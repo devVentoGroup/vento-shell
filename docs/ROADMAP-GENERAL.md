@@ -97,8 +97,8 @@ Importante: todas las apps dependen de los mismos maestros: products/SKUs, sites
 - â¬œ Inventario Core: Stock + Movimientos + Ajustes + Conteo inicial
 - ÐYY­ Remisiones internas end-to-end (crear -> preparar -> en viaje -> recibir -> faltantes)
 - â¬œ Recepciones proveedor (documento) -> movimientos
-- â¬œ Ingreso a bodega por produccion manual (lote + caducidad)
-- â¬œ Etiquetas Zebra (nombre, fecha produccion, fecha expiracion)
+- ÐYY­ Ingreso a bodega por produccion manual (lote + caducidad)
+- ÐYY­ Etiquetas Zebra (nombre, fecha produccion, fecha expiracion)
 - â¬œ Entregas internas CP -> cocina/panaderia -> movimientos
 - â¬œ Transferencias CP -> satelites -> recepcion/disputa
 - â¬œ Luego: LPN/LOC + Zebra + tareas (put-away/picking)
