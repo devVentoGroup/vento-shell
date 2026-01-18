@@ -43,9 +43,11 @@ Importante: todas las apps dependen de los mismos maestros: products/SKUs, sites
 
 ### Fase 0 — Producto y gobernanza (base para no rehacer)
 - ⬜ Definir system of record por dominio (Inventario: NEXO, Fidelizacion: Pass, Asistencia: Anima, Produccion: Fogo)
-- ⬜ Definir roles corporativos estandar (owner/global_manager/manager/staff)
+- 🟡 Definir roles corporativos estandar (propietario, gerente_general, gerente, bodeguero, conductor, cajero, mesero, barista, cocinero, panadero, repostero, pastelero, contador, marketing)
 - ⬜ Definir alcance MVP por app (30 dias vs 90 dias)
 - ⬜ Glosario + SOPs minimos (operacion real)
+- 🟢 Data dictionary Supabase (schema review + riesgos)
+- 🟢 Baseline de schema Supabase en vento-shell/supabase/migrations
 
 **Salida:** documento de decisiones + responsables
 
@@ -53,7 +55,7 @@ Importante: todas las apps dependen de los mismos maestros: products/SKUs, sites
 
 **Core minimo (para habilitar NEXO sin rehacer)**
 - ⬜ Auth unificado (Supabase) + sesion persistente
-- ⬜ Modelo de roles/permisos y RLS base (owner/global_manager/manager/staff)
+- 🟡 Modelo de roles/permisos y RLS base (roles canonicos + scopes site_type/area_kind)
 - ⬜ Tablas comunes minimas: profiles, employees, sites, employee_sites, roles, app_access
 - ⬜ Paquetes compartidos: @vento/db (cliente supabase + helpers) y @vento/auth (session/guards)
 - ⬜ Shell basico: layout simple, selector de site y guard de rutas por rol/site
@@ -72,13 +74,15 @@ Importante: todas las apps dependen de los mismos maestros: products/SKUs, sites
 - ⬜ Tablas base comunes: profiles, employees, sites, employee_sites, roles
 - ⬜ RLS consistente y testeable (staff vs cliente donde aplique)
 - ⬜ Auditoria transversal (created_at/created_by, logs de acciones)
-- ⬜ SSO: login unico en vento-shell y redireccion a apps por subdominio
+- 🟡 SSO: login unico en vento-shell y redireccion a apps por subdominio
+- 🟡 Modelo permisos en BD (roles/apps/permissions + scopes site_type/area_kind)
 
 **Salida:** un core estable donde cualquier app puede construir encima
 
 ### Fase 2 — vento-shell (experiencia unificada)
 - ⬜ Layout global + navegacion estandar (header, app switcher, breadcrumbs)
 - ⬜ Decisiones UI shell: header neutral (blanco), app switcher a la derecha con grid de iconos, selector de site dentro del switcher, menu de perfil a la derecha, sidebar por app cuando aplique, identidad Vento en fondos/figuras sutiles
+- ⬜ Flujo SSO/Hub: login en shell; con returnTo redirige directo a app; sin returnTo va al Hub; sin permisos muestra "No tienes permisos" y boton Volver al Hub
 - ⬜ Guard de rutas por rol y por site
 - ⬜ Selector de site/entidad (si aplica) y persistencia
 - ⬜ Libreria compartida @vento/auth + @vento/db (cliente supabase, helpers)
@@ -91,7 +95,10 @@ Importante: todas las apps dependen de los mismos maestros: products/SKUs, sites
 
 **3.1 NEXO (primero, por urgencia operativa)**
 - ⬜ Inventario Core: Stock + Movimientos + Ajustes + Conteo inicial
+- �YY� Remisiones internas end-to-end (crear -> preparar -> en viaje -> recibir -> faltantes)
 - ⬜ Recepciones proveedor (documento) -> movimientos
+- ⬜ Ingreso a bodega por produccion manual (lote + caducidad)
+- ⬜ Etiquetas Zebra (nombre, fecha produccion, fecha expiracion)
 - ⬜ Entregas internas CP -> cocina/panaderia -> movimientos
 - ⬜ Transferencias CP -> satelites -> recepcion/disputa
 - ⬜ Luego: LPN/LOC + Zebra + tareas (put-away/picking)
