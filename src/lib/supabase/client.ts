@@ -10,6 +10,9 @@ export function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     process.env.SUPABASE_ANON_KEY;
 
+  const cookieDomain =
+    process.env.NEXT_PUBLIC_COOKIE_DOMAIN || process.env.COOKIE_DOMAIN;
+
   if (!url || !key) {
     throw new Error(
       "Supabase URL and Key are required. Set NEXT_PUBLIC_SUPABASE_URL and " +
@@ -17,5 +20,7 @@ export function createClient() {
     );
   }
 
-  return createBrowserClient(url, key);
+  return createBrowserClient(url, key, {
+    cookieOptions: cookieDomain ? { domain: cookieDomain } : undefined,
+  });
 }

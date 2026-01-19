@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 
 export async function createClient() {
   const cookieStore = await cookies();
+  const cookieDomain =
+    process.env.NEXT_PUBLIC_COOKIE_DOMAIN || process.env.COOKIE_DOMAIN;
 
   const url =
     process.env.NEXT_PUBLIC_SUPABASE_URL ||
@@ -21,6 +23,7 @@ export async function createClient() {
   }
 
   return createServerClient(url, key, {
+    cookieOptions: cookieDomain ? { domain: cookieDomain } : undefined,
     cookies: {
       getAll() {
         return cookieStore.getAll();
