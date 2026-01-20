@@ -1,0 +1,9 @@
+code,name,affects_stock,is_active
+adjustment,Ajuste de inventario,0,true
+initial_count,Conteo inicial,1,true
+production_in,Entrada por producción,1,true
+production_out,Salida por producción,-1,true
+purchase_in,Entrada por compra,1,true
+restock_in,Entrada por reabastecimiento,1,true
+restock_out,Salida por reabastecimiento,-1,true
+sale_out,Salida por venta,-1,true

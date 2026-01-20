@@ -1,0 +1,3 @@
+policyname,cmd,qual,with_check
+inventory_movements_insert_permission,INSERT,null,"(has_permission('nexo.inventory.movements'::text, site_id) OR has_permission('nexo.inventory.remissions.prepare'::text, site_id) OR has_permission('nexo.inventory.remissions.receive'::text, site_id) OR has_permission('nexo.inventory.production_batches'::text, site_id))"
+inventory_movements_select_permission,SELECT,"has_permission('nexo.inventory.movements'::text, site_id)",null

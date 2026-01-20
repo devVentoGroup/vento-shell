@@ -65,17 +65,54 @@ export default function Home() {
 
   const DIRECT_APPS: AppLink[] = [];
 
-  const StatusPill = ({ status }: { status: AppStatus }) => {
+  const APP_STYLES: Record<string, { accent: string; soft: string; text: string }> = {
+    viso: {
+      accent: "bg-violet-400",
+      soft: "bg-violet-50",
+      text: "text-violet-700",
+    },
+    nexo: {
+      accent: "bg-amber-400",
+      soft: "bg-amber-50",
+      text: "text-amber-700",
+    },
+    fogo: {
+      accent: "bg-orange-400",
+      soft: "bg-orange-50",
+      text: "text-orange-700",
+    },
+    origo: {
+      accent: "bg-emerald-400",
+      soft: "bg-emerald-50",
+      text: "text-emerald-700",
+    },
+    pulso: {
+      accent: "bg-cyan-400",
+      soft: "bg-cyan-50",
+      text: "text-cyan-700",
+    },
+    aura: {
+      accent: "bg-rose-400",
+      soft: "bg-rose-50",
+      text: "text-rose-700",
+    },
+  };
+
+  const StatusPill = ({
+    status,
+    accentClass,
+  }: {
+    status: AppStatus;
+    accentClass: string;
+  }) => {
     const label = status === "active" ? "Activo" : "Próximamente";
     const cls =
       status === "active"
-        ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
+        ? `bg-white ${accentClass} ring-1 ring-inset ring-zinc-200`
         : "bg-zinc-100 text-zinc-600 ring-zinc-200";
 
     return (
-      <span
-        className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${cls}`}
-      >
+      <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium ${cls}`}>
         {label}
       </span>
     );
@@ -83,6 +120,11 @@ export default function Home() {
 
   const AppCard = ({ app }: { app: AppLink }) => {
     const isActive = app.status === "active";
+    const style = APP_STYLES[app.id] ?? {
+      accent: "bg-zinc-200",
+      soft: "bg-zinc-50",
+      text: "text-zinc-700",
+    };
 
     return (
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition hover:shadow-md">
@@ -93,15 +135,18 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-2">
             {app.logo ? (
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 bg-white">
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 ${style.soft}`}
+              >
                 <Image src={app.logo} alt={`${app.name} logo`} width={20} height={20} />
               </span>
             ) : null}
-            <StatusPill status={app.status} />
+            <StatusPill status={app.status} accentClass={style.text} />
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-between">
+          <div className={`h-1 w-12 rounded-full ${style.accent}`} />
           {isActive ? (
             <a
               href={app.href}
@@ -125,7 +170,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+    <div className="relative min-h-screen bg-white text-zinc-900">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-0 top-0 h-64 w-64 rounded-full bg-zinc-100 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-amber-50 blur-3xl" />
+      </div>
       {/* Top bar */}
       <header className="border-b border-zinc-200 bg-white">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
@@ -138,10 +187,13 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl px-6 py-10">
+      <main className="relative mx-auto w-full max-w-6xl px-6 py-10">
         {/* Hero */}
         <section className="mb-10">
-          <h1 className="text-3xl font-semibold tracking-tight">Centro de aplicaciones</h1>
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            Hub operativo
+          </div>
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight">Centro de aplicaciones</h1>
           <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
             Accede a los módulos de Vento Group. Este Hub es un launcher: cada aplicación vive independiente
             para mantener el sistema estable y escalable.

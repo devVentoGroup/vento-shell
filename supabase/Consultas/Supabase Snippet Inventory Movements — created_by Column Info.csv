@@ -1,0 +1,2 @@
+column_name,data_type,column_default
+created_by,uuid,auth.uid()

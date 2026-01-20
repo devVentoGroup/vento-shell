@@ -40,7 +40,8 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
   }
 
   return (
-    <div className="w-full max-w-lg rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+    <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-zinc-900 via-zinc-700 to-zinc-500" />
       <div className="text-lg font-semibold text-zinc-900">Login</div>
       <div className="mt-1 text-sm text-zinc-600">
         Acceso unico para todas las apps de Vento OS.
@@ -82,7 +83,7 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex h-11 items-center justify-center rounded-xl bg-zinc-900 px-4 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-60"
+          className="inline-flex h-11 items-center justify-center rounded-xl bg-zinc-900 px-4 text-sm font-semibold text-white shadow-sm hover:bg-zinc-800 disabled:opacity-60"
         >
           {loading ? "Ingresando..." : "Ingresar"}
         </button>
