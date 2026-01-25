@@ -13,50 +13,34 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
+CREATE SCHEMA IF NOT EXISTS "public";
+
+
+ALTER SCHEMA "public" OWNER TO "pg_database_owner";
+
+
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
+CREATE TYPE "public"."document_scope" AS ENUM (
+    'employee',
+    'site',
+    'group'
+);
 
 
+ALTER TYPE "public"."document_scope" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."document_status" AS ENUM (
+    'pending_review',
+    'approved',
+    'rejected'
+);
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "unaccent" WITH SCHEMA "public";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
-
-
-
-
+ALTER TYPE "public"."document_status" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."permission_scope_type" AS ENUM (
@@ -89,6 +73,17 @@ CREATE TYPE "public"."site_type" AS ENUM (
 
 
 ALTER TYPE "public"."site_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."support_ticket_status" AS ENUM (
+    'open',
+    'in_progress',
+    'resolved',
+    'closed'
+);
+
+
+ALTER TYPE "public"."support_ticket_status" OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."_set_updated_at"() RETURNS "trigger"
@@ -1572,6 +1567,19 @@ $$;
 ALTER FUNCTION "public"."set_production_batch_code"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_updated_at"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."tg_set_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -1809,6 +1817,33 @@ COMMENT ON TABLE "public"."cost_centers" IS 'Core – tabla canónica para centr
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."documents" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "scope" "public"."document_scope" NOT NULL,
+    "owner_employee_id" "uuid" NOT NULL,
+    "target_employee_id" "uuid",
+    "site_id" "uuid",
+    "title" "text" NOT NULL,
+    "description" "text",
+    "status" "public"."document_status" DEFAULT 'pending_review'::"public"."document_status" NOT NULL,
+    "approved_by" "uuid",
+    "approved_at" timestamp with time zone,
+    "rejected_reason" "text",
+    "storage_path" "text" NOT NULL,
+    "file_name" "text" NOT NULL,
+    "file_size_bytes" integer,
+    "file_mime" "text" DEFAULT 'application/pdf'::"text",
+    "expiry_date" "date",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "documents_scope_site_check" CHECK (((("scope" = 'site'::"public"."document_scope") AND ("site_id" IS NOT NULL)) OR ("scope" <> 'site'::"public"."document_scope"))),
+    CONSTRAINT "documents_scope_target_check" CHECK (((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" IS NOT NULL)) OR ("scope" <> 'employee'::"public"."document_scope")))
+);
+
+
+ALTER TABLE "public"."documents" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."employee_areas" (
     "employee_id" "uuid" NOT NULL,
     "area_id" "uuid" NOT NULL,
@@ -1835,6 +1870,21 @@ ALTER VIEW "public"."employee_attendance_status" OWNER TO "postgres";
 
 COMMENT ON VIEW "public"."employee_attendance_status" IS 'Estado actual de asistencia por empleado (último check-in/out)';
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."employee_devices" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "employee_id" "uuid" NOT NULL,
+    "expo_push_token" "text" NOT NULL,
+    "platform" "text",
+    "device_label" "text",
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."employee_devices" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."employee_permissions" (
@@ -3077,6 +3127,36 @@ COMMENT ON TABLE "public"."suppliers" IS 'Core – tabla canónica para proveedo
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."support_messages" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "ticket_id" "uuid" NOT NULL,
+    "author_id" "uuid" NOT NULL,
+    "body" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."support_messages" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."support_tickets" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_by" "uuid" NOT NULL,
+    "site_id" "uuid",
+    "category" "text" DEFAULT 'attendance'::"text" NOT NULL,
+    "title" "text" NOT NULL,
+    "description" "text",
+    "status" "public"."support_ticket_status" DEFAULT 'open'::"public"."support_ticket_status" NOT NULL,
+    "assigned_to" "uuid",
+    "resolved_at" timestamp with time zone,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."support_tickets" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."user_favorites" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -3193,6 +3273,33 @@ CREATE OR REPLACE VIEW "public"."v_procurement_price_book" AS
 ALTER VIEW "public"."v_procurement_price_book" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."wallet_devices" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "device_library_identifier" "text" NOT NULL,
+    "pass_type_identifier" "text" NOT NULL,
+    "serial_number" "text" NOT NULL,
+    "push_token" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."wallet_devices" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."wallet_passes" (
+    "serial_number" "text" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "pass_type_identifier" "text" NOT NULL,
+    "auth_token" "text" NOT NULL,
+    "data_hash" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"()
+);
+
+
+ALTER TABLE "public"."wallet_passes" OWNER TO "postgres";
+
+
 ALTER TABLE ONLY "public"."app_permissions"
     ADD CONSTRAINT "app_permissions_app_id_code_key" UNIQUE ("app_id", "code");
 
@@ -3238,8 +3345,23 @@ ALTER TABLE ONLY "public"."cost_centers"
 
 
 
+ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."employee_areas"
     ADD CONSTRAINT "employee_areas_pkey" PRIMARY KEY ("employee_id", "area_id");
+
+
+
+ALTER TABLE ONLY "public"."employee_devices"
+    ADD CONSTRAINT "employee_devices_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."employee_devices"
+    ADD CONSTRAINT "employee_devices_unique_token" UNIQUE ("expo_push_token");
 
 
 
@@ -3583,6 +3705,16 @@ ALTER TABLE ONLY "public"."suppliers"
 
 
 
+ALTER TABLE ONLY "public"."support_messages"
+    ADD CONSTRAINT "support_messages_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."support_tickets"
+    ADD CONSTRAINT "support_tickets_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."employee_shifts"
     ADD CONSTRAINT "unique_employee_shift_per_day" UNIQUE ("employee_id", "site_id", "shift_date", "start_time");
 
@@ -3613,6 +3745,21 @@ ALTER TABLE ONLY "public"."users"
 
 
 
+ALTER TABLE ONLY "public"."wallet_devices"
+    ADD CONSTRAINT "wallet_devices_device_library_identifier_pass_type_identifi_key" UNIQUE ("device_library_identifier", "pass_type_identifier", "serial_number");
+
+
+
+ALTER TABLE ONLY "public"."wallet_devices"
+    ADD CONSTRAINT "wallet_devices_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."wallet_passes"
+    ADD CONSTRAINT "wallet_passes_pkey" PRIMARY KEY ("serial_number");
+
+
+
 CREATE UNIQUE INDEX "areas_site_code_unique" ON "public"."areas" USING "btree" ("site_id", "code");
 
 
@@ -3626,6 +3773,26 @@ CREATE UNIQUE INDEX "asistencia_logs_employee_fecha_unique" ON "public"."asisten
 
 
 CREATE INDEX "attendance_logs_employee_occurred_at_idx" ON "public"."attendance_logs" USING "btree" ("employee_id", "occurred_at" DESC);
+
+
+
+CREATE INDEX "documents_expiry_idx" ON "public"."documents" USING "btree" ("expiry_date");
+
+
+
+CREATE INDEX "documents_owner_idx" ON "public"."documents" USING "btree" ("owner_employee_id");
+
+
+
+CREATE INDEX "documents_site_idx" ON "public"."documents" USING "btree" ("site_id");
+
+
+
+CREATE INDEX "documents_status_idx" ON "public"."documents" USING "btree" ("status");
+
+
+
+CREATE INDEX "documents_target_idx" ON "public"."documents" USING "btree" ("target_employee_id");
 
 
 
@@ -3873,6 +4040,18 @@ CREATE UNIQUE INDEX "staff_invitations_token_key" ON "public"."staff_invitations
 
 
 
+CREATE INDEX "support_tickets_assigned_idx" ON "public"."support_tickets" USING "btree" ("assigned_to");
+
+
+
+CREATE INDEX "support_tickets_site_idx" ON "public"."support_tickets" USING "btree" ("site_id");
+
+
+
+CREATE INDEX "support_tickets_status_idx" ON "public"."support_tickets" USING "btree" ("status");
+
+
+
 CREATE OR REPLACE TRIGGER "attendance_logs_00_geofence" BEFORE INSERT ON "public"."attendance_logs" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_attendance_geofence"();
 
 
@@ -3881,11 +4060,23 @@ CREATE OR REPLACE TRIGGER "attendance_logs_enforce_sequence" BEFORE INSERT ON "p
 
 
 
+CREATE OR REPLACE TRIGGER "documents_set_updated_at" BEFORE UPDATE ON "public"."documents" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "employee_devices_set_updated_at" BEFORE UPDATE ON "public"."employee_devices" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "on_loyalty_transaction_created" AFTER INSERT ON "public"."loyalty_transactions" FOR EACH ROW EXECUTE FUNCTION "public"."update_loyalty_balance"();
 
 
 
 CREATE OR REPLACE TRIGGER "set_updated_at_product_inventory_profiles" BEFORE UPDATE ON "public"."product_inventory_profiles" FOR EACH ROW EXECUTE FUNCTION "public"."tg_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "support_tickets_set_updated_at" BEFORE UPDATE ON "public"."support_tickets" FOR EACH ROW EXECUTE FUNCTION "public"."set_updated_at"();
 
 
 
@@ -3959,6 +4150,26 @@ ALTER TABLE ONLY "public"."cost_centers"
 
 
 
+ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_approved_by_fkey" FOREIGN KEY ("approved_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_owner_employee_id_fkey" FOREIGN KEY ("owner_employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_target_employee_id_fkey" FOREIGN KEY ("target_employee_id") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."employee_areas"
     ADD CONSTRAINT "employee_areas_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE CASCADE;
 
@@ -3966,6 +4177,11 @@ ALTER TABLE ONLY "public"."employee_areas"
 
 ALTER TABLE ONLY "public"."employee_areas"
     ADD CONSTRAINT "employee_areas_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."employee_devices"
+    ADD CONSTRAINT "employee_devices_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
 
 
 
@@ -4639,6 +4855,31 @@ ALTER TABLE ONLY "public"."staff_invitations"
 
 
 
+ALTER TABLE ONLY "public"."support_messages"
+    ADD CONSTRAINT "support_messages_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."support_messages"
+    ADD CONSTRAINT "support_messages_ticket_id_fkey" FOREIGN KEY ("ticket_id") REFERENCES "public"."support_tickets"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."support_tickets"
+    ADD CONSTRAINT "support_tickets_assigned_to_fkey" FOREIGN KEY ("assigned_to") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."support_tickets"
+    ADD CONSTRAINT "support_tickets_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."support_tickets"
+    ADD CONSTRAINT "support_tickets_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."user_favorites"
     ADD CONSTRAINT "user_favorites_reward_id_fkey" FOREIGN KEY ("reward_id") REFERENCES "public"."loyalty_rewards"("id") ON DELETE CASCADE;
 
@@ -4661,6 +4902,11 @@ ALTER TABLE ONLY "public"."user_feedback"
 
 ALTER TABLE ONLY "public"."user_feedback"
     ADD CONSTRAINT "user_feedback_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."wallet_devices"
+    ADD CONSTRAINT "wallet_devices_serial_number_fkey" FOREIGN KEY ("serial_number") REFERENCES "public"."wallet_passes"("serial_number") ON DELETE CASCADE;
 
 
 
@@ -4787,6 +5033,45 @@ CREATE POLICY "attendance_logs_select_self" ON "public"."attendance_logs" FOR SE
 ALTER TABLE "public"."cost_centers" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."documents" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "documents_insert" ON "public"."documents" FOR INSERT WITH CHECK ((("owner_employee_id" = "auth"."uid"()) AND ((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND (EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text", 'gerente'::"text"]))))) AND (EXISTS ( SELECT 1
+   FROM "public"."employee_sites" "es"
+  WHERE (("es"."employee_id" = "auth"."uid"()) AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true))))) OR (("scope" = 'group'::"public"."document_scope") AND (EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"])))))))));
+
+
+
+CREATE POLICY "documents_select" ON "public"."documents" FOR SELECT USING (((EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND (EXISTS ( SELECT 1
+   FROM "public"."employee_sites" "es"
+  WHERE (("es"."employee_id" = "auth"."uid"()) AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true))))) OR ("scope" = 'group'::"public"."document_scope")));
+
+
+
+CREATE POLICY "documents_update_owner" ON "public"."documents" FOR UPDATE USING ((("owner_employee_id" = "auth"."uid"()) AND ("status" = 'pending_review'::"public"."document_status"))) WITH CHECK ((("owner_employee_id" = "auth"."uid"()) AND ("status" = 'pending_review'::"public"."document_status")));
+
+
+
+CREATE POLICY "documents_update_review" ON "public"."documents" FOR UPDATE USING (((EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+   FROM ("public"."employees" "e"
+     JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true)))))) WITH CHECK (((EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+   FROM ("public"."employees" "e"
+     JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true))))));
+
+
+
 ALTER TABLE "public"."employee_areas" ENABLE ROW LEVEL SECURITY;
 
 
@@ -4799,6 +5084,21 @@ CREATE POLICY "employee_areas_select_self" ON "public"."employee_areas" FOR SELE
 
 
 CREATE POLICY "employee_areas_write_owner" ON "public"."employee_areas" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"()));
+
+
+
+ALTER TABLE "public"."employee_devices" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "employee_devices_insert" ON "public"."employee_devices" FOR INSERT WITH CHECK (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_devices_select" ON "public"."employee_devices" FOR SELECT USING (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_devices_update" ON "public"."employee_devices" FOR UPDATE USING (("employee_id" = "auth"."uid"())) WITH CHECK (("employee_id" = "auth"."uid"()));
 
 
 
@@ -5441,6 +5741,61 @@ CREATE POLICY "staff_validate_redemptions" ON "public"."loyalty_redemptions" FOR
 ALTER TABLE "public"."suppliers" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."support_messages" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "support_messages_insert" ON "public"."support_messages" FOR INSERT WITH CHECK ((("author_id" = "auth"."uid"()) AND (EXISTS ( SELECT 1
+   FROM "public"."support_tickets" "t"
+  WHERE (("t"."id" = "support_messages"."ticket_id") AND (("t"."created_by" = "auth"."uid"()) OR ("t"."assigned_to" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+           FROM "public"."employees" "e"
+          WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+           FROM ("public"."employees" "e"
+             JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+          WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "t"."site_id") AND ("es"."is_active" = true))))))))));
+
+
+
+CREATE POLICY "support_messages_select" ON "public"."support_messages" FOR SELECT USING ((EXISTS ( SELECT 1
+   FROM "public"."support_tickets" "t"
+  WHERE (("t"."id" = "support_messages"."ticket_id") AND (("t"."created_by" = "auth"."uid"()) OR ("t"."assigned_to" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+           FROM "public"."employees" "e"
+          WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+           FROM ("public"."employees" "e"
+             JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+          WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "t"."site_id") AND ("es"."is_active" = true)))))))));
+
+
+
+ALTER TABLE "public"."support_tickets" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "support_tickets_insert" ON "public"."support_tickets" FOR INSERT WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "support_tickets_select" ON "public"."support_tickets" FOR SELECT USING ((("created_by" = "auth"."uid"()) OR ("assigned_to" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+   FROM ("public"."employees" "e"
+     JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "support_tickets"."site_id") AND ("es"."is_active" = true))))));
+
+
+
+CREATE POLICY "support_tickets_update" ON "public"."support_tickets" FOR UPDATE USING ((("created_by" = "auth"."uid"()) OR ("assigned_to" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+   FROM ("public"."employees" "e"
+     JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "support_tickets"."site_id") AND ("es"."is_active" = true)))))) WITH CHECK ((("created_by" = "auth"."uid"()) OR ("assigned_to" = "auth"."uid"()) OR (EXISTS ( SELECT 1
+   FROM "public"."employees" "e"
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (EXISTS ( SELECT 1
+   FROM ("public"."employees" "e"
+     JOIN "public"."employee_sites" "es" ON (("es"."employee_id" = "e"."id")))
+  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = 'gerente'::"text") AND ("es"."site_id" = "support_tickets"."site_id") AND ("es"."is_active" = true))))));
+
+
+
 ALTER TABLE "public"."user_favorites" ENABLE ROW LEVEL SECURITY;
 
 
@@ -5474,173 +5829,10 @@ CREATE POLICY "users_update_self" ON "public"."users" FOR UPDATE TO "authenticat
 
 
 
-
-
-ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
-
-
-
-
-
-
-ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."users";
-
-
-
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -5890,37 +6082,15 @@ GRANT ALL ON FUNCTION "public"."set_production_batch_code"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."set_updated_at"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_updated_at"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "service_role";
 
 
 
@@ -5945,21 +6115,6 @@ GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "anon";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -6004,6 +6159,12 @@ GRANT ALL ON TABLE "public"."cost_centers" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."documents" TO "anon";
+GRANT ALL ON TABLE "public"."documents" TO "authenticated";
+GRANT ALL ON TABLE "public"."documents" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."employee_areas" TO "anon";
 GRANT ALL ON TABLE "public"."employee_areas" TO "authenticated";
 GRANT ALL ON TABLE "public"."employee_areas" TO "service_role";
@@ -6013,6 +6174,12 @@ GRANT ALL ON TABLE "public"."employee_areas" TO "service_role";
 GRANT ALL ON TABLE "public"."employee_attendance_status" TO "anon";
 GRANT ALL ON TABLE "public"."employee_attendance_status" TO "authenticated";
 GRANT ALL ON TABLE "public"."employee_attendance_status" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."employee_devices" TO "anon";
+GRANT ALL ON TABLE "public"."employee_devices" TO "authenticated";
+GRANT ALL ON TABLE "public"."employee_devices" TO "service_role";
 
 
 
@@ -6350,6 +6517,18 @@ GRANT ALL ON TABLE "public"."suppliers" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."support_messages" TO "anon";
+GRANT ALL ON TABLE "public"."support_messages" TO "authenticated";
+GRANT ALL ON TABLE "public"."support_messages" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."support_tickets" TO "anon";
+GRANT ALL ON TABLE "public"."support_tickets" TO "authenticated";
+GRANT ALL ON TABLE "public"."support_tickets" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."user_favorites" TO "anon";
 GRANT ALL ON TABLE "public"."user_favorites" TO "authenticated";
 GRANT ALL ON TABLE "public"."user_favorites" TO "service_role";
@@ -6380,9 +6559,15 @@ GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."wallet_devices" TO "anon";
+GRANT ALL ON TABLE "public"."wallet_devices" TO "authenticated";
+GRANT ALL ON TABLE "public"."wallet_devices" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."wallet_passes" TO "anon";
+GRANT ALL ON TABLE "public"."wallet_passes" TO "authenticated";
+GRANT ALL ON TABLE "public"."wallet_passes" TO "service_role";
 
 
 
@@ -6410,30 +6595,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

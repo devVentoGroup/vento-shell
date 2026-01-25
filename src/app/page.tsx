@@ -1,6 +1,15 @@
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { createClient } from "@/lib/supabase/server";
+
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: userRes } = await supabase.auth.getUser();
+  if (!userRes.user) {
+    redirect("/login?returnTo=/");
+  }
+
   type AppStatus = "active" | "soon";
 
   type AppLink = {
