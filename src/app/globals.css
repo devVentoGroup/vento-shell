@@ -1,15 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-ink: #111827;
+  --color-ink-soft: #6b7280;
+  --color-paper: #f9fafb;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f9fafb;
+  --color-surface-3: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-success: #1f9d6a;
+  --color-warning: #e08a00;
+  --color-danger: #e0484a;
+  --color-info: #2b7bbb;
+  --color-on-brand: #ffffff;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --shadow-1: 0 6px 16px rgba(18, 14, 22, 0.08);
+  --shadow-2: 0 14px 40px rgba(18, 14, 22, 0.12);
+
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+
+  --color-brand: #111827;
+  --color-brand-600: #0f172a;
+  --color-brand-700: #0b1220;
+  --color-brand-soft: #e5e7eb;
+}
+
+:root[data-theme="anima"] {
+  --color-brand: #e2006a;
+  --color-brand-600: #c6005c;
+  --color-brand-700: #b76e79;
+  --color-brand-soft: #f2c6c0;
+  --color-paper: #f7f5f8;
+  --color-surface-2: #f2eef2;
+  --color-ink: #1b1a1f;
+  --color-ink-soft: #9e9aa6;
+  --color-border: #e6e1ea;
+}
+
+:root[data-theme="nexo"] {
+  --color-brand: #f59e0b;
+  --color-brand-600: #92400e;
+  --color-brand-700: #92400e;
+  --color-brand-soft: #f0e3c6;
+  --color-paper: #fff7e6;
+  --color-surface-2: #fff1d1;
+  --color-ink: #2a1a00;
+  --color-ink-soft: #b8a07a;
+  --color-border: #f0e3c6;
+}
+
+:root[data-theme="viso"] {
+  --color-brand: #a855f7;
+  --color-brand-600: #4c1d95;
+  --color-brand-700: #4c1d95;
+  --color-brand-soft: #e6dff5;
+  --color-paper: #f6f2ff;
+  --color-surface-2: #efe8ff;
+  --color-ink: #1b1033;
+  --color-ink-soft: #9b8fb6;
+  --color-border: #e6dff5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: var(--color-brand);
+  --color-border: var(--color-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-md: var(--radius-md);
+  --shadow-1: var(--shadow-1);
 }
 
 /* Fuerza tema claro en todas las apps */
@@ -17,5 +96,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }

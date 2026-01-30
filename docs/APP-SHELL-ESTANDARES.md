@@ -85,7 +85,6 @@ ANIMA (propuesta)
 - Base porcelain: #F7F5F8 / #F2EEF2
 - Texto principal: #1B1A1F
 - Accent electrico (principal): #E2006A
-- Accent violeta (highlights): #6A00FF
 - Oro rosa (metalico): #B76E79 + brillo #F2C6C0
 - Neutros: #9E9AA6, #E6E1EA
 

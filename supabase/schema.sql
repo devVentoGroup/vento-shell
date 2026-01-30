@@ -1817,6 +1817,22 @@ COMMENT ON TABLE "public"."cost_centers" IS 'Core – tabla canónica para centr
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."document_types" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "scope" "public"."document_scope" DEFAULT 'employee'::"public"."document_scope" NOT NULL,
+    "requires_expiry" boolean DEFAULT false NOT NULL,
+    "validity_months" integer,
+    "reminder_days" integer DEFAULT 7 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."document_types" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."documents" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "scope" "public"."document_scope" NOT NULL,
@@ -1836,6 +1852,8 @@ CREATE TABLE IF NOT EXISTS "public"."documents" (
     "expiry_date" "date",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "document_type_id" "uuid",
+    "issue_date" "date",
     CONSTRAINT "documents_scope_site_check" CHECK (((("scope" = 'site'::"public"."document_scope") AND ("site_id" IS NOT NULL)) OR ("scope" <> 'site'::"public"."document_scope"))),
     CONSTRAINT "documents_scope_target_check" CHECK (((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" IS NOT NULL)) OR ("scope" <> 'employee'::"public"."document_scope")))
 );
@@ -1906,6 +1924,22 @@ ALTER TABLE "public"."employee_permissions" OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."employee_permissions" IS 'Overrides de permisos por empleado.';
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."employee_push_tokens" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "employee_id" "uuid" NOT NULL,
+    "token" "text" NOT NULL,
+    "platform" "text",
+    "device_id" "text",
+    "is_active" boolean DEFAULT true NOT NULL,
+    "last_seen" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."employee_push_tokens" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."employee_settings" (
@@ -3345,6 +3379,11 @@ ALTER TABLE ONLY "public"."cost_centers"
 
 
 
+ALTER TABLE ONLY "public"."document_types"
+    ADD CONSTRAINT "document_types_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."documents"
     ADD CONSTRAINT "documents_pkey" PRIMARY KEY ("id");
 
@@ -3372,6 +3411,11 @@ ALTER TABLE ONLY "public"."employee_permissions"
 
 ALTER TABLE ONLY "public"."employee_permissions"
     ADD CONSTRAINT "employee_permissions_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."employee_push_tokens"
+    ADD CONSTRAINT "employee_push_tokens_pkey" PRIMARY KEY ("id");
 
 
 
@@ -3776,6 +3820,10 @@ CREATE INDEX "attendance_logs_employee_occurred_at_idx" ON "public"."attendance_
 
 
 
+CREATE UNIQUE INDEX "document_types_name_scope_idx" ON "public"."document_types" USING "btree" ("name", "scope");
+
+
+
 CREATE INDEX "documents_expiry_idx" ON "public"."documents" USING "btree" ("expiry_date");
 
 
@@ -3801,6 +3849,14 @@ CREATE INDEX "employee_areas_employee_idx" ON "public"."employee_areas" USING "b
 
 
 CREATE UNIQUE INDEX "employee_areas_one_primary" ON "public"."employee_areas" USING "btree" ("employee_id") WHERE ("is_primary" = true);
+
+
+
+CREATE INDEX "employee_push_tokens_employee_idx" ON "public"."employee_push_tokens" USING "btree" ("employee_id");
+
+
+
+CREATE UNIQUE INDEX "employee_push_tokens_token_idx" ON "public"."employee_push_tokens" USING "btree" ("token");
 
 
 
@@ -4072,6 +4128,14 @@ CREATE OR REPLACE TRIGGER "on_loyalty_transaction_created" AFTER INSERT ON "publ
 
 
 
+CREATE OR REPLACE TRIGGER "set_document_types_updated_at" BEFORE UPDATE ON "public"."document_types" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "set_employee_push_tokens_updated_at" BEFORE UPDATE ON "public"."employee_push_tokens" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "set_updated_at_product_inventory_profiles" BEFORE UPDATE ON "public"."product_inventory_profiles" FOR EACH ROW EXECUTE FUNCTION "public"."tg_set_updated_at"();
 
 
@@ -4156,6 +4220,11 @@ ALTER TABLE ONLY "public"."documents"
 
 
 ALTER TABLE ONLY "public"."documents"
+    ADD CONSTRAINT "documents_document_type_id_fkey" FOREIGN KEY ("document_type_id") REFERENCES "public"."document_types"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."documents"
     ADD CONSTRAINT "documents_owner_employee_id_fkey" FOREIGN KEY ("owner_employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
 
 
@@ -4207,6 +4276,11 @@ ALTER TABLE ONLY "public"."employee_permissions"
 
 ALTER TABLE ONLY "public"."employee_permissions"
     ADD CONSTRAINT "employee_permissions_scope_site_id_fkey" FOREIGN KEY ("scope_site_id") REFERENCES "public"."sites"("id");
+
+
+
+ALTER TABLE ONLY "public"."employee_push_tokens"
+    ADD CONSTRAINT "employee_push_tokens_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
 
 
 
@@ -5033,16 +5107,23 @@ CREATE POLICY "attendance_logs_select_self" ON "public"."attendance_logs" FOR SE
 ALTER TABLE "public"."cost_centers" ENABLE ROW LEVEL SECURITY;
 
 
+ALTER TABLE "public"."document_types" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "document_types_select" ON "public"."document_types" FOR SELECT USING (("auth"."role"() = 'authenticated'::"text"));
+
+
+
+CREATE POLICY "document_types_write_admin" ON "public"."document_types" USING (("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() = 'gerente'::"text"))) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() = 'gerente'::"text")));
+
+
+
 ALTER TABLE "public"."documents" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "documents_insert" ON "public"."documents" FOR INSERT WITH CHECK ((("owner_employee_id" = "auth"."uid"()) AND ((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND (EXISTS ( SELECT 1
-   FROM "public"."employees" "e"
-  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text", 'gerente'::"text"]))))) AND (EXISTS ( SELECT 1
-   FROM "public"."employee_sites" "es"
-  WHERE (("es"."employee_id" = "auth"."uid"()) AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true))))) OR (("scope" = 'group'::"public"."document_scope") AND (EXISTS ( SELECT 1
-   FROM "public"."employees" "e"
-  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"])))))))));
+CREATE POLICY "documents_insert" ON "public"."documents" FOR INSERT WITH CHECK ((("owner_employee_id" = "auth"."uid"()) AND ((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))))) OR (("scope" = 'group'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"())))));
 
 
 
@@ -5117,6 +5198,25 @@ CREATE POLICY "employee_permissions_select_self" ON "public"."employee_permissio
 
 
 
+ALTER TABLE "public"."employee_push_tokens" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "employee_push_tokens_delete_self" ON "public"."employee_push_tokens" FOR DELETE USING (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_push_tokens_insert_self" ON "public"."employee_push_tokens" FOR INSERT WITH CHECK (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_push_tokens_select_self" ON "public"."employee_push_tokens" FOR SELECT USING (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_push_tokens_update_self" ON "public"."employee_push_tokens" FOR UPDATE USING (("employee_id" = "auth"."uid"())) WITH CHECK (("employee_id" = "auth"."uid"()));
+
+
+
 ALTER TABLE "public"."employee_settings" ENABLE ROW LEVEL SECURITY;
 
 
@@ -5168,11 +5268,23 @@ CREATE POLICY "employee_shifts_write_owner" ON "public"."employee_shifts" USING 
 ALTER TABLE "public"."employee_sites" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "employee_sites_select" ON "public"."employee_sites" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("employee_id" IN ( SELECT "e"."id"
+   FROM "public"."employees" "e"
+  WHERE ("e"."site_id" = ( SELECT "me"."site_id"
+           FROM "public"."employees" "me"
+          WHERE ("me"."id" = "auth"."uid"())))))) OR ("employee_id" = "auth"."uid"()))));
+
+
+
 CREATE POLICY "employee_sites_select_owner" ON "public"."employee_sites" FOR SELECT USING (("public"."is_owner"() OR "public"."is_global_manager"()));
 
 
 
 CREATE POLICY "employee_sites_select_self" ON "public"."employee_sites" FOR SELECT USING (("employee_id" = "auth"."uid"()));
+
+
+
+CREATE POLICY "employee_sites_write_admin" ON "public"."employee_sites" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"()));
 
 
 
@@ -5207,11 +5319,21 @@ CREATE POLICY "employees_read_suppliers" ON "public"."suppliers" FOR SELECT TO "
 
 
 
-CREATE POLICY "employees_select_area" ON "public"."employees" FOR SELECT USING ((("area_id" IS NOT NULL) AND "public"."can_access_area"("area_id")));
+CREATE POLICY "employees_select" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR ("id" = "auth"."uid"()))));
 
 
 
-CREATE POLICY "employees_select_manager" ON "public"."employees" FOR SELECT USING ((("public"."is_manager_or_owner"() OR ("public"."current_employee_role"() = ANY (ARRAY['bodeguero'::"text"]))) AND "public"."can_access_site"("site_id")));
+CREATE POLICY "employees_select_area" ON "public"."employees" FOR SELECT USING ((("area_id" IS NOT NULL) AND "public"."can_access_area"("area_id") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() <> 'gerente'::"text") OR ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"()))))));
+
+
+
+CREATE POLICY "employees_select_manager" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR (("public"."current_employee_role"() = 'bodeguero'::"text") AND "public"."can_access_site"("site_id")))));
 
 
 
@@ -5219,7 +5341,17 @@ CREATE POLICY "employees_select_self" ON "public"."employees" FOR SELECT USING (
 
 
 
-CREATE POLICY "employees_write_owner" ON "public"."employees" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"()));
+CREATE POLICY "employees_update" ON "public"."employees" FOR UPDATE USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR ("id" = "auth"."uid"()))) WITH CHECK (("public"."is_owner"() OR ("public"."is_global_manager"() AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text"]))) OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text", 'gerente'::"text"])) AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR (("id" = "auth"."uid"()) AND ("role" = ( SELECT "me"."role"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"()))))));
+
+
+
+CREATE POLICY "employees_write_owner" ON "public"."employees" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR ("public"."is_global_manager"() AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text"])))));
 
 
 
@@ -5696,6 +5828,10 @@ CREATE POLICY "roles_manage_owner" ON "public"."roles" TO "authenticated" USING 
 
 
 
+CREATE POLICY "roles_select" ON "public"."roles" FOR SELECT USING (("auth"."role"() = 'authenticated'::"text"));
+
+
+
 CREATE POLICY "roles_select_all" ON "public"."roles" FOR SELECT TO "authenticated" USING (true);
 
 
@@ -5712,6 +5848,10 @@ CREATE POLICY "site_supply_routes_select_all" ON "public"."site_supply_routes" F
 
 
 ALTER TABLE "public"."sites" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "sites_select" ON "public"."sites" FOR SELECT USING (("auth"."role"() = 'authenticated'::"text"));
+
 
 
 CREATE POLICY "sites_select_public_vento_pass" ON "public"."sites" FOR SELECT TO "authenticated", "anon" USING ((("is_active" = true) AND ("is_public" = true)));
@@ -6159,6 +6299,12 @@ GRANT ALL ON TABLE "public"."cost_centers" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."document_types" TO "anon";
+GRANT ALL ON TABLE "public"."document_types" TO "authenticated";
+GRANT ALL ON TABLE "public"."document_types" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."documents" TO "anon";
 GRANT ALL ON TABLE "public"."documents" TO "authenticated";
 GRANT ALL ON TABLE "public"."documents" TO "service_role";
@@ -6186,6 +6332,12 @@ GRANT ALL ON TABLE "public"."employee_devices" TO "service_role";
 GRANT ALL ON TABLE "public"."employee_permissions" TO "anon";
 GRANT ALL ON TABLE "public"."employee_permissions" TO "authenticated";
 GRANT ALL ON TABLE "public"."employee_permissions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."employee_push_tokens" TO "anon";
+GRANT ALL ON TABLE "public"."employee_push_tokens" TO "authenticated";
+GRANT ALL ON TABLE "public"."employee_push_tokens" TO "service_role";
 
 
 
