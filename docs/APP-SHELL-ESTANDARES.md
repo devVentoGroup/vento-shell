@@ -1,4 +1,4 @@
-# Vento OS - Estandares Comunes (AppShell + UI Kit v1)
+﻿# Vento OS - Estandares Comunes (AppShell + UI Kit v1)
 
 Objetivo: definir una base comun para todas las apps (NEXO, FOGO, etc.)
 antes de construir nuevas experiencias. Esto evita inconsistencias y retrabajo.
@@ -122,3 +122,39 @@ AURA (propuesta)
 1) Migrar NEXO a este estandar (header sticky + perfil logout + layout full-width).
 2) Al crear FOGO, clonar este AppShell y UI Kit.
 3) Evitar estilos por app fuera de este estandar.
+
+## 7) Copiar/pegar estandar (checklist rapido)
+
+Para una nueva app, copiar desde **NEXO**:
+
+- `src/app/globals.css` (cambiar paleta `--ui-*` segun modulo).
+- `src/app/layout.tsx` (fuente, `VentoShell` y metadata base).
+- `src/components/vento/standard/` completo:
+  - `vento-shell.tsx`
+  - `vento-chrome.tsx`
+  - `ui.tsx`
+  - `table.tsx`
+  - `app-switcher.tsx`
+  - `profile-menu.tsx`
+
+Luego ajustar:
+
+- Labels de app en `vento-chrome.tsx` (nombre, subtitulo).
+- Rutas/links del nav en `vento-chrome.tsx` segun la nueva app.
+- `NEXT_PUBLIC_SHELL_LOGIN_URL` en `.env` si aplica.
+- Permisos por app (`permissionCodes`) para mostrar solo lo permitido.
+
+## 8) Bootstrap rapido (script)
+
+Desde `vento-shell`:
+
+```powershell
+.\tools\bootstrap-app-shell.ps1 -TargetPath "C:\Users\vento\OneDrive\MACBOOK\Escritorio\Vento OS\vento-pulso" -AppName "PULSO" -AppCode pulso -Palette PULSO -Domain "pulso.ventogroup.co" -SetActiveApp -Force
+.\tools\bootstrap-app-shell.ps1 -TargetPath "C:\Users\vento\OneDrive\MACBOOK\Escritorio\Vento OS\vento-fogo" -AppName "FOGO" -AppCode fogo -Palette FOGO -Domain "fogo.ventogroup.co" -SetActiveApp -Force
+```
+
+Notas:
+- Ajusta nav/permisos en `vento-chrome.tsx` segun el modulo.
+- Si quieres cambiar el tagline o description, pasa `-Tagline` / `-Description`.
+- `-Force` sobreescribe archivos existentes.
+
