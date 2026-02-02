@@ -13,13 +13,63 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE SCHEMA IF NOT EXISTS "public";
+CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
 
 
-ALTER SCHEMA "public" OWNER TO "pg_database_owner";
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
 
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "unaccent" WITH SCHEMA "public";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
 
 
 
@@ -271,6 +321,7 @@ ALTER FUNCTION "public"."apply_restock_shipment"("p_request_id" "uuid") OWNER TO
 CREATE OR REPLACE FUNCTION "public"."can_access_area"("p_area_id" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select p_area_id is null
     or public.is_owner()
@@ -324,6 +375,7 @@ ALTER FUNCTION "public"."can_access_recipe_scope"("p_site_id" "uuid", "p_area_id
 CREATE OR REPLACE FUNCTION "public"."can_access_site"("p_site_id" "uuid") RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select
     case
@@ -332,14 +384,14 @@ CREATE OR REPLACE FUNCTION "public"."can_access_site"("p_site_id" "uuid") RETURN
       when is_global_manager() then true
       when exists (
         select 1
-        from employee_sites es
+        from public.employee_sites es
         where es.employee_id = auth.uid()
           and es.site_id = p_site_id
           and es.is_active = true
       ) then true
       when exists (
         select 1
-        from employees e
+        from public.employees e
         where e.id = auth.uid()
           and e.site_id = p_site_id
           and (e.is_active is true or e.is_active is null)
@@ -352,9 +404,101 @@ $$;
 ALTER FUNCTION "public"."can_access_site"("p_site_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."check_nexo_permissions"("p_employee_id" "uuid", "p_site_id" "uuid") RETURNS TABLE("permission_code" "text", "allowed" boolean)
+    LANGUAGE "sql" STABLE
+    AS $$
+  with perms as (
+    select ap.code as permission_code
+    from public.app_permissions ap
+    join public.apps a on a.id = ap.app_id
+    where a.code = 'nexo'
+  ),
+  ctx as (
+    select p_employee_id as employee_id, p_site_id as site_id
+  )
+  select p.permission_code,
+         public.has_permission('nexo.' || p.permission_code, (select site_id from ctx), null) as allowed
+  from perms p
+  order by p.permission_code;
+$$;
+
+
+ALTER FUNCTION "public"."check_nexo_permissions"("p_employee_id" "uuid", "p_site_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."close_open_attendance_day_end"("p_timezone" "text" DEFAULT 'America/Bogota'::"text") RETURNS integer
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_day_start timestamptz;
+  v_day_end timestamptz;
+  v_closed int := 0;
+begin
+  v_day_start := (date_trunc('day', now() at time zone p_timezone)) at time zone p_timezone;
+  v_day_end := (date_trunc('day', now() at time zone p_timezone) + interval '1 day' - interval '1 second') at time zone p_timezone;
+
+  with last_logs as (
+    select distinct on (employee_id)
+      employee_id,
+      site_id,
+      action,
+      occurred_at
+    from public.attendance_logs
+    where occurred_at <= v_day_end
+    order by employee_id, occurred_at desc, created_at desc
+  ),
+  inserted as (
+    insert into public.attendance_logs (
+      employee_id,
+      site_id,
+      action,
+      source,
+      occurred_at,
+      latitude,
+      longitude,
+      accuracy_meters,
+      device_info,
+      notes
+    )
+    select
+      l.employee_id,
+      l.site_id,
+      'check_out',
+      'system',
+      v_day_end,
+      s.latitude,
+      s.longitude,
+      0,
+      jsonb_build_object('auto_close', true, 'reason', 'day_end'),
+      'Cierre automatico: turno abierto cerrado por el sistema a las 23:59'
+    from last_logs l
+    join public.sites s on s.id = l.site_id
+    where l.action = 'check_in'
+      and not exists (
+        select 1
+        from public.attendance_logs al
+        where al.employee_id = l.employee_id
+          and al.action = 'check_out'
+          and al.occurred_at > l.occurred_at
+          and al.occurred_at <= v_day_end
+      )
+    returning 1
+  )
+  select count(*) into v_closed from inserted;
+
+  return v_closed;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."close_open_attendance_day_end"("p_timezone" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."current_employee_area_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_selected_area_id();
 $$;
@@ -366,6 +510,7 @@ ALTER FUNCTION "public"."current_employee_area_id"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."current_employee_primary_site_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select coalesce(
     (
@@ -390,6 +535,7 @@ ALTER FUNCTION "public"."current_employee_primary_site_id"() OWNER TO "postgres"
 CREATE OR REPLACE FUNCTION "public"."current_employee_role"() RETURNS "text"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select e.role
   from public.employees e
@@ -403,6 +549,7 @@ ALTER FUNCTION "public"."current_employee_role"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."current_employee_selected_area_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select coalesce(
     (
@@ -432,6 +579,7 @@ ALTER FUNCTION "public"."current_employee_selected_area_id"() OWNER TO "postgres
 CREATE OR REPLACE FUNCTION "public"."current_employee_selected_site_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select coalesce(
     (
@@ -450,6 +598,7 @@ ALTER FUNCTION "public"."current_employee_selected_site_id"() OWNER TO "postgres
 CREATE OR REPLACE FUNCTION "public"."current_employee_site_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_selected_site_id();
 $$;
@@ -502,9 +651,12 @@ declare
 
   v_distance double precision;
   v_accuracy double precision;
+  v_is_assigned boolean;
 begin
-  -- Hora servidor (anti manipulación)
-  new.occurred_at := now();
+  -- Hora servidor (anti manipulacion)
+  if new.source <> 'system' then
+    new.occurred_at := now();
+  end if;
 
   -- Empleado: debe existir y estar activo
   select id, site_id, is_active
@@ -520,10 +672,20 @@ begin
     raise exception 'Empleado inactivo';
   end if;
 
-  -- En check_in, la sede del log debe coincidir con la sede asignada al empleado
-  -- (si tu operación permite multi-sede formal, esto se reemplaza luego por employee_sites)
-  if new.action = 'check_in' and v_emp.site_id is distinct from new.site_id then
-    raise exception 'No autorizado: check-in solo permitido en tu sede asignada';
+  -- En check_in, la sede debe estar asignada al empleado (site_id o employee_sites)
+  if new.action = 'check_in' then
+    v_is_assigned := (v_emp.site_id is not distinct from new.site_id)
+      or exists (
+        select 1
+        from public.employee_sites es
+        where es.employee_id = new.employee_id
+          and es.site_id = new.site_id
+          and es.is_active = true
+      );
+
+    if not v_is_assigned then
+      raise exception 'No autorizado: check-in solo permitido en tu sede asignada';
+    end if;
   end if;
 
   -- Sede: debe existir y estar activa
@@ -540,10 +702,15 @@ begin
     raise exception 'Sede inactiva';
   end if;
 
-  -- Requiere geolocalización si NO es vento_group
+  -- Si es cierre automatico del sistema, omite validacion de geolocalizacion
+  if new.source = 'system' then
+    return new;
+  end if;
+
+  -- Requiere geolocalizacion si NO es vento_group
   if v_site.type <> 'vento_group' then
     if v_site.latitude is null or v_site.longitude is null then
-      raise exception 'Configuración inválida: la sede % no tiene coordenadas', v_site.name;
+      raise exception 'Configuracion invalida: la sede % no tiene coordenadas', v_site.name;
     end if;
     v_requires_geo := true;
   else
@@ -551,39 +718,39 @@ begin
   end if;
 
   if v_requires_geo then
-    -- Debe venir ubicación
+    -- Debe venir ubicacion
     if new.latitude is null or new.longitude is null or new.accuracy_meters is null then
-      raise exception 'Ubicación requerida para registrar asistencia';
+      raise exception 'Ubicacion requerida para registrar asistencia';
     end if;
 
-    -- Si el cliente reporta warnings bloqueantes, rechaza (ayuda, pero no es el “anti-mock” definitivo)
+    -- Si el cliente reporta warnings bloqueantes, rechaza
     if public.device_info_has_blocking_warnings(new.device_info) then
-      raise exception 'Ubicación no válida: señales de ubicación simulada detectadas';
+      raise exception 'Ubicacion no valida: senales de ubicacion simulada detectadas';
     end if;
 
-    -- Política estricta
+    -- Politica estricta
     if new.action = 'check_in' then
+      v_cap := 20;
+      v_max_acc := 20;
+    elsif new.action = 'check_out' then
       v_cap := 30;
       v_max_acc := 25;
-    elsif new.action = 'check_out' then
-      v_cap := 40;
-      v_max_acc := 30;
     else
-      raise exception 'Acción inválida: %', new.action;
+      raise exception 'Accion invalida: %', new.action;
     end if;
 
     v_radius := least(coalesce(v_site.checkin_radius_meters, 50), v_cap);
     v_accuracy := new.accuracy_meters::double precision;
 
     if v_accuracy > v_max_acc then
-      raise exception 'Precisión GPS insuficiente: %m (máximo %m)', round(v_accuracy), v_max_acc;
+      raise exception 'Precision GPS insuficiente: %m (maximo %m)', round(v_accuracy), v_max_acc;
     end if;
 
     v_distance := public.haversine_m(new.latitude, new.longitude, v_site.latitude, v_site.longitude);
 
-    -- Regla estricta de confianza: distancia + precisión <= radio
+    -- Regla estricta de confianza: distancia + precision <= radio
     if (v_distance + v_accuracy) > v_radius then
-      raise exception 'Fuera de rango: %m (precisión %m) > radio %m',
+      raise exception 'Fuera de rango: %m (precision %m) > radio %m',
         round(v_distance), round(v_accuracy), v_radius;
     end if;
   end if;
@@ -1033,6 +1200,7 @@ ALTER FUNCTION "public"."haversine_m"("lat1" numeric, "lon1" numeric, "lat2" num
 CREATE OR REPLACE FUNCTION "public"."is_active_staff"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.is_employee();
 $$;
@@ -1044,6 +1212,7 @@ ALTER FUNCTION "public"."is_active_staff"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_employee"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select exists (
     select 1
@@ -1060,6 +1229,7 @@ ALTER FUNCTION "public"."is_employee"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_global_manager"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_role() = 'gerente_general';
 $$;
@@ -1071,6 +1241,7 @@ ALTER FUNCTION "public"."is_global_manager"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_manager"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_role() = 'gerente';
 $$;
@@ -1082,6 +1253,7 @@ ALTER FUNCTION "public"."is_manager"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_manager_or_owner"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_role() in ('propietario', 'gerente', 'gerente_general');
 $$;
@@ -1093,6 +1265,7 @@ ALTER FUNCTION "public"."is_manager_or_owner"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_owner"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
+    SET "row_security" TO 'off'
     AS $$
   select public.current_employee_role() = 'propietario';
 $$;
@@ -1826,7 +1999,8 @@ CREATE TABLE IF NOT EXISTS "public"."document_types" (
     "reminder_days" integer DEFAULT 7 NOT NULL,
     "is_active" boolean DEFAULT true NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "display_order" integer DEFAULT 999 NOT NULL
 );
 
 
@@ -2029,6 +2203,39 @@ ALTER TABLE "public"."employees" OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."employees" IS 'Core – tabla canónica para empleados/staff. Gestión de personal por site, roles y permisos operativos.';
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."inventory_entries" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "supplier_name" "text" NOT NULL,
+    "invoice_number" "text",
+    "received_at" timestamp with time zone DEFAULT "now"(),
+    "status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "notes" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."inventory_entries" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."inventory_entry_items" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "entry_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "quantity_declared" numeric NOT NULL,
+    "quantity_received" numeric NOT NULL,
+    "unit" "text",
+    "notes" "text",
+    "discrepancy" numeric GENERATED ALWAYS AS (("quantity_received" - "quantity_declared")) STORED,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."inventory_entry_items" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."inventory_locations" (
@@ -2261,6 +2468,36 @@ ALTER TABLE "public"."inventory_stock_by_site" OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."inventory_stock_by_site" IS 'Core – tabla canónica para stock por sitio. Registra cantidades actuales y umbrales por site+product; usar para consultas de disponibilidad y reabastecimiento.';
 
+
+
+CREATE TABLE IF NOT EXISTS "public"."inventory_transfer_items" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "transfer_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "quantity" numeric NOT NULL,
+    "unit" "text",
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."inventory_transfer_items" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."inventory_transfers" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "from_loc_id" "uuid" NOT NULL,
+    "to_loc_id" "uuid" NOT NULL,
+    "status" "text" DEFAULT 'completed'::"text" NOT NULL,
+    "notes" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."inventory_transfers" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."loyalty_redemptions" (
@@ -3439,6 +3676,16 @@ ALTER TABLE ONLY "public"."employees"
 
 
 
+ALTER TABLE ONLY "public"."inventory_entries"
+    ADD CONSTRAINT "inventory_entries_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_entry_items"
+    ADD CONSTRAINT "inventory_entry_items_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."inventory_locations"
     ADD CONSTRAINT "inventory_locations_code_key" UNIQUE ("code");
 
@@ -3481,6 +3728,16 @@ ALTER TABLE ONLY "public"."inventory_stock_by_site"
 
 ALTER TABLE ONLY "public"."inventory_stock_by_site"
     ADD CONSTRAINT "inventory_stock_by_site_site_product_unique" UNIQUE ("site_id", "product_id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfer_items"
+    ADD CONSTRAINT "inventory_transfer_items_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfers"
+    ADD CONSTRAINT "inventory_transfers_pkey" PRIMARY KEY ("id");
 
 
 
@@ -3820,6 +4077,10 @@ CREATE INDEX "attendance_logs_employee_occurred_at_idx" ON "public"."attendance_
 
 
 
+CREATE INDEX "document_types_display_order_idx" ON "public"."document_types" USING "btree" ("display_order", "name");
+
+
+
 CREATE UNIQUE INDEX "document_types_name_scope_idx" ON "public"."document_types" USING "btree" ("name", "scope");
 
 
@@ -3948,7 +4209,43 @@ CREATE INDEX "idx_inv_lpns_status" ON "public"."inventory_lpns" USING "btree" ("
 
 
 
+CREATE INDEX "idx_inventory_entries_site" ON "public"."inventory_entries" USING "btree" ("site_id");
+
+
+
+CREATE INDEX "idx_inventory_entries_status" ON "public"."inventory_entries" USING "btree" ("status");
+
+
+
+CREATE INDEX "idx_inventory_entry_items_entry" ON "public"."inventory_entry_items" USING "btree" ("entry_id");
+
+
+
+CREATE INDEX "idx_inventory_entry_items_product" ON "public"."inventory_entry_items" USING "btree" ("product_id");
+
+
+
 CREATE INDEX "idx_inventory_movements_movement_type" ON "public"."inventory_movements" USING "btree" ("movement_type");
+
+
+
+CREATE INDEX "idx_inventory_transfer_items_product" ON "public"."inventory_transfer_items" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_inventory_transfer_items_transfer" ON "public"."inventory_transfer_items" USING "btree" ("transfer_id");
+
+
+
+CREATE INDEX "idx_inventory_transfers_from" ON "public"."inventory_transfers" USING "btree" ("from_loc_id");
+
+
+
+CREATE INDEX "idx_inventory_transfers_site" ON "public"."inventory_transfers" USING "btree" ("site_id");
+
+
+
+CREATE INDEX "idx_inventory_transfers_to" ON "public"."inventory_transfers" USING "btree" ("to_loc_id");
 
 
 
@@ -4172,6 +4469,10 @@ CREATE OR REPLACE TRIGGER "trigger_employee_shifts_updated_at" BEFORE UPDATE ON 
 
 
 
+CREATE OR REPLACE TRIGGER "update_inventory_entries_updated_at" BEFORE UPDATE ON "public"."inventory_entries" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "update_inventory_locations_updated_at" BEFORE UPDATE ON "public"."inventory_locations" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
 
 
@@ -4181,6 +4482,10 @@ CREATE OR REPLACE TRIGGER "update_inventory_lpn_items_updated_at" BEFORE UPDATE 
 
 
 CREATE OR REPLACE TRIGGER "update_inventory_lpns_updated_at" BEFORE UPDATE ON "public"."inventory_lpns" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "update_inventory_transfers_updated_at" BEFORE UPDATE ON "public"."inventory_transfers" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
 
 
 
@@ -4344,6 +4649,26 @@ ALTER TABLE ONLY "public"."employees"
 
 
 
+ALTER TABLE ONLY "public"."inventory_entries"
+    ADD CONSTRAINT "inventory_entries_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."inventory_entries"
+    ADD CONSTRAINT "inventory_entries_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_entry_items"
+    ADD CONSTRAINT "inventory_entry_items_entry_id_fkey" FOREIGN KEY ("entry_id") REFERENCES "public"."inventory_entries"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_entry_items"
+    ADD CONSTRAINT "inventory_entry_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
 ALTER TABLE ONLY "public"."inventory_locations"
     ADD CONSTRAINT "inventory_locations_parent_fkey" FOREIGN KEY ("parent_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
 
@@ -4431,6 +4756,36 @@ ALTER TABLE ONLY "public"."inventory_stock_by_site"
 
 ALTER TABLE ONLY "public"."inventory_stock_by_site"
     ADD CONSTRAINT "inventory_stock_by_site_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfer_items"
+    ADD CONSTRAINT "inventory_transfer_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfer_items"
+    ADD CONSTRAINT "inventory_transfer_items_transfer_id_fkey" FOREIGN KEY ("transfer_id") REFERENCES "public"."inventory_transfers"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfers"
+    ADD CONSTRAINT "inventory_transfers_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfers"
+    ADD CONSTRAINT "inventory_transfers_from_loc_id_fkey" FOREIGN KEY ("from_loc_id") REFERENCES "public"."inventory_locations"("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfers"
+    ADD CONSTRAINT "inventory_transfers_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_transfers"
+    ADD CONSTRAINT "inventory_transfers_to_loc_id_fkey" FOREIGN KEY ("to_loc_id") REFERENCES "public"."inventory_locations"("id");
 
 
 
@@ -5121,17 +5476,39 @@ CREATE POLICY "document_types_write_admin" ON "public"."document_types" USING ((
 ALTER TABLE "public"."documents" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "documents_insert" ON "public"."documents" FOR INSERT WITH CHECK ((("owner_employee_id" = "auth"."uid"()) AND ((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
+CREATE POLICY "documents_delete" ON "public"."documents" FOR DELETE USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ((("scope" = 'site'::"public"."document_scope") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR (("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" IN ( SELECT "e"."id"
+   FROM "public"."employees" "e"
+  WHERE ("e"."site_id" = ( SELECT "me"."site_id"
+           FROM "public"."employees" "me"
+          WHERE ("me"."id" = "auth"."uid"())))))) OR ("scope" = 'group'::"public"."document_scope")))));
+
+
+
+CREATE POLICY "documents_insert" ON "public"."documents" FOR INSERT WITH CHECK ((("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() = 'gerente'::"text")) AND ((("scope" = 'employee'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("target_employee_id" IN ( SELECT "e"."id"
+   FROM "public"."employees" "e"
+  WHERE ("e"."site_id" = ( SELECT "me"."site_id"
+           FROM "public"."employees" "me"
+          WHERE ("me"."id" = "auth"."uid"())))))))) OR (("scope" = 'site'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
    FROM "public"."employees" "me"
   WHERE ("me"."id" = "auth"."uid"())))))) OR (("scope" = 'group'::"public"."document_scope") AND ("public"."is_owner"() OR "public"."is_global_manager"())))));
 
 
 
-CREATE POLICY "documents_select" ON "public"."documents" FOR SELECT USING (((EXISTS ( SELECT 1
+CREATE POLICY "documents_select" ON "public"."documents" FOR SELECT USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ((("scope" = 'site'::"public"."document_scope") AND ("site_id" = ( SELECT "me"."site_id"
+   FROM "public"."employees" "me"
+  WHERE ("me"."id" = "auth"."uid"())))) OR (("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" IN ( SELECT "e"."id"
    FROM "public"."employees" "e"
-  WHERE (("e"."id" = "auth"."uid"()) AND ("e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))) OR (("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND (EXISTS ( SELECT 1
+  WHERE ("e"."site_id" = ( SELECT "me"."site_id"
+           FROM "public"."employees" "me"
+          WHERE ("me"."id" = "auth"."uid"())))))) OR ("scope" = 'group'::"public"."document_scope"))) OR ((("scope" = 'employee'::"public"."document_scope") AND ("target_employee_id" = "auth"."uid"())) OR (("scope" = 'site'::"public"."document_scope") AND ("site_id" IN ( SELECT "employees"."site_id"
+   FROM "public"."employees"
+  WHERE ("employees"."id" = "auth"."uid"())
+UNION
+ SELECT "es"."site_id"
    FROM "public"."employee_sites" "es"
-  WHERE (("es"."employee_id" = "auth"."uid"()) AND ("es"."site_id" = "documents"."site_id") AND ("es"."is_active" = true))))) OR ("scope" = 'group'::"public"."document_scope")));
+  WHERE (("es"."employee_id" = "auth"."uid"()) AND ("es"."is_active" = true))))))));
 
 
 
@@ -5319,21 +5696,15 @@ CREATE POLICY "employees_read_suppliers" ON "public"."suppliers" FOR SELECT TO "
 
 
 
-CREATE POLICY "employees_select" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"())))) OR ("id" = "auth"."uid"()))));
+CREATE POLICY "employees_select" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = "public"."current_employee_site_id"())) OR ("id" = "auth"."uid"()))));
 
 
 
-CREATE POLICY "employees_select_area" ON "public"."employees" FOR SELECT USING ((("area_id" IS NOT NULL) AND "public"."can_access_area"("area_id") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() <> 'gerente'::"text") OR ("site_id" = ( SELECT "me"."site_id"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"()))))));
+CREATE POLICY "employees_select_area" ON "public"."employees" FOR SELECT USING ((("area_id" IS NOT NULL) AND "public"."can_access_area"("area_id") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR ("public"."current_employee_role"() <> 'gerente'::"text") OR ("site_id" = "public"."current_employee_site_id"()))));
 
 
 
-CREATE POLICY "employees_select_manager" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"())))) OR (("public"."current_employee_role"() = 'bodeguero'::"text") AND "public"."can_access_site"("site_id")))));
+CREATE POLICY "employees_select_manager" ON "public"."employees" FOR SELECT USING ((("auth"."role"() = 'authenticated'::"text") AND ("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = "public"."current_employee_site_id"())) OR (("public"."current_employee_role"() = 'bodeguero'::"text") AND "public"."can_access_site"("site_id")))));
 
 
 
@@ -5341,17 +5712,59 @@ CREATE POLICY "employees_select_self" ON "public"."employees" FOR SELECT USING (
 
 
 
-CREATE POLICY "employees_update" ON "public"."employees" FOR UPDATE USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = ( SELECT "me"."site_id"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"())))) OR ("id" = "auth"."uid"()))) WITH CHECK (("public"."is_owner"() OR ("public"."is_global_manager"() AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text"]))) OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text", 'gerente'::"text"])) AND ("site_id" = ( SELECT "me"."site_id"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"())))) OR (("id" = "auth"."uid"()) AND ("role" = ( SELECT "me"."role"
-   FROM "public"."employees" "me"
-  WHERE ("me"."id" = "auth"."uid"()))))));
+CREATE POLICY "employees_update" ON "public"."employees" FOR UPDATE USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("site_id" = "public"."current_employee_site_id"())) OR ("id" = "auth"."uid"()))) WITH CHECK (("public"."is_owner"() OR ("public"."is_global_manager"() AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text"]))) OR (("public"."current_employee_role"() = 'gerente'::"text") AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text", 'gerente'::"text"])) AND ("site_id" = "public"."current_employee_site_id"())) OR (("id" = "auth"."uid"()) AND ("role" = "public"."current_employee_role"()))));
 
 
 
 CREATE POLICY "employees_write_owner" ON "public"."employees" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR ("public"."is_global_manager"() AND ("role" <> ALL (ARRAY['propietario'::"text", 'gerente_general'::"text"])))));
+
+
+
+ALTER TABLE "public"."inventory_entries" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "inventory_entries_delete_permission" ON "public"."inventory_entries" FOR DELETE TO "authenticated" USING ("public"."has_permission"('nexo.inventory.entries'::"text", "site_id"));
+
+
+
+CREATE POLICY "inventory_entries_insert_permission" ON "public"."inventory_entries" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('nexo.inventory.entries'::"text", "site_id"));
+
+
+
+CREATE POLICY "inventory_entries_select_permission" ON "public"."inventory_entries" FOR SELECT TO "authenticated" USING (("public"."has_permission"('nexo.inventory.entries'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.stock'::"text", "site_id")));
+
+
+
+CREATE POLICY "inventory_entries_update_permission" ON "public"."inventory_entries" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('nexo.inventory.entries'::"text", "site_id")) WITH CHECK ("public"."has_permission"('nexo.inventory.entries'::"text", "site_id"));
+
+
+
+ALTER TABLE "public"."inventory_entry_items" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "inventory_entry_items_delete_permission" ON "public"."inventory_entry_items" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_entries" "ie"
+  WHERE (("ie"."id" = "inventory_entry_items"."entry_id") AND "public"."has_permission"('nexo.inventory.entries'::"text", "ie"."site_id")))));
+
+
+
+CREATE POLICY "inventory_entry_items_insert_permission" ON "public"."inventory_entry_items" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_entries" "ie"
+  WHERE (("ie"."id" = "inventory_entry_items"."entry_id") AND "public"."has_permission"('nexo.inventory.entries'::"text", "ie"."site_id")))));
+
+
+
+CREATE POLICY "inventory_entry_items_select_permission" ON "public"."inventory_entry_items" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_entries" "ie"
+  WHERE (("ie"."id" = "inventory_entry_items"."entry_id") AND ("public"."has_permission"('nexo.inventory.entries'::"text", "ie"."site_id") OR "public"."has_permission"('nexo.inventory.stock'::"text", "ie"."site_id"))))));
+
+
+
+CREATE POLICY "inventory_entry_items_update_permission" ON "public"."inventory_entry_items" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_entries" "ie"
+  WHERE (("ie"."id" = "inventory_entry_items"."entry_id") AND "public"."has_permission"('nexo.inventory.entries'::"text", "ie"."site_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_entries" "ie"
+  WHERE (("ie"."id" = "inventory_entry_items"."entry_id") AND "public"."has_permission"('nexo.inventory.entries'::"text", "ie"."site_id")))));
 
 
 
@@ -5402,7 +5815,7 @@ ALTER TABLE "public"."inventory_movement_types" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."inventory_movements" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "inventory_movements_insert_permission" ON "public"."inventory_movements" FOR INSERT TO "authenticated" WITH CHECK (("public"."has_permission"('nexo.inventory.movements'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.counts'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id")));
+CREATE POLICY "inventory_movements_insert_permission" ON "public"."inventory_movements" FOR INSERT TO "authenticated" WITH CHECK (("public"."has_permission"('nexo.inventory.movements'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.transfers'::"text", "site_id")));
 
 
 
@@ -5413,7 +5826,7 @@ CREATE POLICY "inventory_movements_select_permission" ON "public"."inventory_mov
 ALTER TABLE "public"."inventory_stock_by_site" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "inventory_stock_insert_permission" ON "public"."inventory_stock_by_site" FOR INSERT TO "authenticated" WITH CHECK (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.counts'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id")));
+CREATE POLICY "inventory_stock_insert_permission" ON "public"."inventory_stock_by_site" FOR INSERT TO "authenticated" WITH CHECK (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "site_id")));
 
 
 
@@ -5421,7 +5834,55 @@ CREATE POLICY "inventory_stock_select_permission" ON "public"."inventory_stock_b
 
 
 
-CREATE POLICY "inventory_stock_update_permission" ON "public"."inventory_stock_by_site" FOR UPDATE TO "authenticated" USING (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.counts'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id"))) WITH CHECK (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.counts'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id")));
+CREATE POLICY "inventory_stock_update_permission" ON "public"."inventory_stock_by_site" FOR UPDATE TO "authenticated" USING (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "site_id"))) WITH CHECK (("public"."has_permission"('nexo.inventory.stock'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "site_id")));
+
+
+
+ALTER TABLE "public"."inventory_transfer_items" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "inventory_transfer_items_delete_permission" ON "public"."inventory_transfer_items" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_transfers" "it"
+  WHERE (("it"."id" = "inventory_transfer_items"."transfer_id") AND "public"."has_permission"('nexo.inventory.transfers'::"text", "it"."site_id")))));
+
+
+
+CREATE POLICY "inventory_transfer_items_insert_permission" ON "public"."inventory_transfer_items" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_transfers" "it"
+  WHERE (("it"."id" = "inventory_transfer_items"."transfer_id") AND "public"."has_permission"('nexo.inventory.transfers'::"text", "it"."site_id")))));
+
+
+
+CREATE POLICY "inventory_transfer_items_select_permission" ON "public"."inventory_transfer_items" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_transfers" "it"
+  WHERE (("it"."id" = "inventory_transfer_items"."transfer_id") AND ("public"."has_permission"('nexo.inventory.transfers'::"text", "it"."site_id") OR "public"."has_permission"('nexo.inventory.stock'::"text", "it"."site_id"))))));
+
+
+
+CREATE POLICY "inventory_transfer_items_update_permission" ON "public"."inventory_transfer_items" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_transfers" "it"
+  WHERE (("it"."id" = "inventory_transfer_items"."transfer_id") AND "public"."has_permission"('nexo.inventory.transfers'::"text", "it"."site_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_transfers" "it"
+  WHERE (("it"."id" = "inventory_transfer_items"."transfer_id") AND "public"."has_permission"('nexo.inventory.transfers'::"text", "it"."site_id")))));
+
+
+
+ALTER TABLE "public"."inventory_transfers" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "inventory_transfers_delete_permission" ON "public"."inventory_transfers" FOR DELETE TO "authenticated" USING ("public"."has_permission"('nexo.inventory.transfers'::"text", "site_id"));
+
+
+
+CREATE POLICY "inventory_transfers_insert_permission" ON "public"."inventory_transfers" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('nexo.inventory.transfers'::"text", "site_id"));
+
+
+
+CREATE POLICY "inventory_transfers_select_permission" ON "public"."inventory_transfers" FOR SELECT TO "authenticated" USING (("public"."has_permission"('nexo.inventory.transfers'::"text", "site_id") OR "public"."has_permission"('nexo.inventory.stock'::"text", "site_id")));
+
+
+
+CREATE POLICY "inventory_transfers_update_permission" ON "public"."inventory_transfers" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('nexo.inventory.transfers'::"text", "site_id")) WITH CHECK ("public"."has_permission"('nexo.inventory.transfers'::"text", "site_id"));
 
 
 
@@ -5783,7 +6244,7 @@ CREATE POLICY "restock_request_items_update_permission" ON "public"."restock_req
 ALTER TABLE "public"."restock_requests" ENABLE ROW LEVEL SECURITY;
 
 
-CREATE POLICY "restock_requests_delete_permission" ON "public"."restock_requests" FOR DELETE TO "authenticated" USING ("public"."has_permission"('nexo.inventory.remissions.cancel'::"text"));
+CREATE POLICY "restock_requests_delete_permission" ON "public"."restock_requests" FOR DELETE TO "authenticated" USING (("public"."has_permission"('nexo.inventory.remissions.cancel'::"text") OR (("created_by" = "auth"."uid"()) AND ("status" = ANY (ARRAY['pending'::"text", 'preparing'::"text"])))));
 
 
 
@@ -5795,7 +6256,7 @@ CREATE POLICY "restock_requests_select_permission" ON "public"."restock_requests
 
 
 
-CREATE POLICY "restock_requests_update_permission" ON "public"."restock_requests" FOR UPDATE TO "authenticated" USING (("public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "from_site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "to_site_id") OR "public"."has_permission"('nexo.inventory.remissions.cancel'::"text"))) WITH CHECK (("public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "from_site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "to_site_id") OR "public"."has_permission"('nexo.inventory.remissions.cancel'::"text")));
+CREATE POLICY "restock_requests_update_permission" ON "public"."restock_requests" FOR UPDATE TO "authenticated" USING (("public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "from_site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "to_site_id") OR "public"."has_permission"('nexo.inventory.remissions.cancel'::"text") OR (("created_by" = "auth"."uid"()) AND ("status" = ANY (ARRAY['pending'::"text", 'preparing'::"text"]))))) WITH CHECK (("public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "from_site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "to_site_id") OR "public"."has_permission"('nexo.inventory.remissions.cancel'::"text") OR (("created_by" = "auth"."uid"()) AND ("status" = ANY (ARRAY['pending'::"text", 'preparing'::"text"])))));
 
 
 
@@ -5969,10 +6430,200 @@ CREATE POLICY "users_update_self" ON "public"."users" FOR UPDATE TO "authenticat
 
 
 
+
+
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
+
+
+
+
+
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."users";
+
+
+
+
+
+
+
+
+
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6027,6 +6678,18 @@ GRANT ALL ON FUNCTION "public"."can_access_recipe_scope"("p_site_id" "uuid", "p_
 GRANT ALL ON FUNCTION "public"."can_access_site"("p_site_id" "uuid") TO "anon";
 GRANT ALL ON FUNCTION "public"."can_access_site"("p_site_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."can_access_site"("p_site_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."check_nexo_permissions"("p_employee_id" "uuid", "p_site_id" "uuid") TO "anon";
+GRANT ALL ON FUNCTION "public"."check_nexo_permissions"("p_employee_id" "uuid", "p_site_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."check_nexo_permissions"("p_employee_id" "uuid", "p_site_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."close_open_attendance_day_end"("p_timezone" "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."close_open_attendance_day_end"("p_timezone" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."close_open_attendance_day_end"("p_timezone" "text") TO "service_role";
 
 
 
@@ -6234,6 +6897,34 @@ GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "postgres";
+GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "anon";
+GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "postgres";
+GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "anon";
+GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "postgres";
+GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "anon";
+GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "postgres";
+GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "anon";
+GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "service_role";
@@ -6255,6 +6946,27 @@ GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "service_role";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "anon";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6365,6 +7077,18 @@ GRANT ALL ON TABLE "public"."employees" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."inventory_entries" TO "anon";
+GRANT ALL ON TABLE "public"."inventory_entries" TO "authenticated";
+GRANT ALL ON TABLE "public"."inventory_entries" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."inventory_entry_items" TO "anon";
+GRANT ALL ON TABLE "public"."inventory_entry_items" TO "authenticated";
+GRANT ALL ON TABLE "public"."inventory_entry_items" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."inventory_locations" TO "anon";
 GRANT ALL ON TABLE "public"."inventory_locations" TO "authenticated";
 GRANT ALL ON TABLE "public"."inventory_locations" TO "service_role";
@@ -6416,6 +7140,18 @@ GRANT ALL ON TABLE "public"."inventory_stock_by_location" TO "service_role";
 GRANT ALL ON TABLE "public"."inventory_stock_by_site" TO "anon";
 GRANT ALL ON TABLE "public"."inventory_stock_by_site" TO "authenticated";
 GRANT ALL ON TABLE "public"."inventory_stock_by_site" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."inventory_transfer_items" TO "anon";
+GRANT ALL ON TABLE "public"."inventory_transfer_items" TO "authenticated";
+GRANT ALL ON TABLE "public"."inventory_transfer_items" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."inventory_transfers" TO "anon";
+GRANT ALL ON TABLE "public"."inventory_transfers" TO "authenticated";
+GRANT ALL ON TABLE "public"."inventory_transfers" TO "service_role";
 
 
 
@@ -6723,6 +7459,12 @@ GRANT ALL ON TABLE "public"."wallet_passes" TO "service_role";
 
 
 
+
+
+
+
+
+
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES TO "authenticated";
@@ -6747,6 +7489,30 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
