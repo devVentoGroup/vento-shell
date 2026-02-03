@@ -58,7 +58,7 @@ export default async function Home() {
       id: "pulso",
       name: "PULSO",
       description: "Scanner de clientes y redenciones.",
-      href: "https://pulso.ventogroup.co",
+      href: "https://pulso.ventogroup.co/",
       status: "active",
       logo: "/logos/pulso.svg",
     },
