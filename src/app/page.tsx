@@ -51,7 +51,7 @@ export default async function Home() {
       name: "ORIGO",
       description: "Compras, proveedores y recepción.",
       href: "https://origo.ventogroup.co",
-      status: "soon",
+      status: "active",
       logo: "/logos/origo.svg",
     },
     {

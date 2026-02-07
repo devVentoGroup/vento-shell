@@ -13,63 +13,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
+CREATE SCHEMA IF NOT EXISTS "public";
 
 
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-
-
-
-
+ALTER SCHEMA "public" OWNER TO "pg_database_owner";
 
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_stat_statements" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "unaccent" WITH SCHEMA "public";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
-
-
-
 
 
 
@@ -1810,6 +1760,44 @@ $$;
 ALTER FUNCTION "public"."update_updated_at"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) RETURNS "void"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_site_id uuid;
+begin
+  select site_id into v_site_id
+  from public.inventory_locations
+  where id = p_location_id;
+
+  if v_site_id is null then
+    raise exception 'location not found';
+  end if;
+
+  if not (
+    public.has_permission('nexo.inventory.stock', v_site_id)
+    or public.has_permission('nexo.inventory.remissions.prepare', v_site_id)
+    or public.has_permission('nexo.inventory.remissions.receive', v_site_id)
+    or public.has_permission('nexo.inventory.production_batches', v_site_id)
+    or public.has_permission('nexo.inventory.entries', v_site_id)
+    or public.has_permission('nexo.inventory.transfers', v_site_id)
+  ) then
+    raise exception 'permission denied';
+  end if;
+
+  insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
+  values (p_location_id, p_product_id, p_delta, now())
+  on conflict (location_id, product_id) do update
+    set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
+        updated_at = now();
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."util_column_usage"("p_table" "regclass") RETURNS TABLE("column_name" "text", "non_null_count" bigint, "total_count" bigint, "pct_non_null" numeric)
     LANGUAGE "plpgsql"
     AS $$
@@ -2215,7 +2203,8 @@ CREATE TABLE IF NOT EXISTS "public"."inventory_entries" (
     "notes" "text",
     "created_by" "uuid",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "supplier_id" "uuid"
 );
 
 
@@ -2231,7 +2220,8 @@ CREATE TABLE IF NOT EXISTS "public"."inventory_entry_items" (
     "unit" "text",
     "notes" "text",
     "discrepancy" numeric GENERATED ALWAYS AS (("quantity_received" - "quantity_declared")) STORED,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "location_id" "uuid"
 );
 
 
@@ -2356,99 +2346,15 @@ COMMENT ON TABLE "public"."inventory_movements" IS 'Core – tabla canónica par
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."products" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "name" "text" NOT NULL,
-    "description" "text",
-    "sku" "text",
-    "price" numeric,
-    "cost" numeric,
-    "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "product_type" "text" DEFAULT 'venta'::"text" NOT NULL,
-    "category_id" "uuid" NOT NULL,
-    "unit" "text" NOT NULL,
-    "cost_original" numeric,
-    "production_area_kind" "text" DEFAULT 'general'::"text",
-    CONSTRAINT "products_product_type_check" CHECK (("product_type" = ANY (ARRAY['venta'::"text", 'insumo'::"text", 'preparacion'::"text"])))
+CREATE TABLE IF NOT EXISTS "public"."inventory_stock_by_location" (
+    "location_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "current_qty" numeric DEFAULT 0 NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
-ALTER TABLE "public"."products" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."products" IS 'Core – tabla canónica para catálogo maestro de productos y preparaciones. Catálogo maestro de productos de venta, insumos y preparaciones; usar en todo el código nuevo.';
-
-
-
-COMMENT ON COLUMN "public"."products"."unit" IS 'Unidad base del producto/insumo (ej: "g", "kg", "ml", "L", "unidades"). 
-Migrado desde inventory.unit (legacy).';
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."sites" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "code" "text" NOT NULL,
-    "name" "text" NOT NULL,
-    "type" "text" NOT NULL,
-    "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "latitude" numeric(10,8),
-    "longitude" numeric(11,8),
-    "address" "text",
-    "site_type" "public"."site_type" DEFAULT 'satellite'::"public"."site_type" NOT NULL,
-    "site_kind" "text" NOT NULL,
-    "checkin_radius_meters" integer DEFAULT 50,
-    "is_public" boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE "public"."sites" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."sites" IS 'Core – tabla canónica para ubicaciones (sites). Define locales/almacenes donde hay stock, movimientos y operaciones.';
-
-
-
-COMMENT ON COLUMN "public"."sites"."latitude" IS 'Latitud de la sede para LiveMap';
-
-
-
-COMMENT ON COLUMN "public"."sites"."longitude" IS 'Longitud de la sede para LiveMap';
-
-
-
-COMMENT ON COLUMN "public"."sites"."address" IS 'Dirección física de la sede';
-
-
-
-COMMENT ON COLUMN "public"."sites"."checkin_radius_meters" IS 'Radio en metros para validar check-in GPS (default 50m)';
-
-
-
-CREATE OR REPLACE VIEW "public"."inventory_stock_by_location" AS
- SELECT "loc"."id" AS "location_id",
-    "loc"."code" AS "location_code",
-    "loc"."zone",
-    "loc"."site_id",
-    "s"."name" AS "site_name",
-    "p"."id" AS "product_id",
-    "p"."name" AS "product_name",
-    "p"."sku",
-    "sum"("li"."quantity") AS "total_quantity",
-    "li"."unit",
-    "min"("li"."expiry_date") AS "nearest_expiry"
-   FROM (((("public"."inventory_locations" "loc"
-     JOIN "public"."sites" "s" ON (("loc"."site_id" = "s"."id")))
-     LEFT JOIN "public"."inventory_lpns" "lpn" ON ((("lpn"."location_id" = "loc"."id") AND ("lpn"."status" = 'active'::"text"))))
-     LEFT JOIN "public"."inventory_lpn_items" "li" ON (("li"."lpn_id" = "lpn"."id")))
-     LEFT JOIN "public"."products" "p" ON (("li"."product_id" = "p"."id")))
-  WHERE ("loc"."is_active" = true)
-  GROUP BY "loc"."id", "loc"."code", "loc"."zone", "loc"."site_id", "s"."name", "p"."id", "p"."name", "p"."sku", "li"."unit";
-
-
-ALTER VIEW "public"."inventory_stock_by_location" OWNER TO "postgres";
+ALTER TABLE "public"."inventory_stock_by_location" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."inventory_stock_by_site" (
@@ -3050,6 +2956,37 @@ COMMENT ON TABLE "public"."production_requests" IS 'Core – tabla canónica par
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."products" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "sku" "text",
+    "price" numeric,
+    "cost" numeric,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "product_type" "text" DEFAULT 'venta'::"text" NOT NULL,
+    "category_id" "uuid" NOT NULL,
+    "unit" "text" NOT NULL,
+    "cost_original" numeric,
+    "production_area_kind" "text" DEFAULT 'general'::"text",
+    CONSTRAINT "products_product_type_check" CHECK (("product_type" = ANY (ARRAY['venta'::"text", 'insumo'::"text", 'preparacion'::"text"])))
+);
+
+
+ALTER TABLE "public"."products" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."products" IS 'Core – tabla canónica para catálogo maestro de productos y preparaciones. Catálogo maestro de productos de venta, insumos y preparaciones; usar en todo el código nuevo.';
+
+
+
+COMMENT ON COLUMN "public"."products"."unit" IS 'Unidad base del producto/insumo (ej: "g", "kg", "ml", "L", "unidades"). 
+Migrado desde inventory.unit (legacy).';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."purchase_order_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "purchase_order_id" "uuid" NOT NULL,
@@ -3280,6 +3217,46 @@ ALTER TABLE "public"."roles" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."roles" IS 'Catalogo canonico de roles de staff.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."sites" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "code" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "type" "text" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "latitude" numeric(10,8),
+    "longitude" numeric(11,8),
+    "address" "text",
+    "site_type" "public"."site_type" DEFAULT 'satellite'::"public"."site_type" NOT NULL,
+    "site_kind" "text" NOT NULL,
+    "checkin_radius_meters" integer DEFAULT 50,
+    "is_public" boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE "public"."sites" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."sites" IS 'Core – tabla canónica para ubicaciones (sites). Define locales/almacenes donde hay stock, movimientos y operaciones.';
+
+
+
+COMMENT ON COLUMN "public"."sites"."latitude" IS 'Latitud de la sede para LiveMap';
+
+
+
+COMMENT ON COLUMN "public"."sites"."longitude" IS 'Longitud de la sede para LiveMap';
+
+
+
+COMMENT ON COLUMN "public"."sites"."address" IS 'Dirección física de la sede';
+
+
+
+COMMENT ON COLUMN "public"."sites"."checkin_radius_meters" IS 'Radio en metros para validar check-in GPS (default 50m)';
 
 
 
@@ -3524,6 +3501,27 @@ CREATE OR REPLACE VIEW "public"."v_inventory_catalog" AS
 ALTER VIEW "public"."v_inventory_catalog" OWNER TO "postgres";
 
 
+CREATE OR REPLACE VIEW "public"."v_inventory_stock_by_location" AS
+ SELECT "loc"."id" AS "location_id",
+    "loc"."code" AS "location_code",
+    "loc"."zone",
+    "loc"."site_id",
+    "s"."name" AS "site_name",
+    "p"."id" AS "product_id",
+    "p"."name" AS "product_name",
+    "p"."sku",
+    "isl"."current_qty" AS "total_quantity",
+    "p"."unit"
+   FROM ((("public"."inventory_stock_by_location" "isl"
+     JOIN "public"."inventory_locations" "loc" ON (("loc"."id" = "isl"."location_id")))
+     JOIN "public"."sites" "s" ON (("s"."id" = "loc"."site_id")))
+     JOIN "public"."products" "p" ON (("p"."id" = "isl"."product_id")))
+  WHERE ("loc"."is_active" = true);
+
+
+ALTER VIEW "public"."v_inventory_stock_by_location" OWNER TO "postgres";
+
+
 CREATE OR REPLACE VIEW "public"."v_procurement_price_book" AS
  SELECT "s"."id" AS "supplier_id",
     "s"."name" AS "supplier_name",
@@ -3718,6 +3716,11 @@ ALTER TABLE ONLY "public"."inventory_movement_types"
 
 ALTER TABLE ONLY "public"."inventory_movements"
     ADD CONSTRAINT "inventory_movements_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_stock_by_location"
+    ADD CONSTRAINT "inventory_stock_by_location_pkey" PRIMARY KEY ("location_id", "product_id");
 
 
 
@@ -4217,7 +4220,15 @@ CREATE INDEX "idx_inventory_entries_status" ON "public"."inventory_entries" USIN
 
 
 
+CREATE INDEX "idx_inventory_entries_supplier" ON "public"."inventory_entries" USING "btree" ("supplier_id");
+
+
+
 CREATE INDEX "idx_inventory_entry_items_entry" ON "public"."inventory_entry_items" USING "btree" ("entry_id");
+
+
+
+CREATE INDEX "idx_inventory_entry_items_location" ON "public"."inventory_entry_items" USING "btree" ("location_id");
 
 
 
@@ -4226,6 +4237,14 @@ CREATE INDEX "idx_inventory_entry_items_product" ON "public"."inventory_entry_it
 
 
 CREATE INDEX "idx_inventory_movements_movement_type" ON "public"."inventory_movements" USING "btree" ("movement_type");
+
+
+
+CREATE INDEX "idx_inventory_stock_by_location_location" ON "public"."inventory_stock_by_location" USING "btree" ("location_id");
+
+
+
+CREATE INDEX "idx_inventory_stock_by_location_product" ON "public"."inventory_stock_by_location" USING "btree" ("product_id");
 
 
 
@@ -4659,8 +4678,18 @@ ALTER TABLE ONLY "public"."inventory_entries"
 
 
 
+ALTER TABLE ONLY "public"."inventory_entries"
+    ADD CONSTRAINT "inventory_entries_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."inventory_entry_items"
     ADD CONSTRAINT "inventory_entry_items_entry_id_fkey" FOREIGN KEY ("entry_id") REFERENCES "public"."inventory_entries"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_entry_items"
+    ADD CONSTRAINT "inventory_entry_items_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
 
 
 
@@ -4746,6 +4775,16 @@ ALTER TABLE ONLY "public"."inventory_movements"
 
 ALTER TABLE ONLY "public"."inventory_movements"
     ADD CONSTRAINT "inventory_movements_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id");
+
+
+
+ALTER TABLE ONLY "public"."inventory_stock_by_location"
+    ADD CONSTRAINT "inventory_stock_by_location_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."inventory_stock_by_location"
+    ADD CONSTRAINT "inventory_stock_by_location_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
 
 
 
@@ -5823,6 +5862,35 @@ CREATE POLICY "inventory_movements_select_permission" ON "public"."inventory_mov
 
 
 
+ALTER TABLE "public"."inventory_stock_by_location" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "inventory_stock_by_location_delete_permission" ON "public"."inventory_stock_by_location" FOR DELETE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_locations" "loc"
+  WHERE (("loc"."id" = "inventory_stock_by_location"."location_id") AND "public"."has_permission"('nexo.inventory.stock'::"text", "loc"."site_id")))));
+
+
+
+CREATE POLICY "inventory_stock_by_location_insert_permission" ON "public"."inventory_stock_by_location" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_locations" "loc"
+  WHERE (("loc"."id" = "inventory_stock_by_location"."location_id") AND ("public"."has_permission"('nexo.inventory.stock'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.transfers'::"text", "loc"."site_id"))))));
+
+
+
+CREATE POLICY "inventory_stock_by_location_select_permission" ON "public"."inventory_stock_by_location" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_locations" "loc"
+  WHERE (("loc"."id" = "inventory_stock_by_location"."location_id") AND "public"."has_permission"('nexo.inventory.stock'::"text", "loc"."site_id")))));
+
+
+
+CREATE POLICY "inventory_stock_by_location_update_permission" ON "public"."inventory_stock_by_location" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."inventory_locations" "loc"
+  WHERE (("loc"."id" = "inventory_stock_by_location"."location_id") AND ("public"."has_permission"('nexo.inventory.stock'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.transfers'::"text", "loc"."site_id")))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."inventory_locations" "loc"
+  WHERE (("loc"."id" = "inventory_stock_by_location"."location_id") AND ("public"."has_permission"('nexo.inventory.stock'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.prepare'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.remissions.receive'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.production_batches'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.entries'::"text", "loc"."site_id") OR "public"."has_permission"('nexo.inventory.transfers'::"text", "loc"."site_id"))))));
+
+
+
 ALTER TABLE "public"."inventory_stock_by_site" ENABLE ROW LEVEL SECURITY;
 
 
@@ -6430,200 +6498,10 @@ CREATE POLICY "users_update_self" ON "public"."users" FOR UPDATE TO "authenticat
 
 
 
-
-
-ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
-
-
-
-
-
-
-ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."users";
-
-
-
-
-
-
-
-
-
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -6897,34 +6775,6 @@ GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "service_role";
 
 
 
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent"("text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent"("regdictionary", "text") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent_init"("internal") TO "service_role";
-
-
-
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "postgres";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "anon";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "authenticated";
-GRANT ALL ON FUNCTION "public"."unaccent_lexize"("internal", "internal", "internal", "internal") TO "service_role";
-
-
-
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."update_employee_shifts_updated_at"() TO "service_role";
@@ -6943,30 +6793,15 @@ GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) TO "anon";
+GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "anon";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -7116,18 +6951,6 @@ GRANT ALL ON TABLE "public"."inventory_movement_types" TO "service_role";
 GRANT ALL ON TABLE "public"."inventory_movements" TO "anon";
 GRANT ALL ON TABLE "public"."inventory_movements" TO "authenticated";
 GRANT ALL ON TABLE "public"."inventory_movements" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."products" TO "anon";
-GRANT ALL ON TABLE "public"."products" TO "authenticated";
-GRANT ALL ON TABLE "public"."products" TO "service_role";
-
-
-
-GRANT SELECT,MAINTAIN ON TABLE "public"."sites" TO "anon";
-GRANT ALL ON TABLE "public"."sites" TO "authenticated";
-GRANT ALL ON TABLE "public"."sites" TO "service_role";
 
 
 
@@ -7318,6 +7141,12 @@ GRANT ALL ON TABLE "public"."production_requests" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."products" TO "anon";
+GRANT ALL ON TABLE "public"."products" TO "authenticated";
+GRANT ALL ON TABLE "public"."products" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."purchase_order_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."purchase_order_items" TO "service_role";
 
@@ -7374,6 +7203,12 @@ GRANT ALL ON TABLE "public"."role_site_type_rules" TO "service_role";
 GRANT ALL ON TABLE "public"."roles" TO "anon";
 GRANT ALL ON TABLE "public"."roles" TO "authenticated";
 GRANT ALL ON TABLE "public"."roles" TO "service_role";
+
+
+
+GRANT SELECT,MAINTAIN ON TABLE "public"."sites" TO "anon";
+GRANT ALL ON TABLE "public"."sites" TO "authenticated";
+GRANT ALL ON TABLE "public"."sites" TO "service_role";
 
 
 
@@ -7441,6 +7276,12 @@ GRANT ALL ON TABLE "public"."v_inventory_catalog" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."v_inventory_stock_by_location" TO "anon";
+GRANT ALL ON TABLE "public"."v_inventory_stock_by_location" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_inventory_stock_by_location" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "anon";
 GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "service_role";
@@ -7456,12 +7297,6 @@ GRANT ALL ON TABLE "public"."wallet_devices" TO "service_role";
 GRANT ALL ON TABLE "public"."wallet_passes" TO "anon";
 GRANT ALL ON TABLE "public"."wallet_passes" TO "authenticated";
 GRANT ALL ON TABLE "public"."wallet_passes" TO "service_role";
-
-
-
-
-
-
 
 
 
@@ -7489,30 +7324,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
