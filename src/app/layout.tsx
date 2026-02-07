@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   applicationName: "Vento OS",
   authors: [{ name: "Vento Group" }],
   metadataBase: new URL("https://hub.ventogroup.co"),
+  icons: { icon: "/icon.svg", apple: "/icon.svg" },
 };
 
 export default function RootLayout({
