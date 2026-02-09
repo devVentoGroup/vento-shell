@@ -2,6 +2,21 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Favicon (icono de la pestaña)
+
+**Solo el shell** usa el logo **Vento Group** como favicon. Las demás aplicaciones (Origo, Nexo, etc.) deben usar el logo de su entidad (ver estándares).
+
+Para generar el `favicon.ico` del shell desde `public/vento-group.png`:
+
+```bash
+npm install
+npm run generate-favicon
+```
+
+Se crea `src/app/favicon.ico`. Haz commit de ese archivo para que en producción se use el icono de Vento Group.
+
+## Getting Started
+
 First, run the development server:
 
 ```bash

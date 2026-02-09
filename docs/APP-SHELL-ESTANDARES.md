@@ -1,7 +1,12 @@
-﻿# Vento OS - Estandares Comunes (AppShell + UI Kit v1)
+# Vento OS - Estandares Comunes (AppShell + UI Kit v1)
 
 Objetivo: definir una base comun para todas las apps (NEXO, FOGO, etc.)
 antes de construir nuevas experiencias. Esto evita inconsistencias y retrabajo.
+
+## 0) Favicon e icono de pestaña
+
+- **Shell (Hub):** solo el shell usa el logo **Vento Group** (`vento-group.png`) como favicon. Generado con `npm run generate-favicon` en vento-shell.
+- **Apps (Origo, Nexo, etc.):** cada aplicación debe usar el **logo de su entidad** como favicon (p. ej. `logos/origo.svg`, `logos/nexo.svg`), no el de Vento Group.
 
 ## 1) AppShell (layout base)
 
