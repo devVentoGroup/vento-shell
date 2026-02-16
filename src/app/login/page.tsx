@@ -30,55 +30,55 @@ export default async function LoginPage({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-50 text-slate-900">
-      {/* Fondo con más profundidad: gradiente + formas suaves */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-amber-200/40 blur-[100px]" />
-        <div className="absolute -right-32 top-1/4 h-80 w-80 rounded-full bg-slate-200/50 blur-[80px]" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-[32rem] -translate-x-1/2 rounded-full bg-amber-100/50 blur-[90px]" />
-        <div className="absolute right-1/4 top-1/2 h-64 w-64 rounded-full bg-sky-100/30 blur-[70px]" />
-        {/* Líneas suaves decorativas */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#94a3b8_0.5px,transparent_0.5px),linear-gradient(to_bottom,#94a3b8_0.5px,transparent_0.5px)] bg-[size:4rem_4rem] opacity-[0.04]" />
+        <div className="absolute -left-28 -top-24 h-[28rem] w-[28rem] rounded-full bg-amber-200/40 blur-[95px]" />
+        <div className="absolute -right-24 top-20 h-96 w-96 rounded-full bg-sky-200/30 blur-[90px]" />
+        <div className="absolute bottom-[-120px] left-1/2 h-80 w-[34rem] -translate-x-1/2 rounded-full bg-violet-200/25 blur-[90px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#94a3b8_0.5px,transparent_0.5px),linear-gradient(to_bottom,#94a3b8_0.5px,transparent_0.5px)] bg-[size:3.5rem_3.5rem] opacity-[0.05]" />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-14 lg:flex-row lg:items-center lg:gap-16">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-white shadow-lg shadow-slate-900/20">
-              <span className="text-lg font-bold tracking-tight">V</span>
-            </div>
-            <span className="text-sm font-semibold tracking-wide text-slate-500">Vento OS</span>
+      <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-6 py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <section>
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/85 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600 backdrop-blur">
+            Vento OS Access
           </div>
-          <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">
-            Login
+
+          <h1 className="mt-6 text-4xl font-bold tracking-tight text-slate-900 lg:text-5xl">
+            Un solo acceso para todo el ecosistema
           </h1>
-          <p className="mt-4 max-w-lg text-base leading-7 text-slate-600">
-            Acceso único para todas las aplicaciones de Vento Group. Mantente conectado con un
-            solo perfil y entra directo a tu flujo diario.
+
+          <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">
+            Inicia sesion una vez y entra directo a tus modulos operativos. El acceso respeta tus permisos,
+            sede activa y rol de trabajo.
           </p>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-lg shadow-slate-200/50 backdrop-blur-sm">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Seguridad
-              </div>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2">
+            <article className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-lg shadow-slate-200/40 backdrop-blur">
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Seguridad</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                SSO unificado y sesiones controladas.
+                Sesion centralizada y control de acceso por permisos.
               </p>
-            </div>
-            <div className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-lg shadow-slate-200/50 backdrop-blur-sm">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Acceso rápido
-              </div>
+            </article>
+            <article className="rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-lg shadow-slate-200/40 backdrop-blur">
+              <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Continuidad</div>
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                Entra al Hub y sigue a tu app.
+                Mismo usuario para Hub, Nexo, Origo y el resto de apps.
               </p>
-            </div>
+            </article>
           </div>
-        </div>
 
-        <div className="w-full max-w-md shrink-0">
+          <div className="mt-8 inline-flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">NEXO</span>
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">ORIGO</span>
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">PULSO</span>
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">FOGO</span>
+            <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">AURA</span>
+          </div>
+        </section>
+
+        <section className="w-full max-w-md justify-self-start lg:justify-self-end">
           <LoginForm returnTo={returnTo} defaultEmail={defaultEmail || undefined} />
-        </div>
+        </section>
       </div>
     </div>
   );
