@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,9 +14,23 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+  const [now, setNow] = useState(Date.now());
+
+  const cooldownLeft = useMemo(() => {
+    if (!cooldownUntil) return 0;
+    return Math.max(0, Math.ceil((cooldownUntil - now) / 1000));
+  }, [cooldownUntil, now]);
+
+  useEffect(() => {
+    if (!cooldownUntil) return;
+    const id = window.setInterval(() => setNow(Date.now()), 500);
+    return () => window.clearInterval(id);
+  }, [cooldownUntil]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading || cooldownLeft > 0) return;
     setError("");
     setLoading(true);
 
@@ -28,6 +42,12 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
       });
 
       if (signInError) {
+        const msg = (signInError.message || "").toLowerCase();
+        if (msg.includes("rate limit")) {
+          setCooldownUntil(Date.now() + 30_000);
+          setError("Demasiados intentos. Espera 30 segundos y vuelve a intentar.");
+          return;
+        }
         setError(signInError.message);
         return;
       }
@@ -80,10 +100,14 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || cooldownLeft > 0}
           className="inline-flex h-12 items-center justify-center rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white shadow-lg shadow-slate-900/25 transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? "Ingresando..." : "Entrar"}
+          {loading
+            ? "Ingresando..."
+            : cooldownLeft > 0
+              ? `Espera ${cooldownLeft}s`
+              : "Entrar"}
         </button>
 
         <p className="text-xs text-slate-500">
