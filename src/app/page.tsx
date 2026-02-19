@@ -1,4 +1,5 @@
-import Image from "next/image";
+﻿import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
@@ -36,7 +37,7 @@ const INTERNAL_APPS: AppLink[] = [
     name: "FOGO",
     description: "Recetario, produccion y lotes (FIFO).",
     href: "https://fogo.ventogroup.co",
-    status: "soon",
+    status: "active",
     logo: "/logos/fogo.svg",
   },
   {
@@ -183,9 +184,28 @@ function AppCard({ app }: { app: AppLink }) {
 export default async function Home() {
   const supabase = await createClient();
   const { data: userRes } = await supabase.auth.getUser();
-  if (!userRes.user) {
+  const user = userRes.user;
+  if (!user) {
     redirect("/login?returnTo=/");
   }
+
+  async function signOutAction() {
+    "use server";
+    const supabase = await createClient();
+    await supabase.auth.signOut();
+    redirect("/login?returnTo=/");
+  }
+
+  const userEmail = user.email ?? "";
+  const userInitials = userEmail
+    ? userEmail
+        .split("@")[0]
+        .split(/[._-]+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() ?? "")
+        .join("")
+    : "US";
 
   const activeCount = INTERNAL_APPS.filter((app) => app.status === "active").length;
   const soonCount = INTERNAL_APPS.filter((app) => app.status === "soon").length;
@@ -204,7 +224,51 @@ export default async function Home() {
             <div className="text-lg font-semibold tracking-tight">Vento OS</div>
             <div className="text-sm text-zinc-500">Workspace</div>
           </div>
-          <div className="text-sm text-zinc-500">ventogroup.co</div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden text-sm text-zinc-500 sm:block">ventogroup.co</div>
+
+            <details className="group relative">
+              <summary className="list-none">
+                <span className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-50">
+                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900 text-xs font-bold text-white">
+                    {userInitials}
+                  </span>
+                  <span className="hidden sm:inline">Usuario</span>
+                </span>
+              </summary>
+
+              <div className="absolute right-0 z-20 mt-2 w-64 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
+                <div className="rounded-xl px-3 py-2">
+                  <div className="text-xs uppercase tracking-wide text-zinc-500">Sesion activa</div>
+                  <div className="truncate text-sm font-medium text-zinc-800">{userEmail || "-"}</div>
+                </div>
+
+                <Link
+                  href="/"
+                  className="mt-1 block rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100"
+                >
+                  Mi perfil
+                </Link>
+
+                <Link
+                  href="/"
+                  className="mt-1 block rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100"
+                >
+                  Configuracion de usuario
+                </Link>
+
+                <form action={signOutAction} className="mt-1">
+                  <button
+                    type="submit"
+                    className="block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                  >
+                    Cerrar sesion
+                  </button>
+                </form>
+              </div>
+            </details>
+          </div>
         </div>
       </header>
 
@@ -231,7 +295,7 @@ export default async function Home() {
                 <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Proximas</div>
                 <div className="mt-1 text-2xl font-semibold text-zinc-900">{soonCount}</div>
               </div>
-              <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3 col-span-2 sm:col-span-1">
+              <div className="col-span-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 sm:col-span-1">
                 <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Total apps</div>
                 <div className="mt-1 text-2xl font-semibold text-zinc-900">{INTERNAL_APPS.length}</div>
               </div>
