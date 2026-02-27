@@ -2,12 +2,12 @@
 
 :root {
   --color-ink: #111827;
-  --color-ink-soft: #6b7280;
+  --color-ink-soft: #4b5563;
   --color-paper: #f9fafb;
   --color-surface-1: #ffffff;
-  --color-surface-2: #f9fafb;
-  --color-surface-3: #f3f4f6;
-  --color-border: #e5e7eb;
+  --color-surface-2: #f2f4f7;
+  --color-surface-3: #e8edf2;
+  --color-border: #cbd5e1;
   --color-success: #1f9d6a;
   --color-warning: #e08a00;
   --color-danger: #e0484a;
@@ -52,8 +52,8 @@
   --color-paper: #f7f5f8;
   --color-surface-2: #f2eef2;
   --color-ink: #1b1a1f;
-  --color-ink-soft: #9e9aa6;
-  --color-border: #e6e1ea;
+  --color-ink-soft: #756f82;
+  --color-border: #cdc5d8;
 }
 
 :root[data-theme="nexo"] {
@@ -64,8 +64,8 @@
   --color-paper: #fff7e6;
   --color-surface-2: #fff1d1;
   --color-ink: #2a1a00;
-  --color-ink-soft: #b8a07a;
-  --color-border: #f0e3c6;
+  --color-ink-soft: #8f7750;
+  --color-border: #d6c3a0;
 }
 
 :root[data-theme="viso"] {
@@ -76,8 +76,8 @@
   --color-paper: #f6f2ff;
   --color-surface-2: #efe8ff;
   --color-ink: #1b1033;
-  --color-ink-soft: #9b8fb6;
-  --color-border: #e6dff5;
+  --color-ink-soft: #726489;
+  --color-border: #cfc3e8;
 }
 
 @theme inline {
