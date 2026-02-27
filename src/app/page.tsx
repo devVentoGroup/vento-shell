@@ -21,7 +21,7 @@ const INTERNAL_APPS: AppLink[] = [
     name: "VISO",
     description: "Gerencia, auditoria y configuracion.",
     href: "https://viso.ventogroup.co",
-    status: "soon",
+    status: "active",
     logo: "/logos/viso.svg",
   },
   {

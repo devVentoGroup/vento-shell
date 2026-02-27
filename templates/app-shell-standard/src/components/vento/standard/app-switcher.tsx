@@ -103,7 +103,7 @@ export function AppSwitcher({ sites = [], activeSiteId = "" }: AppSwitcherProps)
         name: "VISO",
         description: "Gerencia y auditor+�a.",
         href: "https://viso.ventogroup.co",
-        status: "soon",
+        status: "active",
         group: "Interno",
       },
       {
