@@ -64,15 +64,15 @@ declare
   v_new_balance integer;
 begin
   if not public.is_active_staff() then
-    return jsonb_build_object('success', false, 'error', 'No autorizado (staff requerido)');
+    return jsonb_build_object('success', false, 'error', 'No autorizado: se requiere personal activo');
   end if;
 
   if p_user_id is null then
-    return jsonb_build_object('success', false, 'error', 'user_id es requerido');
+    return jsonb_build_object('success', false, 'error', 'user_id es obligatorio');
   end if;
 
   if p_site_id is null then
-    return jsonb_build_object('success', false, 'error', 'site_id es requerido');
+    return jsonb_build_object('success', false, 'error', 'site_id es obligatorio');
   end if;
 
   if not public.has_permission('pulso.pos.main', p_site_id, null) then
@@ -85,7 +85,7 @@ begin
 
   v_ref := btrim(coalesce(p_external_ref, ''));
   if v_ref = '' then
-    return jsonb_build_object('success', false, 'error', 'external_ref es requerido');
+    return jsonb_build_object('success', false, 'error', 'external_ref es obligatorio');
   end if;
 
   v_points := floor(p_amount_cop / 1000);
@@ -138,7 +138,7 @@ begin
   );
 
   if coalesce((v_grant_result->>'success')::boolean, false) is not true then
-    raise exception '%', coalesce(v_grant_result->>'error', 'Error otorgando puntos');
+    raise exception '%', coalesce(v_grant_result->>'error', 'Error al otorgar puntos');
   end if;
 
   v_transaction_id := nullif(v_grant_result->>'transaction_id', '')::uuid;
