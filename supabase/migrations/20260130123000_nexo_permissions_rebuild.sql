@@ -1,4 +1,4 @@
-﻿-- Rebuild NEXO role permissions to canonical matrix (removes duplicates and wrong grants)
+-- Rebuild NEXO role permissions to canonical matrix (removes duplicates and wrong grants)
 
 begin;
 

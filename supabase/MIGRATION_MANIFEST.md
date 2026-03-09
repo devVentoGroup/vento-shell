@@ -1,0 +1,118 @@
+# Migration Manifest
+
+Fuente canónica: `vento-shell/supabase/migrations`.
+
+## applied_remote
+Migraciones registradas como aplicadas en la base remota compartida.
+
+- 00000000000000_baseline.sql
+- 20250203000000_inventory_count_sessions.sql
+- 20260117130000_permissions_core.sql
+- 20260118163931_remote_schema.sql
+- 20260118193000_remissions_production.sql
+- 20260118195000_nexo_rls_permissions.sql
+- 20260120120000_product_site_settings.sql
+- 20260122120000_nexo_count_movement_type.sql
+- 20260130120000_nexo_remissions_permissions.sql
+- 20260130121000_nexo_permissions_audit.sql
+- 20260130123000_nexo_permissions_rebuild.sql
+- 20260131130000_nexo_inventory_entries.sql
+- 20260131134000_nexo_inventory_transfers.sql
+- 20260131140000_nexo_cycle_count_movement_type.sql
+- 20260202100000_nexo_stock_by_location.sql
+- 20260202103000_nexo_inventory_entries_supplier_id.sql
+- 20260204000000_account_deletion_requests.sql
+- 20260207130000_suppliers_rls_owners_managers_only.sql
+- 20260207140000_products_image_urls.sql
+- 20260207150000_storage_product_images.sql
+- 20260209120000_seed_sites_vento.sql
+- 20260209130000_sites_select_owner_manager.sql
+- 20260209140000_nexo_inventory_withdraw.sql
+- 20260210000000_account_deletion_in_app.sql
+- 20260213000001_inventory_units.sql
+- 20260213000002_product_units_profile.sql
+- 20260213000003_supplier_pack_units.sql
+- 20260213000004_inventory_line_normalization.sql
+- 20260213000005_remissions_loc_source.sql
+- 20260213000006_count_snapshot.sql
+- 20260213000007_reset_inventory_domain.sql
+- 20260213000008_reset_inventory_domain_preserve_pass_rewards.sql
+- 20260213000009_inventory_categories_v2.sql
+- 20260213000010_inventory_form_drafts.sql
+- 20260215000011_inventory_category_descriptions.sql
+- 20260216000001_inventory_auto_sku.sql
+- 20260216000002_inventory_costing_v2.sql
+- 20260216000003_inventory_product_uom_profiles.sql
+- 20260217000001_inventory_catalog_image_storage.sql
+- 20260217000002_recipe_steps_media.sql
+- 20260217000003_product_site_settings_audience.sql
+- 20260217000004_product_uom_profile_contexts.sql
+- 20260218000001_product_site_min_stock.sql
+- 20260218000002_product_site_settings_internal_usage.sql
+- 20260218000003_production_batch_consumptions.sql
+- 20260218000004_site_production_pick_order.sql
+- 20260218000005_product_cost_events_add_production_source.sql
+- 20260218000006_app_split_permissions_and_entries_audit.sql
+- 20260218000007_product_site_min_stock_purchase_mode.sql
+- 20260218000008_product_site_settings_deduplicate_unique.sql
+- 20260219000001_nexo_remissions_rls_prepare_receive_visibility.sql
+- 20260221000001_pulso_external_loyalty_awards.sql
+- 20260221000002_pulso_service_role_rls.sql
+- 20260226000100_dynamic_satellites_and_update_policies.sql
+- 20260226000200_seed_pass_satellites_style_presets.sql
+- 20260301110000_pass_satellites_dual_logos.sql
+- 20260302000001_vital_foundation.sql
+- 20260303120000_total_earned_points_rpc.sql
+- 20260304000100_force_mandatory_update_1_0_2.sql
+- 20260304153848_remote_schema.sql
+- 20260304170000_reconcile_remote_local_sync.sql
+- 20260305110000_vital_ai_nutrition_top_tier_v1.sql
+- 20260309000000_viso_pass_admin_policies.sql
+- 20260309010000_viso_products_admin_policies.sql
+- 20260309020000_viso_staff_visibility.sql
+- 20260309030000_viso_pass_satellites_dual_logos.sql
+- 20260309140000_vital_sports_profile_v1.sql
+- 20260309143000_vital_today_feed_sports_priority.sql
+- 20260309150000_vital_today_feed_scoring_desaturation.sql
+- 20260309153000_vital_today_feed_scoring_spread_v2.sql
+- 20260309160000_vital_today_feed_scoring_spread_v3.sql
+- 20260309163000_vital_today_feed_scoring_spread_v4.sql
+- 20260309170000_vital_today_feed_scoring_type_fix.sql
+- 20260309173000_vital_today_feed_scoring_spread_v5.sql
+- 20260309174500_vital_sport_template_catalog_v1.sql
+- 20260309181500_vital_weekly_orchestrator_v1.sql
+- 20260309184500_vital_today_feed_interference_penalty_v1.sql
+- 20260309191500_vital_adaptive_cycle_progression_v1.sql
+- 20260309194500_vital_weekly_plan_apply_cycle_deltas_v1.sql
+- 20260309201500_vital_football_academy_vertical_v1.sql
+- 20260309204000_vital_telemetry_foundation_v1.sql
+- 20260309204500_vital_telemetry_decision_observability_v1.sql
+- 20260309211500_vital_multisport_priority_blend_v1.sql
+- 20260310100000_anima_attendance_sync_idempotency_v1.sql
+- 20260310113000_anima_update_policy_split_prod_dev.sql
+- 20260310114500_anima_departure_autoclose_v1.sql
+- 20260310120000_nexo_inventory_ai_ingestions_v1.sql
+- 20260310130000_club_schema_foundation.sql
+- 20260310131000_club_cashback_booster_v1.sql
+- 20260310132000_club_redemption_links_v1.sql
+- 20260310133000_club_beta_seed_owner.sql
+- 20260310140000_orders_delivery_mvp_foundation.sql
+- 20260310143000_app_content_blocks.sql
+- 20260310143500_app_content_blocks_trigger_fix.sql
+- 20260310150000_pass_schema_reorganization_v1.sql
+- 20260310153000_pass_account_deletion_cleanup_v1.sql
+- 20260310154000_pass_store_catalog_v1.sql
+- 20260311100000_orders_operational_rpc_and_audit_v1.sql
+- 20260311113000_pos_schema_reorganization_v1.sql
+- 20260311120000_pass_catalog_sell_guardrails_v1.sql
+- 20260311123000_pass_catalog_seed_from_sell_products_v1.sql
+
+## pending_local
+- Ninguna.
+
+## policy
+- Todas las migraciones nuevas se crean primero en `vento-shell`.
+- Los demas repositorios solo consumen migraciones sincronizadas desde `vento-shell`.
+- Ejecutar `scripts/sync-migrations.ps1` despues de cualquier nueva migracion en canonico.
+
+

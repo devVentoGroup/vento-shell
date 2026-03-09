@@ -1,4 +1,4 @@
-﻿-- Verify NEXO permissions by role and scope
+-- Verify NEXO permissions by role and scope
 -- Usage: run in Supabase SQL editor
 
 -- 1) All NEXO permissions catalog

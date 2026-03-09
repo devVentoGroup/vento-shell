@@ -1,4 +1,4 @@
-﻿-- Add granular NEXO remissions permissions and role grants
+-- Add granular NEXO remissions permissions and role grants
 -- NOTE: This fixes missing permission codes referenced by RLS policies.
 
 -- New permission codes for remissions
