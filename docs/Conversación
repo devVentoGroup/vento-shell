@@ -1,0 +1,624 @@
+Ayúdame a poner mucho mejor la pantalla o todo nexo mejor dicho, en cuanto a lo que se ve, necesito lo que pienses lo mas profundamente posible y armemos un plan, no de nada en específico sino de todo, quiero que toda la progresión de v1 a v2 y a v3 sea lo mas facil y sencilla posible, ten en cuanta absolutamente todas las operaciones que se hacen en un centro de producción, en un restaurante, ten en cuenta también los otros repositorios, necesito que creemos el sistema perfecto, yo he hecho arreglos por situaciones particulares que sufre o que pasan en nuestro negocio, que son bastantes debido a que no todo está automatizado o pues optimizado de la mejor manera, se cual es el ideal de todas las aplicaciones, solo que para empezar a integrarlo a nuestro sistema físico por así decirlo toca reemplazar todos los procesos al tiempo debido a que es una cadena, mi idea con las versiones es empezar a integrar partes por partes pero siento que las paginas, el código está lleno de remaches y de suciedad que me gana. Hay muchas cosas en pantalla que no se si usamos, si no usamos, que ocupan mucho, que siento innecesario, necesito que armeos un plan de trabajo perfecto para limpiar todo el código y las pantallas y dejar todo muy bonito. Y sobretodo dejar el sistema perfecto tanto v1, v2,v3, o las versiones que sean necesarias. Estoy muy estresado.
+
+
+5 mensajes anteriores
+Sí hay salida, pero no es “arreglar pantallas” una por una. El problema real es que hoy Nexo está cargando demasiados dominios a la vez, y la suite todavía no tiene una frontera suficientemente dura entre operación, configuración, excepciones e integración.
+
+Revisé el marco actual en ROADMAP-GENERAL.md, OPERATIVE-FIELD-MATRIX.md, ROADMAP-NEXO.md, OPERACION-V1-NEXO.md, GUIA-CONFIGURACION-INICIAL.md, AUDITORIA-ESTANDARES-UI.md y CATEGORY-AUDIT-NEXO.md. También miré la forma del código y sí hay señales claras de deuda: páginas de 700-1300 líneas como catalog/new/page.tsx, settings/categories/page.tsx, catalog/page.tsx, entries/page.tsx, remissions/page.tsx y stock/page.tsx.
+
+Diagnóstico
+
+Nexo mezcla catálogo, setup, operación diaria, impresión, parte de producción y decisiones de datos maestras.
+Ya existe una intención correcta de v1 en documentos, pero la interfaz todavía deja entrar demasiadas cosas de v2/v3.
+El UI kit existe, pero no está gobernando de verdad la app; la propia auditoría de UI ya lo confirma.
+Hay suciedad de modelo, no solo de pantalla. El caso más claro es categorías: demasiada herencia, poca evidencia de uso real y reglas todavía ambiguas.
+La suite sí tiene una visión buena, pero está repartida en varios repos y documentos; eso hace que el código vuelva a llenarse de “remaches”.
+Lo más importante: hoy estás resolviendo excepciones del negocio adentro de pantallas operativas. Eso siempre ensucia.
+La regla central
+El sistema perfecto no es el que no tiene excepciones. Es el que separa muy bien:
+
+flujo normal
+flujo de excepción
+flujo de corrección
+flujo de auditoría
+Si no haces esa separación, cada caso raro termina incrustado en una pantalla y el producto se deforma.
+
+Dueño por dominio
+
+App	Dueño real	No debe adueñarse de
+Shell	auth, sesión, roles, permisos, sedes, navegación global, design system	lógica operativa de inventario/producción
+Nexo	inventario, stock, ubicaciones, movimientos, remisiones, conteos, ajustes	recetas, compra completa, loyalty, analytics gerencial
+Origo	proveedores, órdenes de compra, recepción contra OC	stock operativo diario, recetas
+Fogo	recetas, BOM, lotes, consumo, rendimiento, merma de producción	catálogo logístico completo, remisiones
+Pulso	venta, caja, pagos, órdenes POS	inventario maestro, producción
+Pass	cliente, puntos, canjes, experiencia loyalty	configuración operativa interna
+Anima	empleados, asistencia, turnos, regularizaciones	datos de clientes, loyalty
+Viso	vista gerencial, KPIs, feedback, decisiones	captura operativa primaria
+Contrato de versiones
+
+Versión	Qué significa	Qué se permite
+v1	Manual pero auditable	trabajo humano, checklists, entradas manuales, correcciones explícitas
+v2	Integrado pero supervisado	pre-cargas, sugerencias, menos doble digitación, fallback manual
+v3	Automatizado con cola de excepciones	eventos entre apps, reglas automáticas, intervención humana solo por alertas
+Esa definición es clave porque evita que v1 se avergüence de ser manual y evita que v2 finja ser v3.
+
+Cómo debe verse la cadena completa
+
+Maestro de producto y sede.
+Compra y proveedor.
+Recepción y costeo.
+Almacenamiento y ubicaciones.
+Producción y lotes.
+Remisión a satélites.
+Recepción en satélite.
+Venta POS.
+Loyalty y redención.
+Feedback cliente.
+Asistencia y turnos.
+Visión gerencial y cierre.
+Cada eslabón debe tener un sistema dueño y un fallback manual temporal. Si intentas cambiar toda la cadena al tiempo sin esos contratos, el físico manda y el software pierde.
+
+Plan maestro
+
+Congelar el modelo operativo maestro.
+Necesitas un solo documento vivo en shell o platform con mapa de procesos, dueño por dominio, tabla por app, excepciones válidas y definición de v1/v2/v3. Sin eso, cualquier refactor vuelve a ensuciarse.
+
+Cerrar Nexo v1 de verdad.
+La documentación ya dice que v1 es inventario base + remisiones y que producción/OC reales quedan fuera. Hay que hacer que la app se comporte igual. Todo lo que no sea esencial para catalogo -> entradas -> stock -> remisiones -> conteo/ajuste debe esconderse, moverse o redirigirse.
+
+Separar interfaz por intención, no por tabla.
+En Nexo la navegación debería quedar así:
+
+Operar: Entradas, Remisiones, Conteos, Traslados, Retiros.
+Verificar: Stock, Movimientos, Alertas.
+Configurar: Productos, Ubicaciones, Sedes, Rutas, Unidades, Categorías.
+Producción: solo CTA o redirect a Fogo cuando aplique.
+Utilidades: impresión, escaneo, setup.
+Partir las pantallas grandes antes de seguir diseñando.
+No recomiendo empezar por “hacerlo bonito” mientras existan páginas de 800-1200 líneas. Primero hay que separar:
+
+screen container
+data loader/query
+feature panels
+form sections
+actions/commands
+status/alerts
+Regla práctica: ninguna página operativa debería pasar de 250-300 líneas sin una razón muy fuerte.
+
+Limpiar el modelo maestro antes de endurecer reglas visuales.
+Categorías, unidades, disponibilidad por sede, proveedores por producto y áreas son parte de la experiencia. Si esos datos están ambiguos, la UI nunca se siente limpia porque el formulario termina defendiendo inconsistencias del modelo.
+
+Extraer lo compartido de verdad.
+No movería todo a monorepo todavía. Primero extraería contratos y piezas:
+
+@vento/ui
+@vento/auth
+@vento/db
+@vento/permissions
+@vento/ops-types
+Si Shell ya define estándares, las apps no deberían copiar layout, alerts, tables y guards a mano.
+
+Integrar por verticales, no por apps completas.
+El orden correcto no es “terminar Nexo, luego Origo, luego Fogo”. El orden correcto es por cadena:
+Recepción: Origo -> Nexo
+Producción: Fogo -> Nexo
+Venta/Loyalty: Pulso -> Pass
+Personas: Anima -> Shell -> resto
+Dirección: todo -> Viso
+Mantener fallback manual en cada integración.
+Eso no es debilidad. Es requisito de operación real. Ejemplos:
+Recepción normal por OC, pero con entrada de contingencia en Nexo.
+Producción normal en Fogo, pero con ingreso manual de terminado mientras madura.
+Acumulación de puntos automática desde Pulso, pero con ajuste auditado para casos raros.
+Qué haría en v1, v2 y v3 por cadena
+
+Cadena	v1	v2	v3
+Compra/recepción	entrada manual auditable en Nexo	recepción contra OC desde Origo	costeo y alertas automáticas
+Producción	ingreso manual de terminados	lote en Fogo publica consumo/terminado en Nexo	sugerencia de producción por demanda/par levels
+Remisiones	solicitud-preparación-recepción manual	sugerencias por mínimos/par levels	remisiones propuestas automáticamente
+Venta/lealtad	Pass aislado o semi-manual	Pulso emite eventos a Pass	campañas/personalización automática
+Personal	asistencia y sedes base	turnos y relación con operación	alertas de staffing/capacidad
+Gerencia	reportes sueltos	dashboards confiables	alertas, excepciones y KPIs compuestos
+Limpieza visual específica para Nexo
+
+Cada pantalla debe tener un solo trabajo principal.
+El hero de la pantalla debe explicar qué acción se hace ahí, no mostrar “todo”.
+Filtros y métricas deben ir arriba; detalles secundarios en panel lateral, modal o detalle.
+Setup y operación nunca deben convivir en la misma navegación principal.
+Todo bloque sin uso confirmado debe pasar por keep / merge / remove / redirect.
+Si un componente repite estilos en vez de usar ui-*, se corrige o se elimina.
+Producción dentro de Nexo debe empezar a reducirse; el propio campo matrix ya apunta a que recetas y lotes pertenecen a Fogo.
+Impresión y herramientas auxiliares no deben competir visualmente con el flujo operativo diario.
+Limpieza técnica específica
+
+Auditoría de pantallas: lista de todas las rutas con owner, rol, frecuencia, estado, destino.
+Auditoría de componentes: used, duplicated, deprecated, move-to-shared.
+Auditoría de tablas/campos: todo campo crítico debe tener owner screen. Ese criterio ya está bien planteado en shell.
+Auditoría de exceptions: cada parche actual debe reclasificarse como:
+regla del negocio
+excepción permanente
+workaround temporal
+basura eliminable
+Reglas de código:
+sin lógica de negocio en componentes de presentación
+sin consultas duplicadas por pantalla
+sin estilos copiados cuando ya existe primitive
+sin nuevas columnas/campos sin owner definido
+sin nuevas pantallas sin criterio de retiro de las viejas
+Orden real de trabajo
+
+Nexo flujo operativo principal.
+Primero catalog, entries, stock, remissions, count-initial. Ahí está el corazón del negocio diario.
+
+Nexo configuración.
+Luego sites, supply-routes, locations, units, categories. Esto debe quedar más pequeño, más administrativo y más aislado.
+
+Shell.
+Unificar AppShell, permisos, navegación, site switcher y UI base para que dejes de copiar decisiones entre repos.
+
+Origo y Fogo.
+Conectar los dominios al inventario sin volver a invadir Nexo.
+
+Pass, Pulso, Viso, Anima.
+Cerrar la cadena comercial, de cliente, de personal y de gerencia.
+
+Mi conclusión
+No estás empezando desde cero. De hecho, ya tienes varias piezas correctas:
+
+Shell ya define la separación conceptual.
+Nexo ya tiene una definición razonable de v1.
+ya existe una auditoría de UI.
+ya existe una matriz de ownership de campos.
+Vital incluso muestra un mejor nivel de guardrails y tokens que puede servir de referencia de disciplina.
+Lo que falta no es “más ideas”. Falta imponer una secuencia dura:
+
+congelar fronteras
+cerrar v1
+limpiar Nexo por intención
+extraer lo compartido
+integrar verticalmente
+automatizar después
+Si quieres, el siguiente paso útil es uno de estos:
+
+Convierto esto en un master plan documental para vento-shell y vento-nexo, listo para usar como norte del proyecto.
+Hago una auditoría pantalla por pantalla de Nexo y te entrego una matriz mantener / fusionar / eliminar / mover.
+Empiezo la primera limpieza real sobre el vertical más crítico: catalog -> entries -> stock -> remissions.
+
+Conviertelo en un plan maestro, también hay algo que quiero que miremos para dejarlo en su forma definitiva y escalable y progresiva a las siguientes versioens, ahorita al crear un producto me pide categoría, la categoría me pide alcance, sede , venta, todo eso. Si yocreo un croissant que es el mismo de vento cafe y de saudo y probablemente de molka, el producto solo me deja ponerlo en una categoría específica, digamos Vitrina de Saudo pero también debería ir en Bollería de Vento café, osea es otra categoría. El problema es que mis negocios tienen categorías distiantas para sus productos de venta, o bueno no es problema sino que así se hace, entonces me toca crear categorías distinatas para los negocios aunque sean el mismo producto, ideal y perfectamente como deberían hacerse estos casos? Necesito lo definitivo y escalable, ese ejemplo y muchos otros, osea que una excepción me hace cambiar todo el modelo de la lógica y eso no me gusta porque son remaches que se hacen, no es un sistema perfecto o lo mas perfecto posible. Y eso me estresa.
+
+
+6 mensajes anteriores
+Quedó convertido en documentación operativa y con una decisión canónica para el caso de categorías.
+
+Archivos creados:
+
+PLAN-MAESTRO-VENTO-OS.md
+MODELO-CATEGORIAS-CANONICO.md
+La decisión definitiva para tu ejemplo del croissant es esta:
+
+Un solo producto maestro.
+Una sola categoría operativa canónica en products.category_id.
+Cero o muchas ofertas comerciales por contexto.
+Cada oferta comercial puede tener una o varias categorías comerciales propias del negocio/canal.
+Traducido a tu caso:
+
+El croissant sigue siendo un solo product_id.
+En operación queda clasificado una sola vez.
+En venta puede aparecer como Bollería en Vento Café, Vitrina en Saudo y Panadería en Molka.
+Eso no se resuelve con varias categorías directas en products, sino con una capa nueva de contexto comercial + offering + categoría comercial.
+La idea central del modelo quedó así:
+
+products = identidad maestra.
+product_categories = taxonomía operativa.
+product_site_settings = reglas operativas por sede.
+catalog_contexts = negocio/canal/catálogo.
+product_offerings = producto maestro dentro de un contexto comercial.
+commercial_categories = árbol comercial de ese contexto.
+product_offering_category_assignments = asignación de categorías comerciales a la oferta.
+También dejé explícito en el plan que esto no es solo un problema de categorías. Es una separación más grande entre:
+
+catálogo maestro
+operación
+oferta comercial
+reporting
+No toqué lógica ni schema todavía. Solo dejé el norte documentado para que la siguiente fase salga sin remaches.
+
+Nota:
+Encontré archivos no rastreados previos en vento-shell y vento-nexo que no toqué. No hice cambios sobre esos archivos.
+
+Siguientes pasos naturales:
+
+Te propongo el schema exacto de v2 para catalog_contexts, product_offerings y sus relaciones.
+Te diseño cómo debe cambiar la UI de creación/edición de producto en Nexo.
+Te armo el plan de migración v1 -> v2 -> v3 sin romper el catálogo actual.
+
+Si porque que pasa después cuando queramos que el centro de producción ya no haga remisión a los satélites sino que le haga una venta. Ahí que? Osea que el centro de producción venda al por mayor o a costo para no perder o un poco mayor para ganar algo, osea cuando queramos tener nuestros centros de costos en todos los satelites y en el centro de producción va a ser mas complicado manejar todo eso no? Tiene que ahcerse bien desde el inicio y no ir improvisando
+
+
+2 mensajes anteriores
+Sí, se complica mucho si desde hoy modelas todo como “remisión”.
+No se complica si desde hoy separas bien 3 cosas:
+
+Movimiento físico.
+Liquidación comercial.
+Imputación gerencial/contable.
+Ese es el punto clave.
+
+Regla canónica
+Una remisión no debe ser el modelo maestro.
+El modelo maestro debe ser un documento interno entre sedes que puede operar en distintos modos:
+
+transferencia sin precio
+transferencia a costo
+transferencia con margen
+venta interna
+consignación
+emergencia
+El movimiento físico puede ser igual en todos.
+Lo que cambia es la liquidación.
+
+Lo bueno
+El schema ya trae pistas correctas para esto en schema_live.sql y schema_live.sql:
+
+restock_requests.pricing_mode
+restock_requests.pricing_status
+restock_requests.internal_supplier_site_id
+restock_request_items.transfer_unit_price
+restock_request_items.transfer_total
+O sea: la base ya empezó a insinuar “remisión con precio”.
+Lo que falta es volverlo canónico y no dejarlo como parche.
+
+Modelo correcto desde el inicio
+
+1. Capa física
+Dueño: Nexo
+
+Pregunta que responde:
+
+¿qué salió?
+¿de dónde salió?
+¿a dónde llegó?
+¿cuándo salió?
+¿cuándo se recibió?
+Aquí viven:
+
+stock
+movimientos
+lotes
+LOCs
+cantidades
+Esto nunca debe depender de si fue gratis, a costo o con margen.
+
+2. Capa de liquidación interna
+Dueño sugerido: Origo a futuro, o Nexo temporalmente mientras madura
+
+Pregunta que responde:
+
+¿el satélite le “compró” al CP?
+¿a qué precio?
+¿con qué política?
+¿quedó pendiente, facturado o liquidado?
+Aquí viven:
+
+precio de transferencia
+moneda
+subtotal
+impuestos si algún día aplica
+estado de liquidación
+documento interno de cargo
+3. Capa gerencial
+Dueño: Viso y luego contabilidad/BI
+
+Pregunta que responde:
+
+¿qué centro de producción le vendió a qué sede?
+¿qué margen interno hubo?
+¿qué centro de costo consumió eso?
+¿cómo se elimina en consolidado?
+Aquí viven:
+
+centro de costo solicitante
+centro de costo proveedor
+margen interno
+reglas de eliminación consolidada
+P&L por sede / línea / negocio
+La decisión más importante
+No mezclar nunca:
+
+costo de inventario
+precio de transferencia
+Eso tiene que quedar separado siempre.
+
+Ejemplo:
+
+CP produce croissant a costo real 1.800
+se lo transfiere a Saudo en 2.300
+Entonces debes guardar dos valores distintos:
+
+inventory_valuation_unit_cost = 1.800
+settlement_unit_price = 2.300
+Si mezclas esos dos, rompes:
+
+costo real
+margen interno
+consolidación
+análisis por sede
+Mi recomendación
+Si todo sigue bajo la misma empresa legal, haz esto:
+
+el inventario se mueve a costo real o costo estándar operativo
+la “venta interna” se registra en una capa de liquidación gerencial aparte
+el margen interno vive para análisis, no para contaminar el costo consolidado
+Eso te deja:
+
+P&L por sede útil
+consolidado limpio
+trazabilidad correcta
+Cuándo sí sería una venta “real”
+Si el CP y los satélites un día son entidades legales distintas, ahí sí:
+
+proveedor interno
+cliente interno
+AR/AP
+impuestos
+factura real
+Pero si hoy son la misma empresa, lo correcto normalmente es:
+
+transferencia física + liquidación interna gerencial
+No “venta comercial normal” en el sentido contable externo.
+
+Cómo debería quedar el documento interno
+Tu documento maestro entre sedes debería soportar:
+
+document_type
+fulfillment_mode
+pricing_mode
+pricing_policy_id
+from_site_id
+to_site_id
+requesting_cost_center_id
+supplying_cost_center_id
+settlement_status
+Y por línea:
+
+product_id
+qty_requested
+qty_shipped
+qty_received
+inventory_cost_unit
+settlement_unit_price
+settlement_total
+line_cost_center_id opcional
+Pricing modes recomendados
+
+none
+source_avg_cost
+source_last_cost
+standard_cost
+recipe_cost
+transfer_price_list
+manual_override
+Política correcta
+La política de precio no debe quedar digitada cada vez.
+Debe salir de una tabla de reglas, algo como:
+
+origen
+destino
+producto o categoría
+modo de precio
+markup %
+vigencia
+O sea, una transfer_pricing_policy.
+
+Sobre centros de costo
+Sí, si no lo dejas bien desde el inicio luego será un dolor.
+
+La regla correcta es:
+
+site no es lo mismo que cost_center
+una sede puede tener varios centros de costo
+el CP también puede ser sede y también centro de costo
+el documento puede tener centro de costo en cabecera
+pero algunas líneas deben poder sobreescribirlo
+Ejemplo:
+
+Saudo pide cosas para vitrina
+otras para cocina
+otras para eventos
+No siempre basta un solo centro de costo por documento.
+
+Entonces qué hacemos desde ya
+
+Mantener remisión como flujo físico v1.
+Renombrar mentalmente el modelo a documento interno entre sedes.
+Formalizar que pricing_mode y transfer_unit_price no son extras: son parte del diseño futuro.
+Separar desde ya costo inventario vs precio de transferencia.
+Preparar tabla de políticas de transferencia y liquidación interna en v2.
+No convertir el CP en “POS para satélites”; eso sería un atajo malo.
+Mi recomendación final
+El sistema perfecto aquí no es:
+
+remisión hoy
+venta mañana
+parche pasado mañana
+El sistema perfecto es:
+
+un solo flujo físico entre sedes
+varios modos comerciales sobre ese flujo
+una capa contable/gerencial separada
+Eso aguanta:
+
+remisión gratis
+remisión a costo
+transferencia con margen
+venta interna
+consolidación por centros de costo
+Si quieres, el siguiente paso útil es uno de estos:
+
+Te redacto el modelo canónico de abastecimiento interno y precio de transferencia como tercer documento maestro.
+Te propongo el schema exacto de tablas/campos para soportarlo.
+Te dibujo la progresión v1 -> v2 -> v3 para remisión, venta interna y centros de costo sin romper lo actual.
+
+Quiero que en el documento maestro se tenga en cuenta todo.
+
+
+4 mensajes anteriores
+Actualicé el documento maestro en PLAN-MAESTRO-VENTO-OS.md.
+
+Ahora ya incluye explícitamente:
+
+alcance total de la operación: CP, satélites, restaurante, POS, loyalty, RRHH y gerencia;
+dimensiones maestras que no se pueden mezclar: product, site, brand, channel, cost_center, legal_entity;
+capas del sistema: maestra, operativa, comercial, liquidación interna y gerencial;
+decisión canónica de producto maestro vs oferta comercial;
+abastecimiento interno entre sedes como concepto superior a la remisión;
+separación estricta entre costo de inventario y precio de transferencia;
+CP como proveedor interno en v2 y posible intercompany en v3;
+centros de costo como dimensión real del sistema;
+backbone documental de la suite;
+progresión v1 -> v2 -> v3 para catálogo, abastecimiento interno y liquidación.
+También dejé claro que:
+
+restock_requests hoy puede seguir como documento físico de v1;
+pero el norte ya no es “remisión simple”, sino documento interno entre sedes;
+y que el sistema no debe improvisar luego cuando CP le “cobre” a los satélites.
+No toqué schema ni lógica todavía, solo el marco maestro.
+
+Siguiente paso natural:
+
+bajar este documento a schema exacto de v2;
+definir tablas/campos para pricing interno, centros de costo y liquidación;
+ajustar luego la UI de Nexo y las fronteras con Origo, Fogo y Viso.
+
+Y que sea v1, todo lo que sea para implementación inmediata, modelo sencillo pero escalable e ir avanzando por versiones de la manera mas facil y definitiva posible. Teniendo en cuanta absolutamente todo, osea prefiero que investigues, que veas videos, aplicaciones existentes, documentos de investigación, osea todo, para que creemos el sistema perfecto, si crees que estoy fallando en algo me lo dices, si crees que me falta algo me lo dices y lo implementamos, necesito que tengamos en cuenta absolutamente todas las variables y sobretodo que nuestra aplicación permita verlas y controlarlas de la forma menos complicada posible.
+
+
+1 mensaje anterior
+Actualicé el maestro para que sea claramente v1-first en PLAN-MAESTRO-VENTO-OS.md.
+
+Qué quedó incorporado
+
+v1 inmediata: qué sí entra ya, qué no debe bloquear, y qué queda preparado pero oculto.
+separación explícita entre:
+producto maestro
+operación física
+oferta comercial
+liquidación interna
+capa gerencial
+abastecimiento interno como concepto superior a “remisión”.
+costo inventariable vs precio de transferencia.
+centros de costo como dimensión real.
+hallazgos externos de sistemas reales para validar el modelo.
+sección donde te digo directamente en qué te puedes estar equivocando hoy.
+Mi lectura franca
+Estás acertando en querer pensar todo desde el inicio.
+Donde sí te puedes equivocar es en esto:
+
+Querer que la UI de v1 ya resuelva visualmente todos los casos de v2/v3.
+Intentar que una sola categoría siga resolviendo inventario, menú, marca y reporting.
+Dejar que Nexo siga creciendo como app “de todo”.
+Modelar una futura venta interna como si hoy tocará hacer un POS interno.
+La corrección correcta es:
+
+v1 simple en pantalla;
+semántica correcta en datos;
+campos y contratos listos para crecer;
+complejidad futura escondida hasta que realmente toque activarla.
+Qué investigué para orientar el modelo
+En esta pasada prioricé documentación oficial y help centers de sistemas reales sobre videos sueltos, porque para decisiones estructurales eso es más confiable.
+
+Fuentes usadas:
+
+Odoo: Reordering rules
+Odoo: Inter-warehouse replenishment
+Odoo: Multi-company / shared records / inter-company transactions
+ERPNext: Item Price
+ERPNext: Price Lists
+Restaurant365: Menu Item Categories
+Restaurant365: Menu Items & Menu Item Links
+Lightspeed: Creating products
+Lightspeed: Creating ingredients
+Lightspeed: Assigning ingredients to products
+Lightspeed: About ingredient management
+Qué validan esas fuentes
+
+separar categoría operativa de categoría comercial;
+separar producto maestro de precios/listas/contextos;
+usar rutas y mínimos para reabastecimiento;
+construir recetas encima de items maestros ya existentes;
+separar registros compartidos de transacciones inter-company.
+Estado actual
+
+actualicé solo documentación;
+no toqué schema ni lógica todavía.
+El siguiente paso correcto ya no es seguir pensando más abstracto. Es bajar esto a implementación.
+
+Te propongo el schema v1 inmediato exacto: qué tablas/campos usamos ya y cuáles solo dejamos listos.
+Después te propongo la UI v1 exacta de Nexo: qué pantallas quedan, cuáles se fusionan y cuáles se esconden.
+Luego armamos la ruta de migración v1 -> v2 -> v3 sin rehacer datos.
+
+Perfecto, empecemos
+
+
+7 mensajes anteriores
+Arrancamos bien.
+
+Dejé dos documentos base para ejecutar v1 sin improvisar:
+
+PLAN-MAESTRO-VENTO-OS.md
+ESPECIFICACION-V1-INMEDIATA.md
+Qué resolví en esta fase
+
+qué entra de verdad en v1;
+qué NO debe bloquear v1;
+qué campos existen pero quedan solo preparados;
+semántica oficial de tablas clave:
+products
+product_categories
+product_site_settings
+sites
+inventory_entries
+inventory_movements
+inventory_stock_by_site
+inventory_locations
+restock_requests
+restock_request_items
+cost_centers
+dejé explícito que audience es transicional y no fuente de verdad futura.
+La decisión más importante que ya quedó fijada
+v1 no necesita tablas nuevas para salir bien.
+Necesita una semántica exacta y una UI mucho más limpia.
+
+También quedó fijado
+
+products.category_id = categoría operativa primaria
+restock_requests = documento físico de abastecimiento interno en v1
+pricing_mode, pricing_status, transfer_unit_price = reservados, no obligatorios en operación diaria
+cost_centers = dimensión real, pero no deben bloquear v1
+Referencias oficiales que usé para validar patrones
+
+Odoo reordering / replenishment: https://www.odoo.com/documentation/18.0/applications/inventory_and_mrp/inventory/warehouses_storage/replenishment/reordering_rules.html
+Odoo multi-company / shared records: https://www.odoo.com/documentation/18.0/applications/general/companies/multi_company.html
+ERPNext item price / price lists: https://docs.frappe.io/erpnext/user/manual/en/item-price
+Restaurant365 menu item categories: https://help.restaurant365.net/support/solutions/articles/12000053772-menu-item-categories
+Lightspeed ingredients / recipes patterns: https://resto-support.lightspeedhq.com/hc/en-us/articles/226404508-Creating-ingredients
+Siguiente paso correcto
+Ahora ya no toca seguir escribiendo teoría.
+Toca bajar esto a ejecución en Nexo.
+
+Hago el backlog técnico v1 pantalla por pantalla de Nexo.
+Después limpio navegación y pantallas según ese backlog.
+Luego pasamos a migraciones mínimas o endurecimientos de datos que hagan falta.
+
+Si, prosigamos
+
+Sigo con el backlog técnico de v1 en Nexo: voy a convertir el alcance ya definido en una matriz concreta de rutas, propósito, mantener/fusionar/mover y prioridad, para que después la limpieza no sea intuitiva sino dirigida.
+
+Voy a cruzar tres cosas: rutas reales, tamaño/complejidad de pantalla y su lugar en v1. La salida tiene que ser una lista ejecutable, no una opinión general.
+
+La foto general es clara: 5 pantallas concentran casi toda la deuda y también casi todo el valor operativo de v1: catálogo, alta de producto, entradas, abastecimiento interno y stock. El backlog va a priorizar eso y quitar ruido alrededor.
+
+Voy a cerrar la matriz de Nexo v1 en un documento con decisiones concretas por ruta: mantener, simplificar, fusionar, esconder, redirigir o deprecar. Después de eso ya podemos ejecutar limpieza real sin seguir discutiendo alcance.
+
+Ya tengo la clasificación. Voy a guardarla como backlog técnico con prioridad y acción por ruta, para que la próxima fase sea implementación directa sobre archivos concretos.
+
