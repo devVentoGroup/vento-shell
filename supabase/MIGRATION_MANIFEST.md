@@ -106,6 +106,7 @@ Migraciones registradas como aplicadas en la base remota compartida.
 - 20260311113000_pos_schema_reorganization_v1.sql
 - 20260311120000_pass_catalog_sell_guardrails_v1.sql
 - 20260311123000_pass_catalog_seed_from_sell_products_v1.sql
+- 20260319120000_nexo_conductor_revoke_remissions_prepare.sql
 
 ## pending_local
 - Ninguna.
