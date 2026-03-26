@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.91.0"
+import { createClient } from "npm:@supabase/supabase-js@2.91.0"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -482,8 +482,9 @@ serve(async (req) => {
       const tokensForEmployee = tokensByEmployee.get(shift.employee_id) ?? []
       const siteName = unwrapRelation(shift.sites)?.name ?? "tu sede"
       const detail = `${formatShiftDate(shift.shift_date)}, ${shift.end_time.slice(0, 5)}`
+      const hasTokens = tokensForEmployee.length > 0
 
-      if (tokensForEmployee.length > 0) {
+      if (hasTokens) {
         tokensForEmployee.forEach((token) => {
           pushMessages.push({
             to: token,
@@ -498,23 +499,23 @@ serve(async (req) => {
         })
       }
 
-      pendingRuntimeInserts.push({
-        shift_id: shift.id,
-        employee_id: shift.employee_id,
-        site_id: shift.site_id,
-        event_type: "end_reminder_sent",
-        scheduled_for: new Date(reminderAtMs).toISOString(),
-        processed_at: nowIso,
-        status: tokensForEmployee.length > 0 ? "applied" : "skipped",
-        notes: tokensForEmployee.length > 0 ? "push_sent" : "no_active_tokens",
-        payload: {
-          shift_date: shift.shift_date,
-          end_time: shift.end_time,
-          tokens: tokensForEmployee.length,
-        },
-      })
-      existingEventKeys.add(`${shift.id}|end_reminder_sent`)
-      if (tokensForEmployee.length > 0) {
+      if (hasTokens) {
+        pendingRuntimeInserts.push({
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          site_id: shift.site_id,
+          event_type: "end_reminder_sent",
+          scheduled_for: new Date(reminderAtMs).toISOString(),
+          processed_at: nowIso,
+          status: "applied",
+          notes: "push_sent",
+          payload: {
+            shift_date: shift.shift_date,
+            end_time: shift.end_time,
+            tokens: tokensForEmployee.length,
+          },
+        })
+        existingEventKeys.add(`${shift.id}|end_reminder_sent`)
         reminderCount += 1
       } else {
         skippedCount += 1
@@ -530,25 +531,26 @@ serve(async (req) => {
       const tokensForEmployee = tokensByEmployee.get(shift.employee_id) ?? []
       const siteName = unwrapRelation(shift.sites)?.name ?? "tu sede"
       const detail = `${formatShiftDate(shift.shift_date)}, ${shift.end_time.slice(0, 5)}`
+      const hasTokens = tokensForEmployee.length > 0
 
-      pendingRuntimeInserts.push({
-        shift_id: shift.id,
-        employee_id: shift.employee_id,
-        site_id: shift.site_id,
-        event_type: "end_reminder_followup_sent",
-        scheduled_for: new Date(followupReminderAtMs).toISOString(),
-        processed_at: nowIso,
-        status: tokensForEmployee.length > 0 ? "applied" : "skipped",
-        notes: tokensForEmployee.length > 0 ? "push_sent_followup" : "no_active_tokens",
-        payload: {
-          shift_date: shift.shift_date,
-          end_time: shift.end_time,
-          tokens: tokensForEmployee.length,
-        },
-      })
-      existingEventKeys.add(`${shift.id}|end_reminder_followup_sent`)
+      if (hasTokens) {
+        pendingRuntimeInserts.push({
+          shift_id: shift.id,
+          employee_id: shift.employee_id,
+          site_id: shift.site_id,
+          event_type: "end_reminder_followup_sent",
+          scheduled_for: new Date(followupReminderAtMs).toISOString(),
+          processed_at: nowIso,
+          status: "applied",
+          notes: "push_sent_followup",
+          payload: {
+            shift_date: shift.shift_date,
+            end_time: shift.end_time,
+            tokens: tokensForEmployee.length,
+          },
+        })
+        existingEventKeys.add(`${shift.id}|end_reminder_followup_sent`)
 
-      if (tokensForEmployee.length > 0) {
         tokensForEmployee.forEach((token) => {
           pushMessages.push({
             to: token,
