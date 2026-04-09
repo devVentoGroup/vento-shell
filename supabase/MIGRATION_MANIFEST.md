@@ -109,11 +109,10 @@ Migraciones registradas como aplicadas en la base remota compartida.
 - 20260319120000_nexo_conductor_revoke_remissions_prepare.sql
 
 ## pending_local
-- Ninguna.
+- 20260401120000_pos_table_service_calls_v1.sql
 
 ## policy
 - Todas las migraciones nuevas se crean primero en `vento-shell`.
 - Los demas repositorios solo consumen migraciones sincronizadas desde `vento-shell`.
 - Ejecutar `scripts/sync-migrations.ps1` despues de cualquier nueva migracion en canonico.
-
 

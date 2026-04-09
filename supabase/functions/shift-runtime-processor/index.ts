@@ -35,6 +35,7 @@ type ShiftRow = {
   shift_date: string
   start_time: string
   end_time: string
+  shift_kind: "laboral" | "descanso" | null
   employees: { full_name: string | null } | { full_name: string | null }[] | null
   sites: { name: string | null } | { name: string | null }[] | null
 }
@@ -364,9 +365,10 @@ serve(async (req) => {
 
   const { data: shifts, error: shiftsError } = await supabase
     .from("employee_shifts")
-    .select("id, employee_id, site_id, shift_date, start_time, end_time, employees!employee_shifts_employee_id_fkey(full_name), sites!employee_shifts_site_id_fkey(name)")
+    .select("id, employee_id, site_id, shift_date, start_time, end_time, shift_kind, employees!employee_shifts_employee_id_fkey(full_name), sites!employee_shifts_site_id_fkey(name)")
     .not("published_at", "is", null)
     .neq("status", "cancelled")
+    .neq("shift_kind", "descanso")
     .gte("shift_date", fromDate)
     .lte("shift_date", toDate)
     .order("shift_date", { ascending: true })
@@ -488,8 +490,8 @@ serve(async (req) => {
         tokensForEmployee.forEach((token) => {
           pushMessages.push({
             to: token,
-            title: "Tu turno está por cerrar",
-            body: `Recuerda cerrar tu turno en ${siteName}. Hora programada de salida: ${detail}.`,
+            title: "Se acerca el fin de tu turno",
+            body: `Se acerca el fin de tu turno en ${siteName}. Recuerda realizar el cierre en la aplicación.`,
             data: {
               type: "shift_end_reminder",
               shift_id: shift.id,
@@ -555,7 +557,7 @@ serve(async (req) => {
           pushMessages.push({
             to: token,
             title: "Aún tienes el turno abierto",
-            body: `Han pasado ${followupReminderDelayMinutes} minutos desde la hora de salida en ${siteName}. Cierra tu turno (${detail}).`,
+            body: `Tu turno sigue abierto en ${siteName}. Recuerda realizar el cierre en la aplicación.`,
             data: {
               type: "shift_end_reminder_followup",
               shift_id: shift.id,

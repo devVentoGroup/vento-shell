@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,6 +35,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script id="vento-number-wheel-guard" strategy="afterInteractive">
+          {`(() => {
+            if (window.__ventoNumberWheelGuard) return;
+            window.__ventoNumberWheelGuard = true;
+            document.addEventListener('wheel', (event) => {
+              const target = event.target;
+              if (!(target instanceof Element)) return;
+              const input = target.closest('input[type="number"]');
+              if (!input) return;
+              if (document.activeElement === input) {
+                input.blur();
+                event.preventDefault();
+              }
+            }, { passive: false });
+          })();`}
+        </Script>
         {children}
       </body>
     </html>

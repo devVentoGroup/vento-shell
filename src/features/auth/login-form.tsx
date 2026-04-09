@@ -12,6 +12,7 @@ type Props = {
 export function LoginForm({ returnTo, defaultEmail }: Props) {
   const [email, setEmail] = useState(defaultEmail ?? "");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
@@ -61,10 +62,16 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-7 shadow-xl shadow-slate-300/30">
+    <div className="relative w-full overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 p-7 shadow-2xl shadow-slate-300/35 backdrop-blur">
       <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500" />
+      <div className="pointer-events-none absolute right-[-48px] top-[-48px] h-28 w-28 rounded-full bg-sky-100/60 blur-2xl" />
+      <div className="pointer-events-none absolute bottom-[-56px] left-[-56px] h-32 w-32 rounded-full bg-amber-100/55 blur-2xl" />
 
-      <h2 className="text-xl font-semibold tracking-tight text-slate-900">Iniciar sesion</h2>
+      <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        SSO centralizado
+      </div>
+      <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Iniciar sesion</h2>
       <p className="mt-1 text-sm text-slate-600">Acceso unico para todo Vento OS.</p>
 
       <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
@@ -83,15 +90,24 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
 
         <label className="grid gap-1.5">
           <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Contrasena</span>
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-            required
-            className="h-11 rounded-xl border border-slate-200 bg-slate-50/60 px-3.5 text-sm text-slate-900 outline-none transition-colors focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+              required
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50/60 px-3.5 pr-20 text-sm text-slate-900 outline-none transition-colors focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-200"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-2 top-1/2 h-7 -translate-y-1/2 rounded-md border border-slate-200 bg-white px-2 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            >
+              {showPassword ? "Ocultar" : "Mostrar"}
+            </button>
+          </div>
         </label>
 
         {error ? (
@@ -112,6 +128,9 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
 
         <p className="text-xs text-slate-500">
           Redireccion: <span className="font-mono text-slate-600">{returnTo}</span>
+        </p>
+        <p className="text-xs text-slate-500">
+          Si tienes bloqueos de acceso, valida permisos de usuario y sede con tu lider.
         </p>
       </form>
     </div>
