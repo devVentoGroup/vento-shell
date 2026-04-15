@@ -8,7 +8,7 @@ on conflict (app_id, code) do nothing;
 -- Crear tabla para registrar validaciones
 create table if not exists public.locations_validation (
   id uuid primary key default gen_random_uuid(),
-  location_id uuid not null references public.locations(id) on delete cascade,
+  location_id uuid not null references public.inventory_locations(id) on delete cascade,
   site_id uuid not null references public.sites(id) on delete cascade,
   
   -- Estado de validacion
