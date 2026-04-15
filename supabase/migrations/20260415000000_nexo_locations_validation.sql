@@ -76,9 +76,17 @@ create policy "owners_managers_all_validation"
   using (
     public.is_owner()
     or public.is_global_manager()
-    or (
-      public.is_manager()
-      and site_id in (select id from public.sites where manager_id = public.current_user_id())
+  );
+
+-- Gerentes: ver validaciones de sus sitios
+create policy "managers_site_validation"
+  on public.locations_validation
+  for all
+  using (
+    public.is_manager()
+    and site_id in (
+      select site_id from public.employee_sites 
+      where employee_id = public.current_user_id()
     )
   );
 
