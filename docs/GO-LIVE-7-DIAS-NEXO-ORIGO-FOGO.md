@@ -68,10 +68,73 @@ Criterio de cierre Dia 1: plano fisico + tabla LOC final aprobada.
 2. `LOC-MOL-STO-01` (`storage`) - Stock operativo.
 3. `LOC-MOL-OPS-01` (`picking`) - Picking operativo.
 
+### Matriz operativa Dia 1 (producto -> area -> LOC) [v1]
+
+Objetivo: que cada item operativo tenga ruta clara para `pedir`, `alistar`, `despachar`, `recibir` y `contar` sin decisiones manuales del trabajador.
+
+#### Centro de Produccion (origen interno)
+
+| Flujo | Area | LOC sugerido |
+|---|---|---|
+| Recepcion proveedor | Bodega | `LOC-CP-REC-01` |
+| Almacen seco | Bodega | `LOC-CP-SECOS1-MAIN` |
+| Almacen frio | Bodega | `LOC-CP-FRIO-MAIN` |
+| Almacen congelado | Bodega | `LOC-CP-CONG-MAIN` |
+| Produccion | Cocina | `LOC-CP-PROD-01` |
+| Despacho satelites | Logistica | `LOC-CP-DESP-01` |
+| Devoluciones/incidencias | Logistica | `LOC-CP-DEV-01` |
+
+#### Satelites (destino interno)
+
+| Sede | Area de solicitud | LOC recepcion | LOC stock | LOC operacion |
+|---|---|---|---|---|
+| Vento Cafe | Mostrador / Cocina / Bar | `LOC-VC-REC-01` | `LOC-VC-STO-01` | `LOC-VC-OPS-01` |
+| Saudo | Cocina Bar | `LOC-SAU-REC-01` | `LOC-SAU-STO-01` | `LOC-SAU-OPS-01` |
+| Molka | Mostrador | `LOC-MOL-REC-01` | `LOC-MOL-STO-01` | `LOC-MOL-OPS-01` |
+
+#### Regla de asignacion por familia de producto (v1)
+
+| Familia operativa | Centro (LOC origen) | Satelite (LOC destino) |
+|---|---|---|
+| Secos / empaques | `LOC-CP-SECOS1-MAIN` | `*-STO-01` |
+| Refrigerados | `LOC-CP-FRIO-MAIN` | `*-STO-01` |
+| Congelados | `LOC-CP-CONG-MAIN` | `*-STO-01` |
+| Preparaciones listas para despacho | `LOC-CP-PROD-01` -> `LOC-CP-DESP-01` | `*-REC-01` -> `*-STO-01` |
+| Insumos de consumo inmediato | `LOC-CP-BOD-MAIN`/zona correspondiente | `*-OPS-01` |
+
+Estado: [ ] Validar con operacion producto por producto (top criticos primero).
+
+### Politica LPN (solo criticos) [v1 congelada]
+
+Regla base: no usar LPN para todo. Solo para items donde agrega control real y evita perdida.
+
+#### Usa LPN (obligatorio)
+
+1. Producto con lote + vencimiento.
+2. Producto de alto costo unitario.
+3. Producto sensible a trazabilidad sanitaria.
+4. Produccion/lote en FOGO con seguimiento de consumo y salida.
+
+#### No usa LPN (operacion simplificada)
+
+1. Insumos de rotacion alta y bajo riesgo.
+2. Empaques, desechables, consumibles generales.
+3. Flujo diario de remision estandar Centro -> satelite (sin lote critico).
+
+#### Criterio de implementacion
+
+1. Activar LPN por categoria critica, no por toda la sede.
+2. Etiquetar fisicamente solo contenedores criticos.
+3. Flujo trabajador: escanear LOC + confirmar cantidad (sin pasos extra).
+4. Auditoria semanal de excepciones (sin bloquear operacion diaria).
+
+Estado: [ ] Politica publicada y comunicada a equipos.
+
 ## Dia 2 - Etiquetado fisico (QR)
 
 | Tarea | Responsable | Evidencia | Estado |
 |---|---|---|---|
+| Interface QR operativa en NEXO (/inventory/warehouse) | Codex | Página responsiva + scanner integrado + autenticación | [x] |
 | Imprimir etiquetas LOC (QR + codigo + sede/area) | Operacion | Lote de etiquetas impresas | [ ] |
 | Imprimir etiquetas de contenedor/bin | Operacion | Etiquetas contenedor impresas | [ ] |
 | Pegar etiquetas en piso y validar escaneo | Operacion | Registro de prueba de lectura | [ ] |
@@ -146,6 +209,7 @@ Criterio de cierre Dia 7: operacion en vivo sin bloqueos criticos.
 
 1. `supabase/ops_v2_readiness_check.sql`
 2. `supabase/ops_v2_restock_traceability_audit.sql`
+3. `supabase/ops_v2_day1_product_area_loc_matrix_check.sql`
 
 ## Cambios ya aplicados (base)
 

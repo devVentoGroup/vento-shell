@@ -45,6 +45,39 @@ async function getLatestInvitation(
   return Array.isArray(data) ? data[0] ?? null : null
 }
 
+async function getInvitationActorAuditId(
+  supabase: ReturnType<typeof createClient>,
+  employeeId: string,
+) {
+  const { data, error } = await supabase
+    .from("users")
+    .select("id")
+    .eq("id", employeeId)
+    .maybeSingle()
+
+  if (error) {
+    console.error("[staff-invitations-create] actor audit lookup failed:", error)
+    return null
+  }
+
+  return data?.id ?? null
+}
+
+async function cleanupProvisionedInviteUser(
+  supabase: ReturnType<typeof createClient>,
+  userId: string | null,
+) {
+  if (!userId) return
+
+  const { error } = await supabase.auth.admin.deleteUser(userId)
+  if (error) {
+    console.error("[staff-invitations-create] cleanup failed:", {
+      userId,
+      error,
+    })
+  }
+}
+
 async function persistInvitationRecord(
   supabase: ReturnType<typeof createClient>,
   params: {
@@ -52,7 +85,8 @@ async function persistInvitationRecord(
     fullName: string | null
     role: string
     siteId: string
-    invitedBy: string
+    invitedByAuditId?: string | null
+    invitedByEmployeeId: string
     status:
       | "sent"
       | "linked_existing_user"
@@ -85,8 +119,8 @@ async function persistInvitationRecord(
     staff_site_id: params.siteId,
     site_id: params.siteId,
     status: params.status,
-    invited_by: params.invitedBy,
-    created_by: params.invitedBy,
+    invited_by: params.invitedByAuditId ?? null,
+    created_by: params.invitedByAuditId ?? null,
     invited_at: now,
     last_sent_at: params.lastSentAt ?? null,
     expired_at: params.expiredAt ?? null,
@@ -97,7 +131,10 @@ async function persistInvitationRecord(
     employee_id: params.employeeId ?? null,
     invite_token_hash: params.inviteTokenHash ?? null,
     notes: params.notes ?? null,
-    metadata: params.metadata ?? {},
+    metadata: {
+      invited_by_employee_id: params.invitedByEmployeeId,
+      ...(params.metadata ?? {}),
+    },
     source_app: "anima",
     updated_at: now,
   }
@@ -169,12 +206,18 @@ serve(async (req) => {
     return buildJsonResponse({ error: "Forbidden" }, 403)
   }
 
+  const invitedByAuditId = await getInvitationActorAuditId(
+    supabase,
+    userData.user.id,
+  )
+
   let payload: {
     email?: string
     full_name?: string | null
     role?: string
     site_id?: string
     expires_days?: number
+    expires_at?: string
   } = {}
 
   try {
@@ -187,6 +230,19 @@ serve(async (req) => {
   const role = payload.role?.trim()
   const siteId = payload.site_id?.trim()
   const expiresDays = Math.max(1, Math.min(30, Number(payload.expires_days ?? 7)))
+
+  let expiredAt: string
+  const expiresAtRaw = payload.expires_at?.trim()
+  if (expiresAtRaw) {
+    const parsed = new Date(expiresAtRaw)
+    if (!Number.isNaN(parsed.getTime())) {
+      expiredAt = parsed.toISOString()
+    } else {
+      expiredAt = new Date(Date.now() + expiresDays * 24 * 60 * 60 * 1000).toISOString()
+    }
+  } else {
+    expiredAt = new Date(Date.now() + expiresDays * 24 * 60 * 60 * 1000).toISOString()
+  }
 
   if (!email || !role || !siteId) {
     return buildJsonResponse({ error: "Missing fields" }, 400)
@@ -245,8 +301,6 @@ serve(async (req) => {
     )
   }
 
-  const expiredAt = new Date(Date.now() + expiresDays * 24 * 60 * 60 * 1000).toISOString()
-
   const { data: linkData, error: linkError } =
     await supabase.auth.admin.generateLink({
       type: "invite",
@@ -274,7 +328,8 @@ serve(async (req) => {
           fullName: payload.full_name?.trim() || null,
           role,
           siteId,
-          invitedBy: userData.user.id,
+          invitedByAuditId,
+          invitedByEmployeeId: userData.user.id,
           status: "failed",
           expiredAt,
           metadata: { source: "staff-invitations-create", error: raw },
@@ -378,7 +433,8 @@ serve(async (req) => {
         fullName,
         role,
         siteId,
-        invitedBy: userData.user.id,
+        invitedByAuditId,
+        invitedByEmployeeId: userData.user.id,
         status: "linked_existing_user",
         authUserId: existingUserId,
         employeeId: existingUserId,
@@ -451,6 +507,7 @@ serve(async (req) => {
     { onConflict: "id" },
   )
   if (empErr) {
+    await cleanupProvisionedInviteUser(supabase, newUserId)
     return buildJsonResponse({ error: empErr.message }, 500)
   }
 
@@ -464,6 +521,7 @@ serve(async (req) => {
     { onConflict: "employee_id,site_id" },
   )
   if (siteErr) {
+    await cleanupProvisionedInviteUser(supabase, newUserId)
     return buildJsonResponse({ error: siteErr.message }, 500)
   }
 
@@ -479,7 +537,8 @@ serve(async (req) => {
       fullName,
       role,
       siteId,
-      invitedBy: userData.user.id,
+      invitedByAuditId,
+      invitedByEmployeeId: userData.user.id,
       status: "sent",
       authUserId: newUserId,
       employeeId: newUserId,
@@ -494,6 +553,7 @@ serve(async (req) => {
     })
   } catch (persistError) {
     console.error("[staff-invitations-create] persist sent failed:", persistError)
+    await cleanupProvisionedInviteUser(supabase, newUserId)
     return buildJsonResponse(
       { error: "No se pudo registrar la invitación operativa" },
       500,
@@ -537,7 +597,8 @@ serve(async (req) => {
           fullName,
           role,
           siteId,
-          invitedBy: userData.user.id,
+          invitedByAuditId,
+          invitedByEmployeeId: userData.user.id,
           status: "failed",
           authUserId: newUserId,
           employeeId: newUserId,
@@ -552,6 +613,7 @@ serve(async (req) => {
       } catch (persistError) {
         console.error("[staff-invitations-create] persist failed email error failed:", persistError)
       }
+      await cleanupProvisionedInviteUser(supabase, newUserId)
       return buildJsonResponse(
         {
           error: "No se pudo enviar el correo",
@@ -567,7 +629,8 @@ serve(async (req) => {
         fullName,
         role,
         siteId,
-        invitedBy: userData.user.id,
+        invitedByAuditId,
+        invitedByEmployeeId: userData.user.id,
         status: "failed",
         authUserId: newUserId,
         employeeId: newUserId,
@@ -582,6 +645,7 @@ serve(async (req) => {
     } catch (persistError) {
       console.error("[staff-invitations-create] persist missing resend failed:", persistError)
     }
+    await cleanupProvisionedInviteUser(supabase, newUserId)
     return buildJsonResponse(
       {
         error:
