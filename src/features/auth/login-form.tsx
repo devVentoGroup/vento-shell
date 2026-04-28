@@ -99,7 +99,7 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
 
   return (
     <>
-    <div className="relative w-full overflow-hidden rounded-3xl border border-white/80 bg-white/90 p-7 shadow-2xl shadow-slate-300/35 backdrop-blur-xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-white/80 bg-white/90 p-5 shadow-2xl shadow-slate-300/35 backdrop-blur-xl sm:p-7">
       <div className="absolute left-0 top-0 h-1.5 w-full bg-gradient-to-r from-cyan-600 via-indigo-600 to-slate-900" />
       <div className="pointer-events-none absolute right-[-48px] top-[-48px] h-28 w-28 rounded-full bg-cyan-200/65 blur-2xl" />
       <div className="pointer-events-none absolute bottom-[-56px] left-[-56px] h-32 w-32 rounded-full bg-indigo-200/50 blur-2xl" />
@@ -112,7 +112,7 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
       <h2 className="relative text-2xl font-semibold tracking-tight text-slate-900">Iniciar sesion</h2>
       <p className="relative mt-1 text-sm text-slate-600">Acceso unico para todo Vento OS.</p>
 
-      <form onSubmit={handleSubmit} className="relative mt-6 grid gap-4">
+      <form onSubmit={handleSubmit} className="relative mt-5 grid gap-3.5 sm:mt-6 sm:gap-4">
         <label className="grid gap-1.5">
           <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Email</span>
           <input
@@ -179,7 +179,7 @@ export function LoginForm({ returnTo, defaultEmail }: Props) {
 
         <div className="grid gap-1.5">
           <p className="text-xs text-slate-500">
-            Redireccion: <span className="font-mono text-slate-600">{returnTo}</span>
+            Redireccion: <span className="break-all font-mono text-slate-600">{returnTo}</span>
           </p>
           <p className="text-xs text-slate-500">
             Si tienes bloqueos de acceso, valida permisos de usuario y sede con tu lider.

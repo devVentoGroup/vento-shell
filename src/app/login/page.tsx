@@ -29,7 +29,7 @@ export default async function LoginPage({
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-50 text-slate-900">
+    <div className="relative min-h-dvh overflow-y-auto bg-slate-50 text-slate-900">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-28 -top-24 h-[28rem] w-[28rem] rounded-full bg-amber-300/45 blur-[95px]" />
         <div className="absolute -right-24 top-12 h-96 w-96 rounded-full bg-cyan-300/35 blur-[95px]" />
@@ -39,8 +39,8 @@ export default async function LoginPage({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#94a3b8_0.5px,transparent_0.5px),linear-gradient(to_bottom,#94a3b8_0.5px,transparent_0.5px)] bg-[size:3.5rem_3.5rem] opacity-[0.05]" />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-6 py-10 lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:py-14">
-        <section>
+      <div className="relative mx-auto grid min-h-dvh w-full max-w-6xl content-center gap-6 px-4 py-6 sm:px-6 lg:gap-10 lg:py-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+        <section className="hidden lg:block">
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600 backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
             Vento OS Access
@@ -106,8 +106,12 @@ export default async function LoginPage({
           </div>
         </section>
 
-        <section className="relative w-full max-w-md justify-self-start lg:justify-self-end">
+        <section className="relative w-full max-w-md justify-self-center lg:justify-self-end">
           <div className="pointer-events-none absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-cyan-200/35 via-indigo-200/25 to-amber-200/35 blur-2xl" />
+          <div className="relative mb-4 text-center lg:hidden">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Vento OS</div>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">Acceso operativo</h1>
+          </div>
           <LoginForm returnTo={returnTo} defaultEmail={defaultEmail || undefined} />
           <p className="mt-4 text-center text-xs text-slate-500">
             Vento OS · {new Date().getFullYear()} · Acceso corporativo
