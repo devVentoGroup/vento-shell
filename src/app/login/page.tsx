@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/login-form";
@@ -5,12 +6,89 @@ import { createClient } from "@/lib/supabase/server";
 
 type SearchParams = { returnTo?: string; email?: string };
 
+const APP_METADATA_BY_HOST: Record<string, { label: string; description: string; icon: string }> = {
+  "nexo.ventogroup.co": {
+    label: "NEXO",
+    description: "Logistica e inventario operativo.",
+    icon: "/logos/nexo.svg",
+  },
+  "origo.ventogroup.co": {
+    label: "ORIGO",
+    description: "Ordenes de compra y proveedores.",
+    icon: "/logos/origo.svg",
+  },
+  "fogo.ventogroup.co": {
+    label: "FOGO",
+    description: "Produccion y cocina operativa.",
+    icon: "/logos/fogo.svg",
+  },
+  "viso.ventogroup.co": {
+    label: "VISO",
+    description: "Analitica y control operativo.",
+    icon: "/logos/viso.svg",
+  },
+  "pulso.ventogroup.co": {
+    label: "PULSO",
+    description: "Gestion y seguimiento operativo.",
+    icon: "/logos/pulso.svg",
+  },
+  "anima.ventogroup.co": {
+    label: "ANIMA",
+    description: "Gestion de personas y comunicacion.",
+    icon: "/logos/anima.svg",
+  },
+  "aura.ventogroup.co": {
+    label: "AURA",
+    description: "Experiencia y asistencia operativa.",
+    icon: "/logos/aura.svg",
+  },
+};
+
 function safeReturnTo(value?: string) {
   const v = (value ?? "").trim();
   if (!v) return "/";
   if (v.startsWith("http://") || v.startsWith("https://")) return v;
   if (!v.startsWith("/")) return "/";
   return v;
+}
+
+function appMetadataFromReturnTo(returnTo: string) {
+  try {
+    const url = new URL(returnTo);
+    return APP_METADATA_BY_HOST[url.hostname.toLowerCase()] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: Promise<SearchParams>;
+}): Promise<Metadata> {
+  const sp = (await searchParams) ?? {};
+  const appMetadata = appMetadataFromReturnTo(safeReturnTo(sp.returnTo));
+
+  if (!appMetadata) {
+    return {
+      title: "Vento OS - Hub",
+      description: "Centro de aplicaciones de Vento Group.",
+      icons: {
+        icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+        apple: "/icon.svg",
+      },
+    };
+  }
+
+  return {
+    title: `Vento OS - ${appMetadata.label}`,
+    description: appMetadata.description,
+    applicationName: `Vento ${appMetadata.label}`,
+    icons: {
+      icon: [{ url: appMetadata.icon, type: "image/svg+xml" }],
+      apple: appMetadata.icon,
+    },
+  };
 }
 
 export default async function LoginPage({

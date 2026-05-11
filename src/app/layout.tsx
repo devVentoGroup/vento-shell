@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   authors: [{ name: "Vento Group" }],
   metadataBase: new URL("https://hub.ventogroup.co"),
   icons: {
-    icon: [{ url: "/favicon.ico", sizes: "any" }, { url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     apple: "/icon.svg",
   },
 };
