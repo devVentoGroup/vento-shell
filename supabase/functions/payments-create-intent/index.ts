@@ -10,14 +10,35 @@ type CreateIntentPayload = {
   transaction_id?: string;
 };
 
-function buildCheckoutUrl(baseUrl: string | null, reference: string, amountMinor: number, publicKey: string | null) {
-  if (!baseUrl) return null;
+async function sha256Hex(value: string) {
+  const encoded = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+async function buildCheckoutUrl(
+  baseUrl: string | null,
+  reference: string,
+  amountMinor: number,
+  currency: string,
+  publicKey: string | null,
+  integritySecret: string | null,
+  redirectUrl: string | null,
+  customerEmail: string | null,
+) {
+  if (!baseUrl || !publicKey || !integritySecret) return null;
   try {
     const url = new URL(baseUrl);
+    const signature = await sha256Hex(`${reference}${amountMinor}${currency}${integritySecret}`);
+    url.searchParams.set("public-key", publicKey);
+    url.searchParams.set("currency", currency);
+    url.searchParams.set("amount-in-cents", String(amountMinor));
     url.searchParams.set("reference", reference);
-    url.searchParams.set("amount_in_cents", String(amountMinor));
-    url.searchParams.set("currency", "COP");
-    if (publicKey) url.searchParams.set("public_key", publicKey);
+    url.searchParams.set("signature:integrity", signature);
+    if (redirectUrl) url.searchParams.set("redirect-url", redirectUrl);
+    if (customerEmail) url.searchParams.set("customer-data:email", customerEmail);
     return url.toString();
   } catch {
     return null;
@@ -101,8 +122,26 @@ Deno.serve(async (req) => {
     }
 
     const wompiPublicKey = Deno.env.get("WOMPI_PUBLIC_KEY") ?? null;
-    const wompiCheckoutBaseUrl = Deno.env.get("WOMPI_CHECKOUT_BASE_URL") ?? null;
-    const checkoutUrl = buildCheckoutUrl(wompiCheckoutBaseUrl, tx.idempotency_key, Number(tx.amount_minor), wompiPublicKey);
+    const wompiIntegritySecret = Deno.env.get("WOMPI_INTEGRITY_SECRET") ?? null;
+    const wompiCheckoutBaseUrl = Deno.env.get("WOMPI_CHECKOUT_BASE_URL") ?? "https://checkout.wompi.co/p/";
+    const wompiRedirectUrl = Deno.env.get("WOMPI_REDIRECT_URL") ?? null;
+    const checkoutUrl = await buildCheckoutUrl(
+      wompiCheckoutBaseUrl,
+      tx.idempotency_key,
+      Number(tx.amount_minor),
+      tx.currency,
+      wompiPublicKey,
+      wompiIntegritySecret,
+      wompiRedirectUrl,
+      authData.user.email ?? null,
+    );
+
+    if (!checkoutUrl) {
+      return new Response(JSON.stringify({ error: "missing_or_invalid_wompi_checkout_config" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     await admin
       .schema("payments")
@@ -132,6 +171,7 @@ Deno.serve(async (req) => {
           reference: tx.idempotency_key,
           amount_in_cents: tx.amount_minor,
           currency: tx.currency,
+          redirect_url: wompiRedirectUrl,
         },
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },

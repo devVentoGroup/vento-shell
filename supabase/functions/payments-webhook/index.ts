@@ -3,7 +3,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-wompi-signature, x-signature",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-event-checksum, x-wompi-signature, x-signature",
 };
 
 type WebhookPayload = {
@@ -21,6 +21,11 @@ type WebhookPayload = {
       metadata?: Record<string, unknown>;
     };
   };
+  signature?: {
+    properties?: string[];
+    checksum?: string;
+  };
+  timestamp?: number | string;
 };
 
 function mapProviderStatus(rawStatus: string | null | undefined): string {
@@ -32,13 +37,42 @@ function mapProviderStatus(rawStatus: string | null | undefined): string {
   return "error";
 }
 
+async function sha256Hex(value: string) {
+  const encoded = new TextEncoder().encode(value);
+  const digest = await crypto.subtle.digest("SHA-256", encoded);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function readPath(input: unknown, path: string): unknown {
+  return path.split(".").reduce<unknown>((current, key) => {
+    if (current && typeof current === "object" && key in current) {
+      return (current as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, input);
+}
+
+async function verifyWompiChecksum(payload: WebhookPayload, eventSecret: string, headerChecksum: string | null) {
+  const properties = payload.signature?.properties;
+  const expectedChecksum = payload.signature?.checksum ?? headerChecksum;
+  if (!properties?.length || !expectedChecksum || payload.timestamp === undefined || payload.timestamp === null) return false;
+
+  const rawProperties = properties.map((property) => {
+    const value = readPath(payload.data ?? {}, property);
+    return value === null || value === undefined ? "" : String(value);
+  });
+  const generated = await sha256Hex(`${rawProperties.join("")}${String(payload.timestamp)}${eventSecret}`);
+  return generated.toLowerCase() === expectedChecksum.toLowerCase();
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const webhookSecret = Deno.env.get("WOMPI_WEBHOOK_SECRET");
-    const providedSignature = req.headers.get("x-wompi-signature") ?? req.headers.get("x-signature");
-    if (!webhookSecret || !providedSignature || providedSignature !== webhookSecret) {
+    const webhookSecret = Deno.env.get("WOMPI_EVENTS_SECRET") ?? Deno.env.get("WOMPI_WEBHOOK_SECRET");
+    if (!webhookSecret) {
       return new Response(JSON.stringify({ error: "unauthorized webhook" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -59,10 +93,20 @@ Deno.serve(async (req) => {
     });
 
     const payload: WebhookPayload = await req.json();
+    const checksumHeader = req.headers.get("x-event-checksum");
+    const signatureValid = await verifyWompiChecksum(payload, webhookSecret, checksumHeader);
+    if (!signatureValid) {
+      return new Response(JSON.stringify({ error: "invalid webhook checksum" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const eventId = payload?.id ?? payload?.data?.id ?? crypto.randomUUID();
     const txFromData = payload?.data?.transaction_id ?? payload?.data?.transaction?.metadata?.transaction_id;
-    const transactionId = typeof txFromData === "string" ? txFromData : null;
-    const providerReference = payload?.data?.transaction?.id ?? payload?.data?.transaction?.reference ?? payload?.data?.reference ?? null;
+    let transactionId = typeof txFromData === "string" ? txFromData : null;
+    const checkoutReference = payload?.data?.transaction?.reference ?? payload?.data?.reference ?? null;
+    const providerReference = payload?.data?.transaction?.id ?? checkoutReference;
     const providerStatus = mapProviderStatus(payload?.data?.transaction?.status ?? payload?.data?.status ?? null);
 
     const { data: existingEvent } = await admin
@@ -79,12 +123,23 @@ Deno.serve(async (req) => {
       });
     }
 
+    if (!transactionId && checkoutReference) {
+      const { data: txByReference } = await admin
+        .schema("payments")
+        .from("transactions")
+        .select("id")
+        .eq("provider", "wompi")
+        .eq("idempotency_key", checkoutReference)
+        .maybeSingle();
+      transactionId = txByReference?.id ?? null;
+    }
+
     if (!transactionId) {
       await admin.schema("payments").from("webhook_events").upsert(
         {
           provider: "wompi",
           provider_event_id: eventId,
-          signature_valid: true,
+          signature_valid: signatureValid,
           processed: false,
           payload,
         },
@@ -108,7 +163,7 @@ Deno.serve(async (req) => {
         provider: "wompi",
         provider_event_id: eventId,
         transaction_id: transactionId,
-        signature_valid: true,
+        signature_valid: signatureValid,
         processed: !markError,
         processed_at: markError ? null : new Date().toISOString(),
         payload,
