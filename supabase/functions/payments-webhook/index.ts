@@ -69,6 +69,11 @@ async function verifyWompiChecksum(payload: WebhookPayload, eventSecret: string,
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method === "GET") {
+    return new Response(JSON.stringify({ ok: true, service: "payments-webhook" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   try {
     const webhookSecret = Deno.env.get("WOMPI_EVENTS_SECRET") ?? Deno.env.get("WOMPI_WEBHOOK_SECRET");
