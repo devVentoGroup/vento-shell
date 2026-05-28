@@ -10,7 +10,20 @@ type AddressSearchPayload = {
   query?: string;
   place_id?: string;
   site_id?: string;
+  latitude?: number;
+  longitude?: number;
 };
+
+function validCoordinate(latitude: number, longitude: number) {
+  return (
+    Number.isFinite(latitude) &&
+    Number.isFinite(longitude) &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180
+  );
+}
 
 async function requireUser(req: Request) {
   const authHeader = req.headers.get("authorization") ?? "";
@@ -55,6 +68,8 @@ Deno.serve(async (req) => {
 
     const body: AddressSearchPayload = await req.json();
     const placeId = (body.place_id ?? "").trim();
+    const latitude = Number(body.latitude);
+    const longitude = Number(body.longitude);
 
     if (placeId) {
       const url = new URL("https://maps.googleapis.com/maps/api/place/details/json");
@@ -83,13 +98,17 @@ Deno.serve(async (req) => {
     }
 
     const query = (body.query ?? "").trim();
-    if (query.length < 3) return json({ ok: true, predictions: [] });
+    if (query.length < 1) return json({ ok: true, predictions: [] });
 
     const url = new URL("https://maps.googleapis.com/maps/api/place/autocomplete/json");
     url.searchParams.set("input", query);
     url.searchParams.set("components", "country:co");
     url.searchParams.set("language", "es");
-    url.searchParams.set("types", "address");
+    if (validCoordinate(latitude, longitude)) {
+      url.searchParams.set("location", `${latitude},${longitude}`);
+      url.searchParams.set("origin", `${latitude},${longitude}`);
+      url.searchParams.set("radius", "25000");
+    }
     url.searchParams.set("key", apiKey);
 
     const response = await fetch(url);
@@ -98,14 +117,30 @@ Deno.serve(async (req) => {
       return json({ error: "address_search_failed", status: payload.status, message: payload.error_message }, 502);
     }
 
-    return json({
-      ok: true,
-      predictions: (payload.predictions ?? []).slice(0, 6).map((item: Record<string, unknown>) => ({
+    const predictions = (payload.predictions ?? [])
+      .slice(0, 10)
+      .sort((a: Record<string, unknown>, b: Record<string, unknown>) => {
+        const distanceA = Number(a.distance_meters);
+        const distanceB = Number(b.distance_meters);
+        const hasDistanceA = Number.isFinite(distanceA);
+        const hasDistanceB = Number.isFinite(distanceB);
+        if (hasDistanceA && hasDistanceB) return distanceA - distanceB;
+        if (hasDistanceA) return -1;
+        if (hasDistanceB) return 1;
+        return 0;
+      })
+      .slice(0, 6)
+      .map((item: Record<string, unknown>) => ({
         place_id: item.place_id,
         description: item.description,
         main_text: (item.structured_formatting as Record<string, unknown> | undefined)?.main_text,
         secondary_text: (item.structured_formatting as Record<string, unknown> | undefined)?.secondary_text,
-      })),
+        distance_meters: item.distance_meters,
+      }));
+
+    return json({
+      ok: true,
+      predictions,
     });
   } catch (error) {
     return json({ error: error instanceof Error ? error.message : "unknown error" }, 500);

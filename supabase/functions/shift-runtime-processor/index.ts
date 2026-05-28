@@ -247,25 +247,42 @@ async function sendPush(messages: { to: string; title: string; body: string; dat
   const invalidTokens = new Set<string>()
   for (let i = 0; i < messages.length; i += 100) {
     const chunk = messages.slice(i, i + 100)
-    const response = await fetch(EXPO_PUSH_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(chunk),
-    })
-    const payload = await response.json()
-    const data = Array.isArray(payload?.data) ? payload.data : []
-    data.forEach((item: any, index: number) => {
-      if (item?.status === "error" && item?.details?.error === "DeviceNotRegistered") {
-        const token = chunk[index]?.to
-        if (token) invalidTokens.add(token)
+    try {
+      const response = await fetch(EXPO_PUSH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(chunk),
+      })
+      const payload = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        console.error("[shift-runtime-processor] expo_push_failed", {
+          status: response.status,
+          messages: chunk.length,
+          payload,
+        })
+        continue
       }
-    })
+
+      const data = Array.isArray(payload?.data) ? payload.data : []
+      data.forEach((item: any, index: number) => {
+        if (item?.status === "error" && item?.details?.error === "DeviceNotRegistered") {
+          const token = chunk[index]?.to
+          if (token) invalidTokens.add(token)
+        }
+      })
+    } catch (error) {
+      console.error("[shift-runtime-processor] expo_push_exception", {
+        messages: chunk.length,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
   }
 
   return Array.from(invalidTokens)
 }
 
-serve(async (req) => {
+async function handleRequest(req: Request) {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders })
   }
@@ -604,4 +621,20 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     },
   )
+}
+
+serve(async (req) => {
+  try {
+    return await handleRequest(req)
+  } catch (error) {
+    console.error("[shift-runtime-processor] unhandled_error", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : null,
+    })
+
+    return new Response(JSON.stringify({ error: "shift_runtime_processor_failed" }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    })
+  }
 })

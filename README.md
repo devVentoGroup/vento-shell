@@ -1,51 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Vento Shell
 
-## Getting Started
+Vento Shell es la plataforma central del ecosistema Vento OS.
 
-### Favicon (icono de la pestaña)
+## Responsabilidad
 
-**Solo el shell** usa el logo **Vento Group** como favicon. Las demás aplicaciones (Origo, Nexo, etc.) deben usar el logo de su entidad (ver estándares).
+- Supabase como fuente canonica de migraciones, RLS, RPCs, Edge Functions, storage y permisos.
+- Auth/SSO, app access, guards y contratos compartidos.
+- Estándares de AppShell/UI comunes para las apps.
+- Documentación maestra del estado del ecosistema.
 
-Para generar el `favicon.ico` del shell desde `public/vento-group.png`:
+Las apps de negocio no deben crear migraciones paralelas para tablas compartidas. Cualquier cambio de base de datos del ecosistema se crea y corre desde este repo.
+
+## Documentación vigente
+
+- `docs/ESTADO-ACTUAL-ECOSISTEMA-2026-05-28.md`
+- `docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md`
+- `docs/APP-SHELL-ESTANDARES.md`
+- `supabase/MIGRATION_MANIFEST.md`
+
+Los planes antiguos en `docs/` quedan como contexto histórico si contradicen el estado actual.
+
+## Desarrollo
 
 ```bash
 npm install
-npm run generate-favicon
+npm run dev
 ```
 
-Se crea `src/app/favicon.ico`. Haz commit de ese archivo para que en producción se use el icono de Vento Group.
+## Supabase
 
-## Getting Started
-
-First, run the development server:
+Migraciones:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx supabase db push
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Edge Functions y secrets también se gestionan desde este repo.
