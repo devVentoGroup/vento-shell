@@ -4,17 +4,21 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
-type AppAvailability = "web" | "mobile" | "soon";
-type AppAccess = "enabled" | "disabled" | "soon" | "mobile";
+type AppAccess = "enabled" | "disabled";
 
 type AppLink = {
   id: string;
   name: string;
+  shortName: string;
   description: string;
-  href?: string;
-  availability: AppAvailability;
-  permissionCode?: string;
-  logo?: string;
+  operationalFocus: string;
+  href: string;
+  permissionCode: string;
+  logo: string;
+  accent: string;
+  accentSoft: string;
+  glow: string;
+  gradient: string;
 };
 
 type ResolvedAppLink = AppLink & {
@@ -25,112 +29,74 @@ const INTERNAL_APPS: AppLink[] = [
   {
     id: "viso",
     name: "VISO",
-    description: "Gerencia, auditoria y configuracion.",
+    shortName: "Gerencia",
+    description: "Dirección, auditoría, equipo, roles y visión ejecutiva del ecosistema.",
+    operationalFocus: "Control gerencial",
     href: "https://viso.ventogroup.co",
-    availability: "web",
     permissionCode: "viso.access",
     logo: "/logos/viso.svg",
+    accent: "text-violet-700",
+    accentSoft: "bg-violet-50 border-violet-100",
+    glow: "shadow-violet-500/20",
+    gradient: "from-violet-500 to-fuchsia-500",
   },
   {
     id: "nexo",
     name: "NEXO",
-    description: "Inventario, logistica y abastecimiento interno.",
+    shortName: "Inventario",
+    description: "Inventario, stock, remisiones, ubicaciones y abastecimiento interno.",
+    operationalFocus: "Logística operativa",
     href: "https://nexo.ventogroup.co",
-    availability: "web",
     permissionCode: "nexo.access",
     logo: "/logos/nexo.svg",
+    accent: "text-amber-700",
+    accentSoft: "bg-amber-50 border-amber-100",
+    glow: "shadow-amber-500/20",
+    gradient: "from-amber-500 to-orange-500",
   },
   {
     id: "fogo",
     name: "FOGO",
-    description: "Recetario, produccion y lotes.",
+    shortName: "Producción",
+    description: "Recetario, preparaciones, lotes de producción y trazabilidad FIFO.",
+    operationalFocus: "Cocina y producción",
     href: "https://fogo.ventogroup.co",
-    availability: "web",
     permissionCode: "fogo.access",
     logo: "/logos/fogo.svg",
+    accent: "text-orange-700",
+    accentSoft: "bg-orange-50 border-orange-100",
+    glow: "shadow-orange-500/20",
+    gradient: "from-orange-500 to-red-500",
   },
   {
     id: "origo",
     name: "ORIGO",
-    description: "Compras, proveedores y recepcion.",
+    shortName: "Compras",
+    description: "Órdenes de compra, proveedores, recepción y abastecimiento externo.",
+    operationalFocus: "Compras y proveedores",
     href: "https://origo.ventogroup.co",
-    availability: "web",
     permissionCode: "origo.access",
     logo: "/logos/origo.svg",
+    accent: "text-emerald-700",
+    accentSoft: "bg-emerald-50 border-emerald-100",
+    glow: "shadow-emerald-500/20",
+    gradient: "from-emerald-500 to-teal-500",
   },
   {
     id: "pulso",
     name: "PULSO",
-    description: "Clientes, redenciones y operacion POS.",
+    shortName: "POS",
+    description: "Clientes, redenciones, salón, pedidos y operación comercial en punto de venta.",
+    operationalFocus: "Ventas y experiencia",
     href: "https://pulso.ventogroup.co",
-    availability: "web",
     permissionCode: "pulso.access",
     logo: "/logos/pulso.svg",
-  },
-  {
-    id: "anima",
-    name: "ANIMA",
-    description: "Experiencia movil. No tiene modulo web en este hub.",
-    availability: "mobile",
-    logo: "/logos/anima.svg",
-  },
-  {
-    id: "aura",
-    name: "AURA",
-    description: "Marketing, contenidos y aprobaciones.",
-    href: "https://aura.ventogroup.co",
-    availability: "soon",
-    logo: "/logos/aura.svg",
+    accent: "text-cyan-700",
+    accentSoft: "bg-cyan-50 border-cyan-100",
+    glow: "shadow-cyan-500/20",
+    gradient: "from-cyan-500 to-sky-500",
   },
 ];
-
-const APP_STYLES: Record<
-  string,
-  { accent: string; soft: string; text: string; ring: string }
-> = {
-  viso: {
-    accent: "bg-violet-500",
-    soft: "bg-violet-50",
-    text: "text-violet-700",
-    ring: "group-hover:ring-violet-300/80",
-  },
-  nexo: {
-    accent: "bg-amber-500",
-    soft: "bg-amber-50",
-    text: "text-amber-700",
-    ring: "group-hover:ring-amber-300/80",
-  },
-  fogo: {
-    accent: "bg-orange-500",
-    soft: "bg-orange-50",
-    text: "text-orange-700",
-    ring: "group-hover:ring-orange-300/80",
-  },
-  origo: {
-    accent: "bg-emerald-500",
-    soft: "bg-emerald-50",
-    text: "text-emerald-700",
-    ring: "group-hover:ring-emerald-300/80",
-  },
-  pulso: {
-    accent: "bg-cyan-500",
-    soft: "bg-cyan-50",
-    text: "text-cyan-700",
-    ring: "group-hover:ring-cyan-300/80",
-  },
-  anima: {
-    accent: "bg-pink-500",
-    soft: "bg-pink-50",
-    text: "text-pink-700",
-    ring: "group-hover:ring-pink-300/80",
-  },
-  aura: {
-    accent: "bg-rose-500",
-    soft: "bg-rose-50",
-    text: "text-rose-700",
-    ring: "group-hover:ring-rose-300/80",
-  },
-};
 
 function splitPermissionCode(permissionCode: string) {
   const normalized = permissionCode.trim();
@@ -150,21 +116,36 @@ function splitPermissionCode(permissionCode: string) {
 }
 
 async function resolveAccess(app: AppLink): Promise<AppAccess> {
-  if (app.availability === "soon") return "soon";
-  if (app.availability === "mobile") return "mobile";
-  if (!app.permissionCode) return "enabled";
-
   const supabase = await createClient();
 
-  const { data, error } = await supabase.rpc("has_permission", {
-    p_permission_code: app.permissionCode,
-    p_site_id: null,
-    p_area_id: null,
-  });
+  const { data: fullCodeResult, error: fullCodeError } = await supabase.rpc(
+    "has_permission",
+    {
+      p_permission_code: app.permissionCode,
+      p_site_id: null,
+      p_area_id: null,
+    }
+  );
 
-  if (error) return "disabled";
+  if (!fullCodeError) {
+    return fullCodeResult ? "enabled" : "disabled";
+  }
 
-  return data ? "enabled" : "disabled";
+  const { appId, code } = splitPermissionCode(app.permissionCode);
+
+  const { data: splitCodeResult, error: splitCodeError } = await supabase.rpc(
+    "has_permission",
+    {
+      p_app_id: appId,
+      p_code: code,
+      p_site_id: null,
+      p_area_id: null,
+    }
+  );
+
+  if (splitCodeError) return "disabled";
+
+  return splitCodeResult ? "enabled" : "disabled";
 }
 
 async function resolveApps(): Promise<ResolvedAppLink[]> {
@@ -176,130 +157,128 @@ async function resolveApps(): Promise<ResolvedAppLink[]> {
   }));
 }
 
-function getAccessLabel(app: ResolvedAppLink) {
-  if (app.access === "enabled") return "Activo";
-  if (app.access === "disabled") return "Sin acceso";
-  if (app.access === "mobile") return "App movil";
-  return "Proximamente";
+function initialsFromEmail(email: string) {
+  if (!email) return "US";
+
+  return (
+    email
+      .split("@")[0]
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("") || "US"
+  );
 }
 
-function StatusPill({ app }: { app: ResolvedAppLink }) {
-  if (app.access === "enabled") {
-    const style = APP_STYLES[app.id] ?? APP_STYLES.viso;
-
+function AccessPill({ access }: { access: AppAccess }) {
+  if (access === "enabled") {
     return (
-      <span
-        className={`inline-flex items-center rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold ${style.text}`}
-      >
-        Activo
-      </span>
-    );
-  }
-
-  if (app.access === "disabled") {
-    return (
-      <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-500">
-        Sin acceso
-      </span>
-    );
-  }
-
-  if (app.access === "mobile") {
-    return (
-      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700">
-        App movil
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        Disponible
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-600">
-      Proximamente
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-500">
+      <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+      Sin acceso
     </span>
   );
 }
 
-function AppCard({ app }: { app: ResolvedAppLink }) {
-  const isEnabled = app.access === "enabled" && app.availability === "web" && Boolean(app.href);
-  const style = APP_STYLES[app.id] ?? {
-    accent: "bg-zinc-300",
-    soft: "bg-zinc-50",
-    text: "text-zinc-700",
-    ring: "group-hover:ring-zinc-200",
-  };
-
-  const actionLabel =
-    app.access === "enabled"
-      ? "Abrir"
-      : app.access === "disabled"
-        ? "Sin acceso"
-        : app.access === "mobile"
-          ? "Solo movil"
-          : "Proximamente";
+function AppCard({ app, index }: { app: ResolvedAppLink; index: number }) {
+  const isEnabled = app.access === "enabled";
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm ring-1 ring-transparent transition duration-150 hover:-translate-y-0.5 hover:shadow-lg ${style.ring}`}
+      className={`group relative overflow-hidden rounded-[28px] border border-white/80 bg-white/82 p-5 shadow-xl shadow-zinc-900/5 ring-1 ring-zinc-900/5 backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:shadow-2xl ${app.glow}`}
     >
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white via-white to-zinc-50 opacity-0 transition duration-150 group-hover:opacity-100" />
+      <div
+        className={`pointer-events-none absolute -right-16 -top-20 h-44 w-44 rounded-full bg-gradient-to-br ${app.gradient} opacity-10 blur-2xl transition duration-200 group-hover:opacity-20`}
+      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 
-      <div className="relative flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-base font-semibold tracking-tight text-zinc-900">
-            {app.name}
-          </h3>
-          <p className="mt-1 text-sm leading-6 text-zinc-600">
-            {app.description}
-          </p>
+      <div className="relative flex items-start justify-between gap-4">
+        <div className={`flex h-14 w-14 items-center justify-center rounded-2xl border ${app.accentSoft} shadow-sm`}>
+          <Image src={app.logo} alt={`${app.name} logo`} width={34} height={34} />
         </div>
 
-        <div className="flex items-center gap-2">
-          {app.logo ? (
-            <span
-              className={`flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 ${style.soft}`}
-            >
-              <Image
-                src={app.logo}
-                alt={`${app.name} logo`}
-                width={22}
-                height={22}
-              />
-            </span>
-          ) : null}
-
-          <StatusPill app={app} />
+        <div className="flex flex-col items-end gap-2">
+          <AccessPill access={app.access} />
+          <span className="text-xs font-semibold text-zinc-400">
+            0{index + 1}
+          </span>
         </div>
       </div>
 
-      <div className="relative mt-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span
-            className={`h-1.5 w-14 rounded-full ${style.accent} transition-all duration-150 group-hover:w-20 ${
-              isEnabled ? "" : "opacity-40"
-            }`}
-          />
-          <span className="text-xs text-zinc-500">{getAccessLabel(app)}</span>
+      <div className="relative mt-6">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <h3 className="text-2xl font-semibold tracking-tight text-zinc-950">
+              {app.name}
+            </h3>
+            <p className={`mt-1 text-sm font-semibold ${app.accent}`}>
+              {app.shortName}
+            </p>
+          </div>
         </div>
+
+        <p className="mt-4 min-h-[72px] text-sm leading-6 text-zinc-600">
+          {app.description}
+        </p>
+
+        <div className="mt-5 rounded-2xl border border-zinc-200/80 bg-zinc-50/70 px-4 py-3">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+            Enfoque operativo
+          </div>
+          <div className="mt-1 text-sm font-semibold text-zinc-800">
+            {app.operationalFocus}
+          </div>
+        </div>
+      </div>
+
+      <div className="relative mt-6 flex items-center justify-between gap-3">
+        <span
+          className={`h-1.5 flex-1 rounded-full bg-gradient-to-r ${app.gradient} ${
+            isEnabled ? "" : "opacity-25 grayscale"
+          }`}
+        />
 
         {isEnabled ? (
           <a
             href={app.href}
-            className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
+            className="inline-flex h-11 items-center justify-center rounded-2xl bg-zinc-950 px-5 text-sm font-semibold text-white shadow-lg shadow-zinc-900/15 transition hover:-translate-y-0.5 hover:bg-zinc-800"
           >
-            {actionLabel}
+            Abrir app
           </a>
         ) : (
           <button
             type="button"
             disabled
-            className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-500"
+            className="inline-flex h-11 cursor-not-allowed items-center justify-center rounded-2xl bg-zinc-100 px-5 text-sm font-semibold text-zinc-400"
             aria-disabled="true"
           >
-            {actionLabel}
+            Bloqueada
           </button>
         )}
       </div>
     </article>
+  );
+}
+
+function MiniAppLogo({ app }: { app: ResolvedAppLink }) {
+  return (
+    <div
+      className={`flex h-11 w-11 items-center justify-center rounded-2xl border bg-white/80 shadow-sm ${
+        app.access === "enabled" ? "border-white" : "border-zinc-200 opacity-45 grayscale"
+      }`}
+      title={`${app.name} · ${app.access === "enabled" ? "Disponible" : "Sin acceso"}`}
+    >
+      <Image src={app.logo} alt={`${app.name} logo`} width={26} height={26} />
+    </div>
   );
 }
 
@@ -321,82 +300,83 @@ export default async function Home() {
   }
 
   const apps = await resolveApps();
+  const accessibleApps = apps.filter((app) => app.access === "enabled");
+  const blockedApps = apps.filter((app) => app.access === "disabled");
 
   const userEmail = user.email ?? "";
-  const userInitials = userEmail
-    ? userEmail
-        .split("@")[0]
-        .split(/[._-]+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase() ?? "")
-        .join("")
-    : "US";
-
-  const activeCount = apps.filter((app) => app.access === "enabled").length;
-  const unavailableCount = apps.filter((app) => app.access !== "enabled").length;
-  const mobileCount = apps.filter((app) => app.access === "mobile").length;
+  const userInitials = initialsFromEmail(userEmail);
 
   return (
-    <div className="relative min-h-screen bg-zinc-50 text-zinc-900">
+    <div className="relative min-h-screen overflow-hidden bg-[#F5F3EE] text-zinc-950">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-120px] top-[-100px] h-[360px] w-[360px] rounded-full bg-amber-200/40 blur-3xl" />
-        <div className="absolute right-[-80px] top-[80px] h-[320px] w-[320px] rounded-full bg-cyan-200/35 blur-3xl" />
-        <div className="absolute bottom-[-120px] left-1/3 h-[320px] w-[320px] rounded-full bg-violet-200/30 blur-3xl" />
+        <div className="absolute left-[-18rem] top-[-18rem] h-[44rem] w-[44rem] rounded-full bg-amber-200/45 blur-3xl" />
+        <div className="absolute right-[-16rem] top-[-12rem] h-[42rem] w-[42rem] rounded-full bg-cyan-200/40 blur-3xl" />
+        <div className="absolute bottom-[-18rem] left-[28%] h-[38rem] w-[38rem] rounded-full bg-violet-200/30 blur-3xl" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.9),transparent_42%)]" />
       </div>
 
-      <header className="relative border-b border-zinc-200/80 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
-          <div className="flex items-baseline gap-3">
-            <div className="text-lg font-semibold tracking-tight">Vento OS</div>
-            <div className="text-sm text-zinc-500">Workspace</div>
+      <header className="relative z-10 border-b border-white/70 bg-white/65 backdrop-blur-2xl">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-zinc-950 text-sm font-black text-white shadow-xl shadow-zinc-900/20">
+              V
+            </div>
+
+            <div>
+              <div className="text-base font-semibold tracking-tight text-zinc-950">
+                Vento OS
+              </div>
+              <div className="text-xs font-medium text-zinc-500">
+                Workspace operativo
+              </div>
+            </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden text-sm text-zinc-500 sm:block">
+            <div className="hidden text-sm font-medium text-zinc-500 md:block">
               ventogroup.co
             </div>
 
             <details className="group relative">
               <summary className="list-none">
-                <span className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-semibold text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-50">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-zinc-900 text-xs font-bold text-white">
+                <span className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/80 bg-white/80 px-3 py-2 text-sm font-semibold text-zinc-800 shadow-sm ring-1 ring-zinc-900/5 transition hover:bg-white">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-zinc-950 text-xs font-bold text-white">
                     {userInitials}
                   </span>
                   <span className="hidden sm:inline">Usuario</span>
                 </span>
               </summary>
 
-              <div className="absolute right-0 z-20 mt-2 w-64 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
-                <div className="rounded-xl px-3 py-2">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">
-                    Sesion activa
+              <div className="absolute right-0 z-30 mt-2 w-72 overflow-hidden rounded-3xl border border-white/80 bg-white/95 p-2 shadow-2xl shadow-zinc-900/15 ring-1 ring-zinc-900/5 backdrop-blur-xl">
+                <div className="rounded-2xl px-3 py-3">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                    Sesión activa
                   </div>
-                  <div className="truncate text-sm font-medium text-zinc-800">
+                  <div className="mt-1 truncate text-sm font-semibold text-zinc-800">
                     {userEmail || "-"}
                   </div>
                 </div>
 
                 <Link
                   href="/"
-                  className="mt-1 block rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100"
+                  className="mt-1 block rounded-2xl px-3 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
                 >
                   Mi perfil
                 </Link>
 
                 <Link
                   href="/"
-                  className="mt-1 block rounded-xl px-3 py-2 text-sm text-zinc-700 transition hover:bg-zinc-100"
+                  className="mt-1 block rounded-2xl px-3 py-2.5 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100"
                 >
-                  Configuracion de usuario
+                  Configuración de usuario
                 </Link>
 
                 <form action={signOutAction} className="mt-1">
                   <button
                     type="submit"
-                    className="block w-full rounded-xl px-3 py-2 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50"
+                    className="block w-full rounded-2xl px-3 py-2.5 text-left text-sm font-semibold text-red-700 transition hover:bg-red-50"
                   >
-                    Cerrar sesion
+                    Cerrar sesión
                   </button>
                 </form>
               </div>
@@ -405,77 +385,125 @@ export default async function Home() {
         </div>
       </header>
 
-      <main className="relative mx-auto w-full max-w-6xl px-6 py-10">
-        <section className="mb-8 rounded-3xl border border-zinc-200 bg-white/85 p-6 shadow-sm backdrop-blur">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <main className="relative z-10 mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 sm:py-10">
+        <section className="relative overflow-hidden rounded-[36px] border border-white/80 bg-white/72 p-6 shadow-2xl shadow-zinc-900/8 ring-1 ring-zinc-900/5 backdrop-blur-2xl sm:p-8 lg:p-10">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.42)_42%,rgba(255,255,255,0.18)_100%)]" />
+          <div className="pointer-events-none absolute -right-28 -top-28 h-72 w-72 rounded-full bg-zinc-950/5 blur-3xl" />
+
+          <div className="relative grid gap-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-600">
-                Hub operativo
+              <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200/80 bg-white/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-600 shadow-sm">
+                Vento Group · Command Center
               </div>
 
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight">
-                Centro de aplicaciones
+              <h1 className="mt-6 max-w-3xl text-5xl font-semibold tracking-[-0.055em] text-zinc-950 sm:text-6xl lg:text-7xl">
+                Vento OS
               </h1>
 
-              <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
-                Accede a los modulos de Vento Group segun tus permisos reales.
-                Las apps sin acceso aparecen bloqueadas para mantener control
-                operativo.
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-zinc-600">
+                Centro premium de acceso a las aplicaciones internas de Vento Group.
+                Cada módulo se habilita según permisos reales y flujo operativo.
               </p>
+
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <div className="flex -space-x-2">
+                  {apps.map((app) => (
+                    <MiniAppLogo key={app.id} app={app} />
+                  ))}
+                </div>
+
+                <div className="text-sm text-zinc-500">
+                  {accessibleApps.length} apps disponibles · {blockedApps.length} bloqueadas por permiso
+                </div>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  Accesibles
+            <div className="grid grid-cols-3 gap-3 lg:grid-cols-1">
+              <div className="rounded-3xl border border-white/80 bg-white/75 p-4 shadow-lg shadow-zinc-900/5 ring-1 ring-zinc-900/5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                  Disponibles
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">
-                  {activeCount}
+                <div className="mt-2 text-3xl font-semibold tracking-tight text-zinc-950">
+                  {accessibleApps.length}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              <div className="rounded-3xl border border-white/80 bg-white/75 p-4 shadow-lg shadow-zinc-900/5 ring-1 ring-zinc-900/5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
                   Bloqueadas
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">
-                  {unavailableCount}
+                <div className="mt-2 text-3xl font-semibold tracking-tight text-zinc-950">
+                  {blockedApps.length}
                 </div>
               </div>
 
-              <div className="col-span-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 sm:col-span-1">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                  Movil
+              <div className="rounded-3xl border border-white/80 bg-white/75 p-4 shadow-lg shadow-zinc-900/5 ring-1 ring-zinc-900/5">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                  Total web
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">
-                  {mobileCount}
+                <div className="mt-2 text-3xl font-semibold tracking-tight text-zinc-950">
+                  {apps.length}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="mb-12">
-          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">
-              Operacion interna
-            </h2>
-            <div className="text-sm text-zinc-500">
-              VISO · NEXO · FOGO · ORIGO · PULSO · ANIMA · AURA
+        <section className="mt-8">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight text-zinc-950">
+                Aplicaciones operativas
+              </h2>
+              <p className="mt-1 text-sm text-zinc-500">
+                Acceso directo al ecosistema web interno.
+              </p>
+            </div>
+
+            <div className="text-sm font-medium text-zinc-500">
+              VISO · NEXO · FOGO · ORIGO · PULSO
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {apps.map((app) => (
-              <AppCard key={app.id} app={app} />
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
+            {apps.map((app, index) => (
+              <AppCard key={app.id} app={app} index={index} />
             ))}
           </div>
         </section>
 
-        <footer className="mt-12 border-t border-zinc-200 pt-6 text-sm text-zinc-500">
+        <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_1fr]">
+          <div className="rounded-[28px] border border-white/80 bg-white/68 p-6 shadow-xl shadow-zinc-900/5 ring-1 ring-zinc-900/5 backdrop-blur-xl">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+              Estandarización
+            </div>
+            <h3 className="mt-3 text-lg font-semibold text-zinc-950">
+              Un solo ecosistema, cinco módulos web.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">
+              El Hub mantiene la entrada común del sistema, mientras cada app conserva
+              su identidad visual, su flujo propio y sus permisos.
+            </p>
+          </div>
+
+          <div className="rounded-[28px] border border-white/80 bg-zinc-950 p-6 text-white shadow-2xl shadow-zinc-900/18">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">
+              Seguridad
+            </div>
+            <h3 className="mt-3 text-lg font-semibold">
+              Acceso controlado por permisos.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-white/65">
+              Las tarjetas reflejan el acceso real del usuario. Si una app no está permitida,
+              queda visible como parte del ecosistema, pero bloqueada para navegación.
+            </p>
+          </div>
+        </section>
+
+        <footer className="mt-10 border-t border-zinc-200/70 py-6 text-sm text-zinc-500">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div>Vento OS · Hub</div>
-            <div>Launcher operativo</div>
+            <div>Launcher premium operativo</div>
           </div>
         </footer>
       </main>
