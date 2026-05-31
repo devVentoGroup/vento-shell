@@ -4,15 +4,21 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
-type AppStatus = "active" | "soon";
+type AppAvailability = "web" | "mobile" | "soon";
+type AppAccess = "enabled" | "disabled" | "soon" | "mobile";
 
 type AppLink = {
   id: string;
   name: string;
   description: string;
-  href: string;
-  status: AppStatus;
+  href?: string;
+  availability: AppAvailability;
+  permissionCode?: string;
   logo?: string;
+};
+
+type ResolvedAppLink = AppLink & {
+  access: AppAccess;
 };
 
 const INTERNAL_APPS: AppLink[] = [
@@ -21,23 +27,26 @@ const INTERNAL_APPS: AppLink[] = [
     name: "VISO",
     description: "Gerencia, auditoria y configuracion.",
     href: "https://viso.ventogroup.co",
-    status: "active",
+    availability: "web",
+    permissionCode: "viso.access",
     logo: "/logos/viso.svg",
   },
   {
     id: "nexo",
     name: "NEXO",
-    description: "Inventario (LOC/LPN) y logistica operativa.",
+    description: "Inventario, logistica y abastecimiento interno.",
     href: "https://nexo.ventogroup.co",
-    status: "active",
+    availability: "web",
+    permissionCode: "nexo.access",
     logo: "/logos/nexo.svg",
   },
   {
     id: "fogo",
     name: "FOGO",
-    description: "Recetario, produccion y lotes (FIFO).",
+    description: "Recetario, produccion y lotes.",
     href: "https://fogo.ventogroup.co",
-    status: "active",
+    availability: "web",
+    permissionCode: "fogo.access",
     logo: "/logos/fogo.svg",
   },
   {
@@ -45,28 +54,40 @@ const INTERNAL_APPS: AppLink[] = [
     name: "ORIGO",
     description: "Compras, proveedores y recepcion.",
     href: "https://origo.ventogroup.co",
-    status: "active",
+    availability: "web",
+    permissionCode: "origo.access",
     logo: "/logos/origo.svg",
   },
   {
     id: "pulso",
     name: "PULSO",
-    description: "Scanner de clientes y redenciones.",
-    href: "https://pulso.ventogroup.co/",
-    status: "active",
+    description: "Clientes, redenciones y operacion POS.",
+    href: "https://pulso.ventogroup.co",
+    availability: "web",
+    permissionCode: "pulso.access",
     logo: "/logos/pulso.svg",
+  },
+  {
+    id: "anima",
+    name: "ANIMA",
+    description: "Experiencia movil. No tiene modulo web en este hub.",
+    availability: "mobile",
+    logo: "/logos/anima.svg",
   },
   {
     id: "aura",
     name: "AURA",
     description: "Marketing, contenidos y aprobaciones.",
     href: "https://aura.ventogroup.co",
-    status: "soon",
+    availability: "soon",
     logo: "/logos/aura.svg",
   },
 ];
 
-const APP_STYLES: Record<string, { accent: string; soft: string; text: string; ring: string }> = {
+const APP_STYLES: Record<
+  string,
+  { accent: string; soft: string; text: string; ring: string }
+> = {
   viso: {
     accent: "bg-violet-500",
     soft: "bg-violet-50",
@@ -97,6 +118,12 @@ const APP_STYLES: Record<string, { accent: string; soft: string; text: string; r
     text: "text-cyan-700",
     ring: "group-hover:ring-cyan-300/80",
   },
+  anima: {
+    accent: "bg-pink-500",
+    soft: "bg-pink-50",
+    text: "text-pink-700",
+    ring: "group-hover:ring-pink-300/80",
+  },
   aura: {
     accent: "bg-rose-500",
     soft: "bg-rose-50",
@@ -105,13 +132,82 @@ const APP_STYLES: Record<string, { accent: string; soft: string; text: string; r
   },
 };
 
-function StatusPill({ status, accentClass }: { status: AppStatus; accentClass: string }) {
-  if (status === "active") {
+function splitPermissionCode(permissionCode: string) {
+  const normalized = permissionCode.trim();
+  const dotIndex = normalized.indexOf(".");
+
+  if (dotIndex === -1) {
+    return {
+      appId: normalized,
+      code: "access",
+    };
+  }
+
+  return {
+    appId: normalized.slice(0, dotIndex),
+    code: normalized.slice(dotIndex + 1),
+  };
+}
+
+async function resolveAccess(app: AppLink): Promise<AppAccess> {
+  if (app.availability === "soon") return "soon";
+  if (app.availability === "mobile") return "mobile";
+  if (!app.permissionCode) return "enabled";
+
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("has_permission", {
+    p_permission_code: app.permissionCode,
+    p_site_id: null,
+    p_area_id: null,
+  });
+
+  if (error) return "disabled";
+
+  return data ? "enabled" : "disabled";
+}
+
+async function resolveApps(): Promise<ResolvedAppLink[]> {
+  const accessResults = await Promise.all(INTERNAL_APPS.map(resolveAccess));
+
+  return INTERNAL_APPS.map((app, index) => ({
+    ...app,
+    access: accessResults[index],
+  }));
+}
+
+function getAccessLabel(app: ResolvedAppLink) {
+  if (app.access === "enabled") return "Activo";
+  if (app.access === "disabled") return "Sin acceso";
+  if (app.access === "mobile") return "App movil";
+  return "Proximamente";
+}
+
+function StatusPill({ app }: { app: ResolvedAppLink }) {
+  if (app.access === "enabled") {
+    const style = APP_STYLES[app.id] ?? APP_STYLES.viso;
+
     return (
       <span
-        className={`inline-flex items-center rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold ${accentClass}`}
+        className={`inline-flex items-center rounded-full border border-zinc-200 bg-white px-2.5 py-1 text-xs font-semibold ${style.text}`}
       >
         Activo
+      </span>
+    );
+  }
+
+  if (app.access === "disabled") {
+    return (
+      <span className="inline-flex items-center rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-1 text-xs font-semibold text-zinc-500">
+        Sin acceso
+      </span>
+    );
+  }
+
+  if (app.access === "mobile") {
+    return (
+      <span className="inline-flex items-center rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700">
+        App movil
       </span>
     );
   }
@@ -123,8 +219,8 @@ function StatusPill({ status, accentClass }: { status: AppStatus; accentClass: s
   );
 }
 
-function AppCard({ app }: { app: AppLink }) {
-  const isActive = app.status === "active";
+function AppCard({ app }: { app: ResolvedAppLink }) {
+  const isEnabled = app.access === "enabled" && app.availability === "web" && Boolean(app.href);
   const style = APP_STYLES[app.id] ?? {
     accent: "bg-zinc-300",
     soft: "bg-zinc-50",
@@ -132,39 +228,65 @@ function AppCard({ app }: { app: AppLink }) {
     ring: "group-hover:ring-zinc-200",
   };
 
+  const actionLabel =
+    app.access === "enabled"
+      ? "Abrir"
+      : app.access === "disabled"
+        ? "Sin acceso"
+        : app.access === "mobile"
+          ? "Solo movil"
+          : "Proximamente";
+
   return (
     <article
-      className={`group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition duration-150 hover:-translate-y-0.5 hover:shadow-lg ${style.ring} ring-1 ring-transparent`}
+      className={`group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm ring-1 ring-transparent transition duration-150 hover:-translate-y-0.5 hover:shadow-lg ${style.ring}`}
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white via-white to-zinc-50 opacity-0 transition duration-150 group-hover:opacity-100" />
 
       <div className="relative flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold tracking-tight text-zinc-900">{app.name}</h3>
-          <p className="mt-1 text-sm leading-6 text-zinc-600">{app.description}</p>
+          <h3 className="text-base font-semibold tracking-tight text-zinc-900">
+            {app.name}
+          </h3>
+          <p className="mt-1 text-sm leading-6 text-zinc-600">
+            {app.description}
+          </p>
         </div>
+
         <div className="flex items-center gap-2">
           {app.logo ? (
-            <span className={`flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 ${style.soft}`}>
-              <Image src={app.logo} alt={`${app.name} logo`} width={22} height={22} />
+            <span
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 ${style.soft}`}
+            >
+              <Image
+                src={app.logo}
+                alt={`${app.name} logo`}
+                width={22}
+                height={22}
+              />
             </span>
           ) : null}
-          <StatusPill status={app.status} accentClass={style.text} />
+
+          <StatusPill app={app} />
         </div>
       </div>
 
       <div className="relative mt-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={`h-1.5 w-14 rounded-full ${style.accent} transition-all duration-150 group-hover:w-20`} />
-          <span className="text-xs text-zinc-500">{isActive ? "Disponible hoy" : "En preparacion"}</span>
+          <span
+            className={`h-1.5 w-14 rounded-full ${style.accent} transition-all duration-150 group-hover:w-20 ${
+              isEnabled ? "" : "opacity-40"
+            }`}
+          />
+          <span className="text-xs text-zinc-500">{getAccessLabel(app)}</span>
         </div>
 
-        {isActive ? (
+        {isEnabled ? (
           <a
             href={app.href}
             className="inline-flex items-center justify-center rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-800"
           >
-            Abrir
+            {actionLabel}
           </a>
         ) : (
           <button
@@ -173,7 +295,7 @@ function AppCard({ app }: { app: AppLink }) {
             className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-500"
             aria-disabled="true"
           >
-            Proximamente
+            {actionLabel}
           </button>
         )}
       </div>
@@ -185,16 +307,20 @@ export default async function Home() {
   const supabase = await createClient();
   const { data: userRes } = await supabase.auth.getUser();
   const user = userRes.user;
+
   if (!user) {
     redirect("/login?returnTo=/");
   }
 
   async function signOutAction() {
     "use server";
+
     const supabase = await createClient();
     await supabase.auth.signOut();
     redirect("/login?returnTo=/");
   }
+
+  const apps = await resolveApps();
 
   const userEmail = user.email ?? "";
   const userInitials = userEmail
@@ -207,8 +333,9 @@ export default async function Home() {
         .join("")
     : "US";
 
-  const activeCount = INTERNAL_APPS.filter((app) => app.status === "active").length;
-  const soonCount = INTERNAL_APPS.filter((app) => app.status === "soon").length;
+  const activeCount = apps.filter((app) => app.access === "enabled").length;
+  const unavailableCount = apps.filter((app) => app.access !== "enabled").length;
+  const mobileCount = apps.filter((app) => app.access === "mobile").length;
 
   return (
     <div className="relative min-h-screen bg-zinc-50 text-zinc-900">
@@ -226,7 +353,9 @@ export default async function Home() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden text-sm text-zinc-500 sm:block">ventogroup.co</div>
+            <div className="hidden text-sm text-zinc-500 sm:block">
+              ventogroup.co
+            </div>
 
             <details className="group relative">
               <summary className="list-none">
@@ -240,8 +369,12 @@ export default async function Home() {
 
               <div className="absolute right-0 z-20 mt-2 w-64 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-2 shadow-xl">
                 <div className="rounded-xl px-3 py-2">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">Sesion activa</div>
-                  <div className="truncate text-sm font-medium text-zinc-800">{userEmail || "-"}</div>
+                  <div className="text-xs uppercase tracking-wide text-zinc-500">
+                    Sesion activa
+                  </div>
+                  <div className="truncate text-sm font-medium text-zinc-800">
+                    {userEmail || "-"}
+                  </div>
                 </div>
 
                 <Link
@@ -279,25 +412,44 @@ export default async function Home() {
               <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-600">
                 Hub operativo
               </div>
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight">Centro de aplicaciones</h1>
+
+              <h1 className="mt-4 text-3xl font-semibold tracking-tight">
+                Centro de aplicaciones
+              </h1>
+
               <p className="mt-2 max-w-2xl text-base leading-7 text-zinc-600">
-                Accede a los modulos de Vento Group. Este hub prioriza acceso rapido, control por rol y continuidad
-                operativa.
+                Accede a los modulos de Vento Group segun tus permisos reales.
+                Las apps sin acceso aparecen bloqueadas para mantener control
+                operativo.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Activas</div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">{activeCount}</div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Accesibles
+                </div>
+                <div className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {activeCount}
+                </div>
               </div>
+
               <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-3">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Proximas</div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">{soonCount}</div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Bloqueadas
+                </div>
+                <div className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {unavailableCount}
+                </div>
               </div>
+
               <div className="col-span-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3 sm:col-span-1">
-                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Total apps</div>
-                <div className="mt-1 text-2xl font-semibold text-zinc-900">{INTERNAL_APPS.length}</div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Movil
+                </div>
+                <div className="mt-1 text-2xl font-semibold text-zinc-900">
+                  {mobileCount}
+                </div>
               </div>
             </div>
           </div>
@@ -305,11 +457,16 @@ export default async function Home() {
 
         <section className="mb-12">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">Operacion interna</h2>
-            <div className="text-sm text-zinc-500">VISO · NEXO · FOGO · ORIGO · PULSO · AURA</div>
+            <h2 className="text-lg font-semibold tracking-tight">
+              Operacion interna
+            </h2>
+            <div className="text-sm text-zinc-500">
+              VISO · NEXO · FOGO · ORIGO · PULSO · ANIMA · AURA
+            </div>
           </div>
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {INTERNAL_APPS.map((app) => (
+            {apps.map((app) => (
               <AppCard key={app.id} app={app} />
             ))}
           </div>
