@@ -4358,6 +4358,21 @@ $$;
 ALTER FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  select public.value_closed_restock_request(p_request_id);
+$$;
+
+
+ALTER FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") IS 'Alias expl├¡cito para valorizar una remisi├│n interna recibida/cerrada con precios internos por presentaci├│n.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."process_loyalty_earning"("p_order_id" "uuid") RETURNS "void"
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pass'
@@ -5171,6 +5186,37 @@ CREATE OR REPLACE FUNCTION "public"."resolve_internal_transfer_price"("p_product
     SET "search_path" TO 'public'
     AS $$
   select
+    resolved.price_list_id,
+    resolved.price_list_item_id,
+    resolved.unit_price,
+    resolved.unit_code,
+    resolved.currency,
+    resolved.priority
+  from public.resolve_internal_transfer_price_for_profile(
+    p_product_id,
+    p_seller_cost_center_id,
+    p_buyer_cost_center_id,
+    p_buyer_site_id,
+    null,
+    p_unit_code,
+    p_at
+  ) resolved
+  limit 1;
+$$;
+
+
+ALTER FUNCTION "public"."resolve_internal_transfer_price"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."resolve_internal_transfer_price"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) IS 'Returns the best active internal price for product/seller/buyer/unit/date. Priority: buyer cost center, buyer site, general seller price.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."resolve_internal_transfer_price_for_profile"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_uom_profile_id" "uuid" DEFAULT NULL::"uuid", "p_unit_code" "text" DEFAULT NULL::"text", "p_at" timestamp with time zone DEFAULT "now"()) RETURNS TABLE("price_list_id" "uuid", "price_list_item_id" "uuid", "unit_price" numeric, "unit_code" "text", "currency" "text", "priority" integer, "uom_profile_id" "uuid", "pricing_label" "text", "pricing_input_unit_code" "text", "pricing_qty_in_input_unit" numeric, "pricing_qty_in_stock_unit" numeric, "pricing_factor_to_stock" numeric)
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  select
     pl.id as price_list_id,
     pli.id as price_list_item_id,
     pli.unit_price,
@@ -5181,7 +5227,17 @@ CREATE OR REPLACE FUNCTION "public"."resolve_internal_transfer_price"("p_product
       when pl.buyer_site_id = p_buyer_site_id then 2
       when pl.buyer_cost_center_id is null and pl.buyer_site_id is null then 3
       else 9
-    end as priority
+    end as priority,
+    pli.uom_profile_id,
+    pli.pricing_label,
+    pli.pricing_input_unit_code,
+    pli.pricing_qty_in_input_unit,
+    pli.pricing_qty_in_stock_unit,
+    case
+      when coalesce(pli.pricing_qty_in_input_unit, 0) > 0
+        then pli.pricing_qty_in_stock_unit / pli.pricing_qty_in_input_unit
+      else 1
+    end as pricing_factor_to_stock
   from public.internal_price_list_items pli
   join public.internal_price_lists pl
     on pl.id = pli.price_list_id
@@ -5192,16 +5248,39 @@ CREATE OR REPLACE FUNCTION "public"."resolve_internal_transfer_price"("p_product
     and p_at >= pl.valid_from
     and (pl.valid_to is null or p_at < pl.valid_to)
     and (
-      p_unit_code is null
-      or btrim(p_unit_code) = ''
-      or lower(btrim(pli.unit_code)) = lower(btrim(p_unit_code))
-    )
-    and (
       pl.buyer_cost_center_id = p_buyer_cost_center_id
       or pl.buyer_site_id = p_buyer_site_id
       or (pl.buyer_cost_center_id is null and pl.buyer_site_id is null)
     )
+    and (
+      (
+        p_uom_profile_id is not null
+        and pli.uom_profile_id = p_uom_profile_id
+      )
+      or (
+        pli.uom_profile_id is null
+        and (
+          p_unit_code is null
+          or btrim(p_unit_code) = ''
+          or lower(btrim(pli.unit_code)) = lower(btrim(p_unit_code))
+        )
+      )
+      or (
+        p_uom_profile_id is null
+        and pli.uom_profile_id is not null
+        and (
+          p_unit_code is null
+          or btrim(p_unit_code) = ''
+          or lower(btrim(pli.unit_code)) = lower(btrim(p_unit_code))
+        )
+      )
+    )
   order by
+    case
+      when p_uom_profile_id is not null and pli.uom_profile_id = p_uom_profile_id then 0
+      when pli.uom_profile_id is null then 1
+      else 2
+    end,
     case
       when pl.buyer_cost_center_id = p_buyer_cost_center_id then 1
       when pl.buyer_site_id = p_buyer_site_id then 2
@@ -5214,10 +5293,10 @@ CREATE OR REPLACE FUNCTION "public"."resolve_internal_transfer_price"("p_product
 $$;
 
 
-ALTER FUNCTION "public"."resolve_internal_transfer_price"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) OWNER TO "postgres";
+ALTER FUNCTION "public"."resolve_internal_transfer_price_for_profile"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_uom_profile_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."resolve_internal_transfer_price"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) IS 'Returns the best active internal price for product/seller/buyer/unit/date. Priority: buyer cost center, buyer site, general seller price.';
+COMMENT ON FUNCTION "public"."resolve_internal_transfer_price_for_profile"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_uom_profile_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) IS 'Returns the best active internal price for product/seller/buyer/date, preferring an exact UOM profile/presentation match and falling back to legacy unit_code.';
 
 
 
@@ -5635,6 +5714,82 @@ $_$;
 
 
 ALTER FUNCTION "public"."set_employee_kiosk_pin"("p_employee_id" "uuid", "p_pin" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_internal_price_item_uom_snapshot"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+  v_profile record;
+  v_should_refresh_snapshot boolean := false;
+begin
+  if new.uom_profile_id is null then
+    return new;
+  end if;
+
+  select
+    profile.id,
+    profile.product_id,
+    profile.label,
+    profile.input_unit_code,
+    profile.qty_in_input_unit,
+    profile.qty_in_stock_unit,
+    profile.is_active
+    into v_profile
+  from public.product_uom_profiles profile
+  where profile.id = new.uom_profile_id;
+
+  if not found then
+    raise exception 'uom profile not found';
+  end if;
+
+  if v_profile.product_id <> new.product_id then
+    raise exception 'uom profile does not belong to internal price product';
+  end if;
+
+  if coalesce(v_profile.is_active, false) <> true then
+    raise exception 'uom profile is inactive';
+  end if;
+
+  if coalesce(v_profile.qty_in_input_unit, 0) <= 0
+     or coalesce(v_profile.qty_in_stock_unit, 0) <= 0 then
+    raise exception 'uom profile conversion must be positive';
+  end if;
+
+  v_should_refresh_snapshot :=
+    tg_op = 'INSERT'
+    or new.uom_profile_id is distinct from old.uom_profile_id;
+
+  if v_should_refresh_snapshot then
+    new.pricing_label := v_profile.label;
+    new.pricing_input_unit_code := v_profile.input_unit_code;
+    new.pricing_qty_in_input_unit := v_profile.qty_in_input_unit;
+    new.pricing_qty_in_stock_unit := v_profile.qty_in_stock_unit;
+    new.unit_code := v_profile.input_unit_code;
+  else
+    new.pricing_label := coalesce(nullif(btrim(new.pricing_label), ''), v_profile.label);
+    new.pricing_input_unit_code := coalesce(
+      nullif(btrim(new.pricing_input_unit_code), ''),
+      v_profile.input_unit_code
+    );
+    new.pricing_qty_in_input_unit := coalesce(
+      new.pricing_qty_in_input_unit,
+      v_profile.qty_in_input_unit
+    );
+    new.pricing_qty_in_stock_unit := coalesce(
+      new.pricing_qty_in_stock_unit,
+      v_profile.qty_in_stock_unit
+    );
+    new.unit_code := coalesce(nullif(btrim(new.unit_code), ''), v_profile.input_unit_code);
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_internal_price_item_uom_snapshot"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_product_sku"() RETURNS "trigger"
@@ -6880,6 +7035,7 @@ declare
 
   v_now timestamptz := now();
   v_price_at timestamptz;
+  v_effective_closed_at timestamptz;
   v_seller_cost_center_id uuid;
   v_buyer_cost_center_id uuid;
 
@@ -6887,7 +7043,8 @@ declare
   v_missing_price_count integer := 0;
   v_variance_count integer := 0;
 
-  v_quantity numeric := 0;
+  v_received_qty numeric := 0;
+  v_pricing_qty numeric := 0;
   v_total numeric := 0;
   v_line_total numeric := 0;
   v_unit_code text;
@@ -6932,11 +7089,24 @@ begin
     );
   end if;
 
-  v_seller_cost_center_id := public.get_site_cost_center(v_request.from_site_id);
-  v_buyer_cost_center_id := public.get_site_cost_center(v_request.to_site_id);
-  v_price_at := coalesce(v_request.closed_at, v_request.received_at, v_now);
+  v_seller_cost_center_id := coalesce(
+    v_request.seller_cost_center_id,
+    public.get_site_cost_center(v_request.from_site_id)
+  );
+  v_buyer_cost_center_id := coalesce(
+    v_request.buyer_cost_center_id,
+    public.get_site_cost_center(v_request.to_site_id)
+  );
 
-  if v_request.status not in ('closed', 'received') or v_request.closed_at is null then
+  v_effective_closed_at := coalesce(
+    v_request.closed_at,
+    case when v_request.status in ('received', 'closed') then v_request.received_at end,
+    case when v_request.status in ('received', 'closed') then v_request.status_updated_at end,
+    case when v_request.status in ('received', 'closed') then v_now end
+  );
+  v_price_at := coalesce(v_effective_closed_at, v_now);
+
+  if v_request.status not in ('closed', 'received') then
     update public.restock_requests
     set
       pricing_mode = 'internal_transfer',
@@ -6949,7 +7119,24 @@ begin
     return jsonb_build_object(
       'request_id', p_request_id,
       'pricing_status', 'pending_close',
-      'message', 'request_is_not_closed'
+      'message', 'request_is_not_received'
+    );
+  end if;
+
+  if v_effective_closed_at is null then
+    update public.restock_requests
+    set
+      pricing_mode = 'internal_transfer',
+      pricing_status = 'pending_close',
+      seller_cost_center_id = v_seller_cost_center_id,
+      buyer_cost_center_id = v_buyer_cost_center_id,
+      priced_at = null
+    where id = p_request_id;
+
+    return jsonb_build_object(
+      'request_id', p_request_id,
+      'pricing_status', 'pending_close',
+      'message', 'missing_received_or_closed_at'
     );
   end if;
 
@@ -6960,6 +7147,7 @@ begin
       pricing_status = 'pending_price',
       seller_cost_center_id = v_seller_cost_center_id,
       buyer_cost_center_id = v_buyer_cost_center_id,
+      closed_at = coalesce(closed_at, v_effective_closed_at),
       priced_at = null
     where id = p_request_id;
 
@@ -6972,7 +7160,7 @@ begin
     );
   end if;
 
-  -- Create variance records when dispatched and received quantities differ.
+  -- Crea diferencias cuando lo recibido no coincide con lo enviado.
   insert into public.internal_transfer_variances (
     remission_id,
     remission_item_id,
@@ -7030,6 +7218,7 @@ begin
       pricing_status = 'pending_variance_resolution',
       seller_cost_center_id = v_seller_cost_center_id,
       buyer_cost_center_id = v_buyer_cost_center_id,
+      closed_at = coalesce(closed_at, v_effective_closed_at),
       priced_at = null
     where id = p_request_id;
 
@@ -7046,15 +7235,15 @@ begin
     where i.request_id = p_request_id
     order by i.created_at asc, i.id asc
   loop
-    v_quantity := coalesce(v_item.received_quantity, 0);
+    v_received_qty := coalesce(v_item.received_quantity, 0);
     v_unit_code := coalesce(
+      nullif(btrim(v_item.input_unit_code), ''),
       nullif(btrim(v_item.stock_unit_code), ''),
       nullif(btrim(v_item.unit), ''),
-      nullif(btrim(v_item.input_unit_code), ''),
       'un'
     );
 
-    if v_quantity <= 0 then
+    if v_received_qty <= 0 then
       update public.restock_request_items
       set
         transfer_unit_price = 0,
@@ -7070,13 +7259,24 @@ begin
 
     v_billable_count := v_billable_count + 1;
 
+    -- Si la l├¡nea fue solicitada con presentaci├│n f├¡sica, se cobra en esa presentaci├│n.
+    -- Ejemplo: cantidad base 4000 ml, input_qty 2 potes, recibido 2000 ml => pricing_qty 1 pote.
+    if v_item.input_uom_profile_id is not null
+       and coalesce(v_item.input_qty, 0) > 0
+       and coalesce(v_item.quantity, 0) > 0 then
+      v_pricing_qty := round((v_received_qty / v_item.quantity) * v_item.input_qty, 6);
+    else
+      v_pricing_qty := v_received_qty;
+    end if;
+
     select *
     into v_price
-    from public.resolve_internal_transfer_price(
+    from public.resolve_internal_transfer_price_for_profile(
       v_item.product_id,
       v_seller_cost_center_id,
       v_buyer_cost_center_id,
       v_request.to_site_id,
+      v_item.input_uom_profile_id,
       v_unit_code,
       v_price_at
     );
@@ -7097,7 +7297,7 @@ begin
       continue;
     end if;
 
-    v_line_total := round(v_quantity * v_price.unit_price, 2);
+    v_line_total := round(v_pricing_qty * v_price.unit_price, 2);
     v_total := v_total + v_line_total;
 
     update public.restock_request_items
@@ -7118,6 +7318,7 @@ begin
       pricing_status = 'pending_price',
       seller_cost_center_id = v_seller_cost_center_id,
       buyer_cost_center_id = v_buyer_cost_center_id,
+      closed_at = coalesce(closed_at, v_effective_closed_at),
       priced_at = null
     where id = p_request_id;
 
@@ -7136,6 +7337,7 @@ begin
       pricing_status = 'not_applicable',
       seller_cost_center_id = v_seller_cost_center_id,
       buyer_cost_center_id = v_buyer_cost_center_id,
+      closed_at = coalesce(closed_at, v_effective_closed_at),
       priced_at = v_now
     where id = p_request_id;
 
@@ -7153,6 +7355,7 @@ begin
     pricing_status = 'ready_to_invoice',
     seller_cost_center_id = v_seller_cost_center_id,
     buyer_cost_center_id = v_buyer_cost_center_id,
+    closed_at = coalesce(closed_at, v_effective_closed_at),
     priced_at = v_now
   where id = p_request_id;
 
@@ -7170,7 +7373,7 @@ $$;
 ALTER FUNCTION "public"."value_closed_restock_request"("p_request_id" "uuid") OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."value_closed_restock_request"("p_request_id" "uuid") IS 'Values a closed restock request for internal billing. Creates pending variances when shipped and received quantities differ. Uses existing transfer_* item fields as financial snapshot.';
+COMMENT ON FUNCTION "public"."value_closed_restock_request"("p_request_id" "uuid") IS 'Values a received/closed restock request for internal billing. Uses input_uom_profile_id to resolve internal price by presentation and stores transfer_* as financial snapshot.';
 
 
 
@@ -7195,11 +7398,11 @@ begin
     select r.id
     from public.restock_requests r
     where r.status in ('closed', 'received')
-      and r.closed_at is not null
-      and r.closed_at <= p_cutoff_at
+      and coalesce(r.closed_at, r.received_at) is not null
+      and coalesce(r.closed_at, r.received_at) <= p_cutoff_at
       and r.internal_pos_document_id is null
       and r.pricing_status not in ('invoiced', 'credited')
-    order by r.closed_at asc, r.id asc
+    order by coalesce(r.closed_at, r.received_at) asc, r.id asc
   loop
     v_result := public.value_closed_restock_request(v_request.id);
     v_status := coalesce(v_result->>'pricing_status', 'unknown');
@@ -7237,7 +7440,7 @@ $$;
 ALTER FUNCTION "public"."value_closed_restock_requests_for_cutoff"("p_cutoff_at" timestamp with time zone) OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."value_closed_restock_requests_for_cutoff"("p_cutoff_at" timestamp with time zone) IS 'Values all closed, non-invoiced restock requests up to a cutoff. Prepares requests for future internal POS generation.';
+COMMENT ON FUNCTION "public"."value_closed_restock_requests_for_cutoff"("p_cutoff_at" timestamp with time zone) IS 'Values all received/closed, non-invoiced restock requests up to a cutoff. Uses coalesce(closed_at, received_at) because v1 closes operationally on received.';
 
 
 
@@ -8610,6 +8813,14 @@ CREATE TABLE IF NOT EXISTS "public"."internal_price_list_items" (
     "is_active" boolean DEFAULT true NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "uom_profile_id" "uuid",
+    "pricing_label" "text",
+    "pricing_input_unit_code" "text",
+    "pricing_qty_in_input_unit" numeric,
+    "pricing_qty_in_stock_unit" numeric,
+    CONSTRAINT "internal_price_list_items_pricing_qty_input_positive" CHECK ((("pricing_qty_in_input_unit" IS NULL) OR ("pricing_qty_in_input_unit" > (0)::numeric))),
+    CONSTRAINT "internal_price_list_items_pricing_qty_stock_positive" CHECK ((("pricing_qty_in_stock_unit" IS NULL) OR ("pricing_qty_in_stock_unit" > (0)::numeric))),
+    CONSTRAINT "internal_price_list_items_profile_snapshot_required" CHECK ((("uom_profile_id" IS NULL) OR (("pricing_label" IS NOT NULL) AND ("btrim"("pricing_label") <> ''::"text") AND ("pricing_input_unit_code" IS NOT NULL) AND ("btrim"("pricing_input_unit_code") <> ''::"text") AND ("pricing_qty_in_input_unit" IS NOT NULL) AND ("pricing_qty_in_stock_unit" IS NOT NULL)))),
     CONSTRAINT "internal_price_list_items_unit_code_not_blank" CHECK (("btrim"("unit_code") <> ''::"text")),
     CONSTRAINT "internal_price_list_items_unit_price_non_negative" CHECK (("unit_price" >= (0)::numeric))
 );
@@ -8623,6 +8834,26 @@ COMMENT ON TABLE "public"."internal_price_list_items" IS 'Items de listas de pre
 
 
 COMMENT ON COLUMN "public"."internal_price_list_items"."unit_price" IS 'Precio interno neto usado para valorizar remisiones cerradas.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."uom_profile_id" IS 'Presentaci├│n f├¡sica / UOM profile sobre la que se define el precio interno. Null conserva compatibilidad legacy por unit_code.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_label" IS 'Snapshot del nombre de la presentaci├│n al momento de configurar el precio interno. Ej: Pote 2 L, Bolsa 2.500 g, unidad producida.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_input_unit_code" IS 'Snapshot de la unidad de entrada de la presentaci├│n. Ej: un, g, ml.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_qty_in_input_unit" IS 'Snapshot de qty_in_input_unit del perfil UOM usado para el precio interno.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_qty_in_stock_unit" IS 'Snapshot de qty_in_stock_unit del perfil UOM usado para el precio interno.';
 
 
 
@@ -10359,11 +10590,11 @@ COMMENT ON TABLE "public"."restock_request_items" IS 'Core ΓÇô tabla can├�
 
 
 
-COMMENT ON COLUMN "public"."restock_request_items"."transfer_unit_price" IS 'Snapshot del precio interno unitario usado para facturar la linea.';
+COMMENT ON COLUMN "public"."restock_request_items"."transfer_unit_price" IS 'Snapshot del precio interno unitario usado para facturar la linea. Si hay input_uom_profile_id, es precio por presentaci├│n solicitada.';
 
 
 
-COMMENT ON COLUMN "public"."restock_request_items"."transfer_total" IS 'Subtotal interno de la linea: cantidad recibida valorizada por precio interno.';
+COMMENT ON COLUMN "public"."restock_request_items"."transfer_total" IS 'Subtotal interno de la linea: cantidad recibida convertida a unidad/presentaci├│n de precio por precio interno.';
 
 
 
@@ -12797,11 +13028,19 @@ CREATE INDEX "internal_pos_documents_seller_idx" ON "public"."internal_pos_docum
 
 
 
-CREATE UNIQUE INDEX "internal_price_list_items_active_uniq" ON "public"."internal_price_list_items" USING "btree" ("price_list_id", "product_id", "lower"("btrim"("unit_code"))) WHERE ("is_active" = true);
+CREATE UNIQUE INDEX "internal_price_list_items_active_legacy_unit_uniq" ON "public"."internal_price_list_items" USING "btree" ("price_list_id", "product_id", "lower"("btrim"("unit_code"))) WHERE (("is_active" = true) AND ("uom_profile_id" IS NULL));
+
+
+
+CREATE UNIQUE INDEX "internal_price_list_items_active_profile_uniq" ON "public"."internal_price_list_items" USING "btree" ("price_list_id", "product_id", "uom_profile_id") WHERE (("is_active" = true) AND ("uom_profile_id" IS NOT NULL));
 
 
 
 CREATE INDEX "internal_price_list_items_product_idx" ON "public"."internal_price_list_items" USING "btree" ("product_id", "is_active");
+
+
+
+CREATE INDEX "internal_price_list_items_uom_profile_idx" ON "public"."internal_price_list_items" USING "btree" ("uom_profile_id") WHERE ("uom_profile_id" IS NOT NULL);
 
 
 
@@ -13174,6 +13413,10 @@ CREATE OR REPLACE TRIGGER "trg_internal_pos_document_sequences_updated_at" BEFOR
 
 
 CREATE OR REPLACE TRIGGER "trg_internal_pos_documents_updated_at" BEFORE UPDATE ON "public"."internal_pos_documents" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_internal_price_list_items_uom_snapshot" BEFORE INSERT OR UPDATE OF "product_id", "unit_code", "uom_profile_id", "pricing_label", "pricing_input_unit_code", "pricing_qty_in_input_unit", "pricing_qty_in_stock_unit" ON "public"."internal_price_list_items" FOR EACH ROW EXECUTE FUNCTION "public"."set_internal_price_item_uom_snapshot"();
 
 
 
@@ -13594,6 +13837,11 @@ ALTER TABLE ONLY "public"."internal_price_list_items"
 
 ALTER TABLE ONLY "public"."internal_price_list_items"
     ADD CONSTRAINT "internal_price_list_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
+ALTER TABLE ONLY "public"."internal_price_list_items"
+    ADD CONSTRAINT "internal_price_list_items_uom_profile_id_fkey" FOREIGN KEY ("uom_profile_id") REFERENCES "public"."product_uom_profiles"("id") ON DELETE SET NULL;
 
 
 
@@ -16779,6 +17027,11 @@ GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public
 
 
 
+GRANT ALL ON FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."process_loyalty_earning"("p_order_id" "uuid") TO "service_role";
 
 
@@ -16819,6 +17072,11 @@ GRANT ALL ON FUNCTION "public"."resolve_internal_transfer_price"("p_product_id" 
 
 
 
+GRANT ALL ON FUNCTION "public"."resolve_internal_transfer_price_for_profile"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_uom_profile_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."resolve_internal_transfer_price_for_profile"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_buyer_cost_center_id" "uuid", "p_buyer_site_id" "uuid", "p_uom_profile_id" "uuid", "p_unit_code" "text", "p_at" timestamp with time zone) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."resolve_product_sku_brand_code"("p_site_id" "uuid") TO "service_role";
 
 
@@ -16852,6 +17110,11 @@ GRANT ALL ON FUNCTION "public"."set_app_navigation_items_updated_at"() TO "servi
 REVOKE ALL ON FUNCTION "public"."set_employee_kiosk_pin"("p_employee_id" "uuid", "p_pin" "text") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."set_employee_kiosk_pin"("p_employee_id" "uuid", "p_pin" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."set_employee_kiosk_pin"("p_employee_id" "uuid", "p_pin" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_internal_price_item_uom_snapshot"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_internal_price_item_uom_snapshot"() TO "service_role";
 
 
 
