@@ -98,6 +98,43 @@ CREATE TYPE "public"."support_ticket_status" AS ENUM (
 ALTER TYPE "public"."support_ticket_status" OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."_navigation_slugify"("p_value" "text") RETURNS "text"
+    LANGUAGE "sql" IMMUTABLE
+    SET "search_path" TO 'public'
+    AS $_$
+  select coalesce(
+    nullif(
+      regexp_replace(
+        regexp_replace(
+          lower(
+            translate(
+              btrim(coalesce(p_value, '')),
+              '├í├⌐├¡├│├║├ü├ë├ì├ô├Ü├▒├æ├╝├£',
+              'aeiouAEIOUnNuU'
+            )
+          ),
+          '[^a-z0-9]+',
+          '_',
+          'g'
+        ),
+        '^_+|_+$',
+        '',
+        'g'
+      ),
+      ''
+    ),
+    'item'
+  );
+$_$;
+
+
+ALTER FUNCTION "public"."_navigation_slugify"("p_value" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."_navigation_slugify"("p_value" "text") IS 'Internal helper to normalize labels/routes into item keys.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."_set_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -3266,6 +3303,547 @@ $$;
 ALTER FUNCTION "public"."fogo_create_production_batch_from_recipe"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_notes" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb" DEFAULT '[]'::"jsonb", "p_packages" "jsonb" DEFAULT '[]'::"jsonb", "p_notes" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+  v_employee_id uuid := auth.uid();
+  v_recipe record;
+  v_destination record;
+  v_configured_production_location_id uuid;
+  v_scale numeric;
+  v_expected_qty numeric;
+  v_produced_unit text;
+  v_total_cost numeric := 0;
+  v_unit_cost numeric := null;
+  v_batch_id uuid;
+  v_batch_code text;
+  v_ingredient record;
+  v_location record;
+  v_remaining numeric;
+  v_required_qty numeric;
+  v_consumed_qty numeric;
+  v_take numeric;
+  v_stock_unit_code text;
+  v_movement_id uuid;
+  v_custom_ingredients boolean := false;
+  v_invalid_ingredients integer := 0;
+  v_packages_count integer := 0;
+  v_package record;
+  v_package_index integer := 0;
+  v_package_total numeric := 0;
+  v_package_unit text;
+  v_expected_package_qty numeric;
+  v_package_label text;
+  v_package_profile_id uuid;
+  v_packaging_status text;
+begin
+  if v_employee_id is null then
+    raise exception 'not authenticated';
+  end if;
+
+  if p_recipe_card_id is null then
+    raise exception 'recipe_card_id is required';
+  end if;
+
+  if coalesce(p_produced_qty, 0) <= 0 then
+    raise exception 'produced_qty must be greater than zero';
+  end if;
+
+  if p_destination_location_id is null then
+    raise exception 'destination_location_id is required';
+  end if;
+
+  if p_ingredients is null or jsonb_typeof(p_ingredients) <> 'array' then
+    raise exception 'ingredients must be a json array';
+  end if;
+
+  if p_packages is null or jsonb_typeof(p_packages) <> 'array' then
+    raise exception 'packages must be a json array';
+  end if;
+
+  select
+    rc.id,
+    rc.product_id,
+    rc.site_id,
+    rc.area_id,
+    rc.yield_qty,
+    rc.yield_unit,
+    rc.portion_size,
+    rc.portion_unit,
+    rc.status,
+    p.name as product_name,
+    p.unit as product_unit,
+    p.stock_unit_code as product_stock_unit_code
+  into v_recipe
+  from public.recipe_cards rc
+  join public.products p on p.id = rc.product_id
+  where rc.id = p_recipe_card_id
+    and coalesce(rc.is_active, true) = true;
+
+  if not found then
+    raise exception 'recipe not found';
+  end if;
+
+  if v_recipe.status <> 'published' then
+    raise exception 'recipe must be published';
+  end if;
+
+  if v_recipe.site_id is null then
+    raise exception 'recipe must have a site';
+  end if;
+
+  if v_recipe.area_id is null then
+    raise exception 'recipe must have an area';
+  end if;
+
+  if coalesce(v_recipe.yield_qty, 0) <= 0 then
+    raise exception 'recipe yield must be greater than zero';
+  end if;
+
+  if not public.has_permission('fogo.production.batches.create', v_recipe.site_id, v_recipe.area_id) then
+    raise exception 'permission denied';
+  end if;
+
+  if not public.can_access_recipe_scope(v_recipe.site_id, v_recipe.area_id) then
+    raise exception 'recipe scope denied';
+  end if;
+
+  select id, site_id, code
+  into v_destination
+  from public.inventory_locations
+  where id = p_destination_location_id
+    and coalesce(is_active, true) = true;
+
+  if not found then
+    raise exception 'destination LOC not found';
+  end if;
+
+  if v_destination.site_id <> v_recipe.site_id then
+    raise exception 'destination LOC must belong to recipe site';
+  end if;
+
+  select production_location_id
+    into v_configured_production_location_id
+  from public.product_site_settings
+  where product_id = v_recipe.product_id
+    and site_id = v_recipe.site_id
+    and coalesce(is_active, true) = true
+    and production_location_id is not null
+  order by updated_at desc nulls last, created_at desc nulls last
+  limit 1;
+
+  if v_configured_production_location_id is not null
+     and v_configured_production_location_id <> p_destination_location_id then
+    raise exception 'destination LOC must match configured production LOC for this product';
+  end if;
+
+  v_scale := p_produced_qty / v_recipe.yield_qty;
+  v_expected_qty := v_recipe.yield_qty;
+  v_produced_unit := coalesce(
+    nullif(v_recipe.yield_unit, ''),
+    nullif(v_recipe.product_stock_unit_code, ''),
+    nullif(v_recipe.product_unit, ''),
+    'un'
+  );
+
+  v_custom_ingredients := jsonb_array_length(p_ingredients) > 0;
+
+  if v_custom_ingredients then
+    with provided as (
+      select distinct x.ingredient_product_id
+      from jsonb_to_recordset(p_ingredients) as x(
+        ingredient_product_id uuid,
+        required_qty numeric,
+        actual_qty numeric,
+        location_id uuid
+      )
+    )
+    select count(*)
+      into v_invalid_ingredients
+    from provided pi
+    left join public.recipes r
+      on r.product_id = v_recipe.product_id
+     and r.ingredient_product_id = pi.ingredient_product_id
+     and coalesce(r.is_active, true) = true
+    where pi.ingredient_product_id is null
+       or r.id is null;
+
+    if v_invalid_ingredients > 0 then
+      raise exception 'ingredients payload contains products that are not active ingredients of the recipe';
+    end if;
+  end if;
+
+  -- Validar paquetes antes de tocar inventario.
+  v_packages_count := jsonb_array_length(p_packages);
+  if v_packages_count > 0 then
+    for v_package in
+      select *
+      from jsonb_to_recordset(p_packages) as x(
+        package_index integer,
+        label text,
+        expected_qty numeric,
+        actual_qty numeric,
+        unit_code text,
+        uom_profile_id uuid,
+        notes text
+      )
+    loop
+      v_package_index := coalesce(v_package.package_index, v_package_index + 1);
+      v_package_unit := coalesce(nullif(trim(v_package.unit_code), ''), v_produced_unit);
+
+      if coalesce(v_package.actual_qty, 0) <= 0 then
+        raise exception 'all packages must have actual_qty greater than zero';
+      end if;
+
+      if v_package.uom_profile_id is not null and not exists (
+        select 1
+        from public.product_uom_profiles profile
+        where profile.id = v_package.uom_profile_id
+          and profile.product_id = v_recipe.product_id
+      ) then
+        raise exception 'package uom profile does not belong to the produced product';
+      end if;
+
+      if not exists (select 1 from public.inventory_units u where u.code = v_package_unit) then
+        raise exception 'package unit % does not exist', v_package_unit;
+      end if;
+
+      v_package_total := v_package_total + coalesce(v_package.actual_qty, 0);
+    end loop;
+
+    if abs(v_package_total - p_produced_qty) > 0.001 then
+      raise exception 'package total (%) must match produced_qty (%)', v_package_total, p_produced_qty;
+    end if;
+  end if;
+
+  insert into public.production_batches (
+    site_id,
+    product_id,
+    recipe_card_id,
+    produced_qty,
+    produced_unit,
+    expected_qty,
+    expected_unit,
+    packaged_qty,
+    packaged_unit,
+    package_count,
+    packaging_status,
+    status,
+    notes,
+    created_by,
+    destination_location_id,
+    recipe_consumed
+  ) values (
+    v_recipe.site_id,
+    v_recipe.product_id,
+    v_recipe.id,
+    p_produced_qty,
+    v_produced_unit,
+    v_expected_qty,
+    v_produced_unit,
+    case when v_packages_count > 0 then v_package_total else null end,
+    case when v_packages_count > 0 then v_produced_unit else null end,
+    v_packages_count,
+    case when v_packages_count > 0 then 'packaged' else 'not_packaged' end,
+    'posted',
+    nullif(trim(coalesce(p_notes, '')), ''),
+    v_employee_id,
+    p_destination_location_id,
+    true
+  ) returning id, batch_code into v_batch_id, v_batch_code;
+
+  for v_ingredient in
+    with provided as (
+      select *
+      from jsonb_to_recordset(p_ingredients) as x(
+        ingredient_product_id uuid,
+        required_qty numeric,
+        actual_qty numeric,
+        location_id uuid
+      )
+    )
+    select
+      r.ingredient_product_id,
+      p.name,
+      p.unit,
+      p.stock_unit_code,
+      coalesce(p.cost, 0) as cost,
+      coalesce(pi.required_qty, r.quantity * v_scale) as required_qty,
+      coalesce(pi.actual_qty, r.quantity * v_scale) as consumed_qty,
+      pi.location_id as requested_location_id
+    from public.recipes r
+    join public.products p on p.id = r.ingredient_product_id
+    left join provided pi on pi.ingredient_product_id = r.ingredient_product_id
+    where r.product_id = v_recipe.product_id
+      and coalesce(r.is_active, true) = true
+      and (not v_custom_ingredients or pi.ingredient_product_id is not null)
+    order by r.created_at asc, r.id asc
+  loop
+    v_required_qty := coalesce(v_ingredient.required_qty, 0);
+    v_consumed_qty := coalesce(v_ingredient.consumed_qty, 0);
+
+    if v_required_qty < 0 or v_consumed_qty < 0 then
+      raise exception 'ingredient quantities cannot be negative';
+    end if;
+
+    if v_consumed_qty <= 0 then
+      continue;
+    end if;
+
+    v_remaining := v_consumed_qty;
+    v_stock_unit_code := coalesce(
+      nullif(v_ingredient.stock_unit_code, ''),
+      nullif(v_ingredient.unit, ''),
+      'un'
+    );
+    v_total_cost := v_total_cost + (v_consumed_qty * coalesce(v_ingredient.cost, 0));
+
+    perform pg_advisory_xact_lock(hashtextextended(v_recipe.site_id::text || ':' || v_ingredient.ingredient_product_id::text, 0));
+
+    for v_location in
+      select
+        loc.id as location_id,
+        loc.code as location_code,
+        coalesce(stock.current_qty, 0) as current_qty
+      from public.inventory_locations loc
+      join public.inventory_stock_by_location stock
+        on stock.location_id = loc.id
+       and stock.product_id = v_ingredient.ingredient_product_id
+       and stock.current_qty > 0
+      left join public.site_production_pick_order pick
+        on pick.site_id = v_recipe.site_id
+       and pick.location_id = loc.id
+       and coalesce(pick.is_active, true) = true
+      where loc.site_id = v_recipe.site_id
+        and coalesce(loc.is_active, true) = true
+        and (
+          v_ingredient.requested_location_id is null
+          or loc.id = v_ingredient.requested_location_id
+        )
+        and (
+          v_ingredient.requested_location_id is not null
+          or v_configured_production_location_id is null
+          or loc.id = v_configured_production_location_id
+        )
+      order by
+        case when v_ingredient.requested_location_id is not null then 0
+             when pick.location_id is null then 1 else 0 end,
+        coalesce(pick.priority, 100000) asc,
+        stock.current_qty desc,
+        loc.code asc
+      for update of stock
+    loop
+      exit when v_remaining <= 0;
+      v_take := least(v_remaining, v_location.current_qty);
+      if v_take <= 0 then
+        continue;
+      end if;
+
+      update public.inventory_stock_by_location
+      set current_qty = current_qty - v_take,
+          updated_at = now()
+      where location_id = v_location.location_id
+        and product_id = v_ingredient.ingredient_product_id
+        and current_qty >= v_take;
+
+      if not found then
+        raise exception 'stock changed while consuming ingredient %', v_ingredient.name;
+      end if;
+
+      insert into public.inventory_movements (
+        site_id,
+        product_id,
+        movement_type,
+        quantity,
+        input_qty,
+        input_unit_code,
+        conversion_factor_to_stock,
+        stock_unit_code,
+        unit_cost,
+        note,
+        related_production_batch_id,
+        created_by
+      ) values (
+        v_recipe.site_id,
+        v_ingredient.ingredient_product_id,
+        'production_consume',
+        -v_take,
+        v_take,
+        v_stock_unit_code,
+        1,
+        v_stock_unit_code,
+        coalesce(v_ingredient.cost, 0),
+        format('Consumo real lote %s desde %s', coalesce(v_batch_code, v_batch_id::text), coalesce(v_location.location_code, v_location.location_id::text)),
+        v_batch_id,
+        v_employee_id
+      ) returning id into v_movement_id;
+
+      insert into public.production_batch_consumptions (
+        batch_id,
+        ingredient_product_id,
+        location_id,
+        required_qty,
+        consumed_qty,
+        stock_unit_code,
+        movement_id,
+        created_by
+      ) values (
+        v_batch_id,
+        v_ingredient.ingredient_product_id,
+        v_location.location_id,
+        case when v_consumed_qty > 0 then (v_required_qty * (v_take / v_consumed_qty)) else 0 end,
+        v_take,
+        v_stock_unit_code,
+        v_movement_id,
+        v_employee_id
+      );
+
+      v_remaining := v_remaining - v_take;
+    end loop;
+
+    if v_remaining > 0.000001 then
+      raise exception 'insufficient stock for ingredient %: required %, missing %',
+        v_ingredient.name,
+        v_consumed_qty,
+        v_remaining;
+    end if;
+  end loop;
+
+  v_unit_cost := case when p_produced_qty > 0 then v_total_cost / p_produced_qty else null end;
+
+  update public.production_batches
+  set total_cost = v_total_cost,
+      unit_cost = v_unit_cost
+  where id = v_batch_id;
+
+  insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
+  values (p_destination_location_id, v_recipe.product_id, p_produced_qty, now())
+  on conflict (location_id, product_id) do update
+    set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
+        updated_at = now();
+
+  insert into public.inventory_movements (
+    site_id,
+    product_id,
+    movement_type,
+    quantity,
+    input_qty,
+    input_unit_code,
+    conversion_factor_to_stock,
+    stock_unit_code,
+    unit_cost,
+    note,
+    related_production_batch_id,
+    created_by
+  ) values (
+    v_recipe.site_id,
+    v_recipe.product_id,
+    'production_output',
+    p_produced_qty,
+    p_produced_qty,
+    coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
+    1,
+    coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
+    v_unit_cost,
+    format('Ingreso real lote %s a %s', coalesce(v_batch_code, v_batch_id::text), coalesce(v_destination.code, p_destination_location_id::text)),
+    v_batch_id,
+    v_employee_id
+  );
+
+  -- Registrar empaques al final. Si no llegaron empaques, queda como lote sin empaque detallado.
+  if v_packages_count > 0 then
+    v_package_index := 0;
+    for v_package in
+      select *
+      from jsonb_to_recordset(p_packages) as x(
+        package_index integer,
+        label text,
+        expected_qty numeric,
+        actual_qty numeric,
+        unit_code text,
+        uom_profile_id uuid,
+        notes text
+      )
+    loop
+      v_package_index := coalesce(v_package.package_index, v_package_index + 1);
+      v_package_unit := coalesce(nullif(trim(v_package.unit_code), ''), v_produced_unit);
+      v_expected_package_qty := coalesce(
+        v_package.expected_qty,
+        nullif(v_recipe.portion_size, 0),
+        v_package.actual_qty
+      );
+      v_package_label := coalesce(
+        nullif(trim(v_package.label), ''),
+        format('Empaque %s', v_package_index)
+      );
+      v_package_profile_id := v_package.uom_profile_id;
+
+      insert into public.production_batch_packages (
+        batch_id,
+        product_id,
+        uom_profile_id,
+        package_index,
+        package_label,
+        expected_qty,
+        actual_qty,
+        unit_code,
+        status,
+        notes,
+        created_by
+      ) values (
+        v_batch_id,
+        v_recipe.product_id,
+        v_package_profile_id,
+        v_package_index,
+        v_package_label,
+        v_expected_package_qty,
+        v_package.actual_qty,
+        v_package_unit,
+        'available',
+        nullif(trim(coalesce(v_package.notes, '')), ''),
+        v_employee_id
+      );
+    end loop;
+  end if;
+
+  v_packaging_status := case
+    when v_packages_count <= 0 then 'not_packaged'
+    when abs(v_package_total - p_produced_qty) <= 0.001 then 'packaged'
+    else 'variance'
+  end;
+
+  update public.production_batches
+  set packaged_qty = case when v_packages_count > 0 then v_package_total else packaged_qty end,
+      packaged_unit = case when v_packages_count > 0 then v_produced_unit else packaged_unit end,
+      package_count = v_packages_count,
+      packaging_status = v_packaging_status
+  where id = v_batch_id;
+
+  return jsonb_build_object(
+    'batchId', v_batch_id,
+    'batchCode', v_batch_code,
+    'recipeCardId', v_recipe.id,
+    'productId', v_recipe.product_id,
+    'siteId', v_recipe.site_id,
+    'areaId', v_recipe.area_id,
+    'expectedQty', v_expected_qty,
+    'producedQty', p_produced_qty,
+    'producedUnit', v_produced_unit,
+    'destinationLocationId', p_destination_location_id,
+    'packageCount', v_packages_count,
+    'packagedQty', case when v_packages_count > 0 then v_package_total else null end,
+    'totalCost', v_total_cost,
+    'unitCost', v_unit_cost
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."fogo_recipe_area_options"("p_site_id" "uuid") RETURNS TABLE("id" "uuid", "code" "text", "name" "text", "kind" "text", "site_id" "uuid")
     LANGUAGE "sql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -3372,6 +3950,347 @@ $$;
 ALTER FUNCTION "public"."fogo_recipe_area_options"("p_site_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."generate_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone DEFAULT "now"(), "p_dry_run" boolean DEFAULT false) RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_cutoff_at timestamptz := coalesce(p_cutoff_at, now());
+  v_document_date date := (coalesce(p_cutoff_at, now()) at time zone 'America/Bogota')::date;
+
+  v_group record;
+  v_document_id uuid;
+  v_sequence_value integer;
+  v_document_number text;
+  v_group_total numeric;
+
+  v_documents_created integer := 0;
+  v_remissions_invoiced integer := 0;
+  v_lines_created integer := 0;
+  v_total numeric := 0;
+
+  v_candidate_remissions integer := 0;
+  v_candidate_lines integer := 0;
+  v_blocked_unpriced integer := 0;
+  v_blocked_variances integer := 0;
+
+  v_result jsonb;
+begin
+  if not (
+    current_user = 'service_role'
+    or current_setting('request.jwt.claim.role', true) = 'service_role'
+    or has_permission('nexo.internal_invoices.generate')
+    or has_permission('internal_invoices.generate')
+    or is_owner()
+    or is_global_manager()
+  ) then
+    raise exception 'permission_denied_internal_invoices_generate';
+  end if;
+
+  -- Prevent concurrent generation for the same cutoff day.
+  perform pg_advisory_xact_lock(hashtext('vento_internal_pos_documents_' || v_document_date::text));
+
+  drop table if exists _daily_internal_pos_candidate_remissions;
+  drop table if exists _daily_internal_pos_candidate_lines;
+
+  -- Candidate remissions: closed, valued, not invoiced, before cutoff, no blocking variance,
+  -- and no received item without price.
+  create temp table _daily_internal_pos_candidate_remissions on commit drop as
+  select
+    r.id as remission_id,
+    r.request_code,
+    r.seller_cost_center_id,
+    r.buyer_cost_center_id,
+    r.to_site_id as buyer_site_id,
+    r.closed_at,
+    r.received_at
+  from public.restock_requests r
+  where r.status = 'closed'
+    and r.pricing_status = 'ready_to_invoice'
+    and r.internal_pos_document_id is null
+    and r.closed_at is not null
+    and r.closed_at <= v_cutoff_at
+    and r.seller_cost_center_id is not null
+    and r.buyer_cost_center_id is not null
+    and exists (
+      select 1
+      from public.restock_request_items i
+      where i.request_id = r.id
+        and coalesce(i.received_quantity, 0) > 0
+    )
+    and not exists (
+      select 1
+      from public.restock_request_items i
+      where i.request_id = r.id
+        and coalesce(i.received_quantity, 0) > 0
+        and (
+          i.transfer_unit_price is null
+          or i.transfer_total is null
+          or i.transfer_unit_price < 0
+          or i.transfer_total < 0
+        )
+    )
+    and not exists (
+      select 1
+      from public.internal_transfer_variances v
+      where v.remission_id = r.id
+        and coalesce(v.status, '') not in ('resolved', 'approved', 'cancelled', 'closed')
+    );
+
+  create temp table _daily_internal_pos_candidate_lines on commit drop as
+  select
+    c.remission_id,
+    i.id as remission_item_id,
+    i.product_id,
+    coalesce(i.received_quantity, 0) as quantity,
+    coalesce(nullif(i.input_unit_code, ''), nullif(i.stock_unit_code, ''), nullif(i.unit, ''), 'un') as unit_code,
+    i.transfer_unit_price as unit_price,
+    i.transfer_total as subtotal,
+    i.internal_price_list_id as price_list_id,
+    i.internal_price_list_item_id as price_list_item_id,
+    coalesce(i.priced_at, now()) as priced_at,
+    coalesce(nullif(i.transfer_currency, ''), 'COP') as currency,
+    c.seller_cost_center_id,
+    c.buyer_cost_center_id,
+    c.buyer_site_id
+  from _daily_internal_pos_candidate_remissions c
+  join public.restock_request_items i
+    on i.request_id = c.remission_id
+  where coalesce(i.received_quantity, 0) > 0;
+
+  select count(*)
+  into v_candidate_remissions
+  from _daily_internal_pos_candidate_remissions;
+
+  select count(*), coalesce(sum(subtotal), 0)
+  into v_candidate_lines, v_total
+  from _daily_internal_pos_candidate_lines;
+
+  -- Diagnostics: closed ready remissions blocked by unpriced lines.
+  select count(distinct r.id)
+  into v_blocked_unpriced
+  from public.restock_requests r
+  where r.status = 'closed'
+    and r.pricing_status = 'ready_to_invoice'
+    and r.internal_pos_document_id is null
+    and r.closed_at is not null
+    and r.closed_at <= v_cutoff_at
+    and exists (
+      select 1
+      from public.restock_request_items i
+      where i.request_id = r.id
+        and coalesce(i.received_quantity, 0) > 0
+        and (
+          i.transfer_unit_price is null
+          or i.transfer_total is null
+          or i.transfer_unit_price < 0
+          or i.transfer_total < 0
+        )
+    );
+
+  -- Diagnostics: closed ready remissions blocked by unresolved variances.
+  select count(distinct r.id)
+  into v_blocked_variances
+  from public.restock_requests r
+  where r.status = 'closed'
+    and r.pricing_status = 'ready_to_invoice'
+    and r.internal_pos_document_id is null
+    and r.closed_at is not null
+    and r.closed_at <= v_cutoff_at
+    and exists (
+      select 1
+      from public.internal_transfer_variances v
+      where v.remission_id = r.id
+        and coalesce(v.status, '') not in ('resolved', 'approved', 'cancelled', 'closed')
+    );
+
+  if p_dry_run then
+    return jsonb_build_object(
+      'dry_run', true,
+      'cutoff_at', v_cutoff_at,
+      'document_date', v_document_date,
+      'candidate_remissions', v_candidate_remissions,
+      'candidate_lines', v_candidate_lines,
+      'candidate_total', coalesce(v_total, 0),
+      'blocked_unpriced_remissions', coalesce(v_blocked_unpriced, 0),
+      'blocked_variance_remissions', coalesce(v_blocked_variances, 0)
+    );
+  end if;
+
+  for v_group in
+    select
+      seller_cost_center_id,
+      buyer_cost_center_id,
+      buyer_site_id,
+      currency,
+      count(distinct remission_id) as remission_count,
+      count(*) as line_count,
+      coalesce(sum(subtotal), 0) as total
+    from _daily_internal_pos_candidate_lines
+    group by
+      seller_cost_center_id,
+      buyer_cost_center_id,
+      buyer_site_id,
+      currency
+    having coalesce(sum(subtotal), 0) >= 0
+    order by buyer_cost_center_id, currency
+  loop
+    insert into public.internal_pos_document_sequences (
+      document_date,
+      last_value,
+      updated_at
+    )
+    values (
+      v_document_date,
+      0,
+      now()
+    )
+    on conflict (document_date)
+    do nothing;
+
+    update public.internal_pos_document_sequences
+    set
+      last_value = last_value + 1,
+      updated_at = now()
+    where document_date = v_document_date
+    returning last_value into v_sequence_value;
+
+    v_document_number :=
+      'IPOS-' ||
+      to_char(v_document_date, 'YYYYMMDD') ||
+      '-' ||
+      lpad(v_sequence_value::text, 4, '0');
+
+    v_document_id := gen_random_uuid();
+    v_group_total := coalesce(v_group.total, 0);
+
+    insert into public.internal_pos_documents (
+      id,
+      document_number,
+      document_date,
+      cutoff_at,
+      seller_cost_center_id,
+      buyer_cost_center_id,
+      buyer_site_id,
+      status,
+      subtotal,
+      total,
+      currency,
+      generated_by_system,
+      generated_at,
+      issued_at,
+      notes,
+      created_at,
+      updated_at
+    )
+    values (
+      v_document_id,
+      v_document_number,
+      v_document_date,
+      v_cutoff_at,
+      v_group.seller_cost_center_id,
+      v_group.buyer_cost_center_id,
+      v_group.buyer_site_id,
+      'issued',
+      v_group_total,
+      v_group_total,
+      v_group.currency,
+      true,
+      now(),
+      now(),
+      'Comprobante interno generado automaticamente para corte diario de las 5:00 p.m. Colombia.',
+      now(),
+      now()
+    );
+
+    insert into public.internal_pos_document_lines (
+      id,
+      document_id,
+      remission_id,
+      remission_item_id,
+      product_id,
+      quantity,
+      unit_code,
+      unit_price,
+      subtotal,
+      price_list_id,
+      price_list_item_id,
+      priced_at,
+      created_at
+    )
+    select
+      gen_random_uuid(),
+      v_document_id,
+      l.remission_id,
+      l.remission_item_id,
+      l.product_id,
+      l.quantity,
+      l.unit_code,
+      l.unit_price,
+      l.subtotal,
+      l.price_list_id,
+      l.price_list_item_id,
+      l.priced_at,
+      now()
+    from _daily_internal_pos_candidate_lines l
+    where l.seller_cost_center_id = v_group.seller_cost_center_id
+      and l.buyer_cost_center_id = v_group.buyer_cost_center_id
+      and coalesce(l.buyer_site_id, '00000000-0000-0000-0000-000000000000'::uuid)
+          = coalesce(v_group.buyer_site_id, '00000000-0000-0000-0000-000000000000'::uuid)
+      and l.currency = v_group.currency;
+
+    get diagnostics v_lines_created = row_count;
+
+    update public.restock_requests r
+    set
+      internal_pos_document_id = v_document_id,
+      pricing_status = 'invoiced'
+    where r.id in (
+      select distinct l.remission_id
+      from _daily_internal_pos_candidate_lines l
+      where l.seller_cost_center_id = v_group.seller_cost_center_id
+        and l.buyer_cost_center_id = v_group.buyer_cost_center_id
+        and coalesce(l.buyer_site_id, '00000000-0000-0000-0000-000000000000'::uuid)
+            = coalesce(v_group.buyer_site_id, '00000000-0000-0000-0000-000000000000'::uuid)
+        and l.currency = v_group.currency
+    );
+
+    get diagnostics v_remissions_invoiced = row_count;
+
+    v_documents_created := v_documents_created + 1;
+  end loop;
+
+  select jsonb_build_object(
+    'dry_run', false,
+    'cutoff_at', v_cutoff_at,
+    'document_date', v_document_date,
+    'documents_created', v_documents_created,
+    'remissions_invoiced', (
+      select count(distinct remission_id)
+      from _daily_internal_pos_candidate_lines
+    ),
+    'lines_created', (
+      select count(*)
+      from _daily_internal_pos_candidate_lines
+    ),
+    'total', coalesce(v_total, 0),
+    'blocked_unpriced_remissions', coalesce(v_blocked_unpriced, 0),
+    'blocked_variance_remissions', coalesce(v_blocked_variances, 0)
+  )
+  into v_result;
+
+  return v_result;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."generate_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone, "p_dry_run" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."generate_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone, "p_dry_run" boolean) IS 'Generates internal POS documents for closed, valued internal remissions up to the given cutoff. Use p_dry_run=true to preview.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."generate_inventory_sku"("p_product_type" "text" DEFAULT NULL::"text", "p_inventory_kind" "text" DEFAULT NULL::"text", "p_name" "text" DEFAULT NULL::"text") RETURNS "text"
     LANGUAGE "plpgsql"
     AS $$
@@ -3446,6 +4365,24 @@ $$;
 ALTER FUNCTION "public"."generate_lpn_code"("p_site_code" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."generate_manual_daily_internal_pos_documents"("p_document_date" "date" DEFAULT NULL::"date") RETURNS "jsonb"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  select public.generate_daily_internal_pos_documents(
+    public.get_colombia_internal_pos_cutoff_at(p_document_date),
+    false
+  );
+$$;
+
+
+ALTER FUNCTION "public"."generate_manual_daily_internal_pos_documents"("p_document_date" "date") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."generate_manual_daily_internal_pos_documents"("p_document_date" "date") IS 'Manual generation for daily internal POS documents using the 5:00 p.m. Colombia cutoff for the selected date. Writes documents and marks remissions as invoiced.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."generate_product_sku"("p_product_type" "text", "p_site_id" "uuid" DEFAULT NULL::"uuid") RETURNS "text"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -3505,6 +4442,26 @@ $$;
 
 
 ALTER FUNCTION "public"."generate_product_sku"("p_product_type" "text", "p_site_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_colombia_internal_pos_cutoff_at"("p_document_date" "date" DEFAULT NULL::"date") RETURNS timestamp with time zone
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'public'
+    AS $$
+  select (
+    coalesce(
+      p_document_date,
+      (now() at time zone 'America/Bogota')::date
+    )::text || ' 17:00:00-05'
+  )::timestamptz;
+$$;
+
+
+ALTER FUNCTION "public"."get_colombia_internal_pos_cutoff_at"("p_document_date" "date") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."get_colombia_internal_pos_cutoff_at"("p_document_date" "date") IS 'Returns the 5:00 p.m. Colombia cutoff timestamp for the given document date, or today in Colombia when null.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."get_internal_invoice_cutoff_warnings"("p_cutoff_at" timestamp with time zone) RETURNS TABLE("warning_key" "text", "total" bigint)
@@ -4234,6 +5191,53 @@ COMMENT ON FUNCTION "public"."nexo_kiosk_withdraw_workers"("p_source_location_id
 
 
 
+CREATE OR REPLACE FUNCTION "public"."normalize_procurement_receipt_costs"("p_input_unit_cost" numeric, "p_tax_included" boolean DEFAULT false, "p_tax_rate" numeric DEFAULT 0, "p_conversion_factor_to_stock" numeric DEFAULT 1, "p_input_qty" numeric DEFAULT 1) RETURNS TABLE("cost_input_mode" "text", "net_unit_cost" numeric, "gross_unit_cost" numeric, "tax_unit_amount" numeric, "stock_unit_cost" numeric, "net_total_cost" numeric, "gross_total_cost" numeric, "tax_amount" numeric)
+    LANGUAGE "sql" STABLE
+    SET "search_path" TO 'public'
+    AS $$
+  with safe as (
+    select
+      greatest(coalesce(p_input_unit_cost, 0), 0)::numeric as input_cost,
+      coalesce(p_tax_included, false) as tax_included,
+      greatest(coalesce(p_tax_rate, 0), 0)::numeric as tax_rate,
+      greatest(coalesce(p_conversion_factor_to_stock, 1), 0.000001)::numeric as factor,
+      greatest(coalesce(p_input_qty, 0), 0)::numeric as qty
+  ),
+  normalized as (
+    select
+      case when tax_included then 'gross' else 'net' end as cost_input_mode,
+      case
+        when tax_included and tax_rate > 0 then input_cost / (1 + (tax_rate / 100))
+        else input_cost
+      end as net_unit_cost,
+      case
+        when tax_included then input_cost
+        else input_cost * (1 + (tax_rate / 100))
+      end as gross_unit_cost,
+      factor,
+      qty
+    from safe
+  )
+  select
+    cost_input_mode,
+    round(net_unit_cost, 6) as net_unit_cost,
+    round(gross_unit_cost, 6) as gross_unit_cost,
+    round(gross_unit_cost - net_unit_cost, 6) as tax_unit_amount,
+    round(net_unit_cost / factor, 6) as stock_unit_cost,
+    round(net_unit_cost * qty, 6) as net_total_cost,
+    round(gross_unit_cost * qty, 6) as gross_total_cost,
+    round((gross_unit_cost - net_unit_cost) * qty, 6) as tax_amount
+  from normalized;
+$$;
+
+
+ALTER FUNCTION "public"."normalize_procurement_receipt_costs"("p_input_unit_cost" numeric, "p_tax_included" boolean, "p_tax_rate" numeric, "p_conversion_factor_to_stock" numeric, "p_input_qty" numeric) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."normalize_procurement_receipt_costs"("p_input_unit_cost" numeric, "p_tax_included" boolean, "p_tax_rate" numeric, "p_conversion_factor_to_stock" numeric, "p_input_qty" numeric) IS 'Normalizes receipt line cost into net/gross/tax/stock-unit values for ORIGO purchases.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."notify_shift_published"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -4358,6 +5362,39 @@ $$;
 ALTER FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone DEFAULT "now"()) RETURNS "jsonb"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  select public.generate_daily_internal_pos_documents(p_cutoff_at, true);
+$$;
+
+
+ALTER FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone) IS 'Preview daily internal POS generation without writing documents.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."preview_manual_daily_internal_pos_documents"("p_document_date" "date" DEFAULT NULL::"date") RETURNS "jsonb"
+    LANGUAGE "sql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+  select public.generate_daily_internal_pos_documents(
+    public.get_colombia_internal_pos_cutoff_at(p_document_date),
+    true
+  );
+$$;
+
+
+ALTER FUNCTION "public"."preview_manual_daily_internal_pos_documents"("p_document_date" "date") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."preview_manual_daily_internal_pos_documents"("p_document_date" "date") IS 'Manual preview for daily internal POS documents using the 5:00 p.m. Colombia cutoff for the selected date. Does not write data.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."price_restock_request_internal_transfer"("p_request_id" "uuid") RETURNS "jsonb"
     LANGUAGE "sql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -4457,6 +5494,148 @@ $$;
 
 
 ALTER FUNCTION "public"."process_order_payment"("p_order_id" "uuid", "p_site_id" "uuid", "p_payment_method" "text", "p_payment_reference" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer DEFAULT 100, "p_is_active" boolean DEFAULT true) RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_screen record;
+  v_item_id uuid;
+  v_group_key text := nullif(btrim(coalesce(p_group_key, '')), '');
+  v_group_label text := nullif(btrim(coalesce(p_group_label, '')), '');
+begin
+  if not (
+    has_permission('viso.staff.permissions.manage')
+    or has_permission('viso.app_navigation.manage')
+    or has_permission('staff.permissions.manage')
+    or is_owner()
+    or is_global_manager()
+    or current_user = 'service_role'
+    or current_setting('request.jwt.claim.role', true) = 'service_role'
+  ) then
+    raise exception 'permission_denied_app_navigation_manage';
+  end if;
+
+  select *
+  into v_screen
+  from public.app_screen_registry
+  where id = p_registry_id
+    and is_available = true
+    and is_ignored = false;
+
+  if not found then
+    raise exception 'screen_not_found_or_not_available';
+  end if;
+
+  if v_group_key is null then
+    v_group_key := coalesce(v_screen.suggested_group_key, 'configuration');
+  end if;
+
+  if v_group_label is null then
+    v_group_label := coalesce(v_screen.suggested_group_label, 'Configuracion');
+  end if;
+
+  insert into public.app_navigation_items (
+    app_code,
+    group_key,
+    group_label,
+    group_order,
+    item_key,
+    label,
+    description,
+    href,
+    icon,
+    required_permission_code,
+    sort_order,
+    is_active
+  )
+  values (
+    v_screen.app_code,
+    v_group_key,
+    v_group_label,
+    p_group_order,
+    v_screen.item_key,
+    v_screen.label,
+    v_screen.description,
+    v_screen.href,
+    coalesce(v_screen.icon, 'settings'),
+    v_screen.required_permission_code,
+    p_sort_order,
+    p_is_active
+  )
+  on conflict (app_code, href)
+  do update set
+    group_key = excluded.group_key,
+    group_label = excluded.group_label,
+    group_order = excluded.group_order,
+    item_key = excluded.item_key,
+    label = excluded.label,
+    description = excluded.description,
+    icon = excluded.icon,
+    required_permission_code = excluded.required_permission_code,
+    sort_order = excluded.sort_order,
+    is_active = excluded.is_active
+  returning id into v_item_id;
+
+  return v_item_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) IS 'Promotes a detected screen from app_screen_registry into app_navigation_items using selected group/order/visibility.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."rebuild_procurement_supplier_product_costs"() RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_item record;
+  v_synced integer := 0;
+  v_skipped integer := 0;
+begin
+  truncate table public.procurement_supplier_product_costs restart identity cascade;
+
+  update public.inventory_entry_items
+  set supplier_product_cost_id = null;
+
+  for v_item in
+    select i.id
+    from public.inventory_entry_items i
+    join public.inventory_entries e
+      on e.id = i.entry_id
+    where e.supplier_id is not null
+      and coalesce(i.quantity_received, 0) > 0
+    order by coalesce(e.received_at, e.created_at), i.created_at, i.id
+  loop
+    begin
+      perform public.sync_procurement_supplier_product_cost_from_entry_item(v_item.id);
+      v_synced := v_synced + 1;
+    exception when others then
+      v_skipped := v_skipped + 1;
+    end;
+  end loop;
+
+  return jsonb_build_object(
+    'synced_items', v_synced,
+    'skipped_items', v_skipped,
+    'cost_rows', (select count(*) from public.procurement_supplier_product_costs)
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."rebuild_procurement_supplier_product_costs"() OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."rebuild_procurement_supplier_product_costs"() IS 'Rebuilds ORIGO supplier/product/presentation cost memory from historical inventory entries.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."receive_purchase_order"("p_purchase_order_id" "uuid") RETURNS "void"
@@ -6244,6 +7423,261 @@ $$;
 ALTER FUNCTION "public"."sync_order_fulfillment_state"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."sync_procurement_supplier_product_cost_from_entry_item"("p_entry_item_id" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_row record;
+  v_norm record;
+
+  v_existing_id uuid;
+  v_cost_id uuid;
+
+  v_input_qty numeric;
+  v_stock_qty numeric;
+  v_factor numeric;
+
+  v_total_input_qty numeric;
+  v_total_stock_qty numeric;
+  v_total_net_cost numeric;
+  v_total_gross_cost numeric;
+  v_samples_count integer;
+begin
+  select
+    i.id as entry_item_id,
+    i.entry_id,
+    i.product_id,
+    i.input_uom_profile_id,
+    i.input_qty,
+    i.quantity_received,
+    i.input_unit_code,
+    i.unit,
+    i.conversion_factor_to_stock,
+    i.stock_unit_code,
+    i.input_unit_cost,
+    i.tax_included,
+    i.tax_rate,
+    i.net_unit_cost as existing_net_unit_cost,
+    i.gross_unit_cost as existing_gross_unit_cost,
+    i.stock_unit_cost as existing_stock_unit_cost,
+    i.net_total_cost as existing_net_total_cost,
+    i.gross_total_cost as existing_gross_total_cost,
+    i.currency,
+    e.supplier_id,
+    e.received_at,
+    e.created_at as entry_created_at
+  into v_row
+  from public.inventory_entry_items i
+  join public.inventory_entries e
+    on e.id = i.entry_id
+  where i.id = p_entry_item_id;
+
+  if not found then
+    raise exception 'inventory_entry_item_not_found: %', p_entry_item_id;
+  end if;
+
+  if v_row.supplier_id is null then
+    return null;
+  end if;
+
+  v_factor := greatest(coalesce(v_row.conversion_factor_to_stock, 1), 0.000001);
+  v_stock_qty := greatest(coalesce(v_row.quantity_received, 0), 0);
+
+  v_input_qty :=
+    case
+      when coalesce(v_row.input_qty, 0) > 0 then v_row.input_qty
+      when v_stock_qty > 0 and v_factor > 0 then v_stock_qty / v_factor
+      else 0
+    end;
+
+  if v_input_qty <= 0 or v_stock_qty <= 0 then
+    return null;
+  end if;
+
+  select *
+  into v_norm
+  from public.normalize_procurement_receipt_costs(
+    coalesce(
+      nullif(v_row.input_unit_cost, 0),
+      nullif(v_row.existing_gross_unit_cost, 0),
+      nullif(v_row.existing_net_unit_cost, 0),
+      0
+    ),
+    coalesce(v_row.tax_included, false),
+    coalesce(v_row.tax_rate, 0),
+    v_factor,
+    v_input_qty
+  );
+
+  -- Prefer explicitly stored normalized values when they already exist.
+  v_norm.net_unit_cost :=
+    case
+      when coalesce(v_row.existing_net_unit_cost, 0) > 0 then v_row.existing_net_unit_cost
+      else v_norm.net_unit_cost
+    end;
+
+  v_norm.gross_unit_cost :=
+    case
+      when coalesce(v_row.existing_gross_unit_cost, 0) > 0 then v_row.existing_gross_unit_cost
+      else v_norm.gross_unit_cost
+    end;
+
+  v_norm.stock_unit_cost :=
+    case
+      when coalesce(v_row.existing_stock_unit_cost, 0) > 0 then v_row.existing_stock_unit_cost
+      else v_norm.stock_unit_cost
+    end;
+
+  v_norm.net_total_cost :=
+    case
+      when coalesce(v_row.existing_net_total_cost, 0) > 0 then v_row.existing_net_total_cost
+      else round(v_norm.net_unit_cost * v_input_qty, 6)
+    end;
+
+  v_norm.gross_total_cost :=
+    case
+      when coalesce(v_row.existing_gross_total_cost, 0) > 0 then v_row.existing_gross_total_cost
+      else round(v_norm.gross_unit_cost * v_input_qty, 6)
+    end;
+
+  select c.id
+  into v_existing_id
+  from public.procurement_supplier_product_costs c
+  where c.is_active = true
+    and c.supplier_id = v_row.supplier_id
+    and c.product_id = v_row.product_id
+    and c.input_uom_profile_id is not distinct from v_row.input_uom_profile_id
+    and lower(c.input_unit_code) = lower(coalesce(nullif(v_row.input_unit_code, ''), nullif(v_row.unit, ''), 'un'))
+    and c.conversion_factor_to_stock = v_factor
+    and lower(c.stock_unit_code) = lower(coalesce(nullif(v_row.stock_unit_code, ''), nullif(v_row.input_unit_code, ''), 'un'))
+    and c.currency = coalesce(nullif(v_row.currency, ''), 'COP')
+  limit 1;
+
+  if v_existing_id is null then
+    insert into public.procurement_supplier_product_costs (
+      supplier_id,
+      product_id,
+      input_uom_profile_id,
+      input_unit_code,
+      input_unit_label,
+      conversion_factor_to_stock,
+      stock_unit_code,
+      currency,
+
+      last_net_unit_cost,
+      last_gross_unit_cost,
+      last_stock_unit_cost,
+
+      avg_net_unit_cost,
+      avg_gross_unit_cost,
+      avg_stock_unit_cost,
+
+      total_input_qty,
+      total_stock_qty,
+      total_net_cost,
+      total_gross_cost,
+      samples_count,
+
+      last_entry_id,
+      last_entry_item_id,
+      last_received_at
+    )
+    values (
+      v_row.supplier_id,
+      v_row.product_id,
+      v_row.input_uom_profile_id,
+      lower(coalesce(nullif(v_row.input_unit_code, ''), nullif(v_row.unit, ''), 'un')),
+      coalesce(nullif(v_row.unit, ''), nullif(v_row.input_unit_code, ''), 'un'),
+      v_factor,
+      lower(coalesce(nullif(v_row.stock_unit_code, ''), nullif(v_row.input_unit_code, ''), 'un')),
+      coalesce(nullif(v_row.currency, ''), 'COP'),
+
+      round(v_norm.net_unit_cost, 6),
+      round(v_norm.gross_unit_cost, 6),
+      round(v_norm.stock_unit_cost, 6),
+
+      round(v_norm.net_total_cost / nullif(v_input_qty, 0), 6),
+      round(v_norm.gross_total_cost / nullif(v_input_qty, 0), 6),
+      round(v_norm.net_total_cost / nullif(v_stock_qty, 0), 6),
+
+      round(v_input_qty, 6),
+      round(v_stock_qty, 6),
+      round(v_norm.net_total_cost, 6),
+      round(v_norm.gross_total_cost, 6),
+      1,
+
+      v_row.entry_id,
+      v_row.entry_item_id,
+      coalesce(v_row.received_at, v_row.entry_created_at, now())
+    )
+    returning id into v_cost_id;
+  else
+    select
+      c.total_input_qty + v_input_qty,
+      c.total_stock_qty + v_stock_qty,
+      c.total_net_cost + v_norm.net_total_cost,
+      c.total_gross_cost + v_norm.gross_total_cost,
+      c.samples_count + 1
+    into
+      v_total_input_qty,
+      v_total_stock_qty,
+      v_total_net_cost,
+      v_total_gross_cost,
+      v_samples_count
+    from public.procurement_supplier_product_costs c
+    where c.id = v_existing_id;
+
+    update public.procurement_supplier_product_costs
+    set
+      input_unit_label = coalesce(nullif(v_row.unit, ''), nullif(v_row.input_unit_code, ''), input_unit_label),
+
+      last_net_unit_cost = round(v_norm.net_unit_cost, 6),
+      last_gross_unit_cost = round(v_norm.gross_unit_cost, 6),
+      last_stock_unit_cost = round(v_norm.stock_unit_cost, 6),
+
+      avg_net_unit_cost = round(v_total_net_cost / nullif(v_total_input_qty, 0), 6),
+      avg_gross_unit_cost = round(v_total_gross_cost / nullif(v_total_input_qty, 0), 6),
+      avg_stock_unit_cost = round(v_total_net_cost / nullif(v_total_stock_qty, 0), 6),
+
+      total_input_qty = round(v_total_input_qty, 6),
+      total_stock_qty = round(v_total_stock_qty, 6),
+      total_net_cost = round(v_total_net_cost, 6),
+      total_gross_cost = round(v_total_gross_cost, 6),
+      samples_count = v_samples_count,
+
+      last_entry_id = v_row.entry_id,
+      last_entry_item_id = v_row.entry_item_id,
+      last_received_at = coalesce(v_row.received_at, v_row.entry_created_at, now()),
+      updated_at = now()
+    where id = v_existing_id
+    returning id into v_cost_id;
+  end if;
+
+  update public.inventory_entry_items
+  set
+    supplier_product_cost_id = v_cost_id,
+    cost_input_mode = coalesce(cost_input_mode, v_norm.cost_input_mode),
+    net_unit_cost = coalesce(nullif(net_unit_cost, 0), round(v_norm.net_unit_cost, 6)),
+    gross_unit_cost = coalesce(nullif(gross_unit_cost, 0), round(v_norm.gross_unit_cost, 6)),
+    stock_unit_cost = coalesce(nullif(stock_unit_cost, 0), round(v_norm.stock_unit_cost, 6)),
+    net_total_cost = coalesce(nullif(net_total_cost, 0), round(v_norm.net_total_cost, 6)),
+    gross_total_cost = coalesce(nullif(gross_total_cost, 0), round(v_norm.gross_total_cost, 6)),
+    tax_amount = coalesce(nullif(tax_amount, 0), round(v_norm.gross_total_cost - v_norm.net_total_cost, 6))
+  where id = v_row.entry_item_id;
+
+  return v_cost_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."sync_procurement_supplier_product_cost_from_entry_item"("p_entry_item_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."sync_procurement_supplier_product_cost_from_entry_item"("p_entry_item_id" "uuid") IS 'Updates ORIGO supplier/product/presentation cost memory from one inventory_entry_items row.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."sync_restock_item_status_trigger"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -6359,6 +7793,24 @@ end $$;
 
 
 ALTER FUNCTION "public"."tg_set_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."tg_sync_procurement_supplier_product_cost_from_entry_item"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+begin
+  perform public.sync_procurement_supplier_product_cost_from_entry_item(new.id);
+  return new;
+exception when others then
+  -- Do not block physical receipt if cost-memory sync fails.
+  -- The rebuild function can repair cost memory later.
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."tg_sync_procurement_supplier_product_cost_from_entry_item"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."touch_order_conversation_from_message"() RETURNS "trigger"
@@ -6666,6 +8118,167 @@ $$;
 
 
 ALTER FUNCTION "public"."update_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "p_href" "text", "p_label" "text", "p_description" "text" DEFAULT NULL::"text", "p_icon" "text" DEFAULT NULL::"text", "p_suggested_group_key" "text" DEFAULT NULL::"text", "p_suggested_group_label" "text" DEFAULT NULL::"text", "p_suggested_group_order" integer DEFAULT NULL::integer, "p_suggested_sort_order" integer DEFAULT NULL::integer, "p_required_permission_code" "text" DEFAULT NULL::"text", "p_permission_name" "text" DEFAULT NULL::"text", "p_permission_description" "text" DEFAULT NULL::"text", "p_source_path" "text" DEFAULT NULL::"text", "p_sync_source" "text" DEFAULT 'scanner'::"text", "p_sync_hash" "text" DEFAULT NULL::"text", "p_navigation_kind" "text" DEFAULT 'menu'::"text", "p_is_menu_candidate" boolean DEFAULT true, "p_parent_href" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_app_code text := lower(btrim(p_app_code));
+  v_href text := case
+    when left(btrim(p_href), 1) = '/' then btrim(p_href)
+    else '/' || btrim(p_href)
+  end;
+  v_item_key text;
+  v_registry_id uuid;
+
+  v_app_id uuid;
+  v_permission_code_full text := null;
+  v_permission_code_local text := null;
+  v_navigation_kind text := coalesce(nullif(btrim(p_navigation_kind), ''), 'menu');
+begin
+  if v_app_code = '' then
+    raise exception 'app_code_required';
+  end if;
+
+  if v_href = '/' then
+    raise exception 'href_must_not_be_root';
+  end if;
+
+  if btrim(coalesce(p_label, '')) = '' then
+    raise exception 'label_required';
+  end if;
+
+  if v_navigation_kind not in ('menu', 'submenu', 'detail', 'action', 'internal', 'auth', 'hidden') then
+    v_navigation_kind := 'internal';
+  end if;
+
+  v_item_key := public._navigation_slugify(v_href);
+  v_permission_code_full := nullif(btrim(coalesce(p_required_permission_code, '')), '');
+
+  insert into public.app_screen_registry (
+    app_code,
+    item_key,
+    label,
+    description,
+    href,
+    icon,
+    suggested_group_key,
+    suggested_group_label,
+    suggested_group_order,
+    suggested_sort_order,
+    required_permission_code,
+    permission_name,
+    permission_description,
+    source_path,
+    sync_source,
+    sync_hash,
+    navigation_kind,
+    is_menu_candidate,
+    parent_href,
+    is_available,
+    is_ignored,
+    last_seen_at
+  )
+  values (
+    v_app_code,
+    v_item_key,
+    btrim(p_label),
+    nullif(btrim(coalesce(p_description, '')), ''),
+    v_href,
+    nullif(btrim(coalesce(p_icon, '')), ''),
+    nullif(btrim(coalesce(p_suggested_group_key, '')), ''),
+    nullif(btrim(coalesce(p_suggested_group_label, '')), ''),
+    p_suggested_group_order,
+    p_suggested_sort_order,
+    v_permission_code_full,
+    nullif(btrim(coalesce(p_permission_name, '')), ''),
+    nullif(btrim(coalesce(p_permission_description, '')), ''),
+    nullif(btrim(coalesce(p_source_path, '')), ''),
+    nullif(btrim(coalesce(p_sync_source, '')), ''),
+    nullif(btrim(coalesce(p_sync_hash, '')), ''),
+    v_navigation_kind,
+    coalesce(p_is_menu_candidate, true),
+    nullif(btrim(coalesce(p_parent_href, '')), ''),
+    true,
+    false,
+    now()
+  )
+  on conflict (app_code, href)
+  do update set
+    item_key = excluded.item_key,
+    label = excluded.label,
+    description = excluded.description,
+    icon = excluded.icon,
+    suggested_group_key = excluded.suggested_group_key,
+    suggested_group_label = excluded.suggested_group_label,
+    suggested_group_order = excluded.suggested_group_order,
+    suggested_sort_order = excluded.suggested_sort_order,
+    required_permission_code = excluded.required_permission_code,
+    permission_name = excluded.permission_name,
+    permission_description = excluded.permission_description,
+    source_path = excluded.source_path,
+    sync_source = excluded.sync_source,
+    sync_hash = excluded.sync_hash,
+    navigation_kind = excluded.navigation_kind,
+    is_menu_candidate = excluded.is_menu_candidate,
+    parent_href = excluded.parent_href,
+    is_available = true,
+    last_seen_at = now(),
+    updated_at = now()
+  returning id into v_registry_id;
+
+  if v_permission_code_full is not null then
+    select id
+    into v_app_id
+    from public.apps
+    where code = v_app_code
+    limit 1;
+
+    if v_app_id is not null then
+      if v_permission_code_full like v_app_code || '.%' then
+        v_permission_code_local := substr(v_permission_code_full, length(v_app_code) + 2);
+      else
+        v_permission_code_local := v_permission_code_full;
+      end if;
+
+      insert into public.app_permissions (
+        app_id,
+        code,
+        name,
+        description,
+        is_active
+      )
+      values (
+        v_app_id,
+        v_permission_code_local,
+        coalesce(nullif(btrim(coalesce(p_permission_name, '')), ''), btrim(p_label)),
+        coalesce(
+          nullif(btrim(coalesce(p_permission_description, '')), ''),
+          'Permite acceder a ' || btrim(p_label) || '.'
+        ),
+        true
+      )
+      on conflict (app_id, code)
+      do update set
+        name = coalesce(excluded.name, public.app_permissions.name),
+        description = coalesce(excluded.description, public.app_permissions.description),
+        is_active = true,
+        updated_at = now();
+    end if;
+  end if;
+
+  return v_registry_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "p_href" "text", "p_label" "text", "p_description" "text", "p_icon" "text", "p_suggested_group_key" "text", "p_suggested_group_label" "text", "p_suggested_group_order" integer, "p_suggested_sort_order" integer, "p_required_permission_code" "text", "p_permission_name" "text", "p_permission_description" "text", "p_source_path" "text", "p_sync_source" "text", "p_sync_hash" "text", "p_navigation_kind" "text", "p_is_menu_candidate" boolean, "p_parent_href" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "p_href" "text", "p_label" "text", "p_description" "text", "p_icon" "text", "p_suggested_group_key" "text", "p_suggested_group_label" "text", "p_suggested_group_order" integer, "p_suggested_sort_order" integer, "p_required_permission_code" "text", "p_permission_name" "text", "p_permission_description" "text", "p_source_path" "text", "p_sync_source" "text", "p_sync_hash" "text", "p_navigation_kind" "text", "p_is_menu_candidate" boolean, "p_parent_href" "text") IS 'Upserts a detected app screen into the global registry with navigation classification and creates its permission definition when possible.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) RETURNS "void"
@@ -8036,6 +9649,68 @@ CREATE TABLE IF NOT EXISTS "public"."app_runtime_settings" (
 ALTER TABLE "public"."app_runtime_settings" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."app_screen_registry" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "app_code" "text" NOT NULL,
+    "item_key" "text" NOT NULL,
+    "label" "text" NOT NULL,
+    "description" "text",
+    "href" "text" NOT NULL,
+    "icon" "text",
+    "suggested_group_key" "text",
+    "suggested_group_label" "text",
+    "suggested_group_order" integer,
+    "suggested_sort_order" integer,
+    "required_permission_code" "text",
+    "permission_name" "text",
+    "permission_description" "text",
+    "source_path" "text",
+    "sync_source" "text" DEFAULT 'scanner'::"text" NOT NULL,
+    "sync_hash" "text",
+    "is_available" boolean DEFAULT true NOT NULL,
+    "is_ignored" boolean DEFAULT false NOT NULL,
+    "first_seen_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "last_seen_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "navigation_kind" "text" DEFAULT 'menu'::"text" NOT NULL,
+    "is_menu_candidate" boolean DEFAULT true NOT NULL,
+    "parent_href" "text",
+    CONSTRAINT "app_screen_registry_app_code_not_blank" CHECK (("btrim"("app_code") <> ''::"text")),
+    CONSTRAINT "app_screen_registry_href_not_blank" CHECK (("btrim"("href") <> ''::"text")),
+    CONSTRAINT "app_screen_registry_href_starts_with_slash" CHECK (("left"("href", 1) = '/'::"text")),
+    CONSTRAINT "app_screen_registry_item_key_not_blank" CHECK (("btrim"("item_key") <> ''::"text")),
+    CONSTRAINT "app_screen_registry_label_not_blank" CHECK (("btrim"("label") <> ''::"text"))
+);
+
+
+ALTER TABLE "public"."app_screen_registry" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."app_screen_registry" IS 'Catalogo global de pantallas detectadas por scanners de las apps web. La visibilidad real del sidebar sigue en app_navigation_items.';
+
+
+
+COMMENT ON COLUMN "public"."app_screen_registry"."required_permission_code" IS 'Codigo completo recomendado para acceso a la pantalla, por ejemplo nexo.cost_centers.view.';
+
+
+
+COMMENT ON COLUMN "public"."app_screen_registry"."source_path" IS 'Ruta de archivo detectada por scanner, por ejemplo src/app/inventory/settings/cost-centers/page.tsx.';
+
+
+
+COMMENT ON COLUMN "public"."app_screen_registry"."navigation_kind" IS 'Clasificacion de la pantalla detectada: menu, submenu, detail, action, internal, auth o hidden.';
+
+
+
+COMMENT ON COLUMN "public"."app_screen_registry"."is_menu_candidate" IS 'Indica si VISO debe mostrar esta pantalla como candidata para agregar al sidebar.';
+
+
+
+COMMENT ON COLUMN "public"."app_screen_registry"."parent_href" IS 'Ruta padre funcional cuando la pantalla es detalle, accion o subpantalla contenida dentro de otra.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."app_update_policies" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "app_key" "text" NOT NULL,
@@ -9041,6 +10716,12 @@ CREATE TABLE IF NOT EXISTS "public"."inventory_entry_items" (
     "expiry_date" "date",
     "location_position_id" "uuid",
     "input_uom_profile_id" "uuid",
+    "supplier_product_cost_id" "uuid",
+    "cost_input_mode" "text",
+    "net_total_cost" numeric,
+    "gross_total_cost" numeric,
+    "tax_amount" numeric,
+    CONSTRAINT "inventory_entry_items_cost_input_mode_chk" CHECK ((("cost_input_mode" IS NULL) OR ("cost_input_mode" = ANY (ARRAY['net'::"text", 'gross'::"text"])))),
     CONSTRAINT "inventory_entry_items_cost_source_chk" CHECK ((("cost_source" IS NULL) OR ("cost_source" = ANY (ARRAY['manual'::"text", 'po_prefill'::"text", 'fallback_product_cost'::"text"])))),
     CONSTRAINT "inventory_entry_items_tax_rate_chk" CHECK ((("tax_rate" IS NULL) OR (("tax_rate" >= (0)::numeric) AND ("tax_rate" <= (100)::numeric))))
 );
@@ -10042,6 +11723,41 @@ COMMENT ON TABLE "public"."procurement_receptions" IS 'Core ΓÇô tabla can├�
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."procurement_supplier_product_costs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "supplier_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "input_uom_profile_id" "uuid",
+    "input_unit_code" "text" NOT NULL,
+    "input_unit_label" "text" NOT NULL,
+    "conversion_factor_to_stock" numeric NOT NULL,
+    "stock_unit_code" "text" NOT NULL,
+    "currency" "text" DEFAULT 'COP'::"text" NOT NULL,
+    "last_net_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "last_gross_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "last_stock_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "avg_net_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "avg_gross_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "avg_stock_unit_cost" numeric DEFAULT 0 NOT NULL,
+    "total_input_qty" numeric DEFAULT 0 NOT NULL,
+    "total_stock_qty" numeric DEFAULT 0 NOT NULL,
+    "total_net_cost" numeric DEFAULT 0 NOT NULL,
+    "total_gross_cost" numeric DEFAULT 0 NOT NULL,
+    "samples_count" integer DEFAULT 0 NOT NULL,
+    "last_entry_id" "uuid",
+    "last_entry_item_id" "uuid",
+    "last_received_at" timestamp with time zone,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "procurement_supplier_product_costs_costs_chk" CHECK ((("last_net_unit_cost" >= (0)::numeric) AND ("last_gross_unit_cost" >= (0)::numeric) AND ("last_stock_unit_cost" >= (0)::numeric) AND ("avg_net_unit_cost" >= (0)::numeric) AND ("avg_gross_unit_cost" >= (0)::numeric) AND ("avg_stock_unit_cost" >= (0)::numeric) AND ("total_net_cost" >= (0)::numeric) AND ("total_gross_cost" >= (0)::numeric))),
+    CONSTRAINT "procurement_supplier_product_costs_qty_chk" CHECK ((("conversion_factor_to_stock" > (0)::numeric) AND ("total_input_qty" >= (0)::numeric) AND ("total_stock_qty" >= (0)::numeric) AND ("samples_count" >= 0)))
+);
+
+
+ALTER TABLE "public"."procurement_supplier_product_costs" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_asset_maintenance_events" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "product_id" "uuid" NOT NULL,
@@ -10211,13 +11927,84 @@ CREATE TABLE IF NOT EXISTS "public"."product_inventory_profiles" (
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "unit_family" "text",
     "costing_mode" "text" DEFAULT 'auto_primary_supplier'::"text" NOT NULL,
+    "measurement_mode" "text" DEFAULT 'fixed_presentation'::"text" NOT NULL,
+    "default_tolerance_percent" numeric(7,3) DEFAULT 0 NOT NULL,
+    "requires_actual_receipt_qty" boolean DEFAULT false NOT NULL,
+    "requires_actual_dispatch_qty" boolean DEFAULT false NOT NULL,
+    "requires_actual_production_qty" boolean DEFAULT false NOT NULL,
+    "requires_count_alongside_weight" boolean DEFAULT false NOT NULL,
     CONSTRAINT "product_inventory_profiles_costing_mode_chk" CHECK (("costing_mode" = ANY (ARRAY['auto_primary_supplier'::"text", 'manual'::"text"]))),
+    CONSTRAINT "product_inventory_profiles_default_tolerance_percent_chk" CHECK ((("default_tolerance_percent" >= (0)::numeric) AND ("default_tolerance_percent" <= (100)::numeric))),
     CONSTRAINT "product_inventory_profiles_kind_chk" CHECK (("inventory_kind" = ANY (ARRAY['ingredient'::"text", 'finished'::"text", 'resale'::"text", 'packaging'::"text", 'asset'::"text", 'unclassified'::"text"]))),
+    CONSTRAINT "product_inventory_profiles_measurement_mode_chk" CHECK (("measurement_mode" = ANY (ARRAY['fixed_presentation'::"text", 'variable_weight'::"text", 'count_with_weight'::"text", 'bulk_volume'::"text"]))),
     CONSTRAINT "product_inventory_profiles_unit_family_chk" CHECK ((("unit_family" = ANY (ARRAY['volume'::"text", 'mass'::"text", 'count'::"text"])) OR ("unit_family" IS NULL)))
 );
 
 
 ALTER TABLE "public"."product_inventory_profiles" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."measurement_mode" IS 'Operational measurement behavior: fixed_presentation, variable_weight, count_with_weight, or bulk_volume.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."default_tolerance_percent" IS 'Normal operational tolerance percent for planned vs actual quantity differences.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_receipt_qty" IS 'When true, receiving flows must capture actual received/accepted quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_dispatch_qty" IS 'When true, dispatch/remission flows must capture actual dispatched quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_production_qty" IS 'When true, production flows must capture actual consumed/output quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_count_alongside_weight" IS 'When true, forms should capture physical count alongside base measured quantity.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."product_master_review_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "request_kind" "text" NOT NULL,
+    "status" "text" DEFAULT 'pending_review'::"text" NOT NULL,
+    "source_app" "text" DEFAULT 'origo'::"text" NOT NULL,
+    "source_flow" "text" DEFAULT 'receipt'::"text" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "supplier_id" "uuid",
+    "product_id" "uuid",
+    "source_entry_id" "uuid",
+    "source_entry_item_id" "uuid",
+    "line_index" integer,
+    "requested_label" "text" NOT NULL,
+    "input_unit_code" "text",
+    "input_unit_label" "text",
+    "conversion_factor_to_stock" numeric,
+    "stock_unit_code" "text",
+    "unit_cost" numeric,
+    "currency" "text" DEFAULT 'COP'::"text" NOT NULL,
+    "notes" "text",
+    "payload" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "reviewed_by" "uuid",
+    "reviewed_at" timestamp with time zone,
+    "review_notes" "text",
+    "approved_product_id" "uuid",
+    "approved_presentation_id" "uuid",
+    CONSTRAINT "product_master_review_requests_conversion_factor_to_stock_check" CHECK ((("conversion_factor_to_stock" IS NULL) OR ("conversion_factor_to_stock" > (0)::numeric))),
+    CONSTRAINT "product_master_review_requests_product_required_for_presentatio" CHECK ((("request_kind" <> 'new_presentation'::"text") OR ("product_id" IS NOT NULL))),
+    CONSTRAINT "product_master_review_requests_request_kind_check" CHECK (("request_kind" = ANY (ARRAY['new_product'::"text", 'new_presentation'::"text"]))),
+    CONSTRAINT "product_master_review_requests_status_check" CHECK (("status" = ANY (ARRAY['pending_review'::"text", 'approved'::"text", 'rejected'::"text", 'cancelled'::"text"]))),
+    CONSTRAINT "product_master_review_requests_unit_cost_check" CHECK ((("unit_cost" IS NULL) OR ("unit_cost" >= (0)::numeric)))
+);
+
+
+ALTER TABLE "public"."product_master_review_requests" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_sku_aliases" (
@@ -10339,6 +12126,46 @@ CREATE TABLE IF NOT EXISTS "public"."production_batch_consumptions" (
 ALTER TABLE "public"."production_batch_consumptions" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."production_batch_packages" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "batch_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "uom_profile_id" "uuid",
+    "package_index" integer NOT NULL,
+    "package_label" "text" NOT NULL,
+    "expected_qty" numeric DEFAULT 0 NOT NULL,
+    "actual_qty" numeric NOT NULL,
+    "unit_code" "text" NOT NULL,
+    "status" "text" DEFAULT 'available'::"text" NOT NULL,
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_by" "uuid",
+    CONSTRAINT "production_batch_packages_actual_qty_chk" CHECK (("actual_qty" > (0)::numeric)),
+    CONSTRAINT "production_batch_packages_expected_qty_chk" CHECK (("expected_qty" >= (0)::numeric)),
+    CONSTRAINT "production_batch_packages_index_chk" CHECK (("package_index" > 0)),
+    CONSTRAINT "production_batch_packages_status_chk" CHECK (("status" = ANY (ARRAY['available'::"text", 'reserved'::"text", 'dispatched'::"text", 'consumed'::"text", 'discarded'::"text", 'void'::"text"])))
+);
+
+
+ALTER TABLE "public"."production_batch_packages" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."production_batch_packages" IS 'Empaques fisicos reales generados por un lote de produccion. Ej: bolsas de 1 kg, 1.2 kg o 0.7 kg.';
+
+
+
+COMMENT ON COLUMN "public"."production_batch_packages"."uom_profile_id" IS 'Presentacion estandar opcional asociada, por ejemplo Bolsa 1 kg en product_uom_profiles.';
+
+
+
+COMMENT ON COLUMN "public"."production_batch_packages"."expected_qty" IS 'Cantidad esperada/estandar del empaque. Ej: bolsa estandar de 1 kg.';
+
+
+
+COMMENT ON COLUMN "public"."production_batch_packages"."actual_qty" IS 'Cantidad real medida del empaque. Esta es la que manda para inventario y remisiones.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."production_batches" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "site_id" "uuid" NOT NULL,
@@ -10355,11 +12182,45 @@ CREATE TABLE IF NOT EXISTS "public"."production_batches" (
     "batch_code" "text",
     "expires_at" timestamp with time zone,
     "destination_location_id" "uuid",
-    "recipe_consumed" boolean DEFAULT false NOT NULL
+    "recipe_consumed" boolean DEFAULT false NOT NULL,
+    "expected_qty" numeric,
+    "expected_unit" "text",
+    "packaged_qty" numeric,
+    "packaged_unit" "text",
+    "package_count" integer DEFAULT 0 NOT NULL,
+    "packaging_status" "text" DEFAULT 'not_packaged'::"text" NOT NULL,
+    CONSTRAINT "production_batches_expected_qty_chk" CHECK ((("expected_qty" IS NULL) OR ("expected_qty" >= (0)::numeric))),
+    CONSTRAINT "production_batches_package_count_chk" CHECK (("package_count" >= 0)),
+    CONSTRAINT "production_batches_packaged_qty_chk" CHECK ((("packaged_qty" IS NULL) OR ("packaged_qty" >= (0)::numeric))),
+    CONSTRAINT "production_batches_packaging_status_chk" CHECK (("packaging_status" = ANY (ARRAY['not_packaged'::"text", 'packaged'::"text", 'partial'::"text", 'variance'::"text"])))
 );
 
 
 ALTER TABLE "public"."production_batches" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."production_batches"."expected_qty" IS 'Rendimiento teorico esperado de la receta para el lote.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."expected_unit" IS 'Unidad del rendimiento teorico esperado.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."packaged_qty" IS 'Total real empacado en unidad base del producto terminado.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."packaged_unit" IS 'Unidad del total real empacado.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."package_count" IS 'Cantidad de empaques fisicos generados por el lote.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."packaging_status" IS 'Estado de empaque del lote: not_packaged, packaged, partial o variance.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."production_request_items" (
@@ -11641,6 +13502,16 @@ ALTER TABLE ONLY "public"."app_runtime_settings"
 
 
 
+ALTER TABLE "public"."app_screen_registry"
+    ADD CONSTRAINT "app_screen_registry_navigation_kind_check" CHECK (("navigation_kind" = ANY (ARRAY['menu'::"text", 'submenu'::"text", 'detail'::"text", 'action'::"text", 'internal'::"text", 'auth'::"text", 'hidden'::"text"]))) NOT VALID;
+
+
+
+ALTER TABLE ONLY "public"."app_screen_registry"
+    ADD CONSTRAINT "app_screen_registry_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."app_update_policies"
     ADD CONSTRAINT "app_update_policies_app_platform_unique" UNIQUE ("app_key", "platform");
 
@@ -12016,6 +13887,11 @@ ALTER TABLE ONLY "public"."procurement_receptions"
 
 
 
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."product_asset_maintenance_events"
     ADD CONSTRAINT "product_asset_maintenance_events_pkey" PRIMARY KEY ("id");
 
@@ -12051,6 +13927,11 @@ ALTER TABLE ONLY "public"."product_inventory_profiles"
 
 
 
+ALTER TABLE ONLY "public"."product_master_review_requests"
+    ADD CONSTRAINT "product_master_review_requests_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."product_site_settings"
     ADD CONSTRAINT "product_site_settings_pkey" PRIMARY KEY ("id");
 
@@ -12083,6 +13964,11 @@ ALTER TABLE ONLY "public"."product_uom_profiles"
 
 ALTER TABLE ONLY "public"."production_batch_consumptions"
     ADD CONSTRAINT "production_batch_consumptions_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_pkey" PRIMARY KEY ("id");
 
 
 
@@ -12369,6 +14255,26 @@ CREATE INDEX "app_navigation_items_app_active_order_idx" ON "public"."app_naviga
 
 
 CREATE INDEX "app_navigation_items_required_permission_code_idx" ON "public"."app_navigation_items" USING "btree" ("required_permission_code");
+
+
+
+CREATE INDEX "app_screen_registry_app_available_idx" ON "public"."app_screen_registry" USING "btree" ("app_code", "is_available", "is_ignored", "suggested_group_order", "suggested_sort_order");
+
+
+
+CREATE UNIQUE INDEX "app_screen_registry_app_href_uidx" ON "public"."app_screen_registry" USING "btree" ("app_code", "href");
+
+
+
+CREATE UNIQUE INDEX "app_screen_registry_app_item_uidx" ON "public"."app_screen_registry" USING "btree" ("app_code", "item_key");
+
+
+
+CREATE INDEX "app_screen_registry_menu_candidates_idx" ON "public"."app_screen_registry" USING "btree" ("app_code", "is_menu_candidate", "is_available", "is_ignored", "suggested_group_order", "suggested_sort_order", "label");
+
+
+
+CREATE INDEX "app_screen_registry_permission_idx" ON "public"."app_screen_registry" USING "btree" ("required_permission_code") WHERE ("required_permission_code" IS NOT NULL);
 
 
 
@@ -12828,6 +14734,26 @@ CREATE INDEX "idx_product_inventory_profiles_unit_family" ON "public"."product_i
 
 
 
+CREATE INDEX "idx_product_master_review_requests_product" ON "public"."product_master_review_requests" USING "btree" ("product_id") WHERE ("product_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_master_review_requests_site_status" ON "public"."product_master_review_requests" USING "btree" ("site_id", "status", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_product_master_review_requests_source_entry" ON "public"."product_master_review_requests" USING "btree" ("source_entry_id") WHERE ("source_entry_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_master_review_requests_status" ON "public"."product_master_review_requests" USING "btree" ("status", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_product_master_review_requests_supplier" ON "public"."product_master_review_requests" USING "btree" ("supplier_id") WHERE ("supplier_id" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_product_site_settings_production_location" ON "public"."product_site_settings" USING "btree" ("production_location_id") WHERE ("production_location_id" IS NOT NULL);
 
 
@@ -12865,6 +14791,18 @@ CREATE INDEX "idx_production_batch_consumptions_ingredient" ON "public"."product
 
 
 CREATE INDEX "idx_production_batch_consumptions_location" ON "public"."production_batch_consumptions" USING "btree" ("location_id");
+
+
+
+CREATE INDEX "idx_production_batch_packages_batch" ON "public"."production_batch_packages" USING "btree" ("batch_id");
+
+
+
+CREATE INDEX "idx_production_batch_packages_product_status" ON "public"."production_batch_packages" USING "btree" ("product_id", "status", "created_at" DESC);
+
+
+
+CREATE INDEX "idx_production_batch_packages_uom_profile" ON "public"."production_batch_packages" USING "btree" ("uom_profile_id");
 
 
 
@@ -13012,11 +14950,19 @@ CREATE INDEX "internal_pos_documents_buyer_idx" ON "public"."internal_pos_docume
 
 
 
+CREATE INDEX "internal_pos_documents_cutoff_buyer_idx" ON "public"."internal_pos_documents" USING "btree" ("document_date", "cutoff_at", "seller_cost_center_id", "buyer_cost_center_id", "status");
+
+
+
 CREATE UNIQUE INDEX "internal_pos_documents_cutoff_party_active_uidx" ON "public"."internal_pos_documents" USING "btree" ("document_date", "seller_cost_center_id", "buyer_cost_center_id", COALESCE("buyer_site_id", '00000000-0000-0000-0000-000000000000'::"uuid")) WHERE ("status" = ANY (ARRAY['draft'::"text", 'issued'::"text", 'credited'::"text"]));
 
 
 
 CREATE INDEX "internal_pos_documents_date_idx" ON "public"."internal_pos_documents" USING "btree" ("document_date", "status");
+
+
+
+CREATE UNIQUE INDEX "internal_pos_documents_document_number_uidx" ON "public"."internal_pos_documents" USING "btree" ("document_number");
 
 
 
@@ -13065,6 +15011,10 @@ CREATE INDEX "internal_transfer_variances_remission_idx" ON "public"."internal_t
 
 
 CREATE INDEX "internal_transfer_variances_responsible_cc_idx" ON "public"."internal_transfer_variances" USING "btree" ("responsible_cost_center_id", "status") WHERE ("responsible_cost_center_id" IS NOT NULL);
+
+
+
+CREATE INDEX "inventory_entry_items_supplier_product_cost_idx" ON "public"."inventory_entry_items" USING "btree" ("supplier_product_cost_id");
 
 
 
@@ -13117,6 +15067,22 @@ CREATE INDEX "order_messages_conversation_created_idx" ON "public"."order_messag
 
 
 CREATE INDEX "order_messages_site_created_idx" ON "public"."order_messages" USING "btree" ("site_id", "created_at" DESC);
+
+
+
+CREATE UNIQUE INDEX "procurement_supplier_product_costs_active_uidx" ON "public"."procurement_supplier_product_costs" USING "btree" ("supplier_id", "product_id", COALESCE("input_uom_profile_id", '00000000-0000-0000-0000-000000000000'::"uuid"), "lower"("input_unit_code"), "conversion_factor_to_stock", "lower"("stock_unit_code"), "currency") WHERE ("is_active" = true);
+
+
+
+CREATE INDEX "procurement_supplier_product_costs_last_received_idx" ON "public"."procurement_supplier_product_costs" USING "btree" ("last_received_at" DESC NULLS LAST);
+
+
+
+CREATE INDEX "procurement_supplier_product_costs_product_idx" ON "public"."procurement_supplier_product_costs" USING "btree" ("product_id", "supplier_id");
+
+
+
+CREATE INDEX "procurement_supplier_product_costs_supplier_idx" ON "public"."procurement_supplier_product_costs" USING "btree" ("supplier_id", "product_id");
 
 
 
@@ -13200,6 +15166,10 @@ CREATE INDEX "restock_requests_internal_billing_idx" ON "public"."restock_reques
 
 
 
+CREATE INDEX "restock_requests_internal_invoice_candidates_idx" ON "public"."restock_requests" USING "btree" ("pricing_status", "status", "internal_pos_document_id", "closed_at");
+
+
+
 CREATE INDEX "restock_requests_seller_buyer_cc_idx" ON "public"."restock_requests" USING "btree" ("seller_cost_center_id", "buyer_cost_center_id") WHERE (("seller_cost_center_id" IS NOT NULL) AND ("buyer_cost_center_id" IS NOT NULL));
 
 
@@ -13277,6 +15247,10 @@ CREATE UNIQUE INDEX "ux_product_uom_profiles_default_per_product_context" ON "pu
 
 
 CREATE UNIQUE INDEX "ux_production_batch_consumptions_batch_ingredient_location" ON "public"."production_batch_consumptions" USING "btree" ("batch_id", "ingredient_product_id", "location_id");
+
+
+
+CREATE UNIQUE INDEX "ux_production_batch_packages_batch_index" ON "public"."production_batch_packages" USING "btree" ("batch_id", "package_index");
 
 
 
@@ -13388,6 +15362,10 @@ CREATE OR REPLACE TRIGGER "trg_app_navigation_items_updated_at" BEFORE UPDATE ON
 
 
 
+CREATE OR REPLACE TRIGGER "trg_app_screen_registry_updated_at" BEFORE UPDATE ON "public"."app_screen_registry" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_cost_centers_updated_at" BEFORE UPDATE ON "public"."cost_centers" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
 
 
@@ -13493,6 +15471,10 @@ CREATE OR REPLACE TRIGGER "trg_site_purpose_settings_updated_at" BEFORE UPDATE O
 
 
 CREATE OR REPLACE TRIGGER "trg_staff_invitations_updated_at" BEFORE UPDATE ON "public"."staff_invitations" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_sync_procurement_supplier_product_cost_from_entry_item" AFTER INSERT ON "public"."inventory_entry_items" FOR EACH ROW EXECUTE FUNCTION "public"."tg_sync_procurement_supplier_product_cost_from_entry_item"();
 
 
 
@@ -13990,6 +15972,11 @@ ALTER TABLE ONLY "public"."inventory_entry_items"
 
 
 
+ALTER TABLE ONLY "public"."inventory_entry_items"
+    ADD CONSTRAINT "inventory_entry_items_supplier_product_cost_id_fkey" FOREIGN KEY ("supplier_product_cost_id") REFERENCES "public"."procurement_supplier_product_costs"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."inventory_form_drafts"
     ADD CONSTRAINT "inventory_form_drafts_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
 
@@ -14375,6 +16362,31 @@ ALTER TABLE ONLY "public"."procurement_receptions"
 
 
 
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_input_uom_profile_id_fkey" FOREIGN KEY ("input_uom_profile_id") REFERENCES "public"."product_uom_profiles"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_last_entry_id_fkey" FOREIGN KEY ("last_entry_id") REFERENCES "public"."inventory_entries"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_last_entry_item_id_fkey" FOREIGN KEY ("last_entry_item_id") REFERENCES "public"."inventory_entry_items"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."procurement_supplier_product_costs"
+    ADD CONSTRAINT "procurement_supplier_product_costs_supplier_id_fkey" FOREIGN KEY ("supplier_id") REFERENCES "public"."suppliers"("id") ON DELETE RESTRICT;
+
+
+
 ALTER TABLE ONLY "public"."product_asset_maintenance_events"
     ADD CONSTRAINT "product_asset_maintenance_events_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
 
@@ -14512,6 +16524,31 @@ ALTER TABLE ONLY "public"."production_batch_consumptions"
 
 ALTER TABLE ONLY "public"."production_batch_consumptions"
     ADD CONSTRAINT "production_batch_consumptions_stock_unit_code_fkey" FOREIGN KEY ("stock_unit_code") REFERENCES "public"."inventory_units"("code");
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_batch_id_fkey" FOREIGN KEY ("batch_id") REFERENCES "public"."production_batches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_unit_code_fkey" FOREIGN KEY ("unit_code") REFERENCES "public"."inventory_units"("code");
+
+
+
+ALTER TABLE ONLY "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_uom_profile_id_fkey" FOREIGN KEY ("uom_profile_id") REFERENCES "public"."product_uom_profiles"("id") ON DELETE SET NULL;
 
 
 
@@ -15108,6 +17145,21 @@ CREATE POLICY "app_runtime_settings_write_admins" ON "public"."app_runtime_setti
   WHERE (("e"."id" = "auth"."uid"()) AND ("lower"("e"."role") = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"])))))) WITH CHECK ((EXISTS ( SELECT 1
    FROM "public"."employees" "e"
   WHERE (("e"."id" = "auth"."uid"()) AND ("lower"("e"."role") = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"]))))));
+
+
+
+ALTER TABLE "public"."app_screen_registry" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "app_screen_registry_select_permission" ON "public"."app_screen_registry" FOR SELECT TO "authenticated" USING (("public"."has_permission"('viso.staff.permissions.manage'::"text") OR "public"."has_permission"('viso.app_navigation.manage'::"text") OR "public"."has_permission"('staff.permissions.manage'::"text") OR "public"."is_owner"() OR "public"."is_global_manager"()));
+
+
+
+CREATE POLICY "app_screen_registry_service_role" ON "public"."app_screen_registry" TO "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "app_screen_registry_write_permission" ON "public"."app_screen_registry" TO "authenticated" USING (("public"."has_permission"('viso.staff.permissions.manage'::"text") OR "public"."has_permission"('viso.app_navigation.manage'::"text") OR "public"."has_permission"('staff.permissions.manage'::"text") OR "public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."has_permission"('viso.staff.permissions.manage'::"text") OR "public"."has_permission"('viso.app_navigation.manage'::"text") OR "public"."has_permission"('staff.permissions.manage'::"text") OR "public"."is_owner"() OR "public"."is_global_manager"()));
 
 
 
@@ -16144,6 +18196,21 @@ CREATE POLICY "product_inventory_profiles_write_owner" ON "public"."product_inve
 
 
 
+ALTER TABLE "public"."product_master_review_requests" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "product_master_review_requests_insert_own" ON "public"."product_master_review_requests" FOR INSERT TO "authenticated" WITH CHECK (("created_by" = "auth"."uid"()));
+
+
+
+CREATE POLICY "product_master_review_requests_select_receipts" ON "public"."product_master_review_requests" FOR SELECT TO "authenticated" USING ((("created_by" = "auth"."uid"()) OR "public"."has_permission"('origo.procurement.receipts'::"text", "site_id", NULL::"uuid")));
+
+
+
+CREATE POLICY "product_master_review_requests_update_receipts" ON "public"."product_master_review_requests" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('origo.procurement.receipts'::"text", "site_id", NULL::"uuid")) WITH CHECK ("public"."has_permission"('origo.procurement.receipts'::"text", "site_id", NULL::"uuid"));
+
+
+
 ALTER TABLE "public"."product_site_settings" ENABLE ROW LEVEL SECURITY;
 
 
@@ -16193,6 +18260,21 @@ CREATE POLICY "product_suppliers_write_owner" ON "public"."product_suppliers" US
 
 
 CREATE POLICY "product_uom_profiles_write_accountant_catalog" ON "public"."product_uom_profiles" TO "authenticated" USING ("public"."has_permission"('nexo.catalog.products'::"text")) WITH CHECK ("public"."has_permission"('nexo.catalog.products'::"text"));
+
+
+
+ALTER TABLE "public"."production_batch_packages" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "production_batch_packages_select_staff" ON "public"."production_batch_packages" FOR SELECT TO "authenticated" USING ("public"."is_employee"());
+
+
+
+CREATE POLICY "production_batch_packages_write_production" ON "public"."production_batch_packages" TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."production_batches" "pb"
+  WHERE (("pb"."id" = "production_batch_packages"."batch_id") AND "public"."has_permission"('fogo.production.batches.create'::"text", "pb"."site_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."production_batches" "pb"
+  WHERE (("pb"."id" = "production_batch_packages"."batch_id") AND "public"."has_permission"('fogo.production.batches.create'::"text", "pb"."site_id")))));
 
 
 
@@ -16694,6 +18776,11 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."_navigation_slugify"("p_value" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."_navigation_slugify"("p_value" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."_set_updated_at"() TO "service_role";
 
 
@@ -16911,8 +18998,18 @@ GRANT ALL ON FUNCTION "public"."fogo_create_production_batch_from_recipe"("p_rec
 
 
 
+GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."fogo_recipe_area_options"("p_site_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fogo_recipe_area_options"("p_site_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."generate_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone, "p_dry_run" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."generate_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone, "p_dry_run" boolean) TO "service_role";
 
 
 
@@ -16931,8 +19028,18 @@ GRANT ALL ON FUNCTION "public"."generate_lpn_code"("p_site_code" "text") TO "ser
 
 
 
+GRANT ALL ON FUNCTION "public"."generate_manual_daily_internal_pos_documents"("p_document_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."generate_manual_daily_internal_pos_documents"("p_document_date" "date") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."generate_product_sku"("p_product_type" "text", "p_site_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."generate_product_sku"("p_product_type" "text", "p_site_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."get_colombia_internal_pos_cutoff_at"("p_document_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."get_colombia_internal_pos_cutoff_at"("p_document_date" "date") TO "service_role";
 
 
 
@@ -17018,12 +19125,27 @@ GRANT ALL ON FUNCTION "public"."nexo_kiosk_withdraw_workers"("p_source_location_
 
 
 
+GRANT ALL ON FUNCTION "public"."normalize_procurement_receipt_costs"("p_input_unit_cost" numeric, "p_tax_included" boolean, "p_tax_rate" numeric, "p_conversion_factor_to_stock" numeric, "p_input_qty" numeric) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."normalize_procurement_receipt_costs"("p_input_unit_cost" numeric, "p_tax_included" boolean, "p_tax_rate" numeric, "p_conversion_factor_to_stock" numeric, "p_input_qty" numeric) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."notify_shift_published"() TO "service_role";
 
 
 
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."preview_manual_daily_internal_pos_documents"("p_document_date" "date") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."preview_manual_daily_internal_pos_documents"("p_document_date" "date") TO "service_role";
 
 
 
@@ -17038,6 +19160,16 @@ GRANT ALL ON FUNCTION "public"."process_loyalty_earning"("p_order_id" "uuid") TO
 
 GRANT ALL ON FUNCTION "public"."process_order_payment"("p_order_id" "uuid", "p_site_id" "uuid", "p_payment_method" "text", "p_payment_reference" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."process_order_payment"("p_order_id" "uuid", "p_site_id" "uuid", "p_payment_method" "text", "p_payment_reference" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."rebuild_procurement_supplier_product_costs"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."rebuild_procurement_supplier_product_costs"() TO "service_role";
 
 
 
@@ -17149,6 +19281,11 @@ GRANT ALL ON FUNCTION "public"."sync_order_fulfillment_state"() TO "service_role
 
 
 
+GRANT ALL ON FUNCTION "public"."sync_procurement_supplier_product_cost_from_entry_item"("p_entry_item_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_procurement_supplier_product_cost_from_entry_item"("p_entry_item_id" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."sync_restock_item_status_trigger"() TO "service_role";
 
 
@@ -17158,6 +19295,11 @@ GRANT ALL ON FUNCTION "public"."sync_restock_request_status_from_items"("p_reque
 
 
 GRANT ALL ON FUNCTION "public"."tg_set_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."tg_sync_procurement_supplier_product_cost_from_entry_item"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."tg_sync_procurement_supplier_product_cost_from_entry_item"() TO "service_role";
 
 
 
@@ -17187,6 +19329,11 @@ GRANT ALL ON FUNCTION "public"."update_order_operational_state"("p_order_id" "uu
 
 
 GRANT ALL ON FUNCTION "public"."update_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "p_href" "text", "p_label" "text", "p_description" "text", "p_icon" "text", "p_suggested_group_key" "text", "p_suggested_group_label" "text", "p_suggested_group_order" integer, "p_suggested_sort_order" integer, "p_required_permission_code" "text", "p_permission_name" "text", "p_permission_description" "text", "p_source_path" "text", "p_sync_source" "text", "p_sync_hash" "text", "p_navigation_kind" "text", "p_is_menu_candidate" boolean, "p_parent_href" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "p_href" "text", "p_label" "text", "p_description" "text", "p_icon" "text", "p_suggested_group_key" "text", "p_suggested_group_label" "text", "p_suggested_group_order" integer, "p_suggested_sort_order" integer, "p_required_permission_code" "text", "p_permission_name" "text", "p_permission_description" "text", "p_source_path" "text", "p_sync_source" "text", "p_sync_hash" "text", "p_navigation_kind" "text", "p_is_menu_candidate" boolean, "p_parent_href" "text") TO "service_role";
 
 
 
@@ -17293,6 +19440,11 @@ GRANT ALL ON TABLE "public"."app_permissions" TO "service_role";
 
 GRANT ALL ON TABLE "public"."app_runtime_settings" TO "authenticated";
 GRANT ALL ON TABLE "public"."app_runtime_settings" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."app_screen_registry" TO "authenticated";
+GRANT ALL ON TABLE "public"."app_screen_registry" TO "service_role";
 
 
 
@@ -17735,6 +19887,11 @@ GRANT ALL ON TABLE "public"."procurement_receptions" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."procurement_supplier_product_costs" TO "authenticated";
+GRANT ALL ON TABLE "public"."procurement_supplier_product_costs" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."product_asset_maintenance_events" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_asset_maintenance_events" TO "service_role";
 
@@ -17775,6 +19932,11 @@ GRANT ALL ON TABLE "public"."product_inventory_profiles" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."product_master_review_requests" TO "authenticated";
+GRANT ALL ON TABLE "public"."product_master_review_requests" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."product_sku_aliases" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_sku_aliases" TO "service_role";
 
@@ -17797,6 +19959,11 @@ GRANT ALL ON TABLE "public"."product_uom_profiles" TO "service_role";
 
 GRANT ALL ON TABLE "public"."production_batch_consumptions" TO "authenticated";
 GRANT ALL ON TABLE "public"."production_batch_consumptions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."production_batch_packages" TO "authenticated";
+GRANT ALL ON TABLE "public"."production_batch_packages" TO "service_role";
 
 
 
