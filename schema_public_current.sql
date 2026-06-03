@@ -219,8 +219,10 @@ CREATE OR REPLACE FUNCTION "public"."apply_inventory_count_adjustments"("p_sessi
 declare
   v_session record;
   v_line record;
-  v_stock_unit_code text;
   v_applied integer := 0;
+  v_new_site_qty numeric;
+  v_new_loc_qty numeric;
+  v_new_pos_qty numeric;
 begin
   select *
   into v_session
@@ -231,6 +233,7 @@ begin
   if not found then
     raise exception 'Sesion no encontrada';
   end if;
+
   if coalesce(v_session.status, '') <> 'closed' then
     raise exception 'Sesion debe estar cerrada';
   end if;
@@ -239,18 +242,20 @@ begin
     select
       l.id,
       l.product_id,
+      l.location_position_id,
       coalesce(l.quantity_counted, 0) as counted_qty,
-      coalesce(l.quantity_delta, 0) as delta
+      coalesce(l.quantity_delta, 0) as delta,
+      coalesce(l.input_quantity, abs(coalesce(l.quantity_delta, 0))) as input_quantity,
+      coalesce(l.input_unit_code, l.stock_unit_code, p.stock_unit_code, p.unit, 'un') as input_unit_code,
+      l.input_uom_profile_id,
+      coalesce(l.stock_unit_code, p.stock_unit_code, p.unit, 'un') as stock_unit_code
     from public.inventory_count_lines l
+    left join public.products p on p.id = l.product_id
     where l.session_id = p_session_id
       and l.adjustment_applied_at is null
-    for update
+    order by l.product_id, l.location_position_id nulls first
+    for update of l
   loop
-    select coalesce(p.stock_unit_code, p.unit, 'un')
-    into v_stock_unit_code
-    from public.products p
-    where p.id = v_line.product_id;
-
     if v_line.delta <> 0 then
       insert into public.inventory_movements (
         site_id,
@@ -261,6 +266,8 @@ begin
         input_unit_code,
         conversion_factor_to_stock,
         stock_unit_code,
+        input_uom_profile_id,
+        location_position_id,
         note,
         created_by
       )
@@ -270,40 +277,41 @@ begin
         'adjustment',
         v_line.delta,
         abs(v_line.delta),
-        coalesce(v_stock_unit_code, 'un'),
+        coalesce(v_line.input_unit_code, v_line.stock_unit_code, 'un'),
         1,
-        coalesce(v_stock_unit_code, 'un'),
+        coalesce(v_line.stock_unit_code, 'un'),
+        v_line.input_uom_profile_id,
+        v_line.location_position_id,
         format('Ajuste por conteo sesion %s', p_session_id),
         p_user_id
       );
-
-      if coalesce(v_session.scope_type, '') = 'loc' and v_session.scope_location_id is not null then
-        perform public.upsert_inventory_stock_by_location(
-          v_session.scope_location_id,
-          v_line.product_id,
-          v_line.delta
-        );
-      end if;
 
       insert into public.inventory_stock_by_site (site_id, product_id, current_qty, updated_at)
       values (v_session.site_id, v_line.product_id, greatest(0, v_line.delta), now())
       on conflict (site_id, product_id) do update
         set current_qty = greatest(0, coalesce(public.inventory_stock_by_site.current_qty, 0) + v_line.delta),
-            updated_at = now();
+            updated_at = now()
+      returning current_qty into v_new_site_qty;
 
-      v_applied := v_applied + 1;
-    else
       if coalesce(v_session.scope_type, '') = 'loc' and v_session.scope_location_id is not null then
         insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
-        values (v_session.scope_location_id, v_line.product_id, greatest(0, v_line.counted_qty), now())
+        values (v_session.scope_location_id, v_line.product_id, greatest(0, v_line.delta), now())
         on conflict (location_id, product_id) do update
-          set updated_at = now();
+          set current_qty = greatest(0, coalesce(public.inventory_stock_by_location.current_qty, 0) + v_line.delta),
+              updated_at = now()
+        returning current_qty into v_new_loc_qty;
       end if;
 
-      insert into public.inventory_stock_by_site (site_id, product_id, current_qty, updated_at)
-      values (v_session.site_id, v_line.product_id, greatest(0, v_line.counted_qty), now())
-      on conflict (site_id, product_id) do update
-        set updated_at = now();
+      if v_line.location_position_id is not null then
+        insert into public.inventory_stock_by_position (position_id, product_id, current_qty, updated_at)
+        values (v_line.location_position_id, v_line.product_id, greatest(0, v_line.delta), now())
+        on conflict (position_id, product_id) do update
+          set current_qty = greatest(0, coalesce(public.inventory_stock_by_position.current_qty, 0) + v_line.delta),
+              updated_at = now()
+        returning current_qty into v_new_pos_qty;
+      end if;
+
+      v_applied := v_applied + 1;
     end if;
 
     update public.inventory_count_lines
@@ -405,6 +413,8 @@ declare
   v_request record;
   v_item record;
   v_qty numeric;
+  v_aux_count numeric;
+  v_aux_unit text;
 begin
   select *
   into v_request
@@ -433,13 +443,22 @@ begin
       continue;
     end if;
 
+    v_aux_count := v_item.received_aux_count;
+    v_aux_unit := nullif(btrim(coalesce(v_item.aux_count_unit_code, '')), '');
+
+    if v_aux_count is not null and v_aux_count <= 0 then
+      v_aux_count := null;
+    end if;
+
     insert into public.inventory_movements (
       site_id,
       product_id,
       movement_type,
       quantity,
       note,
-      related_restock_request_id
+      related_restock_request_id,
+      aux_count,
+      aux_count_unit_code
     )
     values (
       v_request.to_site_id,
@@ -447,7 +466,9 @@ begin
       'transfer_in',
       v_qty,
       'Recepcion remision ' || p_request_id::text,
-      p_request_id
+      p_request_id,
+      v_aux_count,
+      v_aux_unit
     );
 
     insert into public.inventory_stock_by_site (site_id, product_id, current_qty, updated_at)
@@ -472,6 +493,8 @@ declare
   v_request record;
   v_item record;
   v_qty numeric;
+  v_aux_count numeric;
+  v_aux_unit text;
 begin
   select *
   into v_request
@@ -500,13 +523,22 @@ begin
       continue;
     end if;
 
+    v_aux_count := v_item.shipped_aux_count;
+    v_aux_unit := nullif(btrim(coalesce(v_item.aux_count_unit_code, '')), '');
+
+    if v_aux_count is not null and v_aux_count <= 0 then
+      v_aux_count := null;
+    end if;
+
     insert into public.inventory_movements (
       site_id,
       product_id,
       movement_type,
       quantity,
       note,
-      related_restock_request_id
+      related_restock_request_id,
+      aux_count,
+      aux_count_unit_code
     )
     values (
       v_request.from_site_id,
@@ -514,10 +546,11 @@ begin
       'transfer_out',
       v_qty,
       'Salida remision ' || p_request_id::text,
-      p_request_id
+      p_request_id,
+      v_aux_count,
+      v_aux_unit
     );
 
-    -- Totales por sede
     insert into public.inventory_stock_by_site (site_id, product_id, current_qty, updated_at)
     values (v_request.from_site_id, v_item.product_id, -v_qty, now())
     on conflict (site_id, product_id)
@@ -525,9 +558,12 @@ begin
       current_qty = public.inventory_stock_by_site.current_qty + excluded.current_qty,
       updated_at = now();
 
-    -- Totales por LOC (si ya existe source_location_id para la l├¡nea)
     if v_item.source_location_id is not null then
-      perform public.upsert_inventory_stock_by_location(v_item.source_location_id, v_item.product_id, -v_qty);
+      perform public.upsert_inventory_stock_by_location(
+        v_item.source_location_id,
+        v_item.product_id,
+        -v_qty
+      );
     end if;
   end loop;
 end;
@@ -1375,55 +1411,50 @@ begin
   if not found then
     raise exception 'Sesion no encontrada';
   end if;
+
   if coalesce(v_session.status, '') <> 'open' then
     raise exception 'Sesion debe estar abierta';
   end if;
 
-  create temporary table tmp_count_current (
-    product_id uuid primary key,
-    current_qty numeric not null
-  ) on commit drop;
-
-  if coalesce(v_session.scope_type, '') = 'loc' and v_session.scope_location_id is not null then
-    insert into tmp_count_current (product_id, current_qty)
-    select l.product_id, coalesce(s.current_qty, 0)
-    from public.inventory_count_lines l
-    left join public.inventory_stock_by_location s
-      on s.location_id = v_session.scope_location_id
-     and s.product_id = l.product_id
-    where l.session_id = p_session_id;
-  elsif coalesce(v_session.scope_type, '') = 'zone' and coalesce(v_session.scope_zone, '') <> '' then
-    insert into tmp_count_current (product_id, current_qty)
-    select
-      l.product_id,
-      coalesce(sum(s.current_qty), 0)
-    from public.inventory_count_lines l
-    left join public.inventory_locations il
-      on il.site_id = v_session.site_id
-     and il.zone = v_session.scope_zone
-     and il.is_active is true
-    left join public.inventory_stock_by_location s
-      on s.location_id = il.id
-     and s.product_id = l.product_id
-    where l.session_id = p_session_id
-    group by l.product_id;
-  else
-    insert into tmp_count_current (product_id, current_qty)
-    select l.product_id, coalesce(s.current_qty, 0)
-    from public.inventory_count_lines l
-    left join public.inventory_stock_by_site s
-      on s.site_id = v_session.site_id
-     and s.product_id = l.product_id
-    where l.session_id = p_session_id;
-  end if;
-
   update public.inventory_count_lines l
   set
-    current_qty_at_close = coalesce(c.current_qty, 0),
-    quantity_delta = coalesce(l.quantity_counted, 0) - coalesce(c.current_qty, 0)
-  from tmp_count_current c
-  where l.session_id = p_session_id
-    and l.product_id = c.product_id;
+    current_qty_at_close =
+      case
+        when l.location_position_id is not null then coalesce(pos_stock.current_qty, 0)
+        when coalesce(v_session.scope_type, '') = 'loc' and v_session.scope_location_id is not null then coalesce(loc_stock.current_qty, 0)
+        when coalesce(v_session.scope_type, '') = 'zone' and coalesce(v_session.scope_zone, '') <> '' then coalesce(zone_stock.current_qty, 0)
+        else coalesce(site_stock.current_qty, 0)
+      end,
+    quantity_delta =
+      coalesce(l.quantity_counted, 0) -
+      case
+        when l.location_position_id is not null then coalesce(pos_stock.current_qty, 0)
+        when coalesce(v_session.scope_type, '') = 'loc' and v_session.scope_location_id is not null then coalesce(loc_stock.current_qty, 0)
+        when coalesce(v_session.scope_type, '') = 'zone' and coalesce(v_session.scope_zone, '') <> '' then coalesce(zone_stock.current_qty, 0)
+        else coalesce(site_stock.current_qty, 0)
+      end
+  from public.inventory_count_lines line_ref
+  left join public.inventory_stock_by_position pos_stock
+    on pos_stock.position_id = line_ref.location_position_id
+   and pos_stock.product_id = line_ref.product_id
+  left join public.inventory_stock_by_location loc_stock
+    on loc_stock.location_id = v_session.scope_location_id
+   and loc_stock.product_id = line_ref.product_id
+  left join lateral (
+    select coalesce(sum(s.current_qty), 0) as current_qty
+    from public.inventory_locations il
+    left join public.inventory_stock_by_location s
+      on s.location_id = il.id
+     and s.product_id = line_ref.product_id
+    where il.site_id = v_session.site_id
+      and il.zone = v_session.scope_zone
+      and il.is_active is true
+  ) zone_stock on coalesce(v_session.scope_type, '') = 'zone'
+  left join public.inventory_stock_by_site site_stock
+    on site_stock.site_id = v_session.site_id
+   and site_stock.product_id = line_ref.product_id
+  where l.id = line_ref.id
+    and l.session_id = p_session_id;
 
   update public.inventory_count_sessions
   set
@@ -1781,6 +1812,7 @@ begin
       from public.inventory_locations loc
       where loc.id = p_scope_location_id
         and loc.site_id = p_site_id
+        and coalesce(loc.is_active, true) = true
     ) then
       raise exception 'LOC no pertenece a la sede del conteo';
     end if;
@@ -1792,20 +1824,95 @@ begin
 
   create temporary table tmp_count_lines_input (
     product_id uuid not null,
-    quantity numeric not null
+    quantity numeric not null,
+    input_quantity numeric null,
+    input_unit_code text null,
+    input_uom_profile_id uuid null,
+    stock_unit_code text null,
+    location_position_id uuid null
   ) on commit drop;
 
-  insert into tmp_count_lines_input (product_id, quantity)
+  insert into tmp_count_lines_input (
+    product_id,
+    quantity,
+    input_quantity,
+    input_unit_code,
+    input_uom_profile_id,
+    stock_unit_code,
+    location_position_id
+  )
   select
     (entry ->> 'product_id')::uuid,
-    (entry ->> 'quantity')::numeric
+    (entry ->> 'quantity')::numeric,
+    nullif(trim(coalesce(entry ->> 'input_quantity', '')), '')::numeric,
+    nullif(trim(coalesce(entry ->> 'input_unit_code', '')), ''),
+    nullif(trim(coalesce(entry ->> 'uom_profile_id', '')), '')::uuid,
+    nullif(trim(coalesce(entry ->> 'stock_unit_code', '')), ''),
+    nullif(trim(coalesce(entry ->> 'position_id', '')), '')::uuid
   from jsonb_array_elements(coalesce(p_lines, '[]'::jsonb)) entry
-  where coalesce((entry ->> 'quantity')::numeric, 0) > 0;
+  where nullif(trim(coalesce(entry ->> 'product_id', '')), '') is not null
+    and coalesce((entry ->> 'quantity')::numeric, -1) >= 0;
 
   select count(*) into v_count from tmp_count_lines_input;
   if v_count = 0 then
-    raise exception 'Al menos una linea con cantidad > 0';
+    raise exception 'Al menos una linea capturada';
   end if;
+
+  if v_scope_type <> 'loc' and exists (
+    select 1 from tmp_count_lines_input where location_position_id is not null
+  ) then
+    raise exception 'Las ubicaciones internas solo aplican para conteos por LOC';
+  end if;
+
+  if v_scope_type = 'loc' and exists (
+    select 1
+    from tmp_count_lines_input line
+    where line.location_position_id is not null
+      and not exists (
+        select 1
+        from public.inventory_location_positions pos
+        where pos.id = line.location_position_id
+          and pos.location_id = p_scope_location_id
+          and pos.site_id = p_site_id
+          and coalesce(pos.is_active, true) = true
+      )
+  ) then
+    raise exception 'Una o mas ubicaciones internas no pertenecen al LOC del conteo';
+  end if;
+
+  create temporary table tmp_count_lines_agg (
+    product_id uuid not null,
+    location_position_id uuid null,
+    quantity numeric not null,
+    input_quantity numeric null,
+    input_unit_code text null,
+    input_uom_profile_id uuid null,
+    stock_unit_code text null
+  ) on commit drop;
+
+  insert into tmp_count_lines_agg (
+    product_id,
+    location_position_id,
+    quantity,
+    input_quantity,
+    input_unit_code,
+    input_uom_profile_id,
+    stock_unit_code
+  )
+  select
+    product_id,
+    location_position_id,
+    sum(quantity) as quantity,
+    case when count(distinct coalesce(input_unit_code, '')) = 1 then sum(coalesce(input_quantity, quantity)) else null end,
+    case when count(distinct coalesce(input_unit_code, '')) = 1 then max(input_unit_code) else null end,
+    case
+      when count(distinct input_uom_profile_id) filter (where input_uom_profile_id is not null) = 1
+        then (array_agg(input_uom_profile_id) filter (where input_uom_profile_id is not null))[1]
+      else null
+    end,
+    (array_agg(stock_unit_code) filter (where stock_unit_code is not null))[1]
+  from tmp_count_lines_input
+  group by product_id, location_position_id;
 
   insert into public.inventory_count_sessions (
     site_id,
@@ -1834,60 +1941,54 @@ begin
   )
   returning id into v_session_id;
 
-  if v_scope_type = 'loc' then
-    insert into public.inventory_count_lines (
-      session_id,
-      product_id,
-      quantity_counted,
-      current_qty_at_open
-    )
-    select
-      v_session_id,
-      li.product_id,
-      li.quantity,
-      coalesce(loc.current_qty, 0)
-    from tmp_count_lines_input li
-    left join public.inventory_stock_by_location loc
-      on loc.location_id = p_scope_location_id
-     and loc.product_id = li.product_id;
-  elsif v_scope_type = 'zone' then
-    insert into public.inventory_count_lines (
-      session_id,
-      product_id,
-      quantity_counted,
-      current_qty_at_open
-    )
-    select
-      v_session_id,
-      li.product_id,
-      li.quantity,
-      coalesce(sum(loc.current_qty), 0)
-    from tmp_count_lines_input li
-    left join public.inventory_locations il
-      on il.site_id = p_site_id
-     and il.zone = v_scope_zone
-     and il.is_active is true
-    left join public.inventory_stock_by_location loc
-      on loc.location_id = il.id
-     and loc.product_id = li.product_id
-    group by li.product_id, li.quantity;
-  else
-    insert into public.inventory_count_lines (
-      session_id,
-      product_id,
-      quantity_counted,
-      current_qty_at_open
-    )
-    select
-      v_session_id,
-      li.product_id,
-      li.quantity,
-      coalesce(site.current_qty, 0)
-    from tmp_count_lines_input li
-    left join public.inventory_stock_by_site site
-      on site.site_id = p_site_id
-     and site.product_id = li.product_id;
-  end if;
+  insert into public.inventory_count_lines (
+    session_id,
+    product_id,
+    quantity_counted,
+    input_quantity,
+    input_unit_code,
+    input_uom_profile_id,
+    stock_unit_code,
+    location_position_id,
+    current_qty_at_open
+  )
+  select
+    v_session_id,
+    li.product_id,
+    li.quantity,
+    li.input_quantity,
+    li.input_unit_code,
+    li.input_uom_profile_id,
+    coalesce(li.stock_unit_code, p.stock_unit_code, p.unit, 'un'),
+    li.location_position_id,
+    case
+      when li.location_position_id is not null then coalesce(pos_stock.current_qty, 0)
+      when v_scope_type = 'loc' then coalesce(loc_stock.current_qty, 0)
+      when v_scope_type = 'zone' then coalesce(zone_stock.current_qty, 0)
+      else coalesce(site_stock.current_qty, 0)
+    end
+  from tmp_count_lines_agg li
+  left join public.products p
+    on p.id = li.product_id
+  left join public.inventory_stock_by_position pos_stock
+    on pos_stock.position_id = li.location_position_id
+   and pos_stock.product_id = li.product_id
+  left join public.inventory_stock_by_location loc_stock
+    on loc_stock.location_id = p_scope_location_id
+   and loc_stock.product_id = li.product_id
+  left join lateral (
+    select coalesce(sum(s.current_qty), 0) as current_qty
+    from public.inventory_locations il
+    left join public.inventory_stock_by_location s
+      on s.location_id = il.id
+     and s.product_id = li.product_id
+    where il.site_id = p_site_id
+      and il.zone = v_scope_zone
+      and il.is_active is true
+  ) zone_stock on v_scope_type = 'zone'
+  left join public.inventory_stock_by_site site_stock
+    on site_stock.site_id = p_site_id
+   and site_stock.product_id = li.product_id;
 
   return jsonb_build_object('countSessionId', v_session_id, 'count', v_count);
 end;
@@ -3652,6 +3753,21 @@ begin
         raise exception 'stock changed while consuming ingredient %', v_ingredient.name;
       end if;
 
+      insert into public.inventory_stock_by_site (
+        site_id,
+        product_id,
+        current_qty,
+        updated_at
+      ) values (
+        v_recipe.site_id,
+        v_ingredient.ingredient_product_id,
+        -v_take,
+        now()
+      )
+      on conflict (site_id, product_id) do update
+        set current_qty = greatest(0, public.inventory_stock_by_site.current_qty + excluded.current_qty),
+            updated_at = now();
+
       insert into public.inventory_movements (
         site_id,
         product_id,
@@ -3724,6 +3840,24 @@ begin
     set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
         updated_at = now();
 
+  insert into public.inventory_stock_by_site (
+    site_id,
+    product_id,
+    current_qty,
+    avg_unit_cost,
+    updated_at
+  ) values (
+    v_recipe.site_id,
+    v_recipe.product_id,
+    p_produced_qty,
+    v_unit_cost,
+    now()
+  )
+  on conflict (site_id, product_id) do update
+    set current_qty = public.inventory_stock_by_site.current_qty + excluded.current_qty,
+        avg_unit_cost = coalesce(excluded.avg_unit_cost, public.inventory_stock_by_site.avg_unit_cost),
+        updated_at = now();
+
   insert into public.inventory_movements (
     site_id,
     product_id,
@@ -3782,24 +3916,36 @@ begin
 
       insert into public.production_batch_packages (
         batch_id,
+        site_id,
+        location_id,
+        location_position_id,
         product_id,
         uom_profile_id,
         package_index,
         package_label,
         expected_qty,
         actual_qty,
+        original_qty,
+        remaining_qty,
+        reserved_qty,
         unit_code,
         status,
         notes,
         created_by
       ) values (
         v_batch_id,
+        v_recipe.site_id,
+        p_destination_location_id,
+        null,
         v_recipe.product_id,
         v_package_profile_id,
         v_package_index,
         v_package_label,
         v_expected_package_qty,
         v_package.actual_qty,
+        v_package.actual_qty,
+        v_package.actual_qty,
+        0,
         v_package_unit,
         'available',
         nullif(trim(coalesce(v_package.notes, '')), ''),
@@ -7845,6 +7991,20 @@ $$;
 ALTER FUNCTION "public"."touch_order_conversation_from_message"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."touch_product_site_production_route_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."touch_product_site_production_route_updated_at"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."touch_updated_at"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     AS $$
@@ -8530,6 +8690,107 @@ $$;
 
 
 ALTER FUNCTION "public"."validate_product_site_production_location"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."validate_product_site_production_route"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_input_site_id uuid;
+  v_input_area_kind text;
+  v_input_is_active boolean;
+  v_output_site_id uuid;
+  v_output_is_active boolean;
+  v_position_site_id uuid;
+  v_position_location_id uuid;
+  v_position_is_active boolean;
+begin
+  select l.site_id, a.kind, coalesce(l.is_active, true)
+    into v_input_site_id, v_input_area_kind, v_input_is_active
+  from public.inventory_locations l
+  left join public.areas a on a.id = l.area_id
+  where l.id = new.input_location_id;
+
+  if v_input_site_id is null then
+    raise exception 'input_location_id no existe o no tiene sede: %', new.input_location_id;
+  end if;
+
+  if v_input_site_id <> new.site_id then
+    raise exception 'input_location_id % no pertenece a site_id %', new.input_location_id, new.site_id;
+  end if;
+
+  if coalesce(v_input_is_active, false) = false then
+    raise exception 'input_location_id % est├í inactivo', new.input_location_id;
+  end if;
+
+  if v_input_area_kind is distinct from new.area_kind then
+    raise exception 'input_location_id % pertenece al ├írea %, no al ├írea %',
+      new.input_location_id,
+      coalesce(v_input_area_kind, '(sin ├írea)'),
+      new.area_kind;
+  end if;
+
+  if new.output_mode = 'order_fulfillment' then
+    if new.output_location_id is not null or new.output_position_id is not null then
+      raise exception 'order_fulfillment no debe tener output_location_id ni output_position_id';
+    end if;
+    return new;
+  end if;
+
+  if new.output_location_id is null then
+    raise exception 'output_location_id es requerido cuando output_mode = %', new.output_mode;
+  end if;
+
+  select l.site_id, coalesce(l.is_active, true)
+    into v_output_site_id, v_output_is_active
+  from public.inventory_locations l
+  where l.id = new.output_location_id;
+
+  if v_output_site_id is null then
+    raise exception 'output_location_id no existe o no tiene sede: %', new.output_location_id;
+  end if;
+
+  if v_output_site_id <> new.site_id then
+    raise exception 'output_location_id % no pertenece a site_id %', new.output_location_id, new.site_id;
+  end if;
+
+  if coalesce(v_output_is_active, false) = false then
+    raise exception 'output_location_id % est├í inactivo', new.output_location_id;
+  end if;
+
+  if new.output_position_id is not null then
+    select p.site_id, p.location_id, p.is_active
+      into v_position_site_id, v_position_location_id, v_position_is_active
+    from public.inventory_location_positions p
+    where p.id = new.output_position_id;
+
+    if v_position_site_id is null then
+      raise exception 'output_position_id no existe: %', new.output_position_id;
+    end if;
+
+    if v_position_site_id <> new.site_id then
+      raise exception 'output_position_id % no pertenece a site_id %', new.output_position_id, new.site_id;
+    end if;
+
+    if v_position_location_id <> new.output_location_id then
+      raise exception 'output_position_id % pertenece al LOC %, no al output_location_id %',
+        new.output_position_id,
+        v_position_location_id,
+        new.output_location_id;
+    end if;
+
+    if coalesce(v_position_is_active, false) = false then
+      raise exception 'output_position_id % est├í inactivo', new.output_position_id;
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."validate_product_site_production_route"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."validate_restock_request_item_pick"() RETURNS "trigger"
@@ -10627,6 +10888,15 @@ CREATE TABLE IF NOT EXISTS "public"."inventory_count_lines" (
     "quantity_delta" numeric,
     "adjustment_applied_at" timestamp with time zone,
     "current_qty_at_open" numeric,
+    "input_quantity" numeric,
+    "input_unit_code" "text",
+    "input_uom_profile_id" "uuid",
+    "stock_unit_code" "text",
+    "location_position_id" "uuid",
+    "aux_count_unit_code" "text",
+    "counted_aux_count" numeric,
+    CONSTRAINT "inventory_count_lines_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0))),
+    CONSTRAINT "inventory_count_lines_counted_aux_count_nonnegative_chk" CHECK ((("counted_aux_count" IS NULL) OR ("counted_aux_count" >= (0)::numeric))),
     CONSTRAINT "inventory_count_lines_quantity_counted_check" CHECK (("quantity_counted" >= (0)::numeric))
 );
 
@@ -10635,6 +10905,14 @@ ALTER TABLE "public"."inventory_count_lines" OWNER TO "postgres";
 
 
 COMMENT ON TABLE "public"."inventory_count_lines" IS 'L├¡neas de conteo por sesi├│n; quantity_delta = quantity_counted - current_qty_at_close al cerrar';
+
+
+
+COMMENT ON COLUMN "public"."inventory_count_lines"."aux_count_unit_code" IS 'Auxiliary physical count unit used during count. Example: piezas. quantity_counted remains the canonical stock quantity.';
+
+
+
+COMMENT ON COLUMN "public"."inventory_count_lines"."counted_aux_count" IS 'Auxiliary count captured during inventory count for count_with_weight products. Example: 12 pieces while quantity_counted is 2850 g.';
 
 
 
@@ -10902,7 +11180,11 @@ CREATE TABLE IF NOT EXISTS "public"."inventory_movements" (
     "stock_unit_cost" numeric,
     "line_total_cost" numeric,
     "location_position_id" "uuid",
-    "input_uom_profile_id" "uuid"
+    "input_uom_profile_id" "uuid",
+    "aux_count" numeric,
+    "aux_count_unit_code" "text",
+    CONSTRAINT "inventory_movements_aux_count_nonnegative_chk" CHECK ((("aux_count" IS NULL) OR ("aux_count" >= (0)::numeric))),
+    CONSTRAINT "inventory_movements_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0)))
 );
 
 
@@ -10914,6 +11196,14 @@ COMMENT ON TABLE "public"."inventory_movements" IS 'Core ΓÇô tabla can├│n
 
 
 COMMENT ON COLUMN "public"."inventory_movements"."location_position_id" IS 'Optional internal position inside the destination inventory location for traceable inventory movements.';
+
+
+
+COMMENT ON COLUMN "public"."inventory_movements"."aux_count" IS 'Optional auxiliary physical count linked to this movement. Stock math still uses quantity.';
+
+
+
+COMMENT ON COLUMN "public"."inventory_movements"."aux_count_unit_code" IS 'Auxiliary count unit for aux_count. Example: piezas.';
 
 
 
@@ -11933,6 +12223,8 @@ CREATE TABLE IF NOT EXISTS "public"."product_inventory_profiles" (
     "requires_actual_dispatch_qty" boolean DEFAULT false NOT NULL,
     "requires_actual_production_qty" boolean DEFAULT false NOT NULL,
     "requires_count_alongside_weight" boolean DEFAULT false NOT NULL,
+    "aux_count_unit_code" "text",
+    CONSTRAINT "product_inventory_profiles_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0))),
     CONSTRAINT "product_inventory_profiles_costing_mode_chk" CHECK (("costing_mode" = ANY (ARRAY['auto_primary_supplier'::"text", 'manual'::"text"]))),
     CONSTRAINT "product_inventory_profiles_default_tolerance_percent_chk" CHECK ((("default_tolerance_percent" >= (0)::numeric) AND ("default_tolerance_percent" <= (100)::numeric))),
     CONSTRAINT "product_inventory_profiles_kind_chk" CHECK (("inventory_kind" = ANY (ARRAY['ingredient'::"text", 'finished'::"text", 'resale'::"text", 'packaging'::"text", 'asset'::"text", 'unclassified'::"text"]))),
@@ -11965,6 +12257,10 @@ COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_product
 
 
 COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_count_alongside_weight" IS 'When true, forms should capture physical count alongside base measured quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."aux_count_unit_code" IS 'Default auxiliary count unit for count_with_weight products. Example: pieza, unidad, aguacate. Stock remains controlled by the base unit.';
 
 
 
@@ -12005,6 +12301,83 @@ CREATE TABLE IF NOT EXISTS "public"."product_master_review_requests" (
 
 
 ALTER TABLE "public"."product_master_review_requests" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."product_site_production_routes" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "area_kind" "text" NOT NULL,
+    "route_name" "text",
+    "external_recipe_id" "text",
+    "input_location_id" "uuid" NOT NULL,
+    "output_mode" "text" DEFAULT 'inventory_stock'::"text" NOT NULL,
+    "output_location_id" "uuid",
+    "output_position_id" "uuid",
+    "is_default" boolean DEFAULT false NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    CONSTRAINT "product_site_production_routes_external_recipe_nonempty_chk" CHECK ((("external_recipe_id" IS NULL) OR ("length"("btrim"("external_recipe_id")) > 0))),
+    CONSTRAINT "product_site_production_routes_output_mode_chk" CHECK (("output_mode" = ANY (ARRAY['inventory_stock'::"text", 'sellable_stock'::"text", 'order_fulfillment'::"text"]))),
+    CONSTRAINT "product_site_production_routes_output_mode_consistency_chk" CHECK (((("output_mode" = 'order_fulfillment'::"text") AND ("output_location_id" IS NULL) AND ("output_position_id" IS NULL)) OR (("output_mode" = ANY (ARRAY['inventory_stock'::"text", 'sellable_stock'::"text"])) AND ("output_location_id" IS NOT NULL)))),
+    CONSTRAINT "product_site_production_routes_position_requires_location_chk" CHECK ((("output_position_id" IS NULL) OR ("output_location_id" IS NOT NULL))),
+    CONSTRAINT "product_site_production_routes_route_name_nonempty_chk" CHECK ((("route_name" IS NULL) OR ("length"("btrim"("route_name")) > 0)))
+);
+
+
+ALTER TABLE "public"."product_site_production_routes" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."product_site_production_routes" IS 'Rutas operativas de producci├│n por producto, sede y ├írea. Define d├│nde se consumen insumos, qu├⌐ pasa con lo producido y d├│nde queda si genera stock.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."product_id" IS 'Producto/preparaci├│n producido por la ruta.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."site_id" IS 'Sede donde aplica la ruta.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."area_kind" IS '├ürea operativa que ejecuta la receta: cocina, bar, galleter├¡a, reposter├¡a, etc.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."route_name" IS 'Nombre operativo visible de la ruta. Ejemplo: Galleter├¡a a cuarto fr├¡o.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."external_recipe_id" IS 'Identificador externo de receta, por ejemplo FOGO. Opcional para mantener NEXO desacoplado.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."input_location_id" IS 'LOC donde se ejecuta la receta y se consumen los insumos.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."output_mode" IS 'Modo de salida: inventory_stock, sellable_stock u order_fulfillment.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."output_location_id" IS 'LOC donde entra el producto terminado si output_mode genera stock.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."output_position_id" IS 'Ubicaci├│n interna dentro del LOC de salida. Opcional.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."is_default" IS 'Ruta principal para este producto+sede+├írea cuando FOGO/POS no env├¡a un override expl├¡cito.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_production_routes"."notes" IS 'Notas operativas para explicar excepciones o decisiones de configuraci├│n.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_sku_aliases" (
@@ -12140,6 +12513,16 @@ CREATE TABLE IF NOT EXISTS "public"."production_batch_packages" (
     "notes" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "created_by" "uuid",
+    "site_id" "uuid",
+    "location_id" "uuid",
+    "location_position_id" "uuid",
+    "original_qty" numeric,
+    "remaining_qty" numeric,
+    "reserved_qty" numeric DEFAULT 0 NOT NULL,
+    "opened_at" timestamp with time zone,
+    "dispatched_at" timestamp with time zone,
+    "consumed_at" timestamp with time zone,
+    "voided_at" timestamp with time zone,
     CONSTRAINT "production_batch_packages_actual_qty_chk" CHECK (("actual_qty" > (0)::numeric)),
     CONSTRAINT "production_batch_packages_expected_qty_chk" CHECK (("expected_qty" >= (0)::numeric)),
     CONSTRAINT "production_batch_packages_index_chk" CHECK (("package_index" > 0)),
@@ -12440,7 +12823,23 @@ CREATE TABLE IF NOT EXISTS "public"."restock_request_items" (
     "input_uom_profile_id" "uuid",
     "internal_price_list_id" "uuid",
     "internal_price_list_item_id" "uuid",
-    "priced_at" timestamp with time zone
+    "priced_at" timestamp with time zone,
+    "production_package_plan" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "requires_package_dispatch" boolean DEFAULT false NOT NULL,
+    "production_package_dispatch_applied_at" timestamp with time zone,
+    "production_package_dispatch_applied_by" "uuid",
+    "aux_count_unit_code" "text",
+    "input_aux_count" numeric,
+    "prepared_aux_count" numeric,
+    "shipped_aux_count" numeric,
+    "received_aux_count" numeric,
+    "shortage_aux_count" numeric,
+    CONSTRAINT "restock_request_items_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0))),
+    CONSTRAINT "restock_request_items_input_aux_count_nonnegative_chk" CHECK ((("input_aux_count" IS NULL) OR ("input_aux_count" >= (0)::numeric))),
+    CONSTRAINT "restock_request_items_prepared_aux_count_nonnegative_chk" CHECK ((("prepared_aux_count" IS NULL) OR ("prepared_aux_count" >= (0)::numeric))),
+    CONSTRAINT "restock_request_items_received_aux_count_nonnegative_chk" CHECK ((("received_aux_count" IS NULL) OR ("received_aux_count" >= (0)::numeric))),
+    CONSTRAINT "restock_request_items_shipped_aux_count_nonnegative_chk" CHECK ((("shipped_aux_count" IS NULL) OR ("shipped_aux_count" >= (0)::numeric))),
+    CONSTRAINT "restock_request_items_shortage_aux_count_nonnegative_chk" CHECK ((("shortage_aux_count" IS NULL) OR ("shortage_aux_count" >= (0)::numeric)))
 );
 
 
@@ -12468,6 +12867,30 @@ COMMENT ON COLUMN "public"."restock_request_items"."internal_price_list_item_id"
 
 
 COMMENT ON COLUMN "public"."restock_request_items"."priced_at" IS 'Momento en que se congelo el precio interno de la linea.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."aux_count_unit_code" IS 'Auxiliary physical count unit for this remission line. Example: piezas. The canonical quantities remain quantity/prepared/shipped/received/shortage in stock unit.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."input_aux_count" IS 'Optional auxiliary count requested/input for count_with_weight products. Example: 12 pieces while quantity is 2850 g.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."prepared_aux_count" IS 'Auxiliary count prepared at origin for count_with_weight products.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."shipped_aux_count" IS 'Auxiliary count shipped from origin for count_with_weight products.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."received_aux_count" IS 'Auxiliary count received at destination for count_with_weight products.';
+
+
+
+COMMENT ON COLUMN "public"."restock_request_items"."shortage_aux_count" IS 'Auxiliary count registered as shortage for count_with_weight products.';
 
 
 
@@ -13037,7 +13460,12 @@ CREATE TABLE IF NOT EXISTS "public"."suppliers" (
     "notes" "text",
     "is_active" boolean DEFAULT true NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone
+    "updated_at" timestamp with time zone,
+    "payment_type" "text" DEFAULT 'cash'::"text" NOT NULL,
+    "credit_days" integer,
+    CONSTRAINT "suppliers_cash_without_credit_days_check" CHECK ((("payment_type" = 'credit'::"text") OR ("credit_days" IS NULL))),
+    CONSTRAINT "suppliers_credit_days_check" CHECK ((("credit_days" IS NULL) OR ("credit_days" > 0))),
+    CONSTRAINT "suppliers_payment_type_check" CHECK (("payment_type" = ANY (ARRAY['cash'::"text", 'credit'::"text"])))
 );
 
 
@@ -13364,6 +13792,157 @@ CREATE OR REPLACE VIEW "public"."v_procurement_price_book" AS
 
 
 ALTER VIEW "public"."v_procurement_price_book" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."v_site_area_operational_diagnostics" AS
+ SELECT "s"."id" AS "site_id",
+    "s"."name" AS "site_name",
+    "a"."id" AS "area_id",
+    "a"."kind" AS "area_kind",
+    "ak"."name" AS "area_name",
+    "a"."name" AS "area_display_name",
+    "a"."is_active" AS "area_is_active",
+    COALESCE("cap"."can_produce", false) AS "site_can_produce",
+    COALESCE("cap"."can_sell", false) AS "site_can_sell",
+    COALESCE("cap"."can_hold_inventory", false) AS "site_can_hold_inventory",
+    (EXISTS ( SELECT 1
+           FROM "public"."site_area_purpose_rules" "rule"
+          WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AS "area_enabled_for_recipe_production",
+    "count"("l"."id") FILTER (WHERE (COALESCE("l"."is_active", true) = true)) AS "active_location_count",
+    "count"("l"."id") FILTER (WHERE ((COALESCE("l"."is_active", true) = true) AND ("l"."location_type" = 'production'::"text"))) AS "production_location_count",
+    "count"("l"."id") FILTER (WHERE ((COALESCE("l"."is_active", true) = true) AND ("l"."location_type" = ANY (ARRAY['storage'::"text", 'picking'::"text"])))) AS "storage_or_picking_location_count",
+    "count"("pos"."id") FILTER (WHERE ("pos"."is_active" = true)) AS "active_position_count",
+    "count"("r"."id") FILTER (WHERE ("r"."is_active" = true)) AS "active_route_count",
+        CASE
+            WHEN ("a"."is_active" = false) THEN 'INACTIVE'::"text"
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND (COALESCE("cap"."can_produce", false) = false)) THEN 'BLOCKING'::"text"
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND ("count"("l"."id") FILTER (WHERE ((COALESCE("l"."is_active", true) = true) AND ("l"."location_type" = 'production'::"text"))) = 0)) THEN 'BLOCKING'::"text"
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND ("count"("r"."id") FILTER (WHERE ("r"."is_active" = true)) = 0)) THEN 'WARNING'::"text"
+            ELSE 'OK'::"text"
+        END AS "diagnostic_status",
+    "array_remove"(ARRAY[
+        CASE
+            WHEN ("a"."is_active" = false) THEN 'area_inactive'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND (COALESCE("cap"."can_produce", false) = false)) THEN 'site_cannot_produce'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND ("count"("l"."id") FILTER (WHERE ((COALESCE("l"."is_active", true) = true) AND ("l"."location_type" = 'production'::"text"))) = 0)) THEN 'production_area_without_production_loc'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN ((EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "s"."id") AND ("rule"."area_kind" = "a"."kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AND ("count"("r"."id") FILTER (WHERE ("r"."is_active" = true)) = 0)) THEN 'production_area_without_routes'::"text"
+            ELSE NULL::"text"
+        END], NULL::"text") AS "diagnostic_codes"
+   FROM (((((("public"."sites" "s"
+     JOIN "public"."areas" "a" ON (("a"."site_id" = "s"."id")))
+     LEFT JOIN "public"."area_kinds" "ak" ON (("ak"."code" = "a"."kind")))
+     LEFT JOIN "public"."site_operational_capabilities" "cap" ON (("cap"."site_id" = "s"."id")))
+     LEFT JOIN "public"."inventory_locations" "l" ON ((("l"."area_id" = "a"."id") AND ("l"."site_id" = "s"."id"))))
+     LEFT JOIN "public"."inventory_location_positions" "pos" ON ((("pos"."location_id" = "l"."id") AND ("pos"."site_id" = "s"."id"))))
+     LEFT JOIN "public"."product_site_production_routes" "r" ON ((("r"."site_id" = "s"."id") AND ("r"."area_kind" = "a"."kind"))))
+  GROUP BY "s"."id", "s"."name", "a"."id", "a"."kind", "ak"."name", "a"."name", "a"."is_active", "cap"."can_produce", "cap"."can_sell", "cap"."can_hold_inventory";
+
+
+ALTER VIEW "public"."v_site_area_operational_diagnostics" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_site_area_operational_diagnostics" IS 'Diagn├│stico de ├íreas, LOCs, posiciones y rutas por sede. Base para la pantalla de mapa operativo.';
+
+
+
+CREATE OR REPLACE VIEW "public"."v_site_production_route_diagnostics" AS
+ SELECT "r"."id" AS "route_id",
+    "r"."product_id",
+    "p"."name" AS "product_name",
+    "p"."product_type",
+    "r"."site_id",
+    "s"."name" AS "site_name",
+    "r"."area_kind",
+    "ak"."name" AS "area_name",
+    "r"."route_name",
+    "r"."external_recipe_id",
+    "r"."input_location_id",
+    "input_loc"."code" AS "input_location_code",
+    "input_loc"."zone" AS "input_location_zone",
+    "r"."output_mode",
+    "r"."output_location_id",
+    "output_loc"."code" AS "output_location_code",
+    "output_loc"."zone" AS "output_location_zone",
+    "r"."output_position_id",
+    "output_pos"."code" AS "output_position_code",
+    "output_pos"."name" AS "output_position_name",
+    "r"."is_default",
+    "r"."is_active",
+    COALESCE("cap"."can_produce", false) AS "site_can_produce",
+    COALESCE("cap"."can_sell", false) AS "site_can_sell",
+    COALESCE("cap"."can_hold_inventory", false) AS "site_can_hold_inventory",
+    (EXISTS ( SELECT 1
+           FROM "public"."site_area_purpose_rules" "rule"
+          WHERE (("rule"."site_id" = "r"."site_id") AND ("rule"."area_kind" = "r"."area_kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true)))) AS "area_enabled_for_recipe_production",
+        CASE
+            WHEN ("r"."is_active" = false) THEN 'INACTIVE'::"text"
+            WHEN (COALESCE("cap"."can_produce", false) = false) THEN 'BLOCKING'::"text"
+            WHEN (NOT (EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "r"."site_id") AND ("rule"."area_kind" = "r"."area_kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true))))) THEN 'BLOCKING'::"text"
+            WHEN (("r"."output_mode" = 'sellable_stock'::"text") AND (COALESCE("cap"."can_sell", false) = false)) THEN 'WARNING'::"text"
+            WHEN (("r"."output_mode" = ANY (ARRAY['inventory_stock'::"text", 'sellable_stock'::"text"])) AND (COALESCE("cap"."can_hold_inventory", false) = false)) THEN 'WARNING'::"text"
+            ELSE 'OK'::"text"
+        END AS "diagnostic_status",
+    "array_remove"(ARRAY[
+        CASE
+            WHEN ("r"."is_active" = false) THEN 'route_inactive'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN (COALESCE("cap"."can_produce", false) = false) THEN 'site_cannot_produce'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN (NOT (EXISTS ( SELECT 1
+               FROM "public"."site_area_purpose_rules" "rule"
+              WHERE (("rule"."site_id" = "r"."site_id") AND ("rule"."area_kind" = "r"."area_kind") AND ("rule"."purpose" = 'production_recipe'::"text") AND ("rule"."is_enabled" = true))))) THEN 'area_not_enabled_for_recipe_production'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN (("r"."output_mode" = 'sellable_stock'::"text") AND (COALESCE("cap"."can_sell", false) = false)) THEN 'site_cannot_sell_but_route_outputs_sellable_stock'::"text"
+            ELSE NULL::"text"
+        END,
+        CASE
+            WHEN (("r"."output_mode" = ANY (ARRAY['inventory_stock'::"text", 'sellable_stock'::"text"])) AND (COALESCE("cap"."can_hold_inventory", false) = false)) THEN 'site_cannot_hold_inventory_but_route_outputs_stock'::"text"
+            ELSE NULL::"text"
+        END], NULL::"text") AS "diagnostic_codes"
+   FROM ((((((("public"."product_site_production_routes" "r"
+     JOIN "public"."products" "p" ON (("p"."id" = "r"."product_id")))
+     JOIN "public"."sites" "s" ON (("s"."id" = "r"."site_id")))
+     LEFT JOIN "public"."area_kinds" "ak" ON (("ak"."code" = "r"."area_kind")))
+     LEFT JOIN "public"."inventory_locations" "input_loc" ON (("input_loc"."id" = "r"."input_location_id")))
+     LEFT JOIN "public"."inventory_locations" "output_loc" ON (("output_loc"."id" = "r"."output_location_id")))
+     LEFT JOIN "public"."inventory_location_positions" "output_pos" ON (("output_pos"."id" = "r"."output_position_id")))
+     LEFT JOIN "public"."site_operational_capabilities" "cap" ON (("cap"."site_id" = "r"."site_id")));
+
+
+ALTER VIEW "public"."v_site_production_route_diagnostics" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."v_site_production_route_diagnostics" IS 'Diagn├│stico operativo de rutas de producci├│n. Sirve para pintar tarjetas OK/WARNING/BLOCKING en la configuraci├│n de sede.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."wallet_devices" (
@@ -13722,11 +14301,6 @@ ALTER TABLE ONLY "public"."inventory_count_lines"
 
 
 
-ALTER TABLE ONLY "public"."inventory_count_lines"
-    ADD CONSTRAINT "inventory_count_lines_session_id_product_id_key" UNIQUE ("session_id", "product_id");
-
-
-
 ALTER TABLE ONLY "public"."inventory_count_sessions"
     ADD CONSTRAINT "inventory_count_sessions_pkey" PRIMARY KEY ("id");
 
@@ -13932,6 +14506,11 @@ ALTER TABLE ONLY "public"."product_master_review_requests"
 
 
 
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."product_site_settings"
     ADD CONSTRAINT "product_site_settings_pkey" PRIMARY KEY ("id");
 
@@ -13967,8 +14546,23 @@ ALTER TABLE ONLY "public"."production_batch_consumptions"
 
 
 
+ALTER TABLE "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_original_qty_chk" CHECK ((("original_qty" IS NULL) OR ("original_qty" > (0)::numeric))) NOT VALID;
+
+
+
 ALTER TABLE ONLY "public"."production_batch_packages"
     ADD CONSTRAINT "production_batch_packages_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_remaining_qty_chk" CHECK ((("remaining_qty" IS NULL) OR ("remaining_qty" >= (0)::numeric))) NOT VALID;
+
+
+
+ALTER TABLE "public"."production_batch_packages"
+    ADD CONSTRAINT "production_batch_packages_reserved_qty_chk" CHECK (("reserved_qty" >= (0)::numeric)) NOT VALID;
 
 
 
@@ -14754,6 +15348,30 @@ CREATE INDEX "idx_product_master_review_requests_supplier" ON "public"."product_
 
 
 
+CREATE INDEX "idx_product_site_production_routes_external_recipe" ON "public"."product_site_production_routes" USING "btree" ("external_recipe_id") WHERE ("external_recipe_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_site_production_routes_input_location" ON "public"."product_site_production_routes" USING "btree" ("input_location_id");
+
+
+
+CREATE INDEX "idx_product_site_production_routes_output_location" ON "public"."product_site_production_routes" USING "btree" ("output_location_id") WHERE ("output_location_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_site_production_routes_output_position" ON "public"."product_site_production_routes" USING "btree" ("output_position_id") WHERE ("output_position_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_site_production_routes_product_site" ON "public"."product_site_production_routes" USING "btree" ("product_id", "site_id");
+
+
+
+CREATE INDEX "idx_product_site_production_routes_site_area_active" ON "public"."product_site_production_routes" USING "btree" ("site_id", "area_kind", "is_active");
+
+
+
 CREATE INDEX "idx_product_site_settings_production_location" ON "public"."product_site_settings" USING "btree" ("production_location_id") WHERE ("production_location_id" IS NOT NULL);
 
 
@@ -15014,6 +15632,10 @@ CREATE INDEX "internal_transfer_variances_responsible_cc_idx" ON "public"."inter
 
 
 
+CREATE INDEX "inventory_count_lines_session_product_position_idx" ON "public"."inventory_count_lines" USING "btree" ("session_id", "product_id", "location_position_id");
+
+
+
 CREATE INDEX "inventory_entry_items_supplier_product_cost_idx" ON "public"."inventory_entry_items" USING "btree" ("supplier_product_cost_id");
 
 
@@ -15126,6 +15748,10 @@ CREATE UNIQUE INDEX "product_images_product_url_unique_idx" ON "public"."product
 
 
 
+CREATE UNIQUE INDEX "product_site_production_routes_one_default_active_idx" ON "public"."product_site_production_routes" USING "btree" ("product_id", "site_id", "area_kind") WHERE (("is_active" = true) AND ("is_default" = true));
+
+
+
 CREATE INDEX "product_site_settings_product_id_idx" ON "public"."product_site_settings" USING "btree" ("product_id");
 
 
@@ -15158,7 +15784,15 @@ CREATE INDEX "restock_request_items_internal_price_idx" ON "public"."restock_req
 
 
 
+CREATE INDEX "restock_request_items_package_dispatch_pending_idx" ON "public"."restock_request_items" USING "btree" ("request_id") WHERE (("requires_package_dispatch" = true) AND ("production_package_dispatch_applied_at" IS NULL));
+
+
+
 CREATE INDEX "restock_request_items_priced_at_idx" ON "public"."restock_request_items" USING "btree" ("priced_at") WHERE ("priced_at" IS NOT NULL);
+
+
+
+CREATE INDEX "restock_request_items_requires_package_dispatch_idx" ON "public"."restock_request_items" USING "btree" ("requires_package_dispatch") WHERE ("requires_package_dispatch" = true);
 
 
 
@@ -15483,6 +16117,14 @@ CREATE OR REPLACE TRIGGER "trg_sync_restock_item_status" BEFORE INSERT OR UPDATE
 
 
 CREATE OR REPLACE TRIGGER "trg_sync_restock_request_status_from_items" AFTER INSERT OR DELETE OR UPDATE OF "quantity", "prepared_quantity", "shipped_quantity", "received_quantity", "shortage_quantity", "item_status", "request_id" ON "public"."restock_request_items" FOR EACH ROW EXECUTE FUNCTION "public"."trg_sync_restock_request_status_from_items"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_touch_product_site_production_route_updated_at" BEFORE UPDATE ON "public"."product_site_production_routes" FOR EACH ROW EXECUTE FUNCTION "public"."touch_product_site_production_route_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_validate_product_site_production_route" BEFORE INSERT OR UPDATE OF "site_id", "area_kind", "input_location_id", "output_mode", "output_location_id", "output_position_id" ON "public"."product_site_production_routes" FOR EACH ROW EXECUTE FUNCTION "public"."validate_product_site_production_route"();
 
 
 
@@ -15879,6 +16521,16 @@ ALTER TABLE ONLY "public"."inventory_cost_policies"
 
 ALTER TABLE ONLY "public"."inventory_cost_policies"
     ADD CONSTRAINT "inventory_cost_policies_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."inventory_count_lines"
+    ADD CONSTRAINT "inventory_count_lines_input_uom_profile_id_fkey" FOREIGN KEY ("input_uom_profile_id") REFERENCES "public"."product_uom_profiles"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."inventory_count_lines"
+    ADD CONSTRAINT "inventory_count_lines_location_position_id_fkey" FOREIGN KEY ("location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
 
 
 
@@ -16449,6 +17101,36 @@ ALTER TABLE ONLY "public"."product_images"
 
 ALTER TABLE ONLY "public"."product_inventory_profiles"
     ADD CONSTRAINT "product_inventory_profiles_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_area_kind_fkey" FOREIGN KEY ("area_kind") REFERENCES "public"."area_kinds"("code") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_input_location_id_fkey" FOREIGN KEY ("input_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_output_location_id_fkey" FOREIGN KEY ("output_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_output_position_id_fkey" FOREIGN KEY ("output_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."product_site_production_routes"
+    ADD CONSTRAINT "product_site_production_routes_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
 
 
 
@@ -19307,6 +19989,11 @@ GRANT ALL ON FUNCTION "public"."touch_order_conversation_from_message"() TO "ser
 
 
 
+GRANT ALL ON FUNCTION "public"."touch_product_site_production_route_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."touch_product_site_production_route_updated_at"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."touch_updated_at"() TO "service_role";
 
 
@@ -19352,6 +20039,11 @@ GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "ser
 
 
 GRANT ALL ON FUNCTION "public"."validate_product_site_production_location"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."validate_product_site_production_route"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."validate_product_site_production_route"() TO "service_role";
 
 
 
@@ -19937,6 +20629,11 @@ GRANT ALL ON TABLE "public"."product_master_review_requests" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."product_site_production_routes" TO "authenticated";
+GRANT ALL ON TABLE "public"."product_site_production_routes" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."product_sku_aliases" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_sku_aliases" TO "service_role";
 
@@ -20159,6 +20856,16 @@ GRANT ALL ON TABLE "public"."v_ops_site_readiness" TO "service_role";
 
 GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_procurement_price_book" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."v_site_area_operational_diagnostics" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_site_area_operational_diagnostics" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."v_site_production_route_diagnostics" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_site_production_route_diagnostics" TO "service_role";
 
 
 
