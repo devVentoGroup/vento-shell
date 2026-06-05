@@ -3411,8 +3411,21 @@ CREATE OR REPLACE FUNCTION "public"."fogo_create_real_production_batch"("p_recip
 declare
   v_employee_id uuid := auth.uid();
   v_recipe record;
+
+  v_route record;
+  v_route_id uuid := null;
+  v_route_found boolean := false;
+  v_configured_production_location_id uuid := null;
+
+  v_input_location_id uuid := null;
+  v_input_location record;
+
+  v_output_mode text := 'inventory_stock';
+  v_output_location_id uuid := null;
+  v_output_position_id uuid := null;
   v_destination record;
-  v_configured_production_location_id uuid;
+  v_output_position record;
+
   v_scale numeric;
   v_expected_qty numeric;
   v_produced_unit text;
@@ -3452,10 +3465,6 @@ begin
     raise exception 'produced_qty must be greater than zero';
   end if;
 
-  if p_destination_location_id is null then
-    raise exception 'destination_location_id is required';
-  end if;
-
   if p_ingredients is null or jsonb_typeof(p_ingredients) <> 'array' then
     raise exception 'ingredients must be a json array';
   end if;
@@ -3469,6 +3478,7 @@ begin
     rc.product_id,
     rc.site_id,
     rc.area_id,
+    a.kind as area_kind,
     rc.yield_qty,
     rc.yield_unit,
     rc.portion_size,
@@ -3480,6 +3490,7 @@ begin
   into v_recipe
   from public.recipe_cards rc
   join public.products p on p.id = rc.product_id
+  left join public.areas a on a.id = rc.area_id
   where rc.id = p_recipe_card_id
     and coalesce(rc.is_active, true) = true;
 
@@ -3499,6 +3510,10 @@ begin
     raise exception 'recipe must have an area';
   end if;
 
+  if nullif(trim(coalesce(v_recipe.area_kind, '')), '') is null then
+    raise exception 'recipe area must have an area kind';
+  end if;
+
   if coalesce(v_recipe.yield_qty, 0) <= 0 then
     raise exception 'recipe yield must be greater than zero';
   end if;
@@ -3511,33 +3526,116 @@ begin
     raise exception 'recipe scope denied';
   end if;
 
+  select r.*
+    into v_route
+  from public.product_site_production_routes r
+  where r.product_id = v_recipe.product_id
+    and r.site_id = v_recipe.site_id
+    and r.area_kind = v_recipe.area_kind
+    and coalesce(r.is_active, true) = true
+    and (
+      r.external_recipe_id is null
+      or nullif(trim(r.external_recipe_id), '') is null
+      or r.external_recipe_id = v_recipe.id::text
+    )
+  order by
+    case when r.external_recipe_id = v_recipe.id::text then 0 else 1 end,
+    case when coalesce(r.is_default, false) then 0 else 1 end,
+    r.updated_at desc nulls last,
+    r.created_at desc nulls last
+  limit 1;
+
+  if found then
+    v_route_found := true;
+    v_route_id := v_route.id;
+    v_input_location_id := v_route.input_location_id;
+    v_output_mode := coalesce(nullif(trim(v_route.output_mode), ''), 'inventory_stock');
+    v_output_location_id := v_route.output_location_id;
+    v_output_position_id := v_route.output_position_id;
+  else
+    select production_location_id
+      into v_configured_production_location_id
+    from public.product_site_settings
+    where product_id = v_recipe.product_id
+      and site_id = v_recipe.site_id
+      and coalesce(is_active, true) = true
+      and production_location_id is not null
+    order by updated_at desc nulls last, created_at desc nulls last
+    limit 1;
+
+    v_input_location_id := coalesce(v_configured_production_location_id, p_destination_location_id);
+    v_output_mode := 'inventory_stock';
+    v_output_location_id := p_destination_location_id;
+    v_output_position_id := null;
+  end if;
+
+  if v_output_mode not in ('inventory_stock', 'sellable_stock', 'order_fulfillment') then
+    raise exception 'invalid production output mode: %', v_output_mode;
+  end if;
+
+  if v_output_mode = 'order_fulfillment' then
+    v_output_location_id := null;
+    v_output_position_id := null;
+  elsif v_output_location_id is null then
+    raise exception 'destination_location_id is required for output mode %', v_output_mode;
+  end if;
+
+  if v_input_location_id is null then
+    raise exception 'input production LOC is required';
+  end if;
+
   select id, site_id, code
-  into v_destination
+    into v_input_location
   from public.inventory_locations
-  where id = p_destination_location_id
+  where id = v_input_location_id
     and coalesce(is_active, true) = true;
 
   if not found then
-    raise exception 'destination LOC not found';
+    raise exception 'input production LOC not found';
   end if;
 
-  if v_destination.site_id <> v_recipe.site_id then
-    raise exception 'destination LOC must belong to recipe site';
+  if v_input_location.site_id <> v_recipe.site_id then
+    raise exception 'input production LOC must belong to recipe site';
   end if;
 
-  select production_location_id
-    into v_configured_production_location_id
-  from public.product_site_settings
-  where product_id = v_recipe.product_id
-    and site_id = v_recipe.site_id
-    and coalesce(is_active, true) = true
-    and production_location_id is not null
-  order by updated_at desc nulls last, created_at desc nulls last
-  limit 1;
+  if v_output_location_id is not null then
+    select id, site_id, code
+      into v_destination
+    from public.inventory_locations
+    where id = v_output_location_id
+      and coalesce(is_active, true) = true;
 
-  if v_configured_production_location_id is not null
-     and v_configured_production_location_id <> p_destination_location_id then
-    raise exception 'destination LOC must match configured production LOC for this product';
+    if not found then
+      raise exception 'destination LOC not found';
+    end if;
+
+    if v_destination.site_id <> v_recipe.site_id then
+      raise exception 'destination LOC must belong to recipe site';
+    end if;
+  end if;
+
+  if v_output_position_id is not null then
+    select id, site_id, location_id, code, name
+      into v_output_position
+    from public.inventory_location_positions
+    where id = v_output_position_id
+      and coalesce(is_active, true) = true;
+
+    if not found then
+      raise exception 'destination position not found';
+    end if;
+
+    if v_output_position.site_id <> v_recipe.site_id then
+      raise exception 'destination position must belong to recipe site';
+    end if;
+
+    if v_output_position.location_id <> v_output_location_id then
+      raise exception 'destination position must belong to destination LOC';
+    end if;
+  end if;
+
+  if v_output_mode = 'order_fulfillment' and jsonb_array_length(p_packages) > 0 then
+    raise exception 'order_fulfillment routes cannot create stock packages';
   end if;
 
   v_scale := p_produced_qty / v_recipe.yield_qty;
@@ -3564,20 +3662,21 @@ begin
     select count(*)
       into v_invalid_ingredients
     from provided pi
-    left join public.recipes r
-      on r.product_id = v_recipe.product_id
-     and r.ingredient_product_id = pi.ingredient_product_id
-     and coalesce(r.is_active, true) = true
-    where pi.ingredient_product_id is null
-       or r.id is null;
+    where not exists (
+      select 1
+      from public.recipes r
+      where r.product_id = v_recipe.product_id
+        and r.ingredient_product_id = pi.ingredient_product_id
+        and coalesce(r.is_active, true) = true
+    );
 
     if v_invalid_ingredients > 0 then
-      raise exception 'ingredients payload contains products that are not active ingredients of the recipe';
+      raise exception 'provided ingredients do not match active recipe';
     end if;
   end if;
 
-  -- Validar paquetes antes de tocar inventario.
   v_packages_count := jsonb_array_length(p_packages);
+
   if v_packages_count > 0 then
     for v_package in
       select *
@@ -3591,18 +3690,18 @@ begin
         notes text
       )
     loop
-      v_package_index := coalesce(v_package.package_index, v_package_index + 1);
       v_package_unit := coalesce(nullif(trim(v_package.unit_code), ''), v_produced_unit);
 
       if coalesce(v_package.actual_qty, 0) <= 0 then
-        raise exception 'all packages must have actual_qty greater than zero';
+        raise exception 'package actual_qty must be greater than zero';
       end if;
 
       if v_package.uom_profile_id is not null and not exists (
         select 1
-        from public.product_uom_profiles profile
-        where profile.id = v_package.uom_profile_id
-          and profile.product_id = v_recipe.product_id
+        from public.product_uom_profiles pup
+        where pup.id = v_package.uom_profile_id
+          and pup.product_id = v_recipe.product_id
+          and coalesce(pup.is_active, true) = true
       ) then
         raise exception 'package uom profile does not belong to the produced product';
       end if;
@@ -3623,6 +3722,8 @@ begin
     site_id,
     product_id,
     recipe_card_id,
+    production_route_id,
+    output_mode,
     produced_qty,
     produced_unit,
     expected_qty,
@@ -3635,11 +3736,14 @@ begin
     notes,
     created_by,
     destination_location_id,
+    destination_position_id,
     recipe_consumed
   ) values (
     v_recipe.site_id,
     v_recipe.product_id,
     v_recipe.id,
+    v_route_id,
+    v_output_mode,
     p_produced_qty,
     v_produced_unit,
     v_expected_qty,
@@ -3651,7 +3755,8 @@ begin
     'posted',
     nullif(trim(coalesce(p_notes, '')), ''),
     v_employee_id,
-    p_destination_location_id,
+    v_output_location_id,
+    v_output_position_id,
     true
   ) returning id, batch_code into v_batch_id, v_batch_code;
 
@@ -3720,17 +3825,31 @@ begin
       where loc.site_id = v_recipe.site_id
         and coalesce(loc.is_active, true) = true
         and (
-          v_ingredient.requested_location_id is null
-          or loc.id = v_ingredient.requested_location_id
-        )
-        and (
-          v_ingredient.requested_location_id is not null
-          or v_configured_production_location_id is null
-          or loc.id = v_configured_production_location_id
+          (v_route_found and loc.id = v_input_location_id)
+          or (
+            not v_route_found
+            and v_ingredient.requested_location_id is not null
+            and loc.id = v_ingredient.requested_location_id
+          )
+          or (
+            not v_route_found
+            and v_ingredient.requested_location_id is null
+            and v_input_location_id is not null
+            and loc.id = v_input_location_id
+          )
+          or (
+            not v_route_found
+            and v_ingredient.requested_location_id is null
+            and v_input_location_id is null
+          )
         )
       order by
-        case when v_ingredient.requested_location_id is not null then 0
-             when pick.location_id is null then 1 else 0 end,
+        case
+          when v_route_found then 0
+          when v_ingredient.requested_location_id is not null then 0
+          when pick.location_id is null then 1
+          else 0
+        end,
         coalesce(pick.priority, 100000) asc,
         stock.current_qty desc,
         loc.code asc
@@ -3834,60 +3953,71 @@ begin
       unit_cost = v_unit_cost
   where id = v_batch_id;
 
-  insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
-  values (p_destination_location_id, v_recipe.product_id, p_produced_qty, now())
-  on conflict (location_id, product_id) do update
-    set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
-        updated_at = now();
+  if v_output_mode in ('inventory_stock', 'sellable_stock') then
+    insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
+    values (v_output_location_id, v_recipe.product_id, p_produced_qty, now())
+    on conflict (location_id, product_id) do update
+      set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
+          updated_at = now();
 
-  insert into public.inventory_stock_by_site (
-    site_id,
-    product_id,
-    current_qty,
-    avg_unit_cost,
-    updated_at
-  ) values (
-    v_recipe.site_id,
-    v_recipe.product_id,
-    p_produced_qty,
-    v_unit_cost,
-    now()
-  )
-  on conflict (site_id, product_id) do update
-    set current_qty = public.inventory_stock_by_site.current_qty + excluded.current_qty,
-        avg_unit_cost = coalesce(excluded.avg_unit_cost, public.inventory_stock_by_site.avg_unit_cost),
-        updated_at = now();
+    if v_output_position_id is not null then
+      insert into public.inventory_stock_by_position (position_id, product_id, current_qty, updated_at)
+      values (v_output_position_id, v_recipe.product_id, p_produced_qty, now())
+      on conflict (position_id, product_id) do update
+        set current_qty = public.inventory_stock_by_position.current_qty + excluded.current_qty,
+            updated_at = now();
+    end if;
 
-  insert into public.inventory_movements (
-    site_id,
-    product_id,
-    movement_type,
-    quantity,
-    input_qty,
-    input_unit_code,
-    conversion_factor_to_stock,
-    stock_unit_code,
-    unit_cost,
-    note,
-    related_production_batch_id,
-    created_by
-  ) values (
-    v_recipe.site_id,
-    v_recipe.product_id,
-    'production_output',
-    p_produced_qty,
-    p_produced_qty,
-    coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
-    1,
-    coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
-    v_unit_cost,
-    format('Ingreso real lote %s a %s', coalesce(v_batch_code, v_batch_id::text), coalesce(v_destination.code, p_destination_location_id::text)),
-    v_batch_id,
-    v_employee_id
-  );
+    insert into public.inventory_stock_by_site (
+      site_id,
+      product_id,
+      current_qty,
+      avg_unit_cost,
+      updated_at
+    ) values (
+      v_recipe.site_id,
+      v_recipe.product_id,
+      p_produced_qty,
+      v_unit_cost,
+      now()
+    )
+    on conflict (site_id, product_id) do update
+      set current_qty = public.inventory_stock_by_site.current_qty + excluded.current_qty,
+          avg_unit_cost = coalesce(excluded.avg_unit_cost, public.inventory_stock_by_site.avg_unit_cost),
+          updated_at = now();
 
-  -- Registrar empaques al final. Si no llegaron empaques, queda como lote sin empaque detallado.
-  if v_packages_count > 0 then
+    insert into public.inventory_movements (
+      site_id,
+      product_id,
+      movement_type,
+      quantity,
+      input_qty,
+      input_unit_code,
+      conversion_factor_to_stock,
+      stock_unit_code,
+      unit_cost,
+      note,
+      related_production_batch_id,
+      location_position_id,
+      created_by
+    ) values (
+      v_recipe.site_id,
+      v_recipe.product_id,
+      'production_output',
+      p_produced_qty,
+      p_produced_qty,
+      coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
+      1,
+      coalesce(nullif(v_recipe.product_stock_unit_code, ''), nullif(v_recipe.product_unit, ''), v_produced_unit),
+      v_unit_cost,
+      format('Ingreso real lote %s a %s', coalesce(v_batch_code, v_batch_id::text), coalesce(v_destination.code, v_output_location_id::text)),
+      v_batch_id,
+      v_output_position_id,
+      v_employee_id
+    );
+  end if;
+
+  if v_packages_count > 0 and v_output_mode in ('inventory_stock', 'sellable_stock') then
     v_package_index := 0;
     for v_package in
       select *
@@ -3935,8 +4065,8 @@ begin
       ) values (
         v_batch_id,
         v_recipe.site_id,
-        p_destination_location_id,
-        null,
+        v_output_location_id,
+        v_output_position_id,
         v_recipe.product_id,
         v_package_profile_id,
         v_package_index,
@@ -3974,10 +4104,15 @@ begin
     'productId', v_recipe.product_id,
     'siteId', v_recipe.site_id,
     'areaId', v_recipe.area_id,
+    'areaKind', v_recipe.area_kind,
+    'productionRouteId', v_route_id,
+    'inputLocationId', v_input_location_id,
+    'outputMode', v_output_mode,
     'expectedQty', v_expected_qty,
     'producedQty', p_produced_qty,
     'producedUnit', v_produced_unit,
-    'destinationLocationId', p_destination_location_id,
+    'destinationLocationId', v_output_location_id,
+    'destinationPositionId', v_output_position_id,
     'packageCount', v_packages_count,
     'packagedQty', case when v_packages_count > 0 then v_package_total else null end,
     'totalCost', v_total_cost,
@@ -10063,6 +10198,261 @@ CREATE TABLE IF NOT EXISTS "public"."asistencia_logs" (
 ALTER TABLE "public"."asistencia_logs" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."asset_count_lines" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "session_id" "uuid" NOT NULL,
+    "asset_item_id" "uuid",
+    "asset_group_id" "uuid",
+    "expected_qty" numeric(14,3) DEFAULT 1 NOT NULL,
+    "counted_qty" numeric(14,3) DEFAULT 0 NOT NULL,
+    "count_status" "text" DEFAULT 'pending'::"text" NOT NULL,
+    "expected_site_id" "uuid",
+    "expected_area_id" "uuid",
+    "expected_location_id" "uuid",
+    "expected_location_position_id" "uuid",
+    "found_site_id" "uuid",
+    "found_area_id" "uuid",
+    "found_location_id" "uuid",
+    "found_location_position_id" "uuid",
+    "condition_status" "text",
+    "scanned_qr_token" "uuid",
+    "counted_by" "uuid",
+    "counted_at" timestamp with time zone,
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_count_lines_condition_status_chk" CHECK ((("condition_status" IS NULL) OR ("condition_status" = ANY (ARRAY['nuevo'::"text", 'bueno'::"text", 'regular'::"text", 'malo'::"text", 'critico'::"text"])))),
+    CONSTRAINT "asset_count_lines_qty_nonnegative_chk" CHECK ((("expected_qty" >= (0)::numeric) AND ("counted_qty" >= (0)::numeric))),
+    CONSTRAINT "asset_count_lines_status_chk" CHECK (("count_status" = ANY (ARRAY['pending'::"text", 'found'::"text", 'missing'::"text", 'found_elsewhere'::"text", 'damaged'::"text", 'extra'::"text", 'not_applicable'::"text"]))),
+    CONSTRAINT "asset_count_lines_subject_chk" CHECK (((("asset_item_id" IS NOT NULL) AND ("asset_group_id" IS NULL)) OR (("asset_item_id" IS NULL) AND ("asset_group_id" IS NOT NULL))))
+);
+
+
+ALTER TABLE "public"."asset_count_lines" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_count_lines" IS 'Resultado del conteo de activos individuales o grupos: encontrado, faltante, encontrado en otro LOC, danado o extra.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_count_sessions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "name" "text",
+    "status" "text" DEFAULT 'open'::"text" NOT NULL,
+    "scope_type" "text" DEFAULT 'site'::"text" NOT NULL,
+    "scope_area_id" "uuid",
+    "scope_location_id" "uuid",
+    "scope_location_position_id" "uuid",
+    "started_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "started_by" "uuid",
+    "closed_at" timestamp with time zone,
+    "closed_by" "uuid",
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_count_sessions_scope_type_chk" CHECK (("scope_type" = ANY (ARRAY['site'::"text", 'area'::"text", 'loc'::"text", 'position'::"text"]))),
+    CONSTRAINT "asset_count_sessions_status_chk" CHECK (("status" = ANY (ARRAY['open'::"text", 'closed'::"text", 'cancelled'::"text"])))
+);
+
+
+ALTER TABLE "public"."asset_count_sessions" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_count_sessions" IS 'Sesiones de conteo patrimonial de activos. Separadas de inventory_count_sessions para no mezclar activos con consumibles.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_documents" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid",
+    "asset_item_id" "uuid",
+    "asset_group_id" "uuid",
+    "document_type" "text" DEFAULT 'other'::"text" NOT NULL,
+    "title" "text" NOT NULL,
+    "file_url" "text" NOT NULL,
+    "issued_at" "date",
+    "expires_at" "date",
+    "notes" "text",
+    "uploaded_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_documents_file_url_not_blank_chk" CHECK (("length"("btrim"("file_url")) > 0)),
+    CONSTRAINT "asset_documents_subject_chk" CHECK ((("product_id" IS NOT NULL) OR ("asset_item_id" IS NOT NULL) OR ("asset_group_id" IS NOT NULL))),
+    CONSTRAINT "asset_documents_title_not_blank_chk" CHECK (("length"("btrim"("title")) > 0)),
+    CONSTRAINT "asset_documents_type_chk" CHECK (("document_type" = ANY (ARRAY['technical_sheet'::"text", 'manual'::"text", 'invoice'::"text", 'warranty'::"text", 'maintenance_report'::"text", 'photo'::"text", 'certificate'::"text", 'other'::"text"])))
+);
+
+
+ALTER TABLE "public"."asset_documents" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_documents" IS 'Documentos de activos: ficha tecnica, manuales, facturas, garantias, fotos, certificados e informes.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_groups" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "group_code" "text" NOT NULL,
+    "qr_token" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "expected_qty" numeric(14,3) DEFAULT 0 NOT NULL,
+    "unit_code" "text" DEFAULT 'un'::"text" NOT NULL,
+    "site_id" "uuid",
+    "area_id" "uuid",
+    "location_id" "uuid",
+    "location_position_id" "uuid",
+    "responsible_employee_id" "uuid",
+    "condition_status" "text" DEFAULT 'bueno'::"text" NOT NULL,
+    "lifecycle_status" "text" DEFAULT 'activo'::"text" NOT NULL,
+    "main_image_url" "text",
+    "notes" "text",
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_groups_condition_status_chk" CHECK (("condition_status" = ANY (ARRAY['nuevo'::"text", 'bueno'::"text", 'regular'::"text", 'malo'::"text", 'critico'::"text"]))),
+    CONSTRAINT "asset_groups_expected_qty_nonnegative_chk" CHECK (("expected_qty" >= (0)::numeric)),
+    CONSTRAINT "asset_groups_group_code_not_blank_chk" CHECK (("length"("btrim"("group_code")) > 0)),
+    CONSTRAINT "asset_groups_lifecycle_status_chk" CHECK (("lifecycle_status" = ANY (ARRAY['activo'::"text", 'almacenado'::"text", 'prestado'::"text", 'en_reparacion'::"text", 'retirado'::"text", 'perdido'::"text"]))),
+    CONSTRAINT "asset_groups_name_not_blank_chk" CHECK (("length"("btrim"("name")) > 0)),
+    CONSTRAINT "asset_groups_unit_code_not_blank_chk" CHECK (("length"("btrim"("unit_code")) > 0))
+);
+
+
+ALTER TABLE "public"."asset_groups" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_groups" IS 'Activos agrupados por cantidad para objetos repetidos que no requieren trazabilidad individual, por ejemplo sillas, bandejas o canastillas.';
+
+
+
+COMMENT ON COLUMN "public"."asset_groups"."qr_token" IS 'Token estable para QR de grupos contables de activos repetidos.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_items" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "asset_code" "text" NOT NULL,
+    "qr_token" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "display_name" "text",
+    "internal_plate" "text",
+    "serial_number" "text",
+    "site_id" "uuid",
+    "area_id" "uuid",
+    "location_id" "uuid",
+    "location_position_id" "uuid",
+    "responsible_employee_id" "uuid",
+    "brand" "text",
+    "model" "text",
+    "manufacturer" "text",
+    "equipment_status" "text" DEFAULT 'operativo'::"text" NOT NULL,
+    "condition_status" "text" DEFAULT 'bueno'::"text" NOT NULL,
+    "lifecycle_status" "text" DEFAULT 'activo'::"text" NOT NULL,
+    "ownership_status" "text" DEFAULT 'propio'::"text" NOT NULL,
+    "purchase_date" "date",
+    "started_use_date" "date",
+    "warranty_until" "date",
+    "commercial_value" numeric(14,2),
+    "purchase_invoice_url" "text",
+    "main_image_url" "text",
+    "technical_specs" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "notes" "text",
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_items_asset_code_not_blank_chk" CHECK (("length"("btrim"("asset_code")) > 0)),
+    CONSTRAINT "asset_items_commercial_value_nonnegative_chk" CHECK ((("commercial_value" IS NULL) OR ("commercial_value" >= (0)::numeric))),
+    CONSTRAINT "asset_items_condition_status_chk" CHECK (("condition_status" = ANY (ARRAY['nuevo'::"text", 'bueno'::"text", 'regular'::"text", 'malo'::"text", 'critico'::"text"]))),
+    CONSTRAINT "asset_items_equipment_status_chk" CHECK (("equipment_status" = ANY (ARRAY['operativo'::"text", 'en_mantenimiento'::"text", 'fuera_servicio'::"text", 'baja'::"text"]))),
+    CONSTRAINT "asset_items_lifecycle_status_chk" CHECK (("lifecycle_status" = ANY (ARRAY['activo'::"text", 'almacenado'::"text", 'prestado'::"text", 'en_reparacion'::"text", 'retirado'::"text", 'perdido'::"text"]))),
+    CONSTRAINT "asset_items_ownership_status_chk" CHECK (("ownership_status" = ANY (ARRAY['propio'::"text", 'rentado'::"text", 'prestado'::"text", 'comodato'::"text"])))
+);
+
+
+ALTER TABLE "public"."asset_items" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_items" IS 'Unidades fisicas individualizadas de equipos/activos. Cada fila puede tener serial, placa, QR, ubicacion real y ficha tecnica propia.';
+
+
+
+COMMENT ON COLUMN "public"."asset_items"."qr_token" IS 'Token estable para construir QR sin exponer necesariamente el ID interno. La UI puede apuntar a /inventory/assets/items/[id] o resolver por token.';
+
+
+
+COMMENT ON COLUMN "public"."asset_items"."technical_specs" IS 'JSON flexible para datos tecnicos: potencia, voltaje, capacidad, dimensiones, peso, material, consumo, presion, etc.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_maintenance_records" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "asset_item_id" "uuid",
+    "product_id" "uuid",
+    "status" "text" DEFAULT 'planned'::"text" NOT NULL,
+    "maintenance_type" "text" DEFAULT 'preventive'::"text" NOT NULL,
+    "scheduled_date" "date",
+    "performed_date" "date",
+    "responsible_employee_id" "uuid",
+    "maintenance_provider" "text",
+    "work_done" "text",
+    "parts_replaced" boolean DEFAULT false NOT NULL,
+    "replaced_parts" "text",
+    "cost" numeric(14,2),
+    "next_scheduled_date" "date",
+    "notes" "text",
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_maintenance_records_cost_nonnegative_chk" CHECK ((("cost" IS NULL) OR ("cost" >= (0)::numeric))),
+    CONSTRAINT "asset_maintenance_records_status_chk" CHECK (("status" = ANY (ARRAY['planned'::"text", 'done'::"text", 'cancelled'::"text", 'overdue'::"text"]))),
+    CONSTRAINT "asset_maintenance_records_type_chk" CHECK (("maintenance_type" = ANY (ARRAY['preventive'::"text", 'corrective'::"text", 'inspection'::"text", 'calibration'::"text", 'cleaning'::"text", 'other'::"text"])))
+);
+
+
+ALTER TABLE "public"."asset_maintenance_records" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_maintenance_records" IS 'Mantenimientos por activo fisico individual. Convive con el historial legacy por producto sin modificarlo.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."asset_movements" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "asset_item_id" "uuid",
+    "asset_group_id" "uuid",
+    "moved_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "movement_type" "text" DEFAULT 'transfer'::"text" NOT NULL,
+    "from_site_id" "uuid",
+    "from_area_id" "uuid",
+    "from_location_id" "uuid",
+    "from_location_position_id" "uuid",
+    "to_site_id" "uuid",
+    "to_area_id" "uuid",
+    "to_location_id" "uuid",
+    "to_location_position_id" "uuid",
+    "quantity" numeric(14,3),
+    "responsible_employee_id" "uuid",
+    "notes" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    CONSTRAINT "asset_movements_movement_type_chk" CHECK (("movement_type" = ANY (ARRAY['initial_location'::"text", 'transfer'::"text", 'loan'::"text", 'return'::"text", 'maintenance_out'::"text", 'maintenance_in'::"text", 'status_change'::"text", 'adjustment'::"text"]))),
+    CONSTRAINT "asset_movements_quantity_nonnegative_chk" CHECK ((("quantity" IS NULL) OR ("quantity" >= (0)::numeric))),
+    CONSTRAINT "asset_movements_subject_chk" CHECK (((("asset_item_id" IS NOT NULL) AND ("asset_group_id" IS NULL)) OR (("asset_item_id" IS NULL) AND ("asset_group_id" IS NOT NULL))))
+);
+
+
+ALTER TABLE "public"."asset_movements" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."asset_movements" IS 'Historial patrimonial de movimientos de activos individuales o grupos entre sedes, LOCs y ubicaciones internas.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."attendance_logs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "employee_id" "uuid" NOT NULL,
@@ -10167,6 +10557,85 @@ CREATE TABLE IF NOT EXISTS "public"."attendance_sync_conflicts" (
 
 
 ALTER TABLE "public"."attendance_sync_conflicts" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_option_consumption_rules" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "option_id",
+    "code",
+    "name",
+    "product_id",
+    "quantity_per_option",
+    "stock_unit_code",
+    "input_quantity_per_option",
+    "input_unit_code",
+    "conversion_factor_to_stock",
+    "input_uom_profile_id",
+    "source_location_strategy",
+    "source_location_id",
+    "source_location_position_id",
+    "is_active",
+    "sort_order",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_option_consumption_rules";
+
+
+ALTER VIEW "public"."catalog_item_option_consumption_rules" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."catalog_item_option_consumption_rules" IS 'Compat view publica para reglas de consumo operativo de opciones comerciales. Canonical table lives in pass.catalog_item_option_consumption_rules.';
+
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_option_groups" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "catalog_item_id",
+    "code",
+    "name",
+    "description",
+    "selection_type",
+    "is_required",
+    "min_select",
+    "max_select",
+    "sort_order",
+    "is_active",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_option_groups";
+
+
+ALTER VIEW "public"."catalog_item_option_groups" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."catalog_item_option_groups" IS 'Compat view publica para grupos de opciones de items comerciales. Canonical table lives in pass.catalog_item_option_groups.';
+
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_options" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "option_group_id",
+    "code",
+    "name",
+    "description",
+    "price_delta_amount",
+    "product_id",
+    "is_default",
+    "is_active",
+    "sort_order",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_options";
+
+
+ALTER VIEW "public"."catalog_item_options" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."catalog_item_options" IS 'Compat view publica para opciones de items comerciales. Canonical table lives in pass.catalog_item_options.';
+
 
 
 CREATE OR REPLACE VIEW "public"."catalog_item_presentation" WITH ("security_invoker"='true') AS
@@ -11464,6 +11933,61 @@ COMMENT ON TABLE "public"."order_conversations" IS 'Conversaciones de texto liga
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."order_item_options" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "order_item_id" "uuid" NOT NULL,
+    "option_group_id" "uuid",
+    "option_id" "uuid",
+    "group_code" "text",
+    "group_name" "text" NOT NULL,
+    "option_code" "text",
+    "option_name" "text" NOT NULL,
+    "quantity" numeric DEFAULT 1 NOT NULL,
+    "price_delta_amount" numeric DEFAULT 0 NOT NULL,
+    "total_delta_amount" numeric DEFAULT 0 NOT NULL,
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "order_item_options_group_name_not_blank" CHECK (("length"("btrim"("group_name")) > 0)),
+    CONSTRAINT "order_item_options_metadata_object" CHECK (("jsonb_typeof"("metadata") = 'object'::"text")),
+    CONSTRAINT "order_item_options_option_name_not_blank" CHECK (("length"("btrim"("option_name")) > 0)),
+    CONSTRAINT "order_item_options_price_delta_check" CHECK (("price_delta_amount" >= (0)::numeric)),
+    CONSTRAINT "order_item_options_quantity_check" CHECK (("quantity" > (0)::numeric)),
+    CONSTRAINT "order_item_options_total_delta_check" CHECK (("total_delta_amount" >= (0)::numeric))
+);
+
+
+ALTER TABLE "public"."order_item_options" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."order_item_options" IS 'Snapshot de opciones seleccionadas por linea de pedido. Vive en public porque pertenece al pedido operativo, no a la configuracion comercial canonica.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."option_group_id" IS 'Referencia opcional al grupo configurado en pass. Se conserva null si la configuracion se elimina despues del pedido.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."option_id" IS 'Referencia opcional a la opcion configurada en pass. Se conserva null si la opcion se elimina despues del pedido.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."group_name" IS 'Snapshot del nombre del grupo al momento de comprar.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."option_name" IS 'Snapshot del nombre de la opcion al momento de comprar.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."price_delta_amount" IS 'Precio adicional unitario de la opcion al momento de comprar.';
+
+
+
+COMMENT ON COLUMN "public"."order_item_options"."total_delta_amount" IS 'Precio adicional total de esta opcion para la linea del pedido.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."order_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "order_id" "uuid" NOT NULL,
@@ -12572,7 +13096,11 @@ CREATE TABLE IF NOT EXISTS "public"."production_batches" (
     "packaged_unit" "text",
     "package_count" integer DEFAULT 0 NOT NULL,
     "packaging_status" "text" DEFAULT 'not_packaged'::"text" NOT NULL,
+    "production_route_id" "uuid",
+    "output_mode" "text" DEFAULT 'inventory_stock'::"text" NOT NULL,
+    "destination_position_id" "uuid",
     CONSTRAINT "production_batches_expected_qty_chk" CHECK ((("expected_qty" IS NULL) OR ("expected_qty" >= (0)::numeric))),
+    CONSTRAINT "production_batches_output_mode_chk" CHECK (("output_mode" = ANY (ARRAY['inventory_stock'::"text", 'sellable_stock'::"text", 'order_fulfillment'::"text"]))),
     CONSTRAINT "production_batches_package_count_chk" CHECK (("package_count" >= 0)),
     CONSTRAINT "production_batches_packaged_qty_chk" CHECK ((("packaged_qty" IS NULL) OR ("packaged_qty" >= (0)::numeric))),
     CONSTRAINT "production_batches_packaging_status_chk" CHECK (("packaging_status" = ANY (ARRAY['not_packaged'::"text", 'packaged'::"text", 'partial'::"text", 'variance'::"text"])))
@@ -12603,6 +13131,18 @@ COMMENT ON COLUMN "public"."production_batches"."package_count" IS 'Cantidad de 
 
 
 COMMENT ON COLUMN "public"."production_batches"."packaging_status" IS 'Estado de empaque del lote: not_packaged, packaged, partial o variance.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."production_route_id" IS 'Ruta operativa usada para crear el lote. Resuelve LOC de consumo, modo de salida, LOC de salida y posici├│n interna.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."output_mode" IS 'Modo de salida usado por el lote: inventory_stock, sellable_stock u order_fulfillment.';
+
+
+
+COMMENT ON COLUMN "public"."production_batches"."destination_position_id" IS 'Ubicaci├│n interna donde qued├│ el producto terminado dentro del destination_location_id. Opcional.';
 
 
 
@@ -13574,6 +14114,115 @@ COMMENT ON TABLE "public"."users" IS 'Core ΓÇô tabla can├│nica para usuar
 
 
 
+CREATE OR REPLACE VIEW "public"."v_asset_count_session_summary" AS
+SELECT
+    NULL::"uuid" AS "session_id",
+    NULL::"uuid" AS "site_id",
+    NULL::"text" AS "site_name",
+    NULL::"text" AS "name",
+    NULL::"text" AS "status",
+    NULL::"text" AS "scope_type",
+    NULL::timestamp with time zone AS "started_at",
+    NULL::timestamp with time zone AS "closed_at",
+    NULL::integer AS "line_count",
+    NULL::integer AS "found_count",
+    NULL::integer AS "missing_count",
+    NULL::integer AS "found_elsewhere_count",
+    NULL::integer AS "damaged_count",
+    NULL::integer AS "extra_count";
+
+
+ALTER VIEW "public"."v_asset_count_session_summary" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."v_asset_groups_inventory_status" AS
+ SELECT "ag"."id",
+    "ag"."product_id",
+    "p"."name" AS "product_name",
+    "p"."sku" AS "product_sku",
+    "ag"."group_code",
+    "ag"."qr_token",
+    "ag"."name",
+    "ag"."expected_qty",
+    "ag"."unit_code",
+    "ag"."condition_status",
+    "ag"."lifecycle_status",
+    "ag"."site_id",
+    "s"."name" AS "site_name",
+    "ag"."area_id",
+    "a"."name" AS "area_name",
+    "a"."kind" AS "area_kind",
+    "ag"."location_id",
+    "il"."code" AS "location_code",
+    "il"."zone" AS "location_zone",
+    "ag"."location_position_id",
+    "ilp"."code" AS "position_code",
+    "ilp"."name" AS "position_name",
+    "ag"."responsible_employee_id",
+    "e"."full_name" AS "responsible_name",
+    "ag"."main_image_url",
+    ('/inventory/assets/groups/'::"text" || ("ag"."id")::"text") AS "technical_sheet_path",
+    "ag"."created_at",
+    "ag"."updated_at"
+   FROM (((((("public"."asset_groups" "ag"
+     JOIN "public"."products" "p" ON (("p"."id" = "ag"."product_id")))
+     LEFT JOIN "public"."sites" "s" ON (("s"."id" = "ag"."site_id")))
+     LEFT JOIN "public"."areas" "a" ON (("a"."id" = "ag"."area_id")))
+     LEFT JOIN "public"."inventory_locations" "il" ON (("il"."id" = "ag"."location_id")))
+     LEFT JOIN "public"."inventory_location_positions" "ilp" ON (("ilp"."id" = "ag"."location_position_id")))
+     LEFT JOIN "public"."employees" "e" ON (("e"."id" = "ag"."responsible_employee_id")));
+
+
+ALTER VIEW "public"."v_asset_groups_inventory_status" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."v_asset_items_inventory_status" AS
+ SELECT "ai"."id",
+    "ai"."product_id",
+    "p"."name" AS "product_name",
+    "p"."sku" AS "product_sku",
+    "ai"."asset_code",
+    "ai"."qr_token",
+    "ai"."display_name",
+    "ai"."internal_plate",
+    "ai"."serial_number",
+    "ai"."brand",
+    "ai"."model",
+    "ai"."equipment_status",
+    "ai"."condition_status",
+    "ai"."lifecycle_status",
+    "ai"."ownership_status",
+    "ai"."site_id",
+    "s"."name" AS "site_name",
+    "ai"."area_id",
+    "a"."name" AS "area_name",
+    "a"."kind" AS "area_kind",
+    "ai"."location_id",
+    "il"."code" AS "location_code",
+    "il"."zone" AS "location_zone",
+    "ai"."location_position_id",
+    "ilp"."code" AS "position_code",
+    "ilp"."name" AS "position_name",
+    "ai"."responsible_employee_id",
+    "e"."full_name" AS "responsible_name",
+    "ai"."commercial_value",
+    "ai"."warranty_until",
+    "ai"."main_image_url",
+    ('/inventory/assets/items/'::"text" || ("ai"."id")::"text") AS "technical_sheet_path",
+    "ai"."created_at",
+    "ai"."updated_at"
+   FROM (((((("public"."asset_items" "ai"
+     JOIN "public"."products" "p" ON (("p"."id" = "ai"."product_id")))
+     LEFT JOIN "public"."sites" "s" ON (("s"."id" = "ai"."site_id")))
+     LEFT JOIN "public"."areas" "a" ON (("a"."id" = "ai"."area_id")))
+     LEFT JOIN "public"."inventory_locations" "il" ON (("il"."id" = "ai"."location_id")))
+     LEFT JOIN "public"."inventory_location_positions" "ilp" ON (("ilp"."id" = "ai"."location_position_id")))
+     LEFT JOIN "public"."employees" "e" ON (("e"."id" = "ai"."responsible_employee_id")));
+
+
+ALTER VIEW "public"."v_asset_items_inventory_status" OWNER TO "postgres";
+
+
 CREATE OR REPLACE VIEW "public"."v_inventory_catalog" AS
  SELECT "p"."id",
     "p"."name",
@@ -14126,6 +14775,41 @@ ALTER TABLE ONLY "public"."asistencia_logs"
 
 
 
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_documents"
+    ADD CONSTRAINT "asset_documents_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."attendance_breaks"
     ADD CONSTRAINT "attendance_breaks_pkey" PRIMARY KEY ("id");
 
@@ -14418,6 +15102,11 @@ ALTER TABLE ONLY "public"."order_conversations"
 
 ALTER TABLE ONLY "public"."order_conversations"
     ADD CONSTRAINT "order_conversations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."order_item_options"
+    ADD CONSTRAINT "order_item_options_pkey" PRIMARY KEY ("id");
 
 
 
@@ -15008,6 +15697,86 @@ CREATE INDEX "idx_account_deletion_requests_user_status_execute" ON "public"."ac
 
 
 
+CREATE INDEX "idx_asset_count_lines_group_id" ON "public"."asset_count_lines" USING "btree" ("asset_group_id");
+
+
+
+CREATE INDEX "idx_asset_count_lines_item_id" ON "public"."asset_count_lines" USING "btree" ("asset_item_id");
+
+
+
+CREATE INDEX "idx_asset_count_lines_session_id" ON "public"."asset_count_lines" USING "btree" ("session_id");
+
+
+
+CREATE INDEX "idx_asset_count_lines_status" ON "public"."asset_count_lines" USING "btree" ("count_status");
+
+
+
+CREATE INDEX "idx_asset_count_sessions_site_status" ON "public"."asset_count_sessions" USING "btree" ("site_id", "status", "started_at" DESC);
+
+
+
+CREATE INDEX "idx_asset_documents_group_id" ON "public"."asset_documents" USING "btree" ("asset_group_id");
+
+
+
+CREATE INDEX "idx_asset_documents_item_id" ON "public"."asset_documents" USING "btree" ("asset_item_id");
+
+
+
+CREATE INDEX "idx_asset_documents_product_id" ON "public"."asset_documents" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_asset_documents_type" ON "public"."asset_documents" USING "btree" ("document_type");
+
+
+
+CREATE INDEX "idx_asset_groups_product_id" ON "public"."asset_groups" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_asset_groups_site_location" ON "public"."asset_groups" USING "btree" ("site_id", "location_id", "location_position_id");
+
+
+
+CREATE INDEX "idx_asset_items_product_id" ON "public"."asset_items" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_asset_items_site_location" ON "public"."asset_items" USING "btree" ("site_id", "location_id", "location_position_id");
+
+
+
+CREATE INDEX "idx_asset_items_status" ON "public"."asset_items" USING "btree" ("equipment_status", "lifecycle_status");
+
+
+
+CREATE INDEX "idx_asset_maintenance_records_item_id" ON "public"."asset_maintenance_records" USING "btree" ("asset_item_id", "scheduled_date" DESC);
+
+
+
+CREATE INDEX "idx_asset_maintenance_records_product_id" ON "public"."asset_maintenance_records" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "idx_asset_maintenance_records_status" ON "public"."asset_maintenance_records" USING "btree" ("status", "scheduled_date");
+
+
+
+CREATE INDEX "idx_asset_movements_group_id" ON "public"."asset_movements" USING "btree" ("asset_group_id", "moved_at" DESC);
+
+
+
+CREATE INDEX "idx_asset_movements_item_id" ON "public"."asset_movements" USING "btree" ("asset_item_id", "moved_at" DESC);
+
+
+
+CREATE INDEX "idx_asset_movements_to_location" ON "public"."asset_movements" USING "btree" ("to_site_id", "to_location_id", "to_location_position_id");
+
+
+
 CREATE INDEX "idx_attendance_logs_employee" ON "public"."attendance_logs" USING "btree" ("employee_id");
 
 
@@ -15424,6 +16193,18 @@ CREATE INDEX "idx_production_batch_packages_uom_profile" ON "public"."production
 
 
 
+CREATE INDEX "idx_production_batches_destination_position_id" ON "public"."production_batches" USING "btree" ("destination_position_id") WHERE ("destination_position_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_production_batches_output_mode" ON "public"."production_batches" USING "btree" ("output_mode");
+
+
+
+CREATE INDEX "idx_production_batches_production_route_id" ON "public"."production_batches" USING "btree" ("production_route_id") WHERE ("production_route_id" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_products_stock_unit_code" ON "public"."products" USING "btree" ("stock_unit_code");
 
 
@@ -15684,6 +16465,18 @@ CREATE INDEX "order_conversations_site_last_message_idx" ON "public"."order_conv
 
 
 
+CREATE INDEX "order_item_options_option_group_idx" ON "public"."order_item_options" USING "btree" ("option_group_id") WHERE ("option_group_id" IS NOT NULL);
+
+
+
+CREATE INDEX "order_item_options_option_idx" ON "public"."order_item_options" USING "btree" ("option_id") WHERE ("option_id" IS NOT NULL);
+
+
+
+CREATE INDEX "order_item_options_order_item_idx" ON "public"."order_item_options" USING "btree" ("order_item_id");
+
+
+
 CREATE INDEX "order_messages_conversation_created_idx" ON "public"."order_messages" USING "btree" ("conversation_id", "created_at");
 
 
@@ -15852,6 +16645,26 @@ CREATE UNIQUE INDEX "uq_loyalty_external_sales_site_ref" ON "public"."loyalty_ex
 
 
 
+CREATE UNIQUE INDEX "ux_asset_groups_group_code" ON "public"."asset_groups" USING "btree" ("group_code");
+
+
+
+CREATE UNIQUE INDEX "ux_asset_groups_qr_token" ON "public"."asset_groups" USING "btree" ("qr_token");
+
+
+
+CREATE UNIQUE INDEX "ux_asset_items_asset_code" ON "public"."asset_items" USING "btree" ("asset_code");
+
+
+
+CREATE UNIQUE INDEX "ux_asset_items_qr_token" ON "public"."asset_items" USING "btree" ("qr_token");
+
+
+
+CREATE UNIQUE INDEX "ux_asset_items_serial_per_product" ON "public"."asset_items" USING "btree" ("product_id", "serial_number") WHERE (("serial_number" IS NOT NULL) AND ("btrim"("serial_number") <> ''::"text"));
+
+
+
 CREATE UNIQUE INDEX "ux_inventory_form_drafts_scope" ON "public"."inventory_form_drafts" USING "btree" ("user_id", "form_key", "entity_scope", "site_scope");
 
 
@@ -15912,6 +16725,28 @@ CREATE INDEX "website_items_published_idx" ON "public"."website_items" USING "bt
 
 
 
+CREATE OR REPLACE VIEW "public"."v_asset_count_session_summary" AS
+ SELECT "acs"."id" AS "session_id",
+    "acs"."site_id",
+    "s"."name" AS "site_name",
+    "acs"."name",
+    "acs"."status",
+    "acs"."scope_type",
+    "acs"."started_at",
+    "acs"."closed_at",
+    ("count"("acl"."id"))::integer AS "line_count",
+    ("count"(*) FILTER (WHERE ("acl"."count_status" = 'found'::"text")))::integer AS "found_count",
+    ("count"(*) FILTER (WHERE ("acl"."count_status" = 'missing'::"text")))::integer AS "missing_count",
+    ("count"(*) FILTER (WHERE ("acl"."count_status" = 'found_elsewhere'::"text")))::integer AS "found_elsewhere_count",
+    ("count"(*) FILTER (WHERE ("acl"."count_status" = 'damaged'::"text")))::integer AS "damaged_count",
+    ("count"(*) FILTER (WHERE ("acl"."count_status" = 'extra'::"text")))::integer AS "extra_count"
+   FROM (("public"."asset_count_sessions" "acs"
+     LEFT JOIN "public"."sites" "s" ON (("s"."id" = "acs"."site_id")))
+     LEFT JOIN "public"."asset_count_lines" "acl" ON (("acl"."session_id" = "acs"."id")))
+  GROUP BY "acs"."id", "s"."name";
+
+
+
 CREATE OR REPLACE TRIGGER "app_content_blocks_set_updated_at" BEFORE UPDATE ON "public"."app_content_blocks" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
 
 
@@ -15949,6 +16784,10 @@ CREATE OR REPLACE TRIGGER "enforce_inventory_location_area_site" BEFORE INSERT O
 
 
 CREATE OR REPLACE TRIGGER "enforce_inventory_location_position_scope" BEFORE INSERT OR UPDATE OF "site_id", "location_id", "parent_position_id" ON "public"."inventory_location_positions" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_inventory_location_position_scope"();
+
+
+
+CREATE OR REPLACE TRIGGER "order_item_options_set_updated_at" BEFORE UPDATE ON "public"."order_item_options" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
 
 
 
@@ -15997,6 +16836,30 @@ CREATE OR REPLACE TRIGGER "trg_app_navigation_items_updated_at" BEFORE UPDATE ON
 
 
 CREATE OR REPLACE TRIGGER "trg_app_screen_registry_updated_at" BEFORE UPDATE ON "public"."app_screen_registry" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_count_lines_touch_updated_at" BEFORE UPDATE ON "public"."asset_count_lines" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_count_sessions_touch_updated_at" BEFORE UPDATE ON "public"."asset_count_sessions" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_documents_touch_updated_at" BEFORE UPDATE ON "public"."asset_documents" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_groups_touch_updated_at" BEFORE UPDATE ON "public"."asset_groups" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_items_touch_updated_at" BEFORE UPDATE ON "public"."asset_items" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_asset_maintenance_records_touch_updated_at" BEFORE UPDATE ON "public"."asset_maintenance_records" FOR EACH ROW EXECUTE FUNCTION "public"."touch_updated_at"();
 
 
 
@@ -16191,6 +17054,281 @@ ALTER TABLE ONLY "public"."areas"
 
 ALTER TABLE ONLY "public"."areas"
     ADD CONSTRAINT "areas_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id");
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_asset_group_id_fkey" FOREIGN KEY ("asset_group_id") REFERENCES "public"."asset_groups"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_asset_item_id_fkey" FOREIGN KEY ("asset_item_id") REFERENCES "public"."asset_items"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_counted_by_fkey" FOREIGN KEY ("counted_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_expected_area_id_fkey" FOREIGN KEY ("expected_area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_expected_location_id_fkey" FOREIGN KEY ("expected_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_expected_location_position_id_fkey" FOREIGN KEY ("expected_location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_expected_site_id_fkey" FOREIGN KEY ("expected_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_found_area_id_fkey" FOREIGN KEY ("found_area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_found_location_id_fkey" FOREIGN KEY ("found_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_found_location_position_id_fkey" FOREIGN KEY ("found_location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_found_site_id_fkey" FOREIGN KEY ("found_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_lines"
+    ADD CONSTRAINT "asset_count_lines_session_id_fkey" FOREIGN KEY ("session_id") REFERENCES "public"."asset_count_sessions"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_closed_by_fkey" FOREIGN KEY ("closed_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_scope_area_id_fkey" FOREIGN KEY ("scope_area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_scope_location_id_fkey" FOREIGN KEY ("scope_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_scope_location_position_id_fkey" FOREIGN KEY ("scope_location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."asset_count_sessions"
+    ADD CONSTRAINT "asset_count_sessions_started_by_fkey" FOREIGN KEY ("started_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_documents"
+    ADD CONSTRAINT "asset_documents_asset_group_id_fkey" FOREIGN KEY ("asset_group_id") REFERENCES "public"."asset_groups"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_documents"
+    ADD CONSTRAINT "asset_documents_asset_item_id_fkey" FOREIGN KEY ("asset_item_id") REFERENCES "public"."asset_items"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_documents"
+    ADD CONSTRAINT "asset_documents_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_documents"
+    ADD CONSTRAINT "asset_documents_uploaded_by_fkey" FOREIGN KEY ("uploaded_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_location_position_id_fkey" FOREIGN KEY ("location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_responsible_employee_id_fkey" FOREIGN KEY ("responsible_employee_id") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_groups"
+    ADD CONSTRAINT "asset_groups_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_location_position_id_fkey" FOREIGN KEY ("location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_responsible_employee_id_fkey" FOREIGN KEY ("responsible_employee_id") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_items"
+    ADD CONSTRAINT "asset_items_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_asset_item_id_fkey" FOREIGN KEY ("asset_item_id") REFERENCES "public"."asset_items"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_responsible_employee_id_fkey" FOREIGN KEY ("responsible_employee_id") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_maintenance_records"
+    ADD CONSTRAINT "asset_maintenance_records_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_asset_group_id_fkey" FOREIGN KEY ("asset_group_id") REFERENCES "public"."asset_groups"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_asset_item_id_fkey" FOREIGN KEY ("asset_item_id") REFERENCES "public"."asset_items"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_from_area_id_fkey" FOREIGN KEY ("from_area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_from_location_id_fkey" FOREIGN KEY ("from_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_from_location_position_id_fkey" FOREIGN KEY ("from_location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_from_site_id_fkey" FOREIGN KEY ("from_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_responsible_employee_id_fkey" FOREIGN KEY ("responsible_employee_id") REFERENCES "public"."employees"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_to_area_id_fkey" FOREIGN KEY ("to_area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_to_location_id_fkey" FOREIGN KEY ("to_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_to_location_position_id_fkey" FOREIGN KEY ("to_location_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."asset_movements"
+    ADD CONSTRAINT "asset_movements_to_site_id_fkey" FOREIGN KEY ("to_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
 
 
 
@@ -16899,6 +18037,21 @@ ALTER TABLE ONLY "public"."order_conversations"
 
 
 
+ALTER TABLE ONLY "public"."order_item_options"
+    ADD CONSTRAINT "order_item_options_option_group_id_fkey" FOREIGN KEY ("option_group_id") REFERENCES "pass"."catalog_item_option_groups"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."order_item_options"
+    ADD CONSTRAINT "order_item_options_option_id_fkey" FOREIGN KEY ("option_id") REFERENCES "pass"."catalog_item_options"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."order_item_options"
+    ADD CONSTRAINT "order_item_options_order_item_id_fkey" FOREIGN KEY ("order_item_id") REFERENCES "public"."order_items"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."order_items"
     ADD CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id");
 
@@ -17245,7 +18398,17 @@ ALTER TABLE ONLY "public"."production_batches"
 
 
 ALTER TABLE ONLY "public"."production_batches"
+    ADD CONSTRAINT "production_batches_destination_position_id_fkey" FOREIGN KEY ("destination_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."production_batches"
     ADD CONSTRAINT "production_batches_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
+ALTER TABLE ONLY "public"."production_batches"
+    ADD CONSTRAINT "production_batches_production_route_id_fkey" FOREIGN KEY ("production_route_id") REFERENCES "public"."product_site_production_routes"("id") ON DELETE SET NULL;
 
 
 
@@ -18599,6 +19762,51 @@ CREATE POLICY "order_conversations_select_client" ON "public"."order_conversatio
 
 
 CREATE POLICY "order_conversations_select_staff" ON "public"."order_conversations" FOR SELECT TO "authenticated" USING (("public"."is_employee"() AND "public"."can_access_site"("site_id")));
+
+
+
+ALTER TABLE "public"."order_item_options" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "order_item_options_delete_owner" ON "public"."order_item_options" FOR DELETE TO "authenticated" USING (("public"."is_owner"() OR "public"."is_global_manager"()));
+
+
+
+CREATE POLICY "order_item_options_insert_client" ON "public"."order_item_options" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND ("order_header"."client_id" = "auth"."uid"())))));
+
+
+
+CREATE POLICY "order_item_options_insert_staff" ON "public"."order_item_options" FOR INSERT TO "authenticated" WITH CHECK ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND "public"."is_employee"() AND "public"."can_access_site"("order_header"."site_id")))));
+
+
+
+CREATE POLICY "order_item_options_select_client" ON "public"."order_item_options" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND ("order_header"."client_id" = "auth"."uid"())))));
+
+
+
+CREATE POLICY "order_item_options_select_staff" ON "public"."order_item_options" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND "public"."is_employee"() AND "public"."can_access_site"("order_header"."site_id")))));
+
+
+
+CREATE POLICY "order_item_options_update_staff" ON "public"."order_item_options" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND "public"."is_employee"() AND "public"."can_access_site"("order_header"."site_id"))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM ("public"."order_items" "item"
+     JOIN "public"."orders" "order_header" ON (("order_header"."id" = "item"."order_id")))
+  WHERE (("item"."id" = "order_item_options"."order_item_id") AND "public"."is_employee"() AND "public"."can_access_site"("order_header"."site_id")))));
 
 
 
@@ -20166,6 +21374,41 @@ GRANT ALL ON TABLE "public"."asistencia_logs" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."asset_count_lines" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_count_lines" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_count_sessions" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_count_sessions" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_documents" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_documents" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_groups" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_groups" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_items" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_items" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_maintenance_records" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_maintenance_records" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."asset_movements" TO "authenticated";
+GRANT ALL ON TABLE "public"."asset_movements" TO "service_role";
+
+
+
 GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN ON TABLE "public"."attendance_logs" TO "authenticated";
 GRANT ALL ON TABLE "public"."attendance_logs" TO "service_role";
 
@@ -20187,6 +21430,24 @@ GRANT ALL ON TABLE "public"."attendance_shift_events" TO "service_role";
 
 GRANT ALL ON TABLE "public"."attendance_sync_conflicts" TO "authenticated";
 GRANT ALL ON TABLE "public"."attendance_sync_conflicts" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_option_consumption_rules" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_option_consumption_rules" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_option_consumption_rules" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_option_groups" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_option_groups" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_option_groups" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_options" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_options" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_options" TO "anon";
 
 
 
@@ -20460,6 +21721,11 @@ GRANT ALL ON SEQUENCE "public"."lpn_sequence" TO "service_role";
 
 GRANT ALL ON TABLE "public"."order_conversations" TO "authenticated";
 GRANT ALL ON TABLE "public"."order_conversations" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."order_item_options" TO "authenticated";
+GRANT ALL ON TABLE "public"."order_item_options" TO "service_role";
 
 
 
@@ -20831,6 +22097,21 @@ GRANT ALL ON TABLE "public"."user_feedback" TO "service_role";
 
 GRANT ALL ON TABLE "public"."users" TO "authenticated";
 GRANT ALL ON TABLE "public"."users" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."v_asset_count_session_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_asset_count_session_summary" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."v_asset_groups_inventory_status" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_asset_groups_inventory_status" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."v_asset_items_inventory_status" TO "authenticated";
+GRANT ALL ON TABLE "public"."v_asset_items_inventory_status" TO "service_role";
 
 
 
