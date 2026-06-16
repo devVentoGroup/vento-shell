@@ -90,15 +90,6 @@ join public.app_permissions ap on ap.app_id = a.id and ap.is_active = true
 on conflict (role, permission_id, scope_type, scope_site_type, scope_area_kind)
 do update set is_allowed = true;
 
--- Gerencia y contador: lectura por sede para inteligencia economica inicial.
-insert into public.role_permissions (role, permission_id, scope_type)
-select role_name.role, ap.id, 'site'
-from (values ('gerente'), ('contador')) as role_name(role)
-join public.apps a on a.code = 'numera'
-join public.app_permissions ap on ap.app_id = a.id and ap.is_active = true
-where ap.code in ('access', 'cost_centers.view', 'expenses.view', 'break_even.view', 'profitability.view', 'reports.view')
-on conflict (role, permission_id, scope_type, scope_site_type, scope_area_kind)
-do update set is_allowed = true;
 
 commit;
 

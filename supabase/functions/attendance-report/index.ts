@@ -126,6 +126,7 @@ type ConsolidatedShiftRecord = {
   isNoShow: boolean
   isOpen: boolean
   isAutoClose: boolean
+  isRestDay: boolean
   hasDepartureEvent: boolean
   departureAt: string | null
   departureDistanceMeters: number | null
@@ -141,6 +142,7 @@ type EmployeeSummary = {
   sites: string[]
   scheduledShifts: number
   attendedShifts: number
+  restDayCount: number
   lateCount: number
   noShowCount: number
   openCount: number
@@ -157,6 +159,7 @@ type SiteSummary = {
   siteName: string
   scheduledShifts: number
   attendedShifts: number
+  restDayCount: number
   lateCount: number
   noShowCount: number
   openCount: number
@@ -182,6 +185,7 @@ type IncidentRow = {
 type ReportSummary = {
   scheduledShifts: number
   attendedShifts: number
+  restDayCount: number
   lateCount: number
   noShowCount: number
   openCount: number
@@ -198,6 +202,16 @@ const ALLOWED_GLOBAL_ROLES = new Set(["propietario", "gerente_general"])
 const MANAGER_ROLE = "gerente"
 const MANAGER_ALLOWED_SITE_TYPES = new Set(["satellite", "production_center"])
 const SHIFT_LEAVE_EVENT_TYPE = "left_site_open_shift"
+const REST_SHIFT_STATUSES = new Set([
+  "descanso",
+  "dia_descanso",
+  "rest",
+  "rest_day",
+  "day_off",
+  "off",
+  "off_day",
+  "libre",
+])
 const DEFAULT_REPORT_TIME_ZONE = "America/Bogota"
 const DEFAULT_LATE_GRACE_MINUTES = 5
 const DEFAULT_AUTO_CLOSE_GRACE_MINUTES = 30
@@ -268,6 +282,25 @@ function unwrapRelation<T>(value: T | T[] | null | undefined): T | null {
 function safeMinutes(value: number): number {
   if (!Number.isFinite(value)) return 0
   return Math.max(0, Math.round(value))
+}
+
+function normalizeShiftStatus(value: string | null | undefined): string {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+}
+
+function isRestShiftStatus(status: string | null | undefined): boolean {
+  return REST_SHIFT_STATUSES.has(normalizeShiftStatus(status))
+}
+
+function isAttendanceIncident(row: ConsolidatedShiftRecord): boolean {
+  if (row.isRestDay) return false
+  return row.isLate || row.isNoShow || row.isOpen || row.isAutoClose || row.hasDepartureEvent
 }
 
 function minutesToClock(value: number): string {
@@ -672,13 +705,14 @@ function buildConsolidatedShiftRecords(
     .map((shift) => {
       const employeeInfo = unwrapRelation(shift.employees)
       const siteInfo = unwrapRelation(shift.sites)
+      const isRestDay = isRestShiftStatus(shift.status)
       const scheduledStartAt = zonedLocalToUtc(shift.shift_date, shift.start_time, timeZone)
       const scheduledEndAt = zonedLocalToUtc(shift.shift_date, shift.end_time, timeZone)
       const scheduledStartMs = new Date(scheduledStartAt).getTime()
       const scheduledEndMs = new Date(scheduledEndAt).getTime()
       const scheduledGrossMinutes = safeMinutes((scheduledEndMs - scheduledStartMs) / 60000)
-      const scheduledBreakMinutes = safeMinutes(shift.break_minutes ?? 0)
-      const scheduledNetMinutes = safeMinutes(scheduledGrossMinutes - scheduledBreakMinutes)
+      const scheduledBreakMinutes = isRestDay ? 0 : safeMinutes(shift.break_minutes ?? 0)
+      const scheduledNetMinutes = isRestDay ? 0 : safeMinutes(scheduledGrossMinutes - scheduledBreakMinutes)
       const employeeSessions = sessionsByEmployee.get(shift.employee_id) ?? []
 
       let matched: AttendanceSession | null =
@@ -718,31 +752,38 @@ function buildConsolidatedShiftRecords(
       const shiftEnded = scheduledEndMs <= reportCutoffMs
       const checkInMs = matched ? new Date(matched.checkInAt).getTime() : null
       const effectiveEndMs = matched ? new Date(matched.effectiveEndAt).getTime() : null
-      const lateMinutes = checkInMs != null ? safeMinutes((checkInMs - scheduledStartMs) / 60000) : 0
-      const isLate = checkInMs != null && checkInMs > scheduledStartMs + lateGraceMinutes * 60000
+      const lateMinutes = !isRestDay && checkInMs != null ? safeMinutes((checkInMs - scheduledStartMs) / 60000) : 0
+      const isLate = !isRestDay && checkInMs != null && checkInMs > scheduledStartMs + lateGraceMinutes * 60000
       const overtimeMinutes =
-        effectiveEndMs != null ? safeMinutes((effectiveEndMs - scheduledEndMs) / 60000) : 0
+        !isRestDay && effectiveEndMs != null ? safeMinutes((effectiveEndMs - scheduledEndMs) / 60000) : 0
       const leftEarlyMinutes =
-        matched?.checkOutAt != null ? safeMinutes((scheduledEndMs - new Date(matched.checkOutAt).getTime()) / 60000) : 0
-      const isNoShow = !matched && shiftEnded
-      const isOpen = matched?.status === "Abierto"
-      const missingCloseCountable = !!matched && isOpen && shiftEnded
-      const attendanceStatus = isNoShow
-        ? "No asistió"
+        !isRestDay && matched?.checkOutAt != null ? safeMinutes((scheduledEndMs - new Date(matched.checkOutAt).getTime()) / 60000) : 0
+      const isNoShow = !isRestDay && !matched && shiftEnded
+      const isOpen = !isRestDay && matched?.status === "Abierto"
+      const missingCloseCountable = !isRestDay && !!matched && isOpen && shiftEnded
+      const attendanceStatus = isRestDay
+        ? "Descanso"
+        : isNoShow
+          ? "No asistió"
+          : !matched
+            ? "Pendiente"
+            : isOpen
+              ? "Abierto"
+              : "Asistió"
+      const closureStatus = isRestDay
+        ? "No aplica"
         : !matched
-          ? "Pendiente"
+          ? "Sin registro"
           : isOpen
-            ? "Abierto"
-            : "Asistió"
-      const closureStatus = !matched
-        ? "Sin registro"
-        : isOpen
-          ? "Pendiente"
-          : matched.isAutoClose
-            ? "Automático"
-            : "Manual"
+            ? "Pendiente"
+            : matched.isAutoClose
+              ? "Automático"
+              : "Manual"
 
       const observations = [...(matched?.observations ?? [])]
+      if (isRestDay) {
+        observations.push("Turno marcado como descanso")
+      }
       if (isLate) {
         observations.push(`Llegó tarde (${minutesToLabel(lateMinutes)})`)
       }
@@ -791,7 +832,8 @@ function buildConsolidatedShiftRecords(
         isLate,
         isNoShow,
         isOpen: !!isOpen,
-        isAutoClose: matched?.isAutoClose ?? false,
+        isAutoClose: !isRestDay && (matched?.isAutoClose ?? false),
+        isRestDay,
         hasDepartureEvent: !!matched?.departureAt,
         departureAt: matched?.departureAt ?? null,
         departureDistanceMeters: matched?.departureDistanceMeters ?? null,
@@ -817,6 +859,7 @@ function buildEmployeeSummary(rows: ConsolidatedShiftRecord[]): EmployeeSummary[
         sites: [],
         scheduledShifts: 0,
         attendedShifts: 0,
+        restDayCount: 0,
         lateCount: 0,
         noShowCount: 0,
         openCount: 0,
@@ -829,6 +872,13 @@ function buildEmployeeSummary(rows: ConsolidatedShiftRecord[]): EmployeeSummary[
         _siteSet: new Set<string>(),
       }
 
+    if (row.siteName) current._siteSet.add(row.siteName)
+
+    if (row.isRestDay) {
+      current.restDayCount += 1
+      byEmployee.set(row.employeeId, current)
+      continue
+    }
     current.scheduledShifts += 1
     current.scheduledMinutes += row.scheduledNetMinutes
     current.netMinutes += row.actualNetMinutes
@@ -839,8 +889,7 @@ function buildEmployeeSummary(rows: ConsolidatedShiftRecord[]): EmployeeSummary[
     if (row.isOpen && row.attendanceStatus === "Abierto") current.missingCloseCount += 1
     if (row.isAutoClose) current.autoCloseCount += 1
     if (row.hasDepartureEvent) current.departureCount += 1
-    if (row.siteName) current._siteSet.add(row.siteName)
-    if (row.isLate || row.isNoShow || row.isOpen || row.isAutoClose || row.hasDepartureEvent) {
+    if (isAttendanceIncident(row)) {
       current.incidentCount += 1
     }
 
@@ -856,6 +905,7 @@ function buildEmployeeSummary(rows: ConsolidatedShiftRecord[]): EmployeeSummary[
       sites: [...item._siteSet.values()],
       scheduledShifts: item.scheduledShifts,
       attendedShifts: item.attendedShifts,
+      restDayCount: item.restDayCount,
       lateCount: item.lateCount,
       noShowCount: item.noShowCount,
       openCount: item.openCount,
@@ -879,6 +929,7 @@ function buildSiteSummary(rows: ConsolidatedShiftRecord[]): SiteSummary[] {
         siteName: row.siteName || row.siteId,
         scheduledShifts: 0,
         attendedShifts: 0,
+        restDayCount: 0,
         lateCount: 0,
         noShowCount: 0,
         openCount: 0,
@@ -890,6 +941,12 @@ function buildSiteSummary(rows: ConsolidatedShiftRecord[]): SiteSummary[] {
         incidentCount: 0,
       }
 
+    if (row.isRestDay) {
+      current.restDayCount += 1
+      bySite.set(row.siteId, current)
+      continue
+    }
+
     current.scheduledShifts += 1
     current.scheduledMinutes += row.scheduledNetMinutes
     current.netMinutes += row.actualNetMinutes
@@ -900,7 +957,7 @@ function buildSiteSummary(rows: ConsolidatedShiftRecord[]): SiteSummary[] {
     if (row.isOpen && row.attendanceStatus === "Abierto") current.missingCloseCount += 1
     if (row.isAutoClose) current.autoCloseCount += 1
     if (row.hasDepartureEvent) current.departureCount += 1
-    if (row.isLate || row.isNoShow || row.isOpen || row.isAutoClose || row.hasDepartureEvent) {
+    if (isAttendanceIncident(row)) {
       current.incidentCount += 1
     }
 
@@ -911,22 +968,25 @@ function buildSiteSummary(rows: ConsolidatedShiftRecord[]): SiteSummary[] {
 }
 
 function buildReportSummary(rows: ConsolidatedShiftRecord[]): ReportSummary {
-  const scheduledShifts = rows.length
-  const attendedShifts = rows.filter((row) => !!row.checkInAt).length
-  const lateCount = rows.filter((row) => row.isLate).length
-  const noShowCount = rows.filter((row) => row.isNoShow).length
-  const openCount = rows.filter((row) => row.isOpen).length
-  const missingCloseCount = rows.filter((row) => row.isOpen && row.attendanceStatus === "Abierto").length
-  const autoCloseCount = rows.filter((row) => row.isAutoClose).length
-  const departureCount = rows.filter((row) => row.hasDepartureEvent).length
-  const scheduledMinutes = rows.reduce((sum, row) => sum + row.scheduledNetMinutes, 0)
-  const netMinutes = rows.reduce((sum, row) => sum + row.actualNetMinutes, 0)
+  const countableRows = rows.filter((row) => !row.isRestDay)
+  const restDayCount = rows.length - countableRows.length
+  const scheduledShifts = countableRows.length
+  const attendedShifts = countableRows.filter((row) => !!row.checkInAt).length
+  const lateCount = countableRows.filter((row) => row.isLate).length
+  const noShowCount = countableRows.filter((row) => row.isNoShow).length
+  const openCount = countableRows.filter((row) => row.isOpen).length
+  const missingCloseCount = countableRows.filter((row) => row.isOpen && row.attendanceStatus === "Abierto").length
+  const autoCloseCount = countableRows.filter((row) => row.isAutoClose).length
+  const departureCount = countableRows.filter((row) => row.hasDepartureEvent).length
+  const scheduledMinutes = countableRows.reduce((sum, row) => sum + row.scheduledNetMinutes, 0)
+  const netMinutes = countableRows.reduce((sum, row) => sum + row.actualNetMinutes, 0)
   const attendanceRate = scheduledShifts > 0 ? attendedShifts / scheduledShifts : 0
   const punctualityRate = attendedShifts > 0 ? (attendedShifts - lateCount) / attendedShifts : 0
 
   return {
     scheduledShifts,
     attendedShifts,
+    restDayCount,
     lateCount,
     noShowCount,
     openCount,
@@ -949,6 +1009,8 @@ function buildIncidentRows(
   const incidents: IncidentRow[] = []
 
   for (const row of rows) {
+    if (row.isRestDay) continue
+
     const scheduledRange = `${formatTime(row.scheduledStartAt, timeZone)}-${formatTime(row.scheduledEndAt, timeZone)}`
     const actualRange = row.checkInAt
       ? `${formatTime(row.checkInAt, timeZone)}-${row.checkOutAt ? formatTime(row.checkOutAt, timeZone) : "Abierto"}`
@@ -1085,15 +1147,16 @@ function buildWorkbook(
     { width: 14 },
     { width: 16 },
     { width: 16 },
+    { width: 14 },
   ]
 
-  summarySheet.mergeCells("A1:N1")
+  summarySheet.mergeCells("A1:O1")
   summarySheet.getCell("A1").value = "REPORTE OPERATIVO DE TURNOS Y ASISTENCIA"
   summarySheet.getCell("A1").font = { size: 12, bold: true }
   summarySheet.getCell("A1").alignment = { vertical: "middle", horizontal: "center" }
   summarySheet.getCell("A1").fill = { type: "pattern", pattern: "solid", fgColor: { argb: "D9E8F6" } }
 
-  summarySheet.mergeCells("A2:N2")
+  summarySheet.mergeCells("A2:O2")
   summarySheet.getCell("A2").value = `Periodo: ${formatDate(start, timeZone)} a ${formatDate(end, timeZone)} | Alcance: ${scopeLabel} | Generado: ${formatDate(new Date(), timeZone)}`
   summarySheet.getCell("A2").font = { size: 9, italic: true }
   summarySheet.getCell("A2").alignment = { vertical: "middle", horizontal: "left" }
@@ -1105,6 +1168,7 @@ function buildWorkbook(
   const metrics: Array<[string, string | number]> = [
     ["Turnos programados", summary.scheduledShifts],
     ["Turnos asistidos", summary.attendedShifts],
+    ["Descansos", summary.restDayCount],
     ["Tardanzas", summary.lateCount],
     ["No show", summary.noShowCount],
     ["Turnos abiertos", summary.openCount],
@@ -1125,7 +1189,7 @@ function buildWorkbook(
   }
 
   metricRow += 2
-  summarySheet.mergeCells(`A${metricRow}:N${metricRow}`)
+  summarySheet.mergeCells(`A${metricRow}:O${metricRow}`)
   summarySheet.getCell(`A${metricRow}`).value = "RESUMEN POR TRABAJADOR"
   summarySheet.getCell(`A${metricRow}`).font = { size: 10, bold: true }
   summarySheet.getCell(`A${metricRow}`).fill = {
@@ -1143,6 +1207,7 @@ function buildWorkbook(
     "Sede(s)",
     "Programados",
     "Asistidos",
+    "Descansos",
     "Tardanzas",
     "No show",
     "Abiertos",
@@ -1163,6 +1228,7 @@ function buildWorkbook(
       row.sites.join(" | "),
       row.scheduledShifts,
       row.attendedShifts,
+      row.restDayCount,
       row.lateCount,
       row.noShowCount,
       row.openCount,
@@ -1176,7 +1242,7 @@ function buildWorkbook(
   }
 
   if (employeeSummaryRows.length === 0) {
-    summarySheet.mergeCells(`A${employeeRow}:N${employeeRow}`)
+    summarySheet.mergeCells(`A${employeeRow}:O${employeeRow}`)
     summarySheet.getCell(`A${employeeRow}`).value = "Sin turnos programados para el rango seleccionado."
     summarySheet.getCell(`A${employeeRow}`).font = { size: 9, italic: true }
     summarySheet.getCell(`A${employeeRow}`).alignment = { vertical: "middle", horizontal: "center" }
@@ -1184,7 +1250,7 @@ function buildWorkbook(
   }
 
   employeeRow += 2
-  summarySheet.mergeCells(`A${employeeRow}:J${employeeRow}`)
+  summarySheet.mergeCells(`A${employeeRow}:K${employeeRow}`)
   summarySheet.getCell(`A${employeeRow}`).value = "RESUMEN POR SEDE"
   summarySheet.getCell(`A${employeeRow}`).font = { size: 10, bold: true }
   summarySheet.getCell(`A${employeeRow}`).fill = {
@@ -1199,6 +1265,7 @@ function buildWorkbook(
     "Sede",
     "Programados",
     "Asistidos",
+    "Descansos",
     "Tardanzas",
     "No show",
     "Abiertos",
@@ -1215,6 +1282,7 @@ function buildWorkbook(
       row.siteName,
       row.scheduledShifts,
       row.attendedShifts,
+      row.restDayCount,
       row.lateCount,
       row.noShowCount,
       row.openCount,
