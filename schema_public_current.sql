@@ -2001,15 +2001,24 @@ ALTER FUNCTION "public"."create_inventory_count_session_with_lines"("p_site_id" 
 CREATE OR REPLACE FUNCTION "public"."create_order_checkout_draft"("p_site_id" "uuid", "p_satellite_name" "text", "p_fulfillment_type" "text", "p_contact_name" "text", "p_contact_phone" "text", "p_address_line" "text", "p_address_reference" "text", "p_notes" "text", "p_items" "jsonb", "p_delivery_fee_amount" numeric DEFAULT 0, "p_source" "text" DEFAULT 'vento_pass'::"text", "p_delivery_distance_km" integer DEFAULT NULL::integer, "p_delivery_quote_id" "uuid" DEFAULT NULL::"uuid") RETURNS "jsonb"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'auth', 'pass'
-    AS $$
+    AS $_$
 declare
   v_uid uuid := auth.uid();
   v_order_id uuid;
+  v_order_item_id uuid;
   v_tx_id uuid;
   v_item jsonb;
+  v_option jsonb;
+  v_validated_items jsonb := '[]'::jsonb;
+  v_selected_options jsonb := '[]'::jsonb;
   v_product_id uuid;
+  v_catalog_item_id uuid;
+  v_option_id uuid;
   v_quantity numeric;
+  v_original_unit_price numeric;
   v_unit_price numeric;
+  v_catalog_base_price numeric;
+  v_option_delta numeric;
   v_subtotal numeric := 0;
   v_delivery numeric := 0;
   v_total numeric := 0;
@@ -2022,6 +2031,19 @@ declare
   v_payment_status text := 'pending_payment';
   v_payment_provider text := null;
   v_checkout_expires_at timestamptz := null;
+  v_option_row record;
+  v_group_rule record;
+  v_selected_count integer;
+  v_min_select integer;
+  v_max_select integer;
+  v_option_count integer;
+  v_distinct_option_count integer;
+  v_group_preset text;
+  v_linked_catalog_item_id uuid;
+  v_option_metadata jsonb;
+  v_consumption_rules jsonb;
+  v_recipe_effects jsonb;
+  v_canonical_selected_options jsonb := '[]'::jsonb;
 begin
   if v_uid is null then
     raise exception 'authentication_required';
@@ -2096,8 +2118,24 @@ begin
   for v_item in select * from jsonb_array_elements(p_items)
   loop
     v_product_id := nullif(v_item ->> 'product_id', '')::uuid;
+    v_catalog_item_id := nullif(v_item ->> 'catalog_item_id', '')::uuid;
     v_quantity := greatest(coalesce((v_item ->> 'quantity')::numeric, 0), 0);
-    v_unit_price := greatest(coalesce((v_item ->> 'unit_price')::numeric, 0), 0);
+    v_original_unit_price := greatest(coalesce((v_item ->> 'unit_price')::numeric, 0), 0);
+    v_unit_price := v_original_unit_price;
+    v_catalog_base_price := null;
+    v_option_delta := 0;
+
+    if v_item ? 'selected_options' then
+      if jsonb_typeof(v_item -> 'selected_options') <> 'array' then
+        raise exception 'invalid_selected_options';
+      end if;
+
+      v_selected_options := coalesce(v_item -> 'selected_options', '[]'::jsonb);
+    else
+      v_selected_options := '[]'::jsonb;
+    end if;
+
+    v_canonical_selected_options := '[]'::jsonb;
 
     if v_product_id is null then
       raise exception 'item_product_required';
@@ -2107,11 +2145,253 @@ begin
       raise exception 'invalid_item_quantity';
     end if;
 
-    if v_unit_price < 0 then
+    if v_original_unit_price < 0 then
       raise exception 'invalid_item_price';
     end if;
 
+    if v_catalog_item_id is null and jsonb_array_length(v_selected_options) > 0 then
+      raise exception 'catalog_item_required_for_selected_options';
+    end if;
+
+    if v_catalog_item_id is not null then
+      select item.price_amount
+      into v_catalog_base_price
+      from pass.catalog_items item
+      where item.id = v_catalog_item_id
+        and item.site_id = p_site_id
+        and item.product_id = v_product_id
+        and item.is_active = true;
+
+      if not found then
+        raise exception 'catalog_item_invalid';
+      end if;
+
+      select count(*), count(distinct selected.value ->> 'option_id')
+      into v_option_count, v_distinct_option_count
+      from jsonb_array_elements(v_selected_options) selected;
+
+      if coalesce(v_option_count, 0) <> coalesce(v_distinct_option_count, 0) then
+        raise exception 'duplicate_selected_options';
+      end if;
+
+      v_canonical_selected_options := '[]'::jsonb;
+
+      for v_option in select * from jsonb_array_elements(v_selected_options)
+      loop
+        v_option_id := nullif(v_option ->> 'option_id', '')::uuid;
+
+        if v_option_id is null then
+          raise exception 'selected_option_required';
+        end if;
+
+        select
+          opt_group.id as group_id,
+          opt_group.code as group_code,
+          opt_group.name as group_name,
+          opt_group.selection_type,
+          opt_group.metadata as group_metadata,
+          case
+            when lower(coalesce(opt_group.metadata ->> 'preset', '')) in (
+              'choice',
+              'extras',
+              'replacements',
+              'replacement',
+              'removals',
+              'preferences',
+              'recommendations'
+            )
+              then case
+                when lower(coalesce(opt_group.metadata ->> 'preset', '')) = 'replacement'
+                  then 'replacements'
+                else lower(coalesce(opt_group.metadata ->> 'preset', ''))
+              end
+            when lower(coalesce(opt_group.code, '')) like '%recomend%'
+              or lower(coalesce(opt_group.name, '')) like '%recomend%'
+              or lower(coalesce(opt_group.name, '')) like '%suger%'
+              then 'recommendations'
+            when lower(coalesce(opt_group.code, '')) like '%reemplaz%'
+              or lower(coalesce(opt_group.code, '')) like '%cambio%'
+              or lower(coalesce(opt_group.name, '')) like '%reemplaz%'
+              or lower(coalesce(opt_group.name, '')) like '%cambio%'
+              then 'replacements'
+            when lower(coalesce(opt_group.code, '')) like '%quitar%'
+              or lower(coalesce(opt_group.code, '')) like '%sin-%'
+              or lower(coalesce(opt_group.name, '')) like '%quitar%'
+              or lower(coalesce(opt_group.name, '')) like 'sin %'
+              then 'removals'
+            when lower(coalesce(opt_group.code, '')) like '%extra%'
+              or lower(coalesce(opt_group.code, '')) like '%adicion%'
+              or lower(coalesce(opt_group.name, '')) like '%extra%'
+              or lower(coalesce(opt_group.name, '')) like '%adicion%'
+              or lower(coalesce(opt_group.name, '')) like '%topping%'
+              then 'extras'
+            when lower(coalesce(opt_group.code, '')) like '%prefer%'
+              or lower(coalesce(opt_group.name, '')) like '%prefer%'
+              or lower(coalesce(opt_group.name, '')) like '%instru%'
+              then 'preferences'
+            else 'choice'
+          end as group_preset,
+          opt.id as option_id,
+          opt.code as option_code,
+          opt.name as option_name,
+          opt.price_delta_amount,
+          opt.effect_type,
+          opt.metadata as option_metadata
+        into v_option_row
+        from pass.catalog_item_options opt
+        join pass.catalog_item_option_groups opt_group
+          on opt_group.id = opt.option_group_id
+        where opt.id = v_option_id
+          and opt.is_active = true
+          and opt_group.is_active = true
+          and pass.catalog_item_option_group_is_allowed(v_catalog_item_id, opt_group.id);
+
+        if not found then
+          raise exception 'selected_option_invalid';
+        end if;
+
+        v_group_preset := coalesce(v_option_row.group_preset, 'choice');
+        v_option_metadata := coalesce(v_option_row.option_metadata, '{}'::jsonb);
+
+        v_linked_catalog_item_id := case
+          when coalesce(v_option_metadata ->> 'linked_catalog_item_id', '') ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+            then (v_option_metadata ->> 'linked_catalog_item_id')::uuid
+          else null
+        end;
+
+        select coalesce(jsonb_agg(to_jsonb(rule) order by rule.sort_order, rule.name), '[]'::jsonb)
+        into v_consumption_rules
+        from pass.catalog_item_option_consumption_rules rule
+        where rule.option_id = v_option_row.option_id
+          and rule.is_active = true;
+
+        select coalesce(jsonb_agg(to_jsonb(effect) order by effect.sort_order, effect.id), '[]'::jsonb)
+        into v_recipe_effects
+        from pass.catalog_item_option_recipe_effects effect
+        where effect.option_id = v_option_row.option_id
+          and effect.is_active = true;
+
+        if v_group_preset = 'extras' and jsonb_array_length(v_consumption_rules) = 0 then
+          raise exception 'option_consumption_rule_required';
+        end if;
+
+        if v_group_preset = 'replacements' or v_option_row.effect_type = 'replacement' then
+          if jsonb_array_length(v_consumption_rules) = 0 then
+            raise exception 'replacement_consumption_rule_required';
+          end if;
+
+          if not exists (
+            select 1
+            from jsonb_array_elements(v_recipe_effects) effect
+            where effect ->> 'effect_type' = 'replacement'
+          ) then
+            raise exception 'replacement_recipe_effect_required';
+          end if;
+        end if;
+
+        if v_group_preset = 'removals' or v_option_row.effect_type = 'removal' then
+          if not exists (
+            select 1
+            from jsonb_array_elements(v_recipe_effects) effect
+            where effect ->> 'effect_type' = 'removal'
+          ) then
+            raise exception 'removal_recipe_effect_required';
+          end if;
+        end if;
+
+        if v_group_preset = 'recommendations' then
+          if v_linked_catalog_item_id is null then
+            raise exception 'linked_catalog_item_required';
+          end if;
+
+          perform 1
+          from pass.catalog_items linked_item
+          where linked_item.id = v_linked_catalog_item_id
+            and linked_item.site_id = p_site_id
+            and linked_item.is_active = true;
+
+          if not found then
+            raise exception 'linked_catalog_item_invalid';
+          end if;
+        end if;
+
+        v_option_delta := v_option_delta + greatest(coalesce(v_option_row.price_delta_amount, 0), 0);
+
+        v_canonical_selected_options := v_canonical_selected_options || jsonb_build_array(
+          jsonb_build_object(
+            'group_id', v_option_row.group_id,
+            'group_code', v_option_row.group_code,
+            'group_name', v_option_row.group_name,
+            'group_preset', v_group_preset,
+            'selection_type', v_option_row.selection_type,
+            'option_id', v_option_row.option_id,
+            'option_code', v_option_row.option_code,
+            'option_name', v_option_row.option_name,
+            'price_delta_amount', greatest(coalesce(v_option_row.price_delta_amount, 0), 0),
+            'effect_type', v_option_row.effect_type,
+            'linked_catalog_item_id', v_linked_catalog_item_id,
+            'linked_catalog_item_price_amount', nullif(v_option_metadata ->> 'linked_catalog_item_price_amount', '')::numeric,
+            'metadata', v_option_metadata,
+            'consumption_rules', v_consumption_rules,
+            'recipe_effects', v_recipe_effects,
+            'client_snapshot', v_option
+          )
+        );
+      end loop;
+
+      for v_group_rule in
+        select id, name, selection_type, is_required, min_select, max_select
+        from pass.catalog_item_allowed_option_groups(v_catalog_item_id)
+      loop
+        v_min_select := greatest(
+          case when coalesce(v_group_rule.is_required, false) then 1 else 0 end,
+          coalesce(v_group_rule.min_select, 0)
+        );
+
+        v_max_select := case
+          when v_group_rule.selection_type = 'single' then 1
+          else greatest(1, coalesce(v_group_rule.max_select, 1), v_min_select)
+        end;
+
+        select count(distinct opt.id)
+        into v_selected_count
+        from jsonb_array_elements(v_selected_options) selected
+        join pass.catalog_item_options opt
+          on opt.id::text = selected.value ->> 'option_id'
+        where opt.option_group_id = v_group_rule.id
+          and opt.is_active = true;
+
+        if coalesce(v_selected_count, 0) < v_min_select then
+          raise exception 'option_group_min_select_required';
+        end if;
+
+        if coalesce(v_selected_count, 0) > v_max_select then
+          raise exception 'option_group_max_select_exceeded';
+        end if;
+      end loop;
+
+      v_unit_price := greatest(coalesce(v_catalog_base_price, 0), 0) + greatest(coalesce(v_option_delta, 0), 0);
+
+      if abs(v_original_unit_price - v_unit_price) > 0.01 then
+        raise exception 'invalid_item_price';
+      end if;
+    end if;
+
     v_subtotal := v_subtotal + (v_quantity * v_unit_price);
+
+    v_validated_items := v_validated_items || jsonb_build_array(
+      jsonb_build_object(
+        'product_id', v_product_id,
+        'catalog_item_id', v_catalog_item_id,
+        'quantity', v_quantity,
+        'unit_price', v_unit_price,
+        'base_unit_price', coalesce(v_catalog_base_price, v_unit_price),
+        'option_total_amount', greatest(coalesce(v_option_delta, 0), 0),
+        'notes', nullif(trim(coalesce(v_item ->> 'notes', '')), ''),
+        'line_key', nullif(trim(coalesce(v_item ->> 'line_key', '')), ''),
+        'selected_options', v_canonical_selected_options
+      )
+    );
   end loop;
 
   v_total := v_subtotal + v_delivery;
@@ -2161,8 +2441,13 @@ begin
   )
   returning id into v_order_id;
 
-  for v_item in select * from jsonb_array_elements(p_items)
+  for v_item in select * from jsonb_array_elements(v_validated_items)
   loop
+    v_selected_options := coalesce(v_item -> 'selected_options', '[]'::jsonb);
+    v_quantity := (v_item ->> 'quantity')::numeric;
+    v_unit_price := (v_item ->> 'unit_price')::numeric;
+    v_catalog_item_id := nullif(v_item ->> 'catalog_item_id', '')::uuid;
+
     insert into public.order_items (
       order_id,
       product_id,
@@ -2174,11 +2459,85 @@ begin
     values (
       v_order_id,
       (v_item ->> 'product_id')::uuid,
-      (v_item ->> 'quantity')::numeric,
-      (v_item ->> 'unit_price')::numeric,
-      ((v_item ->> 'quantity')::numeric * (v_item ->> 'unit_price')::numeric),
+      v_quantity,
+      v_unit_price,
+      (v_quantity * v_unit_price),
       nullif(trim(coalesce(v_item ->> 'notes', '')), '')
-    );
+    )
+    returning id into v_order_item_id;
+
+    if v_catalog_item_id is not null and jsonb_array_length(v_selected_options) > 0 then
+      for v_option in select * from jsonb_array_elements(v_selected_options)
+      loop
+        v_option_id := nullif(v_option ->> 'option_id', '')::uuid;
+
+        select
+          opt_group.id as group_id,
+          opt_group.code as group_code,
+          opt_group.name as group_name,
+          opt_group.selection_type,
+          opt.id as option_id,
+          opt.code as option_code,
+          opt.name as option_name,
+          opt.price_delta_amount,
+          opt.effect_type
+        into v_option_row
+        from pass.catalog_item_options opt
+        join pass.catalog_item_option_groups opt_group
+          on opt_group.id = opt.option_group_id
+        where opt.id = v_option_id
+          and opt.is_active = true
+          and opt_group.is_active = true
+          and pass.catalog_item_option_group_is_allowed(v_catalog_item_id, opt_group.id);
+
+        if not found then
+          raise exception 'selected_option_invalid';
+        end if;
+
+        insert into public.order_item_options (
+          order_item_id,
+          option_group_id,
+          option_id,
+          group_code,
+          group_name,
+          option_code,
+          option_name,
+          quantity,
+          price_delta_amount,
+          total_delta_amount,
+          metadata
+        )
+        values (
+          v_order_item_id,
+          v_option_row.group_id,
+          v_option_row.option_id,
+          v_option_row.group_code,
+          v_option_row.group_name,
+          v_option_row.option_code,
+          v_option_row.option_name,
+          v_quantity,
+          greatest(coalesce(v_option_row.price_delta_amount, 0), 0),
+          v_quantity * greatest(coalesce(v_option_row.price_delta_amount, 0), 0),
+          jsonb_build_object(
+            'line_key', v_item ->> 'line_key',
+            'catalog_item_id', v_catalog_item_id,
+            'base_unit_price', (v_item ->> 'base_unit_price')::numeric,
+            'option_total_amount', (v_item ->> 'option_total_amount')::numeric,
+            'group_preset', v_option ->> 'group_preset',
+            'selection_type', v_option_row.selection_type,
+            'effect_type', v_option_row.effect_type,
+            'linked_catalog_item_id', nullif(v_option ->> 'linked_catalog_item_id', ''),
+            'linked_catalog_item_price_amount',
+              nullif(v_option ->> 'linked_catalog_item_price_amount', '')::numeric,
+            'option_metadata', coalesce(v_option -> 'metadata', '{}'::jsonb),
+            'selection_snapshot', v_option,
+            'client_snapshot', coalesce(v_option -> 'client_snapshot', v_option),
+            'consumption_rules', coalesce(v_option -> 'consumption_rules', '[]'::jsonb),
+            'recipe_effects', coalesce(v_option -> 'recipe_effects', '[]'::jsonb)
+          )
+        );
+      end loop;
+    end if;
   end loop;
 
   if v_quote.id is not null then
@@ -2234,13 +2593,13 @@ begin
     'checkout_expires_at', v_checkout_expires_at
   );
 end;
-$$;
+$_$;
 
 
 ALTER FUNCTION "public"."create_order_checkout_draft"("p_site_id" "uuid", "p_satellite_name" "text", "p_fulfillment_type" "text", "p_contact_name" "text", "p_contact_phone" "text", "p_address_line" "text", "p_address_reference" "text", "p_notes" "text", "p_items" "jsonb", "p_delivery_fee_amount" numeric, "p_source" "text", "p_delivery_distance_km" integer, "p_delivery_quote_id" "uuid") OWNER TO "postgres";
 
 
-COMMENT ON FUNCTION "public"."create_order_checkout_draft"("p_site_id" "uuid", "p_satellite_name" "text", "p_fulfillment_type" "text", "p_contact_name" "text", "p_contact_phone" "text", "p_address_line" "text", "p_address_reference" "text", "p_notes" "text", "p_items" "jsonb", "p_delivery_fee_amount" numeric, "p_source" "text", "p_delivery_distance_km" integer, "p_delivery_quote_id" "uuid") IS 'Crea orden desde Vento Pass. Domicilio crea intento Wompi pendiente; recoger y en sitio quedan con pago no requerido.';
+COMMENT ON FUNCTION "public"."create_order_checkout_draft"("p_site_id" "uuid", "p_satellite_name" "text", "p_fulfillment_type" "text", "p_contact_name" "text", "p_contact_phone" "text", "p_address_line" "text", "p_address_reference" "text", "p_notes" "text", "p_items" "jsonb", "p_delivery_fee_amount" numeric, "p_source" "text", "p_delivery_distance_km" integer, "p_delivery_quote_id" "uuid") IS 'Crea orden desde Vento Pass. Valida precio de catalog item, opciones configurables y reglas operacionales obligatorias; guarda snapshot canonico en order_item_options. Domicilio crea intento Wompi pendiente; recoger y en sitio quedan con pago no requerido.';
 
 
 
@@ -2678,13 +3037,36 @@ declare
   v_requires_geo boolean;
   v_max_acc integer;
   v_radius integer;
+  v_policy_check_in_max_acc integer;
+  v_policy_check_out_max_acc integer;
+  v_policy_default_radius integer;
+  v_site_policy_radius integer;
+  v_site_policy_requires_geo boolean;
 
   v_distance double precision;
   v_accuracy double precision;
-  v_is_assigned boolean;
 begin
-  if new.source <> 'system' then
+  -- Registros operativos del sistema preservan la hora del proceso que los crea.
+  -- Registros del trabajador siguen usando hora servidor para evitar manipulaci├│n.
+  if coalesce(new.source, 'mobile') <> 'system' then
     new.occurred_at := now();
+  end if;
+
+  select
+    geofence_check_in_max_accuracy_meters,
+    geofence_check_out_max_accuracy_meters,
+    default_radius_meters
+    into v_policy_check_in_max_acc,
+      v_policy_check_out_max_acc,
+      v_policy_default_radius
+  from public.attendance_policy
+  order by created_at asc
+  limit 1;
+
+  if not found then
+    v_policy_check_in_max_acc := 25;
+    v_policy_check_out_max_acc := 25;
+    v_policy_default_radius := null;
   end if;
 
   select id, site_id, is_active
@@ -2700,19 +3082,17 @@ begin
     raise exception 'Empleado inactivo';
   end if;
 
-  if new.action = 'check_in' then
-    v_is_assigned := (v_emp.site_id is not distinct from new.site_id)
-      or exists (
-        select 1
-        from public.employee_sites es
-        where es.employee_id = new.employee_id
-          and es.site_id = new.site_id
-          and es.is_active = true
-      );
-
-    if not v_is_assigned then
-      raise exception 'No autorizado: check-in solo permitido en tu sede asignada';
-    end if;
+  if new.action = 'check_in'
+    and v_emp.site_id is distinct from new.site_id
+    and not exists (
+      select 1
+      from public.employee_sites es
+      where es.employee_id = new.employee_id
+        and es.site_id = new.site_id
+        and es.is_active is true
+    )
+  then
+    raise exception 'No autorizado: check-in solo permitido en una sede asignada';
   end if;
 
   select id, name, type, is_active, latitude, longitude, checkin_radius_meters
@@ -2728,51 +3108,60 @@ begin
     raise exception 'Sede inactiva';
   end if;
 
-  if new.source = 'system' then
+  -- Autocierres, cierres programados y otros procesos internos no tienen muestra GPS
+  -- del trabajador. La secuencia se valida en attendance_logs_enforce_sequence.
+  if coalesce(new.source, 'mobile') = 'system' then
     return new;
   end if;
 
-  if v_site.type <> 'vento_group' then
-    if v_site.latitude is null or v_site.longitude is null then
-      raise exception 'Configuracion invalida: la sede % no tiene coordenadas', v_site.name;
-    end if;
-    if v_site.checkin_radius_meters is null or v_site.checkin_radius_meters <= 0 then
-      raise exception 'Configuracion invalida: la sede % no tiene radio de check-in configurado', v_site.name;
-    end if;
-    v_requires_geo := true;
-  else
-    v_requires_geo := false;
-  end if;
+  select checkin_radius_meters, requires_geofence
+    into v_site_policy_radius, v_site_policy_requires_geo
+  from public.site_attendance_policy
+  where site_id = new.site_id;
+
+  v_requires_geo := coalesce(
+    v_site_policy_requires_geo,
+    v_site.type <> 'vento_group'
+  );
 
   if v_requires_geo then
+    if v_site.latitude is null or v_site.longitude is null then
+      raise exception 'Configuraci├│n inv├ílida: la sede % no tiene coordenadas', v_site.name;
+    end if;
+
     if new.latitude is null or new.longitude is null or new.accuracy_meters is null then
-      raise exception 'Ubicacion requerida para registrar asistencia';
+      raise exception 'Ubicaci├│n requerida para registrar asistencia';
     end if;
 
     if public.device_info_has_blocking_warnings(new.device_info) then
-      raise exception 'Ubicacion no valida: senales de ubicacion simulada detectadas';
+      raise exception 'Ubicaci├│n no v├ílida: se├▒ales de ubicaci├│n simulada detectadas';
     end if;
 
     if new.action = 'check_in' then
-      v_max_acc := 20;
+      v_max_acc := coalesce(v_policy_check_in_max_acc, 25);
     elsif new.action = 'check_out' then
-      v_max_acc := 25;
+      v_max_acc := coalesce(v_policy_check_out_max_acc, 25);
     else
-      raise exception 'Accion invalida: %', new.action;
+      raise exception 'Acci├│n inv├ílida: %', new.action;
     end if;
 
-    v_radius := v_site.checkin_radius_meters;
+    v_radius := coalesce(
+      v_site_policy_radius,
+      v_site.checkin_radius_meters,
+      v_policy_default_radius,
+      50
+    );
     v_accuracy := new.accuracy_meters::double precision;
 
     if v_accuracy > v_max_acc then
-      raise exception 'Precision GPS insuficiente: %m (maximo %m)', round(v_accuracy), v_max_acc;
+      raise exception 'Precisi├│n GPS insuficiente: %m (m├íximo %m)', round(v_accuracy), v_max_acc;
     end if;
 
     v_distance := public.haversine_m(new.latitude, new.longitude, v_site.latitude, v_site.longitude);
 
-    if (v_distance + v_accuracy) > v_radius then
-      raise exception 'Fuera de rango: %m (precision %m) > radio %m',
-        round(v_distance), round(v_accuracy), v_radius;
+    if v_distance > v_radius then
+      raise exception 'Fuera de rango: %m > radio %m (precisi├│n %m)',
+        round(v_distance), v_radius, round(v_accuracy);
     end if;
   end if;
 
@@ -3064,6 +3453,108 @@ ALTER FUNCTION "public"."ensure_order_conversation"("p_order_id" "uuid") OWNER T
 
 
 COMMENT ON FUNCTION "public"."ensure_order_conversation"("p_order_id" "uuid") IS 'Crea o devuelve la conversaci├│n de un pedido propio del cliente.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."estimate_internal_price_unit"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid" DEFAULT NULL::"uuid", "p_uom_profile_id" "uuid" DEFAULT NULL::"uuid", "p_margin_pct" numeric DEFAULT 0) RETURNS TABLE("base_unit_cost" numeric, "base_cost_source" "text", "suggested_unit_price" numeric, "pricing_factor_to_stock" numeric, "stock_unit_cost" numeric)
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+  v_seller_site_id uuid;
+  v_factor numeric := 1;
+  v_stock_unit_cost numeric := 0;
+  v_source text := 'none';
+  v_margin numeric := greatest(coalesce(p_margin_pct, 0), 0);
+begin
+  select cc.site_id
+    into v_seller_site_id
+  from public.cost_centers cc
+  where cc.id = p_seller_cost_center_id;
+
+  if p_uom_profile_id is not null then
+    select
+      case
+        when coalesce(p.qty_in_input_unit, 0) > 0
+          then p.qty_in_stock_unit / p.qty_in_input_unit
+        else 1
+      end
+      into v_factor
+    from public.product_uom_profiles p
+    where p.id = p_uom_profile_id
+      and p.product_id = p_product_id;
+  end if;
+
+  v_factor := greatest(coalesce(v_factor, 1), 0);
+
+  if v_seller_site_id is not null then
+    select nullif(iss.avg_unit_cost, 0)
+      into v_stock_unit_cost
+    from public.inventory_stock_by_site iss
+    where iss.site_id = v_seller_site_id
+      and iss.product_id = p_product_id;
+
+    if coalesce(v_stock_unit_cost, 0) > 0 then
+      v_source := 'stock_avg_cost';
+    end if;
+  end if;
+
+  if coalesce(v_stock_unit_cost, 0) <= 0 then
+    select nullif(pce.cost_after, 0)
+      into v_stock_unit_cost
+    from public.product_cost_events pce
+    where pce.product_id = p_product_id
+      and (v_seller_site_id is null or pce.site_id = v_seller_site_id or pce.site_id is null)
+    order by
+      case when pce.source = 'production' then 0 else 1 end,
+      pce.created_at desc
+    limit 1;
+
+    if coalesce(v_stock_unit_cost, 0) > 0 then
+      v_source := 'production_or_cost_event';
+    end if;
+  end if;
+
+  if coalesce(v_stock_unit_cost, 0) <= 0 then
+    select nullif(avg(c.avg_stock_unit_cost), 0)
+      into v_stock_unit_cost
+    from public.procurement_supplier_product_costs c
+    where c.product_id = p_product_id
+      and c.is_active = true
+      and c.avg_stock_unit_cost > 0;
+
+    if coalesce(v_stock_unit_cost, 0) > 0 then
+      v_source := 'procurement_avg_cost';
+    end if;
+  end if;
+
+  if coalesce(v_stock_unit_cost, 0) <= 0 then
+    select nullif(p.cost, 0)
+      into v_stock_unit_cost
+    from public.products p
+    where p.id = p_product_id;
+
+    if coalesce(v_stock_unit_cost, 0) > 0 then
+      v_source := 'product_cost';
+    end if;
+  end if;
+
+  v_stock_unit_cost := greatest(coalesce(v_stock_unit_cost, 0), 0);
+
+  return query select
+    round(v_stock_unit_cost * v_factor, 6) as base_unit_cost,
+    v_source as base_cost_source,
+    round((v_stock_unit_cost * v_factor) * (1 + (v_margin / 100.0)), 2) as suggested_unit_price,
+    v_factor as pricing_factor_to_stock,
+    v_stock_unit_cost as stock_unit_cost;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."estimate_internal_price_unit"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_uom_profile_id" "uuid", "p_margin_pct" numeric) OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."estimate_internal_price_unit"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_uom_profile_id" "uuid", "p_margin_pct" numeric) IS 'Estimates an internal price per selected pricing unit/presentation using stock/production/procurement/product cost plus a margin percentage.';
 
 
 
@@ -4123,6 +4614,432 @@ $$;
 
 
 ALTER FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb" DEFAULT '[]'::"jsonb", "p_packages" "jsonb" DEFAULT '[]'::"jsonb", "p_outputs" "jsonb" DEFAULT '[]'::"jsonb", "p_notes" "text" DEFAULT NULL::"text") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
+    AS $$
+declare
+  v_employee_id uuid := auth.uid();
+  v_result jsonb;
+  v_batch_id uuid;
+  v_batch record;
+  v_recipe record;
+  v_output record;
+  v_recipe_output record;
+  v_output_location record;
+  v_output_product record;
+  v_input_unit record;
+  v_stock_unit record;
+  v_movement_id uuid;
+  v_total_cost numeric := 0;
+  v_allocated_cost numeric := 0;
+  v_unit_cost numeric := null;
+  v_stock_unit_cost numeric := null;
+  v_stock_qty numeric := 0;
+  v_conversion_factor_to_stock numeric := 1;
+  v_pct_sum numeric := 0;
+  v_primary_qty numeric;
+  v_primary_unit_cost numeric := null;
+  v_has_outputs boolean := false;
+  v_global_qty_before numeric := 0;
+  v_site_qty_before numeric := 0;
+  v_cost_before numeric := 0;
+  v_cost_after numeric := 0;
+  v_site_avg_before numeric := 0;
+  v_site_avg_after numeric := 0;
+begin
+  if p_outputs is null or jsonb_typeof(p_outputs) <> 'array' then
+    raise exception 'outputs must be a json array';
+  end if;
+
+  v_has_outputs := jsonb_array_length(p_outputs) > 0;
+
+  v_result := public.fogo_create_real_production_batch(
+    p_recipe_card_id,
+    p_produced_qty,
+    p_destination_location_id,
+    p_ingredients,
+    p_packages,
+    p_notes
+  );
+
+  if not v_has_outputs then
+    return v_result;
+  end if;
+
+  v_batch_id := nullif(v_result->>'batchId', '')::uuid;
+
+  select *
+    into v_batch
+  from public.production_batches
+  where id = v_batch_id;
+
+  if not found then
+    raise exception 'production batch not found after creation';
+  end if;
+
+  select rc.id, rc.product_id, rc.site_id, rc.area_id, p.unit, p.stock_unit_code
+    into v_recipe
+  from public.recipe_cards rc
+  join public.products p on p.id = rc.product_id
+  where rc.id = p_recipe_card_id;
+
+  v_primary_qty := p_produced_qty;
+  v_total_cost := coalesce(v_batch.total_cost, 0);
+
+  for v_output in
+    select *
+    from jsonb_to_recordset(p_outputs) as x(
+      recipe_output_id uuid,
+      product_id uuid,
+      output_role text,
+      produced_qty numeric,
+      produced_unit text,
+      destination_location_id uuid,
+      cost_allocation_pct numeric
+    )
+  loop
+    if v_output.product_id is null then
+      raise exception 'output product_id is required';
+    end if;
+
+    if coalesce(v_output.produced_qty, 0) <= 0 then
+      raise exception 'output produced_qty must be greater than zero';
+    end if;
+
+    if nullif(trim(coalesce(v_output.produced_unit, '')), '') is null then
+      raise exception 'output produced_unit is required';
+    end if;
+
+    if coalesce(v_output.cost_allocation_pct, 0) < 0 or coalesce(v_output.cost_allocation_pct, 0) > 100 then
+      raise exception 'output cost allocation pct must be between 0 and 100';
+    end if;
+
+    if v_output.recipe_output_id is not null then
+      select *
+        into v_recipe_output
+      from public.recipe_outputs ro
+      where ro.id = v_output.recipe_output_id
+        and ro.recipe_card_id = p_recipe_card_id
+        and ro.product_id = v_output.product_id
+        and coalesce(ro.is_active, true) = true;
+
+      if not found then
+        raise exception 'output does not belong to recipe';
+      end if;
+    elsif v_output.product_id <> v_recipe.product_id then
+      raise exception 'secondary outputs must be configured on recipe_outputs';
+    end if;
+
+    v_pct_sum := v_pct_sum + coalesce(v_output.cost_allocation_pct, 0);
+  end loop;
+
+  if abs(v_pct_sum - 100) > 0.001 then
+    raise exception 'output cost allocation must sum 100%%, got %', v_pct_sum;
+  end if;
+
+  delete from public.production_batch_outputs
+  where batch_id = v_batch_id;
+
+  for v_output in
+    select *
+    from jsonb_to_recordset(p_outputs) as x(
+      recipe_output_id uuid,
+      product_id uuid,
+      output_role text,
+      produced_qty numeric,
+      produced_unit text,
+      destination_location_id uuid,
+      cost_allocation_pct numeric
+    )
+  loop
+    select id, cost, unit, stock_unit_code
+      into v_output_product
+    from public.products
+    where id = v_output.product_id
+    for update;
+
+    if not found then
+      raise exception 'output product not found: %', v_output.product_id;
+    end if;
+
+    select *
+      into v_input_unit
+    from public.inventory_units
+    where code = v_output.produced_unit
+      and coalesce(is_active, true) = true;
+
+    if not found then
+      raise exception 'output unit % is not a valid inventory unit', v_output.produced_unit;
+    end if;
+
+    select *
+      into v_stock_unit
+    from public.inventory_units
+    where code = coalesce(nullif(v_output_product.stock_unit_code, ''), nullif(v_output_product.unit, ''), v_output.produced_unit)
+      and coalesce(is_active, true) = true;
+
+    if not found then
+      raise exception 'stock unit for output product % is not valid', v_output.product_id;
+    end if;
+
+    if v_input_unit.family is distinct from v_stock_unit.family then
+      raise exception 'output unit % cannot be converted to stock unit % for product %',
+        v_output.produced_unit,
+        v_stock_unit.code,
+        v_output.product_id;
+    end if;
+
+    v_conversion_factor_to_stock := v_input_unit.factor_to_base / v_stock_unit.factor_to_base;
+    v_stock_qty := round(v_output.produced_qty * v_conversion_factor_to_stock, 6);
+
+    if v_stock_qty <= 0 then
+      raise exception 'output stock quantity must be greater than zero';
+    end if;
+
+    if v_output.product_id = v_recipe.product_id and abs(v_stock_qty - v_output.produced_qty) > 0.001 then
+      raise exception 'primary output unit must match product stock unit. Got %, expected %',
+        v_output.produced_unit,
+        v_stock_unit.code;
+    end if;
+
+    v_allocated_cost := round(v_total_cost * (coalesce(v_output.cost_allocation_pct, 0) / 100), 6);
+    v_stock_unit_cost := case when v_stock_qty > 0 then round(v_allocated_cost / v_stock_qty, 6) else null end;
+    v_unit_cost := case when v_output.produced_qty > 0 then round(v_allocated_cost / v_output.produced_qty, 6) else null end;
+    v_movement_id := null;
+
+    if v_output.product_id = v_recipe.product_id then
+      v_primary_qty := v_output.produced_qty;
+      v_primary_unit_cost := v_unit_cost;
+    end if;
+
+    if v_batch.output_mode in ('inventory_stock', 'sellable_stock') then
+      v_output.destination_location_id := coalesce(v_output.destination_location_id, v_batch.destination_location_id);
+
+      if v_output.destination_location_id is null then
+        raise exception 'destination_location_id is required for output product %', v_output.product_id;
+      end if;
+
+      select id, site_id, code
+        into v_output_location
+      from public.inventory_locations
+      where id = v_output.destination_location_id
+        and coalesce(is_active, true) = true;
+
+      if not found then
+        raise exception 'output destination LOC not found';
+      end if;
+
+      if v_output_location.site_id <> v_batch.site_id then
+        raise exception 'output destination LOC must belong to batch site';
+      end if;
+
+      select coalesce(sum(current_qty), 0)
+        into v_global_qty_before
+      from public.inventory_stock_by_site
+      where product_id = v_output.product_id;
+
+      select coalesce(current_qty, 0), coalesce(avg_unit_cost, 0)
+        into v_site_qty_before, v_site_avg_before
+      from public.inventory_stock_by_site
+      where site_id = v_batch.site_id
+        and product_id = v_output.product_id;
+
+      if not found then
+        v_site_qty_before := 0;
+        v_site_avg_before := 0;
+      end if;
+
+      if v_output.product_id = v_recipe.product_id then
+        v_global_qty_before := greatest(v_global_qty_before - v_stock_qty, 0);
+        v_site_qty_before := greatest(v_site_qty_before - v_stock_qty, 0);
+
+        update public.inventory_movements
+        set unit_cost = v_unit_cost,
+            stock_unit_cost = v_stock_unit_cost,
+            line_total_cost = v_allocated_cost,
+            input_qty = v_output.produced_qty,
+            input_unit_code = v_output.produced_unit,
+            conversion_factor_to_stock = v_conversion_factor_to_stock,
+            stock_unit_code = v_stock_unit.code
+        where related_production_batch_id = v_batch.id
+          and product_id = v_recipe.product_id
+          and movement_type = 'production_output'
+        returning id into v_movement_id;
+      else
+        insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
+        values (v_output.destination_location_id, v_output.product_id, v_stock_qty, now())
+        on conflict (location_id, product_id) do update
+          set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
+              updated_at = now();
+
+        insert into public.inventory_movements (
+          site_id,
+          product_id,
+          movement_type,
+          quantity,
+          input_qty,
+          input_unit_code,
+          conversion_factor_to_stock,
+          stock_unit_code,
+          unit_cost,
+          stock_unit_cost,
+          line_total_cost,
+          note,
+          related_production_batch_id,
+          created_by
+        ) values (
+          v_batch.site_id,
+          v_output.product_id,
+          'production_output',
+          v_stock_qty,
+          v_output.produced_qty,
+          v_output.produced_unit,
+          v_conversion_factor_to_stock,
+          v_stock_unit.code,
+          v_unit_cost,
+          v_stock_unit_cost,
+          v_allocated_cost,
+          format('Ingreso coproducto lote %s a %s', coalesce(v_batch.batch_code, v_batch.id::text), coalesce(v_output_location.code, v_output.destination_location_id::text)),
+          v_batch.id,
+          v_employee_id
+        ) returning id into v_movement_id;
+      end if;
+
+      v_cost_before := coalesce(v_output_product.cost, 0);
+      if v_global_qty_before + v_stock_qty > 0 then
+        v_cost_after := round(
+          ((greatest(v_global_qty_before, 0) * greatest(v_cost_before, 0)) + (v_stock_qty * greatest(coalesce(v_stock_unit_cost, 0), 0)))
+          / nullif(greatest(v_global_qty_before, 0) + v_stock_qty, 0),
+          6
+        );
+      else
+        v_cost_after := round(greatest(coalesce(v_stock_unit_cost, v_cost_before, 0), 0), 6);
+      end if;
+
+      if v_site_qty_before + v_stock_qty > 0 then
+        v_site_avg_after := round(
+          ((greatest(v_site_qty_before, 0) * greatest(coalesce(v_site_avg_before, v_cost_before, 0), 0)) + (v_stock_qty * greatest(coalesce(v_stock_unit_cost, 0), 0)))
+          / nullif(greatest(v_site_qty_before, 0) + v_stock_qty, 0),
+          6
+        );
+      else
+        v_site_avg_after := round(greatest(coalesce(v_stock_unit_cost, v_site_avg_before, 0), 0), 6);
+      end if;
+
+      insert into public.inventory_stock_by_site (
+        site_id,
+        product_id,
+        current_qty,
+        avg_unit_cost,
+        updated_at
+      ) values (
+        v_batch.site_id,
+        v_output.product_id,
+        v_stock_qty,
+        v_site_avg_after,
+        now()
+      )
+      on conflict (site_id, product_id) do update
+        set current_qty = case
+              when excluded.product_id = v_recipe.product_id
+                then public.inventory_stock_by_site.current_qty
+              else public.inventory_stock_by_site.current_qty + excluded.current_qty
+            end,
+            avg_unit_cost = excluded.avg_unit_cost,
+            updated_at = now();
+
+      update public.products
+      set cost = v_cost_after,
+          updated_at = now()
+      where id = v_output.product_id;
+
+      insert into public.product_cost_events (
+        product_id,
+        site_id,
+        source,
+        source_production_batch_id,
+        source_adjust_movement_id,
+        qty_before,
+        qty_in,
+        cost_before,
+        cost_in,
+        cost_after,
+        basis,
+        created_by
+      ) values (
+        v_output.product_id,
+        v_batch.site_id,
+        'production',
+        v_batch.id,
+        v_movement_id,
+        v_global_qty_before,
+        v_stock_qty,
+        v_cost_before,
+        coalesce(v_stock_unit_cost, 0),
+        v_cost_after,
+        'net',
+        v_employee_id
+      );
+    end if;
+
+    insert into public.production_batch_outputs (
+      batch_id,
+      recipe_card_id,
+      recipe_output_id,
+      product_id,
+      output_role,
+      produced_qty,
+      produced_unit,
+      destination_location_id,
+      cost_allocation_method,
+      cost_allocation_pct,
+      allocated_total_cost,
+      unit_cost,
+      inventory_movement_id,
+      metadata
+    ) values (
+      v_batch.id,
+      p_recipe_card_id,
+      v_output.recipe_output_id,
+      v_output.product_id,
+      case when v_output.product_id = v_recipe.product_id then 'primary' else coalesce(nullif(v_output.output_role, ''), 'co_product') end,
+      v_output.produced_qty,
+      v_output.produced_unit,
+      case when v_batch.output_mode in ('inventory_stock', 'sellable_stock') then v_output.destination_location_id else null end,
+      'percentage',
+      coalesce(v_output.cost_allocation_pct, 0),
+      v_allocated_cost,
+      v_unit_cost,
+      v_movement_id,
+      jsonb_build_object(
+        'source', 'fogo_create_real_production_batch',
+        'stockQty', v_stock_qty,
+        'stockUnitCode', v_stock_unit.code,
+        'stockUnitCost', v_stock_unit_cost,
+        'conversionFactorToStock', v_conversion_factor_to_stock
+      )
+    );
+  end loop;
+
+  update public.production_batches
+  set produced_qty = coalesce(v_primary_qty, produced_qty),
+      unit_cost = coalesce(v_primary_unit_cost, unit_cost),
+      total_cost = v_total_cost
+  where id = v_batch.id;
+
+  return v_result || jsonb_build_object(
+    'multiOutput', true,
+    'outputCount', jsonb_array_length(p_outputs),
+    'primaryUnitCost', v_primary_unit_cost
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_outputs" "jsonb", "p_notes" "text") OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."fogo_recipe_area_options"("p_site_id" "uuid") RETURNS TABLE("id" "uuid", "code" "text", "name" "text", "kind" "text", "site_id" "uuid")
@@ -5581,6 +6498,37 @@ COMMENT ON FUNCTION "public"."notify_shift_published"() IS 'Notifica al empleado
 
 
 
+CREATE OR REPLACE FUNCTION "public"."numera_current_period_summary"() RETURNS TABLE("period_id" "uuid", "period_month" "date", "period_label" "text", "cost_centers" bigint, "budget_amount" numeric, "expected_revenue" numeric, "actual_expenses" numeric, "fixed_expenses" numeric, "variable_expenses" numeric, "one_time_expenses" numeric, "break_even_revenue" numeric)
+    LANGUAGE "sql" STABLE
+    AS $$
+  with current_period as (
+    select id
+    from public.numera_periods
+    where period_month = date_trunc('month', current_date)::date
+    order by period_month desc
+    limit 1
+  )
+  select
+    s.period_id,
+    s.period_month,
+    s.period_label,
+    count(s.cost_center_id) as cost_centers,
+    coalesce(sum(s.budget_amount), 0) as budget_amount,
+    coalesce(sum(s.expected_revenue), 0) as expected_revenue,
+    coalesce(sum(s.actual_expenses), 0) as actual_expenses,
+    coalesce(sum(s.fixed_expenses), 0) as fixed_expenses,
+    coalesce(sum(s.variable_expenses), 0) as variable_expenses,
+    coalesce(sum(s.one_time_expenses), 0) as one_time_expenses,
+    coalesce(sum(s.break_even_revenue), 0) as break_even_revenue
+  from public.numera_cost_center_monthly_summary s
+  join current_period cp on cp.id = s.period_id
+  group by s.period_id, s.period_month, s.period_label;
+$$;
+
+
+ALTER FUNCTION "public"."numera_current_period_summary"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") RETURNS boolean
     LANGUAGE "plpgsql" STABLE SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -5870,6 +6818,396 @@ ALTER FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid
 
 COMMENT ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) IS 'Promotes a detected screen from app_screen_registry into app_navigation_items using selected group/order/visibility.';
 
+
+
+CREATE OR REPLACE FUNCTION "public"."pulso_post_daily_sales_import"("p_batch_id" "uuid") RETURNS "jsonb"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pass', 'pg_temp'
+    AS $$
+declare
+  v_batch record;
+  v_errors jsonb := '[]'::jsonb;
+  v_posted_lines integer := 0;
+  v_skipped_lines integer := 0;
+  v_now timestamptz := now();
+  v_line record;
+  v_component record;
+  v_movement_id uuid;
+begin
+  select *
+    into v_batch
+  from public.pulso_daily_sales_import_batches
+  where id = p_batch_id
+  for update;
+
+  if v_batch.id is null then
+    raise exception 'pulso_daily_sales_import_batch not found: %', p_batch_id;
+  end if;
+
+  if not public.has_permission('pulso.pos.main', v_batch.site_id) then
+    raise exception 'permission denied';
+  end if;
+
+  if v_batch.status = 'posted' then
+    return jsonb_build_object('status', 'posted', 'postedLines', 0, 'skippedLines', 0, 'errors', v_errors);
+  end if;
+
+  if v_batch.status not in ('validated') then
+    raise exception 'Solo se pueden publicar lotes validados. Estado actual: %', v_batch.status;
+  end if;
+
+  for v_line in
+    select
+      row.id as row_id,
+      row.site_id,
+      row.sales_date,
+      row.source_row_number,
+      row.external_item_name,
+      row.external_category,
+      row.quantity as sold_qty,
+      row.catalog_item_id,
+      row.product_id as row_product_id,
+      item.category_label,
+      rule.id as rule_id,
+      rule.area_id,
+      rule.source_loc_id,
+      rule.consumption_mode,
+      rule.finished_product_id,
+      rule.recipe_product_id,
+      rule.ingredient_product_id,
+      rule.ingredient_qty,
+      rule.ingredient_unit
+    from public.pulso_daily_sales_import_rows row
+    left join pass.catalog_items item on item.id = row.catalog_item_id
+    left join lateral (
+      select r.*
+      from public.pulso_sales_consumption_rules r
+      where r.site_id = row.site_id
+        and r.is_active = true
+        and (
+          r.catalog_item_id = row.catalog_item_id
+          or (r.catalog_item_id is null and r.product_id = row.product_id)
+          or (
+            r.catalog_item_id is null
+            and r.product_id is null
+            and r.category_label is not null
+            and lower(btrim(r.category_label)) = lower(btrim(coalesce(item.category_label, row.external_category)))
+          )
+        )
+      order by
+        case
+          when r.catalog_item_id = row.catalog_item_id then 1
+          when r.product_id = row.product_id then 2
+          else 3
+        end,
+        r.priority,
+        r.created_at
+      limit 1
+    ) rule on true
+    where row.batch_id = p_batch_id
+      and row.row_status = 'validated'
+    order by row.source_row_number
+  loop
+    if v_line.catalog_item_id is null then
+      v_errors := v_errors || jsonb_build_array(jsonb_build_object(
+        'rowId', v_line.row_id,
+        'rowNumber', v_line.source_row_number,
+        'item', v_line.external_item_name,
+        'issue', 'missing_catalog_item'
+      ));
+      continue;
+    end if;
+
+    if v_line.rule_id is null then
+      v_errors := v_errors || jsonb_build_array(jsonb_build_object(
+        'rowId', v_line.row_id,
+        'rowNumber', v_line.source_row_number,
+        'item', v_line.external_item_name,
+        'category', coalesce(v_line.category_label, v_line.external_category),
+        'issue', 'missing_consumption_rule'
+      ));
+      continue;
+    end if;
+
+    if v_line.consumption_mode = 'no_inventory' then
+      update public.pulso_daily_sales_import_rows
+      set row_status = 'posted',
+          metadata = metadata || jsonb_build_object('inventoryPosting', 'no_inventory')
+      where id = v_line.row_id;
+      v_skipped_lines := v_skipped_lines + 1;
+      continue;
+    end if;
+
+    for v_component in
+      select
+        v_line.consumption_mode as posting_kind,
+        v_line.finished_product_id as product_id,
+        v_line.sold_qty as qty,
+        null::text as unit_code
+      where v_line.consumption_mode = 'stored_finished_good'
+      union all
+      select
+        v_line.consumption_mode,
+        v_line.ingredient_product_id,
+        v_line.sold_qty * v_line.ingredient_qty,
+        v_line.ingredient_unit
+      where v_line.consumption_mode = 'direct_ingredient'
+      union all
+      select
+        v_line.consumption_mode,
+        recipe.ingredient_product_id,
+        (v_line.sold_qty / recipe_card.yield_qty) * recipe.quantity,
+        null::text
+      from public.recipes recipe
+      join public.recipe_cards recipe_card
+        on recipe_card.product_id = recipe.product_id
+       and recipe_card.is_active = true
+       and recipe_card.yield_qty > 0
+      where v_line.consumption_mode = 'made_to_order_recipe'
+        and recipe.product_id = v_line.recipe_product_id
+        and recipe.is_active = true
+        and recipe.ingredient_product_id is not null
+        and recipe.quantity > 0
+    loop
+      if v_component.product_id is null or coalesce(v_component.qty, 0) <= 0 then
+        v_errors := v_errors || jsonb_build_array(jsonb_build_object(
+          'rowId', v_line.row_id,
+          'rowNumber', v_line.source_row_number,
+          'item', v_line.external_item_name,
+          'issue', 'invalid_consumption_component'
+        ));
+        continue;
+      end if;
+
+      if coalesce((
+        select stock.current_qty
+        from public.inventory_stock_by_location stock
+        where stock.location_id = v_line.source_loc_id
+          and stock.product_id = v_component.product_id
+      ), 0) < v_component.qty then
+        v_errors := v_errors || jsonb_build_array(jsonb_build_object(
+          'rowId', v_line.row_id,
+          'rowNumber', v_line.source_row_number,
+          'item', v_line.external_item_name,
+          'productId', v_component.product_id,
+          'sourceLocId', v_line.source_loc_id,
+          'requiredQty', v_component.qty,
+          'issue', 'insufficient_stock'
+        ));
+        continue;
+      end if;
+
+      if exists (
+        select 1
+        from public.pulso_sales_inventory_postings existing
+        where existing.row_id = v_line.row_id
+          and existing.product_id = v_component.product_id
+          and existing.source_loc_id = v_line.source_loc_id
+          and existing.posting_kind = v_component.posting_kind
+      ) then
+        continue;
+      end if;
+
+      insert into public.inventory_movements (
+        site_id,
+        product_id,
+        movement_type,
+        quantity,
+        note,
+        created_by,
+        input_qty,
+        input_unit_code,
+        conversion_factor_to_stock,
+        stock_unit_code
+      )
+      select
+        v_line.site_id,
+        v_component.product_id,
+        'sale_out',
+        v_component.qty,
+        format('Pulso venta importada %s fila %s - %s', v_batch.sales_date, v_line.source_row_number, v_line.external_item_name),
+        auth.uid(),
+        v_component.qty,
+        coalesce(nullif(v_component.unit_code, ''), p.stock_unit_code, p.unit, 'un'),
+        1,
+        coalesce(p.stock_unit_code, p.unit, 'un')
+      from public.products p
+      where p.id = v_component.product_id
+      returning id into v_movement_id;
+
+      insert into public.inventory_stock_by_site (site_id, product_id, current_qty, updated_at)
+      values (v_line.site_id, v_component.product_id, -v_component.qty, v_now)
+      on conflict (site_id, product_id) do update
+        set current_qty = public.inventory_stock_by_site.current_qty + excluded.current_qty,
+            updated_at = excluded.updated_at;
+
+      insert into public.inventory_stock_by_location (location_id, product_id, current_qty, updated_at)
+      values (v_line.source_loc_id, v_component.product_id, -v_component.qty, v_now)
+      on conflict (location_id, product_id) do update
+        set current_qty = public.inventory_stock_by_location.current_qty + excluded.current_qty,
+            updated_at = excluded.updated_at;
+
+      insert into public.pulso_sales_inventory_postings (
+        batch_id,
+        row_id,
+        rule_id,
+        site_id,
+        sales_date,
+        catalog_item_id,
+        source_loc_id,
+        area_id,
+        product_id,
+        quantity,
+        movement_id,
+        posting_kind,
+        metadata
+      )
+      values (
+        p_batch_id,
+        v_line.row_id,
+        v_line.rule_id,
+        v_line.site_id,
+        v_line.sales_date,
+        v_line.catalog_item_id,
+        v_line.source_loc_id,
+        v_line.area_id,
+        v_component.product_id,
+        v_component.qty,
+        v_movement_id,
+        v_component.posting_kind,
+        jsonb_build_object('source', 'pulso_post_daily_sales_import')
+      );
+
+      v_posted_lines := v_posted_lines + 1;
+    end loop;
+
+    if v_line.consumption_mode = 'made_to_order_recipe' and not exists (
+      select 1
+      from public.recipes recipe
+      join public.recipe_cards recipe_card
+        on recipe_card.product_id = recipe.product_id
+       and recipe_card.is_active = true
+       and recipe_card.yield_qty > 0
+      where recipe.product_id = v_line.recipe_product_id
+        and recipe.is_active = true
+        and recipe.ingredient_product_id is not null
+        and recipe.quantity > 0
+    ) then
+      v_errors := v_errors || jsonb_build_array(jsonb_build_object(
+        'rowId', v_line.row_id,
+        'rowNumber', v_line.source_row_number,
+        'item', v_line.external_item_name,
+        'issue', 'missing_recipe_components'
+      ));
+    end if;
+
+    if jsonb_array_length(v_errors) = 0 then
+      update public.pulso_daily_sales_import_rows
+      set row_status = 'posted'
+      where id = v_line.row_id;
+    end if;
+  end loop;
+
+  if jsonb_array_length(v_errors) > 0 then
+    raise exception 'No se puede publicar el lote: %', v_errors;
+  end if;
+
+  update public.pulso_daily_sales_import_batches
+  set status = 'posted',
+      posted_at = v_now,
+      metadata = metadata || jsonb_build_object(
+        'inventoryPostedAt', v_now,
+        'inventoryPostedBy', auth.uid(),
+        'inventoryPostedLines', v_posted_lines,
+        'inventorySkippedLines', v_skipped_lines
+      )
+  where id = p_batch_id;
+
+  return jsonb_build_object(
+    'status', 'posted',
+    'postedLines', v_posted_lines,
+    'skippedLines', v_skipped_lines,
+    'errors', v_errors
+  );
+end;
+$$;
+
+
+ALTER FUNCTION "public"."pulso_post_daily_sales_import"("p_batch_id" "uuid") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."pulso_sync_external_sales_item_mapping_product_id"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pass'
+    AS $$
+begin
+  select ci.product_id
+    into new.product_id
+  from pass.catalog_items ci
+  where ci.id = new.catalog_item_id
+    and ci.site_id = new.site_id;
+
+  if not found then
+    raise exception 'catalog_item_id no pertenece a la sede indicada';
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."pulso_sync_external_sales_item_mapping_product_id"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."pulso_validate_sales_consumption_rule"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public', 'pass'
+    AS $$
+declare
+  v_loc record;
+  v_catalog record;
+begin
+  select site_id, area_id, is_active
+    into v_loc
+  from public.inventory_locations
+  where id = new.source_loc_id;
+
+  if v_loc.site_id is null then
+    raise exception 'source_loc_id no existe';
+  end if;
+  if v_loc.site_id <> new.site_id then
+    raise exception 'source_loc_id no pertenece a la sede indicada';
+  end if;
+  if v_loc.area_id <> new.area_id then
+    raise exception 'source_loc_id no pertenece al area indicada';
+  end if;
+  if coalesce(v_loc.is_active, false) is false then
+    raise exception 'source_loc_id no esta activo';
+  end if;
+
+  if new.catalog_item_id is not null then
+    select site_id, product_id, category_label
+      into v_catalog
+    from pass.catalog_items
+    where id = new.catalog_item_id;
+
+    if v_catalog.site_id is null then
+      raise exception 'catalog_item_id no existe';
+    end if;
+    if v_catalog.site_id <> new.site_id then
+      raise exception 'catalog_item_id no pertenece a la sede indicada';
+    end if;
+
+    new.product_id := coalesce(new.product_id, v_catalog.product_id);
+    new.category_label := coalesce(nullif(btrim(new.category_label), ''), v_catalog.category_label);
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."pulso_validate_sales_consumption_rule"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."rebuild_procurement_supplier_product_costs"() RETURNS "jsonb"
@@ -7252,6 +8590,19 @@ $$;
 ALTER FUNCTION "public"."set_internal_price_item_uom_snapshot"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."set_numera_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_numera_updated_at"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."set_product_sku"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -7286,6 +8637,71 @@ $$;
 
 
 ALTER FUNCTION "public"."set_production_batch_code"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_pulso_daily_sales_import_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_pulso_daily_sales_import_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_pulso_external_sales_item_mappings_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_pulso_external_sales_item_mappings_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_pulso_sales_consumption_rules_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_pulso_sales_consumption_rules_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_recipe_outputs_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_recipe_outputs_updated_at"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."set_recipe_site_uses_updated_at"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."set_recipe_site_uses_updated_at"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."set_updated_at"() RETURNS "trigger"
@@ -7652,6 +9068,136 @@ $$;
 
 
 ALTER FUNCTION "public"."sync_attendance_events"("p_events" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_employee_primary_site_assignment"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_employee_id uuid;
+  v_requested_primary_site_id uuid;
+  v_current_employee_site_id uuid;
+  v_next_site_id uuid;
+begin
+  if pg_trigger_depth() > 1 then
+    return coalesce(new, old);
+  end if;
+
+  v_employee_id := coalesce(new.employee_id, old.employee_id);
+
+  if v_employee_id is null then
+    return coalesce(new, old);
+  end if;
+
+  if tg_op <> 'DELETE'
+    and coalesce(new.is_active, true) is true
+    and coalesce(new.is_primary, false) is true then
+    v_requested_primary_site_id := new.site_id;
+  else
+    v_requested_primary_site_id := null;
+  end if;
+
+  select e.site_id
+    into v_current_employee_site_id
+  from public.employees e
+  where e.id = v_employee_id;
+
+  select es.site_id
+    into v_next_site_id
+  from public.employee_sites es
+  where es.employee_id = v_employee_id
+    and coalesce(es.is_active, true) is true
+  order by
+    case
+      when v_requested_primary_site_id is not null and es.site_id = v_requested_primary_site_id then 0
+      else 1
+    end,
+    case
+      when v_current_employee_site_id is not null and es.site_id = v_current_employee_site_id then 0
+      else 1
+    end,
+    case when coalesce(es.is_primary, false) then 0 else 1 end,
+    es.site_id
+  limit 1;
+
+  update public.employee_sites es
+  set is_primary = false
+  where es.employee_id = v_employee_id
+    and coalesce(es.is_primary, false) is true
+    and (v_next_site_id is null or es.site_id <> v_next_site_id);
+
+  if v_next_site_id is not null then
+    update public.employee_sites es
+    set is_primary = true
+    where es.employee_id = v_employee_id
+      and es.site_id = v_next_site_id
+      and coalesce(es.is_primary, false) is false;
+  end if;
+
+  update public.employees
+  set
+    site_id = v_next_site_id,
+    updated_at = now()
+  where id = v_employee_id
+    and site_id is distinct from v_next_site_id;
+
+  insert into public.employee_settings (employee_id, selected_site_id, updated_at)
+  values (v_employee_id, v_next_site_id, now())
+  on conflict (employee_id)
+  do update set
+    selected_site_id = excluded.selected_site_id,
+    updated_at = excluded.updated_at
+  where public.employee_settings.selected_site_id is distinct from excluded.selected_site_id;
+
+  return coalesce(new, old);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."sync_employee_primary_site_assignment"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."sync_employee_site_assignment_from_employee"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+begin
+  if pg_trigger_depth() > 1 then
+    return new;
+  end if;
+
+  if new.site_id is not null and (tg_op = 'INSERT' or new.site_id is distinct from old.site_id) then
+    update public.employee_sites
+    set is_primary = false
+    where employee_id = new.id
+      and site_id <> new.site_id
+      and coalesce(is_primary, false) is true;
+
+    insert into public.employee_sites (employee_id, site_id, is_primary, is_active)
+    values (new.id, new.site_id, true, true)
+    on conflict (employee_id, site_id)
+    do update set
+      is_primary = true,
+      is_active = true;
+  end if;
+
+  if tg_op = 'INSERT' or new.site_id is distinct from old.site_id then
+    insert into public.employee_settings (employee_id, selected_site_id, updated_at)
+    values (new.id, new.site_id, now())
+    on conflict (employee_id)
+    do update set
+      selected_site_id = excluded.selected_site_id,
+      updated_at = excluded.updated_at
+    where public.employee_settings.selected_site_id is distinct from excluded.selected_site_id;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."sync_employee_site_assignment_from_employee"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."sync_order_fulfillment_state"() RETURNS "trigger"
@@ -8928,6 +10474,181 @@ $$;
 ALTER FUNCTION "public"."validate_product_site_production_route"() OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."validate_recipe_outputs"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_recipe record;
+  v_pct_sum numeric;
+  v_primary_count integer;
+begin
+  select id, product_id, site_id
+    into v_recipe
+  from public.recipe_cards
+  where id = new.recipe_card_id;
+
+  if v_recipe.id is null then
+    raise exception 'recipe_card_id no existe';
+  end if;
+
+  if new.output_role = 'primary' and new.product_id is distinct from v_recipe.product_id then
+    raise exception 'El output principal debe ser el producto principal de la receta.';
+  end if;
+
+  if new.output_role <> 'primary' and new.product_id = v_recipe.product_id then
+    raise exception 'El producto principal no puede repetirse como coproducto.';
+  end if;
+
+  if new.cost_allocation_method = 'percentage' and new.cost_allocation_pct is null then
+    raise exception 'Los outputs con costeo porcentual necesitan porcentaje.';
+  end if;
+
+  if new.destination_location_id is not null and not exists (
+    select 1
+    from public.inventory_locations loc
+    where loc.id = new.destination_location_id
+      and loc.site_id = v_recipe.site_id
+      and coalesce(loc.is_active, true) = true
+  ) then
+    raise exception 'El LOC destino del output no pertenece a la sede de la receta.';
+  end if;
+
+  select count(*)
+    into v_primary_count
+  from public.recipe_outputs ro
+  where ro.recipe_card_id = new.recipe_card_id
+    and coalesce(ro.is_active, true)
+    and ro.output_role = 'primary'
+    and ro.id is distinct from new.id;
+
+  if coalesce(new.is_active, true) and new.output_role = 'primary' then
+    v_primary_count := v_primary_count + 1;
+  end if;
+
+  if v_primary_count > 1 then
+    raise exception 'Solo puede haber un output principal activo por receta.';
+  end if;
+
+  select coalesce(sum(coalesce(ro.cost_allocation_pct, 0)), 0)
+    into v_pct_sum
+  from public.recipe_outputs ro
+  where ro.recipe_card_id = new.recipe_card_id
+    and ro.id is distinct from new.id
+    and coalesce(ro.is_active, true)
+    and ro.cost_allocation_method = 'percentage';
+
+  if coalesce(new.is_active, true) and new.cost_allocation_method = 'percentage' then
+    v_pct_sum := v_pct_sum + coalesce(new.cost_allocation_pct, 0);
+  end if;
+
+  if coalesce(new.is_active, true) and new.cost_allocation_method = 'percentage' and v_pct_sum > 100.000001 then
+    raise exception 'La suma de porcentajes de outputs no puede superar 100%%.';
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."validate_recipe_outputs"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."validate_recipe_site_use"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_recipe record;
+  v_area_site_id uuid;
+  v_source record;
+  v_destination record;
+begin
+  select id, product_id
+    into v_recipe
+  from public.recipe_cards
+  where id = new.recipe_card_id;
+
+  if v_recipe.id is null then
+    raise exception 'recipe_card_id no existe';
+  end if;
+
+  new.product_id := v_recipe.product_id;
+
+  if new.usage_mode = 'no_inventory' then
+    new.area_id := null;
+    new.source_location_id := null;
+    new.destination_location_id := null;
+  end if;
+
+  if new.usage_mode in ('sells_finished_good', 'stored_for_production', 'prepares_to_order') then
+    new.destination_location_id := null;
+  end if;
+
+  if new.area_id is not null then
+    select site_id into v_area_site_id
+    from public.areas
+    where id = new.area_id;
+
+    if v_area_site_id is distinct from new.site_id then
+      raise exception 'El area no pertenece a la sede del uso.';
+    end if;
+  end if;
+
+  if new.source_location_id is not null then
+    select site_id, area_id, is_active
+      into v_source
+    from public.inventory_locations
+    where id = new.source_location_id;
+
+    if v_source.site_id is null then
+      raise exception 'El LOC origen seleccionado no existe.';
+    end if;
+    if v_source.site_id is distinct from new.site_id then
+      raise exception 'El LOC origen no pertenece a la sede del uso.';
+    end if;
+    if coalesce(v_source.is_active, false) is false then
+      raise exception 'El LOC origen no esta activo.';
+    end if;
+
+    if new.usage_mode in ('sells_finished_good', 'stored_for_production') then
+      new.area_id := v_source.area_id;
+    elsif new.area_id is not null and v_source.area_id is distinct from new.area_id then
+      raise exception 'El LOC origen no pertenece al area del uso.';
+    end if;
+  end if;
+
+  if new.destination_location_id is not null then
+    select site_id, area_id, is_active
+      into v_destination
+    from public.inventory_locations
+    where id = new.destination_location_id;
+
+    if v_destination.site_id is null then
+      raise exception 'El LOC destino seleccionado no existe.';
+    end if;
+    if v_destination.site_id is distinct from new.site_id then
+      raise exception 'El LOC destino no pertenece a la sede del uso.';
+    end if;
+    if coalesce(v_destination.is_active, false) is false then
+      raise exception 'El LOC destino no esta activo.';
+    end if;
+    if new.usage_mode = 'produces_here'
+      and new.area_id is not null
+      and v_destination.area_id is not null
+      and v_destination.area_id is distinct from new.area_id then
+      raise exception 'El LOC destino no pertenece al area del uso.';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."validate_recipe_site_use"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."validate_restock_request_item_pick"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pg_temp'
@@ -9679,6 +11400,64 @@ $$;
 ALTER FUNCTION "public"."viso_accounting_dashboard"("p_site_id" "uuid", "p_month" "date") OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."product_inventory_profiles" (
+    "product_id" "uuid" NOT NULL,
+    "track_inventory" boolean DEFAULT true NOT NULL,
+    "inventory_kind" "text" DEFAULT 'unclassified'::"text" NOT NULL,
+    "default_unit" "text",
+    "lot_tracking" boolean DEFAULT false NOT NULL,
+    "expiry_tracking" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "unit_family" "text",
+    "costing_mode" "text" DEFAULT 'auto_primary_supplier'::"text" NOT NULL,
+    "measurement_mode" "text" DEFAULT 'fixed_presentation'::"text" NOT NULL,
+    "default_tolerance_percent" numeric(7,3) DEFAULT 0 NOT NULL,
+    "requires_actual_receipt_qty" boolean DEFAULT false NOT NULL,
+    "requires_actual_dispatch_qty" boolean DEFAULT false NOT NULL,
+    "requires_actual_production_qty" boolean DEFAULT false NOT NULL,
+    "requires_count_alongside_weight" boolean DEFAULT false NOT NULL,
+    "aux_count_unit_code" "text",
+    CONSTRAINT "product_inventory_profiles_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0))),
+    CONSTRAINT "product_inventory_profiles_costing_mode_chk" CHECK (("costing_mode" = ANY (ARRAY['auto_primary_supplier'::"text", 'manual'::"text"]))),
+    CONSTRAINT "product_inventory_profiles_default_tolerance_percent_chk" CHECK ((("default_tolerance_percent" >= (0)::numeric) AND ("default_tolerance_percent" <= (100)::numeric))),
+    CONSTRAINT "product_inventory_profiles_kind_chk" CHECK (("inventory_kind" = ANY (ARRAY['ingredient'::"text", 'finished'::"text", 'resale'::"text", 'packaging'::"text", 'asset'::"text", 'unclassified'::"text"]))),
+    CONSTRAINT "product_inventory_profiles_measurement_mode_chk" CHECK (("measurement_mode" = ANY (ARRAY['fixed_presentation'::"text", 'variable_weight'::"text", 'count_with_weight'::"text", 'bulk_volume'::"text"]))),
+    CONSTRAINT "product_inventory_profiles_unit_family_chk" CHECK ((("unit_family" = ANY (ARRAY['volume'::"text", 'mass'::"text", 'count'::"text"])) OR ("unit_family" IS NULL)))
+);
+
+
+ALTER TABLE "public"."product_inventory_profiles" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."measurement_mode" IS 'Operational measurement behavior: fixed_presentation, variable_weight, count_with_weight, or bulk_volume.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."default_tolerance_percent" IS 'Normal operational tolerance percent for planned vs actual quantity differences.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_receipt_qty" IS 'When true, receiving flows must capture actual received/accepted quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_dispatch_qty" IS 'When true, dispatch/remission flows must capture actual dispatched quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_production_qty" IS 'When true, production flows must capture actual consumed/output quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_count_alongside_weight" IS 'When true, forms should capture physical count alongside base measured quantity.';
+
+
+
+COMMENT ON COLUMN "public"."product_inventory_profiles"."aux_count_unit_code" IS 'Default auxiliary count unit for count_with_weight products. Example: pieza, unidad, aguacate. Stock remains controlled by the base unit.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."product_site_settings" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "site_id" "uuid" NOT NULL,
@@ -9699,6 +11478,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_site_settings" (
     "local_production_enabled" boolean DEFAULT false NOT NULL,
     "sales_enabled" boolean,
     "inventory_enabled" boolean,
+    "remission_category_id" "uuid",
     CONSTRAINT "product_site_settings_audience_chk" CHECK (("audience" = ANY (ARRAY['SAUDO'::"text", 'VCF'::"text", 'BOTH'::"text", 'INTERNAL'::"text"]))),
     CONSTRAINT "product_site_settings_local_production_location_chk" CHECK ((("local_production_enabled" = true) OR ("production_location_id" IS NULL))),
     CONSTRAINT "product_site_settings_min_stock_input_mode_chk" CHECK ((("min_stock_input_mode" IS NULL) OR ("min_stock_input_mode" = ANY (ARRAY['base'::"text", 'purchase'::"text"])))),
@@ -9757,6 +11537,10 @@ COMMENT ON COLUMN "public"."product_site_settings"."sales_enabled" IS 'Control o
 
 
 COMMENT ON COLUMN "public"."product_site_settings"."inventory_enabled" IS 'Control opcional para inventario por sede. Null mantiene comportamiento legacy.';
+
+
+
+COMMENT ON COLUMN "public"."product_site_settings"."remission_category_id" IS 'Categoria visual de remision para agrupar este producto en la sede destino. No afecta inventario, compras ni categoria del catalogo.';
 
 
 
@@ -10559,6 +12343,50 @@ CREATE TABLE IF NOT EXISTS "public"."attendance_sync_conflicts" (
 ALTER TABLE "public"."attendance_sync_conflicts" OWNER TO "postgres";
 
 
+CREATE OR REPLACE VIEW "public"."catalog_item_customization_template_assignments" WITH ("security_invoker"='true') AS
+ SELECT "catalog_item_id",
+    "template_id",
+    "sort_order",
+    "is_active",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_customization_template_assignments";
+
+
+ALTER VIEW "public"."catalog_item_customization_template_assignments" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_customization_template_groups" WITH ("security_invoker"='true') AS
+ SELECT "template_id",
+    "option_group_id",
+    "sort_order",
+    "is_active",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_customization_template_groups";
+
+
+ALTER VIEW "public"."catalog_item_customization_template_groups" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_customization_templates" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "site_id",
+    "code",
+    "name",
+    "description",
+    "is_active",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_customization_templates";
+
+
+ALTER VIEW "public"."catalog_item_customization_templates" OWNER TO "postgres";
+
+
 CREATE OR REPLACE VIEW "public"."catalog_item_option_consumption_rules" WITH ("security_invoker"='true') AS
  SELECT "id",
     "option_id",
@@ -10578,7 +12406,8 @@ CREATE OR REPLACE VIEW "public"."catalog_item_option_consumption_rules" WITH ("s
     "sort_order",
     "metadata",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "effect_type"
    FROM "pass"."catalog_item_option_consumption_rules";
 
 
@@ -10603,7 +12432,11 @@ CREATE OR REPLACE VIEW "public"."catalog_item_option_groups" WITH ("security_inv
     "is_active",
     "metadata",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "display_type",
+    "is_collapsible",
+    "default_collapsed",
+    "helper_text"
    FROM "pass"."catalog_item_option_groups";
 
 
@@ -10611,6 +12444,30 @@ ALTER VIEW "public"."catalog_item_option_groups" OWNER TO "postgres";
 
 
 COMMENT ON VIEW "public"."catalog_item_option_groups" IS 'Compat view publica para grupos de opciones de items comerciales. Canonical table lives in pass.catalog_item_option_groups.';
+
+
+
+CREATE OR REPLACE VIEW "public"."catalog_item_option_recipe_effects" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "option_id",
+    "effect_type",
+    "target_ingredient_product_id",
+    "recipe_component_code",
+    "quantity_mode",
+    "quantity_amount",
+    "stock_unit_code",
+    "is_active",
+    "sort_order",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_item_option_recipe_effects";
+
+
+ALTER VIEW "public"."catalog_item_option_recipe_effects" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."catalog_item_option_recipe_effects" IS 'Compat view publica para efectos de opciones sobre receta base. Canonical table lives in pass.catalog_item_option_recipe_effects.';
 
 
 
@@ -10627,7 +12484,12 @@ CREATE OR REPLACE VIEW "public"."catalog_item_options" WITH ("security_invoker"=
     "sort_order",
     "metadata",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "effect_type",
+    "image_url",
+    "linked_catalog_item_id",
+    "linked_quantity",
+    "opens_linked_detail"
    FROM "pass"."catalog_item_options";
 
 
@@ -10686,6 +12548,27 @@ ALTER VIEW "public"."catalog_items" OWNER TO "postgres";
 
 COMMENT ON VIEW "public"."catalog_items" IS 'Compat view. Canonical table lives in pass.catalog_items.';
 
+
+
+CREATE OR REPLACE VIEW "public"."catalog_option_visual_assets" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "site_id",
+    "asset_key",
+    "display_name",
+    "image_url",
+    "linked_product_id",
+    "linked_ingredient_product_id",
+    "option_code",
+    "normalized_option_name",
+    "scope",
+    "is_active",
+    "metadata",
+    "created_at",
+    "updated_at"
+   FROM "pass"."catalog_option_visual_assets";
+
+
+ALTER VIEW "public"."catalog_option_visual_assets" OWNER TO "postgres";
 
 
 CREATE OR REPLACE VIEW "public"."commercial_categories" WITH ("security_invoker"='true') AS
@@ -10998,6 +12881,7 @@ CREATE TABLE IF NOT EXISTS "public"."employee_shifts" (
     "published_by" "uuid",
     "show_end_as_close" boolean DEFAULT false NOT NULL,
     "shift_kind" "text" DEFAULT 'laboral'::"text" NOT NULL,
+    "operational_role" "text",
     CONSTRAINT "employee_shifts_shift_kind_check" CHECK (("shift_kind" = ANY (ARRAY['laboral'::"text", 'descanso'::"text"]))),
     CONSTRAINT "employee_shifts_status_check" CHECK (("status" = ANY (ARRAY['scheduled'::"text", 'confirmed'::"text", 'completed'::"text", 'cancelled'::"text", 'no_show'::"text"])))
 );
@@ -11043,6 +12927,10 @@ COMMENT ON COLUMN "public"."employee_shifts"."show_end_as_close" IS 'Si es true,
 
 
 COMMENT ON COLUMN "public"."employee_shifts"."shift_kind" IS 'Tipo de turno: laboral (con jornada) o descanso (no laboral, visible al empleado como descanso programado).';
+
+
+
+COMMENT ON COLUMN "public"."employee_shifts"."operational_role" IS 'Rol operativo planeado para este turno. No reemplaza public.employees.role; Anima debe activar este rol durante el check-in.';
 
 
 
@@ -11223,6 +13111,16 @@ CREATE TABLE IF NOT EXISTS "public"."internal_price_list_items" (
     "pricing_input_unit_code" "text",
     "pricing_qty_in_input_unit" numeric,
     "pricing_qty_in_stock_unit" numeric,
+    "pricing_method" "text" DEFAULT 'manual'::"text" NOT NULL,
+    "margin_pct" numeric,
+    "base_unit_cost" numeric,
+    "base_cost_source" "text",
+    "suggested_unit_price" numeric,
+    "formula_snapshot" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    CONSTRAINT "internal_price_items_base_cost_non_negative_chk" CHECK ((("base_unit_cost" IS NULL) OR ("base_unit_cost" >= (0)::numeric))),
+    CONSTRAINT "internal_price_items_margin_pct_chk" CHECK ((("margin_pct" IS NULL) OR (("margin_pct" >= (0)::numeric) AND ("margin_pct" <= (500)::numeric)))),
+    CONSTRAINT "internal_price_items_pricing_method_chk" CHECK (("pricing_method" = ANY (ARRAY['manual'::"text", 'cost_plus_margin'::"text"]))),
+    CONSTRAINT "internal_price_items_suggested_price_non_negative_chk" CHECK ((("suggested_unit_price" IS NULL) OR ("suggested_unit_price" >= (0)::numeric))),
     CONSTRAINT "internal_price_list_items_pricing_qty_input_positive" CHECK ((("pricing_qty_in_input_unit" IS NULL) OR ("pricing_qty_in_input_unit" > (0)::numeric))),
     CONSTRAINT "internal_price_list_items_pricing_qty_stock_positive" CHECK ((("pricing_qty_in_stock_unit" IS NULL) OR ("pricing_qty_in_stock_unit" > (0)::numeric))),
     CONSTRAINT "internal_price_list_items_profile_snapshot_required" CHECK ((("uom_profile_id" IS NULL) OR (("pricing_label" IS NOT NULL) AND ("btrim"("pricing_label") <> ''::"text") AND ("pricing_input_unit_code" IS NOT NULL) AND ("btrim"("pricing_input_unit_code") <> ''::"text") AND ("pricing_qty_in_input_unit" IS NOT NULL) AND ("pricing_qty_in_stock_unit" IS NOT NULL)))),
@@ -11259,6 +13157,30 @@ COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_qty_in_input_uni
 
 
 COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_qty_in_stock_unit" IS 'Snapshot de qty_in_stock_unit del perfil UOM usado para el precio interno.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."pricing_method" IS 'manual: unit_price was typed directly. cost_plus_margin: unit_price was calculated from base cost and margin, then frozen for remissions.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."margin_pct" IS 'Margin percentage used when pricing_method = cost_plus_margin.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."base_unit_cost" IS 'Base cost per pricing unit/presentation used to calculate the suggested internal price.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."base_cost_source" IS 'Source used for base_unit_cost: production_avg_cost, stock_avg_cost, procurement_avg_cost, product_cost, none.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."suggested_unit_price" IS 'Calculated price before optional manual override.';
+
+
+
+COMMENT ON COLUMN "public"."internal_price_list_items"."formula_snapshot" IS 'Audit snapshot for the internal pricing formula.';
 
 
 
@@ -11909,6 +13831,120 @@ CREATE SEQUENCE IF NOT EXISTS "public"."lpn_sequence"
 
 
 ALTER SEQUENCE "public"."lpn_sequence" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."numera_cost_center_budgets" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "period_id" "uuid" NOT NULL,
+    "cost_center_id" "uuid" NOT NULL,
+    "budget_amount" numeric DEFAULT 0 NOT NULL,
+    "expected_revenue" numeric DEFAULT 0 NOT NULL,
+    "target_gross_margin_pct" numeric,
+    "notes" "text",
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "numera_budgets_amount_non_negative" CHECK (("budget_amount" >= (0)::numeric)),
+    CONSTRAINT "numera_budgets_expected_revenue_non_negative" CHECK (("expected_revenue" >= (0)::numeric)),
+    CONSTRAINT "numera_budgets_margin_pct_check" CHECK ((("target_gross_margin_pct" IS NULL) OR (("target_gross_margin_pct" > (0)::numeric) AND ("target_gross_margin_pct" <= (100)::numeric))))
+);
+
+
+ALTER TABLE "public"."numera_cost_center_budgets" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."numera_expense_categories" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "code" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "expense_kind" "text" DEFAULT 'fixed'::"text" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "sort_order" integer DEFAULT 100 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "numera_expense_categories_code_not_blank" CHECK (("btrim"("code") <> ''::"text")),
+    CONSTRAINT "numera_expense_categories_kind_check" CHECK (("expense_kind" = ANY (ARRAY['fixed'::"text", 'variable'::"text", 'one_time'::"text"]))),
+    CONSTRAINT "numera_expense_categories_name_not_blank" CHECK (("btrim"("name") <> ''::"text"))
+);
+
+
+ALTER TABLE "public"."numera_expense_categories" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."numera_expenses" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "period_id" "uuid" NOT NULL,
+    "cost_center_id" "uuid",
+    "site_id" "uuid",
+    "category_id" "uuid" NOT NULL,
+    "expense_date" "date" DEFAULT CURRENT_DATE NOT NULL,
+    "description" "text" NOT NULL,
+    "amount" numeric NOT NULL,
+    "currency" "text" DEFAULT 'COP'::"text" NOT NULL,
+    "source_app" "text",
+    "source_table" "text",
+    "source_id" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_by" "uuid",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "numera_expenses_amount_non_negative" CHECK (("amount" >= (0)::numeric)),
+    CONSTRAINT "numera_expenses_center_or_site_check" CHECK ((("cost_center_id" IS NOT NULL) OR ("site_id" IS NOT NULL))),
+    CONSTRAINT "numera_expenses_currency_not_blank" CHECK (("btrim"("currency") <> ''::"text")),
+    CONSTRAINT "numera_expenses_description_not_blank" CHECK (("btrim"("description") <> ''::"text"))
+);
+
+
+ALTER TABLE "public"."numera_expenses" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."numera_periods" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "period_month" "date" NOT NULL,
+    "label" "text" NOT NULL,
+    "status" "text" DEFAULT 'open'::"text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "numera_periods_label_not_blank" CHECK (("btrim"("label") <> ''::"text")),
+    CONSTRAINT "numera_periods_month_start_check" CHECK (("period_month" = ("date_trunc"('month'::"text", ("period_month")::timestamp with time zone))::"date")),
+    CONSTRAINT "numera_periods_status_check" CHECK (("status" = ANY (ARRAY['open'::"text", 'closed'::"text", 'locked'::"text"])))
+);
+
+
+ALTER TABLE "public"."numera_periods" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."numera_cost_center_monthly_summary" WITH ("security_invoker"='true') AS
+ SELECT "p"."id" AS "period_id",
+    "p"."period_month",
+    "p"."label" AS "period_label",
+    "cc"."id" AS "cost_center_id",
+    "cc"."site_id",
+    "cc"."name" AS "cost_center_name",
+    "cc"."code" AS "cost_center_code",
+    "cc"."type" AS "cost_center_type",
+    COALESCE("b"."budget_amount", (0)::numeric) AS "budget_amount",
+    COALESCE("b"."expected_revenue", (0)::numeric) AS "expected_revenue",
+    "b"."target_gross_margin_pct",
+    COALESCE("sum"("e"."amount"), (0)::numeric) AS "actual_expenses",
+    COALESCE("sum"("e"."amount") FILTER (WHERE ("ec"."expense_kind" = 'fixed'::"text")), (0)::numeric) AS "fixed_expenses",
+    COALESCE("sum"("e"."amount") FILTER (WHERE ("ec"."expense_kind" = 'variable'::"text")), (0)::numeric) AS "variable_expenses",
+    COALESCE("sum"("e"."amount") FILTER (WHERE ("ec"."expense_kind" = 'one_time'::"text")), (0)::numeric) AS "one_time_expenses",
+    (COALESCE("b"."budget_amount", (0)::numeric) - COALESCE("sum"("e"."amount"), (0)::numeric)) AS "budget_variance",
+        CASE
+            WHEN (("b"."target_gross_margin_pct" IS NULL) OR ("b"."target_gross_margin_pct" <= (0)::numeric)) THEN NULL::numeric
+            ELSE "round"((COALESCE("sum"("e"."amount") FILTER (WHERE ("ec"."expense_kind" = 'fixed'::"text")), (0)::numeric) / ("b"."target_gross_margin_pct" / 100.0)), 2)
+        END AS "break_even_revenue"
+   FROM (((("public"."numera_periods" "p"
+     CROSS JOIN "public"."cost_centers" "cc")
+     LEFT JOIN "public"."numera_cost_center_budgets" "b" ON ((("b"."period_id" = "p"."id") AND ("b"."cost_center_id" = "cc"."id"))))
+     LEFT JOIN "public"."numera_expenses" "e" ON ((("e"."period_id" = "p"."id") AND (("e"."cost_center_id" = "cc"."id") OR (("e"."cost_center_id" IS NULL) AND ("e"."site_id" IS NOT NULL) AND ("e"."site_id" = "cc"."site_id"))))))
+     LEFT JOIN "public"."numera_expense_categories" "ec" ON (("ec"."id" = "e"."category_id")))
+  WHERE ("cc"."is_active" IS NOT FALSE)
+  GROUP BY "p"."id", "p"."period_month", "p"."label", "cc"."id", "cc"."site_id", "cc"."name", "cc"."code", "cc"."type", "b"."budget_amount", "b"."expected_revenue", "b"."target_gross_margin_pct";
+
+
+ALTER VIEW "public"."numera_cost_center_monthly_summary" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_conversations" (
@@ -12706,6 +14742,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_cost_events" (
     "basis" "text" DEFAULT 'net'::"text" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "created_by" "uuid",
+    "source_production_batch_id" "uuid",
     CONSTRAINT "product_cost_events_basis_chk" CHECK (("basis" = ANY (ARRAY['net'::"text", 'gross'::"text"]))),
     CONSTRAINT "product_cost_events_source_chk" CHECK (("source" = ANY (ARRAY['entry'::"text", 'adjust'::"text", 'production'::"text"])))
 );
@@ -12728,64 +14765,6 @@ CREATE TABLE IF NOT EXISTS "public"."product_images" (
 
 
 ALTER TABLE "public"."product_images" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."product_inventory_profiles" (
-    "product_id" "uuid" NOT NULL,
-    "track_inventory" boolean DEFAULT true NOT NULL,
-    "inventory_kind" "text" DEFAULT 'unclassified'::"text" NOT NULL,
-    "default_unit" "text",
-    "lot_tracking" boolean DEFAULT false NOT NULL,
-    "expiry_tracking" boolean DEFAULT false NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "unit_family" "text",
-    "costing_mode" "text" DEFAULT 'auto_primary_supplier'::"text" NOT NULL,
-    "measurement_mode" "text" DEFAULT 'fixed_presentation'::"text" NOT NULL,
-    "default_tolerance_percent" numeric(7,3) DEFAULT 0 NOT NULL,
-    "requires_actual_receipt_qty" boolean DEFAULT false NOT NULL,
-    "requires_actual_dispatch_qty" boolean DEFAULT false NOT NULL,
-    "requires_actual_production_qty" boolean DEFAULT false NOT NULL,
-    "requires_count_alongside_weight" boolean DEFAULT false NOT NULL,
-    "aux_count_unit_code" "text",
-    CONSTRAINT "product_inventory_profiles_aux_count_unit_code_nonempty_chk" CHECK ((("aux_count_unit_code" IS NULL) OR ("length"("btrim"("aux_count_unit_code")) > 0))),
-    CONSTRAINT "product_inventory_profiles_costing_mode_chk" CHECK (("costing_mode" = ANY (ARRAY['auto_primary_supplier'::"text", 'manual'::"text"]))),
-    CONSTRAINT "product_inventory_profiles_default_tolerance_percent_chk" CHECK ((("default_tolerance_percent" >= (0)::numeric) AND ("default_tolerance_percent" <= (100)::numeric))),
-    CONSTRAINT "product_inventory_profiles_kind_chk" CHECK (("inventory_kind" = ANY (ARRAY['ingredient'::"text", 'finished'::"text", 'resale'::"text", 'packaging'::"text", 'asset'::"text", 'unclassified'::"text"]))),
-    CONSTRAINT "product_inventory_profiles_measurement_mode_chk" CHECK (("measurement_mode" = ANY (ARRAY['fixed_presentation'::"text", 'variable_weight'::"text", 'count_with_weight'::"text", 'bulk_volume'::"text"]))),
-    CONSTRAINT "product_inventory_profiles_unit_family_chk" CHECK ((("unit_family" = ANY (ARRAY['volume'::"text", 'mass'::"text", 'count'::"text"])) OR ("unit_family" IS NULL)))
-);
-
-
-ALTER TABLE "public"."product_inventory_profiles" OWNER TO "postgres";
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."measurement_mode" IS 'Operational measurement behavior: fixed_presentation, variable_weight, count_with_weight, or bulk_volume.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."default_tolerance_percent" IS 'Normal operational tolerance percent for planned vs actual quantity differences.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_receipt_qty" IS 'When true, receiving flows must capture actual received/accepted quantity.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_dispatch_qty" IS 'When true, dispatch/remission flows must capture actual dispatched quantity.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_actual_production_qty" IS 'When true, production flows must capture actual consumed/output quantity.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."requires_count_alongside_weight" IS 'When true, forms should capture physical count alongside base measured quantity.';
-
-
-
-COMMENT ON COLUMN "public"."product_inventory_profiles"."aux_count_unit_code" IS 'Default auxiliary count unit for count_with_weight products. Example: pieza, unidad, aguacate. Stock remains controlled by the base unit.';
-
 
 
 CREATE TABLE IF NOT EXISTS "public"."product_master_review_requests" (
@@ -12946,6 +14925,7 @@ CREATE TABLE IF NOT EXISTS "public"."product_suppliers" (
     "purchase_tax_rate" numeric DEFAULT 0 NOT NULL,
     "purchase_price_includes_icui" boolean DEFAULT false NOT NULL,
     "purchase_icui_rate" numeric DEFAULT 0 NOT NULL,
+    "supplier_product_alias" "text",
     CONSTRAINT "product_suppliers_purchase_icui_rate_nonnegative_chk" CHECK (("purchase_icui_rate" >= (0)::numeric)),
     CONSTRAINT "product_suppliers_purchase_pack_qty_chk" CHECK ((("purchase_pack_qty" IS NULL) OR ("purchase_pack_qty" > (0)::numeric))),
     CONSTRAINT "product_suppliers_purchase_tax_rate_nonnegative_chk" CHECK (("purchase_tax_rate" >= (0)::numeric))
@@ -12976,6 +14956,10 @@ COMMENT ON COLUMN "public"."product_suppliers"."purchase_price_includes_icui" IS
 
 
 COMMENT ON COLUMN "public"."product_suppliers"."purchase_icui_rate" IS 'Tasa ICUI aplicada al precio de compra (porcentaje).';
+
+
+
+COMMENT ON COLUMN "public"."product_suppliers"."supplier_product_alias" IS 'Nombre comercial opcional del producto como lo entiende este proveedor. Se usa en ORIGO para WhatsApp/PDF proveedor sin exponer SKU ni unidad interna.';
 
 
 
@@ -13021,6 +15005,36 @@ CREATE TABLE IF NOT EXISTS "public"."production_batch_consumptions" (
 
 
 ALTER TABLE "public"."production_batch_consumptions" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."production_batch_outputs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "batch_id" "uuid" NOT NULL,
+    "recipe_card_id" "uuid" NOT NULL,
+    "recipe_output_id" "uuid",
+    "product_id" "uuid" NOT NULL,
+    "output_role" "text" DEFAULT 'co_product'::"text" NOT NULL,
+    "produced_qty" numeric NOT NULL,
+    "produced_unit" "text" NOT NULL,
+    "destination_location_id" "uuid",
+    "destination_position_id" "uuid",
+    "cost_allocation_method" "text" DEFAULT 'percentage'::"text" NOT NULL,
+    "cost_allocation_pct" numeric,
+    "allocated_total_cost" numeric,
+    "unit_cost" numeric,
+    "inventory_movement_id" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "production_batch_outputs_cost_chk" CHECK ((("allocated_total_cost" IS NULL) OR ("allocated_total_cost" >= (0)::numeric))),
+    CONSTRAINT "production_batch_outputs_cost_method_chk" CHECK (("cost_allocation_method" = ANY (ARRAY['percentage'::"text", 'fixed_unit_cost'::"text", 'market_value'::"text", 'residual'::"text", 'none'::"text"]))),
+    CONSTRAINT "production_batch_outputs_pct_chk" CHECK ((("cost_allocation_pct" IS NULL) OR (("cost_allocation_pct" >= (0)::numeric) AND ("cost_allocation_pct" <= (100)::numeric)))),
+    CONSTRAINT "production_batch_outputs_qty_chk" CHECK (("produced_qty" > (0)::numeric)),
+    CONSTRAINT "production_batch_outputs_role_chk" CHECK (("output_role" = ANY (ARRAY['primary'::"text", 'co_product'::"text", 'by_product'::"text"]))),
+    CONSTRAINT "production_batch_outputs_unit_cost_chk" CHECK ((("unit_cost" IS NULL) OR ("unit_cost" >= (0)::numeric)))
+);
+
+
+ALTER TABLE "public"."production_batch_outputs" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."production_batch_packages" (
@@ -13191,6 +15205,186 @@ COMMENT ON TABLE "public"."production_requests" IS 'Core ΓÇô tabla can├│n
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."pulso_daily_sales_import_batches" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "sales_date" "date" NOT NULL,
+    "source" "text" DEFAULT 'makos_excel'::"text" NOT NULL,
+    "source_file_name" "text" NOT NULL,
+    "source_file_hash" "text" NOT NULL,
+    "status" "text" DEFAULT 'draft'::"text" NOT NULL,
+    "row_count" integer DEFAULT 0 NOT NULL,
+    "matched_row_count" integer DEFAULT 0 NOT NULL,
+    "warning_count" integer DEFAULT 0 NOT NULL,
+    "total_quantity" numeric(14,3) DEFAULT 0 NOT NULL,
+    "subtotal_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "tax_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "discount_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "return_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "net_sales_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "imported_by" "uuid",
+    "imported_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "posted_at" timestamp with time zone,
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "pulso_daily_sales_import_batches_status_check" CHECK (("status" = ANY (ARRAY['draft'::"text", 'validated'::"text", 'posted'::"text", 'cancelled'::"text"]))),
+    CONSTRAINT "pulso_daily_sales_import_batches_totals_nonnegative" CHECK ((("row_count" >= 0) AND ("matched_row_count" >= 0) AND ("warning_count" >= 0) AND ("total_quantity" >= (0)::numeric) AND ("subtotal_amount" >= (0)::numeric) AND ("tax_amount" >= (0)::numeric) AND ("discount_amount" >= (0)::numeric) AND ("return_amount" >= (0)::numeric)))
+);
+
+
+ALTER TABLE "public"."pulso_daily_sales_import_batches" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."pulso_daily_sales_import_rows" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "batch_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "sales_date" "date" NOT NULL,
+    "source_row_number" integer NOT NULL,
+    "external_item_id" "text",
+    "external_item_name" "text" NOT NULL,
+    "external_category" "text",
+    "quantity" numeric(14,3) DEFAULT 0 NOT NULL,
+    "subtotal_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "tax_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "discount_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "return_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "net_sales_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "gross_sales_amount" numeric(14,2) DEFAULT 0 NOT NULL,
+    "catalog_item_id" "uuid",
+    "product_id" "uuid",
+    "match_status" "text" DEFAULT 'unmatched'::"text" NOT NULL,
+    "match_reason" "text",
+    "row_status" "text" DEFAULT 'draft'::"text" NOT NULL,
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "pulso_daily_sales_import_rows_amounts_nonnegative" CHECK ((("quantity" >= (0)::numeric) AND ("subtotal_amount" >= (0)::numeric) AND ("tax_amount" >= (0)::numeric) AND ("discount_amount" >= (0)::numeric) AND ("return_amount" >= (0)::numeric))),
+    CONSTRAINT "pulso_daily_sales_import_rows_match_status_check" CHECK (("match_status" = ANY (ARRAY['matched_mid'::"text", 'matched_code'::"text", 'matched_name'::"text", 'unmatched'::"text"]))),
+    CONSTRAINT "pulso_daily_sales_import_rows_status_check" CHECK (("row_status" = ANY (ARRAY['draft'::"text", 'validated'::"text", 'posted'::"text", 'cancelled'::"text"])))
+);
+
+
+ALTER TABLE "public"."pulso_daily_sales_import_rows" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."pulso_external_sales_item_mappings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "source" "text" DEFAULT 'makos'::"text" NOT NULL,
+    "external_item_id" "text" NOT NULL,
+    "external_item_name" "text",
+    "external_category" "text",
+    "catalog_item_id" "uuid" NOT NULL,
+    "product_id" "uuid",
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "pulso_external_sales_item_mappings_mid_check" CHECK (("length"(TRIM(BOTH FROM "external_item_id")) > 0)),
+    CONSTRAINT "pulso_external_sales_item_mappings_source_check" CHECK (("length"(TRIM(BOTH FROM "source")) > 0))
+);
+
+
+ALTER TABLE "public"."pulso_external_sales_item_mappings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."pulso_sales_consumption_rules" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "catalog_item_id" "uuid",
+    "product_id" "uuid",
+    "category_label" "text",
+    "area_id" "uuid" NOT NULL,
+    "source_loc_id" "uuid" NOT NULL,
+    "consumption_mode" "text" NOT NULL,
+    "finished_product_id" "uuid",
+    "recipe_product_id" "uuid",
+    "ingredient_product_id" "uuid",
+    "ingredient_qty" numeric(14,6),
+    "ingredient_unit" "text",
+    "priority" integer DEFAULT 100 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "pulso_sales_consumption_rules_mode_chk" CHECK (("consumption_mode" = ANY (ARRAY['stored_finished_good'::"text", 'made_to_order_recipe'::"text", 'direct_ingredient'::"text", 'no_inventory'::"text"]))),
+    CONSTRAINT "pulso_sales_consumption_rules_mode_payload_chk" CHECK (((("consumption_mode" = 'stored_finished_good'::"text") AND ("finished_product_id" IS NOT NULL) AND ("recipe_product_id" IS NULL) AND ("ingredient_product_id" IS NULL) AND ("ingredient_qty" IS NULL)) OR (("consumption_mode" = 'made_to_order_recipe'::"text") AND ("recipe_product_id" IS NOT NULL) AND ("finished_product_id" IS NULL) AND ("ingredient_product_id" IS NULL) AND ("ingredient_qty" IS NULL)) OR (("consumption_mode" = 'direct_ingredient'::"text") AND ("ingredient_product_id" IS NOT NULL) AND ("ingredient_qty" IS NOT NULL) AND ("finished_product_id" IS NULL) AND ("recipe_product_id" IS NULL)) OR (("consumption_mode" = 'no_inventory'::"text") AND ("finished_product_id" IS NULL) AND ("recipe_product_id" IS NULL) AND ("ingredient_product_id" IS NULL) AND ("ingredient_qty" IS NULL)))),
+    CONSTRAINT "pulso_sales_consumption_rules_qty_chk" CHECK ((("ingredient_qty" IS NULL) OR ("ingredient_qty" > (0)::numeric))),
+    CONSTRAINT "pulso_sales_consumption_rules_selector_chk" CHECK ((("catalog_item_id" IS NOT NULL) OR ("product_id" IS NOT NULL) OR (NULLIF("btrim"("category_label"), ''::"text") IS NOT NULL)))
+);
+
+
+ALTER TABLE "public"."pulso_sales_consumption_rules" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."pulso_sales_import_rows_pending_consumption" WITH ("security_invoker"='true') AS
+ SELECT "row"."id" AS "row_id",
+    "row"."batch_id",
+    "row"."site_id",
+    "row"."sales_date",
+    "row"."source_row_number",
+    "row"."external_item_id",
+    "row"."external_item_name",
+    "row"."external_category",
+    "row"."quantity",
+    "row"."catalog_item_id",
+    "row"."product_id",
+    "item"."category_label",
+    "row"."match_status",
+    "row"."row_status",
+        CASE
+            WHEN ("row"."catalog_item_id" IS NULL) THEN 'missing_catalog_item'::"text"
+            WHEN ("rule"."id" IS NULL) THEN 'missing_consumption_rule'::"text"
+            ELSE NULL::"text"
+        END AS "issue_code"
+   FROM (("public"."pulso_daily_sales_import_rows" "row"
+     LEFT JOIN "pass"."catalog_items" "item" ON (("item"."id" = "row"."catalog_item_id")))
+     LEFT JOIN LATERAL ( SELECT "r"."id"
+           FROM "public"."pulso_sales_consumption_rules" "r"
+          WHERE (("r"."site_id" = "row"."site_id") AND ("r"."is_active" = true) AND (("r"."catalog_item_id" = "row"."catalog_item_id") OR (("r"."catalog_item_id" IS NULL) AND ("r"."product_id" = "row"."product_id")) OR (("r"."catalog_item_id" IS NULL) AND ("r"."product_id" IS NULL) AND ("r"."category_label" IS NOT NULL) AND ("lower"("btrim"("r"."category_label")) = "lower"("btrim"(COALESCE("item"."category_label", "row"."external_category")))))))
+          ORDER BY
+                CASE
+                    WHEN ("r"."catalog_item_id" = "row"."catalog_item_id") THEN 1
+                    WHEN ("r"."product_id" = "row"."product_id") THEN 2
+                    ELSE 3
+                END, "r"."priority", "r"."created_at"
+         LIMIT 1) "rule" ON (true))
+  WHERE ("row"."row_status" = ANY (ARRAY['draft'::"text", 'validated'::"text"]));
+
+
+ALTER VIEW "public"."pulso_sales_import_rows_pending_consumption" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."pulso_sales_inventory_postings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "batch_id" "uuid" NOT NULL,
+    "row_id" "uuid" NOT NULL,
+    "rule_id" "uuid",
+    "site_id" "uuid" NOT NULL,
+    "sales_date" "date" NOT NULL,
+    "catalog_item_id" "uuid",
+    "source_loc_id" "uuid",
+    "area_id" "uuid",
+    "product_id" "uuid",
+    "quantity" numeric(14,6) NOT NULL,
+    "movement_id" "uuid",
+    "posting_kind" "text" NOT NULL,
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "pulso_sales_inventory_postings_kind_chk" CHECK (("posting_kind" = ANY (ARRAY['stored_finished_good'::"text", 'made_to_order_recipe'::"text", 'direct_ingredient'::"text"]))),
+    CONSTRAINT "pulso_sales_inventory_postings_qty_chk" CHECK (("quantity" > (0)::numeric))
+);
+
+
+ALTER TABLE "public"."pulso_sales_inventory_postings" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."purchase_order_items" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "purchase_order_id" "uuid" NOT NULL,
@@ -13246,6 +15440,55 @@ COMMENT ON TABLE "public"."purchase_orders" IS 'Core ΓÇô tabla can├│nica 
 
 
 
+CREATE TABLE IF NOT EXISTS "public"."recipe_outputs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "recipe_card_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "output_role" "text" DEFAULT 'co_product'::"text" NOT NULL,
+    "expected_qty" numeric NOT NULL,
+    "expected_unit" "text" NOT NULL,
+    "cost_allocation_method" "text" DEFAULT 'percentage'::"text" NOT NULL,
+    "cost_allocation_pct" numeric,
+    "fixed_unit_cost" numeric,
+    "destination_location_id" "uuid",
+    "sort_order" integer DEFAULT 100 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "recipe_outputs_cost_method_chk" CHECK (("cost_allocation_method" = ANY (ARRAY['percentage'::"text", 'fixed_unit_cost'::"text", 'market_value'::"text", 'residual'::"text", 'none'::"text"]))),
+    CONSTRAINT "recipe_outputs_fixed_cost_chk" CHECK ((("fixed_unit_cost" IS NULL) OR ("fixed_unit_cost" >= (0)::numeric))),
+    CONSTRAINT "recipe_outputs_pct_chk" CHECK ((("cost_allocation_pct" IS NULL) OR (("cost_allocation_pct" >= (0)::numeric) AND ("cost_allocation_pct" <= (100)::numeric)))),
+    CONSTRAINT "recipe_outputs_qty_chk" CHECK (("expected_qty" > (0)::numeric)),
+    CONSTRAINT "recipe_outputs_role_chk" CHECK (("output_role" = ANY (ARRAY['primary'::"text", 'co_product'::"text", 'by_product'::"text"])))
+);
+
+
+ALTER TABLE "public"."recipe_outputs" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."recipe_site_uses" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "recipe_card_id" "uuid" NOT NULL,
+    "product_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "usage_mode" "text" NOT NULL,
+    "area_id" "uuid",
+    "source_location_id" "uuid",
+    "destination_location_id" "uuid",
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "metadata" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "recipe_site_uses_mode_chk" CHECK (("usage_mode" = ANY (ARRAY['produces_here'::"text", 'sells_finished_good'::"text", 'prepares_to_order'::"text", 'stored_for_production'::"text", 'no_inventory'::"text"])))
+);
+
+
+ALTER TABLE "public"."recipe_site_uses" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."recipe_steps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "recipe_card_id" "uuid" NOT NULL,
@@ -13271,6 +15514,34 @@ COMMENT ON COLUMN "public"."recipe_steps"."step_image_url" IS 'Foto opcional par
 
 
 COMMENT ON COLUMN "public"."recipe_steps"."step_video_url" IS 'URL opcional de video para el paso de la receta (YouTube, Drive u origen interno).';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."remission_product_categories" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "sort_order" integer DEFAULT 0 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_by" "uuid",
+    CONSTRAINT "remission_product_categories_name_not_blank" CHECK (("length"("btrim"("name")) > 0))
+);
+
+
+ALTER TABLE "public"."remission_product_categories" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."remission_product_categories" IS 'Categorias visuales por sede destino para agrupar productos en solicitudes de remision. No cambian la categoria real del catalogo.';
+
+
+
+COMMENT ON COLUMN "public"."remission_product_categories"."site_id" IS 'Sede destino que usa esta categoria visual.';
+
+
+
+COMMENT ON COLUMN "public"."remission_product_categories"."sort_order" IS 'Orden visual dentro de la sede destino.';
 
 
 
@@ -13588,7 +15859,9 @@ CREATE TABLE IF NOT EXISTS "public"."sites" (
     "site_type" "public"."site_type" DEFAULT 'satellite'::"public"."site_type" NOT NULL,
     "site_kind" "text" NOT NULL,
     "checkin_radius_meters" integer DEFAULT 50,
-    "is_public" boolean DEFAULT false NOT NULL
+    "is_public" boolean DEFAULT false NOT NULL,
+    "operational_visibility" "text" DEFAULT 'operational'::"text" NOT NULL,
+    CONSTRAINT "sites_operational_visibility_chk" CHECK (("operational_visibility" = ANY (ARRAY['operational'::"text", 'app_review'::"text", 'test'::"text", 'hidden'::"text"])))
 );
 
 
@@ -13612,6 +15885,10 @@ COMMENT ON COLUMN "public"."sites"."address" IS 'Direcci├│n f├¡sica de la
 
 
 COMMENT ON COLUMN "public"."sites"."checkin_radius_meters" IS 'Radio en metros para validar check-in GPS (default 50m)';
+
+
+
+COMMENT ON COLUMN "public"."sites"."operational_visibility" IS 'Controla si la sede aparece en flujos operativos. app_review/test/hidden se excluyen de selectores normales.';
 
 
 
@@ -13776,7 +16053,10 @@ CREATE TABLE IF NOT EXISTS "public"."site_operational_capabilities" (
     "show_in_product_setup" boolean DEFAULT true NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_by" "uuid"
+    "updated_by" "uuid",
+    "operation_model" "text" DEFAULT 'multi_area'::"text" NOT NULL,
+    "primary_operational_location_id" "uuid",
+    CONSTRAINT "site_operational_capabilities_operation_model_chk" CHECK (("operation_model" = ANY (ARRAY['single_loc'::"text", 'multi_area'::"text", 'multi_loc'::"text"])))
 );
 
 
@@ -13816,6 +16096,14 @@ COMMENT ON COLUMN "public"."site_operational_capabilities"."is_commercial_busine
 
 
 COMMENT ON COLUMN "public"."site_operational_capabilities"."show_in_product_setup" IS 'Controla si la sede aparece en configuracion producto-sede.';
+
+
+
+COMMENT ON COLUMN "public"."site_operational_capabilities"."operation_model" IS 'Modelo operativo gerencial de la sede: single_loc, multi_area o multi_loc.';
+
+
+
+COMMENT ON COLUMN "public"."site_operational_capabilities"."primary_operational_location_id" IS 'LOC principal usado por sedes single_loc para recibir, almacenar, vender y producir sin traslados internos.';
 
 
 
@@ -15095,6 +17383,41 @@ ALTER TABLE ONLY "public"."loyalty_external_sales"
 
 
 
+ALTER TABLE ONLY "public"."numera_cost_center_budgets"
+    ADD CONSTRAINT "numera_budgets_period_center_unique" UNIQUE ("period_id", "cost_center_id");
+
+
+
+ALTER TABLE ONLY "public"."numera_cost_center_budgets"
+    ADD CONSTRAINT "numera_cost_center_budgets_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expense_categories"
+    ADD CONSTRAINT "numera_expense_categories_code_unique" UNIQUE ("code");
+
+
+
+ALTER TABLE ONLY "public"."numera_expense_categories"
+    ADD CONSTRAINT "numera_expense_categories_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expenses"
+    ADD CONSTRAINT "numera_expenses_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_periods"
+    ADD CONSTRAINT "numera_periods_month_unique" UNIQUE ("period_month");
+
+
+
+ALTER TABLE ONLY "public"."numera_periods"
+    ADD CONSTRAINT "numera_periods_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."order_conversations"
     ADD CONSTRAINT "order_conversations_order_id_key" UNIQUE ("order_id");
 
@@ -15235,6 +17558,11 @@ ALTER TABLE ONLY "public"."production_batch_consumptions"
 
 
 
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE "public"."production_batch_packages"
     ADD CONSTRAINT "production_batch_packages_original_qty_chk" CHECK ((("original_qty" IS NULL) OR ("original_qty" > (0)::numeric))) NOT VALID;
 
@@ -15285,6 +17613,56 @@ ALTER TABLE ONLY "public"."products"
 
 
 
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_batches"
+    ADD CONSTRAINT "pulso_daily_sales_import_batches_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_batches"
+    ADD CONSTRAINT "pulso_daily_sales_import_batches_source_hash_key" UNIQUE ("site_id", "sales_date", "source", "source_file_hash");
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_batch_row_unique" UNIQUE ("batch_id", "source_row_number");
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_site_catalog_key" UNIQUE ("site_id", "source", "catalog_item_id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_site_source_mid_key" UNIQUE ("site_id", "source", "external_item_id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_row_product_uidx" UNIQUE ("row_id", "product_id", "source_loc_id", "posting_kind");
+
+
+
 ALTER TABLE ONLY "public"."purchase_order_items"
     ADD CONSTRAINT "purchase_order_items_pkey" PRIMARY KEY ("id");
 
@@ -15305,6 +17683,31 @@ ALTER TABLE ONLY "public"."recipe_cards"
 
 
 
+ALTER TABLE ONLY "public"."recipe_outputs"
+    ADD CONSTRAINT "recipe_outputs_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."recipe_outputs"
+    ADD CONSTRAINT "recipe_outputs_recipe_product_key" UNIQUE ("recipe_card_id", "product_id");
+
+
+
+ALTER TABLE "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_location_chk" CHECK (((("usage_mode" = 'produces_here'::"text") AND ("area_id" IS NOT NULL) AND ("source_location_id" IS NOT NULL) AND ("destination_location_id" IS NOT NULL)) OR (("usage_mode" = 'prepares_to_order'::"text") AND ("area_id" IS NOT NULL) AND ("source_location_id" IS NOT NULL) AND ("destination_location_id" IS NULL)) OR (("usage_mode" = 'sells_finished_good'::"text") AND ("source_location_id" IS NOT NULL) AND ("destination_location_id" IS NULL)) OR (("usage_mode" = 'stored_for_production'::"text") AND ("source_location_id" IS NOT NULL) AND ("destination_location_id" IS NULL)) OR (("usage_mode" = 'no_inventory'::"text") AND ("area_id" IS NULL) AND ("source_location_id" IS NULL) AND ("destination_location_id" IS NULL)))) NOT VALID;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_recipe_site_key" UNIQUE ("recipe_card_id", "site_id");
+
+
+
 ALTER TABLE ONLY "public"."recipe_steps"
     ADD CONSTRAINT "recipe_steps_pkey" PRIMARY KEY ("id");
 
@@ -15317,6 +17720,16 @@ ALTER TABLE ONLY "public"."recipe_steps"
 
 ALTER TABLE ONLY "public"."recipes"
     ADD CONSTRAINT "recipes_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."remission_product_categories"
+    ADD CONSTRAINT "remission_product_categories_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."remission_product_categories"
+    ADD CONSTRAINT "remission_product_categories_unique_site_name" UNIQUE ("site_id", "name");
 
 
 
@@ -15666,6 +18079,10 @@ CREATE INDEX "employee_push_tokens_employee_idx" ON "public"."employee_push_toke
 
 
 CREATE UNIQUE INDEX "employee_push_tokens_token_idx" ON "public"."employee_push_tokens" USING "btree" ("token");
+
+
+
+CREATE INDEX "employee_shifts_operational_role_idx" ON "public"."employee_shifts" USING "btree" ("site_id", "operational_role") WHERE ("operational_role" IS NOT NULL);
 
 
 
@@ -16093,6 +18510,10 @@ CREATE INDEX "idx_product_cost_events_product_created" ON "public"."product_cost
 
 
 
+CREATE INDEX "idx_product_cost_events_source_production_batch" ON "public"."product_cost_events" USING "btree" ("source_production_batch_id") WHERE ("source_production_batch_id" IS NOT NULL);
+
+
+
 CREATE INDEX "idx_product_inventory_profiles_unit_family" ON "public"."product_inventory_profiles" USING "btree" ("unit_family", "costing_mode");
 
 
@@ -16142,6 +18563,10 @@ CREATE INDEX "idx_product_site_production_routes_site_area_active" ON "public"."
 
 
 CREATE INDEX "idx_product_site_settings_production_location" ON "public"."product_site_settings" USING "btree" ("production_location_id") WHERE ("production_location_id" IS NOT NULL);
+
+
+
+CREATE INDEX "idx_product_site_settings_remission_category" ON "public"."product_site_settings" USING "btree" ("remission_category_id") WHERE ("remission_category_id" IS NOT NULL);
 
 
 
@@ -16237,6 +18662,10 @@ CREATE INDEX "idx_recipes_ingredient_product_id" ON "public"."recipes" USING "bt
 
 
 
+CREATE INDEX "idx_remission_product_categories_site_active_sort" ON "public"."remission_product_categories" USING "btree" ("site_id", "is_active", "sort_order", "name");
+
+
+
 CREATE INDEX "idx_restock_request_item_picks_item" ON "public"."restock_request_item_picks" USING "btree" ("item_id");
 
 
@@ -16278,6 +18707,10 @@ CREATE UNIQUE INDEX "idx_shift_runtime_events_shift_event_type" ON "public"."shi
 
 
 CREATE INDEX "idx_site_area_purpose_rules_site_purpose" ON "public"."site_area_purpose_rules" USING "btree" ("site_id", "purpose", "is_enabled");
+
+
+
+CREATE INDEX "idx_site_operational_capabilities_primary_loc" ON "public"."site_operational_capabilities" USING "btree" ("primary_operational_location_id") WHERE ("primary_operational_location_id" IS NOT NULL);
 
 
 
@@ -16457,6 +18890,26 @@ CREATE UNIQUE INDEX "inventory_stock_by_site_unique_site_product" ON "public"."i
 
 
 
+CREATE INDEX "numera_budgets_period_idx" ON "public"."numera_cost_center_budgets" USING "btree" ("period_id", "cost_center_id");
+
+
+
+CREATE INDEX "numera_expenses_category_idx" ON "public"."numera_expenses" USING "btree" ("category_id", "period_id");
+
+
+
+CREATE INDEX "numera_expenses_cost_center_idx" ON "public"."numera_expenses" USING "btree" ("cost_center_id", "period_id") WHERE ("cost_center_id" IS NOT NULL);
+
+
+
+CREATE INDEX "numera_expenses_period_idx" ON "public"."numera_expenses" USING "btree" ("period_id", "expense_date" DESC);
+
+
+
+CREATE INDEX "numera_expenses_site_idx" ON "public"."numera_expenses" USING "btree" ("site_id", "period_id") WHERE ("site_id" IS NOT NULL);
+
+
+
 CREATE INDEX "order_conversations_client_last_message_idx" ON "public"."order_conversations" USING "btree" ("client_id", COALESCE("last_message_at", "created_at") DESC);
 
 
@@ -16561,7 +19014,59 @@ CREATE UNIQUE INDEX "product_sku_aliases_sku_key" ON "public"."product_sku_alias
 
 
 
+CREATE INDEX "production_batch_outputs_batch_idx" ON "public"."production_batch_outputs" USING "btree" ("batch_id");
+
+
+
+CREATE INDEX "production_batch_outputs_product_idx" ON "public"."production_batch_outputs" USING "btree" ("product_id");
+
+
+
+CREATE INDEX "pulso_daily_sales_import_batches_site_date_idx" ON "public"."pulso_daily_sales_import_batches" USING "btree" ("site_id", "sales_date" DESC, "imported_at" DESC);
+
+
+
+CREATE INDEX "pulso_daily_sales_import_rows_batch_idx" ON "public"."pulso_daily_sales_import_rows" USING "btree" ("batch_id", "source_row_number");
+
+
+
+CREATE INDEX "pulso_daily_sales_import_rows_catalog_idx" ON "public"."pulso_daily_sales_import_rows" USING "btree" ("catalog_item_id") WHERE ("catalog_item_id" IS NOT NULL);
+
+
+
+CREATE INDEX "pulso_external_sales_item_mappings_catalog_idx" ON "public"."pulso_external_sales_item_mappings" USING "btree" ("catalog_item_id") WHERE ("is_active" = true);
+
+
+
+CREATE INDEX "pulso_external_sales_item_mappings_site_source_idx" ON "public"."pulso_external_sales_item_mappings" USING "btree" ("site_id", "source", "is_active");
+
+
+
+CREATE UNIQUE INDEX "pulso_sales_consumption_rules_catalog_uidx" ON "public"."pulso_sales_consumption_rules" USING "btree" ("site_id", "catalog_item_id") WHERE (("catalog_item_id" IS NOT NULL) AND ("is_active" = true));
+
+
+
+CREATE INDEX "pulso_sales_consumption_rules_category_idx" ON "public"."pulso_sales_consumption_rules" USING "btree" ("site_id", "lower"("btrim"("category_label")), "priority") WHERE (("category_label" IS NOT NULL) AND ("is_active" = true));
+
+
+
+CREATE INDEX "pulso_sales_consumption_rules_product_idx" ON "public"."pulso_sales_consumption_rules" USING "btree" ("site_id", "product_id", "priority") WHERE (("product_id" IS NOT NULL) AND ("is_active" = true));
+
+
+
 CREATE INDEX "purchase_orders_created_by_idx" ON "public"."purchase_orders" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "recipe_outputs_product_idx" ON "public"."recipe_outputs" USING "btree" ("product_id") WHERE ("is_active" = true);
+
+
+
+CREATE INDEX "recipe_outputs_recipe_idx" ON "public"."recipe_outputs" USING "btree" ("recipe_card_id", "sort_order") WHERE ("is_active" = true);
+
+
+
+CREATE INDEX "recipe_site_uses_product_site_idx" ON "public"."recipe_site_uses" USING "btree" ("product_id", "site_id") WHERE ("is_active" = true);
 
 
 
@@ -16779,6 +19284,18 @@ CREATE OR REPLACE TRIGGER "employee_devices_set_updated_at" BEFORE UPDATE ON "pu
 
 
 
+CREATE OR REPLACE TRIGGER "employee_sites_sync_primary_assignment" AFTER INSERT OR DELETE OR UPDATE ON "public"."employee_sites" FOR EACH ROW EXECUTE FUNCTION "public"."sync_employee_primary_site_assignment"();
+
+
+
+CREATE OR REPLACE TRIGGER "employees_sync_site_assignment" AFTER UPDATE OF "site_id" ON "public"."employees" FOR EACH ROW EXECUTE FUNCTION "public"."sync_employee_site_assignment_from_employee"();
+
+
+
+CREATE OR REPLACE TRIGGER "employees_sync_site_assignment_insert" AFTER INSERT ON "public"."employees" FOR EACH ROW EXECUTE FUNCTION "public"."sync_employee_site_assignment_from_employee"();
+
+
+
 CREATE OR REPLACE TRIGGER "enforce_inventory_location_area_site" BEFORE INSERT OR UPDATE OF "site_id", "area_id" ON "public"."inventory_locations" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_inventory_location_area_site"();
 
 
@@ -16788,6 +19305,46 @@ CREATE OR REPLACE TRIGGER "enforce_inventory_location_position_scope" BEFORE INS
 
 
 CREATE OR REPLACE TRIGGER "order_item_options_set_updated_at" BEFORE UPDATE ON "public"."order_item_options" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_daily_sales_import_batches_updated_at" BEFORE UPDATE ON "public"."pulso_daily_sales_import_batches" FOR EACH ROW EXECUTE FUNCTION "public"."set_pulso_daily_sales_import_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_daily_sales_import_rows_updated_at" BEFORE UPDATE ON "public"."pulso_daily_sales_import_rows" FOR EACH ROW EXECUTE FUNCTION "public"."set_pulso_daily_sales_import_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_external_sales_item_mappings_sync_product" BEFORE INSERT OR UPDATE OF "catalog_item_id", "site_id" ON "public"."pulso_external_sales_item_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."pulso_sync_external_sales_item_mapping_product_id"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_external_sales_item_mappings_updated_at" BEFORE UPDATE ON "public"."pulso_external_sales_item_mappings" FOR EACH ROW EXECUTE FUNCTION "public"."set_pulso_external_sales_item_mappings_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_sales_consumption_rules_updated_at" BEFORE UPDATE ON "public"."pulso_sales_consumption_rules" FOR EACH ROW EXECUTE FUNCTION "public"."set_pulso_sales_consumption_rules_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "pulso_sales_consumption_rules_validate" BEFORE INSERT OR UPDATE OF "site_id", "catalog_item_id", "product_id", "category_label", "area_id", "source_loc_id" ON "public"."pulso_sales_consumption_rules" FOR EACH ROW EXECUTE FUNCTION "public"."pulso_validate_sales_consumption_rule"();
+
+
+
+CREATE OR REPLACE TRIGGER "recipe_outputs_updated_at" BEFORE UPDATE ON "public"."recipe_outputs" FOR EACH ROW EXECUTE FUNCTION "public"."set_recipe_outputs_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "recipe_outputs_validate" BEFORE INSERT OR UPDATE OF "recipe_card_id", "product_id", "output_role", "expected_qty", "expected_unit", "cost_allocation_method", "cost_allocation_pct", "fixed_unit_cost", "destination_location_id", "is_active" ON "public"."recipe_outputs" FOR EACH ROW EXECUTE FUNCTION "public"."validate_recipe_outputs"();
+
+
+
+CREATE OR REPLACE TRIGGER "recipe_site_uses_updated_at" BEFORE UPDATE ON "public"."recipe_site_uses" FOR EACH ROW EXECUTE FUNCTION "public"."set_recipe_site_uses_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "recipe_site_uses_validate" BEFORE INSERT OR UPDATE OF "recipe_card_id", "product_id", "site_id", "usage_mode", "area_id", "source_location_id", "destination_location_id" ON "public"."recipe_site_uses" FOR EACH ROW EXECUTE FUNCTION "public"."validate_recipe_site_use"();
 
 
 
@@ -16919,6 +19476,22 @@ CREATE OR REPLACE TRIGGER "trg_inventory_units_updated_at" BEFORE UPDATE ON "pub
 
 
 
+CREATE OR REPLACE TRIGGER "trg_numera_budgets_updated_at" BEFORE UPDATE ON "public"."numera_cost_center_budgets" FOR EACH ROW EXECUTE FUNCTION "public"."set_numera_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_numera_expense_categories_updated_at" BEFORE UPDATE ON "public"."numera_expense_categories" FOR EACH ROW EXECUTE FUNCTION "public"."set_numera_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_numera_expenses_updated_at" BEFORE UPDATE ON "public"."numera_expenses" FOR EACH ROW EXECUTE FUNCTION "public"."set_numera_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_numera_periods_updated_at" BEFORE UPDATE ON "public"."numera_periods" FOR EACH ROW EXECUTE FUNCTION "public"."set_numera_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_order_conversations_updated_at" BEFORE UPDATE ON "public"."order_conversations" FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
 
 
@@ -16944,6 +19517,10 @@ CREATE OR REPLACE TRIGGER "trg_product_site_settings_production_location" BEFORE
 
 
 CREATE OR REPLACE TRIGGER "trg_product_site_settings_updated_at" BEFORE UPDATE ON "public"."product_site_settings" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_remission_product_categories_updated_at" BEFORE UPDATE ON "public"."remission_product_categories" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
 
 
 
@@ -18022,6 +20599,36 @@ ALTER TABLE ONLY "public"."loyalty_external_sales"
 
 
 
+ALTER TABLE ONLY "public"."numera_cost_center_budgets"
+    ADD CONSTRAINT "numera_cost_center_budgets_cost_center_id_fkey" FOREIGN KEY ("cost_center_id") REFERENCES "public"."cost_centers"("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_cost_center_budgets"
+    ADD CONSTRAINT "numera_cost_center_budgets_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "public"."numera_periods"("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expenses"
+    ADD CONSTRAINT "numera_expenses_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."numera_expense_categories"("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expenses"
+    ADD CONSTRAINT "numera_expenses_cost_center_id_fkey" FOREIGN KEY ("cost_center_id") REFERENCES "public"."cost_centers"("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expenses"
+    ADD CONSTRAINT "numera_expenses_period_id_fkey" FOREIGN KEY ("period_id") REFERENCES "public"."numera_periods"("id");
+
+
+
+ALTER TABLE ONLY "public"."numera_expenses"
+    ADD CONSTRAINT "numera_expenses_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id");
+
+
+
 ALTER TABLE ONLY "public"."order_conversations"
     ADD CONSTRAINT "order_conversations_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
@@ -18242,6 +20849,11 @@ ALTER TABLE ONLY "public"."product_cost_events"
 
 
 
+ALTER TABLE ONLY "public"."product_cost_events"
+    ADD CONSTRAINT "product_cost_events_source_production_batch_id_fkey" FOREIGN KEY ("source_production_batch_id") REFERENCES "public"."production_batches"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."product_images"
     ADD CONSTRAINT "product_images_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id");
 
@@ -18303,6 +20915,11 @@ ALTER TABLE ONLY "public"."product_site_settings"
 
 
 ALTER TABLE ONLY "public"."product_site_settings"
+    ADD CONSTRAINT "product_site_settings_remission_category_id_fkey" FOREIGN KEY ("remission_category_id") REFERENCES "public"."remission_product_categories"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."product_site_settings"
     ADD CONSTRAINT "product_site_settings_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
 
 
@@ -18359,6 +20976,41 @@ ALTER TABLE ONLY "public"."production_batch_consumptions"
 
 ALTER TABLE ONLY "public"."production_batch_consumptions"
     ADD CONSTRAINT "production_batch_consumptions_stock_unit_code_fkey" FOREIGN KEY ("stock_unit_code") REFERENCES "public"."inventory_units"("code");
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_batch_id_fkey" FOREIGN KEY ("batch_id") REFERENCES "public"."production_batches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_destination_location_id_fkey" FOREIGN KEY ("destination_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_destination_position_id_fkey" FOREIGN KEY ("destination_position_id") REFERENCES "public"."inventory_location_positions"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_inventory_movement_id_fkey" FOREIGN KEY ("inventory_movement_id") REFERENCES "public"."inventory_movements"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_recipe_card_id_fkey" FOREIGN KEY ("recipe_card_id") REFERENCES "public"."recipe_cards"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."production_batch_outputs"
+    ADD CONSTRAINT "production_batch_outputs_recipe_output_id_fkey" FOREIGN KEY ("recipe_output_id") REFERENCES "public"."recipe_outputs"("id") ON DELETE SET NULL;
 
 
 
@@ -18472,6 +21124,156 @@ ALTER TABLE ONLY "public"."products"
 
 
 
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_batches"
+    ADD CONSTRAINT "pulso_daily_sales_import_batches_imported_by_fkey" FOREIGN KEY ("imported_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_batches"
+    ADD CONSTRAINT "pulso_daily_sales_import_batches_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_batch_id_fkey" FOREIGN KEY ("batch_id") REFERENCES "public"."pulso_daily_sales_import_batches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_catalog_item_id_fkey" FOREIGN KEY ("catalog_item_id") REFERENCES "pass"."catalog_items"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_daily_sales_import_rows"
+    ADD CONSTRAINT "pulso_daily_sales_import_rows_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_catalog_item_id_fkey" FOREIGN KEY ("catalog_item_id") REFERENCES "pass"."catalog_items"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_external_sales_item_mappings"
+    ADD CONSTRAINT "pulso_external_sales_item_mappings_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_catalog_item_id_fkey" FOREIGN KEY ("catalog_item_id") REFERENCES "pass"."catalog_items"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_finished_product_id_fkey" FOREIGN KEY ("finished_product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_ingredient_product_id_fkey" FOREIGN KEY ("ingredient_product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_recipe_product_id_fkey" FOREIGN KEY ("recipe_product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_source_loc_id_fkey" FOREIGN KEY ("source_loc_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_consumption_rules"
+    ADD CONSTRAINT "pulso_sales_consumption_rules_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_batch_id_fkey" FOREIGN KEY ("batch_id") REFERENCES "public"."pulso_daily_sales_import_batches"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_catalog_item_id_fkey" FOREIGN KEY ("catalog_item_id") REFERENCES "pass"."catalog_items"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_movement_id_fkey" FOREIGN KEY ("movement_id") REFERENCES "public"."inventory_movements"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_row_id_fkey" FOREIGN KEY ("row_id") REFERENCES "public"."pulso_daily_sales_import_rows"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_rule_id_fkey" FOREIGN KEY ("rule_id") REFERENCES "public"."pulso_sales_consumption_rules"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."pulso_sales_inventory_postings"
+    ADD CONSTRAINT "pulso_sales_inventory_postings_source_loc_id_fkey" FOREIGN KEY ("source_loc_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."purchase_order_items"
     ADD CONSTRAINT "purchase_order_items_input_uom_profile_id_fkey" FOREIGN KEY ("input_uom_profile_id") REFERENCES "public"."product_uom_profiles"("id") ON DELETE SET NULL;
 
@@ -18527,6 +21329,61 @@ ALTER TABLE ONLY "public"."recipe_cards"
 
 
 
+ALTER TABLE ONLY "public"."recipe_outputs"
+    ADD CONSTRAINT "recipe_outputs_destination_location_id_fkey" FOREIGN KEY ("destination_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."recipe_outputs"
+    ADD CONSTRAINT "recipe_outputs_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."recipe_outputs"
+    ADD CONSTRAINT "recipe_outputs_recipe_card_id_fkey" FOREIGN KEY ("recipe_card_id") REFERENCES "public"."recipe_cards"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_area_id_fkey" FOREIGN KEY ("area_id") REFERENCES "public"."areas"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_destination_location_id_fkey" FOREIGN KEY ("destination_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_recipe_card_id_fkey" FOREIGN KEY ("recipe_card_id") REFERENCES "public"."recipe_cards"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_source_location_id_fkey" FOREIGN KEY ("source_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."recipe_site_uses"
+    ADD CONSTRAINT "recipe_site_uses_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."recipe_steps"
     ADD CONSTRAINT "recipe_steps_recipe_card_id_fkey" FOREIGN KEY ("recipe_card_id") REFERENCES "public"."recipe_cards"("id") ON DELETE CASCADE;
 
@@ -18539,6 +21396,16 @@ ALTER TABLE ONLY "public"."recipes"
 
 ALTER TABLE ONLY "public"."recipes"
     ADD CONSTRAINT "recipes_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id");
+
+
+
+ALTER TABLE ONLY "public"."remission_product_categories"
+    ADD CONSTRAINT "remission_product_categories_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."remission_product_categories"
+    ADD CONSTRAINT "remission_product_categories_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "auth"."users"("id");
 
 
 
@@ -18729,6 +21596,11 @@ ALTER TABLE ONLY "public"."site_area_purpose_rules"
 
 ALTER TABLE ONLY "public"."site_attendance_policy"
     ADD CONSTRAINT "site_attendance_policy_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."site_operational_capabilities"
+    ADD CONSTRAINT "site_operational_capabilities_primary_operational_location_fkey" FOREIGN KEY ("primary_operational_location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE SET NULL;
 
 
 
@@ -19754,6 +22626,50 @@ CREATE POLICY "loyalty_external_sales_select_staff" ON "public"."loyalty_externa
 
 
 
+CREATE POLICY "numera_budgets_manage" ON "public"."numera_cost_center_budgets" TO "authenticated" USING ("public"."has_permission"('numera.cost_centers.manage'::"text")) WITH CHECK ("public"."has_permission"('numera.cost_centers.manage'::"text"));
+
+
+
+CREATE POLICY "numera_budgets_select" ON "public"."numera_cost_center_budgets" FOR SELECT TO "authenticated" USING (("public"."has_permission"('numera.cost_centers.view'::"text") OR "public"."has_permission"('numera.cost_centers.manage'::"text")));
+
+
+
+CREATE POLICY "numera_categories_manage" ON "public"."numera_expense_categories" TO "authenticated" USING ("public"."has_permission"('numera.expenses.manage'::"text")) WITH CHECK ("public"."has_permission"('numera.expenses.manage'::"text"));
+
+
+
+CREATE POLICY "numera_categories_select" ON "public"."numera_expense_categories" FOR SELECT TO "authenticated" USING ("public"."has_permission"('numera.access'::"text"));
+
+
+
+ALTER TABLE "public"."numera_cost_center_budgets" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."numera_expense_categories" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."numera_expenses" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "numera_expenses_manage" ON "public"."numera_expenses" TO "authenticated" USING ("public"."has_permission"('numera.expenses.manage'::"text")) WITH CHECK ("public"."has_permission"('numera.expenses.manage'::"text"));
+
+
+
+CREATE POLICY "numera_expenses_select" ON "public"."numera_expenses" FOR SELECT TO "authenticated" USING (("public"."has_permission"('numera.expenses.view'::"text") OR "public"."has_permission"('numera.expenses.manage'::"text")));
+
+
+
+ALTER TABLE "public"."numera_periods" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "numera_periods_manage" ON "public"."numera_periods" TO "authenticated" USING (("public"."has_permission"('numera.expenses.manage'::"text") OR "public"."has_permission"('numera.cost_centers.manage'::"text"))) WITH CHECK (("public"."has_permission"('numera.expenses.manage'::"text") OR "public"."has_permission"('numera.cost_centers.manage'::"text")));
+
+
+
+CREATE POLICY "numera_periods_select" ON "public"."numera_periods" FOR SELECT TO "authenticated" USING ("public"."has_permission"('numera.access'::"text"));
+
+
+
 ALTER TABLE "public"."order_conversations" ENABLE ROW LEVEL SECURITY;
 
 
@@ -20153,6 +23069,23 @@ CREATE POLICY "product_uom_profiles_write_accountant_catalog" ON "public"."produ
 
 
 
+ALTER TABLE "public"."production_batch_outputs" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "production_batch_outputs_select_staff" ON "public"."production_batch_outputs" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."production_batches" "b"
+  WHERE (("b"."id" = "production_batch_outputs"."batch_id") AND "public"."is_employee"()))));
+
+
+
+CREATE POLICY "production_batch_outputs_write_production" ON "public"."production_batch_outputs" TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."production_batches" "b"
+  WHERE (("b"."id" = "production_batch_outputs"."batch_id") AND (("public"."current_employee_role"() = ANY (ARRAY['owner'::"text", 'manager'::"text"])) OR ("b"."site_id" = "public"."current_employee_site_id"())))))) WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."production_batches" "b"
+  WHERE (("b"."id" = "production_batch_outputs"."batch_id") AND (("public"."current_employee_role"() = ANY (ARRAY['owner'::"text", 'manager'::"text"])) OR ("b"."site_id" = "public"."current_employee_site_id"()))))));
+
+
+
 ALTER TABLE "public"."production_batch_packages" ENABLE ROW LEVEL SECURITY;
 
 
@@ -20254,6 +23187,73 @@ CREATE POLICY "pss_select_authenticated" ON "public"."product_site_settings" FOR
 
 
 
+ALTER TABLE "public"."pulso_daily_sales_import_batches" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."pulso_daily_sales_import_rows" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."pulso_external_sales_item_mappings" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "pulso_external_sales_item_mappings_insert_permission" ON "public"."pulso_external_sales_item_mappings" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_external_sales_item_mappings_select_permission" ON "public"."pulso_external_sales_item_mappings" FOR SELECT TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_external_sales_item_mappings_update_permission" ON "public"."pulso_external_sales_item_mappings" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id")) WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+ALTER TABLE "public"."pulso_sales_consumption_rules" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "pulso_sales_consumption_rules_insert_permission" ON "public"."pulso_sales_consumption_rules" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_consumption_rules_select_permission" ON "public"."pulso_sales_consumption_rules" FOR SELECT TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_consumption_rules_update_permission" ON "public"."pulso_sales_consumption_rules" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id")) WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_batches_insert_permission" ON "public"."pulso_daily_sales_import_batches" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_batches_select_permission" ON "public"."pulso_daily_sales_import_batches" FOR SELECT TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_batches_update_permission" ON "public"."pulso_daily_sales_import_batches" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id")) WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_rows_insert_permission" ON "public"."pulso_daily_sales_import_rows" FOR INSERT TO "authenticated" WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_rows_select_permission" ON "public"."pulso_daily_sales_import_rows" FOR SELECT TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+CREATE POLICY "pulso_sales_import_rows_update_permission" ON "public"."pulso_daily_sales_import_rows" FOR UPDATE TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id")) WITH CHECK ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
+ALTER TABLE "public"."pulso_sales_inventory_postings" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "pulso_sales_inventory_postings_select_permission" ON "public"."pulso_sales_inventory_postings" FOR SELECT TO "authenticated" USING ("public"."has_permission"('pulso.pos.main'::"text", "site_id"));
+
+
+
 ALTER TABLE "public"."purchase_orders" ENABLE ROW LEVEL SECURITY;
 
 
@@ -20265,6 +23265,34 @@ CREATE POLICY "recipe_cards_select_staff" ON "public"."recipe_cards" FOR SELECT 
 
 
 CREATE POLICY "recipe_cards_write_manager" ON "public"."recipe_cards" USING ((("public"."is_owner"() OR "public"."is_manager"()) AND "public"."can_access_recipe_scope"("site_id", "area_id"))) WITH CHECK ((("public"."is_owner"() OR "public"."is_manager"()) AND "public"."can_access_recipe_scope"("site_id", "area_id")));
+
+
+
+ALTER TABLE "public"."recipe_outputs" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "recipe_outputs_select_staff" ON "public"."recipe_outputs" FOR SELECT TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."recipe_cards" "rc"
+  WHERE (("rc"."id" = "recipe_outputs"."recipe_card_id") AND "public"."can_access_recipe_scope"("rc"."site_id", "rc"."area_id")))));
+
+
+
+CREATE POLICY "recipe_outputs_write_manager" ON "public"."recipe_outputs" TO "authenticated" USING ((("public"."is_owner"() OR "public"."is_manager"()) AND (EXISTS ( SELECT 1
+   FROM "public"."recipe_cards" "rc"
+  WHERE (("rc"."id" = "recipe_outputs"."recipe_card_id") AND "public"."can_access_recipe_scope"("rc"."site_id", "rc"."area_id")))))) WITH CHECK ((("public"."is_owner"() OR "public"."is_manager"()) AND (EXISTS ( SELECT 1
+   FROM "public"."recipe_cards" "rc"
+  WHERE (("rc"."id" = "recipe_outputs"."recipe_card_id") AND "public"."can_access_recipe_scope"("rc"."site_id", "rc"."area_id"))))));
+
+
+
+ALTER TABLE "public"."recipe_site_uses" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "recipe_site_uses_select_staff" ON "public"."recipe_site_uses" FOR SELECT TO "authenticated" USING ("public"."can_access_recipe_scope"("site_id", "area_id"));
+
+
+
+CREATE POLICY "recipe_site_uses_write_manager" ON "public"."recipe_site_uses" TO "authenticated" USING ((("public"."is_owner"() OR "public"."is_manager"()) AND "public"."can_access_recipe_scope"("site_id", "area_id"))) WITH CHECK ((("public"."is_owner"() OR "public"."is_manager"()) AND "public"."can_access_recipe_scope"("site_id", "area_id")));
 
 
 
@@ -20291,6 +23319,17 @@ CREATE POLICY "recipes_select_staff" ON "public"."recipes" FOR SELECT USING ((EX
 
 
 CREATE POLICY "recipes_write_manager" ON "public"."recipes" USING (("public"."is_owner"() OR "public"."is_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_manager"()));
+
+
+
+ALTER TABLE "public"."remission_product_categories" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "remission_product_categories_select_authenticated" ON "public"."remission_product_categories" FOR SELECT TO "authenticated" USING (true);
+
+
+
+CREATE POLICY "remission_product_categories_write_admin" ON "public"."remission_product_categories" TO "authenticated" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"()));
 
 
 
@@ -20883,6 +23922,11 @@ GRANT ALL ON FUNCTION "public"."ensure_order_conversation"("p_order_id" "uuid") 
 
 
 
+GRANT ALL ON FUNCTION "public"."estimate_internal_price_unit"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_uom_profile_id" "uuid", "p_margin_pct" numeric) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."estimate_internal_price_unit"("p_product_id" "uuid", "p_seller_cost_center_id" "uuid", "p_uom_profile_id" "uuid", "p_margin_pct" numeric) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."fogo_create_production_batch_from_recipe"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_notes" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fogo_create_production_batch_from_recipe"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_notes" "text") TO "service_role";
 
@@ -20890,6 +23934,11 @@ GRANT ALL ON FUNCTION "public"."fogo_create_production_batch_from_recipe"("p_rec
 
 GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_notes" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_outputs" "jsonb", "p_notes" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."fogo_create_real_production_batch"("p_recipe_card_id" "uuid", "p_produced_qty" numeric, "p_destination_location_id" "uuid", "p_ingredients" "jsonb", "p_packages" "jsonb", "p_outputs" "jsonb", "p_notes" "text") TO "service_role";
 
 
 
@@ -21024,6 +24073,11 @@ GRANT ALL ON FUNCTION "public"."notify_shift_published"() TO "service_role";
 
 
 
+GRANT ALL ON FUNCTION "public"."numera_current_period_summary"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."numera_current_period_summary"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "service_role";
 
@@ -21055,6 +24109,21 @@ GRANT ALL ON FUNCTION "public"."process_order_payment"("p_order_id" "uuid", "p_s
 
 GRANT ALL ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."promote_app_screen_to_navigation"("p_registry_id" "uuid", "p_group_key" "text", "p_group_label" "text", "p_group_order" integer, "p_sort_order" integer, "p_is_active" boolean) TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."pulso_post_daily_sales_import"("p_batch_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."pulso_post_daily_sales_import"("p_batch_id" "uuid") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."pulso_sync_external_sales_item_mapping_product_id"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."pulso_sync_external_sales_item_mapping_product_id"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."pulso_validate_sales_consumption_rule"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."pulso_validate_sales_consumption_rule"() TO "service_role";
 
 
 
@@ -21140,11 +24209,41 @@ GRANT ALL ON FUNCTION "public"."set_internal_price_item_uom_snapshot"() TO "serv
 
 
 
+GRANT ALL ON FUNCTION "public"."set_numera_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_numera_updated_at"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."set_product_sku"() TO "service_role";
 
 
 
 GRANT ALL ON FUNCTION "public"."set_production_batch_code"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_pulso_daily_sales_import_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_pulso_daily_sales_import_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_pulso_external_sales_item_mappings_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_pulso_external_sales_item_mappings_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_pulso_sales_consumption_rules_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_pulso_sales_consumption_rules_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_recipe_outputs_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_recipe_outputs_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."set_recipe_site_uses_updated_at"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_recipe_site_uses_updated_at"() TO "service_role";
 
 
 
@@ -21164,6 +24263,16 @@ GRANT ALL ON FUNCTION "public"."start_attendance_break"("p_site_id" "uuid", "p_s
 
 GRANT ALL ON FUNCTION "public"."sync_attendance_events"("p_events" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."sync_attendance_events"("p_events" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."sync_employee_primary_site_assignment"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_employee_primary_site_assignment"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."sync_employee_site_assignment_from_employee"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."sync_employee_site_assignment_from_employee"() TO "service_role";
 
 
 
@@ -21255,6 +24364,16 @@ GRANT ALL ON FUNCTION "public"."validate_product_site_production_route"() TO "se
 
 
 
+GRANT ALL ON FUNCTION "public"."validate_recipe_outputs"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."validate_recipe_outputs"() TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."validate_recipe_site_use"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."validate_recipe_site_use"() TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."validate_restock_request_item_pick"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."validate_restock_request_item_pick"() TO "service_role";
 
@@ -21279,6 +24398,11 @@ GRANT ALL ON FUNCTION "public"."verify_employee_kiosk_pin"("p_employee_id" "uuid
 REVOKE ALL ON FUNCTION "public"."viso_accounting_dashboard"("p_site_id" "uuid", "p_month" "date") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."viso_accounting_dashboard"("p_site_id" "uuid", "p_month" "date") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."viso_accounting_dashboard"("p_site_id" "uuid", "p_month" "date") TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."product_inventory_profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."product_inventory_profiles" TO "service_role";
 
 
 
@@ -21433,6 +24557,24 @@ GRANT ALL ON TABLE "public"."attendance_sync_conflicts" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."catalog_item_customization_template_assignments" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_customization_template_assignments" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_customization_template_assignments" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_customization_template_groups" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_customization_template_groups" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_customization_template_groups" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_customization_templates" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_customization_templates" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_customization_templates" TO "anon";
+
+
+
 GRANT ALL ON TABLE "public"."catalog_item_option_consumption_rules" TO "authenticated";
 GRANT ALL ON TABLE "public"."catalog_item_option_consumption_rules" TO "service_role";
 GRANT SELECT ON TABLE "public"."catalog_item_option_consumption_rules" TO "anon";
@@ -21442,6 +24584,12 @@ GRANT SELECT ON TABLE "public"."catalog_item_option_consumption_rules" TO "anon"
 GRANT ALL ON TABLE "public"."catalog_item_option_groups" TO "authenticated";
 GRANT ALL ON TABLE "public"."catalog_item_option_groups" TO "service_role";
 GRANT SELECT ON TABLE "public"."catalog_item_option_groups" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_item_option_recipe_effects" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_item_option_recipe_effects" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_item_option_recipe_effects" TO "anon";
 
 
 
@@ -21459,6 +24607,12 @@ GRANT SELECT ON TABLE "public"."catalog_item_presentation" TO "anon";
 
 GRANT ALL ON TABLE "public"."catalog_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."catalog_items" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."catalog_option_visual_assets" TO "authenticated";
+GRANT ALL ON TABLE "public"."catalog_option_visual_assets" TO "service_role";
+GRANT SELECT ON TABLE "public"."catalog_option_visual_assets" TO "anon";
 
 
 
@@ -21719,6 +24873,31 @@ GRANT ALL ON SEQUENCE "public"."lpn_sequence" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."numera_cost_center_budgets" TO "authenticated";
+GRANT ALL ON TABLE "public"."numera_cost_center_budgets" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."numera_expense_categories" TO "authenticated";
+GRANT ALL ON TABLE "public"."numera_expense_categories" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."numera_expenses" TO "authenticated";
+GRANT ALL ON TABLE "public"."numera_expenses" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."numera_periods" TO "authenticated";
+GRANT ALL ON TABLE "public"."numera_periods" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."numera_cost_center_monthly_summary" TO "authenticated";
+GRANT ALL ON TABLE "public"."numera_cost_center_monthly_summary" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."order_conversations" TO "authenticated";
 GRANT ALL ON TABLE "public"."order_conversations" TO "service_role";
 
@@ -21885,11 +25064,6 @@ GRANT ALL ON TABLE "public"."product_images" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."product_inventory_profiles" TO "authenticated";
-GRANT ALL ON TABLE "public"."product_inventory_profiles" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."product_master_review_requests" TO "authenticated";
 GRANT ALL ON TABLE "public"."product_master_review_requests" TO "service_role";
 
@@ -21925,6 +25099,11 @@ GRANT ALL ON TABLE "public"."production_batch_consumptions" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."production_batch_outputs" TO "authenticated";
+GRANT ALL ON TABLE "public"."production_batch_outputs" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."production_batch_packages" TO "authenticated";
 GRANT ALL ON TABLE "public"."production_batch_packages" TO "service_role";
 
@@ -21945,6 +25124,36 @@ GRANT ALL ON TABLE "public"."production_requests" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."pulso_daily_sales_import_batches" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_daily_sales_import_batches" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."pulso_daily_sales_import_rows" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_daily_sales_import_rows" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."pulso_external_sales_item_mappings" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_external_sales_item_mappings" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."pulso_sales_consumption_rules" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_sales_consumption_rules" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."pulso_sales_import_rows_pending_consumption" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_sales_import_rows_pending_consumption" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."pulso_sales_inventory_postings" TO "authenticated";
+GRANT ALL ON TABLE "public"."pulso_sales_inventory_postings" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."purchase_order_items" TO "authenticated";
 GRANT ALL ON TABLE "public"."purchase_order_items" TO "service_role";
 
@@ -21955,8 +25164,23 @@ GRANT ALL ON TABLE "public"."purchase_orders" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."recipe_outputs" TO "authenticated";
+GRANT ALL ON TABLE "public"."recipe_outputs" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."recipe_site_uses" TO "authenticated";
+GRANT ALL ON TABLE "public"."recipe_site_uses" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."recipe_steps" TO "authenticated";
 GRANT ALL ON TABLE "public"."recipe_steps" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."remission_product_categories" TO "authenticated";
+GRANT ALL ON TABLE "public"."remission_product_categories" TO "service_role";
 
 
 
