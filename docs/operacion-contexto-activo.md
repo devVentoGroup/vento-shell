@@ -124,10 +124,21 @@ auditoría de solo lectura de la matriz operativa
 
 5. Se ajustó `src/app/staff/schedule/page.tsx` para que la creación de horarios use la matriz operativa y no roles libres.
 
+6. `/staff/schedule` quedó enfocado en la vista:
+
+```txt
+Tabla semanal
+```
+
+La pestaña `Planner` se ocultó/removió del flujo visible para no generar ruido operativo.
+
 Estado exacto de esta fase:
 
 ```txt
 VISO ya puede guardar employee_shifts.operational_role usando códigos de la matriz.
+VISO ya puede guardar employee_shifts.area_id desde la Tabla semanal.
+VISO ya puede guardar employee_shifts.checkin_site_id / checkout_site_id cuando el rol operativo los exige.
+La Tabla semanal muestra alertas de turnos sin rol operativo, roles fuera de matriz y puntos externos faltantes.
 ```
 
 ---
@@ -136,16 +147,18 @@ VISO ya puede guardar employee_shifts.operational_role usando códigos de la mat
 
 #### ANIMA
 
-ANIMA todavía no queda completamente adaptado al modelo nuevo.
+ANIMA quedó adaptado en implementación inicial al modelo nuevo.
 
-Pendiente:
+Hecho:
 
 ```txt
-ANIMA debe leer checkin_site_id / checkout_site_id cuando existan.
-ANIMA debe usar esos puntos para geocerca.
-ANIMA debe seguir usando employee_shifts.site_id como sede operativa.
+ANIMA lee checkin_site_id / checkout_site_id cuando existen.
+ANIMA usa esos puntos para geocerca física.
+ANIMA sigue usando employee_shifts.site_id como sede operativa.
 ANIMA no debe mutar employees.role.
-ANIMA debe exponer o conservar el contexto activo: shift_id, site_id, area_id, operational_role.
+ANIMA conserva contexto activo en asistencia/device_info: shift_id, site_id, area_id, operational_role, checkin_site_id, checkout_site_id.
+ANIMA envía geofence_site_id en el payload de attendance_logs.
+Home y Turnos cargan area_id, operational_role, checkin_site_id y checkout_site_id desde employee_shifts.
 ```
 
 Importante:
@@ -158,26 +171,30 @@ Ya ocurrió una ruptura previa por relaciones ambiguas en PostgREST.
 
 #### Horarios VISO
 
-La fase actual de `/staff/schedule` todavía no incluye por completo:
+La fase actual de `/staff/schedule` ya incluye en la Tabla semanal:
 
 ```txt
 employee_shifts.area_id
 employee_shifts.checkin_site_id
 employee_shifts.checkout_site_id
+filtrado de roles por sede + área
+alertas visuales por contexto operativo incompleto
 ```
 
-Por ahora lo crítico implementado es:
+Lo crítico implementado es:
 
 ```txt
 operational_role desde matriz
+area_id desde matriz
+puntos de marcación externos para conductor_logistica y roles equivalentes que los exijan
 ```
 
 Siguiente mejora necesaria:
 
 ```txt
-seleccionar área en el horario
-filtrar roles por sede + área
-si conductor_logistica, exigir checkin_site_id / checkout_site_id
+validar en producción que los nuevos turnos quedan con area_id, operational_role y puntos externos correctos
+auditar turnos históricos que aparecen en alertas de Tabla semanal
+validar Fase 3 ANIMA en dispositivo con turnos reales
 ```
 
 #### Guards / apps operativas
@@ -640,15 +657,19 @@ src/app/staff/schedule/page.tsx
 Estado:
 
 ```txt
-el formulario ya debe guardar employee_shifts.operational_role con código de matriz
+la Tabla semanal ya guarda employee_shifts.operational_role con código de matriz
+la Tabla semanal ya guarda employee_shifts.area_id cuando aplica
+la Tabla semanal ya exige checkin_site_id / checkout_site_id si la matriz marca el rol con punto externo
+la Tabla semanal muestra área, rol operativo y punto externo dentro de la tarjeta de turno
+la Tabla semanal muestra alertas de revisión operativa para turnos incompletos o fuera de matriz
 ```
 
 Todavía pendiente:
 
 ```txt
-selección explícita de area_id en el horario
-checkin_site_id / checkout_site_id para roles externos
-filtrado fino de roles por sede + área
+validación SQL contra turnos nuevos en producción
+limpiar o corregir turnos históricos detectados por alertas
+mantener fuera de alcance la vista Planner si no se vuelve a usar
 ```
 
 ### 7.2 Resolver rol operativo default
@@ -813,7 +834,7 @@ confirmar Saudo / General operador_integral_satelite opcional
 Estado:
 
 ```txt
-parcialmente implementada
+implementada funcionalmente en Tabla semanal; pendiente validación operativa en producción
 ```
 
 Hecho:
@@ -821,31 +842,45 @@ Hecho:
 1. Revisar `src/app/staff/schedule/page.tsx`.
 2. Conectar creación/edición de horario con matriz.
 3. Guardar `employee_shifts.operational_role`.
+4. Agregar selección explícita de área del turno.
+5. Guardar `employee_shifts.area_id`.
+6. Filtrar roles por sede + área.
+7. Exigir `checkin_site_id` / `checkout_site_id` para roles con punto externo.
+8. Mostrar contexto operativo y alertas en Tabla semanal.
 
 Pendiente:
 
-1. Agregar selección de área del turno.
-2. Guardar `employee_shifts.area_id`, si la columna existe.
-3. Filtrar roles por sede + área, no solo por sede.
-4. Si rol exige externo, pedir `checkin_site_id` / `checkout_site_id`.
-5. Validar con SQL que los nuevos turnos quedan con rol operativo correcto.
+1. Validar con SQL que los nuevos turnos quedan con rol operativo, área y puntos externos correctos.
+2. Corregir turnos históricos que aparezcan en alertas.
+3. Revisar si se elimina definitivamente código heredado de planificación IA/Planner.
 
 ### Fase 3: ANIMA
 
 Estado:
 
 ```txt
-pendiente
+implementada inicial; validación operativa parcial en ANIMA
 ```
+
+Hecho:
+
+1. ANIMA lee turno programado con `area_id`, `operational_role`, `checkin_site_id` y `checkout_site_id`.
+2. ANIMA usa `checkin_site_id` para check-in si existe.
+3. ANIMA usa `checkout_site_id` para check-out si existe.
+4. ANIMA registra contexto operativo en asistencia/device_info.
+5. ANIMA envía `geofence_site_id` separado de `site_id`.
+6. ANIMA no muta `employees.role`.
 
 Pendiente:
 
-1. ANIMA lee turno programado.
-2. ANIMA usa `checkin_site_id` si existe.
-3. ANIMA usa `checkout_site_id` si existe.
-4. ANIMA registra contexto operativo en asistencia/sesión.
-5. ANIMA no muta `employees.role`.
-6. Revisar embeds PostgREST para evitar ambigüedad con `sites`.
+1. Validar en dispositivo check-in normal.
+2. Validar en dispositivo check-out normal.
+3. Validar fallback a `site_id` cuando no haya punto físico externo.
+4. Revisar embeds PostgREST si se agregan relaciones nuevas hacia `sites`.
+
+Validado:
+
+1. En Diagnóstico ANIMA, conductor muestra entrada y salida en el punto de recogida de la camioneta.
 
 ### Fase 4: Guards y Shell
 
@@ -972,18 +1007,21 @@ Verificar rutas:
 
 ### ANIMA
 
-No afirmar que está listo.
+Implementación inicial realizada.
 
-Antes de decir que ANIMA quedó alineado, revisar:
+Archivos relacionados:
 
 ```txt
 src/hooks/use-attendance.ts
+src/hooks/attendance/action-payloads.ts
+src/hooks/attendance/shared.ts
 src/hooks/attendance/geofence-target.ts
 src/components/shifts/use-shifts-data.ts
 src/components/home/use-next-scheduled-shift.ts
+src/components/shifts/utils.ts
 ```
 
-Validar:
+Validar en dispositivo:
 
 ```txt
 check-in normal sigue funcionando
@@ -997,11 +1035,11 @@ si no tiene checkin_site_id, geofence usa site_id como fallback
 
 ## 12. Pendientes abiertos
 
-- Confirmar si `employee_shifts.area_id` existe o si debe agregarse.
-- Confirmar si `employee_shifts.checkin_site_id` y `checkout_site_id` están en producción.
+- Validar con SQL en producción que los turnos nuevos de Tabla semanal guardan `area_id`, `operational_role`, `checkin_site_id` y `checkout_site_id` correctamente.
+- Corregir turnos históricos que aparezcan en alertas de revisión operativa en Tabla semanal.
 - Confirmar si Saudo tendrá `servicio_salon`.
 - Confirmar si Saudo tendrá `operador_integral_satelite`.
-- Revisar ANIMA antes de producción completa.
+- Validar ANIMA Fase 3 en dispositivo con turnos reales: `checkin_site_id` / `checkout_site_id`, geocerca física y contexto operativo activo.
 - Revisar guards de FOGO/NEXO/VISO.
 - Mejorar `/operations/preview` con validaciones contra turnos reales.
 - Revisar permisos por rol operativo en sistema de permisos existente.
@@ -1014,8 +1052,243 @@ No crear ni modificar código relacionado con roles operativos sin revisar este 
 
 Cada cambio debe responder a una fase de la hoja de ruta.
 
-Para continuar en otra conversación, arrancar con:
+---
+
+## 14. Cambio 2026-06-25: reporte de asistencia e incidencias históricas
+
+### Archivo corregido
 
 ```txt
-Lee docs/operacion-contexto-activo.md y continúa desde la Fase 2 pendiente: area_id, checkin_site_id, checkout_site_id en VISO; luego Fase 3 ANIMA.
+src/app/api/viso/attendance-report/route.ts
+```
+
+### Problema corregido
+
+El reporte estaba contando como incidencia crítica toda sesión de asistencia que quedara sin consolidar contra un turno del rango:
+
+```txt
+Asistencia sin turno
+```
+
+Eso inflaba el panel de `Incidencias clave`, especialmente con asistencia histórica que nunca tuvo horario publicado o que ya no puede vincularse sin crear falsos positivos.
+
+### Regla implementada
+
+El reporte ahora aplica estas reglas antes de crear una incidencia `Asistencia sin turno`:
+
+1. Si la sesión ya tiene `shift_id`, pero no se consolidó dentro del rango visual del reporte, no se clasifica como `Asistencia sin turno`.
+2. Si la sesión no tiene `shift_id`, solo se clasifica como `Asistencia sin turno` cuando es reciente según la política del reporte.
+3. La asistencia histórica no vinculable deja de contaminar el conteo operativo de incidencias clave.
+
+### Configuración
+
+Variables soportadas:
+
+```txt
+VISO_ATTENDANCE_UNLINKED_INCIDENT_START_DATE
+VISO_ATTENDANCE_UNLINKED_INCIDENT_LOOKBACK_DAYS
+```
+
+Comportamiento:
+
+```txt
+Si VISO_ATTENDANCE_UNLINKED_INCIDENT_START_DATE existe:
+  solo se cuentan como "Asistencia sin turno" registros desde esa fecha.
+
+Si no existe:
+  se usa VISO_ATTENDANCE_UNLINKED_INCIDENT_LOOKBACK_DAYS.
+
+Si tampoco existe:
+  default = últimos 14 días.
+```
+
+### Recomendación operativa
+
+Para producción, definir explícitamente:
+
+```txt
+VISO_ATTENDANCE_UNLINKED_INCIDENT_START_DATE=2026-06-01
+```
+
+Ajustar esa fecha si la puesta en marcha real del schedule publicado fue otra.
+
+### Estado de base de datos relacionado
+
+Se confirmó con diagnóstico que:
+
+```txt
+recoverable_unlinked_logs_after_timezone_fix = 214
+```
+
+y que los registros fuera de tolerancia no representan entradas "un poco temprano", sino diferencias grandes contra el turno más cercano.
+
+Resultado de diagnóstico relevante:
+
+```txt
+check_in antes del inicio: p50 ≈ -1428 min
+check_in después del inicio: p50 ≈ 1440 min
+check_out antes del fin: p50 ≈ -1350 min
+check_out después del fin: p50 ≈ 600 min
+```
+
+Decisión:
+
+```txt
+No ampliar tolerancias de attendance_policy a ciegas.
+Aplicar backfill solo a registros recuperables por resolve_attendance_shift_id.
+Mantener históricos no vinculables fuera de incidencias críticas operativas.
+```
+
+### SQL pendiente recomendado
+
+Aplicar backfill seguro para los registros recuperables:
+
+```sql
+with matches as (
+  select
+    l.id as attendance_log_id,
+    public.resolve_attendance_shift_id(
+      l.employee_id,
+      l.site_id,
+      l.geofence_site_id,
+      l.action,
+      l.occurred_at
+    ) as shift_id
+  from public.attendance_logs l
+  where l.shift_id is null
+),
+valid_matches as (
+  select
+    m.attendance_log_id,
+    m.shift_id
+  from matches m
+  where m.shift_id is not null
+),
+updated as (
+  update public.attendance_logs l
+  set
+    shift_id = vm.shift_id,
+    geofence_site_id = case
+      when l.geofence_site_id is null
+       and l.site_id is distinct from s.site_id
+      then l.site_id
+      else l.geofence_site_id
+    end,
+    site_id = s.site_id
+  from valid_matches vm
+  join public.employee_shifts s
+    on s.id = vm.shift_id
+  where l.id = vm.attendance_log_id
+  returning l.id
+)
+select count(*) as updated_attendance_logs
+from updated;
+```
+
+Validación esperada posterior:
+
+```sql
+select count(*) as remaining_recoverable
+from public.attendance_logs l
+where l.shift_id is null
+  and public.resolve_attendance_shift_id(
+    l.employee_id,
+    l.site_id,
+    l.geofence_site_id,
+    l.action,
+    l.occurred_at
+  ) is not null;
+```
+
+Resultado esperado:
+
+```txt
+remaining_recoverable = 0
+```
+
+---
+
+## 15. Registro actual y roadmap pendiente
+
+### Estado más reciente
+
+1. VISO / attendance-report ya fue ajustado para no contar asistencia histórica no vinculable como "Asistencia sin turno" crítica.
+2. Fase 2 de VISO schedule quedó funcional en Tabla semanal:
+   - `area_id`
+   - roles por sede + área
+   - `checkin_site_id` / `checkout_site_id`
+   - tarjetas con contexto operativo
+   - alertas operativas por turnos incompletos o fuera de matriz
+3. No ampliar tolerancias de asistencia todavía.
+
+### Pendiente inmediato
+
+1. Subir el route corregido en `src/app/api/viso/attendance-report/route.ts`.
+2. Validar con SQL los turnos nuevos creados después de la migración de `employee_shifts.area_id`.
+3. Corregir turnos históricos que aparezcan en alertas operativas.
+4. Validar Fase 3 ANIMA en dispositivo con turnos reales:
+   - check-in normal
+   - check-out normal
+   - fallback a `site_id` cuando no haya punto físico externo
+
+### Validaciones ejecutadas 2026-06-25
+
+1. Migraciones de asistencia aplicadas en remoto:
+   - `20260625140000_attendance_shift_resolver_timezone_safe`
+   - `20260625141000_attendance_logs_resolve_shift_trigger`
+   - `20260625142000_backfill_attendance_logs_shift_id`
+2. Verificación posterior:
+
+```txt
+remaining_recoverable = 0
+resolver_exists = true
+trigger_exists = true
+```
+
+3. Se creó y aplicó la migración:
+
+```txt
+20260625162814_employee_shifts_area_id
+```
+
+Resultado:
+
+```txt
+employee_shifts.area_id existe en producción.
+```
+
+4. Se creó y aplicó la migración:
+
+```txt
+20260625163215_attendance_shift_context_function_permissions
+```
+
+Resultado:
+
+```txt
+anon_can_execute = false
+authenticated_can_execute = false
+```
+
+5. Auditoría de los últimos 50 turnos laborales recientes:
+
+```txt
+missing_operational_role = 45
+role_not_allowed_for_area = 0
+missing_required_checkin_point = 5
+missing_required_checkout_point = 5
+```
+
+Lectura operativa:
+
+```txt
+No hacer backfill ciego.
+Hay turnos administrativos en Vento Group sin mapeo operativo claro.
+Hay turnos de conductor_logistica en Centro de Producción que necesitan puntos externos.
+```
+
+6. Validación operativa parcial ANIMA:
+
+```txt
+Diagnóstico ANIMA muestra conductor con entrada y salida en el punto de recogida de la camioneta.
 ```

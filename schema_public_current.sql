@@ -183,6 +183,54 @@ $_$;
 ALTER FUNCTION "public"."_vento_uuid_from_text"("input" "text") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."anima_is_active_employee"() RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'auth'
+    AS $$
+  select exists (
+    select 1
+    from public.employees e
+    where e.id = auth.uid()
+      and e.is_active = true
+  );
+$$;
+
+
+ALTER FUNCTION "public"."anima_is_active_employee"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."anima_is_active_owner"() RETURNS boolean
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'auth'
+    AS $$
+  select exists (
+    select 1
+    from public.employees e
+    where e.id = auth.uid()
+      and e.is_active = true
+      and e.role = 'propietario'
+  );
+$$;
+
+
+ALTER FUNCTION "public"."anima_is_active_owner"() OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."anima_latest_attendance_log_id_for_current_user"() RETURNS "uuid"
+    LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'auth'
+    AS $$
+  select al.id
+  from public.attendance_logs al
+  where al.employee_id = auth.uid()
+  order by al.occurred_at desc, al.created_at desc
+  limit 1;
+$$;
+
+
+ALTER FUNCTION "public"."anima_latest_attendance_log_id_for_current_user"() OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."anonymize_user_personal_data"("p_user_id" "uuid") RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public', 'pass'
@@ -403,6 +451,56 @@ $$;
 
 
 ALTER FUNCTION "public"."apply_inventory_site_count"("p_site_id" "uuid", "p_user_id" "uuid", "p_note" "text", "p_lines" "jsonb") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."apply_operational_profile_to_shift"("p_shift_id" "uuid") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_shift public.employee_shifts%rowtype;
+  v_profile public.employee_site_operational_profiles%rowtype;
+begin
+  if not (public.is_owner() or public.is_global_manager() or public.is_manager()) then
+    raise exception 'Not authorized to apply operational profiles to shifts';
+  end if;
+
+  select * into v_shift
+  from public.employee_shifts
+  where id = p_shift_id;
+
+  if not found then
+    raise exception 'Shift not found';
+  end if;
+
+  select * into v_profile
+  from public.employee_site_operational_profiles
+  where employee_id = v_shift.employee_id
+    and site_id = v_shift.site_id
+    and is_active = true
+  limit 1;
+
+  if not found then
+    return p_shift_id;
+  end if;
+
+  update public.employee_shifts
+     set operational_role = coalesce(employee_shifts.operational_role, v_profile.default_operational_role),
+         checkin_site_id = coalesce(employee_shifts.checkin_site_id, v_profile.default_checkin_site_id),
+         checkout_site_id = coalesce(employee_shifts.checkout_site_id, v_profile.default_checkout_site_id),
+         updated_at = now()
+   where id = p_shift_id;
+
+  return p_shift_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."apply_operational_profile_to_shift"("p_shift_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."apply_operational_profile_to_shift"("p_shift_id" "uuid") IS 'Applies employee/site operational defaults to a shift without overriding explicit shift values.';
+
 
 
 CREATE OR REPLACE FUNCTION "public"."apply_restock_receipt"("p_request_id" "uuid") RETURNS "void"
@@ -6145,6 +6243,65 @@ $$;
 ALTER FUNCTION "public"."has_permission"("p_permission_code" "text", "p_site_id" "uuid", "p_area_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."has_role_permission"("p_role" "text", "p_permission_code" "text", "p_site_id" "uuid" DEFAULT NULL::"uuid", "p_area_id" "uuid" DEFAULT NULL::"uuid") RETURNS boolean
+    LANGUAGE "plpgsql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_permission_id uuid;
+  v_site_id uuid;
+  v_area_id uuid;
+  v_allowed boolean := false;
+begin
+  if nullif(btrim(coalesce(p_role, '')), '') is null then
+    return false;
+  end if;
+
+  select ap.id
+    into v_permission_id
+  from public.app_permissions ap
+  join public.apps a on a.id = ap.app_id
+  where (a.code || '.' || ap.code) = p_permission_code
+    and a.is_active = true
+    and ap.is_active = true
+  limit 1;
+
+  if v_permission_id is null then
+    return false;
+  end if;
+
+  v_site_id := p_site_id;
+  v_area_id := p_area_id;
+
+  select exists (
+    select 1
+    from public.role_permissions rp
+    where rp.role = btrim(p_role)
+      and rp.permission_id = v_permission_id
+      and rp.is_allowed = true
+      and public.permission_scope_matches(
+        rp.scope_type,
+        v_site_id,
+        v_area_id,
+        rp.scope_site_id,
+        rp.scope_area_id,
+        rp.scope_site_type,
+        rp.scope_area_kind
+      )
+  ) into v_allowed;
+
+  return coalesce(v_allowed, false);
+end;
+$$;
+
+
+ALTER FUNCTION "public"."has_role_permission"("p_role" "text", "p_permission_code" "text", "p_site_id" "uuid", "p_area_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."has_role_permission"("p_role" "text", "p_permission_code" "text", "p_site_id" "uuid", "p_area_id" "uuid") IS 'Evalua permisos de un rol operativo explicito. Complementa has_permission(), que usa employees.role.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."haversine_m"("lat1" numeric, "lon1" numeric, "lat2" numeric, "lon2" numeric) RETURNS double precision
     LANGUAGE "sql" IMMUTABLE
     AS $$
@@ -6315,6 +6472,185 @@ ALTER FUNCTION "public"."mark_payment_transaction_status"("p_transaction_id" "uu
 
 
 COMMENT ON FUNCTION "public"."mark_payment_transaction_status"("p_transaction_id" "uuid", "p_provider_reference" "text", "p_status" "text", "p_payload" "jsonb") IS 'Aplica resultado de pago y sincroniza estado de orden.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."restock_requests" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_by" "uuid",
+    "from_location" "text" NOT NULL,
+    "to_location" "text" NOT NULL,
+    "status" "text" DEFAULT '''pending'''::"text" NOT NULL,
+    "expected_date" "date",
+    "notes" "text",
+    "from_site_id" "uuid",
+    "to_site_id" "uuid",
+    "pricing_mode" "text" DEFAULT 'none'::"text" NOT NULL,
+    "pricing_status" "text" DEFAULT 'draft'::"text" NOT NULL,
+    "internal_supplier_site_id" "uuid",
+    "request_code" "text",
+    "requested_by_site_id" "uuid",
+    "status_updated_at" timestamp with time zone DEFAULT "now"(),
+    "prepared_at" timestamp with time zone,
+    "prepared_by" "uuid",
+    "in_transit_at" timestamp with time zone,
+    "in_transit_by" "uuid",
+    "received_at" timestamp with time zone,
+    "received_by" "uuid",
+    "cancelled_at" timestamp with time zone,
+    "closed_at" timestamp with time zone,
+    "priority" "text" DEFAULT 'normal'::"text",
+    "request_type" "text" DEFAULT 'internal'::"text",
+    "seller_cost_center_id" "uuid",
+    "buyer_cost_center_id" "uuid",
+    "internal_pos_document_id" "uuid",
+    "priced_at" timestamp with time zone
+);
+
+
+ALTER TABLE "public"."restock_requests" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."restock_requests" IS 'Core ΓÇô tabla can├│nica para solicitudes de reabastecimiento. Gestiona pedidos internos de re-stock entre ubicaciones o hacia proveedores.';
+
+
+
+COMMENT ON COLUMN "public"."restock_requests"."seller_cost_center_id" IS 'Snapshot del centro de costo vendedor usado para facturacion interna.';
+
+
+
+COMMENT ON COLUMN "public"."restock_requests"."buyer_cost_center_id" IS 'Snapshot del centro de costo comprador usado para facturacion interna.';
+
+
+
+COMMENT ON COLUMN "public"."restock_requests"."internal_pos_document_id" IS 'Comprobante POS interno asociado cuando la remision queda facturada.';
+
+
+
+COMMENT ON COLUMN "public"."restock_requests"."priced_at" IS 'Momento en que la remision fue valorizada con precios internos.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."mark_restock_request_in_transit"("p_request_id" "uuid") RETURNS "public"."restock_requests"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_employee_id uuid := auth.uid();
+  v_employee record;
+  v_request public.restock_requests%rowtype;
+  v_latest_log record;
+  v_operational_role text;
+  v_context_site_id uuid;
+  v_allowed boolean := false;
+begin
+  if v_employee_id is null then
+    raise exception 'not authenticated';
+  end if;
+
+  select e.id, e.role, e.is_active
+    into v_employee
+  from public.employees e
+  where e.id = v_employee_id
+    and e.is_active = true;
+
+  if v_employee.id is null then
+    raise exception 'employee not active';
+  end if;
+
+  select *
+    into v_request
+  from public.restock_requests r
+  where r.id = p_request_id
+  for update;
+
+  if v_request.id is null then
+    raise exception 'restock_request not found: %', p_request_id;
+  end if;
+
+  if v_request.from_site_id is null then
+    raise exception 'from_site_id requerido para marcar en transito';
+  end if;
+
+  if v_request.cancelled_at is not null or v_request.closed_at is not null or v_request.received_at is not null then
+    raise exception 'remision no se puede marcar en transito por su estado actual';
+  end if;
+
+  if v_request.in_transit_at is not null then
+    return v_request;
+  end if;
+
+  -- Permiso por rol base del empleado.
+  v_allowed := public.has_permission(
+    'nexo.inventory.remissions.transit',
+    v_request.from_site_id,
+    null
+  );
+
+  -- Permiso por rol operativo activo del turno/check-in.
+  if not v_allowed then
+    select
+      al.action,
+      al.site_id as log_site_id,
+      al.device_info,
+      al.shift_id,
+      s.site_id as shift_site_id,
+      s.operational_role
+    into v_latest_log
+    from public.attendance_logs al
+    left join public.employee_shifts s on s.id = al.shift_id
+    where al.employee_id = v_employee_id
+    order by al.occurred_at desc, al.created_at desc
+    limit 1;
+
+    if v_latest_log.action = 'check_in' then
+      v_operational_role := coalesce(
+        nullif(v_latest_log.device_info #>> '{operationalContext,operationalRole}', ''),
+        nullif(v_latest_log.device_info #>> '{operationalContext,operational_role}', ''),
+        nullif(v_latest_log.operational_role, '')
+      );
+
+      v_context_site_id := coalesce(
+        nullif(v_latest_log.device_info #>> '{operationalContext,siteId}', '')::uuid,
+        nullif(v_latest_log.device_info #>> '{operationalContext,site_id}', '')::uuid,
+        v_latest_log.shift_site_id,
+        v_latest_log.log_site_id
+      );
+
+      if v_context_site_id = v_request.from_site_id then
+        v_allowed := public.has_role_permission(
+          v_operational_role,
+          'nexo.inventory.remissions.transit',
+          v_request.from_site_id,
+          null
+        );
+      end if;
+    end if;
+  end if;
+
+  if not v_allowed then
+    raise exception 'permission denied: remissions.transit';
+  end if;
+
+  update public.restock_requests r
+  set
+    in_transit_at = now(),
+    in_transit_by = v_employee_id,
+    status = 'in_transit',
+    status_updated_at = now()
+  where r.id = p_request_id
+  returning * into v_request;
+
+  return v_request;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."mark_restock_request_in_transit"("p_request_id" "uuid") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."mark_restock_request_in_transit"("p_request_id" "uuid") IS 'Permite a conductor marcar una remision como en transito desde NEXO, validando rol base u operativo activo.';
 
 
 
@@ -6589,6 +6925,33 @@ $$;
 
 
 ALTER FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."prevent_hidden_site_employee_assignment"() RETURNS "trigger"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_site_name text;
+  v_visibility text;
+begin
+  select name, coalesce(operational_visibility, 'operational')
+    into v_site_name, v_visibility
+  from public.sites
+  where id = new.site_id;
+
+  if v_visibility <> 'operational' then
+    raise exception 'No se puede asignar el site tecnico/oculto % (%) a employee_sites',
+      coalesce(v_site_name, new.site_id::text),
+      new.site_id;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."prevent_hidden_site_employee_assignment"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."preview_daily_internal_pos_documents"("p_cutoff_at" timestamp with time zone DEFAULT "now"()) RETURNS "jsonb"
@@ -10122,6 +10485,155 @@ COMMENT ON FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text", "
 
 
 
+CREATE OR REPLACE FUNCTION "public"."upsert_driver_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer DEFAULT 100, "p_address" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_site_id uuid;
+begin
+  if nullif(btrim(coalesce(p_code, '')), '') is null then
+    raise exception 'p_code es requerido';
+  end if;
+
+  if nullif(btrim(coalesce(p_name, '')), '') is null then
+    raise exception 'p_name es requerido';
+  end if;
+
+  if p_latitude is null or p_longitude is null then
+    raise exception 'latitud y longitud son requeridas';
+  end if;
+
+  if coalesce(p_radius_meters, 0) <= 0 then
+    raise exception 'p_radius_meters debe ser mayor a cero';
+  end if;
+
+  insert into public.sites (
+    code,
+    name,
+    type,
+    is_active,
+    latitude,
+    longitude,
+    address,
+    site_type,
+    site_kind,
+    checkin_radius_meters,
+    is_public,
+    operational_visibility
+  ) values (
+    lower(btrim(p_code)),
+    btrim(p_name),
+    'checkin_point',
+    true,
+    p_latitude,
+    p_longitude,
+    nullif(btrim(coalesce(p_address, '')), ''),
+    'admin'::public.site_type,
+    'vehicle_yard',
+    p_radius_meters,
+    false,
+    'hidden'
+  )
+  on conflict (code) do update set
+    name = excluded.name,
+    type = excluded.type,
+    is_active = true,
+    latitude = excluded.latitude,
+    longitude = excluded.longitude,
+    address = excluded.address,
+    site_type = excluded.site_type,
+    site_kind = excluded.site_kind,
+    checkin_radius_meters = excluded.checkin_radius_meters,
+    is_public = false,
+    operational_visibility = 'hidden'
+  returning id into v_site_id;
+
+  insert into public.site_attendance_policy (
+    site_id,
+    checkin_radius_meters,
+    requires_geofence
+  ) values (
+    v_site_id,
+    p_radius_meters,
+    true
+  )
+  on conflict (site_id) do update set
+    checkin_radius_meters = excluded.checkin_radius_meters,
+    requires_geofence = true,
+    updated_at = now();
+
+  return v_site_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_driver_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."upsert_driver_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text") IS 'Crea/actualiza un site oculto para geocerca de recogida/devolucion de camioneta.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."upsert_employee_site_operational_profile"("p_employee_id" "uuid", "p_site_id" "uuid", "p_default_operational_role" "text" DEFAULT NULL::"text", "p_default_checkin_site_id" "uuid" DEFAULT NULL::"uuid", "p_default_checkout_site_id" "uuid" DEFAULT NULL::"uuid", "p_is_active" boolean DEFAULT true, "p_notes" "text" DEFAULT NULL::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_id uuid;
+  v_actor uuid;
+begin
+  if not (public.is_owner() or public.is_global_manager() or public.is_manager()) then
+    raise exception 'Not authorized to manage employee operational profiles';
+  end if;
+
+  v_actor := auth.uid();
+
+  insert into public.employee_site_operational_profiles (
+    employee_id,
+    site_id,
+    default_operational_role,
+    default_checkin_site_id,
+    default_checkout_site_id,
+    is_active,
+    notes,
+    created_by,
+    updated_by
+  )
+  values (
+    p_employee_id,
+    p_site_id,
+    nullif(btrim(coalesce(p_default_operational_role, '')), ''),
+    p_default_checkin_site_id,
+    p_default_checkout_site_id,
+    coalesce(p_is_active, true),
+    nullif(btrim(coalesce(p_notes, '')), ''),
+    v_actor,
+    v_actor
+  )
+  on conflict (employee_id, site_id)
+  do update set
+    default_operational_role = excluded.default_operational_role,
+    default_checkin_site_id = excluded.default_checkin_site_id,
+    default_checkout_site_id = excluded.default_checkout_site_id,
+    is_active = excluded.is_active,
+    notes = excluded.notes,
+    updated_by = excluded.updated_by,
+    updated_at = now()
+  returning id into v_id;
+
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_employee_site_operational_profile"("p_employee_id" "uuid", "p_site_id" "uuid", "p_default_operational_role" "text", "p_default_checkin_site_id" "uuid", "p_default_checkout_site_id" "uuid", "p_is_active" boolean, "p_notes" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."upsert_employee_site_operational_profile"("p_employee_id" "uuid", "p_site_id" "uuid", "p_default_operational_role" "text", "p_default_checkin_site_id" "uuid", "p_default_checkout_site_id" "uuid", "p_is_active" boolean, "p_notes" "text") IS 'Creates or updates default operational role and geofence points for an employee at an operational site.';
+
+
+
 CREATE OR REPLACE FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) RETURNS "void"
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
@@ -10271,6 +10783,183 @@ $$;
 ALTER FUNCTION "public"."upsert_inventory_stock_by_uom_profile"("p_location_id" "uuid", "p_product_id" "uuid", "p_uom_profile_id" "uuid", "p_presentation_delta" numeric, "p_base_delta" numeric, "p_location_position_id" "uuid") OWNER TO "postgres";
 
 
+CREATE OR REPLACE FUNCTION "public"."upsert_operational_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer DEFAULT 100, "p_address" "text" DEFAULT NULL::"text", "p_site_kind" "text" DEFAULT 'checkin_point'::"text") RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_id uuid;
+  v_site_kind text;
+begin
+  if not (public.is_owner() or public.is_global_manager() or public.is_manager()) then
+    raise exception 'Not authorized to manage operational check-in points';
+  end if;
+
+  if nullif(btrim(coalesce(p_code, '')), '') is null then
+    raise exception 'Point code is required';
+  end if;
+
+  if nullif(btrim(coalesce(p_name, '')), '') is null then
+    raise exception 'Point name is required';
+  end if;
+
+  if p_latitude is null or p_longitude is null then
+    raise exception 'Latitude and longitude are required';
+  end if;
+
+  v_site_kind := coalesce(nullif(btrim(p_site_kind), ''), 'checkin_point');
+
+  insert into public.sites (
+    code,
+    name,
+    type,
+    site_type,
+    site_kind,
+    latitude,
+    longitude,
+    address,
+    checkin_radius_meters,
+    is_public,
+    operational_visibility,
+    is_active
+  )
+  values (
+    btrim(p_code),
+    btrim(p_name),
+    'internal',
+    'satellite',
+    v_site_kind,
+    p_latitude,
+    p_longitude,
+    nullif(btrim(coalesce(p_address, '')), ''),
+    greatest(coalesce(p_radius_meters, 100), 1),
+    false,
+    'hidden',
+    true
+  )
+  on conflict (code)
+  do update set
+    name = excluded.name,
+    type = excluded.type,
+    site_type = excluded.site_type,
+    site_kind = excluded.site_kind,
+    latitude = excluded.latitude,
+    longitude = excluded.longitude,
+    address = excluded.address,
+    checkin_radius_meters = excluded.checkin_radius_meters,
+    is_public = false,
+    operational_visibility = 'hidden',
+    is_active = true
+  returning id into v_id;
+
+  -- A technical geofence point must not be assigned as an operational site to employees.
+  delete from public.employee_sites where site_id = v_id;
+
+  update public.employee_settings
+     set selected_site_id = null
+   where selected_site_id = v_id;
+
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_operational_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text", "p_site_kind" "text") OWNER TO "postgres";
+
+
+COMMENT ON FUNCTION "public"."upsert_operational_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text", "p_site_kind" "text") IS 'Creates or updates a hidden physical geofence point for ANIMA check-in/check-out. It does not assign the point as an operational employee site.';
+
+
+
+CREATE OR REPLACE FUNCTION "public"."upsert_site_operational_role"("p_site_id" "uuid", "p_area_id" "uuid", "p_role_code" "text", "p_is_default" boolean DEFAULT false, "p_is_active" boolean DEFAULT true) RETURNS "uuid"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+    AS $$
+declare
+  v_id uuid;
+begin
+  if p_site_id is null then
+    raise exception 'site_id is required';
+  end if;
+
+  if nullif(trim(p_role_code), '') is null then
+    raise exception 'role_code is required';
+  end if;
+
+  if not exists (
+    select 1
+    from public.operational_roles
+    where code = p_role_code
+      and is_active = true
+  ) then
+    raise exception 'Operational role % does not exist or is inactive', p_role_code;
+  end if;
+
+  if p_area_id is not null and not exists (
+    select 1
+    from public.areas
+    where id = p_area_id
+      and site_id = p_site_id
+  ) then
+    raise exception 'The selected area does not belong to the selected site';
+  end if;
+
+  if p_is_default then
+    update public.site_operational_roles
+    set
+      is_default = false,
+      updated_at = now()
+    where site_id = p_site_id
+      and (
+        (area_id is null and p_area_id is null)
+        or area_id = p_area_id
+      );
+  end if;
+
+  select id
+  into v_id
+  from public.site_operational_roles
+  where site_id = p_site_id
+    and (
+      (area_id is null and p_area_id is null)
+      or area_id = p_area_id
+    )
+    and role_code = p_role_code
+  limit 1;
+
+  if v_id is null then
+    insert into public.site_operational_roles (
+      site_id,
+      area_id,
+      role_code,
+      is_default,
+      is_active
+    )
+    values (
+      p_site_id,
+      p_area_id,
+      p_role_code,
+      p_is_default,
+      p_is_active
+    )
+    returning id into v_id;
+  else
+    update public.site_operational_roles
+    set
+      is_default = p_is_default,
+      is_active = p_is_active,
+      updated_at = now()
+    where id = v_id;
+  end if;
+
+  return v_id;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."upsert_site_operational_role"("p_site_id" "uuid", "p_area_id" "uuid", "p_role_code" "text", "p_is_default" boolean, "p_is_active" boolean) OWNER TO "postgres";
+
+
 CREATE OR REPLACE FUNCTION "public"."util_column_usage"("p_table" "regclass") RETURNS TABLE("column_name" "text", "non_null_count" bigint, "total_count" bigint, "pct_non_null" numeric)
     LANGUAGE "plpgsql"
     AS $$
@@ -10305,6 +10994,56 @@ end $$;
 
 
 ALTER FUNCTION "public"."util_column_usage"("p_table" "regclass") OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."validate_employee_site_operational_profile"() RETURNS "trigger"
+    LANGUAGE "plpgsql"
+    AS $$
+declare
+  v_site_visibility text;
+  v_site_active boolean;
+  v_checkin_active boolean;
+  v_checkout_active boolean;
+begin
+  select s.operational_visibility, s.is_active
+    into v_site_visibility, v_site_active
+  from public.sites s
+  where s.id = new.site_id;
+
+  if coalesce(v_site_active, false) is distinct from true then
+    raise exception 'Operational profile site must be an active site';
+  end if;
+
+  if coalesce(v_site_visibility, '') <> 'operational' then
+    raise exception 'Operational profile site must have operational_visibility = operational';
+  end if;
+
+  if new.default_checkin_site_id is not null then
+    select s.is_active into v_checkin_active
+    from public.sites s
+    where s.id = new.default_checkin_site_id;
+
+    if coalesce(v_checkin_active, false) is distinct from true then
+      raise exception 'Default check-in point must be an active site';
+    end if;
+  end if;
+
+  if new.default_checkout_site_id is not null then
+    select s.is_active into v_checkout_active
+    from public.sites s
+    where s.id = new.default_checkout_site_id;
+
+    if coalesce(v_checkout_active, false) is distinct from true then
+      raise exception 'Default check-out point must be an active site';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+ALTER FUNCTION "public"."validate_employee_site_operational_profile"() OWNER TO "postgres";
 
 
 CREATE OR REPLACE FUNCTION "public"."validate_product_site_production_location"() RETURNS "trigger"
@@ -12252,6 +12991,8 @@ CREATE TABLE IF NOT EXISTS "public"."attendance_logs" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "client_event_id" "text",
     "shift_id" "uuid",
+    "geofence_site_id" "uuid",
+    "geofence_distance_meters" numeric(10,2),
     CONSTRAINT "attendance_logs_action_check" CHECK (("action" = ANY (ARRAY['check_in'::"text", 'check_out'::"text"]))),
     CONSTRAINT "attendance_logs_source_check" CHECK (("source" = ANY (ARRAY['mobile'::"text", 'web'::"text", 'kiosk'::"text", 'system'::"text"])))
 );
@@ -12280,6 +13021,14 @@ COMMENT ON COLUMN "public"."attendance_logs"."shift_id" IS 'Turno programado aso
 
 
 
+COMMENT ON COLUMN "public"."attendance_logs"."geofence_site_id" IS 'Sede tecnica/geocerca usada para validar GPS. attendance_logs.site_id conserva la sede operativa.';
+
+
+
+COMMENT ON COLUMN "public"."attendance_logs"."geofence_distance_meters" IS 'Distancia calculada entre el GPS del empleado y geofence_site_id al momento de marcar.';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."attendance_policy" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "geofence_check_in_max_accuracy_meters" integer DEFAULT 20 NOT NULL,
@@ -12293,7 +13042,11 @@ CREATE TABLE IF NOT EXISTS "public"."attendance_policy" (
     "shift_departure_min_check_interval_ms" integer DEFAULT 45000 NOT NULL,
     "default_radius_meters" integer,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "shift_match_early_checkin_minutes" integer DEFAULT 120 NOT NULL,
+    "shift_match_late_checkin_minutes" integer DEFAULT 60 NOT NULL,
+    "shift_match_early_checkout_minutes" integer DEFAULT 60 NOT NULL,
+    "shift_match_late_checkout_minutes" integer DEFAULT 240 NOT NULL
 );
 
 
@@ -12882,6 +13635,8 @@ CREATE TABLE IF NOT EXISTS "public"."employee_shifts" (
     "show_end_as_close" boolean DEFAULT false NOT NULL,
     "shift_kind" "text" DEFAULT 'laboral'::"text" NOT NULL,
     "operational_role" "text",
+    "checkin_site_id" "uuid",
+    "checkout_site_id" "uuid",
     CONSTRAINT "employee_shifts_shift_kind_check" CHECK (("shift_kind" = ANY (ARRAY['laboral'::"text", 'descanso'::"text"]))),
     CONSTRAINT "employee_shifts_status_check" CHECK (("status" = ANY (ARRAY['scheduled'::"text", 'confirmed'::"text", 'completed'::"text", 'cancelled'::"text", 'no_show'::"text"])))
 );
@@ -12931,6 +13686,50 @@ COMMENT ON COLUMN "public"."employee_shifts"."shift_kind" IS 'Tipo de turno: lab
 
 
 COMMENT ON COLUMN "public"."employee_shifts"."operational_role" IS 'Rol operativo planeado para este turno. No reemplaza public.employees.role; Anima debe activar este rol durante el check-in.';
+
+
+
+COMMENT ON COLUMN "public"."employee_shifts"."checkin_site_id" IS 'Punto fisico/geocerca para validar check-in. Si es null, ANIMA usa employee_shifts.site_id.';
+
+
+
+COMMENT ON COLUMN "public"."employee_shifts"."checkout_site_id" IS 'Punto fisico/geocerca para validar check-out. Si es null, ANIMA usa employee_shifts.site_id.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."employee_site_operational_profiles" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "employee_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "default_operational_role" "text",
+    "default_checkin_site_id" "uuid",
+    "default_checkout_site_id" "uuid",
+    "is_active" boolean DEFAULT true NOT NULL,
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    CONSTRAINT "employee_site_operational_profiles_role_not_blank" CHECK ((("default_operational_role" IS NULL) OR ("length"(TRIM(BOTH FROM "default_operational_role")) > 0)))
+);
+
+
+ALTER TABLE "public"."employee_site_operational_profiles" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."employee_site_operational_profiles" IS 'Default operational context per employee and operational site: role, check-in point, and check-out point. Used by VISO to prefill shifts without changing employees.role.';
+
+
+
+COMMENT ON COLUMN "public"."employee_site_operational_profiles"."site_id" IS 'Operational site where the employee works, e.g. Centro de Produccion.';
+
+
+
+COMMENT ON COLUMN "public"."employee_site_operational_profiles"."default_checkin_site_id" IS 'Physical check-in geofence point. May be a hidden site, e.g. vehicle pickup point.';
+
+
+
+COMMENT ON COLUMN "public"."employee_site_operational_profiles"."default_checkout_site_id" IS 'Physical check-out geofence point. May be a hidden site.';
 
 
 
@@ -13945,6 +14744,103 @@ CREATE OR REPLACE VIEW "public"."numera_cost_center_monthly_summary" WITH ("secu
 
 
 ALTER VIEW "public"."numera_cost_center_monthly_summary" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."operational_roles" (
+    "code" "text" NOT NULL,
+    "label" "text" NOT NULL,
+    "description" "text",
+    "role_family" "text" DEFAULT 'operacion'::"text" NOT NULL,
+    "requires_external_checkin" boolean DEFAULT false NOT NULL,
+    "requires_external_checkout" boolean DEFAULT false NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "sort_order" integer DEFAULT 100 NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
+);
+
+
+ALTER TABLE "public"."operational_roles" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."operational_roles" IS 'Closed catalog of operational roles that can be assigned to shifts. This does not replace employees.role.';
+
+
+
+COMMENT ON COLUMN "public"."operational_roles"."code" IS 'Stable operational role code used by employee_shifts.operational_role and site_operational_roles.role_code.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."sites" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "code" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "type" "text" NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "latitude" numeric(10,8),
+    "longitude" numeric(11,8),
+    "address" "text",
+    "site_type" "public"."site_type" DEFAULT 'satellite'::"public"."site_type" NOT NULL,
+    "site_kind" "text" NOT NULL,
+    "checkin_radius_meters" integer DEFAULT 50,
+    "is_public" boolean DEFAULT false NOT NULL,
+    "operational_visibility" "text" DEFAULT 'operational'::"text" NOT NULL,
+    CONSTRAINT "sites_operational_visibility_chk" CHECK (("operational_visibility" = ANY (ARRAY['operational'::"text", 'app_review'::"text", 'test'::"text", 'hidden'::"text"])))
+);
+
+
+ALTER TABLE "public"."sites" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."sites" IS 'Core ΓÇô tabla can├│nica para ubicaciones (sites). Define locales/almacenes donde hay stock, movimientos y operaciones.';
+
+
+
+COMMENT ON COLUMN "public"."sites"."latitude" IS 'Latitud de la sede para LiveMap';
+
+
+
+COMMENT ON COLUMN "public"."sites"."longitude" IS 'Longitud de la sede para LiveMap';
+
+
+
+COMMENT ON COLUMN "public"."sites"."address" IS 'Direcci├│n f├¡sica de la sede';
+
+
+
+COMMENT ON COLUMN "public"."sites"."checkin_radius_meters" IS 'Radio en metros para validar check-in GPS (default 50m)';
+
+
+
+COMMENT ON COLUMN "public"."sites"."operational_visibility" IS 'Controla si la sede aparece en flujos operativos. app_review/test/hidden se excluyen de selectores normales.';
+
+
+
+CREATE OR REPLACE VIEW "public"."operational_sites" AS
+ SELECT "id",
+    "code",
+    "name",
+    "type",
+    "is_active",
+    "created_at",
+    "latitude",
+    "longitude",
+    "address",
+    "site_type",
+    "site_kind",
+    "checkin_radius_meters",
+    "is_public",
+    "operational_visibility"
+   FROM "public"."sites"
+  WHERE ((COALESCE("operational_visibility", 'operational'::"text") = 'operational'::"text") AND (COALESCE("is_active", true) = true));
+
+
+ALTER VIEW "public"."operational_sites" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."operational_sites" IS 'Sedes operativas visibles para selectores/listados. Excluye puntos tecnicos hidden como parqueaderos/geocercas.';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."order_conversations" (
@@ -15705,63 +16601,6 @@ COMMENT ON COLUMN "public"."restock_request_items"."shortage_aux_count" IS 'Auxi
 
 
 
-CREATE TABLE IF NOT EXISTS "public"."restock_requests" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "created_by" "uuid",
-    "from_location" "text" NOT NULL,
-    "to_location" "text" NOT NULL,
-    "status" "text" DEFAULT '''pending'''::"text" NOT NULL,
-    "expected_date" "date",
-    "notes" "text",
-    "from_site_id" "uuid",
-    "to_site_id" "uuid",
-    "pricing_mode" "text" DEFAULT 'none'::"text" NOT NULL,
-    "pricing_status" "text" DEFAULT 'draft'::"text" NOT NULL,
-    "internal_supplier_site_id" "uuid",
-    "request_code" "text",
-    "requested_by_site_id" "uuid",
-    "status_updated_at" timestamp with time zone DEFAULT "now"(),
-    "prepared_at" timestamp with time zone,
-    "prepared_by" "uuid",
-    "in_transit_at" timestamp with time zone,
-    "in_transit_by" "uuid",
-    "received_at" timestamp with time zone,
-    "received_by" "uuid",
-    "cancelled_at" timestamp with time zone,
-    "closed_at" timestamp with time zone,
-    "priority" "text" DEFAULT 'normal'::"text",
-    "request_type" "text" DEFAULT 'internal'::"text",
-    "seller_cost_center_id" "uuid",
-    "buyer_cost_center_id" "uuid",
-    "internal_pos_document_id" "uuid",
-    "priced_at" timestamp with time zone
-);
-
-
-ALTER TABLE "public"."restock_requests" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."restock_requests" IS 'Core ΓÇô tabla can├│nica para solicitudes de reabastecimiento. Gestiona pedidos internos de re-stock entre ubicaciones o hacia proveedores.';
-
-
-
-COMMENT ON COLUMN "public"."restock_requests"."seller_cost_center_id" IS 'Snapshot del centro de costo vendedor usado para facturacion interna.';
-
-
-
-COMMENT ON COLUMN "public"."restock_requests"."buyer_cost_center_id" IS 'Snapshot del centro de costo comprador usado para facturacion interna.';
-
-
-
-COMMENT ON COLUMN "public"."restock_requests"."internal_pos_document_id" IS 'Comprobante POS interno asociado cuando la remision queda facturada.';
-
-
-
-COMMENT ON COLUMN "public"."restock_requests"."priced_at" IS 'Momento en que la remision fue valorizada con precios internos.';
-
-
-
 CREATE TABLE IF NOT EXISTS "public"."role_capabilities" (
     "role" "text" NOT NULL,
     "capability" "text" NOT NULL,
@@ -15843,52 +16682,6 @@ ALTER VIEW "public"."sell_products_by_site" OWNER TO "postgres";
 
 
 COMMENT ON VIEW "public"."sell_products_by_site" IS 'Compat view. Canonical view lives in pass.sell_products_by_site.';
-
-
-
-CREATE TABLE IF NOT EXISTS "public"."sites" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "code" "text" NOT NULL,
-    "name" "text" NOT NULL,
-    "type" "text" NOT NULL,
-    "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "latitude" numeric(10,8),
-    "longitude" numeric(11,8),
-    "address" "text",
-    "site_type" "public"."site_type" DEFAULT 'satellite'::"public"."site_type" NOT NULL,
-    "site_kind" "text" NOT NULL,
-    "checkin_radius_meters" integer DEFAULT 50,
-    "is_public" boolean DEFAULT false NOT NULL,
-    "operational_visibility" "text" DEFAULT 'operational'::"text" NOT NULL,
-    CONSTRAINT "sites_operational_visibility_chk" CHECK (("operational_visibility" = ANY (ARRAY['operational'::"text", 'app_review'::"text", 'test'::"text", 'hidden'::"text"])))
-);
-
-
-ALTER TABLE "public"."sites" OWNER TO "postgres";
-
-
-COMMENT ON TABLE "public"."sites" IS 'Core ΓÇô tabla can├│nica para ubicaciones (sites). Define locales/almacenes donde hay stock, movimientos y operaciones.';
-
-
-
-COMMENT ON COLUMN "public"."sites"."latitude" IS 'Latitud de la sede para LiveMap';
-
-
-
-COMMENT ON COLUMN "public"."sites"."longitude" IS 'Longitud de la sede para LiveMap';
-
-
-
-COMMENT ON COLUMN "public"."sites"."address" IS 'Direcci├│n f├¡sica de la sede';
-
-
-
-COMMENT ON COLUMN "public"."sites"."checkin_radius_meters" IS 'Radio en metros para validar check-in GPS (default 50m)';
-
-
-
-COMMENT ON COLUMN "public"."sites"."operational_visibility" IS 'Controla si la sede aparece en flujos operativos. app_review/test/hidden se excluyen de selectores normales.';
 
 
 
@@ -16104,6 +16897,35 @@ COMMENT ON COLUMN "public"."site_operational_capabilities"."operation_model" IS 
 
 
 COMMENT ON COLUMN "public"."site_operational_capabilities"."primary_operational_location_id" IS 'LOC principal usado por sedes single_loc para recibir, almacenar, vender y producir sin traslados internos.';
+
+
+
+CREATE TABLE IF NOT EXISTS "public"."site_operational_roles" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "role_code" "text" NOT NULL,
+    "label" "text",
+    "is_default" boolean DEFAULT false NOT NULL,
+    "sort_order" integer DEFAULT 100 NOT NULL,
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "description" "text",
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "area_id" "uuid",
+    CONSTRAINT "site_operational_roles_role_code_not_blank" CHECK (("btrim"("role_code") <> ''::"text"))
+);
+
+
+ALTER TABLE "public"."site_operational_roles" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."site_operational_roles" IS 'Controlled matrix of operational roles allowed by site and optional area. Role codes must exist in operational_roles.';
+
+
+
+COMMENT ON COLUMN "public"."site_operational_roles"."role_code" IS 'Operational role code, e.g. conductor, cocinero, barista, inventario. This is not necessarily the employee base/admin role.';
 
 
 
@@ -16882,6 +17704,154 @@ COMMENT ON VIEW "public"."v_site_production_route_diagnostics" IS 'Diagn├│st
 
 
 
+CREATE OR REPLACE VIEW "public"."vento_operational_roles_v1" AS
+ SELECT "code",
+    "label",
+    "description",
+    "role_family",
+    "requires_external_checkin",
+    "requires_external_checkout",
+    "is_active",
+    "sort_order"
+   FROM "public"."operational_roles"
+  WHERE ("is_active" = true);
+
+
+ALTER VIEW "public"."vento_operational_roles_v1" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."vento_site_operational_role_matrix_v1" AS
+ SELECT "sor"."id",
+    "sor"."site_id",
+    "s"."name" AS "site_name",
+    "s"."code" AS "site_code",
+    "s"."site_type",
+    "sor"."area_id",
+    "a"."name" AS "area_name",
+    "a"."kind" AS "area_kind",
+    "sor"."role_code",
+    "opr"."label" AS "role_label",
+    "opr"."description" AS "role_description",
+    "opr"."role_family",
+    "opr"."requires_external_checkin",
+    "opr"."requires_external_checkout",
+    "sor"."is_default",
+    "sor"."is_active",
+    "sor"."created_at",
+    "sor"."updated_at"
+   FROM ((("public"."site_operational_roles" "sor"
+     JOIN "public"."sites" "s" ON (("s"."id" = "sor"."site_id")))
+     LEFT JOIN "public"."areas" "a" ON (("a"."id" = "sor"."area_id")))
+     JOIN "public"."operational_roles" "opr" ON (("opr"."code" = "sor"."role_code")));
+
+
+ALTER VIEW "public"."vento_site_operational_role_matrix_v1" OWNER TO "postgres";
+
+
+CREATE OR REPLACE VIEW "public"."viso_employee_site_operational_profiles" WITH ("security_invoker"='true') AS
+ SELECT "p"."id",
+    "p"."employee_id",
+    "e"."full_name" AS "employee_name",
+    "e"."alias" AS "employee_alias",
+    "e"."role" AS "employee_base_role",
+    "e"."is_active" AS "employee_is_active",
+    "p"."site_id",
+    "s"."name" AS "site_name",
+    "s"."code" AS "site_code",
+    "p"."default_operational_role",
+    COALESCE("r"."name", "p"."default_operational_role") AS "default_operational_role_label",
+    "p"."default_checkin_site_id",
+    "checkin_site"."name" AS "default_checkin_site_name",
+    "checkin_site"."code" AS "default_checkin_site_code",
+    "p"."default_checkout_site_id",
+    "checkout_site"."name" AS "default_checkout_site_name",
+    "checkout_site"."code" AS "default_checkout_site_code",
+    "p"."is_active",
+    "p"."notes",
+    "p"."created_at",
+    "p"."updated_at"
+   FROM ((((("public"."employee_site_operational_profiles" "p"
+     JOIN "public"."employees" "e" ON (("e"."id" = "p"."employee_id")))
+     JOIN "public"."sites" "s" ON (("s"."id" = "p"."site_id")))
+     LEFT JOIN "public"."roles" "r" ON (("r"."code" = "p"."default_operational_role")))
+     LEFT JOIN "public"."sites" "checkin_site" ON (("checkin_site"."id" = "p"."default_checkin_site_id")))
+     LEFT JOIN "public"."sites" "checkout_site" ON (("checkout_site"."id" = "p"."default_checkout_site_id")));
+
+
+ALTER VIEW "public"."viso_employee_site_operational_profiles" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."viso_employee_site_operational_profiles" IS 'Joined view for VISO worker-by-site operational defaults.';
+
+
+
+CREATE OR REPLACE VIEW "public"."viso_operational_checkin_points" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "code",
+    "name",
+    "type",
+    "site_type",
+    "site_kind",
+    "latitude",
+    "longitude",
+    "address",
+    "checkin_radius_meters",
+    "is_active",
+    "operational_visibility"
+   FROM "public"."sites" "s"
+  WHERE (("is_active" = true) AND (("operational_visibility" = 'hidden'::"text") OR ("site_kind" = ANY (ARRAY['checkin_point'::"text", 'vehicle_yard'::"text"]))));
+
+
+ALTER VIEW "public"."viso_operational_checkin_points" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."viso_operational_checkin_points" IS 'Hidden/technical sites usable as physical geofence points for ANIMA check-in/check-out.';
+
+
+
+CREATE OR REPLACE VIEW "public"."viso_operational_sites" WITH ("security_invoker"='true') AS
+ SELECT "id",
+    "code",
+    "name",
+    "type",
+    "site_type",
+    "site_kind",
+    "latitude",
+    "longitude",
+    "address",
+    "checkin_radius_meters",
+    "is_active",
+    "operational_visibility"
+   FROM "public"."sites" "s"
+  WHERE (("is_active" = true) AND ("operational_visibility" = 'operational'::"text"));
+
+
+ALTER VIEW "public"."viso_operational_sites" OWNER TO "postgres";
+
+
+COMMENT ON VIEW "public"."viso_operational_sites" IS 'Operational sites shown in VISO admin selectors. Excludes app_review, test, and hidden sites.';
+
+
+
+CREATE OR REPLACE VIEW "public"."viso_site_operational_roles" WITH ("security_invoker"='true') AS
+ SELECT "sor"."id",
+    "sor"."site_id",
+    "s"."name" AS "site_name",
+    "s"."code" AS "site_code",
+    "sor"."role_code",
+    COALESCE("sor"."label", "r"."name", "sor"."role_code") AS "label",
+    COALESCE("sor"."description", "r"."description") AS "description",
+    "sor"."is_active",
+    "sor"."created_at",
+    "sor"."updated_at"
+   FROM (("public"."site_operational_roles" "sor"
+     JOIN "public"."sites" "s" ON (("s"."id" = "sor"."site_id")))
+     LEFT JOIN "public"."roles" "r" ON (("r"."code" = "sor"."role_code")));
+
+
+ALTER VIEW "public"."viso_site_operational_roles" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."wallet_devices" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "device_library_identifier" "text" NOT NULL,
@@ -17208,6 +18178,16 @@ ALTER TABLE ONLY "public"."employee_shifts"
 
 
 
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_employee_site_key" UNIQUE ("employee_id", "site_id");
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."employee_sites"
     ADD CONSTRAINT "employee_sites_pkey" PRIMARY KEY ("employee_id", "site_id");
 
@@ -17415,6 +18395,11 @@ ALTER TABLE ONLY "public"."numera_periods"
 
 ALTER TABLE ONLY "public"."numera_periods"
     ADD CONSTRAINT "numera_periods_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."operational_roles"
+    ADD CONSTRAINT "operational_roles_pkey" PRIMARY KEY ("code");
 
 
 
@@ -17828,6 +18813,11 @@ ALTER TABLE ONLY "public"."site_operational_capabilities"
 
 
 
+ALTER TABLE ONLY "public"."site_operational_roles"
+    ADD CONSTRAINT "site_operational_roles_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."site_production_pick_order"
     ADD CONSTRAINT "site_production_pick_order_pkey" PRIMARY KEY ("site_id", "location_id");
 
@@ -18014,6 +19004,10 @@ CREATE INDEX "attendance_logs_employee_occurred_at_idx" ON "public"."attendance_
 
 
 
+CREATE INDEX "attendance_logs_geofence_site_id_idx" ON "public"."attendance_logs" USING "btree" ("geofence_site_id") WHERE ("geofence_site_id" IS NOT NULL);
+
+
+
 CREATE INDEX "attendance_shift_events_employee_shift_idx" ON "public"."attendance_shift_events" USING "btree" ("employee_id", "shift_start_at" DESC);
 
 
@@ -18082,7 +19076,27 @@ CREATE UNIQUE INDEX "employee_push_tokens_token_idx" ON "public"."employee_push_
 
 
 
+CREATE INDEX "employee_shifts_checkin_site_id_idx" ON "public"."employee_shifts" USING "btree" ("checkin_site_id") WHERE ("checkin_site_id" IS NOT NULL);
+
+
+
+CREATE INDEX "employee_shifts_checkout_site_id_idx" ON "public"."employee_shifts" USING "btree" ("checkout_site_id") WHERE ("checkout_site_id" IS NOT NULL);
+
+
+
 CREATE INDEX "employee_shifts_operational_role_idx" ON "public"."employee_shifts" USING "btree" ("site_id", "operational_role") WHERE ("operational_role" IS NOT NULL);
+
+
+
+CREATE INDEX "employee_site_operational_profiles_employee_id_idx" ON "public"."employee_site_operational_profiles" USING "btree" ("employee_id");
+
+
+
+CREATE INDEX "employee_site_operational_profiles_role_idx" ON "public"."employee_site_operational_profiles" USING "btree" ("default_operational_role");
+
+
+
+CREATE INDEX "employee_site_operational_profiles_site_id_idx" ON "public"."employee_site_operational_profiles" USING "btree" ("site_id");
 
 
 
@@ -19122,6 +20136,38 @@ CREATE INDEX "role_permissions_scope_site_type_idx" ON "public"."role_permission
 
 
 
+CREATE INDEX "site_operational_roles_area_idx" ON "public"."site_operational_roles" USING "btree" ("area_id");
+
+
+
+CREATE UNIQUE INDEX "site_operational_roles_one_default_per_site_area_uidx" ON "public"."site_operational_roles" USING "btree" ("site_id", COALESCE("area_id", '00000000-0000-0000-0000-000000000000'::"uuid")) WHERE ("is_default" = true);
+
+
+
+CREATE INDEX "site_operational_roles_role_code_idx" ON "public"."site_operational_roles" USING "btree" ("role_code");
+
+
+
+CREATE INDEX "site_operational_roles_role_idx" ON "public"."site_operational_roles" USING "btree" ("role_code") WHERE ("is_active" = true);
+
+
+
+CREATE UNIQUE INDEX "site_operational_roles_site_area_role_uidx" ON "public"."site_operational_roles" USING "btree" ("site_id", COALESCE("area_id", '00000000-0000-0000-0000-000000000000'::"uuid"), "role_code");
+
+
+
+CREATE INDEX "site_operational_roles_site_id_idx" ON "public"."site_operational_roles" USING "btree" ("site_id");
+
+
+
+CREATE INDEX "site_operational_roles_site_idx" ON "public"."site_operational_roles" USING "btree" ("site_id");
+
+
+
+CREATE UNIQUE INDEX "site_operational_roles_site_role_uidx" ON "public"."site_operational_roles" USING "btree" ("site_id", "role_code");
+
+
+
 CREATE UNIQUE INDEX "staff_invitations_token_key" ON "public"."staff_invitations" USING "btree" ("token");
 
 
@@ -19284,6 +20330,10 @@ CREATE OR REPLACE TRIGGER "employee_devices_set_updated_at" BEFORE UPDATE ON "pu
 
 
 
+CREATE OR REPLACE TRIGGER "employee_sites_block_hidden_sites" BEFORE INSERT OR UPDATE OF "site_id" ON "public"."employee_sites" FOR EACH ROW EXECUTE FUNCTION "public"."prevent_hidden_site_employee_assignment"();
+
+
+
 CREATE OR REPLACE TRIGGER "employee_sites_sync_primary_assignment" AFTER INSERT OR DELETE OR UPDATE ON "public"."employee_sites" FOR EACH ROW EXECUTE FUNCTION "public"."sync_employee_primary_site_assignment"();
 
 
@@ -19436,6 +20486,10 @@ CREATE OR REPLACE TRIGGER "trg_employee_push_tokens_updated_at" BEFORE UPDATE ON
 
 
 
+CREATE OR REPLACE TRIGGER "trg_employee_site_operational_profiles_updated_at" BEFORE UPDATE ON "public"."employee_site_operational_profiles" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_enforce_employee_role_site" BEFORE INSERT OR UPDATE OF "role", "site_id" ON "public"."employees" FOR EACH ROW EXECUTE FUNCTION "public"."enforce_employee_role_site"();
 
 
@@ -19540,6 +20594,10 @@ CREATE OR REPLACE TRIGGER "trg_site_operational_capabilities_updated_at" BEFORE 
 
 
 
+CREATE OR REPLACE TRIGGER "trg_site_operational_roles_updated_at" BEFORE UPDATE ON "public"."site_operational_roles" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "trg_site_purpose_settings_updated_at" BEFORE UPDATE ON "public"."site_purpose_settings" FOR EACH ROW EXECUTE FUNCTION "public"."_set_updated_at"();
 
 
@@ -19561,6 +20619,10 @@ CREATE OR REPLACE TRIGGER "trg_sync_restock_request_status_from_items" AFTER INS
 
 
 CREATE OR REPLACE TRIGGER "trg_touch_product_site_production_route_updated_at" BEFORE UPDATE ON "public"."product_site_production_routes" FOR EACH ROW EXECUTE FUNCTION "public"."touch_product_site_production_route_updated_at"();
+
+
+
+CREATE OR REPLACE TRIGGER "trg_validate_employee_site_operational_profile" BEFORE INSERT OR UPDATE ON "public"."employee_site_operational_profiles" FOR EACH ROW EXECUTE FUNCTION "public"."validate_employee_site_operational_profile"();
 
 
 
@@ -20086,6 +21148,41 @@ ALTER TABLE ONLY "public"."employee_shifts"
 
 ALTER TABLE ONLY "public"."employee_shifts"
     ADD CONSTRAINT "employee_shifts_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profile_default_checkout_site_id_fkey" FOREIGN KEY ("default_checkout_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profile_default_operational_role_fkey" FOREIGN KEY ("default_operational_role") REFERENCES "public"."operational_roles"("code") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id");
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_default_checkin_site_id_fkey" FOREIGN KEY ("default_checkin_site_id") REFERENCES "public"."sites"("id") ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."employee_site_operational_profiles"
+    ADD CONSTRAINT "employee_site_operational_profiles_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."employees"("id");
 
 
 
@@ -21614,6 +22711,26 @@ ALTER TABLE ONLY "public"."site_operational_capabilities"
 
 
 
+ALTER TABLE ONLY "public"."site_operational_roles"
+    ADD CONSTRAINT "site_operational_roles_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."employees"("id");
+
+
+
+ALTER TABLE ONLY "public"."site_operational_roles"
+    ADD CONSTRAINT "site_operational_roles_role_code_fkey" FOREIGN KEY ("role_code") REFERENCES "public"."operational_roles"("code") ON UPDATE CASCADE ON DELETE RESTRICT NOT VALID;
+
+
+
+ALTER TABLE ONLY "public"."site_operational_roles"
+    ADD CONSTRAINT "site_operational_roles_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."site_operational_roles"
+    ADD CONSTRAINT "site_operational_roles_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "public"."employees"("id");
+
+
+
 ALTER TABLE ONLY "public"."site_production_pick_order"
     ADD CONSTRAINT "site_production_pick_order_location_id_fkey" FOREIGN KEY ("location_id") REFERENCES "public"."inventory_locations"("id") ON DELETE CASCADE;
 
@@ -21934,11 +23051,27 @@ CREATE POLICY "attendance_breaks_select_self" ON "public"."attendance_breaks" FO
 ALTER TABLE "public"."attendance_logs" ENABLE ROW LEVEL SECURITY;
 
 
+CREATE POLICY "attendance_logs_insert_active_self_restrictive" ON "public"."attendance_logs" AS RESTRICTIVE FOR INSERT TO "authenticated" WITH CHECK ((("employee_id" = "auth"."uid"()) AND "public"."anima_is_active_employee"()));
+
+
+
+CREATE POLICY "attendance_logs_insert_authenticated_permissive" ON "public"."attendance_logs" FOR INSERT TO "authenticated" WITH CHECK (true);
+
+
+
 CREATE POLICY "attendance_logs_insert_self_accessible_site" ON "public"."attendance_logs" FOR INSERT TO "authenticated" WITH CHECK ((("employee_id" = "auth"."uid"()) AND ("source" = ANY (ARRAY['mobile'::"text", 'web'::"text", 'kiosk'::"text"])) AND "public"."can_access_site"("site_id")));
 
 
 
+CREATE POLICY "attendance_logs_select_authenticated_permissive" ON "public"."attendance_logs" FOR SELECT TO "authenticated" USING (true);
+
+
+
 CREATE POLICY "attendance_logs_select_manager_scoped" ON "public"."attendance_logs" FOR SELECT TO "authenticated" USING (("public"."is_owner"() OR "public"."is_global_manager"() OR (("public"."current_employee_role"() = 'gerente'::"text") AND "public"."can_access_site"("site_id"))));
+
+
+
+CREATE POLICY "attendance_logs_select_operational_restrictive" ON "public"."attendance_logs" AS RESTRICTIVE FOR SELECT TO "authenticated" USING (("public"."anima_is_active_owner"() OR (("employee_id" = "auth"."uid"()) AND "public"."anima_is_active_employee"() AND ("id" = "public"."anima_latest_attendance_log_id_for_current_user"()))));
 
 
 
@@ -22165,6 +23298,17 @@ CREATE POLICY "employee_shifts_write_manager" ON "public"."employee_shifts" USIN
 
 
 CREATE POLICY "employee_shifts_write_owner" ON "public"."employee_shifts" USING (("public"."is_owner"() OR "public"."is_global_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"()));
+
+
+
+ALTER TABLE "public"."employee_site_operational_profiles" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "employee_site_operational_profiles_manage_ops_admin" ON "public"."employee_site_operational_profiles" TO "authenticated" USING (("public"."is_owner"() OR "public"."is_global_manager"() OR "public"."is_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"() OR "public"."is_manager"()));
+
+
+
+CREATE POLICY "employee_site_operational_profiles_select_staff" ON "public"."employee_site_operational_profiles" FOR SELECT TO "authenticated" USING ("public"."is_active_staff"());
 
 
 
@@ -23497,6 +24641,17 @@ CREATE POLICY "site_operational_capabilities_write_admin" ON "public"."site_oper
 
 
 
+ALTER TABLE "public"."site_operational_roles" ENABLE ROW LEVEL SECURITY;
+
+
+CREATE POLICY "site_operational_roles_manage_ops_admin" ON "public"."site_operational_roles" TO "authenticated" USING (("public"."is_owner"() OR "public"."is_global_manager"() OR "public"."is_manager"())) WITH CHECK (("public"."is_owner"() OR "public"."is_global_manager"() OR "public"."is_manager"()));
+
+
+
+CREATE POLICY "site_operational_roles_select_staff" ON "public"."site_operational_roles" FOR SELECT TO "authenticated" USING ("public"."is_active_staff"());
+
+
+
 ALTER TABLE "public"."site_purpose_settings" ENABLE ROW LEVEL SECURITY;
 
 
@@ -23726,6 +24881,24 @@ GRANT ALL ON FUNCTION "public"."_vento_uuid_from_text"("input" "text") TO "servi
 
 
 
+REVOKE ALL ON FUNCTION "public"."anima_is_active_employee"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."anima_is_active_employee"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."anima_is_active_employee"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."anima_is_active_owner"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."anima_is_active_owner"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."anima_is_active_owner"() TO "service_role";
+
+
+
+REVOKE ALL ON FUNCTION "public"."anima_latest_attendance_log_id_for_current_user"() FROM PUBLIC;
+GRANT ALL ON FUNCTION "public"."anima_latest_attendance_log_id_for_current_user"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."anima_latest_attendance_log_id_for_current_user"() TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."anonymize_user_personal_data"("p_user_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."anonymize_user_personal_data"("p_user_id" "uuid") TO "service_role";
 
@@ -23738,6 +24911,11 @@ GRANT ALL ON FUNCTION "public"."apply_inventory_count_adjustments"("p_session_id
 
 GRANT ALL ON FUNCTION "public"."apply_inventory_site_count"("p_site_id" "uuid", "p_user_id" "uuid", "p_note" "text", "p_lines" "jsonb") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."apply_inventory_site_count"("p_site_id" "uuid", "p_user_id" "uuid", "p_note" "text", "p_lines" "jsonb") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."apply_operational_profile_to_shift"("p_shift_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."apply_operational_profile_to_shift"("p_shift_id" "uuid") TO "service_role";
 
 
 
@@ -24020,6 +25198,11 @@ GRANT ALL ON FUNCTION "public"."has_permission"("p_permission_code" "text", "p_s
 
 
 
+GRANT ALL ON FUNCTION "public"."has_role_permission"("p_role" "text", "p_permission_code" "text", "p_site_id" "uuid", "p_area_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."has_role_permission"("p_role" "text", "p_permission_code" "text", "p_site_id" "uuid", "p_area_id" "uuid") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."haversine_m"("lat1" numeric, "lon1" numeric, "lat2" numeric, "lon2" numeric) TO "service_role";
 
 
@@ -24058,6 +25241,16 @@ GRANT ALL ON FUNCTION "public"."mark_payment_transaction_status"("p_transaction_
 
 
 
+GRANT ALL ON TABLE "public"."restock_requests" TO "authenticated";
+GRANT ALL ON TABLE "public"."restock_requests" TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."mark_restock_request_in_transit"("p_request_id" "uuid") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."mark_restock_request_in_transit"("p_request_id" "uuid") TO "service_role";
+
+
+
 REVOKE ALL ON FUNCTION "public"."nexo_kiosk_withdraw_workers"("p_source_location_id" "uuid") FROM PUBLIC;
 GRANT ALL ON FUNCTION "public"."nexo_kiosk_withdraw_workers"("p_source_location_id" "uuid") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."nexo_kiosk_withdraw_workers"("p_source_location_id" "uuid") TO "service_role";
@@ -24080,6 +25273,11 @@ GRANT ALL ON FUNCTION "public"."numera_current_period_summary"() TO "service_rol
 
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "authenticated";
 GRANT ALL ON FUNCTION "public"."permission_scope_matches"("p_scope_type" "public"."permission_scope_type", "p_context_site_id" "uuid", "p_context_area_id" "uuid", "p_scope_site_id" "uuid", "p_scope_area_id" "uuid", "p_scope_site_type" "public"."site_type", "p_scope_area_kind" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."prevent_hidden_site_employee_assignment"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."prevent_hidden_site_employee_assignment"() TO "service_role";
 
 
 
@@ -24341,6 +25539,16 @@ GRANT ALL ON FUNCTION "public"."upsert_app_screen_registry"("p_app_code" "text",
 
 
 
+GRANT ALL ON FUNCTION "public"."upsert_driver_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_driver_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."upsert_employee_site_operational_profile"("p_employee_id" "uuid", "p_site_id" "uuid", "p_default_operational_role" "text", "p_default_checkin_site_id" "uuid", "p_default_checkout_site_id" "uuid", "p_is_active" boolean, "p_notes" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_employee_site_operational_profile"("p_employee_id" "uuid", "p_site_id" "uuid", "p_default_operational_role" "text", "p_default_checkin_site_id" "uuid", "p_default_checkout_site_id" "uuid", "p_is_active" boolean, "p_notes" "text") TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) TO "authenticated";
 GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_location"("p_location_id" "uuid", "p_product_id" "uuid", "p_delta" numeric) TO "service_role";
 
@@ -24351,7 +25559,22 @@ GRANT ALL ON FUNCTION "public"."upsert_inventory_stock_by_uom_profile"("p_locati
 
 
 
+GRANT ALL ON FUNCTION "public"."upsert_operational_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text", "p_site_kind" "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_operational_checkin_point"("p_code" "text", "p_name" "text", "p_latitude" numeric, "p_longitude" numeric, "p_radius_meters" integer, "p_address" "text", "p_site_kind" "text") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."upsert_site_operational_role"("p_site_id" "uuid", "p_area_id" "uuid", "p_role_code" "text", "p_is_default" boolean, "p_is_active" boolean) TO "authenticated";
+GRANT ALL ON FUNCTION "public"."upsert_site_operational_role"("p_site_id" "uuid", "p_area_id" "uuid", "p_role_code" "text", "p_is_default" boolean, "p_is_active" boolean) TO "service_role";
+
+
+
 GRANT ALL ON FUNCTION "public"."util_column_usage"("p_table" "regclass") TO "service_role";
+
+
+
+GRANT ALL ON FUNCTION "public"."validate_employee_site_operational_profile"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."validate_employee_site_operational_profile"() TO "service_role";
 
 
 
@@ -24694,6 +25917,11 @@ GRANT ALL ON TABLE "public"."employee_shifts" TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."employee_site_operational_profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."employee_site_operational_profiles" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."employee_sites" TO "authenticated";
 GRANT ALL ON TABLE "public"."employee_sites" TO "service_role";
 
@@ -24895,6 +26123,21 @@ GRANT ALL ON TABLE "public"."numera_periods" TO "service_role";
 
 GRANT ALL ON TABLE "public"."numera_cost_center_monthly_summary" TO "authenticated";
 GRANT ALL ON TABLE "public"."numera_cost_center_monthly_summary" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."operational_roles" TO "authenticated";
+GRANT ALL ON TABLE "public"."operational_roles" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."sites" TO "authenticated";
+GRANT ALL ON TABLE "public"."sites" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."operational_sites" TO "authenticated";
+GRANT ALL ON TABLE "public"."operational_sites" TO "service_role";
 
 
 
@@ -25199,11 +26442,6 @@ GRANT ALL ON TABLE "public"."restock_request_items" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."restock_requests" TO "authenticated";
-GRANT ALL ON TABLE "public"."restock_requests" TO "service_role";
-
-
-
 GRANT ALL ON TABLE "public"."role_capabilities" TO "authenticated";
 GRANT ALL ON TABLE "public"."role_capabilities" TO "service_role";
 
@@ -25226,11 +26464,6 @@ GRANT ALL ON TABLE "public"."roles" TO "service_role";
 
 GRANT ALL ON TABLE "public"."sell_products_by_site" TO "authenticated";
 GRANT ALL ON TABLE "public"."sell_products_by_site" TO "service_role";
-
-
-
-GRANT ALL ON TABLE "public"."sites" TO "authenticated";
-GRANT ALL ON TABLE "public"."sites" TO "service_role";
 
 
 
@@ -25261,6 +26494,11 @@ GRANT ALL ON TABLE "public"."site_attendance_policy" TO "service_role";
 
 GRANT ALL ON TABLE "public"."site_operational_capabilities" TO "authenticated";
 GRANT ALL ON TABLE "public"."site_operational_capabilities" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."site_operational_roles" TO "authenticated";
+GRANT ALL ON TABLE "public"."site_operational_roles" TO "service_role";
 
 
 
@@ -25371,6 +26609,36 @@ GRANT ALL ON TABLE "public"."v_site_area_operational_diagnostics" TO "service_ro
 
 GRANT ALL ON TABLE "public"."v_site_production_route_diagnostics" TO "authenticated";
 GRANT ALL ON TABLE "public"."v_site_production_route_diagnostics" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."vento_operational_roles_v1" TO "authenticated";
+GRANT ALL ON TABLE "public"."vento_operational_roles_v1" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."vento_site_operational_role_matrix_v1" TO "authenticated";
+GRANT ALL ON TABLE "public"."vento_site_operational_role_matrix_v1" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."viso_employee_site_operational_profiles" TO "authenticated";
+GRANT ALL ON TABLE "public"."viso_employee_site_operational_profiles" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."viso_operational_checkin_points" TO "authenticated";
+GRANT ALL ON TABLE "public"."viso_operational_checkin_points" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."viso_operational_sites" TO "authenticated";
+GRANT ALL ON TABLE "public"."viso_operational_sites" TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."viso_site_operational_roles" TO "authenticated";
+GRANT ALL ON TABLE "public"."viso_site_operational_roles" TO "service_role";
 
 
 
