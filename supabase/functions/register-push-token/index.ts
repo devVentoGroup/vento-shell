@@ -53,7 +53,13 @@ serve(async (req) => {
     })
   }
 
-  let payload: { token?: string; platform?: string } = {}
+  let payload: {
+    token?: string
+    platform?: string
+    permissionStatus?: string
+    notificationsEnabled?: boolean
+    deviceName?: string
+  } = {}
   try {
     payload = await req.json()
   } catch {
@@ -65,6 +71,12 @@ serve(async (req) => {
 
   const pushToken = payload.token?.trim()
   const platform = payload.platform?.trim() || "unknown"
+  const permissionStatus = payload.permissionStatus?.trim() || null
+  const notificationsEnabled =
+    typeof payload.notificationsEnabled === "boolean"
+      ? payload.notificationsEnabled
+      : permissionStatus === "granted"
+  const deviceName = payload.deviceName?.trim() || null
 
   if (!pushToken) {
     return new Response(JSON.stringify({ error: "Missing token" }), {
@@ -80,7 +92,11 @@ serve(async (req) => {
         employee_id: userData.user.id,
         token: pushToken,
         platform,
-        is_active: true,
+        permission_status: permissionStatus,
+        notifications_enabled: notificationsEnabled,
+        permission_updated_at: new Date().toISOString(),
+        device_name: deviceName,
+        is_active: notificationsEnabled,
         last_seen: new Date().toISOString(),
       },
       { onConflict: "token" },
