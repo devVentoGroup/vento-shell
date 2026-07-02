@@ -59,6 +59,9 @@ Este documento es la lista viva para llevar la sugerencia semanal de horarios a 
 - [ ] Configurar descanso minimo entre salida y entrada.
 - [ ] Configurar maximo de dias continuos.
 - [ ] Evitar turnos partidos salvo permiso explicito.
+- [x] Crear configuracion de maximo simultaneo por rol operativo.
+- [x] Permitir limite global cruzando sedes o limite por sede.
+- [x] Hacer que el motor descarte turnos que exceden el maximo simultaneo del rol.
 
 ## Fase 5: candidatos y aprobacion
 
@@ -89,3 +92,4 @@ Este documento es la lista viva para llevar la sugerencia semanal de horarios a 
 - 2026-07-01: Documento creado.
 - 2026-07-01: Ajustado motor de sugerencias en VISO para usar perfil operativo por sede, roles operativos del trabajador y area derivada del rol al generar borradores.
 - 2026-07-01: Ajustado fallback historico del planner para convertir cargo base a rol operativo cuando no existe `operational_role` en turnos anteriores; la sugerencia ahora muestra error si fallan las consultas de roles o perfiles operativos.
+- 2026-07-02: Creada y aplicada migracion `20260702112819_viso_role_concurrency_limits.sql` para limites simultaneos por rol operativo; VISO ahora permite configurarlos en horarios y el generador los respeta como regla dura.
