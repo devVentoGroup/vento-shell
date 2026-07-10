@@ -27,6 +27,10 @@ type UpdatedTransactionRecord = {
   id: string;
 };
 
+type FailureStatus = "error" | "cancelled";
+
+type AdminClient = ReturnType<typeof createClient>;
+
 function jsonResponse(body: JsonBody, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -63,6 +67,33 @@ function parseExpirationMinutes() {
   }
 
   return Math.floor(raw);
+}
+
+
+function buildPaymentReturnUrl({
+  supabaseUrl,
+  orderId,
+  transactionId,
+  reference,
+  environment,
+}: {
+  supabaseUrl: string;
+  orderId: string;
+  transactionId: string;
+  reference: string;
+  environment: string;
+}) {
+  const configuredBaseUrl = asCleanString(Deno.env.get("WOMPI_RETURN_BASE_URL"));
+  const baseUrl = configuredBaseUrl || `${supabaseUrl.replace(/\/+$/, "")}/functions/v1/payments-return`;
+  const url = new URL(baseUrl);
+
+  url.searchParams.set("orderId", orderId);
+  url.searchParams.set("transactionId", transactionId);
+  url.searchParams.set("reference", reference);
+  url.searchParams.set("checkoutOpened", "true");
+  url.searchParams.set("environment", environment);
+
+  return url.toString();
 }
 
 function inferWompiEnvironmentFromPublicKey(publicKey: string) {
@@ -105,6 +136,36 @@ function asUpdatedTransactionRecord(value: unknown) {
   const id = asCleanString(record.id);
 
   return id ? { id } satisfies UpdatedTransactionRecord : null;
+}
+
+function getErrorDetail(error: unknown) {
+  return error instanceof Error ? error.message : "unknown_error";
+}
+
+async function recordCheckoutFailure(
+  admin: AdminClient,
+  transactionId: string,
+  reason: string,
+  status: FailureStatus = "error",
+  payload: Record<string, unknown> = {},
+) {
+  const { error } = await admin.rpc("checkout_fail_payment_transaction", {
+    p_transaction_id: transactionId,
+    p_status: status,
+    p_reason: reason,
+    p_source: "payments-create-intent",
+    p_payload: payload,
+  });
+
+  if (error) {
+    console.error("payments-create-intent compensation failed", {
+      transaction_id: transactionId,
+      reason,
+      status,
+      code: error.code,
+      message: error.message,
+    });
+  }
 }
 
 async function buildCheckoutUrl({
@@ -177,36 +238,6 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "missing_supabase_env" }, 500);
     }
 
-    const wompiPublicKey = asCleanString(Deno.env.get("WOMPI_PUBLIC_KEY"));
-    const wompiIntegritySecret = asCleanString(Deno.env.get("WOMPI_INTEGRITY_SECRET"));
-    const wompiCheckoutBaseUrl = asCleanString(
-      Deno.env.get("WOMPI_CHECKOUT_BASE_URL") || "https://checkout.wompi.co/p/",
-    );
-    const wompiRedirectUrl = asCleanString(Deno.env.get("WOMPI_REDIRECT_URL")) || null;
-    const expectedWompiEnvironment = asCleanString(Deno.env.get("WOMPI_ENVIRONMENT")) || null;
-
-    if (!wompiPublicKey || !wompiIntegritySecret || !wompiCheckoutBaseUrl) {
-      return jsonResponse({ error: "missing_wompi_checkout_config" }, 500);
-    }
-
-    const publicKeyEnvironment = inferWompiEnvironmentFromPublicKey(wompiPublicKey);
-    const integritySecretEnvironment = inferWompiEnvironmentFromIntegritySecret(wompiIntegritySecret);
-
-    if (
-      publicKeyEnvironment === "unknown" ||
-      integritySecretEnvironment === "unknown" ||
-      publicKeyEnvironment !== integritySecretEnvironment
-    ) {
-      return jsonResponse({ error: "invalid_wompi_key_environment" }, 500);
-    }
-
-    if (
-      expectedWompiEnvironment &&
-      expectedWompiEnvironment !== publicKeyEnvironment
-    ) {
-      return jsonResponse({ error: "wompi_environment_mismatch" }, 500);
-    }
-
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: `Bearer ${bearer}` } },
       auth: { persistSession: false, autoRefreshToken: false },
@@ -265,6 +296,13 @@ Deno.serve(async (req) => {
     }
 
     if (tx.provider !== "wompi") {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "unsupported_payment_provider",
+        "error",
+        { provider: tx.provider },
+      );
       return jsonResponse({ error: "unsupported_payment_provider", provider: tx.provider }, 409);
     }
 
@@ -283,23 +321,102 @@ Deno.serve(async (req) => {
     const amountMinor = Number(tx.amount_minor);
 
     if (!tx.order_id) {
+      await recordCheckoutFailure(admin, tx.id, "transaction_without_order", "error");
       return jsonResponse({ error: "transaction_without_order" }, 409);
     }
 
     if (!isValidWompiReference(reference)) {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "invalid_wompi_reference",
+        "error",
+        { reference },
+      );
       return jsonResponse({ error: "invalid_wompi_reference" }, 409);
     }
 
     if (currency !== "COP") {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "unsupported_currency",
+        "error",
+        { currency },
+      );
       return jsonResponse({ error: "unsupported_currency", currency }, 409);
     }
 
     if (!Number.isInteger(amountMinor) || amountMinor <= 0) {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "invalid_amount_minor",
+        "error",
+        { amount_minor: tx.amount_minor },
+      );
       return jsonResponse({ error: "invalid_amount_minor" }, 409);
+    }
+
+    const wompiPublicKey = asCleanString(Deno.env.get("WOMPI_PUBLIC_KEY"));
+    const wompiIntegritySecret = asCleanString(Deno.env.get("WOMPI_INTEGRITY_SECRET"));
+    const wompiCheckoutBaseUrl = asCleanString(
+      Deno.env.get("WOMPI_CHECKOUT_BASE_URL") || "https://checkout.wompi.co/p/",
+    );
+    const expectedWompiEnvironment = asCleanString(Deno.env.get("WOMPI_ENVIRONMENT")) || null;
+
+    if (!wompiPublicKey || !wompiIntegritySecret || !wompiCheckoutBaseUrl) {
+      await recordCheckoutFailure(admin, tx.id, "missing_wompi_checkout_config", "error");
+      return jsonResponse({ error: "missing_wompi_checkout_config" }, 500);
+    }
+
+    const publicKeyEnvironment = inferWompiEnvironmentFromPublicKey(wompiPublicKey);
+    const integritySecretEnvironment = inferWompiEnvironmentFromIntegritySecret(wompiIntegritySecret);
+
+    if (
+      publicKeyEnvironment === "unknown" ||
+      integritySecretEnvironment === "unknown" ||
+      publicKeyEnvironment !== integritySecretEnvironment
+    ) {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "invalid_wompi_key_environment",
+        "error",
+        {
+          public_key_environment: publicKeyEnvironment,
+          integrity_secret_environment: integritySecretEnvironment,
+        },
+      );
+      return jsonResponse({ error: "invalid_wompi_key_environment" }, 500);
+    }
+
+    if (
+      expectedWompiEnvironment &&
+      expectedWompiEnvironment !== publicKeyEnvironment
+    ) {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "wompi_environment_mismatch",
+        "error",
+        {
+          expected_environment: expectedWompiEnvironment,
+          actual_environment: publicKeyEnvironment,
+        },
+      );
+      return jsonResponse({ error: "wompi_environment_mismatch" }, 500);
     }
 
     const expirationMinutes = parseExpirationMinutes();
     const expirationTime = new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString();
+    const wompiRedirectUrl = buildPaymentReturnUrl({
+      supabaseUrl,
+      orderId: tx.order_id,
+      transactionId: tx.id,
+      reference,
+      environment: publicKeyEnvironment,
+    });
 
     const rawRequest = {
       intent: "checkout",
@@ -316,6 +433,31 @@ Deno.serve(async (req) => {
       },
     };
 
+    let checkoutUrl: string;
+
+    try {
+      checkoutUrl = await buildCheckoutUrl({
+        baseUrl: wompiCheckoutBaseUrl,
+        reference,
+        amountMinor,
+        currency,
+        publicKey: wompiPublicKey,
+        integritySecret: wompiIntegritySecret,
+        redirectUrl: wompiRedirectUrl,
+        customerEmail: authData.user.email ?? null,
+        expirationTime,
+      });
+    } catch (error) {
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "checkout_url_build_failed",
+        "error",
+        { detail: getErrorDetail(error) },
+      );
+      return jsonResponse({ error: "checkout_url_build_failed" }, 500);
+    }
+
     const { data: updatedTxResult, error: updateError } = await admin.rpc(
       "checkout_mark_payment_transaction_requires_action",
       {
@@ -330,6 +472,18 @@ Deno.serve(async (req) => {
         code: updateError.code,
         message: updateError.message,
       });
+
+      await recordCheckoutFailure(
+        admin,
+        tx.id,
+        "transaction_update_failed",
+        "error",
+        {
+          code: updateError.code,
+          message: updateError.message,
+        },
+      );
+
       return jsonResponse({ error: "transaction_update_failed" }, 500);
     }
 
@@ -338,18 +492,6 @@ Deno.serve(async (req) => {
     if (!updatedTx) {
       return jsonResponse({ error: "transaction_update_conflict" }, 409);
     }
-
-    const checkoutUrl = await buildCheckoutUrl({
-      baseUrl: wompiCheckoutBaseUrl,
-      reference,
-      amountMinor,
-      currency,
-      publicKey: wompiPublicKey,
-      integritySecret: wompiIntegritySecret,
-      redirectUrl: wompiRedirectUrl,
-      customerEmail: authData.user.email ?? null,
-      expirationTime,
-    });
 
     return jsonResponse({
       ok: true,
@@ -374,7 +516,7 @@ Deno.serve(async (req) => {
     return jsonResponse(
       {
         error: "unexpected_error",
-        detail: error instanceof Error ? error.message : "unknown error",
+        detail: getErrorDetail(error),
       },
       500,
     );
