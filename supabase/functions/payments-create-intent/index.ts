@@ -12,6 +12,21 @@ type CreateIntentPayload = {
 
 type JsonBody = Record<string, unknown>;
 
+type PaymentTransactionRecord = {
+  id: string;
+  user_id: string;
+  provider: string;
+  idempotency_key: string;
+  amount_minor: number | string;
+  currency: string;
+  status: string;
+  order_id: string | null;
+};
+
+type UpdatedTransactionRecord = {
+  id: string;
+};
+
 function jsonResponse(body: JsonBody, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -60,6 +75,36 @@ function inferWompiEnvironmentFromIntegritySecret(integritySecret: string) {
   if (integritySecret.startsWith("test_integrity_")) return "test";
   if (integritySecret.startsWith("prod_integrity_")) return "prod";
   return "unknown";
+}
+
+function asPaymentTransactionRecord(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return {
+    id: asCleanString(record.id),
+    user_id: asCleanString(record.user_id),
+    provider: asCleanString(record.provider),
+    idempotency_key: asCleanString(record.idempotency_key),
+    amount_minor: record.amount_minor as number | string,
+    currency: asCleanString(record.currency),
+    status: asCleanString(record.status),
+    order_id: asCleanString(record.order_id) || null,
+  } satisfies PaymentTransactionRecord;
+}
+
+function asUpdatedTransactionRecord(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+
+  const record = value as Record<string, unknown>;
+  const id = asCleanString(record.id);
+
+  return id ? { id } satisfies UpdatedTransactionRecord : null;
 }
 
 async function buildCheckoutUrl({
@@ -195,12 +240,10 @@ Deno.serve(async (req) => {
       return jsonResponse({ error: "invalid_transaction_id" }, 400);
     }
 
-    const { data: tx, error: txError } = await admin
-      .schema("payments")
-      .from("transactions")
-      .select("id, user_id, provider, idempotency_key, amount_minor, currency, status, order_id")
-      .eq("id", transactionId)
-      .maybeSingle();
+    const { data: txResult, error: txError } = await admin.rpc(
+      "checkout_get_payment_transaction",
+      { p_transaction_id: transactionId },
+    );
 
     if (txError) {
       console.error("payments-create-intent transaction lookup failed", {
@@ -210,6 +253,8 @@ Deno.serve(async (req) => {
       });
       return jsonResponse({ error: "transaction_lookup_failed" }, 500);
     }
+
+    const tx = asPaymentTransactionRecord(txResult);
 
     if (!tx) {
       return jsonResponse({ error: "transaction_not_found" }, 404);
@@ -256,30 +301,28 @@ Deno.serve(async (req) => {
     const expirationMinutes = parseExpirationMinutes();
     const expirationTime = new Date(Date.now() + expirationMinutes * 60 * 1000).toISOString();
 
-    const { data: updatedTx, error: updateError } = await admin
-      .schema("payments")
-      .from("transactions")
-      .update({
-        status: "requires_action",
-        raw_request: {
-          intent: "checkout",
-          provider: tx.provider,
-          generated_at: new Date().toISOString(),
-          expires_at: expirationTime,
-          environment: publicKeyEnvironment,
-          checkout: {
-            reference,
-            amount_minor: amountMinor,
-            currency,
-            redirect_url: wompiRedirectUrl,
-            expiration_time: expirationTime,
-          },
-        },
-      })
-      .eq("id", tx.id)
-      .in("status", ["pending", "requires_action"])
-      .select("id")
-      .maybeSingle();
+    const rawRequest = {
+      intent: "checkout",
+      provider: tx.provider,
+      generated_at: new Date().toISOString(),
+      expires_at: expirationTime,
+      environment: publicKeyEnvironment,
+      checkout: {
+        reference,
+        amount_minor: amountMinor,
+        currency,
+        redirect_url: wompiRedirectUrl,
+        expiration_time: expirationTime,
+      },
+    };
+
+    const { data: updatedTxResult, error: updateError } = await admin.rpc(
+      "checkout_mark_payment_transaction_requires_action",
+      {
+        p_transaction_id: tx.id,
+        p_raw_request: rawRequest,
+      },
+    );
 
     if (updateError) {
       console.error("payments-create-intent transaction update failed", {
@@ -289,6 +332,8 @@ Deno.serve(async (req) => {
       });
       return jsonResponse({ error: "transaction_update_failed" }, 500);
     }
+
+    const updatedTx = asUpdatedTransactionRecord(updatedTxResult);
 
     if (!updatedTx) {
       return jsonResponse({ error: "transaction_update_conflict" }, 409);
