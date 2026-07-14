@@ -1,0 +1,16 @@
+update public.product_uom_profiles
+set is_default = false,
+    updated_at = now()
+where product_id = '6020f9ef-9bc0-4a65-87f6-c4d84f601f4b'
+  and usage_context = 'remission'
+  and is_default = true;
+
+update public.product_uom_profiles
+set label = 'kg',
+    input_unit_code = 'kg',
+    qty_in_input_unit = 1,
+    qty_in_stock_unit = 1000,
+    is_default = true,
+    is_active = true,
+    source = 'manual',
+    usage_context =
