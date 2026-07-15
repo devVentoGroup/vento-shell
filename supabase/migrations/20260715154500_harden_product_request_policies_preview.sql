@@ -82,7 +82,7 @@ before update on public.product_request_policies
 for each row
 execute function public.lock_used_product_request_policy_semantics();
 
-create or replace view public.product_request_policy_audit
+create or replace view public.product_request_policy_audit_summary
 with (security_invoker = true)
 as
 with usage_counts as (
@@ -157,7 +157,7 @@ select
   ], null)::text[] as issues
 from policy_rows;
 
-comment on view public.product_request_policy_audit is
-  'Auditoría específica de políticas de solicitud. No modela compras, producción ni fulfillment.';
+comment on view public.product_request_policy_audit_summary is
+  'Resumen de auditoría para catálogo. Complementa product_request_policy_audit sin cambiar su contrato existente.';
 
-grant select on public.product_request_policy_audit to authenticated;
+grant select on public.product_request_policy_audit_summary to authenticated;
