@@ -62,6 +62,7 @@ type ScheduledShiftRow = {
   break_minutes: number | null
   notes: string | null
   status: string
+  shift_kind: string | null
   published_at: string | null
   employees: EmployeeRelation | EmployeeRelation[] | null
   sites: SiteRelation | SiteRelation[] | null
@@ -76,6 +77,8 @@ type AttendanceSession = {
   siteId: string
   siteName: string
   shiftId: string | null
+  checkInShiftId: string | null
+  checkOutShiftId: string | null
   checkInAt: string
   checkInSource: string | null
   checkOutAt: string | null
@@ -218,6 +221,7 @@ const DEFAULT_AUTO_CLOSE_GRACE_MINUTES = 30
 const MATCH_WINDOW_BEFORE_MINUTES = 360
 const MATCH_WINDOW_AFTER_MINUTES = 720
 const QUERY_BUFFER_HOURS = 36
+const REPORT_QUERY_PAGE_SIZE = 1000
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -440,6 +444,25 @@ function buildSessionKey(employeeId: string, checkInAtIso: string, siteId: strin
   return `${employeeId}|${siteId}|${checkInAtIso}`
 }
 
+async function fetchAllPages<T>(
+  fetchPage: (from: number, to: number) => Promise<{ data: T[] | null; error: unknown }>,
+) {
+  const rows: T[] = []
+  let from = 0
+
+  while (true) {
+    const to = from + REPORT_QUERY_PAGE_SIZE - 1
+    const { data, error } = await fetchPage(from, to)
+    if (error) return { data: null, error }
+
+    const page = data ?? []
+    rows.push(...page)
+    if (page.length < REPORT_QUERY_PAGE_SIZE) return { data: rows, error: null }
+
+    from += REPORT_QUERY_PAGE_SIZE
+  }
+}
+
 function rangesOverlap(
   startA: number,
   endA: number,
@@ -626,6 +649,8 @@ function buildAttendanceSessions(
         siteId: checkInRow.site_id,
         siteName: siteInfo?.name ?? "",
         shiftId,
+        checkInShiftId: checkInRow.shift_id ?? null,
+        checkOutShiftId: checkOutRow?.shift_id ?? null,
         checkInAt: checkInRow.occurred_at,
         checkInSource: checkInRow.source ?? null,
         checkOutAt: checkOutRow?.occurred_at ?? null,
@@ -705,7 +730,9 @@ function buildConsolidatedShiftRecords(
     .map((shift) => {
       const employeeInfo = unwrapRelation(shift.employees)
       const siteInfo = unwrapRelation(shift.sites)
-      const isRestDay = isRestShiftStatus(shift.status)
+      const isRestDay =
+        normalizeShiftStatus(shift.shift_kind) === "descanso" ||
+        isRestShiftStatus(shift.status)
       const scheduledStartAt = zonedLocalToUtc(shift.shift_date, shift.start_time, timeZone)
       const scheduledEndAt = zonedLocalToUtc(shift.shift_date, shift.end_time, timeZone)
       const scheduledStartMs = new Date(scheduledStartAt).getTime()
@@ -716,8 +743,11 @@ function buildConsolidatedShiftRecords(
       const employeeSessions = sessionsByEmployee.get(shift.employee_id) ?? []
 
       let matched: AttendanceSession | null =
-        employeeSessions.find((session) => !usedSessionKeys.has(session.key) && session.shiftId === shift.id) ??
-        null
+        employeeSessions.find(
+          (session) =>
+            !usedSessionKeys.has(session.key) &&
+            (session.checkInShiftId === shift.id || session.checkOutShiftId === shift.id),
+        ) ?? null
       let matchedBy: "shift_id" | "window" | "none" = matched ? "shift_id" : "none"
 
       if (!matched) {
@@ -725,6 +755,9 @@ function buildConsolidatedShiftRecords(
           .filter((session) => {
             if (usedSessionKeys.has(session.key)) return false
             if (session.siteId !== shift.site_id) return false
+            // A session explicitly tied to a different published shift must
+            // never be consumed just because its hours overlap this one.
+            if (session.checkInShiftId || session.checkOutShiftId) return false
             const sessionStartMs = new Date(session.checkInAt).getTime()
             const sessionEndMs = new Date(session.effectiveEndAt).getTime()
             return rangesOverlap(
@@ -1745,7 +1778,7 @@ serve(async (req: Request) => {
         .select("late_grace_minutes, auto_checkout_grace_minutes_after_end")
         .limit(1)
         .maybeSingle<ShiftPolicyRow>(),
-      (() => {
+      () => fetchAllPages<AttendanceRow>((from, to) => {
         let query = supabase
           .from("attendance_logs")
           .select(
@@ -1754,11 +1787,12 @@ serve(async (req: Request) => {
           .gte("occurred_at", queryStart.toISOString())
           .lte("occurred_at", queryEnd.toISOString())
           .order("occurred_at", { ascending: true })
+          .range(from, to)
 
         if (scopeSiteId) query = query.eq("site_id", scopeSiteId)
         if (scopeEmployeeId) query = query.eq("employee_id", scopeEmployeeId)
         return query
-      })(),
+      }),
       (() => {
         let query = supabase
           .from("attendance_breaks")
@@ -1787,7 +1821,7 @@ serve(async (req: Request) => {
         let query = supabase
           .from("employee_shifts")
           .select(
-            "id, employee_id, site_id, shift_date, start_time, end_time, break_minutes, notes, status, published_at, employees!employee_shifts_employee_id_fkey(full_name, alias, role), sites!employee_shifts_site_id_fkey(name)",
+            "id, employee_id, site_id, shift_date, start_time, end_time, break_minutes, notes, status, shift_kind, published_at, employees!employee_shifts_employee_id_fkey(full_name, alias, role), sites!employee_shifts_site_id_fkey(name)",
           )
           .not("published_at", "is", null)
           .neq("status", "cancelled")
@@ -1912,7 +1946,8 @@ serve(async (req: Request) => {
 
     const buffer = await workbook.xlsx.writeBuffer()
     const base64 = toBase64(buffer)
-    const filename = `reporte_turnos_asistencia_${formatDateForFilename(start)}_${formatDateForFilename(end)}.xlsx`
+    const generatedFileStamp = new Date().toISOString().replace(/[:.]/g, "-")
+    const filename = `reporte_turnos_asistencia_${formatDateForFilename(start)}_${formatDateForFilename(end)}_${generatedFileStamp}.xlsx`
 
     return new Response(
       JSON.stringify({
