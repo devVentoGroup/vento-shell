@@ -1,0 +1,1 @@
+alter policy roles_select on public.roles to authenticated using (true);

@@ -1,0 +1,1 @@
+alter policy document_types_select on public.document_types to authenticated using (true);
