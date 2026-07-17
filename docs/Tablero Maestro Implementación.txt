@@ -1,0 +1,70 @@
+26. Tablero maestro
+BLOQUE A — Configuración y rutas
+[x] CFG-001  Definir claramente Stock o Producción
+[x] CFG-002  Corregir guardado del área responsable
+[x] CFG-003  Corregir indicador Completa/Incompleta
+[x] CFG-004  Separar configuración de stock y producción
+[x] CFG-005  Convertir Rutas configuradas en auditoría
+[x] CFG-006  Validar duplicados de rutas
+[x] CFG-007  Pruebas de persistencia después de recargar
+BLOQUE B — Modelo de tareas
+[x] DATA-001 Añadir campos de producción a las rutas
+[x] DATA-002 Añadir campos copiados a las tareas
+[x] DATA-003 Crear índices por sede, área, modo y estado
+[x] DATA-004 Crear migración en vento-shell
+[x] DATA-005 Hacer backfill de rutas existentes
+[n] TASK-001 Crear tareas completas desde la solicitud
+[x] TASK-002 Bloquear tareas incompletas con causa exacta
+[x] TASK-003 Evitar tareas duplicadas
+[x] TASK-004 Recalcular una tarea después de corregir su ruta
+BLOQUE C — Bodega y stock
+[ ] NEXO-001 Crear cola por tareas de Bodega
+[ ] NEXO-002 Filtrar por área responsable
+[ ] NEXO-003 Mostrar únicamente productos de stock
+[ ] NEXO-004 Preparar desde el LOC configurado
+[ ] NEXO-005 Resolver posiciones internas
+[ ] NEXO-006 Guardar picks
+[ ] NEXO-007 Permitir preparación parcial
+[ ] NEXO-008 Registrar faltantes
+[ ] NEXO-009 Actualizar cantidad lista
+BLOQUE D — FOGO y producción
+[ ] FOGO-001 Crear cola de solicitudes de producción
+[ ] FOGO-002 Filtrar por Panadería/Repostería/Cocina
+[ ] FOGO-003 Crear producción simple sin receta
+[ ] FOGO-004 Permitir producción parcial
+[ ] FOGO-005 Actualizar la tarea de atención
+[ ] FOGO-006 Guardar eventos de producción
+[ ] FOGO-007 Mostrar historial
+[ ] FOGO-008 Vincular producción real con receta
+[ ] FOGO-009 Permitir asignar lotes a solicitudes
+BLOQUE E — Despacho
+[ ] DSP-001 Crear cola de cantidades listas
+[ ] DSP-002 Agrupar por destino
+[ ] DSP-003 Mostrar área que preparó
+[ ] DSP-004 Crear remisión física
+[ ] DSP-005 Crear ítems del envío
+[ ] DSP-006 Permitir despacho parcial
+[ ] DSP-007 Registrar conductor y vehículo
+[ ] DSP-008 Sellar la remisión
+[ ] DSP-009 Poner en tránsito
+BLOQUE F — Recepción
+[ ] REC-001 Recibir contra lo enviado
+[ ] REC-002 Agrupar por área solicitante
+[ ] REC-003 Registrar recibido
+[ ] REC-004 Registrar rechazado
+[ ] REC-005 Registrar cuarentena
+[ ] REC-006 Registrar faltante
+[ ] REC-007 Crear excepciones
+[ ] REC-007A Mantener diferencias como novedad en tránsito
+[ ] REC-007B Resolver novedad: recibido tarde, devolución, daño o pérdida
+[ ] REC-007C Registrar baja por movilización solo si la pérdida se confirma
+[ ] REC-007D Asignar responsable y evidencia de la novedad
+[ ] REC-008 Actualizar inventario destino
+[ ] REC-009 Cerrar envío
+[ ] REC-010 Cerrar solicitud
+BLOQUE G — Transición
+[ ] LEG-001 Identificar pantallas legacy
+[ ] LEG-002 Impedir nuevas configuraciones duplicadas
+[ ] LEG-003 Migrar pendientes
+[ ] LEG-004 Dejar históricos en lectura
+[ ] LEG-005 Eliminar código legacy
