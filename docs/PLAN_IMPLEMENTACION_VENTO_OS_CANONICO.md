@@ -6,27 +6,27 @@
 
 ## Estado canónico
 
-| Campo                     | Valor                                                                             |
-| ------------------------- | --------------------------------------------------------------------------------- |
-| Versión                   | 2026-07-18                                                                        |
-| Revisión documental       | **25**                                                                            |
-| Estado documental         | **VIGENTE**                                                                       |
-| ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                                         |
-| Última tarea aprobada     | **AUTH-CAT-017 — Crear catálogo versionado en vento-shell**                       |
-| Tarea actual              | **AUTH-CAT-018 — Crear tipos TypeScript derivados del catálogo**                  |
-| Estado de la tarea actual | **NO INICIADA**                                                                   |
-| Siguiente tarea           | **AUTH-CAT-019 — Evitar cadenas de permisos escritas manualmente**                |
-| Bloque actual             | **BLOQUE C — Catálogo canónico de aplicaciones y permisos**                       |
-| Progreso del bloque       | **AUTH-CAT-001 a AUTH-CAT-017 aprobadas; AUTH-CAT-018 a AUTH-CAT-019 pendientes** |
-| Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**                         |
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Versión                   | 2026-07-18                                                         |
+| Revisión documental       | **25**                                                             |
+| Estado documental         | **VIGENTE**                                                        |
+| ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                          |
+| Última tarea aprobada     | **AUTH-CAT-018 — Crear tipos TypeScript derivados del catálogo**   |
+| Tarea actual              | **AUTH-CAT-019 — Evitar cadenas de permisos escritas manualmente** |
+| Estado de la tarea actual | **NO INICIADA**                                                    |
+| Siguiente tarea           | **AUTH-RBAC-001 — Crear matriz de propietario**                    |
+| Bloque actual             | **BLOQUE C — Catálogo canónico de aplicaciones y permisos**        |
+| Progreso del bloque       | **AUTH-CAT-001 a AUTH-CAT-018 aprobadas; AUTH-CAT-019 pendiente**  |
+| Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**          |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                              |
 | --------------- | ---------------------------------- |
-| Última aprobada | `AUTH-CAT-017`                     |
-| Tarea actual    | `AUTH-CAT-018` — **NO INICIADA**   |
-| Siguiente tarea | `AUTH-CAT-019`                     |
+| Última aprobada | `AUTH-CAT-018`                     |
+| Tarea actual    | `AUTH-CAT-019` — **NO INICIADA**   |
+| Siguiente tarea | `AUTH-RBAC-001`                    |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL** |
 
 ## Navegación principal
@@ -247,11 +247,120 @@
     automáticamente sin verificarlo contra el documento canónico vigente
     y el estado actual de los repositorios.
 
+26. Supabase deberá tratarse como una plataforma canónica integral y no
+    únicamente como un conjunto de tablas en `public`.
+
+    Su gobierno incluirá, como mínimo:
+
+    - esquemas;
+    - Auth;
+    - tablas y relaciones;
+    - vistas y vistas materializadas;
+    - funciones, RPC y triggers;
+    - RLS y grants;
+    - Storage;
+    - Realtime;
+    - Edge Functions;
+    - webhooks;
+    - cron, colas y automatizaciones;
+    - extensiones;
+    - secretos y configuración;
+    - migraciones;
+    - tipos generados;
+    - auditoría, rendimiento, retención y recuperación.
+
+27. La organización física de Supabase se definirá en el BLOQUE E3 y se
+    implementará en el BLOQUE R.
+
+    El BLOQUE E3 auditará el estado real, definirá la arquitectura objetivo
+    y aprobará el plan de transición.
+
+    El BLOQUE R aplicará las migraciones, protecciones, pruebas y retiro
+    controlado de estructuras legacy.
+
+28. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
+    Edge Function, webhook, tarea programada o secreto podrá reorganizarse,
+    renombrarse, trasladarse o retirarse sin:
+
+    - inventario previo;
+    - propietario funcional;
+    - análisis de consumidores;
+    - clasificación de exposición;
+    - impacto sobre Auth, RLS, RPC y aplicaciones;
+    - plan de compatibilidad;
+    - migración versionada en `vento-shell`;
+    - validación de datos;
+    - pruebas;
+    - rollback;
+    - actualización documental.
+
+29. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
+    `realtime`, `extensions` y `supabase_migrations`, deberán distinguirse
+    de los esquemas empresariales de Vento.
+
+    No deberán moverse, renombrarse ni utilizarse como contenedores de
+    lógica empresarial salvo mediante mecanismos oficialmente soportados.
+
+30. Los esquemas empresariales de Vento deberán organizarse por dominios
+    estables y fuentes de verdad, no por:
+
+    - aplicación;
+    - repositorio;
+    - ruta;
+    - pantalla;
+    - componente;
+    - necesidad temporal.
+
+    Una aplicación podrá consumir varios dominios y un dominio podrá ser
+    consumido por varias aplicaciones sin duplicar sus datos.
+
+31. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
+
+    Cada objeto deberá declarar expresamente:
+
+    - dominio;
+    - esquema;
+    - propietario funcional;
+    - propietario técnico;
+    - exposición por Data API;
+    - roles con acceso;
+    - política RLS;
+    - consumidores;
+    - clasificación de sensibilidad;
+    - estrategia de auditoría;
+    - ciclo de vida.
+
+32. El estado desplegado de Supabase deberá ser reproducible desde
+    `vento-shell`.
+
+    Los cambios directos realizados desde Dashboard, Table Editor,
+    SQL Editor u otra herramienta deberán limitarse a diagnóstico o
+    emergencia controlada y convertirse después en una migración
+    versionada, verificable y documentada.
+
+33. La autenticación técnica, la identidad empresarial y la autorización
+    deberán permanecer separadas.
+
+    `auth.users`
+    → identidad autenticada
+
+    trabajador, cliente o dispositivo
+    → identidad empresarial vinculada
+
+    catálogo, matrices, contexto y recurso
+    → autorización efectiva
+
+34. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
+    con las aplicaciones existentes.
+
+    No se moverán objetos entre esquemas ni se retirarán nombres legacy
+    mediante un cambio único si existen consumidores activos.
+
 ---
 
 ## ROADMAP MAESTRO
 
-**Autorización, procesos, pantallas, integraciones y experiencia Vento**
+**Autorización, datos, procesos, pantallas, integraciones y experiencia Vento**
 
 Este roadmap cubre las diez aplicaciones canónicas del ecosistema:
 
@@ -324,8 +433,10 @@ ANIMA
   el contexto operativo cuando corresponda
 
 Supabase
-→ conserva la fuente de verdad de identidad, contexto,
-  autorización, procesos, estados y auditoría
+→ conserva y ejecuta las fuentes de verdad de identidad, contexto,
+  autorización, procesos, estados y auditoría mediante una arquitectura
+  gobernada de esquemas, Auth, tablas, relaciones, RLS, RPC, Storage,
+  Realtime, automatizaciones y eventos
 
 SHELL
 → presenta el hub contextual y las aplicaciones disponibles
@@ -366,6 +477,10 @@ AUTORIZACIÓN
 PROCESO
 → define qué resultado empresarial se busca
 
+DATOS
+→ definen la fuente de verdad, relaciones, estados, exposición,
+  retención y trazabilidad del proceso
+
 PANTALLA
 → presenta la información y acciones necesarias
 
@@ -380,9 +495,13 @@ La base operativa ya existe parcialmente: roles operativos por sede,
 perfiles por trabajador, permisos operativos, contexto por turno,
 funciones de autorización, procesos y aplicaciones funcionales.
 
+Supabase también ha crecido de forma incremental y contiene objetos,
+funciones, políticas y fuentes de verdad que deberán evaluarse como un
+sistema integral, no únicamente desde la perspectiva de autorización.
+
 Debe auditarse, consolidarse, simplificarse y extenderse a todo el
 ecosistema. No deberá reconstruirse desde cero ni duplicarse entre
-aplicaciones.
+aplicaciones o esquemas.
 
 ### Estructura de bloques del roadmap maestro
 
@@ -52496,11 +52615,27 @@ CAPAS ADICIONALES
 ### [ ] AUTH-RBAC-021 — Definir concesiones individuales operativas
 ### [ ] AUTH-RBAC-022 — Definir denegaciones individuales y transversales
 ### [ ] AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido
-### [ ] AUTH-RBAC-024 — Sembrar matriz base
-### [ ] AUTH-RBAC-025 — Sembrar matriz operativa
-### [ ] AUTH-RBAC-026 — Sembrar excepciones y denegaciones
+### [ ] AUTH-RBAC-024 — Definir dataset canónico de matriz base
+### [ ] AUTH-RBAC-025 — Definir dataset canónico de matriz operativa
+### [ ] AUTH-RBAC-026 — Definir dataset canónico de excepciones y denegaciones
 ### [ ] AUTH-RBAC-027 — Validar que no exista acceso operativo global accidental
 ### [ ] AUTH-RBAC-028 — Validar que la administración no dependa del check-in
+
+Regla de implementación de matrices
+
+AUTH-RBAC-024 a AUTH-RBAC-026
+→ definen y aprueban datasets canónicos
+→ no insertan, actualizan ni eliminan datos en Supabase
+
+La aplicación física de estos datasets deberá ejecutarse únicamente
+dentro del BLOQUE R, después de:
+
+- aprobar la arquitectura objetivo del BLOQUE E3;
+- crear las estructuras canónicas necesarias;
+- completar los backfills correspondientes;
+- validar integridad referencial;
+- disponer de pruebas y rollback;
+- crear la migración versionada en `vento-shell`.
 
 Regla de cierre
 
@@ -52549,14 +52684,38 @@ AUTHORIZATION DECISION
 ### [ ] AUTH-CTX-023 — Incluir decisión final y razones
 ### [ ] AUTH-CTX-024 — Incluir datos de auditoría
 
-IMPLEMENTACIÓN CANÓNICA
+DISEÑO DE IMPLEMENTACIÓN CANÓNICA
 
-### [ ] AUTH-CTX-025 — Crear función SQL get_access_context
-### [ ] AUTH-CTX-026 — Crear función canónica evaluate_authorization
-### [ ] AUTH-CTX-027 — Evitar que cada aplicación reconstruya el contexto
-### [ ] AUTH-CTX-028 — Mantener compatibilidad temporal con get_operational_context
+### [ ] AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
+### [ ] AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
+### [ ] AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
+### [ ] AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
 ### [ ] AUTH-CTX-029 — Definir estrategia de invalidación y caché
-### [ ] AUTH-CTX-030 — Crear pruebas contractuales del contexto y la decisión
+### [ ] AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
+
+Regla de implementación
+
+AUTH-CTX-025 a AUTH-CTX-030 permanecen documentales dentro del BLOQUE E.
+
+Durante este bloque no se crearán:
+
+- funciones SQL;
+- RPC;
+- migraciones;
+- políticas RLS;
+- grants;
+- triggers;
+- cambios físicos en Supabase.
+
+Su implementación deberá ejecutarse en el BLOQUE R después de aprobar:
+
+- la arquitectura de esquemas;
+- la capa expuesta de RPC;
+- la capa privada de helpers;
+- la política de SECURITY DEFINER;
+- la política de grants y RLS;
+- el plan de transición;
+- el mecanismo de compatibilidad con consumidores existentes.
 
 Resultado esperado
 
@@ -52730,6 +52889,210 @@ SERVER PROTECTION
 AUDIT
 +
 USABILITY CRITERIA
+
+## BLOQUE E3
+
+**Arquitectura canónica de datos y gobierno integral de Supabase**
+
+Este bloque convierte Supabase en una parte explícita del modelo canónico
+de Vento OS.
+
+No reemplaza:
+
+BLOQUE E2
+→ define procesos, actores, pantallas y fuentes de verdad empresariales
+
+BLOQUE X
+→ define eventos, emisores, consumidores y traspasos
+
+BLOQUE H
+→ implementa contratos y tipos compartidos en `vento-shell`
+
+BLOQUE R
+→ implementa físicamente la arquitectura, seguridad y transición aprobadas
+
+BLOQUE E3
+→ audita Supabase completo, define su arquitectura objetivo y aprueba
+  el plan de transición antes de modificar la base
+
+Durante este bloque no se ejecutan migraciones ni cambios físicos.
+
+### Principios obligatorios
+
+SUPABASE
+→ plataforma de datos y ejecución
+
+VENTO-SHELL
+→ fuente versionada de migraciones, configuración, contratos y pruebas
+
+ESQUEMA
+→ frontera lógica, de nombres, exposición y seguridad
+
+DOMINIO
+→ responsabilidad empresarial estable
+
+APLICACIÓN
+→ experiencia que consume uno o varios dominios
+
+AUTHENTICATION
+→ identifica la sesión técnica
+
+IDENTIDAD EMPRESARIAL
+→ identifica trabajador, cliente, dispositivo o actor de sistema
+
+AUTHORIZATION
+→ decide qué capacidad puede ejecutar el actor en un contexto y recurso
+
+Reglas:
+
+- no crear un esquema por aplicación automáticamente;
+- no utilizar rutas o pantallas como estructura de datos;
+- no mover objetos antes de identificar todos sus consumidores;
+- no considerar `public` como destino universal;
+- no mezclar esquemas administrados por Supabase con dominios de Vento;
+- no convertir `auth.users` en catálogo laboral o de clientes;
+- no utilizar tipos TypeScript como sustituto de RLS o autorización;
+- no implementar el modelo objetivo mediante una migración masiva única;
+- no retirar legacy antes de completar adopción, verificación y rollback.
+
+### AUDITORÍA INTEGRAL DE SUPABASE
+
+### [ ] SUPA-AUD-001 — Inventariar todos los esquemas existentes
+### [ ] SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento
+### [ ] SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
+### [ ] SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
+### [ ] SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
+### [ ] SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
+### [ ] SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
+### [ ] SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
+### [ ] SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
+### [ ] SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
+### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
+### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
+### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
+### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
+### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
+### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
+### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
+### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
+### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
+### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
+### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
+### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
+### [ ] SUPA-AUD-024 — Clasificar riesgos críticos, altos, medios y deuda técnica
+
+### ARQUITECTURA CANÓNICA OBJETIVO
+
+Criterios obligatorios de evaluación
+
+Toda decisión de arquitectura deberá evaluarse, como mínimo, contra:
+
+- propiedad de la fuente de verdad;
+- estabilidad del dominio empresarial;
+- consumidores actuales y futuros;
+- exposición mediante Data API;
+- seguridad, RLS y grants;
+- compatibilidad temporal;
+- rendimiento y crecimiento;
+- auditoría y trazabilidad;
+- capacidad de rollback;
+- reproducibilidad desde `vento-shell`.
+
+Estos criterios deberán aplicarse desde SUPA-ARC-001 y consolidarse
+formalmente en SUPA-ARC-025 mediante una ADR aprobada.
+
+### [ ] SUPA-ARC-001 — Definir principios de separación entre esquemas administrados y empresariales
+### [ ] SUPA-ARC-002 — Definir dominios empresariales estables
+### [ ] SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad
+### [ ] SUPA-ARC-004 — Definir función futura de `public`
+### [ ] SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
+### [ ] SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
+### [ ] SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+### [ ] SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+### [ ] SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
+### [ ] SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+### [ ] SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+### [ ] SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+### [ ] SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+### [ ] SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+### [ ] SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+### [ ] SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+### [ ] SUPA-ARC-017 — Definir política de escrituras entre dominios
+### [ ] SUPA-ARC-018 — Definir arquitectura de Storage
+### [ ] SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+### [ ] SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+### [ ] SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
+### [ ] SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+
+La lista final de esquemas empresariales no se aprobará por intuición.
+
+Se derivará de:
+
+procesos aprobados
++
+fuentes de verdad
++
+propiedad funcional
++
+dependencias reales
++
+seguridad
++
+frecuencia de cambio
++
+necesidades de exposición
+
+Los nombres preliminares como `organization`, `workforce`, `attendance`,
+`authorization`, `catalog`, `inventory`, `logistics`, `production`,
+`procurement`, `sales`, `finance`, `loyalty`, `api`, `private` y `audit`
+solo podrán convertirse en canónicos después de la auditoría.
+
+### PLAN DE TRANSICIÓN
+
+### [ ] SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo
+### [ ] SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar
+### [ ] SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos
+### [ ] SUPA-TRANS-004 — Definir orden de migración por dominio
+### [ ] SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
+### [ ] SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
+### [ ] SUPA-TRANS-007 — Definir adaptación coordinada de consumidores
+### [ ] SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición
+### [ ] SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
+### [ ] SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad
+### [ ] SUPA-TRANS-011 — Definir rollback por paquete de cambio
+### [ ] SUPA-TRANS-012 — Definir retiro progresivo de objetos legacy
+### [ ] SUPA-TRANS-013 — Definir verificación de paridad local, staging y producción
+### [ ] SUPA-TRANS-014 — Definir actualización de tipos, contratos y documentación
+### [ ] SUPA-TRANS-015 — Crear roadmap ejecutable de migraciones en `vento-shell`
+### [ ] SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R
+
+### Resultado esperado
+
+PROCESO EMPRESARIAL
+→ APLICACIÓN PROPIETARIA
+→ DOMINIO
+→ FUENTE DE VERDAD
+→ CONTRATO
+→ VISTA O RPC EXPUESTA
+→ RLS Y AUTORIZACIÓN
+→ AUDITORÍA Y EVENTOS
+→ CONSUMIDORES
+
+Y, físicamente:
+
+`vento-shell`
+→ migraciones, configuración, contratos y pruebas
+
+Supabase
+→ estado reproducible, organizado y protegido
+
+Aplicaciones
+→ consumidoras del modelo aprobado, sin redefinirlo
+
 
 ## BLOQUE F
 
@@ -52926,10 +53289,20 @@ Paquetes candidatos
 ### [ ] SHELL-CTX-005 Compartir razones de bloqueo
 
 ### [ ] SHELL-DB-001 Crear @vento/supabase
-### [ ] SHELL-DB-002 Centralizar tipos generados
-### [ ] SHELL-DB-003 Crear wrappers tipados para RPC
+### [ ] SHELL-DB-002 Centralizar tipos generados por cada paquete de base de datos aprobado
+### [ ] SHELL-DB-003 Crear y actualizar wrappers tipados para RPC canónicas
 ### [ ] SHELL-DB-004 Normalizar errores de Supabase
 ### [ ] SHELL-DB-005 Separar cliente server, browser y native
+
+Regla de sincronización con BLOQUE R
+
+SHELL-DB-001, SHELL-DB-004 y SHELL-DB-005
+→ pueden establecer la infraestructura inicial del paquete compartido
+
+SHELL-DB-002 y SHELL-DB-003
+→ se ejecutan incrementalmente con AUTH-DB-026
+→ se actualizan después de cada paquete contractual del BLOQUE R
+→ no se consideran terminadas hasta completar la certificación final
 
 ### [ ] SHELL-UI-001 Crear @vento/ui-web
 ### [ ] SHELL-UI-002 Compartir Alert
@@ -53374,23 +53747,145 @@ SUBBLOQUE O2 — Procesos y experiencia de NUMERA
 
 ## BLOQUE R
 
-**RLS, RPC y base de datos**
+**Implementación progresiva de arquitectura Supabase, seguridad y transición**
 
-### [ ] AUTH-DB-001 — Auditar tablas sin RLS
-### [ ] AUTH-DB-002 — Auditar políticas demasiado amplias
-### [ ] AUTH-DB-003 — Auditar funciones SECURITY DEFINER
-### [ ] AUTH-DB-004 — Auditar grants a authenticated
-### [ ] AUTH-DB-005 — Auditar grants a anon
-### [ ] AUTH-DB-006 — Incorporar contexto en RPC sensibles
-### [ ] AUTH-DB-007 — Validar sede dentro de RPC
-### [ ] AUTH-DB-008 — Validar área dentro de RPC
-### [ ] AUTH-DB-009 — Validar permiso dentro de RPC
-### [ ] AUTH-DB-010 — Validar actor dentro de RPC
-### [ ] AUTH-DB-011 — Crear constraints de integridad
-### [ ] AUTH-DB-012 — Crear auditoría de cambios de permisos
-### [ ] AUTH-DB-013 — Crear auditoría de simulación
-### [ ] AUTH-DB-014 — Crear auditoría de dispositivos
-### [ ] AUTH-DB-015 — Documentar todas las migraciones en vento-shell
+Relación obligatoria:
+
+BLOQUE E3
+→ audita el estado real
+→ define la arquitectura objetivo
+→ aprueba el plan de transición
+
+BLOQUE R
+→ implementa exclusivamente decisiones aprobadas
+→ utiliza paquetes pequeños y reversibles
+→ conserva compatibilidad temporal
+→ registra todas las migraciones en `vento-shell`
+
+BLOQUE R no repetirá las auditorías realizadas en BLOQUE E3.
+
+Cada tarea de corrección deberá partir de un hallazgo aprobado,
+un objeto identificado y un paquete de transición definido.
+
+### R0 — Preparación, pruebas y contención de riesgos
+
+### [ ] AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
+### [ ] AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones
+### [ ] AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
+### [ ] AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+
+### [ ] AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+### [ ] AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
+### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
+### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
+### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
+### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
+### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+
+Regla de entrada a migraciones
+
+No podrá comenzar ningún paquete estructural mientras no existan:
+
+- baseline de Supabase remoto;
+- comparación con migraciones locales;
+- entorno de pruebas reproducible;
+- pruebas negativas de autorización;
+- respaldo verificable;
+- restauración probada;
+- rollback documentado;
+- migración versionada en `vento-shell`.
+
+### R1 — Fundación física canónica
+
+### [ ] AUTH-DB-016 — Crear esquemas empresariales aprobados
+### [ ] AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos
+### [ ] AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
+### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+
+### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos
+### [ ] AUTH-DB-013 — Implementar auditoría de simulación
+### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
+
+Regla de auditoría
+
+AUTH-DB-012 a AUTH-DB-014 solo podrán ejecutarse después de crear
+la capa o esquema transversal de auditoría aprobado en SUPA-ARC-007.
+
+No deberán crear mecanismos de auditoría independientes dentro de cada
+aplicación o dominio.
+
+### R2 — Migración progresiva por dominio
+
+### [ ] AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
+### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
+### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
+### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
+
+Orden obligatorio de cada paquete de dominio
+
+1. Confirmar objeto y consumidores.
+2. Crear estructura objetivo.
+3. Crear compatibilidad temporal.
+4. Ejecutar backfill.
+5. Reconciliar datos.
+6. Adaptar escrituras.
+7. Adaptar lecturas.
+8. Aplicar constraints.
+9. Aplicar RLS y grants.
+10. Generar tipos.
+11. Actualizar contratos y wrappers.
+12. Adaptar consumidores.
+13. Ejecutar pruebas.
+14. Verificar drift.
+15. Verificar rendimiento.
+16. Confirmar rollback.
+17. Aprobar adopción del paquete.
+
+AUTH-DB-011 no podrá ejecutarse antes del backfill y la reconciliación
+del paquete correspondiente.
+
+AUTH-DB-026 no será una acción única al final del proyecto.
+
+Los tipos deberán regenerarse después de cada cambio contractual de:
+
+- esquemas;
+- tablas;
+- vistas;
+- funciones;
+- RPC;
+- enums;
+- contratos expuestos.
+
+### R3 — Retiro y certificación final
+
+### [ ] AUTH-DB-030 — Retirar objetos legacy únicamente después de adopción comprobada
+### [ ] AUTH-DB-031 — Certificar paridad entre documento, vento-shell, Supabase y aplicaciones
+
+Regla de cierre
+
+AUTH-DB-030 y AUTH-DB-031 no se ejecutarán completamente durante
+la fundación inicial.
+
+Se ejecutarán en la FASE 12 después de comprobar:
+
+- adaptación de todos los consumidores;
+- finalización de los pilotos aplicables;
+- ausencia de lecturas legacy;
+- ausencia de escrituras legacy;
+- reconciliación de datos;
+- pruebas de seguridad;
+- pruebas de restauración;
+- rollback todavía disponible;
+- paridad local, staging y producción.
+
+Ningún objeto legacy se retirará únicamente porque exista su reemplazo.
 
 ## BLOQUE S
 
@@ -53643,7 +54138,7 @@ FASE 1 — DEFINICIÓN CANÓNICA
 4. BLOQUE D — Matrices definitivas
 5. BLOQUE E — Contexto y decisión unificada
 
-FASE 2 — ARQUITECTURA FUNCIONAL Y AUDITORÍA DE SUPERFICIES
+FASE 2 — ARQUITECTURA FUNCIONAL, DATOS Y AUDITORÍA DE SUPERFICIES
 
 6. BLOQUE E2 — Procesos, actores, pantallas y experiencia transversal
 7. Ejecutar AUTH-UI-001 a AUTH-UI-029
@@ -53652,6 +54147,10 @@ FASE 2 — ARQUITECTURA FUNCIONAL Y AUDITORÍA DE SUPERFICIES
 10. Aprobar contrato transversal de pantallas
 11. BLOQUE X — Definir integraciones y eventos empresariales
 12. Aprobar traspasos entre aplicaciones
+13. BLOQUE E3 — Auditar Supabase integralmente
+14. Aprobar mapa de dominios, fuentes de verdad y propietarios
+15. Aprobar arquitectura de esquemas, Auth, acceso, Storage, Realtime y automatizaciones
+16. Aprobar plan de transición y roadmap de migraciones en `vento-shell`
 
 En esta fase se define:
 
@@ -53660,19 +54159,23 @@ qué aplicación es propietaria;
 qué actor participa;
 qué pantallas existen;
 qué eventos se producen;
-qué aplicaciones consumen esos eventos.
+qué aplicaciones consumen esos eventos;
+qué dominio conserva cada fuente de verdad;
+cómo se organiza y protege Supabase;
+cómo se migrará sin romper consumidores existentes.
 
-Todavía no se implementan interfaces definitivas.
+Todavía no se implementan interfaces definitivas ni se reorganiza
+físicamente Supabase.
 
-FASE 3 — FUNDACIÓN COMPARTIDA Y SEGURIDAD
+FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 
-13. BLOQUE H — VENTO-SHELL como núcleo compartido
-14. Crear contratos, eventos, tipos y helpers
-15. Ejecutar AUTH-UI-030 a AUTH-UI-039
-16. BLOQUE J — Inventariar y proteger acciones de servidor
-17. BLOQUE R — RLS, RPC y base de datos
-18. BLOQUE S — Mensajes y experiencia de bloqueo
-19. BLOQUE T — Establecer CI, versionado y rollback base
+17. BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
+18. Crear contratos, eventos, helpers puros y estructura inicial de @vento/supabase
+19. Ejecutar AUTH-UI-030 a AUTH-UI-039
+20. BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
+21. BLOQUE J — Inventariar y proteger acciones de servidor
+22. BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
+23. BLOQUE S — Mensajes y experiencia de bloqueo
 
 AUTH-UI-030 a AUTH-UI-039 define:
 
@@ -53686,17 +54189,32 @@ simulación;
 datos sensibles;
 masking.
 
-BLOQUE J y BLOQUE R implementan la protección real.
+BLOQUE T deberá establecer la capacidad mínima de validar migraciones,
+reconstruir la base, ejecutar pruebas, desplegar en staging, detectar drift
+y verificar rollback antes del primer paquete estructural.
+
+BLOQUE J protege acciones de servidor.
+
+BLOQUE R ejecuta inicialmente:
+
+- R0 — preparación y contención;
+- R1 — fundación física;
+- los primeros paquetes de R2 aprobados y necesarios para habilitar
+  las fases siguientes.
+
+R2 continuará progresivamente durante las fases de cada aplicación.
+
+R3 se ejecutará durante el cierre transversal.
 
 FASE 4 — HABILITADORES TRANSVERSALES
 
-20. BLOQUE F — ANIMA
-21. BLOQUE G — VISO como administrador del modelo
-22. SUBBLOQUE G2 — VISO Core
-23. BLOQUE H2 — SHELL como aplicación
-24. Ejecutar AUTH-UI-040 a AUTH-UI-051
-25. BLOQUE P — Dispositivos compartidos
-26. BLOQUE Q — Simulación estricta
+24. BLOQUE F — ANIMA
+25. BLOQUE G — VISO como administrador del modelo
+26. SUBBLOQUE G2 — VISO Core
+27. BLOQUE H2 — SHELL como aplicación
+28. Ejecutar AUTH-UI-040 a AUTH-UI-051
+29. BLOQUE P — Dispositivos compartidos
+30. BLOQUE Q — Simulación estricta
 
 AUTH-UI-040 a AUTH-UI-051 implementa:
 
@@ -53715,30 +54233,56 @@ errores recuperables.
 AUTH-UI-052 a AUTH-UI-060 se ejecutará después,
 aplicación por aplicación.
 
+Regla de migración progresiva por aplicación
+
+Antes o durante la implementación de cada aplicación deberá ejecutarse
+el paquete R2 correspondiente a sus dominios y fuentes de verdad.
+
+Cada paquete deberá incluir:
+
+- estructuras objetivo;
+- compatibilidad temporal;
+- backfill;
+- reconciliación;
+- RLS y grants;
+- RPC o vistas expuestas;
+- tipos generados;
+- wrappers compartidos;
+- adaptación de consumidores;
+- pruebas;
+- medición;
+- rollback.
+
+No será obligatorio mover todo un dominio antes de comenzar a mejorar
+una aplicación si el paquete aprobado permite una transición segura.
+
+Tampoco podrá declararse migrado un dominio mientras alguna aplicación
+continúe escribiendo sin control sobre su estructura legacy.
+
 FASE 5 — NEXO
 
-27. Auditar procesos y pantallas de NEXO
-28. Ejecutar SUBBLOQUE K2 — Procesos y experiencia de NEXO
-29. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NEXO
-30. Aprobar prototipos de NEXO
-31. Implementar BLOQUE K — Autorización de NEXO
-32. Implementar contratos de eventos emitidos y consumidos por NEXO
-33. Ejecutar piloto operativo
-34. Corregir hallazgos
-35. Aprobar NEXO
+31. Auditar procesos y pantallas de NEXO
+32. Ejecutar SUBBLOQUE K2 — Procesos y experiencia de NEXO
+33. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NEXO
+34. Aprobar prototipos de NEXO
+35. Implementar BLOQUE K — Autorización de NEXO
+36. Implementar contratos de eventos emitidos y consumidos por NEXO
+37. Ejecutar piloto operativo
+38. Corregir hallazgos
+39. Aprobar NEXO
 
 FASE 6 — FOGO Y ORIGO
 
-36. Auditar y diseñar FOGO
-37. Auditar y diseñar ORIGO
-38. Ejecutar AUTH-UI-052 a AUTH-UI-060 para FOGO y ORIGO
-39. Implementar autorización y seguridad de FOGO
-40. Implementar autorización y seguridad de ORIGO
-41. Implementar INT-PROD — FOGO ↔ NEXO
-42. Implementar INT-PROC — ORIGO → NEXO → NUMERA
-43. Ejecutar pilotos por proceso
-44. Corregir hallazgos
-45. Aprobar FOGO y ORIGO
+40. Auditar y diseñar FOGO
+41. Auditar y diseñar ORIGO
+42. Ejecutar AUTH-UI-052 a AUTH-UI-060 para FOGO y ORIGO
+43. Implementar autorización y seguridad de FOGO
+44. Implementar autorización y seguridad de ORIGO
+45. Implementar INT-PROD — FOGO ↔ NEXO
+46. Implementar INT-PROC — ORIGO → NEXO → NUMERA
+47. Ejecutar pilotos por proceso
+48. Corregir hallazgos
+49. Aprobar FOGO y ORIGO
 
 FOGO y ORIGO podrán avanzar en paralelo después de estabilizar
 los contratos de productos, presentaciones, existencias y movimientos
@@ -53746,74 +54290,79 @@ propiedad de NEXO.
 
 FASE 7 — PULSO
 
-46. Auditar venta, caja, pagos y salón
-47. Ejecutar SUBBLOQUE N2 — Procesos y experiencia de PULSO
-48. Ejecutar AUTH-UI-052 a AUTH-UI-060 para PULSO
-49. Implementar autorización y seguridad de PULSO
-50. Implementar INT-SALES — PULSO → NEXO / NUMERA / PASS
-51. Ejecutar piloto en sedes satélite
-52. Corregir hallazgos
-53. Aprobar PULSO
+50. Auditar venta, caja, pagos y salón
+51. Ejecutar SUBBLOQUE N2 — Procesos y experiencia de PULSO
+52. Ejecutar AUTH-UI-052 a AUTH-UI-060 para PULSO
+53. Implementar autorización y seguridad de PULSO
+54. Implementar INT-SALES — PULSO → NEXO / NUMERA / PASS
+55. Ejecutar piloto en sedes satélite
+56. Corregir hallazgos
+57. Aprobar PULSO
 
 FASE 8 — NUMERA
 
-54. Auditar procesos financieros
-55. Ejecutar SUBBLOQUE O2 — Procesos y experiencia de NUMERA
-56. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NUMERA
-57. Implementar autorización y seguridad de NUMERA
-58. Consumir eventos de ORIGO, FOGO, NEXO y PULSO
-59. Ejecutar piloto con contabilidad y dirección
-60. Corregir hallazgos
-61. Aprobar NUMERA
+58. Auditar procesos financieros
+59. Ejecutar SUBBLOQUE O2 — Procesos y experiencia de NUMERA
+60. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NUMERA
+61. Implementar autorización y seguridad de NUMERA
+62. Consumir eventos de ORIGO, FOGO, NEXO y PULSO
+63. Ejecutar piloto con contabilidad y dirección
+64. Corregir hallazgos
+65. Aprobar NUMERA
 
 FASE 9 — VISO COMPLETO
 
-62. Ejecutar SUBBLOQUE G3 — Experiencia administrativa de VISO
-63. Ejecutar AUTH-UI-052 a AUTH-UI-060 para VISO
-64. Reorganizar administración por dominios
-65. Integrar auditoría consolidada
-66. Integrar vista previa por trabajador
-67. Probar con cada rol administrativo
-68. Corregir hallazgos
-69. Aprobar VISO completo
+66. Ejecutar SUBBLOQUE G3 — Experiencia administrativa de VISO
+67. Ejecutar AUTH-UI-052 a AUTH-UI-060 para VISO
+68. Reorganizar administración por dominios
+69. Integrar auditoría consolidada
+70. Integrar vista previa por trabajador
+71. Probar con cada rol administrativo
+72. Corregir hallazgos
+73. Aprobar VISO completo
 
 FASE 10 — PASS
 
-70. Ejecutar BLOQUE V — PASS e integración con el dominio laboral
-71. Diseñar experiencia del cliente
-72. Implementar integración de acumulación desde PULSO
-73. Implementar integración de redención desde PULSO
-74. Probar identidad cliente separada del dominio laboral
-75. Ejecutar piloto de fidelización
-76. Corregir hallazgos
-77. Aprobar PASS
+74. Ejecutar BLOQUE V — PASS e integración con el dominio laboral
+75. Diseñar experiencia del cliente
+76. Implementar integración de acumulación desde PULSO
+77. Implementar integración de redención desde PULSO
+78. Probar identidad cliente separada del dominio laboral
+79. Ejecutar piloto de fidelización
+80. Corregir hallazgos
+81. Aprobar PASS
 
 FASE 11 — AURA
 
-78. Ejecutar BLOQUE W — AURA como aplicación diferida
-79. Completar auditoría funcional
-80. Decidir continuidad, reemplazo o retiro
-81. Crear roadmap propio únicamente si continúa
-82. No ampliar permisos ni procesos antes de la decisión
+82. Ejecutar BLOQUE W — AURA como aplicación diferida
+83. Completar auditoría funcional
+84. Decidir continuidad, reemplazo o retiro
+85. Crear roadmap propio únicamente si continúa
+86. No ampliar permisos ni procesos antes de la decisión
 
 FASE 12 — CIERRE TRANSVERSAL
 
-83. Completar y validar BLOQUE X de extremo a extremo
-84. Confirmar idempotencia, reintentos y compensaciones
-85. Confirmar que no existan registros manuales duplicados
-86. Completar BLOQUE T — CI, versionado y despliegue
-87. Ejecutar BLOQUE U — Pruebas integrales
-88. Ejecutar pruebas de seguridad
-89. Ejecutar pruebas funcionales
-90. Ejecutar pruebas de experiencia
-91. Ejecutar pruebas de integración
-92. Validar rollback por aplicación
-93. Aprobar cierre documental y operativo
+87. Completar y validar BLOQUE X de extremo a extremo
+88. Confirmar idempotencia, reintentos y compensaciones
+89. Confirmar que no existan registros manuales duplicados
+90. Completar BLOQUE T — CI, versionado y despliegue
+91. Ejecutar BLOQUE U — Pruebas integrales
+92. Ejecutar pruebas de seguridad
+93. Ejecutar pruebas funcionales
+94. Ejecutar pruebas de experiencia
+95. Ejecutar pruebas de integración
+96. Validar rollback por aplicación
+97. Ejecutar validación final de AUTH-DB-029 — respaldo, restauración y rollback
+98. Ejecutar AUTH-DB-030 — retiro controlado de objetos legacy
+99. Ejecutar AUTH-DB-031 — certificación de paridad documental, técnica y operativa
+100. Confirmar ausencia de drift entre vento-shell, local, staging y producción
+101. Aprobar cierre documental y operativo
 
 Regla de avance:
 
 DEFINICIÓN
 → AUDITORÍA FUNCIONAL
+→ ARQUITECTURA DE DATOS
 → DISEÑO
 → PROTOTIPO
 → AUTORIZACIÓN
@@ -53836,6 +54385,7 @@ tenga infraestructura parcial.
 Una aplicación se considerará finalizada cuando:
 
 sus procesos estén conectados;
+sus fuentes de verdad y contratos de datos estén definidos;
 cada actor vea la experiencia correcta;
 las acciones estén protegidas;
 las integraciones sean idempotentes;
@@ -53861,5 +54411,7 @@ BASE EXISTENTE
 - [ ] NUMERA integrado completamente
 - [ ] VENTO-SHELL convertido en librería compartida
 - [ ] Auditoría transversal completa
+- [ ] Arquitectura canónica de Supabase aprobada
+- [ ] Supabase reproducible desde migraciones de vento-shell
 
 Estas piezas están registradas en el roadmap operativo existente de vento-shell; varias fases de contexto operativo y permisos ya fueron construidas, aunque todavía no están consolidadas transversalmente.
