@@ -22,6 +22,29 @@
       "runOptions": {
         "runOn": "folderOpen"
       }
+    },
+    {
+      "label": "Plan canónico: compilar automáticamente",
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/scripts/docs/watch-plan-canonico.mjs"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "dedicated",
+        "clear": false,
+        "showReuseMessage": false
+      },
+      "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1
+      }
     }
   ]
 }

@@ -1,51 +1,84 @@
 # DOCUMENTO CANÓNICO DE CONTINUIDAD — AUTORIZACIÓN VENTO OS
 
-> **IMPORTANTE:**
-> Este archivo es la **única fuente documental canónica de continuidad**.
-> Conserva evidencia histórica, decisiones aprobadas, matrices y roadmap en un solo documento.
+> **IMPORTANTE**
+>
+> Este archivo es el punto de entrada del plan canónico modular de Vento OS.
+>
+> Las fuentes documentales canónicas son los fragmentos enumerados, ordenados y controlados mediante `manifest.json`.
+>
+> El archivo ubicado en `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` es un artefacto derivado para lectura integral, validación y transferencia de contexto. No debe editarse manualmente.
 
 ## Estado canónico
 
 | Campo                     | Valor                                                                  |
 | ------------------------- | ---------------------------------------------------------------------- |
 | Versión                   | 2026-07-18                                                             |
-| Revisión documental       | **26**                                                                 |
+| Revisión documental       | **34**                                                                 |
 | Estado documental         | **VIGENTE**                                                            |
+| Arquitectura documental   | **MODULAR CANÓNICA**                                                   |
+| Fuente de orden canónico  | `manifest.json`                                                        |
+| Fragmentos canónicos      | **58**                                                                 |
+| Tareas `AUTH` únicas      | **306**                                                                |
+| Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`        |
+| Estado del compilado      | **GENERADO Y VALIDADO**                                                |
 | ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                              |
-| Última tarea aprobada     | **AUTH-CAT-019 — Evitar cadenas de permisos escritas manualmente**     |
-| Tarea actual              | **AUTH-RBAC-001 — Crear matriz de propietario**                        |
+| Última tarea aprobada     | **AUTH-RBAC-008 — Crear matriz de cajero_satelite**                    |
+| Tarea actual              | **AUTH-RBAC-009 — Crear matriz de barista_satelite**                   |
 | Estado de la tarea actual | **NO INICIADA**                                                        |
-| Siguiente tarea           | **AUTH-RBAC-002 — Crear matriz de gerente_general**                    |
+| Siguiente tarea           | **AUTH-RBAC-010 — Crear matriz de cocinero_satelite**                  |
 | Bloque actual             | **BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos** |
-| Progreso del bloque       | **AUTH-CAT-001 a AUTH-CAT-019 aprobadas; AUTH-RBAC-001 pendiente**     |
+| Progreso del bloque       | **AUTH-RBAC-001 a AUTH-RBAC-008 aprobadas; AUTH-RBAC-009 pendiente**   |
 | Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**              |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                              |
-| --------------- | ---------------------------------- |
-| Última aprobada | `AUTH-CAT-019`                     |
-| Tarea actual    | `AUTH-RBAC-001` — **NO INICIADA**  |
-| Siguiente tarea | `AUTH-RBAC-002`                    |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL** |
+| Estado          | Valor                                                        |
+| --------------- | ------------------------------------------------------------ |
+| Última aprobada | `AUTH-RBAC-008` — matriz de `cajero_satelite`                |
+| Tarea actual    | `AUTH-RBAC-009` — matriz de `barista_satelite` — NO INICIADA |
+| Siguiente tarea | `AUTH-RBAC-010` — matriz de `cocinero_satelite`              |
+| Archivo activo  | `bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md`      |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                           |
+
+## Progreso documental aprobado
+
+| Grupo de tareas                   | Estado          |
+| --------------------------------- | --------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-019`   | **APROBADAS**   |
+| `AUTH-RBAC-001` a `AUTH-RBAC-008` | **APROBADAS**   |
+| `AUTH-RBAC-009`                   | **NO INICIADA** |
+| Implementación física             | **NO INICIADA** |
+
+## Reglas de edición
+
+1. Los archivos ubicados dentro de `docs/plan-canonico/modular/` son las fuentes documentales editables.
+2. El orden de compilación debe corresponder exclusivamente al registrado en `manifest.json`.
+3. No debe editarse manualmente ningún archivo dentro de `.generated/`.
+4. Cada cambio guardado en un fragmento canónico debe regenerar y validar automáticamente el compilado.
+5. Una tarea no puede marcarse como aprobada hasta que el usuario indique expresamente `APROBADO`.
+6. No debe adelantarse la tarea siguiente ni modificarse una decisión aprobada sin autorización expresa.
+7. Las migraciones, cambios de código y modificaciones de Supabase permanecen prohibidas durante la fase documental actual.
 
 ## Navegación principal
 
-> **Plegado en VS Code:** `## BLOQUE` pliega un bloque completo y `### AUTH-*` pliega una tarea completa.
+- [Protocolo obligatorio](./01_PROTOCOLO.md)
+- [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
+- [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
+- [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
+- [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
+- [Documento compilado](./.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md)
 
-- [Estado canónico](#estado-canónico)
-- [Protocolo obligatorio](#protocolo-obligatorio-de-continuidad)
-- [Roadmap maestro](#roadmap-maestro)
-- [BLOQUE A](#bloque-a) — Auditoría integral
-- [BLOQUE B](#bloque-b) — Modelo definitivo
-- [BLOQUE C](#bloque-c) — Catálogo canónico
-- [BLOQUE D](#bloque-d) — Matrices canónicas
-- [BLOQUE E](#bloque-e) — Contexto y decisión
-- [BLOQUE E2](#bloque-e2) — Procesos y experiencia
-- [BLOQUE E3](#bloque-e3) — Arquitectura y gobierno de Supabase
-- [BLOQUE F](#bloque-f) — Inicio de implementación e integración
+## Control de continuidad
 
-## Protocolo obligatorio de continuidad
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-RBAC-008
+        ↓
+TAREA ACTUAL
+AUTH-RBAC-009 — Crear matriz de barista_satelite
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-RBAC-010 — Crear matriz de cocinero_satelite## Protocolo obligatorio de continuidad
 
 1. Leer primero el estado documental y la siguiente tarea.
 
@@ -57075,14 +57108,3506 @@ El aumento no concede inventario general ni autoridad logística. Sustituye depe
 No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
 
 
-### [ ] AUTH-RBAC-009 — Crear matriz de barista_satelite
-### [ ] AUTH-RBAC-010 — Crear matriz de cocinero_satelite
-### [ ] AUTH-RBAC-011 — Crear matriz de servicio_salon
-### [ ] AUTH-RBAC-012 — Crear matriz de mostrador_satelite
-### [ ] AUTH-RBAC-013 — Crear matriz de operador_integral_satelite
-### [ ] AUTH-RBAC-014 — Crear matriz de produccion_cocina
-### [ ] AUTH-RBAC-015 — Crear matriz de produccion_panaderia
-### [ ] AUTH-RBAC-016 — Crear matriz de produccion_reposteria
+### ✅ AUTH-RBAC-009 — Crear matriz de barista_satelite
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-009 — Crear matriz de barista_satelite                   |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de barra satélite        |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-008 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-010 — Crear matriz de cocinero_satelite                  |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `barista_satelite` durante un turno válido en un área de barra, sin recuperar permisos permanentes del rol base legacy `barista` ni convertir el acceso a PULSO en autorización implícita para consultar comandas, preparar bebidas, modificar estados o ejecutar operaciones comerciales no representadas todavía por permisos atómicos.
+
+#### 3. Decisión principal
+
+`barista_satelite` representa la función temporal de preparación de bebidas y operación de barra en una sede satélite. Su autoridad existe únicamente dentro del contexto operativo vigente y sobre recursos compatibles con la sede, el área, la relación del actor y la etapa del proceso.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL barista_satelite
++ SEDE AUTORIZADA
++ ÁREA ACTIVA DE TIPO bar
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ RECURSO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE BARRA
+```
+
+No se admite:
+
+```text
+employees.role = barista → acceso permanente
+pulso.access → autorización para consultar o preparar cualquier comanda
+dispositivo de barra → rol automático
+PIN del dispositivo → sustituto del permiso
+sede seleccionada → autorización
+barista_satelite → acceso a inventario general
+barista_satelite → acceso automático a recetas de FOGO
+barista_satelite → delivery.override automático
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                  |
+| -------------------------------------------- | -------: | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       11 | Se conceden por el carril operativo dentro del contexto de barra y de los recursos expresamente definidos.                              |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                    |
+| Capacidades no asignadas                     |      101 | Permanecen denegadas por defecto por pertenecer al carril base, a otros procesos operativos o a acciones sensibles no propias de barra. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                            |
+
+La matriz contiene **11 concesiones operativas a nivel de clave** y **101 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                      | Significado                                                                                                                                         |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-BAR-APP`               | Entrada operativa a una aplicación con turno y rol válidos. El permiso puede mostrar requisitos faltantes, pero no concede capacidades internas.    |
+| `CTX-BAR-REF`               | Consulta mínima de referencias necesarias para operar barra o solicitar abastecimiento, limitada a la sede y al flujo vigentes.                     |
+| `CTX-BAR-REMISSION`         | Consulta de remisiones por relación legítima con la sede destino o el actor solicitante.                                                            |
+| `CTX-BAR-REMISSION-OWN`     | Modificación exclusiva de solicitudes propias y todavía editables.                                                                                  |
+| `CTX-BAR-REMISSION-REQUEST` | Creación de solicitudes para la sede y área activas con ruta y políticas válidas.                                                                   |
+| `CTX-BAR-PULSO`             | Entrada a la superficie de operación comercial de barra durante turno válido. No sustituye permisos de comandas, preparación, venta, pago o cierre. |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por el nombre del rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `barista_satelite` requiere un área operativa concreta compatible con el tipo `bar` y habilitada para la sede del turno.
+4. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno y rol válidos.
+5. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+6. La sede activa se deriva del contexto válido; la sede seleccionada, primaria o enviada por el cliente no concede autoridad.
+7. El permiso `pulso.access` solo permite entrar a PULSO y cargar la superficie compatible. No autoriza consultar comandas, cambiar estados, confirmar preparaciones, registrar faltantes, operar ventas, cobros, caja, anulaciones, devoluciones, puntos ni cierres.
+8. La consulta de catálogo desde NEXO se limita a los atributos necesarios para identificar productos y presentaciones solicitables para la barra.
+9. La consulta de remisiones se limita a la relación del actor o de la sede destino; no concede visibilidad de toda la red.
+10. La actualización de remisiones se limita a solicitudes propias, estados editables y campos permitidos, con reautenticación y auditoría.
+11. La solicitud de remisiones debe ser idempotente y validar políticas, ruta, destino, cantidades y presentaciones.
+12. `fogo.production.recipe_book.view` no se asigna por inferencia. La necesidad de consultar recetas o fichas de bebidas deberá resolverse mediante una capacidad atómica y un contrato de recurso aprobados.
+13. `pulso.delivery.deliveries.override` no se asigna al rol. Solo podrá obtenerse mediante autoridad base explícita y contexto operativo simultáneo.
+14. APP-REVIEW, entornos demo, recursos aislados y sedes no habilitadas permanecen excluidos.
+15. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+16. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `barista_satelite`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                                                                                                                                 |
+| ---------------------------------- | ------------------------------- | --------------------- | ------------------------------ | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de barra satélite.                                                                                     |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de barra satélite.                                                                                     |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de barra satélite.                                                                                     |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de barra satélite.                                                                                     |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | El recetario de FOGO no se concede por inferencia. La consulta de fórmulas o fichas de bebidas deberá contar con un permiso atómico y contrato de aplicabilidad propios antes de incorporarse a este rol. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                    |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para barista_satelite | Alcance aprobado                                                                                                                                                                                  | Condición                                                                                                                                                                                   |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-APP — turno publicado y vigente, rol efectivo `barista_satelite`, sede activa autorizada y área operativa válida de tipo `bar`. No exige check-in para mostrar la entrada y los bloqueos. | Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.                                               |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.                  | Turno vigente y rol `barista_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.                 |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.                                                                                                  | Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.                                                                                      |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.                                                             | Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.                                                                                    |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.                                                                                                   | Turno vigente. Solo lectura; no permite administrar categorías.                                                                                                                             |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.                                                                  | Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | El stock exige área activa coincidente. El rol de barra no recibe visibilidad general de existencias de cocina, bodega, otras barras ni otras áreas.                                        |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.           | Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.                                   |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.                                                         | Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen. |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**          | CTX-BAR-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `bar`, utilizando origen, ruta, productos, presentaciones y políticas válidas.                                | Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.                                  |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Recibir remisiones cambia cantidades y custodia en destino. Corresponde al rol de recepción autorizado, no automáticamente al barista.                                                      |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La cancelación no se concede por defecto al barista. Una necesidad de cancelar solicitudes propias deberá definirse como política explícita o excepción operativa auditada.                 |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**          | CTX-BAR-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.                                                             | Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.                                                                   |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde barra o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.         |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                            | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                                    |
+| ---------------------------------------- | --------------------------------- | --------------------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de barra satélite. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de barra satélite. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de barra satélite. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de barra satélite. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.       |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para barista_satelite | Alcance aprobado                                                                                                          | Condición                                                                                                                                                                                                                                    |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**          | CTX-BAR-PULSO — turno publicado y vigente, rol `barista_satelite`, sede autorizada y área operativa válida de tipo `bar`. | Carril operativo. Permite entrar a PULSO y mostrar el contexto de barra. No autoriza por sí solo consultar comandas, cambiar estados de preparación, registrar faltantes, rehacer productos, operar ventas, pagos, caja, puntos ni entregas. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                    | Capacidad `BASE_AND_OPERATIONAL` de excepción. Requiere autoridad base explícita, turno, check-in, reautenticación fuerte, motivo y auditoría reforzada.                                                                                     |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para barista_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                 | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         0 |            6 |
+| NEXO       |                 63 |        10 |           53 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         1 |            1 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **11** |      **101** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO DE BARRA VÁLIDO
+        ↓
+ENTRAR A PULSO
+        ↓
+FUNCIONES ATÓMICAS DE COMANDAS Y PREPARACIÓN
+PENDIENTES DE CATÁLOGO
+
+TURNO + CHECK-IN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR REFERENCIAS DE SOLICITUD
+        ↓
+CONSULTAR / CREAR / EDITAR SOLICITUD PROPIA
+```
+
+La matriz no autoriza al barista a preparar, despachar o recibir una remisión ni a operar inventario físico. Tampoco autoriza todavía la lectura o mutación de comandas de barra: esas capacidades no existen en el catálogo canónico vigente y no pueden deducirse de `pulso.access`.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- gestión de personal, documentos, turnos, permisos o seguridad;
+- lotes, órdenes, recetas maestras o recetario de FOGO por inferencia;
+- entradas, retiros, traslados, conteos, ajustes, ubicaciones, LPN o validaciones de inventario;
+- preparación, despacho o recepción de remisiones;
+- cancelación de remisiones por defecto;
+- operaciones logísticas, de conductor, cumplimiento o bodega;
+- compras, recepciones y proveedores de ORIGO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- configuración de sedes, políticas, rutas, impresión o catálogos maestros;
+- ventas, pagos, caja, anulaciones, devoluciones o descuentos por inferencia desde PULSO;
+- `pulso.delivery.deliveries.override` sin autoridad base separada;
+- acceso a clientes, puntos o canjes de fidelización por inferencia;
+- acceso a APP-REVIEW o a sedes no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente solo contiene `pulso.access` y una excepción de entrega. Por tanto, todavía no representa las operaciones ordinarias de una barra, entre ellas:
+
+- consultar la cola de comandas asignada a la barra;
+- consultar detalle, modificadores, notas, alergias y prioridad de cada ítem;
+- aceptar o iniciar una preparación;
+- cambiar estados como pendiente, en preparación, listo, entregado o rechazado;
+- confirmar cantidades y responsable de preparación;
+- registrar un producto temporalmente agotado o no disponible;
+- solicitar sustitución o aclaración de una comanda;
+- registrar rehacer, merma, derrame, error o desperdicio;
+- consultar fichas técnicas, recetas publicadas y porciones aplicables a bebidas;
+- separar preparación de bebidas de acciones comerciales de venta y cobro;
+- imprimir o reimprimir tickets de producción cuando corresponda;
+- consultar historial operativo de la barra dentro de la sede y el turno;
+- gestionar tiempos, alertas y priorización de preparación;
+- atribuir cada transición al actor real, incluso desde dispositivo compartido.
+
+Estas brechas no amplían la matriz. Hasta que existan permisos atómicos canónicos, `pulso.access` no podrá interpretarse como autorización implícita para consultar, preparar o modificar comandas. También deberá definirse expresamente si el recetario de bebidas pertenece a PULSO, FOGO o a una capacidad transversal con aplicación propietaria única.
+
+#### 12. Dispositivo compartido de barra
+
+La plantilla `bar_satellite` puede habilitar PULSO, NEXO y SHELL como superficies disponibles, pero no concede la matriz del rol. Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO barista_satelite VÁLIDO
++ ÁREA DEL DISPOSITIVO COINCIDENTE
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política `same_area_active_worker` puede utilizarse como filtro territorial inicial, pero no sustituye la validación del rol `barista_satelite` ni del permiso exacto. La configuración legacy `navigation_role = barista` deberá corregirse posteriormente para no mezclar el rol base heredado con el rol operativo canónico. No se aceptará una sesión anónima, una acción atribuida al usuario técnico ni una navegación basada únicamente en `navigation_role`.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró tres asignaciones operativas legacy para `barista_satelite`: NEXO acceso, remisiones y solicitud de remisiones. Esta propuesta conserva la intención mínima del flujo, reemplaza la capacidad genérica de remisiones por claves canónicas y añade únicamente las referencias necesarias para operar la solicitud y la entrada controlada a PULSO.
+
+```text
+3 ASIGNACIONES LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+11 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 6 referencias de catálogo y políticas
+├── 3 capacidades sobre solicitudes/remisiones
+├── 1 referencia de rutas de abastecimiento
+└── 1 entrada a PULSO
+```
+
+El aumento no concede inventario general, autoridad logística, recetas de FOGO ni operaciones comerciales implícitas. Sustituye dependencias internas del flujo de solicitud por referencias explícitas y deja documentadas las capacidades de barra que aún faltan en el catálogo.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Cada permiso concedido tiene contexto y recurso explícitos.
+- ✅ El rol exige turno, sede y área de barra válidos.
+- ✅ Las mutaciones concedidas exigen check-in cuando corresponde.
+- ✅ `pulso.access` no se utiliza como wildcard de PULSO.
+- ✅ No se concedieron operaciones físicas de inventario, logística o producción central.
+- ✅ No se concedieron recetas de FOGO por inferencia.
+- ✅ No se concedieron capacidades financieras, laborales o de seguridad.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW y sedes no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                         | Impacto                                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTH-RBAC-010 a AUTH-RBAC-013 | Deberán definir las demás funciones satélite sin heredar automáticamente esta matriz.                                                            |
+| AUTH-RBAC-021                 | Podrá añadir excepciones operativas individuales sin sustituir turno, área, rol ni permiso exacto.                                               |
+| AUTH-RBAC-023                 | Deberá corregir y limitar los dispositivos de barra a actores, aplicaciones, roles y áreas compatibles.                                          |
+| AUTH-RBAC-025                 | Deberá proyectar estas 11 concesiones en el dataset canónico de matriz operativa.                                                                |
+| AUTH-RBAC-027                 | Deberá confirmar que ninguna concesión produzca acceso operativo global accidental.                                                              |
+| BLOQUE E                      | Deberá distinguir entrada, permiso, recurso y razones de bloqueo en la decisión final.                                                           |
+| PULSO y roadmap funcional     | Deberán crear y clasificar permisos atómicos para comandas, preparación, estados, faltantes, mermas, tiempos y tickets de barra.                 |
+| FOGO y arquitectura funcional | Deberán resolver la propiedad del recetario aplicable a bebidas sin duplicar recetas ni conceder `fogo.production.recipe_book.view` por defecto. |
+| BLOQUE R                      | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                         |
+
+#### 16. Criterios de aprobación
+
+1. `barista_satelite` queda definido como rol operativo temporal de preparación de bebidas y barra.
+2. Las 11 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, sede y área de barra válidos.
+4. Las acciones vivas o mutadoras concedidas exigen check-in cuando corresponde.
+5. El rol puede consultar referencias y solicitar abastecimiento sin acceder a inventario general.
+6. La actualización se limita a solicitudes propias y editables.
+7. No puede preparar, despachar, recibir o cancelar remisiones por defecto.
+8. `pulso.access` no autoriza comandas, preparación, ventas, pagos ni caja por sí solo.
+9. `fogo.production.recipe_book.view` permanece fuera de la matriz mientras no exista una decisión funcional y contractual específica para recetas de bebidas.
+10. `delivery.override` permanece fuera de la matriz ordinaria.
+11. Las 101 capacidades restantes permanecen denegadas por defecto.
+12. No se implementa código, Supabase ni migraciones en esta tarea.
+13. `AUTH-RBAC-010` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-008 | APROBADA    |
+| AUTH-RBAC-009 | APROBADA    |
+| AUTH-RBAC-010 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-010 — Crear matriz de cocinero_satelite
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-010 — Crear matriz de cocinero_satelite                  |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de cocina satélite       |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-009 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-011 — Crear matriz de servicio_salon                     |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `cocinero_satelite` durante un turno válido en un área de cocina de una sede satélite, sin recuperar permisos permanentes del rol base legacy `cocinero`, sin confundirlo con `produccion_cocina` y sin convertir el acceso a PULSO en autorización implícita para consultar comandas, preparar alimentos, modificar estados o ejecutar operaciones comerciales no representadas todavía por permisos atómicos.
+
+#### 3. Decisión principal
+
+`cocinero_satelite` representa la función temporal de preparación de alimentos en la cocina de un punto de venta satélite. Su autoridad existe únicamente dentro del contexto operativo vigente y sobre recursos compatibles con la sede, el área, la relación del actor y la etapa del proceso.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL cocinero_satelite
++ SEDE AUTORIZADA
++ ÁREA ACTIVA DE TIPO bar
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ RECURSO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE COCINA
+```
+
+No se admite:
+
+```text
+employees.role = cocinero → acceso permanente
+pulso.access → autorización para consultar o preparar cualquier comanda
+dispositivo de cocina → rol automático
+PIN del dispositivo → sustituto del permiso
+sede seleccionada → autorización
+cocinero_satelite → acceso a inventario general
+cocinero_satelite → acceso automático a recetas o producción central de FOGO
+cocinero_satelite → delivery.override automático
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                   |
+| -------------------------------------------- | -------: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       11 | Se conceden por el carril operativo dentro del contexto de cocina y de los recursos expresamente definidos.                              |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                     |
+| Capacidades no asignadas                     |      101 | Permanecen denegadas por defecto por pertenecer al carril base, a otros procesos operativos o a acciones sensibles no propias de cocina. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                             |
+
+La matriz contiene **11 concesiones operativas a nivel de clave** y **101 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                          | Significado                                                                                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-KITCHEN-APP`               | Entrada operativa a una aplicación con turno y rol válidos. El permiso puede mostrar requisitos faltantes, pero no concede capacidades internas.     |
+| `CTX-KITCHEN-REF`               | Consulta mínima de referencias necesarias para operar cocina o solicitar abastecimiento, limitada a la sede y al flujo vigentes.                     |
+| `CTX-KITCHEN-REMISSION`         | Consulta de remisiones por relación legítima con la sede destino o el actor solicitante.                                                             |
+| `CTX-KITCHEN-REMISSION-OWN`     | Modificación exclusiva de solicitudes propias y todavía editables.                                                                                   |
+| `CTX-KITCHEN-REMISSION-REQUEST` | Creación de solicitudes para la sede y área activas con ruta y políticas válidas.                                                                    |
+| `CTX-KITCHEN-PULSO`             | Entrada a la superficie de operación comercial de cocina durante turno válido. No sustituye permisos de comandas, preparación, venta, pago o cierre. |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por el nombre del rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `cocinero_satelite` requiere un área operativa concreta compatible con el tipo `kitchen` y habilitada para la sede del turno.
+4. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno y rol válidos.
+5. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+6. La sede activa se deriva del contexto válido; la sede seleccionada, primaria o enviada por el cliente no concede autoridad.
+7. El permiso `pulso.access` solo permite entrar a PULSO y cargar la superficie compatible. No autoriza consultar comandas, cambiar estados, confirmar preparaciones, registrar faltantes, operar ventas, cobros, caja, anulaciones, devoluciones, puntos ni cierres.
+8. La consulta de catálogo desde NEXO se limita a los atributos necesarios para identificar productos y presentaciones solicitables para la cocina.
+9. La consulta de remisiones se limita a la relación del actor o de la sede destino; no concede visibilidad de toda la red.
+10. La actualización de remisiones se limita a solicitudes propias, estados editables y campos permitidos, con reautenticación y auditoría.
+11. La solicitud de remisiones debe ser idempotente y validar políticas, ruta, destino, cantidades y presentaciones.
+12. `fogo.production.recipe_book.view` no se asigna por inferencia. La necesidad de consultar recetas o fichas de preparación deberá resolverse mediante una capacidad atómica y un contrato de recurso aprobados.
+13. `pulso.delivery.deliveries.override` no se asigna al rol. Solo podrá obtenerse mediante autoridad base explícita y contexto operativo simultáneo.
+14. APP-REVIEW, entornos demo, recursos aislados y sedes no habilitadas permanecen excluidos.
+15. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+16. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `cocinero_satelite`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------- | --------------------- | ------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de cocina satélite.                                                                                      |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de cocina satélite.                                                                                      |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de cocina satélite.                                                                                      |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de cocina satélite.                                                                                      |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | El recetario de FOGO no se concede por inferencia. La consulta de fórmulas o fichas de alimentos deberá contar con un permiso atómico y contrato de aplicabilidad propios antes de incorporarse a este rol. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                      |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para cocinero_satelite | Alcance aprobado                                                                                                                                                                                           | Condición                                                                                                                                                                                   |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-APP — turno publicado y vigente, rol efectivo `cocinero_satelite`, sede activa autorizada y área operativa válida de tipo `kitchen`. No exige check-in para mostrar la entrada y los bloqueos. | Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.                                               |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.                       | Turno vigente y rol `cocinero_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.                |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.                                                                                                       | Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.                                                                                      |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.                                                                  | Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.                                                                                    |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.                                                                                                        | Turno vigente. Solo lectura; no permite administrar categorías.                                                                                                                             |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.                                                                       | Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | El stock exige área activa coincidente. El rol de cocina no recibe visibilidad general de existencias de cocina, bodega, otras cocinas ni otras áreas.                                      |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.                | Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.                                   |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.                                                              | Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen. |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `kitchen`, utilizando origen, ruta, productos, presentaciones y políticas válidas.                                 | Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.                                  |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Recibir remisiones cambia cantidades y custodia en destino. Corresponde al rol de recepción autorizado, no automáticamente al cocinero.                                                     |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La cancelación no se concede por defecto al cocinero. Una necesidad de cancelar solicitudes propias deberá definirse como política explícita o excepción operativa auditada.                |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.                                                                  | Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.                                                                   |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde cocina o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.        |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                     | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                                     |
+| ---------------------------------------- | --------------------------------- | --------------------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de cocina satélite. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de cocina satélite. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de cocina satélite. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de cocina satélite. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.        |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para cocinero_satelite | Alcance aprobado                                                                                                                   | Condición                                                                                                                                                                                                                                     |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**           | CTX-KITCHEN-PULSO — turno publicado y vigente, rol `cocinero_satelite`, sede autorizada y área operativa válida de tipo `kitchen`. | Carril operativo. Permite entrar a PULSO y mostrar el contexto de cocina. No autoriza por sí solo consultar comandas, cambiar estados de preparación, registrar faltantes, rehacer productos, operar ventas, pagos, caja, puntos ni entregas. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                             | Capacidad `BASE_AND_OPERATIONAL` de excepción. Requiere autoridad base explícita, turno, check-in, reautenticación fuerte, motivo y auditoría reforzada.                                                                                      |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para cocinero_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         0 |            6 |
+| NEXO       |                 63 |        10 |           53 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         1 |            1 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **11** |      **101** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO DE COCINA VÁLIDO
+        ↓
+ENTRAR A PULSO
+        ↓
+FUNCIONES ATÓMICAS DE COMANDAS Y PREPARACIÓN
+PENDIENTES DE CATÁLOGO
+
+TURNO + CHECK-IN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR REFERENCIAS DE SOLICITUD
+        ↓
+CONSULTAR / CREAR / EDITAR SOLICITUD PROPIA
+```
+
+La matriz no autoriza al cocinero a preparar, despachar o recibir una remisión ni a operar inventario físico. Tampoco autoriza todavía la lectura o mutación de comandas de cocina: esas capacidades no existen en el catálogo canónico vigente y no pueden deducirse de `pulso.access`.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- gestión de personal, documentos, turnos, permisos o seguridad;
+- lotes, órdenes, recetas maestras o recetario de FOGO por inferencia;
+- entradas, retiros, traslados, conteos, ajustes, ubicaciones, LPN o validaciones de inventario;
+- preparación, despacho o recepción de remisiones;
+- cancelación de remisiones por defecto;
+- operaciones logísticas, de conductor, cumplimiento o bodega;
+- compras, recepciones y proveedores de ORIGO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- configuración de sedes, políticas, rutas, impresión o catálogos maestros;
+- ventas, pagos, caja, anulaciones, devoluciones o descuentos por inferencia desde PULSO;
+- `pulso.delivery.deliveries.override` sin autoridad base separada;
+- acceso a clientes, puntos o canjes de fidelización por inferencia;
+- acceso a APP-REVIEW o a sedes no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente solo contiene `pulso.access` y una excepción de entrega. Por tanto, todavía no representa las operaciones ordinarias de una cocina satélite, entre ellas:
+
+- consultar la cola de comandas asignada a cocina;
+- consultar detalle, modificadores, notas, alergias, restricciones y prioridad de cada ítem;
+- aceptar o iniciar una preparación;
+- cambiar estados como pendiente, en preparación, listo, entregado o rechazado;
+- confirmar cantidades, porciones y responsable de preparación;
+- registrar un producto temporalmente agotado o no disponible;
+- solicitar sustitución o aclaración de una comanda;
+- registrar rehacer, merma, desperdicio, error de preparación o devolución a cocina;
+- consultar fichas técnicas, recetas publicadas y porciones aplicables a cocina satélite;
+- separar preparación de alimentos de acciones comerciales de venta y cobro;
+- imprimir o reimprimir tickets de producción cuando corresponda;
+- consultar historial operativo de cocina dentro de la sede y el turno;
+- gestionar tiempos, alertas, secuencias y priorización de preparación;
+- atribuir cada transición al actor real, incluso desde dispositivo compartido.
+
+Estas brechas no amplían la matriz. Hasta que existan permisos atómicos canónicos, `pulso.access` no podrá interpretarse como autorización implícita para consultar, preparar o modificar comandas. También deberá definirse expresamente si las recetas operativas de cocina satélite pertenecen a PULSO, FOGO o a una capacidad transversal con aplicación propietaria única, sin confundirlas con la planificación y ejecución de producción central.
+
+#### 12. Dispositivo compartido de cocina satélite
+
+La auditoría no identificó una plantilla específica y canónica para cocina satélite. La plantilla legacy `production_center` no puede reutilizarse automáticamente porque fue concebida para producción central, utiliza `navigation_role = cocinero` del catálogo base heredado y no distingue la función `cocinero_satelite` de los roles `produccion_cocina`, `produccion_panaderia` y `produccion_reposteria`.
+
+Una futura plantilla de cocina satélite podrá habilitar PULSO, NEXO y SHELL como superficies disponibles, pero no concederá por sí misma la matriz del rol. Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO cocinero_satelite VÁLIDO
++ ÁREA DEL DISPOSITIVO COINCIDENTE
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política de actor deberá exigir coincidencia de sede y área y validar expresamente el rol `cocinero_satelite`. No se aceptará `same_site_active_worker` como autorización suficiente, una sesión anónima, una acción atribuida al usuario técnico ni una navegación basada únicamente en `navigation_role`. La definición de la plantilla concreta corresponde a AUTH-RBAC-023 y no forma parte de esta tarea.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró tres asignaciones operativas legacy para `cocinero_satelite`: NEXO acceso, remisiones y solicitud de remisiones. Esta propuesta conserva la intención mínima del flujo, reemplaza la capacidad genérica de remisiones por claves canónicas y añade únicamente las referencias necesarias para operar la solicitud y la entrada controlada a PULSO.
+
+```text
+3 ASIGNACIONES LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+11 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 6 referencias de catálogo y políticas
+├── 3 capacidades sobre solicitudes/remisiones
+├── 1 referencia de rutas de abastecimiento
+└── 1 entrada a PULSO
+```
+
+El aumento no concede inventario general, autoridad logística, producción central ni operaciones comerciales implícitas. Sustituye dependencias internas del flujo de solicitud por referencias explícitas y deja documentadas las capacidades de cocina que aún faltan en el catálogo.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Cada permiso concedido tiene contexto y recurso explícitos.
+- ✅ El rol exige turno, sede y área de cocina válidos.
+- ✅ Las mutaciones concedidas exigen check-in cuando corresponde.
+- ✅ `pulso.access` no se utiliza como wildcard de PULSO.
+- ✅ No se concedieron operaciones físicas de inventario, logística o producción central.
+- ✅ No se concedieron recetas de FOGO por inferencia.
+- ✅ No se concedieron capacidades financieras, laborales o de seguridad.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW y sedes no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                         | Impacto                                                                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-RBAC-011 a AUTH-RBAC-013 | Deberán definir las demás funciones satélite sin heredar automáticamente esta matriz.                                                                    |
+| AUTH-RBAC-021                 | Podrá añadir excepciones operativas individuales sin sustituir turno, área, rol ni permiso exacto.                                                       |
+| AUTH-RBAC-023                 | Deberá definir una plantilla específica de cocina satélite y excluir la reutilización automática de `production_center`.                                 |
+| AUTH-RBAC-025                 | Deberá proyectar estas 11 concesiones en el dataset canónico de matriz operativa.                                                                        |
+| AUTH-RBAC-027                 | Deberá confirmar que ninguna concesión produzca acceso operativo global accidental.                                                                      |
+| BLOQUE E                      | Deberá distinguir entrada, permiso, recurso y razones de bloqueo en la decisión final.                                                                   |
+| PULSO y roadmap funcional     | Deberán crear y clasificar permisos atómicos para comandas, preparación, estados, faltantes, mermas, tiempos y tickets de cocina.                        |
+| FOGO y arquitectura funcional | Deberán resolver la propiedad de recetas aplicables a cocina satélite sin mezclar el rol con producción central ni conceder el recetario por inferencia. |
+| BLOQUE R                      | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                 |
+
+#### 16. Criterios de aprobación
+
+1. `cocinero_satelite` queda definido como rol operativo temporal de preparación de alimentos en cocina de punto de venta.
+2. Las 11 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, sede y área de cocina válidos.
+4. Las acciones vivas o mutadoras concedidas exigen check-in cuando corresponde.
+5. El rol puede consultar referencias y solicitar abastecimiento sin acceder a inventario general.
+6. La actualización se limita a solicitudes propias y editables.
+7. No puede preparar, despachar, recibir o cancelar remisiones por defecto.
+8. `pulso.access` no autoriza comandas, preparación, ventas, pagos ni caja por sí solo.
+9. `fogo.production.recipe_book.view` permanece fuera de la matriz mientras no exista una decisión funcional y contractual específica para recetas de cocina satélite.
+10. El rol no recibe permisos de producción central por similitud semántica con `produccion_cocina`.
+11. La plantilla legacy `production_center` no puede utilizarse como plantilla de cocina satélite sin rediseño y aprobación.
+12. `delivery.override` permanece fuera de la matriz ordinaria.
+13. Las 101 capacidades restantes permanecen denegadas por defecto.
+14. No se implementa código, Supabase ni migraciones en esta tarea.
+15. `AUTH-RBAC-011` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-009 | APROBADA    |
+| AUTH-RBAC-010 | APROBADA    |
+| AUTH-RBAC-011 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+### ✅ AUTH-RBAC-011 — Crear matriz de servicio_salon
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-011 — Crear matriz de servicio_salon                     |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de servicio de salón     |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-010 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-012 — Crear matriz de mostrador_satelite                 |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `servicio_salon` durante un turno válido en un área de servicio de una sede satélite, sin recuperar permisos permanentes del rol base legacy `mesero` y sin convertir el acceso a PULSO en autorización implícita para gestionar mesas, tomar pedidos, modificar comandas, confirmar entregas, cobrar o cerrar servicios que todavía no están representados por permisos atómicos.
+
+#### 3. Decisión principal
+
+`servicio_salon` representa la función temporal de atención de mesas, acompañamiento al cliente y servicio de salón en un punto de venta satélite. Su autoridad existe únicamente dentro del contexto operativo vigente y sobre recursos compatibles con la sede, el área, la relación del actor y la etapa del servicio.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL servicio_salon
++ SEDE AUTORIZADA
++ ÁREA ACTIVA DE TIPO service
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ RECURSO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE SERVICIO DE SALÓN
+```
+
+No se admite:
+
+```text
+employees.role = mesero → acceso permanente
+pulso.access → autorización para gestionar mesas, pedidos o comandas
+dispositivo de salón → rol automático
+PIN del dispositivo → sustituto del permiso
+sede seleccionada → autorización
+servicio_salon → acceso a inventario general
+servicio_salon → acceso automático a caja, cocina, mostrador o producción
+servicio_salon → delivery.override automático
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                          |
+| -------------------------------------------- | -------: | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       11 | Se conceden por el carril operativo dentro del contexto de servicio de salón y de los recursos expresamente definidos.                          |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                            |
+| Capacidades no asignadas                     |      101 | Permanecen denegadas por defecto por pertenecer al carril base, a otros procesos operativos o a acciones sensibles ajenas al servicio de salón. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                                    |
+
+La matriz contiene **11 concesiones operativas a nivel de clave** y **101 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                          | Significado                                                                                                                                      |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CTX-SERVICE-APP`               | Entrada operativa a una aplicación con turno y rol válidos. El permiso puede mostrar requisitos faltantes, pero no concede capacidades internas. |
+| `CTX-SERVICE-REF`               | Consulta mínima de referencias necesarias para solicitar abastecimiento del salón, limitada a la sede, el área y el flujo vigentes.              |
+| `CTX-SERVICE-REMISSION`         | Consulta de remisiones por relación legítima con la sede destino o el actor solicitante.                                                         |
+| `CTX-SERVICE-REMISSION-OWN`     | Modificación exclusiva de solicitudes propias y todavía editables.                                                                               |
+| `CTX-SERVICE-REMISSION-REQUEST` | Creación de solicitudes para la sede y el área activas con ruta, productos, presentaciones y políticas válidas.                                  |
+| `CTX-SERVICE-PULSO`             | Entrada a la superficie de servicio de salón durante turno válido. No sustituye permisos de mesas, pedidos, comandas, entrega, cobro o cierre.   |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por el nombre del rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `servicio_salon` requiere un área operativa concreta compatible con el tipo `service` y habilitada para la sede del turno.
+4. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno y rol válidos.
+5. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+6. La sede activa se deriva del contexto válido; la sede seleccionada, primaria o enviada por el cliente no concede autoridad.
+7. El permiso `pulso.access` solo permite entrar a PULSO y cargar la superficie compatible. No autoriza gestionar mesas, tomar pedidos, modificar comandas, confirmar entregas, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios.
+8. La consulta de catálogo desde NEXO se limita a los atributos necesarios para identificar productos y presentaciones solicitables para el salón.
+9. La consulta de remisiones se limita a la relación del actor o de la sede destino; no concede visibilidad de toda la red.
+10. La actualización de remisiones se limita a solicitudes propias, estados editables y campos permitidos, con reautenticación y auditoría.
+11. La solicitud de remisiones debe ser idempotente y validar políticas, ruta, destino, cantidades y presentaciones.
+12. El catálogo actual no contiene permisos atómicos de mesas, pedidos, comandas, entrega ordinaria o atención al cliente. Esas capacidades no se deducen de `pulso.access`.
+13. `pulso.delivery.deliveries.override` no se asigna al rol. Solo podrá obtenerse mediante autoridad base explícita y contexto operativo simultáneo.
+14. APP-REVIEW, entornos demo, recursos aislados y sedes no habilitadas permanecen excluidos.
+15. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+16. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `servicio_salon`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------- | --------------------- | ---------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la servicio de salón.                                                                                                 |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la servicio de salón.                                                                                                 |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la servicio de salón.                                                                                                 |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la servicio de salón.                                                                                                 |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | El recetario de FOGO no se concede por inferencia. La consulta de fórmulas o fichas de alimentos deberá contar con un permiso atómico y contrato de aplicabilidad propios antes de incorporarse a este rol. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                      |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para servicio_salon | Alcance aprobado                                                                                                                                                                                        | Condición                                                                                                                                                                                   |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-APP — turno publicado y vigente, rol efectivo `servicio_salon`, sede activa autorizada y área operativa válida de tipo `service`. No exige check-in para mostrar la entrada y los bloqueos. | Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.                                               |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.                    | Turno vigente y rol `servicio_salon` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.                   |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.                                                                                                    | Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.                                                                                      |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.                                                               | Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.                                                                                    |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.                                                                                                     | Turno vigente. Solo lectura; no permite administrar categorías.                                                                                                                             |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.                                                                    | Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | El stock exige área activa coincidente. El rol de cocina no recibe visibilidad general de existencias de cocina, bodega, otras cocinas ni otras áreas.                                      |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.             | Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.                                   |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.                                                           | Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen. |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `service`, utilizando origen, ruta, productos, presentaciones y políticas válidas.                              | Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.                                  |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Recibir remisiones cambia cantidades y custodia en destino. Corresponde al rol de recepción autorizado, no automáticamente al personal de salón.                                            |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La cancelación no se concede por defecto al personal de salón. Una necesidad de cancelar solicitudes propias deberá definirse como política explícita o excepción operativa auditada.       |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**        | CTX-SERVICE-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.                                                               | Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.                                                                   |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el salón o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.      |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                  | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| ---------------------------------------- | --------------------------------- | --------------------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la servicio de salón.     |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la servicio de salón.     |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la servicio de salón.     |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la servicio de salón.     |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para servicio_salon | Alcance aprobado                                                                                                                | Condición                                                                                                                                                                                                                                                        |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**        | CTX-SERVICE-PULSO — turno publicado y vigente, rol `servicio_salon`, sede autorizada y área operativa válida de tipo `service`. | Carril operativo. Permite entrar a PULSO y mostrar el contexto de servicio de salón. No autoriza por sí solo gestionar mesas, tomar pedidos, modificar comandas, confirmar entregas, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                          | Capacidad `BASE_AND_OPERATIONAL` de excepción. Requiere autoridad base explícita, turno, check-in, reautenticación fuerte, motivo y auditoría reforzada.                                                                                                         |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para servicio_salon | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ---------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**               | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         0 |            6 |
+| NEXO       |                 63 |        10 |           53 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         1 |            1 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **11** |      **101** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO DE SERVICIO DE SALÓN VÁLIDO
+        ↓
+ENTRAR A PULSO
+        ↓
+FUNCIONES ATÓMICAS DE MESAS, PEDIDOS Y SERVICIO
+PENDIENTES DE CATÁLOGO
+
+TURNO + CHECK-IN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR REFERENCIAS DE SOLICITUD
+        ↓
+CONSULTAR / CREAR / EDITAR SOLICITUD PROPIA
+```
+
+La matriz no autoriza al personal de salón a preparar, despachar o recibir una remisión ni a operar inventario físico. Tampoco autoriza todavía la gestión de mesas, pedidos, comandas, entregas ordinarias o cobros: esas capacidades no existen en el catálogo canónico vigente y no pueden deducirse de `pulso.access`.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- gestión de personal, documentos, turnos, permisos o seguridad;
+- lotes, órdenes, recetas maestras o recetario de FOGO;
+- entradas, retiros, traslados, conteos, ajustes, ubicaciones, LPN o validaciones de inventario;
+- preparación, despacho o recepción de remisiones;
+- cancelación de remisiones por defecto;
+- operaciones logísticas, de conductor, cumplimiento o bodega;
+- preparación de alimentos, barra, cocina, mostrador o producción central;
+- compras, recepciones y proveedores de ORIGO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- configuración de sedes, políticas, rutas, impresión o catálogos maestros;
+- ventas, pagos, caja, anulaciones, devoluciones o descuentos por inferencia desde PULSO;
+- `pulso.delivery.deliveries.override` sin autoridad base separada;
+- acceso a clientes, puntos o canjes de fidelización por inferencia;
+- acceso a APP-REVIEW o a sedes no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente solo contiene `pulso.access` y una excepción de entrega. Por tanto, todavía no representa las operaciones ordinarias del servicio de salón, entre ellas:
+
+- consultar mesas, zonas o puestos asignados al área activa;
+- abrir, consultar o actualizar el servicio de una mesa;
+- tomar y modificar pedidos dentro de estados permitidos;
+- consultar comandas y su avance sin modificar procesos de cocina o barra;
+- registrar observaciones, modificadores, alergias y restricciones del cliente;
+- confirmar entrega ordinaria de productos a una mesa o cliente;
+- registrar productos faltantes, devoluciones o aclaraciones del servicio;
+- solicitar separación, unión o traslado de mesas mediante reglas aprobadas;
+- identificar responsable del pedido, de la entrega y de cada transición;
+- solicitar cuenta, dividir consumo o remitir el cobro al rol autorizado;
+- consultar tiempos, alertas y prioridades del servicio;
+- gestionar pedidos para llevar cuando la sede y el proceso lo permitan;
+- imprimir o reimprimir comandas o cuentas mediante permisos específicos;
+- consultar historial operativo limitado a la sede, el área y el turno;
+- operar desde dispositivo compartido conservando atribución al actor real.
+
+Estas brechas no amplían la matriz. Hasta que existan permisos atómicos canónicos, `pulso.access` no podrá interpretarse como autorización implícita para gestionar mesas, pedidos, comandas, entregas, cobros o cierres. Las capacidades deberán asignarse a PULSO como aplicación propietaria del proceso comercial y separarse de caja, cocina, barra y mostrador.
+
+#### 12. Dispositivo compartido de servicio de salón
+
+La auditoría no identificó una plantilla específica y canónica para servicio de salón. Una futura plantilla o dispositivo móvil de salón podrá habilitar PULSO, NEXO y SHELL como superficies disponibles, pero no concederá por sí mismo la matriz del rol.
+
+Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO servicio_salon VÁLIDO
++ ÁREA DEL DISPOSITIVO COINCIDENTE
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política de actor deberá exigir coincidencia de sede y área y validar expresamente el rol `servicio_salon`. No se aceptará `same_site_active_worker` como autorización suficiente, una sesión anónima, una acción atribuida al usuario técnico ni una navegación basada únicamente en `navigation_role`. La definición de la plantilla concreta corresponde a AUTH-RBAC-023 y no forma parte de esta tarea.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró que `servicio_salon` tiene uso operativo real —66 turnos históricos y asignación en dos sedes— pero **cero permisos operativos propios**. Su funcionamiento actual puede depender del rol base legacy `mesero`, de rutas que solo verifican turno o de lógica sin permiso atómico.
+
+Esta propuesta elimina esa dependencia conceptual y define una matriz operativa explícita:
+
+```text
+0 ASIGNACIONES OPERATIVAS PROPIAS
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+11 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 6 referencias de catálogo y políticas
+├── 3 capacidades sobre solicitudes/remisiones
+├── 1 referencia de rutas de abastecimiento
+└── 1 entrada a PULSO
+```
+
+Las 11 concesiones no intentan reconstruir silenciosamente los permisos legacy de `mesero`. Solo habilitan el abastecimiento propio del salón y la entrada controlada a PULSO. Las capacidades ordinarias de atención permanecen pendientes de permisos atómicos.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Cada permiso concedido tiene contexto y recurso explícitos.
+- ✅ El rol exige turno, sede y área de tipo `service` válidos.
+- ✅ Las mutaciones concedidas exigen check-in cuando corresponde.
+- ✅ `pulso.access` no se utiliza como wildcard de PULSO.
+- ✅ No se concedieron operaciones físicas de inventario, logística, caja, cocina, barra o producción.
+- ✅ No se concedieron capacidades financieras, laborales o de seguridad.
+- ✅ No se heredaron permisos del rol base legacy `mesero`.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW y sedes no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                     | Impacto                                                                                                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTH-RBAC-012             | Deberá definir `mostrador_satelite` sin heredar automáticamente esta matriz ni confundir entrega de mostrador con servicio de salón.                         |
+| AUTH-RBAC-013             | Deberá definir `operador_integral_satelite` mediante capacidades explícitas, no mediante la unión automática de todos los roles satélite.                    |
+| AUTH-RBAC-021             | Podrá añadir excepciones operativas individuales sin sustituir turno, área, rol ni permiso exacto.                                                           |
+| AUTH-RBAC-023             | Deberá definir dispositivos de salón compatibles y limitar actor, sede, área, aplicaciones y duración.                                                       |
+| AUTH-RBAC-025             | Deberá proyectar estas 11 concesiones en el dataset canónico de matriz operativa.                                                                            |
+| AUTH-RBAC-027             | Deberá confirmar que ninguna concesión produzca acceso operativo global accidental.                                                                          |
+| BLOQUE E                  | Deberá distinguir entrada, permiso, recurso y razones de bloqueo en la decisión final.                                                                       |
+| PULSO y roadmap funcional | Deberán crear y clasificar permisos atómicos para mesas, pedidos, comandas, entrega ordinaria, cuentas, cobro derivado, historial y atribución del servicio. |
+| BLOQUE R                  | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                     |
+
+#### 16. Criterios de aprobación
+
+1. `servicio_salon` queda definido como rol operativo temporal de atención y servicio de salón.
+2. Las 11 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, sede y área de tipo `service` válidos.
+4. Las acciones vivas o mutadoras concedidas exigen check-in cuando corresponde.
+5. El rol puede consultar referencias y solicitar abastecimiento sin acceder a inventario general.
+6. La actualización se limita a solicitudes propias y editables.
+7. No puede preparar, despachar, recibir o cancelar remisiones por defecto.
+8. `pulso.access` no autoriza mesas, pedidos, comandas, entregas, cobros ni cierres por sí solo.
+9. El rol no recibe permisos de caja, cocina, barra, mostrador o producción por similitud funcional.
+10. No se recuperan permisos del rol base legacy `mesero`.
+11. `delivery.override` permanece fuera de la matriz ordinaria.
+12. Las 101 capacidades restantes permanecen denegadas por defecto.
+13. No se implementa código, Supabase ni migraciones en esta tarea.
+14. `AUTH-RBAC-012` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-010 | APROBADA    |
+| AUTH-RBAC-011 | APROBADA    |
+| AUTH-RBAC-012 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-012 — Crear matriz de mostrador_satelite
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-012 — Crear matriz de mostrador_satelite                 |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de mostrador satélite    |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-011 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-013 — Crear matriz de operador_integral_satelite         |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `mostrador_satelite` durante un turno válido en el área de Mostrador de una sede satélite, sin atribuirle un rol base legacy inexistente y sin convertir el acceso a PULSO en autorización implícita para consultar colas, alistar pedidos, empacar productos, cambiar estados, confirmar entregas o ejecutar operaciones comerciales que todavía no están representadas por permisos atómicos.
+
+#### 3. Decisión principal
+
+`mostrador_satelite` representa la función temporal de **atención, entrega y operación de mostrador** en un punto de venta satélite. Su autoridad existe únicamente dentro del contexto operativo vigente y sobre recursos compatibles con la sede, el área exacta, la relación del actor, el canal del pedido y la etapa de entrega.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL mostrador_satelite
++ SEDE AUTORIZADA
++ ÁREA ACTIVA DE MOSTRADOR
++ TIPO DE ÁREA CANÓNICO RESUELTO
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ RECURSO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE MOSTRADOR
+```
+
+No se admite:
+
+```text
+nombre del área = Mostrador → autorización
+rol base aproximado → permisos de mostrador permanentes
+pulso.access → autorización para alistar o entregar cualquier pedido
+dispositivo de mostrador → rol automático
+PIN del dispositivo → sustituto del permiso
+sede seleccionada → autorización
+mostrador_satelite → acceso a inventario general
+mostrador_satelite → acceso automático a caja, salón, barra, cocina o producción
+mostrador_satelite → delivery.override automático
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                  |
+| -------------------------------------------- | -------: | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       11 | Se conceden por el carril operativo dentro del contexto de mostrador y de los recursos expresamente definidos.                          |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                    |
+| Capacidades no asignadas                     |      101 | Permanecen denegadas por defecto por pertenecer al carril base, a otros procesos operativos o a acciones sensibles ajenas al mostrador. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                            |
+
+La matriz contiene **11 concesiones operativas a nivel de clave** y **101 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                          | Significado                                                                                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-COUNTER-APP`               | Entrada operativa a una aplicación con turno y rol válidos. El permiso puede mostrar requisitos faltantes, pero no concede capacidades internas.   |
+| `CTX-COUNTER-REF`               | Consulta mínima de referencias necesarias para abastecimiento y operación del mostrador, limitada a la sede, el área y el flujo vigentes.          |
+| `CTX-COUNTER-REMISSION`         | Consulta de remisiones por relación legítima con la sede destino o el actor solicitante.                                                           |
+| `CTX-COUNTER-REMISSION-OWN`     | Modificación exclusiva de solicitudes propias y todavía editables.                                                                                 |
+| `CTX-COUNTER-REMISSION-REQUEST` | Creación de solicitudes para la sede y el área activas con ruta, productos, presentaciones y políticas válidas.                                    |
+| `CTX-COUNTER-PULSO`             | Entrada a la superficie de mostrador durante turno válido. No sustituye permisos de cola, alistamiento, empaque, estados, entrega, cobro o cierre. |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por el nombre del rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `mostrador_satelite` requiere el área concreta de Mostrador configurada para la sede y compatible con el tipo de área canónico registrado. El nombre visible del área no sustituye esa clasificación.
+4. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno y rol válidos.
+5. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+6. La sede activa se deriva del contexto válido; la sede seleccionada, primaria o enviada por el cliente no concede autoridad.
+7. El permiso `pulso.access` solo permite entrar a PULSO y cargar la superficie compatible. No autoriza consultar colas, reclamar pedidos, alistar, empacar, cambiar estados, confirmar entregas, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios.
+8. La consulta de catálogo desde NEXO se limita a los atributos necesarios para identificar productos, presentaciones, empaques e insumos solicitables para el mostrador.
+9. La consulta de remisiones se limita a la relación del actor o de la sede destino; no concede visibilidad de toda la red.
+10. La actualización de remisiones se limita a solicitudes propias, estados editables y campos permitidos, con reautenticación y auditoría.
+11. La solicitud de remisiones debe ser idempotente y validar políticas, ruta, destino, cantidades y presentaciones.
+12. El catálogo actual no contiene permisos atómicos de cola de entrega, alistamiento, empaque, cambio de estado o entrega ordinaria. Esas capacidades no se deducen de `pulso.access`.
+13. `pulso.delivery.deliveries.override` no se asigna al rol. Solo podrá obtenerse mediante autoridad base explícita y contexto operativo simultáneo.
+14. APP-REVIEW, entornos demo, recursos aislados y sedes no habilitadas permanecen excluidos.
+15. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+16. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `mostrador_satelite`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------- | --------------------- | -------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de mostrador.                                                                                            |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de mostrador.                                                                                            |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de mostrador.                                                                                            |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación de mostrador.                                                                                            |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | El recetario de FOGO no se concede por inferencia. La consulta de fórmulas o fichas de alimentos deberá contar con un permiso atómico y contrato de aplicabilidad propios antes de incorporarse a este rol. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                      |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para mostrador_satelite | Alcance aprobado                                                                                                                                                                                                                                                   | Condición                                                                                                                                                                                   |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-APP — turno publicado y vigente, rol efectivo `mostrador_satelite`, sede activa autorizada y área operativa válida de Mostrador, resuelta desde el área exacta del turno y su tipo canónico. No exige check-in para mostrar la entrada y los bloqueos. | Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.                                               |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.                                                                               | Turno vigente y rol `mostrador_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.               |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.                                                                                                                                                               | Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.                                                                                      |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.                                                                                                                          | Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.                                                                                    |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.                                                                                                                                                                | Turno vigente. Solo lectura; no permite administrar categorías.                                                                                                                             |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.                                                                                                                               | Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | El stock exige área activa coincidente. El rol de cocina no recibe visibilidad general de existencias de cocina, bodega, otras cocinas ni otras áreas.                                      |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.                                                                        | Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.                                   |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.                                                                                                                      | Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen. |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área de Mostrador activa, utilizando origen, ruta, productos, presentaciones y políticas válidas.                                                                               | Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.                                  |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Recibir remisiones cambia cantidades y custodia en destino. Corresponde al rol de recepción autorizado, no automáticamente al personal de mostrador.                                        |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La cancelación no se concede por defecto al personal de mostrador. Una necesidad de cancelar solicitudes propias deberá definirse como política explícita o excepción operativa auditada.   |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-COUNTER-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.                                                                                                                          | Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.                                                                   |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                     |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde el mostrador o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.  |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                                             | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                      |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                               |
+| ---------------------------------------- | --------------------------------- | --------------------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de mostrador. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de mostrador. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de mostrador. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación de mostrador. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.  |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para mostrador_satelite | Alcance aprobado                                                                                                                                                                           | Condición                                                                                                                                                                                                                                                                               |
+| ------------------------------------ | --------------------------------------- | ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**            | CTX-COUNTER-PULSO — turno publicado y vigente, rol `mostrador_satelite`, sede autorizada y área operativa válida de Mostrador, resuelta desde el área exacta del turno y su tipo canónico. | Carril operativo. Permite entrar a PULSO y mostrar el contexto de mostrador. No autoriza por sí solo consultar colas de entrega, alistar o empacar pedidos, cambiar estados, confirmar entregas ordinarias, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                     | Capacidad `BASE_AND_OPERATIONAL` de excepción. Requiere autoridad base explícita, turno, check-in, reautenticación fuerte, motivo y auditoría reforzada.                                                                                                                                |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para mostrador_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         0 |            6 |
+| NEXO       |                 63 |        10 |           53 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         1 |            1 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **11** |      **101** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO DE MOSTRADOR VÁLIDO
+        ↓
+ENTRAR A PULSO
+        ↓
+FUNCIONES ATÓMICAS DE COLA, ALISTAMIENTO,
+EMPAQUE, ESTADOS Y ENTREGA
+PENDIENTES DE CATÁLOGO
+
+TURNO + CHECK-IN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR REFERENCIAS DE SOLICITUD
+        ↓
+CONSULTAR / CREAR / EDITAR SOLICITUD PROPIA
+```
+
+La matriz no autoriza al personal de mostrador a preparar, despachar o recibir una remisión ni a operar inventario físico. Tampoco autoriza todavía a consultar colas de entrega, reclamar pedidos, alistar o empacar productos, cambiar estados o confirmar entregas ordinarias: esas capacidades no existen en el catálogo canónico vigente y no pueden deducirse de `pulso.access`.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- gestión de personal, documentos, turnos, permisos o seguridad;
+- lotes, órdenes, recetas maestras o recetario de FOGO;
+- entradas, retiros, traslados, conteos, ajustes, ubicaciones, LPN o validaciones de inventario;
+- preparación, despacho o recepción de remisiones;
+- cancelación de remisiones por defecto;
+- operaciones logísticas, de conductor, cumplimiento o bodega;
+- preparación de alimentos o bebidas;
+- operación de caja, servicio de salón, barra, cocina o producción central;
+- compras, recepciones y proveedores de ORIGO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- configuración de sedes, políticas, rutas, impresión o catálogos maestros;
+- ventas, pagos, caja, anulaciones, devoluciones o descuentos por inferencia desde PULSO;
+- colas, alistamiento, empaque, estados o entrega ordinaria por inferencia desde `pulso.access`;
+- `pulso.delivery.deliveries.override` sin autoridad base separada;
+- acceso a clientes, puntos o canjes de fidelización por inferencia;
+- acceso a APP-REVIEW o a sedes no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente solo contiene `pulso.access` y una excepción de entrega. Por tanto, todavía no representa las operaciones ordinarias del mostrador, entre ellas:
+
+- consultar la cola de pedidos asignados al mostrador;
+- distinguir pedidos para mesa, recogida, domicilio u otro canal autorizado;
+- consultar productos terminados provenientes de cocina o barra;
+- reclamar o asumir el alistamiento de un pedido;
+- validar integridad, cantidades, presentación y observaciones antes del empaque;
+- alistar empaques, acompañamientos, utensilios y elementos complementarios;
+- registrar faltantes, daños, errores o devoluciones hacia el área de origen;
+- marcar un pedido como recibido en mostrador, en alistamiento o listo para entrega;
+- identificar al cliente, repartidor o actor autorizado para recibir;
+- confirmar la entrega ordinaria y conservar actor, hora, canal y evidencia;
+- administrar pedidos no reclamados, entregas parciales o incidencias;
+- imprimir o reimprimir tickets, etiquetas o comprobantes mediante permisos específicos;
+- consultar tiempos, alertas, prioridades e historial limitado al turno y la sede;
+- operar desde un dispositivo compartido conservando atribución al actor real.
+
+Estas brechas no amplían la matriz. Hasta que existan permisos atómicos canónicos, `pulso.access` no podrá interpretarse como autorización implícita para consultar, alistar, empacar, cambiar estados o entregar pedidos. PULSO deberá conservar la propiedad del proceso comercial y separar claramente mostrador, caja, servicio de salón, cocina, barra y entrega excepcional.
+
+#### 12. Dispositivo compartido de mostrador
+
+La auditoría no identificó una plantilla específica y canónica para mostrador. Una futura terminal de mostrador podrá habilitar PULSO, NEXO y SHELL como superficies disponibles, pero no concederá por sí misma la matriz del rol.
+
+Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO mostrador_satelite VÁLIDO
++ SEDE Y ÁREA DEL DISPOSITIVO COINCIDENTES
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política de actor deberá exigir coincidencia de sede y área y validar expresamente el rol `mostrador_satelite`. No se aceptará `same_site_active_worker` como autorización suficiente, una sesión anónima, una acción atribuida al usuario técnico ni una navegación basada únicamente en `navigation_role`. La definición de la plantilla concreta corresponde a AUTH-RBAC-023 y no forma parte de esta tarea.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró que `mostrador_satelite` está configurado en **Vento Café / Mostrador**, pero registra **cero turnos históricos, cero perfiles y cero permisos operativos propios**. No existe un rol base legacy equivalente directo denominado `mostrador`.
+
+Esto exige conservar el rol para definición funcional, pero impide afirmar que ya esté operando realmente. Antes de su implementación deberán verificarse el uso actual del área, el personal que hoy cumple esa función, las pantallas existentes y si otro rol se está utilizando como sustituto informal.
+
+La propuesta define una matriz explícita sin inventar herencia:
+
+```text
+0 TURNOS HISTÓRICOS
++ 1 ASIGNACIÓN SEDE / ÁREA
++ 0 PERMISOS OPERATIVOS
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+11 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 6 referencias de catálogo y políticas
+├── 3 capacidades sobre solicitudes/remisiones
+├── 1 referencia de rutas de abastecimiento
+└── 1 entrada a PULSO
+```
+
+Las 11 concesiones solo habilitan abastecimiento propio y entrada controlada a PULSO. No demuestran que el flujo de mostrador esté implementado ni sustituyen la auditoría funcional y de experiencia prevista para PULSO.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Cada permiso concedido tiene contexto y recurso explícitos.
+- ✅ El rol exige turno, sede y área exacta de Mostrador válidos.
+- ✅ Las mutaciones concedidas exigen check-in cuando corresponde.
+- ✅ `pulso.access` no se utiliza como wildcard de PULSO.
+- ✅ No se concedieron operaciones físicas de inventario, logística, caja, salón, barra, cocina o producción.
+- ✅ No se concedieron capacidades financieras, laborales o de seguridad.
+- ✅ No se inventó un rol base legacy equivalente.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW y sedes no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                     | Impacto                                                                                                                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-RBAC-013             | Deberá definir `operador_integral_satelite` mediante capacidades explícitas, no mediante la unión automática de caja, barra, cocina, salón y mostrador. |
+| AUTH-RBAC-021             | Podrá añadir excepciones operativas individuales sin sustituir turno, área, rol ni permiso exacto.                                                      |
+| AUTH-RBAC-023             | Deberá definir terminales de mostrador compatibles y limitar actor, sede, área, aplicaciones y duración.                                                |
+| AUTH-RBAC-025             | Deberá proyectar estas 11 concesiones en el dataset canónico de matriz operativa.                                                                       |
+| AUTH-RBAC-027             | Deberá confirmar que ninguna concesión produzca acceso operativo global accidental.                                                                     |
+| BLOQUE E                  | Deberá distinguir entrada, permiso, recurso, canal, etapa y razones de bloqueo en la decisión final.                                                    |
+| PULSO y roadmap funcional | Deberán crear y clasificar permisos atómicos para cola, alistamiento, empaque, estados, entrega ordinaria, incidencias, tickets, evidencia e historial. |
+| BLOQUE R                  | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                |
+
+#### 16. Criterios de aprobación
+
+1. `mostrador_satelite` queda definido como rol operativo temporal de atención, entrega y operación de mostrador.
+2. Las 11 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, sede y área exacta de Mostrador válidos.
+4. El tipo de área se resuelve desde la configuración canónica y no desde el nombre visible.
+5. Las acciones vivas o mutadoras concedidas exigen check-in cuando corresponde.
+6. El rol puede consultar referencias y solicitar abastecimiento sin acceder a inventario general.
+7. La actualización se limita a solicitudes propias y editables.
+8. No puede preparar, despachar, recibir o cancelar remisiones por defecto.
+9. `pulso.access` no autoriza colas, alistamiento, empaque, cambios de estado, entregas, cobros ni cierres por sí solo.
+10. El rol no recibe permisos de caja, salón, barra, cocina o producción por similitud funcional.
+11. No se inventa ni se recupera un rol base legacy equivalente.
+12. La existencia de una asignación en Vento Café / Mostrador no se presenta como implementación funcional terminada.
+13. `delivery.override` permanece fuera de la matriz ordinaria.
+14. Las 101 capacidades restantes permanecen denegadas por defecto.
+15. No se implementa código, Supabase ni migraciones en esta tarea.
+16. `AUTH-RBAC-013` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-011 | APROBADA    |
+| AUTH-RBAC-012 | APROBADA    |
+| AUTH-RBAC-013 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-013 — Crear matriz de operador_integral_satelite
+
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-013 — Crear matriz de operador_integral_satelite         |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz de operador integral satélite      |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-012 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-014 — Crear matriz de produccion_cocina                  |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `operador_integral_satelite` durante un turno válido en un formato satélite pequeño configurado expresamente para operación integrada, sin convertirlo en superusuario, sin fusionar automáticamente las matrices de caja, barra, cocina, salón y mostrador, y sin recuperar el permiso legacy amplio `pulso.pos.main`.
+
+#### 3. Decisión principal
+
+`operador_integral_satelite` representa una función temporal para sedes pequeñas donde una misma persona ejecuta varias responsabilidades ordinarias durante el turno. La integración pertenece al diseño operativo de la sede; no significa acceso total ni elimina la obligación de autorizar cada capacidad mediante una clave canónica exacta.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL operador_integral_satelite
++ SEDE HABILITADA COMO FORMATO INTEGRADO
++ ÁREA EXACTA CUANDO LA CONFIGURACIÓN DE LA SEDE LA EXIJA
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ RECURSO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA INTEGRADA
+```
+
+No se admite:
+
+```text
+operador_integral_satelite = superusuario
+operador_integral_satelite = unión automática de cinco matrices
+formato pequeño = ausencia de controles
+pulso.access = autorización para vender, cobrar o cerrar caja
+pulso.pos.main legacy = permiso canónico reutilizable
+dispositivo compartido = rol automático
+PIN del dispositivo = sustituto del permiso
+sede seleccionada = autorización
+rol base administrativo = ampliación del contexto operativo
+operador_integral_satelite = inventario general, logística o producción central
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                              |
+| -------------------------------------------- | -------: | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       12 | Se conceden por el carril operativo dentro del contexto de operación integrada y de los recursos expresamente definidos.                            |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                                |
+| Capacidades no asignadas                     |      100 | Permanecen denegadas por defecto por pertenecer al carril base, a otros procesos operativos o a acciones sensibles ajenas a la operación integrada. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                                        |
+
+La matriz contiene **12 concesiones operativas a nivel de clave** y **100 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                             | Significado                                                                                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CTX-INTEGRATED-APP`               | Entrada operativa a una aplicación con turno y rol válidos dentro de una sede habilitada para formato integrado. No concede capacidades internas.                  |
+| `CTX-INTEGRATED-REF`               | Consulta mínima de productos, presentaciones, políticas, categorías, unidades y rutas necesarias para abastecimiento de la sede integrada.                         |
+| `CTX-INTEGRATED-REMISSION`         | Consulta de remisiones por relación legítima con la sede destino o con el actor solicitante.                                                                       |
+| `CTX-INTEGRATED-REMISSION-OWN`     | Modificación exclusiva de solicitudes propias y todavía editables.                                                                                                 |
+| `CTX-INTEGRATED-REMISSION-REQUEST` | Creación de solicitudes para la sede integrada activa mediante rutas, productos, presentaciones y políticas válidas.                                               |
+| `CTX-INTEGRATED-REMISSION-RECEIVE` | Confirmación ordinaria de recepción física en la sede integrada activa, con validación de cantidades, estado, actor, evidencia y concurrencia.                     |
+| `CTX-INTEGRATED-PULSO`             | Entrada a la superficie comercial del formato pequeño. No sustituye permisos atómicos de pedidos, preparación, servicio, venta, pago, caja, fidelización o cierre. |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por el nombre del rol.
+2. `operador_integral_satelite` no hereda automáticamente las concesiones de `cajero_satelite`, `barista_satelite`, `cocinero_satelite`, `servicio_salon` o `mostrador_satelite`.
+3. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+4. La sede debe estar habilitada expresamente para `operador_integral_satelite`. La configuración `site_operational_roles` determina si exige un área concreta o admite el área general de la sede.
+5. Cuando la sede configure un área exacta, el turno y el recurso deberán coincidir con ella. Un `area_id` nulo no podrá utilizarse para eludir una restricción existente.
+6. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno, rol y sede válidos.
+7. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede compatible y recurso resoluble.
+8. La sede activa se deriva del contexto válido; la sede seleccionada, primaria o enviada por el cliente no concede autoridad.
+9. `pulso.access` solo permite entrar a PULSO y cargar la superficie compatible. No autoriza pedidos, preparación, servicio, venta, pago, caja, comprobantes, fidelización, anulaciones, devoluciones ni cierres.
+10. El permiso legacy amplio `pulso.pos.main` permanece bloqueado y no se incorpora a esta matriz.
+11. La consulta de catálogo desde NEXO se limita a los atributos necesarios para identificar productos, presentaciones, empaques e insumos solicitables para la sede integrada.
+12. La consulta de remisiones se limita a la relación del actor o de la sede destino; no concede visibilidad de toda la red.
+13. La actualización de remisiones se limita a solicitudes propias, estados editables y campos permitidos, con reautenticación y auditoría.
+14. La solicitud de remisiones debe ser idempotente y validar políticas, ruta, destino, cantidades y presentaciones.
+15. La recepción se limita a remisiones destinadas a la sede integrada activa y al estado empresarial que admita recepción. No permite preparar, despachar, cancelar ni corregir unilateralmente cantidades de origen.
+16. Recibir una remisión no concede consulta general de stock, movimientos, ubicaciones, LPN, entradas, retiros, traslados, conteos o ajustes.
+17. `pulso.delivery.deliveries.override` no se asigna al rol. Solo podrá obtenerse mediante autoridad base explícita y contexto operativo simultáneo.
+18. APP-REVIEW, entornos demo, recursos aislados y sedes no habilitadas permanecen excluidos.
+19. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+20. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `operador_integral_satelite`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                                                                                                                                   |
+| ---------------------------------- | ------------------------------- | --------------------- | ---------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación integrada del punto de venta.                                                                            |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación integrada del punto de venta.                                                                            |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación integrada del punto de venta.                                                                            |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece al proceso productivo de FOGO y no se asigna automáticamente a la operación integrada del punto de venta.                                                                            |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | El recetario de FOGO no se concede por inferencia. La consulta de fórmulas o fichas de alimentos deberá contar con un permiso atómico y contrato de aplicabilidad propios antes de incorporarse a este rol. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                      |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para operador_integral_satelite | Alcance aprobado                                                                                                                                                                                                                            | Condición                                                                                                                                                                                                                    |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-APP — turno publicado y vigente, rol efectivo `operador_integral_satelite`, sede activa habilitada para formato integrado y área exacta cuando la configuración la exija. No exige check-in para mostrar entrada y bloqueos. | Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.                                                                                |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.                                                     | Turno vigente y rol `operador_integral_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.                                        |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.                                                                                                                                     | Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.                                                                                                                       |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.                                                                                                | Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.                                                                                                                     |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.                                                                                                                                      | Turno vigente. Solo lectura; no permite administrar categorías.                                                                                                                                                              |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.                                                                                                     | Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.                                                                                                                                                |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                                                      |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                                                      |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | El stock exige área activa coincidente. El rol de cocina no recibe visibilidad general de existencias de cocina, bodega, otras cocinas ni otras áreas.                                                                       |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.                                              | Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.                                                                    |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.                                                                                            | Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.                                  |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REMISSION-REQUEST — crear una solicitud para la sede integrada activa y desde el área exacta cuando la configuración la exija, utilizando origen, ruta, productos, presentaciones y políticas válidas.                       | Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.                                                                   |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REMISSION-RECEIVE — recepción ordinaria de remisiones cuyo destino sea la sede integrada activa, con recurso, origen, cantidades y estado válidos.                                                                           | Turno y check-in activos. Reautenticación fuerte, verificación física, control de concurrencia y auditoría antes/después. Solo confirma recepción en destino; no permite preparar, despachar, cancelar ni alterar el origen. |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La cancelación no se concede por defecto al operador integral. Una necesidad de cancelar solicitudes propias deberá definirse como política explícita o excepción operativa auditada.                                        |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.                                                                                                | Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.                                                                                                    |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                                                      |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad exige autoridad base y contexto operativo simultáneos. Esta matriz no concede el componente base ni la capacidad completa.                                                                                      |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | La capacidad de NEXO no es necesaria para solicitar abastecimiento desde la sede integrada o implica inventario, bodega, logística, finanzas, configuración o una acción sensible ajena al rol.                              |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                      | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                       |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                                               |
+| ---------------------------------------- | --------------------------------- | --------------------- | ---------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación integrada del punto de venta. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación integrada del punto de venta. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación integrada del punto de venta. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la operación integrada del punto de venta. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                  |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para operador_integral_satelite | Alcance aprobado                                                                                                                                             | Condición                                                                                                                                                                                                              |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**                    | CTX-INTEGRATED-PULSO — turno publicado y vigente, rol `operador_integral_satelite`, sede habilitada como formato integrado y área exacta cuando corresponda. | Carril operativo. Permite entrar a PULSO y mostrar la superficie integrada. No autoriza por sí solo pedidos, preparación, servicio, ventas, pagos, caja, anulaciones, devoluciones, fidelización, entregas ni cierres. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                       | Capacidad `BASE_AND_OPERATIONAL` de excepción. Requiere autoridad base explícita, turno, check-in, reautenticación fuerte, motivo y auditoría reforzada.                                                               |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para operador_integral_satelite | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ---------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                           | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         0 |            6 |
+| NEXO       |                 63 |        11 |           52 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         1 |            1 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **12** |      **100** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO INTEGRADO VÁLIDO
+        ↓
+ENTRAR A PULSO
+        ↓
+FUNCIONES ATÓMICAS DE PEDIDOS, PREPARACIÓN,
+SERVICIO, VENTA, PAGO Y CAJA
+PENDIENTES DE CATÁLOGO
+
+TURNO + CHECK-IN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR REFERENCIAS DE SOLICITUD
+        ↓
+CONSULTAR / CREAR / EDITAR SOLICITUD PROPIA
+        ↓
+RECIBIR REMISIÓN DESTINADA A LA SEDE INTEGRADA
+```
+
+La matriz permite que el operador integral gestione el abastecimiento ordinario de la sede pequeña desde la solicitud hasta la recepción. No lo convierte en bodeguero: no concede preparación en origen, despacho, cancelación, inventario general ni administración logística. Tampoco autoriza todavía las operaciones internas de PULSO porque el catálogo no contiene permisos atómicos suficientes.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- gestión de personal, documentos, turnos, permisos o seguridad;
+- lotes, órdenes, recetas maestras o producción central de FOGO;
+- entradas generales, retiros, traslados, conteos, ajustes, ubicaciones, LPN o validaciones de inventario;
+- preparación o despacho de remisiones en origen;
+- cancelación de remisiones por defecto;
+- correcciones unilaterales sobre cantidades despachadas o custodia de origen;
+- operaciones logísticas de conductor, cumplimiento o bodega central;
+- compras, recepciones de compra y proveedores de ORIGO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- configuración de sedes, políticas, rutas, impresión o catálogos maestros;
+- ventas, pagos, caja, anulaciones, devoluciones, descuentos o cierres por inferencia desde PULSO;
+- preparación de alimentos, bebidas, servicio de salón o mostrador por simple nombre del rol, mientras no existan permisos atómicos;
+- `pulso.pos.main` por ser un permiso legacy amplio y bloqueado;
+- `pulso.delivery.deliveries.override` sin autoridad base separada;
+- acceso a clientes, puntos o canjes de fidelización por inferencia;
+- acceso a APP-REVIEW o a sedes no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente no representa todavía la operación comercial integrada de un formato pequeño. Como mínimo deberán separarse permisos atómicos para:
+
+- consultar y gestionar pedidos del turno y la sede;
+- distinguir pedido en mesa, mostrador, recogida, domicilio u otros canales;
+- preparar productos simples o coordinar preparación por área;
+- registrar estados de preparación, alistamiento y entrega;
+- gestionar mesas o servicio cuando el formato lo utilice;
+- crear ventas y aplicar reglas comerciales autorizadas;
+- cobrar por medios permitidos y emitir comprobantes;
+- abrir, operar y cerrar caja mediante capacidades separadas;
+- anular, devolver, descontar o corregir mediante permisos sensibles específicos;
+- acumular o redimir fidelización mediante permisos propios;
+- registrar faltantes, desperdicios, incidencias y rehacer productos;
+- atribuir acciones al trabajador real en dispositivos compartidos.
+
+Estas brechas no amplían la matriz. `operador_integral_satelite` solo podrá ejecutar las capacidades que tengan permiso canónico explícito. El concepto “integral” describe la organización del trabajo en la sede, no una autorización total.
+
+#### 12. Dispositivo compartido para formato integrado
+
+No existe todavía una plantilla canónica específica para el operador integral. Una futura terminal de formato pequeño podrá habilitar PULSO, NEXO y SHELL como superficies disponibles, pero no concederá por sí misma esta matriz.
+
+Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO operador_integral_satelite VÁLIDO
++ SEDE DEL DISPOSITIVO HABILITADA PARA FORMATO INTEGRADO
++ ÁREA COINCIDENTE CUANDO CORRESPONDA
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política de actor deberá validar expresamente el rol y la sede. `same_site_active_worker` no será suficiente por sí sola. Tampoco se admitirán sesiones anónimas, acciones atribuidas al usuario técnico ni navegación basada únicamente en `navigation_role`. La plantilla concreta corresponde a AUTH-RBAC-023.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró que `operador_integral_satelite` registra **35 turnos históricos**, está habilitado en **Molka / sede general** y conserva seis permisos operativos legacy:
+
+```text
+nexo.access
+nexo.inventory.remissions
+nexo.inventory.remissions.request
+nexo.inventory.remissions.receive
+pulso.access
+pulso.pos.main
+```
+
+La propuesta no copia esas seis cadenas de forma mecánica. Normaliza la consulta de remisiones, incorpora las referencias mínimas necesarias para una solicitud segura, conserva la recepción ordinaria en destino y excluye `pulso.pos.main` porque el catálogo lo clasifica como permiso amplio bloqueado.
+
+```text
+35 TURNOS HISTÓRICOS
++ 1 ASIGNACIÓN DE SEDE GENERAL
++ 6 PERMISOS LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+12 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 6 referencias de catálogo y políticas
+├── 4 capacidades sobre solicitudes/remisiones
+├── 1 referencia de rutas de abastecimiento
+└── 1 entrada a PULSO
+```
+
+Las 12 concesiones no demuestran que la operación comercial integrada esté completamente implementada. Solo definen el mínimo autorizable con el catálogo vigente.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Cada permiso concedido tiene contexto y recurso explícitos.
+- ✅ El rol exige turno y sede integrada válidos; el área exacta se exige cuando la configuración de la sede lo determine.
+- ✅ Las mutaciones concedidas exigen check-in.
+- ✅ La recepción se limita al destino y no concede facultades de origen.
+- ✅ `pulso.access` no se utiliza como wildcard de PULSO.
+- ✅ `pulso.pos.main` no fue recuperado desde el modelo legacy.
+- ✅ No se concedieron inventario general, logística central, producción, compras, finanzas, gestión laboral o seguridad.
+- ✅ El rol no se definió como unión automática de otras matrices.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW y sedes no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                     | Impacto                                                                                                                                                                   |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-RBAC-014             | Deberá definir `produccion_cocina` como rol de producción central, sin heredar capacidades del operador integral ni de cocina satélite.                                   |
+| AUTH-RBAC-021             | Podrá añadir excepciones operativas individuales sin sustituir turno, sede, área, rol ni permiso exacto.                                                                  |
+| AUTH-RBAC-023             | Deberá definir terminales de formato integrado y limitar actor, sede, área, aplicaciones y duración.                                                                      |
+| AUTH-RBAC-025             | Deberá proyectar estas 12 concesiones en el dataset canónico de matriz operativa.                                                                                         |
+| AUTH-RBAC-027             | Deberá confirmar que el carácter integrado no produzca acceso operativo global accidental.                                                                                |
+| BLOQUE E                  | Deberá distinguir entrada, permiso, recurso, territorio, estado y razones de bloqueo en la decisión final.                                                                |
+| PULSO y roadmap funcional | Deberán descomponer `pulso.pos.main` y crear permisos atómicos para pedidos, preparación, servicio, venta, pago, caja, comprobantes, fidelización, incidencias y cierres. |
+| BLOQUE R                  | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                                  |
+
+#### 16. Criterios de aprobación
+
+1. `operador_integral_satelite` queda definido como rol temporal para formatos pequeños expresamente habilitados.
+2. El rol no es un superusuario ni la unión automática de las matrices de caja, barra, cocina, salón y mostrador.
+3. Las 12 concesiones son explícitas y compatibles con el carril operativo.
+4. El rol requiere turno y sede válidos; el área exacta se exige según la configuración canónica de la sede.
+5. Las acciones vivas o mutadoras concedidas exigen check-in.
+6. El rol puede consultar referencias, solicitar abastecimiento y modificar solicitudes propias sin acceder a inventario general.
+7. Puede recibir remisiones destinadas a la sede integrada activa, con validación física, reautenticación y auditoría.
+8. No puede preparar, despachar o cancelar remisiones por defecto.
+9. La recepción no concede stock, movimientos, ubicaciones, LPN, entradas, retiros, traslados, conteos ni ajustes.
+10. `pulso.access` no autoriza pedidos, preparación, servicio, ventas, pagos, caja, fidelización ni cierres por sí solo.
+11. `pulso.pos.main` permanece bloqueado y no se hereda desde el estado legacy.
+12. `delivery.override` permanece fuera de la matriz ordinaria.
+13. La asignación histórica en Molka no se presenta como implementación funcional completa.
+14. Las 100 capacidades restantes permanecen denegadas por defecto.
+15. No se implementa código, Supabase ni migraciones en esta tarea.
+16. `AUTH-RBAC-014` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-012 | APROBADA    |
+| AUTH-RBAC-013 | APROBADA    |
+| AUTH-RBAC-014 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+### ✅ AUTH-RBAC-014 — Crear matriz de produccion_cocina
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-014 — Crear matriz de produccion_cocina                  |
+| Estado                    | APROBADA                                                           |
+| Naturaleza                | Definición documental de matriz operativa de cocina central        |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-013 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-015 — Crear matriz de produccion_panaderia               |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `produccion_cocina` durante un turno válido en Cocina Caliente del Centro de Producción, separando la ejecución productiva de la administración de recetas, la operación de bodega, la logística, las compras y la cocina satélite.
+
+#### 3. Decisión principal
+
+`produccion_cocina` representa la función temporal encargada de ejecutar producción de cocina caliente central a partir de órdenes y recetarios operativos publicados. Puede crear y consultar lotes de su área y registrar consumos de insumos trazables, pero no administra recetas maestras, inventario general, remisiones, compras, despacho ni otras áreas productivas.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL produccion_cocina
++ SEDE CENTRO DE PRODUCCIÓN
++ ÁREA ACTIVA COCINA CALIENTE
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ ORDEN / RECETA / LOTE / INVENTARIO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE COCINA CENTRAL
+```
+
+No se admite:
+
+```text
+employees.role = cocinero → acceso permanente
+produccion_cocina = cocinero_satelite
+fogo.access = autorización total de FOGO
+recetario operativo = administración del maestro de recetas
+crear lote = cerrar, aprobar o alterar cualquier lote
+registrar retiro = control general de inventario
+Centro de Producción = acceso a panadería, repostería y bodega
+plantilla production_center = rol automático
+PIN del dispositivo = sustituto de turno, check-in o permiso
+produccion_cocina = remisiones, compras o logística
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                      |
+| -------------------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       16 | Se conceden por el carril operativo dentro del contexto de Cocina Caliente y sobre órdenes, lotes, recetas operativas e inventario acotado. |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                        |
+| Capacidades no asignadas                     |       96 | Permanecen denegadas por defecto por pertenecer al carril base, a otras áreas productivas o a bodega, logística, compras y administración.  |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                                |
+
+La matriz contiene **16 concesiones operativas a nivel de clave** y **96 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                                 | Significado                                                                                                                  |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-PROD-KITCHEN-FOGO-APP`            | Entrada operativa a FOGO con turno, rol, sede y área válidos. No concede capacidades internas.                               |
+| `CTX-PROD-KITCHEN-ORDER`               | Órdenes destinadas o asignadas a Cocina Caliente dentro del periodo productivo autorizado.                                   |
+| `CTX-PROD-KITCHEN-BATCH`               | Lotes de producción vinculados a órdenes, recetas y recursos del área activa.                                                |
+| `CTX-PROD-KITCHEN-BATCH-CREATE`        | Creación trazable e idempotente de lotes para Cocina Caliente.                                                               |
+| `CTX-PROD-KITCHEN-RECIPE-BOOK`         | Proyección operativa publicada de recetas aplicables; excluye el maestro administrativo completo.                            |
+| `CTX-PROD-KITCHEN-NEXO-APP`            | Entrada operativa a NEXO para consumo y trazabilidad de insumos del área. No concede inventario general.                     |
+| `CTX-PROD-KITCHEN-REF`                 | Consulta mínima de productos, presentaciones, categorías y unidades necesarias para interpretar recetas, órdenes y consumos. |
+| `CTX-PROD-KITCHEN-INVENTORY-REF`       | Ubicaciones autorizadas y topología mínima necesaria para identificar el origen físico del insumo.                           |
+| `CTX-PROD-KITCHEN-INVENTORY-STOCK`     | Existencias de insumos limitadas a Cocina Caliente y a las ubicaciones compatibles.                                          |
+| `CTX-PROD-KITCHEN-INVENTORY-BATCH`     | Trazabilidad de inventario de lotes productivos vinculados al área y a sus órdenes.                                          |
+| `CTX-PROD-KITCHEN-WITHDRAWAL`          | Consulta de consumos propios o relacionados con el lote productivo autorizado.                                               |
+| `CTX-PROD-KITCHEN-WITHDRAWAL-REGISTER` | Registro de consumo de insumos contra orden o lote, con cantidad, unidad, ubicación, actor y trazabilidad.                   |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por nombre de rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `produccion_cocina` requiere Centro de Producción y un área operativa concreta compatible con Cocina Caliente.
+4. El área activa no se infiere desde el producto, la receta, el dispositivo ni la sede seleccionada; debe proceder del turno válido.
+5. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno, rol, sede y área válidos cuando el permiso o el rol lo requieran.
+6. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+7. `fogo.access` y `nexo.access` solo permiten entrar a sus aplicaciones y cargar el estado del contexto. No funcionan como wildcards.
+8. `fogo.production.orders.view` se limita a órdenes destinadas o asignadas a Cocina Caliente. No concede reasignar, aprobar, modificar o cancelar órdenes.
+9. `fogo.production.recipe_book.view` expone únicamente la versión operativa publicada y aplicable. No concede `fogo.production.recipes.view`, edición, exportación masiva ni acceso administrativo al maestro.
+10. `fogo.production.batches.create` exige orden y receta aplicables, cantidades, responsable, área, estado e idempotencia válidos. No autoriza cualquier transición posterior del lote.
+11. La consulta de productos, presentaciones, categorías y unidades desde NEXO se limita a la proyección mínima necesaria para ejecutar producción y registrar consumos.
+12. La consulta de stock, LPN, lotes y retiros se limita a insumos, ubicaciones, órdenes y lotes relacionados con Cocina Caliente; no concede inventario general de la sede.
+13. `nexo.inventory.withdrawals.register` solo registra consumo trazable contra una orden o lote válido. No concede ajustes, entradas, traslados, conteos ni inventario negativo.
+14. La creación del lote productivo y el registro de consumo son operaciones distintas; ninguna debe duplicar efectos de inventario ni sustituir la integración canónica entre FOGO y NEXO.
+15. No se asignan remisiones: la recepción, preparación, despacho y transporte pertenecen a roles y procesos diferentes.
+16. No se asignan compras ni recepciones de ORIGO; el acceso a proveedores u órdenes de compra no es necesario para ejecutar Cocina Caliente.
+17. No se asignan capacidades de panadería, repostería o bodega por compartir la misma sede. Cada área conserva su rol y matriz propios.
+18. APP-REVIEW, demo, pruebas, recursos aislados y sedes no habilitadas permanecen excluidos.
+19. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+20. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `produccion_cocina`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para produccion_cocina | Alcance aprobado                                                                                                                                                          | Condición                                                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------- | --------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-FOGO-APP — turno publicado y vigente, rol `produccion_cocina`, Centro de Producción habilitado y área activa exacta de Cocina Caliente.                  | Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.                                        |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-BATCH — lotes vinculados a órdenes y ejecución de Cocina Caliente dentro del Centro de Producción.                                                       | Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.                      |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Cocina Caliente, con receta publicada, cantidades, unidad, responsable y trazabilidad. | Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.                    |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-ORDER — órdenes de producción destinadas o asignadas a Cocina Caliente y vigentes para el turno o periodo operativo autorizado.                          | Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.                                           |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Cocina Caliente, con porciones, insumos, proceso y controles necesarios. | Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                               |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para produccion_cocina | Alcance aprobado                                                                                                                                | Condición                                                                                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-NEXO-APP — turno publicado y vigente, rol `produccion_cocina`, Centro de Producción y área activa de Cocina Caliente.          | Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.                                                                |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Cocina Caliente.                                   | Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.                                                                                           |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.         | Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.                                                                                                                                                          |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-REF — categorías necesarias para localizar insumos y productos relacionados con Cocina Caliente.                               | Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.                                                                                                                                                          |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.                                 | Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.                                                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-INVENTORY-REF — ubicaciones activas desde las que Cocina Caliente está autorizada a consumir o consultar insumos.              | Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.                                                                       |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Cocina Caliente o con el lote productivo activo.  | Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.                                                         |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Cocina Caliente en ubicaciones compatibles.   | Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.                                                         |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Cocina Caliente o vinculados a sus órdenes activas. | Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.                                                  |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Cocina Caliente dentro del turno vigente.               | Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.                                                                  |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**           | CTX-PROD-KITCHEN-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Cocina Caliente.  | Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad. |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Cocina Caliente.                                                               |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                                                |
+| ---------------------------------------- | --------------------------------- | --------------------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Cocina Caliente. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Cocina Caliente. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Cocina Caliente. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Cocina Caliente. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                   |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                                                                 |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | PULSO pertenece a la operación comercial del punto de venta y no corresponde a la producción central de Cocina Caliente.                  |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base. |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para produccion_cocina | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                  | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         5 |            1 |
+| NEXO       |                 63 |        11 |           52 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         0 |            2 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **16** |       **96** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO VÁLIDO DE COCINA CALIENTE
+        ↓
+ENTRAR A FOGO
+        ↓
+CONSULTAR ÓRDENES Y RECETARIO OPERATIVO
+        ↓
+TURNO + CHECK-IN
+        ↓
+CONSULTAR / CREAR LOTE DE PRODUCCIÓN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR INSUMOS, UBICACIONES Y STOCK AUTORIZADO
+        ↓
+REGISTRAR CONSUMO CONTRA ORDEN O LOTE
+        ↓
+CONSULTAR TRAZABILIDAD DEL LOTE EN INVENTARIO
+```
+
+La matriz permite iniciar la ejecución productiva y registrar consumos trazables, pero el catálogo vigente no contiene todavía permisos atómicos para todas las transiciones del lote, control de calidad, rendimiento, merma, cierre productivo o ingreso automático del producto terminado.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- administración del maestro completo de recetas;
+- creación, modificación o archivo de recetas;
+- modificación, reasignación, aprobación o cancelación de órdenes de producción;
+- cierre, liberación, rechazo o reversión de lotes cuando no exista permiso atómico aprobado;
+- producción de panadería, galletería, repostería o pastelería por inferencia;
+- inventario general del Centro de Producción o de otras áreas;
+- movimientos, entradas, ajustes, traslados, conteos o validaciones de stock;
+- asignación de ubicaciones, administración de LPN, zonas o posiciones;
+- preparación, despacho, transporte, recepción o cancelación de remisiones;
+- compras, órdenes de compra, proveedores y recepciones de ORIGO;
+- operación comercial, caja, pedidos, pagos o fidelización de PULSO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- gestión de personal, turnos, permisos, seguridad o VISO;
+- acceso a APP-REVIEW o a sedes y áreas no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente permite consultar órdenes, consultar el recetario operativo, consultar y crear lotes, pero no representa todavía de forma atómica varias operaciones esenciales del ciclo productivo:
+
+- aceptar o iniciar una orden de producción;
+- cambiar el estado de una orden o lote;
+- pausar, reanudar, cancelar o reabrir una ejecución;
+- registrar cantidades planificadas, producidas, rechazadas y aprovechables;
+- registrar consumo teórico y consumo real por insumo;
+- registrar sustituciones de ingredientes autorizadas;
+- registrar merma, desperdicio, reproceso y causas;
+- registrar tiempos, temperatura, responsables y controles del proceso;
+- registrar control de calidad, liberación o rechazo;
+- confirmar producto terminado, presentación, lote, vencimiento y ubicación destino;
+- integrar de forma idempotente FOGO con movimientos de inventario en NEXO;
+- corregir una producción mediante reversión trazable, no mediante edición destructiva;
+- imprimir etiquetas o documentos operativos del lote con permiso propio;
+- consultar historial y evidencia del lote dentro del área autorizada;
+- distinguir creación del lote, ejecución, terminación, liberación y cierre administrativo.
+
+Estas brechas no amplían la matriz. `fogo.production.batches.create` no podrá interpretarse como permiso para ejecutar todas las transiciones del ciclo de vida ni para producir efectos de inventario no definidos contractualmente.
+
+#### 12. Dispositivo compartido de producción
+
+La plantilla legacy `production_center` puede habilitar FOGO, NEXO y SHELL como superficies disponibles, pero no concede ninguna matriz. Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO produccion_cocina VÁLIDO
++ ÁREA DEL DISPOSITIVO = ÁREA DEL TURNO = COCINA CALIENTE
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política `same_site_active_worker` de la plantilla legacy es insuficiente porque permitiría actores de otras áreas del Centro de Producción. La implementación futura deberá exigir coincidencia de área y rol operativo, y reemplazar `navigation_role = cocinero` por una configuración que distinga `produccion_cocina`, `produccion_panaderia` y `produccion_reposteria`. No se aceptará una sesión anónima ni una acción atribuida al usuario técnico del dispositivo.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró 16 turnos históricos y una asignación de sede/área para `produccion_cocina`, pero **0 permisos operativos**. La operación de FOGO puede depender todavía del rol base legacy `cocinero`, de rutas sin protección suficiente o de lógica especial no canónica.
+
+```text
+0 ASIGNACIONES OPERATIVAS LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+16 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 5 capacidades de FOGO
+└── 11 capacidades mínimas de NEXO
+```
+
+La propuesta no copia permisos permanentes del rol base `cocinero`. Construye una matriz operativa nueva, limitada al turno, al Centro de Producción, a Cocina Caliente y a los recursos productivos e inventarios relacionados.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Los cinco permisos operativos vigentes de FOGO fueron evaluados y asignados expresamente.
+- ✅ Cada concesión tiene contexto, área y recurso explícitos.
+- ✅ El rol exige turno, Centro de Producción y área de Cocina Caliente válidos.
+- ✅ Las mutaciones y consultas vivas concedidas exigen check-in cuando corresponde.
+- ✅ El recetario operativo no se confunde con el maestro administrativo de recetas.
+- ✅ Los retiros se limitan a consumo trazable contra orden o lote.
+- ✅ No se concedieron remisiones, logística, compras, bodega ni operación comercial.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW, demo y áreas no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                         | Impacto                                                                                                                                                      |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTH-RBAC-015 y AUTH-RBAC-016 | Deberán definir panadería y repostería de manera independiente, sin heredar automáticamente esta matriz ni compartir áreas.                                  |
+| AUTH-RBAC-017                 | Deberá reservar para `bodeguero` las operaciones generales de bodega, stock, entradas, ubicaciones, conteos, preparación y despacho.                         |
+| AUTH-RBAC-021                 | Podrá añadir una excepción operativa individual temporal sin modificar la plantilla general ni eliminar turno, área o recurso.                               |
+| AUTH-RBAC-023                 | Deberá restringir los dispositivos de producción por actor, rol, sede, área, aplicaciones y permisos compatibles.                                            |
+| AUTH-RBAC-025                 | Deberá proyectar estas 16 concesiones en el dataset canónico de matriz operativa.                                                                            |
+| AUTH-RBAC-027                 | Deberá confirmar que ninguna concesión produzca acceso a otras áreas productivas o inventario global accidental.                                             |
+| BLOQUE E                      | Deberá resolver orden, receta operativa, lote, área, ubicación, stock y consumo antes de decidir.                                                            |
+| FOGO y roadmap funcional      | Deberán crear permisos atómicos para ejecución, estados, rendimiento, merma, calidad, terminación, liberación, reversión y cierre del lote.                  |
+| Integración FOGO–NEXO         | Deberá definir efectos idempotentes de consumo y producto terminado, evitando duplicar movimientos o permitir inconsistencias entre producción e inventario. |
+| BLOQUE R                      | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                     |
+
+#### 16. Criterios de aprobación
+
+1. `produccion_cocina` queda definido como rol operativo temporal de Cocina Caliente central.
+2. Las 16 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, Centro de Producción y área activa exacta de Cocina Caliente.
+4. Puede entrar a FOGO y NEXO sin que `access` funcione como wildcard.
+5. Puede consultar órdenes y recetario operativo aplicables a su área.
+6. Puede consultar y crear lotes productivos vinculados a órdenes válidas.
+7. Puede consultar insumos, ubicaciones, stock y trazabilidad estrictamente necesarios.
+8. Puede registrar retiros únicamente como consumo trazable contra orden o lote.
+9. No administra recetas maestras ni recibe capacidades de bodega, remisiones, logística, compras o caja.
+10. Compartir sede con otras áreas no amplía su matriz.
+11. Las 96 capacidades restantes permanecen denegadas por defecto.
+12. No se implementa código, Supabase ni migraciones en esta tarea.
+13. `AUTH-RBAC-015` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-013 | APROBADA    |
+| AUTH-RBAC-014 | APROBADA    |
+| AUTH-RBAC-015 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-015 — Crear matriz de produccion_panaderia
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                               |
+| ------------------------- | ------------------------------------------------------------------- |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos  |
+| Tarea                     | AUTH-RBAC-015 — Crear matriz de produccion_panaderia                |
+| Estado                    | **APROBADA**                                                        |
+| Naturaleza                | Definición documental de matriz operativa de panadería y galletería |
+| Implementación física     | No incluida                                                         |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                     |
+| Tarea anterior vigente    | AUTH-RBAC-014 — APROBADA                                            |
+| Tarea posterior reservada | AUTH-RBAC-016 — Crear matriz de produccion_reposteria               |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `produccion_panaderia` durante un turno válido en Galletería y Panadería del Centro de Producción, separando la ejecución productiva de la administración de recetas, la operación de bodega, la logística, las compras y la cocina satélite, Cocina Caliente y Repostería.
+
+#### 3. Decisión principal
+
+`produccion_panaderia` representa la función temporal encargada de ejecutar producción de panadería y galletería a partir de órdenes y recetarios o formulaciones operativas publicadas. Puede crear y consultar lotes de su área y registrar consumos de insumos trazables, pero no administra recetas maestras, inventario general, remisiones, compras, despacho ni Cocina Caliente, Repostería u otras áreas productivas.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL produccion_panaderia
++ SEDE CENTRO DE PRODUCCIÓN
++ ÁREA ACTIVA GALLETERÍA Y PANADERÍA
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ ORDEN / RECETA / FORMULACIÓN / LOTE / INVENTARIO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE PANADERÍA Y GALLETERÍA
+```
+
+No se admite:
+
+```text
+employees.role = panadero → acceso permanente
+produccion_panaderia = produccion_cocina o produccion_reposteria
+fogo.access = autorización total de FOGO
+recetario operativo = administración del maestro de recetas
+crear lote = cerrar, aprobar o alterar cualquier lote
+registrar retiro = control general de inventario
+Centro de Producción = acceso a Cocina Caliente, repostería y bodega
+plantilla production_center = rol automático
+PIN del dispositivo = sustituto de turno, check-in o permiso
+produccion_panaderia = remisiones, compras, despacho o logística
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                                                   |
+| -------------------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Capacidades operativas asignadas             |       16 | Se conceden por el carril operativo dentro del contexto de Galletería y Panadería y sobre órdenes, lotes, recetas o formulaciones operativas e inventario acotado.       |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                                                     |
+| Capacidades no asignadas                     |       96 | Permanecen denegadas por defecto por pertenecer al carril base, a Cocina Caliente, Repostería u otras áreas productivas o a bodega, logística, compras y administración. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                                                             |
+
+La matriz contiene **16 concesiones operativas a nivel de clave** y **96 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                                | Significado                                                                                                                  |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-PROD-BAKERY-FOGO-APP`            | Entrada operativa a FOGO con turno, rol, sede y área válidos. No concede capacidades internas.                               |
+| `CTX-PROD-BAKERY-ORDER`               | Órdenes destinadas o asignadas a Galletería y Panadería dentro del periodo productivo autorizado.                            |
+| `CTX-PROD-BAKERY-BATCH`               | Lotes de producción vinculados a órdenes, recetas y recursos del área activa.                                                |
+| `CTX-PROD-BAKERY-BATCH-CREATE`        | Creación trazable e idempotente de lotes para Galletería y Panadería.                                                        |
+| `CTX-PROD-BAKERY-RECIPE-BOOK`         | Proyección operativa publicada de recetas aplicables; excluye el maestro administrativo completo.                            |
+| `CTX-PROD-BAKERY-NEXO-APP`            | Entrada operativa a NEXO para consumo y trazabilidad de insumos del área. No concede inventario general.                     |
+| `CTX-PROD-BAKERY-REF`                 | Consulta mínima de productos, presentaciones, categorías y unidades necesarias para interpretar recetas, órdenes y consumos. |
+| `CTX-PROD-BAKERY-INVENTORY-REF`       | Ubicaciones autorizadas y topología mínima necesaria para identificar el origen físico del insumo.                           |
+| `CTX-PROD-BAKERY-INVENTORY-STOCK`     | Existencias de insumos limitadas a Galletería y Panadería y a las ubicaciones compatibles.                                   |
+| `CTX-PROD-BAKERY-INVENTORY-BATCH`     | Trazabilidad de inventario de lotes productivos vinculados al área y a sus órdenes.                                          |
+| `CTX-PROD-BAKERY-WITHDRAWAL`          | Consulta de consumos propios o relacionados con el lote productivo autorizado.                                               |
+| `CTX-PROD-BAKERY-WITHDRAWAL-REGISTER` | Registro de consumo de insumos contra orden o lote, con cantidad, unidad, ubicación, actor y trazabilidad.                   |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por nombre de rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `produccion_panaderia` requiere Centro de Producción y un área operativa concreta compatible con Galletería y Panadería.
+4. El área activa no se infiere desde el producto, la receta, el dispositivo ni la sede seleccionada; debe proceder del turno válido.
+5. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno, rol, sede y área válidos cuando el permiso o el rol lo requieran.
+6. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+7. `fogo.access` y `nexo.access` solo permiten entrar a sus aplicaciones y cargar el estado del contexto. No funcionan como wildcards.
+8. `fogo.production.orders.view` se limita a órdenes destinadas o asignadas a Galletería y Panadería. No concede reasignar, aprobar, modificar o cancelar órdenes.
+9. `fogo.production.recipe_book.view` expone únicamente la versión operativa publicada y aplicable. No concede `fogo.production.recipes.view`, edición, exportación masiva ni acceso administrativo al maestro.
+10. `fogo.production.batches.create` exige orden y receta aplicables, cantidades, responsable, área, estado e idempotencia válidos. No autoriza cualquier transición posterior del lote.
+11. La consulta de productos, presentaciones, categorías y unidades desde NEXO se limita a la proyección mínima necesaria para ejecutar producción y registrar consumos.
+12. La consulta de stock, LPN, lotes y retiros se limita a insumos, ubicaciones, órdenes y lotes relacionados con Galletería y Panadería; no concede inventario general de la sede.
+13. `nexo.inventory.withdrawals.register` solo registra consumo trazable contra una orden o lote válido. No concede ajustes, entradas, traslados, conteos ni inventario negativo.
+14. La creación del lote productivo y el registro de consumo son operaciones distintas; ninguna debe duplicar efectos de inventario ni sustituir la integración canónica entre FOGO y NEXO.
+15. No se asignan remisiones: la recepción, preparación, despacho y transporte pertenecen a roles y procesos diferentes.
+16. No se asignan compras ni recepciones de ORIGO; el acceso a proveedores u órdenes de compra no es necesario para ejecutar Galletería y Panadería.
+17. No se asignan capacidades de Cocina Caliente, repostería o bodega por compartir la misma sede. Cada área conserva su rol y matriz propios.
+18. APP-REVIEW, demo, pruebas, recursos aislados y sedes no habilitadas permanecen excluidos.
+19. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+20. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `produccion_panaderia`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para produccion_panaderia | Alcance aprobado                                                                                                                                                                | Condición                                                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------- | --------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-FOGO-APP — turno publicado y vigente, rol `produccion_panaderia`, Centro de Producción habilitado y área activa exacta de Galletería y Panadería.               | Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.                                        |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-BATCH — lotes vinculados a órdenes y ejecución de Galletería y Panadería dentro del Centro de Producción.                                                       | Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.                      |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Galletería y Panadería, con receta publicada, cantidades, unidad, responsable y trazabilidad. | Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.                    |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-ORDER — órdenes de producción destinadas o asignadas a Galletería y Panadería y vigentes para el turno o periodo operativo autorizado.                          | Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.                                           |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Galletería y Panadería, con porciones, insumos, proceso y controles necesarios. | Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                          | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                               |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para produccion_panaderia | Alcance aprobado                                                                                                                                      | Condición                                                                                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-NEXO-APP — turno publicado y vigente, rol `produccion_panaderia`, Centro de Producción y área activa de Galletería y Panadería.       | Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.                                                                |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Galletería y Panadería.                                   | Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.                                                                                           |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.                | Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.                                                                                                                                                          |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-REF — categorías necesarias para localizar insumos y productos relacionados con Galletería y Panadería.                               | Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.                                                                                                                                                          |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.                                        | Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.                                                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-INVENTORY-REF — ubicaciones activas desde las que Galletería y Panadería está autorizada a consumir o consultar insumos.              | Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.                                                                       |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Galletería y Panadería o con el lote productivo activo.  | Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.                                                         |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Galletería y Panadería en ubicaciones compatibles.   | Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.                                                         |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Galletería y Panadería o vinculados a sus órdenes activas. | Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.                                                  |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Galletería y Panadería dentro del turno vigente.               | Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.                                                                  |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**              | CTX-PROD-BAKERY-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Galletería y Panadería.  | Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad. |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Galletería y Panadería.                                                        |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                                                       |
+| ---------------------------------------- | --------------------------------- | --------------------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Galletería y Panadería. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Galletería y Panadería. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Galletería y Panadería. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Galletería y Panadería. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                          |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                                                                 |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ---------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | PULSO pertenece a la operación comercial del punto de venta y no corresponde a la producción central de Galletería y Panadería.           |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base. |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para produccion_panaderia | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                     | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         5 |            1 |
+| NEXO       |                 63 |        11 |           52 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         0 |            2 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **16** |       **96** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO VÁLIDO DE GALLETERÍA Y PANADERÍA
+        ↓
+ENTRAR A FOGO
+        ↓
+CONSULTAR ÓRDENES Y RECETARIO OPERATIVO
+        ↓
+TURNO + CHECK-IN
+        ↓
+CONSULTAR / CREAR LOTE DE PRODUCCIÓN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR INSUMOS, UBICACIONES Y STOCK AUTORIZADO
+        ↓
+REGISTRAR CONSUMO CONTRA ORDEN O LOTE
+        ↓
+CONSULTAR TRAZABILIDAD DEL LOTE EN INVENTARIO
+```
+
+La matriz permite iniciar la ejecución productiva y registrar consumos trazables, pero el catálogo vigente no contiene todavía permisos atómicos para todas las transiciones del lote, control de calidad, rendimiento, merma, cierre productivo o ingreso automático del producto terminado.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- administración del maestro completo de recetas;
+- creación, modificación o archivo de recetas;
+- modificación, reasignación, aprobación o cancelación de órdenes de producción;
+- cierre, liberación, rechazo o reversión de lotes cuando no exista permiso atómico aprobado;
+- producción de Cocina Caliente, repostería o pastelería por inferencia;
+- inventario general del Centro de Producción o de otras áreas;
+- movimientos, entradas, ajustes, traslados, conteos o validaciones de stock;
+- asignación de ubicaciones, administración de LPN, zonas o posiciones;
+- preparación, despacho, transporte, recepción o cancelación de remisiones;
+- compras, órdenes de compra, proveedores y recepciones de ORIGO;
+- operación comercial, caja, pedidos, pagos o fidelización de PULSO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- gestión de personal, turnos, permisos, seguridad o VISO;
+- acceso a APP-REVIEW o a sedes y áreas no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente permite consultar órdenes, consultar el recetario o formulación operativa, consultar y crear lotes, pero no representa todavía de forma atómica varias operaciones esenciales del ciclo productivo:
+
+- aceptar o iniciar una orden de producción;
+- cambiar el estado de una orden o lote;
+- pausar, reanudar, cancelar o reabrir una ejecución;
+- registrar cantidades planificadas, producidas, rechazadas y aprovechables;
+- registrar consumo teórico y consumo real por insumo;
+- registrar sustituciones de ingredientes autorizadas;
+- registrar merma, desperdicio, reproceso y causas;
+- registrar tiempos, temperatura, responsables y controles del proceso;
+- registrar control de calidad, liberación o rechazo;
+- confirmar producto terminado, presentación, lote, vencimiento y ubicación destino;
+- integrar de forma idempotente FOGO con movimientos de inventario en NEXO;
+- corregir una producción mediante reversión trazable, no mediante edición destructiva;
+- imprimir etiquetas o documentos operativos del lote con permiso propio;
+- consultar historial y evidencia del lote dentro del área autorizada;
+- distinguir creación del lote, ejecución, terminación, liberación y cierre administrativo.
+
+Estas brechas no amplían la matriz. `fogo.production.batches.create` no podrá interpretarse como permiso para ejecutar todas las transiciones del ciclo de vida ni para producir efectos de inventario no definidos contractualmente.
+
+#### 12. Dispositivo compartido de producción
+
+La plantilla legacy `production_center` puede habilitar FOGO, NEXO y SHELL como superficies disponibles, pero no concede ninguna matriz. Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO produccion_panaderia VÁLIDO
++ ÁREA DEL DISPOSITIVO = ÁREA DEL TURNO = GALLETERÍA Y PANADERÍA
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política `same_site_active_worker` de la plantilla legacy es insuficiente porque permitiría actores de otras áreas del Centro de Producción. La implementación futura deberá exigir coincidencia de área y rol operativo, y reemplazar `navigation_role = cocinero` por una configuración que distinga `produccion_cocina`, `produccion_panaderia` y `produccion_reposteria`. No se aceptará una sesión anónima ni una acción atribuida al usuario técnico del dispositivo.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró 17 turnos históricos y una asignación de sede/área para `produccion_panaderia`, pero **0 permisos operativos**. La operación de FOGO puede depender todavía del rol base legacy `panadero`, de rutas sin protección suficiente o de lógica especial no canónica.
+
+```text
+0 PERMISOS OPERATIVOS LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+16 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 5 capacidades de FOGO
+└── 11 capacidades mínimas de NEXO
+```
+
+La propuesta no copia permisos permanentes del rol base `panadero`. Construye una matriz operativa nueva, limitada al turno, al Centro de Producción, a Galletería y Panadería y a los recursos productivos e inventarios relacionados.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Los cinco permisos operativos vigentes de FOGO fueron evaluados y asignados expresamente.
+- ✅ Cada concesión tiene contexto, área y recurso explícitos.
+- ✅ El rol exige turno, Centro de Producción y área de Galletería y Panadería válidos.
+- ✅ Las mutaciones y consultas vivas concedidas exigen check-in cuando corresponde.
+- ✅ El recetario o formulación operativa no se confunde con el maestro administrativo de recetas.
+- ✅ Los retiros se limitan a consumo trazable contra orden o lote.
+- ✅ No se concedieron remisiones, logística, compras, bodega ni operación comercial.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW, demo y áreas no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                    | Impacto                                                                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTH-RBAC-016            | Deberá definir repostería de manera independiente, sin heredar automáticamente esta matriz ni compartir áreas.                                               |
+| AUTH-RBAC-017            | Deberá reservar para `bodeguero` las operaciones generales de bodega, stock, entradas, ubicaciones, conteos, preparación y despacho.                         |
+| AUTH-RBAC-021            | Podrá añadir una excepción operativa individual temporal sin modificar la plantilla general ni eliminar turno, área o recurso.                               |
+| AUTH-RBAC-023            | Deberá restringir los dispositivos de producción por actor, rol, sede, área, aplicaciones y permisos compatibles.                                            |
+| AUTH-RBAC-025            | Deberá proyectar estas 16 concesiones en el dataset canónico de matriz operativa.                                                                            |
+| AUTH-RBAC-027            | Deberá confirmar que ninguna concesión produzca acceso a Cocina Caliente, Repostería u otras áreas productivas o inventario global accidental.               |
+| BLOQUE E                 | Deberá resolver orden, receta o formulación operativa, lote, área, ubicación, stock y consumo antes de decidir.                                              |
+| FOGO y roadmap funcional | Deberán crear permisos atómicos para ejecución, estados, rendimiento, merma, calidad, terminación, liberación, reversión y cierre del lote.                  |
+| Integración FOGO–NEXO    | Deberá definir efectos idempotentes de consumo y producto terminado, evitando duplicar movimientos o permitir inconsistencias entre producción e inventario. |
+| BLOQUE R                 | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                     |
+
+#### 16. Criterios de aprobación
+
+1. `produccion_panaderia` queda definido como rol operativo temporal de Galletería y Panadería central.
+2. Las 16 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, Centro de Producción y área activa exacta de Galletería y Panadería.
+4. Puede entrar a FOGO y NEXO sin que `access` funcione como wildcard.
+5. Puede consultar órdenes y recetario o formulación operativa aplicables a su área.
+6. Puede consultar y crear lotes productivos vinculados a órdenes válidas.
+7. Puede consultar insumos, ubicaciones, stock y trazabilidad estrictamente necesarios.
+8. Puede registrar retiros únicamente como consumo trazable contra orden o lote.
+9. No administra recetas maestras ni recibe capacidades de bodega, remisiones, logística, compras o caja.
+10. Compartir sede con otras áreas no amplía su matriz.
+11. Las 96 capacidades restantes permanecen denegadas por defecto.
+12. No se implementa código, Supabase ni migraciones en esta tarea.
+13. `AUTH-RBAC-016` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-014 | APROBADA    |
+| AUTH-RBAC-015 | APROBADA    |
+| AUTH-RBAC-016 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-016 — Crear matriz de produccion_reposteria
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                                |
+| ------------------------- | -------------------------------------------------------------------- |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos   |
+| Tarea                     | AUTH-RBAC-016 — Crear matriz de produccion_reposteria                |
+| Estado                    | APROBADA                                                             |
+| Naturaleza                | Definición documental de matriz operativa de repostería y pastelería |
+| Implementación física     | No incluida                                                          |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                      |
+| Tarea anterior vigente    | AUTH-RBAC-015 — APROBADA                                             |
+| Tarea posterior reservada | AUTH-RBAC-017 — Crear matriz de bodeguero                            |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades que puede ejercer el rol operativo `produccion_reposteria` durante un turno válido en Repostería del Centro de Producción, separando la ejecución productiva de la administración de recetas, la operación de bodega, la logística, las compras, la cocina satélite, Cocina Caliente, Galletería y Panadería.
+
+#### 3. Decisión principal
+
+`produccion_reposteria` representa la función temporal encargada de ejecutar producción de repostería y pastelería a partir de órdenes y recetarios o formulaciones operativas publicadas. Puede crear y consultar lotes de su área y registrar consumos de insumos trazables, pero no administra recetas maestras, inventario general, remisiones, compras, despacho ni la producción de Cocina Caliente, Galletería y Panadería u otras áreas productivas.
+
+```text
+ACTOR IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ ROL produccion_reposteria
++ SEDE CENTRO DE PRODUCCIÓN
++ ÁREA ACTIVA REPOSTERÍA
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ PERMISO OPERATIVO EXPLÍCITO
++ ORDEN / RECETA / FORMULACIÓN / LOTE / INVENTARIO COMPATIBLE
+= AUTORIZACIÓN OPERATIVA DE REPOSTERÍA Y PASTELERÍA
+```
+
+No se admite:
+
+```text
+employees.role = repostero o pastelero → acceso permanente
+produccion_reposteria = produccion_cocina o produccion_panaderia
+fogo.access = autorización total de FOGO
+recetario operativo = administración del maestro de recetas
+crear lote = cerrar, aprobar o alterar cualquier lote
+registrar retiro = control general de inventario
+Centro de Producción = acceso a Cocina Caliente, Galletería y Panadería o bodega
+plantilla production_center = rol automático
+PIN del dispositivo = sustituto de turno, check-in o permiso
+produccion_reposteria = remisiones, compras, despacho o logística
+```
+
+#### 4. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                                                                                                               |
+| -------------------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Capacidades operativas asignadas             |       16 | Se conceden por el carril operativo dentro del contexto de Repostería y sobre órdenes, lotes, recetas o formulaciones operativas e inventario acotado.                               |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol operativo no recibe autoridad base adicional.                                                                                                                                 |
+| Capacidades no asignadas                     |       96 | Permanecen denegadas por defecto por pertenecer al carril base, a Cocina Caliente, Galletería y Panadería u otras áreas productivas o a bodega, logística, compras y administración. |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                                                                                                                         |
+
+La matriz contiene **16 concesiones operativas a nivel de clave** y **96 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 5. Perfiles de alcance utilizados
+
+| Perfil                                | Significado                                                                                                                  |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `CTX-PROD-PASTRY-FOGO-APP`            | Entrada operativa a FOGO con turno, rol, sede y área válidos. No concede capacidades internas.                               |
+| `CTX-PROD-PASTRY-ORDER`               | Órdenes destinadas o asignadas a Repostería dentro del periodo productivo autorizado.                                        |
+| `CTX-PROD-PASTRY-BATCH`               | Lotes de producción vinculados a órdenes, recetas y recursos del área activa.                                                |
+| `CTX-PROD-PASTRY-BATCH-CREATE`        | Creación trazable e idempotente de lotes para Repostería.                                                                    |
+| `CTX-PROD-PASTRY-RECIPE-BOOK`         | Proyección operativa publicada de recetas aplicables; excluye el maestro administrativo completo.                            |
+| `CTX-PROD-PASTRY-NEXO-APP`            | Entrada operativa a NEXO para consumo y trazabilidad de insumos del área. No concede inventario general.                     |
+| `CTX-PROD-PASTRY-REF`                 | Consulta mínima de productos, presentaciones, categorías y unidades necesarias para interpretar recetas, órdenes y consumos. |
+| `CTX-PROD-PASTRY-INVENTORY-REF`       | Ubicaciones autorizadas y topología mínima necesaria para identificar el origen físico del insumo.                           |
+| `CTX-PROD-PASTRY-INVENTORY-STOCK`     | Existencias de insumos limitadas a Repostería y a las ubicaciones compatibles.                                               |
+| `CTX-PROD-PASTRY-INVENTORY-BATCH`     | Trazabilidad de inventario de lotes productivos vinculados al área y a sus órdenes.                                          |
+| `CTX-PROD-PASTRY-WITHDRAWAL`          | Consulta de consumos propios o relacionados con el lote productivo autorizado.                                               |
+| `CTX-PROD-PASTRY-WITHDRAWAL-REGISTER` | Registro de consumo de insumos contra orden o lote, con cantidad, unidad, ubicación, actor y trazabilidad.                   |
+
+#### 6. Reglas obligatorias de la matriz
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, herencias implícitas ni autorización por nombre de rol.
+2. El rol operativo efectivo procede exclusivamente del turno publicado y vigente. Los perfiles y dispositivos solo sugieren o restringen; nunca asignan el rol.
+3. `produccion_reposteria` requiere Centro de Producción y un área operativa concreta compatible con Repostería.
+4. El área activa no se infiere desde el producto, la receta, el dispositivo ni la sede seleccionada; debe proceder del turno válido.
+5. Las concesiones con prerrequisito `T` pueden consultarse antes del check-in, pero continúan exigiendo turno, rol, sede y área válidos cuando el permiso o el rol lo requieran.
+6. Las concesiones con prerrequisito `T+C` requieren turno y check-in activos, sede y área coincidentes y recurso resoluble.
+7. `fogo.access` y `nexo.access` solo permiten entrar a sus aplicaciones y cargar el estado del contexto. No funcionan como wildcards.
+8. `fogo.production.orders.view` se limita a órdenes destinadas o asignadas a Repostería. No concede reasignar, aprobar, modificar o cancelar órdenes.
+9. `fogo.production.recipe_book.view` expone únicamente la versión operativa publicada y aplicable. No concede `fogo.production.recipes.view`, edición, exportación masiva ni acceso administrativo al maestro.
+10. `fogo.production.batches.create` exige orden y receta aplicables, cantidades, responsable, área, estado e idempotencia válidos. No autoriza cualquier transición posterior del lote.
+11. La consulta de productos, presentaciones, categorías y unidades desde NEXO se limita a la proyección mínima necesaria para ejecutar producción y registrar consumos.
+12. La consulta de stock, LPN, lotes y retiros se limita a insumos, ubicaciones, órdenes y lotes relacionados con Repostería; no concede inventario general de la sede.
+13. `nexo.inventory.withdrawals.register` solo registra consumo trazable contra una orden o lote válido. No concede ajustes, entradas, traslados, conteos ni inventario negativo.
+14. La creación del lote productivo y el registro de consumo son operaciones distintas; ninguna debe duplicar efectos de inventario ni sustituir la integración canónica entre FOGO y NEXO.
+15. No se asignan remisiones: la recepción, preparación, despacho y transporte pertenecen a roles y procesos diferentes.
+16. No se asignan compras ni recepciones de ORIGO; el acceso a proveedores u órdenes de compra no es necesario para ejecutar Repostería.
+17. No se asignan capacidades de Cocina Caliente, Galletería y Panadería o bodega por compartir la misma sede. Cada área conserva su rol y matriz propios.
+18. APP-REVIEW, demo, pruebas, recursos aislados y sedes no habilitadas permanecen excluidos.
+19. Las denegaciones individuales, estructurales, de recurso, dispositivo o aislamiento prevalecen sobre esta matriz.
+20. Todo permiso nuevo se deniega hasta que una versión canónica posterior lo evalúe expresamente para `produccion_reposteria`.
+
+#### 7. Matriz canónica completa
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| -------------- | ----------------- | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------------------------------------- | ------------------------------------ | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ---------------- | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para produccion_reposteria | Alcance aprobado                                                                                                                                                    | Condición                                                                                                                                                                                                            |
+| ---------------------------------- | ------------------------------- | --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-FOGO-APP — turno publicado y vigente, rol `produccion_reposteria`, Centro de Producción habilitado y área activa exacta de Repostería.              | Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.                                        |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-BATCH — lotes vinculados a órdenes y ejecución de Repostería dentro del Centro de Producción.                                                       | Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.                      |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Repostería, con receta publicada, cantidades, unidad, responsable y trazabilidad. | Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.                    |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-ORDER — órdenes de producción destinadas o asignadas a Repostería y vigentes para el turno o periodo operativo autorizado.                          | Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.                                           |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Repostería, con porciones, insumos, proceso y controles necesarios. | Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                              | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                               |
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para produccion_reposteria | Alcance aprobado                                                                                                                          | Condición                                                                                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-NEXO-APP — turno publicado y vigente, rol `produccion_reposteria`, Centro de Producción y área activa de Repostería.      | Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.                                                                |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Repostería.                                   | Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.                                                                                           |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.    | Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.                                                                                                                                                          |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-REF — categorías necesarias para localizar insumos y productos relacionados con Repostería.                               | Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.                                                                                                                                                          |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.                            | Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.                                                                                                                                               |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-INVENTORY-REF — ubicaciones activas desde las que Repostería está autorizada a consumir o consultar insumos.              | Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.                                                                       |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Repostería o con el lote productivo activo.  | Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.                                                         |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Repostería en ubicaciones compatibles.   | Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.                                                         |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Repostería o vinculados a sus órdenes activas. | Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.                                                  |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Repostería dentro del turno vigente.               | Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.                                                                  |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**               | CTX-PROD-PASTRY-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Repostería.  | Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad. |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base.                                                                                           |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | La capacidad pertenece a bodega, logística, inventario general, configuración, finanzas o una operación no necesaria para la producción ordinaria de Repostería.                                                                    |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                    | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.                                                                                                                              |
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| ----------------------------------------- | ------------------------------ | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                                           |
+| ---------------------------------------- | --------------------------------- | --------------------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Repostería. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Repostería. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Repostería. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | La capacidad pertenece a compras, recepción o proveedores y no corresponde a la ejecución productiva de Repostería. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente.              |
+
+##### 7.8 VENTO PASS — 1 permisos
+
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| ------------- | ------------------- | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+##### 7.9 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                                                                 |
+| ------------------------------------ | --------------------------------------- | ---------------------- | ----------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | PULSO pertenece a la operación comercial del punto de venta y no corresponde a la producción central de Repostería.                       |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad combinada o excepcional. Requiere autoridad base explícita además del contexto operativo; esta matriz no aporta el carril base. |
+
+##### 7.10 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para produccion_reposteria | Alcance aprobado                                                       | Condición                                                                                              |
+| --------------------------------------------- | ----------------------------------------- | ----------- | ----------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                      | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Un rol operativo no puede recibirla ni convertirla en permanente. |
+
+
+
+#### 8. Resumen por aplicación
+
+| Aplicación | Permisos canónicos | Asignados | No asignados |
+| ---------- | -----------------: | --------: | -----------: |
+| SHELL      |                  1 |         0 |            1 |
+| ANIMA      |                 10 |         0 |           10 |
+| AURA       |                  1 |         0 |            1 |
+| FOGO       |                  6 |         5 |            1 |
+| NEXO       |                 63 |        11 |           52 |
+| NUMERA     |                  6 |         0 |            6 |
+| ORIGO      |                  5 |         0 |            5 |
+| VENTO PASS |                  1 |         0 |            1 |
+| PULSO      |                  2 |         0 |            2 |
+| VISO       |                 17 |         0 |           17 |
+| **Total**  |            **112** |    **16** |       **96** |
+
+#### 9. Flujo operativo autorizado
+
+```text
+TURNO VÁLIDO DE REPOSTERÍA
+        ↓
+ENTRAR A FOGO
+        ↓
+CONSULTAR ÓRDENES Y RECETARIO OPERATIVO
+        ↓
+TURNO + CHECK-IN
+        ↓
+CONSULTAR / CREAR LOTE DE PRODUCCIÓN
+        ↓
+ENTRAR A NEXO
+        ↓
+CONSULTAR INSUMOS, UBICACIONES Y STOCK AUTORIZADO
+        ↓
+REGISTRAR CONSUMO CONTRA ORDEN O LOTE
+        ↓
+CONSULTAR TRAZABILIDAD DEL LOTE EN INVENTARIO
+```
+
+La matriz permite iniciar la ejecución productiva y registrar consumos trazables, pero el catálogo vigente no contiene todavía permisos atómicos para todas las transiciones del lote, control de calidad, rendimiento, merma, cierre productivo o ingreso automático del producto terminado.
+
+#### 10. Capacidades expresamente no concedidas
+
+- cualquier permiso exclusivo del carril base;
+- administración del maestro completo de recetas;
+- creación, modificación o archivo de recetas;
+- modificación, reasignación, aprobación o cancelación de órdenes de producción;
+- cierre, liberación, rechazo o reversión de lotes cuando no exista permiso atómico aprobado;
+- producción de Cocina Caliente, Panadería o Galletería por inferencia;
+- inventario general del Centro de Producción o de otras áreas;
+- movimientos, entradas, ajustes, traslados, conteos o validaciones de stock;
+- asignación de ubicaciones, administración de LPN, zonas o posiciones;
+- preparación, despacho, transporte, recepción o cancelación de remisiones;
+- compras, órdenes de compra, proveedores y recepciones de ORIGO;
+- operación comercial, caja, pedidos, pagos o fidelización de PULSO;
+- facturas internas, costos, márgenes, gastos, contabilidad o NUMERA;
+- gestión de personal, turnos, permisos, seguridad o VISO;
+- acceso a APP-REVIEW o a sedes y áreas no habilitadas;
+- cualquier permiso futuro no evaluado expresamente.
+
+#### 11. Brechas del catálogo identificadas
+
+El catálogo vigente permite consultar órdenes, consultar el recetario o formulación operativa, consultar y crear lotes, pero no representa todavía de forma atómica varias operaciones esenciales del ciclo productivo:
+
+- aceptar o iniciar una orden de producción;
+- cambiar el estado de una orden o lote;
+- pausar, reanudar, cancelar o reabrir una ejecución;
+- registrar cantidades planificadas, producidas, rechazadas y aprovechables;
+- registrar consumo teórico y consumo real por insumo;
+- registrar sustituciones de ingredientes autorizadas;
+- registrar merma, desperdicio, reproceso y causas;
+- registrar tiempos, temperatura, responsables y controles del proceso;
+- registrar control de calidad, liberación o rechazo;
+- confirmar producto terminado, presentación, lote, vencimiento y ubicación destino;
+- integrar de forma idempotente FOGO con movimientos de inventario en NEXO;
+- corregir una producción mediante reversión trazable, no mediante edición destructiva;
+- imprimir etiquetas o documentos operativos del lote con permiso propio;
+- consultar historial y evidencia del lote dentro del área autorizada;
+- distinguir creación del lote, ejecución, terminación, liberación y cierre administrativo.
+
+Estas brechas no amplían la matriz. `fogo.production.batches.create` no podrá interpretarse como permiso para ejecutar todas las transiciones del ciclo de vida ni para producir efectos de inventario no definidos contractualmente.
+
+#### 12. Dispositivo compartido de producción
+
+La plantilla legacy `production_center` puede habilitar FOGO, NEXO y SHELL como superficies disponibles, pero no concede ninguna matriz. Antes de ejecutar una acción deberá existir:
+
+```text
+DISPOSITIVO TÉCNICO ACTIVO
++ ACTOR IDENTIFICADO
++ PIN O AUTENTICACIÓN EXIGIDA
++ TURNO produccion_reposteria VÁLIDO
++ ÁREA DEL DISPOSITIVO = ÁREA DEL TURNO = REPOSTERÍA
++ CHECK-IN CUANDO CORRESPONDA
++ PERMISO DE ESTA MATRIZ
+= ACCIÓN ATRIBUIBLE AL TRABAJADOR
+```
+
+La política `same_site_active_worker` de la plantilla legacy es insuficiente porque permitiría actores de otras áreas del Centro de Producción. La implementación futura deberá exigir coincidencia de área y rol operativo, y reemplazar `navigation_role = cocinero` por una configuración que distinga `produccion_cocina`, `produccion_panaderia` y `produccion_reposteria`. No se aceptará una sesión anónima ni una acción atribuida al usuario técnico del dispositivo.
+
+#### 13. Relación con el estado legacy
+
+La auditoría encontró 15 turnos históricos y una asignación de sede/área para `produccion_reposteria`, pero **0 permisos operativos**. La operación de FOGO puede depender todavía de los roles base legacy `repostero` y `pastelero`, de rutas sin protección suficiente o de lógica especial no canónica.
+
+```text
+0 PERMISOS OPERATIVOS LEGACY
+        ↓
+VALIDACIÓN CONTRA 112 PERMISOS CANÓNICOS
+        ↓
+16 CONCESIONES OPERATIVAS EXPLÍCITAS
+├── 5 capacidades de FOGO
+└── 11 capacidades mínimas de NEXO
+```
+
+La propuesta no copia permisos permanentes de los roles base `repostero` ni `pastelero`. Construye una matriz operativa nueva, limitada al turno, al Centro de Producción, a Repostería y a los recursos productivos e inventarios relacionados.
+
+#### 14. Validaciones de integridad
+
+- ✅ Los 112 permisos canónicos fueron evaluados exactamente una vez.
+- ✅ Las cantidades por aplicación suman 112.
+- ✅ Solo se asignaron permisos que admiten carril operativo.
+- ✅ No se asignó ningún permiso `BASE_ONLY`.
+- ✅ No se asignó ningún permiso `BASE_AND_OPERATIONAL`.
+- ✅ Los cinco permisos operativos vigentes de FOGO fueron evaluados y asignados expresamente.
+- ✅ Cada concesión tiene contexto, área y recurso explícitos.
+- ✅ El rol exige turno, Centro de Producción y área de Repostería válidos.
+- ✅ Las mutaciones y consultas vivas concedidas exigen check-in cuando corresponde.
+- ✅ El recetario o formulación operativa no se confunde con el maestro administrativo de recetas.
+- ✅ Los retiros se limitan a consumo trazable contra orden o lote.
+- ✅ No se concedieron remisiones, logística, compras, bodega ni operación comercial.
+- ✅ No existen wildcards ni permisos implícitos.
+- ✅ APP-REVIEW, demo y áreas no habilitadas permanecen excluidas.
+- ✅ Los permisos nuevos se deniegan por defecto.
+
+#### 15. Impacto sobre tareas posteriores
+
+| Tarea                    | Impacto                                                                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| AUTH-RBAC-017            | Deberá reservar para `bodeguero` las operaciones generales de bodega, stock, entradas, ubicaciones, conteos, preparación y despacho.                         |
+| AUTH-RBAC-021            | Podrá añadir una excepción operativa individual temporal sin modificar la plantilla general ni eliminar turno, área o recurso.                               |
+| AUTH-RBAC-023            | Deberá restringir los dispositivos de producción por actor, rol, sede, área, aplicaciones y permisos compatibles.                                            |
+| AUTH-RBAC-025            | Deberá proyectar estas 16 concesiones en el dataset canónico de matriz operativa.                                                                            |
+| AUTH-RBAC-027            | Deberá confirmar que ninguna concesión produzca acceso a Cocina Caliente, Galletería y Panadería u otras áreas productivas o inventario global accidental.   |
+| BLOQUE E                 | Deberá resolver orden, receta o formulación operativa, lote, área, ubicación, stock y consumo antes de decidir.                                              |
+| FOGO y roadmap funcional | Deberán crear permisos atómicos para ejecución, estados, rendimiento, merma, calidad, terminación, liberación, reversión y cierre del lote.                  |
+| Integración FOGO–NEXO    | Deberá definir efectos idempotentes de consumo y producto terminado, evitando duplicar movimientos o permitir inconsistencias entre producción e inventario. |
+| BLOQUE R                 | Implementará la transición física mediante migraciones versionadas en `vento-shell`, pruebas, reconciliación y rollback.                                     |
+
+#### 16. Criterios de aprobación
+
+1. `produccion_reposteria` queda definido como rol operativo temporal de Repostería central.
+2. Las 16 concesiones son explícitas y compatibles con el carril operativo.
+3. El rol requiere turno, Centro de Producción y área activa exacta de Repostería.
+4. Puede entrar a FOGO y NEXO sin que `access` funcione como wildcard.
+5. Puede consultar órdenes y recetario o formulación operativa aplicables a su área.
+6. Puede consultar y crear lotes productivos vinculados a órdenes válidas.
+7. Puede consultar insumos, ubicaciones, stock y trazabilidad estrictamente necesarios.
+8. Puede registrar retiros únicamente como consumo trazable contra orden o lote.
+9. No administra recetas maestras ni recibe capacidades de bodega, remisiones, logística, compras o caja.
+10. Compartir sede con otras áreas no amplía su matriz.
+11. Las 96 capacidades restantes permanecen denegadas por defecto.
+12. No se implementa código, Supabase ni migraciones en esta tarea.
+13. `AUTH-RBAC-017` permanece sin iniciar hasta solicitud expresa.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-015 | APROBADA    |
+| AUTH-RBAC-016 | APROBADA    |
+| AUTH-RBAC-017 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
 ### [ ] AUTH-RBAC-017 — Crear matriz de bodeguero
 ### [ ] AUTH-RBAC-018 — Crear matriz de conductor_logistica
 ### [ ] AUTH-RBAC-019 — Crear matriz de gerencia_operativa
