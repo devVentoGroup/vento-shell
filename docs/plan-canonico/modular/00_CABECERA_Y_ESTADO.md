@@ -17,8 +17,8 @@
 | Estado documental         | **VIGENTE**                                                            |
 | Arquitectura documental   | **MODULAR CANÓNICA**                                                   |
 | Fuente de orden canónico  | `manifest.json`                                                        |
-| Fragmentos canónicos      | **58**                                                                 |
-| Tareas `AUTH` únicas      | **306**                                                                |
+| Fragmentos canónicos      | **59**                                                                 |
+| Tareas `AUTH` únicas      | **311**                                                                |
 | Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`        |
 | Estado del compilado      | **GENERADO Y VALIDADO**                                                |
 | ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                              |

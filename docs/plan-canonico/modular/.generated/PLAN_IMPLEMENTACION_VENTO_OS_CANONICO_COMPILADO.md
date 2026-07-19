@@ -17,8 +17,8 @@
 | Estado documental         | **VIGENTE**                                                            |
 | Arquitectura documental   | **MODULAR CANÓNICA**                                                   |
 | Fuente de orden canónico  | `manifest.json`                                                        |
-| Fragmentos canónicos      | **58**                                                                 |
-| Tareas `AUTH` únicas      | **306**                                                                |
+| Fragmentos canónicos      | **59**                                                                 |
+| Tareas `AUTH` únicas      | **311**                                                                |
 | Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`        |
 | Estado del compilado      | **GENERADO Y VALIDADO**                                                |
 | ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                              |
@@ -60608,16 +60608,5838 @@ La propuesta no copia permisos permanentes de los roles base `repostero` ni `pas
 | AUTH-RBAC-017 | NO INICIADA |
 
 No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
-### [ ] AUTH-RBAC-017 — Crear matriz de bodeguero
-### [ ] AUTH-RBAC-018 — Crear matriz de conductor_logistica
-### [ ] AUTH-RBAC-019 — Crear matriz de gerencia_operativa
+### ✅ AUTH-RBAC-017 — Crear matriz de bodeguero
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-017 — Crear matriz de bodeguero                          |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de bodega                |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-016 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-018 — Crear matriz de conductor_logistica                |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios, dispositivos ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades del rol operativo `bodeguero` para custodiar inventario, recibir y ubicar existencias, ejecutar movimientos ordinarios, preparar y recibir remisiones, realizar conteos y aportar evidencia de diferencias, sin convertirlo en administrador de inventario, comprador, conductor, supervisor, aprobador o corrector unilateral de stock.
+
+#### 3. Decisión principal
+
+`bodeguero` representa la función temporal responsable de la custodia física y trazable de la bodega dentro de un turno, una sede y un área de tipo `warehouse`. Su autoridad termina donde comienza la aprobación administrativa, la corrección excepcional, la custodia en tránsito, la compra, la producción o la operación comercial.
+
+```text
+ACTOR HUMANO IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ CHECK-IN ACTIVO CUANDO CORRESPONDA
++ ROL OPERATIVO bodeguero
++ SEDE AUTORIZADA
++ ÁREA ACTIVA DE BODEGA
++ PERMISO EXACTO
++ RECURSO BAJO CUSTODIA O RELACIÓN OPERATIVA VÁLIDA
+= AUTORIZACIÓN OPERATIVA DE BODEGA
+```
+
+No se admite:
+
+```text
+employees.role = bodeguero → acceso permanente
+KIOSCO_BODEGA_CP → permisos empresariales sin actor humano
+same_site_active_worker → cualquier trabajador de la sede puede operar bodega
+nexo.access → autorización total de inventario
+conteo → ajuste automático
+validación → corrección de stock
+entrada ordinaria → creación de stock sin documento fuente
+preparar remisión → despachar o iniciar tránsito
+consultar compra → aprobar compra o registrar recepción
+traslado interno → movimiento entre sedes
+bodeguero → administrador de productos, ubicaciones o políticas
+```
+
+#### 4. Separación de responsabilidades
+
+| Dominio       | El bodeguero sí puede                                                                  | El bodeguero no puede por esta matriz                                                   | Actor o autoridad esperada                    |
+| ------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Custodia      | Consultar stock, LPN, movimientos, ubicaciones, zonas y posiciones de la bodega activa | Consultar inventario general de otras sedes o áreas                                     | Contexto de sede y área                       |
+| Entradas      | Registrar entradas ordinarias con fuente empresarial válida y ubicar el stock          | Crear stock sin soporte o usar entrada excepcional                                      | Autoridad base para excepciones               |
+| Movimientos   | Trasladar dentro de la bodega y registrar retiros trazables                            | Trasladar entre sedes mediante un movimiento local o permitir stock negativo            | Remisiones para movimientos entre sedes       |
+| Conteos       | Ejecutar conteos y validaciones asignadas, registrar evidencia                         | Aprobar diferencias o ajustar cantidades                                                | Gerencia/supervisión con autoridad base       |
+| Remisiones    | Consultar, preparar y recibir cuando la bodega sea el extremo autorizado               | Solicitar por terceros, editar libremente, cancelar o iniciar tránsito                  | Solicitante, conductor y gerencia según etapa |
+| Compras       | Consultar orden, recepción y proveedor necesarios para verificar una entrega           | Crear, aprobar o modificar órdenes; registrar/revertir recepción con el catálogo actual | ORIGO y permiso atómico futuro                |
+| Configuración | Consumir catálogos y reglas publicadas                                                 | Crear productos, redefinir ubicaciones, políticas, plantillas o rutas                   | Roles base autorizados                        |
+| Finanzas      | Ninguna capacidad financiera                                                           | Ver costos, márgenes, facturas, variaciones o resolver diferencias                      | Contabilidad/gerencia                         |
+
+#### 5. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                                   |
+| -------------------------------------------- | -------: | ---------------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       35 | Concesiones explícitas de NEXO y consulta operativa acotada de ORIGO.                    |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol no recibe por sí solo ajustes, entradas excepcionales, aprobaciones ni overrides. |
+| Capacidades no asignadas                     |       77 | Permanecen denegadas por defecto.                                                        |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                             |
+
+La matriz contiene **35 concesiones operativas a nivel de clave** y **77 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 6. Perfiles de alcance utilizados
+
+- `CTX-WH-NEXO-APP` — Turno publicado y vigente, rol operativo `bodeguero`, sede autorizada y área activa de tipo `warehouse`. Permite entrar a NEXO; no concede ninguna capacidad interna por sí solo.
+
+- `CTX-WH-CATALOG` — Unidades, equivalencias y factores publicados necesarios para validar cantidades, presentaciones y conversiones.
+
+- `CTX-WH-REQUEST-POLICIES` — Políticas publicadas aplicables a solicitudes y abastecimiento de las sedes atendidas por la bodega activa. Solo lectura; no permite modificarlas.
+
+- `CTX-WH-ADJUSTMENTS-READ` — Ajustes finalizados que afecten stock bajo custodia de la bodega activa. Durante conteos ciegos no se mostrarán existencias teóricas, variaciones ni información que sesgue el conteo.
+
+- `CTX-WH-ENTRIES` — Entradas ordinarias y sus líneas vinculadas a la bodega activa, incluida su fuente empresarial, estado, ubicación y trazabilidad visible.
+
+- `CTX-WH-ENTRY-REGISTER` — Registro ordinario de entrada física a la bodega únicamente cuando exista una fuente válida: recepción aprobada, lote productivo liberado, devolución, remisión recibida u otro evento canónico autorizado. No permite crear stock sin soporte.
+
+- `CTX-WH-TOPOLOGY` — Posiciones de almacenamiento pertenecientes a zonas y ubicaciones autorizadas de la bodega activa.
+
+- `CTX-WH-PUTAWAY` — Asignación de stock o LPN recibidos a una ubicación válida dentro de la bodega activa. Exige compatibilidad de producto, capacidad, lote, estado y restricciones de almacenamiento.
+
+- `CTX-WH-LPN` — LPN y contenedores bajo custodia de la bodega activa, con contenido, lote, ubicación y estado necesarios para operar. No permite reasignarlos sin el permiso correspondiente.
+
+- `CTX-WH-MOVEMENTS` — Movimientos que tengan origen, destino o efecto dentro de la bodega activa. La visibilidad de un extremo no habilita actuar sobre territorios no autorizados.
+
+- `CTX-WH-STOCK` — Existencias de la bodega activa por producto, presentación, lote, LPN y ubicación. No concede acceso a otras sedes ni a áreas no cubiertas por el contexto.
+
+- `CTX-WH-PRODUCTION-BATCHES` — Lotes productivos reflejados en inventario cuando ingresen, se encuentren o deban trazarse dentro de la bodega activa. No concede operar FOGO ni modificar lotes productivos.
+
+- `CTX-WH-TRANSFERS` — Traslados donde la bodega activa sea origen o destino autorizado. La consulta de un extremo no amplía la autoridad sobre el otro.
+
+- `CTX-WH-TRANSFER-CREATE` — Traslados ordinarios entre ubicaciones autorizadas de la misma sede y área de bodega. Los movimientos entre sedes se gestionan mediante remisiones; los movimientos hacia consumo productivo se gestionan mediante retiros o el flujo canónico correspondiente.
+
+- `CTX-WH-WITHDRAWALS` — Retiros originados en la bodega activa, incluidos sus productos, cantidades, motivo, destino operativo y actor registrador.
+
+- `CTX-WH-WITHDRAWAL-REGISTER` — Salida física de stock desde ubicación y lote exactos de la bodega activa hacia un destino o motivo válido. Debe impedir stock negativo, duplicidad, retroactividad no autorizada y consumo sin trazabilidad.
+
+- `CTX-WH-OPERATIONS` — Cola y estado de operaciones ordinarias de la bodega activa: recepción física, ubicación, traslado, retiro, conteo, validación y preparación.
+
+- `CTX-WH-STOCK-VALIDATION` — Validaciones físicas o dirigidas sobre un conjunto autorizado de stock y ubicaciones. Registra evidencia y diferencias, pero no corrige cantidades ni crea ajustes automáticamente.
+
+- `CTX-WH-COUNT-READ` — Sesiones de conteo asignadas o ejecutadas en la bodega activa. Antes del envío debe preservar modalidad ciega; las diferencias y el stock teórico solo se muestran según la etapa y autoridad aprobadas.
+
+- `CTX-WH-COUNT-PERFORM` — Captura y envío de cantidades físicas en sesiones válidas de la bodega activa. No concede aprobar diferencias, ajustar stock, reabrir sesiones cerradas ni alterar resultados de otro actor.
+
+- `CTX-WH-INITIAL-COUNT` — Sesiones de conteo inicial asignadas a la bodega activa, con visibilidad limitada por etapa. No concede modificar la base inicial fuera del flujo formal.
+
+- `CTX-WH-REMISSION` — Remisiones donde la bodega activa sea origen, destino receptor o custodio explícito. Excluye visibilidad general de otras sedes y campos no necesarios para la etapa.
+
+- `CTX-WH-REMISSION-PREPARE` — Preparación de remisiones cuyo origen sea la bodega activa: reserva, alistamiento, cantidades preparadas, faltantes, sustituciones permitidas, empaque y estado listo para transporte. No inicia el tránsito.
+
+- `CTX-WH-REMISSION-RECEIVE` — Recepción de remisiones cuyo destino autorizado sea la bodega activa. Exige verificación física, cantidades recibidas, diferencias y transferencia de custodia. El actor no puede recibir una remisión que preparó en el mismo extremo.
+
+- `CTX-WH-SUPPLY-ROUTES` — Rutas y ventanas de abastecimiento publicadas necesarias para priorizar y preparar remisiones desde la bodega activa. No concede modificarlas ni coordinar transporte completo.
+
+- `CTX-WH-PRINT-JOBS` — Trabajos de impresión originados por operaciones de la bodega activa, como etiquetas de LPN, ubicaciones o preparación. No permite editar plantillas.
+
+- `CTX-WH-ORIGO-APP` — Entrada operativa a ORIGO para verificación física de abastecimiento durante el turno. No concede compras ni recepción por sí sola.
+
+- `CTX-WH-PURCHASE-ORDERS` — Órdenes de compra aprobadas o vigentes cuyo destino receptor sea la sede o bodega activa. Mostrar solo productos, cantidades, presentaciones, proveedor, estado y datos necesarios para la recepción.
+
+- `CTX-WH-PURCHASE-RECEIPTS` — Recepciones de compra vinculadas a la sede o bodega activa, incluidas sus cantidades, diferencias y estado. No concede registrar, revertir ni aprobar recepciones.
+
+- `CTX-WH-SUPPLIER-IDENTITY` — Proyección mínima del proveedor necesaria para identificar la entrega y validar documentos. Excluye información bancaria, negociación, costos no requeridos y administración del maestro.
+
+
+#### 7. Matriz canónica completa — 112 permisos
+
+
+##### 7.1 SHELL — 1 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.2 ANIMA — 10 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `anima.access` | Entrar a ANIMA | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.employee_documents.view` | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.employee_photos.upload` | Cargar fotografías de trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.team_members.view` | Consultar integrantes del equipo | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.workforce.staff_invitations.create` | Invitar trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.attendance.shifts.create` | Crear turnos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.attendance.shifts.update` | Actualizar turnos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `anima.attendance.shifts.cancel` | Cancelar turnos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.3 AURA — 1 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `aura.access` | Entrar a AURA | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.4 FOGO — 6 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `fogo.access` | Entrar a FOGO | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción corresponde a roles productivos. El bodeguero solo consulta el reflejo de lotes dentro de NEXO cuando existe inventario bajo su custodia. |
+
+| `fogo.production.batches.view` | Consultar lotes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción corresponde a roles productivos. El bodeguero solo consulta el reflejo de lotes dentro de NEXO cuando existe inventario bajo su custodia. |
+
+| `fogo.production.batches.create` | Crear lotes de producción | `OPERATIONAL_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción corresponde a roles productivos. El bodeguero solo consulta el reflejo de lotes dentro de NEXO cuando existe inventario bajo su custodia. |
+
+| `fogo.production.orders.view` | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción corresponde a roles productivos. El bodeguero solo consulta el reflejo de lotes dentro de NEXO cuando existe inventario bajo su custodia. |
+
+| `fogo.production.recipe_book.view` | Consultar recetario operativo | `OPERATIONAL_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción corresponde a roles productivos. El bodeguero solo consulta el reflejo de lotes dentro de NEXO cuando existe inventario bajo su custodia. |
+
+| `fogo.production.recipes.view` | Consultar recetas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.5 NEXO — 63 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `nexo.access` | Entrar a NEXO | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-NEXO-APP — Turno publicado y vigente, rol operativo `bodeguero`, sede autorizada y área activa de tipo `warehouse`. Permite entrar a NEXO; no concede ninguna capacidad interna por sí solo. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.catalog.products.view` | Consultar productos | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-CATALOG — Productos vigentes que pueden almacenarse, recibirse, ubicarse, trasladarse, retirarse o incluirse en remisiones de la bodega activa. Excluye costos, márgenes, proveedores y configuración administrativa. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.catalog.products.create` | Crear productos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Crear productos es administración del maestro; no corresponde a custodia física. |
+
+| `nexo.catalog.presentations.view` | Consultar presentaciones | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-CATALOG — Presentaciones, empaques, conversiones y unidades logísticas necesarias para recibir, contar, ubicar, trasladar, retirar y preparar inventario. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.catalog.request_policies.view` | Consultar políticas de solicitud | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-REQUEST-POLICIES — Políticas publicadas aplicables a solicitudes y abastecimiento de las sedes atendidas por la bodega activa. Solo lectura; no permite modificarlas. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.catalog.categories.view` | Consultar categorías | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-CATALOG — Categorías necesarias para búsqueda, clasificación y operación física del inventario autorizado. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.catalog.units.view` | Consultar unidades | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-CATALOG — Unidades, equivalencias y factores publicados necesarios para validar cantidades, presentaciones y conversiones. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.assets.items.view` | Consultar activos | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Los activos físicos constituyen un subdominio distinto. La matriz ordinaria de bodeguero no presume responsabilidad sobre activos; podrá concederse mediante rol o excepción específica cuando se defina el proceso. |
+
+| `nexo.assets.items.create` | Crear activos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Crear activos es administración del maestro y además BASE_ONLY. |
+
+| `nexo.assets.groups.view` | Consultar grupos de activos | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Los grupos de activos no son necesarios para la operación ordinaria del inventario de consumibles y mercancías. |
+
+| `nexo.assets.counts.view` | Consultar conteos de activos | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Los conteos de activos requieren un proceso y responsabilidad específicos; no se confunden con conteos de inventario. |
+
+| `nexo.inventory.adjustments.view` | Consultar ajustes de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-ADJUSTMENTS-READ — Ajustes finalizados que afecten stock bajo custodia de la bodega activa. Durante conteos ciegos no se mostrarán existencias teóricas, variaciones ni información que sesgue el conteo. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.adjustments.register` | Registrar ajustes de inventario | `BASE_AND_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | El bodeguero puede detectar y documentar diferencias, pero no corregir stock unilateralmente. La capacidad exige BASE_AND_OPERATIONAL y autoridad base adicional. |
+
+| `nexo.inventory.entries.view` | Consultar entradas de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-ENTRIES — Entradas ordinarias y sus líneas vinculadas a la bodega activa, incluida su fuente empresarial, estado, ubicación y trazabilidad visible. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.entries.register` | Registrar entradas de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-ENTRY-REGISTER — Registro ordinario de entrada física a la bodega únicamente cuando exista una fuente válida: recepción aprobada, lote productivo liberado, devolución, remisión recibida u otro evento canónico autorizado. No permite crear stock sin soporte. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.entries.override` | Registrar entradas excepcionales | `BASE_AND_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Las entradas excepcionales no forman parte de la operación ordinaria. Exigen autoridad base adicional, motivo reforzado y auditoría. |
+
+| `nexo.inventory.locations.view` | Consultar ubicaciones de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-TOPOLOGY — Ubicaciones activas pertenecientes a la sede y al área de bodega del contexto operativo. No concede administrar el catálogo de ubicaciones. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-PUTAWAY — Asignación de stock o LPN recibidos a una ubicación válida dentro de la bodega activa. Exige compatibilidad de producto, capacidad, lote, estado y restricciones de almacenamiento. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.location_catalog.update` | Actualizar el catálogo de una ubicación | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Modificar el catálogo de una ubicación es configuración BASE_ONLY; el bodeguero puede usar y asignar ubicaciones, no redefinirlas. |
+
+| `nexo.inventory.lpns.view` | Consultar LPN | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-LPN — LPN y contenedores bajo custodia de la bodega activa, con contenido, lote, ubicación y estado necesarios para operar. No permite reasignarlos sin el permiso correspondiente. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.movements.view` | Consultar movimientos de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-MOVEMENTS — Movimientos que tengan origen, destino o efecto dentro de la bodega activa. La visibilidad de un extremo no habilita actuar sobre territorios no autorizados. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.stock.view` | Consultar stock | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-STOCK — Existencias de la bodega activa por producto, presentación, lote, LPN y ubicación. No concede acceso a otras sedes ni a áreas no cubiertas por el contexto. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.production_batches.view` | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-PRODUCTION-BATCHES — Lotes productivos reflejados en inventario cuando ingresen, se encuentren o deban trazarse dentro de la bodega activa. No concede operar FOGO ni modificar lotes productivos. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.transfers.view` | Consultar traslados de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-TRANSFERS — Traslados donde la bodega activa sea origen o destino autorizado. La consulta de un extremo no amplía la autoridad sobre el otro. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.transfers.create` | Crear traslados de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-TRANSFER-CREATE — Traslados ordinarios entre ubicaciones autorizadas de la misma sede y área de bodega. Los movimientos entre sedes se gestionan mediante remisiones; los movimientos hacia consumo productivo se gestionan mediante retiros o el flujo canónico correspondiente. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.withdrawals.view` | Consultar retiros de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-WITHDRAWALS — Retiros originados en la bodega activa, incluidos sus productos, cantidades, motivo, destino operativo y actor registrador. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.withdrawals.register` | Registrar retiros de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-WITHDRAWAL-REGISTER — Salida física de stock desde ubicación y lote exactos de la bodega activa hacia un destino o motivo válido. Debe impedir stock negativo, duplicidad, retroactividad no autorizada y consumo sin trazabilidad. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.zones.view` | Consultar zonas de almacenamiento | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-TOPOLOGY — Zonas de almacenamiento pertenecientes a la bodega activa. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.storage_positions.view` | Consultar posiciones de almacenamiento | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-TOPOLOGY — Posiciones de almacenamiento pertenecientes a zonas y ubicaciones autorizadas de la bodega activa. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.warehouse_operations.view` | Consultar operaciones de bodega | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-OPERATIONS — Cola y estado de operaciones ordinarias de la bodega activa: recepción física, ubicación, traslado, retiro, conteo, validación y preparación. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.stock_validations.perform` | Ejecutar validaciones de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-STOCK-VALIDATION — Validaciones físicas o dirigidas sobre un conjunto autorizado de stock y ubicaciones. Registra evidencia y diferencias, pero no corrige cantidades ni crea ajustes automáticamente. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.stock_counts.view` | Consultar conteos de inventario | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-COUNT-READ — Sesiones de conteo asignadas o ejecutadas en la bodega activa. Antes del envío debe preservar modalidad ciega; las diferencias y el stock teórico solo se muestran según la etapa y autoridad aprobadas. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.stock_counts.perform` | Ejecutar conteos de inventario | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-COUNT-PERFORM — Captura y envío de cantidades físicas en sesiones válidas de la bodega activa. No concede aprobar diferencias, ajustar stock, reabrir sesiones cerradas ni alterar resultados de otro actor. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.initial_counts.view` | Consultar conteos iniciales | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-INITIAL-COUNT — Sesiones de conteo inicial asignadas a la bodega activa, con visibilidad limitada por etapa. No concede modificar la base inicial fuera del flujo formal. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.remissions.view` | Consultar remisiones | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-REMISSION — Remisiones donde la bodega activa sea origen, destino receptor o custodio explícito. Excluye visibilidad general de otras sedes y campos no necesarios para la etapa. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.remissions.update` | Actualizar remisiones | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La edición general es más amplia que preparar o recibir. El bodeguero utilizará las acciones atómicas de su etapa y no podrá alterar campos ajenos, origen, destino o estados libremente. |
+
+| `nexo.inventory.remissions.request` | Solicitar remisiones | `OPERATIONAL_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Solicitar abastecimiento corresponde al área o sede demandante. La bodega de origen atiende solicitudes válidas, no las crea en nombre de terceros. |
+
+| `nexo.inventory.remissions.prepare` | Preparar remisiones | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-REMISSION-PREPARE — Preparación de remisiones cuyo origen sea la bodega activa: reserva, alistamiento, cantidades preparadas, faltantes, sustituciones permitidas, empaque y estado listo para transporte. No inicia el tránsito. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.remissions.dispatch` | Despachar remisiones | `OPERATIONAL_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Despachar inicia la salida y custodia en tránsito. Corresponde al conductor o actor logístico de despacho autorizado, no al bodeguero por defecto. |
+
+| `nexo.inventory.remissions.receive` | Recibir remisiones | `OPERATIONAL_ONLY` | **ASIGNAR OPERATIVO** | CTX-WH-REMISSION-RECEIVE — Recepción de remisiones cuyo destino autorizado sea la bodega activa. Exige verificación física, cantidades recibidas, diferencias y transferencia de custodia. El actor no puede recibir una remisión que preparó en el mismo extremo. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.inventory.remissions.cancel` | Cancelar remisiones | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Cancelar una remisión es una decisión sensible de control. No pertenece a la operación ordinaria del bodeguero. |
+
+| `nexo.logistics.operations_board.view` | Consultar tablero logístico | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | El tablero logístico transversal excede la cola local de bodega y puede revelar varias sedes y operaciones. |
+
+| `nexo.logistics.operations.view` | Consultar operaciones logísticas | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La operación logística general excede la custodia local de bodega. |
+
+| `nexo.logistics.driver_operations.view` | Consultar operaciones de conductores | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Las operaciones de conductores pertenecen al rol conductor o coordinación logística. |
+
+| `nexo.logistics.fulfillment.view` | Consultar cumplimiento logístico | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | El cumplimiento logístico transversal se reserva a coordinación o supervisión; la bodega consulta sus remisiones y operaciones locales. |
+
+| `nexo.logistics.fulfillment_routes.view` | Consultar rutas de cumplimiento | `BASE_OR_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Las rutas de cumplimiento y transporte corresponden a logística y conductor; la bodega solo consulta rutas de abastecimiento necesarias para preparar. |
+
+| `nexo.logistics.supply_routes.view` | Consultar rutas de abastecimiento | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-SUPPLY-ROUTES — Rutas y ventanas de abastecimiento publicadas necesarias para priorizar y preparar remisiones desde la bodega activa. No concede modificarlas ni coordinar transporte completo. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.finance.internal_invoices.view` | Consultar facturas internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_invoices.generate` | Generar facturas internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_invoices.issue` | Emitir facturas internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_invoices.cancel` | Cancelar facturas internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_prices.view` | Consultar precios internos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_variances.view` | Consultar variaciones internas | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.finance.internal_variances.approve` | Aprobar variaciones internas | `BASE_AND_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Aprobar variaciones requiere autoridad base y operativa; el bodeguero no aprueba sus propias diferencias. |
+
+| `nexo.finance.internal_variances.resolve` | Resolver variaciones internas | `BASE_AND_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Resolver variaciones requiere autoridad base y operativa; el bodeguero aporta evidencia, no decide la regularización. |
+
+| `nexo.finance.cost_centers.view` | Consultar centros de costo en NEXO | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.analytics.internal_reports.view` | Consultar reportes internos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.analytics.margin_reports.view` | Consultar reportes de margen | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.printing.templates.update` | Editar plantillas de impresión | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.printing.jobs.view` | Consultar trabajos de impresión | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-PRINT-JOBS — Trabajos de impresión originados por operaciones de la bodega activa, como etiquetas de LPN, ubicaciones o preparación. No permite editar plantillas. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `nexo.settings.sites.view` | Consultar configuración de sedes | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `nexo.settings.remission_policies.view` | Consultar políticas de remisiones | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Las políticas generales de remisiones son configuración BASE_ONLY. La operación consume reglas publicadas mediante el flujo, no la administración completa. |
+
+
+##### 7.6 NUMERA — 6 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `numera.access` | Entrar a NUMERA | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `numera.finance.cost_centers.view` | Consultar centros de costo | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `numera.finance.expenses.view` | Consultar gastos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `numera.analytics.break_even.view` | Consultar punto de equilibrio | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `numera.analytics.profitability.view` | Consultar rentabilidad | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.7 ORIGO — 5 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `origo.access` | Entrar a ORIGO | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-ORIGO-APP — Entrada operativa a ORIGO para verificación física de abastecimiento durante el turno. No concede compras ni recepción por sí sola. | Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-PURCHASE-ORDERS — Órdenes de compra aprobadas o vigentes cuyo destino receptor sea la sede o bodega activa. Mostrar solo productos, cantidades, presentaciones, proveedor, estado y datos necesarios para la recepción. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `origo.procurement.receipts.view` | Consultar recepciones de compra | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-PURCHASE-RECEIPTS — Recepciones de compra vinculadas a la sede o bodega activa, incluidas sus cantidades, diferencias y estado. No concede registrar, revertir ni aprobar recepciones. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `origo.procurement.suppliers.view` | Consultar proveedores | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO** | CTX-WH-SUPPLIER-IDENTITY — Proyección mínima del proveedor necesaria para identificar la entrega y validar documentos. Excluye información bancaria, negociación, costos no requeridos y administración del maestro. | Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable. |
+
+| `origo.catalog.product_reviews.view` | Consultar revisiones de productos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | La revisión del maestro de productos es administrativa y BASE_ONLY. |
+
+
+##### 7.8 VENTO PASS — 1 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.9 PULSO — 2 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `pulso.access` | Entrar a PULSO | `OPERATIONAL_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Operación comercial del punto de venta ajena a la bodega central. |
+
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad combinada o excepcional. Requiere autoridad base adicional y no forma parte del trabajo ordinario del bodeguero. |
+
+
+##### 7.10 VISO — 17 permisos
+
+
+| Permiso | Capacidad humana | Modalidad | Decisión para bodeguero | Alcance aprobado | Condición |
+| ------- | ---------------- | --------- | ----------------------- | ---------------- | --------- |
+
+| `viso.access` | Entrar a VISO | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.platform.app_updates.view` | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.organization.businesses.view` | Consultar empresas y unidades de negocio | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.workforce.employees.view` | Consultar trabajadores | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.workforce.staff_calendar.view` | Consultar calendario del personal | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.workforce.schedules.view` | Consultar programación de turnos | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.workforce.vacancies.view` | Consultar vacantes | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.authorization.audit_logs.view` | Consultar auditoría de autorización | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.catalog.commercial_categories.view` | Consultar categorías comerciales | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.content.content_blocks.view` | Consultar bloques de contenido | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.content.menu.view` | Consultar menú | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.content.website_content.view` | Consultar contenido del sitio web | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.finance.accounting.view` | Consultar información contable | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.delivery.rates.view` | Consultar tarifas de entrega | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.loyalty.products.view` | Consultar productos de fidelización | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+| `viso.loyalty.customers.view` | Consultar clientes de fidelización | `BASE_ONLY` | **NO ASIGNAR** | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+#### 8. Reglas obligatorias de operación
+
+1. Cada concesión utiliza una clave canónica exacta; no existen wildcards, permisos por prefijo ni autorización por nombre del rol.
+
+2. El rol operativo efectivo procede exclusivamente del turno válido. El código coincidente `bodeguero` en el catálogo base no reutiliza ni amplía esta matriz.
+
+3. El área activa de bodega debe resolverse desde el turno y corresponder a la sede operativa. Una ubicación de inventario no sustituye el área empresarial.
+
+4. El permiso operativo global, cuando se materialice, solo será reutilizable dentro de contextos válidos; nunca permitirá operar simultáneamente otras sedes.
+
+5. Las consultas se limitan a recursos relacionados con la sede y área activas, incluso cuando el recurso tenga extremos de origen y destino.
+
+6. Toda entrada ordinaria exige un documento o evento fuente canónico y no puede duplicar el efecto producido por ORIGO, FOGO o una remisión.
+
+7. Asignar ubicación no permite modificar el catálogo de ubicaciones ni omitir restricciones de capacidad, compatibilidad, lote, temperatura o estado.
+
+8. Todo traslado creado por el bodeguero queda limitado a ubicaciones autorizadas de la misma sede y bodega. Entre sedes se utilizará una remisión.
+
+9. Todo retiro exige ubicación, lote o LPN, cantidad, unidad, destino o motivo y actor. Debe impedir stock negativo y mantener trazabilidad append-only.
+
+10. Los conteos y validaciones registran evidencia; no producen ajustes automáticos ni permiten al bodeguero aprobar sus propias diferencias.
+
+11. La interfaz de conteo deberá ser ciega mientras corresponda y no revelar stock teórico, variaciones o ajustes antes de la etapa autorizada.
+
+12. `remissions.prepare` permite alistar, registrar faltantes y dejar listo para transporte; no concede `dispatch` ni transfiere custodia al conductor.
+
+13. `remissions.receive` solo aplica cuando la bodega activa es destino autorizado y debe impedir que el mismo extremo sea preparado y recibido por el mismo actor sin una excepción formal.
+
+14. No se concede `remissions.update`: cada etapa utilizará su permiso atómico para evitar edición transversal del recurso.
+
+15. La consulta de ORIGO es una proyección operativa de verificación. No muestra información comercial, bancaria o negociaciones que no sean necesarias.
+
+16. El catálogo actual carece de `origo.procurement.receipts.register`; por tanto, esta matriz no afirma que la recepción de compra esté completa.
+
+17. El dispositivo compartido restringe y nunca amplía. `KIOSCO_BODEGA_CP` requiere actor humano identificado, sesión vigente y permiso real del actor.
+
+18. La política legacy `same_site_active_worker` es insuficiente para acciones de bodega; deberá sustituirse o complementarse con validación del rol `bodeguero` y del área activa.
+
+19. APP-REVIEW, demo, sedes aisladas y recursos no habilitados permanecen excluidos.
+
+20. No se implementan cambios físicos durante esta tarea.
+
+
+#### 9. Brechas contractuales identificadas
+
+| Brecha                                                                             | Impacto                                                                                                                             | Decisión en esta matriz                                                                                                                       |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| ORIGO no tiene `procurement.receipts.register`                                     | El bodeguero puede verificar la orden y la recepción, pero no existe capacidad atómica canónica para registrar la recepción física. | No inventar autorización. Crear el permiso en una futura versión contractual antes de implementar el flujo completo.                          |
+| No existe permiso específico para cuarentena, rechazo, vencimiento, avería o merma | La entrada ordinaria no debe convertirse en un canal genérico para excepciones de calidad.                                          | Denegar cualquier efecto excepcional no representado; documentarlo como flujo futuro.                                                         |
+| No existe permiso atómico de impresión o reimpresión                               | `printing.jobs.view` solo permite consultar trabajos.                                                                               | No inferir impresión desde la consulta; el flujo propietario deberá emitir la acción técnica mediante el permiso empresarial correspondiente. |
+| No existe aprobación de conteo separada                                            | `stock_counts.perform` permite capturar cantidades, no aprobar diferencias.                                                         | Mantener separación: bodeguero cuenta; autoridad base revisa y, si corresponde, ajusta.                                                       |
+| `warehouse_kiosk` usa `same_site_active_worker`                                    | Puede admitir trabajadores de otras áreas de la sede.                                                                               | La implementación deberá exigir rol y área compatibles antes de cualquier acción empresarial.                                                 |
+
+
+#### 10. Capacidades expresamente excluidas
+
+- Ajustar inventario o registrar entradas excepcionales sin autoridad base adicional.
+- Crear o modificar productos, activos, ubicaciones, políticas, rutas o plantillas.
+- Aprobar, resolver o consultar información financiera y variaciones internas.
+- Crear solicitudes de remisión en nombre de áreas solicitantes.
+- Cancelar remisiones o editar libremente sus datos y estados.
+- Iniciar tránsito, asumir custodia del conductor o consultar operaciones de conductores.
+- Operar FOGO, PULSO, NUMERA, VISO, AURA o Vento Pass.
+- Administrar compras, proveedores o el maestro de productos desde ORIGO.
+- Gestionar activos por defecto; esa responsabilidad requiere una definición separada.
+
+
+#### 11. Validaciones mínimas por tipo de acción
+
+| Acción                  | Validaciones mínimas                                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Entrada ordinaria       | Fuente válida, documento único, producto/presentación vigente, cantidad y unidad válidas, lote/fecha cuando aplique, sede y área destino, idempotencia. |
+| Ubicación               | Ubicación activa, misma sede/área, capacidad, compatibilidad, restricciones físicas, stock o LPN identificados.                                         |
+| Traslado                | Ambos extremos autorizados, misma sede y bodega, disponibilidad, bloqueo de origen, movimiento atómico, trazabilidad.                                   |
+| Retiro                  | Origen exacto, disponibilidad, motivo/destino, unidad y conversión válidas, sin stock negativo, auditoría reforzada.                                    |
+| Conteo                  | Sesión asignada, conjunto cerrado de ubicaciones, modalidad ciega, captura por actor, bloqueo de edición posterior, evidencia.                          |
+| Preparación de remisión | Origen autorizado, estado preparable, líneas solicitadas, cantidades preparadas, faltantes, sustituciones permitidas, empaque, versión.                 |
+| Recepción de remisión   | Destino autorizado, estado recibible, verificación física, diferencias, transferencia de custodia, efecto de inventario único.                          |
+| Verificación de compra  | Orden y recepción relacionadas con la sede, proveedor identificable, proyección mínima, sin mutaciones por esta matriz.                                 |
+
+
+#### 12. Compatibilidad con dispositivos compartidos
+
+Las concesiones admitidas desde un dispositivo compartido deberán respetar la clasificación canónica de cada permiso. El kiosco no podrá ejecutar ninguna acción mientras no exista una sesión ligera atribuida a un trabajador activo con turno, check-in, rol `bodeguero`, sede y área válidos.
+
+Las acciones sensibles o mutadoras deberán revalidarse en servidor en cada solicitud. El PIN identifica al actor dentro del dispositivo; no reemplaza autenticación fuerte cuando el permiso la exija ni convierte el dispositivo técnico en empleado.
+
+
+#### 13. Riesgos de transición
+
+1. `bodeguero` existe simultáneamente como rol base y operativo; la implementación deberá registrar siempre el origen de la concesión.
+2. Los permisos base legacy del oficio no podrán mantener acciones `OPERATIONAL_ONLY` fuera de turno.
+3. RLS, helpers y frontend con hardcode de `bodeguero` pueden conservar accesos aunque se corrija la matriz.
+4. La matriz actual de Supabase usa cadenas sin FK y concesiones globales; el dataset canónico deberá corregir integridad y alcance.
+5. La identidad heredada “Tablet Bodega” no puede continuar actuando como empleado.
+6. Preparar, recibir, entrar, ubicar y retirar pueden duplicar efectos si las RPC no comparten contratos idempotentes.
+
+
+#### 14. Resultado esperado en la experiencia
+
+```text
+BODEGA — CENTRO DE PRODUCCIÓN
+
+Pendientes
+[ Recibir mercancía ]
+[ Ubicar inventario ]
+[ Preparar remisiones ]
+[ Recibir remisiones ]
+
+Operación
+[ Consultar stock ]
+[ Registrar retiro ]
+[ Trasladar dentro de bodega ]
+[ Conteos asignados ]
+
+Control
+[ Ver movimientos ]
+[ Ver entradas ]
+[ Ver ajustes aplicados ]
+
+No visible
+- Ajustar inventario
+- Entrada excepcional
+- Cancelar remisión
+- Despachar transporte
+- Aprobar diferencias
+- Configurar productos o ubicaciones
+```
+
+
+#### 15. Invariantes
+
+- Bodeguero es rol operativo, no autoridad permanente.
+
+- Bodega, sede, área, ubicación y recurso permanecen conceptos separados.
+
+- El dispositivo técnico no posee permisos empresariales.
+
+- La consulta no implica mutación.
+
+- El conteo no implica ajuste.
+
+- La validación no implica aprobación.
+
+- La entrada ordinaria no implica override.
+
+- La preparación no implica despacho.
+
+- La recepción no implica cancelación.
+
+- La visibilidad de un extremo no autoriza el otro.
+
+- El movimiento entre sedes no se modela como traslado local.
+
+- No existe acceso financiero implícito.
+
+- No existe administración por nombre de rol.
+
+- Toda mutación conserva actor, contexto, recurso, versión e idempotencia.
+
+- La ausencia de permiso produce denegación.
+
+
+#### 16. Criterios de aprobación
+
+La tarea podrá aprobarse cuando se acepte que:
+
+- el bodeguero recibe 35 concesiones operativas explícitas;
+- puede ejecutar la operación ordinaria completa de custodia de la bodega;
+- no puede ajustar inventario, registrar excepciones ni aprobar diferencias por sí solo;
+- prepara remisiones, pero no inicia el tránsito;
+- puede recibir remisiones cuando la bodega sea destino;
+- puede verificar compras y recepciones en ORIGO sin administrarlas;
+- la recepción física de compra continúa incompleta hasta crear el permiso atómico faltante;
+- no hereda permisos del rol base legacy ni del dispositivo;
+- los 112 permisos fueron evaluados sin omisiones ni duplicados.
+
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-016 | APROBADA    |
+| AUTH-RBAC-017 | APROBADA    |
+| AUTH-RBAC-018 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-018 — Crear matriz de conductor_logistica
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-018 — Crear matriz de conductor_logistica                |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de transporte y custodia |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-017 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-019 — Crear matriz de gerencia_operativa                 |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios, dispositivos ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025 y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades del rol operativo `conductor_logistica` para recoger carga preparada, aceptar custodia, iniciar y ejecutar el tránsito, consultar su ruta y entregar físicamente la carga al actor receptor, sin convertirlo en bodeguero, receptor, administrador logístico, corrector de inventario, comprador ni autoridad para cancelar operaciones.
+
+#### 3. Decisión principal
+
+`conductor_logistica` representa la función temporal responsable del transporte y de la custodia física desde la aceptación documentada de la carga hasta su entrega documentada al destino autorizado. Su autoridad se limita a operaciones, rutas, remisiones y bultos que estén asignados al actor, al vehículo o a la jornada vigente.
+
+```text
+ACTOR HUMANO IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ CHECK-IN ACTIVO EN PUNTO AUTORIZADO
++ ROL OPERATIVO conductor_logistica
++ RUTA, VEHÍCULO U OPERACIÓN ASIGNADA
++ REMISIÓN PREPARADA Y LISTA PARA TRANSPORTE
++ PERMISO EXACTO
++ RECURSO RELACIONADO CON LA CUSTODIA DEL ACTOR
+= AUTORIZACIÓN OPERATIVA DE TRANSPORTE
+```
+
+No se admite:
+
+```text
+employees.role = conductor → acceso permanente
+perfil predeterminado → autorización
+vehículo asignado → permiso empresarial
+nexo.access → acceso logístico total
+ver remisión → modificar cantidades
+aceptar custodia → preparar carga
+iniciar tránsito → recibir en destino
+entregar físicamente → auto-confirmar recepción
+incidencia → ajustar inventario
+conductor_logistica → consultar todas las rutas o conductores
+```
+
+#### 4. Separación de responsabilidades
+
+| Etapa                    | Responsable principal                                 | Facultad del conductor                                                            | Límite obligatorio                                                        |
+| ------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Solicitud                | Área solicitante                                      | Consultar solo cuando la remisión quede asignada a su operación                   | No solicita en nombre de terceros                                         |
+| Preparación              | Bodeguero u origen autorizado                         | Verificar manifiesto, bultos y estado listo                                       | No reserva, sustituye ni modifica cantidades                              |
+| Carga                    | Origen + conductor                                    | Contrastar bultos, sellos, LPN y vehículo antes de aceptar custodia               | No crea stock ni corrige diferencias                                      |
+| Despacho                 | Conductor                                             | Aceptar custodia e iniciar tránsito mediante `remissions.dispatch`                | Solo desde estado preparable y con asignación válida                      |
+| Tránsito                 | Conductor                                             | Consultar ruta, operaciones propias y cumplimiento                                | No modifica rutas ni opera remisiones ajenas                              |
+| Entrega física           | Conductor                                             | Presentar la carga al destino y registrar evidencia cuando exista permiso atómico | El catálogo actual no contiene una capacidad ordinaria de entrega/handoff |
+| Recepción                | Actor del destino                                     | Permanecer como custodio hasta la aceptación                                      | El conductor no ejecuta `remissions.receive`                              |
+| Diferencias o incidentes | Conductor reporta; autoridad correspondiente resuelve | Aportar evidencia y bloquear continuidad si corresponde                           | No ajusta inventario, cancela ni resuelve unilateralmente                 |
+
+#### 5. Resultado cuantitativo de la matriz
+
+| Resultado                                    | Cantidad | Efecto                                                                              |
+| -------------------------------------------- | -------: | ----------------------------------------------------------------------------------- |
+| Capacidades operativas asignadas             |       14 | Concesiones explícitas de NEXO para carga asignada, tránsito, rutas y cumplimiento. |
+| Capacidades `BASE_AND_OPERATIONAL` asignadas |        0 | El rol no recibe overrides, ajustes, cancelaciones ni aprobaciones.                 |
+| Capacidades no asignadas                     |       98 | Permanecen denegadas por defecto.                                                   |
+| Total evaluado                               |      112 | Sin omisiones ni duplicados.                                                        |
+
+La matriz contiene **14 concesiones operativas a nivel de clave** y **98 ausencias de concesión**. La ausencia de concesión produce denegación por defecto; no se crean filas `deny` redundantes.
+
+#### 6. Perfiles de alcance utilizados
+
+- `CTX-DRV-NEXO-APP` — Entrada a NEXO durante un turno de conductor válido. No concede ninguna función interna por sí sola.
+- `CTX-DRV-CARGO-CATALOG` — Productos, presentaciones y unidades incluidos en la carga asignada. Excluye información comercial, financiera o de proveedores.
+- `CTX-DRV-LPN` — LPN, bultos, contenedores y sellos vinculados a remisiones bajo custodia del actor.
+- `CTX-DRV-CUSTODY-MOVEMENTS` — Eventos de custodia e inventario relacionados con la operación asignada, no el historial global.
+- `CTX-DRV-REMISSIONS` — Remisiones asignadas al conductor, ruta o vehículo y remisiones listas para recogida en un origen autorizado.
+- `CTX-DRV-DISPATCH` — Aceptación de custodia e inicio de tránsito sobre carga preparada, validada y asignada.
+- `CTX-DRV-BOARD` — Tablero limitado a las operaciones propias del turno.
+- `CTX-DRV-OPERATIONS` — Operaciones donde el conductor sea actor asignado o custodio vigente.
+- `CTX-DRV-SELF` — Historial y estado operativo del propio conductor, nunca de otros conductores.
+- `CTX-DRV-FULFILLMENT` — Cumplimiento de paradas y remisiones asignadas.
+- `CTX-DRV-FULFILLMENT-ROUTES` — Ruta y secuencia de paradas asignadas, en modo de solo lectura.
+- `CTX-DRV-SUPPLY-ROUTES` — Rutas de abastecimiento publicadas aplicables a la jornada.
+
+Los perfiles operativos se materializarán después como contratos de recurso y filtros del lado servidor. No son simples filtros visuales.
+
+#### 7. Matriz canónica completa — 112 permisos
+
+
+##### 7.1 SHELL — 1 permisos
+
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                             |
+| -------------- | ----------------- | ----------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.2 ANIMA — 10 permisos
+
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                             |
+| ------------------------------------------- | ------------------------------------ | ----------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.3 AURA — 1 permisos
+
+| Permiso       | Capacidad humana | Modalidad   | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                             |
+| ------------- | ---------------- | ----------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.4 FOGO — 6 permisos
+
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                                                  |
+| ---------------------------------- | ------------------------------- | --------------------- | --------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción y sus lotes pertenecen a roles productivos; el conductor transporta resultados ya liberados. |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción y sus lotes pertenecen a roles productivos; el conductor transporta resultados ya liberados. |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción y sus lotes pertenecen a roles productivos; el conductor transporta resultados ya liberados. |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción y sus lotes pertenecen a roles productivos; el conductor transporta resultados ya liberados. |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La producción y sus lotes pertenecen a roles productivos; el conductor transporta resultados ya liberados. |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                      |
+
+
+##### 7.5 NEXO — 63 permisos
+
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para conductor_logistica | Alcance aprobado                                                                                                                                                                                                                       | Condición                                                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-NEXO-APP — Turno publicado y vigente, rol `conductor_logistica`, sede logística autorizada y contexto de ruta o vehículo válido. Permite entrar a NEXO; no concede capacidades internas por sí solo.                           | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-CARGO-CATALOG — Productos incluidos en remisiones, manifiestos, LPN o incidencias asignadas al conductor. Excluye costos, márgenes, proveedores y catálogo administrativo.                                                     | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-CARGO-CATALOG — Presentaciones y empaques necesarios para verificar físicamente la carga asignada, incluyendo unidades logísticas y equivalencias visibles en el manifiesto.                                                   | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las políticas de solicitud pertenecen a las áreas solicitantes y a la administración del abastecimiento, no al conductor.                                                                           |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La clasificación por categorías no es necesaria para verificar una carga ya manifestada.                                                                                                            |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-CARGO-CATALOG — Unidades y conversiones necesarias para contrastar cantidades preparadas, cargadas y entregadas. No permite modificar equivalencias.                                                                           | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La capacidad excede el transporte y la custodia en tránsito o pertenece a otro actor del proceso.                                                                                                   |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La capacidad excede el transporte y la custodia en tránsito o pertenece a otro actor del proceso.                                                                                                   |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La capacidad excede el transporte y la custodia en tránsito o pertenece a otro actor del proceso.                                                                                                   |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las correcciones y diferencias de inventario no son necesarias para ejecutar la ruta ordinaria.                                                                                                     |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor no puede corregir inventario, regularizar faltantes ni aprobar diferencias.                                                                                                            |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las entradas de inventario pertenecen al origen o destino; el conductor consulta la remisión y su manifiesto.                                                                                       |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor no registra entradas de inventario ni crea stock en el destino.                                                                                                                        |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las entradas excepcionales requieren autoridad base y operativa; nunca corresponden al conductor ordinario.                                                                                         |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las ubicaciones internas de bodega pertenecen al bodeguero. El conductor solo necesita puntos de recogida y entrega incluidos en la operación logística.                                            |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Asignar ubicación es custodia interna de bodega y no corresponde al tránsito.                                                                                                                       |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-LPN — LPN, contenedores, sellos y bultos vinculados exclusivamente con remisiones bajo custodia asignada al conductor. No permite reasignar, abrir o alterar contenido por sí solo.                                            | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-CUSTODY-MOVEMENTS — Eventos de inventario y custodia relacionados con remisiones asignadas: preparación final, carga, despacho, tránsito, entrega y recepción. No concede acceso al historial general de inventario.           | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor custodia carga asignada, no administra existencias ni necesita consultar stock general de origen o destino.                                                                            |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La trazabilidad productiva se proyectará en la remisión cuando sea necesaria; el conductor no consulta lotes productivos generales.                                                                 |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Los traslados internos no son remisiones de transporte. La información necesaria debe proyectarse desde la remisión asignada.                                                                       |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor no crea traslados internos ni mueve stock por fuera del flujo de remisiones.                                                                                                           |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Los retiros de inventario pertenecen a bodega o consumo productivo; no forman parte de la custodia en tránsito.                                                                                     |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor no descuenta inventario directamente ni registra consumos.                                                                                                                             |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las zonas internas de almacenamiento pertenecen a bodega, no al tránsito.                                                                                                                           |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Las posiciones internas de almacenamiento pertenecen a bodega, no al tránsito.                                                                                                                      |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La cola de bodega corresponde al bodeguero; el conductor utiliza la cola logística asignada.                                                                                                        |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor puede reportar una incidencia, pero no ejecutar validaciones de stock.                                                                                                                 |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Los conteos de inventario pertenecen a la custodia de bodega.                                                                                                                                       |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | El conductor no realiza conteos de inventario durante el tránsito.                                                                                                                                  |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Los conteos iniciales no forman parte de la operación de transporte.                                                                                                                                |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-REMISSIONS — Remisiones asignadas al conductor, a su ruta o vehículo, y aquellas listas para recogida en un origen autorizado. Incluye origen, destino, líneas, cantidades preparadas, bultos, estado e instrucciones mínimas. | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La actualización amplia mezclaría etapas y permitiría alterar datos fuera de la responsabilidad del conductor. Cada transición debe usar un permiso atómico.                                        |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Solicitar abastecimiento corresponde al área solicitante, no al conductor.                                                                                                                          |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Preparar, reservar, empacar y definir cantidades corresponde al bodeguero o actor de origen.                                                                                                        |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**             | CTX-DRV-DISPATCH — Aceptación explícita de custodia e inicio de tránsito únicamente sobre una remisión preparada, cargada, validada y asignada al conductor. No permite modificar cantidades, preparar, recibir ni cancelar.           | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La recepción y confirmación de cantidades corresponde al actor autorizado en el destino; el conductor entrega la custodia, pero no se auto-recibe.                                                  |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Cancelar es una decisión sensible de control y no corresponde a quien transporta la carga.                                                                                                          |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-BOARD — Tablero limitado a las operaciones asignadas al actor, ruta o vehículo durante el turno. No muestra el tablero logístico global ni operaciones de otros conductores.                                                   | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-OPERATIONS — Operaciones logísticas donde el conductor sea actor asignado o custodio vigente. Incluye secuencia, estado, origen, destino, ventanas y bloqueos necesarios para ejecutar la ruta.                                | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-SELF — Operaciones propias del conductor y su trazabilidad durante el turno. No permite consultar desempeño, ubicación o historial de otros conductores.                                                                       | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-FULFILLMENT — Cumplimiento de remisiones y paradas asignadas al conductor: pendiente, recogida, en tránsito, entregada, recibida o con incidencia. No expone cumplimiento organizacional global.                               | Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable. |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-FULFILLMENT-ROUTES — Ruta, secuencia de paradas, ventanas, restricciones y destinos asignados para el turno. No permite crear, editar o reasignar rutas.                                                                       | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**             | CTX-DRV-SUPPLY-ROUTES — Rutas de abastecimiento publicadas que correspondan a la jornada y a las remisiones asignadas. Solo lectura; no concede coordinación general ni modificación de frecuencias.                                   | Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.   |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La capacidad excede el transporte y la custodia en tránsito o pertenece a otro actor del proceso.                                                                                                   |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La capacidad excede el transporte y la custodia en tránsito o pertenece a otro actor del proceso.                                                                                                   |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | La consulta de trabajos de impresión no es necesaria para conducir. El manifiesto o documento requerido debe proyectarse dentro de la operación asignada.                                           |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                                 | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                                                                               |
+
+
+##### 7.6 NUMERA — 6 permisos
+
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                             |
+| ----------------------------------------- | ------------------------------ | ----------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+##### 7.7 ORIGO — 5 permisos
+
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                                                                                       |
+| ---------------------------------------- | --------------------------------- | --------------------- | --------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | El conductor no opera compras ni recepciones de proveedores desde ORIGO.                                                                        |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La orden de compra no es el contrato operativo del transporte interno. La información necesaria debe estar en la operación o remisión asignada. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La recepción de compra corresponde al receptor autorizado, no al conductor por defecto.                                                         |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | No se concede acceso general a proveedores; cuando exista transporte de proveedor, se proyectarán únicamente los datos logísticos mínimos.      |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                           |
+| `pass.access`                            | Entrar a Vento Pass               | `BASE_ONLY`           | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa.                                                           |
+
+
+##### 7.8 PULSO — 2 permisos
+
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                                                                                   |
+| ------------------------------------ | --------------------------------------- | ---------------------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | La operación comercial y de entregas excepcionales de PULSO no se concede al conductor por esta matriz.                                     |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Es una confirmación excepcional de entrega y exige autoridad base además de contexto operativo; no es una facultad ordinaria del conductor. |
+
+
+##### 7.9 VISO — 17 permisos
+
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para conductor_logistica | Alcance aprobado                                                       | Condición                                                                             |
+| --------------------------------------------- | ----------------------------------------- | ----------- | --------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                    | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base; no puede concederse desde esta matriz operativa. |
+
+
+#### 8. Reglas operativas obligatorias
+
+1. El rol solo existe durante un turno publicado, vigente y compatible con `conductor_logistica`.
+2. El perfil operativo predeterminado sugiere configuración; no concede permisos ni reemplaza el turno.
+3. El check-in externo deberá realizarse en un punto aprobado, como el patio o punto de recogida, y vincularse con el turno correcto.
+4. Un punto de check-in oculto no se convierte en sede laboral ni amplía la cobertura territorial del conductor.
+5. Las consultas globales de logística se proyectarán exclusivamente sobre operaciones asignadas al actor, ruta o vehículo.
+6. `remissions.dispatch` representa aceptación de custodia e inicio de tránsito; no permite preparar, editar líneas, recibir o cancelar.
+7. Antes del despacho deberán coincidir remisión, versión, origen, destino, bultos, LPN, sellos, cantidades preparadas, ruta, vehículo y conductor.
+8. Cualquier diferencia previa al despacho bloquea la aceptación de custodia hasta que el origen la resuelva o registre formalmente.
+9. Tras el despacho, la custodia queda atribuida al conductor hasta la recepción válida o un evento formal de transferencia.
+10. El conductor no puede auto-recibir la remisión ni confirmar por el destino las cantidades entregadas.
+11. La visibilidad de una remisión no autoriza otra remisión de la misma sede, ruta o fecha.
+12. La visibilidad de una ruta no autoriza modificar secuencia, ventanas, destinos, conductor o vehículo.
+13. La geolocalización y telemetría, cuando se implementen, deben limitarse a la jornada activa, tener finalidad logística y cumplir retención definida.
+14. El conductor no consulta stock general de origen o destino; la carga autorizada se deriva del manifiesto asignado.
+15. Los eventos de movimientos visibles deben pertenecer a la cadena de custodia de la carga asignada.
+16. Las pruebas de entrega, firmas, fotografías o códigos de recepción requerirán permisos y contratos atómicos antes de su implementación.
+17. Un incidente no permite ajustar inventario, cancelar la remisión ni declarar recepción automáticamente.
+18. El cierre de jornada deberá bloquearse cuando existan remisiones todavía bajo custodia, salvo transferencia o excepción documentada.
+19. APP-REVIEW, demo, sedes aisladas, rutas no asignadas y vehículos ajenos permanecen excluidos.
+20. No se implementan cambios físicos durante esta tarea.
+
+#### 9. Brechas contractuales identificadas
+
+| Brecha                                                           | Impacto                                                                                                                         | Decisión en esta matriz                                                                                                                               |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No existe `nexo.inventory.remissions.handoff` o `deliver`        | El conductor puede iniciar tránsito, pero el catálogo no representa la entrega física ordinaria y la transferencia al receptor. | No ampliar `dispatch` ni `receive`. Crear permiso atómico de entrega o handoff.                                                                       |
+| No existe permiso para prueba de entrega                         | No hay capacidad explícita para firma, fotografía, código, sello o evidencia del destino.                                       | Mantener la evidencia fuera de autorización hasta definir permiso, sensibilidad, retención y recurso.                                                 |
+| No existe permiso para incidentes de transporte                  | Avería, faltante, rechazo, accidente, demora o imposibilidad de entrega no tienen acción atómica.                               | El conductor no ajusta ni cancela. Crear `logistics.incidents.register` y flujo de resolución.                                                        |
+| No existe permiso para progreso de ruta                          | La matriz permite consultar rutas, pero no registrar llegada, salida, omisión o reprogramación de una parada.                   | Crear acciones atómicas de progreso; no inferirlas desde `operations.view`.                                                                           |
+| No existe permiso para inspección o asignación de vehículo       | El catálogo no representa checklist, kilometraje, combustible, mantenimiento o aceptación del vehículo.                         | No usar permisos de activos como sustituto. Diseñar el subdominio y sus capacidades.                                                                  |
+| `dispatch` concentra aceptación de custodia e inicio de tránsito | Una sola acción puede dificultar doble validación entre origen y conductor.                                                     | La implementación deberá usar confirmación transaccional, versión, manifiesto y actor de origen; evaluar separar `custody.accept` de `transit.start`. |
+| No existe flujo atómico de entrega fallida o devolución          | El conductor no puede cerrar de forma segura una parada no entregada.                                                           | Mantener la operación abierta o bloqueada hasta contar con permiso y estado canónico.                                                                 |
+
+#### 10. Capacidades expresamente excluidas
+
+- Solicitar, preparar, editar, recibir o cancelar remisiones.
+- Modificar productos, presentaciones, unidades, rutas o políticas.
+- Consultar stock general, ubicaciones internas, conteos, retiros, traslados o entradas.
+- Crear movimientos de inventario por fuera de la transición autorizada de despacho.
+- Ajustar diferencias, registrar entradas excepcionales o aprobar variaciones.
+- Consultar operaciones, rutas, ubicación o desempeño de otros conductores.
+- Operar compras, producción, caja, fidelización, finanzas o administración de personal.
+- Confirmar entregas excepcionales mediante `pulso.delivery.deliveries.override`.
+- Usar identidad técnica de vehículo o dispositivo como actor empresarial.
+
+#### 11. Validaciones mínimas por tipo de acción
+
+| Acción                 | Validaciones mínimas                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Consultar ruta         | Actor asignado, turno vigente, ruta publicada, vehículo compatible, ventana temporal y paradas autorizadas.                                |
+| Consultar remisión     | Asignación directa o relación demostrable con ruta/vehículo, estado visible y proyección mínima de datos.                                  |
+| Ver LPN o bulto        | Relación con remisión asignada, sello/estado vigente y ocultamiento de contenedores ajenos.                                                |
+| Aceptar custodia       | Remisión preparada, manifiesto versionado, bultos y sellos coincidentes, origen autorizado, actor y vehículo asignados, sin bloqueo.       |
+| Iniciar tránsito       | Custodia aceptada, estado válido, check-in activo, idempotencia, fecha y hora de servidor, auditoría y geolocalización cuando corresponda. |
+| Consultar movimientos  | Solo eventos asociados a la cadena de custodia de operaciones propias.                                                                     |
+| Consultar cumplimiento | Solo paradas y remisiones asignadas; no incluir métricas globales ni de otros actores.                                                     |
+| Finalizar jornada      | Sin custodia abierta, o con transferencia, devolución o excepción formalmente registrada.                                                  |
+
+#### 12. Compatibilidad con dispositivos y movilidad
+
+La aplicación del conductor podrá ejecutarse en un dispositivo personal o corporativo, pero el dispositivo no será propietario de la operación. Cada acción deberá atribuirse al trabajador autenticado y al turno vigente.
+
+Cuando exista un dispositivo compartido o instalado en el vehículo, deberá crearse una sesión de actor. El PIN, código del vehículo o usuario técnico solo identifica el contexto del dispositivo; no reemplaza la autorización empresarial ni concede el rol.
+
+La operación deberá tolerar conectividad intermitente sin duplicar transiciones. Las acciones offline se registrarán con identificador idempotente, hora del dispositivo y hora de servidor, y se rechazarán si el recurso cambió de versión o fue transferido a otro actor.
+
+#### 13. Riesgos de transición
+
+1. El rol base legacy `conductor` conserva permisos permanentes y puede mantener acceso fuera de turno.
+2. El permiso legacy `nexo.inventory.remissions.transit` deberá mapearse cuidadosamente a la capacidad canónica `nexo.inventory.remissions.dispatch` sin ampliar su significado.
+3. El único perfil operativo existente del conductor puede ser interpretado erróneamente como autorización automática.
+4. Los puntos externos de check-in comparten la tabla `sites` y pueden aparecer incorrectamente como sedes laborales.
+5. La matriz física actual usa cadenas de permiso sin FK y concesiones globales; el dataset canónico deberá corregir integridad y alcance.
+6. La aplicación puede depender de rutas técnicas legacy como `conductor.view` o `transit.view`; deberán sustituirse por permisos funcionales.
+7. Sin permiso de entrega, la interfaz puede reutilizar indebidamente `receive` o `delivery.override`, rompiendo la segregación de funciones.
+8. La conectividad móvil puede producir doble despacho o eventos fuera de orden si no existe idempotencia y control de versión.
+
+#### 14. Resultado esperado en la experiencia
+
+```text
+MI RUTA — TURNO ACTIVO
+
+Próxima recogida
+[ Centro de Producción ]
+Remisiones listas: 3
+[ Revisar carga ]
+
+Carga bajo mi custodia
+[ REM-2026-00124 ]  En tránsito
+Destino: Vento Café
+Bultos: 8 de 8
+
+Ruta
+1. Centro de Producción   ✓ Recogida
+2. Vento Café             ● Siguiente
+3. Saudo                  ○ Pendiente
+
+Acciones disponibles
+[ Aceptar carga e iniciar tránsito ]
+[ Ver manifiesto ]
+[ Ver ruta ]
+
+Pendiente contractual
+- Registrar llegada
+- Entregar y transferir custodia
+- Adjuntar prueba de entrega
+- Reportar incidencia
+```
+
+No se mostrará:
+
+- Preparar o modificar cantidades.
+- Recibir por el destino.
+- Cancelar remisiones.
+- Consultar stock general.
+- Ver rutas de otros conductores.
+- Ajustar diferencias.
+
+#### 15. Invariantes
+
+- Conductor es rol operativo, no cargo permanente ni autoridad logística global.
+- Perfil, vehículo, ruta y dispositivo no conceden permisos.
+- Preparación y custodia en tránsito son etapas diferentes.
+- Aceptar custodia no permite alterar el manifiesto.
+- Iniciar tránsito no implica entrega.
+- Entregar físicamente no equivale a recibir en nombre del destino.
+- El conductor no puede aprobar sus propias diferencias.
+- Una incidencia no produce automáticamente ajuste, cancelación ni recepción.
+- La visibilidad se limita a operaciones asignadas.
+- La geolocalización se limita a una finalidad y jornada definidas.
+- Toda transición conserva actor, recurso, versión, ubicación, fecha e idempotencia.
+- La ausencia de permiso produce denegación.
+
+#### 16. Criterios de aprobación
+
+La tarea podrá aprobarse cuando se acepte que:
+
+- `conductor_logistica` recibe 14 concesiones operativas explícitas;
+- puede consultar exclusivamente su carga, operaciones, rutas y cumplimiento asignados;
+- acepta custodia e inicia tránsito mediante `nexo.inventory.remissions.dispatch`;
+- no prepara, modifica, recibe, cancela ni ajusta remisiones o inventario;
+- el destino conserva la responsabilidad de recepción;
+- no se utiliza `pulso.delivery.deliveries.override` como permiso ordinario del conductor;
+- la entrega, prueba de entrega, incidentes y progreso de ruta quedan reconocidos como brechas contractuales;
+- el perfil, punto de check-in, vehículo y dispositivo no sustituyen el permiso;
+- los 112 permisos fueron evaluados sin omisiones ni duplicados.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-017 | APROBADA    |
+| AUTH-RBAC-018 | APROBADA    |
+| AUTH-RBAC-019 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
+
+### ✅ AUTH-RBAC-019 — Crear matriz de gerencia_operativa
+
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Tarea                     | AUTH-RBAC-019 — Crear matriz de gerencia_operativa                 |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de matriz operativa de coordinación          |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-018 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-020 — Definir concesiones individuales base              |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios, dispositivos ni datasets físicos. La aplicación posterior deberá realizarse mediante AUTH-RBAC-025, las capas de excepciones aprobadas y las migraciones versionadas del BLOQUE R en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir, permiso por permiso, las capacidades del rol operativo `gerencia_operativa` para coordinar en tiempo real la jornada, supervisar producción, inventario, abastecimiento, logística y operación comercial de la sede activa, y aportar el componente operativo de determinadas acciones excepcionales, sin convertir este rol en un duplicado de `propietario`, `gerente_general`, `gerente` o `supervisor`, sin crear un bypass y sin sustituir a los actores físicos responsables de cada etapa.
+
+#### 3. Decisión principal
+
+`gerencia_operativa` representa coordinación directa y temporal de la operación. Su función es observar el estado completo de la sede activa, priorizar, desbloquear, escalar y ejecutar únicamente las acciones de coordinación expresamente concedidas. No hereda permisos administrativos por el nombre del rol y no recibe alcance organizacional global.
+
+```text
+ACTOR HUMANO IDENTIFICADO
++ TURNO PUBLICADO Y VIGENTE
++ CHECK-IN ACTIVO CUANDO APLIQUE
++ ROL OPERATIVO gerencia_operativa
++ SEDE ACTIVA AUTORIZADA
++ ÁREA ACTIVA O ÁREA GENERAL COMPATIBLE
++ PERMISO EXACTO
++ RECURSO RELACIONADO CON LA JORNADA
+= AUTORIZACIÓN OPERATIVA DE COORDINACIÓN
+```
+
+No se admite:
+
+```text
+gerencia_operativa = gerente_general
+gerencia_operativa = todos los permisos operativos
+gerencia_operativa = bypass de turno o check-in
+gerencia_operativa = alcance sobre todas las sedes
+gerencia_operativa = reemplazo automático de bodeguero, conductor o producción
+ver una operación = modificarla
+coordinar una etapa = asumir su custodia física
+componente operativo = autorización suficiente para BASE_AND_OPERATIONAL
+```
+
+#### 4. Separación entre carril base y coordinación operativa
+
+| Dimensión                                         | Carril base administrativo                                 | Rol `gerencia_operativa`                                                 |
+| ------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Vigencia                                          | Permanente mientras el rol y permiso base estén activos    | Solo durante turno y contexto operativo válidos                          |
+| Territorio                                        | Sedes y áreas asignadas según la matriz base               | Únicamente sede/área activas y recursos relacionados con la jornada      |
+| Personal, horarios y configuración                | Puede corresponder al rol base                             | No se duplica en esta matriz                                             |
+| Seguimiento de producción, inventario y logística | Puede existir como consulta administrativa                 | Se concede para coordinación en tiempo real                              |
+| Ejecución física                                  | No se presume                                              | Solo cuando exista permiso operativo exacto; no se infiere por jerarquía |
+| Acciones `BASE_AND_OPERATIONAL`                   | Aporta el componente base cuando la matriz base lo concede | Aporta únicamente el componente operativo expresamente asignado          |
+| Fin del turno                                     | No revoca permisos base                                    | Revoca todas las capacidades de esta matriz                              |
+
+Un trabajador con rol base `propietario`, `gerente_general`, `gerente` o `supervisor` podrá asumir `gerencia_operativa`, pero los dos carriles conservarán decisiones, alcances y auditorías independientes. Un trabajador sin componente base no podrá ejecutar una acción `BASE_AND_OPERATIONAL` aunque tenga este rol operativo.
+
+#### 5. Resultado cuantitativo de la matriz
+
+| Resultado                                 | Cantidad | Efecto                                                                                                   |
+| ----------------------------------------- | -------: | -------------------------------------------------------------------------------------------------------- |
+| Capacidades operativas directas           |       43 | Cuarenta permisos `BASE_OR_OPERATIONAL` y tres `OPERATIONAL_ONLY` concedidos dentro del contexto activo. |
+| Componentes operativos de doble condición |        5 | No autorizan por sí solos; requieren una concesión base compatible y controles reforzados.               |
+| Capacidades no asignadas                  |       64 | Permanecen denegadas por defecto.                                                                        |
+| Total evaluado                            |      112 | Sin omisiones ni duplicados.                                                                             |
+
+La matriz contiene **48 claves con concesión en el carril operativo**: 43 capacidades operativas directas y cinco componentes operativos de permisos `BASE_AND_OPERATIONAL`. No existe wildcard ni concesión global.
+
+#### 6. Perfiles de alcance utilizados
+
+- `CTX-MGR-FOGO-APP` — Entrada operativa a FOGO durante el turno de coordinación.
+- `CTX-MGR-PRODUCTION-STATUS` — Órdenes y lotes que afectan la sede o áreas coordinadas.
+- `CTX-MGR-PRODUCTION-RECIPE` — Recetario operativo mínimo vinculado con órdenes o incidencias activas.
+- `CTX-MGR-NEXO-APP` — Entrada operativa a NEXO sin ampliar territorio.
+- `CTX-MGR-CATALOG` — Catálogos necesarios para interpretar solicitudes, inventario y remisiones de la sede activa.
+- `CTX-MGR-ASSETS` — Activos y conteos relacionados con la sede activa, en consulta.
+- `CTX-MGR-INVENTORY-CONTROL` — Entradas y ajustes que afectan la jornada, con trazabilidad.
+- `CTX-MGR-INVENTORY-VIEW` — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros y operaciones de la sede activa.
+- `CTX-MGR-COUNTS-READ` — Conteos con visibilidad limitada por etapa y segregación de funciones.
+- `CTX-MGR-REMISSIONS` — Remisiones relacionadas con la sede activa o bajo coordinación expresa.
+- `CTX-MGR-REMISSION-UPDATE` — Campos operativos editables sin alterar custodia o cantidades protegidas.
+- `CTX-MGR-REMISSION-REQUEST` — Solicitudes justificadas para la sede o área activa.
+- `CTX-MGR-REMISSION-CANCEL` — Cancelación en estados permitidos, con motivo y auditoría reforzada.
+- `CTX-MGR-LOGISTICS` — Operaciones, conductores, cumplimiento y rutas que afectan la sede coordinada.
+- `CTX-MGR-ORIGO` — Abastecimiento y recepción vinculados con la sede activa, en consulta.
+- `CTX-MGR-PULSO-APP` — Entrada operativa a PULSO sin conceder ventas, caja o pagos por sí sola.
+- `CTX-MGR-DOUBLE-*` — Componente operativo de capacidades excepcionales que exigen simultáneamente carril base válido.
+
+Los perfiles deberán convertirse posteriormente en contratos de recurso y filtros del lado servidor. No son filtros visuales ni parámetros confiables del frontend.
+
+#### 7. Matriz canónica completa — 112 permisos
+
+
+##### 7.1 SHELL — 1 permisos
+| Permiso        | Capacidad humana  | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| -------------- | ----------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shell.access` | Entrar a Vento OS | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+##### 7.2 ANIMA — 10 permisos
+| Permiso                                     | Capacidad humana                     | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| ------------------------------------------- | ------------------------------------ | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `anima.access`                              | Entrar a ANIMA                       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.employee_documents.view`   | Consultar documentos de trabajadores | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.employee_documents.upload` | Cargar documentos de trabajadores    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.employee_documents.delete` | Eliminar documentos de trabajadores  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.employee_photos.upload`    | Cargar fotografías de trabajadores   | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.team_members.view`         | Consultar integrantes del equipo     | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.workforce.staff_invitations.create`  | Invitar trabajadores                 | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.attendance.shifts.create`            | Crear turnos                         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.attendance.shifts.update`            | Actualizar turnos                    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `anima.attendance.shifts.cancel`            | Cancelar turnos                      | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+##### 7.3 AURA — 1 permisos
+| Permiso       | Capacidad humana | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| ------------- | ---------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `aura.access` | Entrar a AURA    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+##### 7.4 FOGO — 6 permisos
+| Permiso                            | Capacidad humana                | Modalidad             | Decisión para gerencia_operativa | Alcance aprobado                                                                                                                                                                         | Condición                                                                                                                                                                                        |
+| ---------------------------------- | ------------------------------- | --------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `fogo.access`                      | Entrar a FOGO                   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-FOGO-APP — Entrada a FOGO durante el turno de coordinación. No concede acciones internas por sí sola.                                                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `fogo.production.batches.view`     | Consultar lotes de producción   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-PRODUCTION-STATUS — Órdenes y lotes de producción vinculados con la sede activa, sus áreas operativas o abastecimientos que afecten la jornada. Solo seguimiento y coordinación. | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `fogo.production.batches.create`   | Crear lotes de producción       | `OPERATIONAL_ONLY`    | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                   | Crear lotes corresponde al rol productivo responsable. La gerencia coordina y supervisa, pero no sustituye la ejecución productiva ordinaria.                                                    |
+| `fogo.production.orders.view`      | Consultar órdenes de producción | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-PRODUCTION-STATUS — Órdenes y lotes de producción vinculados con la sede activa, sus áreas operativas o abastecimientos que afecten la jornada. Solo seguimiento y coordinación. | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `fogo.production.recipe_book.view` | Consultar recetario operativo   | `OPERATIONAL_ONLY`    | **ASIGNAR OPERATIVO**            | CTX-MGR-PRODUCTION-RECIPE — Recetario operativo estrictamente necesario para verificar ejecución, rendimientos e incidencias de órdenes activas en la sede o área coordinada.            | Carril operativo. Requiere turno, sede/área compatibles y relación con una orden o incidencia activa. No permite consultar ni administrar el maestro completo de recetas.                        |
+| `fogo.production.recipes.view`     | Consultar recetas               | `BASE_ONLY`           | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                   | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                     |
+
+
+##### 7.5 NEXO — 63 permisos
+| Permiso                                      | Capacidad humana                         | Modalidad              | Decisión para gerencia_operativa | Alcance aprobado                                                                                                                                                                                                                    | Condición                                                                                                                                                                                                                                            |
+| -------------------------------------------- | ---------------------------------------- | ---------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nexo.access`                                | Entrar a NEXO                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-NEXO-APP — Entrada a NEXO durante un turno válido de `gerencia_operativa`. No concede funciones internas ni alcance multisede por sí sola.                                                                                  | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.catalog.products.view`                 | Consultar productos                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.catalog.products.create`               | Crear productos                          | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.catalog.presentations.view`            | Consultar presentaciones                 | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.catalog.request_policies.view`         | Consultar políticas de solicitud         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.catalog.categories.view`               | Consultar categorías                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.catalog.units.view`                    | Consultar unidades                       | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.assets.items.view`                     | Consultar activos                        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.                                                      | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.assets.items.create`                   | Crear activos                            | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.assets.groups.view`                    | Consultar grupos de activos              | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.                                                      | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.assets.counts.view`                    | Consultar conteos de activos             | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.                                                      | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.adjustments.view`            | Consultar ajustes de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-CONTROL — Entradas o ajustes que afecten la sede activa, con actor, documento, motivo, estado y trazabilidad. No amplía por sí sola la capacidad de registrar.                                                    | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.adjustments.register`        | Registrar ajustes de inventario          | `BASE_AND_OPERATIONAL` | **ASIGNAR COMPONENTE OPERATIVO** | CTX-MGR-DOUBLE-ADJUSTMENT — Componente operativo sobre inventario de la sede/área activa. La ejecución final exige además concesión base compatible, diferencia documentada, motivo, reautenticación y auditoría reforzada.         | Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.                                                            |
+| `nexo.inventory.entries.view`                | Consultar entradas de inventario         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-CONTROL — Entradas o ajustes que afecten la sede activa, con actor, documento, motivo, estado y trazabilidad. No amplía por sí sola la capacidad de registrar.                                                    | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.entries.register`            | Registrar entradas de inventario         | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | La entrada ordinaria es una captura física del actor receptor o bodeguero. La gerencia puede consultar y, con doble condición, autorizar una excepción, pero no registrar la recepción ordinaria por defecto.                                        |
+| `nexo.inventory.entries.override`            | Registrar entradas excepcionales         | `BASE_AND_OPERATIONAL` | **ASIGNAR COMPONENTE OPERATIVO** | CTX-MGR-DOUBLE-ENTRY — Componente operativo para una entrada excepcional en la sede/área activa. Requiere simultáneamente autoridad base, documento o incidente válido, motivo y control de duplicidad.                             | Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.                                                            |
+| `nexo.inventory.locations.view`              | Consultar ubicaciones de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.location_assignments.assign` | Asignar ubicaciones de inventario        | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Asignar ubicaciones es ejecución de bodega. La coordinación puede consultar la distribución, pero no sustituye al custodio físico.                                                                                                                   |
+| `nexo.inventory.location_catalog.update`     | Actualizar el catálogo de una ubicación  | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.inventory.lpns.view`                   | Consultar LPN                            | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.movements.view`              | Consultar movimientos de inventario      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.stock.view`                  | Consultar stock                          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.production_batches.view`     | Consultar lotes vinculados al inventario | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.transfers.view`              | Consultar traslados de inventario        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.transfers.create`            | Crear traslados de inventario            | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Crear traslados es ejecución física y custodia de bodega. La gerencia consulta y coordina; no mueve inventario por inferencia.                                                                                                                       |
+| `nexo.inventory.withdrawals.view`            | Consultar retiros de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.withdrawals.register`        | Registrar retiros de inventario          | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Registrar retiros corresponde al actor que entrega o consume físicamente el inventario. La gerencia no debe crear movimientos ordinarios sin custodia directa.                                                                                       |
+| `nexo.inventory.zones.view`                  | Consultar zonas de almacenamiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.storage_positions.view`      | Consultar posiciones de almacenamiento   | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.warehouse_operations.view`   | Consultar operaciones de bodega          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.stock_validations.perform`   | Ejecutar validaciones de inventario      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | La validación física debe atribuirse al actor que inspecciona el stock. La gerencia puede revisar resultados, pero no se presume ejecutora del conteo.                                                                                               |
+| `nexo.inventory.stock_counts.view`           | Consultar conteos de inventario          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-COUNTS-READ — Conteos de la sede o área activa, respetando modalidad ciega, etapa, segregación de funciones y ocultamiento del stock teórico cuando corresponda.                                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.stock_counts.perform`        | Ejecutar conteos de inventario           | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | La captura de conteo corresponde al equipo asignado. La gerencia consulta el proceso y resuelve solo mediante permisos separados cuando corresponda.                                                                                                 |
+| `nexo.inventory.initial_counts.view`         | Consultar conteos iniciales              | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-COUNTS-READ — Conteos de la sede o área activa, respetando modalidad ciega, etapa, segregación de funciones y ocultamiento del stock teórico cuando corresponda.                                                            | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.remissions.view`             | Consultar remisiones                     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-REMISSIONS — Remisiones cuyo origen o destino corresponda a la sede activa, o cuya operación requiera coordinación directa del turno. Los datos de la otra sede se proyectan al mínimo necesario.                           | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.remissions.update`           | Actualizar remisiones                    | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-REMISSION-UPDATE — Actualización de prioridad, programación, observaciones y datos operativos permitidos de remisiones relacionadas con la sede activa. No altera cantidades bajo custodia ni etapas cerradas.              | Carril operativo. Solo campos y estados expresamente editables; cualquier cambio de cantidades, origen, destino, custodia o inventario exige permiso atómico diferente o se deniega.                                                                 |
+| `nexo.inventory.remissions.request`          | Solicitar remisiones                     | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**            | CTX-MGR-REMISSION-REQUEST — Solicitudes justificadas para la sede o área activa, sujetas a políticas, presentaciones mínimas, disponibilidad y trazabilidad del solicitante.                                                        | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.inventory.remissions.prepare`          | Preparar remisiones                      | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Preparar y empacar corresponde al origen o bodeguero. La gerencia coordina, pero no modifica cantidades preparadas por defecto.                                                                                                                      |
+| `nexo.inventory.remissions.dispatch`         | Despachar remisiones                     | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Aceptar custodia e iniciar tránsito corresponde al conductor asignado. La gerencia no se convierte en custodio del transporte.                                                                                                                       |
+| `nexo.inventory.remissions.receive`          | Recibir remisiones                       | `OPERATIONAL_ONLY`     | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Recibir y aceptar cantidades corresponde al actor físico del destino. La gerencia no auto-confirma la recepción salvo flujo excepcional atómico futuro.                                                                                              |
+| `nexo.inventory.remissions.cancel`           | Cancelar remisiones                      | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-REMISSION-CANCEL — Cancelación operativa de remisiones relacionadas con la sede activa, solo en estados cancelables, con motivo obligatorio, reautenticación y auditoría. No revierte custodia o inventario por inferencia. | Carril operativo. Exige turno y check-in activos, recurso relacionado con la sede coordinada, estado cancelable, control de versión, motivo obligatorio y auditoría. La cancelación no ejecuta ajustes ni devoluciones implícitas.                   |
+| `nexo.logistics.operations_board.view`       | Consultar tablero logístico              | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.logistics.operations.view`             | Consultar operaciones logísticas         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.logistics.driver_operations.view`      | Consultar operaciones de conductores     | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.logistics.fulfillment.view`            | Consultar cumplimiento logístico         | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.logistics.fulfillment_routes.view`     | Consultar rutas de cumplimiento          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.logistics.supply_routes.view`          | Consultar rutas de abastecimiento        | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.                   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.finance.internal_invoices.view`        | Consultar facturas internas              | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_invoices.generate`    | Generar facturas internas                | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_invoices.issue`       | Emitir facturas internas                 | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_invoices.cancel`      | Cancelar facturas internas               | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_invoice_amounts.view` | Consultar valores de facturas internas   | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_prices.view`          | Consultar precios internos               | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_variances.view`       | Consultar variaciones internas           | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.finance.internal_variances.approve`    | Aprobar variaciones internas             | `BASE_AND_OPERATIONAL` | **ASIGNAR COMPONENTE OPERATIVO** | CTX-MGR-DOUBLE-VARIANCE — Componente operativo de una variación vinculada a la sede o jornada activa. Requiere además autoridad base compatible, evidencia, separación de funciones y auditoría reforzada.                          | Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, recurso territorialmente compatible y actor distinto de quien originó o capturó la diferencia cuando la segregación lo requiera. |
+| `nexo.finance.internal_variances.resolve`    | Resolver variaciones internas            | `BASE_AND_OPERATIONAL` | **ASIGNAR COMPONENTE OPERATIVO** | CTX-MGR-DOUBLE-VARIANCE — Componente operativo de una variación vinculada a la sede o jornada activa. Requiere además autoridad base compatible, evidencia, separación de funciones y auditoría reforzada.                          | Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, recurso territorialmente compatible y actor distinto de quien originó o capturó la diferencia cuando la segregación lo requiera. |
+| `nexo.finance.cost_centers.view`             | Consultar centros de costo en NEXO       | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.analytics.internal_reports.view`       | Consultar reportes internos              | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.analytics.margin_reports.view`         | Consultar reportes de margen             | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.printing.templates.update`             | Editar plantillas de impresión           | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.printing.jobs.view`                    | Consultar trabajos de impresión          | `BASE_OR_OPERATIONAL`  | **ASIGNAR OPERATIVO**            | CTX-MGR-PRINT-JOBS — Trabajos de impresión originados por operaciones de la sede activa, únicamente para seguimiento, reintento técnico autorizado o diagnóstico; no edición de plantillas.                                         | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.                                                     |
+| `nexo.settings.sites.view`                   | Consultar configuración de sedes         | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+| `nexo.settings.remission_policies.view`      | Consultar políticas de remisiones        | `BASE_ONLY`            | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                                                                                              | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                                                                         |
+
+
+##### 7.6 NUMERA — 6 permisos
+| Permiso                                   | Capacidad humana               | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| ----------------------------------------- | ------------------------------ | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `numera.access`                           | Entrar a NUMERA                | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `numera.finance.cost_centers.view`        | Consultar centros de costo     | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `numera.finance.expenses.view`            | Consultar gastos               | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `numera.analytics.break_even.view`        | Consultar punto de equilibrio  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `numera.analytics.profitability.view`     | Consultar rentabilidad         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `numera.analytics.financial_reports.view` | Consultar reportes financieros | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+##### 7.7 ORIGO — 5 permisos
+| Permiso                                  | Capacidad humana                  | Modalidad             | Decisión para gerencia_operativa | Alcance aprobado                                                                                                                                                | Condición                                                                                                                                                                                        |
+| ---------------------------------------- | --------------------------------- | --------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `origo.access`                           | Entrar a ORIGO                    | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-ORIGO-APP — Entrada operativa a ORIGO para coordinar abastecimiento y recepción de la sede activa. No concede compras ni administración de proveedores. | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `origo.procurement.purchase_orders.view` | Consultar órdenes de compra       | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `origo.procurement.receipts.view`        | Consultar recepciones de compra   | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `origo.procurement.suppliers.view`       | Consultar proveedores             | `BASE_OR_OPERATIONAL` | **ASIGNAR OPERATIVO**            | CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.   | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `origo.catalog.product_reviews.view`     | Consultar revisiones de productos | `BASE_ONLY`           | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa.                                                                                          | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`.                                     |
+
+
+##### 7.8 VENTO PASS — 1 permisos
+| Permiso       | Capacidad humana    | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| ------------- | ------------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pass.access` | Entrar a Vento Pass | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+##### 7.9 PULSO — 2 permisos
+| Permiso                              | Capacidad humana                        | Modalidad              | Decisión para gerencia_operativa | Alcance aprobado                                                                                                                                                                                        | Condición                                                                                                                                                                                        |
+| ------------------------------------ | --------------------------------------- | ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pulso.access`                       | Entrar a PULSO                          | `OPERATIONAL_ONLY`     | **ASIGNAR OPERATIVO**            | CTX-MGR-PULSO-APP — Entrada a PULSO durante el turno para coordinación comercial de la sede activa. No concede ventas, caja, pagos, pedidos ni cierres por sí sola.                                     | Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global. |
+| `pulso.delivery.deliveries.override` | Confirmar entregas de forma excepcional | `BASE_AND_OPERATIONAL` | **ASIGNAR COMPONENTE OPERATIVO** | CTX-MGR-DOUBLE-DELIVERY — Componente operativo de una confirmación excepcional de entrega en la sede activa. Exige autoridad base compatible, evidencia, reautenticación, motivo y auditoría reforzada. | Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.        |
+
+
+##### 7.10 VISO — 17 permisos
+| Permiso                                       | Capacidad humana                          | Modalidad   | Decisión para gerencia_operativa | Alcance aprobado                                                       | Condición                                                                                                                                                    |
+| --------------------------------------------- | ----------------------------------------- | ----------- | -------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `viso.access`                                 | Entrar a VISO                             | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.platform.app_updates.view`              | Consultar actualizaciones de aplicaciones | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.organization.businesses.view`           | Consultar empresas y unidades de negocio  | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.workforce.employees.view`               | Consultar trabajadores                    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.workforce.staff_calendar.view`          | Consultar calendario del personal         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.workforce.schedules.view`               | Consultar programación de turnos          | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.workforce.vacancies.view`               | Consultar vacantes                        | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.authorization.context_simulations.view` | Consultar simulaciones de autorización    | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.authorization.audit_logs.view`          | Consultar auditoría de autorización       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.catalog.commercial_categories.view`     | Consultar categorías comerciales          | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.content.content_blocks.view`            | Consultar bloques de contenido            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.content.menu.view`                      | Consultar menú                            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.content.website_content.view`           | Consultar contenido del sitio web         | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.finance.accounting.view`                | Consultar información contable            | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.delivery.rates.view`                    | Consultar tarifas de entrega              | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.loyalty.products.view`                  | Consultar productos de fidelización       | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+| `viso.loyalty.customers.view`                 | Consultar clientes de fidelización        | `BASE_ONLY` | **NO ASIGNAR**                   | — Denegación por defecto; no se crea concesión en la matriz operativa. | Capacidad exclusiva del carril base. Los permisos administrativos permanentes proceden del rol base del trabajador y no se duplican en `gerencia_operativa`. |
+
+
+#### 8. Reglas operativas obligatorias
+
+1. `gerencia_operativa` solo existe durante un turno publicado, vigente y territorialmente compatible.
+2. El rol no se deriva del rol base, cargo, perfil, sede seleccionada, dispositivo o jerarquía informal.
+3. La sede activa procede del turno y el recurso; no se sustituye por la sede primaria o una selección del frontend.
+4. Cuando la sede utilice un área general, esta deberá estar aprobada para el rol. En sedes con áreas específicas, cada recurso conservará su área real.
+5. Los 40 permisos `BASE_OR_OPERATIONAL` asignados se evalúan exclusivamente por el carril operativo y nunca toman prestado alcance del carril base.
+6. Los cinco permisos `BASE_AND_OPERATIONAL` reciben solo el componente operativo. Sin componente base compatible, la respuesta es `DENY`.
+7. Un rol base global no convierte el contexto operativo en global ni permite intervenir recursos de otra sede.
+8. La coordinación puede consultar el estado transversal de la sede, pero cada mutación debe corresponder a una capacidad exacta.
+9. `fogo.production.batches.create` permanece fuera de la matriz. Crear lotes corresponde al rol productivo responsable.
+10. La gerencia no registra entradas ordinarias, ubicaciones, traslados, retiros, validaciones o conteos físicos por inferencia.
+11. La gerencia no prepara, despacha ni recibe remisiones como sustituto automático de bodega, conductor o destino.
+12. `remissions.update` solo permite campos y estados explícitamente editables; no altera cantidades bajo custodia ni reconstruye inventario.
+13. `remissions.cancel` exige estado cancelable, motivo, reautenticación, control de versión y auditoría. No revierte automáticamente movimientos o custodia.
+14. Una acción sensible no puede ser aprobada por el mismo actor que originó, capturó o se beneficia de la operación cuando la segregación de funciones lo prohíba.
+15. Los datos de otras sedes en recursos relacionales se proyectarán al mínimo necesario; no conceden navegación general sobre esas sedes.
+16. `pulso.access` solo habilita la entrada. El catálogo actual no representa supervisión de ventas, pedidos, caja, pagos o cierres.
+17. APP-REVIEW, demo, entornos aislados y recursos sin territorio resuelto permanecen denegados.
+18. Toda mutación requiere idempotencia, fecha de servidor, actor efectivo, motivo cuando aplique y auditoría.
+19. Finalizado el turno o check-in requerido, todas las concesiones de esta matriz dejan de estar disponibles.
+20. No se implementan cambios físicos durante esta tarea.
+
+#### 9. Acciones de doble condición
+
+| Permiso                                   | Componente de `gerencia_operativa`                | Componente adicional obligatorio | Controles mínimos                                                                    |
+| ----------------------------------------- | ------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------ |
+| `nexo.inventory.adjustments.register`     | Presencia operativa en la sede/área afectada      | Permiso base compatible          | Evidencia de diferencia, motivo, reautenticación, segregación y auditoría            |
+| `nexo.inventory.entries.override`         | Contexto operativo de la recepción afectada       | Permiso base compatible          | Documento o incidente válido, prevención de duplicados, motivo y auditoría           |
+| `nexo.finance.internal_variances.approve` | Participación operativa en la jornada afectada    | Permiso base compatible          | Evidencia, actor distinto del capturador cuando aplique y decisión versionada        |
+| `nexo.finance.internal_variances.resolve` | Contexto operativo del recurso                    | Permiso base compatible          | Resolución documentada, efecto contable/inventario explícito y auditoría             |
+| `pulso.delivery.deliveries.override`      | Presencia operativa en la sede y entrega afectada | Permiso base compatible          | Prueba de entrega, reautenticación, motivo, prevención de autoaprobación y auditoría |
+
+La asignación operativa no garantiza que todos los roles base puedan completar estas acciones. La intersección se resolverá por trabajador, permiso, territorio y recurso.
+
+#### 10. Capacidades físicas expresamente excluidas
+
+- Crear lotes de producción como responsable ejecutor.
+- Registrar entradas ordinarias de inventario.
+- Asignar ubicaciones físicas.
+- Crear traslados o registrar retiros.
+- Ejecutar validaciones o capturar conteos físicos.
+- Preparar, empacar o modificar cantidades preparadas de remisiones.
+- Aceptar custodia e iniciar tránsito como conductor.
+- Recibir físicamente y confirmar cantidades por el destino.
+- Crear productos, activos, configuraciones, rutas o políticas.
+- Ejecutar ventas, cobros, cierres de caja, pedidos o producción por inferencia.
+
+Cuando una persona de gerencia deba cubrir materialmente una función, deberá asignársele el rol operativo especialista correspondiente para ese turno o una excepción individual operativa explícita, temporal y auditada. No se ampliará `gerencia_operativa` para resolver suplencias informales.
+
+#### 11. Brechas contractuales identificadas
+
+| Brecha                                                    | Impacto                                                                                                                                     | Decisión en esta matriz                                                                           |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| PULSO solo posee `access` y un override excepcional       | La gerencia puede entrar, pero no existe permiso atómico para consultar ventas, pedidos, caja, pagos, mesas o cierres.                      | No inferir supervisión desde `pulso.access`. Crear permisos de consulta y coordinación comercial. |
+| FOGO no separa supervisión, reprogramación e incidencias  | La gerencia puede consultar órdenes y lotes, pero no existe capacidad atómica para pausar, escalar, reprogramar o gestionar una incidencia. | No usar `batches.create` ni permisos de recetas como sustituto.                                   |
+| `remissions.update` es amplio                             | Puede mezclar notas ordinarias con cambios sensibles de líneas, cantidades, origen, destino o estado.                                       | Aplicar contrato de campos y estados; si no puede garantizarse, descomponer antes de implementar. |
+| `remissions.cancel` no diferencia etapa                   | La cancelación previa a preparación no tiene el mismo impacto que una cancelación con custodia o movimientos.                               | Limitar por estado y crear capacidades atómicas de reversión cuando corresponda.                  |
+| No existe permiso de incidentes operativos transversales  | Las incidencias de producción, inventario, transporte, venta o recepción pueden terminar registrándose como notas o ajustes.                | Crear un flujo y permisos de incidentes; no ampliar ajustes o cancelaciones.                      |
+| No existe permiso de reasignación operativa de emergencia | La gerencia puede coordinar, pero no reasignar formalmente actor, ruta o responsable mediante una capacidad atómica.                        | Mantener la reasignación fuera de esta matriz hasta definir autoridad, vigencia y auditoría.      |
+
+#### 12. Validaciones mínimas por dominio
+
+| Dominio             | Validaciones mínimas                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Producción          | Sede/área vinculadas, orden o lote real, etapa visible, proyección mínima de receta y ausencia de mutación implícita.     |
+| Inventario          | Sede y ubicación reales, LPN o producto válido, actor, movimiento causal, estado, control de versión y campos protegidos. |
+| Conteos             | Sesión válida, modalidad ciega, etapa, asignación, ocultamiento del teórico y segregación entre captura y aprobación.     |
+| Remisiones          | Origen/destino, estado, versión, custodia, líneas, cantidades y extremo territorial autorizado.                           |
+| Logística           | Operación que afecta la sede activa, ruta publicada, conductor/vehículo asignados y privacidad de telemetría.             |
+| Compras y recepción | Orden o recepción vinculada con la sede activa, proveedor mínimo, estado y exclusión de datos comerciales innecesarios.   |
+| Doble condición     | Concesión base y operativa completas, intersección territorial, reautenticación, motivo, evidencia y auditoría.           |
+
+#### 13. Riesgos de transición
+
+1. La matriz legacy de `gerencia_operativa` contiene siete permisos NEXO globales y puede interpretarse como autorización transversal sin territorio.
+2. El código actual puede conservar bypass para `propietario` y `gerente_general`, contradiciendo la exigencia de un rol operativo válido.
+3. `gerencia_operativa` está actualmente habilitado en Vento Group, pero esa asignación no lo convierte en rol organizacional global.
+4. Las aplicaciones pueden seguir usando permisos técnicos de rutas o nombres legacy como `remissions`, `prepare`, `transit`, `receive` y `cancel`.
+5. La asignación de todos los permisos `BASE_OR_OPERATIONAL` exige que cada contrato de recurso limite estrictamente sede, área y jornada; una concesión textual global sería crítica.
+6. Las acciones `BASE_AND_OPERATIONAL` podrían autorizarse erróneamente mediante un `OR` entre carriles. Deben evaluarse mediante intersección obligatoria.
+7. La falta de permisos atómicos en PULSO y FOGO puede llevar a interfaces que oculten controles solo en frontend sin protección de servidor.
+8. Una gerencia con permisos base amplios puede parecer autorizada aunque el turno haya terminado; la interfaz deberá mostrar claramente el origen de cada capacidad.
+
+#### 14. Resultado esperado en la experiencia
+
+```text
+COORDINACIÓN OPERATIVA — TURNO ACTIVO
+
+Sede
+[ Vento Café ]
+
+Estado de la jornada
+Producción       3 órdenes activas      1 incidencia
+Inventario       2 diferencias          1 conteo abierto
+Remisiones       4 en preparación       2 en tránsito
+Abastecimiento   1 entrega pendiente
+
+Acciones disponibles
+[ Ver operación completa de la sede ]
+[ Solicitar abastecimiento ]
+[ Actualizar prioridad de remisión ]
+[ Cancelar remisión permitida ]
+
+Acciones de doble condición
+[ Autorizar ajuste ]             Requiere autoridad base
+[ Aprobar variación ]            Requiere autoridad base
+[ Confirmar entrega excepcional ] Requiere autoridad base
+```
+
+No se mostrará como capacidad ordinaria:
+
+- Preparar o despachar físicamente una remisión.
+- Recibir por el destino.
+- Crear lotes de producción.
+- Registrar entradas, traslados, retiros o conteos.
+- Ejecutar ventas, cobros o cierres de caja.
+- Ver otras sedes sin relación con la jornada.
+
+#### 15. Invariantes
+
+- `gerencia_operativa` es coordinación temporal, no autoridad administrativa permanente.
+- El rol no es un wildcard ni un bypass.
+- Toda concesión tiene permiso exacto, territorio, recurso y contexto.
+- Los 40 permisos `BASE_OR_OPERATIONAL` se satisfacen por un carril operativo completo e independiente.
+- Los cinco permisos `BASE_AND_OPERATIONAL` requieren simultáneamente ambos carriles.
+- El componente base no amplía la sede activa del carril operativo.
+- El componente operativo no amplía la cobertura del rol base.
+- Coordinar no equivale a ejecutar físicamente todas las etapas.
+- Una persona que cubra una función especialista debe asumir el rol especialista o una excepción explícita.
+- La consulta transversal se limita a la sede y jornada activas.
+- La cancelación no produce reversión implícita.
+- Ninguna acción sensible permite autoaprobación cuando la segregación lo prohíbe.
+- La ausencia de una clave o contrato atómico produce denegación.
+- El fin del turno revoca esta matriz y no afecta los permisos base válidos.
+
+#### 16. Criterios de aprobación
+
+La tarea podrá aprobarse cuando se acepte que:
+
+- `gerencia_operativa` recibe 48 claves en el carril operativo y no un wildcard;
+- 43 capacidades son operativas directas y cinco aportan únicamente el componente operativo de doble condición;
+- se conceden los 40 permisos `BASE_OR_OPERATIONAL` con alcance limitado a sede, área, jornada y recurso;
+- solo tres de los 13 permisos `OPERATIONAL_ONLY` se conceden: recetario operativo, solicitud de remisión y entrada a PULSO;
+- crear lotes, entradas ordinarias, ubicaciones, traslados, retiros, conteos, preparación, despacho y recepción permanecen fuera del rol;
+- las acciones sensibles requieren componente base compatible, reautenticación, evidencia, motivo y auditoría;
+- `gerencia_operativa` no duplica matrices base ni sustituye a roles especialistas;
+- la asignación actual en Vento Group no crea alcance global;
+- los 112 permisos fueron evaluados sin omisiones ni duplicados;
+- no se implementa todavía ningún cambio físico.
+
+#### 17. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-018 | APROBADA    |
+| AUTH-RBAC-019 | APROBADA    |
+| AUTH-RBAC-020 | NO INICIADA |
+
+No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
+
 
 CAPAS ADICIONALES
 
-### [ ] AUTH-RBAC-020 — Definir concesiones individuales base
-### [ ] AUTH-RBAC-021 — Definir concesiones individuales operativas
-### [ ] AUTH-RBAC-022 — Definir denegaciones individuales y transversales
-### [ ] AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido
+### ✅ AUTH-RBAC-020 — Definir concesiones individuales base
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                              |
+| ------------------------- | ------------------------------------------------------------------ |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos |
+| Sección                   | Capas adicionales                                                  |
+| Tarea                     | AUTH-RBAC-020 — Definir concesiones individuales base              |
+| Estado                    | **APROBADA**                                                       |
+| Naturaleza                | Definición documental de excepciones positivas del carril base     |
+| Implementación física     | No incluida                                                        |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                    |
+| Tarea anterior vigente    | AUTH-RBAC-019 — APROBADA                                           |
+| Tarea posterior reservada | AUTH-RBAC-021 — Definir concesiones individuales operativas        |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La estructura definitiva y el dataset canónico de excepciones se definirán posteriormente en `AUTH-RBAC-026` y se implementarán únicamente en el BLOQUE R mediante migraciones versionadas en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir cuándo, cómo y bajo qué límites un trabajador puede recibir una concesión individual positiva en el carril base para añadir una responsabilidad administrativa específica que no procede de su matriz de rol, sin convertir `employee_permissions` en una segunda matriz general, sin duplicar permisos heredados, sin volver permanentes capacidades operativas y sin evadir modalidad, alcance, sensibilidad, segregación de funciones, vigencia o auditoría.
+
+#### 3. Decisión principal
+
+Una concesión individual base es una excepción positiva, explícita y atribuida a un trabajador concreto.
+
+Su finalidad es cubrir una responsabilidad administrativa legítima que:
+
+- corresponde únicamente a una persona o a un grupo excepcionalmente reducido;
+- no justifica modificar la matriz canónica del rol completo;
+- requiere un alcance concreto;
+- tiene una causa empresarial verificable;
+- puede tener vigencia temporal o permanente revisable;
+- debe poder revocarse sin cambiar el rol base del trabajador.
+
+```text
+TRABAJADOR ACTIVO
++ PERMISO CANÓNICO COMPATIBLE CON CARRIL BASE
++ CONCESIÓN INDIVIDUAL VIGENTE
++ ALCANCE APROBADO Y COMPATIBLE
++ RECURSO REAL DENTRO DEL ALCANCE
++ SIN DENEGACIÓN APLICABLE
+= BASE_ALLOW INDIVIDUAL POSIBLE
+```
+
+No se admite:
+
+```text
+concesión individual base = segundo rol base
+concesión individual base = copia de la matriz del rol
+concesión individual base = bypass de autorización
+concesión individual base = permiso operativo permanente
+concesión individual base = turno o check-in implícito
+concesión individual base = alcance global por defecto
+concesión positiva más específica = restricción de un allow más amplio
+```
+
+#### 4. Relación con la matriz del rol base
+
+Dentro del carril base, las concesiones positivas se combinan por unión:
+
+```text
+ROLE_BASE_ALLOW
+OR
+EMPLOYEE_BASE_ALLOW
+=
+BASE_ALLOW POSIBLE
+```
+
+La concesión individual puede añadir una capacidad que el rol no tenga, pero no reemplaza ni reescribe la matriz del rol.
+
+| Situación                                                                       | Resultado                                                        |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| El rol no concede el permiso y la excepción individual sí                       | La excepción puede autorizar dentro de su alcance.               |
+| El rol concede el permiso y la excepción individual repite el mismo alcance     | Configuración redundante; no debe crearse.                       |
+| El rol concede un alcance más amplio y la excepción concede uno más estrecho    | La excepción no restringe el rol; no produce reducción efectiva. |
+| El rol concede un alcance limitado y la excepción añade otro alcance compatible | Se evalúa la unión de ambos alcances.                            |
+| Existe una denegación aplicable                                                 | La denegación prevalece conforme a AUTH-MOD-019 y AUTH-RBAC-022. |
+
+Regla crítica:
+
+> Una concesión positiva nunca se utiliza para reducir otra concesión positiva. Para restringir deberá existir una denegación explícita en la capa correspondiente.
+
+#### 5. Compatibilidad por modalidad
+
+| `authorization_requirement` | ¿Admite concesión individual base? | Efecto                                                                                                                                            |
+| --------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BASE_ONLY`                 | **SÍ**                             | Puede producir una autorización completa del carril base si se cumplen alcance, recurso y controles.                                              |
+| `BASE_OR_OPERATIONAL`       | **SÍ**                             | Concede únicamente el carril base. No altera ni crea el carril operativo.                                                                         |
+| `BASE_AND_OPERATIONAL`      | **SÍ, SOLO COMO COMPONENTE BASE**  | No autoriza la acción por sí sola. Continúa siendo obligatorio un componente operativo válido con turno, check-in y contexto cuando correspondan. |
+| `OPERATIONAL_ONLY`          | **NO**                             | Una asignación base sería incompatible y deberá denegarse como configuración inválida.                                                            |
+
+Resultado sobre el catálogo vigente:
+
+| Clasificación                                                   | Cantidad |
+| --------------------------------------------------------------- | -------: |
+| Permisos que admiten componente base                            |       99 |
+| Capacidades directas base (`BASE_ONLY` o `BASE_OR_OPERATIONAL`) |       94 |
+| Componentes base de doble condición (`BASE_AND_OPERATIONAL`)    |        5 |
+| Permisos exclusivamente operativos prohibidos en esta capa      |       13 |
+| Total evaluado                                                  |      112 |
+
+No es necesario repetir en esta tarea las 112 filas del catálogo: la elegibilidad se deriva exclusivamente de la modalidad canónica vigente de cada permiso. Una modalidad ausente, desconocida o legacy produce denegación.
+
+#### 6. Usos válidos
+
+Una concesión individual base puede utilizarse para:
+
+1. **Responsabilidad especializada estable**  
+   Una persona cumple una función administrativa singular que no corresponde al conjunto de su rol.
+
+2. **Cobertura temporal administrativa**  
+   Sustitución por vacaciones, incapacidad, vacante, proyecto o transición, con fecha de inicio y expiración.
+
+3. **Responsabilidad territorial adicional**  
+   El trabajador conserva el mismo permiso, pero requiere cobertura sobre otra sede, área o conjunto autorizado no incluido en su matriz ordinaria.
+
+4. **Participación controlada en un proyecto**  
+   Acceso administrativo limitado a un recurso, sede, área o periodo específico.
+
+5. **Componente base de una acción `BASE_AND_OPERATIONAL`**  
+   Autoridad administrativa individual para una acción sensible que solo podrá completarse además con contexto operativo válido.
+
+6. **Acceso de consulta excepcional**  
+   Lectura concreta y justificada de información necesaria para una responsabilidad temporal o especializada.
+
+#### 7. Usos prohibidos
+
+No se utilizarán concesiones individuales base para:
+
+- asignar permisos `OPERATIONAL_ONLY`;
+- permitir operar sin turno, check-in, rol operativo, sede o área cuando el contrato los exige;
+- compensar permanentemente una matriz de rol incompleta;
+- replicar en múltiples trabajadores el mismo paquete de permisos que debería pertenecer a un rol;
+- reconstruir un rol informal mediante decenas de excepciones;
+- conceder wildcards, prefijos, aplicaciones completas o permisos no canónicos;
+- otorgar acceso automático a APP-REVIEW, demo, sedes aisladas o entornos no productivos;
+- utilizar un permiso de entrada `<app>.access` como sustituto de capacidades internas;
+- elevar el alcance por encima del máximo aprobado en AUTH-CAT-011;
+- eliminar sensibilidad, reautenticación, segregación de funciones o controles del recurso;
+- autorizar por nombre de cargo, relación personal, jerarquía informal o urgencia no documentada;
+- conceder capacidades a empleados inactivos, identidades técnicas o dispositivos;
+- crear la excepción a favor del mismo actor que la solicita o aprueba cuando exista conflicto de interés.
+
+#### 8. Alcance territorial y de recurso
+
+Toda concesión individual base deberá declarar un alcance explícito compatible con el permiso.
+
+Podrá utilizar únicamente las dimensiones aprobadas para esa capacidad, entre ellas:
+
+- organizacional;
+- sedes asignadas;
+- sede específica;
+- tipo de sede con modo de cobertura explícito;
+- área específica;
+- tipo de área con modo de cobertura explícito;
+- recursos propios;
+- conjunto de recursos expresamente relacionado.
+
+Reglas obligatorias:
+
+1. El alcance concedido nunca puede superar el alcance máximo del permiso.
+2. `null` no significa global ni todas las sedes.
+3. Una sede específica requiere un `site_id` válido y activo.
+4. Un área específica requiere un `area_id` válido, activo y perteneciente a la sede correspondiente.
+5. Un tipo de sede o tipo de área debe declarar si cubre únicamente asignaciones del trabajador o todas las entidades del tipo cuando el permiso lo admita.
+6. APP-REVIEW, demo y territorios aislados requieren autorización separada y no se incluyen por coincidencia de tipo.
+7. La sede o área seleccionada en el frontend no modifica el alcance concedido.
+8. El recurso real debe resolverse en servidor antes de decidir.
+9. Un recurso multisede debe validar todos los lados obligatorios definidos por su contrato.
+10. El alcance organizacional individual debe ser excepcional, explícito y sujeto a aprobación reforzada.
+
+#### 9. Vigencia
+
+Toda concesión individual base deberá declarar:
+
+- `effective_from`;
+- `effective_until`, cuando sea temporal;
+- estado actual;
+- motivo de creación;
+- responsable solicitante;
+- responsable aprobador;
+- fecha de última revisión.
+
+Estados conceptuales permitidos:
+
+```text
+DRAFT
+PENDING_APPROVAL
+SCHEDULED
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Reglas:
+
+- una concesión temporal expira automáticamente;
+- no existe renovación silenciosa;
+- extender la vigencia genera una nueva decisión auditada;
+- una concesión futura no autoriza antes de `effective_from`;
+- una concesión vencida permanece en historial, pero no participa como allow;
+- desactivar al trabajador produce denegación estructural aunque la concesión siga registrada;
+- desactivar la aplicación o el permiso invalida la concesión;
+- un cambio de rol, sede, área o responsabilidad dispara revisión obligatoria;
+- una concesión permanente solo se admite para responsabilidades individualizadas estables y deberá revisarse periódicamente.
+
+#### 10. Contrato documental mínimo de una concesión
+
+Cada concesión individual base deberá conservar como mínimo:
+
+| Campo conceptual            | Regla                                                                               |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `employee_id`               | Trabajador humano exacto y activo.                                                  |
+| `permission_code`           | Clave canónica exacta, activa y sin wildcard.                                       |
+| `lane`                      | Siempre `BASE`.                                                                     |
+| `effect`                    | Siempre `ALLOW` dentro de esta tarea. Las denegaciones se definen en AUTH-RBAC-022. |
+| `scope_type`                | Tipo de alcance permitido por el permiso.                                           |
+| `scope_mode`                | Modo explícito cuando el alcance use tipos o conjuntos.                             |
+| `scope_site_id`             | Obligatorio cuando el alcance sea sede específica.                                  |
+| `scope_site_type`           | Obligatorio cuando el alcance sea por tipo de sede.                                 |
+| `scope_area_id`             | Obligatorio cuando el alcance sea área específica.                                  |
+| `scope_area_kind`           | Obligatorio cuando el alcance sea por tipo de área.                                 |
+| `resource_constraint`       | Restricción adicional de propiedad, relación o conjunto cuando aplique.             |
+| `effective_from`            | Inicio de vigencia.                                                                 |
+| `effective_until`           | Fin de vigencia o nulo solo para responsabilidad estable aprobada.                  |
+| `reason_code`               | Causa normalizada.                                                                  |
+| `justification`             | Explicación humana verificable.                                                     |
+| `requested_by`              | Actor que solicita.                                                                 |
+| `approved_by`               | Actor autorizado que aprueba.                                                       |
+| `created_by` / `updated_by` | Trazabilidad de mantenimiento.                                                      |
+| `source_reference`          | Acta, solicitud, proyecto, suplencia o evidencia que origina la concesión.          |
+| `reviewed_at`               | Última revisión administrativa.                                                     |
+| `revoked_at` / `revoked_by` | Trazabilidad de revocación.                                                         |
+
+La estructura física definitiva podrá usar tablas separadas o una tabla unificada de asignaciones. La semántica anterior es obligatoria independientemente del diseño físico.
+
+#### 11. Flujo de aprobación
+
+```text
+SOLICITUD JUSTIFICADA
+        ↓
+VALIDAR TRABAJADOR Y RESPONSABILIDAD
+        ↓
+VALIDAR PERMISO Y MODALIDAD
+        ↓
+COMPROBAR MATRIZ DEL ROL Y REDUNDANCIA
+        ↓
+VALIDAR ALCANCE MÁXIMO Y RECURSO
+        ↓
+EVALUAR SENSIBILIDAD Y SEGREGACIÓN
+        ↓
+APROBACIÓN AUTORIZADA
+        ↓
+ACTIVACIÓN O PROGRAMACIÓN
+        ↓
+REVISIÓN, EXPIRACIÓN O REVOCACIÓN
+```
+
+Controles mínimos:
+
+1. El solicitante no se autoaprueba.
+2. El beneficiario no aprueba su propia concesión.
+3. La persona que administra técnicamente el registro no adquiere por ello autoridad empresarial para aprobarlo.
+4. Los permisos sensibles, de configuración, finanzas, personal, clientes, inventario excepcional o seguridad requieren aprobación reforzada.
+5. Los alcances globales requieren aprobación reforzada.
+6. Las concesiones `BASE_AND_OPERATIONAL` deben identificar expresamente que solo aportan el componente base.
+7. No se activa una concesión con conflictos de segregación de funciones sin una excepción de gobierno documentada.
+8. La aprobación debe comprobar el resultado efectivo, no solo la fila solicitada.
+
+#### 12. Sensibilidad y segregación de funciones
+
+La concesión individual no reduce la sensibilidad canónica del permiso.
+
+Cuando la capacidad sea sensible, deberán conservarse según corresponda:
+
+- reautenticación fuerte;
+- motivo obligatorio;
+- evidencia adjunta;
+- aprobación dual;
+- separación entre creador, ejecutor, verificador y aprobador;
+- protección frente a autoaprobación;
+- control de versión del recurso;
+- idempotencia;
+- auditoría reforzada;
+- revisión posterior.
+
+Para permisos `BASE_AND_OPERATIONAL`:
+
+```text
+EMPLOYEE_BASE_ALLOW
++ OPERATIONAL_ALLOW VÁLIDO
++ CONTEXTO OPERATIVO VÁLIDO
++ CONTROLES SENSIBLES
++ SIN DENY
+= ACCIÓN POSIBLE
+```
+
+La concesión individual base no permite que la misma persona capture y apruebe una diferencia, ajuste, variación, entrega excepcional u otra operación cuando el contrato exija actores distintos.
+
+#### 13. Dependencias y acceso a aplicaciones
+
+Una concesión sobre una acción interna no concede automáticamente `<app>.access`.
+
+Cuando el catálogo declare una dependencia explícita:
+
+```text
+PERMISO INTERNO
+requiere
+<app>.access
+```
+
+ambos permisos deberán resultar autorizados en el carril compatible.
+
+No se infiere dependencia por compartir prefijo. Tampoco se permite crear un paquete oculto de permisos bajo una sola excepción.
+
+#### 14. Relación con otras capas
+
+| Capa                           | Relación con la concesión individual base                                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rol base                       | Fuente independiente de allows dentro del mismo carril.                                                                                       |
+| Concesión individual operativa | Se define en AUTH-RBAC-021 y nunca es creada por esta capa.                                                                                   |
+| Denegación base                | Prevalece sobre este allow cuando coincide.                                                                                                   |
+| Bloqueo transversal            | Prevalece sobre todos los carriles compatibles.                                                                                               |
+| Turno y check-in               | No son creados ni exigidos por una capacidad base ordinaria; continúan siendo obligatorios para el componente operativo de permisos híbridos. |
+| Dispositivo compartido         | Puede restringir o impedir el uso; nunca amplía la concesión.                                                                                 |
+| Simulación                     | Puede mostrar el resultado hipotético autorizado, pero no activar ni usar la concesión.                                                       |
+| RLS, RPC y servidor            | Deben evaluar la misma concesión, alcance, vigencia y denegaciones.                                                                           |
+| Caché                          | Debe invalidarse al activar, suspender, revocar o expirar la concesión.                                                                       |
+
+#### 15. Prevención de redundancias
+
+Antes de crear una concesión deberá calcularse el permiso base efectivo del trabajador.
+
+La creación se rechazará como redundante cuando:
+
+- el rol ya concede la misma clave con el mismo alcance;
+- el rol ya concede un alcance que contiene completamente el solicitado;
+- otra concesión individual activa ya cubre el mismo permiso y alcance;
+- dos aliases legacy se normalizan hacia la misma clave canónica;
+- la concesión no produce ninguna capacidad adicional verificable.
+
+Una concesión individual repetida en varios trabajadores o mantenida indefinidamente para compensar una omisión deberá generar una revisión de la matriz del rol.
+
+Regla:
+
+```text
+NECESIDAD GENERAL DEL ROL
+→ CORREGIR MATRIZ DEL ROL
+
+NECESIDAD PARTICULAR DEL TRABAJADOR
+→ CONCESIÓN INDIVIDUAL
+```
+
+No se establece un número automático de personas que convierta la excepción en matriz. La decisión depende de si la responsabilidad es estructural del rol o particular del trabajador.
+
+#### 16. Estado legacy de `employee_permissions`
+
+La auditoría encontró 17 concesiones individuales existentes, asignadas a dos identidades, sin denegaciones reales y sin capacidades diferenciales frente a sus roles.
+
+Resultado conceptual:
+
+```text
+17 filas existentes
+→ 0 excepciones funcionales reales confirmadas
+→ múltiples redundancias
+→ una identidad inactiva con asignaciones
+→ duplicados físicos
+```
+
+Decisión para la transición:
+
+1. Ninguna fila legacy se declarará canónica automáticamente.
+2. Las nueve asignaciones asociadas a la auxiliar administrativa deberán compararse contra la matriz base definitiva; si siguen totalmente cubiertas, se clasificarán como redundantes.
+3. Las asignaciones de la identidad `Tablet Bodega` no se migrarán como concesiones humanas activas mientras la identidad permanezca inactiva o represente un dispositivo.
+4. Los duplicados físicos se consolidarán durante el dataset y migración posterior.
+5. Cada fila deberá normalizarse hacia permiso canónico, carril, alcance, vigencia, motivo y actor humano.
+6. Una fila sin intención verificable se clasificará como `legacy_grant_unresolved` y no autorizará hasta revisión.
+7. La limpieza física no se ejecuta en esta tarea.
+
+#### 17. Ejemplos válidos
+
+##### Ejemplo A — Cobertura administrativa temporal
+
+```text
+Trabajador: auxiliar_administrativa
+Permiso: viso.workforce.schedules.view
+Modalidad: BASE_ONLY
+Alcance: sede específica
+Vigencia: dos semanas
+Motivo: cobertura de vacaciones
+```
+
+Resultado: concesión válida si el rol no cubre ya completamente esa sede y existe aprobación.
+
+##### Ejemplo B — Consulta especializada
+
+```text
+Trabajador: contador
+Permiso: nexo.finance.internal_invoices.view
+Modalidad: BASE_OR_OPERATIONAL
+Carril concedido: BASE
+Alcance: sedes asignadas
+```
+
+Resultado: permite la consulta administrativa dentro del alcance. No crea turno ni facultad operativa.
+
+##### Ejemplo C — Componente base de doble condición
+
+```text
+Trabajador: gerente de sede
+Permiso: nexo.inventory.adjustments.register
+Modalidad: BASE_AND_OPERATIONAL
+Concesión individual: componente BASE en una sede
+```
+
+Resultado: no puede registrar un ajuste sin componente operativo válido, presencia requerida, evidencia, segregación y demás controles.
+
+#### 18. Ejemplos inválidos
+
+##### Ejemplo D — Permiso exclusivamente operativo
+
+```text
+Permiso: nexo.inventory.entries.register
+Modalidad: OPERATIONAL_ONLY
+Concesión solicitada: BASE
+```
+
+Resultado: **DENEGAR — incompatible_assignment_lane**.
+
+##### Ejemplo E — Falsa restricción
+
+```text
+Rol: permite permiso global
+Excepción individual: mismo permiso solo en Vento Café
+```
+
+Resultado: el permiso global continúa vigente. La excepción positiva no restringe.
+
+##### Ejemplo F — Copia redundante
+
+```text
+Rol: ya permite viso.workforce.employees.view en sedes asignadas
+Excepción: mismo permiso y mismo alcance
+```
+
+Resultado: **RECHAZAR COMO REDUNDANTE**.
+
+##### Ejemplo G — Reconstrucción de rol informal
+
+```text
+Trabajador recibe 30 permisos individuales permanentes
+porque su rol no fue actualizado
+```
+
+Resultado: revisar y corregir la matriz de rol; no normalizar la excepción masiva.
+
+#### 19. Auditoría obligatoria
+
+Deberán generarse eventos para:
+
+```text
+individual_base_grant_requested
+individual_base_grant_approved
+individual_base_grant_rejected
+individual_base_grant_scheduled
+individual_base_grant_activated
+individual_base_grant_updated
+individual_base_grant_suspended
+individual_base_grant_reactivated
+individual_base_grant_revoked
+individual_base_grant_expired
+individual_base_grant_redundancy_detected
+individual_base_grant_conflict_detected
+```
+
+Cada evento deberá registrar como mínimo:
+
+- actor efectivo;
+- trabajador beneficiario;
+- permiso exacto;
+- carril base;
+- alcance;
+- vigencia;
+- motivo;
+- referencia de origen;
+- estado anterior y nuevo;
+- solicitante;
+- aprobador;
+- fecha de servidor;
+- resultado de validación de redundancia;
+- conflictos o denegaciones detectadas.
+
+#### 20. Brechas contractuales identificadas
+
+| Brecha                                                                                          | Impacto                                                                                                                | Decisión                                                                                                                  |
+| ----------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| El catálogo vigente no contiene una capacidad atómica para administrar concesiones individuales | No existe todavía un permiso empresarial exacto para crear, aprobar, suspender o revocar estas excepciones desde VISO. | No reutilizar un permiso amplio o de lectura. Crear capacidades de gobierno específicas antes de implementar la interfaz. |
+| `employee_permissions` no distingue claramente carril base y operativo                          | Una fila podría interpretarse por la función incorrecta.                                                               | El modelo futuro deberá declarar `lane` de forma obligatoria.                                                             |
+| La estructura actual no representa adecuadamente vigencia, motivo y aprobación                  | Las excepciones pueden permanecer activas sin contexto de negocio.                                                     | Añadir ciclo de vida, justificación y auditoría en el diseño físico posterior.                                            |
+| Las claves y alcances legacy contienen redundancias                                             | Pueden generar resultados engañosos o duplicados.                                                                      | Normalizar y consolidar únicamente durante AUTH-RBAC-026 y BLOQUE R.                                                      |
+| Las RLS y funciones actuales no consumen una decisión unificada                                 | Una concesión podría funcionar en una superficie y no en otra.                                                         | No activar el dataset definitivo antes del BLOQUE E y de pruebas transversales.                                           |
+
+#### 21. Invariantes
+
+1. Toda concesión individual base pertenece a un trabajador humano concreto.
+2. Toda concesión utiliza una clave canónica exacta.
+3. No existen wildcards.
+4. Toda concesión declara carril `BASE`.
+5. `OPERATIONAL_ONLY` no admite concesión base.
+6. `BASE_AND_OPERATIONAL` recibe únicamente componente base.
+7. Una concesión individual no crea turno, check-in, rol operativo, sede activa ni área activa.
+8. Una concesión positiva no restringe otra concesión positiva.
+9. Una denegación aplicable prevalece sobre la concesión.
+10. El alcance concedido no supera el máximo contractual del permiso.
+11. `null` no equivale a global.
+12. La sede seleccionada no autoriza.
+13. El recurso real se resuelve en servidor.
+14. Una concesión redundante no debe crearse.
+15. Una necesidad estructural del rol se resuelve en la matriz del rol.
+16. Una concesión temporal expira automáticamente.
+17. Una concesión vencida o revocada no se elimina del historial.
+18. Un trabajador inactivo no puede utilizar la concesión.
+19. Un permiso inactivo no puede ser autorizado por una concesión vigente.
+20. La identidad técnica de un dispositivo no recibe concesiones humanas.
+21. APP-REVIEW no se incluye por tipo de sede.
+22. La sensibilidad y segregación de funciones permanecen intactas.
+23. El frontend no es fuente de verdad de alcance, vigencia o estado.
+24. RPC, Server Actions, API y RLS deben producir la misma decisión.
+25. Toda modificación es auditada.
+
+#### 22. Criterios de aprobación
+
+AUTH-RBAC-020 podrá aprobarse cuando se acepte expresamente que:
+
+- las concesiones individuales base son excepciones positivas para trabajadores concretos;
+- no constituyen un segundo rol ni una matriz paralela;
+- 99 permisos admiten componente base y 13 permisos `OPERATIONAL_ONLY` quedan prohibidos;
+- los permisos `BASE_AND_OPERATIONAL` reciben únicamente el componente base;
+- una concesión positiva más específica no restringe un allow más amplio;
+- las concesiones redundantes deben rechazarse;
+- cada concesión declara permiso, carril, alcance, vigencia, motivo, solicitante, aprobador y auditoría;
+- los alcances globales y permisos sensibles requieren aprobación reforzada;
+- los datos legacy actuales no se consideran excepciones canónicas automáticamente;
+- las concesiones operativas se reservan para AUTH-RBAC-021;
+- las denegaciones se reservan para AUTH-RBAC-022;
+- no se realiza implementación física durante esta tarea.
+
+#### 23. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-019 | APROBADA    |
+| AUTH-RBAC-020 | APROBADA    |
+| AUTH-RBAC-021 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-021 hasta recibir aprobación explícita.
+
+
+### ✅ AUTH-RBAC-021 — Definir concesiones individuales operativas
+
+#### 1. Identificación de la tarea
+
+| Campo                     | Valor                                                               |
+| ------------------------- | ------------------------------------------------------------------- |
+| Bloque                    | BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos  |
+| Sección                   | Capas adicionales                                                   |
+| Tarea                     | AUTH-RBAC-021 — Definir concesiones individuales operativas         |
+| Estado                    | **APROBADA**                                                        |
+| Naturaleza                | Definición documental de excepciones positivas del carril operativo |
+| Implementación física     | No incluida                                                         |
+| Catálogo evaluado         | 112 permisos canónicos vigentes                                     |
+| Tarea anterior vigente    | AUTH-RBAC-020 — APROBADA                                            |
+| Tarea posterior reservada | AUTH-RBAC-022 — Definir denegaciones individuales y transversales   |
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios ni datasets físicos. La estructura definitiva y el dataset canónico de excepciones se definirán posteriormente en `AUTH-RBAC-026` y se implementarán únicamente en el BLOQUE R mediante migraciones versionadas en `vento-shell`.
+
+#### 2. Objetivo
+
+Definir cuándo, cómo y bajo qué límites un trabajador puede recibir una concesión individual positiva en el carril operativo para ejecutar una capacidad excepcional durante un contexto de trabajo válido, sin convertir la excepción en un segundo rol operativo, sin reconstruir una matriz incompleta, sin permitir operación permanente y sin evadir turno, check-in, sede, área, rol operativo, dispositivo, modalidad, alcance, sensibilidad, segregación de funciones o contrato de recurso.
+
+#### 3. Decisión principal
+
+Una concesión individual operativa es una excepción positiva, explícita, temporal o revisable, atribuida a un trabajador humano concreto y utilizable únicamente dentro de un contexto operativo compatible.
+
+Su finalidad es añadir una capacidad puntual que:
+
+- corresponde a una persona específica y no al rol completo;
+- se utiliza únicamente durante un turno publicado y vigente;
+- conserva el rol operativo efectivo del turno;
+- se limita a sedes, áreas, recursos y estados aprobados;
+- cumple el prerrequisito de check-in de la capacidad;
+- tiene causa empresarial verificable;
+- puede expirar o revocarse sin modificar la matriz del rol;
+- no representa una sustitución informal de otro oficio completo.
+
+```text
+TRABAJADOR ACTIVO
++ TURNO PUBLICADO Y VIGENTE
++ ROL OPERATIVO EFECTIVO COMPATIBLE
++ CONCESIÓN INDIVIDUAL OPERATIVA VIGENTE
++ SEDE Y ÁREA OPERATIVAS COMPATIBLES
++ CHECK-IN CUANDO EL PERMISO LO EXIJA
++ RECURSO DENTRO DEL ALCANCE
++ SIN DENEGACIÓN APLICABLE
+= OPERATIONAL_ALLOW INDIVIDUAL POSIBLE
+```
+
+No se admite:
+
+```text
+concesión individual operativa = segundo rol operativo
+concesión individual operativa = permiso permanente sin turno
+concesión individual operativa = sustituto de check-in
+concesión individual operativa = cambio automático de sede o área
+concesión individual operativa = acceso técnico del dispositivo
+concesión individual operativa = paquete oculto de otro oficio
+concesión individual operativa = permiso futuro todavía inexistente
+```
+
+#### 4. Relación con la matriz del rol operativo
+
+Dentro del carril operativo, las concesiones positivas se combinan por unión:
+
+```text
+OPERATIONAL_ROLE_ALLOW
+OR
+EMPLOYEE_OPERATIONAL_ALLOW
+=
+OPERATIONAL_ALLOW POSIBLE
+```
+
+La unión solo se evalúa después de resolver un contexto operativo válido. La concesión individual no crea el contexto y no reemplaza el rol operativo efectivo.
+
+| Situación                                                                                   | Resultado                                                                              |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| El rol operativo no concede el permiso y la excepción individual sí                         | La excepción puede autorizar dentro de su vigencia, rol compatible, alcance y recurso. |
+| El rol operativo ya concede el mismo permiso y alcance                                      | Configuración redundante; no debe crearse.                                             |
+| El rol concede un alcance más amplio y la excepción concede uno más estrecho                | La excepción no restringe el rol; no produce reducción efectiva.                       |
+| El rol concede un alcance limitado y la excepción añade otro alcance compatible             | Se evalúa la unión sin superar el máximo contractual.                                  |
+| El trabajador tiene turno, pero el rol operativo efectivo no es compatible con la excepción | La excepción no participa y la acción se deniega.                                      |
+| Existe una denegación operativa o transversal aplicable                                     | La denegación prevalece conforme a AUTH-MOD-019 y AUTH-RBAC-022.                       |
+
+Regla crítica:
+
+> La concesión individual operativa amplía una capacidad del actor dentro de su contexto de trabajo; no transforma el contexto ni cambia el oficio que está ejecutando.
+
+#### 5. Compatibilidad por modalidad
+
+| `authorization_requirement` | ¿Admite concesión individual operativa? | Efecto                                                                                                       |
+| --------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `OPERATIONAL_ONLY`          | **SÍ**                                  | Puede producir una autorización completa del carril operativo si el contexto, alcance y recurso son válidos. |
+| `BASE_OR_OPERATIONAL`       | **SÍ**                                  | Concede únicamente el carril operativo. No crea ni modifica el carril base.                                  |
+| `BASE_AND_OPERATIONAL`      | **SÍ, SOLO COMO COMPONENTE OPERATIVO**  | No autoriza la acción por sí sola. Continúa siendo obligatorio un componente base válido.                    |
+| `BASE_ONLY`                 | **NO**                                  | Una asignación operativa sería incompatible y deberá denegarse como configuración inválida.                  |
+
+Resultado sobre el catálogo vigente:
+
+| Clasificación                                | Cantidad |
+| -------------------------------------------- | -------: |
+| Permisos que admiten componente operativo    |       58 |
+| `OPERATIONAL_ONLY`                           |       13 |
+| `BASE_OR_OPERATIONAL`                        |       40 |
+| `BASE_AND_OPERATIONAL`                       |        5 |
+| Permisos `BASE_ONLY` prohibidos en esta capa |       54 |
+| Total evaluado                               |      112 |
+
+No es necesario repetir en esta tarea las 112 filas del catálogo: la elegibilidad se deriva exclusivamente de la modalidad canónica vigente. Una modalidad ausente, desconocida, retirada o legacy produce denegación.
+
+#### 6. Prerrequisitos operativos inalterables
+
+La concesión individual no modifica los prerrequisitos aprobados en AUTH-CAT-012 y AUTH-CAT-013.
+
+Distribución vigente de los 58 permisos que admiten carril operativo:
+
+| Prerrequisito            | Cantidad | Regla                                                                                                  |
+| ------------------------ | -------: | ------------------------------------------------------------------------------------------------------ |
+| Turno vigente (`T`)      |       19 | Puede consultarse o accederse durante un turno válido sin exigir check-in para esa capacidad concreta. |
+| Turno y check-in (`T+C`) |       39 | Exige turno y sesión de check-in activa y coincidente.                                                 |
+| Área activa requerida    |       31 | El turno debe contener un área operativa válida y compatible con el recurso.                           |
+| Sede activa suficiente   |       27 | Puede evaluarse a nivel de sede cuando el contrato de la capacidad no exige área.                      |
+
+Reglas:
+
+1. Toda concesión individual operativa exige turno vigente.
+2. Una capacidad `T+C` nunca podrá degradarse a `T`.
+3. Un permiso con área requerida nunca podrá ejecutarse únicamente con sede.
+4. El check-in debe coincidir con el turno, la sede y el actor.
+5. El fin del turno retira inmediatamente la capacidad operativa.
+6. El cierre del check-in retira las capacidades `T+C`.
+7. La concesión puede estar vigente administrativamente y, aun así, no autorizar por ausencia de contexto.
+8. El turno no concede por sí mismo el permiso.
+9. El check-in no concede por sí mismo el permiso.
+
+#### 7. Compatibilidad con el rol operativo efectivo
+
+Toda concesión deberá declarar el conjunto de roles operativos con los que puede utilizarse.
+
+La compatibilidad podrá expresarse mediante:
+
+- un rol operativo exacto;
+- varios roles operativos exactos;
+- una familia de roles aprobada, únicamente cuando la semántica esté definida canónicamente;
+- cualquier rol operativo, solo para capacidades genuinamente transversales y con aprobación reforzada.
+
+Reglas:
+
+1. La ausencia de restricción de rol no significa cualquier rol.
+2. El rol activo del turno debe coincidir con la restricción aprobada.
+3. Una excepción para `cajero_satelite` no se activa durante un turno de `barista_satelite`.
+4. Una excepción para `bodeguero` no se activa durante un turno de `conductor_logistica`.
+5. Un permiso de consulta transversal puede admitir varios roles únicamente si el recurso y la finalidad lo justifican.
+6. Una responsabilidad que requiera casi toda la matriz de otro rol deberá resolverse asignando correctamente ese rol al turno, no copiando sus permisos como excepciones.
+
+Regla de sustitución:
+
+```text
+COBERTURA DE UNA ACCIÓN PARTICULAR
+→ CONCESIÓN INDIVIDUAL OPERATIVA
+
+COBERTURA DEL OFICIO COMPLETO
+→ ASIGNAR EL ROL OPERATIVO CORRECTO EN EL TURNO
+```
+
+#### 8. Usos válidos
+
+Una concesión individual operativa puede utilizarse para:
+
+1. **Capacidad excepcional dentro del mismo oficio**  
+   Un trabajador requiere una acción adicional puntual compatible con su función principal.
+
+2. **Cobertura temporal de una acción específica**  
+   Sustitución breve por vacaciones, contingencia, entrenamiento o piloto, sin asumir todo el rol de otra persona.
+
+3. **Responsabilidad operativa especializada**  
+   Una persona concreta está capacitada para una tarea técnica adicional que no corresponde a todos los integrantes del rol.
+
+4. **Acción sobre un recurso o ruta específica**  
+   Capacidad limitada a una remisión, ruta, equipo, sede, área, lote, turno o conjunto aprobado.
+
+5. **Componente operativo de una acción `BASE_AND_OPERATIONAL`**  
+   Participación física o contextual necesaria para una acción sensible que además exige responsabilidad base.
+
+6. **Piloto controlado**  
+   Habilitación temporal para validar una capacidad antes de decidir si debe incorporarse a la matriz del rol.
+
+#### 9. Usos prohibidos
+
+No se utilizarán concesiones individuales operativas para:
+
+- asignar permisos `BASE_ONLY`;
+- operar sin turno publicado y vigente;
+- omitir check-in cuando la capacidad sea `T+C`;
+- conceder una sede o área no autorizada;
+- cambiar el rol operativo efectivo del turno;
+- convertir un trabajador en bodeguero, conductor, cajero, productor o receptor mediante un paquete de permisos;
+- compensar permanentemente una matriz de rol incompleta;
+- replicar en varios trabajadores una responsabilidad estructural del rol;
+- crear wildcards, prefijos, acceso total a una aplicación o permisos no canónicos;
+- utilizar `<app>.access` como sustituto de capacidades internas;
+- autorizar capacidades futuras que todavía no tengan clave canónica activa;
+- permitir a un dispositivo técnico actuar como beneficiario;
+- conceder automáticamente acceso por conocer el PIN de un kiosco;
+- evadir segregación de funciones, doble aprobación o reautenticación;
+- utilizar una excepción para autoaprobar, autocorregir o confirmar la propia operación cuando el contrato exija otro actor;
+- ampliar silenciosamente el alcance por urgencia, cargo informal o confianza personal.
+
+#### 10. Alcance territorial y de recurso
+
+Toda concesión individual operativa deberá declarar un alcance explícito compatible con el permiso y con el contexto activo.
+
+Podrá utilizar únicamente las dimensiones aprobadas para la capacidad:
+
+- sede operativa activa;
+- sede específica;
+- área operativa activa;
+- área específica;
+- tipo de área dentro de sedes autorizadas;
+- recurso asignado al trabajador;
+- recurso originado, preparado, transportado o recibido dentro de una relación aprobada;
+- ruta, remisión, lote, orden, conteo, dispositivo o sesión exactos cuando corresponda.
+
+Reglas obligatorias:
+
+1. El alcance concedido nunca puede superar el alcance máximo del permiso.
+2. `null` no significa global, todas las sedes ni cualquier área.
+3. La sede seleccionada en la interfaz no autoriza.
+4. El área seleccionada en la interfaz no autoriza.
+5. La sede y el área deben proceder del turno y del contexto efectivo.
+6. El recurso real debe resolverse en servidor.
+7. Un recurso multisede debe validar origen, destino y actor según su contrato.
+8. La excepción no permite consultar recursos semejantes no relacionados.
+9. APP-REVIEW, demo y territorios aislados quedan excluidos salvo concesión separada y finalidad expresa.
+10. Una concesión operativa organizacional o global está prohibida salvo que una capacidad futura defina expresamente ese alcance y supere aprobación reforzada.
+
+#### 11. Vigencia y ciclo de vida
+
+Toda concesión individual operativa deberá declarar:
+
+- `effective_from`;
+- `effective_until`;
+- estado actual;
+- motivo de creación;
+- responsable solicitante;
+- responsable aprobador;
+- fecha de última revisión.
+
+Estados conceptuales permitidos:
+
+```text
+DRAFT
+PENDING_APPROVAL
+SCHEDULED
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Reglas:
+
+- la vigencia indefinida no será el valor predeterminado;
+- una concesión operativa permanente requiere justificación excepcional y revisión periódica;
+- una concesión temporal expira automáticamente;
+- no existe renovación silenciosa;
+- extender la vigencia genera una nueva decisión auditada;
+- una concesión futura no participa antes de `effective_from`;
+- una concesión vencida permanece en historial, pero no autoriza;
+- una concesión suspendida o revocada invalida caché y sesiones de autorización;
+- desactivar al trabajador produce denegación estructural;
+- desactivar el permiso o la aplicación invalida la concesión;
+- cambiar los roles compatibles, sedes, áreas o funciones del trabajador dispara revisión obligatoria.
+
+#### 12. Contrato documental mínimo
+
+Cada concesión individual operativa deberá conservar como mínimo:
+
+| Campo conceptual               | Regla                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| `employee_id`                  | Trabajador humano exacto y activo.                                                  |
+| `permission_code`              | Clave canónica exacta, activa y sin wildcard.                                       |
+| `lane`                         | Siempre `OPERATIONAL`.                                                              |
+| `effect`                       | Siempre `ALLOW` dentro de esta tarea. Las denegaciones se definen en AUTH-RBAC-022. |
+| `compatible_operational_roles` | Uno o más roles operativos exactos compatibles.                                     |
+| `scope_type`                   | Tipo de alcance permitido por el permiso.                                           |
+| `scope_mode`                   | Modo explícito cuando el alcance use tipos o conjuntos.                             |
+| `scope_site_id`                | Sede específica cuando corresponda.                                                 |
+| `scope_area_id`                | Área específica cuando corresponda.                                                 |
+| `scope_area_kind`              | Tipo de área cuando el permiso lo admita.                                           |
+| `resource_constraint`          | Restricción de propiedad, asignación, relación o conjunto.                          |
+| `effective_from`               | Inicio de vigencia.                                                                 |
+| `effective_until`              | Fin de vigencia; obligatorio salvo excepción estable aprobada.                      |
+| `reason_code`                  | Causa normalizada.                                                                  |
+| `justification`                | Explicación humana verificable.                                                     |
+| `requested_by`                 | Actor que solicita.                                                                 |
+| `approved_by`                  | Actor autorizado que aprueba.                                                       |
+| `created_by` / `updated_by`    | Trazabilidad de mantenimiento.                                                      |
+| `source_reference`             | Acta, contingencia, capacitación, proyecto o evidencia de origen.                   |
+| `reviewed_at`                  | Última revisión administrativa.                                                     |
+| `revoked_at` / `revoked_by`    | Trazabilidad de revocación.                                                         |
+
+La estructura física definitiva podrá usar tablas separadas o una tabla unificada de asignaciones. La semántica anterior es obligatoria independientemente del diseño físico.
+
+#### 13. Flujo de aprobación
+
+```text
+SOLICITUD JUSTIFICADA
+        ↓
+VALIDAR TRABAJADOR Y NECESIDAD PARTICULAR
+        ↓
+VALIDAR PERMISO Y CARRIL OPERATIVO
+        ↓
+COMPROBAR MATRIZ DEL ROL Y REDUNDANCIA
+        ↓
+DEFINIR ROLES OPERATIVOS COMPATIBLES
+        ↓
+VALIDAR TURNO, CHECK-IN, ÁREA Y RECURSO REQUERIDOS
+        ↓
+EVALUAR SENSIBILIDAD Y SEGREGACIÓN
+        ↓
+APROBACIÓN AUTORIZADA
+        ↓
+ACTIVACIÓN O PROGRAMACIÓN
+        ↓
+REVISIÓN, EXPIRACIÓN O REVOCACIÓN
+```
+
+Controles mínimos:
+
+1. El solicitante no se autoaprueba.
+2. El beneficiario no aprueba su propia concesión.
+3. La persona que administra técnicamente el registro no adquiere autoridad empresarial para aprobarlo.
+4. Las capacidades sensibles o `BASE_AND_OPERATIONAL` requieren aprobación reforzada.
+5. La aprobación debe comprobar el resultado efectivo, no solo la fila solicitada.
+6. Debe verificarse si la responsabilidad corresponde realmente a otro rol operativo.
+7. Debe comprobarse que la excepción no produzca una combinación incompatible de funciones.
+8. Debe definirse una fecha de revisión antes de activar concesiones de vigencia amplia.
+
+#### 14. Sensibilidad y segregación de funciones
+
+La concesión individual no reduce la sensibilidad canónica del permiso.
+
+Cuando la capacidad sea sensible, deberán conservarse según corresponda:
+
+- reautenticación fuerte;
+- motivo obligatorio;
+- evidencia adjunta;
+- aprobación dual;
+- separación entre preparador, transportador, receptor, verificador y aprobador;
+- separación entre creador, ejecutor y corrector;
+- control de versión del recurso;
+- idempotencia;
+- auditoría reforzada;
+- revisión posterior.
+
+Para permisos `BASE_AND_OPERATIONAL`:
+
+```text
+BASE_ALLOW VÁLIDO
++ EMPLOYEE_OPERATIONAL_ALLOW O ROLE_OPERATIONAL_ALLOW
++ CONTEXTO OPERATIVO VÁLIDO
++ CONTROLES SENSIBLES
++ SIN DENY
+= ACCIÓN POSIBLE
+```
+
+La concesión individual operativa no aporta el componente base.
+
+Casos especialmente restringidos:
+
+- ajustes de inventario;
+- entradas excepcionales;
+- aprobación o resolución de variaciones;
+- confirmaciones excepcionales de entrega.
+
+La misma persona no podrá crear artificialmente ambos carriles mediante autoaprobación ni utilizar la excepción para aprobar su propia evidencia cuando el contrato exija segregación.
+
+#### 15. Dependencias y acceso a aplicaciones
+
+Una concesión sobre una acción interna no concede automáticamente `<app>.access`.
+
+Cuando el catálogo declare una dependencia explícita:
+
+```text
+PERMISO INTERNO
+requiere
+<app>.access
+```
+
+ambos permisos deberán resultar autorizados en el carril compatible.
+
+No se infiere dependencia por compartir prefijo. Tampoco se permite crear un paquete oculto bajo una sola excepción.
+
+Ejemplo:
+
+```text
+conceder nexo.inventory.remissions.dispatch
+≠ conceder nexo.access automáticamente
+```
+
+Ambas decisiones deben estar representadas y auditadas por separado cuando sean necesarias.
+
+#### 16. Dispositivos compartidos
+
+Una concesión individual operativa puede utilizarse desde un dispositivo compartido únicamente cuando:
+
+- el dispositivo está activo;
+- la aplicación está permitida en el dispositivo;
+- el actor humano está identificado;
+- la sesión del actor está vigente;
+- el turno y check-in cumplen el contrato;
+- el rol operativo efectivo es compatible;
+- la sede y área del dispositivo coinciden;
+- la capacidad está permitida para ese tipo de dispositivo conforme a AUTH-RBAC-023.
+
+El dispositivo:
+
+- no recibe la concesión;
+- no transfiere la concesión entre trabajadores;
+- no mantiene el permiso después de cerrar la sesión del actor;
+- no convierte `navigation_role` en autorización;
+- no permite ejecutar acciones como usuario técnico.
+
+#### 17. Relación con otras capas
+
+| Capa                      | Relación con la concesión individual operativa                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------- |
+| Rol operativo             | Fuente independiente de allows dentro del mismo carril.                                            |
+| Concesión individual base | Se define en AUTH-RBAC-020 y no es creada por esta capa.                                           |
+| Denegación operativa      | Prevalece sobre este allow cuando coincide.                                                        |
+| Bloqueo transversal       | Prevalece sobre ambos carriles.                                                                    |
+| Turno                     | Siempre obligatorio.                                                                               |
+| Check-in                  | Obligatorio cuando el permiso sea `T+C`.                                                           |
+| Rol operativo efectivo    | Debe ser compatible con la excepción.                                                              |
+| Sede y área               | Se resuelven desde el contexto, no desde selección frontend.                                       |
+| Dispositivo compartido    | Puede restringir o impedir el uso; nunca amplía la concesión.                                      |
+| Simulación                | Puede calcular un resultado hipotético, pero no activar la concesión.                              |
+| RLS, RPC y servidor       | Deben evaluar la misma excepción, contexto, alcance, recurso y denegaciones.                       |
+| Caché                     | Debe invalidarse ante activación, suspensión, revocación, expiración, check-out o cambio de turno. |
+
+#### 18. Prevención de redundancias y excepciones masivas
+
+Antes de crear una concesión deberá calcularse el permiso operativo efectivo del trabajador para los roles compatibles.
+
+La creación se rechazará como redundante cuando:
+
+- la matriz del rol ya concede la misma clave con el mismo alcance;
+- la matriz del rol ya concede un alcance que contiene completamente el solicitado;
+- otra concesión individual activa ya cubre el mismo permiso, roles y alcance;
+- dos aliases legacy se normalizan hacia la misma clave canónica;
+- la concesión no produce ninguna capacidad adicional verificable.
+
+Una excepción repetida en varios trabajadores o mantenida indefinidamente para compensar una omisión deberá generar revisión de la matriz del rol.
+
+```text
+NECESIDAD GENERAL DEL ROL
+→ CORREGIR MATRIZ OPERATIVA
+
+NECESIDAD PARTICULAR DEL TRABAJADOR
+→ CONCESIÓN INDIVIDUAL OPERATIVA
+
+NECESIDAD DE EJECUTAR OTRO OFICIO COMPLETO
+→ ASIGNAR OTRO ROL OPERATIVO AL TURNO
+```
+
+#### 19. Relación con el estado legacy
+
+La auditoría no encontró una capa canónica de concesiones operativas individuales diferenciada por carril.
+
+El estado actual mezcla:
+
+- permisos individuales en `employee_permissions` sin campo de carril;
+- permisos de rol operativo en `operational_role_permissions`;
+- roles base legacy que todavía conceden acciones operativas permanentes;
+- funciones separadas que pueden consultar fuentes distintas.
+
+Decisión para la transición:
+
+1. Ninguna fila legacy se interpretará como concesión operativa individual automáticamente.
+2. Toda fila deberá normalizarse hacia permiso canónico, carril, roles compatibles, alcance, vigencia y justificación.
+3. Las asignaciones redundantes frente al rol se retirarán del dataset futuro.
+4. Los permisos operativos conservados en roles base legacy no se migrarán como excepciones individuales.
+5. Las identidades técnicas y dispositivos no podrán convertirse en beneficiarios humanos.
+6. Una fila sin intención verificable se clasificará como `legacy_grant_unresolved` y no autorizará hasta revisión.
+7. La limpieza física no se ejecuta en esta tarea.
+
+#### 20. Ejemplos válidos
+
+##### Ejemplo A — Capacidad puntual de entrega
+
+```text
+Trabajador: operador_integral_satelite
+Permiso: futura clave atómica de entrega ordinaria
+Carril: OPERATIONAL
+Rol compatible: operador_integral_satelite
+Alcance: sede integrada activa
+Vigencia: periodo de piloto
+```
+
+Resultado: solo será posible cuando la clave exista en el catálogo, tenga modalidad operativa aprobada y se cumplan turno, contexto y recurso. La brecha actual no autoriza la acción.
+
+##### Ejemplo B — Consulta logística temporal
+
+```text
+Trabajador: bodeguero
+Permiso: nexo.logistics.operations.view
+Modalidad: BASE_OR_OPERATIONAL
+Carril concedido: OPERATIONAL
+Rol compatible: bodeguero
+Alcance: operaciones relacionadas con la sede activa
+Vigencia: dos semanas
+```
+
+Resultado: permite consulta operativa dentro del alcance; no concede despacho, tránsito ni recepción.
+
+##### Ejemplo C — Componente operativo de doble condición
+
+```text
+Trabajador: gerente con turno de gerencia_operativa
+Permiso: nexo.inventory.adjustments.register
+Modalidad: BASE_AND_OPERATIONAL
+Concesión individual: componente OPERATIONAL
+Alcance: sede y área activas
+```
+
+Resultado: no puede registrar el ajuste sin componente base válido, check-in, evidencia, recurso compatible y segregación.
+
+##### Ejemplo D — Capacidad especializada dentro de bodega
+
+```text
+Trabajador: bodeguero
+Permiso: nexo.inventory.stock_validations.perform
+Modalidad: OPERATIONAL_ONLY
+Rol compatible: bodeguero
+Alcance: área de bodega activa
+Vigencia: entrenamiento supervisado
+```
+
+Resultado: puede ejecutar validaciones durante el contexto autorizado. No puede aprobar diferencias ni registrar ajustes.
+
+#### 21. Ejemplos inválidos
+
+##### Ejemplo E — Permiso base en el carril operativo
+
+```text
+Permiso: viso.workforce.employees.update
+Modalidad: BASE_ONLY
+Concesión solicitada: OPERATIONAL
+```
+
+Resultado: **DENEGAR — incompatible_assignment_lane**.
+
+##### Ejemplo F — Sustitución completa de rol
+
+```text
+Trabajador con turno de barista_satelite
+recibe 30 permisos individuales de bodeguero
+```
+
+Resultado: inválido. Debe programarse un turno con el rol `bodeguero` si realmente cubrirá ese oficio.
+
+##### Ejemplo G — Sin check-in
+
+```text
+Permiso T+C
+Turno válido
+Sin check-in activo
+```
+
+Resultado: **DENEGAR — active_checkin_required**.
+
+##### Ejemplo H — Rol incompatible
+
+```text
+Excepción compatible con conductor_logistica
+Turno actual: cocinero_satelite
+```
+
+Resultado: **DENEGAR — incompatible_operational_role**.
+
+##### Ejemplo I — Permiso futuro inexistente
+
+```text
+Responsabilidad: registrar prueba de entrega
+Clave canónica actual: inexistente
+```
+
+Resultado: **DENEGAR POR DEFECTO**. La responsabilidad deberá convertirse primero en una capacidad atómica mediante una nueva versión del catálogo.
+
+#### 22. Auditoría obligatoria
+
+Deberán generarse eventos para:
+
+```text
+individual_operational_grant_requested
+individual_operational_grant_approved
+individual_operational_grant_rejected
+individual_operational_grant_scheduled
+individual_operational_grant_activated
+individual_operational_grant_used
+individual_operational_grant_blocked
+individual_operational_grant_updated
+individual_operational_grant_suspended
+individual_operational_grant_reactivated
+individual_operational_grant_revoked
+individual_operational_grant_expired
+individual_operational_grant_redundancy_detected
+individual_operational_grant_conflict_detected
+```
+
+Cada evento deberá registrar como mínimo:
+
+- actor efectivo;
+- trabajador beneficiario;
+- permiso exacto;
+- carril operativo;
+- rol operativo efectivo;
+- roles compatibles configurados;
+- turno y check-in;
+- sede y área activas;
+- alcance y recurso;
+- vigencia;
+- motivo;
+- referencia de origen;
+- estado anterior y nuevo;
+- solicitante;
+- aprobador;
+- dispositivo cuando corresponda;
+- fecha de servidor;
+- resultado de validación de redundancia;
+- conflictos o denegaciones detectadas.
+
+#### 23. Tratamiento de permisos todavía inexistentes
+
+Las responsabilidades identificadas durante las matrices que no cuentan con una clave atómica vigente se consideran **brechas contractuales**, no permisos implícitos.
+
+Flujo obligatorio:
+
+```text
+BRECHA DOCUMENTADA EN UNA MATRIZ O PROCESO
+        ↓
+DEFINIR PROCESO, ACTOR, ACCIÓN Y APLICACIÓN PROPIETARIA
+        ↓
+CREAR PROPUESTA DE PERMISO ATÓMICO
+        ↓
+DEFINIR MODALIDAD, ALCANCE, TURNO, CHECK-IN, ÁREA,
+DISPOSITIVO, SIMULACIÓN, SENSIBILIDAD Y RECURSO
+        ↓
+APROBAR NUEVA VERSIÓN DEL CATÁLOGO
+        ↓
+REVISAR MATRICES Y EXCEPCIONES AFECTADAS
+        ↓
+GENERAR DATASETS CANÓNICOS
+        ↓
+IMPLEMENTAR EN VENTO-SHELL Y REPOSITORIO PROPIETARIO
+        ↓
+MIGRACIÓN VERSIONADA EN VENTO-SHELL CUANDO AFECTE SUPABASE
+        ↓
+PRUEBAS, STAGING, ROLLBACK Y ACTUALIZACIÓN DOCUMENTAL
+```
+
+Reglas:
+
+1. Una brecha identificada no equivale a una capacidad ya aprobada.
+2. El nombre preliminar escrito en una matriz no constituye una clave canónica.
+3. No se reutilizará un permiso amplio para cubrir una acción ausente.
+4. Todo permiso nuevo inicia denegado en matrices y excepciones hasta evaluación expresa.
+5. Una capacidad nueva puede exigir reabrir la matriz de uno o varios roles.
+6. La implementación física solo ocurre en las fases de implementación y, si afecta Supabase, mediante migración documentada en `vento-shell`.
+
+#### 24. Brechas contractuales identificadas
+
+| Brecha                                                                                             | Impacto                                                                                                        | Decisión                                                                                                                     |
+| -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| El catálogo no contiene una capacidad atómica para administrar concesiones operativas individuales | No existe un permiso empresarial exacto para crear, aprobar, suspender o revocar estas excepciones desde VISO. | Crear capacidades de gobierno específicas antes de implementar la interfaz.                                                  |
+| `employee_permissions` no distingue carril base y operativo                                        | Una fila podría utilizarse por la función incorrecta.                                                          | El modelo futuro deberá declarar `lane` obligatoriamente.                                                                    |
+| La estructura actual no vincula una excepción con roles operativos compatibles                     | Una capacidad podría activarse durante un oficio no relacionado.                                               | Incorporar restricción obligatoria de rol o familia canónica.                                                                |
+| La estructura actual no representa vigencia, motivo y aprobación                                   | Las excepciones pueden permanecer activas sin causa verificable.                                               | Añadir ciclo de vida, justificación y auditoría en el diseño físico posterior.                                               |
+| Las funciones actuales no consumen una decisión unificada                                          | La excepción podría funcionar en una superficie y fallar en otra.                                              | No activar el dataset definitivo antes del BLOQUE E y de pruebas transversales.                                              |
+| Varias responsabilidades operativas identificadas no tienen permiso atómico                        | No pueden asignarse todavía a roles ni individuos.                                                             | Definirlas en el roadmap funcional y de autorización de la aplicación propietaria, versionar el catálogo y revisar matrices. |
+
+#### 25. Invariantes
+
+1. Toda concesión individual operativa pertenece a un trabajador humano concreto.
+2. Toda concesión utiliza una clave canónica exacta y activa.
+3. No existen wildcards.
+4. Toda concesión declara carril `OPERATIONAL`.
+5. `BASE_ONLY` no admite concesión operativa.
+6. `BASE_AND_OPERATIONAL` recibe únicamente componente operativo.
+7. Toda concesión exige turno publicado y vigente.
+8. Las capacidades `T+C` exigen check-in activo y coincidente.
+9. La concesión no crea ni cambia el rol operativo.
+10. El rol operativo efectivo debe ser compatible.
+11. La concesión no crea sede ni área activas.
+12. El alcance concedido no supera el máximo contractual.
+13. `null` no equivale a global.
+14. La sede seleccionada no autoriza.
+15. El recurso real se resuelve en servidor.
+16. Una concesión positiva no restringe otra concesión positiva.
+17. Una denegación aplicable prevalece.
+18. Una concesión redundante no debe crearse.
+19. Una necesidad estructural se resuelve en la matriz del rol.
+20. La cobertura de otro oficio completo se resuelve asignando el rol correcto.
+21. Una concesión temporal expira automáticamente.
+22. Una concesión vencida o revocada no se elimina del historial.
+23. Un trabajador inactivo no puede utilizarla.
+24. Un permiso inactivo no puede autorizarse.
+25. Una identidad técnica o dispositivo no recibe concesiones humanas.
+26. Un dispositivo puede restringir, pero nunca ampliar.
+27. APP-REVIEW no se incluye por coincidencia de tipo.
+28. La sensibilidad y segregación permanecen intactas.
+29. Un permiso futuro inexistente permanece denegado.
+30. RPC, Server Actions, API y RLS deben producir la misma decisión.
+31. El fin del turno o check-in invalida inmediatamente la capacidad correspondiente.
+32. Toda modificación y uso relevante queda auditado.
+
+#### 26. Impacto sobre tareas posteriores
+
+| Tarea                               | Impacto                                                                                               |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| AUTH-RBAC-022                       | Definirá denegaciones de carril y bloqueos transversales que prevalecen sobre estas concesiones.      |
+| AUTH-RBAC-023                       | Determinará qué capacidades operativas pueden ejecutarse desde cada dispositivo compartido.           |
+| AUTH-RBAC-026                       | Proyectará concesiones base, operativas y denegaciones en un dataset canónico versionado.             |
+| AUTH-RBAC-027                       | Verificará que ninguna excepción produzca acceso operativo global accidental.                         |
+| BLOQUE E                            | Diseñará la decisión unificada que combina rol, excepción, contexto, recurso y denegaciones.          |
+| BLOQUE E2 y roadmaps por aplicación | Convertirán las brechas funcionales en procesos y permisos atómicos propuestos.                       |
+| BLOQUE E3                           | Definirá la estructura objetivo y transición de Supabase.                                             |
+| BLOQUE R                            | Implementará datasets, backfills, funciones, RLS, RPC y migraciones versionadas en `vento-shell`.     |
+| BLOQUE QA                           | Probará expiración, cambio de turno, check-out, manipulación de recursos, segregación y denegaciones. |
+
+#### 27. Criterios de aprobación
+
+AUTH-RBAC-021 podrá aprobarse cuando se acepte expresamente que:
+
+- las concesiones individuales operativas son excepciones positivas para trabajadores concretos;
+- no constituyen un segundo rol operativo ni un paquete de otro oficio;
+- 58 permisos admiten componente operativo y 54 permisos `BASE_ONLY` quedan prohibidos;
+- toda concesión exige turno válido;
+- los 39 permisos `T+C` continúan exigiendo check-in;
+- los 31 permisos con área requerida continúan exigiendo área activa;
+- el rol operativo efectivo debe ser compatible con la excepción;
+- los permisos `BASE_AND_OPERATIONAL` reciben únicamente el componente operativo;
+- una concesión positiva más específica no restringe un allow más amplio;
+- las concesiones redundantes deben rechazarse;
+- cada concesión declara permiso, carril, roles compatibles, alcance, vigencia, motivo, solicitante, aprobador y auditoría;
+- las capacidades futuras inexistentes permanecen denegadas hasta crear y aprobar una nueva versión del catálogo;
+- las denegaciones se reservan para AUTH-RBAC-022;
+- no se realiza implementación física durante esta tarea.
+
+#### 28. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-020 | APROBADA    |
+| AUTH-RBAC-021 | APROBADA    |
+| AUTH-RBAC-022 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-022 hasta recibir aprobación explícita.
+
+
+### ✅ AUTH-RBAC-022 — Definir denegaciones individuales y transversales
+
+**Estado:** APROBADA 
+**Bloque:** BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos  
+**Naturaleza:** Definición documental de denegaciones explícitas aplicables a trabajadores  
+**Implementación física:** No incluida  
+**Catálogo evaluado:** 112 permisos canónicos vigentes  
+**Tarea anterior vigente:** AUTH-RBAC-021 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, repositorios, guards, dispositivos ni datasets físicos.
+
+La implementación posterior deberá materializarse mediante `AUTH-RBAC-026`, el modelo de decisión unificado del BLOQUE E y migraciones versionadas en `vento-shell` dentro del BLOQUE R.
+
+---
+
+#### 1. Objetivo
+
+Definir el contrato canónico para restringir capacidades que un trabajador podría recibir mediante:
+
+- su rol base;
+- una concesión individual base;
+- su rol operativo;
+- una concesión individual operativa;
+- una combinación `BASE_OR_OPERATIONAL`;
+- una combinación `BASE_AND_OPERATIONAL`.
+
+La denegación deberá permitir retirar una capacidad exacta sin:
+
+- modificar silenciosamente la matriz completa de un rol;
+- convertir la ausencia de concesión en un bloqueo explícito;
+- mezclar los carriles base y operativo;
+- depender de la interfaz;
+- utilizar nombres de rol como bypass;
+- crear permisos negativos por prefijo o wildcard;
+- ignorar el recurso y su territorio real.
+
+---
+
+#### 2. Decisión principal
+
+Vento OS distinguirá cuatro causas diferentes de resultado negativo:
+
+```text
+DEFAULT_DENY
+→ no existe una concesión aplicable completa
+
+CONTEXT_DENY
+→ falta o es inválido un prerrequisito del permiso
+
+LANE_DENY
+→ existe una denegación individual explícita en BASE u OPERATIONAL
+
+ACTOR_WIDE_DENY
+→ existe una denegación individual transversal para la clave exacta
+
+STRUCTURAL_DENY
+→ una condición estructural impide cualquier autorización compatible
+```
+
+La precedencia permanece:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW
+>
+DEFAULT_DENY
+```
+
+Regla definitiva:
+
+```text
+UNA CONCESIÓN INDIVIDUAL
+NO PUEDE VENCER
+UNA DENEGACIÓN APLICABLE
+```
+
+La especificidad territorial determina si una denegación coincide con el recurso.
+
+No determina que un `allow` más específico pueda vencerla.
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin cambios:
+
+- ADR-AUTH-001 — Modelo canónico de identidad, contexto y autorización;
+- AUTH-MOD-001 — Actor efectivo;
+- AUTH-MOD-002 — Separación entre rol base y rol operativo;
+- AUTH-MOD-007 y AUTH-MOD-008 — Sede y área;
+- AUTH-MOD-009 y AUTH-MOD-010 — Turno y check-in;
+- AUTH-MOD-011 — Dispositivos compartidos;
+- AUTH-MOD-018 — Combinación de carriles;
+- AUTH-MOD-019 — Denegación explícita;
+- AUTH-CAT-001 a AUTH-CAT-019 — Catálogo canónico de 112 permisos;
+- AUTH-RBAC-001 a AUTH-RBAC-019 — Matrices de roles;
+- AUTH-RBAC-020 — Concesiones individuales base;
+- AUTH-RBAC-021 — Concesiones individuales operativas.
+
+Reglas heredadas obligatorias:
+
+```text
+DENY APLICABLE
+=
+PERMISO EXACTO
+∩
+SUJETO COINCIDENTE
+∩
+CARRIL COINCIDENTE
+∩
+VIGENCIA ACTIVA
+∩
+ALCANCE COINCIDENTE
+∩
+RECURSO DENTRO DEL ALCANCE
+```
+
+```text
+SIN ALLOW APLICABLE
+→ DEFAULT_DENY
+```
+
+```text
+RECURSO AMBIGUO O NO RESUELTO
+→ DENEGAR
+```
+
+---
+
+#### 4. Alcance de AUTH-RBAC-022
+
+Esta tarea define:
+
+- denegación individual del carril base;
+- denegación individual del carril operativo;
+- bloqueo individual transversal por permiso exacto;
+- relación con las cuatro modalidades de autorización;
+- alcance territorial y contractual de la denegación;
+- vigencia, activación, expiración y revocación;
+- motivos y evidencia mínima;
+- aprobación y segregación de funciones;
+- conflictos y superposición entre varias denegaciones;
+- comportamiento frente a dispositivos compartidos y simulación;
+- transición de posibles datos legacy;
+- información mínima que deberá contener el dataset de AUTH-RBAC-026.
+
+Esta tarea no define:
+
+- denegaciones técnicas de infraestructura;
+- suspensión de cuentas de Supabase Auth;
+- desactivación de trabajadores;
+- bloqueo de dispositivos completos;
+- matrices positivas de roles;
+- nuevos permisos;
+- claves negativas por aplicación o módulo;
+- políticas físicas de RLS;
+- funciones SQL;
+- estructura definitiva de tablas;
+- interfaz final de VISO;
+- retención física de auditoría;
+- flujos disciplinarios o laborales.
+
+---
+
+#### 5. Clases canónicas de denegación
+
+##### 5.1 `STRUCTURAL_DENY`
+
+Bloqueo producido por una condición que hace inválida cualquier autorización compatible.
+
+Ejemplos:
+
+- actor efectivo inexistente;
+- trabajador inactivo;
+- aplicación inactiva;
+- permiso inexistente, retirado o inactivo;
+- modalidad ausente;
+- recurso irresoluble o ambiguo;
+- aislamiento obligatorio de APP-REVIEW;
+- violación de una regla estructural de seguridad;
+- inexistencia del principal de recuperación requerido.
+
+Reglas:
+
+- no es una excepción individual administrada mediante `employee_permissions`;
+- no se neutraliza con roles, allows ni excepciones;
+- no requiere una fila negativa por cada permiso;
+- deberá producir razones estructuradas y auditables;
+- su solución consiste en corregir el estado estructural, no en crear un override.
+
+##### 5.2 `LANE_DENY`
+
+Denegación individual que bloquea un permiso exacto únicamente dentro de uno de los carriles:
+
+```text
+BASE
+OPERATIONAL
+```
+
+Variantes:
+
+```text
+BASE_LANE_DENY
+OPERATIONAL_LANE_DENY
+```
+
+Ejemplos:
+
+- trabajador que conserva su rol administrativo, pero no puede aprobar una capacidad financiera concreta;
+- trabajador operativo temporalmente impedido para registrar ajustes;
+- colaborador que puede consultar una aplicación administrativamente, pero no ejecutar una función operativa específica;
+- restricción limitada a una sede o área determinada.
+
+Reglas:
+
+- no bloquea automáticamente el carril contrario;
+- solo puede aplicarse a un carril compatible con la modalidad del permiso;
+- no elimina ni modifica la concesión positiva de origen;
+- se evalúa después de las denegaciones transversales y antes de los allows del carril;
+- cualquier deny aplicable vence todos los allows del mismo carril.
+
+##### 5.3 `ACTOR_WIDE_DENY`
+
+Bloqueo individual transversal para un permiso exacto.
+
+Afecta todos los carriles compatibles de la modalidad del permiso.
+
+Ejemplo:
+
+```text
+permission_key = nexo.inventory.adjustments.register
+subject = trabajador X
+deny_class = ACTOR_WIDE_DENY
+```
+
+Resultado:
+
+```text
+concesión por rol base        → bloqueada
+concesión individual base     → bloqueada
+concesión por rol operativo   → bloqueada
+concesión operativa individual→ bloqueada
+```
+
+Reglas:
+
+- no bloquea otras claves de permiso;
+- no acepta prefijos;
+- no acepta `*`;
+- no acepta un nombre de aplicación como sustituto de permisos;
+- no equivale a suspender al trabajador;
+- deberá utilizarse únicamente cuando la restricción deba mantenerse sin importar el carril por el que pudiera autorizarse la capacidad.
+
+---
+
+#### 6. Clases que no se crean en esta tarea
+
+No se crean denegaciones positivas o negativas asociadas automáticamente a:
+
+- un rol base completo;
+- un rol operativo completo;
+- una familia de roles;
+- una aplicación completa;
+- un módulo completo;
+- un prefijo de permisos;
+- todos los trabajadores de una sede;
+- todos los trabajadores de un área;
+- un dispositivo compartido.
+
+Para modificar lo que un rol recibe ordinariamente deberá modificarse la matriz canónica correspondiente y versionar el dataset.
+
+```text
+CAPACIDAD QUE NINGÚN MIEMBRO DEL ROL DEBE TENER
+→ corregir la matriz del rol
+
+CAPACIDAD QUE UN TRABAJADOR CONCRETO NO DEBE EJERCER
+→ crear deny individual
+```
+
+Los bloqueos propios del dispositivo se definirán en `AUTH-RBAC-023`.
+
+---
+
+#### 7. Compatibilidad con las modalidades de autorización
+
+| Modalidad              | `BASE_LANE_DENY` | `OPERATIONAL_LANE_DENY` | `ACTOR_WIDE_DENY` | Resultado relevante                                                                      |
+| ---------------------- | ---------------: | ----------------------: | ----------------: | ---------------------------------------------------------------------------------------- |
+| `BASE_ONLY`            |               Sí |                      No |                Sí | un deny base o transversal bloquea la clave                                              |
+| `OPERATIONAL_ONLY`     |               No |                      Sí |                Sí | un deny operativo o transversal bloquea la clave                                         |
+| `BASE_OR_OPERATIONAL`  |               Sí |                      Sí |                Sí | un lane deny deja disponible el otro carril; actor-wide bloquea ambos                    |
+| `BASE_AND_OPERATIONAL` |               Sí |                      Sí |                Sí | negar cualquiera de los carriles bloquea la autorización final; actor-wide bloquea ambos |
+
+Validación cuantitativa sobre la versión vigente:
+
+```text
+PERMISOS CANÓNICOS                         112
+COMPATIBLES CON BASE_LANE_DENY             99
+COMPATIBLES CON OPERATIONAL_LANE_DENY      58
+COMPATIBLES CON ACTOR_WIDE_DENY           112
+```
+
+Desglose de modalidades:
+
+```text
+BASE_ONLY               54
+OPERATIONAL_ONLY        13
+BASE_OR_OPERATIONAL     40
+BASE_AND_OPERATIONAL     5
+TOTAL                   112
+```
+
+Una asignación de deny incompatible con la modalidad:
+
+```text
+→ no se activa
+→ se clasifica como configuración inválida
+→ produce alerta administrativa
+→ no amplía el efecto del deny
+```
+
+---
+
+#### 8. Efecto sobre permisos híbridos
+
+##### 8.1 `BASE_OR_OPERATIONAL`
+
+Un lane deny afecta únicamente su carril.
+
+```text
+BASE_LANE_DENY
++
+OPERATIONAL_ALLOW VÁLIDO
+=
+ALLOW POR CARRIL OPERATIVO
+```
+
+```text
+OPERATIONAL_LANE_DENY
++
+BASE_ALLOW VÁLIDO
+=
+ALLOW POR CARRIL BASE
+```
+
+```text
+ACTOR_WIDE_DENY
++
+CUALQUIER ALLOW
+=
+EXPLICIT_DENY
+```
+
+##### 8.2 `BASE_AND_OPERATIONAL`
+
+Ambos carriles son obligatorios.
+
+```text
+BASE_LANE_DENY
++
+OPERATIONAL_ALLOW
+=
+EXPLICIT_DENY
+```
+
+```text
+BASE_ALLOW
++
+OPERATIONAL_LANE_DENY
+=
+EXPLICIT_DENY
+```
+
+```text
+ACTOR_WIDE_DENY
+=
+EXPLICIT_DENY
+```
+
+No existe autorización parcial para un permiso `BASE_AND_OPERATIONAL`.
+
+---
+
+#### 9. Permiso exacto obligatorio
+
+Toda denegación deberá almacenar una `permission_key` canónica exacta y activa.
+
+Permitido:
+
+```text
+nexo.inventory.adjustments.register
+```
+
+Prohibido:
+
+```text
+nexo.*
+nexo.inventory.*
+inventory.adjustments
+NEXO
+all_sensitive_permissions
+```
+
+Una denegación sobre `app.access` afecta exclusivamente la capacidad exacta de entrada a la aplicación.
+
+No sustituye la autorización servidor de las capacidades internas.
+
+```text
+APP ACCESS DENEGADO
+≠
+PERMISOS INTERNOS AUTOMÁTICAMENTE DENEGADOS
+```
+
+Cuando se requiera suspender completamente el acceso de un trabajador deberá utilizarse el mecanismo estructural correspondiente —por ejemplo, desactivación laboral o bloqueo de identidad— y no crear cientos de denies individuales.
+
+---
+
+#### 10. Sujeto de la denegación
+
+Las denegaciones de esta tarea tienen como sujeto exclusivo:
+
+```text
+employee_id
+```
+
+El trabajador deberá:
+
+- existir;
+- pertenecer al dominio laboral;
+- estar identificado de forma inequívoca;
+- no depender de nombre, correo o rol como identificador;
+- conservar el historial aunque después quede inactivo.
+
+No se utilizará como sujeto:
+
+- `auth.uid()` sin resolver trabajador;
+- rol base;
+- rol operativo;
+- sede;
+- área;
+- plantilla de dispositivo;
+- usuario técnico del dispositivo;
+- cliente de Vento Pass;
+- service role.
+
+El actor afectado no podrá crear, aprobar, modificar, revocar ni neutralizar su propia denegación.
+
+---
+
+#### 11. Alcance de la denegación
+
+Toda denegación deberá declarar un alcance explícito.
+
+Valores conceptuales admitidos:
+
+| Alcance             | Significado                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `GLOBAL_PERMISSION` | bloquea la clave exacta sobre todos los recursos compatibles                                     |
+| `ORGANIZATION`      | bloquea la clave en una organización o unidad empresarial concreta                               |
+| `SITE`              | bloquea la clave en una sede concreta                                                            |
+| `AREA`              | bloquea la clave en un área concreta                                                             |
+| `SITE_TYPE`         | bloquea la clave en sedes del tipo exacto definido                                               |
+| `AREA_KIND`         | bloquea la clave en áreas del tipo exacto dentro de una cobertura superior explícita             |
+| `RESOURCE`          | bloquea la clave sobre un recurso empresarial exacto                                             |
+| `RELATION`          | bloquea la clave cuando el actor mantiene una relación concreta con el recurso, origen o destino |
+
+Reglas:
+
+1. `null` no significa todas las sedes o áreas.
+2. `GLOBAL_PERMISSION` debe declararse expresamente.
+3. `AREA_KIND` requiere la cobertura superior necesaria.
+4. Una denegación por sede no se interpreta como global.
+5. Una denegación por tipo no incluye tipos parecidos.
+6. La sede seleccionada no modifica la denegación.
+7. El área seleccionada no modifica la denegación.
+8. El recurso real se resuelve en el servidor.
+9. Un origen o destino bloqueado puede bloquear la operación completa cuando ambos son obligatorios.
+10. El contrato de recurso del permiso define qué dimensiones deben compararse.
+
+---
+
+#### 12. Especificidad territorial
+
+La especificidad sirve para decidir si una denegación coincide con el recurso.
+
+Ejemplo:
+
+```text
+DENY EN SEDE VENTO_CAFE
++
+RECURSO DE SAUDO
+=
+DENY NO APLICABLE
+```
+
+```text
+DENY GLOBAL DE LA CLAVE
++
+ALLOW LIMITADO A UN ÁREA
+=
+DENY APLICABLE
+```
+
+No se adoptará esta regla:
+
+```text
+allow más específico > deny más general
+```
+
+La regla correcta será:
+
+```text
+si el deny coincide con el recurso
+→ deny prevalece
+```
+
+---
+
+#### 13. Operaciones con múltiples territorios o recursos
+
+Cuando una acción afecte:
+
+- origen y destino;
+- varias sedes;
+- varias áreas;
+- varios lotes;
+- varios productos;
+- varios trabajadores;
+- varios documentos relacionados;
+
+la evaluación deberá realizarse sobre todos los recursos requeridos.
+
+```text
+DENY APLICABLE EN CUALQUIER RECURSO OBLIGATORIO
+→ DENEGAR LA OPERACIÓN COMPLETA
+```
+
+Solo podrá existir ejecución parcial cuando el contrato de la acción la permita expresamente y la respuesta identifique qué elementos fueron aceptados o rechazados.
+
+---
+
+#### 14. Vigencia
+
+Toda denegación deberá declarar:
+
+- `effective_from`;
+- `effective_until` o una justificación de vigencia indefinida;
+- zona horaria canónica;
+- estado de ciclo de vida;
+- fecha de revisión cuando corresponda.
+
+Estados conceptuales:
+
+```text
+DRAFT
+SCHEDULED
+ACTIVE
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Reglas:
+
+- un borrador no bloquea;
+- una denegación programada bloquea únicamente al iniciar su vigencia;
+- la expiración se valida al autorizar y no depende exclusivamente de un cron;
+- una denegación revocada conserva historial;
+- una denegación vencida no se elimina físicamente;
+- modificar una denegación activa deberá producir una nueva versión o evento auditable;
+- una denegación indefinida requiere justificación reforzada y revisión periódica.
+
+---
+
+#### 15. Motivos permitidos
+
+Toda denegación deberá incluir un `reason_code` estructurado.
+
+Categorías conceptuales permitidas:
+
+```text
+SEGREGATION_OF_DUTIES
+TEMPORARY_RESPONSIBILITY_RESTRICTION
+TRAINING_OR_CERTIFICATION_REQUIRED
+SECURITY_INCIDENT
+CREDENTIAL_OR_IDENTITY_RISK
+INVESTIGATION_HOLD
+DATA_PROTECTION_RESTRICTION
+FINANCIAL_CONTROL_RESTRICTION
+OPERATIONAL_SAFETY_RESTRICTION
+CONTRACTUAL_RESTRICTION
+OTHER_APPROVED
+```
+
+Reglas:
+
+- `OTHER_APPROVED` exige explicación obligatoria;
+- la explicación no deberá almacenar datos laborales, disciplinarios, médicos o personales innecesarios;
+- el motivo visible para el trabajador puede ser una versión segura y resumida;
+- la evidencia confidencial deberá permanecer en el sistema propietario correspondiente, no dentro del permiso;
+- el motivo no podrá quedar vacío para una denegación activa.
+
+---
+
+#### 16. Casos de uso válidos
+
+##### Caso A — Segregación financiera
+
+Un trabajador puede consultar comprobantes, pero no cancelar facturas internas.
+
+```text
+employee_id = trabajador
+permission_key = nexo.finance.internal_invoices.cancel
+deny_class = BASE_LANE_DENY
+scope = ORGANIZATION
+reason_code = SEGREGATION_OF_DUTIES
+```
+
+##### Caso B — Restricción operativa temporal
+
+Un bodeguero conserva su rol, pero no puede registrar ajustes mientras completa una certificación o revisión.
+
+```text
+permission_key = nexo.inventory.adjustments.register
+deny_class = OPERATIONAL_LANE_DENY
+scope = SITE o AREA
+effective_until = fecha definida
+```
+
+##### Caso C — Bloqueo transversal de una capacidad sensible
+
+Un trabajador no puede ejecutar una clave sensible por ningún carril durante una investigación de seguridad.
+
+```text
+permission_key = pulso.delivery.deliveries.override
+deny_class = ACTOR_WIDE_DENY
+scope = GLOBAL_PERMISSION
+```
+
+##### Caso D — Restricción territorial
+
+Un gerente puede cancelar remisiones dentro de su cobertura, excepto en una sede concreta durante una transición controlada.
+
+```text
+permission_key = nexo.inventory.remissions.cancel
+deny_class = BASE_LANE_DENY
+scope = SITE
+```
+
+---
+
+#### 17. Casos de uso inválidos
+
+No se utilizarán denegaciones para:
+
+- representar que el trabajador no recibió un permiso;
+- corregir una matriz de rol mal diseñada;
+- sustituir la desactivación de un trabajador;
+- sustituir la eliminación o corrección de un turno;
+- sustituir el cierre de check-in;
+- ocultar una aplicación defectuosa;
+- impedir una transición de estado que debe validar el recurso;
+- resolver stock insuficiente;
+- aplicar límites monetarios o cuantitativos propios del proceso;
+- bloquear una ruta frontend sin proteger la acción servidor;
+- suspender una sede completa;
+- bloquear un dispositivo compartido;
+- crear un override universal;
+- impedir permanentemente toda operación mediante cientos de filas individuales.
+
+---
+
+#### 18. Relación con concesiones individuales
+
+##### 18.1 Concesión individual base
+
+```text
+BASE_ALLOW INDIVIDUAL
++
+BASE_LANE_DENY APLICABLE
+=
+EXPLICIT_DENY EN BASE
+```
+
+##### 18.2 Concesión individual operativa
+
+```text
+OPERATIONAL_ALLOW INDIVIDUAL
++
+OPERATIONAL_LANE_DENY APLICABLE
+=
+EXPLICIT_DENY EN OPERATIONAL
+```
+
+##### 18.3 Concesión posterior
+
+Crear un allow después de crear un deny no neutraliza el deny.
+
+##### 18.4 Revocación del deny
+
+Revocar o expirar un deny:
+
+```text
+NO CONCEDE EL PERMISO
+```
+
+La autorización solo será posible si continúa existiendo una concesión positiva compatible y todos los demás requisitos son válidos.
+
+---
+
+#### 19. Relación con roles
+
+Los roles continúan siendo fuentes positivas de responsabilidad.
+
+```text
+ROL BASE
+→ puede producir BASE_ALLOW
+
+ROL OPERATIVO
+→ puede producir OPERATIONAL_ALLOW
+```
+
+Las denegaciones individuales restringen al trabajador concreto.
+
+No modifican la matriz del rol para otros trabajadores.
+
+Un rol no puede utilizarse como sujeto de `ACTOR_WIDE_DENY` dentro de esta tarea.
+
+---
+
+#### 20. Relación con dispositivo compartido
+
+El dispositivo nunca anula una denegación.
+
+```text
+ACTOR IDENTIFICADO EN DISPOSITIVO
++
+PERMISO COMPATIBLE CON DISPOSITIVO
++
+DENY APLICABLE AL ACTOR
+=
+DENEGAR
+```
+
+La sesión del dispositivo deberá conservar:
+
+- actor efectivo;
+- permiso evaluado;
+- deny aplicable;
+- motivo de bloqueo seguro;
+- auditoría.
+
+El usuario técnico del dispositivo no podrá recibir una excepción para ignorar denies del trabajador.
+
+Las restricciones propias de dispositivo se definirán en `AUTH-RBAC-023`.
+
+---
+
+#### 21. Relación con simulación
+
+La simulación puede mostrar el resultado hipotético de una denegación cuando el permiso admite simulación.
+
+Reglas:
+
+- una simulación no crea, revoca ni ignora denegaciones;
+- simular otro rol no elimina las denegaciones del sujeto simulado;
+- el actor real conserva sus propios permisos para consultar la simulación;
+- los detalles confidenciales del motivo deberán enmascararse;
+- una simulación nunca convierte `would_allow` en autorización ejecutable.
+
+---
+
+#### 22. Gobernanza y aprobación
+
+Toda denegación activa deberá tener:
+
+- solicitante identificado;
+- aprobador autorizado;
+- sujeto afectado;
+- clave exacta;
+- clase de deny;
+- carril cuando aplique;
+- alcance;
+- vigencia;
+- motivo;
+- evidencia o referencia documental cuando corresponda;
+- fecha de creación;
+- fecha de aprobación;
+- auditoría de cambios.
+
+Reglas de segregación:
+
+1. El trabajador afectado no puede aprobarla ni revocarla.
+2. Un aprobador no podrá usar la denegación para ampliar sus propias capacidades.
+3. Las denegaciones sensibles, globales o transversales requerirán revisión reforzada.
+4. Las denegaciones que afecten propietarios, gerentes generales o capacidades de recuperación requerirán gobierno especial.
+5. La activación deberá comprobar que permanece al menos un principal válido de recuperación de seguridad.
+6. No existirá un permiso universal para ignorar denegaciones.
+7. Las emergencias deberán usar capacidades específicas y producir revisión posterior.
+
+---
+
+#### 23. Prevención de bloqueo organizacional
+
+Antes de activar una denegación sobre capacidades de seguridad o recuperación deberá verificarse:
+
+```text
+AL MENOS UN PRINCIPAL DE RECUPERACIÓN VÁLIDO
+```
+
+No se permitirá una combinación que deje sin actores capaces de:
+
+- administrar propietarios;
+- recuperar acceso de seguridad;
+- revocar denegaciones críticas;
+- restaurar la administración del catálogo;
+- atender una emergencia autorizada.
+
+Resultado de validación fallida:
+
+```text
+security_recovery_principal_required
+→ no activar la denegación
+```
+
+---
+
+#### 24. Conflictos y superposición
+
+##### 24.1 Duplicado exacto
+
+No podrán existir dos denegaciones activas idénticas para:
+
+```text
+employee_id
+permission_key
+deny_class
+lane
+scope
+resource constraint
+periodo coincidente
+```
+
+##### 24.2 Superposición válida
+
+Pueden coexistir:
+
+- un deny de sede y otro de recurso;
+- un deny operativo y uno transversal;
+- periodos consecutivos;
+- restricciones con motivos diferentes, cuando exista necesidad aprobada.
+
+##### 24.3 Evaluación
+
+Si coinciden varias denegaciones:
+
+- se aplican todas las que correspondan;
+- la decisión final permanece `DENY`;
+- se registra la clase de mayor precedencia como razón primaria;
+- se conservan todos los `deny_id` coincidentes para auditoría;
+- no se selecciona un allow para compensarlas.
+
+##### 24.4 Conflicto administrativo
+
+Una superposición incoherente deberá generar:
+
+```text
+deny_conflict_detected
+```
+
+La detección de conflicto no autoriza la operación.
+
+---
+
+#### 25. Contrato conceptual mínimo
+
+El dataset canónico y la estructura física futura deberán poder representar como mínimo:
+
+```text
+ExplicitDeny
+├── deny_id
+├── employee_id
+├── permission_key
+├── deny_class
+├── authorization_lane
+├── scope_type
+├── organization_id
+├── site_id
+├── site_type
+├── area_id
+├── area_kind
+├── resource_type
+├── resource_id
+├── relation_type
+├── effective_from
+├── effective_until
+├── status
+├── reason_code
+├── reason_note
+├── evidence_reference
+├── requested_by
+├── approved_by
+├── created_by
+├── created_at
+├── updated_by
+├── updated_at
+├── revoked_by
+├── revoked_at
+├── revocation_reason
+└── version
+```
+
+La implementación física podrá normalizar este contrato en más de una tabla, pero no podrá perder su semántica.
+
+---
+
+#### 26. Validación de integridad
+
+Toda creación o actualización deberá validar:
+
+- trabajador existente;
+- permiso canónico exacto y activo;
+- clase de deny válida;
+- carril compatible con la modalidad;
+- alcance coherente;
+- sede y área existentes y activas;
+- pertenencia del área a la sede;
+- recurso válido cuando aplique;
+- vigencia no contradictoria;
+- motivo obligatorio;
+- aprobador autorizado;
+- sujeto distinto del aprobador cuando corresponda;
+- ausencia de duplicado exacto;
+- conservación del principal de recuperación;
+- imposibilidad de wildcard;
+- imposibilidad de neutralización por el propio sujeto.
+
+Ante ambigüedad:
+
+```text
+NO ACTIVAR LA DENEGACIÓN
++
+REGISTRAR CONFIGURACIÓN INVÁLIDA
+```
+
+Esto evita que una configuración ambigua bloquee silenciosamente toda la organización.
+
+---
+
+#### 27. Orden canónico de evaluación
+
+La decisión deberá seguir este orden:
+
+1. Resolver principal autenticado.
+2. Resolver actor efectivo.
+3. Validar identidad laboral.
+4. Validar trabajador activo.
+5. Validar aplicación.
+6. Validar permiso.
+7. Resolver modalidad.
+8. Resolver recurso real.
+9. Resolver territorio real.
+10. Evaluar `STRUCTURAL_DENY`.
+11. Evaluar `ACTOR_WIDE_DENY`.
+12. Evaluar carril base cuando corresponda.
+13. Evaluar `BASE_LANE_DENY`.
+14. Evaluar allows base.
+15. Resolver contexto operativo cuando corresponda.
+16. Evaluar `OPERATIONAL_LANE_DENY`.
+17. Evaluar allows operativos.
+18. Combinar carriles según la modalidad.
+19. Validar prerrequisitos restantes.
+20. Producir decisión final.
+21. Registrar auditoría.
+
+No será válido evaluar primero los allows y omitir una búsqueda posterior de denies.
+
+---
+
+#### 28. Respuesta de autorización
+
+Una decisión afectada por denegación deberá devolver como mínimo:
+
+```text
+allowed = false
+decision = DENY
+deny_class
+deny_source
+deny_scope
+deny_reason_code
+authorization_lane
+blocked_reasons
+decision_id
+```
+
+No será suficiente devolver solamente:
+
+```text
+false
+```
+
+La interfaz deberá distinguir:
+
+- ausencia de concesión;
+- contexto operativo inválido;
+- denegación individual por carril;
+- bloqueo transversal;
+- bloqueo estructural;
+- recurso fuera de alcance.
+
+Los detalles confidenciales del motivo no deberán exponerse al cliente sin autorización específica.
+
+---
+
+#### 29. Aplicación obligatoria en todas las superficies
+
+La misma decisión deberá aplicarse en:
+
+- guards;
+- Server Actions;
+- Route Handlers;
+- RPC;
+- funciones SQL;
+- políticas RLS;
+- jobs;
+- procesos con service role;
+- dispositivos compartidos;
+- navegación;
+- componentes;
+- exportaciones;
+- impresión;
+- integraciones.
+
+Regla:
+
+```text
+PANTALLA OCULTA
+≠
+OPERACIÓN PROTEGIDA
+```
+
+Las mutaciones y lecturas sensibles deberán volver a evaluar la denegación en el servidor.
+
+---
+
+#### 30. Caché e invalidación
+
+Una denegación activada, revocada o expirada deberá invalidar cualquier caché de autorización afectada.
+
+No se permitirá que:
+
+- una sesión iniciada antes del deny conserve la capacidad;
+- una aplicación use permisos cargados al iniciar sesión como fuente definitiva;
+- un dispositivo compartido mantenga un actor autorizado después del bloqueo;
+- una revocación tarde indefinidamente en surtir efecto.
+
+La estrategia técnica exacta se definirá en el BLOQUE E y en la implementación.
+
+---
+
+#### 31. Auditoría
+
+Toda decisión afectada por un deny deberá registrar:
+
+- principal autenticado;
+- actor efectivo;
+- trabajador afectado;
+- aplicación;
+- permiso;
+- modalidad;
+- carril;
+- recurso;
+- sede;
+- área;
+- deny aplicable;
+- clase;
+- alcance;
+- motivo estructurado;
+- creador;
+- aprobador;
+- inicio de vigencia;
+- decisión final;
+- fecha de evaluación.
+
+Eventos administrativos mínimos:
+
+```text
+deny_created
+deny_scheduled
+deny_approved
+deny_activated
+deny_updated
+deny_revoked
+deny_expired
+deny_rejected
+deny_conflict_detected
+deny_recovery_risk_detected
+```
+
+---
+
+#### 32. Estado legacy y transición
+
+Estado conocido:
+
+```text
+role_permissions
+→ solo concesiones positivas conocidas
+
+employee_permissions
+→ 17 concesiones redundantes
+→ 0 denegaciones funcionales confirmadas
+
+operational_role_permissions
+→ solo concesiones positivas conocidas
+```
+
+Por tanto:
+
+- no existe una denegación individual vigente que deba preservarse automáticamente;
+- las 17 filas actuales de `employee_permissions` no se convertirán en denies;
+- un valor legacy `is_allowed = false` no se activará automáticamente;
+- toda fila negativa histórica ambigua se clasificará como `legacy_deny_unresolved`;
+- deberá revisarse manualmente su intención, carril, alcance, vigencia y motivo;
+- la implementación deberá separar claramente allows y denies, aunque físicamente puedan compartir una estructura normalizada.
+
+---
+
+#### 33. Dataset posterior
+
+`AUTH-RBAC-026` deberá definir el dataset canónico de:
+
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones individuales base;
+- denegaciones individuales operativas;
+- bloqueos individuales transversales;
+- vigencias;
+- alcances;
+- motivos;
+- estados de transición legacy.
+
+Esta tarea define el contrato.
+
+No crea todavía filas para trabajadores concretos.
+
+Toda denegación real deberá surgir de una necesidad empresarial aprobada y no de una suposición documental.
+
+---
+
+#### 34. Impacto sobre tareas posteriores
+
+| Tarea                                  | Impacto                                                                                             |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `AUTH-RBAC-023`                        | deberá garantizar que el dispositivo nunca amplíe permisos ni ignore denies del actor efectivo      |
+| revisión contractual previa a datasets | deberá analizar si nuevas claves requieren reglas específicas de deny                               |
+| `AUTH-RBAC-024`                        | conservará las matrices base como fuentes positivas; no incorporará bloqueos individuales           |
+| `AUTH-RBAC-025`                        | conservará las matrices operativas como fuentes positivas; no incorporará bloqueos individuales     |
+| `AUTH-RBAC-026`                        | materializará el dataset canónico de excepciones y denegaciones                                     |
+| `AUTH-RBAC-027`                        | verificará que las excepciones y denies no produzcan acceso operativo global accidental             |
+| `AUTH-RBAC-028`                        | confirmará que los denies base no conviertan funciones administrativas en dependientes del check-in |
+| BLOQUE E                               | implementará la decisión unificada, las razones estructuradas y la precedencia                      |
+| VISO                                   | deberá administrar solicitudes, aprobaciones, vigencia, conflictos, revocación y auditoría          |
+| BLOQUE R                               | implementará estructuras, backfills, migraciones, pruebas y rollback en `vento-shell`               |
+
+---
+
+#### 35. Riesgos controlados
+
+##### Riesgo 1 — Usar deny para corregir matrices deficientes
+
+Control:
+
+```text
+corregir matriz del rol
+≠
+crear cientos de denies individuales
+```
+
+##### Riesgo 2 — Wildcards
+
+Control:
+
+```text
+permission_key exacta obligatoria
+```
+
+##### Riesgo 3 — Bloqueo total accidental
+
+Control:
+
+```text
+principal de recuperación obligatorio
+```
+
+##### Riesgo 4 — Allow específico vence deny global
+
+Control:
+
+```text
+cualquier deny aplicable vence el allow del carril
+```
+
+##### Riesgo 5 — Motivos sensibles expuestos
+
+Control:
+
+```text
+reason_code estructurado
++
+notas confidenciales separadas
+```
+
+##### Riesgo 6 — Deny vencido sigue bloqueando
+
+Control:
+
+```text
+vigencia evaluada en cada autorización
+```
+
+##### Riesgo 7 — Frontend como única protección
+
+Control:
+
+```text
+servidor + RPC + RLS + guards
+```
+
+##### Riesgo 8 — Dispositivo ignora deny
+
+Control:
+
+```text
+actor efectivo conserva sus denies en la sesión compartida
+```
+
+##### Riesgo 9 — Revocar deny concede permiso
+
+Control:
+
+```text
+se vuelve a evaluar el allow positivo y el contexto
+```
+
+##### Riesgo 10 — Datos legacy ambiguos
+
+Control:
+
+```text
+legacy_deny_unresolved
+→ revisión manual
+```
+
+---
+
+#### 36. Invariantes
+
+1. Toda autorización se deniega por defecto.
+2. Ausencia de allow no equivale a deny explícito.
+3. Toda denegación utiliza una clave exacta.
+4. No existen wildcards de deny.
+5. No existe jerarquía implícita entre permisos.
+6. Un deny no concede ninguna capacidad.
+7. Un deny estructural no puede ser anulado por permisos.
+8. Un actor-wide deny afecta todos los carriles compatibles de la clave.
+9. Un lane deny afecta únicamente su carril.
+10. Un deny aplicable vence cualquier allow de su carril.
+11. Una concesión individual no vence una denegación.
+12. Un allow específico no vence un deny global aplicable.
+13. La especificidad determina coincidencia, no precedencia.
+14. Un deny no aplica fuera de su alcance.
+15. La sede seleccionada no altera la denegación.
+16. El área seleccionada no altera la denegación.
+17. El recurso real se resuelve en el servidor.
+18. `null` no significa global.
+19. Una denegación por sede no es global.
+20. Una denegación por tipo no incluye tipos parecidos.
+21. Los roles no crean bloqueos transversales dentro de esta tarea.
+22. Un rol base no deniega automáticamente la operación.
+23. Un rol operativo no deniega automáticamente la administración.
+24. `BASE_OR_OPERATIONAL` conserva independencia entre carriles salvo actor-wide deny.
+25. `BASE_AND_OPERATIONAL` falla si cualquiera de sus carriles queda denegado.
+26. El actor afectado no puede neutralizar su propia denegación.
+27. El dispositivo restringe; nunca elimina denies.
+28. La simulación no elimina denies.
+29. El service role no es un bypass universal.
+30. Revocar un deny no crea un allow.
+31. Las denegaciones vencidas conservan trazabilidad.
+32. Debe mantenerse al menos un principal de recuperación válido.
+33. Los datos legacy ambiguos no se activan automáticamente.
+34. Toda decisión sensible debe ser explicable y auditable.
+35. Toda implementación física derivada se versionará en `vento-shell`.
+
+---
+
+#### 37. Validaciones finales
+
+| Validación                                          | Resultado |
+| --------------------------------------------------- | --------: |
+| Permisos canónicos considerados                     |       112 |
+| Modalidades consideradas                            |         4 |
+| Permisos compatibles con deny base                  |        99 |
+| Permisos compatibles con deny operativo             |        58 |
+| Permisos compatibles con bloqueo transversal exacto |       112 |
+| Wildcards permitidos                                |         0 |
+| Bypasses por nombre de rol                          |         0 |
+| Denegaciones legacy confirmadas                     |         0 |
+| Clases de deny administradas en esta tarea          |         2 |
+| Variantes de carril                                 |         2 |
+| Condiciones estructurales conservadas               |        Sí |
+| Implementación física realizada                     |        No |
+
+Aclaración:
+
+```text
+CLASES ADMINISTRADAS
+├── LANE_DENY
+│   ├── BASE_LANE_DENY
+│   └── OPERATIONAL_LANE_DENY
+└── ACTOR_WIDE_DENY
+
+STRUCTURAL_DENY
+→ forma parte de la decisión canónica
+→ no se crea como excepción individual en esta tarea
+```
+
+---
+
+#### 38. Criterios de aprobación
+
+AUTH-RBAC-022 podrá aprobarse cuando se acepte expresamente que:
+
+1. la ausencia de concesión continúa siendo `DEFAULT_DENY`, no deny explícito;
+2. las denegaciones individuales solo afectan trabajadores concretos;
+3. `LANE_DENY` puede bloquear únicamente BASE u OPERATIONAL;
+4. `ACTOR_WIDE_DENY` bloquea la clave exacta en todos sus carriles compatibles;
+5. `STRUCTURAL_DENY` no se administra como excepción individual;
+6. toda denegación utiliza una clave exacta y no admite wildcards;
+7. la modalidad determina qué lanes pueden ser denegados;
+8. los 99 permisos con carril base admiten deny base;
+9. los 58 permisos con carril operativo admiten deny operativo;
+10. las 112 claves admiten bloqueo transversal exacto;
+11. un deny aplicable prevalece sobre todos los allows de su carril;
+12. un allow más específico no vence un deny aplicable;
+13. el recurso y el territorio reales se resuelven en el servidor;
+14. toda denegación tiene alcance, vigencia, motivo, solicitante y aprobador;
+15. el trabajador no puede neutralizar su propia denegación;
+16. se conserva al menos un principal de recuperación de seguridad;
+17. el dispositivo compartido no ignora los denies del actor;
+18. revocar o expirar un deny no concede automáticamente el permiso;
+19. los posibles denies legacy ambiguos se mantienen inactivos hasta revisión;
+20. `AUTH-RBAC-026` definirá los datos concretos y el BLOQUE R implementará el modelo mediante migraciones de `vento-shell`.
+
+---
+
+#### 39. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-020 | APROBADA    |
+| AUTH-RBAC-021 | APROBADA    |
+| AUTH-RBAC-022 | APROBADA    |
+| AUTH-RBAC-023 | NO INICIADA |
+
+No se avanza a `AUTH-RBAC-023` hasta recibir aprobación expresa.
+
+
+### ✅ AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido
+
+**Estado:** APROBADA 
+**Bloque:** BLOQUE D — Matrices canónicas de roles, excepciones y dispositivos  
+**Naturaleza:** Definición documental de matriz restrictiva de plantillas e instancias de dispositivo compartido  
+**Implementación física:** No incluida  
+**Catálogo evaluado:** 112 permisos canónicos vigentes  
+**Tarea anterior vigente:** AUTH-RBAC-022 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-024 — Definir dataset canónico de matriz base
+
+Esta tarea no modifica Supabase, migraciones, tablas, RLS, RPC, aplicaciones, plantillas físicas, dispositivos, repositorios ni datasets desplegados.
+
+La implementación posterior deberá materializarse mediante el contexto unificado del BLOQUE E, la auditoría y arquitectura objetivo del BLOQUE E3 y migraciones versionadas en `vento-shell` dentro del BLOQUE R.
+
+---
+
+#### 1. Objetivo
+
+Definir el límite máximo de capacidades que puede intentar ejecutar un actor humano desde cada clase de dispositivo compartido, sin convertir la identidad técnica, la plantilla, la aplicación instalada, el PIN o el rol de navegación en una concesión empresarial.
+
+La tarea debe resolver simultáneamente:
+
+- qué plantillas canónicas de dispositivo existen;
+- qué aplicaciones puede presentar cada plantilla;
+- qué claves exactas forman el techo restrictivo de cada plantilla;
+- qué política de actor, sede, área y recurso debe satisfacer cada sesión;
+- cuáles acciones exigen reautenticación fuerte;
+- qué ocurre con plantillas, políticas y dispositivos legacy;
+- cómo se versionan las plantillas sin ampliar silenciosamente la autoridad;
+- cómo se cruzan la matriz del actor y la matriz del dispositivo.
+
+---
+
+#### 2. Decisión principal
+
+Un dispositivo compartido será un **filtro restrictivo versionado**. No será una fuente de permisos.
+
+```text
+PERMISO EFECTIVO DEL ACTOR
+∩ CLAVE EXACTA ADMITIDA POR LA PLANTILLA
+∩ APLICACIÓN ADMITIDA POR LA INSTANCIA
+∩ POLÍTICA DE ACTOR SATISFECHA
+∩ SEDE, ÁREA Y RECURSO COMPATIBLES
+∩ SESIÓN DE ACTOR VIGENTE
+∩ REAUTENTICACIÓN FUERTE CUANDO APLIQUE
+∩ AUSENCIA DE DENEGACIONES
+= CAPACIDAD EJECUTABLE DESDE EL DISPOSITIVO
+```
+
+Regla definitiva:
+
+```text
+DISPOSITIVO PERMITE
+≠
+ACTOR TIENE PERMISO
+```
+
+El dispositivo solo puede producir uno de estos efectos:
+
+- conservar una capacidad que el actor ya posee y cuyo contexto es válido;
+- exigir una condición adicional;
+- restringir el territorio o el recurso;
+- bloquear una capacidad;
+- exigir reautenticación fuerte;
+- impedir que una aplicación o acción aparezca en ese terminal.
+
+Nunca podrá ampliar el carril base u operativo del actor.
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin cambios:
+
+- ADR-AUTH-001 — Modelo canónico de identidad, contexto y autorización;
+- AUTH-MOD-001 — Actor efectivo;
+- AUTH-MOD-002 — Separación entre rol base y rol operativo;
+- AUTH-MOD-007 y AUTH-MOD-008 — Sede y área;
+- AUTH-MOD-009 y AUTH-MOD-010 — Turno y check-in;
+- AUTH-MOD-011 — Dispositivo compartido;
+- AUTH-MOD-018 y AUTH-MOD-019 — Combinación de carriles y denegaciones;
+- AUTH-CAT-001 a AUTH-CAT-019 — Catálogo de 112 permisos y sus propiedades;
+- AUTH-RBAC-001 a AUTH-RBAC-019 — Matrices base y operativas;
+- AUTH-RBAC-020 y AUTH-RBAC-021 — Concesiones individuales;
+- AUTH-RBAC-022 — Denegaciones individuales y transversales.
+
+Invariantes heredados:
+
+> El dispositivo no tiene turno; el trabajador sí.
+
+> El dispositivo puede restringir, pero nunca conceder.
+
+> La sesión de actor no es un login personal completo ni un check-in laboral.
+
+> El PIN ligero identifica al actor, pero no satisface `STRONG_REAUTH_REQUIRED`.
+
+> Ningún permiso `NOT_ALLOWED` puede formar parte de una plantilla.
+
+---
+
+#### 4. Alcance de AUTH-RBAC-023
+
+Esta tarea define:
+
+- plantillas canónicas objetivo;
+- modo de sesión permitido por plantilla;
+- aplicaciones permitidas;
+- paquetes exactos de claves permitidas;
+- políticas de actor compatibles;
+- restricciones por sede, área, vehículo o recurso;
+- comportamiento de `STANDARD` y `STRONG`;
+- herencia entre plantilla e instancia;
+- tratamiento de las dos instancias actuales;
+- corrección o retiro de las seis plantillas legacy auditadas;
+- datos mínimos que deberá exponer el contrato futuro de dispositivo.
+
+Esta tarea no define:
+
+- PIN, passkey, MFA o proveedor técnico definitivo;
+- duración numérica de sesiones;
+- estructura física definitiva de tablas;
+- implementación de heartbeat o modo offline;
+- interfaz definitiva del launcher;
+- nuevos permisos funcionales;
+- nuevas concesiones para roles;
+- creación inmediata de dispositivos;
+- aplicación física de cambios legacy;
+- política de gestión de equipos personales no compartidos.
+
+---
+
+#### 5. Resultado cuantitativo
+
+| Elemento                               | Cantidad | Decisión                                                                                    |
+| -------------------------------------- | -------: | ------------------------------------------------------------------------------------------- |
+| Permisos canónicos evaluados           |      112 | Se conserva íntegramente AUTH-CAT-014.                                                      |
+| `STANDARD_ACTOR_SESSION`               |       52 | Techo global compatible con sesión ordinaria; no todos se incluyen en todas las plantillas. |
+| `STRONG_REAUTH_REQUIRED`               |       40 | Techo global compatible únicamente con reautenticación fuerte y plantilla autorizada.       |
+| `NOT_ALLOWED`                          |       20 | Excluidos de todas las plantillas.                                                          |
+| Plantillas objetivo                    |       14 | Cada una tiene apps, política, territorio y paquetes exactos.                               |
+| Plantilla legacy retirada              |        1 | `production_center`, sustituida por tres plantillas de área.                                |
+| Dispositivos reales auditados          |        2 | Se conservan como instancias, pero requieren correcciones antes de considerarse conformes.  |
+| Permisos concedidos por un dispositivo |        0 | El dispositivo nunca concede.                                                               |
+| Wildcards permitidos                   |        0 | Toda capacidad se referencia por clave exacta.                                              |
+
+---
+
+#### 6. Capas de configuración
+
+##### 6.1 Plantilla
+
+Define el máximo reutilizable:
+
+- código y versión;
+- tipo de terminal;
+- modo de sesión;
+- aplicaciones máximas;
+- paquetes exactos de permisos;
+- política de actor;
+- compatibilidad con reautenticación fuerte;
+- restricciones territoriales requeridas;
+- comportamiento de bloqueo y limpieza.
+
+##### 6.2 Instancia
+
+Vincula la plantilla con un equipo físico:
+
+- `device_id`;
+- usuario técnico;
+- sede y área exactas;
+- vehículo o recurso vinculado, cuando corresponda;
+- versión de plantilla fijada;
+- aplicaciones deshabilitadas;
+- permisos retirados localmente;
+- estado de activación;
+- soporte real de reautenticación fuerte.
+
+La instancia puede **reducir**, nunca ampliar, la plantilla.
+
+##### 6.3 Sesión de actor
+
+Vincula temporalmente:
+
+```text
+DISPOSITIVO
++ EMPLEADO
++ MODO DE SESIÓN
++ INICIO Y EXPIRACIÓN
++ CONTEXTO RESUELTO
+```
+
+Solo puede existir un actor efectivo por dispositivo en un instante.
+
+##### 6.4 Decisión por acción
+
+La autorización se recalcula en servidor para la clave y el recurso exactos. No se deriva de una pantalla cargada, una app visible o una decisión cacheada.
+
+---
+
+#### 7. Regla de herencia plantilla → instancia
+
+La semántica canónica será:
+
+```text
+APPS EFECTIVAS
+= APPS DE LA PLANTILLA
+− APPS DESHABILITADAS EN LA INSTANCIA
+
+PERMISOS EFECTIVOS DEL DISPOSITIVO
+= PERMISOS EXACTOS DE LA PLANTILLA
+− PERMISOS RETIRADOS EN LA INSTANCIA
+```
+
+No se permite:
+
+- añadir una aplicación desde la instancia;
+- añadir una clave desde la instancia;
+- cambiar `NOT_ALLOWED` a permitido;
+- bajar `STRONG` a `STANDARD`;
+- sustituir una clave por un permiso más amplio;
+- activar una plantilla nueva sin versión y aprobación;
+- aplicar silenciosamente una nueva versión a dispositivos existentes.
+
+Cada instancia queda fijada a una versión concreta. Un cambio de versión requiere despliegue controlado y rollback.
+
+---
+
+#### 8. Paquetes exactos de capacidades
+
+Los siguientes paquetes son agrupaciones documentales reutilizables. **No son permisos, roles, wildcards ni fuentes de autorización.** Cada paquete enumera claves exactas y queda versionado.
+
+##### DEVICE-SHELL-CORE-v1
+
+**Total:** 1 claves exactas — `1` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto | Compatibilidad compartida |
+| -------------- | ------------------------- |
+| `shell.access` | `STANDARD`                |
+
+##### DEVICE-SATELLITE-REQUESTER-v1
+
+**Total:** 11 claves exactas — `10` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                       | Compatibilidad compartida |
+| ------------------------------------ | ------------------------- |
+| `nexo.access`                        | `STANDARD`                |
+| `nexo.catalog.products.view`         | `STANDARD`                |
+| `nexo.catalog.presentations.view`    | `STANDARD`                |
+| `nexo.catalog.request_policies.view` | `STANDARD`                |
+| `nexo.catalog.categories.view`       | `STANDARD`                |
+| `nexo.catalog.units.view`            | `STANDARD`                |
+| `nexo.inventory.remissions.view`     | `STANDARD`                |
+| `nexo.inventory.remissions.update`   | `STRONG`                  |
+| `nexo.inventory.remissions.request`  | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`  | `STANDARD`                |
+| `pulso.access`                       | `STANDARD`                |
+
+##### DEVICE-INTEGRATED-SATELLITE-v1
+
+**Total:** 12 claves exactas — `11` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                       | Compatibilidad compartida |
+| ------------------------------------ | ------------------------- |
+| `nexo.access`                        | `STANDARD`                |
+| `nexo.catalog.products.view`         | `STANDARD`                |
+| `nexo.catalog.presentations.view`    | `STANDARD`                |
+| `nexo.catalog.request_policies.view` | `STANDARD`                |
+| `nexo.catalog.categories.view`       | `STANDARD`                |
+| `nexo.catalog.units.view`            | `STANDARD`                |
+| `nexo.inventory.remissions.view`     | `STANDARD`                |
+| `nexo.inventory.remissions.update`   | `STRONG`                  |
+| `nexo.inventory.remissions.request`  | `STANDARD`                |
+| `nexo.inventory.remissions.receive`  | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`  | `STANDARD`                |
+| `pulso.access`                       | `STANDARD`                |
+
+##### DEVICE-PRODUCTION-CORE-v1
+
+**Total:** 16 claves exactas — `16` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                           | Compatibilidad compartida |
+| ---------------------------------------- | ------------------------- |
+| `fogo.access`                            | `STANDARD`                |
+| `fogo.production.batches.view`           | `STANDARD`                |
+| `fogo.production.batches.create`         | `STANDARD`                |
+| `fogo.production.orders.view`            | `STANDARD`                |
+| `fogo.production.recipe_book.view`       | `STANDARD`                |
+| `nexo.access`                            | `STANDARD`                |
+| `nexo.catalog.products.view`             | `STANDARD`                |
+| `nexo.catalog.presentations.view`        | `STANDARD`                |
+| `nexo.catalog.categories.view`           | `STANDARD`                |
+| `nexo.catalog.units.view`                | `STANDARD`                |
+| `nexo.inventory.locations.view`          | `STANDARD`                |
+| `nexo.inventory.lpns.view`               | `STANDARD`                |
+| `nexo.inventory.stock.view`              | `STANDARD`                |
+| `nexo.inventory.production_batches.view` | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`        | `STANDARD`                |
+| `nexo.inventory.withdrawals.register`    | `STANDARD`                |
+
+##### DEVICE-WAREHOUSE-CORE-v1
+
+**Total:** 35 claves exactas — `35` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                               | Compatibilidad compartida |
+| -------------------------------------------- | ------------------------- |
+| `nexo.access`                                | `STANDARD`                |
+| `nexo.catalog.products.view`                 | `STANDARD`                |
+| `nexo.catalog.presentations.view`            | `STANDARD`                |
+| `nexo.catalog.request_policies.view`         | `STANDARD`                |
+| `nexo.catalog.categories.view`               | `STANDARD`                |
+| `nexo.catalog.units.view`                    | `STANDARD`                |
+| `nexo.inventory.adjustments.view`            | `STANDARD`                |
+| `nexo.inventory.entries.view`                | `STANDARD`                |
+| `nexo.inventory.entries.register`            | `STANDARD`                |
+| `nexo.inventory.locations.view`              | `STANDARD`                |
+| `nexo.inventory.location_assignments.assign` | `STANDARD`                |
+| `nexo.inventory.lpns.view`                   | `STANDARD`                |
+| `nexo.inventory.movements.view`              | `STANDARD`                |
+| `nexo.inventory.stock.view`                  | `STANDARD`                |
+| `nexo.inventory.production_batches.view`     | `STANDARD`                |
+| `nexo.inventory.transfers.view`              | `STANDARD`                |
+| `nexo.inventory.transfers.create`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.register`        | `STANDARD`                |
+| `nexo.inventory.zones.view`                  | `STANDARD`                |
+| `nexo.inventory.storage_positions.view`      | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view`   | `STANDARD`                |
+| `nexo.inventory.stock_validations.perform`   | `STANDARD`                |
+| `nexo.inventory.stock_counts.view`           | `STANDARD`                |
+| `nexo.inventory.stock_counts.perform`        | `STANDARD`                |
+| `nexo.inventory.initial_counts.view`         | `STANDARD`                |
+| `nexo.inventory.remissions.view`             | `STANDARD`                |
+| `nexo.inventory.remissions.prepare`          | `STANDARD`                |
+| `nexo.inventory.remissions.receive`          | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`          | `STANDARD`                |
+| `nexo.printing.jobs.view`                    | `STANDARD`                |
+| `origo.access`                               | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`     | `STANDARD`                |
+| `origo.procurement.receipts.view`            | `STANDARD`                |
+| `origo.procurement.suppliers.view`           | `STANDARD`                |
+
+##### DEVICE-LOGISTICS-CORE-v1
+
+**Total:** 14 claves exactas — `14` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                           | Compatibilidad compartida |
+| ---------------------------------------- | ------------------------- |
+| `nexo.access`                            | `STANDARD`                |
+| `nexo.catalog.products.view`             | `STANDARD`                |
+| `nexo.catalog.presentations.view`        | `STANDARD`                |
+| `nexo.catalog.units.view`                | `STANDARD`                |
+| `nexo.inventory.lpns.view`               | `STANDARD`                |
+| `nexo.inventory.movements.view`          | `STANDARD`                |
+| `nexo.inventory.remissions.view`         | `STANDARD`                |
+| `nexo.inventory.remissions.dispatch`     | `STANDARD`                |
+| `nexo.logistics.operations_board.view`   | `STANDARD`                |
+| `nexo.logistics.operations.view`         | `STANDARD`                |
+| `nexo.logistics.driver_operations.view`  | `STANDARD`                |
+| `nexo.logistics.fulfillment.view`        | `STANDARD`                |
+| `nexo.logistics.fulfillment_routes.view` | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`      | `STANDARD`                |
+
+##### DEVICE-PROCUREMENT-RECEPTION-v1
+
+**Total:** 17 claves exactas — `16` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                               | Compatibilidad compartida |
+| -------------------------------------------- | ------------------------- |
+| `nexo.access`                                | `STANDARD`                |
+| `nexo.catalog.products.view`                 | `STANDARD`                |
+| `nexo.catalog.presentations.view`            | `STANDARD`                |
+| `nexo.catalog.units.view`                    | `STANDARD`                |
+| `nexo.inventory.entries.view`                | `STANDARD`                |
+| `nexo.inventory.entries.register`            | `STANDARD`                |
+| `nexo.inventory.locations.view`              | `STANDARD`                |
+| `nexo.inventory.location_assignments.assign` | `STANDARD`                |
+| `nexo.inventory.lpns.view`                   | `STANDARD`                |
+| `nexo.inventory.movements.view`              | `STANDARD`                |
+| `nexo.inventory.stock.view`                  | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view`   | `STANDARD`                |
+| `origo.access`                               | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`     | `STANDARD`                |
+| `origo.procurement.receipts.view`            | `STANDARD`                |
+| `origo.procurement.suppliers.view`           | `STANDARD`                |
+| `origo.catalog.product_reviews.view`         | `STRONG`                  |
+
+##### DEVICE-OPERATIONS-MANAGEMENT-v1
+
+**Total:** 48 claves exactas — `41` STANDARD, `7` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                             | Compatibilidad compartida |
+| ------------------------------------------ | ------------------------- |
+| `fogo.access`                              | `STANDARD`                |
+| `fogo.production.batches.view`             | `STANDARD`                |
+| `fogo.production.orders.view`              | `STANDARD`                |
+| `fogo.production.recipe_book.view`         | `STANDARD`                |
+| `nexo.access`                              | `STANDARD`                |
+| `nexo.catalog.products.view`               | `STANDARD`                |
+| `nexo.catalog.presentations.view`          | `STANDARD`                |
+| `nexo.catalog.request_policies.view`       | `STANDARD`                |
+| `nexo.catalog.categories.view`             | `STANDARD`                |
+| `nexo.catalog.units.view`                  | `STANDARD`                |
+| `nexo.assets.items.view`                   | `STANDARD`                |
+| `nexo.assets.groups.view`                  | `STANDARD`                |
+| `nexo.assets.counts.view`                  | `STANDARD`                |
+| `nexo.inventory.adjustments.view`          | `STANDARD`                |
+| `nexo.inventory.adjustments.register`      | `STRONG`                  |
+| `nexo.inventory.entries.view`              | `STANDARD`                |
+| `nexo.inventory.entries.override`          | `STRONG`                  |
+| `nexo.inventory.locations.view`            | `STANDARD`                |
+| `nexo.inventory.lpns.view`                 | `STANDARD`                |
+| `nexo.inventory.movements.view`            | `STANDARD`                |
+| `nexo.inventory.stock.view`                | `STANDARD`                |
+| `nexo.inventory.production_batches.view`   | `STANDARD`                |
+| `nexo.inventory.transfers.view`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`          | `STANDARD`                |
+| `nexo.inventory.zones.view`                | `STANDARD`                |
+| `nexo.inventory.storage_positions.view`    | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view` | `STANDARD`                |
+| `nexo.inventory.stock_counts.view`         | `STANDARD`                |
+| `nexo.inventory.initial_counts.view`       | `STANDARD`                |
+| `nexo.inventory.remissions.view`           | `STANDARD`                |
+| `nexo.inventory.remissions.update`         | `STRONG`                  |
+| `nexo.inventory.remissions.request`        | `STANDARD`                |
+| `nexo.inventory.remissions.cancel`         | `STRONG`                  |
+| `nexo.logistics.operations_board.view`     | `STANDARD`                |
+| `nexo.logistics.operations.view`           | `STANDARD`                |
+| `nexo.logistics.driver_operations.view`    | `STANDARD`                |
+| `nexo.logistics.fulfillment.view`          | `STANDARD`                |
+| `nexo.logistics.fulfillment_routes.view`   | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`        | `STANDARD`                |
+| `nexo.finance.internal_variances.approve`  | `STRONG`                  |
+| `nexo.finance.internal_variances.resolve`  | `STRONG`                  |
+| `nexo.printing.jobs.view`                  | `STANDARD`                |
+| `origo.access`                             | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`   | `STANDARD`                |
+| `origo.procurement.receipts.view`          | `STANDARD`                |
+| `origo.procurement.suppliers.view`         | `STANDARD`                |
+| `pulso.access`                             | `STANDARD`                |
+| `pulso.delivery.deliveries.override`       | `STRONG`                  |
+
+##### DEVICE-ADMIN-MANAGEMENT-v1
+
+**Total:** 23 claves exactas — `0` STANDARD, `23` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                                | Compatibilidad compartida |
+| --------------------------------------------- | ------------------------- |
+| `numera.access`                               | `STRONG`                  |
+| `numera.finance.cost_centers.view`            | `STRONG`                  |
+| `numera.finance.expenses.view`                | `STRONG`                  |
+| `numera.analytics.break_even.view`            | `STRONG`                  |
+| `numera.analytics.profitability.view`         | `STRONG`                  |
+| `numera.analytics.financial_reports.view`     | `STRONG`                  |
+| `viso.access`                                 | `STRONG`                  |
+| `viso.platform.app_updates.view`              | `STRONG`                  |
+| `viso.organization.businesses.view`           | `STRONG`                  |
+| `viso.workforce.employees.view`               | `STRONG`                  |
+| `viso.workforce.staff_calendar.view`          | `STRONG`                  |
+| `viso.workforce.schedules.view`               | `STRONG`                  |
+| `viso.workforce.vacancies.view`               | `STRONG`                  |
+| `viso.authorization.context_simulations.view` | `STRONG`                  |
+| `viso.authorization.audit_logs.view`          | `STRONG`                  |
+| `viso.catalog.commercial_categories.view`     | `STRONG`                  |
+| `viso.content.content_blocks.view`            | `STRONG`                  |
+| `viso.content.menu.view`                      | `STRONG`                  |
+| `viso.content.website_content.view`           | `STRONG`                  |
+| `viso.finance.accounting.view`                | `STRONG`                  |
+| `viso.delivery.rates.view`                    | `STRONG`                  |
+| `viso.loyalty.products.view`                  | `STRONG`                  |
+| `viso.loyalty.customers.view`                 | `STRONG`                  |
+
+---
+
+#### 9. Matriz de plantillas objetivo
+
+| Plantilla                        | Modo             | Aplicaciones máximas            | Paquetes máximos                                       | Elegibilidad de actor                                                    | Restricción territorial                                       | Decisión                                    |
+| -------------------------------- | ---------------- | ------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------- |
+| `pos_satellite`                  | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1   | `cajero_satelite`                                                        | Sede exacta + área exacta de caja                             | RETENER Y VERSIONAR                         |
+| `bar_satellite`                  | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1   | `barista_satelite`                                                       | Sede exacta + área exacta de barra                            | CORREGIR LEGACY                             |
+| `kitchen_satellite`              | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1   | `cocinero_satelite`                                                      | Sede exacta + área exacta de cocina                           | NUEVA                                       |
+| `service_satellite`              | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1   | `servicio_salon`                                                         | Sede exacta + área exacta de salón                            | NUEVA                                       |
+| `counter_satellite`              | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1   | `mostrador_satelite`                                                     | Sede exacta + área exacta de mostrador                        | NUEVA                                       |
+| `integrated_satellite`           | OPERACIONAL      | SHELL, NEXO, PULSO              | DEVICE-SHELL-CORE-v1 + DEVICE-INTEGRATED-SATELLITE-v1  | `operador_integral_satelite`                                             | Sede exacta; área exacta cuando exista en la asignación       | NUEVA                                       |
+| `production_kitchen`             | OPERACIONAL      | SHELL, FOGO, NEXO               | DEVICE-SHELL-CORE-v1 + DEVICE-PRODUCTION-CORE-v1       | `produccion_cocina`                                                      | Centro de Producción + Cocina Caliente exacta                 | NUEVA; SUSTITUYE PARTE DE production_center |
+| `production_bakery`              | OPERACIONAL      | SHELL, FOGO, NEXO               | DEVICE-SHELL-CORE-v1 + DEVICE-PRODUCTION-CORE-v1       | `produccion_panaderia`                                                   | Centro de Producción + Galletería y Panadería exacta          | NUEVA; SUSTITUYE PARTE DE production_center |
+| `production_pastry`              | OPERACIONAL      | SHELL, FOGO, NEXO               | DEVICE-SHELL-CORE-v1 + DEVICE-PRODUCTION-CORE-v1       | `produccion_reposteria`                                                  | Centro de Producción + Repostería exacta                      | NUEVA; SUSTITUYE PARTE DE production_center |
+| `warehouse_kiosk`                | OPERACIONAL      | SHELL, NEXO, ORIGO              | DEVICE-SHELL-CORE-v1 + DEVICE-WAREHOUSE-CORE-v1        | `bodeguero`                                                              | Sede exacta + área exacta de bodega                           | CORREGIR POLÍTICA                           |
+| `logistics_vehicle_terminal`     | OPERACIONAL      | SHELL, NEXO                     | DEVICE-SHELL-CORE-v1 + DEVICE-LOGISTICS-CORE-v1        | `conductor_logistica`                                                    | Sede operativa + vehículo/ruta asignados; área no obligatoria | NUEVA                                       |
+| `procurement_reception`          | MIXTA EXCLUYENTE | SHELL, NEXO, ORIGO              | DEVICE-SHELL-CORE-v1 + DEVICE-PROCUREMENT-RECEPTION-v1 | Operativo: `bodeguero`; administrativo: actor con permiso base explícito | Sede receptora + área exacta de recepción/bodega              | REDISEÑAR                                   |
+| `operations_management_terminal` | OPERACIONAL      | SHELL, FOGO, NEXO, ORIGO, PULSO | DEVICE-SHELL-CORE-v1 + DEVICE-OPERATIONS-MANAGEMENT-v1 | `gerencia_operativa`                                                     | Sede operativa activa; área exacta cuando el permiso la exija | NUEVA                                       |
+| `management_terminal`            | ADMINISTRATIVA   | SHELL, NUMERA, VISO             | DEVICE-SHELL-CORE-v1 + DEVICE-ADMIN-MANAGEMENT-v1      | Sin whitelist por nombre de rol; actor con permiso base efectivo         | Alcance real del actor; el sitio físico no amplía territorio  | REDISEÑAR                                   |
+
+Las aplicaciones máximas solo controlan disponibilidad de superficie. Cada acción continúa exigiendo permiso exacto del actor.
+
+---
+
+#### 10. Reglas por familia de plantilla
+
+##### 10.1 Terminales satélite especializados
+
+Aplican a `pos_satellite`, `bar_satellite`, `kitchen_satellite`, `service_satellite` y `counter_satellite`.
+
+- Exigen sesión `OPERATIONAL`.
+- Exigen rol operativo exacto compatible con la plantilla.
+- Exigen coincidencia de sede y área exactas.
+- Admiten el núcleo de abastecimiento del área y `pulso.access`.
+- `nexo.inventory.remissions.update` exige reautenticación fuerte; el PIN ligero no basta.
+- No admiten inventario general, producción central, recepción, preparación, despacho, cancelación ni administración.
+- Las futuras acciones atómicas de PULSO deberán añadirse únicamente mediante una versión nueva del paquete y revisión de las matrices afectadas.
+
+##### 10.2 Terminal integrado de formato pequeño
+
+`integrated_satellite` corresponde a sedes donde una sola función operativa cubre varias tareas ordinarias.
+
+- Exige `operador_integral_satelite`.
+- Puede incluir recepción ordinaria de remisiones de la sede integrada.
+- No se convierte en suma automática de caja, barra, cocina, salón y mostrador.
+- El área se exige cuando la configuración de la sede o el permiso la requiera.
+- Una nueva capacidad comercial de PULSO deberá aparecer como permiso atómico antes de incorporarse.
+
+##### 10.3 Terminales de producción
+
+La plantilla legacy `production_center` queda retirada porque no distingue Cocina Caliente, Galletería y Panadería y Repostería.
+
+Se sustituye por:
+
+- `production_kitchen`;
+- `production_bakery`;
+- `production_pastry`.
+
+Cada instancia queda ligada a un área exacta y a un único rol operativo compatible. No puede consultar recetas, órdenes, lotes o existencias de otra área por compartir la misma sede.
+
+##### 10.4 Kiosco de bodega
+
+`warehouse_kiosk` admite las 35 capacidades operativas aprobadas para `bodeguero`, más `shell.access` cuando el actor lo posea por su carril base.
+
+Reglas:
+
+- política exacta `operational_role_in_area`;
+- rol operativo permitido: `bodeguero`;
+- sede y área de bodega exactas;
+- `same_site_active_worker` no es suficiente y deberá retirarse;
+- no admite ajustes, overrides, aprobaciones o cancelaciones sensibles;
+- el acceso a ORIGO puede habilitarse en una instancia solo si la plantilla y la aplicación ya están desplegadas;
+- consultar una recepción no permite registrarla formalmente mientras no exista el permiso atómico correspondiente.
+
+##### 10.5 Terminal logístico de vehículo
+
+`logistics_vehicle_terminal` admite la operación asignada del conductor: consulta de carga, ruta, LPN y movimientos asociados, aceptación de custodia e inicio de tránsito.
+
+No admite:
+
+- preparación de carga;
+- modificación libre de cantidades;
+- recepción por el destino;
+- cancelación;
+- stock general;
+- movimientos internos de bodega;
+- operaciones de otros conductores.
+
+La instancia deberá vincularse a vehículo o recurso logístico cuando el contrato del BLOQUE E lo formalice.
+
+##### 10.6 Terminal de recepción de compras
+
+`procurement_reception` admite dos modos mutuamente excluyentes:
+
+| Modo             | Actor elegible                     | Requisitos                                                                                                   |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `OPERATIONAL`    | `bodeguero` en el área receptora   | Turno, check-in cuando aplique, sede, área, permiso operativo y recurso.                                     |
+| `ADMINISTRATIVE` | Trabajador con permiso base exacto | No requiere turno para `BASE_ONLY`; conserva alcance base y exige reautenticación fuerte cuando corresponda. |
+
+Cambiar de modo cierra la sesión anterior, limpia la pantalla y elimina toda reautenticación vigente.
+
+La plantilla permite consultar órdenes, recepciones, proveedor y revisión administrativa de producto. No crea por sí sola el permiso todavía inexistente para registrar formalmente una recepción de compra.
+
+##### 10.7 Terminal de gerencia operativa
+
+`operations_management_terminal` permite el paquete exacto aprobado para `gerencia_operativa`.
+
+- Exige turno y rol operativo `gerencia_operativa`.
+- Conserva el alcance territorial del recurso.
+- Las siete capacidades STRONG del paquete requieren reautenticación fuerte.
+- Coordinar no equivale a ejecutar físicamente bodega, producción, conducción o recepción.
+- La plantilla no elimina la doble condición de los permisos `BASE_AND_OPERATIONAL`.
+
+##### 10.8 Terminal administrativa
+
+`management_terminal` admite `SHELL`, `NUMERA` y `VISO`.
+
+- No usa `gerente_general`, `propietario` u otro nombre de rol como bypass.
+- La sesión es `ADMINISTRATIVE`.
+- `shell.access` puede utilizar sesión ordinaria de actor.
+- Las 23 capacidades de VISO y NUMERA incluidas exigen reautenticación fuerte.
+- El alcance continúa siendo el alcance real del actor.
+- La pantalla se limpia al bloquear, cambiar de actor o expirar la reautenticación.
+- ANIMA, PASS y AURA permanecen excluidas.
+
+---
+
+#### 11. Política canónica de actor
+
+Las políticas legacy pueden participar únicamente como filtros preliminares. No autorizan acciones.
+
+| Política legacy           | Decisión                                                                                              |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `same_site_active_worker` | **INSUFICIENTE**. Es demasiado amplia para terminales especializados.                                 |
+| `same_area_active_worker` | **INSUFICIENTE POR SÍ SOLA**. Puede filtrar territorio, pero no oficio ni permiso.                    |
+| `role_in_site`            | Requiere declarar catálogo de rol, códigos exactos y permiso efectivo; el nombre del rol no autoriza. |
+| `role_in_area`            | Requiere rol operativo exacto, sede, área, turno y permiso; el campo `navigation_role` no participa.  |
+
+Contrato objetivo de elegibilidad:
+
+```text
+session_mode
++ employee_active
++ role_catalog explícito cuando aplique
++ allowed_role_codes exactos cuando aplique
++ site_match
++ area_match cuando aplique
++ app_allowed
++ actor_session vigente
+= ACTOR ELEGIBLE PARA INTENTAR
+```
+
+Ser elegible para intentar una acción no equivale a tener el permiso.
+
+---
+
+#### 12. `navigation_role`
+
+`navigation_role` queda limitado a una pista de presentación o selección de interfaz.
+
+No podrá:
+
+- resolver el rol base;
+- resolver el rol operativo;
+- conceder aplicaciones;
+- conceder permisos;
+- sustituir el turno;
+- sustituir la política de actor;
+- producir bypass;
+- traducir automáticamente roles legacy a roles canónicos.
+
+Cuando exista, deberá declarar explícitamente si referencia un rol base u operativo. Su ausencia no bloquea una autorización válida y su presencia no la concede.
+
+---
+
+#### 13. Reautenticación fuerte en dispositivos
+
+Una plantilla que contenga claves `STRONG` deberá declarar soporte real de reautenticación fuerte.
+
+Reglas:
+
+- el PIN ligero no satisface STRONG;
+- la reautenticación pertenece al actor, no al equipo;
+- se vincula al permiso, acción y recurso confirmados;
+- expira por tiempo, cambio de actor, bloqueo o cierre;
+- no se transfiere a otra aplicación;
+- no se reutiliza después de cambiar el recurso de alto impacto;
+- no sustituye una aprobación por segunda persona cuando el proceso la exija;
+- si el equipo no soporta reautenticación fuerte, las claves STRONG se deniegan aunque aparezcan en el paquete.
+
+---
+
+#### 14. Prohibiciones universales
+
+Las siguientes 20 claves `NOT_ALLOWED` quedan fuera de todas las plantillas:
+
+- `anima.access`
+- `anima.workforce.employee_documents.view`
+- `anima.workforce.employee_documents.upload`
+- `anima.workforce.employee_documents.delete`
+- `anima.workforce.employee_photos.upload`
+- `anima.workforce.team_members.view`
+- `anima.workforce.staff_invitations.create`
+- `anima.attendance.shifts.create`
+- `anima.attendance.shifts.update`
+- `anima.attendance.shifts.cancel`
+- `aura.access`
+- `fogo.production.recipes.view`
+- `nexo.catalog.products.create`
+- `nexo.assets.items.create`
+- `nexo.inventory.location_catalog.update`
+- `nexo.finance.internal_invoices.generate`
+- `nexo.finance.internal_invoices.issue`
+- `nexo.finance.internal_invoices.cancel`
+- `nexo.printing.templates.update`
+- `pass.access`
+
+Además queda prohibido:
+
+- ejecutar acciones empresariales sin actor;
+- mantener dos actores efectivos simultáneos;
+- reutilizar la sesión del actor anterior;
+- mostrar datos protegidos antes de identificar actor;
+- ejecutar mutaciones sin conectividad verificable;
+- utilizar aplicaciones instaladas como permisos;
+- usar la plantilla como rol;
+- ampliar una instancia por configuración local;
+- conceder capacidades nuevas automáticamente al actualizar el catálogo;
+- almacenar credenciales personales del actor en el dispositivo.
+
+---
+
+#### 15. Decisión sobre dispositivos actuales
+
+##### 15.1 `CAJA_VENTO_CAFE_01`
+
+| Elemento         | Decisión objetivo                                                   |
+| ---------------- | ------------------------------------------------------------------- |
+| Instancia        | Conservar.                                                          |
+| Plantilla        | `pos_satellite` versionada.                                         |
+| Sede / área      | `VENTO_CAFE` / Caja exacta.                                         |
+| Apps máximas     | SHELL, NEXO, PULSO.                                                 |
+| Actor operativo  | `cajero_satelite`.                                                  |
+| Política         | Rol operativo exacto en sede y área; no solo navegación.            |
+| Capacidad máxima | DEVICE-SHELL-CORE-v1 + DEVICE-SATELLITE-REQUESTER-v1.               |
+| STRONG           | `nexo.inventory.remissions.update` requiere reautenticación fuerte. |
+| Acción sin actor | Prohibida.                                                          |
+
+La existencia de la instancia no demuestra que la sesión de actor ya esté implementada. Deberá validarse en BLOQUE R.
+
+##### 15.2 `KIOSCO_BODEGA_CP`
+
+| Elemento          | Decisión objetivo                                                                       |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| Instancia         | Conservar.                                                                              |
+| Plantilla         | `warehouse_kiosk` versionada.                                                           |
+| Sede / área       | `CENTRO_PROD` / Bodega exacta.                                                          |
+| Apps máximas      | SHELL, NEXO, ORIGO; la instancia puede mantener una selección menor durante transición. |
+| Actor operativo   | `bodeguero`.                                                                            |
+| Política actual   | `same_site_active_worker` — **RECHAZADA COMO POLÍTICA FINAL**.                          |
+| Política objetivo | Rol operativo `bodeguero` + turno + contexto de sede/área + permiso exacto.             |
+| Capacidad máxima  | DEVICE-SHELL-CORE-v1 + DEVICE-WAREHOUSE-CORE-v1.                                        |
+| Acción sin actor  | Prohibida.                                                                              |
+
+No se considera conforme mientras no exista sesión de actor persistida, revalidación por acción y auditoría del empleado real.
+
+---
+
+#### 16. Tratamiento de plantillas legacy
+
+| Plantilla legacy        | Decisión                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `pos_satellite`         | Conservar, versionar y limitar a `cajero_satelite`. `navigation_role` queda decorativo.                                       |
+| `bar_satellite`         | Conservar, pero sustituir la referencia legacy `barista` por elegibilidad explícita de `barista_satelite`.                    |
+| `warehouse_kiosk`       | Conservar, reemplazando `same_site_active_worker` por rol operativo y área exactos.                                           |
+| `procurement_reception` | Rediseñar como terminal mixta excluyente; `auxiliar_administrativa` no autoriza por nombre ni exige turno para permisos base. |
+| `production_center`     | Retirar y sustituir por tres plantillas de área. No traducir `cocinero` automáticamente.                                      |
+| `management_terminal`   | Conservar y rediseñar; eliminar políticas duplicadas y cualquier bypass por `gerente_general`.                                |
+
+Las plantillas nuevas permanecen sin instancia hasta que el flujo funcional correspondiente esté listo y pase por implementación, pruebas y despliegue controlado.
+
+---
+
+#### 17. Cambio de actor y concurrencia
+
+1. La operación protegida captura `device_id`, `actor_session_id`, `employee_id`, permiso y recurso.
+2. Antes de confirmar, el servidor verifica que siguen siendo los mismos.
+3. Cambiar actor cierra la sesión anterior.
+4. Se eliminan caché visual, formularios, selección de recurso y reautenticación del actor anterior.
+5. Una operación iniciada por un actor no puede confirmarse por otro dentro de la misma transacción.
+6. Si el proceso exige dos personas, se modelan dos intervenciones auditadas, no una transferencia de sesión.
+7. Cerrar la sesión del dispositivo no genera check-out laboral.
+8. El check-out laboral revoca las capacidades `T+C` del actor aunque la sesión técnica continúe abierta.
+
+---
+
+#### 18. Conectividad
+
+Sin conectividad verificable:
+
+- no se ejecutan mutaciones;
+- no se ejecutan claves STRONG;
+- no se reutiliza una autorización previa;
+- los datos cacheados se muestran únicamente como no vigentes cuando su contrato lo permita;
+- no se atribuye una acción pendiente a un actor distinto al que la inició;
+- no se crea una cola offline empresarial implícita.
+
+Cualquier modo offline futuro será un contrato separado, versionado y aprobado por capacidad.
+
+---
+
+#### 19. Razones de bloqueo
+
+| Razón conceptual                         | Significado                                                             |
+| ---------------------------------------- | ----------------------------------------------------------------------- |
+| `shared_device_inactive`                 | Instancia inactiva, revocada o no reconocida.                           |
+| `shared_device_template_version_invalid` | La instancia no está fijada a una versión válida.                       |
+| `shared_device_app_not_allowed`          | La aplicación no pertenece a la intersección plantilla/instancia.       |
+| `shared_device_permission_not_listed`    | La clave exacta no pertenece al paquete efectivo del dispositivo.       |
+| `shared_device_permission_not_allowed`   | La clave está clasificada `NOT_ALLOWED`.                                |
+| `shared_device_actor_required`           | No existe actor humano vigente.                                         |
+| `shared_device_actor_session_expired`    | La sesión ligera expiró o fue cerrada.                                  |
+| `shared_device_session_mode_mismatch`    | El modo administrativo u operativo no corresponde a la acción.          |
+| `shared_device_actor_policy_mismatch`    | El actor no satisface la política de elegibilidad.                      |
+| `shared_device_site_mismatch`            | La sede del actor, dispositivo o recurso no coincide.                   |
+| `shared_device_area_mismatch`            | El área exigida no coincide.                                            |
+| `shared_device_resource_mismatch`        | El vehículo, ubicación, remisión, lote u otro recurso no es compatible. |
+| `strong_reauth_required`                 | Falta reautenticación fuerte válida.                                    |
+| `strong_reauth_not_supported`            | La instancia no soporta el mecanismo exigido.                           |
+| `shared_device_actor_changed`            | El actor cambió durante la operación.                                   |
+| `shared_device_context_stale`            | Cambió turno, check-in, permiso, deny o recurso desde la evaluación.    |
+| `shared_device_offline_mutation_denied`  | No existe conectividad verificable para una mutación.                   |
+
+La nomenclatura técnica definitiva se formalizará en BLOQUE E.
+
+---
+
+#### 20. Auditoría mínima
+
+Toda decisión protegida desde dispositivo compartido deberá poder registrar:
+
+- `device_id`;
+- código y versión de plantilla;
+- versión de configuración de instancia;
+- usuario técnico autenticado;
+- `actor_session_id`;
+- `employee_id`;
+- modo de sesión;
+- aplicación y permiso exactos;
+- recurso, sede y área resueltos;
+- clasificación `STANDARD`, `STRONG` o `NOT_ALLOWED`;
+- evidencia y vigencia de reautenticación fuerte;
+- carriles base y operativo evaluados;
+- denegaciones aplicables;
+- decisión y razones;
+- identificador de correlación de la operación;
+- fecha y hora del servidor.
+
+La identidad técnica nunca aparece como actor empresarial de la transacción.
+
+---
+
+#### 21. Versionamiento y nuevos permisos
+
+La matriz queda vinculada a la versión vigente del catálogo de 112 permisos.
+
+Cuando se cree, divida, reemplace o retire una clave:
+
+```text
+NUEVA VERSIÓN DEL CATÁLOGO
+→ permiso nuevo DENEGADO en todas las plantillas
+→ análisis de compatibilidad compartida
+→ revisión de paquetes afectados
+→ revisión de plantillas afectadas
+→ nueva versión de plantilla
+→ despliegue explícito a instancias
+```
+
+No será necesario remodelar el sistema. Solo se revisan las plantillas y matrices relacionadas con las claves modificadas.
+
+AUTH-RBAC-024 a AUTH-RBAC-026 no deberán congelar datasets incompatibles con una versión de catálogo posterior. Cada dataset deberá declarar `catalog_version` y los paquetes de dispositivo deberán hacer lo mismo.
+
+---
+
+#### 22. Validaciones de integridad
+
+- ✅ Los 112 permisos conservan la clasificación aprobada en AUTH-CAT-014.
+- ✅ Las 20 claves `NOT_ALLOWED` están excluidas de todos los paquetes.
+- ✅ Ninguna plantilla concede permisos.
+- ✅ Cada paquete contiene claves exactas y sin duplicados.
+- ✅ No existen wildcards por app, módulo, prefijo o rol.
+- ✅ Las instancias solo pueden reducir plantillas.
+- ✅ `navigation_role` no participa en autorización.
+- ✅ Los terminales operativos exigen actor, turno y contexto cuando el permiso lo requiere.
+- ✅ Los permisos `T+C` continúan exigiendo check-in.
+- ✅ Las claves STRONG no se degradan a PIN ligero.
+- ✅ ANIMA, PASS y AURA no se convierten en aplicaciones laborales compartidas.
+- ✅ La plantilla genérica de producción queda reemplazada por áreas exactas.
+- ✅ El kiosco de bodega deja de admitir cualquier trabajador activo de la sede.
+- ✅ El terminal administrativo no obtiene bypass por nombre de rol.
+- ✅ Los dos dispositivos actuales quedan revisados, pero no declarados implementados.
+- ✅ Los permisos nuevos quedan denegados hasta una nueva versión.
+
+---
+
+#### 23. Impacto sobre tareas posteriores
+
+| Tarea o bloque                         | Impacto                                                                                                                  |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Revisión contractual previa a datasets | Deberá consolidar las brechas y cambios del catálogo antes de congelar versiones finales.                                |
+| AUTH-RBAC-024                          | El dataset base deberá declarar versión de catálogo; no obtiene permisos por dispositivo.                                |
+| AUTH-RBAC-025                          | El dataset operativo deberá declarar versión de catálogo y conservar turno, check-in, sede y área.                       |
+| AUTH-RBAC-026                          | Excepciones y denegaciones continuarán venciendo las capacidades de dispositivo.                                         |
+| AUTH-RBAC-027                          | Verificará que plantillas, instancias y recursos no produzcan acceso operativo global accidental.                        |
+| AUTH-RBAC-028                          | Verificará que terminales administrativos no conviertan permisos base en dependientes de check-in.                       |
+| BLOQUE E                               | Diseñará `AccessContext` y `AuthorizationDecision` con identidad técnica, actor, sesión, plantilla, instancia y razones. |
+| BLOQUE E3                              | Auditará la infraestructura real y definirá el modelo físico objetivo.                                                   |
+| BLOQUE R                               | Implementará tablas, backfills, limpieza legacy, migraciones, pruebas y rollback en `vento-shell`.                       |
+
+---
+
+#### 24. Criterios de aprobación
+
+AUTH-RBAC-023 podrá aprobarse cuando se acepte expresamente que:
+
+1. El dispositivo es un filtro restrictivo y nunca una fuente de permisos.
+2. La autorización final es la intersección entre actor, plantilla, instancia, contexto, recurso y denegaciones.
+3. Se definen 14 plantillas objetivo y una plantilla legacy retirada.
+4. Las aplicaciones permitidas no conceden capacidades internas.
+5. Los paquetes reutilizables contienen únicamente claves exactas.
+6. Las 20 claves `NOT_ALLOWED` quedan excluidas universalmente.
+7. Las claves STRONG conservan reautenticación fuerte personal.
+8. La instancia puede reducir, pero no ampliar, su plantilla.
+9. Toda instancia queda fijada a una versión de plantilla.
+10. `same_site_active_worker` no es política final válida para el kiosco de bodega.
+11. `navigation_role` no participa en autorización.
+12. `production_center` se divide por área productiva.
+13. `procurement_reception` distingue sesión operativa y administrativa.
+14. `management_terminal` no utiliza nombres de rol como bypass.
+15. CAJA_VENTO_CAFE_01 y KIOSCO_BODEGA_CP se conservan, pero requieren implementación y pruebas posteriores.
+16. Los permisos nuevos quedan denegados por defecto en todas las plantillas.
+17. Ninguna acción empresarial puede ejecutarse sin actor humano.
+18. La tarea no implementa código, Supabase ni migraciones.
+
+---
+
+#### 25. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-021 | APROBADA    |
+| AUTH-RBAC-022 | APROBADA    |
+| AUTH-RBAC-023 | APROBADA    |
+| AUTH-RBAC-024 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-024 hasta recibir aprobación explícita.
+
+
+REVISIÓN CONTRACTUAL PREVIA A DATASETS
+
+### ✅ AUTH-CAT-020 — Consolidar brechas contractuales detectadas por las matrices
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE D — Revisión contractual previa a datasets  
+**Naturaleza:** Consolidación documental y trazable de brechas contractuales  
+**Implementación física:** No incluida  
+**Catálogo vigente de referencia:** 112 permisos canónicos  
+**Versión del catálogo:** Sin modificación durante esta tarea  
+**Tarea anterior vigente:** AUTH-RBAC-023 — APROBADA  
+**Tarea posterior reservada:** AUTH-CAT-021 — Clasificar brechas listas para catálogo y brechas diferidas a roadmaps funcionales
+
+Esta tarea no crea permisos, no aprueba claves candidatas, no modifica matrices, no publica una nueva versión del catálogo y no altera Supabase, RLS, RPC, aplicaciones, dispositivos, datasets ni migraciones.
+
+La tarea produce exclusivamente un **registro consolidado, deduplicado y trazable de brechas** que servirá como entrada obligatoria para AUTH-CAT-021 a AUTH-CAT-024.
+
+---
+
+#### 1. Objetivo
+
+Consolidar en un único inventario contractual todas las capacidades, descomposiciones, decisiones de propiedad funcional y vacíos estructurales identificados durante:
+
+- AUTH-RBAC-009 a AUTH-RBAC-019 — matrices operativas y gerencia operativa;
+- AUTH-RBAC-020 y AUTH-RBAC-021 — concesiones individuales base y operativas;
+- AUTH-RBAC-022 — denegaciones individuales y transversales;
+- AUTH-RBAC-023 — capacidades permitidas por dispositivo compartido;
+- AUTH-CAT-003 a AUTH-CAT-019 — deuda legacy, clasificación y contratos del catálogo vigente.
+
+La consolidación debe impedir que una misma necesidad aparezca repetida bajo nombres distintos en varias matrices y debe separar claramente:
+
+1. capacidades empresariales faltantes;
+2. permisos legacy demasiado amplios;
+3. decisiones pendientes de aplicación propietaria;
+4. brechas de contrato de recurso o ciclo de vida;
+5. brechas estructurales de autorización o persistencia;
+6. asuntos de implementación que no pertenecen al catálogo.
+
+---
+
+#### 2. Decisión principal
+
+Las observaciones detectadas durante las matrices no se convertirán automáticamente en permisos.
+
+```text
+HALLAZGO EN UNA MATRIZ
+        ↓
+REGISTRO CONSOLIDADO DE BRECHA
+        ↓
+CLASIFICACIÓN DE MADUREZ
+        ↓
+DEFINICIÓN FUNCIONAL Y PROPIETARIO
+        ↓
+PROPUESTA DE CLAVE ATÓMICA, SI CORRESPONDE
+        ↓
+CLASIFICACIÓN COMPLETA DEL PERMISO
+        ↓
+REVISIÓN DE MATRICES AFECTADAS
+        ↓
+NUEVA VERSIÓN DEL CATÁLOGO
+```
+
+Reglas definitivas:
+
+```text
+BRECHA DOCUMENTADA
+≠
+PERMISO APROBADO
+```
+
+```text
+NOMBRE PRELIMINAR
+≠
+PERMISSION_KEY CANÓNICA
+```
+
+```text
+PROBLEMA DE TABLA, CONTEXTO O IMPLEMENTACIÓN
+≠
+NUEVO PERMISO
+```
+
+El catálogo vigente permanece en **112 permisos canónicos** hasta que AUTH-CAT-024 publique expresamente una nueva versión.
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin cambios:
+
+- ADR-AUTH-001 — Modelo canónico de identidad, contexto y autorización;
+- AUTH-MOD-001 a AUTH-MOD-020;
+- AUTH-CAT-001 a AUTH-CAT-019;
+- AUTH-RBAC-001 a AUTH-RBAC-023;
+- la convención `<app>.<module>.<resource>.<action>`;
+- las cuatro modalidades de autorización;
+- los alcances, prerrequisitos de turno, check-in y área;
+- los contratos de recurso;
+- la sensibilidad, simulación y compatibilidad con dispositivos;
+- la precedencia de denegaciones;
+- la regla de denegación por defecto;
+- la prohibición de herencia por prefijo;
+- la prohibición de convertir permisos amplios en aliases hacia varias capacidades.
+
+También conserva la regla aprobada para permisos `DECOMPOSE_REQUIRED`:
+
+```text
+INVENTARIAR OPERACIONES REALES
+→ CREAR PERMISOS ATÓMICOS
+→ EVALUAR CADA PERMISO POR SEPARADO
+→ NO COPIAR AUTOMÁTICAMENTE LA CONCESIÓN LEGACY
+```
+
+---
+
+#### 4. Alcance de AUTH-CAT-020
+
+Esta tarea sí define:
+
+- identificadores documentales estables para cada brecha consolidada;
+- aplicación propietaria candidata;
+- dominio funcional afectado;
+- descripción empresarial de la necesidad;
+- permisos actuales que no deben ampliarse para cubrirla;
+- matrices o capas que originaron el hallazgo;
+- roles potencialmente afectados;
+- dependencia funcional pendiente;
+- relación con deuda legacy conocida;
+- estado común `CONSOLIDATED_UNCLASSIFIED`;
+- reglas de deduplicación y trazabilidad;
+- entrada mínima exigida para AUTH-CAT-021.
+
+Esta tarea no define:
+
+- claves canónicas finales;
+- modalidad, alcance, sensibilidad o solo lectura de permisos nuevos;
+- requisitos definitivos de turno, check-in, área o dispositivo;
+- contrato final de recurso de una capacidad nueva;
+- matrices actualizadas;
+- aliases o fechas de retiro legacy;
+- estructura física de tablas;
+- funciones SQL, RLS, RPC o Server Actions;
+- pantallas definitivas;
+- migraciones, backfills o limpieza de datos.
+
+---
+
+#### 5. Modelo canónico de registro de brecha
+
+Cada brecha consolidada deberá quedar representada conceptualmente por:
+
+| Campo                 | Significado                                                                     |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `gap_id`              | Identificador documental estable de la brecha.                                  |
+| `gap_type`            | Tipo de brecha: capacidad, descomposición, propiedad, contrato o estructura.    |
+| `owner_candidate`     | Aplicación o dominio candidato a ser propietario. No constituye decisión final. |
+| `business_capability` | Acción o resultado empresarial ausente o insuficientemente separado.            |
+| `current_contract`    | Permiso o contrato actual relacionado.                                          |
+| `forbidden_inference` | Permiso actual que no puede ampliarse para cubrir la brecha.                    |
+| `source_tasks`        | Tareas que originaron o confirmaron el hallazgo.                                |
+| `affected_roles`      | Roles cuyas matrices podrían requerir revisión posterior.                       |
+| `required_definition` | Información funcional necesaria antes de crear una clave.                       |
+| `legacy_relation`     | Permiso legacy amplio relacionado, cuando exista.                               |
+| `status`              | Estado de la brecha dentro del proceso contractual.                             |
+
+Estado inicial común:
+
+```text
+CONSOLIDATED_UNCLASSIFIED
+```
+
+Este estado significa:
+
+- la brecha está reconocida y trazada;
+- todavía no se decide si está madura;
+- todavía no existe una clave canónica nueva;
+- continúa aplicando denegación por defecto.
+
+---
+
+#### 6. Reglas de consolidación y deduplicación
+
+1. Una misma capacidad descrita en varias matrices se registra una sola vez.
+2. Las diferencias por actor se conservan como roles afectados, no como permisos distintos por rol.
+3. Las diferencias reales de acción, recurso, estado o autoridad se mantienen separadas.
+4. Una pantalla, ruta, botón o herramienta no constituye una brecha de permiso por sí misma.
+5. Una ausencia de UI no implica ausencia de contrato y viceversa.
+6. Los permisos de entrada `<app>.access` nunca absorben capacidades internas faltantes.
+7. Los permisos de consulta no absorben mutaciones.
+8. Los permisos de creación no absorben ejecución, aprobación, cierre o reversión.
+9. Los permisos de actualización no absorben cambios de cualquier campo o estado.
+10. Los permisos de cancelación no absorben reversión de efectos ya materializados.
+11. Los permisos técnicos de impresión o escaneo no reemplazan la capacidad empresarial ejecutada.
+12. Una brecha transversal deberá tener un propietario funcional único o un contrato compartido explícito.
+13. Las brechas estructurales se separan del backlog de permisos.
+14. Ningún nombre provisional incluido en esta tarea podrá utilizarse directamente en código.
+
+---
+
+#### 7. Resultado ejecutivo de la consolidación
+
+Se establecen cinco inventarios coordinados:
+
+| Inventario | Contenido                                                   | Resultado de esta tarea                                |
+| ---------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| A          | Capacidades empresariales faltantes detectadas por matrices | Consolidado por dominio y aplicación candidata         |
+| B          | Permisos legacy amplios `DECOMPOSE_REQUIRED`                | 21 claves preservadas como deuda contractual bloqueada |
+| C          | Decisiones pendientes de propiedad funcional                | Consolidación sin adjudicación definitiva              |
+| D          | Brechas estructurales de autorización y persistencia        | Separadas del catálogo de permisos                     |
+| E          | Cambios físicos o de implementación                         | Diferidos a BLOQUE E, E3, R y QA                       |
+
+No se suman los inventarios A y B como si fueran brechas independientes, porque varias capacidades faltantes pueden ser precisamente el resultado futuro de descomponer una clave legacy amplia.
+
+---
+
+## INVENTARIO A — CAPACIDADES EMPRESARIALES FALTANTES
+
+#### 8. PULSO — Operación comercial, atención y producción satélite
+
+Las matrices de `barista_satelite`, `cocinero_satelite`, `servicio_salon`, `mostrador_satelite`, `operador_integral_satelite` y `gerencia_operativa` convergen en las siguientes familias consolidadas.
+
+| Gap ID          | Capacidad empresarial ausente                                                                                              | No inferir desde                               | Fuentes principales          | Roles potencialmente afectados                                         |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------- |
+| `GAP-PULSO-001` | Consultar cola, detalle, modificadores, notas, alergias, prioridad y asignación de pedidos o comandas.                     | `pulso.access`                                 | AUTH-RBAC-009 a 013, 019     | barra, cocina, salón, mostrador, operador integral, gerencia operativa |
+| `GAP-PULSO-002` | Reclamar, aceptar o iniciar preparación y registrar su responsable.                                                        | `pulso.access`                                 | AUTH-RBAC-009, 010, 013      | barra, cocina, operador integral                                       |
+| `GAP-PULSO-003` | Ejecutar transiciones atómicas de preparación: pendiente, en preparación, listo, rechazado o entregado al siguiente actor. | `pulso.access`                                 | AUTH-RBAC-009, 010, 012, 013 | barra, cocina, mostrador, operador integral                            |
+| `GAP-PULSO-004` | Registrar indisponibilidad, agotado, sustitución o solicitud de aclaración de un ítem.                                     | `pulso.access`                                 | AUTH-RBAC-009, 010, 011, 013 | barra, cocina, salón, operador integral                                |
+| `GAP-PULSO-005` | Registrar rehacer, error, devolución a preparación, merma, derrame o desperdicio con causa.                                | `pulso.access`; ajustes de inventario          | AUTH-RBAC-009, 010, 011, 013 | barra, cocina, salón, operador integral, gerencia operativa            |
+| `GAP-PULSO-006` | Gestionar mesas, zonas, apertura de servicio, traslado, unión, separación y cierre operativo del servicio.                 | `pulso.access`; `pulso.pos.main`               | AUTH-RBAC-011, 013, 019      | servicio de salón, operador integral, gerencia operativa               |
+| `GAP-PULSO-007` | Crear y actualizar pedidos dentro de estados y campos permitidos.                                                          | `pulso.access`; `pulso.pos.main`               | AUTH-RBAC-011, 013, 019      | salón, mostrador, operador integral, caja, gerencia operativa          |
+| `GAP-PULSO-008` | Alistar, empacar, validar integridad y preparar entrega por canal.                                                         | `pulso.access`; `delivery.override`            | AUTH-RBAC-012, 013           | mostrador, operador integral                                           |
+| `GAP-PULSO-009` | Confirmar entrega ordinaria, identidad del receptor, canal, hora y evidencia básica.                                       | `pulso.delivery.deliveries.override`           | AUTH-RBAC-011, 012, 013      | salón, mostrador, operador integral                                    |
+| `GAP-PULSO-010` | Crear ventas y aplicar reglas comerciales ordinarias autorizadas.                                                          | `pulso.pos.main`                               | AUTH-RBAC-013, 019           | cajero, operador integral, gerencia operativa                          |
+| `GAP-PULSO-011` | Cobrar, registrar medio de pago, emitir comprobante y separar reversión de pago.                                           | `pulso.pos.main`                               | AUTH-RBAC-011, 013, 019      | cajero, operador integral, gerencia operativa                          |
+| `GAP-PULSO-012` | Abrir, operar, controlar y cerrar sesión de caja mediante acciones separadas.                                              | `pulso.pos.main`                               | AUTH-RBAC-013, 019           | cajero, operador integral, gerencia operativa                          |
+| `GAP-PULSO-013` | Anular, devolver, descontar, corregir o reabrir mediante permisos sensibles independientes.                                | `pulso.pos.main`; permisos ordinarios de venta | AUTH-RBAC-013, 019           | caja, operador integral, gerencia autorizada                           |
+| `GAP-PULSO-014` | Acumular y redimir fidelización mediante acciones laborales separadas del acceso normal del cliente PASS.                  | `pulso.pos.main`; `pass.access`                | AUTH-RBAC-013                | caja, operador integral y actores autorizados                          |
+| `GAP-PULSO-015` | Consultar tiempos, alertas, prioridades, historial operativo y supervisión comercial con alcance controlado.               | `pulso.access`                                 | AUTH-RBAC-009 a 013, 019     | roles operativos y gerencia operativa según proyección                 |
+| `GAP-PULSO-016` | Resolver pedidos no reclamados, entregas parciales, incidencias y canales fallidos sin usar override genérico.             | `delivery.override`; cancelación genérica      | AUTH-RBAC-012, 013, 019      | mostrador, operador integral, gerencia autorizada                      |
+
+Decisión de consolidación:
+
+- Las variantes de barra, cocina, salón y mostrador no generan claves distintas únicamente por el nombre del área.
+- AUTH-CAT-021 deberá determinar qué capacidades son comunes y cuáles tienen recursos o transiciones diferentes.
+- `pulso.pos.main` permanece como deuda legacy amplia y bloqueada.
+
+---
+
+#### 9. FOGO — Ejecución y supervisión productiva
+
+Las matrices de `produccion_cocina`, `produccion_panaderia`, `produccion_reposteria` y `gerencia_operativa` convergen en las siguientes familias.
+
+| Gap ID         | Capacidad empresarial ausente                                                                            | No inferir desde                             | Fuentes principales                     | Roles potencialmente afectados             |
+| -------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------- | ------------------------------------------ |
+| `GAP-FOGO-001` | Aceptar o iniciar una orden de producción asignada.                                                      | `production.orders.view`; `batches.create`   | AUTH-RBAC-014 a 016                     | roles de producción y gerencia operativa   |
+| `GAP-FOGO-002` | Ejecutar transiciones atómicas de orden o lote: iniciar, pausar, reanudar, terminar, cancelar o reabrir. | `batches.create`                             | AUTH-RBAC-014 a 016, 019                | producción y gerencia según acción         |
+| `GAP-FOGO-003` | Registrar cantidades planificadas, producidas, rechazadas, aprovechables y rendimiento.                  | `batches.create`                             | AUTH-RBAC-014 a 016                     | producción y supervisión                   |
+| `GAP-FOGO-004` | Registrar consumo teórico y real por insumo y sus diferencias.                                           | permisos de consulta de inventario           | AUTH-RBAC-014 a 016                     | producción y supervisión                   |
+| `GAP-FOGO-005` | Registrar sustitución autorizada de ingrediente o insumo.                                                | edición genérica del lote o receta           | AUTH-RBAC-014 a 016                     | producción y autoridad aprobadora          |
+| `GAP-FOGO-006` | Registrar merma, desperdicio, reproceso y causa.                                                         | ajuste de inventario; edición del lote       | AUTH-RBAC-014 a 016                     | producción y supervisión                   |
+| `GAP-FOGO-007` | Registrar tiempos, temperatura, responsables, controles y evidencia del proceso.                         | `batches.create`; notas libres               | AUTH-RBAC-014 a 016                     | producción y calidad                       |
+| `GAP-FOGO-008` | Registrar control de calidad, liberación o rechazo mediante autoridad separada.                          | cierre ordinario del lote                    | AUTH-RBAC-014 a 016                     | producción, calidad y autoridad base       |
+| `GAP-FOGO-009` | Confirmar producto terminado, presentación, lote, vencimiento y ubicación destino.                       | `batches.create`; entradas genéricas de NEXO | AUTH-RBAC-014 a 016                     | producción y bodega según custodia         |
+| `GAP-FOGO-010` | Emitir efectos idempotentes hacia inventario NEXO por consumo y producto terminado.                      | acceso simultáneo a FOGO y NEXO              | AUTH-RBAC-014 a 016                     | servicios de dominio y actores autorizados |
+| `GAP-FOGO-011` | Corregir o revertir una ejecución productiva sin edición destructiva.                                    | update genérico; ajuste de inventario        | AUTH-RBAC-014 a 016                     | autoridad definida y supervisión           |
+| `GAP-FOGO-012` | Consultar historial y evidencia completa del lote con alcance controlado.                                | `batches.view` sin contrato de proyección    | AUTH-RBAC-014 a 016, 019                | producción y gerencia operativa            |
+| `GAP-FOGO-013` | Reprogramar, escalar o coordinar incidencias de producción.                                              | `batches.create`; permisos de recetas        | AUTH-RBAC-019                           | gerencia operativa y autoridad productiva  |
+| `GAP-FOGO-014` | Separar administración del recetario en acciones atómicas sobre recetas y publicación.                   | `fogo.production.recipes.manage`             | AUTH-CAT-003 a 019; AUTH-RBAC-014 a 016 | roles administrativos que correspondan     |
+
+Decisión de consolidación:
+
+- Cocina caliente, panadería y repostería comparten el ciclo contractual base.
+- Las diferencias de fórmula, control o equipo pertenecen al recurso y al proceso, no necesariamente a claves diferentes.
+- `fogo.production.recipes.manage` permanece bloqueado hasta descomposición.
+
+---
+
+#### 10. NEXO — Inventario, remisiones y logística
+
+| Gap ID         | Capacidad empresarial ausente o demasiado amplia                                                              | No inferir desde                                          | Fuentes principales                 | Roles potencialmente afectados                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------- | -------------------------------------------------------- |
+| `GAP-NEXO-001` | Registrar cuarentena, rechazo, vencimiento, avería, daño o merma de inventario mediante flujos diferenciados. | entradas ordinarias; ajustes genéricos                    | AUTH-RBAC-017                       | bodega, supervisión y autoridad de calidad               |
+| `GAP-NEXO-002` | Aprobar o resolver diferencias de conteo de forma separada de la captura.                                     | `stock_counts.perform`; ajuste automático                 | AUTH-RBAC-017                       | bodeguero como capturador; autoridad base como aprobador |
+| `GAP-NEXO-003` | Limitar actualización de remisiones por campos, actor y estado.                                               | `nexo.inventory.remissions.update` como edición universal | AUTH-RBAC-019                       | solicitantes, preparación y gerencia según campo         |
+| `GAP-NEXO-004` | Diferenciar cancelación previa, cancelación con preparación y reversión después de movimientos o custodia.    | `remissions.cancel`                                       | AUTH-RBAC-019                       | gerencia y autoridades definidas                         |
+| `GAP-NEXO-005` | Separar aceptación de custodia por el conductor e inicio de tránsito.                                         | `remissions.dispatch` como acción única                   | AUTH-RBAC-018                       | bodega y conductor logística                             |
+| `GAP-NEXO-006` | Registrar entrega física ordinaria y transferencia de custodia al receptor.                                   | `dispatch`; `receive`                                     | AUTH-RBAC-018                       | conductor y receptor autorizado                          |
+| `GAP-NEXO-007` | Registrar prueba de entrega: firma, fotografía, código, sello u otra evidencia aprobada.                      | permiso de entrega genérico                               | AUTH-RBAC-018                       | conductor, receptor y supervisión limitada               |
+| `GAP-NEXO-008` | Registrar incidentes de transporte: avería, faltante, rechazo, accidente, demora o imposibilidad.             | ajuste, cancelación o nota libre                          | AUTH-RBAC-018, 019                  | conductor y gerencia operativa                           |
+| `GAP-NEXO-009` | Registrar llegada, salida, omisión, reprogramación y progreso de una parada.                                  | `operations.view`; consulta de ruta                       | AUTH-RBAC-018                       | conductor y coordinación logística                       |
+| `GAP-NEXO-010` | Registrar entrega fallida, devolución y transferencia de custodia de retorno.                                 | cancelación o recepción ordinaria                         | AUTH-RBAC-018                       | conductor, bodega, destino y gerencia                    |
+| `GAP-NEXO-011` | Inspeccionar, aceptar y asignar vehículo; registrar checklist, kilometraje y combustible.                     | permisos genéricos de activos                             | AUTH-RBAC-018                       | conductor y gestión logística                            |
+| `GAP-NEXO-012` | Reasignar actor, ruta, vehículo o responsable por emergencia con vigencia y auditoría.                        | update genérico; cambio directo de registros              | AUTH-RBAC-019                       | gerencia operativa y autoridad logística                 |
+| `GAP-NEXO-013` | Registrar incidentes operativos transversales sin convertirlos en ajustes, cancelaciones o notas.             | ajustes; cancelaciones; notas libres                      | AUTH-RBAC-019                       | producción, inventario, transporte y gerencia            |
+| `GAP-NEXO-014` | Imprimir o reimprimir documentos, etiquetas o comprobantes vinculados a una operación empresarial.            | `printing.jobs.view`; acceso al diseñador                 | AUTH-RBAC-017 y matrices operativas | bodega, producción, logística y actores autorizados      |
+
+Decisión de consolidación:
+
+- La impresión se registra aquí como capacidad empresarial vinculada a recursos NEXO, pero AUTH-CAT-021 deberá decidir si existe una familia transversal de impresión o acciones por dominio.
+- Las incidencias no podrán resolverse ampliando ajustes o cancelaciones.
+- `remissions.update`, `remissions.cancel` y `remissions.dispatch` deberán conservar contratos estrictos mientras se decide si requieren descomposición adicional.
+
+---
+
+#### 11. ORIGO — Recepción y abastecimiento
+
+| Gap ID          | Capacidad empresarial ausente                                     | No inferir desde                     | Fuentes principales | Roles potencialmente afectados               |
+| --------------- | ----------------------------------------------------------------- | ------------------------------------ | ------------------- | -------------------------------------------- |
+| `GAP-ORIGO-001` | Registrar formalmente la recepción física de una orden de compra. | `origo.procurement.receipts.view`    | AUTH-RBAC-017       | bodeguero, receptor de compras y supervisión |
+| `GAP-ORIGO-002` | Separar administración de proveedores en acciones atómicas.       | `origo.procurement.suppliers.manage` | AUTH-CAT-003 a 019  | actores administrativos y de compras         |
+
+Regla:
+
+```text
+CONSULTAR RECEPCIÓN
+≠
+REGISTRAR RECEPCIÓN
+```
+
+La entrada física en NEXO y la recepción comercial en ORIGO deberán coordinarse, pero no se fusionarán automáticamente en una sola autorización.
+
+---
+
+#### 12. VISO — Gobierno de excepciones y denegaciones
+
+| Gap ID         | Capacidad empresarial ausente                                                                                    | No inferir desde                                           | Fuentes principales | Roles potencialmente afectados                        |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------- | ----------------------------------------------------- |
+| `GAP-VISO-001` | Consultar, solicitar, crear, aprobar, activar, suspender, revocar y auditar concesiones individuales base.       | `staff.permissions.manage`; permisos de lectura            | AUTH-RBAC-020       | propietarios, gerencias y administradores autorizados |
+| `GAP-VISO-002` | Consultar, solicitar, crear, aprobar, activar, suspender, revocar y auditar concesiones individuales operativas. | `staff.permissions.manage`; gestión de perfiles operativos | AUTH-RBAC-021       | propietarios, gerencias y administradores autorizados |
+| `GAP-VISO-003` | Crear, aprobar, activar, revocar y auditar denegaciones de carril y bloqueos transversales.                      | gestión genérica de permisos                               | AUTH-RBAC-022       | autoridad de seguridad y recuperación                 |
+| `GAP-VISO-004` | Separar las nueve familias legacy amplias de administración VISO en acciones atómicas.                           | permisos `*.manage` legacy                                 | AUTH-CAT-003 a 019  | roles administrativos según cada dominio              |
+
+La futura administración deberá conservar segregación entre solicitante, aprobador y actor afectado cuando la sensibilidad lo exija.
+
+---
+
+#### 13. Dominios sin nuevas capacidades confirmadas por las matrices
+
+| Aplicación | Resultado de AUTH-CAT-020                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | No se identifican nuevas capacidades empresariales; `shell.access` continúa como entrada al hub.                                                               |
+| ANIMA      | Las matrices no introducen nuevas capacidades; las brechas de contexto, turnos y check-in se tratarán en BLOQUE E y roadmaps funcionales.                      |
+| NUMERA     | No aparecen nuevas necesidades derivadas directamente de matrices; conserva dos permisos legacy amplios pendientes de descomposición.                          |
+| AURA       | Continúa diferida; no se amplía el catálogo.                                                                                                                   |
+| PASS       | No se amplía el RBAC laboral. Las operaciones de fidelización laboral deberán pertenecer a PULSO, VISO o al adaptador definido, sin mezclar la sesión cliente. |
+
+---
+
+## INVENTARIO B — DEUDA LEGACY DE DESCOMPOSICIÓN
+
+#### 14. Permisos `DECOMPOSE_REQUIRED` preservados
+
+Los siguientes 21 permisos legacy continúan:
+
+```text
+catalog_status = deprecated
+assignment_status = blocked
+authorization_requirement = null
+```
+
+No reciben claves nuevas durante AUTH-CAT-020.
+
+##### FOGO — 1
+
+```text
+fogo.production.recipes.manage
+```
+
+##### NEXO — 7
+
+```text
+nexo.settings.categories.manage
+nexo.settings.units.manage
+nexo.settings.supply_routes.manage
+nexo.internal_prices.manage
+nexo.cost_centers.manage
+nexo.settings.sites.manage
+nexo.settings.remissions.manage
+```
+
+##### NUMERA — 2
+
+```text
+numera.cost_centers.manage
+numera.expenses.manage
+```
+
+##### ORIGO — 1
+
+```text
+origo.suppliers.manage
+```
+
+##### PULSO — 1
+
+```text
+pulso.pos.main
+```
+
+##### VISO — 9
+
+```text
+viso.app_navigation.manage
+viso.employee_operational_profiles.manage
+viso.menu.images.manage
+viso.operational_points.manage
+viso.site_operational_roles.manage
+viso.staff.documents.manage
+viso.staff.employee_photos.manage
+viso.staff.manage
+viso.staff.permissions.manage
+```
+
+Reglas:
+
+1. Ninguna asignación legacy se copiará a todas las capacidades resultantes.
+2. Cada acción resultante deberá evaluarse contra matrices base, operativas, excepciones, dispositivos y denegaciones.
+3. Una capacidad funcional faltante del Inventario A puede convertirse en resultado de esta descomposición, pero la relación deberá declararse expresamente.
+4. La descomposición efectiva corresponde a AUTH-CAT-022, después de la clasificación de AUTH-CAT-021.
+
+---
+
+## INVENTARIO C — DECISIONES PENDIENTES DE PROPIEDAD FUNCIONAL
+
+#### 15. Propiedad funcional por resolver
+
+| Gap ID        | Decisión pendiente                                                         | Aplicaciones candidatas                                  | Regla temporal                                                             |
+| ------------- | -------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `GAP-OWN-001` | Propietario del recetario operativo utilizado por barra y cocina satélite. | PULSO, FOGO o contrato compartido con propietario único  | No conceder `fogo.production.recipe_book.view` por inferencia desde PULSO. |
+| `GAP-OWN-002` | Propietario del flujo de impresión y reimpresión empresarial.              | Aplicación del proceso con servicio técnico compartido   | `printing.jobs.view` no autoriza imprimir.                                 |
+| `GAP-OWN-003` | Propietario del incidente operativo transversal y su resolución.           | Dominio de origen, NEXO o servicio transversal gobernado | No utilizar ajustes, cancelaciones o notas como sustituto.                 |
+| `GAP-OWN-004` | Frontera entre recepción comercial ORIGO y entrada/custodia física NEXO.   | ORIGO + NEXO mediante integración contractual            | Cada efecto conserva autorización propia.                                  |
+| `GAP-OWN-005` | Frontera entre entrega comercial PULSO y transporte/custodia NEXO.         | PULSO + NEXO                                             | Entrega de pedido y handoff logístico no se fusionan por nombre.           |
+| `GAP-OWN-006` | Propietario laboral de acumulación y redención de fidelización.            | PULSO, VISO o adaptador PASS                             | La identidad cliente PASS permanece separada del RBAC laboral.             |
+
+AUTH-CAT-020 no adjudica estas propiedades. AUTH-CAT-021 deberá marcar cuáles requieren roadmap funcional previo.
+
+---
+
+## INVENTARIO D — BRECHAS ESTRUCTURALES QUE NO SON PERMISOS
+
+#### 16. Brechas del modelo de asignaciones y excepciones
+
+| Gap ID           | Brecha estructural                                                                                           | Tratamiento posterior                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `GAP-STRUCT-001` | `employee_permissions` no distingue obligatoriamente carril base y operativo.                                | Diseño físico del BLOQUE E3 y dataset AUTH-RBAC-026.            |
+| `GAP-STRUCT-002` | Una excepción operativa no declara roles o familias operativas compatibles.                                  | Contrato de excepción y estructura objetivo.                    |
+| `GAP-STRUCT-003` | Las excepciones actuales no representan adecuadamente vigencia, motivo, aprobación, suspensión y revocación. | Ciclo de vida canónico y auditoría.                             |
+| `GAP-STRUCT-004` | Las funciones actuales no consumen una única decisión de autorización.                                       | BLOQUE E — `AccessContext` y `AuthorizationDecision`.           |
+| `GAP-STRUCT-005` | Los allows y denies legacy no poseen semántica física suficiente para todos los carriles.                    | BLOQUE E3, AUTH-RBAC-026 y BLOQUE R.                            |
+| `GAP-STRUCT-006` | Existen concesiones individuales legacy redundantes y duplicadas.                                            | Reconciliación y backfill controlado; no crear permisos nuevos. |
+| `GAP-STRUCT-007` | Los roles base legacy todavía pueden conceder capacidades operativas permanentes.                            | Transición de matrices y retiro controlado en BLOQUE R.         |
+| `GAP-STRUCT-008` | La relación textual de permisos operativos carece de integridad referencial fuerte.                          | Arquitectura de datos y migración futura.                       |
+
+Estas brechas no ingresan al catálogo como claves.
+
+---
+
+#### 17. Brechas de dispositivo y actor efectivo
+
+| Gap ID           | Brecha estructural                                                                               | Tratamiento posterior                               |
+| ---------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `GAP-DEVICE-001` | Plantillas legacy mezclan roles base y operativos en `navigation_role`.                          | Migración de plantillas definida por AUTH-RBAC-023. |
+| `GAP-DEVICE-002` | `same_site_active_worker` es demasiado amplio para bodega y otras terminales especializadas.     | Política restrictiva de actor, sede, área y rol.    |
+| `GAP-DEVICE-003` | No existen sesiones persistidas de actor humano en los dispositivos auditados.                   | BLOQUE E, E3 y R; no es una brecha de permiso.      |
+| `GAP-DEVICE-004` | La identidad técnica puede terminar apareciendo como actor si no se aplica el contrato aprobado. | Separación principal técnico / actor efectivo.      |
+| `GAP-DEVICE-005` | La reautenticación fuerte no puede ser sustituida por PIN ligero.                                | Contrato de autenticación y decisión unificada.     |
+| `GAP-DEVICE-006` | Los permisos nuevos deben quedar bloqueados en plantillas hasta versionar paquetes e instancias. | Gobierno de versiones de dispositivos.              |
+
+---
+
+#### 18. Brechas de recurso, estado y transición
+
+Las siguientes observaciones pueden exigir mejorar contratos de permisos existentes sin crear una clave nueva:
+
+| Gap ID             | Contrato insuficiente                                                                     | Permisos relacionados                |
+| ------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------ |
+| `GAP-CONTRACT-001` | Actualización de remisión sin lista de campos y estados permitidos.                       | `nexo.inventory.remissions.update`   |
+| `GAP-CONTRACT-002` | Cancelación de remisión sin diferenciar etapa y efectos ya ejecutados.                    | `nexo.inventory.remissions.cancel`   |
+| `GAP-CONTRACT-003` | Despacho que combina aceptación de custodia e inicio de tránsito.                         | `nexo.inventory.remissions.dispatch` |
+| `GAP-CONTRACT-004` | Consulta de lote sin proyección diferenciada entre operador, supervisor y administración. | `fogo.production.batches.view`       |
+| `GAP-CONTRACT-005` | Creación de lote sin límites claros frente a ejecución, cierre e inventario.              | `fogo.production.batches.create`     |
+| `GAP-CONTRACT-006` | Override de entrega sin contrato de caso excepcional, evidencia y autoridad base.         | `pulso.delivery.deliveries.override` |
+
+AUTH-CAT-021 deberá decidir para cada fila si procede:
+
+- precisar el contrato del permiso existente;
+- descomponer el permiso;
+- crear una capacidad adicional;
+- diferir la decisión al roadmap funcional.
+
+---
+
+## INVENTARIO E — ASUNTOS DE IMPLEMENTACIÓN DIFERIDOS
+
+#### 19. Hallazgos excluidos de creación de permisos
+
+No se crearán permisos para resolver directamente:
+
+- tablas sin columnas suficientes;
+- llaves foráneas ausentes;
+- índices únicos defectuosos;
+- RLS incompletas;
+- funciones SECURITY DEFINER;
+- exposición RPC;
+- idempotencia, concurrencia o versionado técnico;
+- eventos fuera de orden;
+- conectividad offline;
+- ausencia de sesiones de actor;
+- inconsistencias de `navigation_role`;
+- falta de plantilla de dispositivo;
+- migración de datos legacy;
+- ausencia de pantalla;
+- nombres de rutas o componentes;
+- auditoría física o retención de evidencia.
+
+Estos asuntos deberán resolverse en:
+
+```text
+BLOQUE E
+→ contexto y decisión unificados
+
+BLOQUE E2
+→ procesos, pantallas e integración funcional
+
+BLOQUE E3
+→ arquitectura objetivo de Supabase
+
+BLOQUE R
+→ implementación y migraciones
+
+BLOQUE QA
+→ pruebas funcionales, contractuales y de seguridad
+```
+
+---
+
+#### 20. Trazabilidad hacia matrices afectadas
+
+La creación o descomposición posterior de permisos no reabrirá todas las matrices indiscriminadamente.
+
+| Dominio              | Matrices que deberán revisarse principalmente                                                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| PULSO operativo      | `cajero_satelite`, `barista_satelite`, `cocinero_satelite`, `servicio_salon`, `mostrador_satelite`, `operador_integral_satelite`, `gerencia_operativa` y roles base administrativos relacionados |
+| FOGO                 | `produccion_cocina`, `produccion_panaderia`, `produccion_reposteria`, `gerencia_operativa` y roles base con autoridad productiva                                                                 |
+| NEXO bodega          | `bodeguero`, `gerencia_operativa` y roles base con autoridad de inventario                                                                                                                       |
+| NEXO logística       | `conductor_logistica`, `bodeguero`, `gerencia_operativa` y receptores autorizados                                                                                                                |
+| ORIGO recepción      | `bodeguero`, posibles roles de recepción de compras y roles base de abastecimiento                                                                                                               |
+| VISO autorización    | `propietario`, `gerente_general`, `gerente`, `supervisor` y otros roles administrativos que se aprueben                                                                                          |
+| Excepciones y denies | AUTH-RBAC-020 a 022 y dataset AUTH-RBAC-026                                                                                                                                                      |
+| Dispositivos         | paquetes y plantillas de AUTH-RBAC-023 relacionadas con las nuevas claves                                                                                                                        |
+
+Regla:
+
+```text
+CAMBIO DE PERMISO
+→ REVISAR SOLO MATRICES, EXCEPCIONES Y DISPOSITIVOS IMPACTADOS
+```
+
+---
+
+#### 21. Entregable obligatorio para AUTH-CAT-021
+
+AUTH-CAT-021 deberá recibir de esta tarea:
+
+1. todos los `gap_id` del Inventario A;
+2. los 21 permisos del Inventario B;
+3. las seis decisiones de propiedad del Inventario C;
+4. las brechas contractuales del Inventario D;
+5. la lista de asuntos excluidos del catálogo;
+6. las matrices potencialmente afectadas;
+7. trazabilidad a las tareas fuente.
+
+AUTH-CAT-021 deberá asignar a cada brecha una de estas categorías, sin crear todavía claves:
+
+```text
+READY_FOR_CATALOG_DESIGN
+NEEDS_FUNCTIONAL_ROADMAP
+NEEDS_OWNER_DECISION
+NEEDS_EXISTING_CONTRACT_REFINEMENT
+STRUCTURAL_NOT_PERMISSION
+IMPLEMENTATION_ONLY
+DUPLICATE_OR_ABSORBED
+REJECTED_AS_PERMISSION
+```
+
+La clasificación anterior se reserva expresamente para AUTH-CAT-021. AUTH-CAT-020 solo entrega el inventario consolidado.
+
+---
+
+#### 22. Invariantes
+
+1. El catálogo vigente continúa con 112 permisos.
+2. Ninguna brecha crea autorización.
+3. Ningún nombre preliminar se convierte en clave canónica.
+4. `app.access` no absorbe operaciones internas.
+5. Ningún permiso de lectura absorbe mutaciones.
+6. Ningún permiso de creación absorbe ejecución o cierre.
+7. Ningún permiso de actualización se interpreta como edición universal.
+8. Ninguna cancelación sustituye reversión.
+9. Ningún override se convierte en operación ordinaria.
+10. Ningún permiso técnico de pantalla, escáner o impresión reemplaza la capacidad empresarial.
+11. Los 21 permisos legacy amplios permanecen bloqueados.
+12. Las asignaciones legacy no se copian automáticamente.
+13. Las brechas estructurales no se convierten en permisos.
+14. Las decisiones de propiedad no se resuelven por conveniencia técnica.
+15. PASS cliente permanece separado del RBAC laboral.
+16. Los dispositivos no amplían permisos.
+17. Las nuevas claves futuras quedarán denegadas por defecto.
+18. Solo se revisarán matrices realmente afectadas.
+19. Toda nueva versión conservará diff, trazabilidad y compatibilidad.
+20. La implementación física permanece fuera de esta tarea.
+
+---
+
+#### 23. Riesgos controlados
+
+##### Riesgo 1 — Crear demasiados permisos por cada pantalla
+
+Control:
+
+```text
+CAPACIDAD EMPRESARIAL
+≠
+RUTA O COMPONENTE
+```
+
+##### Riesgo 2 — Consolidar acciones realmente distintas
+
+Control:
+
+- conservar separación por acción, recurso, estado y autoridad;
+- no deduplicar únicamente por similitud de palabras.
+
+##### Riesgo 3 — Crear permisos antes de definir el proceso
+
+Control:
+
+- AUTH-CAT-021 podrá diferir brechas al roadmap funcional;
+- no se fuerza una clave para cerrar documentalmente una matriz.
+
+##### Riesgo 4 — Convertir deuda estructural en permisos
+
+Control:
+
+- Inventario D separado;
+- tablas, contexto, RLS y dispositivos se resuelven en sus bloques.
+
+##### Riesgo 5 — Duplicar la deuda legacy y las brechas nuevas
+
+Control:
+
+- Inventarios A y B no se suman automáticamente;
+- AUTH-CAT-022 deberá declarar relaciones de sustitución.
+
+##### Riesgo 6 — Rehacer todas las matrices
+
+Control:
+
+- tabla de impacto dirigida;
+- revisión únicamente por diff contractual.
+
+##### Riesgo 7 — Autorizar silenciosamente al publicar una clave
+
+Control:
+
+```text
+NUEVO PERMISO
+→ CERO CONCESIONES IMPLÍCITAS
+→ REVISIÓN EXPRESA DE MATRICES
+```
+
+---
+
+#### 24. Impacto sobre tareas posteriores
+
+| Tarea               | Impacto                                                                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| AUTH-CAT-021        | Clasificará cada brecha por madurez, propiedad y destino documental.                           |
+| AUTH-CAT-022        | Diseñará únicamente las claves atómicas y descomposiciones declaradas maduras.                 |
+| AUTH-CAT-023        | Aplicará el diff contractual solo a matrices, excepciones y paquetes de dispositivo afectados. |
+| AUTH-CAT-024        | Publicará y congelará la nueva versión del catálogo que alimentará datasets.                   |
+| AUTH-RBAC-024 a 026 | Consumirán exclusivamente la versión congelada por AUTH-CAT-024.                               |
+| AUTH-RBAC-027 y 028 | Validarán alcance operativo y separación de administración.                                    |
+| BLOQUE E            | Implementará contexto y decisión unificados.                                                   |
+| BLOQUE E2           | Definirá procesos todavía inmaduros y propiedad funcional.                                     |
+| BLOQUE E3           | Diseñará estructuras físicas, integridad y transición de Supabase.                             |
+| BLOQUE R            | Implementará migraciones, backfills, aliases, retiro legacy y rollback en `vento-shell`.       |
+| BLOQUE QA           | Probará contratos, matrices, dispositivos, excepciones, denegaciones y compatibilidad.         |
+
+---
+
+#### 25. Criterios de aprobación
+
+AUTH-CAT-020 podrá aprobarse cuando se acepte expresamente que:
+
+- el inventario consolidado incluye capacidades faltantes, deuda legacy, propiedad, estructura y contratos;
+- las capacidades repetidas entre roles se deduplican por resultado empresarial;
+- PULSO, FOGO, NEXO, ORIGO y VISO concentran las brechas funcionales identificadas;
+- los 21 permisos `DECOMPOSE_REQUIRED` continúan bloqueados;
+- los problemas de estructura, contexto, dispositivo o implementación no se convierten en permisos;
+- no se crean claves canónicas durante esta tarea;
+- el catálogo permanece en 112 permisos;
+- toda brecha conserva trazabilidad a matrices y capas fuente;
+- AUTH-CAT-021 decidirá madurez y destino;
+- solo las brechas maduras pasarán a diseño atómico en AUTH-CAT-022;
+- ninguna matriz se modifica todavía;
+- no se realizan cambios físicos.
+
+---
+
+#### 26. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-023 | APROBADA    |
+| AUTH-CAT-020  | APROBADA    |
+| AUTH-CAT-021  | NO INICIADA |
+
+No se avanza a AUTH-CAT-021 hasta recibir aprobación explícita.
+
+
+### [ ] AUTH-CAT-021 — Clasificar brechas listas para catálogo y brechas diferidas a roadmaps funcionales
+
+### [ ] AUTH-CAT-022 — Descomponer permisos legacy maduros y definir nuevas claves atómicas
+
+### [ ] AUTH-CAT-023 — Actualizar matrices y paquetes de dispositivo afectados por el diff contractual
+
+### [ ] AUTH-CAT-024 — Publicar y congelar la versión canónica que alimentará los datasets
+DATASETS CANÓNICOS
+
 ### [ ] AUTH-RBAC-024 — Definir dataset canónico de matriz base
 ### [ ] AUTH-RBAC-025 — Definir dataset canónico de matriz operativa
 ### [ ] AUTH-RBAC-026 — Definir dataset canónico de excepciones y denegaciones

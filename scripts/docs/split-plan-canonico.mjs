@@ -45,6 +45,14 @@ const markers = {
   B: lineStartIndex(/^## BLOQUE B\s*$/m, 'BLOQUE B'),
   C: lineStartIndex(/^## BLOQUE C\s*$/m, 'BLOQUE C'),
   D: lineStartIndex(/^## BLOQUE D\s*$/m, 'BLOQUE D'),
+  reviewBeforeDatasets: lineStartIndex(
+    /^REVISIÓN CONTRACTUAL PREVIA A DATASETS\s*$/m,
+    'REVISIÓN CONTRACTUAL PREVIA A DATASETS',
+  ),
+  datasets: lineStartIndex(
+    /^DATASETS CANÓNICOS\s*$/m,
+    'DATASETS CANÓNICOS',
+  ),
   E: lineStartIndex(/^## BLOQUE E\s*$/m, 'BLOQUE E'),
   E2: lineStartIndex(/^## BLOQUE E2\s*$/m, 'BLOQUE E2'),
   E3: lineStartIndex(/^## BLOQUE E3\s*$/m, 'BLOQUE E3'),
@@ -79,7 +87,9 @@ function taskIndex(id) {
 const t = {};
 for (let i = 1; i <= 20; i += 1) t[`AUD${i}`] = taskIndex(`AUTH-AUD-${String(i).padStart(3, '0')}`);
 for (let i = 1; i <= 20; i += 1) t[`MOD${i}`] = taskIndex(`AUTH-MOD-${String(i).padStart(3, '0')}`);
-for (let i = 1; i <= 19; i += 1) t[`CAT${i}`] = taskIndex(`AUTH-CAT-${String(i).padStart(3, '0')}`);
+for (let i = 1; i <= 24; i += 1) {
+  t[`CAT${i}`] = taskIndex(`AUTH-CAT-${String(i).padStart(3, '0')}`);
+}
 for (let i = 1; i <= 28; i += 1) t[`RBAC${i}`] = taskIndex(`AUTH-RBAC-${String(i).padStart(3, '0')}`);
 
 const segments = [
@@ -117,9 +127,26 @@ const segments = [
   ['bloques/D_MATRICES/04_OPERATIVOS_SERVICIO_MOSTRADOR_INTEGRAL.md', t.RBAC11, t.RBAC14],
   ['bloques/D_MATRICES/05_OPERATIVOS_PRODUCCION.md', t.RBAC14, t.RBAC17],
   ['bloques/D_MATRICES/06_OPERATIVOS_LOGISTICA_Y_GERENCIA.md', t.RBAC17, t.RBAC20],
-  ['bloques/D_MATRICES/07_EXCEPCIONES_Y_DISPOSITIVOS.md', t.RBAC20, t.RBAC24],
-  ['bloques/D_MATRICES/08_DATASETS.md', t.RBAC24, t.RBAC27],
-  ['bloques/D_MATRICES/09_VALIDACIONES.md', t.RBAC27, markers.E],
+  [
+    'bloques/D_MATRICES/07_EXCEPCIONES_Y_DISPOSITIVOS.md',
+    t.RBAC20,
+    markers.reviewBeforeDatasets,
+  ],
+  [
+    'bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md',
+    markers.reviewBeforeDatasets,
+    markers.datasets,
+  ],
+  [
+    'bloques/D_MATRICES/09_DATASETS.md',
+    markers.datasets,
+    t.RBAC27,
+  ],
+  [
+    'bloques/D_MATRICES/10_VALIDACIONES.md',
+    t.RBAC27,
+    markers.E,
+  ],
 
   ['bloques/E_CONTEXTO_Y_DECISION/00_BLOQUE_E.md', markers.E, markers.E2],
   ['bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md', markers.E2, markers.E3],
