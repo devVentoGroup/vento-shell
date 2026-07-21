@@ -8,17 +8,29 @@ BLOQUE C
 → catálogo canónico de aplicaciones y permisos
 
 BLOQUE D
-→ matrices definitivas
+→ matrices vigentes de la versión contractual base
 
 BLOQUE E
 → contexto y decisión de autorización
 
+BLOQUE E1
+→ mapa de capacidades, operación real y cobertura de implementación
+
 No implementa todavía pantallas definitivas.
+
+Regla de realimentación:
+
+- E1 conserva el AS-IS y la línea base de cobertura;
+- E2 diseña el TO-BE;
+- E2, E3, E4, X y los bloques por aplicación pueden devolver nuevas
+  brechas, dependencias o decisiones de propiedad a E1;
+- una devolución deberá actualizar la trazabilidad y no crear inventarios
+  paralelos.
 
 CATÁLOGO DE PROCESOS
 
-### [ ] PROC-CAT-001 Inventariar todos los procesos actuales de Vento OS
-### [ ] PROC-CAT-002 Identificar procesos manuales todavía no representados
+### [ ] PROC-CAT-001 Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+### [ ] PROC-CAT-002 Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes
 ### [ ] PROC-CAT-003 Crear identificador estable para cada proceso
 ### [ ] PROC-CAT-004 Definir propósito empresarial de cada proceso
 ### [ ] PROC-CAT-005 Definir aplicación propietaria de cada proceso
@@ -82,6 +94,35 @@ CONTRATO DE PANTALLAS
 ### [ ] PROC-SCREEN-027 Definir métrica de usabilidad
 ### [ ] PROC-SCREEN-028 Definir criterio de aceptación operativo
 
+COBERTURA DE PROCESOS
+
+### [ ] PROC-COVER-001 Vincular cada proceso con una capacidad aprobada en E1
+### [ ] PROC-COVER-002 Vincular cada proceso con su operación manual actual
+### [ ] PROC-COVER-003 Vincular cada proceso con su implementación actual
+### [ ] PROC-COVER-004 Clasificar proceso completo, parcial, manual, ausente o diferido
+### [ ] PROC-COVER-005 Identificar dependencias que impiden completar el proceso
+### [ ] PROC-COVER-006 Definir alcance mínimo y alcance objetivo
+### [ ] PROC-COVER-007 Prohibir declarar completo un proceso con solo infraestructura
+### [ ] PROC-COVER-008 Aprobar matriz capacidad → proceso → pantalla → implementación
+
+### [ ] PROC-COVER-009 Vincular explícitamente proceso AS-IS y proceso TO-BE
+### [ ] PROC-COVER-010 Registrar nuevas brechas y devolverlas al registro canónico de E1
+
+REQUISITOS NO FUNCIONALES
+
+### [ ] NFR-REQ-001 — Definir criticidad y disponibilidad por proceso
+### [ ] NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
+### [ ] NFR-REQ-003 — Definir tiempos máximos de respuesta
+### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
+### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
+### [ ] NFR-REQ-006 — Definir trazabilidad y retención
+### [ ] NFR-REQ-007 — Definir accesibilidad y ergonomía
+### [ ] NFR-REQ-008 — Definir hardware, red y periféricos requeridos
+### [ ] NFR-REQ-009 — Definir observabilidad, soporte y alertas
+### [ ] NFR-REQ-010 — Definir respaldo, RTO y RPO
+### [ ] NFR-REQ-011 — Definir compatibilidad mínima por dispositivo
+### [ ] NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+
 PRINCIPIOS DE EXPERIENCIA
 
 ### [ ] UX-BASE-001 Separar experiencia operativa y administrativa
@@ -123,4 +164,3 @@ SERVER PROTECTION
 AUDIT
 +
 USABILITY CRITERIA
-

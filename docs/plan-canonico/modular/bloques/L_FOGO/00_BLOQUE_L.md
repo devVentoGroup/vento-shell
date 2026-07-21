@@ -35,5 +35,4 @@ SUBBLOQUE L2 — Procesos y experiencia de FOGO
 ### [ ] FOGO-UX-012 Conectar consumo de insumos con NEXO
 ### [ ] FOGO-UX-013 Conectar producto terminado con NEXO
 ### [ ] FOGO-UX-014 Diseñar pantalla para supervisor de producción
-### [ ] FOGO-UX-015 Ejecutar piloto por área productiva
-
+### [ ] FOGO-UX-015 Validar el prototipo por área productiva

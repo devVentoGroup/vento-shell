@@ -17,7 +17,7 @@
 | Estado documental         | **VIGENTE**                                                                                                                   |
 | Arquitectura documental   | **MODULAR CANÓNICA**                                                                                                          |
 | Fuente de orden canónico  | `manifest.json`                                                                                                               |
-| Fragmentos canónicos      | **59**                                                                                                                        |
+| Fragmentos canónicos      | **62**                                                                                                                        |
 | Tareas `AUTH` únicas      | **311**                                                                                                                       |
 | Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                                               |
 | Estado del compilado      | **GENERADO Y VALIDADO**                                                                                                       |
@@ -64,6 +64,12 @@
 
 - [Protocolo obligatorio](./01_PROTOCOLO.md)
 - [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
+- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_BLOQUE_E1.md)
+- [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
+- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
+- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_BLOQUE_E4.md)
+
+- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_BLOQUE_E5.md)
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
@@ -208,11 +214,19 @@ AUTH-RBAC-024 — Definir dataset canónico de matriz base
 9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
 
-   La continuidad ejecutable se determina exclusivamente mediante:
+   La tarea documental inmediata se determina mediante:
 
    1. `Estado canónico`;
-   2. `Continuidad inmediata`;
-   3. orden vigente registrado en `manifest.json`.
+   2. `Continuidad inmediata`.
+
+   `manifest.json` define exclusivamente el orden físico de compilación
+   de los fragmentos y no el orden de ejecución del roadmap.
+
+   El orden de ejecución posterior se determina mediante:
+
+   `90_ORDEN_DE_IMPLEMENTACION.md`
+   +
+   dependencias y puertas aprobadas de cada bloque.
 
    Las referencias de continuidad incluidas dentro de tareas aprobadas
    representan el estado existente cuando se aprobó esa tarea y no deberán
@@ -500,10 +514,9 @@ AUTH-RBAC-024 — Definir dataset canónico de matriz base
     y emitir eventos canónicos antes de afectar otros dominios.
 
 ---
-
 ## ROADMAP MAESTRO
 
-**Autorización, datos, procesos, pantallas, integraciones y experiencia Vento**
+**Autorización, capacidades, operación, datos, procesos, pantallas, integraciones y experiencia Vento**
 
 Este roadmap cubre las diez aplicaciones canónicas del ecosistema:
 
@@ -590,7 +603,9 @@ VENTO-SHELL
   eventos empresariales y componentes compartidos
 
 NEXO
-→ administra inventario, movimientos, custodia y logística
+→ administra catálogo de productos, inventario, ubicaciones, LPN,
+  contenedores, activos reutilizables, repuestos, movimientos,
+  custodia y logística
 
 FOGO
 → administra planificación y ejecución productiva
@@ -613,6 +628,10 @@ AURA
   diferida hasta completar su auditoría funcional
 
 Principio transversal:
+
+CAPACIDAD EMPRESARIAL
+→ define qué resultado debe poder producir Vento Group,
+  aunque todavía no exista en código, datos o pantallas
 
 AUTORIZACIÓN
 → define quién puede ejecutar una capacidad
@@ -654,8 +673,75 @@ Debe auditarse, consolidarse, simplificarse y extenderse a todo el
 ecosistema. No deberá reconstruirse desde cero ni duplicarse entre
 aplicaciones o esquemas.
 
+El roadmap no se considerará integral hasta completar BLOQUE E1.
+
+BLOQUE E1 deberá confrontar:
+
+- operación real;
+- procesos manuales;
+- documentos y herramientas externas;
+- código actual;
+- datos actuales;
+- pantallas actuales;
+- infraestructura parcial;
+- capacidades todavía ausentes.
+
+Una función no se considerará cubierta por existir únicamente como tabla,
+permiso, ruta, componente o prototipo.
+
+Separación obligatoria de diseño:
+
+```text
+BLOQUE E1
+→ AS-IS: operación actual, capacidades, brechas y cobertura
+
+BLOQUE E2
+→ TO-BE: procesos, actores, pantallas y experiencia objetivo
+
+BLOQUES E3, E4, X Y ROADMAPS POR APLICACIÓN
+→ pueden devolver nuevas brechas o dependencias a E1 y E2
+
+BLOQUE E5
+→ convierte el diseño aprobado en paquetes implementables
+```
+
+Ningún mapa se considera inmutable hasta cerrar el diseño objetivo y sus
+dependencias contractuales, técnicas y operativas.
+
 ### Estructura de bloques del roadmap maestro
 
+| Bloque | Responsabilidad |
+| --- | --- |
+| A | Auditoría integral inicial de autorización |
+| B | Modelo definitivo de identidad y autorización |
+| C | Catálogo canónico de permisos |
+| D | Matrices, revisión contractual y datasets |
+| E | Contexto efectivo y decisión unificada |
+| E1 | Descubrimiento de operación, capacidades y cobertura |
+| E2 | Procesos, actores, pantallas y experiencia |
+| E3 | Arquitectura y gobierno integral de Supabase |
+| E4 | Colas, impresión, notificaciones y evidencia |
+| E5 | Paquetes de implementación, readiness, cutover e hypercare |
+| F | ANIMA |
+| G | VISO |
+| H | VENTO-SHELL como núcleo compartido |
+| H2 | SHELL como aplicación y hub |
+| I | Navegación, pantallas y autorización de vistas |
+| J | Acciones de servidor y seguridad real |
+| K | NEXO |
+| L | FOGO |
+| M | ORIGO |
+| N | PULSO |
+| O | NUMERA |
+| P | Dispositivos compartidos |
+| Q | Simulación estricta |
+| R | Implementación física y migraciones de Supabase |
+| S | Mensajes y experiencia de bloqueo |
+| T | Calidad, CI y despliegue |
+| U | Pruebas integrales |
+| V | PASS |
+| W | AURA |
+| X | Integraciones internas y externas |
 ## BLOQUE A
 
 **Auditoría integral del ecosistema**
@@ -68125,7 +68211,8 @@ No se avanza a AUTH-CAT-023 hasta recibir aprobación explícita.
 
 ### [ ] AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual
 
-### [ ] AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets## DATASETS CANÓNICOS
+### [ ] AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+## DATASETS CANÓNICOS
 
 Los datasets canónicos solo podrán iniciarse cuando AUTH-CAT-024 haya:
 
@@ -68286,6 +68373,240 @@ SimulationContext
   indeterminate
 }
 
+## BLOQUE E1
+
+**Descubrimiento integral de operación, capacidades y cobertura de implementación**
+
+Este bloque convierte la operación real de Vento Group en una entrada
+obligatoria del roadmap antes de diseñar procesos, pantallas, datos o
+implementaciones definitivas.
+
+Depende de:
+
+BLOQUE D
+→ catálogo, matrices y contratos de autorización base conocidos
+
+BLOQUE E
+→ contexto efectivo y decisión unificada de autorización
+
+Produce entradas obligatorias para:
+
+BLOQUE E2
+→ procesos, actores, pantallas y experiencia objetivo
+
+BLOQUE E3
+→ dominios, fuentes de verdad y arquitectura de Supabase
+
+BLOQUE E4
+→ servicios operativos transversales
+
+BLOQUES POR APLICACIÓN
+→ alcance funcional, técnico y de experiencia realmente faltante
+
+Durante este bloque no se implementan pantallas, migraciones ni cambios
+físicos en Supabase.
+
+### Principio obligatorio
+
+El roadmap no se derivará únicamente del código existente.
+
+```text
+OPERACIÓN REAL
++
+PROCESOS MANUALES
++
+DOCUMENTOS Y HERRAMIENTAS EXTERNAS
++
+CÓDIGO ACTUAL
++
+DATOS ACTUALES
++
+PANTALLAS ACTUALES
++
+INFRAESTRUCTURA PARCIAL
++
+CAPACIDADES TODAVÍA AUSENTES
+        ↓
+MAPA DE CAPACIDADES DE VENTO GROUP
+        ↓
+MATRIZ DE COBERTURA FUNCIONAL Y TÉCNICA
+        ↓
+ROADMAP OBJETIVO
+```
+
+### AUDITORÍA DE OPERACIÓN REAL
+
+### [ ] OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
+### [ ] OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
+### [ ] OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+### [ ] OPS-AUD-004 — Inventariar procesos ejecutados en papel
+### [ ] OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas
+### [ ] OPS-AUD-006 — Inventariar formularios, remisiones, órdenes, etiquetas, comprobantes y reportes
+### [ ] OPS-AUD-007 — Documentar flujo ordinario de cada proceso
+### [ ] OPS-AUD-008 — Documentar excepciones, correcciones, anulaciones, devoluciones y reversión
+### [ ] OPS-AUD-009 — Documentar aprobaciones, segregación de funciones y controles manuales
+### [ ] OPS-AUD-010 — Medir frecuencia, volumen, criticidad, tiempos y estacionalidad
+### [ ] OPS-AUD-011 — Identificar dependencias entre áreas, sedes, aplicaciones y terceros
+### [ ] OPS-AUD-012 — Identificar puntos de doble digitación y conciliación manual
+### [ ] OPS-AUD-013 — Identificar pérdidas de trazabilidad, información y responsabilidad
+### [ ] OPS-AUD-014 — Identificar contingencias por caída de red, energía, dispositivo o proveedor
+### [ ] OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso
+
+### MAPA CANÓNICO DE CAPACIDADES EMPRESARIALES
+
+### [ ] CAP-MAP-001 — Crear taxonomía jerárquica de capacidades de Vento Group
+### [ ] CAP-MAP-002 — Definir capacidad, subcapacidad y resultado empresarial esperado
+### [ ] CAP-MAP-003 — Vincular cada capacidad con empresa, sede, área y canal aplicables
+### [ ] CAP-MAP-004 — Definir dominio y aplicación propietaria candidata
+### [ ] CAP-MAP-005 — Definir aplicaciones y sistemas consumidores
+### [ ] CAP-MAP-006 — Identificar actor iniciador, ejecutor, supervisor y aprobador
+### [ ] CAP-MAP-007 — Identificar información de entrada y resultado producido
+### [ ] CAP-MAP-008 — Identificar fuente de verdad actual y fuente de verdad objetivo
+### [ ] CAP-MAP-009 — Identificar eventos e integraciones requeridos
+### [ ] CAP-MAP-010 — Identificar permisos y controles de autorización requeridos
+### [ ] CAP-MAP-011 — Identificar pantallas, dispositivos, documentos y evidencia requeridos
+### [ ] CAP-MAP-012 — Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance
+### [ ] CAP-MAP-013 — Detectar capacidades duplicadas o con propiedad competidora
+### [ ] CAP-MAP-014 — Detectar capacidades necesarias que no aparecen en código ni datos actuales
+### [ ] CAP-MAP-015 — Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group
+
+### AUDITORÍA DE IMPLEMENTACIÓN ACTUAL
+
+### [ ] CODE-AUD-001 — Inventariar todos los repositorios y superficies desplegadas
+### [ ] CODE-AUD-002 — Inventariar rutas, layouts, pantallas, componentes y formularios
+### [ ] CODE-AUD-003 — Inventariar acciones de usuario y comportamiento efectivo
+### [ ] CODE-AUD-004 — Inventariar hooks, servicios, adaptadores, consultas y estado local
+### [ ] CODE-AUD-005 — Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
+### [ ] CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
+### [ ] CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
+### [ ] CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
+### [ ] CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
+### [ ] CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa
+### [ ] CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
+### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente
+### [ ] CODE-AUD-013 — Detectar código legacy todavía activo
+### [ ] CODE-AUD-014 — Detectar código duplicado y fuentes de verdad competidoras
+### [ ] CODE-AUD-015 — Detectar rutas, componentes, funciones y tablas sin consumidores
+### [ ] CODE-AUD-016 — Ejecutar build, lint, tipos y pruebas disponibles por repositorio
+### [ ] CODE-AUD-017 — Auditar autorización, validación de servidor y exposición de datos
+### [ ] CODE-AUD-018 — Auditar operación offline, reintentos, concurrencia e idempotencia
+### [ ] CODE-AUD-019 — Vincular cada capacidad con su implementación actual verificable
+### [ ] CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
+
+### COBERTURA EMPRESARIAL OBLIGATORIA
+
+E1 deberá evaluar como mínimo los siguientes dominios. Evaluar un dominio
+no obliga a construirlo dentro de Vento OS; obliga a decidir de forma
+explícita su tratamiento.
+
+Clasificaciones permitidas:
+
+```text
+BUILD
+REUSE_OR_REFACTOR
+INTEGRATE_EXTERNAL
+BUY
+CONTROLLED_MANUAL
+DEFERRED
+OUT_OF_SCOPE
+RETIRE
+```
+
+### [ ] CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
+### [ ] CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro
+### [ ] CAP-SCOPE-003 — Evaluar seguridad y salud en el trabajo
+### [ ] CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas
+### [ ] CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
+### [ ] CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
+### [ ] CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
+### [ ] CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
+### [ ] CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+### [ ] CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
+### [ ] CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
+### [ ] CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
+### [ ] CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
+### [ ] CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
+### [ ] CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
+### [ ] CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
+### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
+### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+
+### MATRIZ DE COBERTURA
+
+Cada capacidad deberá recibir exactamente un estado principal:
+
+```text
+PRODUCTION_READY
+FUNCTIONAL_PARTIAL
+INFRASTRUCTURE_ONLY
+UI_ONLY
+PROTOTYPE_ONLY
+LEGACY_ACTIVE
+BROKEN
+MISSING
+BLOCKED_BY_DEPENDENCY
+DEFERRED
+OUT_OF_SCOPE
+```
+
+### [ ] CAP-COVER-001 — Definir criterios verificables de cada estado de cobertura
+### [ ] CAP-COVER-002 — Clasificar cobertura funcional
+### [ ] CAP-COVER-003 — Clasificar cobertura de interfaz
+### [ ] CAP-COVER-004 — Clasificar cobertura de servidor
+### [ ] CAP-COVER-005 — Clasificar cobertura de datos
+### [ ] CAP-COVER-006 — Clasificar cobertura de autorización
+### [ ] CAP-COVER-007 — Clasificar cobertura de auditoría
+### [ ] CAP-COVER-008 — Clasificar cobertura de pruebas
+### [ ] CAP-COVER-009 — Clasificar cobertura de integración
+### [ ] CAP-COVER-010 — Registrar dependencias y bloqueos
+### [ ] CAP-COVER-011 — Priorizar por criticidad, frecuencia, riesgo y valor operativo
+### [ ] CAP-COVER-012 — Aprobar matriz capacidad × proceso × aplicación × implementación
+
+### REGISTRO CANÓNICO DE BRECHAS
+
+### [ ] GAP-CTRL-001 — Consolidar brechas de auditoría, CAT-021, operación y código
+### [ ] GAP-CTRL-002 — Deduplicar brechas equivalentes
+### [ ] GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación
+### [ ] GAP-CTRL-004 — Asignar propietario y fecha de decisión
+### [ ] GAP-CTRL-005 — Vincular cada brecha con capacidad y proceso
+### [ ] GAP-CTRL-006 — Vincular cada brecha con tarea y paquete de implementación
+### [ ] GAP-CTRL-007 — Definir criterio y evidencia de cierre
+### [ ] GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
+
+### Salida obligatoria
+
+BLOQUE E1 deberá entregar:
+
+- mapa aprobado de capacidades de Vento Group;
+- inventario de procesos manuales y externos;
+- inventario técnico por repositorio;
+- matriz de cobertura funcional y técnica;
+- matriz de cobertura empresarial mínima;
+- registro canónico de brechas con propietario, destino y evidencia de cierre;
+- backlog de capacidades ausentes;
+- backlog de implementación incompleta;
+- decisiones pendientes de propiedad;
+- lista de nuevas necesidades de autorización;
+- lista de servicios transversales requeridos;
+- prioridades y dependencias.
+
+### Regla de evolución del catálogo
+
+Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
+
+```text
+CAPACIDAD AUSENTE
+→ DEFINICIÓN FUNCIONAL SUFICIENTE
+→ REVISIÓN CONTRACTUAL
+→ NUEVA VERSIÓN DEL CATÁLOGO, SI CORRESPONDE
+→ DIFF DE MATRICES Y DISPOSITIVOS
+→ REGENERACIÓN DE DATASETS AFECTADOS
+```
+
+El catálogo congelado antes de E1 se considerará una versión base de las
+capacidades conocidas y maduras, no una declaración de que toda capacidad
+futura de Vento Group ya fue inventariada.
 ## BLOQUE E2
 
 **Arquitectura funcional, procesos y experiencia transversal**
@@ -68296,17 +68617,29 @@ BLOQUE C
 → catálogo canónico de aplicaciones y permisos
 
 BLOQUE D
-→ matrices definitivas
+→ matrices vigentes de la versión contractual base
 
 BLOQUE E
 → contexto y decisión de autorización
 
+BLOQUE E1
+→ mapa de capacidades, operación real y cobertura de implementación
+
 No implementa todavía pantallas definitivas.
+
+Regla de realimentación:
+
+- E1 conserva el AS-IS y la línea base de cobertura;
+- E2 diseña el TO-BE;
+- E2, E3, E4, X y los bloques por aplicación pueden devolver nuevas
+  brechas, dependencias o decisiones de propiedad a E1;
+- una devolución deberá actualizar la trazabilidad y no crear inventarios
+  paralelos.
 
 CATÁLOGO DE PROCESOS
 
-### [ ] PROC-CAT-001 Inventariar todos los procesos actuales de Vento OS
-### [ ] PROC-CAT-002 Identificar procesos manuales todavía no representados
+### [ ] PROC-CAT-001 Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+### [ ] PROC-CAT-002 Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes
 ### [ ] PROC-CAT-003 Crear identificador estable para cada proceso
 ### [ ] PROC-CAT-004 Definir propósito empresarial de cada proceso
 ### [ ] PROC-CAT-005 Definir aplicación propietaria de cada proceso
@@ -68370,6 +68703,35 @@ CONTRATO DE PANTALLAS
 ### [ ] PROC-SCREEN-027 Definir métrica de usabilidad
 ### [ ] PROC-SCREEN-028 Definir criterio de aceptación operativo
 
+COBERTURA DE PROCESOS
+
+### [ ] PROC-COVER-001 Vincular cada proceso con una capacidad aprobada en E1
+### [ ] PROC-COVER-002 Vincular cada proceso con su operación manual actual
+### [ ] PROC-COVER-003 Vincular cada proceso con su implementación actual
+### [ ] PROC-COVER-004 Clasificar proceso completo, parcial, manual, ausente o diferido
+### [ ] PROC-COVER-005 Identificar dependencias que impiden completar el proceso
+### [ ] PROC-COVER-006 Definir alcance mínimo y alcance objetivo
+### [ ] PROC-COVER-007 Prohibir declarar completo un proceso con solo infraestructura
+### [ ] PROC-COVER-008 Aprobar matriz capacidad → proceso → pantalla → implementación
+
+### [ ] PROC-COVER-009 Vincular explícitamente proceso AS-IS y proceso TO-BE
+### [ ] PROC-COVER-010 Registrar nuevas brechas y devolverlas al registro canónico de E1
+
+REQUISITOS NO FUNCIONALES
+
+### [ ] NFR-REQ-001 — Definir criticidad y disponibilidad por proceso
+### [ ] NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
+### [ ] NFR-REQ-003 — Definir tiempos máximos de respuesta
+### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
+### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
+### [ ] NFR-REQ-006 — Definir trazabilidad y retención
+### [ ] NFR-REQ-007 — Definir accesibilidad y ergonomía
+### [ ] NFR-REQ-008 — Definir hardware, red y periféricos requeridos
+### [ ] NFR-REQ-009 — Definir observabilidad, soporte y alertas
+### [ ] NFR-REQ-010 — Definir respaldo, RTO y RPO
+### [ ] NFR-REQ-011 — Definir compatibilidad mínima por dispositivo
+### [ ] NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+
 PRINCIPIOS DE EXPERIENCIA
 
 ### [ ] UX-BASE-001 Separar experiencia operativa y administrativa
@@ -68411,7 +68773,6 @@ SERVER PROTECTION
 AUDIT
 +
 USABILITY CRITERIA
-
 ## BLOQUE E3
 
 **Arquitectura canónica de datos y gobierno integral de Supabase**
@@ -68420,6 +68781,9 @@ Este bloque convierte Supabase en una parte explícita del modelo canónico
 de Vento OS.
 
 No reemplaza:
+
+BLOQUE E1
+→ identifica capacidades, procesos reales y cobertura técnica actual
 
 BLOQUE E2
 → define procesos, actores, pantallas y fuentes de verdad empresariales
@@ -68841,6 +69205,327 @@ Aplicaciones
 → consumidoras del modelo aprobado, sin redefinirlo
 
 
+## BLOQUE E4
+
+**Servicios operativos transversales, colas y evidencia**
+
+Este bloque define servicios compartidos que soportan varios procesos y
+aplicaciones sin apropiarse de la lógica empresarial de cada dominio.
+
+Depende de:
+
+BLOQUE E1
+→ identifica necesidades transversales reales y cobertura actual
+
+BLOQUE E2
+→ define procesos, documentos, acciones y experiencia requerida
+
+BLOQUE E3
+→ define fuentes de verdad, persistencia y seguridad
+
+BLOQUE X
+→ define eventos, integraciones y adaptadores
+
+No implementa todavía adaptadores físicos ni migraciones.
+
+### Principio de propiedad
+
+```text
+APLICACIÓN PROPIETARIA DEL PROCESO
+→ decide qué resultado empresarial debe producirse
+
+SERVICIO TRANSVERSAL
+→ ejecuta una capacidad técnica compartida mediante contrato versionado
+```
+
+Un servicio transversal no deberá convertirse en propietario del proceso,
+del permiso empresarial ni de la fuente de verdad del dominio consumidor.
+
+### CATÁLOGO DE SERVICIOS TRANSVERSALES
+
+### [ ] TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
+### [ ] TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio
+### [ ] TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+### [ ] TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+### [ ] TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+### [ ] TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+### [ ] TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
+### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
+### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
+
+### INFRAESTRUCTURA CANÓNICA DE COLAS
+
+### [ ] QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes
+### [ ] QUEUE-ARC-002 — Definir contrato canónico de trabajo asíncrono
+### [ ] QUEUE-ARC-003 — Definir clave de idempotencia por trabajo
+### [ ] QUEUE-ARC-004 — Definir prioridad, programación y vencimiento
+### [ ] QUEUE-ARC-005 — Definir asignación a trabajador, dispositivo o adaptador
+### [ ] QUEUE-ARC-006 — Definir reintentos, backoff y límite máximo
+### [ ] QUEUE-ARC-007 — Definir cancelación antes y durante ejecución
+### [ ] QUEUE-ARC-008 — Definir cola de fallos y recuperación manual
+### [ ] QUEUE-ARC-009 — Definir bloqueo de duplicados y concurrencia
+### [ ] QUEUE-ARC-010 — Definir estados y eventos canónicos
+### [ ] QUEUE-ARC-011 — Definir métricas de espera, ejecución y error
+### [ ] QUEUE-ARC-012 — Definir autorización para crear, cancelar y reintentar trabajos
+
+Estados mínimos:
+
+```text
+queued
+scheduled
+assigned
+processing
+succeeded
+retry_pending
+failed
+cancelled
+expired
+```
+
+### SERVICIO TRANSVERSAL DE IMPRESIÓN
+
+### [ ] PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo
+### [ ] PRINT-ARC-002 — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión
+### [ ] PRINT-ARC-003 — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles
+### [ ] PRINT-ARC-004 — Definir aplicación propietaria de cada documento
+### [ ] PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+### [ ] PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+### [ ] PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+### [ ] PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
+### [ ] PRINT-ARC-009 — Definir estado de impresora y heartbeat
+### [ ] PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
+### [ ] PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
+### [ ] PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable
+### [ ] PRINT-ARC-013 — Definir cancelación y expiración
+### [ ] PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
+### [ ] PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
+### [ ] PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
+### [ ] PRINT-ARC-017 — Definir operación offline y contingencia manual
+### [ ] PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+### [ ] PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+### [ ] PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+
+Flujo mínimo:
+
+```text
+PROCESO EMPRESARIAL
+→ DOCUMENTO VERSIONADO
+→ PRINT JOB
+→ ROUTING
+→ PRINTER ADAPTER
+→ RESULTADO Y AUDITORÍA
+```
+
+La cola de impresión no autoriza la operación empresarial que originó el
+documento. Solo ejecuta un trabajo ya autorizado.
+
+### NOTIFICACIONES Y ALERTAS
+
+### [ ] NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales
+### [ ] NOTIFY-ARC-002 — Definir evento empresarial que origina cada notificación
+### [ ] NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto
+### [ ] NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación
+### [ ] NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
+### [ ] NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
+### [ ] NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
+### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
+### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
+### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
+
+### ARCHIVOS, DOCUMENTOS Y EVIDENCIA
+
+### [ ] EVID-ARC-001 — Inventariar archivos y evidencia por proceso
+### [ ] EVID-ARC-002 — Definir propietario funcional de cada tipo documental
+### [ ] EVID-ARC-003 — Definir clasificación de sensibilidad
+### [ ] EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
+### [ ] EVID-ARC-005 — Definir carga, sustitución, anulación y retención
+### [ ] EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
+### [ ] EVID-ARC-007 — Definir acceso temporal y URLs firmadas
+### [ ] EVID-ARC-008 — Definir auditoría de consulta y modificación
+### [ ] EVID-ARC-009 — Definir conservación legal y eliminación
+### [ ] EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
+
+Los pilotos operativos reales no se ejecutan durante E4.
+
+E4 define contratos, arquitectura y criterios. La implementación, readiness,
+cutover, piloto e hypercare se planifican en E5 y se ejecutan después de
+implementar el paquete aprobado.
+
+### Salida obligatoria
+
+BLOQUE E4 deberá entregar:
+
+- catálogo de servicios transversales;
+- contrato canónico de trabajos asíncronos;
+- arquitectura de colas;
+- arquitectura de impresión;
+- catálogo de impresoras y documentos;
+- reglas de enrutamiento por sede y área;
+- contrato de notificaciones;
+- contrato de archivos y evidencia;
+- permisos y riesgos contractuales que deban volver al catálogo;
+- plan de implementación y criterios de piloto.
+## BLOQUE E5
+
+**Diseño de solución, paquetes de implementación y preparación operativa**
+
+Este bloque convierte las decisiones aprobadas de E1, E2, E3, E4, X y de
+los roadmaps por aplicación en unidades de trabajo implementables,
+verificables, desplegables y reversibles.
+
+No reemplaza:
+
+BLOQUE E1
+→ descubre operación real, capacidades y cobertura actual
+
+BLOQUE E2
+→ diseña procesos, actores, pantallas y experiencia objetivo
+
+BLOQUE X
+→ define integraciones, eventos y contratos entre sistemas
+
+BLOQUE E3
+→ define arquitectura de datos, Supabase y transición
+
+BLOQUE E4
+→ define colas, impresión, notificaciones y evidencia
+
+BLOQUES POR APLICACIÓN
+→ definen el comportamiento funcional y la experiencia de cada dominio
+
+BLOQUE E5
+→ transforma esas decisiones en paquetes concretos de implementación,
+  readiness, cutover, piloto, rollback e hypercare
+
+Durante este bloque no se implementan código, migraciones ni cambios
+físicos. Se diseña y aprueba cómo se implementará cada alcance.
+
+### Principios obligatorios
+
+```text
+CAPACIDAD APROBADA
+→ PROCESO TO-BE
+→ DISEÑO FUNCIONAL Y TÉCNICO
+→ PAQUETE DE IMPLEMENTACIÓN
+→ PRUEBAS
+→ READINESS
+→ CUTOVER
+→ PILOTO OPERATIVO
+→ HYPERCARE
+→ EVIDENCIA DE CIERRE
+```
+
+Una capacidad no podrá pasar a implementación cuando:
+
+- no tenga propietario funcional;
+- no tenga aplicación y repositorio propietarios;
+- no tenga alcance objetivo aprobado;
+- no tenga impacto de autorización evaluado;
+- no tenga impacto de datos e integración evaluado;
+- no tenga pruebas, rollout y rollback definidos;
+- no tenga criterio de aceptación operativo;
+- conserve una brecha crítica sin responsable.
+
+### PAQUETES DE IMPLEMENTACIÓN
+
+### [ ] DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación
+### [ ] DELIV-PKG-002 — Vincular el paquete con capability_id, process_id y gap_id
+### [ ] DELIV-PKG-003 — Definir aplicación, dominio y repositorio propietarios
+### [ ] DELIV-PKG-004 — Definir estado AS-IS y resultado TO-BE verificable
+### [ ] DELIV-PKG-005 — Definir alcance incluido, excluido y diferido
+### [ ] DELIV-PKG-006 — Definir pantallas, componentes y navegación que se crearán o modificarán
+### [ ] DELIV-PKG-007 — Definir lógica de dominio, Server Actions, API, RPC y Edge Functions
+### [ ] DELIV-PKG-008 — Definir tablas, vistas, funciones, políticas, Storage y Realtime afectados
+### [ ] DELIV-PKG-009 — Definir migraciones, backfills, compatibilidad y retiro legacy
+### [ ] DELIV-PKG-010 — Definir eventos emitidos, consumidos, colas y compensaciones
+### [ ] DELIV-PKG-011 — Definir impresión, notificaciones, documentos y evidencia requeridos
+### [ ] DELIV-PKG-012 — Definir permisos, modalidad, alcance, contexto y contrato de recurso
+### [ ] DELIV-PKG-013 — Definir requisitos no funcionales aplicables
+### [ ] DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
+### [ ] DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación
+### [ ] DELIV-PKG-016 — Definir pruebas unitarias, contractuales, integración, seguridad y E2E
+### [ ] DELIV-PKG-017 — Definir observabilidad, métricas, logs, alertas y auditoría
+### [ ] DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva
+### [ ] DELIV-PKG-019 — Definir estrategia de despliegue y rollout
+### [ ] DELIV-PKG-020 — Definir rollback técnico, funcional y de datos
+### [ ] DELIV-PKG-021 — Definir documentación, procedimiento y capacitación
+### [ ] DELIV-PKG-022 — Definir alcance, actores, datos y duración del piloto
+### [ ] DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
+### [ ] DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
+### [ ] DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
+
+### PUERTA DE READINESS OPERATIVO
+
+### [ ] READY-GATE-001 — Confirmar código desplegado en el entorno objetivo
+### [ ] READY-GATE-002 — Confirmar migraciones aplicadas y datos validados
+### [ ] READY-GATE-003 — Confirmar permisos, matrices y dispositivos configurados
+### [ ] READY-GATE-004 — Confirmar usuarios, roles, sedes, áreas y turnos requeridos
+### [ ] READY-GATE-005 — Confirmar catálogos y datos maestros mínimos
+### [ ] READY-GATE-006 — Confirmar integraciones y credenciales de prueba o producción
+### [ ] READY-GATE-007 — Confirmar hardware, red, escáneres e impresoras
+### [ ] READY-GATE-008 — Confirmar procedimientos operativos y contingencias
+### [ ] READY-GATE-009 — Confirmar capacitación y material de apoyo
+### [ ] READY-GATE-010 — Confirmar mesa de soporte, responsables y escalamiento
+### [ ] READY-GATE-011 — Confirmar monitoreo, métricas y alertas
+### [ ] READY-GATE-012 — Confirmar respaldo y rollback probados
+### [ ] READY-GATE-013 — Capturar línea base previa al piloto
+### [ ] READY-GATE-014 — Registrar riesgos aceptados y condiciones de suspensión
+### [ ] READY-GATE-015 — Aprobar formalmente la entrada al piloto operativo
+
+### CUTOVER Y PILOTO
+
+### [ ] CUTOVER-OPS-001 — Definir fecha, ventana y responsables del cutover
+### [ ] CUTOVER-OPS-002 — Definir secuencia de activación por sede, área, rol o proceso
+### [ ] CUTOVER-OPS-003 — Definir convivencia temporal con el proceso anterior
+### [ ] CUTOVER-OPS-004 — Evitar doble registro y doble efecto durante la transición
+### [ ] CUTOVER-OPS-005 — Definir conciliaciones durante el piloto
+### [ ] CUTOVER-OPS-006 — Definir criterio de pausa, reversión o continuación
+### [ ] CUTOVER-OPS-007 — Registrar incidentes, decisiones y cambios de alcance
+### [ ] CUTOVER-OPS-008 — Medir tiempos, errores, adopción y resultado empresarial
+### [ ] CUTOVER-OPS-009 — Aprobar salida del piloto o exigir correcciones
+### [ ] CUTOVER-OPS-010 — Retirar el proceso anterior solo con evidencia suficiente
+
+### HYPERCARE Y ESTABILIZACIÓN
+
+### [ ] HYPERCARE-OPS-001 — Definir periodo de acompañamiento intensivo
+### [ ] HYPERCARE-OPS-002 — Definir responsables funcionales y técnicos
+### [ ] HYPERCARE-OPS-003 — Monitorear errores, colas, integraciones y rendimiento
+### [ ] HYPERCARE-OPS-004 — Monitorear adopción, tiempos y desviaciones operativas
+### [ ] HYPERCARE-OPS-005 — Conciliar datos y efectos entre dominios
+### [ ] HYPERCARE-OPS-006 — Priorizar y corregir incidentes de estabilización
+### [ ] HYPERCARE-OPS-007 — Registrar deuda aceptada y tareas posteriores
+### [ ] HYPERCARE-OPS-008 — Confirmar soporte ordinario y documentación definitiva
+### [ ] HYPERCARE-OPS-009 — Confirmar retiro controlado de contingencias temporales
+### [ ] HYPERCARE-OPS-010 — Aprobar cierre con evidencia funcional, técnica y operativa
+
+### PUERTA DE SALIDA DE E5
+
+### [ ] E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado
+### [ ] E5-GATE-002 — Confirmar que cada brecha crítica tiene propietario y destino
+### [ ] E5-GATE-003 — Confirmar que los requisitos no funcionales están cubiertos
+### [ ] E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
+### [ ] E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
+### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
+### [ ] E5-GATE-007 — Confirmar trazabilidad hasta pruebas y evidencia de cierre
+### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes
+
+### Salida obligatoria
+
+BLOQUE E5 deberá entregar:
+
+- catálogo de paquetes de implementación;
+- trazabilidad capacidad → proceso → brecha → paquete;
+- inventario exacto de cambios por repositorio;
+- impacto de datos, autorización, integración y servicios transversales;
+- requisitos no funcionales aplicables;
+- estrategia de pruebas y observabilidad;
+- readiness operativo;
+- plan de cutover y piloto;
+- rollback y contingencia;
+- plan de capacitación y soporte;
+- plan de hypercare;
+- criterios y evidencia de cierre.
 ## BLOQUE F
 
 **ANIMA como iniciador del turno**
@@ -69298,6 +69983,52 @@ EXPERIENCIA
 ### [ ] NEXO-AUTH-019 Eliminar helpers duplicados
 ### [ ] NEXO-AUTH-020 Ejecutar pruebas integrales
 
+### EXTENSIÓN DE DOMINIO — LPN, CONTENEDORES, ACTIVOS Y REUTILIZABLES
+
+Esta extensión deberá ejecutarse como parte de NEXO y no se considerará
+resuelta por la sola existencia de tablas, permisos o rutas legacy.
+
+### [ ] NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores
+### [ ] NEXO-DOM-002 — Definir propósito y tipos canónicos de LPN
+### [ ] NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar
+### [ ] NEXO-DOM-004 — Definir contenido, empaque y desempaque de LPN
+### [ ] NEXO-DOM-005 — Definir división, unión y transferencia de contenido
+### [ ] NEXO-DOM-006 — Definir LPN anidados y contenedores retornables
+### [ ] NEXO-DOM-007 — Definir relación sede → LOC → LPN → contenido
+### [ ] NEXO-DOM-008 — Definir custodia y responsable actual
+### [ ] NEXO-DOM-009 — Separar activo individual y reutilizable controlado por cantidad
+### [ ] NEXO-DOM-010 — Definir estado, condición, daño, pérdida y faltante
+### [ ] NEXO-DOM-011 — Definir préstamo, devolución, transferencia y cambio de custodia
+### [ ] NEXO-DOM-012 — Definir mantenimiento, reparación y disponibilidad
+### [ ] NEXO-DOM-013 — Definir baja, descarte, venta o reemplazo
+### [ ] NEXO-DOM-014 — Definir kits, conjuntos y validación de completitud
+### [ ] NEXO-DOM-015 — Definir conteos de activos, reutilizables y contenedores
+### [ ] NEXO-DOM-016 — Definir repuestos, compatibilidad y stock mínimo
+### [ ] NEXO-DOM-017 — Definir auditoría, historial y evidencia
+### [ ] NEXO-DOM-018 — Integrar etiquetas LOC, LPN, activos y documentos con BLOQUE E4
+
+### [ ] NEXO-DOM-019 — Separar identidad permanente del contenedor físico e identidad temporal o persistente del LPN
+### [ ] NEXO-DOM-020 — Definir cuándo un contenedor conserva, cambia o cierra su LPN
+### [ ] NEXO-DOM-021 — Prohibir doble contabilización entre existencia suelta en LOC y existencia contenida en LPN
+### [ ] NEXO-DOM-022 — Definir que mover un LPN mueve atómicamente todo su contenido
+### [ ] NEXO-DOM-023 — Definir trazabilidad de lote, serial, vencimiento y condición dentro del LPN
+### [ ] NEXO-DOM-024 — Definir capacidad, peso, volumen y compatibilidad de contenido
+### [ ] NEXO-DOM-025 — Vincular repuestos consumidos con mantenimiento y costo del activo
+### [ ] NEXO-DOM-026 — Definir inspecciones, mantenimiento preventivo, garantía y calibración
+### [ ] NEXO-DOM-027 — Resolver propiedad de vehículos, checklist, kilometraje, combustible y mantenimiento de flota
+### [ ] NEXO-DOM-028 — Emitir eventos financieros por adquisición, reparación, pérdida y baja cuando corresponda
+
+### [ ] NEXO-AUTH-021 — Auditar permisos actuales de LPN, activos y contenedores
+### [ ] NEXO-AUTH-022 — Proteger creación, actualización, cierre, anulación y reetiquetado de LPN
+### [ ] NEXO-AUTH-023 — Proteger empaque, desempaque, división, unión y transferencia
+### [ ] NEXO-AUTH-024 — Proteger consulta y administración de activos y reutilizables
+### [ ] NEXO-AUTH-025 — Proteger custodia, préstamo, devolución y transferencia
+### [ ] NEXO-AUTH-026 — Proteger mantenimiento, daño, pérdida y baja
+### [ ] NEXO-AUTH-027 — Separar captura de conteo y aprobación de diferencias
+### [ ] NEXO-AUTH-028 — Proteger impresión y reimpresión mediante permisos atómicos
+### [ ] NEXO-AUTH-029 — Eliminar dependencia de permisos amplios legacy
+### [ ] NEXO-AUTH-030 — Ejecutar pruebas integrales del subdominio
+
 SUBBLOQUE K2 — Procesos y experiencia de NEXO
 
 ### [ ] NEXO-UX-001 Inventariar procesos reales de inventario y logística
@@ -69323,9 +70054,26 @@ SUBBLOQUE K2 — Procesos y experiencia de NEXO
 ### [ ] NEXO-UX-021 Mostrar solo información necesaria según etapa
 ### [ ] NEXO-UX-022 Diseñar manejo de diferencias y excepciones
 ### [ ] NEXO-UX-023 Probar flujos en tablets y kioscos
-### [ ] NEXO-UX-024 Ejecutar piloto con bodeguero, conductor y receptores
-### [ ] NEXO-UX-025 Medir tiempo, errores y necesidad de capacitación
+### [ ] NEXO-UX-024 Validar el prototipo con bodeguero, conductor y receptores
+### [ ] NEXO-UX-025 Definir métricas de tiempo, error y capacitación para el piloto operativo
 
+### [ ] NEXO-UX-026 Diseñar ciclo de vida completo de LPN
+### [ ] NEXO-UX-027 Diseñar empaque, desempaque y consulta de contenido
+### [ ] NEXO-UX-028 Diseñar división, unión, transferencia y reetiquetado
+### [ ] NEXO-UX-029 Diseñar contenedores anidados y retornables
+### [ ] NEXO-UX-030 Diseñar catálogo de activos y reutilizables
+### [ ] NEXO-UX-031 Diseñar custodia, préstamo, devolución y transferencia
+### [ ] NEXO-UX-032 Diseñar estado, daño, pérdida, reparación y baja
+### [ ] NEXO-UX-033 Diseñar kits, conjuntos y control de completitud
+### [ ] NEXO-UX-034 Diseñar conteos de activos y reutilizables
+### [ ] NEXO-UX-035 Diseñar repuestos, compatibilidad y reposición mínima
+### [ ] NEXO-UX-036 Diseñar búsqueda por LOC, LPN, código, responsable y contenido
+### [ ] NEXO-UX-037 Diseñar impresión de LOC, LPN, activo y documento
+### [ ] NEXO-UX-038 Diseñar operación con escáner y etiquetas dañadas
+### [ ] NEXO-UX-039 Diseñar inventario inicial de contenedores y activos
+### [ ] NEXO-UX-040 Validar el prototipo del subdominio con decoración, vajilla, herramientas y repuestos
+### [ ] NEXO-UX-041 Definir línea base y métricas objetivo de pérdidas, búsqueda y diferencias
+### [ ] NEXO-UX-042 Aprobar el diseño del subdominio y remitirlo a E5 antes de implementarlo físicamente
 ## BLOQUE L
 
 **FOGO**
@@ -69363,8 +70111,7 @@ SUBBLOQUE L2 — Procesos y experiencia de FOGO
 ### [ ] FOGO-UX-012 Conectar consumo de insumos con NEXO
 ### [ ] FOGO-UX-013 Conectar producto terminado con NEXO
 ### [ ] FOGO-UX-014 Diseñar pantalla para supervisor de producción
-### [ ] FOGO-UX-015 Ejecutar piloto por área productiva
-
+### [ ] FOGO-UX-015 Validar el prototipo por área productiva
 ## BLOQUE M
 
 **ORIGO**
@@ -69402,8 +70149,7 @@ SUBBLOQUE M2 — Procesos y experiencia de ORIGO
 ### [ ] ORIGO-UX-013 Evitar repetir recepción manualmente en NEXO
 ### [ ] ORIGO-UX-014 Conectar recepción con entrada de inventario
 ### [ ] ORIGO-UX-015 Conectar compra con evento financiero
-### [ ] ORIGO-UX-016 Ejecutar piloto con compras y recepción
-
+### [ ] ORIGO-UX-016 Validar el prototipo con compras y recepción
 ## BLOQUE N
 
 **PULSO**
@@ -69445,13 +70191,45 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ### [ ] PULSO-UX-016 Conectar venta con inventario
 ### [ ] PULSO-UX-017 Conectar venta con NUMERA
 ### [ ] PULSO-UX-018 Conectar venta con PASS
-### [ ] PULSO-UX-019 Ejecutar piloto en caja y salón
-
+### [ ] PULSO-UX-019 Validar el prototipo con caja, salón, barra, cocina y mostrador
 ## BLOQUE O
 
 **NUMERA**
 
-### [ ] NUMERA-AUTH-001 Auditar módulos actuales
+### AUDITORÍA FUNCIONAL Y TÉCNICA DE NUMERA
+
+### [ ] NUMERA-AUD-001 — Inventariar rutas, pantallas, componentes y formularios actuales
+### [ ] NUMERA-AUD-002 — Inventariar Server Actions, API, RPC, consultas y jobs utilizados
+### [ ] NUMERA-AUD-003 — Inventariar tablas, vistas, eventos y sistemas fuente
+### [ ] NUMERA-AUD-004 — Identificar módulos completos, parciales, prototipos y ausentes
+### [ ] NUMERA-AUD-005 — Detectar datos simulados, hardcodes, TODO y lógica provisional
+### [ ] NUMERA-AUD-006 — Detectar reportes sin conciliación o sin fuente de verdad aprobada
+### [ ] NUMERA-AUD-007 — Detectar registros manuales duplicados frente a otros dominios
+### [ ] NUMERA-AUD-008 — Auditar cálculos de costos, margen, rentabilidad y punto de equilibrio
+### [ ] NUMERA-AUD-009 — Auditar gastos, centros de costo, cierres y aprobaciones
+### [ ] NUMERA-AUD-010 — Auditar exportaciones, información sensible y trazabilidad
+### [ ] NUMERA-AUD-011 — Ejecutar build, lint, tipos y pruebas existentes
+### [ ] NUMERA-AUD-012 — Crear matriz capacidad financiera × implementación actual
+
+### MAPA DE ALCANCE FINANCIERO
+
+### [ ] NUMERA-DOM-001 — Definir alcance ejecutivo, analítico y contable de NUMERA
+### [ ] NUMERA-DOM-002 — Definir hechos económicos recibidos desde ventas
+### [ ] NUMERA-DOM-003 — Definir hechos económicos recibidos desde compras y recepción
+### [ ] NUMERA-DOM-004 — Definir hechos económicos recibidos desde producción e inventario
+### [ ] NUMERA-DOM-005 — Definir gastos, soportes, aprobación, corrección y anulación
+### [ ] NUMERA-DOM-006 — Definir centros de costo y propiedad de su catálogo
+### [ ] NUMERA-DOM-007 — Definir costos, costo estándar, costo real y variaciones
+### [ ] NUMERA-DOM-008 — Definir rentabilidad por empresa, sede, canal, producto y periodo
+### [ ] NUMERA-DOM-009 — Definir caja, bancos y conciliaciones que pertenezcan al alcance aprobado
+### [ ] NUMERA-DOM-010 — Definir cuentas por pagar y obligaciones si pertenecen a NUMERA
+### [ ] NUMERA-DOM-011 — Definir cierres, periodos y reapertura controlada
+### [ ] NUMERA-DOM-012 — Definir reportes, indicadores y exportaciones oficiales
+### [ ] NUMERA-DOM-013 — Definir fronteras frente al sistema contable o fiscal externo
+### [ ] NUMERA-DOM-014 — Definir conciliación y tratamiento de diferencias
+### [ ] NUMERA-DOM-015 — Aprobar alcance objetivo y capacidades diferidas
+
+### [ ] NUMERA-AUTH-001 Vincular módulos y acciones con permisos y contratos aprobados
 ### [ ] NUMERA-AUTH-002 Clasificar información financiera sensible
 ### [ ] NUMERA-AUTH-003 Definir permisos de lectura
 ### [ ] NUMERA-AUTH-004 Definir permisos de registro
@@ -69482,8 +70260,17 @@ SUBBLOQUE O2 — Procesos y experiencia de NUMERA
 ### [ ] NUMERA-UX-013 Filtrar por empresa, sede y centro de costo
 ### [ ] NUMERA-UX-014 Consumir eventos de PULSO, ORIGO, FOGO y NEXO
 ### [ ] NUMERA-UX-015 Evitar registro financiero duplicado
-### [ ] NUMERA-UX-016 Ejecutar piloto con contabilidad y dirección
+### [ ] NUMERA-UX-016 Validar el prototipo con contabilidad y dirección
 
+### [ ] NUMERA-UX-017 Diseñar conciliación de ventas y pagos
+### [ ] NUMERA-UX-018 Diseñar conciliación de compras y recepciones
+### [ ] NUMERA-UX-019 Diseñar conciliación de inventario, producción y variaciones
+### [ ] NUMERA-UX-020 Diseñar cuentas por pagar cuando pertenezcan al alcance aprobado
+### [ ] NUMERA-UX-021 Diseñar caja y bancos cuando pertenezcan al alcance aprobado
+### [ ] NUMERA-UX-022 Diseñar costos y rentabilidad con trazabilidad hasta el origen
+### [ ] NUMERA-UX-023 Diseñar correcciones y reaperturas sin borrar historial
+### [ ] NUMERA-UX-024 Diseñar tablero de cobertura y conciliación de fuentes
+### [ ] NUMERA-UX-025 Aprobar alcance financiero antes de completar implementación
 ## BLOQUE P
 
 **Dispositivos compartidos**
@@ -70078,39 +70865,38 @@ FASE 1 — DEFINICIÓN CANÓNICA
 1. BLOQUE A — Auditoría integral
 2. BLOQUE B — Modelo definitivo
 3. BLOQUE C — Catálogo canónico
-4. BLOQUE D — Matrices definitivas
+4. BLOQUE D — Matrices y datasets de la versión contractual base
 5. BLOQUE E — Contexto y decisión unificada
 
-FASE 2 — ARQUITECTURA FUNCIONAL, DATOS Y AUDITORÍA DE SUPERFICIES
+FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLEMENTACIÓN
 
-6. BLOQUE E2 — Procesos, actores, pantallas y experiencia transversal
-7. Ejecutar AUTH-UI-001 a AUTH-UI-029
-8. Aprobar catálogo de procesos
-9. Aprobar propiedad funcional de cada proceso
-10. Aprobar contrato transversal de pantallas
-11. BLOQUE X — Definir integraciones internas, externas, credenciales técnicas y eventos empresariales
-12. Aprobar traspasos entre aplicaciones y contrato canónico de ventas
-13. Aprobar integración temporal del POS externo
-14. BLOQUE E3 — Auditar Supabase, normalización y calidad de datos
-15. Aprobar mapa de dominios, fuentes de verdad y propietarios
-16. Aprobar arquitectura de esquemas, Auth, acceso, Storage, Realtime y automatizaciones
-17. Aprobar política canónica de normalización
-18. Aprobar plan de transición y roadmap de migraciones en `vento-shell`
+6. BLOQUE E1 — Auditar operación real, capacidades, dominios y cobertura de implementación
+7. Aprobar línea base de capacidades, registro de brechas y matriz de cobertura por repositorio
+8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales
+9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
+10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
+11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo
+12. BLOQUE E3 — Auditar Supabase, normalización, fuentes de verdad y arquitectura objetivo
+13. Aprobar dominios, arquitectura de datos, normalización y plan de transición
+14. BLOQUE E4 — Definir colas, impresión, notificaciones, documentos y evidencia
+15. Aprobar contratos, planes de implementación y criterios de piloto de los servicios transversales
+16. BLOQUE E5 — Convertir capacidades aprobadas en paquetes de implementación, readiness, cutover, piloto, rollback e hypercare
+17. Reabrir el catálogo y actualizar matrices o datasets únicamente cuando una capacidad nueva madura lo requiera
+18. Aprobar puerta de entrada a fundación compartida e implementación por paquetes
 
 En esta fase se define:
 
-qué proceso existe;
-qué aplicación es propietaria;
-qué actor participa;
-qué pantallas existen;
-qué eventos se producen;
-qué aplicaciones y sistemas externos emiten o consumen esos eventos;
-qué contratos canónicos desacoplan a los proveedores externos;
-qué credenciales técnicas y scopes requiere cada integración;
-qué reglas de normalización aplican a cada dato;
-qué dominio conserva cada fuente de verdad;
-cómo se organiza y protege Supabase;
-cómo se migrará sin romper consumidores existentes.
+- qué capacidades necesita realmente Vento Group;
+- qué procesos existen y cuál es su diseño TO-BE;
+- qué está completo, parcial, provisional, roto o ausente;
+- qué aplicación, dominio y repositorio son propietarios;
+- qué actor, pantalla y dispositivo son necesarios;
+- qué eventos, colas, documentos e impresiones se producen;
+- qué fuentes de verdad y dominios conservan los datos;
+- qué requisitos no funcionales son obligatorios;
+- qué cambios exactos requiere cada repositorio;
+- cómo se probará, desplegará, revertirá y estabilizará cada paquete;
+- cómo se migrará sin romper consumidores existentes.
 
 Todavía no se implementan interfaces definitivas ni se reorganiza
 físicamente Supabase.
@@ -70251,28 +71037,28 @@ Este habilitador:
 
 FASE 5 — NEXO
 
-33. Auditar procesos y pantallas de NEXO
-34. Ejecutar SUBBLOQUE K2 — Procesos y experiencia de NEXO
-35. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NEXO
-36. Aprobar prototipos de NEXO
-37. Implementar BLOQUE K — Autorización de NEXO
-38. Implementar contratos de eventos emitidos y consumidos por NEXO, incluida la salida derivada de ventas externas canónicas
-39. Ejecutar piloto operativo
-40. Corregir hallazgos
-41. Aprobar NEXO
+33. Consumir la matriz E1 y auditar implementación real de NEXO
+34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística
+35. Ejecutar SUBBLOQUE K2 completo, incluidas NEXO-DOM-019 a NEXO-DOM-028 y NEXO-UX-026 a NEXO-UX-042
+36. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor, dispositivo y subdominio
+37. Aprobar paquetes E5 de NEXO con archivos, datos, autorización, eventos, impresión, pruebas y rollback
+38. Implementar funcionalidad, pantallas, acciones, datos, autorización, contratos y seguridad de NEXO
+39. Completar readiness operativo, integraciones y servicios transversales requeridos
+40. Ejecutar cutover, pilotos operativos, conciliación e hypercare
+41. Aprobar NEXO por procesos y subdominios con evidencia de cierre
 
 FASE 6 — FOGO Y ORIGO
 
 42. Auditar y diseñar FOGO
 43. Auditar y diseñar ORIGO
-44. Ejecutar AUTH-UI-052 a AUTH-UI-060 para FOGO y ORIGO
-45. Implementar autorización y seguridad de FOGO
-46. Implementar autorización y seguridad de ORIGO
-47. Implementar INT-PROD — FOGO ↔ NEXO
-48. Implementar INT-PROC — ORIGO → NEXO → NUMERA
-49. Ejecutar pilotos por proceso
-50. Corregir hallazgos
-51. Aprobar FOGO y ORIGO
+44. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos de FOGO y ORIGO
+45. Aprobar paquetes E5 de FOGO y ORIGO
+46. Implementar funcionalidad, datos, autorización y seguridad de FOGO
+47. Implementar funcionalidad, datos, autorización y seguridad de ORIGO
+48. Implementar INT-PROD — FOGO ↔ NEXO e INT-PROC — ORIGO → NEXO → NUMERA
+49. Completar readiness y ejecutar pilotos por proceso
+50. Ejecutar conciliación, correcciones e hypercare
+51. Aprobar FOGO y ORIGO con evidencia de cierre
 
 FOGO y ORIGO podrán avanzar en paralelo después de estabilizar
 los contratos de productos, presentaciones, existencias y movimientos
@@ -70280,54 +71066,54 @@ propiedad de NEXO.
 
 FASE 7 — PULSO
 
-52. Auditar venta, caja, pagos y salón
+52. Auditar venta, caja, pagos, mesas, comandas, preparación, entrega y salón
 53. Ejecutar SUBBLOQUE N2 — Procesos y experiencia de PULSO
-54. Ejecutar AUTH-UI-052 a AUTH-UI-060 para PULSO
-55. Implementar autorización y seguridad de PULSO
-56. Implementar INT-SALES — PULSO adopta el contrato canónico de ventas y sustituye progresivamente al POS externo
-57. Ejecutar piloto en sedes satélite
-58. Corregir hallazgos
-59. Aprobar PULSO
+54. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor y dispositivo
+55. Aprobar paquetes E5 de PULSO
+56. Implementar funcionalidad, datos, autorización, seguridad e INT-SALES de PULSO
+57. Completar readiness y ejecutar piloto progresivo en sedes satélite
+58. Ejecutar conciliación, correcciones e hypercare
+59. Aprobar PULSO con evidencia de cierre
 
 FASE 8 — NUMERA
 
-60. Auditar procesos financieros
-61. Ejecutar SUBBLOQUE O2 — Procesos y experiencia de NUMERA
-62. Ejecutar AUTH-UI-052 a AUTH-UI-060 para NUMERA
-63. Implementar autorización y seguridad de NUMERA
-64. Consumir eventos de ORIGO, FOGO, NEXO y del contrato canónico de ventas emitido por la fuente vigente
-65. Ejecutar piloto con contabilidad y dirección
-66. Corregir hallazgos
-67. Aprobar NUMERA
+60. Consumir la matriz E1 y ejecutar NUMERA-AUD-001 a NUMERA-AUD-012
+61. Aprobar alcance ejecutivo, analítico, financiero y contable de NUMERA
+62. Ejecutar NUMERA-DOM-001 a NUMERA-DOM-015, SUBBLOQUE O2 y AUTH-UI-052 a AUTH-UI-060
+63. Aprobar prototipos y paquetes E5 de NUMERA
+64. Implementar funcionalidad, datos, autorización, contratos y seguridad de NUMERA
+65. Integrar eventos, conciliaciones y fuentes aprobadas de ORIGO, FOGO, NEXO y ventas
+66. Completar readiness y ejecutar piloto, conciliación e hypercare con contabilidad y dirección
+67. Aprobar NUMERA únicamente con cobertura, diferencias y evidencia documentadas
 
 FASE 9 — VISO COMPLETO
 
 68. Ejecutar SUBBLOQUE G3 — Experiencia administrativa de VISO
-69. Ejecutar AUTH-UI-052 a AUTH-UI-060 para VISO
-70. Reorganizar administración por dominios
-71. Integrar auditoría consolidada
-72. Integrar vista previa por trabajador
-73. Probar con cada rol administrativo
-74. Corregir hallazgos
-75. Aprobar VISO completo
+69. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por rol
+70. Aprobar paquetes E5 de VISO
+71. Implementar reorganización funcional, autorización y administración por dominios
+72. Integrar auditoría consolidada y vista previa por trabajador
+73. Completar readiness y ejecutar piloto con cada rol administrativo
+74. Ejecutar correcciones e hypercare
+75. Aprobar VISO completo con evidencia de cierre
 
 FASE 10 — PASS
 
 76. Ejecutar BLOQUE V — PASS e integración con el dominio laboral
-77. Diseñar experiencia del cliente
-78. Implementar acumulación desde el contrato canónico de ventas emitido por la fuente vigente
-79. Implementar redención mediante la fuente comercial vigente sin duplicar identidad, saldo ni efectos
-80. Probar identidad cliente separada del dominio laboral
-81. Ejecutar piloto de fidelización
-82. Corregir hallazgos
-83. Aprobar PASS
+77. Diseñar y validar la experiencia del cliente
+78. Aprobar paquetes E5 de PASS
+79. Implementar acumulación y redención desde la fuente comercial vigente sin duplicar identidad, saldo ni efectos
+80. Probar identidad cliente, seguridad, datos, integraciones y readiness
+81. Ejecutar piloto progresivo de fidelización
+82. Ejecutar conciliación, correcciones e hypercare
+83. Aprobar PASS con evidencia de cierre
 
 FASE 11 — AURA
 
 84. Ejecutar BLOQUE W — AURA como aplicación diferida
 85. Completar auditoría funcional
 86. Decidir continuidad, reemplazo o retiro
-87. Crear roadmap propio únicamente si continúa
+87. Crear roadmap propio y paquetes E5 únicamente si continúa
 88. No ampliar permisos ni procesos antes de la decisión
 
 FASE 12 — CIERRE TRANSVERSAL
@@ -70386,7 +71172,6 @@ las acciones estén protegidas;
 las integraciones sean idempotentes;
 la trazabilidad sea completa;
 el piloto operativo haya sido aprobado.
-
 ## Estado inicial conocido
 
 BASE EXISTENTE
@@ -70400,6 +71185,17 @@ BASE EXISTENTE
 - [x] ANIMA valida turno y rol operativo
 - [~] NEXO utiliza permisos operativos parcialmente
 - [~] VISO administra perfiles y roles parcialmente
+
+- [~] Existen tablas y permisos de LPN, pero el ciclo funcional completo no está aprobado
+- [~] Existen capacidades parciales de activos, sin modelo integral de reutilizables, custodia y mantenimiento
+- [ ] Mapa integral de capacidades de Vento Group aprobado
+- [ ] Matriz de cobertura funcional y técnica por repositorio aprobada
+- [ ] Servicio transversal de impresión y enrutamiento por área aprobado
+
+- [ ] Registro canónico de brechas con propietario y evidencia de cierre aprobado
+- [ ] Requisitos no funcionales transversales aprobados
+- [ ] BLOQUE E5 y paquetes de implementación aprobados
+- [ ] Auditoría funcional y técnica completa de NUMERA
 - [ ] FOGO integrado completamente
 - [ ] ORIGO integrado completamente
 - [ ] PULSO integrado completamente

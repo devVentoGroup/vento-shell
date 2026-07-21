@@ -39,5 +39,4 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ### [ ] PULSO-UX-016 Conectar venta con inventario
 ### [ ] PULSO-UX-017 Conectar venta con NUMERA
 ### [ ] PULSO-UX-018 Conectar venta con PASS
-### [ ] PULSO-UX-019 Ejecutar piloto en caja y salón
-
+### [ ] PULSO-UX-019 Validar el prototipo con caja, salón, barra, cocina y mostrador

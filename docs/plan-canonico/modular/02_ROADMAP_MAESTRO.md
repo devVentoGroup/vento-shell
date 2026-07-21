@@ -1,6 +1,6 @@
 ## ROADMAP MAESTRO
 
-**Autorización, datos, procesos, pantallas, integraciones y experiencia Vento**
+**Autorización, capacidades, operación, datos, procesos, pantallas, integraciones y experiencia Vento**
 
 Este roadmap cubre las diez aplicaciones canónicas del ecosistema:
 
@@ -87,7 +87,9 @@ VENTO-SHELL
   eventos empresariales y componentes compartidos
 
 NEXO
-→ administra inventario, movimientos, custodia y logística
+→ administra catálogo de productos, inventario, ubicaciones, LPN,
+  contenedores, activos reutilizables, repuestos, movimientos,
+  custodia y logística
 
 FOGO
 → administra planificación y ejecución productiva
@@ -110,6 +112,10 @@ AURA
   diferida hasta completar su auditoría funcional
 
 Principio transversal:
+
+CAPACIDAD EMPRESARIAL
+→ define qué resultado debe poder producir Vento Group,
+  aunque todavía no exista en código, datos o pantallas
 
 AUTORIZACIÓN
 → define quién puede ejecutar una capacidad
@@ -151,5 +157,72 @@ Debe auditarse, consolidarse, simplificarse y extenderse a todo el
 ecosistema. No deberá reconstruirse desde cero ni duplicarse entre
 aplicaciones o esquemas.
 
+El roadmap no se considerará integral hasta completar BLOQUE E1.
+
+BLOQUE E1 deberá confrontar:
+
+- operación real;
+- procesos manuales;
+- documentos y herramientas externas;
+- código actual;
+- datos actuales;
+- pantallas actuales;
+- infraestructura parcial;
+- capacidades todavía ausentes.
+
+Una función no se considerará cubierta por existir únicamente como tabla,
+permiso, ruta, componente o prototipo.
+
+Separación obligatoria de diseño:
+
+```text
+BLOQUE E1
+→ AS-IS: operación actual, capacidades, brechas y cobertura
+
+BLOQUE E2
+→ TO-BE: procesos, actores, pantallas y experiencia objetivo
+
+BLOQUES E3, E4, X Y ROADMAPS POR APLICACIÓN
+→ pueden devolver nuevas brechas o dependencias a E1 y E2
+
+BLOQUE E5
+→ convierte el diseño aprobado en paquetes implementables
+```
+
+Ningún mapa se considera inmutable hasta cerrar el diseño objetivo y sus
+dependencias contractuales, técnicas y operativas.
+
 ### Estructura de bloques del roadmap maestro
 
+| Bloque | Responsabilidad |
+| --- | --- |
+| A | Auditoría integral inicial de autorización |
+| B | Modelo definitivo de identidad y autorización |
+| C | Catálogo canónico de permisos |
+| D | Matrices, revisión contractual y datasets |
+| E | Contexto efectivo y decisión unificada |
+| E1 | Descubrimiento de operación, capacidades y cobertura |
+| E2 | Procesos, actores, pantallas y experiencia |
+| E3 | Arquitectura y gobierno integral de Supabase |
+| E4 | Colas, impresión, notificaciones y evidencia |
+| E5 | Paquetes de implementación, readiness, cutover e hypercare |
+| F | ANIMA |
+| G | VISO |
+| H | VENTO-SHELL como núcleo compartido |
+| H2 | SHELL como aplicación y hub |
+| I | Navegación, pantallas y autorización de vistas |
+| J | Acciones de servidor y seguridad real |
+| K | NEXO |
+| L | FOGO |
+| M | ORIGO |
+| N | PULSO |
+| O | NUMERA |
+| P | Dispositivos compartidos |
+| Q | Simulación estricta |
+| R | Implementación física y migraciones de Supabase |
+| S | Mensajes y experiencia de bloqueo |
+| T | Calidad, CI y despliegue |
+| U | Pruebas integrales |
+| V | PASS |
+| W | AURA |
+| X | Integraciones internas y externas |

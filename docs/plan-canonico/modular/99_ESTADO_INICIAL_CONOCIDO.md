@@ -11,6 +11,17 @@ BASE EXISTENTE
 - [x] ANIMA valida turno y rol operativo
 - [~] NEXO utiliza permisos operativos parcialmente
 - [~] VISO administra perfiles y roles parcialmente
+
+- [~] Existen tablas y permisos de LPN, pero el ciclo funcional completo no está aprobado
+- [~] Existen capacidades parciales de activos, sin modelo integral de reutilizables, custodia y mantenimiento
+- [ ] Mapa integral de capacidades de Vento Group aprobado
+- [ ] Matriz de cobertura funcional y técnica por repositorio aprobada
+- [ ] Servicio transversal de impresión y enrutamiento por área aprobado
+
+- [ ] Registro canónico de brechas con propietario y evidencia de cierre aprobado
+- [ ] Requisitos no funcionales transversales aprobados
+- [ ] BLOQUE E5 y paquetes de implementación aprobados
+- [ ] Auditoría funcional y técnica completa de NUMERA
 - [ ] FOGO integrado completamente
 - [ ] ORIGO integrado completamente
 - [ ] PULSO integrado completamente

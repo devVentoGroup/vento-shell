@@ -17,7 +17,7 @@
 | Estado documental         | **VIGENTE**                                                                                                                   |
 | Arquitectura documental   | **MODULAR CANÓNICA**                                                                                                          |
 | Fuente de orden canónico  | `manifest.json`                                                                                                               |
-| Fragmentos canónicos      | **59**                                                                                                                        |
+| Fragmentos canónicos      | **62**                                                                                                                        |
 | Tareas `AUTH` únicas      | **311**                                                                                                                       |
 | Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                                               |
 | Estado del compilado      | **GENERADO Y VALIDADO**                                                                                                       |
@@ -64,6 +64,12 @@
 
 - [Protocolo obligatorio](./01_PROTOCOLO.md)
 - [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
+- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_BLOQUE_E1.md)
+- [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
+- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
+- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_BLOQUE_E4.md)
+
+- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_BLOQUE_E5.md)
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
