@@ -10,48 +10,52 @@
 
 ## Estado canónico
 
-| Campo | Valor |
-| --- | --- |
-| Versión | 2026-07-21 |
-| Revisión documental | **39** |
-| Estado documental | **VIGENTE** |
-| Arquitectura documental | **MODULAR CANÓNICA** |
-| Fuente de orden canónico | `manifest.json` |
-| Fragmentos canónicos | **92** |
-| Tareas `AUTH` únicas | **312** |
-| Compilado derivado | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` |
-| Estado del compilado | **GENERADO Y VALIDADO ESTRUCTURALMENTE** |
-| ADR vigente | `ADR-AUTH-001 — ACCEPTED` |
-| Última tarea aprobada | **AUTH-CTX-019 — Incluir decisión del carril base** |
-| Tarea actual | **AUTH-CTX-020 — Incluir decisión del carril operativo** |
-| Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-CTX-021 — Incluir allows coincidentes** |
-| Bloque actual | **BLOQUE E — Contexto y decisión de autorización unificados** |
-| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-019 aprobadas; AUTH-CTX-020 pendiente** |
-| Estado de implementación | **No iniciar código, migraciones ni cambios en Supabase** |
+| Campo                         | Valor                                                             |
+| ----------------------------- | ----------------------------------------------------------------- |
+| Versión                       | 2026-07-21                                                        |
+| Revisión documental           | **39**                                                            |
+| Estado documental             | **VIGENTE**                                                       |
+| Arquitectura documental       | **MODULAR CANÓNICA**                                              |
+| Fuente de orden canónico      | `manifest.json`                                                   |
+| Fragmentos canónicos          | **109**                                                            |
+| Tareas canónicas con marcador | **719**                                                           |
+| Tareas `AUTH` únicas          | **312**                                                           |
+| Tareas aprobadas              | **117**                                                           |
+| Tareas en propuesta           | **0**                                                             |
+| Tareas no iniciadas           | **602**                                                           |
+| Tareas rechazadas             | **0**                                                             |
+| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`   |
+| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                          |
+| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                         |
+| Última tarea aprobada         | **AUTH-CTX-025 — Diseñar contrato SQL de get_access_context**               |
+| Tarea actual                  | `AUTH-CTX-026` — Diseñar contrato canónico de evaluate_authorization — **NO INICIADA**     |
+| Estado de la tarea actual     | **NO INICIADA**                                                   |
+| Siguiente tarea               | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones       |
+| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**     |
+| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-025 aprobadas; AUTH-CTX-026 pendiente** |
+| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**         |
 
 ### Continuidad inmediata
 
-| Estado | Valor |
-| --- | --- |
-| Última aprobada | `AUTH-CTX-019` — Incluir decisión del carril base |
-| Tarea actual | `AUTH-CTX-020` — Incluir decisión del carril operativo — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-021` — Incluir allows coincidentes |
-| Restricción | **FASE EXCLUSIVAMENTE DOCUMENTAL** |
+| Estado          | Valor                                                               |
+| --------------- | ------------------------------------------------------------------- |
+| Última aprobada | `AUTH-CTX-025` — Diseñar contrato SQL de get_access_context                   |
+| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                         |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                  |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas | Estado |
-| --- | --- |
-| `AUTH-CAT-001` a `AUTH-CAT-024` | **APROBADAS** |
-| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS** |
-| BLOQUE D | **CERRADO DOCUMENTALMENTE** |
-| `AUTH-MOD-001` a `AUTH-MOD-020` | **APROBADAS** |
-| `AUTH-MOD-021` | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
-| `AUTH-CTX-001` a `AUTH-CTX-019` | **APROBADAS** |
-| `AUTH-CTX-020` | **NO INICIADA** |
-| `AUTH-CTX-021` a `AUTH-CTX-030` | **NO INICIADAS** |
-| Implementación física | **NO INICIADA** |
+| Grupo de tareas                   | Estado                                         |
+| --------------------------------- | ---------------------------------------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                  |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                  |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
+| `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
+| `AUTH-CTX-001` a `AUTH-CTX-025` | **APROBADAS** |
+| `AUTH-CTX-026` a `AUTH-CTX-030` | **NO INICIADAS** |
+| Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
 
@@ -77,21 +81,19 @@
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
 - [Documento compilado](./.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md)
+- [Registro global de tareas](./.generated/REGISTRO_GLOBAL_DE_TAREAS.md)
 
 ## Control de continuidad
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-019 — Incluir decisión del carril base
+AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
         ↓
 TAREA ACTUAL
-AUTH-CTX-020 — Incluir decisión del carril operativo
+AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-CTX-021 — Incluir allows coincidentes
-        ↓
-CONTINUIDAD DEL BLOQUE
-AUTH-CTX-022 a AUTH-CTX-027
+AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
         ↓
 PUERTA CONTRACTUAL OBLIGATORIA
 AUTH-MOD-021 — Definir rol base mínimo

@@ -10,34 +10,39 @@
 
 ## Estado canónico
 
-| Campo                     | Valor                                                               |
-| ------------------------- | ------------------------------------------------------------------- |
-| Versión                   | 2026-07-21                                                          |
-| Revisión documental       | **38**                                                              |
-| Estado documental         | **VIGENTE**                                                         |
-| Arquitectura documental   | **MODULAR CANÓNICA**                                                |
-| Fuente de orden canónico  | `manifest.json`                                                     |
-| Fragmentos canónicos      | **92**                                                              |
-| Tareas `AUTH` únicas      | **312**                                                             |
-| Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`     |
-| Estado del compilado      | **GENERADO Y VALIDADO**                                             |
-| ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                           |
-| Última tarea aprobada     | **AUTH-CTX-008 — Incluir rol base vigente**                         |
-| Tarea actual              | **AUTH-CTX-009 — Incluir cobertura administrativa por sede y área** |
-| Estado de la tarea actual | **NO INICIADA**                                                     |
-| Siguiente tarea           | **AUTH-CTX-010 — Incluir turno publicado y vigente**                |
-| Bloque actual             | **BLOQUE E — Contexto y decisión de autorización unificados**       |
-| Progreso del bloque       | **AUTH-CTX-001 a AUTH-CTX-008 aprobadas; AUTH-CTX-009 pendiente**   |
-| Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**           |
+| Campo                         | Valor                                                             |
+| ----------------------------- | ----------------------------------------------------------------- |
+| Versión                       | 2026-07-21                                                        |
+| Revisión documental           | **39**                                                            |
+| Estado documental             | **VIGENTE**                                                       |
+| Arquitectura documental       | **MODULAR CANÓNICA**                                              |
+| Fuente de orden canónico      | `manifest.json`                                                   |
+| Fragmentos canónicos          | **109**                                                            |
+| Tareas canónicas con marcador | **719**                                                           |
+| Tareas `AUTH` únicas          | **312**                                                           |
+| Tareas aprobadas              | **117**                                                           |
+| Tareas en propuesta           | **0**                                                             |
+| Tareas no iniciadas           | **602**                                                           |
+| Tareas rechazadas             | **0**                                                             |
+| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`   |
+| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                          |
+| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                         |
+| Última tarea aprobada         | **AUTH-CTX-025 — Diseñar contrato SQL de get_access_context**               |
+| Tarea actual                  | `AUTH-CTX-026` — Diseñar contrato canónico de evaluate_authorization — **NO INICIADA**     |
+| Estado de la tarea actual     | **NO INICIADA**                                                   |
+| Siguiente tarea               | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones       |
+| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**     |
+| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-025 aprobadas; AUTH-CTX-026 pendiente** |
+| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**         |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                               |
-| --------------- | ----------------------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CTX-008` — Incluir rol base vigente                                           |
-| Tarea actual    | `AUTH-CTX-009` — Incluir cobertura administrativa por sede y área — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-010` — Incluir turno publicado y vigente                                  |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                  |
+| Estado          | Valor                                                               |
+| --------------- | ------------------------------------------------------------------- |
+| Última aprobada | `AUTH-CTX-025` — Diseñar contrato SQL de get_access_context                   |
+| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                         |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                  |
 
 ## Progreso documental aprobado
 
@@ -48,9 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
-| `AUTH-CTX-001` a `AUTH-CTX-008`   | **APROBADAS**                                  |
-| `AUTH-CTX-009`                    | **NO INICIADA**                                |
-| `AUTH-CTX-010` a `AUTH-CTX-030`   | **NO INICIADAS**                               |
+| `AUTH-CTX-001` a `AUTH-CTX-025` | **APROBADAS** |
+| `AUTH-CTX-026` a `AUTH-CTX-030` | **NO INICIADAS** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -77,23 +81,19 @@
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
 - [Documento compilado](./.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md)
+- [Registro global de tareas](./.generated/REGISTRO_GLOBAL_DE_TAREAS.md)
 
 ## Control de continuidad
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-008 — Incluir rol base vigente
+AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
         ↓
 TAREA ACTUAL
-AUTH-CTX-009 — Incluir cobertura
-administrativa por sede y área
+AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-CTX-010 — Incluir turno
-publicado y vigente
-        ↓
-CONTINUIDAD DEL BLOQUE
-AUTH-CTX-011 a AUTH-CTX-027
+AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
         ↓
 PUERTA CONTRACTUAL OBLIGATORIA
 AUTH-MOD-021 — Definir rol base mínimo
@@ -561,6 +561,21 @@ AUTH-CTX-028 a AUTH-CTX-030
     o cuando cite una tarea que no exista formalmente en el roadmap.
 
 ---
+
+## Regla canónica de granularidad documental
+
+La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.
+
+Reglas obligatorias:
+
+- un archivo puede contener múltiples tareas con encabezado `###`;
+- una tarea no deberá tener archivo propio cuando pertenece a una sección lógica común;
+- los archivos se nombrarán por la responsabilidad documental que agrupan;
+- el estado de cada tarea seguirá derivándose exclusivamente de su marcador;
+- el compilador y el registro global deberán detectar todas las tareas dentro de cada archivo;
+- una sección monolítica podrá dividirse cuando contenga responsabilidades documentales distintas;
+- no se dividirá una tarea internamente entre varios archivos;
+- toda reorganización deberá preservar orden, contenido e inventario de identificadores.
 ## ROADMAP MAESTRO
 
 **Autorización, capacidades, operación, datos, procesos, pantallas, integraciones y experiencia Vento**
@@ -75887,6 +75902,8 @@ gerente_general
 
 CONTRATOS
 
+## CONTRATOS BASE
+
 ### ✅ AUTH-CTX-001 — Diseñar AccessContext canónico
 
 **Estado:** APROBADA  
@@ -77532,7 +77549,6 @@ AUTH-CTX-001 podrá aprobarse cuando se acepte que:
 
 No se avanza a AUTH-CTX-002 hasta recibir aprobación explícita de
 AUTH-CTX-001.
-
 
 ### ✅ AUTH-CTX-002 — Diseñar AuthorizationDecision canónica
 
@@ -79555,7 +79571,6 @@ AUTH-CTX-002 podrá aprobarse cuando se acepte que:
 No se avanza a AUTH-CTX-003 hasta recibir aprobación explícita de
 AUTH-CTX-002.
 
-
 ### ✅ AUTH-CTX-003 — Diseñar SimulationContext separado
 
 **Estado:** APROBADA 
@@ -81405,7 +81420,6 @@ AUTH-CTX-003 podrá aprobarse cuando se acepte que:
 No se avanza a AUTH-CTX-004 hasta recibir aprobación explícita de
 AUTH-CTX-003.
 
-
 ### ✅ AUTH-CTX-004 — Versionar los contratos de respuesta
 
 **Estado:** APROBADA  
@@ -82802,6 +82816,7 @@ AUTH-CTX-004.
 
 
 ACCESS CONTEXT
+## IDENTIDAD Y ACTOR
 
 ### ✅ AUTH-CTX-005 — Incluir principal autenticado
 
@@ -84301,7 +84316,6 @@ AUTH-CTX-005 podrá aprobarse cuando se acepte que:
 
 No se avanza a AUTH-CTX-006 hasta recibir aprobación explícita de
 AUTH-CTX-005.
-
 
 ### ✅ AUTH-CTX-006 — Incluir actor efectivo
 
@@ -86035,7 +86049,6 @@ AUTH-CTX-006 podrá aprobarse cuando se acepte que:
 
 No se avanza a AUTH-CTX-007 hasta recibir aprobación explícita de
 AUTH-CTX-006.
-
 
 ### ✅ AUTH-CTX-007 — Incluir identidad laboral o de dominio
 
@@ -88200,7 +88213,6 @@ AUTH-CTX-007 podrá aprobarse cuando se acepte que:
 No se avanza a AUTH-CTX-008 hasta recibir aprobación explícita de
 AUTH-CTX-007.
 
-
 ### ✅ AUTH-CTX-008 — Incluir rol base vigente
 
 **Estado:** APROBADA  
@@ -90313,6 +90325,7 @@ AUTH-CTX-008 — APROBADA
         ↓
 AUTH-CTX-009 — Incluir cobertura administrativa por sede y área
 ```
+## CONTEXTO LABORAL Y DISPOSITIVO
 
 ### ✅ AUTH-CTX-009 — Incluir cobertura administrativa por sede y área
 
@@ -91990,7 +92003,6 @@ AUTH-CTX-010 — NO INICIADA
 No se avanza a AUTH-CTX-010 hasta recibir aprobación explícita de
 AUTH-CTX-009.
 
-
 ### ✅ AUTH-CTX-010 — Incluir turno publicado y vigente
 
 **Estado:** APROBADA  
@@ -93586,7 +93598,6 @@ AUTH-CTX-011 — NO INICIADA
 
 No se avanza a AUTH-CTX-011 hasta recibir aprobación explícita de
 AUTH-CTX-010.
-
 
 ### ✅ AUTH-CTX-011 — Incluir sesión de check-in activa
 
@@ -95428,7 +95439,6 @@ AUTH-CTX-012 — NO INICIADA
 
 No se avanza a AUTH-CTX-012 hasta recibir aprobación explícita de
 AUTH-CTX-011.
-
 
 ### ✅ AUTH-CTX-012 — Incluir rol operativo efectivo
 
@@ -97429,7 +97439,6 @@ AUTH-CTX-013 — NO INICIADA
 
 No se avanza a AUTH-CTX-013 hasta recibir aprobación explícita de
 AUTH-CTX-012.
-
 
 ### ✅ AUTH-CTX-013 — Incluir sede y área operativas
 
@@ -99660,7 +99669,6 @@ AUTH-CTX-014 — NO INICIADA
 
 No se avanza a AUTH-CTX-014 hasta recibir aprobación explícita de
 AUTH-CTX-013.
-
 
 ### ✅ AUTH-CTX-014 — Incluir contexto de dispositivo compartido
 
@@ -101918,7 +101926,6 @@ AUTH-CTX-015 — NO INICIADA
 No se avanza a AUTH-CTX-015 hasta recibir aprobación explícita de
 AUTH-CTX-014.
 
-
 ### ✅ AUTH-CTX-015 — Incluir razones estructuradas de invalidez
 
 **Estado:** APROBADA 
@@ -103450,6 +103457,7 @@ AUTH-CTX-015.
 
 
 AUTHORIZATION DECISION
+## DECISIÓN DE AUTORIZACIÓN
 
 ### ✅ AUTH-CTX-016 — Incluir aplicación y permiso solicitado
 
@@ -105441,7 +105449,6 @@ AUTH-CTX-017 — NO INICIADA
 
 No se avanza a AUTH-CTX-017 hasta recibir aprobación explícita de
 AUTH-CTX-016.
-
 
 ### ✅ AUTH-CTX-017 — Incluir `authorization_requirement`
 
@@ -107465,7 +107472,6 @@ AUTH-CTX-018 — NO INICIADA
 
 No se avanza a AUTH-CTX-018 hasta recibir aprobación explícita de
 AUTH-CTX-017.
-
 
 ### ✅ AUTH-CTX-018 — Incluir recurso y territorio resueltos
 
@@ -110192,214 +110198,142 @@ AUTH-CTX-019 — NO INICIADA
 No se avanza a AUTH-CTX-019 hasta recibir aprobación explícita de
 AUTH-CTX-018.
 
+### ✅ AUTH-CTX-019 — Incluir decisión del carril base
 
-### 🟡 AUTH-CTX-019 — Incluir decisión del carril base
+| Campo                          | Valor                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------- |
+| **Estado**                     | APROBADA                                                                   |
+| **Bloque**                     | BLOQUE E — Contexto y decisión de autorización unificados                  |
+| **Subbloque**                  | `AUTHORIZATION DECISION`                                                   |
+| **Naturaleza**                 | Definición documental de `base_decision` dentro de `AuthorizationDecision` |
+| **Implementación física**      | No incluida                                                                |
+| **Tarea anterior vigente**     | `AUTH-CTX-018` — APROBADA                                                  |
+| **Tarea posterior reservada**  | `AUTH-CTX-020` — Incluir decisión del carril operativo                     |
+| **Contrato afectado**          | `AuthorizationDecision@1.0.0`                                              |
+| **Campo principal afectado**   | `base_decision`                                                            |
+| **Tipo principal afectado**    | `LaneDecision`                                                             |
+| **Dataset base**               | `vento.authorization.base-role-grants@1.0.0`                               |
+| **Dataset de overrides**       | `vento.authorization.individual-overrides@1.0.0`                           |
+| **Catálogo**                   | `vento.authorization@1.0.0`                                                |
+| **Cambio contractual**         | Aclaración normativa compatible; no cambia la forma publicada              |
+| **Cambios físicos permitidos** | No                                                                         |
 
-Estado: PROPUESTA PARA APROBACIÓN
-Bloque: BLOQUE E — Contexto y decisión de autorización unificados
-Subbloque: AUTHORIZATION DECISION
-Naturaleza: Definición documental de base_decision dentro de AuthorizationDecision
-Implementación física: No incluida
-Tarea anterior vigente: AUTH-CTX-018 — APROBADA
-Tarea posterior reservada: AUTH-CTX-020 — Incluir decisión del carril operativo
-Contrato afectado: AuthorizationDecision@1.0.0
-Campo principal afectado: base_decision
-Tipo principal afectado: LaneDecision
-Dataset base: vento.authorization.base-role-grants@1.0.0
-Dataset de overrides: vento.authorization.individual-overrides@1.0.0
-Catálogo: vento.authorization@1.0.0
-Cambio contractual: Aclaración normativa compatible; no cambia la forma publicada
-Cambios físicos permitidos: No
+Esta tarea define cómo Vento OS evalúa el carril base de autorización a partir de:
 
-Esta tarea define cómo Vento OS evalúa el carril base de autorización a partirde:
+- actor efectivo;
+- identidad laboral;
+- estado del empleado;
+- rol base vigente;
+- cobertura administrativa;
+- aplicación y permiso exactos;
+- modalidad contractual;
+- recurso y territorio resueltos;
+- concesiones base de rol;
+- concesiones individuales base;
+- denegaciones transversales;
+- denegaciones del carril base;
+- alcance;
+- propiedad;
+- estado del recurso;
+- dispositivo compartido;
+- sensibilidad;
+- dependencias;
+- política de campos;
+- `default deny`.
 
-actor efectivo;
-
-identidad laboral;
-
-estado del empleado;
-
-rol base vigente;
-
-cobertura administrativa;
-
-aplicación y permiso exactos;
-
-modalidad contractual;
-
-recurso y territorio resueltos;
-
-concesiones base de rol;
-
-concesiones individuales base;
-
-denegaciones transversales;
-
-denegaciones del carril base;
-
-alcance;
-
-propiedad;
-
-estado del recurso;
-
-dispositivo compartido;
-
-sensibilidad;
-
-dependencias;
-
-política de campos;
-
-default deny.
-
-La decisión principal es:
-
-CARRIL BASE
-=
-AUTORIDAD ADMINISTRATIVA O FUNCIONAL PERMANENTE
-DEL ACTOR LABORAL
-SOBRE EL PERMISO EXACTO
-Y EL RECURSO EXACTO
+> **Regla central**
+>
+> ```text
+> CARRIL BASE
+> =
+> AUTORIDAD ADMINISTRATIVA O FUNCIONAL PERMANENTE
+> DEL ACTOR LABORAL
+> SOBRE EL PERMISO EXACTO
+> Y EL RECURSO EXACTO
+> ```
 
 El carril base:
 
-no depende de turno;
+- no depende de turno;
+- no depende de check-in;
+- no toma prestado el rol operativo;
+- no toma prestada la sede operativa;
+- no toma prestada el área operativa;
+- no obtiene bypass por nombre de rol;
+- no autoriza por jerarquía implícita;
+- no convierte cobertura en permiso;
+- no convierte un permiso en cobertura;
+- no convierte un dispositivo en fuente de autoridad.
 
-no depende de check-in;
+No implementa SQL, RPC, RLS, funciones, migraciones, guards, middlewares, caché ni cambios físicos en Supabase.
 
-no toma prestado el rol operativo;
+#### 1. Objetivo
 
-no toma prestada la sede operativa;
+Definir base_decision de manera que Vento OS pueda responder inequívocamente:
 
-no toma prestada el área operativa;
+- cuándo el carril base es aplicable
+- cuándo debe ser NOT_APPLICABLE
+- cuándo está estructuralmente listo
+- cuándo debe denegar por indisponibilidad
+- cuándo debe denegar por invalidez
+- qué fuentes pueden producir un allow base
+- qué fuentes pueden producir un deny base
+- cómo se consulta la matriz base
+- cómo se consumen overrides individuales
+- cómo se compara un grant con el recurso
+- cómo se evalúa alcance no territorial
+- cómo se evalúa alcance organizacional
+- cómo se evalúan sedes asignadas
+- cómo se evalúa una sede específica
+- cómo se evalúan tipos de sede
+- cómo se evalúan áreas asignadas
+- cómo se evalúa un área específica
+- cómo se evalúan tipos de área
+- cómo se evalúa OWN
+- cómo se evalúan recursos multiterritoriales
+- cómo se evalúan colecciones, agregados y lotes
+- cómo se preserva la independencia frente al carril operativo
+- cómo se aplican actor-wide denies y lane denies
+- cómo se aplica default deny
+- cómo se serializa LaneDecision
+- cómo se ordenan los identificadores coincidentes
+- cómo se evita duplicar evidencia
+- cómo se evita que un componente base de BASE_AND_OPERATIONAL autorice por sí solo
+- cómo se relaciona con restricciones globales
+- cómo se preservan determinismo, inmutabilidad y auditoría.
 
-no obtiene bypass por nombre de rol;
+---
 
-no autoriza por jerarquía implícita;
-
-no convierte cobertura en permiso;
-
-no convierte un permiso en cobertura;
-
-no convierte un dispositivo en fuente de autoridad.
-
-No implementa SQL, RPC, RLS, funciones, migraciones, guards, middlewares,caché ni cambios físicos en Supabase.
-
-1. Objetivo
-
-Definir base_decision de manera que Vento OS pueda responderinequívocamente:
-
-cuándo el carril base es aplicable;
-
-cuándo debe ser NOT_APPLICABLE;
-
-cuándo está estructuralmente listo;
-
-cuándo debe denegar por indisponibilidad;
-
-cuándo debe denegar por invalidez;
-
-qué fuentes pueden producir un allow base;
-
-qué fuentes pueden producir un deny base;
-
-cómo se consulta la matriz base;
-
-cómo se consumen overrides individuales;
-
-cómo se compara un grant con el recurso;
-
-cómo se evalúa alcance no territorial;
-
-cómo se evalúa alcance organizacional;
-
-cómo se evalúan sedes asignadas;
-
-cómo se evalúa una sede específica;
-
-cómo se evalúan tipos de sede;
-
-cómo se evalúan áreas asignadas;
-
-cómo se evalúa un área específica;
-
-cómo se evalúan tipos de área;
-
-cómo se evalúa OWN;
-
-cómo se evalúan recursos multiterritoriales;
-
-cómo se evalúan colecciones, agregados y lotes;
-
-cómo se preserva la independencia frente al carril operativo;
-
-cómo se aplican actor-wide denies y lane denies;
-
-cómo se aplica default deny;
-
-cómo se serializa LaneDecision;
-
-cómo se ordenan los identificadores coincidentes;
-
-cómo se evita duplicar evidencia;
-
-cómo se evita que un componente base de BASE_AND_OPERATIONALautorice por sí solo;
-
-cómo se relaciona con restricciones globales;
-
-cómo se preservan determinismo, inmutabilidad y auditoría.
-
-2. Base normativa
+#### 2. Base normativa
 
 AUTH-CTX-019 conserva sin cambios las decisiones aprobadas en:
 
-ADR-AUTH-001;
-
-AUTH-MOD-001 — Actor efectivo;
-
-AUTH-MOD-002 — Separación entre rol base y rol operativo;
-
-AUTH-MOD-003 a AUTH-MOD-006 — Roles administrativos, funcionales ehíbridos;
-
-AUTH-MOD-007 y AUTH-MOD-008 — Sede y área;
-
-AUTH-MOD-013 a AUTH-MOD-017 — Alcances;
-
-AUTH-MOD-018 — Combinación de carriles;
-
-AUTH-MOD-019 — Denegación explícita;
-
-AUTH-CAT-006 — Modalidad;
-
-AUTH-CAT-011 — Alcance permitido;
-
-AUTH-CAT-016 — Contrato de recurso;
-
-AUTH-CAT-017 — Dependencias;
-
-AUTH-RBAC-001 a AUTH-RBAC-008 — Matrices base;
-
-AUTH-RBAC-020 — Concesiones individuales base;
-
-AUTH-RBAC-022 — Denegaciones individuales y transversales;
-
-AUTH-RBAC-024 — Dataset canónico de matriz base;
-
-AUTH-RBAC-026 — Dataset canónico de overrides;
-
-AUTH-RBAC-028 — Independencia de la administración frente al check-in;
-
-AUTH-CTX-001 a AUTH-CTX-015 — AccessContext;
-
-AUTH-CTX-016 — Aplicación y permiso solicitado;
-
-AUTH-CTX-017 — authorization_requirement;
-
-AUTH-CTX-018 — Recurso y territorio resueltos.
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — Actor efectivo;
+- `AUTH-MOD-002` — Separación entre rol base y rol operativo;
+- `AUTH-MOD-003` a `AUTH-MOD-006` — Roles administrativos, funcionales e híbridos;
+- `AUTH-MOD-007` y `AUTH-MOD-008` — Sede y área;
+- `AUTH-MOD-013` a `AUTH-MOD-017` — Alcances;
+- `AUTH-MOD-018` — Combinación de carriles;
+- `AUTH-MOD-019` — Denegación explícita;
+- `AUTH-CAT-006` — Modalidad;
+- `AUTH-CAT-011` — Alcance permitido;
+- `AUTH-CAT-016` — Contrato de recurso;
+- `AUTH-CAT-017` — Dependencias;
+- `AUTH-RBAC-001` a `AUTH-RBAC-008` — Matrices base;
+- `AUTH-RBAC-020` — Concesiones individuales base;
+- `AUTH-RBAC-022` — Denegaciones individuales y transversales;
+- `AUTH-RBAC-024` — Dataset canónico de matriz base;
+- `AUTH-RBAC-026` — Dataset canónico de overrides;
+- `AUTH-RBAC-028` — Independencia de la administración frente al check-in;
+- `AUTH-CTX-001` a `AUTH-CTX-015` — `AccessContext`;
+- `AUTH-CTX-016` — Aplicación y permiso solicitado;
+- `AUTH-CTX-017` — `authorization_requirement`;
+- `AUTH-CTX-018` — Recurso y territorio resueltos.
 
 Principios obligatorios:
 
+```text
 ROL BASE
 ≠
 PERMISO
@@ -110439,9 +110373,13 @@ ALCANCE
 RECURSO
 ∩
 AUSENCIA DE DENY APLICABLE
+```
 
-3. Forma contractual conservada
+---
 
+#### 3. Forma contractual conservada
+
+```ts
 type LaneDecision = {
   lane: "BASE" | "OPERATIONAL";
 
@@ -110461,50 +110399,47 @@ type LaneDecision = {
   matched_deny_ids: string[];
   reason_codes: string[];
 };
+```
 
 Para esta tarea:
 
+```ts
 base_decision: LaneDecision;
+```
 
 deberá cumplir siempre:
 
+```text
 lane = BASE
+```
 
 No se agregan campos.
 
-4. Aplicabilidad por modalidad
+---
 
-authorization_requirement
+#### 4. Aplicabilidad por modalidad
 
-Carril base
+| `authorization_requirement` | Carril base             | Regla                            |
+| --------------------------- | ----------------------- | -------------------------------- |
+| `BASE_ONLY`                 | Aplicable               | Debe producir `ALLOW` o `DENY`   |
+| `OPERATIONAL_ONLY`          | No aplicable            | Produce `NOT_APPLICABLE`         |
+| `BASE_OR_OPERATIONAL`       | Aplicable               | Se evalúa de forma independiente |
+| `BASE_AND_OPERATIONAL`      | Aplicable y obligatorio | Debe aportar el componente base  |
 
-BASE_ONLY
-
-Aplicable
-
-OPERATIONAL_ONLY
-
-No aplicable
-
-BASE_OR_OPERATIONAL
-
-Aplicable
-
-BASE_AND_OPERATIONAL
-
-Aplicable y obligatorio
-
-Regla:
-
+```text
 OPERATIONAL_ONLY
 → base_decision.outcome = NOT_APPLICABLE
+```
 
-No se consulta la matriz base para intentar rescatar un permisoOPERATIONAL_ONLY.
+No se consulta la matriz base para intentar rescatar un permiso `OPERATIONAL_ONLY`.
 
-5. Forma de NOT_APPLICABLE
+---
 
-Cuando la modalidad es OPERATIONAL_ONLY:
+#### 5. Forma de NOT_APPLICABLE
 
+Cuando la modalidad es `OPERATIONAL_ONLY`:
+
+```ts
 base_decision = {
   lane: "BASE",
   outcome: "NOT_APPLICABLE",
@@ -110514,233 +110449,204 @@ base_decision = {
   matched_deny_ids: [],
   reason_codes: ["BASE_LANE_NOT_REQUIRED"]
 };
+```
 
 Reglas:
 
-no significa DENY;
+- no significa `DENY`;
+- no significa error;
+- no significa ausencia de rol;
+- no consulta allows base;
+- no consulta lane denies base;
+- los actor-wide denies y structural denies continúan siendo evaluables a nivel global en `AUTH-CTX-022` y `AUTH-CTX-023`;
+- un grant base almacenado para un permiso `OPERATIONAL_ONLY` se clasifica como incompatibilidad contractual, no como allow.
 
-no significa error;
+---
 
-no significa ausencia de rol;
+#### 6. Cuándo evaluated = true
 
-no consulta allows base;
+Para las modalidades:
 
-no consulta lane denies base;
-
-los actor-wide denies y structural denies continúan siendo evaluables anivel global en AUTH-CTX-022 y AUTH-CTX-023;
-
-un grant base almacenado para un permiso OPERATIONAL_ONLY se clasificacomo incompatibilidad contractual, no como allow.
-
-6. Cuándo evaluated = true
-
-Para:
-
-BASE_ONLY;
-
-BASE_OR_OPERATIONAL;
-
-BASE_AND_OPERATIONAL;
+- `BASE_ONLY`;
+- `BASE_OR_OPERATIONAL`;
+- `BASE_AND_OPERATIONAL`;
 
 se utilizará:
 
+```text
 evaluated = true
+```
 
-aunque el carril termine tempranamente en DENY por:
+Esto se conserva aunque el carril termine tempranamente en `DENY` por:
 
-contexto inválido;
+- contexto inválido;
+- empleado inactivo;
+- rol base inválido;
+- cobertura inválida;
+- recurso no resoluble;
+- deny aplicable;
+- falta de allow.
 
-empleado inactivo;
+```text
+evaluated = false
+```
 
-rol base inválido;
+se reserva exclusivamente para `NOT_APPLICABLE`.
 
-cobertura inválida;
+---
 
-recurso no resoluble;
-
-deny aplicable;
-
-falta de allow.
-
-evaluated = false se reserva para NOT_APPLICABLE.
-
-7. readiness
+#### 7. readiness
 
 Para modalidades que admiten base:
 
+```text
 base_decision.readiness
 =
 AccessContext.lane_readiness.base.status
+```
 
 El evaluador no podrá:
 
-convertir INVALID en READY;
-
-convertir UNAVAILABLE en READY;
-
-ocultar un código estructural;
-
-recalcular parcialmente el contexto;
-
-reemplazar el rol base;
-
-completar cobertura.
+- convertir `INVALID` en `READY`;
+- convertir `UNAVAILABLE` en `READY`;
+- ocultar un código estructural;
+- recalcular parcialmente el contexto;
+- reemplazar el rol base;
+- completar cobertura.
 
 Si el contexto quedó obsoleto:
 
+```text
 readiness = INVALID
 outcome = DENY
+```
 
-8. Relación entre readiness y outcome
+---
 
-Readiness
+#### 8. Relación entre readiness y outcome
 
-Outcome máximo posible
+| `readiness`      | Resultado máximo posible |
+| ---------------- | ------------------------ |
+| `READY`          | `ALLOW` o `DENY`         |
+| `UNAVAILABLE`    | `DENY`                   |
+| `INVALID`        | `DENY`                   |
+| `NOT_APPLICABLE` | `NOT_APPLICABLE`         |
 
-READY
+`READY` no concede autoridad. Solo habilita la consulta y evaluación de fuentes base compatibles.
 
-ALLOW o DENY
+---
 
-UNAVAILABLE
-
-DENY
-
-INVALID
-
-DENY
-
-NOT_APPLICABLE
-
-NOT_APPLICABLE
-
-READY no concede autoridad.
-
-Solo habilita la consulta y evaluación de fuentes base compatibles.
-
-9. Actor laboral obligatorio
+#### 9. Actor laboral obligatorio
 
 El carril base laboral requiere:
 
-actor efectivo de tipo EMPLOYEE;
+- actor efectivo de tipo `EMPLOYEE`;
+- identidad laboral resoluble;
+- empleado exacto;
+- empleado activo;
+- coincidencia entre actor y empleado;
+- snapshot vigente.
 
-identidad laboral resoluble;
+Para actores de tipo:
 
-empleado exacto;
+- `CUSTOMER`;
+- `SYSTEM` autónomo;
+- `DEVICE` sin actor humano;
+- `UNRESOLVED`;
 
-empleado activo;
-
-coincidencia entre actor y empleado;
-
-snapshot vigente.
-
-Para actores:
-
-CUSTOMER;
-
-SYSTEM autónomo;
-
-DEVICE sin actor humano;
-
-UNRESOLVED;
-
-el carril base será NOT_APPLICABLE o DENY según el contrato del actor yla modalidad.
+el carril base será `NOT_APPLICABLE` o `DENY` según el contrato del actor y la modalidad.
 
 No se inventará una identidad laboral para evaluar una matriz base.
 
-10. Empleado inactivo
+---
+
+#### 10. Empleado inactivo
 
 Un empleado inactivo conserva atribución histórica, pero no autoridad.
 
 Resultado:
 
+```text
 readiness = UNAVAILABLE
 outcome = DENY
 reason_codes incluye BASE_EMPLOYEE_INACTIVE
+```
 
 No se consultan grants como mecanismo de reactivación.
 
 Una concesión individual activa no reactiva al empleado.
 
-11. Rol base vigente
+---
+
+#### 11. Rol base vigente
 
 Para evaluar el carril base deberá existir:
 
+```text
 base_role != null
 base_role.role_status = ACTIVE
+```
 
 Reglas:
 
-el rol debe pertenecer al actor;
-
-debe existir en el catálogo canónico;
-
-debe estar activo;
-
-debe ser único;
-
-no puede proceder del turno;
-
-no puede proceder del dispositivo;
-
-no puede proceder de navigation_role;
-
-no puede proceder de una cadena enviada por cliente.
+- el rol debe pertenecer al actor;
+- debe existir en el catálogo canónico;
+- debe estar activo;
+- debe ser único;
+- no puede proceder del turno;
+- no puede proceder del dispositivo;
+- no puede proceder de `navigation_role`;
+- no puede proceder de una cadena enviada por cliente.
 
 Un grant individual no repara:
 
-rol ausente;
+- rol ausente;
+- rol ambiguo;
+- rol inactivo;
+- rol legacy no mapeado;
+- actor incompatible.
 
-rol ambiguo;
+---
 
-rol inactivo;
-
-rol legacy no mapeado;
-
-actor incompatible.
-
-12. Roles canónicos base
+#### 12. Roles canónicos base
 
 El dataset canónico base contiene exactamente siete roles:
 
-propietario
-gerente_general
-gerente
-supervisor
-auxiliar_administrativa
-contador
-marketing
+| Rol base canónico         |
+| ------------------------- |
+| `propietario`             |
+| `gerente_general`         |
+| `gerente`                 |
+| `supervisor`              |
+| `auxiliar_administrativa` |
+| `contador`                |
+| `marketing`               |
 
 Los oficios base legacy no participan como fuente canónica del carril base.
 
 Su transición deberá resolverse mediante:
 
-AUTH-MOD-021;
-
-AUTH-CTX-028;
-
-AUTH-DB-020;
-
-AUTH-DB-030.
+- `AUTH-MOD-021`;
+- `AUTH-CTX-028`;
+- `AUTH-DB-020`;
+- `AUTH-DB-030`.
 
 Hasta entonces, un oficio legacy no se utilizará como bypass.
 
-13. Sin bypass por rol
+---
+
+#### 13. Sin bypass por rol
 
 Queda prohibido:
 
-propietario
-→ ALLOW automático
-
-gerente_general
-→ ALLOW automático
-
-gerente
-→ todos los permisos de su sede
-
-supervisor
-→ todos los permisos operativos
+- propietario → ALLOW automático
+- gerente_general → ALLOW automático
+- gerente → todos los permisos de su sede
+- supervisor → todos los permisos operativos
 
 Todo actor requiere:
 
+```text
 permiso exacto
 +
 grant exacto
@@ -110750,325 +110656,293 @@ alcance compatible
 recurso compatible
 +
 ausencia de deny
+```
 
-14. Fuentes de allow base
+---
+
+#### 14. Fuentes de allow base
 
 Solo pueden producir candidatos de allow base:
 
+```text
 BASE_ROLE
 INDIVIDUAL_BASE
+```
 
 Fuentes normativas:
 
-vento.authorization.base-role-grants@1.0.0
-vento.authorization.individual-overrides@1.0.0
+- `vento.authorization.base-role-grants@1.0.0`;
+- `vento.authorization.individual-overrides@1.0.0`.
 
 No producen allows base:
 
-matriz operativa;
+- matriz operativa;
+- rol operativo;
+- turno;
+- check-in;
+- sede operativa;
+- área operativa;
+- dispositivo;
+- `navigation_role`;
+- rutas;
+- menús;
+- frontend;
+- service role;
+- nombre del cargo.
 
-rol operativo;
+---
 
-turno;
-
-check-in;
-
-sede operativa;
-
-área operativa;
-
-dispositivo;
-
-navigation_role;
-
-rutas;
-
-menús;
-
-frontend;
-
-service role;
-
-nombre del cargo.
-
-15. Dataset base canónico
+#### 15. Dataset base canónico
 
 La matriz base vigente es:
 
+```text
 vento.authorization.base-role-grants@1.0.0
+```
 
-Características aprobadas:
+| Característica              | Valor |
+| --------------------------- | ----: |
+| Registros lógicos           |   499 |
+| Roles base                  |     7 |
+| Concesiones directas        |   463 |
+| Componentes base            |    36 |
+| Permisos `OPERATIONAL_ONLY` |     0 |
+| Claves legacy               |     0 |
+| Roles operativos            |     0 |
 
-499 registros lógicos;
+Reglas adicionales:
 
-siete roles base;
+- orden determinista;
+- ausencia de fila = `default deny`;
+- el evaluador consume el snapshot exacto y su hash aprobado;
+- el evaluador no reconstruye la matriz desde tablas legacy.
 
-463 concesiones directas;
+---
 
-36 componentes base;
-
-cero permisos OPERATIONAL_ONLY;
-
-cero claves legacy;
-
-cero roles operativos;
-
-orden determinista;
-
-ausencia de fila = default deny.
-
-El evaluador deberá consumir el snapshot exacto y su hash aprobado.
-
-No podrá reconstruir la matriz desde tablas legacy.
-
-16. Grants DIRECT
+#### 16. Grants DIRECT
 
 Un grant base directo puede producir ALLOW completo cuando:
 
-el permiso admite base;
+- el permiso admite base
+- el rol coincide
+- la clave coincide exactamente
+- el grant está activo
+- el scope coincide
+- el recurso coincide
+- la vigencia coincide
+- no existe deny aplicable
+- las restricciones globales no fallan.
 
-el rol coincide;
+---
 
-la clave coincide exactamente;
+#### 17. Grants BASE_COMPONENT
 
-el grant está activo;
+Un registro `BASE_COMPONENT` pertenece a un permiso `BASE_AND_OPERATIONAL` y representa únicamente el componente base.
 
-el scope coincide;
-
-el recurso coincide;
-
-la vigencia coincide;
-
-no existe deny aplicable;
-
-las restricciones globales no fallan.
-
-17. Grants BASE_COMPONENT
-
-Un registro BASE_COMPONENT pertenece a un permisoBASE_AND_OPERATIONAL y representa únicamente el componente base.
-
-Regla:
-
+```text
 BASE_COMPONENT
 → puede producir base_decision = ALLOW
+```
 
-pero:
+Pero:
 
+```text
 BASE_COMPONENT
 ≠ final_decision = ALLOW
+```
 
 La decisión final exige además:
 
+```text
 operational_decision = ALLOW
+```
 
-AUTH-CTX-023 aplicará la conjunción.
+`AUTH-CTX-023` aplicará la conjunción.
 
-18. Overrides individuales base
+---
+
+#### 18. Overrides individuales base
 
 Un override individual base podrá:
 
-conceder una capacidad adicional compatible;
-
-limitarla mediante alcance;
-
-tener vigencia;
-
-referenciar el empleado exacto.
+- conceder una capacidad adicional compatible;
+- limitarla mediante alcance;
+- tener vigencia;
+- referenciar el empleado exacto.
 
 No podrá:
 
-reparar un actor inválido;
-
-reparar un rol base inválido;
-
-convertir un permiso OPERATIONAL_ONLY;
-
-ampliar un permiso más allá de su contrato;
-
-anular una denegación;
-
-conceder por wildcard;
-
-conceder por prefijo;
-
-conceder a un dispositivo.
+- reparar un actor inválido;
+- reparar un rol base inválido;
+- convertir un permiso `OPERATIONAL_ONLY`;
+- ampliar un permiso más allá de su contrato;
+- anular una denegación;
+- conceder por wildcard;
+- conceder por prefijo;
+- conceder a un dispositivo.
 
 El seed canónico inicial contiene cero overrides automáticos.
 
-19. Clave exacta
+---
+
+#### 19. Clave exacta
 
 Todo candidato deberá cumplir:
 
+```text
 grant.permission_key
 =
 requested.permission_key
+```
 
 No se admite:
 
-prefijo;
+- prefijo;
+- sufijo;
+- wildcard;
+- módulo;
+- aplicación completa;
+- coincidencia semántica;
+- alias no adaptado;
+- permiso legacy;
+- ruta;
+- nombre humano.
 
-sufijo;
+---
 
-wildcard;
-
-módulo;
-
-aplicación completa;
-
-coincidencia semántica;
-
-alias no adaptado;
-
-permiso legacy;
-
-ruta;
-
-nombre humano.
-
-20. Modalidad compatible
+#### 20. Modalidad compatible
 
 Un grant base solo es compatible con:
 
+```text
 BASE_ONLY
 BASE_OR_OPERATIONAL
 BASE_AND_OPERATIONAL
+```
 
 Un grant base sobre permiso OPERATIONAL_ONLY:
 
-no se incluye en matched_allow_ids;
+- no se incluye en matched_allow_ids
+- no produce allow
+- genera incompatibilidad contractual
+- se audita
+- se corrige en datasets o transición.
 
-no produce allow;
+---
 
-genera incompatibilidad contractual;
+#### 21. Vigencia
 
-se audita;
-
-se corrige en datasets o transición.
-
-21. Vigencia
-
-Un grant deberá estar activo en decided_at.
+Un grant deberá estar activo en `decided_at`.
 
 La vigencia puede depender de:
 
-estado activo;
+- estado activo;
+- fecha de inicio;
+- fecha de fin;
+- revocación;
+- versión de dataset;
+- estado del rol;
+- estado del empleado.
 
-fecha de inicio;
+Regla de inicio:
 
-fecha de fin;
-
-revocación;
-
-versión de dataset;
-
-estado del rol;
-
-estado del empleado.
-
-Reglas:
-
+```text
 starts_at <= decided_at
+```
 
-y cuando exista fin:
+Cuando exista fin:
 
+```text
 decided_at < ends_at
+```
 
 Un grant futuro, expirado o revocado no coincide.
 
-22. Alcances permitidos
+---
 
-La evaluación base podrá consumir los códigos:
+#### 22. Alcances permitidos
 
-NT
-ORG
-G
-AS
-SS
-AST
-TST
-AA
-SA
-AAT
-ATW
-OWN
+La evaluación base podrá consumir los siguientes códigos:
 
-CTX es incompatible con el carril base.
+| Código | Alcance                             |
+| ------ | ----------------------------------- |
+| `NT`   | No territorial                      |
+| `ORG`  | Recurso organizacional exacto       |
+| `G`    | Global organizacional ordinario     |
+| `AS`   | Sedes asignadas                     |
+| `SS`   | Sede específica                     |
+| `AST`  | Tipo de sede dentro de asignaciones |
+| `TST`  | Todas las sedes de un tipo          |
+| `AA`   | Áreas asignadas                     |
+| `SA`   | Área específica                     |
+| `AAT`  | Tipo de área dentro de asignaciones |
+| `ATW`  | Todas las áreas de un tipo          |
+| `OWN`  | Propiedad o atribución              |
 
-Un grant base con:
+`CTX` es incompatible con el carril base.
 
+```text
 scope_code = CTX
+→ incompatibilidad contractual
+```
 
-produce incompatibilidad contractual.
+---
 
-23. NT — No territorial
+#### 23. NT — No territorial
 
-NT coincide únicamente cuando el contrato del permiso y del recurso declaraque la capacidad no utiliza una dimensión territorial variable.
+NT coincide únicamente cuando el contrato del permiso y del recurso declara que la capacidad no utiliza una dimensión territorial variable.
 
 Reglas:
 
-no inventa organización;
+- no inventa organización
+- no inventa sede
+- no inventa área
+- no autoriza recursos territoriales
+- no convierte listas vacías en global.
 
-no inventa sede;
+---
 
-no inventa área;
-
-no autoriza recursos territoriales;
-
-no convierte listas vacías en global.
-
-24. ORG — Recurso organizacional exacto
+#### 24. ORG — Recurso organizacional exacto
 
 ORG coincide cuando:
 
-el recurso pertenece a la organización exacta;
+- el recurso pertenece a la organización exacta
+- el permiso declara alcance organizacional
+- el recurso no requiere una sede o área adicional
+- no pertenece a entorno aislado
+- la unidad de negocio, canal o dominio requerido coincide.
+- ORG no equivale a G.
+- No cubre automáticamente todos los recursos territoriales de la organización.
 
-el permiso declara alcance organizacional;
+---
 
-el recurso no requiere una sede o área adicional;
+#### 25. G — Global organizacional ordinario
 
-no pertenece a entorno aislado;
-
-la unidad de negocio, canal o dominio requerido coincide.
-
-ORG no equivale a G.
-
-No cubre automáticamente todos los recursos territoriales de la organización.
-
-25. G — Global organizacional ordinario
-
-G permite evaluar recursos ordinarios de la organización cuando el grant lodeclara expresamente.
+`G` permite evaluar recursos ordinarios de la organización cuando el grant lo declara expresamente.
 
 Reglas:
 
-solo aplica al permiso exacto;
+- solo aplica al permiso exacto;
+- no concede otros permisos;
+- no atraviesa organizaciones;
+- no atraviesa tenants futuros;
+- no incluye `APP-REVIEW`;
+- no incluye demo;
+- no incluye sandbox;
+- no incluye pruebas;
+- no incluye recursos aislados;
+- no omite sujeto, propiedad, estado, lados o campos;
+- no convierte `propietario` en bypass.
 
-no concede otros permisos;
+Un rol con `administrative_coverage.mode = NONE` puede utilizar un grant `G` específico cuando el grant exacto lo concede y el recurso es compatible.
 
-no atraviesa organizaciones;
+La cobertura del actor no se transforma por ello en `ORGANIZATION`.
 
-no atraviesa tenants futuros;
+---
 
-no incluye APP-REVIEW;
+#### 26. AS — Sedes asignadas
 
-no incluye demo;
-
-no incluye sandbox;
-
-no incluye pruebas;
-
-no incluye recursos aislados;
-
-no omite sujeto, propiedad, estado, lados o campos;
-
-no convierte propietario en bypass.
-
-Un rol con administrative_coverage.mode = NONE puede utilizar un grant Gespecífico si el grant exacto lo concede y el recurso es compatible.
-
-La cobertura del actor no se transforma por ello en ORGANIZATION.
-
-26. AS — Sedes asignadas
-
-AS exige que todos los territorios de sede obligatorios del recurso esténincluidos en las asignaciones utilizables del actor.
+AS exige que todos los territorios de sede obligatorios del recurso estén incluidos en las asignaciones utilizables del actor.
 
 Fuente:
 
@@ -111076,591 +110950,591 @@ AccessContext.assigned_sites
 
 Una sede utilizable exige:
 
-asignación activa;
-
-sede activa;
-
-assignable = true.
+- asignación activa
+- sede activa
+- assignable = true.
 
 Reglas:
 
-la sede primaria no es suficiente por sí sola;
+- la sede primaria no es suficiente por sí sola
+- la sede seleccionada no participa
+- varias sedes no significan global
+- un recurso multisitio exige coincidencia en todos los lados obligatorios
+- una lista vacía no coincide.
 
-la sede seleccionada no participa;
+---
 
-varias sedes no significan global;
-
-un recurso multisitio exige coincidencia en todos los lados obligatorios;
-
-una lista vacía no coincide.
-
-27. SS — Sede específica
+#### 27. SS — Sede específica
 
 SS exige coincidencia exacta entre:
 
-grant.site_id
-
-y la sede o lado del recurso exigido por el contrato.
+- grant.site_id
+- y la sede o lado del recurso exigido por el contrato.
 
 Reglas:
 
-no utiliza la sede seleccionada;
+- no utiliza la sede seleccionada
+- no utiliza la sede del turno
+- no utiliza la sede primaria como fallback
+- la sede debe existir y estar activa
+- la coincidencia con un lado no cubre otro lado obligatorio
+- un grant sin site_id es inválido.
 
-no utiliza la sede del turno;
+---
 
-no utiliza la sede primaria como fallback;
-
-la sede debe existir y estar activa;
-
-la coincidencia con un lado no cubre otro lado obligatorio;
-
-un grant sin site_id es inválido.
-
-28. AST — Tipo de sede dentro de asignaciones
+#### 28. AST — Tipo de sede dentro de asignaciones
 
 AST exige:
 
-sede del recurso dentro de assigned_sites;
-
-sede activa;
-
-tipo de sede exacto;
-
-tipo declarado en el grant;
-
-ausencia de territorio aislado.
+- sede del recurso dentro de assigned_sites
+- sede activa
+- tipo de sede exacto
+- tipo declarado en el grant
+- ausencia de territorio aislado.
 
 Regla:
 
+```text
 AS
 ∩
 site_type exacto
+```
 
 No equivale a todas las sedes de ese tipo.
 
-29. TST — Todas las sedes de un tipo
+---
+
+#### 29. TST — Todas las sedes de un tipo
 
 TST es transversal y exige una concesión explícita.
 
 Reglas:
 
-no se infiere desde AST;
+- no se infiere desde AST
+- no se infiere por tener varias sedes
+- no se infiere por rol
+- cubre únicamente sedes ordinarias del tipo exacto
+- excluye entornos aislados
+- conserva límites de organización
+- conserva recurso y campos
+- una sede de tipo desconocido no coincide.
 
-no se infiere por tener varias sedes;
+---
 
-no se infiere por rol;
+#### 30. AA — Áreas asignadas
 
-cubre únicamente sedes ordinarias del tipo exacto;
+`AA` exige que todas las áreas obligatorias del recurso estén incluidas en:
 
-excluye entornos aislados;
-
-conserva límites de organización;
-
-conserva recurso y campos;
-
-una sede de tipo desconocido no coincide.
-
-30. AA — Áreas asignadas
-
-AA exige que todas las áreas obligatorias del recurso estén incluidas en:
-
+```text
 AccessContext.assigned_areas
+```
 
 y que:
 
-la asignación esté activa;
-
-el área esté activa;
-
-pertenezca a una sede autorizada;
-
-el área coincida exactamente.
+- la asignación esté activa;
+- el área esté activa;
+- pertenezca a una sede autorizada;
+- el área coincida exactamente.
 
 Una lista vacía no coincide.
 
-AA no podrá utilizarse como sustituto del área operativa.
+`AA` no podrá utilizarse como sustituto del área operativa.
 
-31. SA — Área específica
+---
+
+#### 31. SA — Área específica
 
 SA exige coincidencia exacta entre:
 
-grant.area_id
-
-y el área del recurso.
+- grant.area_id
+- y el área del recurso.
 
 Además:
 
-el área debe existir;
+- el área debe existir
+- debe estar activa
+- debe pertenecer a la sede correspondiente
+- el grant deberá conservar o derivar la sede necesaria
+- no se aceptan áreas de otra sede
+- un area_id nulo invalida el grant.
 
-debe estar activa;
+---
 
-debe pertenecer a la sede correspondiente;
+#### 32. AAT — Tipo de área dentro de asignaciones
 
-el grant deberá conservar o derivar la sede necesaria;
+`AAT` exige:
 
-no se aceptan áreas de otra sede;
-
-un area_id nulo invalida el grant.
-
-32. AAT — Tipo de área dentro de asignaciones
-
-AAT exige:
-
+```text
 área del recurso
-∈ assigned_areas utilizables
+∈
+assigned_areas utilizables
+```
 
 y:
 
+```text
 area_kind del recurso
 =
 area_kind del grant
+```
 
 No cubre todas las áreas del mismo tipo.
 
-33. ATW — Todas las áreas de un tipo
+---
 
-ATW exige:
+#### 33. ATW — Todas las áreas de un tipo
 
-tipo de área exacto;
+`ATW` exige:
 
-límite superior de sedes autorizado;
-
-organización compatible;
-
-recurso ordinario;
-
-concesión transversal explícita.
+- tipo de área exacto;
+- límite superior de sedes autorizado;
+- organización compatible;
+- recurso ordinario;
+- concesión transversal explícita.
 
 Nunca existe sin un límite de sede.
 
-ATW no atraviesa entornos aislados.
+`ATW` no atraviesa entornos aislados.
 
-34. OWN — Propiedad o atribución
+---
 
-OWN coincide cuando:
+#### 34. OWN — Propiedad o atribución
 
-el contrato define qué significa propiedad;
+`OWN` coincide cuando:
 
-resource.ownership.coherent = true;
-
-la relación con el actor coincide;
-
-el actor exacto es el permitido;
-
-el recurso está vigente;
-
-cualquier límite territorial adicional también coincide.
+- el contrato define qué significa propiedad;
+- `resource.ownership.coherent = true`;
+- la relación con el actor coincide;
+- el actor exacto es el permitido;
+- el recurso está vigente;
+- cualquier límite territorial adicional también coincide.
 
 Regla:
 
+```text
 OWN
 → puede reducir el conjunto
 → nunca amplía territorio
+```
 
-No se utiliza universalmente:
+No se utiliza universalmente la regla:
 
+```text
 created_by = actor
+```
 
 Cada recurso define su relación canónica.
 
-35. Composición de alcance
+---
+
+#### 35. Composición de alcance
 
 Un permiso puede requerir más de una condición.
 
 Ejemplo:
 
+```text
 OWN
 +
 AS
+```
 
 significa:
 
+```text
 recurso propio
-dentro de sedes asignadas
+Y
+recurso dentro de sedes asignadas
+```
 
-No:
+No significa:
 
+```text
 recurso propio
-o
-sedes asignadas
+O
+recurso dentro de sedes asignadas
+```
 
-La semántica AND o OR deberá proceder del perfil de alcance publicado delpermiso.
+La semántica `AND` u `OR` deberá proceder del perfil de alcance publicado del permiso.
 
 No se elegirá la combinación más permisiva.
 
-36. Cobertura administrativa
+---
+
+#### 36. Cobertura administrativa
 
 administrative_coverage es evidencia contextual, no grant.
 
 Modos:
 
+```text
 NONE
 ASSIGNED_SITES
 SPECIFIC_SITE
 ASSIGNED_AREAS
 SPECIFIC_AREA
 ORGANIZATION
+```
 
 Uso:
 
-AS, AST, AA, AAT consumen asignaciones y cobertura coherente;
+- AS, AST, AA, AAT consumen asignaciones y cobertura coherente
+- SS y SA consumen dimensiones exactas del grant
+- G y ORG dependen del grant exacto, no de convertir artificialmente la cobertura
+- NONE no bloquea permisos NT, ORG, G u OWN cuando el contrato y grant los permiten
+- valid = false bloquea el carril base.
 
-SS y SA consumen dimensiones exactas del grant;
+---
 
-G y ORG dependen del grant exacto, no de convertir artificialmente lacobertura;
-
-NONE no bloquea permisos NT, ORG, G u OWN cuando el contrato ygrant los permiten;
-
-valid = false bloquea el carril base.
-
-37. Recursos sin sede
+#### 37. Recursos sin sede
 
 Un recurso con:
 
+```text
 site_ids = []
+```
 
 puede ser válido cuando el contrato lo clasifica como:
 
-no territorial;
+- no territorial;
+- organizacional;
+- de dominio;
+- propio sin dimensión territorial;
+- `NON_RESOURCE`.
 
-organizacional;
-
-de dominio;
-
-propio sin dimensión territorial;
-
-NON_RESOURCE.
-
-No será válido para un grant que exija AS, SS, AST o TST.
+No será válido para un grant que exija `AS`, `SS`, `AST` o `TST`.
 
 No se asignará una sede por fallback.
 
-38. Recursos sin área
+---
+
+#### 38. Recursos sin área
 
 Un recurso con:
 
+```text
 area_ids = []
+```
 
-puede ser válido a nivel de organización, sede, recurso no territorial orecurso site-wide.
+puede ser válido a nivel de organización, sede, recurso no territorial o recurso site-wide.
 
-No será válido para un grant que exija AA, SA, AAT o ATW.
+No será válido para un grant que exija `AA`, `SA`, `AAT` o `ATW`.
 
 Una lista vacía no significa todas las áreas.
 
-39. Recursos multiterritoriales
+---
 
-Cuando resource.required_sides contiene varios lados, el grant deberá cubrirtodos los lados obligatorios según su contrato.
+#### 39. Recursos multiterritoriales
+
+Cuando resource.required_sides contiene varios lados, el grant deberá cubrir todos los lados obligatorios según su contrato.
 
 Ejemplo:
 
+```text
 remisión
 origin = CENTRO_PRODUCCION
 destination = VENTO_CAFE
+```
 
 Un grant SS para CENTRO_PRODUCCION no cubre automáticamente el destino.
 
-La composición deberá estar declarada por el contrato del permiso y delrecurso.
+La composición deberá estar declarada por el contrato del permiso y del recurso.
 
-40. Colecciones
+---
 
-Para COLLECTION:
+#### 40. Colecciones
 
-cada miembro debe quedar dentro del alcance;
+Para `COLLECTION`:
 
-el conjunto se construye en servidor;
+- cada miembro debe quedar dentro del alcance;
+- el conjunto se construye en servidor;
+- los IDs se evalúan contra el mismo permiso;
+- un miembro no autorizado se excluye en lecturas;
+- una colección no puede incluir miembros ocultos y filtrar después;
+- el conteo y la paginación conservan el alcance.
 
-los IDs se evalúan contra el mismo permiso;
+La decisión de una colección autorizada no autoriza mutaciones sobre todos sus miembros.
 
-un miembro no autorizado se excluye en lecturas;
+---
 
-una colección no puede incluir miembros ocultos y filtrar después;
-
-el conteo y paginación conservan el alcance.
-
-La decisión de una colección autorizada no autoriza mutaciones sobre todos susmiembros.
-
-41. Agregados
+#### 41. Agregados
 
 Para AGGREGATE:
 
-cada dato contribuyente debe estar autorizado;
+- cada dato contribuyente debe estar autorizado
+- no se incluyen territorios denegados
+- no se revelan datos por inferencia
+- el resultado conserva el alcance exacto
+- un grant global continúa limitado al permiso de agregado
+- un agregado transversal requiere scope explícito.
 
-no se incluyen territorios denegados;
+---
 
-no se revelan datos por inferencia;
+#### 42. Operaciones masivas
 
-el resultado conserva el alcance exacto;
+Para `BULK`:
 
-un grant global continúa limitado al permiso de agregado;
-
-un agregado transversal requiere scope explícito.
-
-42. Operaciones masivas
-
-Para BULK:
-
+```text
 permiso ordinario
 ≠
 permiso masivo
+```
 
 La evaluación seguirá la política declarada:
 
-ALL_OR_NOTHING
-
-Todos los miembros deben producir base allow cuando el carril base searequerido.
-
-PARTIAL_WITH_RESULTS
-
-Cada miembro obtiene una decisión base independiente.
+| Política               | Regla                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `ALL_OR_NOTHING`       | Todos los miembros deben producir base allow cuando el carril base sea requerido |
+| `PARTIAL_WITH_RESULTS` | Cada miembro obtiene una decisión base independiente                             |
 
 No se resumirá una operación parcialmente denegada como allow total.
 
-43. Estado del recurso
+---
+
+#### 43. Estado del recurso
 
 Un grant válido no autoriza estados incompatibles.
 
 El carril base deberá consumir:
 
+```text
 resource.state_snapshot
+```
 
-y verificar el estado actual, la transición solicitada y las condicionesempresariales del permiso.
+y verificar el estado actual, la transición solicitada y las condiciones empresariales del permiso.
 
 Si el contrato no admite el estado:
 
+```text
 outcome = DENY
 reason_codes incluye BASE_RESOURCE_STATE_MISMATCH
+```
 
-44. Campos protegidos
+---
+
+#### 44. Campos protegidos
 
 El allow del carril base no concede automáticamente todos los campos.
 
 La decisión deberá respetar:
 
+```text
 resource.field_classification
 requested_fields
 field_policy_decision
+```
 
-Una lectura parcial puede conservar base_decision.outcome = ALLOW sobre laproyección autorizada.
+Una lectura parcial puede conservar `base_decision.outcome = ALLOW` sobre la proyección autorizada.
 
-Una mutación con un campo bloqueado produce DENY o requiere separaciónexplícita.
+Una mutación con un campo bloqueado produce `DENY` o requiere separación explícita.
 
-45. Concurrencia
+---
 
-Para una operación que exige concurrencia:
+#### 45. Concurrencia
 
+Para una operación que exige concurrencia deberá cumplirse antes de ejecutar:
+
+```text
 resource.concurrency.validated = true
+```
 
-deberá cumplirse antes de ejecutar.
+El carril base puede demostrar autoridad sobre el recurso, pero una concurrencia fallida impide la ejecución.
 
-El carril base puede demostrar autoridad sobre el recurso, pero unaconcurrencia fallida impide la ejecución.
+`AUTH-CTX-023` consolidará el bloqueo final.
 
-AUTH-CTX-023 consolidará el bloqueo final.
+---
 
-46. Dispositivo compartido
+#### 46. Dispositivo compartido
 
 El dispositivo no produce allow base.
 
 Una acción desde dispositivo exige además:
 
-dispositivo válido;
-
-sesión de actor válida;
-
-aplicación permitida;
-
-clave incluida;
-
-territorio compatible;
-
-política de actor satisfecha;
-
-reautenticación cuando aplique.
+- dispositivo válido
+- sesión de actor válida
+- aplicación permitida
+- clave incluida
+- territorio compatible
+- política de actor satisfecha
+- reautenticación cuando aplique.
 
 La relación es:
 
+```text
 BASE AUTHORITY
 ∩
 DEVICE LIMIT
+```
 
 Nunca unión.
 
-47. Turno y check-in
+---
+
+#### 47. Turno y check-in
 
 El carril base no consulta:
 
-active_shift;
-
-active_checkin_session;
-
-operational_role;
-
-operational_site;
-
-operational_area.
+- active_shift
+- active_checkin_session
+- operational_role
+- operational_site
+- operational_area.
 
 Reglas:
 
-sin turno
-→ base puede continuar
+- sin turno → base puede continuar
+- sin check-in → base puede continuar
+- fin del turno → no revoca base
+- check-in activo → no amplía base
 
-sin check-in
-→ base puede continuar
+---
 
-fin del turno
-→ no revoca base
-
-check-in activo
-→ no amplía base
-
-48. Carril operativo separado
+#### 48. Carril operativo separado
 
 El carril base no utilizará:
 
-operational-role-grants;
-
-grants individuales operativos;
-
-rol del turno;
-
-scope CTX;
-
-área del turno;
-
-permisos operativos legacy.
+- `operational-role-grants`;
+- grants individuales operativos;
+- rol del turno;
+- scope `CTX`;
+- área del turno;
+- permisos operativos legacy.
 
 Un actor híbrido puede obtener decisiones independientes en ambos carriles.
 
-49. Actor-wide deny
+---
 
-Un actor-wide deny aplicable a la clave exacta bloquea el carril base aunqueexistan múltiples allows.
+#### 49. Actor-wide deny
+
+Un actor-wide deny aplicable a la clave exacta bloquea el carril base aunque existan múltiples allows.
 
 Regla:
 
+```text
 ACTOR_WIDE_DENY
 >
 BASE ALLOW
+```
 
 AUTH-CTX-022 definirá y poblará la evidencia.
 
-50. Base lane deny
+---
+
+#### 50. Base lane deny
 
 Una denegación del carril base bloquea únicamente el base cuando coincide.
 
 En BASE_OR_OPERATIONAL:
 
+```text
 base deny
 → base_decision = DENY
 → operativo puede continuar
+```
 
 En BASE_AND_OPERATIONAL:
 
+```text
 base deny
 → base_decision = DENY
 → final_decision = DENY
+```
 
 Una concesión más específica no vence la denegación aplicable.
 
-51. Structural deny
+---
 
-Un problema estructural aplicable puede bloquear solo base o ambos carriles.
+#### 51. Structural deny
+
+Un problema estructural aplicable puede bloquear solo el carril base o ambos carriles.
 
 Ejemplos:
 
-rol base ambiguo;
-
-rol base inactivo;
-
-cobertura administrativa inválida;
-
-asignaciones contradictorias;
-
-snapshot obsoleto;
-
-recurso no resoluble;
-
-contrato incompatible.
+- rol base ambiguo;
+- rol base inactivo;
+- cobertura administrativa inválida;
+- asignaciones contradictorias;
+- snapshot obsoleto;
+- recurso no resoluble;
+- contrato incompatible.
 
 Un structural deny no es una fila administrable de overrides.
 
-52. Default deny
+---
 
-Si el carril es aplicable y no existe deny, pero tampoco existe un allow basecompleto:
+#### 52. Default deny
 
+Si el carril es aplicable y no existe deny, pero tampoco existe un allow base completo:
+
+```text
 outcome = DENY
 reason_codes incluye BASE_NO_MATCHING_ALLOW
+```
 
 No se materializa una denegación explícita.
 
 No se inventa un grant.
 
-53. Varios allows coincidentes
+---
+
+#### 53. Varios allows coincidentes
 
 Pueden coincidir varios allows de rol o individuales.
 
 Reglas:
 
-uno solo completo es suficiente para base_decision = ALLOW;
+- uno solo completo es suficiente para base_decision = ALLOW
+- los grants no se suman para crear un alcance no declarado
+- un grant incompleto no completa otro salvo composición explícita
+- se registran todos los allows realmente coincidentes
+- los IDs se deduplican
+- el orden es determinista
+- un deny aplicable prevalece.
 
-los grants no se suman para crear un alcance no declarado;
+---
 
-un grant incompleto no completa otro salvo composición explícita;
-
-se registran todos los allows realmente coincidentes;
-
-los IDs se deduplican;
-
-el orden es determinista;
-
-un deny aplicable prevalece.
-
-54. matched_allow_ids
+#### 54. matched_allow_ids
 
 Solo incluye grants base que:
 
-pertenecen al actor o rol exacto;
+- pertenecen al actor o rol exacto;
+- usan la clave exacta;
+- son compatibles con la modalidad;
+- están vigentes;
+- coinciden territorialmente;
+- coinciden con el recurso;
+- cumplen estado y condiciones;
+- pueden contribuir al carril.
 
-usan la clave exacta;
+No incluye candidatos descartados, grants operativos, grants inactivos, fuera de alcance, legacy o incompatibles.
 
-son compatibles con la modalidad;
+`AUTH-CTX-021` definirá el objeto completo `MatchedGrant`.
 
-están vigentes;
+---
 
-coinciden territorialmente;
+#### 55. matched_deny_ids
 
-coinciden con el recurso;
+Incluye únicamente IDs de denegaciones administrables que bloquean el carril base:
 
-cumplen estado y condiciones;
-
-pueden contribuir al carril.
-
-No incluye candidatos descartados, grants operativos, grants inactivos,fuera de alcance, legacy o incompatibles.
-
-AUTH-CTX-021 definirá el objeto completo MatchedGrant.
-
-55. matched_deny_ids
-
-Incluye únicamente IDs de denegaciones administrables que bloquean el carrilbase:
-
-actor-wide deny;
-
-base lane deny.
+- actor-wide deny;
+- base lane deny.
 
 No incluye:
 
-structural issues sin deny_id;
+- structural issues sin `deny_id`;
+- default deny;
+- falta de allow;
+- códigos de razón sin registro administrable.
 
-default deny;
+`AUTH-CTX-022` definirá el objeto completo `MatchedDeny`.
 
-falta de allow;
+---
 
-códigos de razón sin registro administrable.
-
-AUTH-CTX-022 definirá el objeto completo MatchedDeny.
-
-56. reason_codes
+#### 56. reason_codes
 
 Códigos iniciales reservados para base_decision:
 
+```text
 BASE_LANE_NOT_REQUIRED
 BASE_CONTEXT_NOT_APPLICABLE
 BASE_CONTEXT_UNAVAILABLE
@@ -111686,315 +111560,328 @@ BASE_COMPONENT_MATCHED
 BASE_DATASET_VERSION_MISMATCH
 BASE_GRANT_CONFIGURATION_INVALID
 BASE_INCOMPATIBLE_GRANT
+```
 
 AUTH-CTX-023 decidirá cuáles se exponen al cliente y su prioridad.
 
-57. Truth table principal
+---
 
-Condición
+#### 57. Truth table principal
 
-Outcome
+| Condición                                     | Resultado del carril base                                   |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| Modalidad `OPERATIONAL_ONLY`                  | `NOT_APPLICABLE`                                            |
+| Contexto base `INVALID`                       | `DENY`                                                      |
+| Contexto base `UNAVAILABLE`                   | `DENY`                                                      |
+| Recurso `UNRESOLVED`, `CONFLICT` o `ISOLATED` | `DENY`                                                      |
+| `actor-wide deny` coincidente                 | `DENY`                                                      |
+| `base lane deny` coincidente                  | `DENY`                                                      |
+| Sin allow base completo                       | `DENY`                                                      |
+| Allow base completo sin deny                  | `ALLOW`                                                     |
+| `BASE_COMPONENT` completo                     | `ALLOW` del carril; no de la decisión final                 |
+| Restricción global fallida                    | El carril conserva evidencia; la decisión final será `DENY` |
 
-Modalidad OPERATIONAL_ONLY
+---
 
-NOT_APPLICABLE
+#### 58. Restricciones globales y outcome del carril
 
-Contexto base INVALID
-
-DENY
-
-Contexto base UNAVAILABLE
-
-DENY
-
-Recurso UNRESOLVED, CONFLICT o ISOLATED
-
-DENY
-
-Actor-wide deny coincidente
-
-DENY
-
-Base lane deny coincidente
-
-DENY
-
-Sin allow base completo
-
-DENY
-
-Allow base completo sin deny
-
-ALLOW
-
-BASE_COMPONENT completo
-
-ALLOW del carril; no final
-
-Constraint global fallido
-
-El carril conserva evidencia; la decisión final será DENY
-
-58. Restricciones globales y outcome del carril
-
-base_decision expresa la autoridad producida por el carril base.
+`base_decision` expresa la autoridad producida por el carril base.
 
 Las decisiones separadas:
 
-device_decision;
-
-sensitivity_decision;
-
-field_policy_decision;
-
-prerequisite_decisions;
+- `device_decision`;
+- `sensitivity_decision`;
+- `field_policy_decision`;
+- `prerequisite_decisions`;
 
 no se convierten en grants base.
 
 Cuando una restricción global falla:
 
+```text
 base_decision puede conservar ALLOW
 final_decision = DENY
+```
 
-Esto permite explicar que el actor posee la capacidad base, pero la solicitudconcreta fue bloqueada por una restricción adicional.
+Esto permite explicar que el actor posee la capacidad base, pero la solicitud concreta fue bloqueada por una restricción adicional.
 
-59. Dependencias
+---
+
+#### 59. Dependencias
 
 Una dependencia de permiso se evalúa mediante una decisión separada.
 
 Reglas:
 
-no se infiere por módulo;
+- no se infiere por módulo
+- no se infiere app.access
+- cada dependencia conserva su modalidad
+- una dependencia fallida bloquea la solicitud principal cuando el contrato la declara obligatoria
+- aprobar la dependencia no crea el grant principal
+- la evidencia no se incluye como matched_allow_ids del permiso principal.
 
-no se infiere app.access;
+---
 
-cada dependencia conserva su modalidad;
-
-una dependencia fallida bloquea la solicitud principal cuando el contratola declara obligatoria;
-
-aprobar la dependencia no crea el grant principal;
-
-la evidencia no se incluye como matched_allow_ids del permiso principal.
-
-60. Simulación
+#### 60. Simulación
 
 La simulación puede calcular un base_decision hipotético.
 
 Reglas:
 
-utiliza el mismo algoritmo;
+- utiliza el mismo algoritmo
+- no modifica el contexto real
+- no ejecuta mutaciones
+- no crea grants
+- no elimina denies
+- no convierte WOULD_ALLOW en ALLOW
+- el actor real conserva la autorización para iniciar y consultar la simulación.
 
-no modifica el contexto real;
+---
 
-no ejecuta mutaciones;
+#### 61. Procesos de sistema
 
-no crea grants;
+Un proceso SYSTEM autónomo no utiliza el carril base laboral salvo que un contrato explícito de sistema lo represente.
 
-no elimina denies;
+No se convertirá service role, API key, cron, Edge Function o cola en rol base.
 
-no convierte WOULD_ALLOW en ALLOW;
+Los procesos delegados conservan al empleado actor cuando exista delegación válida.
 
-el actor real conserva la autorización para iniciar y consultar lasimulación.
+---
 
-61. Procesos de sistema
+#### 62. Inmutabilidad y snapshot
 
-Un proceso SYSTEM autónomo no utiliza el carril base laboral salvo que uncontrato explícito de sistema lo represente.
+`base_decision` queda asociado a:
 
-No se convertirá service role, API key, cron, Edge Function o cola en rolbase.
-
-Los procesos delegados conservan al empleado actor cuando exista delegaciónválida.
-
-62. Inmutabilidad y snapshot
-
-base_decision queda asociado a:
-
-actor;
-
-empleado;
-
-rol base;
-
-cobertura;
-
-permiso;
-
-recurso;
-
-versión;
-
-datasets;
-
-denies;
-
-instante;
-
-restricciones.
+- actor;
+- empleado;
+- rol base;
+- cobertura;
+- permiso;
+- recurso;
+- versión;
+- datasets;
+- denies;
+- instante;
+- restricciones.
 
 Un cambio en cualquiera de estos hechos obliga a una nueva decisión.
 
-63. Orden determinista
+---
+
+#### 63. Orden determinista
 
 La serialización deberá:
 
-ordenar matched_allow_ids alfabéticamente;
+- ordenar matched_allow_ids alfabéticamente
+- ordenar matched_deny_ids alfabéticamente
+- eliminar duplicados
+- ordenar reason_codes por prioridad y luego alfabéticamente
+- conservar el mismo resultado para el mismo snapshot
+- no depender del orden físico de filas
+- no elegir el primer grant
+- no elegir el grant más amplio
+- no elegir el grant más permisivo.
 
-ordenar matched_deny_ids alfabéticamente;
+---
 
-eliminar duplicados;
+#### 64. Casos de ejemplo
 
-ordenar reason_codes por prioridad y luego alfabéticamente;
+##### Caso A — Permiso `BASE_ONLY` con grant de rol
 
-conservar el mismo resultado para el mismo snapshot;
-
-no depender del orden físico de filas;
-
-no elegir el primer grant;
-
-no elegir el grant más amplio;
-
-no elegir el grant más permisivo.
-
-64. Casos de ejemplo
-
-Caso A — Permiso BASE_ONLY con grant de rol
-
+```text
 permission = viso.workforce.employees.view
 requirement = BASE_ONLY
 base_role = gerente
 grant = AS
 resource.site_ids = [VENTO_CAFE]
 assigned_sites = [VENTO_CAFE]
+```
 
 Resultado:
 
+```text
 base_decision.outcome = ALLOW
 operational_decision = NOT_APPLICABLE
+```
 
-Caso B — OPERATIONAL_ONLY
+##### Caso B — `OPERATIONAL_ONLY`
 
+```text
 permission = nexo.inventory.remissions.prepare
 requirement = OPERATIONAL_ONLY
+```
 
 Resultado:
 
+```text
 base_decision = NOT_APPLICABLE
+```
 
 Aunque exista una fila base legacy, no autoriza.
 
-Caso C — BASE_OR_OPERATIONAL sin turno
+##### Caso C — `BASE_OR_OPERATIONAL` sin turno
 
+```text
 base allow válido
 active_shift = null
+```
 
 Resultado:
 
+```text
 base_decision = ALLOW
+```
 
-Caso D — BASE_AND_OPERATIONAL
+##### Caso D — `BASE_AND_OPERATIONAL`
 
+```text
 base component válido
 operational component pendiente
+```
 
 Resultado:
 
+```text
 base_decision = ALLOW
 final_decision todavía no es ALLOW
+```
 
-Caso E — Propietario sin grant
+##### Caso E — Propietario sin grant
 
+```text
 base_role = propietario
 sin grant exacto
+```
 
 Resultado:
 
+```text
 base_decision = DENY
 BASE_NO_MATCHING_ALLOW
+```
 
-Caso F — Contador con cobertura NONE y grant global exacto
+##### Caso F — Contador con cobertura `NONE` y grant global exacto
 
+```text
 base_role = contador
 administrative_coverage.mode = NONE
 grant.scope = G
 resource organizacional ordinario
+```
 
 Resultado:
 
+```text
 base_decision puede ser ALLOW
+```
 
-Caso G — Recurso fuera de sedes asignadas
+##### Caso G — Recurso fuera de sedes asignadas
 
+```text
 grant = AS
 assigned_sites = [VENTO_CAFE]
 resource.site = SAUDO
+```
 
 Resultado:
 
+```text
 DENY
 BASE_SCOPE_NOT_MATCHED
+```
 
-Caso H — Recurso propio fuera del territorio
+##### Caso H — Recurso propio fuera del territorio
 
+```text
 grant = OWN + AS
 ownership = SELF
 resource.site = SAUDO
 assigned_sites = [VENTO_CAFE]
+```
 
 Resultado:
 
+```text
 DENY
+```
 
-Caso I — Remisión con dos lados
+##### Caso I — Remisión con dos lados
 
+```text
 grant cubre origin
 no cubre destination
 ambos lados son obligatorios
+```
 
 Resultado:
 
+```text
 DENY
 BASE_REQUIRED_SIDE_NOT_COVERED
+```
 
-Caso J — Actor-wide deny
+##### Caso J — Actor-wide deny
 
+```text
 dos allows base válidos
 un actor-wide deny coincidente
+```
 
 Resultado:
 
+```text
 base_decision = DENY
+```
 
-Caso K — APP-REVIEW
+##### Caso K — `APP-REVIEW`
 
+```text
 grant = G
 resource.isolated_environment = true
+```
 
 Resultado:
 
+```text
 DENY
 BASE_RESOURCE_ISOLATED
+```
 
-65. Antipatrones prohibidos
+---
 
+#### 65. Antipatrones prohibidos
+
+```ts
 if (employee.role === "propietario") {
   return true;
 }
+```
 
+```ts
 if (!activeShift) {
   return false;
 }
+```
 
+```ts
 const allowed = rolePermissions.some((permission) =>
   permission.startsWith(`${appCode}.`)
 );
+```
 
+```ts
 const siteId = selectedSiteId ?? employee.site_id;
+```
 
+```ts
 if (resource.created_by === actorId) {
   return true;
 }
+```
 
 También queda prohibido:
 
+```text
 rol base → todos los permisos
 check-in activo → ampliar administración
 sin turno → perder administración
@@ -112007,406 +111894,14516 @@ G → incluir APP-REVIEW
 allow más específico → vencer deny
 varios allows incompletos → construir uno nuevo
 BASE_COMPONENT → final allow
+```
 
-66. Relación con tareas posteriores
+---
 
-AUTH-CTX-020
+#### 66. Relación con tareas posteriores
 
-Definirá el carril operativo de forma independiente.
+| Tarea                         | Responsabilidad posterior                                                                                                                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-020`                | Definir el carril operativo de forma independiente                                                                                                                                                |
+| `AUTH-CTX-021`                | Definir y serializar `MatchedGrant`, incluyendo los grants base realmente coincidentes                                                                                                            |
+| `AUTH-CTX-022`                | Definir structural denies, actor-wide denies, base lane denies, operational lane denies y evidencia coincidente                                                                                   |
+| `AUTH-CTX-023`                | Combinar base, operación, modalidad, restricciones, dependencias, campos, denies, default deny y decisión final                                                                                   |
+| `AUTH-CTX-024`                | Registrar evidencia auditable de rol, grant, override, scope, recurso, territorio, razones, datasets, hash y outcome                                                                              |
+| `AUTH-CTX-025`                | Diseñar `get_access_context`, incluyendo los hechos base necesarios                                                                                                                               |
+| `AUTH-CTX-026`                | Diseñar `evaluate_authorization`, la consulta de datasets, el scope matcher, la frontera transaccional y `LaneDecision`                                                                           |
+| `AUTH-CTX-027`                | Eliminar evaluaciones locales de permisos base en aplicaciones                                                                                                                                    |
+| `AUTH-CTX-028`                | Diseñar compatibilidad con `has_permission`, `role_permissions`, `employee_permissions`, oficios base legacy, territorios legacy, scopes, duplicados y aliases                                    |
+| `AUTH-CTX-029`                | Definir caché e invalidación por cambios de rol, asignación, grant, deny, recurso, estado, dataset y catálogo                                                                                     |
+| `AUTH-CTX-030`                | Definir pruebas contractuales de modalidad, readiness, roles, overrides, scopes, recursos, multiterritorio, colecciones, agregados, bulk, denies, dispositivo, campos, concurrencia y aislamiento |
+| `AUTH-MOD-021`                | Definir el rol base mínimo de trabajadores puramente operativos antes de `AUTH-CTX-028`                                                                                                           |
+| `AUTH-DB-006` a `AUTH-DB-010` | Implementar validación del contexto, permiso, recurso, actor y territorio dentro de RPC sensibles                                                                                                 |
+| `AUTH-DB-020`                 | Migrar grants y consumidores legacy con compatibilidad temporal                                                                                                                                   |
+| `AUTH-DB-027`                 | Probar matriz base, overrides, RLS, RPC, recursos y migraciones                                                                                                                                   |
+| `AUTH-DB-030`                 | Retirar `has_permission` y rutas legacy después de adopción comprobada                                                                                                                            |
+| `AUTH-DB-031`                 | Certificar paridad documental, técnica y operativa                                                                                                                                                |
 
-AUTH-CTX-021
+---
 
-Definirá y serializará MatchedGrant, incluyendo los grants base realmentecoincidentes.
-
-AUTH-CTX-022
-
-Definirá structural denies, actor-wide denies, base lane denies,operational lane denies y evidencia coincidente.
-
-AUTH-CTX-023
-
-Combinará base, operación, modalidad, restricciones, dependencias, campos,denies, default deny y decisión final.
-
-AUTH-CTX-024
-
-Registrará evidencia auditable de rol, grant, override, scope, recurso,territorio, razones, datasets, hash y outcome.
-
-AUTH-CTX-025
-
-Diseñará get_access_context, incluyendo los hechos base necesarios.
-
-AUTH-CTX-026
-
-Diseñará evaluate_authorization, la consulta de datasets, el scope matcher,la frontera transaccional y el objeto LaneDecision.
-
-AUTH-CTX-027
-
-Eliminará evaluaciones locales de permisos base en aplicaciones.
-
-AUTH-CTX-028
-
-Diseñará compatibilidad con has_permission, role_permissions,employee_permissions, oficios base legacy, campos territoriales legacy,scopes actuales, duplicados y aliases.
-
-AUTH-CTX-029
-
-Definirá caché e invalidación por cambios de rol, asignación, grant, deny,recurso, estado, dataset y catálogo.
-
-AUTH-CTX-030
-
-Definirá pruebas contractuales de modalidad, readiness, roles, overrides,scopes, recursos propios, multiterritorio, colecciones, agregados, bulk,denies, default deny, componentes base, dispositivo, campos, concurrencia yaislamiento.
-
-AUTH-MOD-021
-
-Deberá aprobarse antes de AUTH-CTX-028 para definir el rol base mínimo de lostrabajadores puramente operativos.
-
-AUTH-DB-006 a AUTH-DB-010
-
-Implementarán validación del contexto, permiso, recurso, actor y territoriodentro de RPC sensibles.
-
-AUTH-DB-020
-
-Migrará grants y consumidores legacy con compatibilidad temporal.
-
-AUTH-DB-027
-
-Probará matriz base, overrides, RLS, RPC, recursos y migraciones.
-
-AUTH-DB-030
-
-Retirará has_permission y rutas legacy después de adopción comprobada.
-
-AUTH-DB-031
-
-Certificará paridad documental, técnica y operativa.
-
-67. Fuera del alcance
+#### 67. Fuera del alcance
 
 AUTH-CTX-019 no:
 
-modifica la matriz base;
-
-modifica sus 499 registros;
-
-modifica sus hashes;
-
-crea grants;
-
-crea overrides;
-
-crea denegaciones;
-
-define el carril operativo;
-
-define objetos completos de matched allows;
-
-define objetos completos de matched denies;
-
-produce la combinación final;
-
-modifica contratos de recurso;
-
-reclasifica permisos;
-
-implementa campos protegidos;
-
-implementa MFA;
-
-implementa dispositivos;
-
-crea tipos físicos;
-
-crea funciones SQL;
-
-crea RPC;
-
-crea RLS;
-
-crea migraciones;
-
-modifica Supabase;
-
-modifica aplicaciones.
+- modifica la matriz base;
+- modifica sus 499 registros;
+- modifica sus hashes;
+- crea grants;
+- crea overrides;
+- crea denegaciones;
+- define el carril operativo;
+- define objetos completos de matched allows;
+- define objetos completos de matched denies;
+- produce la combinación final;
+- modifica contratos de recurso;
+- reclasifica permisos;
+- implementa campos protegidos;
+- implementa MFA;
+- implementa dispositivos;
+- crea tipos físicos;
+- crea funciones SQL;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- modifica Supabase;
+- modifica aplicaciones.
 
 Cada responsabilidad posterior tiene destino explícito en la sección 66.
 
-68. Riesgos controlados
+---
 
-Riesgo 1 — Rol jerárquico funciona como bypass
+#### 68. Riesgos controlados
 
-Control:
+| Riesgo                                        | Control canónico                                                       |
+| --------------------------------------------- | ---------------------------------------------------------------------- |
+| Rol jerárquico funciona como bypass           | Rol + grant exacto + recurso exacto                                    |
+| Administración depende de presencia operativa | El carril base no consume turno ni check-in                            |
+| Scope global concede todos los permisos       | `G` limita territorio; no crea capacidades                             |
+| `OWN` amplía sedes                            | Propiedad ∩ territorio                                                 |
+| Grant individual repara identidad inválida    | Contexto base válido obligatorio                                       |
+| Deny se vence con allow más específico        | Deny aplicable > allow                                                 |
+| Componente base ejecuta acción doble          | `BASE_COMPONENT` autoriza el carril; la decisión final exige operación |
+| Recursos aislados entran en `G`               | `isolated_environment` produce `DENY` sin autorización específica      |
 
-rol
-+
-grant exacto
-+
-recurso exacto
+---
 
-Riesgo 2 — Administración depende de presencia operativa
-
-Control:
-
-base no consume turno ni check-in
-
-Riesgo 3 — Scope global concede todos los permisos
-
-Control:
-
-G limita territorio
-no crea capacidades
-
-Riesgo 4 — OWN amplía sedes
-
-Control:
-
-propiedad
-∩
-territorio
-
-Riesgo 5 — Grant individual repara identidad inválida
-
-Control:
-
-contexto base válido obligatorio
-
-Riesgo 6 — Deny se vence con allow más específico
-
-Control:
-
-deny aplicable
->
-allow
-
-Riesgo 7 — Componente base ejecuta acción doble
-
-Control:
-
-BASE_COMPONENT
-→ allow de carril
-→ final exige operación
-
-Riesgo 8 — Recursos aislados entran en G
-
-Control:
-
-isolated_environment
-→ DENY sin autorización específica
-
-69. Criterios de aprobación
+#### 69. Criterios de aprobación
 
 AUTH-CTX-019 podrá aprobarse cuando se acepte que:
 
-se conserva la forma de LaneDecision;
-
-base_decision.lane siempre es BASE;
-
-OPERATIONAL_ONLY produce NOT_APPLICABLE;
-
-evaluated = false solo para carril no aplicable;
-
-las demás modalidades evalúan base;
-
-readiness procede del AccessContext;
-
-el evaluador no mejora readiness;
-
-READY no significa allow;
-
-un actor laboral exacto es obligatorio;
-
-empleado inactivo no posee autoridad;
-
-rol base activo y único es obligatorio;
-
-un override no repara rol inválido;
-
-solo siete roles base son canónicos;
-
-los oficios legacy no son fuente final;
-
-propietario no tiene bypass;
-
-gerente general no tiene bypass;
-
-las únicas fuentes de allow son BASE_ROLE e INDIVIDUAL_BASE;
-
-el dataset base es @1.0.0;
-
-contiene 499 registros;
-
-los grants directos pueden autorizar el carril;
-
-los componentes base solo autorizan su carril;
-
-un componente base no autoriza la acción final;
-
-los overrides individuales permanecen restrictivos;
-
-la clave debe coincidir exactamente;
-
-la modalidad debe admitir base;
-
-el grant debe estar vigente;
-
-CTX es incompatible con base;
-
-NT no inventa territorio;
-
-ORG no equivale a global territorial;
-
-G es organizacional ordinario;
-
-G excluye entornos aislados;
-
-AS usa sedes asignadas utilizables;
-
-SS exige sede exacta;
-
-AST combina asignación y tipo;
-
-TST exige transversalidad explícita;
-
-AA usa áreas asignadas;
-
-SA exige área exacta;
-
-AAT combina asignación y tipo;
-
-ATW exige límite superior de sede;
-
-OWN no amplía territorio;
-
-scopes compuestos respetan su lógica publicada;
-
-cobertura administrativa no es grant;
-
-cobertura NONE puede coexistir con grants NT, ORG, G u OWN;
-
-recursos sin sede no usan fallback;
-
-recursos sin área no significan todas;
-
-todos los lados obligatorios deben estar cubiertos;
-
-colecciones se limitan en servidor;
-
-agregados excluyen miembros no autorizados;
-
-operaciones masivas requieren contrato;
-
-estado del recurso participa;
-
-campos protegidos permanecen separados;
-
-concurrencia permanece obligatoria cuando aplica;
-
-el dispositivo solo restringe;
-
-el turno no participa;
-
-el check-in no participa;
-
-el carril operativo permanece separado;
-
-actor-wide deny prevalece;
-
-base lane deny prevalece en base;
-
-structural deny puede bloquear el carril;
-
-ausencia de allow produce default deny;
-
-varios allows no crean alcance nuevo;
-
-matched_allow_ids solo contiene grants realmente coincidentes;
-
-matched_deny_ids excluye default deny;
-
-reason_codes queda normalizado;
-
-restricciones globales pueden negar la decisión final sin reescribir laevidencia del carril;
-
-dependencias no crean grants;
-
-simulación no ejecuta autoridad;
-
-procesos de sistema no inventan rol base;
-
-la decisión es inmutable;
-
-el orden es determinista;
-
-AUTH-CTX-020 definirá operación;
-
-AUTH-CTX-021 definirá allows coincidentes;
-
-AUTH-CTX-022 definirá denies;
-
-AUTH-CTX-023 definirá decisión final;
-
-AUTH-CTX-024 definirá auditoría;
-
-AUTH-CTX-026 diseñará el evaluador;
-
-AUTH-CTX-027 eliminará lógica local;
-
-AUTH-CTX-028 gobernará compatibilidad legacy;
-
-AUTH-CTX-029 gobernará invalidación;
-
-AUTH-CTX-030 gobernará pruebas;
-
-AUTH-MOD-021 permanece como puerta antes de AUTH-CTX-028;
-
-las tareas AUTH-DB indicadas tienen destinos físicos explícitos;
-
-no se implementa código, migraciones ni cambios en Supabase.
-
-70. Estado final de la propuesta
-
-Tarea
-
-Estado
-
-Relación
-
-AUTH-CTX-018
-
-APROBADA
-
-Tarea anterior
-
-AUTH-CTX-019
-
-APROBADA
-
-Tarea actual
-
-AUTH-CTX-020
-
-NO INICIADA
-
-Tarea siguiente reservada
-
-La continuidad propuesta queda:
-
+1. se conserva la forma de LaneDecision.
+2. base_decision.lane siempre es BASE.
+3. OPERATIONAL_ONLY produce NOT_APPLICABLE.
+4. evaluated = false solo para carril no aplicable.
+5. las demás modalidades evalúan base.
+6. readiness procede del AccessContext.
+7. el evaluador no mejora readiness.
+8. READY no significa allow.
+9. un actor laboral exacto es obligatorio.
+10. empleado inactivo no posee autoridad.
+11. rol base activo y único es obligatorio.
+12. un override no repara rol inválido.
+13. solo siete roles base son canónicos.
+14. los oficios legacy no son fuente final.
+15. propietario no tiene bypass.
+16. gerente general no tiene bypass.
+17. las únicas fuentes de allow son BASE_ROLE e INDIVIDUAL_BASE.
+18. el dataset base es @1.0.0.
+19. contiene 499 registros.
+20. los grants directos pueden autorizar el carril.
+21. los componentes base solo autorizan su carril.
+22. un componente base no autoriza la acción final.
+23. los overrides individuales permanecen restrictivos.
+24. la clave debe coincidir exactamente.
+25. la modalidad debe admitir base.
+26. el grant debe estar vigente.
+27. CTX es incompatible con base.
+28. NT no inventa territorio.
+29. ORG no equivale a global territorial.
+30. G es organizacional ordinario.
+31. G excluye entornos aislados.
+32. AS usa sedes asignadas utilizables.
+33. SS exige sede exacta.
+34. AST combina asignación y tipo.
+35. TST exige transversalidad explícita.
+36. AA usa áreas asignadas.
+37. SA exige área exacta.
+38. AAT combina asignación y tipo.
+39. ATW exige límite superior de sede.
+40. OWN no amplía territorio.
+41. scopes compuestos respetan su lógica publicada.
+42. cobertura administrativa no es grant.
+43. cobertura NONE puede coexistir con grants NT, ORG, G u OWN.
+44. recursos sin sede no usan fallback.
+45. recursos sin área no significan todas.
+46. todos los lados obligatorios deben estar cubiertos.
+47. colecciones se limitan en servidor.
+48. agregados excluyen miembros no autorizados.
+49. operaciones masivas requieren contrato.
+50. estado del recurso participa.
+51. campos protegidos permanecen separados.
+52. concurrencia permanece obligatoria cuando aplica.
+53. el dispositivo solo restringe.
+54. el turno no participa.
+55. el check-in no participa.
+56. el carril operativo permanece separado.
+57. actor-wide deny prevalece.
+58. base lane deny prevalece en base.
+59. structural deny puede bloquear el carril.
+60. ausencia de allow produce default deny.
+61. varios allows no crean alcance nuevo.
+62. matched_allow_ids solo contiene grants realmente coincidentes.
+63. matched_deny_ids excluye default deny.
+64. reason_codes queda normalizado.
+65. restricciones globales pueden negar la decisión final sin reescribir la evidencia del carril.
+66. dependencias no crean grants.
+67. simulación no ejecuta autoridad.
+68. procesos de sistema no inventan rol base.
+69. la decisión es inmutable.
+70. el orden es determinista.
+71. AUTH-CTX-020 definirá operación.
+72. AUTH-CTX-021 definirá allows coincidentes.
+73. AUTH-CTX-022 definirá denies.
+74. AUTH-CTX-023 definirá decisión final.
+75. AUTH-CTX-024 definirá auditoría.
+76. AUTH-CTX-026 diseñará el evaluador.
+77. AUTH-CTX-027 eliminará lógica local.
+78. AUTH-CTX-028 gobernará compatibilidad legacy.
+79. AUTH-CTX-029 gobernará invalidación.
+80. AUTH-CTX-030 gobernará pruebas.
+81. AUTH-MOD-021 permanece como puerta antes de AUTH-CTX-028.
+82. las tareas AUTH-DB indicadas tienen destinos físicos explícitos.
+83. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 70. Cierre y continuidad
+
+| Relación       | Tarea          | Estado        |
+| -------------- | -------------- | ------------- |
+| Tarea anterior | `AUTH-CTX-018` | ✅ APROBADA    |
+| Tarea cerrada  | `AUTH-CTX-019` | ✅ APROBADA    |
+| Tarea actual   | `AUTH-CTX-020` | ⬜ NO INICIADA |
+
+```text
 AUTH-CTX-018 — APROBADA
         ↓
 AUTH-CTX-019 — APROBADA
         ↓
 AUTH-CTX-020 — NO INICIADA
+```
 
-No se avanza a AUTH-CTX-020 hasta recibir aprobación explícita deAUTH-CTX-019.
+`AUTH-CTX-020` permanece reservada hasta que se inicie formalmente su propuesta.
 
+### ✅ AUTH-CTX-020 — Incluir decisión del carril operativo
 
-### [ ] AUTH-CTX-020 — Incluir decisión del carril operativo
-### [ ] AUTH-CTX-021 — Incluir allows coincidentes
-### [ ] AUTH-CTX-022 — Incluir denegaciones coincidentes
-### [ ] AUTH-CTX-023 — Incluir decisión final y razones
-### [ ] AUTH-CTX-024 — Incluir datos de auditoría
+| Campo                          | Valor                                                                             |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| **Estado**                     | APROBADA                                                                          |
+| **Bloque**                     | BLOQUE E — Contexto y decisión de autorización unificados                         |
+| **Subbloque**                  | `AUTHORIZATION DECISION`                                                          |
+| **Naturaleza**                 | Definición documental de `operational_decision` dentro de `AuthorizationDecision` |
+| **Implementación física**      | No incluida                                                                       |
+| **Tarea anterior vigente**     | `AUTH-CTX-019` — APROBADA                                                         |
+| **Tarea posterior reservada**  | `AUTH-CTX-021` — Incluir allows coincidentes                                      |
+| **Contrato afectado**          | `AuthorizationDecision@1.0.0`                                                     |
+| **Campo principal afectado**   | `operational_decision`                                                            |
+| **Tipo principal afectado**    | `LaneDecision`                                                                    |
+| **Dataset operativo**          | `vento.authorization.operational-role-grants@1.0.0`                               |
+| **Dataset de overrides**       | `vento.authorization.individual-overrides@1.0.0`                                  |
+| **Catálogo**                   | `vento.authorization@1.0.0`                                                       |
+| **Cambio contractual**         | Aclaración normativa compatible; no cambia la forma publicada                     |
+| **Cambios físicos permitidos** | No                                                                                |
+
+Esta tarea define cómo Vento OS evalúa el carril operativo de autorización a partir de:
+
+- actor efectivo;
+- identidad laboral;
+- estado del empleado;
+- turno publicado y vigente;
+- sesión de check-in activa cuando corresponda;
+- rol operativo efectivo;
+- sede operativa;
+- área operativa;
+- aplicación y permiso exactos;
+- modalidad contractual;
+- prerrequisito operativo `T` o `T+C`;
+- requisito de área operativa;
+- recurso y territorio resueltos;
+- concesiones de matriz operativa;
+- concesiones individuales operativas;
+- denegaciones transversales;
+- denegaciones del carril operativo;
+- estado del recurso;
+- lados obligatorios;
+- dispositivo compartido;
+- sensibilidad;
+- dependencias;
+- política de campos;
+- concurrencia;
+- `default deny`.
+
+> **Regla central**
+>
+> ```text
+> CARRIL OPERATIVO
+> =
+> AUTORIDAD TEMPORAL Y CONTEXTUAL
+> DEL ACTOR LABORAL
+> DURANTE UN TURNO PUBLICADO Y VIGENTE
+> BAJO UN ROL OPERATIVO EXACTO
+> SOBRE EL PERMISO EXACTO
+> Y EL RECURSO EXACTO
+> ```
+
+La autoridad operativa exige, como mínimo:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+EMPLEADO ACTIVO
++
+TURNO PUBLICADO Y VIGENTE
++
+ROL OPERATIVO CANÓNICO
++
+SEDE Y ÁREA COMPATIBLES
++
+CHECK-IN CUANDO EL CONTRATO EXIGE T+C
++
+GRANT OPERATIVO EXACTO
++
+RECURSO Y LADOS COMPATIBLES
++
+AUSENCIA DE DENY APLICABLE
+```
+
+El carril operativo:
+
+- no se obtiene del rol base;
+- no se obtiene de la cobertura administrativa;
+- no se obtiene de la sede primaria;
+- no se obtiene de la sede seleccionada;
+- no se obtiene de un perfil operativo predeterminado;
+- no se obtiene del dispositivo;
+- no se obtiene de `navigation_role`;
+- no se obtiene de una ruta visible;
+- no se obtiene de una aplicación abierta;
+- no se obtiene de un check-in aislado;
+- no se obtiene por jerarquía implícita;
+- no sobrevive al fin del contexto operativo que lo sustenta;
+- no concede autoridad sobre sedes, áreas o lados distintos del recurso.
+
+No implementa SQL, RPC, RLS, funciones, migraciones, guards, middlewares, caché ni cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir `operational_decision` de manera que Vento OS pueda responder inequívocamente:
+
+1. cuándo el carril operativo es aplicable;
+2. cuándo debe ser `NOT_APPLICABLE`;
+3. cuándo debe evaluarse;
+4. cuándo está estructuralmente listo;
+5. cuándo debe denegar por indisponibilidad;
+6. cuándo debe denegar por invalidez;
+7. cómo consume `T` y `T+C`;
+8. cómo consume el requisito de área;
+9. qué turno puede sustentar el carril;
+10. qué sesión de check-in puede sustentar una capacidad `T+C`;
+11. qué rol operativo participa;
+12. cómo se valida la habilitación territorial del rol;
+13. cómo se resuelven sede y área operativas;
+14. qué fuentes pueden producir un allow operativo;
+15. qué fuentes pueden producir un deny operativo;
+16. cómo se consulta la matriz operativa;
+17. cómo se consumen overrides individuales operativos;
+18. cómo se compara un grant con el recurso;
+19. cómo se comparan origen, destino y demás lados obligatorios;
+20. cómo se evalúan recursos de nivel sede;
+21. cómo se evalúan recursos de nivel área;
+22. cómo se evalúan recursos multiterritoriales;
+23. cómo se evalúan colecciones, agregados y operaciones masivas;
+24. cómo se preserva la independencia frente al carril base;
+25. cómo se aplican actor-wide denies y operational lane denies;
+26. cómo se aplica `default deny`;
+27. cómo se serializa `LaneDecision`;
+28. cómo se ordenan los identificadores coincidentes;
+29. cómo se evita duplicar evidencia;
+30. cómo se evita que un componente operativo de `BASE_AND_OPERATIONAL` autorice por sí solo;
+31. cómo interactúa el carril con dispositivos compartidos;
+32. cómo se preservan determinismo, inmutabilidad y auditoría.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-020 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — Actor efectivo;
+- `AUTH-MOD-002` — Separación entre rol base y rol operativo;
+- `AUTH-MOD-005` — Roles operativos;
+- `AUTH-MOD-006` — Casos híbridos administrativo-operativos;
+- `AUTH-MOD-007` y `AUTH-MOD-008` — Sede y área;
+- `AUTH-MOD-009` — Turno publicado;
+- `AUTH-MOD-010` — Check-in activo;
+- `AUTH-MOD-011` — Sesión en dispositivo compartido;
+- `AUTH-MOD-013` a `AUTH-MOD-017` — Alcances;
+- `AUTH-MOD-018` — Combinación de carriles;
+- `AUTH-MOD-019` — Denegación explícita;
+- `AUTH-CAT-006` — Modalidad;
+- `AUTH-CAT-007` — Clasificación de permisos operativos;
+- `AUTH-CAT-011` — Alcance permitido;
+- `AUTH-CAT-012` — Prerrequisitos de turno y check-in;
+- `AUTH-CAT-013` — Requisito de área operativa;
+- `AUTH-CAT-014` — Compatibilidad con dispositivo compartido;
+- `AUTH-CAT-016` — Contrato de recurso;
+- `AUTH-CAT-017` — Dependencias;
+- `AUTH-RBAC-009` a `AUTH-RBAC-019` — Matrices operativas;
+- `AUTH-RBAC-021` — Concesiones individuales operativas;
+- `AUTH-RBAC-022` — Denegaciones individuales y transversales;
+- `AUTH-RBAC-025` — Dataset canónico de matriz operativa;
+- `AUTH-RBAC-026` — Dataset canónico de overrides;
+- `AUTH-RBAC-027` — Ausencia de acceso operativo global accidental;
+- `AUTH-RBAC-028` — Independencia de la administración frente al check-in;
+- `AUTH-CTX-001` a `AUTH-CTX-015` — `AccessContext`;
+- `AUTH-CTX-016` — Aplicación y permiso solicitado;
+- `AUTH-CTX-017` — `authorization_requirement`;
+- `AUTH-CTX-018` — Recurso y territorio resueltos;
+- `AUTH-CTX-019` — Decisión del carril base.
+
+Principios obligatorios:
+
+```text
+TURNO
+≠
+PERMISO
+```
+
+```text
+CHECK-IN
+≠
+PERMISO
+```
+
+```text
+ROL OPERATIVO
+≠
+PERMISO
+```
+
+```text
+DISPOSITIVO
+≠
+AUTORIDAD
+```
+
+```text
+SEDE OPERATIVA
+≠
+TODAS LAS SEDES
+```
+
+```text
+ÁREA OPERATIVA
+≠
+TODAS LAS ÁREAS
+```
+
+```text
+ROL BASE
+≠
+ROL OPERATIVO
+```
+
+```text
+COBERTURA ADMINISTRATIVA
+≠
+TERRITORIO OPERATIVO
+```
+
+```text
+ALLOW OPERATIVO APLICABLE
+=
+PERMISO EXACTO
+∩
+ACTOR EXACTO
+∩
+TURNO EXACTO
+∩
+ROL OPERATIVO EXACTO
+∩
+PRERREQUISITOS
+∩
+SEDE Y ÁREA
+∩
+RECURSO Y LADOS
+∩
+GRANT VIGENTE
+∩
+AUSENCIA DE DENY APLICABLE
+```
+
+---
+
+#### 3. Forma contractual conservada
+
+```ts
+type LaneDecision = {
+  lane: "BASE" | "OPERATIONAL";
+
+  outcome:
+    | "ALLOW"
+    | "DENY"
+    | "NOT_APPLICABLE";
+
+  readiness:
+    | "READY"
+    | "UNAVAILABLE"
+    | "INVALID"
+    | "NOT_APPLICABLE";
+
+  evaluated: boolean;
+  matched_allow_ids: string[];
+  matched_deny_ids: string[];
+  reason_codes: string[];
+};
+```
+
+Para esta tarea:
+
+```ts
+operational_decision: LaneDecision;
+```
+
+deberá cumplir siempre:
+
+```text
+lane = OPERATIONAL
+```
+
+No se agregan campos.
+
+---
+
+#### 4. Aplicabilidad por modalidad
+
+| `authorization_requirement` | Carril operativo        | Regla                                |
+| --------------------------- | ----------------------- | ------------------------------------ |
+| `BASE_ONLY`                 | No aplicable            | Produce `NOT_APPLICABLE`             |
+| `OPERATIONAL_ONLY`          | Aplicable y obligatorio | Debe producir `ALLOW` o `DENY`       |
+| `BASE_OR_OPERATIONAL`       | Aplicable               | Se evalúa de forma independiente     |
+| `BASE_AND_OPERATIONAL`      | Aplicable y obligatorio | Debe aportar el componente operativo |
+
+```text
+BASE_ONLY
+→ operational_decision.outcome = NOT_APPLICABLE
+```
+
+No se consulta la matriz operativa para intentar ampliar un permiso `BASE_ONLY`.
+
+---
+
+#### 5. Forma de NOT_APPLICABLE
+
+Cuando la modalidad es `BASE_ONLY`:
+
+```ts
+operational_decision = {
+  lane: "OPERATIONAL",
+  outcome: "NOT_APPLICABLE",
+  readiness: "NOT_APPLICABLE",
+  evaluated: false,
+  matched_allow_ids: [],
+  matched_deny_ids: [],
+  reason_codes: ["OPERATIONAL_LANE_NOT_REQUIRED"]
+};
+```
+
+Reglas:
+
+- no significa `DENY`;
+- no significa error;
+- no significa ausencia de turno;
+- no significa ausencia de rol operativo;
+- no consulta grants operativos;
+- no consulta lane denies operativos;
+- los actor-wide denies y structural denies continúan siendo evaluables a nivel global en `AUTH-CTX-022` y `AUTH-CTX-023`;
+- una fila operativa almacenada para un permiso `BASE_ONLY` se clasifica como incompatibilidad contractual, no como allow.
+
+---
+
+#### 6. Cuándo evaluated = true
+
+Para las modalidades:
+
+- `OPERATIONAL_ONLY`;
+- `BASE_OR_OPERATIONAL`;
+- `BASE_AND_OPERATIONAL`;
+
+se utilizará:
+
+```text
+evaluated = true
+```
+
+Esto se conserva aunque el carril termine tempranamente en `DENY` por:
+
+- contexto operativo inexistente;
+- contexto operativo inválido;
+- empleado inactivo;
+- turno ausente;
+- turno vencido;
+- turno ambiguo;
+- check-in ausente cuando se exige;
+- check-in incompatible;
+- rol operativo inválido;
+- sede operativa incompatible;
+- área obligatoria ausente;
+- recurso no resoluble;
+- deny aplicable;
+- falta de allow.
+
+```text
+evaluated = false
+```
+
+se reserva exclusivamente para `NOT_APPLICABLE`.
+
+---
+
+#### 7. readiness
+
+Para modalidades que admiten operación:
+
+```text
+operational_decision.readiness
+=
+AccessContext.lane_readiness.operational.status
+```
+
+El evaluador no podrá:
+
+- convertir `INVALID` en `READY`;
+- convertir `UNAVAILABLE` en `READY`;
+- crear un turno;
+- extender la vigencia de un turno;
+- crear un check-in;
+- reabrir una sesión cerrada;
+- reemplazar el rol operativo;
+- completar una sede;
+- completar un área;
+- seleccionar el primer contexto disponible;
+- ocultar un código estructural;
+- recalcular parcialmente el contexto con reglas locales.
+
+Si el contexto quedó obsoleto:
+
+```text
+readiness = INVALID
+outcome = DENY
+```
+
+---
+
+#### 8. Relación entre readiness y outcome
+
+| `readiness`      | Resultado máximo posible |
+| ---------------- | ------------------------ |
+| `READY`          | `ALLOW` o `DENY`         |
+| `UNAVAILABLE`    | `DENY`                   |
+| `INVALID`        | `DENY`                   |
+| `NOT_APPLICABLE` | `NOT_APPLICABLE`         |
+
+`READY` no concede autoridad.
+
+Solo indica que el contexto operativo puede compararse con grants, denies y recurso.
+
+---
+
+#### 9. Actor laboral obligatorio
+
+El carril operativo laboral requiere:
+
+- actor efectivo de tipo `EMPLOYEE`;
+- identidad laboral resoluble;
+- empleado exacto;
+- empleado activo;
+- coincidencia entre actor y empleado;
+- snapshot vigente.
+
+Para actores de tipo:
+
+- `CUSTOMER`;
+- `SYSTEM` autónomo;
+- `DEVICE` sin actor humano;
+- `UNRESOLVED`;
+
+el carril operativo será `NOT_APPLICABLE` o `DENY` según la modalidad y el contrato del actor.
+
+No se inventará una identidad laboral para evaluar una matriz operativa.
+
+---
+
+#### 10. Empleado inactivo
+
+Un empleado inactivo conserva atribución histórica, pero no autoridad operativa.
+
+Resultado:
+
+```text
+readiness = UNAVAILABLE
+outcome = DENY
+reason_codes incluye OPERATIONAL_EMPLOYEE_INACTIVE
+```
+
+No se consultan grants como mecanismo de reactivación.
+
+Un turno residual, una sesión de check-in abierta o una concesión individual activa no reactivan al empleado.
+
+---
+
+#### 11. Turno publicado y vigente
+
+Para evaluar el carril operativo deberá existir:
+
+```text
+active_shift != null
+active_shift.published = true
+active_shift.currently_valid = true
+```
+
+El turno deberá:
+
+- pertenecer al actor efectivo;
+- pertenecer al empleado exacto;
+- tener una revisión autoritativa;
+- estar dentro de su ventana temporal;
+- no estar cancelado;
+- no estar retirado;
+- no estar completado de forma terminal;
+- contener sede resoluble;
+- contener rol operativo resoluble;
+- no ser ambiguo.
+
+El carril no utiliza:
+
+- turno futuro;
+- turno expirado;
+- turno borrador;
+- turno no publicado;
+- turno de otro trabajador;
+- turno enviado por cliente;
+- turno elegido por dispositivo;
+- turno seleccionado por frontend.
+
+---
+
+#### 12. Ausencia de turno
+
+Cuando el permiso admite operación y no existe un turno vigente:
+
+```text
+readiness = UNAVAILABLE
+outcome = DENY
+reason_codes incluye OPERATIONAL_SHIFT_UNAVAILABLE
+```
+
+La ausencia de turno:
+
+- no invalida el carril base;
+- no elimina permisos administrativos;
+- no se repara mediante check-in aislado;
+- no se repara mediante rol base;
+- no se repara mediante dispositivo;
+- no se repara mediante override individual operativo;
+- no se repara mediante perfil predeterminado.
+
+---
+
+#### 13. Turno inválido o ambiguo
+
+Cuando existe evidencia contradictoria o varios candidatos incompatibles:
+
+```text
+readiness = INVALID
+outcome = DENY
+reason_codes incluye OPERATIONAL_SHIFT_INVALID
+```
+
+Casos:
+
+- dos turnos simultáneos sin regla determinista;
+- turno de otro empleado;
+- sede inexistente;
+- área perteneciente a otra sede;
+- rol ausente;
+- rol desconocido;
+- revisión no autoritativa;
+- timestamps no resolubles;
+- estado desconocido;
+- contexto antiguo reutilizado después de una modificación.
+
+No se elegirá el primer turno.
+
+---
+
+#### 14. Prerrequisito operativo
+
+La decisión consume:
+
+```ts
+operational_prerequisite:
+  | "T"
+  | "T+C"
+  | "NOT_APPLICABLE";
+```
+
+| Valor            | Requisito                                                          |
+| ---------------- | ------------------------------------------------------------------ |
+| `T`              | Turno publicado y vigente                                          |
+| `T+C`            | Turno publicado y vigente + sesión de check-in activa y compatible |
+| `NOT_APPLICABLE` | El carril operativo no participa                                   |
+
+Reglas:
+
+- no existe `C` sin turno;
+- la modalidad no permite inferir `T` o `T+C`;
+- el valor procede del contrato canónico del permiso;
+- el dispositivo no reduce `T+C` a `T`;
+- la simulación no reduce `T+C` a `T`;
+- un override no cambia el prerrequisito;
+- un rol no cambia el prerrequisito.
+
+---
+
+#### 15. Permisos T
+
+Para un permiso `T`:
+
+```text
+active_shift válido
+→ requisito temporal satisfecho
+```
+
+No se exige una sesión de check-in activa.
+
+Sin embargo, si existe una sesión de check-in presentada como parte del contexto y resulta incompatible, inválida, cerrada de forma contradictoria o perteneciente a otro turno:
+
+```text
+outcome = DENY
+```
+
+El evaluador no podrá ignorar evidencia operativa contradictoria para obtener un allow.
+
+---
+
+#### 16. Permisos T+C
+
+Para un permiso `T+C` deberá existir:
+
+```text
+active_checkin_session != null
+```
+
+y la sesión deberá:
+
+- pertenecer al actor efectivo;
+- pertenecer al empleado exacto;
+- corresponder al `active_shift`;
+- estar abierta;
+- estar vigente;
+- no estar reemplazada;
+- no estar revocada;
+- no estar expirada;
+- coincidir con la sede operativa;
+- ser compatible con el área cuando el contrato la utiliza;
+- proceder de evidencia confirmada por servidor.
+
+Resultado ante ausencia:
+
+```text
+readiness = UNAVAILABLE
+outcome = DENY
+reason_codes incluye OPERATIONAL_CHECKIN_REQUIRED
+```
+
+---
+
+#### 17. Check-in incompatible
+
+Un check-in incompatible produce:
+
+```text
+readiness = INVALID
+outcome = DENY
+reason_codes incluye OPERATIONAL_CHECKIN_MISMATCH
+```
+
+Ejemplos:
+
+- sesión de otro turno;
+- sesión de otra sede;
+- sesión de otro empleado;
+- sesión cerrada;
+- sesión expirada;
+- sesión duplicada sin resolución determinista;
+- evento offline todavía no confirmado;
+- sesión corregida o reemplazada;
+- check-in residual de un turno cancelado.
+
+El check-in no elige el turno.
+
+---
+
+#### 18. Fin del turno
+
+Cuando termina la vigencia del turno:
+
+```text
+operational_decision
+→ debe reevaluarse
+```
+
+La autoridad operativa no sobrevive por:
+
+- mantener abierta la aplicación;
+- conservar una cookie;
+- conservar un objeto en memoria;
+- conservar un check-in residual;
+- mantener una sesión de dispositivo;
+- conservar una decisión anterior;
+- mantener una ruta abierta.
+
+Una decisión emitida antes del fin no autoriza una ejecución posterior sin revalidación.
+
+---
+
+#### 19. Cierre del check-in
+
+El cierre del check-in:
+
+- revoca la posibilidad de producir allow para permisos `T+C`;
+- no revoca por sí solo permisos `T`;
+- no modifica el rol base;
+- no modifica la cobertura administrativa;
+- no convierte el turno en inválido;
+- obliga a reevaluar decisiones operativas dependientes de check-in.
+
+---
+
+#### 20. Rol operativo efectivo
+
+Para evaluar el carril deberá existir:
+
+```text
+operational_role != null
+operational_role.active = true
+```
+
+El rol deberá:
+
+- proceder del turno vigente;
+- pertenecer al catálogo operativo canónico;
+- coincidir exactamente con el código publicado;
+- estar activo;
+- no estar deprecado;
+- estar habilitado en la sede del turno;
+- ser compatible con el área;
+- conservar el `shift_id` exacto;
+- conservar la sede exacta;
+- conservar el área exacta o `null`.
+
+No se resuelve desde:
+
+- rol base;
+- cargo humano;
+- perfil predeterminado;
+- `navigation_role`;
+- plantilla de dispositivo;
+- aplicación;
+- ruta;
+- permiso;
+- cookie;
+- cliente.
+
+---
+
+#### 21. Roles canónicos operativos
+
+El dataset canónico operativo contiene exactamente doce roles:
+
+| Rol operativo canónico       |
+| ---------------------------- |
+| `cajero_satelite`            |
+| `barista_satelite`           |
+| `cocinero_satelite`          |
+| `servicio_salon`             |
+| `mostrador_satelite`         |
+| `operador_integral_satelite` |
+| `produccion_cocina`          |
+| `produccion_panaderia`       |
+| `produccion_reposteria`      |
+| `bodeguero`                  |
+| `conductor_logistica`        |
+| `gerencia_operativa`         |
+
+No participan como fuente canónica:
+
+- `propietario_admin`;
+- oficios base legacy;
+- aliases no resueltos;
+- roles de navegación;
+- nombres humanos;
+- roles de aplicaciones externas.
+
+La compatibilidad temporal se diseñará en `AUTH-CTX-028`.
+
+---
+
+#### 22. Sin bypass por rol operativo
+
+Queda prohibido:
+
+- `gerencia_operativa` → ALLOW automático;
+- `operador_integral_satelite` → todas las capacidades del satélite;
+- `bodeguero` → todo NEXO;
+- `conductor_logistica` → todos los vehículos o remisiones;
+- `cajero_satelite` → todas las operaciones de venta;
+- `produccion_*` → todas las operaciones de FOGO.
+
+Todo actor requiere:
+
+```text
+permiso exacto
++
+grant exacto
++
+turno exacto
++
+rol exacto
++
+territorio compatible
++
+recurso compatible
++
+ausencia de deny
+```
+
+---
+
+#### 23. Rol base y jerarquía administrativa
+
+El rol base no sustituye el rol operativo.
+
+Reglas:
+
+- propietario requiere rol operativo real cuando pretende autorizar por el carril operativo;
+- gerente general requiere rol operativo real cuando pretende autorizar por el carril operativo;
+- gerente no obtiene operación por cobertura administrativa;
+- supervisor no obtiene operación por jerarquía;
+- un allow base no repara un carril operativo inválido;
+- un `BASE_COMPONENT` no sustituye un componente operativo;
+- un usuario híbrido conserva ambos carriles separados.
+
+---
+
+#### 24. Habilitación territorial del rol
+
+El rol operativo deberá declarar coherencia con:
+
+- sede del turno;
+- área del turno;
+- configuración site-wide;
+- configuración por área;
+- vigencia de la habilitación.
+
+Si el rol es canónico pero:
+
+```text
+valid_for_site = false
+```
+
+o:
+
+```text
+valid_for_area = false
+```
+
+el carril produce:
+
+```text
+outcome = DENY
+```
+
+El evaluador no reemplaza el rol por otro habilitado en la sede.
+
+---
+
+#### 25. Sede operativa
+
+La sede operativa procede del turno vigente y deberá ser:
+
+- resoluble;
+- activa;
+- operable;
+- coherente con el rol;
+- coherente con el check-in cuando exista;
+- coherente con el dispositivo cuando se usa un terminal compartido;
+- comparable con el recurso.
+
+No se toma de:
+
+- sede seleccionada;
+- sede primaria;
+- cobertura administrativa;
+- última sede utilizada;
+- dispositivo como fuente;
+- localizador del request;
+- primer `site_id` del recurso.
+
+---
+
+#### 26. Área operativa
+
+El área operativa procede del turno.
+
+Cuando existe deberá:
+
+- ser resoluble;
+- estar activa;
+- pertenecer a la sede operativa;
+- ser coherente con el rol;
+- ser coherente con el recurso;
+- ser coherente con el dispositivo cuando corresponda.
+
+No se completa mediante:
+
+- área asignada administrativa;
+- área seleccionada;
+- tipo de área enviado por cliente;
+- dispositivo;
+- perfil predeterminado;
+- primera área habilitada para el rol.
+
+---
+
+#### 27. Requisito de área
+
+La decisión consume:
+
+```ts
+type OperationalAreaRequirement =
+  | "REQUIRED"
+  | "SITE_SUFFICIENT"
+  | "NOT_APPLICABLE";
+```
+
+| Requisito         | Regla                                                          |
+| ----------------- | -------------------------------------------------------------- |
+| `REQUIRED`        | Exige área operativa activa y compatible                       |
+| `SITE_SUFFICIENT` | Permite evaluación a nivel de sede si rol y recurso lo admiten |
+| `NOT_APPLICABLE`  | El carril operativo no participa                               |
+
+Reglas:
+
+- `SITE_SUFFICIENT` no significa todas las áreas;
+- una restricción del rol puede exigir área aunque el permiso sea `SITE_SUFFICIENT`;
+- un recurso de área exige coincidencia aunque el permiso admita nivel de sede;
+- un área `null` nunca es wildcard;
+- un dispositivo no crea área;
+- un override no elimina el requisito.
+
+---
+
+#### 28. Área obligatoria ausente
+
+Cuando el contrato o el rol exige área y no existe:
+
+```text
+readiness = UNAVAILABLE
+outcome = DENY
+reason_codes incluye OPERATIONAL_AREA_REQUIRED
+```
+
+Cuando existe área, pero es incoherente:
+
+```text
+readiness = INVALID
+outcome = DENY
+reason_codes incluye OPERATIONAL_AREA_MISMATCH
+```
+
+---
+
+#### 29. Territorio operativo exacto
+
+El territorio operativo efectivo es:
+
+```text
+operational_site
++
+operational_area cuando aplica
++
+rol operativo
++
+turno
++
+check-in cuando aplica
+```
+
+No es:
+
+- cobertura administrativa;
+- conjunto de sedes asignadas;
+- conjunto de áreas asignadas;
+- territorio global;
+- territorio del dispositivo;
+- territorio declarado por el cliente.
+
+---
+
+#### 30. Comparación con el recurso
+
+El carril operativo deberá comparar el contexto contra:
+
+- `resource.territory.site_ids`;
+- `resource.territory.area_ids`;
+- `resource.required_sides`;
+- origen;
+- destino;
+- sujeto;
+- custodio;
+- ruta;
+- vehículo;
+- propiedad cuando el contrato lo exige;
+- estado;
+- campos solicitados;
+- política de concurrencia.
+
+Regla:
+
+```text
+CONTEXTO OPERATIVO
+LIMITA
+EL RECURSO REAL
+```
+
+No:
+
+```text
+CONTEXTO OPERATIVO
+CREA
+EL TERRITORIO DEL RECURSO
+```
+
+---
+
+#### 31. Lados obligatorios
+
+El contrato del recurso deberá declarar qué lado o lados debe cubrir el carril operativo.
+
+Ejemplos:
+
+```text
+RESOURCE
+ORIGIN
+DESTINATION
+SOURCE
+TARGET
+CUSTODIAN
+VEHICLE
+ROUTE
+```
+
+Reglas:
+
+- un lado obligatorio debe resolverse;
+- el contexto debe coincidir con el lado declarado;
+- coincidencia con origen no autoriza destino;
+- coincidencia con destino no autoriza origen;
+- un lado no se intercambia silenciosamente;
+- un turno no obtiene autoridad sobre todos los lados;
+- un grant no amplía los lados declarados.
+
+---
+
+#### 32. Recursos multiterritoriales
+
+Un turno aporta un territorio operativo principal.
+
+Una operación puede exigir varios territorios.
+
+Ejemplo:
+
+```text
+turno = CENTRO_PRODUCCION
+remisión:
+origin = CENTRO_PRODUCCION
+destination = VENTO_CAFE
+```
+
+El carril operativo no obtiene automáticamente autoridad sobre `VENTO_CAFE`.
+
+El contrato deberá exigir una de estas formas:
+
+- coincidencia con origen;
+- coincidencia con destino;
+- coincidencia con ambos;
+- componente base adicional;
+- capacidad transversal explícita;
+- decisión separada por lado;
+- política masiva explícita.
+
+Sin regla contractual exacta:
+
+```text
+outcome = DENY
+```
+
+---
+
+#### 33. Permisos operativos no son cross-site
+
+Una concesión operativa sin IDs territoriales físicos no significa:
+
+```text
+todas las sedes
+```
+
+Significa:
+
+```text
+capacidad disponible
+únicamente dentro del contexto operativo válido
+y contra el recurso compatible
+```
+
+Queda prohibido interpretar:
+
+```text
+grant operativo presente
++
+site_id null
+=
+global
+```
+
+---
+
+#### 34. Fuentes de allow operativo
+
+Solo pueden producir candidatos de allow operativo:
+
+```text
+OPERATIONAL_ROLE
+INDIVIDUAL_OPERATIONAL
+```
+
+Fuentes normativas:
+
+- `vento.authorization.operational-role-grants@1.0.0`;
+- `vento.authorization.individual-overrides@1.0.0`.
+
+No producen allows operativos:
+
+- matriz base;
+- rol base;
+- cobertura administrativa;
+- turno por sí solo;
+- check-in por sí solo;
+- sede;
+- área;
+- dispositivo;
+- `navigation_role`;
+- rutas;
+- menús;
+- frontend;
+- service role;
+- nombre del cargo;
+- perfil predeterminado.
+
+---
+
+#### 35. Dataset operativo canónico
+
+La matriz operativa vigente es:
+
+```text
+vento.authorization.operational-role-grants@1.0.0
+```
+
+| Característica         |        Valor |
+| ---------------------- | -----------: |
+| Registros lógicos      |          240 |
+| Roles operativos       |           12 |
+| Concesiones directas   |          218 |
+| Componentes operativos |           22 |
+| Permisos `BASE_ONLY`   |            0 |
+| Claves legacy          |            0 |
+| Wildcards              |            0 |
+| Efecto                 | `ALLOW_ONLY` |
+
+Hash contractual:
+
+```text
+sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+Reglas adicionales:
+
+- orden determinista;
+- ausencia de fila = `default deny`;
+- el evaluador consume el snapshot exacto y su hash aprobado;
+- el evaluador no reconstruye la matriz desde tablas legacy;
+- no se expande por aplicación;
+- no se expande por prefijo;
+- no se expande por dispositivo;
+- una fila no sobrevive al fin del contexto operativo.
+
+---
+
+#### 36. Grants DIRECT_OPERATIONAL
+
+Un grant operativo directo puede producir allow completo del carril cuando:
+
+- el permiso admite operación;
+- el rol operativo coincide;
+- la clave coincide exactamente;
+- el grant está vigente;
+- el turno está vigente;
+- el prerrequisito se cumple;
+- la sede coincide;
+- el área coincide cuando aplica;
+- el recurso coincide;
+- los lados exigidos coinciden;
+- no existe deny aplicable;
+- el contexto no está obsoleto.
+
+---
+
+#### 37. Grants OPERATIONAL_COMPONENT
+
+Un registro `OPERATIONAL_COMPONENT` pertenece a un permiso `BASE_AND_OPERATIONAL` y representa únicamente el componente operativo.
+
+```text
+OPERATIONAL_COMPONENT
+→ puede producir operational_decision = ALLOW
+```
+
+Pero:
+
+```text
+OPERATIONAL_COMPONENT
+≠ final_decision = ALLOW
+```
+
+La decisión final exige además:
+
+```text
+base_decision = ALLOW
+```
+
+`AUTH-CTX-023` aplicará la conjunción.
+
+---
+
+#### 38. Overrides individuales operativos
+
+Un override individual operativo podrá:
+
+- conceder una capacidad operativa adicional compatible;
+- limitarla mediante contexto;
+- tener vigencia;
+- referenciar el empleado exacto;
+- requerir rol operativo exacto;
+- requerir sede o área exacta;
+- exigir turno y check-in según el permiso.
+
+No podrá:
+
+- crear turno;
+- crear check-in;
+- reparar empleado inactivo;
+- reparar rol inválido;
+- reparar sede incompatible;
+- reparar área incompatible;
+- convertir un permiso `BASE_ONLY`;
+- cambiar `T+C` por `T`;
+- ampliar el permiso más allá de su contrato;
+- anular una denegación;
+- conceder por wildcard;
+- conceder por prefijo;
+- conceder a un dispositivo.
+
+El seed canónico inicial contiene cero overrides automáticos.
+
+---
+
+#### 39. Clave exacta
+
+Todo candidato deberá cumplir:
+
+```text
+grant.permission_key
+=
+request.permission_key
+```
+
+No se admite:
+
+- prefijo;
+- sufijo;
+- wildcard;
+- módulo;
+- aplicación completa;
+- coincidencia semántica;
+- alias no adaptado;
+- permiso legacy;
+- ruta;
+- nombre humano.
+
+---
+
+#### 40. Modalidad compatible
+
+Un grant operativo solo es compatible con:
+
+```text
+OPERATIONAL_ONLY
+BASE_OR_OPERATIONAL
+BASE_AND_OPERATIONAL
+```
+
+Un grant operativo sobre permiso `BASE_ONLY`:
+
+- no se incluye en `matched_allow_ids`;
+- no produce allow;
+- genera incompatibilidad contractual;
+- se audita;
+- se corrige en datasets o transición.
+
+---
+
+#### 41. Vigencia del grant
+
+Un grant deberá estar activo en `decided_at`.
+
+La vigencia puede depender de:
+
+- estado activo;
+- fecha de inicio;
+- fecha de fin;
+- revocación;
+- versión de dataset;
+- estado del rol;
+- estado del empleado;
+- contexto operativo vigente.
+
+Regla de inicio:
+
+```text
+starts_at <= decided_at
+```
+
+Cuando exista fin:
+
+```text
+decided_at < ends_at
+```
+
+Un grant futuro, expirado, suspendido o revocado no coincide.
+
+---
+
+#### 42. Estado del recurso
+
+Un grant operativo válido no autoriza estados incompatibles.
+
+El carril deberá consumir:
+
+```text
+resource.state_snapshot
+```
+
+y verificar:
+
+- estado actual;
+- transición solicitada;
+- relación del actor;
+- condición de custodia;
+- condiciones empresariales del permiso.
+
+Si el contrato no admite el estado:
+
+```text
+outcome = DENY
+reason_codes incluye OPERATIONAL_RESOURCE_STATE_MISMATCH
+```
+
+---
+
+#### 43. Propiedad, custodia y responsabilidad
+
+La autoridad operativa puede depender de relaciones como:
+
+- actor asignado;
+- custodio;
+- productor;
+- solicitante;
+- transportador;
+- receptor;
+- cajero de la sesión;
+- responsable del lote;
+- responsable del área.
+
+Estas relaciones:
+
+- proceden del contrato del recurso;
+- no se infieren del rol;
+- no se infieren del turno;
+- no se infieren de `created_by` universalmente;
+- no amplían territorio.
+
+---
+
+#### 44. Remisiones
+
+Una remisión puede exigir lados distintos según la acción:
+
+| Acción conceptual | Lado operativo esperado               |
+| ----------------- | ------------------------------------- |
+| Solicitar         | Destino o solicitante, según contrato |
+| Preparar          | Origen                                |
+| Despachar         | Origen y handoff                      |
+| Transportar       | Ruta, vehículo y custodia             |
+| Entregar          | Destino o handoff                     |
+| Recibir           | Destino                               |
+| Cancelar          | Autoridad declarada por estado y lado |
+
+La tabla es conceptual.
+
+La definición exacta de cada permiso procede de su contrato canónico.
+
+Regla:
+
+```text
+ROL O CONTEXTO EN UN LADO
+≠
+AUTORIDAD EN TODOS LOS LADOS
+```
+
+---
+
+#### 45. Inventario y ubicaciones
+
+Una operación de inventario puede involucrar:
+
+- sede;
+- área;
+- ubicación;
+- ubicación de origen;
+- ubicación de destino;
+- LPN;
+- contenedor;
+- producto;
+- custodio;
+- estado;
+- tipo de movimiento.
+
+El carril operativo deberá coincidir con todas las dimensiones exigidas por el contrato.
+
+Autorizar una sede no autoriza todas sus ubicaciones.
+
+Autorizar un área no autoriza ubicaciones de otra área.
+
+---
+
+#### 46. Producción
+
+Un recurso productivo puede involucrar:
+
+- sede productora;
+- área productora;
+- receta;
+- orden;
+- lote;
+- solicitud;
+- inventario consumido;
+- inventario resultante;
+- estado de producción.
+
+El rol operativo de producción no autoriza automáticamente:
+
+- editar recetas;
+- aprobar mermas;
+- ajustar inventario;
+- cerrar lotes;
+- aprobar variaciones;
+- modificar costos.
+
+Cada capacidad conserva permiso, modalidad, recurso y lado exactos.
+
+---
+
+#### 47. Compras y recepciones
+
+Una recepción puede separar:
+
+- recepción comercial en ORIGO;
+- ingreso físico y custodia en NEXO;
+- sede receptora;
+- área;
+- ubicación interna;
+- proveedor;
+- orden de compra;
+- documento;
+- movimiento de inventario.
+
+El carril operativo solo autoriza el efecto exacto que corresponde a su permiso.
+
+No fusiona automáticamente recepción comercial e inventario.
+
+---
+
+#### 48. Ventas, caja y pagos
+
+Una operación comercial puede involucrar:
+
+- sede;
+- área;
+- sesión de caja;
+- terminal;
+- pedido;
+- venta;
+- pago;
+- reverso;
+- reembolso;
+- cierre.
+
+El rol `cajero_satelite` no autoriza automáticamente:
+
+- cancelar ventas;
+- reembolsar;
+- reversar pagos;
+- cerrar caja ajena;
+- modificar precios;
+- usar overrides;
+- editar datos sensibles.
+
+Cada acción requiere su permiso exacto.
+
+---
+
+#### 49. Rutas y vehículos
+
+Un conductor con turno no obtiene autoridad sobre todos los vehículos ni todas las rutas.
+
+El carril deberá verificar:
+
+- vehículo relacionado con la operación;
+- ruta relacionada;
+- asignación o custodia válida;
+- ventana temporal;
+- origen;
+- destino;
+- handoff;
+- estado.
+
+Una relación inválida produce `DENY`.
+
+---
+
+#### 50. Colecciones
+
+Para `COLLECTION`:
+
+- cada miembro debe pertenecer al contexto permitido;
+- el conjunto se construye en servidor;
+- los IDs se evalúan contra el mismo permiso;
+- un miembro no autorizado se excluye en lecturas;
+- una colección no puede incluir miembros ocultos y filtrar después;
+- el conteo y la paginación conservan el contexto.
+
+La decisión de una colección autorizada no concede mutaciones sobre todos sus miembros.
+
+---
+
+#### 51. Agregados
+
+Para `AGGREGATE`:
+
+- cada dato contribuyente debe estar autorizado;
+- no se incluyen territorios fuera del contexto;
+- no se revelan datos por inferencia;
+- el resultado conserva el alcance exacto;
+- un agregado multisede requiere capacidad transversal explícita o carril base compatible.
+
+Un turno en una sede no genera un agregado operativo sobre todas las sedes.
+
+---
+
+#### 52. Operaciones masivas
+
+Para `BULK`:
+
+```text
+permiso ordinario
+≠
+permiso masivo
+```
+
+La evaluación seguirá la política declarada:
+
+| Política               | Regla                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `ALL_OR_NOTHING`       | Todos los miembros deben producir allow operativo cuando el carril sea requerido |
+| `PARTIAL_WITH_RESULTS` | Cada miembro obtiene una decisión operativa independiente                        |
+
+No se resumirá una operación parcialmente denegada como allow total.
+
+---
+
+#### 53. Campos protegidos
+
+El allow del carril operativo no concede automáticamente todos los campos.
+
+La decisión deberá respetar:
+
+```text
+resource.field_classification
+requested_fields
+field_policy_decision
+```
+
+Una lectura parcial puede conservar `operational_decision.outcome = ALLOW` sobre la proyección autorizada.
+
+Una mutación con un campo bloqueado produce `DENY` o requiere separación explícita.
+
+---
+
+#### 54. Concurrencia
+
+Para una operación que exige concurrencia deberá cumplirse antes de ejecutar:
+
+```text
+resource.concurrency.validated = true
+```
+
+El carril operativo puede demostrar autoridad contextual, pero una concurrencia fallida impide la ejecución.
+
+`AUTH-CTX-023` consolidará el bloqueo final.
+
+---
+
+#### 55. Dispositivo compartido
+
+Un dispositivo compartido no produce allow operativo.
+
+Cuando el contexto procede de un terminal compartido deberá existir:
+
+- dispositivo autenticado;
+- instancia activa;
+- sesión de actor activa;
+- actor humano efectivo;
+- sesión no expirada;
+- aplicación admitida;
+- sede compatible;
+- área compatible;
+- política de actor satisfecha.
+
+La sesión del dispositivo:
+
+- no es check-in laboral;
+- no crea turno;
+- no crea rol operativo;
+- no crea sede;
+- no crea área;
+- no transfiere autoridad entre trabajadores.
+
+---
+
+#### 56. Paquete de capacidades del dispositivo
+
+La lista o paquete del dispositivo actúa como techo restrictivo.
+
+```text
+OPERATIONAL AUTHORITY
+∩
+DEVICE CAPABILITY PACKAGE
+```
+
+Nunca:
+
+```text
+OPERATIONAL AUTHORITY
+∪
+DEVICE CAPABILITY PACKAGE
+```
+
+Si el permiso no está permitido por el paquete:
+
+- el grant operativo puede continuar registrado como evidencia;
+- `device_decision` produce bloqueo;
+- `final_decision` será `DENY`;
+- el dispositivo no recibe el grant.
+
+---
+
+#### 57. Incoherencia territorial del dispositivo
+
+Cuando un dispositivo compartido declara una sede o área incompatible con el actor, turno o recurso:
+
+```text
+readiness = INVALID
+outcome = DENY
+reason_codes incluye OPERATIONAL_DEVICE_CONTEXT_MISMATCH
+```
+
+No se utilizará el territorio del dispositivo para corregir el turno.
+
+---
+
+#### 58. Carril base separado
+
+El carril operativo no utiliza:
+
+- `base-role-grants`;
+- concesiones individuales base;
+- rol base;
+- cobertura administrativa;
+- scopes base;
+- asignaciones administrativas como sustituto del turno.
+
+En `BASE_OR_OPERATIONAL`:
+
+```text
+base_decision
+y
+operational_decision
+se evalúan independientemente
+```
+
+En `BASE_AND_OPERATIONAL`:
+
+```text
+ambos deben producir ALLOW
+```
+
+---
+
+#### 59. Actor-wide deny
+
+Un actor-wide deny aplicable a la clave exacta bloquea el carril operativo aunque existan múltiples allows.
+
+Regla:
+
+```text
+ACTOR_WIDE_DENY
+>
+OPERATIONAL ALLOW
+```
+
+`AUTH-CTX-022` definirá y poblará la evidencia.
+
+---
+
+#### 60. Operational lane deny
+
+Una denegación del carril operativo bloquea únicamente el carril operativo cuando coincide.
+
+En `BASE_OR_OPERATIONAL`:
+
+```text
+operational deny
+→ operational_decision = DENY
+→ base puede continuar
+```
+
+En `BASE_AND_OPERATIONAL`:
+
+```text
+operational deny
+→ operational_decision = DENY
+→ final_decision = DENY
+```
+
+Una concesión más específica no vence la denegación aplicable.
+
+---
+
+#### 61. Structural deny
+
+Un problema estructural aplicable puede bloquear solo el carril operativo o ambos carriles.
+
+Ejemplos:
+
+- actor laboral inválido;
+- empleado inactivo;
+- turno ambiguo;
+- turno obsoleto;
+- check-in contradictorio;
+- rol operativo desconocido;
+- rol inactivo;
+- sede incompatible;
+- área incompatible;
+- dispositivo con sesión inválida;
+- recurso no resoluble;
+- contrato incompatible;
+- dataset incompatible.
+
+Un structural deny no es una fila administrable de overrides.
+
+---
+
+#### 62. Default deny
+
+Si el carril es aplicable y no existe deny, pero tampoco existe un allow operativo completo:
+
+```text
+outcome = DENY
+reason_codes incluye OPERATIONAL_NO_MATCHING_ALLOW
+```
+
+No se materializa una denegación explícita.
+
+No se inventa un grant.
+
+Una matriz incompleta no autoriza mediante fallback base.
+
+---
+
+#### 63. Varios allows coincidentes
+
+Pueden coincidir varios allows de rol o individuales.
+
+Reglas:
+
+- uno solo completo es suficiente para `operational_decision = ALLOW`;
+- los grants no se suman para crear un alcance no declarado;
+- un grant incompleto no completa otro salvo composición explícita;
+- se registran todos los allows realmente coincidentes;
+- los IDs se deduplican;
+- el orden es determinista;
+- un deny aplicable prevalece;
+- un grant no extiende el turno;
+- un grant no amplía territorio.
+
+---
+
+#### 64. matched_allow_ids
+
+Solo incluye grants operativos que:
+
+- pertenecen al rol o actor exacto;
+- usan la clave exacta;
+- son compatibles con la modalidad;
+- están vigentes;
+- coinciden con turno y prerrequisitos;
+- coinciden territorialmente;
+- coinciden con el recurso;
+- cumplen estado y condiciones;
+- pueden contribuir al carril.
+
+No incluye:
+
+- candidatos descartados;
+- grants base;
+- grants inactivos;
+- grants fuera de contexto;
+- grants legacy;
+- grants incompatibles;
+- paquete de dispositivo;
+- turno;
+- check-in.
+
+`AUTH-CTX-021` definirá el objeto completo `MatchedGrant`.
+
+---
+
+#### 65. matched_deny_ids
+
+Incluye únicamente IDs de denegaciones administrables que bloquean el carril operativo:
+
+- actor-wide deny;
+- operational lane deny.
+
+No incluye:
+
+- structural issues sin `deny_id`;
+- `default deny`;
+- falta de allow;
+- códigos de razón sin registro administrable;
+- bloqueos del dispositivo sin deny administrable.
+
+`AUTH-CTX-022` definirá el objeto completo `MatchedDeny`.
+
+---
+
+#### 66. reason_codes
+
+Códigos iniciales reservados para `operational_decision`:
+
+```text
+OPERATIONAL_LANE_NOT_REQUIRED
+OPERATIONAL_CONTEXT_NOT_APPLICABLE
+OPERATIONAL_CONTEXT_UNAVAILABLE
+OPERATIONAL_CONTEXT_INVALID
+OPERATIONAL_EMPLOYEE_INACTIVE
+OPERATIONAL_SHIFT_UNAVAILABLE
+OPERATIONAL_SHIFT_INVALID
+OPERATIONAL_SHIFT_EXPIRED
+OPERATIONAL_SHIFT_CANCELLED
+OPERATIONAL_CHECKIN_REQUIRED
+OPERATIONAL_CHECKIN_MISMATCH
+OPERATIONAL_CHECKIN_INVALID
+OPERATIONAL_ROLE_NOT_AVAILABLE
+OPERATIONAL_ROLE_INVALID
+OPERATIONAL_ROLE_SITE_MISMATCH
+OPERATIONAL_ROLE_AREA_MISMATCH
+OPERATIONAL_SITE_UNAVAILABLE
+OPERATIONAL_SITE_MISMATCH
+OPERATIONAL_AREA_REQUIRED
+OPERATIONAL_AREA_MISMATCH
+OPERATIONAL_RESOURCE_UNRESOLVED
+OPERATIONAL_RESOURCE_CONFLICT
+OPERATIONAL_RESOURCE_ISOLATED
+OPERATIONAL_RESOURCE_STATE_MISMATCH
+OPERATIONAL_REQUIRED_SIDE_NOT_COVERED
+OPERATIONAL_RELATIONSHIP_NOT_MATCHED
+OPERATIONAL_FIELD_POLICY_FAILED
+OPERATIONAL_CONCURRENCY_FAILED
+OPERATIONAL_DEVICE_CONTEXT_MISMATCH
+OPERATIONAL_ACTOR_WIDE_DENY
+OPERATIONAL_LANE_DENY
+OPERATIONAL_NO_MATCHING_ALLOW
+OPERATIONAL_ALLOW_MATCHED
+OPERATIONAL_COMPONENT_MATCHED
+OPERATIONAL_DATASET_VERSION_MISMATCH
+OPERATIONAL_GRANT_CONFIGURATION_INVALID
+OPERATIONAL_INCOMPATIBLE_GRANT
+```
+
+`AUTH-CTX-023` decidirá cuáles se exponen al cliente y su prioridad.
+
+---
+
+#### 67. Truth table principal
+
+| Condición                                     | Resultado del carril operativo                              |
+| --------------------------------------------- | ----------------------------------------------------------- |
+| Modalidad `BASE_ONLY`                         | `NOT_APPLICABLE`                                            |
+| Contexto operativo `INVALID`                  | `DENY`                                                      |
+| Contexto operativo `UNAVAILABLE`              | `DENY`                                                      |
+| Turno ausente                                 | `DENY`                                                      |
+| Turno vencido o cancelado                     | `DENY`                                                      |
+| `T+C` sin check-in                            | `DENY`                                                      |
+| Check-in incompatible                         | `DENY`                                                      |
+| Rol operativo inválido                        | `DENY`                                                      |
+| Sede o área incompatible                      | `DENY`                                                      |
+| Recurso `UNRESOLVED`, `CONFLICT` o `ISOLATED` | `DENY`                                                      |
+| `actor-wide deny` coincidente                 | `DENY`                                                      |
+| `operational lane deny` coincidente           | `DENY`                                                      |
+| Sin allow operativo completo                  | `DENY`                                                      |
+| Allow operativo completo sin deny             | `ALLOW`                                                     |
+| `OPERATIONAL_COMPONENT` completo              | `ALLOW` del carril; no de la decisión final                 |
+| Restricción global fallida                    | El carril conserva evidencia; la decisión final será `DENY` |
+
+---
+
+#### 68. Restricciones globales y outcome del carril
+
+`operational_decision` expresa la autoridad producida por el carril operativo.
+
+Las decisiones separadas:
+
+- `device_decision`;
+- `sensitivity_decision`;
+- `field_policy_decision`;
+- `prerequisite_decisions`;
+
+no se convierten en grants operativos.
+
+Cuando una restricción global falla después de que el carril haya demostrado autoridad:
+
+```text
+operational_decision puede conservar ALLOW
+final_decision = DENY
+```
+
+Sin embargo, cuando la incompatibilidad invalida el propio contexto operativo —por ejemplo, sesión de actor de dispositivo incoherente, turno incompatible o área contradictoria— el carril produce `DENY`.
+
+---
+
+#### 69. Dependencias
+
+Una dependencia de permiso se evalúa mediante una decisión separada.
+
+Reglas:
+
+- no se infiere por módulo;
+- no se infiere desde `app.access`;
+- cada dependencia conserva su modalidad;
+- una dependencia fallida bloquea la solicitud principal cuando el contrato la declara obligatoria;
+- aprobar la dependencia no crea el grant principal;
+- la evidencia no se incluye como `matched_allow_ids` del permiso principal;
+- una dependencia operativa exige su propio contexto compatible.
+
+---
+
+#### 70. Simulación
+
+La simulación puede calcular un `operational_decision` hipotético.
+
+Reglas:
+
+- utiliza el mismo algoritmo;
+- declara contexto simulado;
+- no crea turno real;
+- no crea check-in real;
+- no crea sesión de dispositivo;
+- no modifica el contexto real;
+- no ejecuta mutaciones;
+- no crea grants;
+- no elimina denies;
+- no convierte `WOULD_ALLOW` en `ALLOW`;
+- el actor real conserva la autorización para iniciar y consultar la simulación.
+
+---
+
+#### 71. Procesos de sistema
+
+Un proceso `SYSTEM` autónomo no utiliza el carril operativo laboral.
+
+No se convertirá:
+
+- service role;
+- API key;
+- cron;
+- Edge Function;
+- webhook;
+- cola;
+- worker;
+
+en empleado, turno, check-in o rol operativo.
+
+Los procesos delegados conservan al actor humano cuando existe delegación válida.
+
+Las automatizaciones sin actor deberán utilizar contratos de sistema separados, definidos y autorizados explícitamente.
+
+---
+
+#### 72. Inmutabilidad y snapshot
+
+`operational_decision` queda asociado a:
+
+- actor;
+- empleado;
+- turno;
+- check-in cuando aplica;
+- rol operativo;
+- sede;
+- área;
+- permiso;
+- recurso;
+- lados;
+- estado;
+- datasets;
+- grants;
+- denies;
+- dispositivo;
+- instante.
+
+Un cambio en cualquiera de estos hechos obliga a una nueva decisión.
+
+Una decisión emitida no se modifica.
+
+---
+
+#### 73. Orden determinista
+
+La serialización deberá:
+
+- ordenar `matched_allow_ids` alfabéticamente;
+- ordenar `matched_deny_ids` alfabéticamente;
+- eliminar duplicados;
+- ordenar `reason_codes` por prioridad y luego alfabéticamente;
+- conservar el mismo resultado para el mismo snapshot;
+- no depender del orden físico de filas;
+- no elegir el primer grant;
+- no elegir el grant más amplio;
+- no elegir el grant más permisivo;
+- no elegir el primer turno;
+- no elegir la primera área;
+- conservar conflictos en vez de resolverlos arbitrariamente.
+
+---
+
+#### 74. Casos de ejemplo
+
+##### Caso A — Permiso OPERATIONAL_ONLY con T+C
+
+```text
+permission = nexo.inventory.remissions.prepare
+requirement = OPERATIONAL_ONLY
+prerequisite = T+C
+turno vigente = sí
+check-in compatible = sí
+operational_role = bodeguero
+recurso.origin = CENTRO_PRODUCCION
+operational_site = CENTRO_PRODUCCION
+grant exacto = sí
+```
+
+Resultado:
+
+```text
+operational_decision.outcome = ALLOW
+base_decision = NOT_APPLICABLE
+```
+
+##### Caso B — BASE_ONLY
+
+```text
+permission = viso.workforce.employees.view
+requirement = BASE_ONLY
+```
+
+Resultado:
+
+```text
+operational_decision = NOT_APPLICABLE
+```
+
+##### Caso C — T sin check-in
+
+```text
+permission operativo de entrada
+prerequisite = T
+turno vigente = sí
+check-in = null
+```
+
+Resultado posible:
+
+```text
+operational_decision = ALLOW
+```
+
+si rol, grant, territorio, recurso y denies son compatibles.
+
+##### Caso D — T+C sin check-in
+
+```text
+prerequisite = T+C
+turno vigente = sí
+check-in = null
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_CHECKIN_REQUIRED
+```
+
+##### Caso E — Propietario sin turno
+
+```text
+base_role = propietario
+requirement = OPERATIONAL_ONLY
+active_shift = null
+```
+
+Resultado:
+
+```text
+operational_decision = DENY
+OPERATIONAL_SHIFT_UNAVAILABLE
+```
+
+##### Caso F — Rol operativo sin grant
+
+```text
+operational_role = servicio_salon
+contexto válido
+sin grant exacto
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_NO_MATCHING_ALLOW
+```
+
+##### Caso G — Rol habilitado en otra área
+
+```text
+turno.area = COCINA
+rol habilitado únicamente en BARRA
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_ROLE_AREA_MISMATCH
+```
+
+##### Caso H — Remisión con lado incorrecto
+
+```text
+turno = CENTRO_PRODUCCION
+acción = receive
+resource.destination = VENTO_CAFE
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_REQUIRED_SIDE_NOT_COVERED
+```
+
+salvo que el contrato exacto declare otra autoridad compatible.
+
+##### Caso I — BASE_AND_OPERATIONAL
+
+```text
+base component = ALLOW
+operational component = ALLOW
+```
+
+Resultado del carril:
+
+```text
+operational_decision = ALLOW
+```
+
+La decisión final será resuelta por `AUTH-CTX-023`.
+
+##### Caso J — Dispositivo restringido
+
+```text
+actor posee allow operativo
+permiso no incluido en capability_package
+```
+
+Resultado:
+
+```text
+operational_decision puede conservar ALLOW
+device_decision = DENY
+final_decision = DENY
+```
+
+##### Caso K — Check-in de otro turno
+
+```text
+active_shift = S2
+active_checkin_session.shift_id = S1
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_CHECKIN_MISMATCH
+```
+
+##### Caso L — Recurso de otra sede
+
+```text
+operational_site = SAUDO
+resource.site = VENTO_CAFE
+contrato exige coincidencia de sede
+```
+
+Resultado:
+
+```text
+DENY
+OPERATIONAL_SITE_MISMATCH
+```
+
+##### Caso M — Grant individual sin contexto
+
+```text
+individual operational grant vigente
+active_shift = null
+```
+
+Resultado:
+
+```text
+DENY
+```
+
+El override no crea contexto.
+
+##### Caso N — Turno terminado
+
+```text
+decisión previa = ALLOW
+resolved_at actual >= shift.ends_at
+```
+
+Resultado:
+
+```text
+nueva evaluación obligatoria
+operational_decision = DENY
+```
+
+---
+
+#### 75. Antipatrones prohibidos
+
+```ts
+if (employee.role === "propietario") {
+  return true;
+}
+```
+
+```ts
+if (activeShift) {
+  return true;
+}
+```
+
+```ts
+if (activeCheckin) {
+  return true;
+}
+```
+
+```ts
+if (operationalRole === "gerencia_operativa") {
+  return true;
+}
+```
+
+```ts
+const siteId =
+  selectedSiteId ??
+  deviceSiteId ??
+  employee.site_id;
+```
+
+```ts
+const role =
+  shift.operational_role ??
+  profile.default_operational_role ??
+  device.navigation_role;
+```
+
+```ts
+const allowed =
+  operationalGrants.some((grant) =>
+    permission.startsWith(grant.permission_key)
+  );
+```
+
+También queda prohibido:
+
+```text
+turno → todos los permisos
+check-in → todos los permisos
+rol operativo → todas las sedes
+rol base → sustituir operación
+sede seleccionada → sede operativa
+dispositivo → fuente de territorio
+navigation_role → autoridad
+perfil predeterminado → rol vigente
+grant con null → global
+área null → todas las áreas
+allow más específico → vencer deny
+varios allows incompletos → construir uno nuevo
+OPERATIONAL_COMPONENT → final allow
+sesión de dispositivo → check-in
+decisión antigua → ejecutar después del turno
+```
+
+---
+
+#### 76. Relación con tareas posteriores
+
+| Tarea                           | Responsabilidad posterior                                                                                                                                                                          |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-021`                  | Definir y serializar `MatchedGrant`, incluyendo los grants operativos realmente coincidentes                                                                                                       |
+| `AUTH-CTX-022`                  | Definir structural denies, actor-wide denies, base lane denies, operational lane denies y evidencia coincidente                                                                                    |
+| `AUTH-CTX-023`                  | Combinar base, operación, modalidad, restricciones, dependencias, campos, denies, default deny y decisión final                                                                                    |
+| `AUTH-CTX-024`                  | Registrar evidencia auditable de turno, check-in, rol, grant, override, recurso, territorio, razones, datasets, hash y outcome                                                                     |
+| `AUTH-CTX-025`                  | Diseñar `get_access_context`, incluyendo los hechos operativos necesarios                                                                                                                          |
+| `AUTH-CTX-026`                  | Diseñar `evaluate_authorization`, consulta de datasets, comparación contextual, frontera transaccional y `LaneDecision`                                                                            |
+| `AUTH-CTX-027`                  | Eliminar evaluaciones locales y fallbacks de operación en aplicaciones                                                                                                                             |
+| `AUTH-CTX-028`                  | Diseñar compatibilidad con `get_operational_context`, `has_operational_permission`, roles legacy, perfiles, `navigation_role`, `propietario_admin`, `bodeguero` duplicado y consumidores booleanos |
+| `AUTH-CTX-029`                  | Definir caché e invalidación por cambios de turno, check-in, rol, habilitación, grant, deny, recurso, dispositivo, dataset y catálogo                                                              |
+| `AUTH-CTX-030`                  | Definir pruebas contractuales de modalidad, T, T+C, rol, sede, área, recurso, lados, dispositivo, denies, concurrencia y aislamiento                                                               |
+| `AUTH-DB-006` a `AUTH-DB-010`   | Implementar validación canónica del contexto, permiso, recurso, actor y territorio dentro de RPC sensibles                                                                                         |
+| `AUTH-DB-011`                   | Aplicar constraints después de inventario, backfill y reconciliación                                                                                                                               |
+| `AUTH-DB-020`                   | Migrar matrices y consumidores legacy con compatibilidad temporal                                                                                                                                  |
+| `AUTH-DB-027`                   | Probar matriz operativa, overrides, RLS, RPC, contexto, recursos y migraciones                                                                                                                     |
+| `AUTH-DB-030`                   | Retirar funciones y rutas legacy después de adopción comprobada                                                                                                                                    |
+| `AUTH-DB-031`                   | Certificar paridad documental, técnica y operativa                                                                                                                                                 |
+| `AUTH-DEV-001` a `AUTH-DEV-016` | Materializar sesiones, políticas y consumo de dispositivos compartidos                                                                                                                             |
+| `GAP-CTRL-001`                  | Consolidar retrospectivamente brechas operativas detectadas y no resueltas en implementación                                                                                                       |
+| `GAP-CTRL-006`                  | Vincular cada brecha con tarea y paquete de implementación concreto                                                                                                                                |
+
+---
+
+#### 77. Fuera del alcance
+
+AUTH-CTX-020 no:
+
+- modifica la matriz operativa;
+- modifica sus 240 registros;
+- modifica su hash;
+- agrega roles operativos;
+- elimina roles operativos;
+- crea turnos;
+- crea check-ins;
+- crea sesiones de dispositivo;
+- crea grants;
+- crea overrides;
+- crea denegaciones;
+- define objetos completos de matched allows;
+- define objetos completos de matched denies;
+- produce la combinación final;
+- modifica contratos de recurso;
+- reclasifica permisos;
+- cambia `T` o `T+C`;
+- cambia requisitos de área;
+- implementa campos protegidos;
+- implementa MFA;
+- crea tipos físicos;
+- crea funciones SQL;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- modifica Supabase;
+- modifica aplicaciones.
+
+Cada responsabilidad posterior tiene destino explícito en la sección 76.
+
+---
+
+#### 78. Riesgos controlados
+
+| Riesgo                                               | Control canónico                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------------------ |
+| Turno funciona como permiso                          | Turno + rol + grant exacto + recurso exacto                              |
+| Check-in concede autoridad                           | Check-in solo satisface `T+C`                                            |
+| Propietario opera sin contexto                       | El carril operativo exige turno y rol reales                             |
+| Rol operativo funciona como superusuario             | No existe bypass por nombre de rol                                       |
+| Grant sin territorio se interpreta como global       | Todo grant operativo queda limitado por contexto y recurso               |
+| Perfil predeterminado reemplaza el turno             | El perfil solo ayuda a planificar                                        |
+| Dispositivo concede capacidad                        | Paquete de dispositivo solo restringe                                    |
+| Sede seleccionada reemplaza la sede del turno        | La sede operativa procede del turno                                      |
+| Área nula equivale a todas                           | `null` nunca es wildcard                                                 |
+| Componente operativo ejecuta acción doble            | `OPERATIONAL_COMPONENT` autoriza el carril; la decisión final exige base |
+| Turno terminado conserva autoridad                   | Toda ejecución requiere revalidación                                     |
+| Un lado de la remisión autoriza el otro              | Cada lado obligatorio se evalúa por contrato                             |
+| Matriz operativa incompleta se compensa con rol base | No existe fallback entre carriles                                        |
+| Sesión de dispositivo se trata como check-in         | Las dos sesiones permanecen separadas                                    |
+| Servicio técnico se convierte en trabajador          | Procesos de sistema usan contrato separado                               |
+
+---
+
+#### 79. Criterios de aprobación
+
+AUTH-CTX-020 podrá aprobarse cuando se acepte que:
+
+1. se conserva la forma de `LaneDecision`;
+2. `operational_decision.lane` siempre es `OPERATIONAL`;
+3. `BASE_ONLY` produce `NOT_APPLICABLE`;
+4. `evaluated = false` solo para carril no aplicable;
+5. las demás modalidades evalúan operación;
+6. readiness procede del `AccessContext`;
+7. el evaluador no mejora readiness;
+8. `READY` no significa allow;
+9. un actor laboral exacto es obligatorio;
+10. empleado inactivo no posee autoridad operativa;
+11. el turno publicado y vigente es obligatorio;
+12. el turno debe pertenecer al actor;
+13. un turno futuro no autoriza;
+14. un turno vencido no autoriza;
+15. un turno cancelado no autoriza;
+16. un turno ambiguo falla cerrado;
+17. el check-in no crea turno;
+18. `T` exige turno;
+19. `T` no exige check-in;
+20. un check-in incompatible bloquea incluso en permisos `T`;
+21. `T+C` exige turno y check-in;
+22. no existe `C` sin turno;
+23. el check-in debe coincidir con el turno;
+24. el check-in debe pertenecer al actor;
+25. una sesión offline no confirmada no autoriza;
+26. el cierre del check-in revoca capacidades `T+C`;
+27. el fin del turno revoca el carril operativo;
+28. un rol operativo canónico es obligatorio;
+29. el rol procede exclusivamente del turno;
+30. el rol base no sustituye el rol operativo;
+31. el perfil predeterminado no sustituye el rol;
+32. `navigation_role` no sustituye el rol;
+33. el dispositivo no sustituye el rol;
+34. existen doce roles operativos canónicos;
+35. `propietario_admin` no participa en el dataset canónico;
+36. `gerencia_operativa` no es bypass;
+37. `operador_integral_satelite` no es superusuario;
+38. propietario requiere contexto real para el carril operativo;
+39. gerente general requiere contexto real para el carril operativo;
+40. la habilitación del rol por sede es obligatoria;
+41. la habilitación del rol por área se respeta;
+42. la sede operativa procede del turno;
+43. la sede seleccionada no participa como fuente;
+44. la sede primaria no participa como fallback;
+45. el área operativa procede del turno;
+46. el dispositivo no crea área;
+47. `REQUIRED` exige área;
+48. `SITE_SUFFICIENT` no significa todas las áreas;
+49. una restricción del rol puede exigir área;
+50. `null` nunca significa wildcard;
+51. el contexto operativo no sustituye territorio del recurso;
+52. el recurso se resuelve antes de evaluar;
+53. el territorio debe ser coherente;
+54. los lados obligatorios proceden del contrato;
+55. origen no autoriza destino;
+56. destino no autoriza origen;
+57. un turno no autoriza múltiples sedes automáticamente;
+58. los grants operativos no son cross-site;
+59. solo `OPERATIONAL_ROLE` e `INDIVIDUAL_OPERATIONAL` producen candidatos;
+60. el dataset operativo es `@1.0.0`;
+61. contiene 240 registros;
+62. contiene doce roles;
+63. contiene 218 concesiones directas;
+64. contiene 22 componentes operativos;
+65. no contiene permisos `BASE_ONLY`;
+66. no contiene claves legacy;
+67. no contiene wildcards;
+68. su hash permanece congelado;
+69. un grant directo puede autorizar el carril;
+70. un componente operativo solo autoriza su carril;
+71. un componente operativo no autoriza la acción final;
+72. un override no crea contexto;
+73. un override no cambia `T+C`;
+74. la clave debe coincidir exactamente;
+75. la modalidad debe admitir operación;
+76. el grant debe estar vigente;
+77. el estado del recurso participa;
+78. propiedad y custodia proceden del contrato;
+79. colecciones se limitan en servidor;
+80. agregados excluyen miembros fuera de contexto;
+81. operaciones masivas requieren contrato;
+82. campos protegidos permanecen separados;
+83. concurrencia permanece obligatoria cuando aplica;
+84. el dispositivo solo restringe;
+85. la sesión de dispositivo no es check-in;
+86. el paquete de dispositivo no es RBAC allow;
+87. la incoherencia del dispositivo puede invalidar contexto;
+88. el carril base permanece separado;
+89. actor-wide deny prevalece;
+90. operational lane deny prevalece en operación;
+91. structural deny puede bloquear el carril;
+92. ausencia de allow produce default deny;
+93. varios allows no crean alcance nuevo;
+94. `matched_allow_ids` solo contiene grants realmente coincidentes;
+95. `matched_deny_ids` excluye default deny;
+96. `reason_codes` queda normalizado;
+97. restricciones globales pueden negar la decisión final sin reescribir evidencia válida del carril;
+98. dependencias no crean grants;
+99. simulación no ejecuta autoridad;
+100. procesos de sistema no inventan contexto laboral;
+101. la decisión es inmutable;
+102. el orden es determinista;
+103. `AUTH-CTX-021` definirá allows coincidentes;
+104. `AUTH-CTX-022` definirá denies;
+105. `AUTH-CTX-023` definirá decisión final;
+106. `AUTH-CTX-024` definirá auditoría;
+107. `AUTH-CTX-026` diseñará el evaluador;
+108. `AUTH-CTX-027` eliminará lógica local;
+109. `AUTH-CTX-028` gobernará compatibilidad legacy;
+110. `AUTH-CTX-029` gobernará invalidación;
+111. `AUTH-CTX-030` gobernará pruebas;
+112. las tareas físicas tienen destinos explícitos;
+113. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 80. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-019` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-020` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-021` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-019 — APROBADA
+        ↓
+AUTH-CTX-020 — APROBADA
+        ↓
+AUTH-CTX-021 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-021` hasta recibir aprobación explícita de `AUTH-CTX-020`.
+
+### ✅ AUTH-CTX-021 — Incluir allows coincidentes
+
+| Campo                          | Valor                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- |
+| **Estado**                     | APROBADA                                                                                          |
+| **Bloque**                     | BLOQUE E — Contexto y decisión de autorización unificados                                         |
+| **Subbloque**                  | `AUTHORIZATION DECISION`                                                                          |
+| **Naturaleza**                 | Definición documental de `matched_allows` y `MatchedGrant` dentro de `AuthorizationDecision`      |
+| **Implementación física**      | No incluida                                                                                       |
+| **Tarea anterior vigente**     | `AUTH-CTX-020` — APROBADA                                                                         |
+| **Tarea posterior reservada**  | `AUTH-CTX-022` — Incluir denegaciones coincidentes                                                |
+| **Contrato afectado**          | `AuthorizationDecision@1.0.0`                                                                     |
+| **Campo principal afectado**   | `matched_allows`                                                                                  |
+| **Tipo principal afectado**    | `MatchedGrant`                                                                                    |
+| **Datasets de grants**         | `vento.authorization.base-role-grants@1.0.0`, `vento.authorization.operational-role-grants@1.0.0` |
+| **Dataset de overrides**       | `vento.authorization.individual-overrides@1.0.0`                                                  |
+| **Catálogo**                   | `vento.authorization@1.0.0`                                                                       |
+| **Cambio contractual**         | Aclaración normativa compatible; no cambia la forma publicada                                     |
+| **Cambios físicos permitidos** | No                                                                                                |
+
+Esta tarea define cuándo una concesión candidata se convierte en un allow
+realmente coincidente y cómo se registra dentro de:
+
+```ts
+AuthorizationDecision.matched_allows: MatchedGrant[];
+```
+
+La regla central es:
+
+```text
+GRANT ALMACENADO
+≠
+GRANT COINCIDENTE
+```
+
+```text
+GRANT COINCIDENTE
+=
+FUENTE CANÓNICA VÁLIDA
+∩
+SUJETO EXACTO
+∩
+PERMISO EXACTO
+∩
+CARRIL COMPATIBLE
+∩
+MODALIDAD COMPATIBLE
+∩
+VIGENCIA ACTIVA
+∩
+ALCANCE COMPLETO
+∩
+TERRITORIO COINCIDENTE
+∩
+RECURSO COINCIDENTE
+∩
+CONDICIONES DEL GRANT SATISFECHAS
+```
+
+Un allow coincidente:
+
+- demuestra que una concesión canónica concreta puede contribuir a un carril;
+- no elimina denegaciones;
+- no decide por sí solo la autorización final;
+- no amplía el permiso;
+- no amplía el territorio;
+- no crea recurso;
+- no crea turno;
+- no crea check-in;
+- no crea rol;
+- no crea relación de propiedad;
+- no crea una capacidad para el dispositivo;
+- no se reutiliza para otra solicitud.
+
+No implementa SQL, RPC, RLS, funciones, migraciones, índices, caché,
+adaptadores, guards ni cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir `matched_allows` de manera que Vento OS pueda responder
+inequívocamente:
+
+1. qué concesiones fueron candidatas;
+2. cuáles cumplieron todas las condiciones;
+3. cuáles pueden contribuir al carril base;
+4. cuáles pueden contribuir al carril operativo;
+5. qué fuente produjo cada allow;
+6. qué sujeto originó la concesión;
+7. qué permiso exacto fue evaluado;
+8. qué alcance canónico se utilizó;
+9. si el territorio coincidió;
+10. si el recurso coincidió;
+11. si la concesión estaba vigente;
+12. qué dataset y versión se consultaron;
+13. cómo se representan grants directos;
+14. cómo se representan componentes de `BASE_AND_OPERATIONAL`;
+15. cómo se representan overrides individuales;
+16. cómo se conservan múltiples allows coincidentes;
+17. cómo se evita combinar grants incompletos;
+18. cómo se deduplican resultados;
+19. cómo se relacionan con `matched_allow_ids`;
+20. cómo se preserva la evidencia cuando un deny termina prevaleciendo;
+21. cómo se evita revelar matrices completas al cliente;
+22. cómo se preservan determinismo, inmutabilidad y auditoría.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-021 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — Actor efectivo;
+- `AUTH-MOD-002` — Separación entre rol base y rol operativo;
+- `AUTH-MOD-013` a `AUTH-MOD-017` — Alcances;
+- `AUTH-MOD-018` — Combinación de carriles;
+- `AUTH-MOD-019` — Denegación explícita;
+- `AUTH-CAT-001` a `AUTH-CAT-024` — Catálogo canónico;
+- `AUTH-RBAC-001` a `AUTH-RBAC-021` — Matrices y concesiones;
+- `AUTH-RBAC-022` — Denegaciones individuales y transversales;
+- `AUTH-RBAC-024` — Dataset canónico de matriz base;
+- `AUTH-RBAC-025` — Dataset canónico de matriz operativa;
+- `AUTH-RBAC-026` — Dataset canónico de overrides;
+- `AUTH-RBAC-027` — Ausencia de acceso operativo global accidental;
+- `AUTH-CTX-001` a `AUTH-CTX-015` — `AccessContext`;
+- `AUTH-CTX-016` — Aplicación y permiso exactos;
+- `AUTH-CTX-017` — Modalidad y prerrequisitos;
+- `AUTH-CTX-018` — Recurso y territorio resueltos;
+- `AUTH-CTX-019` — Decisión del carril base;
+- `AUTH-CTX-020` — Decisión del carril operativo.
+
+Principios obligatorios:
+
+```text
+EXISTIR EN UNA MATRIZ
+≠
+COINCIDIR
+```
+
+```text
+ALLOW
+≠
+DECISIÓN FINAL
+```
+
+```text
+ALLOW INDIVIDUAL
+≠
+BYPASS
+```
+
+```text
+MÁS ALLOWS
+≠
+MÁS ALCANCE
+```
+
+```text
+ALLOW EN UN CARRIL
+≠
+ALLOW EN EL OTRO
+```
+
+```text
+ALLOW
+<
+DENY APLICABLE
+```
+
+---
+
+#### 3. Forma contractual conservada
+
+```ts
+type MatchedGrant = {
+  grant_id: string;
+  lane: "BASE" | "OPERATIONAL";
+  source_kind:
+    | "BASE_ROLE"
+    | "OPERATIONAL_ROLE"
+    | "INDIVIDUAL_BASE"
+    | "INDIVIDUAL_OPERATIONAL";
+
+  source_subject_id: string;
+  permission_key: string;
+  effect: "ALLOW";
+  scope_code: string;
+  matched_territory: boolean;
+  matched_resource: boolean;
+  validity_status: "ACTIVE";
+  source_dataset_id: string;
+  source_dataset_version: string;
+};
+```
+
+La colección se conserva como:
+
+```ts
+matched_allows: MatchedGrant[];
+```
+
+No se agregan, eliminan ni renombran campos.
+
+Las precisiones de esta tarea son semánticas y compatibles con
+`AuthorizationDecision@1.0.0`.
+
+---
+
+#### 4. Invariantes de MatchedGrant
+
+Todo objeto serializado en `matched_allows` deberá cumplir:
+
+```text
+effect = ALLOW
+validity_status = ACTIVE
+matched_territory = true
+matched_resource = true
+permission_key = permiso solicitado exacto
+```
+
+Además:
+
+- `grant_id` deberá ser resoluble;
+- `lane` deberá ser compatible con `source_kind`;
+- `source_subject_id` deberá coincidir con el actor o rol efectivo;
+- `scope_code` deberá ser canónico;
+- el dataset deberá estar reconocido;
+- la versión deberá estar vigente para la decisión;
+- el grant deberá haber sido realmente evaluado.
+
+Si alguna condición es falsa, el candidato no se serializa como
+`MatchedGrant`.
+
+---
+
+#### 5. Candidato frente a allow coincidente
+
+El evaluador podrá manejar internamente candidatos descartados.
+
+Ejemplos:
+
+- grant de otro rol;
+- grant de otro empleado;
+- clave distinta;
+- carril incompatible;
+- modalidad incompatible;
+- grant futuro;
+- grant expirado;
+- scope insuficiente;
+- territorio distinto;
+- recurso distinto;
+- condición empresarial incumplida;
+- dataset incompatible.
+
+Estos candidatos:
+
+- no aparecen en `matched_allows`;
+- no aparecen en `matched_allow_ids`;
+- no se convierten en denegaciones;
+- pueden producir diagnóstico interno o auditoría de configuración;
+- no se exponen al cliente.
+
+`matched_allows` contiene exclusivamente coincidencias completas.
+
+---
+
+#### 6. Secuencia canónica de resolución
+
+La resolución deberá seguir, conceptualmente, este orden:
+
+```text
+1. permiso canónico exacto
+2. modalidad y carriles requeridos
+3. snapshot de datasets compatibles
+4. candidatos por permission_key
+5. fuente y sujeto
+6. carril
+7. vigencia
+8. alcance
+9. territorio
+10. recurso y condiciones
+11. inclusión como MatchedGrant
+12. deduplicación y orden
+13. proyección de matched_allow_ids
+```
+
+El orden no autoriza por sí mismo.
+
+Cada etapa reduce candidatos.
+
+Ninguna etapa amplía el conjunto.
+
+---
+
+#### 7. Permiso exacto obligatorio
+
+Todo grant coincidente deberá cumplir:
+
+```text
+grant.permission_key
+=
+AuthorizationDecision.request.permission_key
+```
+
+La comparación es exacta y sensible a la forma canónica publicada.
+
+No se admiten:
+
+- prefijos;
+- wildcards;
+- sufijos;
+- claves relativas;
+- nombres de aplicación;
+- nombres humanos;
+- nombres de rutas;
+- aliases sin adaptar;
+- similitud semántica;
+- permiso padre;
+- permiso hijo;
+- fallback a `<app>.access`.
+
+Un grant de `app.access` solo coincide con `app.access`.
+
+---
+
+#### 8. Catálogo y estado del permiso
+
+Antes de resolver allows deberá existir:
+
+- aplicación canónica;
+- aplicación activa;
+- permiso canónico;
+- permiso activo;
+- versión compatible;
+- modalidad definida;
+- contrato de recurso compatible.
+
+Un grant no reactiva:
+
+- una aplicación inactiva;
+- un permiso inactivo;
+- un permiso retirado;
+- una clave inexistente;
+- un contrato ausente.
+
+Ante incompatibilidad estructural no se registran allows coincidentes.
+
+---
+
+#### 9. Carriles admitidos
+
+`MatchedGrant.lane` solo admite:
+
+```text
+BASE
+OPERATIONAL
+```
+
+No existe:
+
+```text
+BOTH
+ALL
+GLOBAL
+REQUEST
+```
+
+Un permiso híbrido se representa mediante grants separados por carril.
+
+Un único `MatchedGrant` nunca ocupa dos carriles.
+
+---
+
+#### 10. Compatibilidad entre lane y source_kind
+
+| `source_kind`            | `lane` obligatorio |
+| ------------------------ | ------------------ |
+| `BASE_ROLE`              | `BASE`             |
+| `INDIVIDUAL_BASE`        | `BASE`             |
+| `OPERATIONAL_ROLE`       | `OPERATIONAL`      |
+| `INDIVIDUAL_OPERATIONAL` | `OPERATIONAL`      |
+
+Cualquier combinación distinta:
+
+```text
+→ configuración inválida
+→ candidato descartado
+→ no MatchedGrant
+```
+
+No se corrige cambiando el carril en tiempo de ejecución.
+
+---
+
+#### 11. Compatibilidad con la modalidad
+
+| Modalidad              | Allows base | Allows operativos |
+| ---------------------- | ----------: | ----------------: |
+| `BASE_ONLY`            |          Sí |                No |
+| `OPERATIONAL_ONLY`     |          No |                Sí |
+| `BASE_OR_OPERATIONAL`  |          Sí |                Sí |
+| `BASE_AND_OPERATIONAL` |          Sí |                Sí |
+
+Un grant ubicado en un carril incompatible:
+
+- no coincide;
+- no se mueve al otro carril;
+- no cambia la modalidad;
+- no rescata la solicitud;
+- se trata como incompatibilidad contractual.
+
+---
+
+#### 12. Lane NOT_APPLICABLE
+
+Cuando un carril es `NOT_APPLICABLE`:
+
+```text
+matched_allow_ids = []
+```
+
+y no podrá existir en `matched_allows` ningún registro para ese carril.
+
+Ejemplos:
+
+```text
+BASE_ONLY
+→ cero MatchedGrant OPERATIONAL
+```
+
+```text
+OPERATIONAL_ONLY
+→ cero MatchedGrant BASE
+```
+
+---
+
+#### 13. BASE_OR_OPERATIONAL
+
+Para `BASE_OR_OPERATIONAL` pueden existir:
+
+- solo allows base;
+- solo allows operativos;
+- allows en ambos carriles;
+- ningún allow.
+
+Los allows se evalúan independientemente.
+
+La presencia de un allow base:
+
+- no impide evaluar el carril operativo;
+- no elimina su evidencia;
+- no convierte grants operativos en redundantes.
+
+La combinación final se resolverá en `AUTH-CTX-023`.
+
+---
+
+#### 14. BASE_AND_OPERATIONAL
+
+Para `BASE_AND_OPERATIONAL` se requieren contribuciones separadas:
+
+```text
+MatchedGrant BASE compatible
++
+MatchedGrant OPERATIONAL compatible
+```
+
+Un componente base no completa el componente operativo.
+
+Un componente operativo no completa el componente base.
+
+La unión se realizará únicamente mediante la combinación canónica de
+`AUTH-CTX-023`.
+
+---
+
+#### 15. Grants directos y componentes
+
+Los datasets distinguen conceptualmente:
+
+- grants directos;
+- componentes base;
+- componentes operativos.
+
+`MatchedGrant` no duplica el campo `grant_type`.
+
+La naturaleza directa o de componente se conserva en la fila fuente
+identificada por:
+
+```text
+source_dataset_id
++
+source_dataset_version
++
+grant_id
+```
+
+Reglas:
+
+- un componente completo para su carril sí puede ser `MatchedGrant`;
+- un componente no implica allow final;
+- el evaluador no transforma componentes en grants directos;
+- la auditoría podrá recuperar la fila fuente exacta;
+- una proyección cliente no necesita revelar el tipo interno.
+
+---
+
+#### 16. Fuente BASE_ROLE
+
+Un allow `BASE_ROLE` exige:
+
+- actor laboral válido;
+- empleado activo;
+- rol base canónico activo;
+- coincidencia exacta entre el rol del contexto y el sujeto del grant;
+- permiso exacto;
+- modalidad compatible;
+- alcance y recurso coincidentes;
+- vigencia activa.
+
+No coincide un grant de:
+
+- otro rol;
+- rol legacy no adaptado;
+- nombre de cargo;
+- rol operativo;
+- rol simulado no autorizado;
+- rol enviado por cliente.
+
+---
+
+#### 17. Fuente OPERATIONAL_ROLE
+
+Un allow `OPERATIONAL_ROLE` exige:
+
+- actor laboral válido;
+- empleado activo;
+- carril operativo aplicable;
+- turno válido;
+- rol operativo efectivo;
+- coincidencia exacta con el rol del grant;
+- sede y área compatibles;
+- prerrequisitos satisfechos;
+- permiso exacto;
+- recurso coincidente;
+- vigencia activa.
+
+El rol operativo no se obtiene de:
+
+- rol base;
+- perfil predeterminado;
+- `navigation_role`;
+- dispositivo;
+- área seleccionada;
+- nombre humano.
+
+---
+
+#### 18. Fuente INDIVIDUAL_BASE
+
+Un allow `INDIVIDUAL_BASE` exige:
+
+- empleado exacto;
+- override base activo;
+- modalidad compatible;
+- carril base evaluable;
+- contexto base válido;
+- permiso exacto;
+- alcance permitido por el contrato;
+- recurso y territorio coincidentes.
+
+El override no:
+
+- repara empleado inactivo;
+- repara rol base inválido;
+- cambia la modalidad;
+- anula un deny;
+- crea cobertura administrativa;
+- amplía el permiso.
+
+---
+
+#### 19. Fuente INDIVIDUAL_OPERATIONAL
+
+Un allow `INDIVIDUAL_OPERATIONAL` exige:
+
+- empleado exacto;
+- override operativo activo;
+- modalidad compatible;
+- carril operativo evaluable;
+- turno y check-in cuando aplican;
+- rol operativo y territorio compatibles;
+- permiso exacto;
+- recurso coincidente.
+
+El override no:
+
+- crea turno;
+- crea check-in;
+- crea rol;
+- repara sede o área incompatibles;
+- reduce `T+C` a `T`;
+- anula un deny;
+- convierte un permiso base en operativo.
+
+---
+
+#### 20. Semántica de source_subject_id
+
+`source_subject_id` utiliza el identificador canónico de la fuente:
+
+| `source_kind`            | `source_subject_id`               |
+| ------------------------ | --------------------------------- |
+| `BASE_ROLE`              | Código canónico del rol base      |
+| `OPERATIONAL_ROLE`       | Código canónico del rol operativo |
+| `INDIVIDUAL_BASE`        | `employee_id` exacto              |
+| `INDIVIDUAL_OPERATIONAL` | `employee_id` exacto              |
+
+No se utiliza:
+
+- nombre del rol;
+- nombre del trabajador;
+- correo;
+- documento;
+- `auth.uid()` técnico del dispositivo;
+- ID de turno;
+- ID de check-in;
+- ID de dispositivo;
+- ID de sesión compartida.
+
+---
+
+#### 21. Coincidencia del sujeto
+
+La coincidencia exige igualdad exacta entre:
+
+```text
+source_subject_id
+y
+sujeto canónico correspondiente del AccessContext
+```
+
+No se admite:
+
+- herencia implícita de roles;
+- jerarquía de roles;
+- equivalencia por familia;
+- alias no adaptado;
+- coincidencia parcial;
+- rol “superior”;
+- sustitución por otro trabajador;
+- dispositivo como sujeto humano.
+
+---
+
+#### 22. Identidad de grant_id
+
+`grant_id` deberá ser:
+
+- estable;
+- canónico;
+- no vacío;
+- resoluble dentro del snapshot;
+- inmutable para la misma concesión;
+- globalmente no ambiguo dentro de la familia de datasets de autorización.
+
+No deberá utilizarse como `grant_id`:
+
+- posición de la fila;
+- índice de arreglo;
+- nombre humano;
+- hash temporal no estable;
+- clave de React;
+- ID físico que cambie durante una migración;
+- combinación generada localmente por una aplicación.
+
+Cuando una fuente física legacy utilice otro nombre —por ejemplo,
+`override_id`— el adaptador deberá proyectar su identificador estable como
+`grant_id` sin alterar su identidad.
+
+---
+
+#### 23. Unicidad global
+
+Dentro de una decisión:
+
+```text
+grant_id
+→ una única concesión canónica
+```
+
+Si dos datasets exponen el mismo `grant_id` para concesiones distintas:
+
+```text
+GRANT_ID_COLLISION
+→ configuración inválida
+→ fail closed
+```
+
+No se resolverá utilizando:
+
+- primer dataset;
+- dataset más reciente;
+- carril base;
+- carril operativo;
+- fuente “más específica”.
+
+---
+
+#### 24. Dataset de grants base
+
+Para `BASE_ROLE`:
+
+```text
+source_dataset_id =
+vento.authorization.base-role-grants
+
+source_dataset_version =
+1.0.0
+```
+
+La decisión deberá consumir el snapshot canónico aprobado.
+
+No utilizará directamente como fuente normativa final:
+
+- `role_permissions`;
+- matrices reconstruidas desde frontend;
+- permisos cacheados sin versión;
+- datos legacy sin adaptar.
+
+---
+
+#### 25. Dataset de grants operativos
+
+Para `OPERATIONAL_ROLE`:
+
+```text
+source_dataset_id =
+vento.authorization.operational-role-grants
+
+source_dataset_version =
+1.0.0
+```
+
+La ausencia de dimensiones físicas en una fila operativa no significa
+alcance global.
+
+El grant continúa limitado por:
+
+- turno;
+- rol;
+- sede;
+- área;
+- recurso;
+- lados;
+- contrato.
+
+---
+
+#### 26. Dataset de overrides
+
+Para:
+
+- `INDIVIDUAL_BASE`;
+- `INDIVIDUAL_OPERATIONAL`;
+
+se utilizará:
+
+```text
+source_dataset_id =
+vento.authorization.individual-overrides
+
+source_dataset_version =
+1.0.0
+```
+
+La lane del override deberá estar declarada y ser compatible.
+
+No se infiere desde el permiso, el rol o el contexto.
+
+---
+
+#### 27. Versiones de datasets
+
+Una decisión podrá consultar varios datasets, pero cada dataset deberá
+utilizar un único snapshot congelado.
+
+Queda prohibido:
+
+- mezclar dos versiones de la matriz base;
+- mezclar dos versiones de la matriz operativa;
+- combinar overrides de versiones distintas;
+- cambiar de versión durante la evaluación;
+- usar una fila nueva con un hash antiguo;
+- omitir la versión.
+
+Una incompatibilidad de versión impide registrar grants provenientes del
+dataset afectado.
+
+---
+
+#### 28. Hash e integridad
+
+`MatchedGrant` conserva ID y versión del dataset, no su hash.
+
+El hash exacto del snapshot se registrará en:
+
+```text
+AuthorizationDecision.audit
+```
+
+mediante `AUTH-CTX-024`.
+
+El evaluador deberá verificar la integridad antes de resolver allows.
+
+Un hash incompatible:
+
+```text
+→ no usar filas parciales
+→ no MatchedGrant
+→ structural/configuration deny posterior
+```
+
+---
+
+#### 29. effect
+
+Todo `MatchedGrant` deberá declarar:
+
+```text
+effect = ALLOW
+```
+
+No se admiten en `matched_allows`:
+
+- `DENY`;
+- `REVOKE`;
+- `BLOCK`;
+- `AUDIT_ONLY`;
+- `INHERIT`;
+- `UNKNOWN`.
+
+Las denegaciones se resolverán exclusivamente en `AUTH-CTX-022`.
+
+---
+
+#### 30. validity_status
+
+Todo objeto serializado deberá declarar:
+
+```text
+validity_status = ACTIVE
+```
+
+Estados candidatos no coincidentes incluyen:
+
+- futuro;
+- expirado;
+- revocado;
+- suspendido;
+- desactivado;
+- reemplazado;
+- versión incompatible;
+- sujeto inactivo.
+
+Estos estados no se serializan como `MatchedGrant`.
+
+---
+
+#### 31. Instante de vigencia
+
+La vigencia se evalúa contra:
+
+```text
+AuthorizationDecision.decided_at
+```
+
+Regla de inicio:
+
+```text
+starts_at <= decided_at
+```
+
+Regla de fin cuando existe:
+
+```text
+decided_at < ends_at
+```
+
+No se utiliza:
+
+- hora del cliente;
+- hora del dispositivo;
+- hora de render;
+- hora de caché;
+- hora de creación del recurso como sustituto.
+
+---
+
+#### 32. scope_code
+
+`scope_code` identifica el alcance canónico utilizado para comprobar el
+grant.
+
+Podrá representar:
+
+- un alcance primitivo aprobado;
+- un perfil compuesto canónico y versionado;
+- `CTX` para el carril operativo;
+- una combinación publicada por el contrato.
+
+No será:
+
+- descripción humana;
+- SQL;
+- JSON libre;
+- `scope_expression` sin normalizar;
+- nombre de pantalla;
+- nombre de sede;
+- ID de recurso;
+- texto generado por cliente.
+
+---
+
+#### 33. Alcances base
+
+Los grants base podrán utilizar los códigos o perfiles aprobados derivados
+de:
+
+```text
+NT
+ORG
+G
+AS
+SS
+AST
+TST
+AA
+SA
+AAT
+ATW
+OWN
+```
+
+Un scope compuesto deberá conservar su identificador canónico.
+
+No se reconstruye analizando texto descriptivo.
+
+---
+
+#### 34. Alcance operativo CTX
+
+Para el carril operativo:
+
+```text
+scope_code = CTX
+```
+
+o el perfil operativo canónico que lo incluya.
+
+`CTX` significa:
+
+```text
+contexto operativo efectivo
+∩
+recurso exacto
+∩
+lados exigidos
+```
+
+No significa:
+
+- cualquier sede;
+- cualquier área;
+- cualquier recurso del rol;
+- cualquier operación de la aplicación;
+- acceso cross-site;
+- acceso permanente.
+
+---
+
+#### 35. Alcance individual
+
+Un override individual puede reducir o precisar el alcance compatible.
+
+No podrá:
+
+- superar el alcance máximo del permiso;
+- eliminar restricciones de recurso;
+- eliminar lados obligatorios;
+- transformar `OWN` en global;
+- transformar `CTX` en cross-site;
+- conceder un scope incompatible con la modalidad.
+
+La coincidencia se evalúa contra la intersección completa aplicable.
+
+---
+
+#### 36. matched_territory
+
+`matched_territory = true` significa que el grant cubre todas las
+dimensiones territoriales exigidas para su contribución.
+
+Incluye, cuando correspondan:
+
+- organización;
+- unidad de negocio;
+- sede;
+- área;
+- tipo de sede;
+- tipo de área;
+- origen;
+- destino;
+- ruta;
+- vehículo;
+- lados territoriales obligatorios;
+- exclusión de entornos aislados.
+
+No significa únicamente que “alguna sede coincide”.
+
+---
+
+#### 37. Territorio no aplicable
+
+Para un permiso o recurso contractualmente no territorial:
+
+```text
+matched_territory = true
+```
+
+solo cuando:
+
+- el contrato declara territorio no aplicable;
+- el scope del grant admite esa forma;
+- no existe una dimensión obligatoria omitida.
+
+No se utiliza una lista territorial vacía como prueba automática.
+
+---
+
+#### 38. Todos los lados obligatorios
+
+Cuando el recurso declara varios lados:
+
+```text
+matched_territory = true
+```
+
+exige que el grant cubra los lados que corresponden a su carril y contrato.
+
+Ejemplo:
+
+```text
+required_sides = [ORIGIN, DESTINATION]
+```
+
+Un grant que solo cubre origen no se serializa como match completo cuando
+ambos lados son obligatorios para esa contribución.
+
+---
+
+#### 39. Entornos aislados
+
+Un grant ordinario no coincide con un recurso:
+
+```text
+isolated_environment = true
+```
+
+salvo autorización aislada explícita y compatible.
+
+No producen coincidencia aislada por sí solos:
+
+- `G`;
+- `ORG`;
+- `CTX`;
+- rol propietario;
+- rol gerencial;
+- dispositivo de revisión.
+
+---
+
+#### 40. matched_resource
+
+`matched_resource = true` significa que la concesión coincide con la forma
+empresarial exacta resuelta por el contrato.
+
+Incluye, cuando correspondan:
+
+- `resource_contract_id`;
+- tipo de recurso;
+- forma de solicitud;
+- IDs exactos;
+- versión;
+- sujeto;
+- propiedad;
+- custodia;
+- relaciones;
+- estado;
+- transición;
+- lados resueltos;
+- política de colección;
+- política de agregado;
+- política de lote.
+
+---
+
+#### 41. Separación entre territorio y recurso
+
+La división será:
+
+```text
+matched_territory
+→ cobertura territorial
+```
+
+```text
+matched_resource
+→ identidad y condiciones empresariales del recurso
+```
+
+Ejemplo:
+
+```text
+misma sede
+pero estado incompatible
+```
+
+produce:
+
+```text
+territorio coincide
+recurso no coincide
+→ no MatchedGrant
+```
+
+---
+
+#### 42. Propiedad y OWN
+
+Para un grant `OWN`:
+
+```text
+matched_resource = true
+```
+
+exige que la relación de propiedad o atribución definida por el contrato
+coincida.
+
+No se utiliza universalmente:
+
+```text
+created_by = actor
+```
+
+La propiedad no elimina la comprobación territorial.
+
+---
+
+#### 43. Estado del recurso
+
+Cuando el grant o contrato exige un estado:
+
+```text
+matched_resource = true
+```
+
+requiere que el snapshot actual sea compatible.
+
+Ejemplos:
+
+- remisión pendiente;
+- lote abierto;
+- caja activa;
+- orden aprobada;
+- recepción no cerrada.
+
+Un estado incompatible descarta el candidato.
+
+No crea automáticamente un deny administrable.
+
+---
+
+#### 44. Campos y MatchedGrant
+
+La coincidencia de grant no autoriza por sí sola todos los campos.
+
+`matched_resource` no sustituye:
+
+```text
+field_policy_decision
+```
+
+Un grant puede coincidir con el recurso mientras:
+
+```text
+field_policy_decision = PARTIAL
+```
+
+o mientras una mutación termine bloqueada por campos protegidos.
+
+La evidencia del grant se conserva.
+
+---
+
+#### 45. Concurrencia y MatchedGrant
+
+La concurrencia no forma parte del grant almacenado.
+
+Un grant puede coincidir y registrarse mientras:
+
+```text
+resource.concurrency.validated = false
+```
+
+La ejecución será bloqueada por la decisión correspondiente.
+
+`MatchedGrant` demuestra autoridad potencial del carril, no disponibilidad
+transaccional definitiva.
+
+---
+
+#### 46. Dispositivo y MatchedGrant
+
+El paquete de capacidades del dispositivo no produce `MatchedGrant`.
+
+Cuando el actor posee un grant coincidente, pero el dispositivo restringe la
+capacidad:
+
+```text
+matched_allows conserva el grant
+device_decision = FAIL
+final_decision = DENY
+```
+
+El dispositivo no se registra como `source_kind`.
+
+---
+
+#### 47. Sensibilidad y reautenticación
+
+Una concesión puede coincidir aunque una exigencia sensible adicional falle.
+
+Ejemplo:
+
+```text
+grant base coincidente
+reautenticación requerida ausente
+```
+
+Resultado:
+
+```text
+MatchedGrant conservado
+sensitivity_decision = FAIL
+final_decision = DENY
+```
+
+La restricción no borra la evidencia de la concesión.
+
+---
+
+#### 48. Dependencias
+
+Un allow de una dependencia no se agrega a `matched_allows` del permiso
+principal.
+
+Cada dependencia produce su propia decisión.
+
+El permiso principal contiene exclusivamente grants cuya:
+
+```text
+permission_key
+=
+permission_key principal
+```
+
+Aprobar una dependencia no crea un allow principal.
+
+---
+
+#### 49. Grants incompletos
+
+Un candidato que falla una condición no entra parcialmente.
+
+Queda prohibido serializar:
+
+```ts
+{
+  matched_territory: false,
+  matched_resource: true
+}
+```
+
+dentro de `matched_allows`.
+
+Los booleanos del contrato son invariantes de evidencia positiva.
+
+No son un informe de todos los candidatos descartados.
+
+---
+
+#### 50. No composición accidental
+
+Dos grants incompletos no se combinan para crear uno completo.
+
+Ejemplo prohibido:
+
+```text
+grant A cubre sede
+grant B cubre propiedad
+→ allow completo
+```
+
+La combinación solo es válida cuando un contrato de grant compuesto,
+publicado y versionado, define explícitamente todas sus condiciones como una
+única concesión.
+
+---
+
+#### 51. Múltiples allows coincidentes
+
+Pueden coincidir simultáneamente:
+
+- grant de rol;
+- override individual;
+- varios grants de rol con alcances diferentes;
+- grants en ambos carriles de un permiso híbrido.
+
+Todos los allows completos se conservan.
+
+No se elige únicamente:
+
+- el más específico;
+- el más amplio;
+- el individual;
+- el de rol;
+- el primero;
+- el más reciente.
+
+La multiplicidad no amplía la autoridad.
+
+---
+
+#### 52. Redundancia de rol e individual
+
+Cuando un rol y un override individual conceden exactamente la misma
+capacidad y ambos coinciden:
+
+```text
+matched_allows
+→ contiene ambas concesiones
+```
+
+Esto preserva la evidencia real.
+
+No obstante:
+
+- no produce doble autoridad;
+- no cambia el resultado;
+- puede generar una observación de redundancia administrativa;
+- no autoriza eliminar automáticamente el override.
+
+La limpieza física corresponde a tareas de implementación y migración.
+
+---
+
+#### 53. Grants distintos con el mismo efecto
+
+Dos grants con IDs distintos permanecen separados cuando representan
+concesiones canónicas distintas.
+
+Ejemplos:
+
+- rol base + override base;
+- rol operativo + override operativo;
+- grant de alcance limitado + grant global;
+- componente base + grant directo de otra fuente.
+
+El orden no implica precedencia.
+
+---
+
+#### 54. Duplicado exacto por grant_id
+
+Si la misma concesión aparece repetida de forma byte-equivalente dentro del
+mismo snapshot:
+
+```text
+→ deduplicar por grant_id
+→ conservar una sola entrada
+→ registrar problema de dataset
+```
+
+Si el contenido difiere:
+
+```text
+→ conflicto
+→ no elegir una fila
+→ fail closed
+```
+
+---
+
+#### 55. Relación con matched_allow_ids
+
+La consistencia obligatoria es:
+
+```text
+base_decision.matched_allow_ids
+=
+grant_id de matched_allows donde lane = BASE
+```
+
+```text
+operational_decision.matched_allow_ids
+=
+grant_id de matched_allows donde lane = OPERATIONAL
+```
+
+Ambas listas deberán:
+
+- estar deduplicadas;
+- usar el mismo identificador;
+- conservar orden determinista;
+- no incluir grants descartados;
+- no incluir denies;
+- no incluir dependencias.
+
+---
+
+#### 56. Outcome ALLOW
+
+Cuando un carril produce:
+
+```text
+outcome = ALLOW
+```
+
+deberá existir al menos un `MatchedGrant` capaz de satisfacer la contribución
+requerida de ese carril.
+
+Queda prohibido:
+
+```text
+outcome = ALLOW
+matched_allow_ids = []
+```
+
+Un resultado así es una incoherencia estructural.
+
+---
+
+#### 57. Outcome DENY con allows existentes
+
+Un carril puede terminar en `DENY` aunque existan allows coincidentes.
+
+Ejemplos:
+
+- actor-wide deny;
+- lane deny;
+- restricción bloqueante;
+- combinación obligatoria fallida;
+- condición final separada.
+
+En ese caso:
+
+- los grants no se eliminan;
+- `matched_allows` conserva la evidencia;
+- el deny prevalece;
+- la explicación distingue autoridad concedida y bloqueo aplicable.
+
+---
+
+#### 58. Outcome DENY sin allows
+
+Cuando no existe ningún allow completo:
+
+```text
+matched_allow_ids = []
+matched_allows no contiene entradas del carril
+```
+
+El resultado posterior será `DENY` por ausencia de allow.
+
+`default deny` no se representa como `MatchedGrant`.
+
+---
+
+#### 59. Outcome NOT_APPLICABLE
+
+Cuando un carril es `NOT_APPLICABLE`:
+
+- no se consultan sus datasets para conceder;
+- no se registran allows del carril;
+- no se incluyen IDs;
+- no se interpreta la ausencia como error.
+
+Una fila incompatible localizada durante validación administrativa no se
+convierte en match.
+
+---
+
+#### 60. Denies no borran allows
+
+`AUTH-CTX-021` registra evidencia positiva.
+
+`AUTH-CTX-022` registrará evidencia negativa.
+
+Regla:
+
+```text
+DENY APLICABLE
+>
+ALLOW COINCIDENTE
+```
+
+Pero:
+
+```text
+DENY APLICABLE
+≠
+BORRAR EVIDENCIA DEL ALLOW
+```
+
+Esto permite auditoría y explicación correcta.
+
+---
+
+#### 61. Orden determinista
+
+`matched_allows` deberá ordenarse por:
+
+1. `lane`: `BASE`, luego `OPERATIONAL`;
+2. `source_kind` en orden canónico;
+3. `source_dataset_id`;
+4. `source_dataset_version`;
+5. `grant_id`.
+
+Orden canónico de `source_kind`:
+
+```text
+BASE_ROLE
+INDIVIDUAL_BASE
+OPERATIONAL_ROLE
+INDIVIDUAL_OPERATIONAL
+```
+
+El orden no concede precedencia.
+
+---
+
+#### 62. Inmutabilidad
+
+Una vez emitida la decisión:
+
+- no se agregan grants;
+- no se eliminan grants;
+- no se cambia la lane;
+- no se cambia el sujeto;
+- no se cambia el dataset;
+- no se actualiza la vigencia;
+- no se reemplaza el recurso.
+
+Un cambio de realidad produce una nueva `AuthorizationDecision`.
+
+---
+
+#### 63. Frescura
+
+La coincidencia deberá basarse en snapshots vigentes de:
+
+- contexto;
+- catálogo;
+- datasets;
+- recurso;
+- grants;
+- overrides.
+
+Un grant revocado después de una decisión no modifica retroactivamente la
+evidencia histórica.
+
+Pero una ejecución posterior deberá reevaluar cuando corresponda.
+
+La estrategia de invalidación se definirá en `AUTH-CTX-029`.
+
+---
+
+#### 64. Colecciones
+
+Para una lectura `COLLECTION`, un grant solo coincide sobre el conjunto
+delimitado por el servidor.
+
+Reglas:
+
+- no autoriza miembros fuera de alcance;
+- no autoriza filtros aplicados únicamente en frontend;
+- no autoriza conteos que incluyan miembros ocultos;
+- no autoriza una mutación sobre toda la colección;
+- la paginación conserva el mismo scope.
+
+`matched_resource = true` se refiere al conjunto autorizado resultante.
+
+---
+
+#### 65. Agregados
+
+Para `AGGREGATE`:
+
+- solo contribuyen miembros individualmente autorizados;
+- el grant deberá ser compatible con la dimensión agregada;
+- no se incluyen territorios ocultos;
+- no se infieren totales excluidos;
+- un grant local no produce agregado global.
+
+La coincidencia corresponde al agregado autorizado exacto.
+
+---
+
+#### 66. Operaciones masivas
+
+Para `BULK`, el grant deberá ser compatible con la política masiva del
+contrato.
+
+En `ALL_OR_NOTHING`:
+
+```text
+todos los miembros obligatorios deben coincidir
+```
+
+En `PARTIAL_WITH_RESULTS`:
+
+```text
+cada miembro obtiene evaluación separada
+```
+
+Un permiso individual ordinario no se convierte en grant masivo.
+
+---
+
+#### 67. NON_RESOURCE
+
+Para una solicitud `NON_RESOURCE`:
+
+```text
+matched_resource = true
+```
+
+solo cuando:
+
+- el contrato declara `NON_RESOURCE`;
+- el permiso y grant admiten esa forma;
+- no existe un recurso empresarial omitido;
+- no se usa como fallback.
+
+Ejemplo:
+
+```text
+app.access
+```
+
+puede ser `NON_RESOURCE`.
+
+Esto no concede las capacidades internas de la aplicación.
+
+---
+
+#### 68. Simulación
+
+La simulación puede calcular grants que coincidirían bajo un contexto
+hipotético.
+
+Sin embargo:
+
+- no produce autoridad ejecutable;
+- no reutiliza la decisión real;
+- no crea grants;
+- no altera datasets;
+- no elimina denies;
+- no expone matrices completas;
+- debe marcarse dentro del contrato separado de simulación.
+
+Un `MatchedGrant` simulado no podrá presentarse como evidencia de una
+ejecución real.
+
+---
+
+#### 69. Procesos SYSTEM
+
+Los cuatro valores actuales de `source_kind` pertenecen al modelo laboral.
+
+Un proceso `SYSTEM` autónomo no se proyecta silenciosamente como:
+
+- rol base;
+- rol operativo;
+- override individual;
+- dispositivo.
+
+`AUTH-CTX-026` deberá diseñar la rama contractual de procesos de sistema.
+
+Si esa rama requiere ampliar `MatchedGrant`, deberá versionarse el contrato
+antes de implementación.
+
+---
+
+#### 70. Compatibilidad legacy
+
+Las estructuras físicas actuales:
+
+- `role_permissions`;
+- `operational_role_permissions`;
+- `employee_permissions`;
+- funciones booleanas actuales;
+
+no se serializan directamente como fuente canónica final.
+
+`AUTH-CTX-028` diseñará adaptadores que deberán:
+
+- mapear claves legacy;
+- resolver lane;
+- normalizar scope;
+- eliminar ambigüedad;
+- controlar duplicados;
+- proyectar IDs estables;
+- vincular dataset y versión;
+- fallar cerrado cuando no exista equivalencia uno-a-uno.
+
+---
+
+#### 71. Proyección interna
+
+La forma completa de `MatchedGrant` pertenece a la decisión interna y a la
+auditoría autorizada.
+
+Puede ser utilizada por:
+
+- evaluador;
+- auditoría;
+- diagnóstico administrativo;
+- pruebas contractuales;
+- simulación autorizada.
+
+No deberá ser enviada indiscriminadamente a todos los clientes.
+
+---
+
+#### 72. Proyección segura al cliente
+
+La respuesta cliente ordinaria podrá omitir:
+
+- `grant_id`;
+- `source_subject_id`;
+- `source_dataset_id`;
+- `source_dataset_version`;
+- cantidad de grants;
+- estructura de la matriz;
+- existencia de overrides sensibles.
+
+La proyección segura podrá limitarse a:
+
+- decisión;
+- razón pública;
+- acción de recuperación;
+- campos visibles;
+- requisito pendiente permitido.
+
+La forma exacta se consolidará en `AUTH-CTX-023`.
+
+---
+
+#### 73. Auditoría
+
+`AUTH-CTX-024` deberá registrar, de forma autorizada:
+
+- `grant_id`;
+- lane;
+- source kind;
+- source subject;
+- permission key;
+- scope code;
+- dataset;
+- versión;
+- hash del snapshot;
+- recurso;
+- territorio;
+- instante;
+- resultado.
+
+No deberá registrar secretos ni payloads empresariales innecesarios.
+
+---
+
+#### 74. Casos de ejemplo
+
+##### Caso A — Grant base de rol
+
+```text
+source_kind = BASE_ROLE
+source_subject_id = gerente
+permission_key exacto
+scope = AS
+recurso dentro de sede asignada
+grant activo
+```
+
+Resultado:
+
+```text
+MatchedGrant BASE
+```
+
+##### Caso B — Grant base fuera de territorio
+
+```text
+scope = AS
+recurso en sede no asignada
+```
+
+Resultado:
+
+```text
+no MatchedGrant
+```
+
+##### Caso C — Override individual redundante
+
+```text
+grant de rol coincide
+override individual base coincide
+```
+
+Resultado:
+
+```text
+dos MatchedGrant
+misma autoridad efectiva
+```
+
+##### Caso D — Grant operativo
+
+```text
+source_kind = OPERATIONAL_ROLE
+rol del turno coincide
+CTX coincide
+recurso y lado coinciden
+```
+
+Resultado:
+
+```text
+MatchedGrant OPERATIONAL
+```
+
+##### Caso E — Rol operativo distinto
+
+```text
+turno = bodeguero
+grant = conductor_logistica
+```
+
+Resultado:
+
+```text
+no MatchedGrant
+```
+
+##### Caso F — BASE_AND_OPERATIONAL
+
+```text
+componente base coincide
+componente operativo coincide
+```
+
+Resultado:
+
+```text
+dos MatchedGrant
+uno por carril
+```
+
+La decisión final se combina después.
+
+##### Caso G — Allow y deny
+
+```text
+grant base coincide
+actor-wide deny coincide
+```
+
+Resultado:
+
+```text
+MatchedGrant conservado
+MatchedDeny posterior
+final DENY
+```
+
+##### Caso H — Grant expirado
+
+```text
+ends_at <= decided_at
+```
+
+Resultado:
+
+```text
+no MatchedGrant
+```
+
+##### Caso I — Dataset incompatible
+
+```text
+source_dataset_version no compatible
+```
+
+Resultado:
+
+```text
+no usar filas parciales
+no MatchedGrant
+```
+
+##### Caso J — Recurso no territorial
+
+```text
+contrato = NON_RESOURCE
+grant compatible
+```
+
+Resultado:
+
+```text
+matched_territory = true
+matched_resource = true
+```
+
+##### Caso K — Entorno aislado
+
+```text
+grant G ordinario
+resource.isolated_environment = true
+```
+
+Resultado:
+
+```text
+no MatchedGrant
+```
+
+##### Caso L — Misma sede, estado incorrecto
+
+```text
+territorio compatible
+estado del recurso incompatible
+```
+
+Resultado:
+
+```text
+no MatchedGrant
+```
+
+##### Caso M — Restricción de dispositivo
+
+```text
+grant operativo coincide
+dispositivo no admite permiso
+```
+
+Resultado:
+
+```text
+MatchedGrant conservado
+device_decision = FAIL
+final DENY
+```
+
+##### Caso N — Colisión de grant_id
+
+```text
+mismo grant_id
+dos concesiones diferentes
+```
+
+Resultado:
+
+```text
+configuración inválida
+fail closed
+```
+
+##### Caso O — Lane no aplicable
+
+```text
+permission = BASE_ONLY
+grant operativo almacenado
+```
+
+Resultado:
+
+```text
+no MatchedGrant OPERATIONAL
+incompatibilidad contractual
+```
+
+---
+
+#### 75. Antipatrones prohibidos
+
+```ts
+const matched = grants.filter(
+  (grant) => grant.permission_key.startsWith(permissionKey)
+);
+```
+
+```ts
+const bestGrant = grants[0];
+```
+
+```ts
+const matched = [
+  ...roleGrants,
+  ...individualGrants,
+].filter((grant) => grant.is_active);
+```
+
+```ts
+if (grant.scope === "global") {
+  return true;
+}
+```
+
+```ts
+return {
+  ...grant,
+  matched_territory: false,
+  matched_resource: true,
+};
+```
+
+```ts
+if (device.capabilities.includes(permissionKey)) {
+  matchedAllows.push(device);
+}
+```
+
+También queda prohibido:
+
+```text
+grant almacenado → grant coincidente
+rol superior → sujeto coincidente
+override individual → bypass
+grant base → allow operativo
+grant operativo → allow base
+dos grants incompletos → uno completo
+más específico → vencer deny
+lista vacía → todos
+scope null → global
+recurso propio → omitir territorio
+misma sede → recurso coincidente
+allow → decisión final
+deny → borrar evidencia del allow
+```
+
+---
+
+#### 76. Relación con tareas posteriores
+
+| Tarea                         | Responsabilidad posterior                                                                          |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-022`                | Definir `MatchedDeny`, structural denies, actor-wide denies y lane denies                          |
+| `AUTH-CTX-023`                | Aplicar precedencia, combinación, default deny, restricciones y decisión final                     |
+| `AUTH-CTX-024`                | Registrar grants, datasets, hashes, recurso, territorio y resultados de auditoría                  |
+| `AUTH-CTX-025`                | Diseñar la producción física del contexto; no resolver grants por sí solo                          |
+| `AUTH-CTX-026`                | Diseñar consulta de datasets, matchers, tipos físicos, procesos SYSTEM y frontera transaccional    |
+| `AUTH-CTX-027`                | Obligar a aplicaciones y RPC a consumir matched allows centralizados                               |
+| `AUTH-CTX-028`                | Diseñar adaptadores para matrices legacy, IDs, scopes, aliases, duplicados y funciones booleanas   |
+| `AUTH-CTX-029`                | Definir caché e invalidación de grants, datasets, contexto y recurso                               |
+| `AUTH-CTX-030`                | Definir pruebas contractuales de matching, multiplicidad, componentes, deduplicación y fail closed |
+| `AUTH-DB-006` a `AUTH-DB-010` | Implementar autorización canónica dentro de RPC sensibles                                          |
+| `AUTH-DB-011`                 | Aplicar constraints después de inventario, reconciliación y backfill                               |
+| `AUTH-DB-020`                 | Migrar matrices y overrides legacy a fuentes canónicas                                             |
+| `AUTH-DB-027`                 | Probar integridad, RLS, RPC, datasets y migraciones                                                |
+| `AUTH-DB-030`                 | Retirar funciones legacy después de adopción comprobada                                            |
+| `AUTH-DB-031`                 | Certificar paridad documental, técnica y operativa                                                 |
+| `GAP-CTRL-001`                | Consolidar brechas de grants y consumidores detectadas antes de implementación                     |
+| `GAP-CTRL-006`                | Vincular cada brecha con tarea documental y paquete implementable                                  |
+
+---
+
+#### 77. Fuera del alcance
+
+AUTH-CTX-021 no:
+
+- modifica el catálogo;
+- modifica modalidades;
+- modifica alcances;
+- modifica matrices;
+- modifica datasets;
+- cambia sus versiones;
+- crea grants;
+- crea overrides;
+- elimina redundancias;
+- crea denies;
+- define `MatchedDeny`;
+- aplica precedencia final;
+- decide mensajes cliente;
+- crea ramas SYSTEM físicas;
+- crea tipos TypeScript;
+- crea JSON Schema;
+- crea Zod;
+- crea SQL;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- modifica Supabase;
+- modifica aplicaciones.
+
+Cada responsabilidad posterior tiene destino explícito en la sección 76.
+
+---
+
+#### 78. Riesgos controlados
+
+| Riesgo                                      | Control canónico                                     |
+| ------------------------------------------- | ---------------------------------------------------- |
+| Toda fila activa se considera allow         | Matching completo obligatorio                        |
+| Prefijo concede capacidades relacionadas    | `permission_key` exacto                              |
+| Grant de otro rol coincide                  | `source_subject_id` exacto                           |
+| Override individual funciona como bypass    | Contexto, scope y recurso siguen siendo obligatorios |
+| Grant operativo se vuelve global            | `CTX` siempre limita por contexto y recurso          |
+| Scope descriptivo se interpreta libremente  | `scope_code` canónico y versionado                   |
+| Dos grants incompletos se combinan          | Cada `MatchedGrant` debe ser completo                |
+| Deny borra evidencia                        | Grants y denies permanecen separados                 |
+| Más grants amplían alcance                  | Multiplicidad no crea scope nuevo                    |
+| Colisión de IDs se resuelve arbitrariamente | `GRANT_ID_COLLISION` y fail closed                   |
+| Dataset cambia durante la decisión          | Snapshot único por dataset                           |
+| Cliente recibe matrices internas            | Proyección segura separada                           |
+| Componente híbrido autoriza solo            | Combinación reservada a `AUTH-CTX-023`               |
+| Legacy se usa como fuente normativa         | Adaptación explícita en `AUTH-CTX-028`               |
+| Dispositivo se registra como grant          | El dispositivo solo restringe                        |
+
+---
+
+#### 79. Criterios de aprobación
+
+AUTH-CTX-021 podrá aprobarse cuando se acepte que:
+
+1. se conserva la forma de `MatchedGrant`;
+2. se conserva `matched_allows: MatchedGrant[]`;
+3. no se agregan campos;
+4. grant almacenado no significa grant coincidente;
+5. solo se serializan coincidencias completas;
+6. `effect` siempre es `ALLOW`;
+7. `validity_status` siempre es `ACTIVE`;
+8. `matched_territory` siempre es `true`;
+9. `matched_resource` siempre es `true`;
+10. los candidatos descartados no aparecen en `matched_allows`;
+11. el permiso debe coincidir exactamente;
+12. no existen prefijos ni wildcards;
+13. una aplicación o permiso inactivo no se reactiva mediante grant;
+14. cada grant pertenece a un solo carril;
+15. no existe lane `BOTH`;
+16. `BASE_ROLE` pertenece a BASE;
+17. `INDIVIDUAL_BASE` pertenece a BASE;
+18. `OPERATIONAL_ROLE` pertenece a OPERATIONAL;
+19. `INDIVIDUAL_OPERATIONAL` pertenece a OPERATIONAL;
+20. la modalidad limita los carriles compatibles;
+21. un carril `NOT_APPLICABLE` no registra grants;
+22. `BASE_OR_OPERATIONAL` conserva evidencia independiente;
+23. `BASE_AND_OPERATIONAL` exige contribuciones separadas;
+24. un solo MatchedGrant no ocupa dos carriles;
+25. grant directo y componente permanecen diferenciados en la fuente;
+26. un componente puede coincidir para su carril;
+27. un componente no autoriza la decisión final;
+28. BASE_ROLE exige rol base exacto;
+29. OPERATIONAL_ROLE exige rol operativo exacto;
+30. INDIVIDUAL_BASE exige empleado exacto;
+31. INDIVIDUAL_OPERATIONAL exige empleado exacto;
+32. source_subject_id usa códigos de rol o employee_id;
+33. no usa nombres, correos ni documentos;
+34. grant_id es estable;
+35. grant_id es resoluble;
+36. grant_id no es un índice local;
+37. los IDs deben ser globalmente no ambiguos;
+38. una colisión produce fail closed;
+39. grants base proceden del dataset base canónico;
+40. grants operativos proceden del dataset operativo canónico;
+41. overrides proceden del dataset de overrides;
+42. no se usan tablas legacy como fuente final;
+43. cada dataset usa un snapshot único;
+44. no se mezclan versiones;
+45. el hash se registra posteriormente en auditoría;
+46. un hash incompatible impide usar filas parciales;
+47. effect no admite DENY;
+48. grants futuros no coinciden;
+49. grants expirados no coinciden;
+50. grants revocados no coinciden;
+51. la vigencia usa decided_at;
+52. scope_code es canónico;
+53. scope_code no es texto humano;
+54. los scopes base conservan códigos aprobados;
+55. CTX limita por contexto y recurso;
+56. un override no supera el alcance máximo;
+57. matched_territory cubre todas las dimensiones obligatorias;
+58. territorio no aplicable requiere contrato explícito;
+59. todos los lados obligatorios deben estar cubiertos;
+60. grants ordinarios no incluyen entornos aislados;
+61. matched_resource exige recurso y condiciones empresariales;
+62. territorio y recurso permanecen separados;
+63. OWN exige relación contractual real;
+64. el estado del recurso participa;
+65. fields permanecen en decisión separada;
+66. concurrencia permanece en decisión separada;
+67. el dispositivo no produce MatchedGrant;
+68. sensibilidad no borra evidencia de grant;
+69. dependencias no se mezclan con el permiso principal;
+70. no se serializan booleans falsos en matched_allows;
+71. dos grants incompletos no se combinan;
+72. pueden existir varios allows coincidentes;
+73. rol e individual pueden coexistir;
+74. multiplicidad no crea doble autoridad;
+75. grants distintos conservan IDs distintos;
+76. duplicados exactos se deduplican por grant_id;
+77. contenido divergente con mismo ID produce conflicto;
+78. LaneDecision y matched_allows deben coincidir;
+79. outcome ALLOW exige al menos un grant;
+80. outcome DENY puede conservar grants;
+81. default deny no es MatchedGrant;
+82. NOT_APPLICABLE exige cero grants del carril;
+83. un deny no borra evidencia positiva;
+84. el orden es determinista;
+85. el orden no implica precedencia;
+86. la decisión es inmutable;
+87. la frescura se evalúa por snapshots;
+88. colecciones se delimitan en servidor;
+89. agregados excluyen miembros no autorizados;
+90. bulk requiere contrato compatible;
+91. NON_RESOURCE no es fallback;
+92. simulación no produce autoridad ejecutable;
+93. SYSTEM no se adapta silenciosamente a source_kind laboral;
+94. una ampliación para SYSTEM exige versionado;
+95. legacy se adapta en AUTH-CTX-028;
+96. la forma completa es interna;
+97. la proyección cliente protege datos de grants;
+98. AUTH-CTX-024 registrará evidencia auditable;
+99. AUTH-CTX-022 definirá denegaciones coincidentes;
+100. AUTH-CTX-023 aplicará precedencia y decisión final;
+101. AUTH-CTX-026 diseñará la implementación contractual;
+102. AUTH-CTX-027 eliminará matching local;
+103. AUTH-CTX-029 gobernará invalidación;
+104. AUTH-CTX-030 gobernará pruebas;
+105. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 80. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-020` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-021` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-022` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-020 — APROBADA
+        ↓
+AUTH-CTX-021 — APROBADA
+        ↓
+AUTH-CTX-022 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-022` hasta recibir aprobación explícita de
+`AUTH-CTX-021`.
+
+### ✅ AUTH-CTX-022 — Incluir denegaciones coincidentes
+
+| Campo                            | Valor                                                                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Estado**                       | APROBADA                                                                                            |
+| **Bloque**                       | BLOQUE E — Contexto y decisión de autorización unificados                                           |
+| **Subbloque**                    | `AUTHORIZATION DECISION`                                                                            |
+| **Naturaleza**                   | Definición documental de `matched_denies`, `structural_denies`, `actor_wide_denies` y `lane_denies` |
+| **Implementación física**        | No incluida                                                                                         |
+| **Tarea anterior vigente**       | `AUTH-CTX-021` — APROBADA                                                                           |
+| **Tarea posterior reservada**    | `AUTH-CTX-023` — Incluir decisión final y razones                                                   |
+| **Contrato afectado**            | `AuthorizationDecision@1.0.0`                                                                       |
+| **Campos principales afectados** | `matched_denies`, `structural_denies`, `actor_wide_denies`, `lane_denies`, `blocked_reasons`        |
+| **Tipos principales afectados**  | `MatchedDeny`, `DecisionReason`                                                                     |
+| **Dataset administrable**        | `vento.authorization.individual-overrides@1.0.0`                                                    |
+| **Catálogo**                     | `vento.authorization@1.0.0`                                                                         |
+| **Cambio contractual**           | Aclaración normativa compatible; no cambia la forma publicada                                       |
+| **Cambios físicos permitidos**   | No                                                                                                  |
+
+Esta tarea define cómo Vento OS identifica, clasifica, conserva y serializa
+las denegaciones que realmente coinciden con una solicitud de autorización.
+
+La regla central es:
+
+```text
+DENEGACIÓN ALMACENADA
+≠
+DENEGACIÓN COINCIDENTE
+```
+
+```text
+DENEGACIÓN COINCIDENTE
+=
+CLASE CANÓNICA
+∩
+PERMISO EXACTO
+∩
+ACTOR COMPATIBLE
+∩
+CARRIL COMPATIBLE
+∩
+VIGENCIA ACTIVA
+∩
+ALCANCE COINCIDENTE
+∩
+TERRITORIO COINCIDENTE
+∩
+RECURSO COINCIDENTE
+```
+
+La precedencia canónica permanece:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW
+>
+DEFAULT_DENY
+```
+
+Una denegación coincidente:
+
+- no crea un permiso negativo por prefijo;
+- no bloquea permisos distintos;
+- no se expande a toda una aplicación;
+- no se transfiere entre trabajadores;
+- no se transfiere entre carriles;
+- no se transfiere entre territorios;
+- no desaparece porque exista un allow más específico;
+- no reemplaza la resolución del recurso;
+- no sustituye la auditoría;
+- no convierte la revocación del deny en un allow.
+
+No implementa SQL, RPC, RLS, funciones, migraciones, tablas, índices,
+interfaces, guards, caché ni cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir las denegaciones coincidentes de manera que Vento OS pueda responder
+inequívocamente:
+
+1. qué clases de resultado negativo existen;
+2. cuáles son estructurales;
+3. cuáles son administrables;
+4. cuáles son transversales al actor;
+5. cuáles pertenecen a un carril;
+6. cuándo existe `DEFAULT_DENY`;
+7. qué denegaciones se serializan como `MatchedDeny`;
+8. qué razones se serializan como `DecisionReason`;
+9. cómo se relacionan ambas representaciones;
+10. qué sujeto debe coincidir;
+11. qué permiso debe coincidir;
+12. qué carril debe coincidir;
+13. qué vigencia debe cumplirse;
+14. qué alcance debe coincidir;
+15. qué territorio debe coincidir;
+16. qué recurso debe coincidir;
+17. cómo se comparan origen y destino;
+18. cómo se tratan colecciones, agregados y lotes;
+19. cómo se preservan múltiples denies simultáneos;
+20. cómo se deduplican;
+21. cómo se relacionan con `matched_deny_ids`;
+22. cómo se preservan allows coincidentes;
+23. cómo se determina la precedencia;
+24. cómo se revoca una denegación;
+25. cómo se evita que la revocación conceda autoridad;
+26. cómo se conserva evidencia sin revelar información sensible;
+27. cómo se preservan determinismo, inmutabilidad y auditoría.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-022 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — Actor efectivo;
+- `AUTH-MOD-002` — Separación entre rol base y rol operativo;
+- `AUTH-MOD-007` y `AUTH-MOD-008` — Sede y área;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — Turno y check-in;
+- `AUTH-MOD-011` — Dispositivo compartido;
+- `AUTH-MOD-018` — Combinación de carriles;
+- `AUTH-MOD-019` — Denegación explícita;
+- `AUTH-CAT-001` a `AUTH-CAT-024` — Catálogo canónico;
+- `AUTH-RBAC-001` a `AUTH-RBAC-021` — Matrices y concesiones;
+- `AUTH-RBAC-022` — Denegaciones individuales y transversales;
+- `AUTH-RBAC-024` — Dataset canónico base;
+- `AUTH-RBAC-025` — Dataset canónico operativo;
+- `AUTH-RBAC-026` — Dataset canónico de excepciones y denegaciones;
+- `AUTH-RBAC-027` y `AUTH-RBAC-028` — Validaciones transversales;
+- `AUTH-CTX-001` a `AUTH-CTX-015` — `AccessContext`;
+- `AUTH-CTX-016` — Aplicación y permiso solicitados;
+- `AUTH-CTX-017` — Modalidad y prerrequisitos;
+- `AUTH-CTX-018` — Recurso y territorio resueltos;
+- `AUTH-CTX-019` — Carril base;
+- `AUTH-CTX-020` — Carril operativo;
+- `AUTH-CTX-021` — Allows coincidentes.
+
+Principios obligatorios:
+
+```text
+SIN ALLOW
+→ DEFAULT_DENY
+```
+
+```text
+DENY EXPLÍCITO
+≠
+AUSENCIA DE ALLOW
+```
+
+```text
+DENY APLICABLE
+>
+ALLOW APLICABLE
+```
+
+```text
+ALLOW MÁS ESPECÍFICO
+≠
+VENCER DENY
+```
+
+```text
+REVOCAR DENY
+≠
+CREAR ALLOW
+```
+
+```text
+DENY EN BASE
+≠
+DENY EN OPERACIÓN
+```
+
+```text
+DENY TRANSVERSAL
+=
+BLOQUEO DE TODOS LOS CARRILES COMPATIBLES
+PARA EL PERMISO EXACTO
+```
+
+---
+
+#### 3. Causas canónicas de resultado negativo
+
+Vento OS distinguirá:
+
+| Causa                               | Naturaleza                                             | Persistida como deny administrable |
+| ----------------------------------- | ------------------------------------------------------ | ---------------------------------: |
+| `STRUCTURAL_DENY`                   | Invalidez obligatoria del contrato, contexto o recurso |                                 No |
+| `ACTOR_WIDE_DENY`                   | Bloqueo individual transversal para el permiso exacto  |                                 Sí |
+| `BASE_LANE_DENY`                    | Bloqueo individual del carril base                     |                                 Sí |
+| `OPERATIONAL_LANE_DENY`             | Bloqueo individual del carril operativo                |                                 Sí |
+| `DEFAULT_DENY`                      | Ausencia de allow completo                             |                                 No |
+| Restricción o prerrequisito fallido | Decisión separada que puede bloquear                   |         No como deny administrable |
+
+No se mezclan estas causas.
+
+Cada una conserva su origen y semántica.
+
+---
+
+#### 4. Forma contractual de MatchedDeny
+
+```ts
+type MatchedDeny = {
+  deny_id: string;
+  deny_class:
+    | "STRUCTURAL"
+    | "ACTOR_WIDE"
+    | "BASE_LANE"
+    | "OPERATIONAL_LANE"
+    | "DEFAULT";
+
+  lane: "BASE" | "OPERATIONAL" | "ALL" | null;
+  permission_key: string;
+  source_kind: string;
+  matched_actor: boolean;
+  matched_resource: boolean;
+  matched_territory: boolean;
+  matched_validity: boolean;
+  reason_code: string;
+};
+```
+
+La colección se conserva como:
+
+```ts
+matched_denies: MatchedDeny[];
+```
+
+No se agregan, eliminan ni renombran campos.
+
+---
+
+#### 5. Forma contractual de DecisionReason
+
+```ts
+type DecisionReason = {
+  reason_code: string;
+  category: string;
+  severity: "BLOCKING" | "INFORMATIONAL";
+  lane: "BASE" | "OPERATIONAL" | "ALL" | null;
+  source: string;
+  safe_to_expose: boolean;
+};
+```
+
+Las colecciones se conservan como:
+
+```ts
+structural_denies: DecisionReason[];
+actor_wide_denies: DecisionReason[];
+lane_denies: DecisionReason[];
+blocked_reasons: DecisionReason[];
+```
+
+AUTH-CTX-023 consolidará el orden final y la razón primaria.
+
+---
+
+#### 6. Invariantes de MatchedDeny
+
+Todo objeto serializado en `matched_denies` deberá cumplir:
+
+```text
+matched_actor = true
+matched_resource = true
+matched_territory = true
+matched_validity = true
+```
+
+Estos booleanos significan:
+
+- coincidencia completa; o
+- dimensión declarada explícitamente como no aplicable por el contrato.
+
+No se serializan candidatos parciales.
+
+Queda prohibido incluir:
+
+```ts
+{
+  matched_actor: true,
+  matched_resource: false,
+  matched_territory: true,
+  matched_validity: true
+}
+```
+
+como una denegación coincidente.
+
+---
+
+#### 7. Candidato frente a denegación coincidente
+
+Podrán existir candidatos descartados, por ejemplo:
+
+- deny de otro empleado;
+- deny de otra clave;
+- deny de otro carril;
+- deny futuro;
+- deny expirado;
+- deny revocado;
+- deny fuera del territorio;
+- deny fuera del recurso;
+- deny legacy sin equivalencia;
+- deny con scope inválido.
+
+Estos candidatos:
+
+- no aparecen en `matched_denies`;
+- no aparecen en `matched_deny_ids`;
+- no bloquean la decisión;
+- pueden producir diagnóstico administrativo;
+- no se exponen al cliente.
+
+---
+
+#### 8. Secuencia canónica de resolución
+
+La resolución deberá seguir, conceptualmente:
+
+```text
+1. permiso canónico exacto
+2. modalidad y carriles aplicables
+3. structural conditions
+4. snapshot del dataset de overrides
+5. candidatos por employee_id y permission_key
+6. clase de deny
+7. carril
+8. vigencia
+9. alcance
+10. territorio
+11. recurso
+12. inclusión como MatchedDeny
+13. creación de DecisionReason
+14. deduplicación y orden
+15. proyección de matched_deny_ids
+```
+
+Cada etapa reduce candidatos.
+
+Ninguna etapa amplía el bloqueo.
+
+---
+
+#### 9. Permiso exacto obligatorio
+
+Toda denegación administrable deberá cumplir:
+
+```text
+deny.permission_key
+=
+AuthorizationDecision.request.permission_key
+```
+
+No se admiten:
+
+- prefijos;
+- wildcards;
+- aplicaciones completas;
+- módulos;
+- permisos padres;
+- permisos hijos;
+- claves similares;
+- rutas;
+- nombres humanos;
+- aliases no adaptados;
+- patrones regulares.
+
+Un deny para `nexo.inventory.remissions.prepare` no bloquea
+`nexo.inventory.remissions.receive`.
+
+---
+
+#### 10. Denegaciones por aplicación o módulo
+
+Queda prohibido crear administrativamente:
+
+```text
+nexo.*
+fogo.production.*
+*.manage
+```
+
+Si Vento requiere bloquear varias capacidades:
+
+- cada permiso exacto deberá denegarse; o
+- deberá existir una suspensión estructural del actor mediante el mecanismo
+  empresarial correspondiente.
+
+La denegación no se convierte en un sistema paralelo de roles negativos.
+
+---
+
+#### 11. Actor exacto
+
+Las denegaciones administrables de AUTH-RBAC-022 pertenecen a un trabajador
+humano exacto.
+
+La coincidencia exige:
+
+```text
+deny.employee_id
+=
+AccessContext.domain_identity.employee_id
+=
+effective_actor.employee_id
+```
+
+No coincide por:
+
+- correo;
+- documento;
+- nombre;
+- rol;
+- cargo;
+- dispositivo;
+- turno;
+- sesión técnica;
+- sede;
+- semejanza.
+
+---
+
+#### 12. Empleado activo y trazabilidad histórica
+
+Una denegación puede conservarse históricamente aunque el empleado esté
+inactivo.
+
+Sin embargo, el empleado inactivo ya produce bloqueo estructural laboral.
+
+Reglas:
+
+- no se elimina automáticamente el deny;
+- no se usa el deny para justificar la inactividad;
+- no se reactiva al empleado al revocar el deny;
+- la auditoría conserva ambos hechos por separado.
+
+---
+
+#### 13. STRUCTURAL_DENY
+
+Un `STRUCTURAL_DENY` procede de una condición obligatoria inválida.
+
+Ejemplos:
+
+- principal ausente;
+- actor no resoluble;
+- identidad ambigua;
+- empleado inactivo;
+- aplicación inexistente;
+- permiso inexistente;
+- contrato incompatible;
+- contexto obsoleto;
+- recurso no resoluble;
+- territorio contradictorio;
+- turno ambiguo;
+- rol inválido;
+- dataset incompatible;
+- colisión de IDs;
+- evaluación incompleta.
+
+No es una excepción administrable.
+
+No se crea desde VISO como una fila de deny.
+
+---
+
+#### 14. Structural deny administrable prohibido
+
+Queda prohibido almacenar en el dataset:
+
+```text
+deny_class = STRUCTURAL
+```
+
+como una decisión discrecional de usuario.
+
+El dataset `individual-overrides@1.0.0` contiene únicamente:
+
+- actor-wide denies;
+- base lane denies;
+- operational lane denies;
+- grants individuales.
+
+Una condición estructural procede del evaluador y de sus fuentes
+autoritativas.
+
+---
+
+#### 15. Representación structural en MatchedDeny
+
+Un structural deny podrá aparecer en `matched_denies` únicamente cuando:
+
+- existe una `permission_key` canónica;
+- la condición estructural es determinista;
+- el evaluador produce un `deny_id` sintético y trazable;
+- todas las dimensiones aplicables se consideran coincidentes;
+- se crea además su `DecisionReason`.
+
+Formato conceptual del ID sintético:
+
+```text
+structural:<reason_code>:<evidence_fingerprint>
+```
+
+Este ID:
+
+- no corresponde a una fila administrable;
+- no se incluye en `LaneDecision.matched_deny_ids`;
+- no puede revocarse;
+- no puede editarse desde VISO;
+- solo identifica evidencia dentro de la decisión y auditoría.
+
+Si no existe una clave canónica resoluble, la condición se registra solo en
+`structural_denies` y `blocked_reasons`, no como `MatchedDeny`.
+
+---
+
+#### 16. Lane de structural deny
+
+Un structural deny podrá utilizar:
+
+| Alcance estructural                                | `lane`        |
+| -------------------------------------------------- | ------------- |
+| Bloquea toda evaluación                            | `ALL`         |
+| Bloquea únicamente base                            | `BASE`        |
+| Bloquea únicamente operación                       | `OPERATIONAL` |
+| Ocurre antes de resolver carriles o no aplica lane | `null`        |
+
+Ejemplos:
+
+```text
+EMPLOYEE_ACTOR_MISMATCH
+→ ALL
+```
+
+```text
+BASE_ROLE_AMBIGUOUS
+→ BASE
+```
+
+```text
+SHIFT_OVERLAP
+→ OPERATIONAL
+```
+
+```text
+PERMISSION_NOT_FOUND
+→ null
+```
+
+---
+
+#### 17. ACTOR_WIDE_DENY
+
+Un `ACTOR_WIDE_DENY` es una denegación individual transversal para:
+
+```text
+empleado exacto
++
+permission_key exacta
++
+alcance exacto
++
+vigencia exacta
+```
+
+Bloquea todos los carriles compatibles con la modalidad.
+
+No bloquea:
+
+- otros permisos;
+- otros trabajadores;
+- recursos fuera de su alcance;
+- periodos fuera de su vigencia;
+- actores no laborales.
+
+---
+
+#### 18. Lane de actor-wide deny
+
+Todo actor-wide deny coincidente utiliza:
+
+```text
+deny_class = ACTOR_WIDE
+lane = ALL
+```
+
+`ALL` significa:
+
+```text
+todos los carriles aplicables al permiso solicitado
+```
+
+No significa:
+
+- todas las aplicaciones;
+- todos los permisos;
+- todos los recursos;
+- todos los actores;
+- todos los contextos futuros fuera de vigencia.
+
+---
+
+#### 19. Efecto por modalidad de actor-wide deny
+
+| Modalidad              | Efecto                   |
+| ---------------------- | ------------------------ |
+| `BASE_ONLY`            | Bloquea base             |
+| `OPERATIONAL_ONLY`     | Bloquea operación        |
+| `BASE_OR_OPERATIONAL`  | Bloquea base y operación |
+| `BASE_AND_OPERATIONAL` | Bloquea base y operación |
+
+En todos los casos aplicables:
+
+```text
+final_decision será DENY
+```
+
+La consolidación formal corresponde a `AUTH-CTX-023`.
+
+---
+
+#### 20. BASE_LANE_DENY
+
+Un `BASE_LANE_DENY` bloquea únicamente el carril base.
+
+Debe cumplir:
+
+```text
+deny_class = BASE_LANE
+lane = BASE
+```
+
+No bloquea el carril operativo.
+
+No elimina grants operativos.
+
+No cambia la modalidad del permiso.
+
+---
+
+#### 21. Efecto de BASE_LANE_DENY por modalidad
+
+| Modalidad              | Resultado conceptual                      |
+| ---------------------- | ----------------------------------------- |
+| `BASE_ONLY`            | Decisión final bloqueada                  |
+| `OPERATIONAL_ONLY`     | Deny incompatible; no coincide            |
+| `BASE_OR_OPERATIONAL`  | Base bloqueado; operación puede autorizar |
+| `BASE_AND_OPERATIONAL` | Decisión final bloqueada                  |
+
+Una fila base para un permiso `OPERATIONAL_ONLY` es una incompatibilidad de
+configuración y no un deny coincidente.
+
+---
+
+#### 22. OPERATIONAL_LANE_DENY
+
+Un `OPERATIONAL_LANE_DENY` bloquea únicamente el carril operativo.
+
+Debe cumplir:
+
+```text
+deny_class = OPERATIONAL_LANE
+lane = OPERATIONAL
+```
+
+No bloquea el carril base.
+
+No elimina grants base.
+
+No cambia los prerrequisitos.
+
+---
+
+#### 23. Efecto de OPERATIONAL_LANE_DENY por modalidad
+
+| Modalidad              | Resultado conceptual                      |
+| ---------------------- | ----------------------------------------- |
+| `BASE_ONLY`            | Deny incompatible; no coincide            |
+| `OPERATIONAL_ONLY`     | Decisión final bloqueada                  |
+| `BASE_OR_OPERATIONAL`  | Operación bloqueada; base puede autorizar |
+| `BASE_AND_OPERATIONAL` | Decisión final bloqueada                  |
+
+Una fila operativa para un permiso `BASE_ONLY` es una incompatibilidad
+contractual.
+
+---
+
+#### 24. DEFAULT_DENY
+
+`DEFAULT_DENY` ocurre cuando:
+
+- el carril es aplicable;
+- el contexto requerido es evaluable;
+- no existe una denegación explícita que explique el resultado;
+- no existe un allow completo.
+
+Regla:
+
+```text
+SIN ALLOW COMPLETO
+→ DEFAULT_DENY
+```
+
+No requiere una fila almacenada.
+
+No es una sanción.
+
+No es una excepción individual.
+
+---
+
+#### 25. Default deny no administrable
+
+Queda prohibido insertar:
+
+```text
+deny_class = DEFAULT
+```
+
+en el dataset de overrides.
+
+`DEFAULT_DENY` es una política del evaluador.
+
+Revocar un `DEFAULT_DENY` solo es posible creando una concesión válida,
+corrigiendo el contexto o corrigiendo el contrato correspondiente.
+
+---
+
+#### 26. Representación default en MatchedDeny
+
+Cuando `DEFAULT_DENY` deba conservarse dentro de `matched_denies`, el
+evaluador podrá producir un ID sintético determinista:
+
+```text
+default:<lane>:<permission_key>:<decision_fingerprint>
+```
+
+Reglas:
+
+- no corresponde a una fila administrable;
+- no se incluye en `LaneDecision.matched_deny_ids`;
+- no puede editarse;
+- no puede revocarse;
+- no sustituye `DecisionReason`;
+- se utiliza únicamente para evidencia estructurada.
+
+Si la implementación decide no proyectarlo como `MatchedDeny`, deberá
+conservarlo obligatoriamente como `DecisionReason` en `blocked_reasons`.
+
+`AUTH-CTX-026` congelará una de las dos representaciones físicas sin cambiar
+la semántica.
+
+---
+
+#### 27. Context deny y prerrequisitos
+
+Las fallas de:
+
+- turno;
+- check-in;
+- área;
+- dispositivo;
+- sensibilidad;
+- dependencia;
+- campos;
+- concurrencia;
+
+se representan mediante sus decisiones y `DecisionReason`.
+
+No se materializan como denegaciones individuales.
+
+Podrán clasificarse como structural o prerequisite blocking según su origen.
+
+`AUTH-CTX-023` consolidará la categoría final.
+
+---
+
+#### 28. Dataset administrable
+
+Las denegaciones administrables proceden de:
+
+```text
+vento.authorization.individual-overrides@1.0.0
+```
+
+El dataset inicial aprobado contiene:
+
+```text
+0 denegaciones base confirmadas
+0 denegaciones operativas confirmadas
+0 bloqueos transversales confirmados
+```
+
+Hash del seed inicial:
+
+```text
+sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10
+```
+
+El seed vacío es intencional.
+
+No significa que el contrato esté incompleto.
+
+---
+
+#### 29. Dataset vacío y evaluación real
+
+Con cero denies administrables:
+
+- structural denies continúan aplicando;
+- prerequisite failures continúan aplicando;
+- resource failures continúan aplicando;
+- device restrictions continúan aplicando;
+- default deny continúa aplicando;
+- allows no se convierten en bypass.
+
+La ausencia de filas solo significa:
+
+```text
+no existe deny individual administrable confirmado
+```
+
+---
+
+#### 30. source_kind de MatchedDeny
+
+Valores normativos iniciales de `source_kind`:
+
+| `deny_class`       | `source_kind`                 |
+| ------------------ | ----------------------------- |
+| `STRUCTURAL`       | `STRUCTURAL_RULE`             |
+| `ACTOR_WIDE`       | `INDIVIDUAL_ACTOR_WIDE_DENY`  |
+| `BASE_LANE`        | `INDIVIDUAL_BASE_DENY`        |
+| `OPERATIONAL_LANE` | `INDIVIDUAL_OPERATIONAL_DENY` |
+| `DEFAULT`          | `DEFAULT_POLICY`              |
+
+No se utilizará como `source_kind`:
+
+- nombre de tabla;
+- ruta;
+- componente;
+- pantalla;
+- rol;
+- dispositivo;
+- texto humano libre.
+
+---
+
+#### 31. Identidad de deny_id
+
+Para denies administrables, `deny_id` deberá ser:
+
+- estable;
+- no vacío;
+- resoluble;
+- inmutable;
+- único dentro del dataset;
+- trazable a la aprobación correspondiente.
+
+No podrá ser:
+
+- índice de arreglo;
+- posición de fila;
+- nombre humano;
+- permiso;
+- employee_id;
+- hash temporal no estable;
+- ID generado por frontend.
+
+---
+
+#### 32. Unicidad global
+
+Dentro de una decisión:
+
+```text
+deny_id
+→ una única evidencia de deny
+```
+
+Si dos filas distintas comparten `deny_id`:
+
+```text
+DENY_ID_COLLISION
+→ structural deny
+→ fail closed
+```
+
+No se elegirá:
+
+- la primera;
+- la más nueva;
+- la más específica;
+- la transversal;
+- la de carril.
+
+---
+
+#### 33. permission_key en structural deny
+
+Cuando un structural deny ocurre después de resolver el permiso:
+
+```text
+permission_key = clave canónica solicitada
+```
+
+Cuando ocurre antes de resolver una clave válida:
+
+- no se inventa una clave;
+- no se usa la cadena desconocida como clave canónica;
+- no se crea `MatchedDeny`;
+- se registra `DecisionReason`.
+
+Esto evita violar el contrato de `MatchedDeny`.
+
+---
+
+#### 34. reason_code
+
+Todo `MatchedDeny` deberá contener un `reason_code` canónico.
+
+El código:
+
+- identifica la causa;
+- no contiene PII;
+- no contiene texto libre;
+- no contiene nombres;
+- no contiene secretos;
+- no sustituye la evidencia;
+- no sustituye el mensaje seguro de UI.
+
+La prioridad de razones se definirá en `AUTH-CTX-023`.
+
+---
+
+#### 35. Motivo humano administrable
+
+Una denegación administrable podrá conservar internamente:
+
+- motivo;
+- evidencia aprobatoria;
+- persona aprobadora;
+- vigencia;
+- referencia administrativa.
+
+Estos datos no forman parte de `MatchedDeny@1.0.0`.
+
+Se conservarán en la fuente y en auditoría autorizada.
+
+No deberán exponerse al cliente ordinario.
+
+---
+
+#### 36. Vigencia
+
+Una denegación administrable coincide únicamente cuando está activa en:
+
+```text
+AuthorizationDecision.decided_at
+```
+
+Regla de inicio:
+
+```text
+starts_at <= decided_at
+```
+
+Regla de fin cuando existe:
+
+```text
+decided_at < ends_at
+```
+
+Una denegación:
+
+- futura;
+- expirada;
+- revocada;
+- suspendida;
+- reemplazada;
+
+no coincide.
+
+---
+
+#### 37. matched_validity
+
+`matched_validity = true` exige:
+
+- estado activo;
+- periodo vigente;
+- dataset compatible;
+- revisión válida;
+- no revocada;
+- no reemplazada;
+- sujeto todavía identificable.
+
+No basta con:
+
+```text
+is_active = true
+```
+
+si la fecha o versión no coincide.
+
+---
+
+#### 38. Revocación
+
+Revocar una denegación significa:
+
+```text
+la denegación deja de coincidir
+```
+
+No significa:
+
+```text
+crear allow
+```
+
+Después de revocar:
+
+1. se reevalúa el permiso;
+2. se buscan allows;
+3. se aplican otros denies;
+4. se aplican prerrequisitos;
+5. se aplica default deny si no existe allow.
+
+---
+
+#### 39. Revocación retroactiva prohibida
+
+La revocación actual no modifica una decisión histórica.
+
+Una decisión emitida conserva:
+
+- denies que coincidieron;
+- vigencia evaluada;
+- razón;
+- snapshot;
+- resultado.
+
+La nueva realidad produce una nueva decisión.
+
+---
+
+#### 40. Alcance de la denegación
+
+Una denegación administrable deberá declarar un alcance compatible con el
+permiso.
+
+Podrá utilizar:
+
+- alcance global ordinario;
+- organización;
+- sedes;
+- sede específica;
+- tipo de sede;
+- áreas;
+- área específica;
+- tipo de área;
+- propiedad;
+- contexto operativo;
+- perfil compuesto canónico.
+
+No podrá utilizar texto libre como regla de autorización.
+
+---
+
+#### 41. Deny sin alcance
+
+Un deny sin scope explícito no se interpretará automáticamente como global.
+
+El contrato físico deberá distinguir entre:
+
+```text
+scope global explícito
+```
+
+y:
+
+```text
+scope ausente o inválido
+```
+
+Un scope ausente produce configuración inválida y fail closed de forma
+controlada.
+
+No se ampliará silenciosamente el bloqueo.
+
+---
+
+#### 42. matched_territory
+
+`matched_territory = true` significa que la denegación cubre todas las
+dimensiones territoriales exigidas.
+
+Puede incluir:
+
+- organización;
+- sede;
+- área;
+- tipo de sede;
+- tipo de área;
+- origen;
+- destino;
+- ruta;
+- vehículo;
+- entorno aislado;
+- lados obligatorios.
+
+Una coincidencia parcial no es deny coincidente.
+
+---
+
+#### 43. Denegación no territorial
+
+Para un permiso contractualmente no territorial:
+
+```text
+matched_territory = true
+```
+
+solo cuando:
+
+- el permiso admite scope no territorial;
+- el deny declara ese alcance;
+- no se está omitiendo una dimensión obligatoria.
+
+Una lista vacía no demuestra no territorialidad.
+
+---
+
+#### 44. matched_resource
+
+`matched_resource = true` exige que la denegación coincida con:
+
+- tipo de recurso;
+- recurso exacto o conjunto permitido;
+- relación empresarial;
+- propiedad cuando aplica;
+- custodia cuando aplica;
+- estado cuando forma parte del scope;
+- transición;
+- lados obligatorios;
+- forma de solicitud.
+
+No basta con que la sede coincida.
+
+---
+
+#### 45. Deny por propiedad
+
+Una denegación `OWN` podrá bloquear únicamente recursos cuya relación de
+propiedad o atribución coincida con el contrato.
+
+No se utiliza universalmente:
+
+```text
+created_by = employee_id
+```
+
+La propiedad no elimina la comprobación territorial.
+
+---
+
+#### 46. Estado del recurso
+
+Una denegación puede estar limitada a un estado cuando su contrato lo
+permite.
+
+Ejemplo:
+
+```text
+bloquear cancelación
+solo para remisiones en tránsito
+```
+
+La coincidencia exige el estado exacto.
+
+Un deny sin condición de estado no deberá inventarla.
+
+---
+
+#### 47. Lados obligatorios
+
+Cuando el recurso tiene varios lados, la denegación deberá declarar qué lado
+cubre.
+
+Ejemplo:
+
+```text
+deny de recepción en VENTO_CAFE
+```
+
+no bloquea automáticamente:
+
+```text
+preparación en CENTRO_PRODUCCION
+```
+
+La coincidencia con destino no implica coincidencia con origen.
+
+---
+
+#### 48. Recursos multiterritoriales
+
+Para un recurso con varios territorios:
+
+- la denegación puede cubrir un lado;
+- puede cubrir varios lados;
+- puede ser transversal si el contrato lo permite;
+- no se amplía por inferencia.
+
+La decisión final utilizará la relación entre:
+
+- acción;
+- permiso;
+- lado requerido;
+- deny coincidente.
+
+---
+
+#### 49. Colecciones
+
+Para `COLLECTION`, una denegación puede:
+
+- excluir miembros coincidentes en lecturas parciales cuando el contrato lo
+  permita;
+- bloquear la colección completa si la operación exige `ALL_OR_NOTHING`;
+- generar resultados por miembro si el contrato admite parcialidad.
+
+No se recuperan miembros denegados para filtrarlos únicamente en frontend.
+
+---
+
+#### 50. Agregados
+
+Un deny aplicable impide que los datos correspondientes contribuyan al
+agregado.
+
+Reglas:
+
+- no se incluyen valores denegados;
+- no se revelan por diferencias;
+- no se muestran conteos que permitan inferencia;
+- un deny local no bloquea territorios no coincidentes;
+- un actor-wide deny transversal sí bloquea la capacidad exacta completa.
+
+---
+
+#### 51. Operaciones masivas
+
+Para `BULK`:
+
+| Política               | Efecto de un deny en un miembro                   |
+| ---------------------- | ------------------------------------------------- |
+| `ALL_OR_NOTHING`       | Bloquea la operación completa                     |
+| `PARTIAL_WITH_RESULTS` | Bloquea ese miembro y conserva resultado separado |
+
+La política procede del contrato.
+
+No se elige la alternativa más permisiva.
+
+---
+
+#### 52. Campos protegidos
+
+Una política de campos no se convierte automáticamente en `MatchedDeny`.
+
+Los campos bloqueados se representan en:
+
+```text
+field_policy_decision
+```
+
+Cuando el bloqueo de campo invalida la operación completa:
+
+- se crea `DecisionReason`;
+- `AUTH-CTX-023` produce `DENY`;
+- no se crea un deny individual administrable.
+
+---
+
+#### 53. Dispositivo compartido
+
+Una restricción de dispositivo no se convierte en actor-wide deny ni lane
+deny.
+
+Se representa en:
+
+```text
+device_decision
+```
+
+El dispositivo:
+
+- no es sujeto de un deny individual laboral;
+- no transfiere denies;
+- no elimina denies;
+- no reduce la vigencia;
+- no modifica el alcance.
+
+Una sesión de actor inválida puede producir structural deny.
+
+---
+
+#### 54. Sensibilidad y reautenticación
+
+Una exigencia de reautenticación fallida no es un deny individual.
+
+Se registra en:
+
+```text
+sensitivity_decision
+```
+
+Puede bloquear la decisión final sin alterar:
+
+- grants coincidentes;
+- denies administrables;
+- matrices;
+- contexto laboral.
+
+---
+
+#### 55. Dependencias
+
+Una dependencia denegada produce su propia decisión.
+
+No se copia su `MatchedDeny` dentro de la colección del permiso principal.
+
+El permiso principal recibe una razón de dependencia fallida.
+
+Esto evita mezclar:
+
+```text
+deny de dependencia
+con
+deny del permiso principal
+```
+
+---
+
+#### 56. Deny y allows coincidentes
+
+Un deny aplicable no elimina los allows que coincidieron.
+
+Ejemplo:
+
+```text
+matched_allows = [grant_A, grant_B]
+matched_denies = [deny_X]
+```
+
+Resultado posterior:
+
+```text
+DENY
+```
+
+La evidencia positiva permanece para explicar:
+
+```text
+existía autoridad concedida
+pero fue bloqueada
+```
+
+---
+
+#### 57. Specificity no altera precedencia
+
+La especificidad determina si un deny coincide.
+
+No determina si puede ser vencido.
+
+Queda prohibido:
+
+```text
+allow de área
+>
+deny de sede
+```
+
+si ambos coinciden con el recurso.
+
+Una vez coincidente:
+
+```text
+DENY
+>
+ALLOW
+```
+
+---
+
+#### 58. Múltiples denegaciones coincidentes
+
+Pueden coincidir simultáneamente:
+
+- structural deny;
+- actor-wide deny;
+- base lane deny;
+- operational lane deny;
+- default deny en otro carril;
+- restricciones separadas.
+
+Todas las razones relevantes se conservan.
+
+No se elige únicamente la “más fuerte” para borrar las demás.
+
+AUTH-CTX-023 elegirá una razón primaria.
+
+---
+
+#### 59. Actor-wide y lane deny simultáneos
+
+Si coinciden:
+
+```text
+ACTOR_WIDE_DENY
++
+LANE_DENY
+```
+
+se conservan ambos.
+
+La precedencia determina que actor-wide es la categoría primaria superior.
+
+El lane deny continúa siendo evidencia válida.
+
+---
+
+#### 60. Structural y actor-wide simultáneos
+
+Si el contexto permite identificar el actor y el deny antes de detectar una
+invalidez posterior, podrán conservarse ambas evidencias.
+
+Si la invalidez estructural impide resolver de forma confiable:
+
+- actor;
+- permiso;
+- recurso;
+
+no se buscarán denies administrables con datos ambiguos.
+
+Fail closed no significa inventar coincidencias.
+
+---
+
+#### 61. Default deny y explicit deny
+
+Cuando existe un explicit deny aplicable, no se utiliza `DEFAULT_DENY` como
+explicación principal del mismo carril.
+
+Regla:
+
+```text
+EXPLICIT DENY
+→ causa suficiente
+```
+
+`DEFAULT_DENY` se reserva para ausencia de allow sin explicit deny
+coincidente.
+
+---
+
+#### 62. Relación con matched_deny_ids
+
+La consistencia obligatoria es:
+
+```text
+base_decision.matched_deny_ids
+=
+deny_id administrables de matched_denies
+donde lane = BASE o lane = ALL
+y que bloquean base
+```
+
+```text
+operational_decision.matched_deny_ids
+=
+deny_id administrables de matched_denies
+donde lane = OPERATIONAL o lane = ALL
+y que bloquean operación
+```
+
+No se incluyen:
+
+- IDs sintéticos structural;
+- IDs sintéticos default;
+- `DecisionReason`;
+- restricciones de dispositivo;
+- fallas de campos;
+- fallas de sensibilidad.
+
+---
+
+#### 63. Outcome de carril con lane deny
+
+Cuando un lane deny coincide con un carril aplicable:
+
+```text
+lane.outcome = DENY
+```
+
+aunque existan allows completos.
+
+El carril no aplicable permanece:
+
+```text
+NOT_APPLICABLE
+```
+
+No se convierte a `DENY` por una fila incompatible.
+
+---
+
+#### 64. Outcome con actor-wide deny
+
+Cuando coincide un actor-wide deny:
+
+- cada carril compatible evaluado produce bloqueo;
+- los allows se conservan;
+- los matched deny IDs se proyectan en los carriles compatibles;
+- la decisión final será `DENY`.
+
+La composición definitiva corresponde a `AUTH-CTX-023`.
+
+---
+
+#### 65. blocked_reasons
+
+`blocked_reasons` será la colección consolidada de razones bloqueantes.
+
+AUTH-CTX-022 aporta:
+
+- razones estructurales;
+- razones de actor-wide deny;
+- razones de lane deny;
+- razón de default deny cuando corresponda.
+
+AUTH-CTX-023 agregará y ordenará:
+
+- prerrequisitos;
+- recurso;
+- dispositivo;
+- sensibilidad;
+- campos;
+- dependencias;
+- concurrencia;
+- combinación.
+
+---
+
+#### 66. structural_denies
+
+`structural_denies` contiene exclusivamente razones de categoría estructural
+bloqueante.
+
+Todo elemento deberá declarar:
+
+```text
+severity = BLOCKING
+```
+
+No contiene:
+
+- actor-wide denies administrables;
+- lane denies administrables;
+- default deny;
+- advertencias meramente informativas.
+
+---
+
+#### 67. actor_wide_denies
+
+`actor_wide_denies` contiene un `DecisionReason` por cada actor-wide deny
+coincidente.
+
+Reglas:
+
+- `lane = ALL`;
+- `severity = BLOCKING`;
+- `source` identifica la fuente canónica sin revelar secretos;
+- `safe_to_expose` depende del catálogo de mensajes;
+- no se agregan denies descartados.
+
+---
+
+#### 68. lane_denies
+
+`lane_denies` contiene razones de:
+
+- `BASE_LANE_DENY`;
+- `OPERATIONAL_LANE_DENY`.
+
+Cada razón conserva:
+
+- lane exacta;
+- código;
+- severidad;
+- fuente;
+- política de exposición.
+
+No se fusionan ambos carriles en una sola razón.
+
+---
+
+#### 69. Reason codes iniciales
+
+Códigos iniciales reservados:
+
+```text
+STRUCTURAL_AUTHENTICATION_INVALID
+STRUCTURAL_ACTOR_UNRESOLVED
+STRUCTURAL_ACTOR_AMBIGUOUS
+STRUCTURAL_EMPLOYEE_INACTIVE
+STRUCTURAL_APPLICATION_INVALID
+STRUCTURAL_PERMISSION_INVALID
+STRUCTURAL_CONTRACT_INVALID
+STRUCTURAL_CONTEXT_STALE
+STRUCTURAL_RESOURCE_UNRESOLVED
+STRUCTURAL_RESOURCE_CONFLICT
+STRUCTURAL_TERRITORY_CONFLICT
+STRUCTURAL_DATASET_VERSION_MISMATCH
+STRUCTURAL_DENY_ID_COLLISION
+ACTOR_WIDE_DENY_MATCHED
+BASE_LANE_DENY_MATCHED
+OPERATIONAL_LANE_DENY_MATCHED
+DEFAULT_DENY_NO_MATCHING_ALLOW
+DENY_CONFIGURATION_INVALID
+DENY_PERMISSION_MISMATCH
+DENY_ACTOR_MISMATCH
+DENY_LANE_MISMATCH
+DENY_SCOPE_MISMATCH
+DENY_TERRITORY_MISMATCH
+DENY_RESOURCE_MISMATCH
+DENY_NOT_YET_ACTIVE
+DENY_EXPIRED
+DENY_REVOKED
+```
+
+AUTH-CTX-023 congelará prioridad y razón primaria.
+
+BLOQUE S definirá mensajes de UI.
+
+---
+
+#### 70. Proyección segura al cliente
+
+La proyección cliente ordinaria no deberá revelar:
+
+- `deny_id`;
+- motivo disciplinario;
+- aprobador;
+- evidencia interna;
+- alcance completo;
+- vigencia exacta;
+- estructura de matrices;
+- existencia de otros grants;
+- detalles de seguridad.
+
+Podrá exponer únicamente:
+
+- código seguro;
+- mensaje permitido;
+- acción de recuperación;
+- contacto o flujo autorizado;
+- carácter temporal cuando sea seguro.
+
+---
+
+#### 71. VISO y administración
+
+La futura interfaz administrativa deberá diferenciar:
+
+```text
+● Bloquear en todos los carriles
+○ Bloquear solo carril base
+○ Bloquear solo carril operativo
+```
+
+Y deberá exigir:
+
+- trabajador exacto;
+- permiso exacto;
+- alcance;
+- vigencia;
+- motivo;
+- aprobación;
+- vista previa del efecto;
+- confirmación;
+- auditoría.
+
+La interfaz no se implementa en esta tarea.
+
+Su diseño físico corresponde a los roadmaps funcionales y paquetes
+posteriores.
+
+---
+
+#### 72. Simulación
+
+La simulación podrá mostrar:
+
+- qué denegaciones coincidirían;
+- qué carriles bloquearían;
+- qué allows quedarían neutralizados;
+- cuál sería el resultado hipotético.
+
+No podrá:
+
+- crear denies;
+- revocar denies;
+- modificar vigencia;
+- ejecutar autoridad;
+- revelar motivos sensibles a actores no autorizados.
+
+Los resultados simulados no se registran como decisiones reales de
+ejecución.
+
+---
+
+#### 73. Procesos SYSTEM
+
+Las denegaciones individuales definidas aquí pertenecen a trabajadores.
+
+Un proceso `SYSTEM` autónomo no se proyecta como empleado para consumir:
+
+- actor-wide deny;
+- base lane deny;
+- operational lane deny.
+
+Las restricciones de procesos de sistema deberán diseñarse en
+`AUTH-CTX-026`.
+
+Si requieren una nueva clase contractual, deberá versionarse el contrato.
+
+---
+
+#### 74. Compatibilidad legacy
+
+Las filas legacy con `is_allowed = false` no se aceptan automáticamente.
+
+AUTH-CTX-028 deberá:
+
+- identificar sujeto;
+- resolver permiso canónico;
+- clasificar carril;
+- resolver alcance;
+- resolver vigencia;
+- eliminar duplicados;
+- verificar motivo;
+- detectar aliases;
+- impedir expansión uno-a-muchos;
+- producir IDs estables;
+- someter el resultado a revisión humana.
+
+Cero expansión automática.
+
+---
+
+#### 75. Casos de ejemplo
+
+##### Caso A — Actor-wide deny
+
+```text
+empleado exacto
+permission_key exacta
+deny_class = ACTOR_WIDE
+scope coincide
+vigencia activa
+```
+
+Resultado:
+
+```text
+MatchedDeny ACTOR_WIDE
+lane = ALL
+```
+
+##### Caso B — Deny de otro trabajador
+
+```text
+deny.employee_id != actor.employee_id
+```
+
+Resultado:
+
+```text
+no MatchedDeny
+```
+
+##### Caso C — Base lane deny en BASE_OR_OPERATIONAL
+
+```text
+base deny coincide
+operational allow coincide
+```
+
+Resultado conceptual:
+
+```text
+base = DENY
+operational = ALLOW
+final puede ser ALLOW
+```
+
+##### Caso D — Operational lane deny en BASE_AND_OPERATIONAL
+
+```text
+base allow
+operational deny
+```
+
+Resultado:
+
+```text
+final DENY
+```
+
+##### Caso E — Allow más específico
+
+```text
+deny de sede coincide
+allow de área coincide
+```
+
+Resultado:
+
+```text
+DENY prevalece
+```
+
+##### Caso F — Deny expirado
+
+```text
+ends_at <= decided_at
+```
+
+Resultado:
+
+```text
+no MatchedDeny
+```
+
+##### Caso G — Revocar deny
+
+```text
+deny revocado
+sin allow aplicable
+```
+
+Resultado:
+
+```text
+DEFAULT_DENY
+```
+
+##### Caso H — Structural deny de actor
+
+```text
+EMPLOYEE_ACTOR_MISMATCH
+```
+
+Resultado:
+
+```text
+structural_denies incluye razón
+lane = ALL
+```
+
+##### Caso I — Default deny
+
+```text
+contexto válido
+sin explicit deny
+sin allow
+```
+
+Resultado:
+
+```text
+DEFAULT_DENY
+```
+
+##### Caso J — Recurso fuera del scope del deny
+
+```text
+deny = VENTO_CAFE
+resource = SAUDO
+```
+
+Resultado:
+
+```text
+no MatchedDeny
+```
+
+##### Caso K — Remisión con lado distinto
+
+```text
+deny cubre destination
+acción exige origin
+```
+
+Resultado:
+
+```text
+no coincidencia salvo contrato explícito
+```
+
+##### Caso L — Dos denies coincidentes
+
+```text
+actor-wide deny
+base lane deny
+```
+
+Resultado:
+
+```text
+ambos se conservan
+actor-wide tiene mayor precedencia
+```
+
+##### Caso M — Dispositivo bloquea
+
+```text
+sin deny individual
+device_decision = FAIL
+```
+
+Resultado:
+
+```text
+no MatchedDeny administrable
+blocked_reason de dispositivo
+```
+
+##### Caso N — Deny legacy one-to-many
+
+```text
+legacy_permission amplio
+→ tres permisos canónicos
+```
+
+Resultado:
+
+```text
+no expansión automática
+revisión humana
+```
+
+##### Caso O — Permission key inválida
+
+```text
+permission no canónica
+```
+
+Resultado:
+
+```text
+DecisionReason estructural
+no MatchedDeny con clave inventada
+```
+
+---
+
+#### 76. Antipatrones prohibidos
+
+```ts
+if (deny.permission_key.startsWith(request.permission_key)) {
+  return false;
+}
+```
+
+```ts
+const denied = denies.some(
+  (deny) => deny.employee_id === employeeId
+);
+```
+
+```ts
+if (allow.scope_is_more_specific) {
+  ignoreDeny();
+}
+```
+
+```ts
+if (!deny.is_active) {
+  return true;
+}
+```
+
+```ts
+const deny = {
+  permission_key: `${appCode}.*`,
+  lane: "ALL",
+};
+```
+
+```ts
+const deviceDeny = {
+  deny_class: "ACTOR_WIDE",
+  employee_id: device.auth_user_id,
+};
+```
+
+También queda prohibido:
+
+```text
+deny almacenado → deny coincidente
+deny de app → bloquear todo
+deny de rol → bloquear trabajadores
+deny base → bloquear operación
+deny operativo → bloquear base
+deny expirado → continuar bloqueando
+revocar deny → conceder
+allow específico → vencer deny
+lista vacía → global
+scope ausente → global
+misma sede → mismo recurso
+default deny → fila administrable
+restricción de dispositivo → deny individual
+motivo sensible → mensaje cliente
+```
+
+---
+
+#### 77. Relación con tareas posteriores
+
+| Tarea                         | Responsabilidad posterior                                                                                  |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `AUTH-CTX-023`                | Consolidar precedencia, blocked reasons, combinación, razón primaria y decisión final                      |
+| `AUTH-CTX-024`                | Registrar denies, fuentes, IDs, datasets, hashes, vigencias, recurso y resultado                           |
+| `AUTH-CTX-025`                | Diseñar `get_access_context`; no consultar denies como fuente de identidad                                 |
+| `AUTH-CTX-026`                | Diseñar matchers físicos, IDs sintéticos, representación default, procesos SYSTEM y frontera transaccional |
+| `AUTH-CTX-027`                | Eliminar denegaciones locales, fallbacks y precedencias reinterpretadas por aplicaciones                   |
+| `AUTH-CTX-028`                | Adaptar `is_allowed = false`, aliases, duplicados, scopes legacy y consumidores booleanos                  |
+| `AUTH-CTX-029`                | Invalidar decisiones por creación, modificación, revocación o expiración de denies                         |
+| `AUTH-CTX-030`                | Probar precedencia, matching, vigencia, territorio, recurso, múltiples denies y exposición segura          |
+| `AUTH-DB-006` a `AUTH-DB-010` | Aplicar la decisión canónica dentro de RPC sensibles                                                       |
+| `AUTH-DB-011`                 | Crear constraints después de inventario, backfill y reconciliación                                         |
+| `AUTH-DB-020`                 | Migrar y clasificar denegaciones legacy                                                                    |
+| `AUTH-DB-027`                 | Probar integridad, RLS, RPC, datasets y migraciones                                                        |
+| `AUTH-DB-030`                 | Retirar precedencias y funciones legacy                                                                    |
+| `AUTH-DB-031`                 | Certificar paridad documental, técnica y operativa                                                         |
+| `GAP-CTRL-001`                | Consolidar brechas de denegaciones y consumidores antes de implementación                                  |
+| `GAP-CTRL-006`                | Vincular brechas con tareas y paquetes implementables                                                      |
+| BLOQUE S                      | Diseñar mensajes seguros y experiencia de bloqueo                                                          |
+
+---
+
+#### 78. Fuera del alcance
+
+AUTH-CTX-022 no:
+
+- crea denegaciones;
+- modifica denegaciones;
+- revoca denegaciones;
+- cambia matrices;
+- cambia grants;
+- cambia modalidades;
+- cambia scopes;
+- modifica datasets;
+- modifica hashes;
+- crea tablas;
+- crea funciones;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- modifica Supabase;
+- implementa VISO;
+- define mensajes finales;
+- decide retención física;
+- resuelve procesos disciplinarios;
+- produce todavía la decisión final completa.
+
+Cada responsabilidad posterior tiene destino explícito en la sección 77.
+
+---
+
+#### 79. Riesgos controlados
+
+| Riesgo                                               | Control canónico                                           |
+| ---------------------------------------------------- | ---------------------------------------------------------- |
+| Deny por prefijo bloquea capacidades no relacionadas | Permiso exacto obligatorio                                 |
+| Deny de otro trabajador coincide                     | Actor exacto obligatorio                                   |
+| Deny de carril bloquea ambos                         | Lane explícita y modalidad compatible                      |
+| Allow más específico vence deny                      | Deny coincidente siempre prevalece                         |
+| Scope ausente se interpreta como global              | Scope ausente es inválido                                  |
+| Revocar deny concede permiso                         | Reevaluación completa y default deny                       |
+| Structural deny se administra desde VISO             | Structural permanece fuera del dataset                     |
+| Default deny se materializa como fila                | Política del evaluador, no override                        |
+| Dispositivo se convierte en sujeto                   | Denies administrables pertenecen al empleado               |
+| Motivo disciplinario llega al cliente                | Proyección segura separada                                 |
+| Deny legacy amplio se expande                        | Cero expansión uno-a-muchos                                |
+| Colisión de IDs se resuelve arbitrariamente          | Structural deny y fail closed                              |
+| Múltiples denies pierden evidencia                   | Todas las coincidencias se conservan                       |
+| Deny borra allows                                    | Evidencias positivas y negativas permanecen separadas      |
+| Seed vacío desactiva seguridad                       | Structural, restricciones y default deny continúan activos |
+
+---
+
+#### 80. Criterios de aprobación
+
+AUTH-CTX-022 podrá aprobarse cuando se acepte que:
+
+1. se conserva la forma de `MatchedDeny`;
+2. se conserva la forma de `DecisionReason`;
+3. se conservan las cinco colecciones afectadas;
+4. no se agregan campos;
+5. deny almacenado no significa deny coincidente;
+6. solo se serializan coincidencias completas;
+7. los cuatro booleanos de matching son true en `MatchedDeny`;
+8. candidatos parciales no aparecen;
+9. existen structural, actor-wide, base lane, operational lane y default;
+10. las clases no se mezclan;
+11. structural tiene mayor precedencia;
+12. actor-wide precede a lane deny;
+13. lane deny precede a allow;
+14. allow precede a default deny;
+15. el permiso debe coincidir exactamente;
+16. no existen prefijos;
+17. no existen wildcards;
+18. no existen denies por módulo;
+19. los denies administrables pertenecen a un empleado exacto;
+20. no coinciden por nombre, correo o documento;
+21. empleado inactivo conserva trazabilidad, pero ya está bloqueado estructuralmente;
+22. structural deny no es administrable;
+23. structural deny no se crea desde VISO;
+24. el dataset no contiene structural denies;
+25. un structural puede afectar ALL, BASE, OPERATIONAL o null;
+26. un structural con clave canónica puede producir MatchedDeny sintético;
+27. su ID sintético no es administrable;
+28. su ID sintético no entra en matched_deny_ids;
+29. sin clave canónica se usa únicamente DecisionReason;
+30. actor-wide deny usa lane ALL;
+31. actor-wide bloquea todos los carriles compatibles;
+32. actor-wide no bloquea otros permisos;
+33. base lane deny solo bloquea base;
+34. base lane deny no bloquea operación;
+35. base deny en OPERATIONAL_ONLY es incompatible;
+36. operational lane deny solo bloquea operación;
+37. operational lane deny no bloquea base;
+38. operational deny en BASE_ONLY es incompatible;
+39. en BASE_OR_OPERATIONAL el otro carril puede autorizar;
+40. en BASE_AND_OPERATIONAL un lane deny bloquea el resultado final;
+41. default deny significa ausencia de allow;
+42. default deny no es sanción;
+43. default deny no es fila administrable;
+44. revocar default deny requiere crear autoridad válida o corregir contexto;
+45. default puede usar ID sintético solo como evidencia;
+46. el ID default no entra en matched_deny_ids;
+47. AUTH-CTX-026 congelará su representación física;
+48. prerrequisitos fallidos permanecen en decisiones separadas;
+49. restricciones no se convierten en denies individuales;
+50. el dataset administrable es `individual-overrides@1.0.0`;
+51. su seed inicial contiene cero denies;
+52. el seed vacío es intencional;
+53. structural y default continúan activos con dataset vacío;
+54. source_kind queda normalizado;
+55. deny_id administrable es estable;
+56. deny_id no es índice local;
+57. una colisión produce fail closed;
+58. no se elige una fila en conflicto;
+59. permission_key estructural solo se usa si es canónica;
+60. no se inventa permission_key;
+61. reason_code es canónico;
+62. reason_code no contiene PII;
+63. motivo humano permanece fuera de MatchedDeny;
+64. la vigencia usa decided_at;
+65. deny futuro no coincide;
+66. deny expirado no coincide;
+67. deny revocado no coincide;
+68. matched_validity exige más que is_active;
+69. revocar deny no crea allow;
+70. la revocación no modifica decisiones históricas;
+71. una nueva realidad produce una nueva decisión;
+72. todo deny administrable exige scope compatible;
+73. scope ausente no significa global;
+74. scope inválido falla cerrado sin ampliar bloqueo;
+75. matched_territory cubre todas las dimensiones obligatorias;
+76. listas vacías no prueban no territorialidad;
+77. matched_resource exige recurso y condiciones exactas;
+78. misma sede no basta;
+79. OWN usa relación contractual;
+80. el estado del recurso puede limitar el deny;
+81. los lados obligatorios permanecen separados;
+82. origen no equivale a destino;
+83. multiterritorio no se amplía por inferencia;
+84. colecciones respetan parcialidad contractual;
+85. agregados excluyen datos denegados;
+86. bulk respeta ALL_OR_NOTHING o PARTIAL_WITH_RESULTS;
+87. campos protegidos permanecen en field_policy_decision;
+88. dispositivo permanece en device_decision;
+89. sensibilidad permanece en sensitivity_decision;
+90. dependencias producen decisiones separadas;
+91. deny no borra allows;
+92. especificidad no altera precedencia;
+93. pueden coincidir varios denies;
+94. todas las evidencias relevantes se conservan;
+95. actor-wide y lane deny pueden coexistir;
+96. structural puede coexistir cuando la resolución es confiable;
+97. fail closed no inventa coincidencias;
+98. explicit deny desplaza default deny como explicación del carril;
+99. matched_deny_ids solo contiene denies administrables;
+100. IDs sintéticos no entran en LaneDecision;
+101. un lane deny convierte el carril aplicable en DENY;
+102. una fila incompatible no cambia NOT_APPLICABLE;
+103. actor-wide bloquea los carriles compatibles;
+104. blocked_reasons se consolidará en AUTH-CTX-023;
+105. structural_denies solo contiene razones estructurales;
+106. actor_wide_denies solo contiene razones transversales coincidentes;
+107. lane_denies conserva cada lane exacta;
+108. reason codes quedan normalizados;
+109. prioridad final se define en AUTH-CTX-023;
+110. la proyección cliente no revela deny_id;
+111. la proyección cliente no revela motivos sensibles;
+112. VISO deberá exigir trabajador, permiso, alcance, vigencia, motivo y aprobación;
+113. simulación no crea ni revoca denies;
+114. procesos SYSTEM no se convierten en empleados;
+115. una nueva clase SYSTEM exigiría versionado;
+116. legacy requiere adaptación explícita;
+117. legacy one-to-many no se expande;
+118. la decisión es inmutable;
+119. la auditoría conservará evidencia completa autorizada;
+120. AUTH-CTX-023 definirá decisión final y razón primaria;
+121. AUTH-CTX-024 definirá auditoría;
+122. AUTH-CTX-026 diseñará matchers físicos;
+123. AUTH-CTX-027 eliminará precedencia local;
+124. AUTH-CTX-028 gobernará compatibilidad legacy;
+125. AUTH-CTX-029 gobernará invalidación;
+126. AUTH-CTX-030 gobernará pruebas;
+127. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 81. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-021` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-022` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-023` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-021 — APROBADA
+        ↓
+AUTH-CTX-022 — APROBADA
+        ↓
+AUTH-CTX-023 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-023` hasta recibir aprobación explícita de
+`AUTH-CTX-022`.
+
+### ✅ AUTH-CTX-023 — Incluir decisión final y razones
+
+| Campo                            | Valor                                                                               |
+| -------------------------------- | ----------------------------------------------------------------------------------- |
+| **Estado**                       | APROBADA                                                                            |
+| **Bloque**                       | BLOQUE E — Contexto y decisión de autorización unificados                           |
+| **Subbloque**                    | `AUTHORIZATION DECISION`                                                            |
+| **Naturaleza**                   | Definición documental de `combination`, `final_decision` y razones estructuradas    |
+| **Implementación física**        | No incluida                                                                         |
+| **Tarea anterior vigente**       | `AUTH-CTX-022` — APROBADA                                                           |
+| **Tarea posterior reservada**    | `AUTH-CTX-024` — Incluir datos de auditoría                                         |
+| **Contrato afectado**            | `AuthorizationDecision@1.0.0`                                                       |
+| **Campos principales afectados** | `combination`, `final_decision`, `blocked_reasons` y `reason_codes` de los carriles |
+| **Tipos principales afectados**  | `DecisionCombination`, `FinalDecision`, `DecisionReason`                            |
+| **Cambio contractual**           | Aclaración normativa compatible; no cambia la forma publicada                       |
+| **Cambios físicos permitidos**   | No                                                                                  |
+
+Esta tarea define cómo Vento OS transforma:
+
+```text
+CARRIL BASE
++
+CARRIL OPERATIVO
++
+ALLOWS COINCIDENTES
++
+DENIES COINCIDENTES
++
+PRERREQUISITOS
++
+RECURSO
++
+RESTRICCIONES
+```
+
+en una única decisión final determinista, explicable y segura.
+
+La regla central es:
+
+```text
+COMBINATION_RESULT = ALLOW
+NO IMPLICA POR SÍ SOLO
+FINAL_DECISION = ALLOW
+```
+
+```text
+FINAL ALLOW
+=
+CONTRATO VÁLIDO
+∩
+CONTEXTO VÁLIDO
+∩
+RECURSO VÁLIDO
+∩
+SIN STRUCTURAL DENY
+∩
+SIN ACTOR-WIDE DENY
+∩
+COMBINACIÓN DE CARRILES SATISFECHA
+∩
+PRERREQUISITOS BLOQUEANTES SUPERADOS
+∩
+RESTRICCIONES BLOQUEANTES SUPERADAS
+∩
+POLÍTICA DE CAMPOS COMPATIBLE
+∩
+CONCURRENCIA E IDEMPOTENCIA VÁLIDAS CUANDO APLIQUEN
+```
+
+```text
+CUALQUIER BLOQUEO APLICABLE
+→ FINAL DENY
+```
+
+No implementa SQL, RPC, RLS, funciones, migraciones, tipos TypeScript,
+JSON Schema, Zod, caché, interfaces ni cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir la decisión final de forma que Vento OS pueda responder
+inequívocamente:
+
+1. qué carriles eran aplicables;
+2. qué resultado produjo cada carril;
+3. qué regla de combinación correspondía;
+4. qué carriles aportaron autoridad positiva;
+5. qué carriles quedaron bloqueados;
+6. si la combinación de carriles fue suficiente;
+7. qué restricciones finales bloquearon la solicitud;
+8. cuál fue el resultado final;
+9. cuál es la categoría técnica primaria;
+10. cuál es el código técnico primario;
+11. qué razones adicionales se conservaron;
+12. qué mensaje seguro puede recibir el cliente;
+13. cómo se evita revelar denies sensibles;
+14. cómo se representa `BASE_ONLY`;
+15. cómo se representa `OPERATIONAL_ONLY`;
+16. cómo se representa `BASE_OR_OPERATIONAL`;
+17. cómo se representa `BASE_AND_OPERATIONAL`;
+18. cómo se tratan dependencias;
+19. cómo se tratan dispositivo y sensibilidad;
+20. cómo se tratan campos parciales;
+21. cómo se tratan estado, concurrencia e idempotencia;
+22. cómo se tratan colecciones, agregados y operaciones masivas;
+23. cómo se deduplican razones;
+24. cómo se determina la razón primaria;
+25. cómo se preservan determinismo, inmutabilidad y auditoría.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-023 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-020`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` — Contrato de `AccessContext`;
+- `AUTH-CTX-002` — Contrato de `AuthorizationDecision`;
+- `AUTH-CTX-004` — Versionado contractual;
+- `AUTH-CTX-016` — Aplicación y permiso exactos;
+- `AUTH-CTX-017` — Modalidad y prerrequisitos;
+- `AUTH-CTX-018` — Recurso y territorio resueltos;
+- `AUTH-CTX-019` — Decisión del carril base;
+- `AUTH-CTX-020` — Decisión del carril operativo;
+- `AUTH-CTX-021` — Allows coincidentes;
+- `AUTH-CTX-022` — Denegaciones coincidentes.
+
+Principios obligatorios:
+
+```text
+ALLOW DE CARRIL
+≠
+ALLOW FINAL
+```
+
+```text
+DENY APLICABLE
+>
+ALLOW APLICABLE
+```
+
+```text
+RAZÓN PRIMARIA
+≠
+ÚNICA RAZÓN
+```
+
+```text
+RAZÓN TÉCNICA
+≠
+MENSAJE SEGURO PARA CLIENTE
+```
+
+```text
+FINAL DECISION
+≠
+EJECUCIÓN DE LA ACCIÓN
+```
+
+```text
+FINAL ALLOW
+NO ES TOKEN
+NO ES SESIÓN
+NO ES CACHÉ PERMANENTE
+```
+
+---
+
+#### 3. Forma contractual conservada
+
+```ts
+type DecisionCombination = {
+  authorization_requirement:
+    | "BASE_ONLY"
+    | "OPERATIONAL_ONLY"
+    | "BASE_OR_OPERATIONAL"
+    | "BASE_AND_OPERATIONAL";
+
+  base_outcome: "ALLOW" | "DENY" | "NOT_APPLICABLE";
+  operational_outcome: "ALLOW" | "DENY" | "NOT_APPLICABLE";
+
+  authorizing_lanes: AuthorizationLane[];
+  blocked_lanes: AuthorizationLane[];
+
+  combination_rule:
+    | "BASE"
+    | "OPERATIONAL"
+    | "BASE_OR_OPERATIONAL"
+    | "BASE_AND_OPERATIONAL";
+
+  combination_result: "ALLOW" | "DENY";
+};
+```
+
+```ts
+type FinalDecision = {
+  outcome: "ALLOW" | "DENY";
+
+  reason_category:
+    | "AUTHORIZED"
+    | "STRUCTURAL_DENY"
+    | "ACTOR_WIDE_DENY"
+    | "LANE_DENY"
+    | "PREREQUISITE_DENY"
+    | "RESOURCE_DENY"
+    | "DEVICE_DENY"
+    | "SENSITIVITY_DENY"
+    | "FIELD_POLICY_DENY"
+    | "DEFAULT_DENY"
+    | "CONTRACT_INVALID";
+
+  primary_reason_code: string;
+  authorizing_lanes: AuthorizationLane[];
+  safe_message_code: string;
+};
+```
+
+```ts
+type DecisionReason = {
+  reason_code: string;
+  category: string;
+  severity: "BLOCKING" | "INFORMATIONAL";
+  lane: "BASE" | "OPERATIONAL" | "ALL" | null;
+  source: string;
+  safe_to_expose: boolean;
+};
+```
+
+No se agregan, eliminan ni renombran campos.
+
+---
+
+#### 4. Campos afectados de AuthorizationDecision
+
+```ts
+combination: DecisionCombination;
+final_decision: FinalDecision;
+blocked_reasons: DecisionReason[];
+```
+
+Además se exige consistencia con:
+
+```ts
+base_decision.reason_codes: string[];
+operational_decision.reason_codes: string[];
+structural_denies: DecisionReason[];
+actor_wide_denies: DecisionReason[];
+lane_denies: DecisionReason[];
+matched_allows: MatchedGrant[];
+matched_denies: MatchedDeny[];
+```
+
+---
+
+#### 5. Capas de decisión
+
+La decisión completa se divide en cinco capas:
+
+```text
+CAPA 1 — VALIDEZ ESTRUCTURAL
+CAPA 2 — RESULTADO DE CADA CARRIL
+CAPA 3 — COMBINACIÓN POR MODALIDAD
+CAPA 4 — RESTRICCIONES FINALES DE SOLICITUD
+CAPA 5 — RESULTADO FINAL Y PROYECCIÓN SEGURA
+```
+
+Cada capa consume resultados anteriores.
+
+Ninguna capa puede convertir una invalidez previa en allow.
+
+---
+
+#### 6. Secuencia canónica de consolidación
+
+```text
+1. Validar contrato, catálogo, contexto y recurso.
+2. Consolidar structural_denies.
+3. Consolidar actor_wide_denies.
+4. Consolidar base_decision.
+5. Consolidar operational_decision.
+6. Construir combination según authorization_requirement.
+7. Consolidar prerrequisitos y dependencias.
+8. Consolidar device_decision.
+9. Consolidar sensitivity_decision.
+10. Consolidar field_policy_decision.
+11. Consolidar estado, concurrencia e idempotencia.
+12. Construir blocked_reasons.
+13. Seleccionar primary_reason_code.
+14. Derivar reason_category.
+15. Derivar safe_message_code.
+16. Emitir final_decision.
+17. Congelar la decisión.
+```
+
+El orden es normativo para la explicación y el determinismo.
+
+No autoriza por simple posición en la secuencia.
+
+---
+
+#### 7. Resultado de carril como entrada
+
+AUTH-CTX-023 no recalcula grants ni denies.
+
+Consume:
+
+```text
+base_decision.outcome
+operational_decision.outcome
+```
+
+Los valores permitidos son:
+
+```text
+ALLOW
+DENY
+NOT_APPLICABLE
+```
+
+Cualquier valor desconocido produce:
+
+```text
+CONTRACT_INVALID
+→ FINAL DENY
+```
+
+---
+
+#### 8. Consistencia de carriles con modalidad
+
+| Modalidad              | Base             | Operativo        |
+| ---------------------- | ---------------- | ---------------- |
+| `BASE_ONLY`            | Aplicable        | `NOT_APPLICABLE` |
+| `OPERATIONAL_ONLY`     | `NOT_APPLICABLE` | Aplicable        |
+| `BASE_OR_OPERATIONAL`  | Aplicable        | Aplicable        |
+| `BASE_AND_OPERATIONAL` | Aplicable        | Aplicable        |
+
+Una combinación incompatible es estructuralmente inválida.
+
+Ejemplos:
+
+```text
+BASE_ONLY + operational = ALLOW
+→ CONTRACT_INVALID
+```
+
+```text
+BASE_AND_OPERATIONAL + base = NOT_APPLICABLE
+→ CONTRACT_INVALID
+```
+
+---
+
+#### 9. Construcción de DecisionCombination
+
+`DecisionCombination` deberá ser una proyección determinista de:
+
+```text
+authorization_requirement
++
+base_decision.outcome
++
+operational_decision.outcome
+```
+
+No deberá consultar de nuevo:
+
+- matrices;
+- grants;
+- roles;
+- turnos;
+- check-ins;
+- dispositivo;
+- recurso;
+- datos del cliente.
+
+La evidencia ya deberá estar consolidada en las decisiones previas.
+
+---
+
+#### 10. Regla BASE_ONLY
+
+```text
+authorization_requirement = BASE_ONLY
+combination_rule = BASE
+```
+
+Resultado:
+
+| Base    | Operativo        | combination_result |
+| ------- | ---------------- | ------------------ |
+| `ALLOW` | `NOT_APPLICABLE` | `ALLOW`            |
+| `DENY`  | `NOT_APPLICABLE` | `DENY`             |
+
+Invariantes:
+
+```text
+authorizing_lanes = [BASE]
+solo cuando base = ALLOW
+```
+
+```text
+blocked_lanes = [BASE]
+solo cuando base = DENY
+```
+
+---
+
+#### 11. Regla OPERATIONAL_ONLY
+
+```text
+authorization_requirement = OPERATIONAL_ONLY
+combination_rule = OPERATIONAL
+```
+
+Resultado:
+
+| Base             | Operativo | combination_result |
+| ---------------- | --------- | ------------------ |
+| `NOT_APPLICABLE` | `ALLOW`   | `ALLOW`            |
+| `NOT_APPLICABLE` | `DENY`    | `DENY`             |
+
+Invariantes:
+
+```text
+authorizing_lanes = [OPERATIONAL]
+solo cuando operational = ALLOW
+```
+
+```text
+blocked_lanes = [OPERATIONAL]
+solo cuando operational = DENY
+```
+
+---
+
+#### 12. Regla BASE_OR_OPERATIONAL
+
+```text
+authorization_requirement = BASE_OR_OPERATIONAL
+combination_rule = BASE_OR_OPERATIONAL
+```
+
+Resultado:
+
+| Base    | Operativo | combination_result | authorizing_lanes     |
+| ------- | --------- | ------------------ | --------------------- |
+| `ALLOW` | `ALLOW`   | `ALLOW`            | `[BASE, OPERATIONAL]` |
+| `ALLOW` | `DENY`    | `ALLOW`            | `[BASE]`              |
+| `DENY`  | `ALLOW`   | `ALLOW`            | `[OPERATIONAL]`       |
+| `DENY`  | `DENY`    | `DENY`             | `[]`                  |
+
+Los carriles no prestan fragmentos incompletos entre sí.
+
+Un deny de carril no bloquea el otro carril en esta modalidad.
+
+---
+
+#### 13. Regla BASE_AND_OPERATIONAL
+
+```text
+authorization_requirement = BASE_AND_OPERATIONAL
+combination_rule = BASE_AND_OPERATIONAL
+```
+
+Resultado:
+
+| Base    | Operativo | combination_result |
+| ------- | --------- | ------------------ |
+| `ALLOW` | `ALLOW`   | `ALLOW`            |
+| `ALLOW` | `DENY`    | `DENY`             |
+| `DENY`  | `ALLOW`   | `DENY`             |
+| `DENY`  | `DENY`    | `DENY`             |
+
+Solo el caso `ALLOW + ALLOW` produce:
+
+```text
+authorizing_lanes = [BASE, OPERATIONAL]
+```
+
+Cualquier carril denegado queda en `blocked_lanes`.
+
+---
+
+#### 14. authorizing_lanes de la combinación
+
+`combination.authorizing_lanes` contiene los carriles cuyo outcome fue
+`ALLOW` y que participan positivamente en la regla de combinación.
+
+Reglas:
+
+- no contiene `NOT_APPLICABLE`;
+- no contiene carriles `DENY`;
+- no contiene duplicados;
+- se ordena `BASE`, luego `OPERATIONAL`;
+- puede contener ambos en `BASE_OR_OPERATIONAL`;
+- no implica todavía que la decisión final sea allow.
+
+---
+
+#### 15. blocked_lanes de la combinación
+
+`combination.blocked_lanes` contiene los carriles aplicables cuyo outcome fue
+`DENY`.
+
+No contiene:
+
+- carriles no aplicables;
+- restricciones de solicitud;
+- fallas de campos;
+- fallas de dispositivo que no pertenezcan al carril;
+- razones informativas.
+
+En `BASE_OR_OPERATIONAL` puede existir simultáneamente:
+
+```text
+authorizing_lanes = [OPERATIONAL]
+blocked_lanes = [BASE]
+combination_result = ALLOW
+```
+
+---
+
+#### 16. combination_result
+
+`combination_result` responde exclusivamente:
+
+```text
+¿LOS OUTCOMES DE CARRIL SATISFACEN LA MODALIDAD?
+```
+
+No responde todavía:
+
+```text
+¿LA SOLICITUD COMPLETA PUEDE EJECUTARSE?
+```
+
+Por tanto es válido:
+
+```text
+combination_result = ALLOW
+final_decision.outcome = DENY
+```
+
+cuando una restricción final bloquea la solicitud.
+
+---
+
+#### 17. Bloqueos anteriores a la combinación
+
+Los siguientes bloqueos impiden que la combinación produzca autoridad
+utilizable:
+
+- contrato incompatible;
+- contexto inválido;
+- actor no resoluble;
+- aplicación o permiso inválidos;
+- recurso no resoluble;
+- structural deny global;
+- actor-wide deny.
+
+Cuando alguno impide evaluar de forma fiable los carriles:
+
+```text
+carriles aplicables = DENY
+combination_result = DENY
+final_decision = DENY
+```
+
+No se inventan resultados de carril.
+
+---
+
+#### 18. Bloqueos posteriores o transversales
+
+Pueden bloquear una combinación positiva:
+
+- dependencia obligatoria fallida;
+- estado incompatible;
+- required side fallido;
+- dispositivo incompatible;
+- reautenticación ausente;
+- política de campos `FAIL`;
+- concurrencia no validada;
+- idempotencia inválida;
+- restricción común de solicitud.
+
+Estos bloqueos:
+
+- no borran los allows;
+- no alteran el historial de los carriles;
+- se agregan a `blocked_reasons`;
+- producen `final_decision.outcome = DENY`.
+
+---
+
+#### 19. Invariantes de FinalDecision
+
+Todo `FinalDecision` deberá cumplir:
+
+```text
+outcome = ALLOW o DENY
+```
+
+Nunca:
+
+```text
+null
+UNKNOWN
+INDETERMINATE
+PARTIAL
+WOULD_ALLOW
+```
+
+Además:
+
+- `primary_reason_code` siempre existe;
+- `safe_message_code` siempre existe;
+- `reason_category` siempre corresponde a la razón primaria;
+- `authorizing_lanes` está deduplicado;
+- la decisión final es inmutable.
+
+---
+
+#### 20. Invariantes de ALLOW final
+
+Cuando:
+
+```text
+final_decision.outcome = ALLOW
+```
+
+se exige:
+
+```text
+combination.combination_result = ALLOW
+blocked_reasons = []
+final_decision.reason_category = AUTHORIZED
+final_decision.primary_reason_code = AUTHORIZED
+final_decision.safe_message_code = AUTHORIZATION_GRANTED
+final_decision.authorizing_lanes = combination.authorizing_lanes
+```
+
+Además deberá existir al menos un `MatchedGrant` consistente con cada carril
+autorizante.
+
+---
+
+#### 21. Invariantes de DENY final
+
+Cuando:
+
+```text
+final_decision.outcome = DENY
+```
+
+se exige:
+
+```text
+blocked_reasons.length >= 1
+final_decision.authorizing_lanes = []
+final_decision.reason_category != AUTHORIZED
+final_decision.primary_reason_code != AUTHORIZED
+final_decision.safe_message_code != AUTHORIZATION_GRANTED
+```
+
+La evidencia positiva puede permanecer en:
+
+```text
+combination.authorizing_lanes
+matched_allows
+LaneDecision.matched_allow_ids
+```
+
+pero no se proyecta como autoridad final.
+
+---
+
+#### 22. Razón primaria frente a razones adicionales
+
+`primary_reason_code` identifica una sola razón técnica principal.
+
+`blocked_reasons` conserva todas las razones bloqueantes relevantes.
+
+Regla:
+
+```text
+SELECCIONAR RAZÓN PRIMARIA
+≠
+ELIMINAR RAZONES SECUNDARIAS
+```
+
+La razón primaria se usa para:
+
+- clasificación final;
+- mensaje seguro;
+- telemetría agregada;
+- diagnóstico inicial.
+
+La auditoría conserva el conjunto completo.
+
+---
+
+#### 23. Precedencia técnica para la razón primaria
+
+Orden inicial de categorías:
+
+```text
+1. CONTRACT_INVALID
+2. STRUCTURAL_DENY
+3. ACTOR_WIDE_DENY
+4. RESOURCE_DENY
+5. PREREQUISITE_DENY
+6. LANE_DENY
+7. DEVICE_DENY
+8. SENSITIVITY_DENY
+9. FIELD_POLICY_DENY
+10. DEFAULT_DENY
+```
+
+`AUTHORIZED` solo aplica cuando no existe bloqueo.
+
+Esta precedencia selecciona explicación primaria.
+
+No altera la precedencia de grants y denies definida previamente.
+
+---
+
+#### 24. Desempate determinista de razones
+
+Cuando varias razones pertenecen a la misma prioridad:
+
+1. razón `lane = ALL`;
+2. razón `lane = null` de solicitud completa;
+3. razón `lane = BASE`;
+4. razón `lane = OPERATIONAL`;
+5. `reason_code` en orden lexicográfico;
+6. `source` en orden lexicográfico.
+
+No se usa:
+
+- orden de consulta;
+- orden de inserción;
+- primera fila física;
+- mensaje humano;
+- gravedad inferida por el frontend.
+
+---
+
+#### 25. CONTRACT_INVALID
+
+`reason_category = CONTRACT_INVALID` aplica cuando la evaluación no puede
+interpretarse conforme al contrato vigente.
+
+Ejemplos:
+
+- versión mayor incompatible;
+- campo obligatorio ausente;
+- enum crítico desconocido;
+- modalidad incompatible con outcomes;
+- dataset o hash incompatible;
+- colisión de IDs;
+- ciclo contractual de dependencias;
+- decisión de carril internamente contradictoria.
+
+Resultado:
+
+```text
+FINAL DENY
+safe_message_code = ACCESS_NOT_AVAILABLE
+```
+
+---
+
+#### 26. STRUCTURAL_DENY
+
+Aplica a invalideces autoritativas del contexto o solicitud.
+
+Ejemplos:
+
+- autenticación inválida;
+- actor no resoluble;
+- empleado inactivo;
+- aplicación inexistente;
+- permiso inexistente;
+- contexto obsoleto;
+- territorio contradictorio;
+- recurso no resoluble;
+- entorno aislado no autorizado.
+
+No puede superarse mediante grants.
+
+---
+
+#### 27. ACTOR_WIDE_DENY
+
+Aplica cuando existe un bloqueo transversal coincidente para el actor y
+permiso exactos.
+
+Reglas:
+
+```text
+combination_result = DENY
+final_decision.outcome = DENY
+final_decision.reason_category = ACTOR_WIDE_DENY
+```
+
+El mensaje seguro no revela:
+
+- motivo disciplinario;
+- aprobador;
+- vigencia exacta;
+- deny_id;
+- alcance administrativo interno.
+
+---
+
+#### 28. RESOURCE_DENY
+
+Agrupa bloqueos cuya causa principal pertenece al recurso o a la ejecución
+sobre ese recurso.
+
+Incluye:
+
+- recurso no disponible;
+- estado incompatible;
+- transición inválida;
+- ownership inválido;
+- required side ausente;
+- conflicto de versión;
+- concurrencia fallida;
+- idempotencia inválida;
+- miembro bulk no autorizable bajo política atómica.
+
+No se usa para ocultar una falla de contrato.
+
+---
+
+#### 29. PREREQUISITE_DENY
+
+Agrupa prerrequisitos obligatorios fallidos.
+
+Incluye:
+
+- turno requerido;
+- check-in requerido;
+- área activa requerida;
+- dependencia de permiso;
+- aprobación adicional contractual;
+- requisito común de solicitud.
+
+La razón deberá conservar el carril cuando sea específica.
+
+---
+
+#### 30. LANE_DENY
+
+Aplica cuando la causa primaria es una denegación explícita o ausencia de
+capacidad dentro de un carril, y la modalidad no queda satisfecha.
+
+Incluye:
+
+- base lane deny;
+- operational lane deny;
+- combinación `BASE_AND_OPERATIONAL` incompleta por deny de carril;
+- `BASE_ONLY` con base denegado;
+- `OPERATIONAL_ONLY` con operación denegada.
+
+No se usa cuando la única causa es `DEFAULT_DENY`.
+
+---
+
+#### 31. DEVICE_DENY
+
+Aplica cuando:
+
+```text
+device_decision.status = FAIL
+```
+
+y no existe una categoría superior aplicable.
+
+El dispositivo restringe.
+
+Nunca concede.
+
+El mensaje seguro podrá indicar incompatibilidad del dispositivo sin revelar
+capacidades internas completas.
+
+---
+
+#### 32. SENSITIVITY_DENY
+
+Aplica cuando una capacidad sensible exige un control adicional no cumplido.
+
+Ejemplos:
+
+- reautenticación reciente;
+- segundo factor;
+- confirmación reforzada;
+- motivo obligatorio;
+- separación de funciones;
+- aprobación adicional.
+
+No elimina grants ni denies.
+
+---
+
+#### 33. FIELD_POLICY_DENY
+
+Aplica cuando:
+
+```text
+field_policy_decision.status = FAIL
+```
+
+Una política `PARTIAL` no produce deny final cuando la operación puede
+reducirse legítimamente a la proyección autorizada.
+
+Una mutación inseparable con campos bloqueados produce deny.
+
+---
+
+#### 34. DEFAULT_DENY
+
+Aplica únicamente cuando:
+
+- el contrato es válido;
+- el contexto es evaluable;
+- no existe explicit deny superior;
+- no existe allow completo suficiente;
+- la modalidad no queda satisfecha.
+
+Código primario inicial:
+
+```text
+DEFAULT_DENY_NO_MATCHING_ALLOW
+```
+
+No es una sanción ni una excepción administrable.
+
+---
+
+#### 35. blocked_reasons
+
+`blocked_reasons` contiene exclusivamente razones con:
+
+```text
+severity = BLOCKING
+```
+
+Reglas:
+
+- no contiene `AUTHORIZED`;
+- no contiene razones meramente informativas;
+- no contiene duplicados semánticos;
+- conserva razones de todas las capas;
+- usa orden determinista;
+- permanece disponible para auditoría interna;
+- se proyecta parcialmente al cliente según `safe_to_expose`.
+
+---
+
+#### 36. Fuentes que alimentan blocked_reasons
+
+Como mínimo:
+
+- `structural_denies`;
+- `actor_wide_denies`;
+- `lane_denies`;
+- `base_decision.reason_codes` cuando bloquean;
+- `operational_decision.reason_codes` cuando bloquean;
+- `prerequisite_decisions` con `FAIL`;
+- `device_decision.reason_codes` con `FAIL`;
+- `sensitivity_decision.reason_codes` con `FAIL`;
+- `field_policy_decision.reason_codes` con `FAIL`;
+- razones de estado, concurrencia e idempotencia;
+- default deny derivado.
+
+No se copian cadenas sin normalizar.
+
+---
+
+#### 37. Normalización de DecisionReason
+
+Toda razón consolidada deberá tener:
+
+```text
+reason_code no vacío
+category no vacía
+severity = BLOCKING
+lane canónica
+source canónica
+safe_to_expose explícito
+```
+
+No se admiten:
+
+- texto humano como `reason_code`;
+- PII dentro del código;
+- nombres de tablas como categoría;
+- mensajes UI dentro de `source`;
+- lane inferida por el cliente.
+
+---
+
+#### 38. Formato de reason_code
+
+Forma recomendada:
+
+```text
+^[A-Z][A-Z0-9_]*$
+```
+
+Ejemplos:
+
+```text
+STRUCTURAL_ACTOR_UNRESOLVED
+ACTIVE_SHIFT_REQUIRED
+ACTIVE_CHECKIN_REQUIRED
+RESOURCE_STATE_INVALID
+BASE_LANE_DENY_MATCHED
+DEFAULT_DENY_NO_MATCHING_ALLOW
+```
+
+No se utilizan espacios, puntos, guiones ni texto localizado.
+
+---
+
+#### 39. Familias iniciales de razones
+
+```text
+CONTRACT_*
+STRUCTURAL_*
+AUTHENTICATION_*
+ACTOR_*
+EMPLOYMENT_*
+APPLICATION_*
+PERMISSION_*
+RESOURCE_*
+TERRITORY_*
+OWNERSHIP_*
+STATE_*
+BASE_*
+OPERATIONAL_*
+SHIFT_*
+CHECKIN_*
+AREA_*
+DEVICE_*
+SENSITIVITY_*
+FIELD_POLICY_*
+DEPENDENCY_*
+CONCURRENCY_*
+IDEMPOTENCY_*
+DEFAULT_DENY_*
+```
+
+Las familias no sustituyen categorías contractuales.
+
+---
+
+#### 40. Catálogo técnico inicial de razones
+
+Códigos iniciales mínimos:
+
+```text
+AUTHORIZED
+CONTRACT_VERSION_INCOMPATIBLE
+CONTRACT_REQUIRED_FIELD_MISSING
+CONTRACT_CRITICAL_ENUM_UNKNOWN
+CONTRACT_LANE_COMBINATION_INVALID
+CONTRACT_DEPENDENCY_CYCLE
+STRUCTURAL_AUTHENTICATION_INVALID
+STRUCTURAL_ACTOR_UNRESOLVED
+STRUCTURAL_ACTOR_AMBIGUOUS
+STRUCTURAL_EMPLOYEE_INACTIVE
+STRUCTURAL_APPLICATION_INVALID
+STRUCTURAL_PERMISSION_INVALID
+STRUCTURAL_CONTEXT_STALE
+STRUCTURAL_RESOURCE_UNRESOLVED
+STRUCTURAL_RESOURCE_CONFLICT
+STRUCTURAL_TERRITORY_CONFLICT
+STRUCTURAL_DATASET_VERSION_MISMATCH
+STRUCTURAL_GRANT_ID_COLLISION
+STRUCTURAL_DENY_ID_COLLISION
+ACTOR_WIDE_DENY_MATCHED
+BASE_LANE_DENY_MATCHED
+OPERATIONAL_LANE_DENY_MATCHED
+BASE_NO_MATCHING_ALLOW
+OPERATIONAL_NO_MATCHING_ALLOW
+ACTIVE_SHIFT_REQUIRED
+ACTIVE_CHECKIN_REQUIRED
+ACTIVE_AREA_REQUIRED
+PERMISSION_DEPENDENCY_DENIED
+RESOURCE_STATE_INVALID
+RESOURCE_OWNERSHIP_MISMATCH
+RESOURCE_REQUIRED_SIDE_MISMATCH
+RESOURCE_VERSION_CONFLICT
+RESOURCE_ISOLATED
+DEVICE_NOT_ALLOWED
+DEVICE_SESSION_INVALID
+REAUTHENTICATION_REQUIRED
+SECOND_FACTOR_REQUIRED
+FIELD_POLICY_BLOCKED
+CONCURRENCY_VALIDATION_FAILED
+IDEMPOTENCY_VALIDATION_FAILED
+DEFAULT_DENY_NO_MATCHING_ALLOW
+```
+
+Agregar un código no debe cambiar silenciosamente la precedencia.
+
+---
+
+#### 41. Deduplificación de razones
+
+Dos razones son el mismo hecho cuando coinciden:
+
+```text
+reason_code
++
+category
++
+lane
++
+source
+```
+
+En ese caso se conserva una sola entrada.
+
+Si el mismo `reason_code` aparece con categorías incompatibles:
+
+```text
+CONTRACT_INVALID
+→ FINAL DENY
+```
+
+No se elige una categoría arbitrariamente.
+
+---
+
+#### 42. Orden de blocked_reasons
+
+Orden canónico:
+
+1. prioridad de `reason_category`;
+2. lane `ALL`;
+3. lane `null`;
+4. lane `BASE`;
+5. lane `OPERATIONAL`;
+6. `reason_code`;
+7. `source`.
+
+El primer elemento deberá coincidir con `primary_reason_code` después de
+aplicar la tabla normativa de prioridad.
+
+---
+
+#### 43. Consistencia con structural_denies
+
+Cada razón de `structural_denies` que permanezca aplicable deberá aparecer en
+`blocked_reasons`.
+
+No toda razón estructural exige un `MatchedDeny`.
+
+Pero toda razón estructural bloqueante exige:
+
+```text
+final_decision.outcome = DENY
+```
+
+---
+
+#### 44. Consistencia con actor_wide_denies
+
+Cada actor-wide deny coincidente deberá producir:
+
+- un `MatchedDeny` administrable;
+- una razón en `actor_wide_denies`;
+- una razón en `blocked_reasons`;
+- IDs en los carriles compatibles;
+- resultado final deny.
+
+La razón primaria será actor-wide salvo que exista contrato o structural deny
+superior.
+
+---
+
+#### 45. Consistencia con lane_denies
+
+Cada lane deny coincidente deberá:
+
+- permanecer en `lane_denies`;
+- aparecer en `blocked_reasons` cuando contribuya al bloqueo final;
+- aparecer en `LaneDecision.reason_codes` del carril;
+- conservar su lane exacta.
+
+En `BASE_OR_OPERATIONAL`, un lane deny del carril no autorizante puede quedar
+como evidencia sin bloquear el resultado final.
+
+En ese caso no entra en `blocked_reasons` de la solicitud completa, pero sí
+permanece en `lane_denies` y en el carril.
+
+---
+
+#### 46. Razones de carril no bloqueantes para el resultado final
+
+Ejemplo:
+
+```text
+BASE_OR_OPERATIONAL
+base = DENY por BASE_LANE_DENY
+operational = ALLOW
+combination_result = ALLOW
+sin restricciones adicionales
+```
+
+Resultado:
+
+```text
+final = ALLOW
+lane_denies conserva BASE_LANE_DENY
+blocked_reasons = []
+```
+
+La razón bloqueó un carril, no la solicitud completa.
+
+---
+
+#### 47. reason_codes dentro de LaneDecision
+
+`base_decision.reason_codes` contiene razones propias del carril base.
+
+`operational_decision.reason_codes` contiene razones propias del carril
+operativo.
+
+Reglas:
+
+- no mezclan reasons del otro carril;
+- no contienen razones de solicitud puramente transversales salvo cuando
+  efectivamente bloquean ese carril;
+- no sustituyen `blocked_reasons`;
+- conservan orden determinista;
+- pueden contener razones aunque el resultado final sea allow por el otro
+  carril.
+
+---
+
+#### 48. primary_reason_code y reason_category
+
+La relación deberá ser uno-a-uno dentro de la decisión.
+
+Ejemplos:
+
+| primary_reason_code              | reason_category     |
+| -------------------------------- | ------------------- |
+| `AUTHORIZED`                     | `AUTHORIZED`        |
+| `CONTRACT_VERSION_INCOMPATIBLE`  | `CONTRACT_INVALID`  |
+| `STRUCTURAL_ACTOR_UNRESOLVED`    | `STRUCTURAL_DENY`   |
+| `ACTOR_WIDE_DENY_MATCHED`        | `ACTOR_WIDE_DENY`   |
+| `RESOURCE_STATE_INVALID`         | `RESOURCE_DENY`     |
+| `ACTIVE_SHIFT_REQUIRED`          | `PREREQUISITE_DENY` |
+| `BASE_LANE_DENY_MATCHED`         | `LANE_DENY`         |
+| `DEVICE_NOT_ALLOWED`             | `DEVICE_DENY`       |
+| `REAUTHENTICATION_REQUIRED`      | `SENSITIVITY_DENY`  |
+| `FIELD_POLICY_BLOCKED`           | `FIELD_POLICY_DENY` |
+| `DEFAULT_DENY_NO_MATCHING_ALLOW` | `DEFAULT_DENY`      |
+
+---
+
+#### 49. safe_to_expose
+
+`DecisionReason.safe_to_expose` controla si una razón técnica puede aparecer
+en una proyección cliente.
+
+No controla si la razón participa en la decisión.
+
+Una razón sensible puede ser:
+
+```text
+safe_to_expose = false
+severity = BLOCKING
+```
+
+y seguir siendo la razón técnica primaria.
+
+---
+
+#### 50. safe_message_code
+
+`safe_message_code` siempre deberá ser seguro para el consumidor autorizado.
+
+No será:
+
+- texto libre;
+- motivo disciplinario;
+- nombre del grant;
+- deny_id;
+- estructura interna;
+- consulta SQL;
+- mensaje de excepción.
+
+El cliente traducirá el código mediante su catálogo de experiencia.
+
+---
+
+#### 51. Catálogo inicial de mensajes seguros
+
+```text
+AUTHORIZATION_GRANTED
+ACCESS_NOT_AVAILABLE
+AUTHENTICATION_REQUIRED
+WORK_CONTEXT_REQUIRED
+ACTIVE_SHIFT_REQUIRED
+ACTIVE_CHECKIN_REQUIRED
+RESOURCE_NOT_AVAILABLE
+RESOURCE_CHANGED_RETRY
+DEVICE_NOT_SUPPORTED
+REAUTHENTICATION_REQUIRED
+REQUESTED_FIELDS_NOT_ALLOWED
+CONTACT_AUTHORIZED_ADMINISTRATOR
+```
+
+BLOQUE S definirá redacción, localización y acciones de recuperación.
+
+---
+
+#### 52. Mapeo seguro inicial
+
+| Categoría final     | safe_message_code predeterminado       |
+| ------------------- | -------------------------------------- |
+| `AUTHORIZED`        | `AUTHORIZATION_GRANTED`                |
+| `CONTRACT_INVALID`  | `ACCESS_NOT_AVAILABLE`                 |
+| `STRUCTURAL_DENY`   | `ACCESS_NOT_AVAILABLE`                 |
+| `ACTOR_WIDE_DENY`   | `ACCESS_NOT_AVAILABLE`                 |
+| `LANE_DENY`         | `ACCESS_NOT_AVAILABLE`                 |
+| `DEFAULT_DENY`      | `ACCESS_NOT_AVAILABLE`                 |
+| `RESOURCE_DENY`     | `RESOURCE_NOT_AVAILABLE`               |
+| `PREREQUISITE_DENY` | Código seguro específico cuando exista |
+| `DEVICE_DENY`       | `DEVICE_NOT_SUPPORTED`                 |
+| `SENSITIVITY_DENY`  | `REAUTHENTICATION_REQUIRED`            |
+| `FIELD_POLICY_DENY` | `REQUESTED_FIELDS_NOT_ALLOWED`         |
+
+El mapeo específico nunca podrá revelar una razón marcada como no exponible.
+
+---
+
+#### 53. Reason técnico sensible y mensaje genérico
+
+Ejemplo:
+
+```text
+primary_reason_code = ACTOR_WIDE_DENY_MATCHED
+reason_category = ACTOR_WIDE_DENY
+safe_message_code = ACCESS_NOT_AVAILABLE
+```
+
+El cliente no recibe:
+
+- “bloqueo disciplinario”;
+- motivo;
+- aprobador;
+- alcance;
+- fecha final;
+- ID de la denegación.
+
+---
+
+#### 54. Dependencias de permisos
+
+Una dependencia fallida produce:
+
+```text
+reason_category = PREREQUISITE_DENY
+primary_reason_code = PERMISSION_DEPENDENCY_DENIED
+```
+
+cuando no existe una categoría superior.
+
+La decisión de la dependencia:
+
+- conserva su propio contrato;
+- no copia sus grants al permiso principal;
+- no copia sus matched denies;
+- aporta una razón resumida al permiso principal.
+
+---
+
+#### 55. Ciclos de dependencias
+
+Un ciclo produce:
+
+```text
+reason_category = CONTRACT_INVALID
+primary_reason_code = CONTRACT_DEPENDENCY_CYCLE
+final = DENY
+```
+
+No se rompe el ciclo autorizando parcialmente.
+
+No se elige una dependencia “principal”.
+
+---
+
+#### 56. Estado y transición del recurso
+
+Una autoridad válida no supera un estado incompatible.
+
+Ejemplo:
+
+```text
+combination_result = ALLOW
+resource state = incompatible
+```
+
+Resultado:
+
+```text
+final = DENY
+reason_category = RESOURCE_DENY
+primary_reason_code = RESOURCE_STATE_INVALID
+```
+
+---
+
+#### 57. Concurrencia
+
+Cuando la política exige versión, timestamp, lock o snapshot:
+
+```text
+concurrency.validated = false
+→ final DENY
+```
+
+Código inicial:
+
+```text
+CONCURRENCY_VALIDATION_FAILED
+```
+
+El cliente deberá reevaluar sobre el recurso actualizado.
+
+---
+
+#### 58. Idempotencia
+
+Una clave de idempotencia:
+
+- no concede permiso;
+- no sustituye el contexto;
+- no reutiliza una decisión sobre otro payload;
+- no permite repetir una transición incompatible.
+
+Una validación fallida produce:
+
+```text
+IDEMPOTENCY_VALIDATION_FAILED
+→ RESOURCE_DENY
+```
+
+---
+
+#### 59. FieldPolicy PASS
+
+Cuando:
+
+```text
+field_policy_decision.status = PASS
+```
+
+la política de campos no agrega bloqueo.
+
+Esto no autoriza el recurso por sí solo.
+
+---
+
+#### 60. FieldPolicy PARTIAL
+
+`PARTIAL` puede coexistir con final allow únicamente cuando:
+
+- la operación admite proyección reducida;
+- `visible_fields` y `mutable_fields` quedan explícitos;
+- los campos bloqueados no son indispensables para la operación;
+- el servidor aplica la proyección;
+- el cliente no puede recuperar los campos excluidos.
+
+En este caso:
+
+```text
+final = ALLOW
+reason_category = AUTHORIZED
+```
+
+La limitación permanece en `field_policy_decision`.
+
+---
+
+#### 61. FieldPolicy FAIL
+
+`FAIL` produce:
+
+```text
+final = DENY
+reason_category = FIELD_POLICY_DENY
+primary_reason_code = FIELD_POLICY_BLOCKED
+```
+
+salvo que exista una categoría superior.
+
+No se ejecuta una mutación parcial no declarada.
+
+---
+
+#### 62. Colecciones
+
+Para `COLLECTION`:
+
+- el servidor construye el conjunto autorizado;
+- miembros denegados no se recuperan para filtrado cliente;
+- la decisión puede autorizar una colección reducida;
+- el mensaje no revela miembros excluidos;
+- la paginación conserva el mismo contrato y scope.
+
+Una colección vacía autorizada no es igual a una colección denegada.
+
+---
+
+#### 63. Agregados
+
+Un agregado final allow exige que todas sus contribuciones estén dentro del
+conjunto autorizado.
+
+No se permite inferencia mediante:
+
+- conteos;
+- diferencias;
+- totales;
+- agrupaciones;
+- errores diferenciados.
+
+Una contribución bloqueada deberá excluirse o bloquear el agregado según el
+contrato.
+
+---
+
+#### 64. BULK ALL_OR_NOTHING
+
+Cuando la política es:
+
+```text
+ALL_OR_NOTHING
+```
+
+un miembro bloqueado produce:
+
+```text
+final = DENY para la operación masiva completa
+```
+
+La razón primaria se selecciona con la misma precedencia normativa.
+
+---
+
+#### 65. BULK PARTIAL_WITH_RESULTS
+
+Cuando la política es:
+
+```text
+PARTIAL_WITH_RESULTS
+```
+
+cada miembro obtiene su propia decisión.
+
+La decisión contenedora no podrá presentarse como allow irrestricto sobre
+todos los miembros.
+
+Los resultados denegados usarán mensajes seguros individuales.
+
+---
+
+#### 66. NON_RESOURCE
+
+Una solicitud `NON_RESOURCE` puede autorizarse cuando:
+
+- el contrato declara legítimamente esa forma;
+- el permiso exacto admite la operación;
+- no existe un recurso empresarial omitido;
+- los carriles y restricciones quedan satisfechos.
+
+`NON_RESOURCE` no es fallback para una resolución fallida.
+
+---
+
+#### 67. Dispositivo compartido
+
+En dispositivo compartido:
+
+```text
+principal = dispositivo
+actor efectivo = empleado
+```
+
+La decisión final deberá atribuirse al actor efectivo y conservar la
+referencia del dispositivo en auditoría.
+
+Una sesión de actor inválida produce structural deny.
+
+Un paquete de dispositivo incompatible produce device deny.
+
+---
+
+#### 68. Entornos aislados
+
+Un entorno aislado sin autorización específica produce:
+
+```text
+final = DENY
+reason_category = STRUCTURAL_DENY o RESOURCE_DENY
+```
+
+La categoría dependerá de si la incompatibilidad invalida el contrato de
+resolución o bloquea un recurso correctamente resuelto.
+
+Un grant global ordinario no modifica esta regla.
+
+---
+
+#### 69. Contexto obsoleto
+
+Cuando el contexto supera su política de frescura o contradice la realidad
+autoritativa:
+
+```text
+primary_reason_code = STRUCTURAL_CONTEXT_STALE
+reason_category = STRUCTURAL_DENY
+safe_message_code = WORK_CONTEXT_REQUIRED o ACCESS_NOT_AVAILABLE
+```
+
+Se deberá resolver un nuevo contexto.
+
+---
+
+#### 70. Procesos SYSTEM
+
+Los procesos de sistema no deberán recibir `AUTHORIZED` por usar
+`service_role`.
+
+La rama SYSTEM deberá validar identidad técnica, permiso, recurso, alcance y
+auditoría conforme a `AUTH-CTX-026`.
+
+Mientras la rama no esté publicada:
+
+```text
+contrato no compatible
+→ FINAL DENY
+```
+
+---
+
+#### 71. Simulación
+
+Una decisión simulada no utiliza `FinalDecision` real para ejecutar.
+
+No podrá proyectar:
+
+```text
+outcome = ALLOW
+```
+
+como autoridad ejecutable.
+
+La simulación conserva contratos y estados separados.
+
+---
+
+#### 72. Proyección interna
+
+La proyección interna autorizada puede incluir:
+
+- `DecisionCombination` completo;
+- `FinalDecision` completo;
+- `blocked_reasons` completo;
+- matched grants y denies;
+- fuentes y IDs;
+- hashes y versiones;
+- datos de auditoría permitidos.
+
+No significa que todo consumidor de frontend pueda verla.
+
+---
+
+#### 73. Proyección segura al cliente
+
+La respuesta cliente ordinaria podrá incluir:
+
+- `final_decision.outcome`;
+- `safe_message_code`;
+- razones con `safe_to_expose = true`;
+- acción de recuperación permitida;
+- `correlation_id` seguro;
+- campos autorizados.
+
+No deberá incluir:
+
+- `deny_id`;
+- `grant_id`;
+- motivo disciplinario;
+- matrices;
+- fuente sensible;
+- evidencia interna;
+- existencia de recursos ocultos.
+
+---
+
+#### 74. Determinismo
+
+Mismos inputs congelados deberán producir:
+
+```text
+misma combination
+misma final_decision
+mismo primary_reason_code
+mismo orden de blocked_reasons
+mismo safe_message_code
+```
+
+Se excluyen identificadores únicos y timestamps que por contrato deban ser
+nuevos.
+
+---
+
+#### 75. Inmutabilidad
+
+Una vez emitida:
+
+- no se cambia el outcome;
+- no se cambia la razón primaria;
+- no se agregan o eliminan razones;
+- no se cambian authorizing lanes;
+- no se cambia el mensaje seguro;
+- no se actualiza el recurso.
+
+Una nueva realidad produce una nueva decisión.
+
+---
+
+#### 76. Ejecución vinculada
+
+`final_decision.outcome = ALLOW` no ejecuta la acción.
+
+Para mutaciones se exige:
+
+```text
+resolver
+→ autorizar
+→ validar estado y concurrencia
+→ ejecutar
+```
+
+en una frontera segura o con revalidación inmediata.
+
+`decision_id` no se utiliza como bypass.
+
+---
+
+#### 77. Casos canónicos
+
+##### Caso A — BASE_ONLY autorizado
+
+```text
+base = ALLOW
+operational = NOT_APPLICABLE
+sin bloqueos
+```
+
+Resultado:
+
+```text
+combination_result = ALLOW
+final = ALLOW
+authorizing_lanes = [BASE]
+primary_reason_code = AUTHORIZED
+```
+
+##### Caso B — OPERATIONAL_ONLY sin turno
+
+```text
+operational = DENY
+reason = ACTIVE_SHIFT_REQUIRED
+```
+
+Resultado:
+
+```text
+final = DENY
+reason_category = PREREQUISITE_DENY
+```
+
+##### Caso C — BASE_OR_OPERATIONAL
+
+```text
+base = DENY por lane deny
+operational = ALLOW
+```
+
+Resultado:
+
+```text
+combination_result = ALLOW
+final = ALLOW
+combination.blocked_lanes = [BASE]
+final.authorizing_lanes = [OPERATIONAL]
+blocked_reasons = []
+```
+
+##### Caso D — BASE_AND_OPERATIONAL incompleto
+
+```text
+base = ALLOW
+operational = DENY
+```
+
+Resultado:
+
+```text
+combination_result = DENY
+final = DENY
+```
+
+##### Caso E — Actor-wide deny
+
+```text
+allows base y operativo coinciden
+actor-wide deny coincide
+```
+
+Resultado:
+
+```text
+final = DENY
+reason_category = ACTOR_WIDE_DENY
+```
+
+##### Caso F — Combinación positiva, dispositivo bloqueado
+
+```text
+combination_result = ALLOW
+device_decision = FAIL
+```
+
+Resultado:
+
+```text
+final = DENY
+combination.authorizing_lanes conserva evidencia
+final.authorizing_lanes = []
+```
+
+##### Caso G — Reautenticación requerida
+
+```text
+combination_result = ALLOW
+sensitivity_decision = FAIL
+```
+
+Resultado:
+
+```text
+final = DENY
+safe_message_code = REAUTHENTICATION_REQUIRED
+```
+
+##### Caso H — Lectura parcial de campos
+
+```text
+combination_result = ALLOW
+field_policy = PARTIAL
+proyección reducida válida
+```
+
+Resultado:
+
+```text
+final = ALLOW
+```
+
+##### Caso I — Mutación con campo bloqueado
+
+```text
+field_policy = FAIL
+```
+
+Resultado:
+
+```text
+final = DENY
+reason_category = FIELD_POLICY_DENY
+```
+
+##### Caso J — Recurso cambió
+
+```text
+combination_result = ALLOW
+concurrency.validated = false
+```
+
+Resultado:
+
+```text
+final = DENY
+safe_message_code = RESOURCE_CHANGED_RETRY
+```
+
+##### Caso K — Default deny
+
+```text
+contexto válido
+sin explicit deny
+sin allow suficiente
+```
+
+Resultado:
+
+```text
+final = DENY
+primary_reason_code = DEFAULT_DENY_NO_MATCHING_ALLOW
+```
+
+##### Caso L — Contrato incompatible
+
+```text
+modalidad = BASE_ONLY
+operational_outcome = ALLOW
+```
+
+Resultado:
+
+```text
+final = DENY
+reason_category = CONTRACT_INVALID
+```
+
+##### Caso M — Razón sensible
+
+```text
+actor-wide deny
+safe_to_expose = false
+```
+
+Resultado cliente:
+
+```text
+ACCESS_NOT_AVAILABLE
+```
+
+##### Caso N — Bulk atómico
+
+```text
+99 miembros allow
+1 miembro deny
+policy = ALL_OR_NOTHING
+```
+
+Resultado:
+
+```text
+final = DENY
+```
+
+##### Caso O — Dependencia fallida
+
+```text
+permiso principal tiene allows
+dependencia = DENY
+```
+
+Resultado:
+
+```text
+final = DENY
+primary_reason_code = PERMISSION_DEPENDENCY_DENIED
+```
+
+---
+
+#### 78. Antipatrones prohibidos
+
+```ts
+const finalDecision =
+  baseDecision.outcome === "ALLOW" ||
+  operationalDecision.outcome === "ALLOW";
+```
+
+```ts
+if (matchedAllows.length > 0) {
+  return "ALLOW";
+}
+```
+
+```ts
+const primaryReason = blockedReasons[0];
+```
+
+```ts
+return {
+  outcome: combination.combination_result,
+  authorizing_lanes: combination.authorizing_lanes,
+};
+```
+
+```ts
+if (fieldPolicy.status === "PARTIAL") {
+  return "DENY";
+}
+```
+
+```ts
+safe_message_code = primary_reason_code;
+```
+
+También queda prohibido:
+
+```text
+allow de carril → allow final automático
+combination allow → ejecutar sin restricciones
+primer error físico → razón primaria
+razón primaria → única razón
+lane deny en OR → bloquear el otro carril
+partial fields → deny universal
+actor-wide deny → mensaje disciplinario
+service_role → authorized
+final allow → token reutilizable
+```
+
+---
+
+#### 79. Relación con tareas posteriores
+
+| Tarea                         | Responsabilidad posterior                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `AUTH-CTX-024`                | Definir auditoría, hashes, versiones, evidencias, correlation y retención       |
+| `AUTH-CTX-025`                | Diseñar producción física de `AccessContext`                                    |
+| `AUTH-CTX-026`                | Diseñar evaluador físico, catálogo de prioridades, tipos, schemas y rama SYSTEM |
+| `AUTH-CTX-027`                | Obligar a consumidores a usar la decisión centralizada                          |
+| `AUTH-CTX-028`                | Adaptar funciones booleanas, mensajes y precedencias legacy                     |
+| `AUTH-CTX-029`                | Definir caché, expiración, invalidación y reevaluación                          |
+| `AUTH-CTX-030`                | Probar modalidades, precedencia, razones, mensajes y determinismo               |
+| `AUTH-DB-006` a `AUTH-DB-010` | Aplicar la decisión dentro de RPC sensibles                                     |
+| `AUTH-DB-020`                 | Migrar grants, denies y precedencias legacy                                     |
+| `AUTH-DB-027`                 | Probar integridad, RLS, RPC y migraciones                                       |
+| `AUTH-DB-030`                 | Retirar evaluadores y fallbacks legacy                                          |
+| `AUTH-DB-031`                 | Certificar paridad documental, técnica y operativa                              |
+| BLOQUE S                      | Diseñar mensajes, recuperación y UX de autorización                             |
+| `GAP-CTRL-001`                | Consolidar brechas detectadas                                                   |
+| `GAP-CTRL-006`                | Vincular cada brecha con tarea y paquete implementable                          |
+
+---
+
+#### 80. Fuera del alcance
+
+AUTH-CTX-023 no:
+
+- modifica modalidades;
+- modifica grants;
+- modifica denies;
+- crea reason rows físicas;
+- crea mensajes de interfaz;
+- implementa traducciones;
+- crea tipos TypeScript;
+- crea JSON Schema;
+- crea Zod;
+- crea SQL;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- modifica Supabase;
+- implementa caché;
+- ejecuta acciones;
+- define retención de auditoría;
+- implementa procesos SYSTEM.
+
+Cada responsabilidad posterior tiene destino explícito en la sección 79.
+
+---
+
+#### 81. Riesgos controlados
+
+| Riesgo                                              | Control canónico                             |
+| --------------------------------------------------- | -------------------------------------------- |
+| Un allow de carril se vuelve allow final            | Capas separadas y restricciones finales      |
+| OR se interpreta como AND                           | Tabla de combinación explícita               |
+| AND acepta un solo carril                           | Ambos outcomes deben ser allow               |
+| Lane deny en OR bloquea toda la solicitud           | Solo bloquea su carril                       |
+| Combination allow oculta dispositivo o sensibilidad | FinalDecision se calcula después             |
+| Razón primaria borra evidencia                      | blocked_reasons conserva todas               |
+| Orden de consulta cambia explicación                | Prioridad y desempate deterministas          |
+| Deny sensible se revela                             | safe_to_expose y safe_message_code separados |
+| Field PARTIAL se deniega siempre                    | Allow sobre proyección reducida válida       |
+| Concurrencia se ignora                              | Revalidación bloqueante                      |
+| Default deny se confunde con explicit deny          | Categorías y códigos separados               |
+| service_role concede negocio                        | Rama SYSTEM contractual obligatoria          |
+| Decisión positiva se reutiliza indefinidamente      | Inmutabilidad y reevaluación                 |
+| Cliente ejecuta por UI allow                        | Servidor debe reevaluar y vincular ejecución |
+
+---
+
+#### 82. Criterios de aprobación
+
+AUTH-CTX-023 podrá aprobarse cuando se acepte que:
+
+1. se conserva la forma de `DecisionCombination`;
+2. se conserva la forma de `FinalDecision`;
+3. se conserva la forma de `DecisionReason`;
+4. no se agregan campos;
+5. no se eliminan campos;
+6. la decisión usa cinco capas;
+7. un allow de carril no implica allow final;
+8. combination_result no implica final allow;
+9. la consolidación tiene orden normativo;
+10. los outcomes de carril son entradas, no se recalculan;
+11. un enum desconocido falla cerrado;
+12. la modalidad debe ser compatible con ambos outcomes;
+13. BASE_ONLY exige base aplicable;
+14. BASE_ONLY exige operativo no aplicable;
+15. OPERATIONAL_ONLY exige operativo aplicable;
+16. OPERATIONAL_ONLY exige base no aplicable;
+17. BASE_OR_OPERATIONAL evalúa ambos carriles;
+18. BASE_AND_OPERATIONAL evalúa ambos carriles;
+19. combinaciones incompatibles producen CONTRACT_INVALID;
+20. DecisionCombination es determinista;
+21. BASE_ONLY autoriza solo con base allow;
+22. OPERATIONAL_ONLY autoriza solo con operativo allow;
+23. BASE_OR_OPERATIONAL autoriza con cualquiera de los dos;
+24. BASE_OR_OPERATIONAL conserva ambos si ambos permiten;
+25. BASE_AND_OPERATIONAL exige ambos allows;
+26. authorizing_lanes no contiene denies;
+27. authorizing_lanes no contiene no aplicables;
+28. authorizing_lanes se ordena base antes de operativo;
+29. blocked_lanes contiene carriles aplicables denegados;
+30. blocked_lanes no contiene restricciones transversales;
+31. OR puede tener un carril autorizante y otro bloqueado;
+32. combination_result responde solo por modalidad;
+33. final_decision responde por solicitud completa;
+34. structural deny bloquea;
+35. actor-wide deny bloquea;
+36. dependencia fallida bloquea;
+37. estado incompatible bloquea;
+38. dispositivo incompatible bloquea;
+39. sensibilidad fallida bloquea;
+40. field policy FAIL bloquea;
+41. concurrencia fallida bloquea;
+42. idempotencia inválida bloquea;
+43. los bloqueos no borran allows;
+44. final outcome solo admite ALLOW o DENY;
+45. no existe resultado null;
+46. primary_reason_code siempre existe;
+47. safe_message_code siempre existe;
+48. reason_category corresponde a la razón primaria;
+49. final ALLOW exige combination ALLOW;
+50. final ALLOW exige blocked_reasons vacío;
+51. final ALLOW usa category AUTHORIZED;
+52. final ALLOW usa code AUTHORIZED;
+53. final ALLOW usa AUTHORIZATION_GRANTED;
+54. final ALLOW proyecta authorizing lanes de la combinación;
+55. final DENY exige al menos una razón bloqueante;
+56. final DENY proyecta authorizing_lanes vacío;
+57. final DENY no usa category AUTHORIZED;
+58. final DENY conserva evidencia positiva interna;
+59. razón primaria no elimina razones adicionales;
+60. blocked_reasons conserva evidencia completa;
+61. existe prioridad técnica explícita;
+62. CONTRACT_INVALID tiene mayor prioridad;
+63. STRUCTURAL_DENY sigue a contrato inválido;
+64. ACTOR_WIDE_DENY sigue a structural;
+65. DEFAULT_DENY tiene menor prioridad bloqueante;
+66. el desempate es determinista;
+67. el orden físico no determina la razón primaria;
+68. CONTRACT_INVALID cubre incompatibilidades contractuales;
+69. STRUCTURAL_DENY cubre invalideces autoritativas;
+70. ACTOR_WIDE_DENY no revela motivo sensible;
+71. RESOURCE_DENY cubre estado y ejecución del recurso;
+72. PREREQUISITE_DENY cubre turno, check-in y dependencias;
+73. LANE_DENY cubre denegaciones de carril que bloquean la modalidad;
+74. DEVICE_DENY procede de device FAIL;
+75. SENSITIVITY_DENY procede de controles sensibles fallidos;
+76. FIELD_POLICY_DENY procede de field FAIL;
+77. DEFAULT_DENY solo aplica por ausencia de allow suficiente;
+78. blocked_reasons solo contiene severity BLOCKING;
+79. blocked_reasons no contiene AUTHORIZED;
+80. las fuentes de razones quedan enumeradas;
+81. toda razón queda normalizada;
+82. reason_code no contiene texto localizado;
+83. reason_code no contiene PII;
+84. reason_code usa forma canónica;
+85. existen familias iniciales;
+86. existe catálogo técnico inicial;
+87. agregar un código no cambia precedencia implícitamente;
+88. razones duplicadas se deduplican semánticamente;
+89. categorías incompatibles producen contract invalid;
+90. blocked_reasons tiene orden canónico;
+91. structural_denies se refleja en blocked_reasons;
+92. actor_wide_denies se refleja en blocked_reasons;
+93. lane_denies se refleja cuando bloquea la solicitud completa;
+94. lane deny no bloqueante en OR permanece solo como evidencia de carril;
+95. reason_codes de base no mezclan operativo;
+96. reason_codes operativos no mezclan base;
+97. LaneDecision reasons no sustituyen blocked_reasons;
+98. primary_reason_code y reason_category son consistentes;
+99. safe_to_expose no altera el resultado;
+100. una razón no exponible sigue bloqueando;
+101. safe_message_code es siempre seguro;
+102. safe_message_code no es texto libre;
+103. existe catálogo inicial de mensajes seguros;
+104. actor-wide deny usa mensaje genérico;
+105. dependencias conservan decisión separada;
+106. dependencia fallida aporta una razón resumida;
+107. ciclos producen contract invalid;
+108. estado incompatible supera autoridad válida;
+109. concurrencia requiere validación;
+110. idempotencia no concede permiso;
+111. FieldPolicy PASS no agrega bloqueo;
+112. FieldPolicy PARTIAL puede permitir proyección reducida;
+113. FieldPolicy PARTIAL no permite mutación parcial no declarada;
+114. FieldPolicy FAIL deniega;
+115. colecciones se delimitan en servidor;
+116. colección vacía autorizada no equivale a deny;
+117. agregados evitan inferencias;
+118. bulk all-or-nothing bloquea completo;
+119. bulk partial produce decisiones por miembro;
+120. NON_RESOURCE no es fallback;
+121. dispositivo compartido conserva actor y principal;
+122. sesión de actor inválida es structural;
+123. paquete de dispositivo incompatible es device deny;
+124. entornos aislados requieren autorización específica;
+125. contexto obsoleto exige nueva resolución;
+126. service_role no produce authorized;
+127. simulación no produce autoridad ejecutable;
+128. la proyección interna puede contener evidencia completa autorizada;
+129. la proyección cliente protege grants, denies y recursos ocultos;
+130. mismos inputs producen mismo resultado semántico;
+131. la decisión es inmutable;
+132. una nueva realidad produce nueva decisión;
+133. final allow no ejecuta la acción;
+134. las mutaciones requieren frontera segura o revalidación;
+135. decision_id no funciona como bypass;
+136. AUTH-CTX-024 definirá auditoría;
+137. AUTH-CTX-026 definirá implementación contractual;
+138. AUTH-CTX-027 eliminará decisiones locales;
+139. AUTH-CTX-028 gobernará compatibilidad legacy;
+140. AUTH-CTX-029 gobernará caché e invalidación;
+141. AUTH-CTX-030 gobernará pruebas;
+142. BLOQUE S gobernará mensajes y UX;
+143. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 83. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-022` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-023` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-024` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-022 — APROBADA
+        ↓
+AUTH-CTX-023 — APROBADA
+        ↓
+AUTH-CTX-024 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-024` hasta recibir aprobación explícita de
+`AUTH-CTX-023`.
+
+### ✅ AUTH-CTX-024 — Incluir datos de auditoría
+
+| Campo                          | Valor                                                                                         |
+| ------------------------------ | --------------------------------------------------------------------------------------------- |
+| **Estado**                     | APROBADA                                                                                      |
+| **Bloque**                     | BLOQUE E — Contexto y decisión de autorización unificados                                     |
+| **Subbloque**                  | `AUTHORIZATION DECISION`                                                                      |
+| **Naturaleza**                 | Definición documental de `AuthorizationAuditContext`                                          |
+| **Implementación física**      | No incluida                                                                                   |
+| **Tarea anterior vigente**     | `AUTH-CTX-023` — APROBADA                                                                     |
+| **Tarea posterior reservada**  | `AUTH-CTX-025` — Diseñar contrato SQL de `get_access_context`                                 |
+| **Contrato afectado**          | `AuthorizationDecision@1.0.0`                                                                 |
+| **Campo principal afectado**   | `audit`                                                                                       |
+| **Tipo principal afectado**    | `AuthorizationAuditContext`                                                                   |
+| **Perfil de serialización**    | `vento.canonical-json@1.0.0`                                                                  |
+| **Cambio contractual**         | Aclaración normativa compatible; no cambia la forma publicada                                 |
+| **Cambios físicos permitidos** | No                                                                                            |
+| **Brecha física detectada**    | Falta tarea específica de persistencia de decisiones                                          |
+| **Nueva tarea requerida**      | `AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización` |
+
+Esta tarea define qué evidencia mínima debe acompañar a cada
+`AuthorizationDecision`, cómo se relaciona con la evidencia detallada de la
+decisión y cómo deberá permitir trazabilidad, reproducción y vinculación con
+la ejecución sin convertir la decisión en un token de capacidad.
+
+La regla central es:
+
+```text
+DECISIÓN AUTORIZATIVA
+=
+RESULTADO
++
+EVIDENCIA
++
+PROCEDENCIA
++
+HUELLAS
++
+VERSIONES
++
+ATRIBUCIÓN
+```
+
+```text
+AUDITORÍA
+≠
+LOG DE TEXTO
+```
+
+```text
+AUDITORÍA
+≠
+RESPUESTA SEGURA PARA CLIENTE
+```
+
+```text
+DECISION_ID
+≠
+TOKEN DE AUTORIZACIÓN
+```
+
+No implementa tablas, columnas, índices, particiones, RLS, RPC, funciones,
+triggers, migraciones, retención, archivado, dashboards, exportaciones ni
+cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir `AuthorizationAuditContext` para que Vento OS pueda demostrar:
+
+1. qué decisión fue emitida;
+2. cuándo fue emitida;
+3. qué solicitud originó la evaluación;
+4. qué actor efectivo fue evaluado;
+5. qué principal presentó la credencial;
+6. qué dispositivo intervino;
+7. qué aplicación y permiso exactos se evaluaron;
+8. qué recurso o conjunto se resolvió;
+9. cuál fue el resultado final;
+10. qué carriles autorizaron;
+11. qué snapshot de contexto se utilizó;
+12. qué snapshot de recurso se utilizó;
+13. qué catálogo se utilizó;
+14. qué datasets se utilizaron;
+15. qué evaluador produjo el resultado;
+16. qué versión del evaluador participó;
+17. cómo se vincula la decisión con la ejecución;
+18. cómo se preserva la trazabilidad sin filtrar secretos;
+19. cómo se conserva la inmutabilidad histórica;
+20. cómo se reproduce una investigación posterior.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-024 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-CTX-001` — `AccessContext`;
+- `AUTH-CTX-002` — `AuthorizationDecision`;
+- `AUTH-CTX-003` — `SimulationContext`;
+- `AUTH-CTX-004` — Versionado y serialización;
+- `AUTH-CTX-005` a `AUTH-CTX-015` — Identidad, actor, empleo, contexto y dispositivo;
+- `AUTH-CTX-016` — Aplicación y permiso;
+- `AUTH-CTX-017` — Modalidad y prerrequisitos;
+- `AUTH-CTX-018` — Recurso y territorio;
+- `AUTH-CTX-019` — Carril base;
+- `AUTH-CTX-020` — Carril operativo;
+- `AUTH-CTX-021` — Allows coincidentes;
+- `AUTH-CTX-022` — Denegaciones coincidentes;
+- `AUTH-CTX-023` — Decisión final y razones;
+- `AUTH-RBAC-024` a `AUTH-RBAC-026` — Datasets canónicos;
+- `SUPA-ARC-007` — Esquema transversal futuro de auditoría y eventos;
+- `SUPA-ARC-022` — Retención, archivado, respaldo y recuperación;
+- `AUTH-DB-012` — Auditoría futura de cambios de permisos;
+- `AUTH-DB-013` — Auditoría futura de simulación;
+- `AUTH-DB-014` — Auditoría futura de dispositivos;
+- `AUTH-DB-025` — Índices, retención y controles de crecimiento;
+- `AUTH-DB-027` — Harness de pruebas de Supabase;
+- `AUTH-DB-031` — Certificación de paridad.
+
+Principios obligatorios:
+
+```text
+MISMO decision_id
+→ MISMA DECISIÓN INMUTABLE
+```
+
+```text
+MISMA DECISIÓN
+→ MISMO CONTEXTO
+→ MISMO RECURSO
+→ MISMO CATÁLOGO
+→ MISMOS DATASETS
+→ MISMO EVALUADOR
+```
+
+```text
+NUEVA REALIDAD
+→ NUEVA DECISIÓN
+→ NUEVO decision_id
+```
+
+---
+
+#### 3. Alcance
+
+AUTH-CTX-024 precisa exclusivamente:
+
+- forma y semántica de `AuthorizationAuditContext`;
+- atribución de actor, principal y dispositivo;
+- identidad de aplicación, permiso y recurso;
+- resultado y carriles autorizantes;
+- huellas de contexto y recurso;
+- hash de catálogo;
+- hashes de datasets;
+- identidad y versión del evaluador;
+- correlación con solicitud y ejecución;
+- proyección segura;
+- invariantes de integridad;
+- responsabilidades físicas posteriores.
+
+No modifica la precedencia, la modalidad, los grants, los denies ni el
+resultado aprobado en AUTH-CTX-023.
+
+---
+
+#### 4. Forma contractual conservada
+
+La forma publicada se conserva:
+
+```ts
+type AuthorizationAuditContext = {
+  decision_id: string;
+  correlation_id: string | null;
+
+  actor_id: string | null;
+  principal_id: string | null;
+  device_id: string | null;
+
+  app_code: string;
+  permission_key: string;
+  resource_type: string;
+  resource_ids: string[];
+
+  outcome: "ALLOW" | "DENY";
+  authorizing_lanes: AuthorizationLane[];
+
+  context_fingerprint: string;
+  resource_fingerprint: string;
+  catalog_hash: string;
+  dataset_hashes: Record<string, string>;
+
+  evaluator_name: string;
+  evaluator_version: string;
+};
+```
+
+La raíz conserva:
+
+```ts
+audit: AuthorizationAuditContext;
+```
+
+No se agregan, eliminan ni renombran campos en `AuthorizationDecision@1.0.0`.
+
+---
+
+#### 5. Función del audit context
+
+`AuthorizationAuditContext` será el índice de trazabilidad de la decisión.
+
+No duplicará indiscriminadamente:
+
+- solicitud completa;
+- contexto completo;
+- recurso completo;
+- grants completos;
+- denegaciones completas;
+- razones completas;
+- estado completo;
+- campos protegidos completos.
+
+La evidencia detallada permanece en el resto de `AuthorizationDecision`.
+
+El objeto `audit` identifica y enlaza esa evidencia.
+
+---
+
+#### 6. Audit context frente a decisión completa
+
+```text
+AuthorizationDecision
+→ evidencia semántica completa
+
+AuthorizationAuditContext
+→ índice compacto, estable y verificable
+```
+
+Una auditoría autorizada deberá poder partir del objeto `audit` y localizar:
+
+- la decisión exacta;
+- el contexto exacto;
+- la solicitud exacta;
+- el recurso exacto;
+- las fuentes exactas;
+- la ejecución relacionada cuando exista.
+
+---
+
+#### 7. Presencia obligatoria
+
+Toda `AuthorizationDecision` válida deberá contener:
+
+```text
+audit != null
+```
+
+No se admiten:
+
+- decisiones sin auditoría;
+- auditoría opcional para `ALLOW`;
+- auditoría opcional para `DENY`;
+- auditoría únicamente en errores;
+- auditoría únicamente en capacidades sensibles.
+
+La persistencia durable podrá depender de políticas posteriores, pero el
+contrato emitido siempre contendrá `audit`.
+
+---
+
+#### 8. Consistencia de decision_id
+
+La igualdad obligatoria es:
+
+```text
+AuthorizationDecision.decision_id
+=
+AuthorizationDecision.audit.decision_id
+```
+
+`decision_id` deberá ser:
+
+- único;
+- estable;
+- no vacío;
+- generado por servidor;
+- no predecible cuando la implementación lo requiera;
+- inmutable;
+- no reutilizado.
+
+No podrá ser:
+
+- índice incremental expuesto;
+- permiso;
+- employee_id;
+- resource_id;
+- idempotency key;
+- correlation ID;
+- token de acceso.
+
+---
+
+#### 9. decided_at
+
+`decided_at` permanece en la raíz de la decisión.
+
+El objeto `audit` no agrega otro timestamp redundante.
+
+Regla:
+
+```text
+audit
+se interpreta dentro de la decisión emitida en decided_at
+```
+
+La persistencia futura deberá conservar `decided_at` junto al audit context.
+
+---
+
+#### 10. correlation_id
+
+`correlation_id` vincula eventos pertenecientes a una misma operación lógica.
+
+Podrá conectar:
+
+```text
+solicitud
+→ resolución de contexto
+→ decisión
+→ ejecución
+→ evento de dominio
+→ error o compensación
+```
+
+No concede autoridad.
+
+No reemplaza `decision_id`.
+
+No se reutiliza para operaciones empresariales no relacionadas.
+
+---
+
+#### 11. correlation_id nulo
+
+`correlation_id = null` será válido únicamente cuando el origen todavía no
+disponga de correlación.
+
+No significa:
+
+- que la decisión no sea auditable;
+- que `decision_id` pueda omitirse;
+- que la ejecución quede sin atribución;
+- que pueda inventarse una correlación retrospectiva distinta.
+
+AUTH-CTX-026 deberá definir en qué fronteras el evaluador crea o propaga la
+correlación.
+
+---
+
+#### 12. actor_id
+
+`actor_id` representa el actor efectivo evaluado.
+
+Debe coincidir con:
+
+```text
+access_context_ref.actor_id
+```
+
+y con la proyección autoritativa del `AccessContext`.
+
+Puede representar:
+
+- empleado;
+- cliente;
+- actor de sistema.
+
+Será `null` únicamente cuando el actor permanezca legítimamente no resuelto.
+
+---
+
+#### 13. principal_id
+
+`principal_id` representa el principal técnico que presentó la credencial.
+
+Debe coincidir con:
+
+```text
+access_context_ref.principal_id
+```
+
+Puede corresponder a:
+
+- usuario autenticado;
+- principal técnico de dispositivo compartido;
+- identidad de servicio;
+- otro principal canónico futuro.
+
+No equivale automáticamente a `actor_id`.
+
+---
+
+#### 14. device_id
+
+`device_id` identifica el dispositivo compartido o dispositivo administrado
+que intervino en la solicitud.
+
+Será:
+
+```text
+device_id = null
+```
+
+cuando no exista un dispositivo canónico involucrado.
+
+No se rellenará con:
+
+- browser session ID;
+- user agent;
+- dirección IP;
+- hostname no registrado;
+- auth_user_id;
+- employee_id.
+
+---
+
+#### 15. Matriz de atribución
+
+| Escenario                   | `actor_id`                        | `principal_id`                    | `device_id`                               |
+| --------------------------- | --------------------------------- | --------------------------------- | ----------------------------------------- |
+| Sesión personal de empleado | Empleado                          | Usuario autenticado               | `null` o dispositivo administrado real    |
+| Dispositivo compartido      | Empleado activo en el dispositivo | Principal técnico del dispositivo | Dispositivo exacto                        |
+| Cliente autenticado         | Cliente                           | Usuario autenticado               | `null` o dispositivo administrado real    |
+| Servicio de sistema         | Actor de sistema                  | Principal técnico del servicio    | `null`                                    |
+| Actor no resuelto           | `null`                            | Principal disponible o `null`     | Dispositivo disponible o `null`           |
+| Anónimo                     | `null`                            | `null`                            | `null` salvo dispositivo público canónico |
+
+La fila de atribución no cambia el outcome por sí misma.
+
+---
+
+#### 16. Atribución en dispositivo compartido
+
+En un dispositivo compartido:
+
+```text
+principal_id
+≠ actor_id
+```
+
+La auditoría deberá conservar simultáneamente:
+
+- principal técnico del dispositivo;
+- empleado efectivo;
+- dispositivo exacto.
+
+Queda prohibido atribuir la acción únicamente al usuario técnico compartido.
+
+---
+
+#### 17. app_code
+
+`app_code` deberá coincidir exactamente con:
+
+```text
+AuthorizationDecision.request.app_code
+```
+
+y con la aplicación propietaria del permiso según el catálogo.
+
+No se utilizan:
+
+- alias de UI;
+- ruta;
+- nombre comercial libre;
+- módulo;
+- repositorio;
+- hostname.
+
+---
+
+#### 18. permission_key
+
+`permission_key` deberá coincidir exactamente con:
+
+```text
+AuthorizationDecision.request.permission_key
+```
+
+y con:
+
+```text
+permission_contract.permission_key
+```
+
+No se registran prefijos, wildcards ni nombres humanos.
+
+---
+
+#### 19. resource_type
+
+`resource_type` deberá coincidir con:
+
+```text
+AuthorizationDecision.resource.resource_type
+```
+
+No será el nombre de una tabla salvo coincidencia contractual explícita.
+
+No se utilizará un tipo genérico para ocultar errores de resolución.
+
+---
+
+#### 20. resource_ids
+
+`resource_ids` contendrá los identificadores canónicos efectivamente
+resueltos.
+
+Reglas:
+
+- lista explícita;
+- sin duplicados;
+- orden determinista;
+- misma representación entre evaluaciones equivalentes;
+- sin identificadores inventados;
+- sin IDs enviados por cliente que no hayan sido verificados.
+
+---
+
+#### 21. Recurso existente
+
+Para `request_shape = EXISTING`:
+
+```text
+resource_ids.length >= 1
+```
+
+salvo que la resolución haya fallado antes de confirmar un recurso.
+
+Una decisión `ALLOW` sobre recurso existente exige al menos un ID resuelto.
+
+---
+
+#### 22. Borrador de creación
+
+Para `request_shape = DRAFT`, el recurso puede todavía no poseer ID persistido.
+
+Regla:
+
+```text
+resource_ids = []
+```
+
+puede ser válido cuando:
+
+- el borrador está normalizado;
+- el recurso todavía no existe;
+- `resource_fingerprint` identifica el borrador exacto;
+- el tipo y territorio están resueltos;
+- la decisión conserva su forma de solicitud.
+
+No se crea un ID falso para llenar la lista.
+
+---
+
+#### 23. Colecciones
+
+Para `COLLECTION`:
+
+- `resource_ids` podrá contener los miembros materializados evaluados;
+- podrá permanecer vacía cuando el contrato utilice un descriptor de consulta
+  reproducible dentro del recurso completo;
+- una colección autorizada no se resume únicamente con el primer ID;
+- la auditoría durable deberá conservar la estrategia aprobada por
+  `SUPA-ARC-007` y `AUTH-DB-032`.
+
+La proyección cliente no expone miembros ocultos.
+
+---
+
+#### 24. Agregados
+
+Para `AGGREGATE`:
+
+- `resource_type` identifica el agregado contractual;
+- `resource_ids` podrá contener IDs de particiones o fuentes explícitas;
+- no deberán registrarse IDs que permitan inferir datos denegados en una
+  proyección no autorizada;
+- `resource_fingerprint` deberá identificar la definición exacta del agregado.
+
+---
+
+#### 25. Operaciones masivas
+
+Para `BULK`:
+
+- `resource_ids` será determinista y deduplicado;
+- la política `ALL_OR_NOTHING` o `PARTIAL_WITH_RESULTS` permanece en la
+  decisión completa;
+- el audit context no oculta miembros fallidos;
+- la persistencia podrá almacenar detalle por miembro mediante el diseño
+  aprobado en `SUPA-ARC-007` y `AUTH-DB-032`.
+
+---
+
+#### 26. NON_RESOURCE
+
+Para `NON_RESOURCE`:
+
+```text
+resource_ids = []
+```
+
+será obligatorio.
+
+`resource_type` deberá conservar el tipo contractual no materializado.
+
+`resource_fingerprint` seguirá siendo obligatorio y representará la solicitud
+no territorial o no materializada exacta.
+
+---
+
+#### 27. outcome
+
+La igualdad obligatoria es:
+
+```text
+audit.outcome
+=
+final_decision.outcome
+```
+
+Valores permitidos:
+
+```text
+ALLOW
+DENY
+```
+
+No existen:
+
+- `UNKNOWN`;
+- `ERROR`;
+- `PARTIAL`;
+- `NOT_APPLICABLE`;
+- `WOULD_ALLOW`;
+- `INDETERMINATE`.
+
+---
+
+#### 28. authorizing_lanes
+
+La igualdad obligatoria es:
+
+```text
+audit.authorizing_lanes
+=
+final_decision.authorizing_lanes
+```
+
+Orden canónico:
+
+```text
+BASE
+OPERATIONAL
+```
+
+No se duplica un carril.
+
+---
+
+#### 29. authorizing_lanes en ALLOW
+
+Todo `ALLOW` deberá cumplir:
+
+```text
+authorizing_lanes.length >= 1
+```
+
+y cada carril deberá:
+
+- estar admitido por la modalidad;
+- haber producido `ALLOW`;
+- pertenecer al mismo actor;
+- corresponder al mismo permiso;
+- corresponder al mismo recurso;
+- usar la misma decisión.
+
+---
+
+#### 30. authorizing_lanes en DENY
+
+Todo `DENY` deberá cumplir:
+
+```text
+authorizing_lanes = []
+```
+
+Aunque uno de los carriles haya producido `ALLOW` antes de una restricción
+transversal, el outcome final denegado no tendrá carriles autorizantes en el
+audit context.
+
+La evidencia del carril positivo permanece en `combination` y en las
+decisiones de carril.
+
+---
+
+#### 31. context_fingerprint
+
+`context_fingerprint` identifica el snapshot exacto de `AccessContext`
+utilizado.
+
+Debe coincidir con:
+
+```text
+access_context_ref.context_fingerprint
+```
+
+No se recalcula desde una versión posterior del contexto.
+
+---
+
+#### 32. Preimagen del context fingerprint
+
+La preimagen canónica deberá representar, como mínimo, los hechos
+autoritativos que puedan modificar la decisión:
+
+- versión contractual del contexto;
+- `context_id`;
+- `resolved_at`;
+- principal;
+- actor efectivo;
+- identidad de dominio relevante;
+- empleado;
+- rol base;
+- cobertura administrativa;
+- turno;
+- check-in;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- dispositivo;
+- readiness de carriles;
+- problemas estructurales;
+- versiones autoritativas de resolución.
+
+AUTH-CTX-025 y AUTH-CTX-026 definirán la producción física de esta preimagen.
+
+---
+
+#### 33. Exclusiones del context fingerprint
+
+No deberán participar por defecto:
+
+- textos de UI;
+- nombres decorativos;
+- mensajes traducidos;
+- orden no semántico de propiedades;
+- metadata de presentación;
+- información no consultada;
+- secretos de autenticación;
+- tokens;
+- payload JWT completo.
+
+La exclusión no podrá eliminar un hecho que afecte la autorización.
+
+---
+
+#### 34. resource_fingerprint
+
+`resource_fingerprint` identifica el recurso, borrador, conjunto o solicitud
+no materializada exactos evaluados.
+
+Debe cambiar cuando cambie un hecho autoritativo relevante.
+
+---
+
+#### 35. Preimagen del resource fingerprint
+
+La preimagen deberá representar, según aplique:
+
+- `resource_type`;
+- `request_shape`;
+- `resolution_status`;
+- IDs resueltos;
+- versión del recurso;
+- sujeto;
+- territorio;
+- propiedad;
+- custodia;
+- lados obligatorios;
+- estado relevante;
+- clasificación de campos;
+- política de concurrencia;
+- versión esperada;
+- forma de colección, agregado o bulk;
+- borrador normalizado;
+- transición solicitada.
+
+---
+
+#### 36. Estado completo frente a estado relevante
+
+No será obligatorio hashear indiscriminadamente todas las columnas físicas.
+
+Se incluirán:
+
+```text
+hechos que participan
+o pueden invalidar
+la decisión exacta
+```
+
+La selección de hechos deberá proceder del contrato del recurso.
+
+No se permite que cada aplicación elija libremente qué excluir.
+
+---
+
+#### 37. Serialización de fingerprints
+
+Las huellas deberán utilizar:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+Reglas:
+
+- propiedades en orden canónico;
+- arrays con semántica de conjunto ordenados canónicamente;
+- arrays con semántica secuencial conservan orden;
+- Unicode normalizado según el perfil;
+- timestamps normalizados;
+- `null` explícito;
+- listas vacías explícitas;
+- números sin representación ambigua;
+- ausencia de campos obligatorios produce contrato inválido.
+
+---
+
+#### 38. Formato de fingerprints
+
+Formato inicial recomendado:
+
+```text
+sha256:<64 caracteres hexadecimales minúsculos>
+```
+
+AUTH-CTX-026 congelará el algoritmo físico.
+
+Si se adopta otro algoritmo, deberá:
+
+- identificarse en la cadena;
+- ser determinista;
+- ser criptográficamente adecuado;
+- conservar compatibilidad histórica;
+- no reinterpretar fingerprints existentes.
+
+---
+
+#### 39. Fingerprint no reversible
+
+Una huella:
+
+- no sustituye el snapshot;
+- no debe permitir reconstruir secretos;
+- no debe utilizar claves secretas como preimagen;
+- no prueba por sí sola que la fuente era correcta;
+- prueba identidad del contenido bajo el perfil utilizado.
+
+La auditoría autorizada necesita además procedencia y versiones.
+
+---
+
+#### 40. catalog_hash
+
+La igualdad obligatoria es:
+
+```text
+audit.catalog_hash
+=
+permission_contract.catalog_hash
+```
+
+El hash identifica el catálogo exacto utilizado.
+
+No se utiliza:
+
+- versión declarada sin hash;
+- hash de otro ambiente;
+- hash calculado después de la decisión;
+- hash del documento compilado completo;
+- commit de una aplicación consumidora.
+
+---
+
+#### 41. Catálogo incompatible
+
+Si el catálogo no puede validarse:
+
+```text
+final_decision = DENY
+reason_category = CONTRACT_INVALID
+```
+
+La decisión emitida deberá conservar el hash disponible únicamente cuando
+sea confiable.
+
+Si no puede producirse un audit context completo y coherente, no se emite una
+`AuthorizationDecision` válida; la operación falla cerrada como error de
+infraestructura.
+
+---
+
+#### 42. dataset_hashes
+
+`dataset_hashes` identifica cada dataset autoritativo que participó
+materialmente en la evaluación.
+
+Forma semántica:
+
+```text
+clave
+=
+dataset_id@dataset_version
+
+valor
+=
+dataset_hash exacto
+```
+
+Ejemplo conceptual:
+
+```json
+{
+  "vento.authorization.base-role-grants@1.0.0": "sha256:...",
+  "vento.authorization.operational-role-grants@1.0.0": "sha256:...",
+  "vento.authorization.individual-overrides@1.0.0": "sha256:..."
+}
+```
+
+---
+
+#### 43. Datasets consultados sin coincidencias
+
+Un dataset consultado deberá registrarse aunque produzca:
+
+```text
+0 matches
+```
+
+Esto permite distinguir:
+
+```text
+dataset consultado sin coincidencias
+```
+
+de:
+
+```text
+dataset omitido
+```
+
+La ausencia de coincidencias no elimina su participación en la decisión.
+
+---
+
+#### 44. Dataset no aplicable
+
+Un dataset que contractualmente no aplica al permiso o modalidad:
+
+- no se inventa como consultado;
+- no se agrega con hash vacío;
+- no se agrega con `null`;
+- queda fuera de `dataset_hashes`.
+
+La decisión completa explica la modalidad y carriles no aplicables.
+
+---
+
+#### 45. Orden de dataset_hashes
+
+Aunque JSON no debe interpretarse por orden, la serialización canónica deberá
+ordenar las claves lexicográficamente.
+
+Esto garantiza:
+
+- reproducibilidad;
+- comparación;
+- hashing estable;
+- diffs consistentes.
+
+---
+
+#### 46. Hash faltante
+
+Un dataset autoritativo sin hash publicable produce:
+
+```text
+DATASET_HASH_MISSING
+→ CONTRACT_INVALID
+→ DENY
+```
+
+No se aceptan:
+
+- `latest`;
+- `unknown`;
+- cadena vacía;
+- fecha como sustituto;
+- versión sin hash.
+
+---
+
+#### 47. evaluator_name
+
+`evaluator_name` identifica el componente lógico que produjo la decisión.
+
+Deberá ser:
+
+- estable;
+- no vacío;
+- independiente del hostname;
+- independiente del pod;
+- independiente del usuario;
+- independiente de la aplicación cliente.
+
+No se utilizará:
+
+- nombre aleatorio de proceso;
+- ruta de archivo local;
+- nombre de desarrollador;
+- nombre de máquina;
+- `unknown`.
+
+AUTH-CTX-026 congelará el identificador lógico inicial.
+
+---
+
+#### 48. evaluator_version
+
+`evaluator_version` identifica la versión exacta de implementación del
+evaluador.
+
+Deberá permitir distinguir despliegues con lógica diferente.
+
+No se aceptan:
+
+```text
+latest
+current
+production
+main
+unknown
+```
+
+Podrá utilizar:
+
+- versión semántica;
+- identificador inmutable de build;
+- combinación canónica aprobada.
+
+El formato final corresponde a AUTH-CTX-026.
+
+---
+
+#### 49. Versiones independientes
+
+```text
+contract_version
+≠ schema_version
+≠ catalog_version
+≠ dataset_version
+≠ evaluator_version
+```
+
+Actualizar el evaluador no modifica automáticamente el contrato.
+
+Actualizar el contrato exige evaluación de compatibilidad según
+AUTH-CTX-004.
+
+---
+
+#### 50. Inmutabilidad
+
+Una vez emitida la decisión:
+
+- `audit` no se modifica;
+- hashes no se recalculan;
+- IDs no se reemplazan;
+- outcome no se corrige in place;
+- razones no se reordenan in place;
+- ejecución posterior no altera la decisión.
+
+Una corrección produce:
+
+```text
+nueva decisión
++
+nuevo decision_id
+```
+
+---
+
+#### 51. Completitud
+
+Una `AuthorizationDecision` no será válida si falta cualquiera de los campos
+obligatorios de `audit`.
+
+No se completará posteriormente mediante:
+
+- trigger tardío;
+- job de reparación;
+- frontend;
+- fallback;
+- consulta a estado actual.
+
+La evidencia debe quedar determinada en el momento de decisión.
+
+---
+
+#### 52. Reproducibilidad
+
+La auditoría deberá permitir responder:
+
+```text
+con estos mismos snapshots
+y estas mismas versiones,
+¿el evaluador produjo coherentemente este resultado?
+```
+
+No promete que el estado actual siga siendo igual.
+
+No reevalúa contra datos actuales para reinterpretar el pasado.
+
+---
+
+#### 53. Cadena de evidencia
+
+La cadena mínima será:
+
+```text
+decision_id
+→ AuthorizationDecision
+→ access_context_ref
+→ context_fingerprint
+→ request
+→ permission_contract
+→ catalog_hash
+→ resource
+→ resource_fingerprint
+→ matched evidence
+→ dataset_hashes
+→ evaluator_name/version
+→ final_decision
+```
+
+Toda ruptura deberá ser detectable.
+
+---
+
+#### 54. Relación con matched_allows
+
+El audit context no duplica `matched_allows`.
+
+La decisión completa conserva:
+
+- grant IDs;
+- carril;
+- fuente;
+- sujeto;
+- scope;
+- coincidencia territorial;
+- coincidencia de recurso;
+- dataset y versión.
+
+`dataset_hashes` verifica la fuente publicada utilizada.
+
+---
+
+#### 55. Relación con matched_denies
+
+El audit context no duplica `matched_denies`.
+
+La decisión completa conserva:
+
+- deny IDs;
+- clase;
+- carril;
+- permiso;
+- fuente;
+- actor;
+- recurso;
+- territorio;
+- vigencia;
+- razón.
+
+Los IDs sintéticos estructurales o default permanecen en la decisión y no se
+convierten en filas físicas administrables.
+
+---
+
+#### 56. Relación con razones
+
+El audit context no agrega:
+
+- `primary_reason_code`;
+- `safe_message_code`;
+- `blocked_reasons`.
+
+Esos datos ya pertenecen a:
+
+```text
+final_decision
++
+blocked_reasons
+```
+
+La auditoría completa debe persistirlos junto con el audit context mediante
+la tarea física correspondiente.
+
+---
+
+#### 57. No duplicación
+
+Queda prohibido mantener dos copias divergentes de:
+
+- outcome;
+- actor;
+- permiso;
+- recurso;
+- hashes;
+- carriles;
+- razones.
+
+Cuando el campo existe tanto en la raíz como en `audit`, debe existir una
+invariante explícita de igualdad.
+
+---
+
+#### 58. Vinculación con ejecución
+
+Cuando una decisión se utilice para una mutación, la ejecución deberá
+registrar:
+
+- `decision_id`;
+- `correlation_id`;
+- resultado de ejecución;
+- recurso final;
+- versión final;
+- timestamp de ejecución;
+- error o compensación cuando corresponda.
+
+Estos campos pertenecen al registro de ejecución, no amplían
+`AuthorizationAuditContext@1.0.0`.
+
+---
+
+#### 59. Brecha física identificada
+
+El roadmap no contiene actualmente una tarea específica para persistir
+decisiones reales de autorización y vincularlas con su ejecución.
+
+Se crea explícitamente:
+
+```text
+AUTH-DB-032
+— Implementar persistencia canónica y vinculación
+  de decisiones de autorización
+```
+
+Ubicación obligatoria:
+
+```text
+BLOQUE R1 — Fundación física canónica
+después de SUPA-ARC-007
+antes de la adopción completa en AUTH-DB-006 a AUTH-DB-010
+```
+
+---
+
+#### 60. Alcance futuro de AUTH-DB-032
+
+`AUTH-DB-032` deberá implementar, una vez aprobada la arquitectura:
+
+- almacenamiento inmutable de decisiones;
+- almacenamiento de evidencia autorizada;
+- vínculo decisión–ejecución;
+- búsqueda por `decision_id`;
+- búsqueda por `correlation_id`;
+- búsqueda por actor, principal y dispositivo bajo autorización;
+- búsqueda por permiso y recurso;
+- RLS y grants de auditoría;
+- integridad entre decisión y audit context;
+- política de redacción de datos sensibles;
+- compatibilidad con partición y archivado;
+- integración con eventos transversales;
+- pruebas y rollback.
+
+No se implementa dentro de AUTH-CTX-024.
+
+---
+
+#### 61. Frontera transaccional
+
+Para mutaciones sensibles:
+
+```text
+resolver
+→ decidir
+→ registrar decisión
+→ validar concurrencia
+→ ejecutar
+→ registrar resultado
+```
+
+deberá ocurrir:
+
+- dentro de una frontera transaccional; o
+- mediante un protocolo explícito de revalidación e idempotencia.
+
+AUTH-CTX-026 definirá el contrato del evaluador.
+
+`AUTH-DB-032` implementará el vínculo durable.
+
+---
+
+#### 62. Decisiones de lectura
+
+Las decisiones de lectura también deberán producir `audit`.
+
+La política de persistencia durable podrá diferenciar:
+
+- navegación;
+- UI guard;
+- lectura ordinaria;
+- lectura sensible;
+- exportación;
+- agregado;
+- soporte;
+- mutación.
+
+Esa política será definida en `SUPA-ARC-007` e implementada en
+`AUTH-DB-032`.
+
+No se permite que la diferencia de retención cambie el contrato emitido.
+
+---
+
+#### 63. UI guards
+
+Un UI guard puede consumir una proyección segura.
+
+No deberá recibir:
+
+- hashes de datasets;
+- grants;
+- denies;
+- IDs disciplinarios;
+- fingerprint completo si no es necesario;
+- evaluator version interna.
+
+La decisión de servidor conserva la auditoría completa.
+
+---
+
+#### 64. RPC y RLS
+
+RPC y políticas sensibles deberán:
+
+- consumir el mismo evaluador o semántica canónica;
+- propagar `decision_id`;
+- no crear audit contexts incompatibles;
+- no registrar únicamente texto libre;
+- no omitir actor efectivo en dispositivo compartido.
+
+La adopción corresponde a `AUTH-DB-006` a `AUTH-DB-010`.
+
+---
+
+#### 65. Cambios de permisos
+
+La auditoría de una decisión no sustituye:
+
+```text
+AUTH-DB-012
+— auditoría de cambios de permisos
+```
+
+Relación:
+
+```text
+cambio de grant o deny
+→ evento de configuración
+
+decisión posterior
+→ evento de evaluación
+```
+
+Ambos pueden compartir correlación administrativa, pero son hechos distintos.
+
+---
+
+#### 66. Simulación
+
+La simulación utiliza:
+
+```text
+SimulationAuditContext
+```
+
+No utiliza `AuthorizationAuditContext` como si fuera una decisión real.
+
+`AUTH-DB-013` implementará la auditoría física de simulación.
+
+Un `WOULD_ALLOW` nunca se registra como `ALLOW`.
+
+---
+
+#### 67. Dispositivos
+
+La auditoría de decisiones conserva `device_id` cuando participa un
+dispositivo.
+
+`AUTH-DB-014` implementará el historial y cambios propios del dispositivo.
+
+Relación:
+
+```text
+cambio del dispositivo
+≠
+decisión emitida usando el dispositivo
+```
+
+---
+
+#### 68. Procesos SYSTEM
+
+Un actor de sistema deberá conservar:
+
+- actor de sistema exacto;
+- principal técnico exacto;
+- aplicación;
+- permiso;
+- recurso;
+- delegación cuando exista;
+- hashes;
+- evaluador.
+
+`service_role` no se registra como explicación suficiente de autoridad.
+
+---
+
+#### 69. Actor anónimo o no resuelto
+
+Una decisión emitida para actor anónimo o no resuelto:
+
+- tendrá `actor_id = null`;
+- conservará el principal disponible;
+- normalmente terminará en `DENY`;
+- conservará fingerprints coherentes;
+- no inventará employee_id;
+- no omitirá audit.
+
+---
+
+#### 70. Proyección segura al cliente
+
+La proyección ordinaria podrá incluir como máximo:
+
+- outcome;
+- permiso seguro;
+- código de mensaje;
+- razones seguras;
+- `correlation_id` o identificador de soporte cuando se permita.
+
+No deberá incluir por defecto:
+
+- `dataset_hashes`;
+- `catalog_hash`;
+- `context_fingerprint`;
+- `resource_fingerprint`;
+- `evaluator_name`;
+- `evaluator_version`;
+- IDs internos sensibles;
+- grants o denies.
+
+---
+
+#### 71. Identificador de soporte
+
+El identificador presentado a soporte podrá ser:
+
+- `correlation_id`; o
+- un identificador opaco que resuelva internamente a la correlación.
+
+No deberá ser:
+
+- bearer token;
+- `decision_id` reutilizable para ejecutar;
+- ID que revele volumen;
+- secuencia incremental pública.
+
+BLOQUE S definirá la experiencia de soporte.
+
+---
+
+#### 72. Datos personales
+
+El audit context utiliza IDs canónicos, no atributos humanos descriptivos.
+
+No incluirá directamente:
+
+- nombre;
+- documento;
+- correo;
+- teléfono;
+- cargo textual;
+- motivo disciplinario;
+- comentario libre.
+
+Una consulta autorizada podrá resolver esos datos desde sus fuentes vigentes
+sin modificar la decisión histórica.
+
+---
+
+#### 73. Secretos y credenciales
+
+Queda prohibido registrar dentro del audit context:
+
+- JWT;
+- refresh token;
+- API key;
+- password;
+- cookie;
+- secreto de webhook;
+- credencial de base;
+- headers completos;
+- payload de autenticación;
+- código OTP.
+
+Las necesidades de seguridad técnica deberán usar telemetría separada y
+redactada.
+
+---
+
+#### 74. Audit log frente a observabilidad
+
+```text
+AUDITORÍA EMPRESARIAL
+→ evidencia durable e interpretable
+
+OBSERVABILIDAD
+→ métricas, trazas y logs operativos
+```
+
+Pueden compartir `correlation_id`.
+
+No deberán compartir indiscriminadamente:
+
+- retención;
+- exposición;
+- sensibilidad;
+- estructura;
+- audiencia.
+
+`SUPA-ARC-007` definirá la frontera transversal.
+
+---
+
+#### 75. Fallo del evaluador
+
+Un error interno nunca produce `ALLOW`.
+
+Si el evaluador puede construir una decisión coherente:
+
+```text
+DENY
++
+CONTRACT_INVALID o razón estructural
++
+audit completo
+```
+
+Si no puede construir el contrato mínimo:
+
+```text
+no se emite AuthorizationDecision válida
++
+operación falla cerrada
++
+telemetría de infraestructura
+```
+
+No se emite un objeto parcialmente auditable.
+
+---
+
+#### 76. Contexto obsoleto
+
+Cuando el contexto queda obsoleto antes de ejecutar:
+
+- la decisión histórica permanece;
+- la ejecución se rechaza;
+- se genera una nueva decisión si se reintenta;
+- ambas decisiones conservan IDs distintos;
+- la correlación podrá conservarse si pertenece al mismo intento lógico.
+
+AUTH-CTX-029 definirá invalidación y caché.
+
+---
+
+#### 77. Concurrencia
+
+Una decisión sobre una versión de recurso no se reutiliza después de un
+conflicto.
+
+El audit context conserva `resource_fingerprint`.
+
+El registro de ejecución deberá conservar:
+
+- versión esperada;
+- versión observada;
+- resultado del conflicto.
+
+La estructura física corresponde a `AUTH-DB-032`.
+
+---
+
+#### 78. Idempotencia
+
+Una idempotency key:
+
+- no sustituye `decision_id`;
+- no sustituye `correlation_id`;
+- no concede permiso;
+- podrá vincular varios reintentos controlados;
+- no permitirá reutilizar una decisión obsoleta.
+
+La clave permanece en el contexto de concurrencia o ejecución, no se agrega
+al audit context v1.
+
+---
+
+#### 79. Drift y ambientes
+
+La misma versión declarada del evaluador no deberá representar lógica
+distinta entre:
+
+- local;
+- pruebas;
+- staging;
+- producción.
+
+`AUTH-DB-028` verificará baseline y drift.
+
+`AUTH-DB-031` certificará paridad final.
+
+Los hashes permiten detectar fuentes distintas, pero no sustituyen control de
+drift.
+
+---
+
+#### 80. Retención, archivado y crecimiento
+
+La política de retención no se decide aquí.
+
+Responsabilidades explícitas:
+
+| Responsabilidad                                    | Tarea          |
+| -------------------------------------------------- | -------------- |
+| Arquitectura de auditoría y eventos                | `SUPA-ARC-007` |
+| Retención, archivado, respaldo y recuperación      | `SUPA-ARC-022` |
+| Persistencia de decisiones y vínculo con ejecución | `AUTH-DB-032`  |
+| Índices, partición, retención y crecimiento        | `AUTH-DB-025`  |
+| Pruebas físicas                                    | `AUTH-DB-027`  |
+| Certificación final                                | `AUTH-DB-031`  |
+
+No queda pendiente narrativo sin dueño.
+
+---
+
+#### 81. Acceso a auditoría
+
+La futura consulta de auditoría deberá aplicar:
+
+- permiso exacto;
+- propósito legítimo;
+- alcance territorial cuando aplique;
+- separación entre soporte, seguridad, gerencia y auditoría;
+- redacción de campos sensibles;
+- trazabilidad de la propia consulta;
+- ausencia de acceso por simple rol textual.
+
+La arquitectura corresponde a `SUPA-ARC-007`.
+
+La implementación corresponde a `AUTH-DB-032`.
+
+---
+
+#### 82. Compatibilidad legacy
+
+AUTH-CTX-028 deberá identificar:
+
+- decisiones booleanas sin evidencia;
+- logs de texto sin actor efectivo;
+- registros sin principal;
+- auditorías sin dispositivo;
+- decisiones sin hashes;
+- IDs reutilizados;
+- permisos legacy;
+- recursos no resueltos;
+- registros sin correlación;
+- fuentes incompatibles.
+
+No se declararán reproducibles si carecen de evidencia.
+
+Podrán conservarse como historial legacy claramente clasificado.
+
+---
+
+#### 83. Pruebas obligatorias posteriores
+
+AUTH-CTX-030 deberá probar contractualmente:
+
+- igualdad de IDs;
+- igualdad de outcome;
+- igualdad de carriles;
+- actor, principal y dispositivo;
+- recursos existentes;
+- borradores;
+- colecciones;
+- agregados;
+- bulk;
+- non-resource;
+- fingerprints deterministas;
+- cambio de fingerprint ante cambio autoritativo;
+- catálogo;
+- datasets consultados sin match;
+- datasets no aplicables;
+- evaluator version;
+- proyección segura;
+- inmutabilidad;
+- errores fail closed.
+
+AUTH-DB-027 deberá probar la implementación física.
+
+---
+
+#### 84. Casos canónicos
+
+##### Caso A — Sesión personal autorizada
+
+```text
+actor_id = employee_id
+principal_id = auth_user_id
+device_id = null
+outcome = ALLOW
+authorizing_lanes = [BASE]
+```
+
+##### Caso B — Dispositivo compartido
+
+```text
+actor_id = employee_id
+principal_id = shared_device_auth_principal
+device_id = shared_device_id
+```
+
+##### Caso C — Denegación
+
+```text
+outcome = DENY
+authorizing_lanes = []
+primary reason permanece en final_decision
+```
+
+##### Caso D — Borrador
+
+```text
+resource_ids = []
+resource_fingerprint = fingerprint del borrador normalizado
+```
+
+##### Caso E — Dataset sin coincidencias
+
+```text
+individual-overrides consultado
+0 matches
+→ su hash permanece en dataset_hashes
+```
+
+##### Caso F — Dataset no aplicable
+
+```text
+carril operativo NOT_APPLICABLE
+dataset operativo no consultado
+→ no se agrega hash falso
+```
+
+##### Caso G — Recurso cambia
+
+```text
+resource_fingerprint anterior
+≠ resource_fingerprint nuevo
+→ nueva decisión
+```
+
+##### Caso H — Error crítico antes de construir audit
+
+```text
+no AuthorizationDecision válida
+→ fail closed
+→ telemetría de infraestructura
+```
+
+##### Caso I — Proyección cliente
+
+```text
+cliente recibe safe_message_code
+no recibe dataset_hashes
+```
+
+##### Caso J — Ejecución
+
+```text
+execution_record.decision_id
+=
+AuthorizationDecision.decision_id
+```
+
+---
+
+#### 85. Antipatrones prohibidos
+
+```ts
+audit.actor_id = request.employee_id;
+```
+
+```ts
+audit.principal_id = audit.actor_id;
+```
+
+```ts
+audit.device_id = request.userAgent;
+```
+
+```ts
+audit.dataset_hashes = {};
+```
+
+cuando sí se consultaron datasets.
+
+```ts
+audit.evaluator_version = "latest";
+```
+
+```ts
+if (decision.outcome === "ALLOW") {
+  skipAudit();
+}
+```
+
+```ts
+executeWithDecisionId(decisionId);
+```
+
+También queda prohibido:
+
+```text
+decision_id → bearer token
+correlation_id → permiso
+resource_ids del cliente → recurso auditado
+hash actual → reinterpretar decisión histórica
+logs de texto → auditoría canónica
+correo → actor_id
+auth_user_id → employee_id
+service_role → autoridad
+dataset sin match → dataset omitido
+DENY con authorizing_lanes
+ALLOW sin authorizing_lanes
+fingerprint sin perfil canónico
+auditoría sensible → respuesta cliente
+```
+
+---
+
+#### 86. Relación con tareas posteriores
+
+| Tarea                         | Responsabilidad                                                  |
+| ----------------------------- | ---------------------------------------------------------------- |
+| `AUTH-CTX-025`                | Producir `AccessContext` y su referencia coherente               |
+| `AUTH-CTX-026`                | Diseñar evaluador, fingerprints, correlación y versiones físicas |
+| `AUTH-CTX-027`                | Eliminar decisiones y logs locales incompatibles                 |
+| `AUTH-CTX-028`                | Adaptar historial y consumidores legacy                          |
+| `AUTH-CTX-029`                | Definir caché, obsolescencia e invalidación                      |
+| `AUTH-CTX-030`                | Probar contrato completo                                         |
+| `SUPA-ARC-007`                | Diseñar esquema transversal de auditoría y eventos               |
+| `SUPA-ARC-022`                | Definir retención, archivado, respaldo y recuperación            |
+| `AUTH-DB-006` a `AUTH-DB-010` | Adoptar contexto y decisión en RPC sensibles                     |
+| `AUTH-DB-012`                 | Auditar cambios de permisos                                      |
+| `AUTH-DB-013`                 | Auditar simulaciones                                             |
+| `AUTH-DB-014`                 | Auditar dispositivos                                             |
+| `AUTH-DB-025`                 | Implementar índices, retención y crecimiento                     |
+| `AUTH-DB-027`                 | Probar esquema, RLS, RPC y migraciones                           |
+| `AUTH-DB-031`                 | Certificar paridad final                                         |
+| `AUTH-DB-032`                 | Persistir decisiones y vincularlas con ejecución                 |
+| BLOQUE S                      | Diseñar exposición segura y soporte                              |
+
+---
+
+#### 87. Fuera del alcance
+
+AUTH-CTX-024 no:
+
+- crea tablas;
+- crea esquema de auditoría;
+- crea migraciones;
+- crea índices;
+- define particiones;
+- establece días de retención;
+- crea políticas RLS;
+- crea permisos de consulta;
+- implementa el evaluador;
+- implementa fingerprints;
+- implementa correlación;
+- implementa logs;
+- implementa dashboards;
+- migra datos legacy;
+- modifica Supabase;
+- cambia el resultado final;
+- agrega campos a `AuthorizationAuditContext@1.0.0`.
+
+Toda responsabilidad diferida tiene tarea explícita en las secciones 80 y
+86.
+
+---
+
+#### 88. Riesgos controlados
+
+| Riesgo                          | Control                             |
+| ------------------------------- | ----------------------------------- |
+| Decisión sin evidencia          | `audit` obligatorio                 |
+| Actor confundido con principal  | Campos y matriz separados           |
+| Dispositivo oculto              | `device_id` explícito               |
+| ID de cliente aceptado          | Resolución autoritativa en servidor |
+| Hash calculado después          | Snapshot e inmutabilidad            |
+| Dataset sin match omitido       | Dataset consultado conserva hash    |
+| Dataset no aplicable inventado  | Solo fuentes realmente consultadas  |
+| `latest` como versión           | Versión exacta obligatoria          |
+| DENY con carril autorizante     | Lista vacía obligatoria             |
+| ALLOW sin evidencia             | Carril autorizante obligatorio      |
+| Auditoría filtrada al cliente   | Proyección segura separada          |
+| Logs usados como auditoría      | Contrato estructurado               |
+| Decisión reutilizada como token | Prohibición contractual             |
+| Falta persistencia física       | Nueva tarea `AUTH-DB-032`           |
+| Retención sin dueño             | `SUPA-ARC-022` y `AUTH-DB-025`      |
+| Consulta sin control            | `SUPA-ARC-007` y `AUTH-DB-032`      |
+| Divergencia entre ambientes     | `AUTH-DB-028` y `AUTH-DB-031`       |
+
+---
+
+#### 89. Criterios de aprobación
+
+AUTH-CTX-024 podrá aprobarse cuando se acepte que:
+
+1. se conserva la forma de `AuthorizationAuditContext`;
+2. no se agregan campos;
+3. `audit` es obligatorio;
+4. ALLOW y DENY incluyen audit;
+5. audit no es log de texto;
+6. audit no es proyección cliente;
+7. audit es índice compacto de trazabilidad;
+8. la decisión completa conserva la evidencia detallada;
+9. audit no duplica indiscriminadamente la decisión;
+10. `audit.decision_id` iguala al `decision_id` raíz;
+11. decision_id es único;
+12. decision_id es inmutable;
+13. decision_id no es token;
+14. decision_id no es idempotency key;
+15. decided_at permanece en la raíz;
+16. correlation_id vincula una operación lógica;
+17. correlation_id no concede autoridad;
+18. correlation_id puede ser null de forma controlada;
+19. AUTH-CTX-026 define creación y propagación;
+20. actor_id representa actor efectivo;
+21. actor_id coincide con AccessContext;
+22. actor_id puede ser null solo en actor no resuelto;
+23. principal_id representa principal técnico;
+24. principal_id no equivale al actor;
+25. device_id representa dispositivo canónico;
+26. device_id no es user agent;
+27. dispositivo compartido conserva actor, principal y dispositivo;
+28. sesión personal conserva empleado y usuario;
+29. servicio conserva actor y principal técnicos;
+30. app_code coincide con request;
+31. app_code coincide con propietario del permiso;
+32. permission_key coincide exactamente;
+33. no existen prefijos ni wildcards;
+34. resource_type coincide con recurso resuelto;
+35. resource_ids son autoritativos;
+36. resource_ids no contienen duplicados;
+37. resource_ids tienen orden determinista;
+38. IDs del cliente no se aceptan sin validación;
+39. recurso existente autorizado exige ID;
+40. borrador puede tener lista vacía;
+41. borrador usa fingerprint exacto;
+42. no se inventa ID para borrador;
+43. colecciones requieren estrategia reproducible;
+44. agregados conservan definición exacta;
+45. bulk conserva miembros o descriptor aprobado;
+46. non-resource usa lista vacía;
+47. audit.outcome iguala final_decision.outcome;
+48. outcome solo admite ALLOW o DENY;
+49. audit.authorizing_lanes iguala final_decision;
+50. carriles se ordenan canónicamente;
+51. ALLOW exige al menos un carril autorizante;
+52. DENY exige lista vacía;
+53. un carril positivo previo no queda como autorizante de DENY;
+54. context_fingerprint coincide con AccessContextReference;
+55. fingerprint representa snapshot exacto;
+56. nueva realidad produce nueva huella;
+57. preimagen incluye hechos autoritativos;
+58. secretos quedan excluidos;
+59. exclusión no elimina hechos relevantes;
+60. resource_fingerprint es obligatorio;
+61. fingerprint cambia con recurso relevante;
+62. preimagen incluye territorio y estado;
+63. preimagen incluye concurrencia cuando aplica;
+64. no se hashean columnas irrelevantes indiscriminadamente;
+65. contrato del recurso define hechos relevantes;
+66. serialización usa canonical JSON;
+67. conjuntos se ordenan;
+68. secuencias conservan orden;
+69. null y listas vacías son explícitos;
+70. algoritmo identifica su nombre;
+71. huella no sustituye snapshot;
+72. huella no prueba corrección de fuente;
+73. catalog_hash iguala permission_contract;
+74. versión sin hash no basta;
+75. catálogo incompatible falla cerrado;
+76. decisión incompleta no se emite;
+77. dataset_hashes registra fuentes participantes;
+78. clave incluye dataset ID y versión;
+79. valor incluye hash exacto;
+80. dataset consultado sin match se registra;
+81. dataset no aplicable no se inventa;
+82. claves se ordenan canónicamente;
+83. hash faltante produce contract invalid;
+84. no se acepta latest ni unknown;
+85. evaluator_name es lógico y estable;
+86. evaluator_name no es hostname;
+87. evaluator_version identifica implementación exacta;
+88. evaluator_version no usa latest;
+89. versiones contractuales permanecen separadas;
+90. actualizar evaluador no cambia contrato;
+91. decisión emitida es inmutable;
+92. audit no se reescribe;
+93. corrección produce nueva decisión;
+94. todos los campos obligatorios se completan al emitir;
+95. no existe reparación tardía silenciosa;
+96. la auditoría permite reproducibilidad histórica;
+97. no reinterpreta pasado con datos actuales;
+98. existe cadena verificable de evidencia;
+99. audit no duplica matched_allows;
+100. matched_allows conserva fuente y dataset;
+101. audit no duplica matched_denies;
+102. matched_denies conserva su evidencia;
+103. audit no duplica razones;
+104. razones permanecen en final_decision y blocked_reasons;
+105. campos duplicados tienen igualdad explícita;
+106. ejecución registra decision_id;
+107. ejecución registra correlation_id;
+108. ejecución registra resultado;
+109. esos campos no amplían audit v1;
+110. existe una brecha física real;
+111. se crea `AUTH-DB-032`;
+112. AUTH-DB-032 pertenece a BLOQUE R1;
+113. AUTH-DB-032 ocurre después de SUPA-ARC-007;
+114. AUTH-DB-032 precede adopción completa en RPC;
+115. AUTH-DB-032 implementará persistencia inmutable;
+116. AUTH-DB-032 implementará vínculo con ejecución;
+117. AUTH-DB-032 implementará consulta protegida;
+118. frontera transaccional o revalidación es obligatoria;
+119. decisiones de lectura también producen audit;
+120. persistencia durable puede variar por política;
+121. variación de retención no cambia el contrato;
+122. UI guard recibe proyección segura;
+123. RPC y RLS comparten semántica;
+124. cambios de permisos se auditan aparte;
+125. simulación se audita aparte;
+126. dispositivo se audita aparte;
+127. SYSTEM no se autoriza por service role;
+128. anónimo no inventa actor;
+129. cliente no recibe hashes internos;
+130. soporte usa correlación segura;
+131. audit no almacena PII descriptiva;
+132. audit no almacena secretos;
+133. observabilidad y auditoría son distintas;
+134. error interno nunca permite;
+135. decisión parcial no se emite;
+136. contexto obsoleto produce nueva decisión;
+137. concurrencia invalida reutilización;
+138. idempotencia no sustituye decisión;
+139. drift se controla por tareas explícitas;
+140. retención pertenece a SUPA-ARC-022 y AUTH-DB-025;
+141. acceso pertenece a SUPA-ARC-007 y AUTH-DB-032;
+142. legacy se clasifica sin fingir reproducibilidad;
+143. AUTH-CTX-030 prueba el contrato;
+144. AUTH-DB-027 prueba la implementación;
+145. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 90. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado                      |
+| --------------- | -------------- | --------------------------- |
+| Tarea anterior  | `AUTH-CTX-023` | ✅ APROBADA                  |
+| Tarea propuesta | `AUTH-CTX-024` | 🟡 PROPUESTA PARA APROBACIÓN |
+| Tarea siguiente | `AUTH-CTX-025` | ⬜ NO INICIADA               |
+
+```text
+AUTH-CTX-023 — APROBADA
+        ↓
+AUTH-CTX-024 — APROBADA
+        ↓
+AUTH-CTX-025 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-025` hasta recibir aprobación explícita de
+`AUTH-CTX-024`.
+
 
 DISEÑO DE IMPLEMENTACIÓN CANÓNICA
+## DISEÑO DE IMPLEMENTACIÓN Y TRANSICIÓN
 
-### [ ] AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
+### ✅ AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
+
+| Campo                           | Valor                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Estado**                      | APROBADA                                                                                               |
+| **Bloque**                      | BLOQUE E — Contexto y decisión de autorización unificados                                              |
+| **Subbloque**                   | DISEÑO DE IMPLEMENTACIÓN CANÓNICA                                                                      |
+| **Naturaleza**                  | Diseño documental de contrato SQL futuro                                                               |
+| **Implementación física**       | No incluida                                                                                            |
+| **Tarea anterior vigente**      | `AUTH-CTX-024` — APROBADA                                                                              |
+| **Tarea posterior reservada**   | `AUTH-CTX-026` — Diseñar contrato canónico de `evaluate_authorization`                                 |
+| **Contrato producido**          | `AccessContext@1.0.0`                                                                                  |
+| **Perfil de serialización**     | `vento.canonical-json@1.0.0`                                                                           |
+| **Identidad lógica de función** | `get_access_context(text) → jsonb`                                                                     |
+| **Nombre físico calificado**    | Pendiente de `SUPA-ARC-005`, `SUPA-ARC-006` y `SUPA-ARC-013`                                           |
+| **Cambio contractual**          | Define la frontera SQL sin cambiar `AccessContext@1.0.0`                                               |
+| **Cambios físicos permitidos**  | No                                                                                                     |
+| **Brecha física detectada**     | No existe tarea específica para implementar el resolver canónico                                       |
+| **Nueva tarea requerida**       | `AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura` |
+
+Esta tarea diseña la frontera SQL futura que producirá el
+`AccessContext@1.0.0` real y autoritativo de Vento OS.
+
+La función tendrá una responsabilidad estrictamente contextual:
+
+```text
+CREDENCIAL TÉCNICA REAL
++
+APLICACIÓN CANÓNICA SOLICITANTE
++
+FUENTES EMPRESARIALES AUTORITATIVAS
++
+INSTANTE ÚNICO DE RESOLUCIÓN
+=
+ACCESS CONTEXT INMUTABLE
+```
+
+No decidirá permisos, no resolverá recursos de una acción, no mezclará
+simulación, no aplicará bypass por nombre de rol y no aceptará desde el caller
+ningún hecho empresarial autoritativo.
+
+La firma lógica propuesta es:
+
+```sql
+get_access_context(
+  p_app_code text
+)
+returns jsonb
+```
+
+La sintaxis anterior es contractual y no constituye una migración ejecutable.
+
+---
+
+#### 1. Objetivo
+
+Definir de forma cerrada:
+
+1. la identidad lógica de la función;
+2. su firma SQL;
+3. sus únicos parámetros permitidos;
+4. los parámetros expresamente prohibidos;
+5. el tipo y forma del resultado;
+6. la fuente del principal autenticado;
+7. la resolución del actor efectivo;
+8. la resolución de identidad de dominio;
+9. la resolución laboral;
+10. la separación entre carril base y operativo;
+11. el tratamiento de dispositivos compartidos;
+12. el tratamiento de actores de sistema;
+13. la exclusión de simulación;
+14. la semántica de errores;
+15. la seguridad SQL;
+16. la volatilidad;
+17. la consistencia del snapshot;
+18. la serialización canónica;
+19. la exposición segura;
+20. la transición desde resolvers legacy;
+21. la responsabilidad de implementación futura;
+22. las pruebas que deberán existir antes de adopción.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-025 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-020`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` — `AccessContext`;
+- `AUTH-CTX-002` — `AuthorizationDecision`;
+- `AUTH-CTX-003` — `SimulationContext`;
+- `AUTH-CTX-004` — versionado y serialización;
+- `AUTH-CTX-005` a `AUTH-CTX-015` — nodos del contexto;
+- `AUTH-CTX-016` a `AUTH-CTX-024` — decisión, evidencia y auditoría;
+- `SUPA-ARC-005` — capa expuesta;
+- `SUPA-ARC-006` — capa privada;
+- `SUPA-ARC-007` — auditoría y eventos;
+- `SUPA-ARC-008` a `SUPA-ARC-010` — Auth, identidades, sesiones y revocación;
+- `SUPA-ARC-013` — convenciones de funciones y RPC;
+- `SUPA-ARC-014` — política de `SECURITY DEFINER`;
+- `SUPA-ARC-015` — exposición, grants y RLS;
+- `SUPA-ARC-023` — generación de tipos;
+- `SUPA-ARC-024` — entornos;
+- `AUTH-DB-019` — vínculos canónicos entre Auth e identidades;
+- `AUTH-DB-027` — harness físico de pruebas;
+- `AUTH-DB-028` — baseline y drift;
+- `AUTH-DB-030` — retiro legacy;
+- `AUTH-DB-031` — certificación final.
+
+Principios obligatorios:
+
+```text
+CALLER
+NO DECLARA
+ACTOR, EMPLEADO, ROL, SEDE, ÁREA, TURNO, CHECK-IN O DISPOSITIVO
+```
+
+```text
+GET_ACCESS_CONTEXT
+RESUELVE HECHOS
+NO DECIDE PERMISOS
+```
+
+```text
+ACCESS CONTEXT REAL
+≠
+SIMULATION CONTEXT
+```
+
+```text
+SQL SECURITY DEFINER
+≠
+AUTORIDAD EMPRESARIAL
+```
+
+---
+
+#### 3. Estado físico conocido
+
+El estado actual contiene resolvers previos que no representan el contrato
+canónico final.
+
+Entre ellos existen:
+
+```text
+get_operational_context(...)
+get_effective_context_v1(...)
+```
+
+Estos resolvers son antecedentes técnicos, no fuente normativa del contrato
+nuevo.
+
+---
+
+#### 4. Divergencias legacy identificadas
+
+El estado actual presenta, entre otras, las siguientes divergencias:
+
+1. acepta un `employee_id` suministrado como parámetro;
+2. acepta una sede suministrada como parámetro;
+3. usa sede seleccionada como fallback;
+4. usa sede predeterminada del empleado como fallback;
+5. aplica bypass por nombres de rol;
+6. mezcla contexto administrativo y operativo;
+7. devuelve un booleano `can_operate`;
+8. interpreta políticas por aplicación dentro del contexto;
+9. mezcla simulación con contexto real;
+10. utiliza `navigation_role` como rol operativo;
+11. trata dispositivo compartido como fuente de rol;
+12. devuelve una forma plana distinta de `AccessContext@1.0.0`;
+13. no publica metadatos contractuales completos;
+14. no garantiza fingerprints de fuentes;
+15. no representa todos los problemas estructurales congelados;
+16. no conserva la separación completa entre principal y actor;
+17. no representa asignaciones múltiples canónicas;
+18. puede resolver hechos mediante precedencias de fallback incompatibles.
+
+Ninguna de estas divergencias será incorporada al contrato nuevo.
+
+---
+
+#### 5. Decisión principal
+
+Se define la identidad lógica:
+
+```text
+get_access_context(text) → jsonb
+```
+
+Forma conceptual:
+
+```sql
+create function <authorization_internal_schema>.get_access_context(
+  p_app_code text
+)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = pg_catalog, <schemas_privados_aprobados>;
+```
+
+Los nombres entre `<...>` son marcadores documentales.
+
+La ubicación física y el `search_path` exactos deberán aprobarse en
+`SUPA-ARC-005`, `SUPA-ARC-006`, `SUPA-ARC-013` y `SUPA-ARC-014`.
+
+---
+
+#### 6. Identidad contractual SQL
+
+La identidad de la función se compone de:
+
+```text
+nombre = get_access_context
+argumentos = (text)
+retorno = jsonb
+```
+
+No se considerarán equivalentes:
+
+```text
+get_access_context()
+get_access_context(uuid)
+get_access_context(text, uuid)
+get_access_context(jsonb)
+get_access_context_v1(text)
+```
+
+Una firma alternativa exigirá una decisión contractual explícita.
+
+---
+
+#### 7. Único parámetro permitido
+
+El único parámetro público del contrato será:
+
+```sql
+p_app_code text
+```
+
+Su propósito es seleccionar la aplicación canónica que solicita el contexto
+y, con ello:
+
+- la identidad de dominio aplicable;
+- el conjunto de tipos de principal admitidos;
+- la política de dispositivo aplicable;
+- la fuente empresarial que debe resolverse;
+- la compatibilidad del contexto con el consumidor.
+
+No autoriza capacidades de esa aplicación.
+
+---
+
+#### 8. p_app_code obligatorio
+
+`p_app_code`:
+
+- no tendrá valor por defecto;
+- no podrá ser `null`;
+- no podrá ser cadena vacía;
+- no podrá contener espacios periféricos;
+- deberá coincidir exactamente con un código publicado;
+- no se corregirá silenciosamente;
+- no se transformará mediante `lower()` para ocultar errores;
+- no admitirá alias;
+- no admitirá nombres de rutas;
+- no admitirá nombres comerciales libres.
+
+---
+
+#### 9. Aplicación desconocida o inactiva
+
+Un código con forma válida pero sin configuración autoritativa producirá un
+contexto estructuralmente inválido mediante códigos ya congelados:
+
+```text
+RESOLVER_CONFIGURATION_MISSING
+```
+
+Más de una configuración autoritativa producirá:
+
+```text
+RESOLVER_CONFIGURATION_AMBIGUOUS
+```
+
+No se inventará una aplicación predeterminada.
+
+---
+
+#### 10. Parámetro nulo o mal formado
+
+Un parámetro que no permita siquiera identificar la invocación contractual
+producirá un error SQL de argumento inválido.
+
+Categoría prevista:
+
+```text
+SQLSTATE 22023 — invalid_parameter_value
+```
+
+No se devolverá `null`.
+
+No se utilizará una excepción genérica con texto libre como contrato de
+negocio.
+
+---
+
+#### 11. Parámetros prohibidos
+
+La firma no aceptará:
+
+```text
+p_user_id
+p_auth_user_id
+p_principal_id
+p_actor_id
+p_employee_id
+p_customer_id
+p_device_id
+p_actor_session_id
+p_role
+p_base_role
+p_operational_role
+p_site_id
+p_area_id
+p_shift_id
+p_checkin_id
+p_selected_site_id
+p_simulation_id
+p_bypass
+p_can_operate
+p_permission_key
+p_resource_id
+```
+
+Estos datos serán resueltos o pertenecerán a contratos posteriores.
+
+---
+
+#### 12. Prohibición de overload inseguro
+
+No se creará un overload ejecutable por aplicaciones que permita:
+
+```text
+get_access_context(p_app_code, p_employee_id)
+```
+
+o cualquier variante equivalente.
+
+Las tareas administrativas de soporte y simulación deberán utilizar
+contratos separados, con permisos separados y sin producir autoridad real.
+
+---
+
+#### 13. Tipo de retorno
+
+La función retornará:
+
+```sql
+jsonb
+```
+
+El valor será un único objeto que cumpla:
+
+```text
+AccessContext@1.0.0
+schema_version = 1.0.0
+```
+
+No retornará:
+
+- tabla plana;
+- múltiples filas;
+- array de contextos;
+- booleano;
+- lista de permisos;
+- record parcial;
+- texto JSON;
+- `void`.
+
+---
+
+#### 14. Razón para usar jsonb
+
+`jsonb` permite representar sin aplanamiento:
+
+- principal;
+- actor efectivo;
+- identidad de dominio;
+- empleado;
+- rol base;
+- asignaciones múltiples;
+- cobertura;
+- turno;
+- check-in;
+- rol y territorio operativos;
+- dispositivo;
+- readiness;
+- problemas estructurales;
+- metadata de resolución.
+
+El tipo SQL físico no redefine la semántica del contrato publicado.
+
+---
+
+#### 15. Un resultado exacto
+
+Toda invocación contractualmente válida deberá producir:
+
+```text
+exactamente un objeto
+```
+
+No deberá producir:
+
+- cero filas;
+- más de una fila;
+- `null`;
+- una lista con un elemento;
+- una envoltura PostgREST propia del dominio.
+
+La ausencia o invalidez de hechos se expresa dentro del objeto.
+
+---
+
+#### 16. Metadatos contractuales raíz
+
+El resultado deberá declarar:
+
+```json
+{
+  "contract_family": "vento.authorization.response-contracts",
+  "contract_family_version": "1.0.0",
+  "contract_name": "AccessContext",
+  "contract_version": "1.0.0",
+  "schema_version": "1.0.0"
+}
+```
+
+Los demás campos aprobados se agregan a la misma raíz.
+
+---
+
+#### 17. Forma raíz obligatoria
+
+La función deberá producir conceptualmente:
+
+```ts
+type AccessContextV1 = ContractMetadata & {
+  contract_name: "AccessContext";
+  contract_version: "1.0.0";
+  schema_version: "1.0.0";
+
+  context_id: string;
+  resolved_at: string;
+
+  principal: PrincipalContext;
+  actor_effective: EffectiveActorContext;
+  domain_identity: DomainIdentityContext | null;
+  employee: EmployeeContext | null;
+
+  base_role: BaseRoleContext | null;
+  assigned_sites: AssignedSiteContext[];
+  assigned_areas: AssignedAreaContext[];
+  administrative_coverage: AdministrativeCoverageContext;
+
+  active_shift: ActiveShiftContext | null;
+  active_checkin_session: ActiveCheckinContext | null;
+  operational_role: OperationalRoleContext | null;
+  operational_site: OperationalSiteContext | null;
+  operational_area: OperationalAreaContext | null;
+
+  device_context: DeviceContext | null;
+
+  lane_readiness: {
+    base: LaneReadiness;
+    operational: LaneReadiness;
+  };
+
+  structural_issues: StructuralIssue[];
+  resolution_metadata: ResolutionMetadata;
+};
+```
+
+---
+
+#### 18. No modificación de AccessContext
+
+AUTH-CTX-025 no agrega:
+
+- `app_code` a la raíz;
+- `correlation_id`;
+- `context_fingerprint`;
+- `permission_key`;
+- `resource`;
+- `can_operate`;
+- `is_simulation`;
+- `bypass_applied`;
+- `selected_site_id`;
+- `navigation_role`.
+
+La función produce el contrato ya publicado.
+
+---
+
+#### 19. Vinculación con p_app_code
+
+Aunque `app_code` no se agrega a la raíz de `AccessContext@1.0.0`, la
+invocación queda vinculada mediante:
+
+- el argumento exacto;
+- la política de identidad de dominio seleccionada;
+- las fuentes y versiones registradas;
+- el snapshot utilizado por la decisión posterior;
+- `AuthorizationDecision.request.app_code`;
+- el fingerprint calculado por el evaluador.
+
+Un contexto no se reutilizará para una aplicación distinta.
+
+---
+
+#### 20. context_id
+
+`context_id` será:
+
+- generado en servidor;
+- único por resolución nueva;
+- inmutable;
+- no derivado del actor;
+- no derivado del usuario;
+- no derivado del dispositivo;
+- no reutilizable como token;
+- no reutilizable como permiso.
+
+La estrategia física de generación corresponde a `AUTH-DB-033`.
+
+---
+
+#### 21. context_id y caché
+
+Antes de AUTH-CTX-029:
+
+```text
+resolución nueva
+→ context_id nuevo
+```
+
+Cuando exista caché aprobada:
+
+```text
+cache HIT del mismo snapshot
+→ podrá conservar el context_id almacenado
+```
+
+No se reutilizará un `context_id` con contenido distinto.
+
+---
+
+#### 22. resolved_at
+
+`resolved_at` será un timestamp de servidor:
+
+- capturado una sola vez;
+- con zona horaria;
+- serializado en UTC;
+- utilizado para validar todas las vigencias;
+- común a todos los resolvers internos;
+- no suministrado por el cliente.
+
+Formato de salida:
+
+```text
+RFC 3339 / ISO 8601 UTC
+```
+
+---
+
+#### 23. Instante único
+
+Toda la función deberá utilizar un único valor lógico:
+
+```text
+v_resolved_at
+```
+
+No se mezclarán llamadas independientes a relojes que puedan producir
+fronteras diferentes dentro del mismo contexto.
+
+---
+
+#### 24. Snapshot único
+
+Todos los hechos deberán observarse bajo el mismo snapshot transaccional.
+
+Queda prohibido:
+
+- resolver principal en una consulta y turno en otra transacción;
+- mezclar un cache antiguo con asignaciones actuales;
+- combinar revisiones de turno distintas;
+- resolver dispositivo antes y actor después de una mutación visible;
+- reconstruir el objeto en el cliente.
+
+Una mezcla detectable produce:
+
+```text
+CONTEXT_SNAPSHOT_MIXED
+```
+
+---
+
+#### 25. Volatilidad SQL
+
+La función se declarará:
+
+```sql
+stable
+```
+
+porque:
+
+- solo lee fuentes autoritativas;
+- no ejecuta mutaciones;
+- debe observar una vista estable durante el statement;
+- puede depender de identidad y tiempo de statement;
+- no es `IMMUTABLE`.
+
+No se declarará `VOLATILE` para ocultar escrituras internas.
+
+---
+
+#### 26. Función sin efectos empresariales
+
+`get_access_context` no deberá:
+
+- crear sesiones;
+- abrir turnos;
+- crear check-ins;
+- seleccionar sede;
+- actualizar preferencias;
+- crear actores;
+- corregir asignaciones;
+- revocar credenciales;
+- insertar auditoría empresarial durable;
+- emitir eventos de dominio;
+- modificar caches sin una estrategia aprobada;
+- ejecutar la acción solicitada.
+
+---
+
+#### 27. Fuente del principal
+
+El principal técnico se resolverá desde la sesión real de PostgreSQL/Supabase:
+
+- identidad autenticada;
+- claims validados;
+- rol técnico de conexión;
+- vínculo empresarial vigente;
+- sesión de dispositivo cuando corresponda.
+
+El caller no enviará `principal_id`.
+
+---
+
+#### 28. Uso de auth.uid()
+
+`auth.uid()` podrá participar como localizador técnico.
+
+No se interpretará directamente como:
+
+- `employee_id`;
+- `customer_id`;
+- `device_id`;
+- actor efectivo;
+- rol;
+- sede;
+- área;
+- autorización.
+
+Siempre deberá existir una relación empresarial autoritativa.
+
+---
+
+#### 29. Claims JWT
+
+Los claims podrán usarse para:
+
+- identificar la sesión técnica;
+- clasificar el tipo de sesión;
+- localizar el principal;
+- validar expiración y audiencia.
+
+No podrán sustituir:
+
+- estado laboral;
+- rol base;
+- asignaciones;
+- turno;
+- check-in;
+- rol operativo;
+- sede o área;
+- grants;
+- denies.
+
+---
+
+#### 30. Sesión humana personal
+
+Para una sesión personal:
+
+```text
+principal.principal_type = HUMAN_USER
+```
+
+El resolver deberá:
+
+1. identificar la credencial;
+2. resolver el principal empresarial;
+3. seleccionar identidad de dominio según `p_app_code`;
+4. resolver actor efectivo;
+5. resolver empleado cuando aplique;
+6. construir carriles de forma independiente.
+
+No asumirá:
+
+```text
+auth.uid() = employee.id
+```
+
+---
+
+#### 31. Identidad de dominio
+
+`domain_identity` se seleccionará mediante:
+
+```text
+principal real
++
+p_app_code
++
+política canónica de identidad de la aplicación
+```
+
+No se seleccionará por:
+
+- primera relación encontrada;
+- nombre del frontend;
+- claim de rol;
+- tabla consultada por una aplicación;
+- tipo de usuario preferido por el cliente.
+
+---
+
+#### 32. Múltiples identidades de dominio
+
+Cuando una credencial represente, por ejemplo:
+
+```text
+CUSTOMER
++
+EMPLOYEE
+```
+
+la aplicación deberá determinar qué identidad acepta.
+
+Si la política no permite resolver una identidad única:
+
+```text
+DOMAIN_IDENTITY_AMBIGUOUS
+```
+
+No se combinarán identidades para ampliar autoridad.
+
+---
+
+#### 33. Actor efectivo
+
+El actor efectivo se resolverá después del principal y de la identidad
+aplicable.
+
+Deberá cumplir:
+
+```text
+actor_effective
+≠ principal
+```
+
+aunque ambos puedan referenciar a la misma persona en una sesión personal.
+
+---
+
+#### 34. Delegación
+
+Una delegación solo será válida cuando exista una relación empresarial
+explícita y vigente.
+
+El caller no podrá enviar `delegation_id`.
+
+Una delegación inválida produce:
+
+```text
+DELEGATION_INVALID
+```
+
+No existe delegación implícita por `service_role`.
+
+---
+
+#### 35. Empleado
+
+El empleado se resolverá desde el actor efectivo laboral.
+
+No se buscará directamente mediante:
+
+- email suministrado;
+- documento suministrado;
+- nombre;
+- `p_employee_id`;
+- rol;
+- sede;
+- último turno.
+
+La existencia de un usuario de Auth no garantiza un empleado.
+
+---
+
+#### 36. Empleado inactivo
+
+Un empleado identificado e inactivo se representa como estado empresarial
+conocido.
+
+Resultado esperado:
+
+```text
+employee.is_active = false
+base readiness = UNAVAILABLE
+operational readiness = UNAVAILABLE
+reason_codes incluye EMPLOYEE_INACTIVE
+```
+
+No se reactivará mediante asignaciones, turnos, check-ins o permisos
+residuales.
+
+---
+
+#### 37. Rol base
+
+El rol base deberá resolverse desde una asignación laboral canónica vigente.
+
+No se derivará de:
+
+- `employees.role` legacy sin mapeo aprobado;
+- turno;
+- check-in;
+- dispositivo;
+- navegación;
+- nombre de cargo;
+- sede seleccionada.
+
+Ambigüedad produce:
+
+```text
+BASE_ROLE_AMBIGUOUS
+```
+
+---
+
+#### 38. Asignaciones de sede
+
+`assigned_sites` contendrá todas las asignaciones laborales relevantes,
+normalizadas y ordenadas.
+
+No se colapsará a:
+
+```text
+employees.site_id
+```
+
+Reglas:
+
+- lista vacía significa ninguna asignación;
+- varias sedes no significan organización;
+- una sede primaria no autoriza por sí sola;
+- duplicados contradictorios producen problema estructural.
+
+---
+
+#### 39. Orden de assigned_sites
+
+Orden canónico:
+
+1. `site_code`;
+2. `site_id`.
+
+`is_primary` no altera el orden ni concede precedencia de autoridad.
+
+---
+
+#### 40. Asignaciones de área
+
+`assigned_areas` deberá:
+
+- conservar área y sede;
+- verificar pertenencia;
+- distinguir área concreta de tipo de área;
+- detectar duplicados;
+- ordenar determinísticamente;
+- no conceder permisos.
+
+Orden canónico:
+
+1. `site_id`;
+2. `area_kind`;
+3. `area_id`.
+
+---
+
+#### 41. Cobertura administrativa
+
+`administrative_coverage` se resolverá desde:
+
+- rol base;
+- asignaciones;
+- reglas explícitas;
+- autoridad organizacional aprobada.
+
+No utilizará:
+
+- sede seleccionada;
+- sede primaria como fallback;
+- turno;
+- check-in;
+- dispositivo;
+- permiso evaluado;
+- recurso todavía desconocido.
+
+---
+
+#### 42. Organización
+
+```text
+mode = ORGANIZATION
+```
+
+solo podrá producirse mediante autoridad explícita.
+
+No se deduce de:
+
+- rol con nombre privilegiado;
+- lista vacía;
+- `null`;
+- varias sedes;
+- `service_role`;
+- acceso a todas las filas mediante SQL.
+
+---
+
+#### 43. Turno activo
+
+`active_shift` deberá resolverse desde una revisión:
+
+- publicada;
+- autoritativa;
+- vigente en `resolved_at`;
+- correspondiente al actor;
+- con rango temporal válido;
+- sin solapamiento ambiguo;
+- con sede válida;
+- con rol operativo resoluble.
+
+No se seleccionará por orden arbitrario con `limit 1`.
+
+---
+
+#### 44. Turnos nocturnos y zona horaria
+
+La vigencia de turnos deberá usar:
+
+- timestamps o reglas temporales canónicas;
+- zona horaria de la sede o política aprobada;
+- cruce de medianoche explícito;
+- `resolved_at` único.
+
+Queda prohibido fijar de forma silenciosa:
+
+```text
+America/Bogota
+```
+
+dentro del resolver para todos los dominios futuros.
+
+La fuente de zona horaria deberá ser autoritativa y versionada.
+
+---
+
+#### 45. Ausencia de turno
+
+Cuando no exista turno vigente y no haya contradicción:
+
+```text
+active_shift = null
+operational readiness = UNAVAILABLE
+reason_codes incluye NO_ACTIVE_SHIFT
+```
+
+La ausencia de turno no bloquea el carril base.
+
+---
+
+#### 46. Solapamiento de turnos
+
+Más de un turno vigente candidato produce:
+
+```text
+SHIFT_OVERLAP
+active_shift = null
+operational readiness = INVALID
+```
+
+No se resolverá mediante:
+
+- primer registro;
+- turno más reciente;
+- turno más antiguo;
+- prioridad no declarada;
+- turno elegido por el cliente.
+
+---
+
+#### 47. Check-in activo
+
+`active_checkin_session` deberá representar una sesión canónica activa.
+
+No se reconstruirá únicamente buscando:
+
+```text
+último check_in sin check_out posterior
+```
+
+si el modelo canónico ya dispone de sesiones, vínculos terminales o estados.
+
+---
+
+#### 48. Ausencia de check-in
+
+Ausencia normal:
+
+```text
+active_checkin_session = null
+reason_codes incluye NO_ACTIVE_CHECKIN
+```
+
+No produce por sí sola `StructuralIssue`.
+
+El carril operativo podrá continuar `READY` para permisos con prerrequisito
+`T`.
+
+---
+
+#### 49. Check-in incompatible
+
+Un check-in de:
+
+- otro actor;
+- otro turno;
+- otra sede;
+- área incompatible;
+- sesión cerrada;
+- sesión expirada;
+- evento pendiente offline;
+
+no se acepta como activo.
+
+Se emite el código estructural correspondiente.
+
+---
+
+#### 50. Rol operativo
+
+`operational_role` se deriva exclusivamente del turno válido.
+
+No procede de:
+
+- rol base;
+- `navigation_role`;
+- dispositivo;
+- último rol usado;
+- perfil predeterminado;
+- frontend;
+- check-in aislado.
+
+---
+
+#### 51. Sede operativa
+
+`operational_site` se deriva del turno válido.
+
+No se resuelve mediante:
+
+```text
+coalesce(
+  p_site_id,
+  selected_site_id,
+  checkin_site_id,
+  shift_site_id,
+  employee_default_site_id
+)
+```
+
+La sede seleccionada y la sede predeterminada no sustituyen el turno.
+
+---
+
+#### 52. Área operativa
+
+`operational_area`:
+
+- deriva del turno;
+- puede ser confirmada por check-in;
+- debe pertenecer a la sede;
+- puede ser `null` legítimamente;
+- no se toma de un selector;
+- no se toma de la última marcación.
+
+La necesidad de área depende posteriormente del permiso.
+
+---
+
+#### 53. Dispositivo administrado
+
+Un dispositivo administrado podrá participar como contexto técnico aun en una
+sesión personal.
+
+`device_context` se incluye únicamente cuando existe un dispositivo canónico
+resuelto.
+
+No se construye desde:
+
+- user agent;
+- IP;
+- hostname;
+- navegador;
+- texto enviado por cliente.
+
+---
+
+#### 54. Dispositivo compartido
+
+En dispositivo compartido:
+
+```text
+principal = SHARED_DEVICE
+actor_effective = EMPLOYEE o UNRESOLVED
+```
+
+El actor se resuelve desde una sesión de actor vigente.
+
+El dispositivo no aporta:
+
+- rol base;
+- rol operativo;
+- grant;
+- sede empresarial del actor;
+- permiso.
+
+Puede restringir aplicaciones y capacidades, nunca ampliarlas.
+
+---
+
+#### 55. Dispositivo sin actor
+
+Un dispositivo compartido válido sin sesión humana produce:
+
+```text
+actor_effective.actor_type = UNRESOLVED
+lane_readiness.base = UNAVAILABLE
+lane_readiness.operational = UNAVAILABLE
+reason_codes incluye DEVICE_ACTOR_SESSION_NOT_AVAILABLE
+```
+
+No se reutiliza el último actor.
+
+---
+
+#### 56. navigation_role prohibido
+
+`navigation_role` no se utilizará para llenar:
+
+- `base_role`;
+- `operational_role`;
+- `actor_effective`;
+- `administrative_coverage`;
+- `lane_readiness`.
+
+Puede permanecer como dato legacy hasta su retiro, pero no participa en el
+contrato canónico.
+
+---
+
+#### 57. Simulación excluida
+
+`get_access_context` nunca resolverá:
+
+- `simulation_id`;
+- actor simulado;
+- rol simulado;
+- sede simulada;
+- área simulada;
+- turno hipotético;
+- grants hipotéticos.
+
+No consultará una simulación activa antes del contexto real.
+
+La simulación pertenece a `SimulationContext`.
+
+---
+
+#### 58. Actor de sistema
+
+Un actor de sistema deberá resolverse mediante:
+
+- principal técnico registrado;
+- proceso permitido;
+- identidad de dominio `SYSTEM`;
+- actor de sistema exacto;
+- delegación explícita cuando actúe por otra entidad.
+
+El uso de `service_role` no basta.
+
+---
+
+#### 59. Principal anónimo
+
+El contrato puede representar `ANONYMOUS`.
+
+Sin embargo, la función no se concederá a `anon` por defecto.
+
+La exposición anónima futura requerirá:
+
+- caso de uso explícito;
+- política por aplicación;
+- proyección segura;
+- grant específico;
+- pruebas negativas;
+- aprobación en `SUPA-ARC-015`.
+
+---
+
+#### 60. lane_readiness
+
+La función calculará:
+
+```ts
+lane_readiness: {
+  base: LaneReadiness;
+  operational: LaneReadiness;
+}
+```
+
+No producirá:
+
+- `can_operate`;
+- `can_admin`;
+- `has_permission`;
+- `allow`;
+- `deny`.
+
+Readiness solo expresa suficiencia estructural.
+
+---
+
+#### 61. Carril base
+
+El carril base se calcula en este orden:
+
+```text
+1. BLOCKING_ALL
+2. tipo de actor
+3. estado laboral
+4. BLOCKING_BASE
+5. rol base
+6. cobertura administrativa
+7. estado final
+```
+
+No depende de turno o check-in.
+
+---
+
+#### 62. Carril operativo
+
+El carril operativo se calcula en este orden:
+
+```text
+1. BLOCKING_ALL
+2. tipo de actor
+3. estado laboral
+4. BLOCKING_OPERATIONAL
+5. turno
+6. rol operativo
+7. sede operativa
+8. área cuando corresponda al rol
+9. disponibilidad de check-in
+10. estado final
+```
+
+No evalúa todavía el prerrequisito de un permiso concreto.
+
+---
+
+#### 63. structural_issues
+
+La función producirá `structural_issues` usando únicamente el catálogo
+congelado en AUTH-CTX-015.
+
+No inventará códigos SQL locales.
+
+No incluirá:
+
+- nombres de excepciones;
+- stack traces;
+- mensajes de PostgreSQL;
+- nombres de tablas;
+- consultas;
+- datos personales;
+- falta de grant;
+- denegaciones de permiso.
+
+---
+
+#### 64. Propiedad de resolvers
+
+Cada problema será emitido por su resolver propietario:
+
+- principal;
+- identidad de dominio;
+- actor;
+- empleado;
+- rol base;
+- asignaciones;
+- cobertura;
+- turno;
+- check-in;
+- rol operativo;
+- territorio operativo;
+- dispositivo;
+- validador de contexto;
+- freshness resolver.
+
+Un resolver dependiente no duplicará la causa.
+
+---
+
+#### 65. Supresión de cascadas
+
+Ejemplo:
+
+```text
+SHIFT_OVERLAP
+→ turno null
+→ rol operativo null
+→ sede operativa null
+→ área operativa null
+```
+
+Se emite la causa raíz.
+
+No se agregan falsamente códigos de rol, sede y área desconocidos como
+consecuencia automática.
+
+---
+
+#### 66. Deduplificación
+
+La identidad de un `StructuralIssue` será:
+
+```text
+issue_code
++
+subject_type
++
+subject_id
++
+source
+```
+
+Duplicados exactos se serializan una sola vez.
+
+Metadatos incompatibles producen:
+
+```text
+STRUCTURAL_ISSUE_METADATA_INVALID
+```
+
+---
+
+#### 67. Orden de structural_issues
+
+Orden obligatorio:
+
+1. severidad;
+2. `issue_code`;
+3. `subject_type`;
+4. `subject_id`, usando cadena vacía para `null`;
+5. `source`.
+
+El resultado no dependerá del plan de ejecución SQL.
+
+---
+
+#### 68. Orden de reason_codes
+
+Cada `reason_codes` deberá:
+
+- eliminar duplicados;
+- respetar precedencia estructural;
+- ordenar códigos de disponibilidad alfabéticamente;
+- mantener salida determinista.
+
+---
+
+#### 69. ResolutionMetadata
+
+La función producirá:
+
+```ts
+type ResolutionMetadata = {
+  resolver: string;
+  resolver_version: string;
+  authorization_contract_version: string;
+  catalog_version: string;
+  source_versions: Record<string, string>;
+  source_fingerprints: Record<string, string>;
+  cache_status: "MISS" | "HIT" | "BYPASS" | "NOT_IMPLEMENTED";
+};
+```
+
+No se agregan propiedades.
+
+---
+
+#### 70. resolver
+
+Valor lógico inicial propuesto:
+
+```text
+vento.authorization.get_access_context
+```
+
+No será:
+
+- nombre de archivo;
+- esquema físico;
+- hostname;
+- nombre de aplicación;
+- nombre de persona;
+- nombre de migración.
+
+AUTH-DB-033 congelará el identificador físico publicado.
+
+---
+
+#### 71. resolver_version
+
+`resolver_version` identificará una implementación exacta.
+
+No se aceptan:
+
+```text
+latest
+main
+current
+production
+unknown
+```
+
+Podrá usar una versión semántica o build inmutable aprobada.
+
+---
+
+#### 72. authorization_contract_version
+
+Deberá declarar:
+
+```text
+1.0.0
+```
+
+y coincidir con:
+
+```text
+contract_version
+```
+
+Una incompatibilidad produce:
+
+```text
+CONTRACT_VERSION_UNSUPPORTED
+```
+
+---
+
+#### 73. catalog_version
+
+`catalog_version` identificará el catálogo canónico utilizado para:
+
+- aplicaciones;
+- identidades admitidas;
+- roles;
+- sedes;
+- áreas;
+- dispositivos;
+- demás configuraciones contextuales.
+
+No sustituye hashes de fuentes.
+
+---
+
+#### 74. source_versions
+
+`source_versions` deberá identificar cada fuente materialmente utilizada.
+
+Ejemplos conceptuales:
+
+```json
+{
+  "principal_registry": "1.0.0",
+  "domain_identity_policy": "1.0.0",
+  "employment_model": "1.0.0",
+  "role_catalog": "1.0.0",
+  "site_catalog": "1.0.0",
+  "area_catalog": "1.0.0",
+  "shift_model": "1.0.0",
+  "checkin_model": "1.0.0",
+  "device_model": "1.0.0",
+  "structural_issue_catalog": "1.0.0"
+}
+```
+
+Las claves finales se congelarán en AUTH-DB-033 después de E3.
+
+---
+
+#### 75. source_fingerprints
+
+`source_fingerprints` deberá identificar snapshots autoritativos usados.
+
+No se usarán hashes de:
+
+- tabla completa cuando no corresponda;
+- documento compilado;
+- aplicación cliente;
+- JWT completo;
+- secretos;
+- texto formateado no canónico.
+
+La preimagen deberá ser reproducible y segura.
+
+---
+
+#### 76. Fingerprint del contexto
+
+`get_access_context` deberá producir todos los datos necesarios para calcular
+el `context_fingerprint` requerido por `AccessContextReference`.
+
+La huella final podrá calcularse:
+
+- dentro del resolver privado; o
+- inmediatamente en `evaluate_authorization`;
+
+pero deberá usar el objeto canónico exacto y el mismo perfil de
+serialización.
+
+No se agrega un campo nuevo a `AccessContext@1.0.0`.
+
+---
+
+#### 77. Serialización canónica
+
+La construcción JSON deberá respetar:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+Incluye:
+
+- claves obligatorias presentes;
+- `null` explícito;
+- arrays vacíos explícitos;
+- timestamps normalizados;
+- enums exactos;
+- arrays ordenados cuando son conjuntos;
+- orden preservado cuando la secuencia es semántica;
+- ausencia de números ambiguos;
+- Unicode normalizado.
+
+---
+
+#### 78. jsonb::text prohibido como única canonicalización
+
+No se asumirá que:
+
+```sql
+some_jsonb::text
+```
+
+implementa por sí solo todo el perfil `vento.canonical-json@1.0.0`.
+
+La función física de canonicalización deberá aprobarse y probarse en
+`AUTH-DB-033` y `AUTH-DB-027`.
+
+---
+
+#### 79. null y listas vacías
+
+Se conserva:
+
+```text
+null
+≠ global
+```
+
+```text
+[]
+= ningún elemento
+```
+
+No se omitirán campos obligatorios para reducir payload.
+
+---
+
+#### 80. Seguridad de ejecución
+
+La implementación canónica requerirá privilegios para leer fuentes
+restringidas.
+
+Por ello la función podrá ser `SECURITY DEFINER` únicamente bajo estas
+condiciones:
+
+- propietario técnico no interactivo;
+- propietario sin autoridad empresarial implícita;
+- `search_path` fijo;
+- objetos referenciados con nombres calificados;
+- ausencia de SQL dinámico inseguro;
+- revocación de ejecución a `PUBLIC`;
+- helpers privados no expuestos;
+- pruebas de escalamiento;
+- revisión en `SUPA-ARC-014`.
+
+---
+
+#### 81. search_path
+
+Queda prohibido:
+
+```sql
+set search_path = public
+```
+
+como única protección.
+
+El `search_path` deberá:
+
+- iniciar con `pg_catalog`;
+- incluir únicamente esquemas aprobados;
+- excluir esquemas escribibles por callers;
+- utilizar nombres calificados para objetos críticos;
+- congelarse en la migración.
+
+---
+
+#### 82. SQL dinámico
+
+La implementación no deberá usar SQL dinámico para seleccionar:
+
+- tabla por app;
+- columna por rol;
+- esquema por cliente;
+- función por permiso.
+
+Si alguna parte exige SQL dinámico, deberá justificar:
+
+- lista cerrada;
+- quoting seguro;
+- imposibilidad de inyección;
+- pruebas negativas;
+- revisión específica.
+
+La opción predeterminada es no utilizarlo.
+
+---
+
+#### 83. Grants
+
+Política inicial:
+
+```text
+PUBLIC       → REVOKE
+anon         → REVOKE
+authenticated→ no acceso directo al contrato interno por defecto
+```
+
+La función completa será consumida por:
+
+- `evaluate_authorization`;
+- wrappers internos aprobados;
+- pruebas privilegiadas;
+- servicios autorizados.
+
+La proyección segura para cliente se implementará separadamente dentro de
+`AUTH-DB-033`.
+
+---
+
+#### 84. Proyección segura
+
+El `AccessContext` completo puede contener evidencia interna que no debe
+entregarse indiscriminadamente al cliente.
+
+La proyección segura podrá incluir:
+
+- tipo de principal seguro;
+- actor efectivo mínimo;
+- rol base cuando sea visible;
+- sede y área operativas seguras;
+- disponibilidad de carriles;
+- códigos seguros;
+- contexto de dispositivo mínimo;
+- `context_id` cuando corresponda.
+
+No incluirá por defecto:
+
+- fingerprints;
+- source versions internas;
+- IDs sensibles;
+- problemas no seguros;
+- detalles de sesiones;
+- configuración completa;
+- datos de otros actores.
+
+---
+
+#### 85. Tarea física de proyección segura
+
+La implementación de la proyección segura queda asignada a:
+
+```text
+AUTH-DB-033
+```
+
+La adaptación de consumidores legacy y la forma de compatibilidad se
+diseñará en:
+
+```text
+AUTH-CTX-028
+```
+
+No queda como pendiente narrativo.
+
+---
+
+#### 86. RLS
+
+`get_access_context` no dependerá de que el caller pueda leer directamente
+todas las tablas fuente.
+
+Tampoco deberá:
+
+- desactivar RLS globalmente;
+- conceder SELECT amplio al caller;
+- devolver filas fuente;
+- usar bypass de RLS como autoridad empresarial.
+
+La función resuelve hechos; `evaluate_authorization` decide capacidades.
+
+---
+
+#### 87. service_role
+
+`service_role` podrá permitir conectividad técnica.
+
+No produce:
+
+- actor empresarial;
+- permiso;
+- rol;
+- cobertura;
+- delegación;
+- bypass.
+
+Un proceso de sistema deberá estar registrado y autorizado explícitamente.
+
+---
+
+#### 88. Errores esperados frente a errores de infraestructura
+
+Se separan:
+
+```text
+INCONSISTENCIA EMPRESARIAL O CONTEXTUAL
+→ AccessContext válido
+→ structural_issues
+→ readiness fail closed
+```
+
+```text
+CONTRATO DE INVOCACIÓN INVÁLIDO
+→ error SQL estable
+```
+
+```text
+FALLO DE INFRAESTRUCTURA QUE IMPIDE CONSTRUIR EL CONTRATO
+→ excepción controlada
+→ sin contexto parcial
+→ fail closed
+```
+
+---
+
+#### 89. No usar excepciones para estados normales
+
+No se lanzará excepción por:
+
+- ausencia normal de turno;
+- ausencia normal de check-in;
+- empleado inactivo conocido;
+- dispositivo sin actor;
+- actor no laboral;
+- lista vacía de asignaciones;
+- área opcional ausente.
+
+Esos estados tienen representación contractual.
+
+---
+
+#### 90. Error interno
+
+Un error interno no se convertirá en:
+
+- contexto vacío;
+- `can_operate = true`;
+- contexto de sede predeterminada;
+- actor de último uso;
+- rol por nombre;
+- respuesta parcial marcada como válida.
+
+La operación falla cerrada.
+
+---
+
+#### 91. Mensajes de error
+
+Los errores SQL expuestos no deberán revelar:
+
+- nombres internos de tablas;
+- existencia de otro empleado;
+- IDs ajenos;
+- stack traces;
+- SQL;
+- políticas de seguridad;
+- secretos;
+- datos personales.
+
+La observabilidad interna conservará el detalle permitido.
+
+---
+
+#### 92. Sin decisiones de permiso
+
+`get_access_context` no recibe `permission_key`.
+
+No consulta:
+
+- grants;
+- denies;
+- alcance de permiso;
+- modalidad;
+- recurso;
+- restricciones de campos;
+- sensibilidad;
+- dependencias.
+
+Estas responsabilidades pertenecen a `evaluate_authorization`.
+
+---
+
+#### 93. Sin can_operate
+
+Queda prohibido agregar:
+
+```text
+can_operate
+```
+
+al resultado.
+
+La pregunta:
+
+```text
+¿puede operar?
+```
+
+es ambigua sin permiso y recurso exactos.
+
+---
+
+#### 94. Sin bypass administrativo
+
+Queda prohibido:
+
+```text
+role in ('propietario', 'gerente_general')
+→ bypass
+```
+
+Los roles privilegiados siguen sujetos a:
+
+- permiso exacto;
+- modalidad;
+- recurso;
+- alcance;
+- denies;
+- auditoría.
+
+---
+
+#### 95. Sin fallback territorial
+
+Queda prohibido resolver sede operativa mediante:
+
+- parámetro del caller;
+- sede seleccionada;
+- sede primaria;
+- sede del empleado legacy;
+- sede del dispositivo como sustituto del turno;
+- última sede usada.
+
+Cada concepto permanece separado.
+
+---
+
+#### 96. Sin recurso
+
+`AccessContext` no contiene:
+
+- resource_id;
+- resource_type solicitado;
+- origen;
+- destino;
+- estado del recurso;
+- campos solicitados;
+- transición.
+
+El recurso pertenece a `AuthorizationDecision`.
+
+---
+
+#### 97. Consumo por evaluate_authorization
+
+AUTH-CTX-026 deberá diseñar:
+
+```text
+evaluate_authorization
+→ valida solicitud
+→ obtiene get_access_context(p_app_code)
+→ calcula context_fingerprint
+→ resuelve permiso y recurso
+→ evalúa carriles
+→ emite AuthorizationDecision
+```
+
+No deberá duplicar la resolución del contexto.
+
+---
+
+#### 98. Frontera de caché
+
+AUTH-CTX-025 no define:
+
+- TTL;
+- clave de caché;
+- invalidación;
+- almacenamiento;
+- coherencia eventual.
+
+La implementación inicial deberá declarar:
+
+```text
+cache_status = NOT_IMPLEMENTED
+```
+
+hasta que AUTH-CTX-029 apruebe otra estrategia.
+
+---
+
+#### 99. No cachear por user_id solamente
+
+Una futura clave de caché no podrá basarse únicamente en:
+
+```text
+auth.uid()
+```
+
+Debe considerar hechos como:
+
+- principal;
+- actor;
+- app;
+- dispositivo;
+- sesión de actor;
+- empleo;
+- roles;
+- asignaciones;
+- turno;
+- check-in;
+- versiones;
+- fuentes.
+
+La definición exacta corresponde a AUTH-CTX-029.
+
+---
+
+#### 100. Auditoría y observabilidad
+
+La resolución podrá emitir telemetría técnica mínima:
+
+- duración;
+- resolver version;
+- success/failure técnico;
+- correlation técnica cuando exista;
+- cantidad de fuentes;
+- cache status.
+
+No deberá persistir por sí sola una acción empresarial.
+
+La auditoría durable de decisiones pertenece a `AUTH-DB-032`.
+
+---
+
+#### 101. Rendimiento
+
+La implementación deberá evitar:
+
+- N+1 por asignación;
+- consulta por cada código;
+- carga de historiales completos;
+- materialización de permisos;
+- selección de columnas innecesarias;
+- funciones repetidas por nodo sin snapshot común.
+
+La optimización no podrá cambiar la semántica.
+
+---
+
+#### 102. Índices
+
+Los índices necesarios se determinarán después de:
+
+- auditoría física E3;
+- esquema objetivo;
+- consultas reales;
+- planes de ejecución;
+- volumen;
+- cardinalidad.
+
+La implementación corresponde a:
+
+```text
+AUTH-DB-025
+AUTH-DB-033
+```
+
+No se diseñan índices concretos en esta tarea.
+
+---
+
+#### 103. Tipos generados
+
+Después de implementar la función:
+
+```text
+AUTH-DB-026
+```
+
+deberá regenerar tipos.
+
+Los consumidores no usarán tipos manuales divergentes como fuente de verdad.
+
+---
+
+#### 104. Estado actual get_operational_context
+
+`get_operational_context` se clasifica como resolver legacy transitorio.
+
+AUTH-CTX-027 deberá inventariar:
+
+- firmas;
+- consumidores;
+- dependencias;
+- políticas;
+- RLS;
+- RPC;
+- tests;
+- supuestos de sede;
+- bypasses;
+- códigos de error.
+
+No se retirará todavía.
+
+---
+
+#### 105. Estado actual get_effective_context_v1
+
+`get_effective_context_v1` se clasifica como agregador legacy incompatible
+porque mezcla:
+
+- contexto real;
+- simulación;
+- dispositivo;
+- roles de navegación;
+- bypass;
+- decisión anticipada.
+
+AUTH-CTX-027 deberá registrar cada consumidor.
+
+AUTH-CTX-028 deberá diseñar la compatibilidad temporal.
+
+---
+
+#### 106. Estrategia de transición
+
+Orden obligatorio:
+
+```text
+1. Aprobar AUTH-CTX-025.
+2. Aprobar AUTH-CTX-026.
+3. Auditar resolvers y consumidores en AUTH-CTX-027.
+4. Diseñar compatibilidad en AUTH-CTX-028.
+5. Definir caché en AUTH-CTX-029.
+6. Aprobar pruebas en AUTH-CTX-030.
+7. Aprobar arquitectura física E3.
+8. Implementar AUTH-DB-033.
+9. Ejecutar pruebas AUTH-DB-027.
+10. Adaptar consumidores.
+11. Verificar ausencia de lecturas legacy.
+12. Retirar legacy mediante AUTH-DB-030.
+13. Certificar con AUTH-DB-031.
+```
+
+---
+
+#### 107. Nueva tarea AUTH-DB-033
+
+Se crea explícitamente:
+
+```text
+AUTH-DB-033
+— Implementar get_access_context canónico,
+  sus resolvers privados y su proyección segura
+```
+
+Ubicación:
+
+```text
+BLOQUE R1 — Fundación física canónica
+después de AUTH-DB-019
+después de SUPA-ARC-005 a SUPA-ARC-015
+antes de adoptar el contexto en AUTH-DB-006 a AUTH-DB-010
+```
+
+---
+
+#### 108. Alcance futuro de AUTH-DB-033
+
+`AUTH-DB-033` deberá:
+
+- crear la función canónica;
+- crear helpers privados;
+- fijar schema y search_path;
+- configurar propietario;
+- revocar grants inseguros;
+- implementar la proyección segura;
+- implementar fingerprints de fuentes;
+- validar versión contractual;
+- producir JSON canónico;
+- asegurar snapshot único;
+- integrar catálogos;
+- probar actores humanos;
+- probar dispositivos;
+- probar sistemas;
+- probar errores;
+- medir rendimiento;
+- documentar rollback;
+- registrar migración en `vento-shell`.
+
+---
+
+#### 109. Responsabilidades relacionadas
+
+| Responsabilidad             | Tarea                           |
+| --------------------------- | ------------------------------- |
+| Contrato de `AccessContext` | `AUTH-CTX-001`                  |
+| Nodos contextuales          | `AUTH-CTX-005` a `AUTH-CTX-015` |
+| Contrato SQL de resolución  | `AUTH-CTX-025`                  |
+| Contrato del evaluador      | `AUTH-CTX-026`                  |
+| Inventario legacy           | `AUTH-CTX-027`                  |
+| Compatibilidad temporal     | `AUTH-CTX-028`                  |
+| Caché e invalidación        | `AUTH-CTX-029`                  |
+| Pruebas contractuales       | `AUTH-CTX-030`                  |
+| Capa expuesta y privada     | `SUPA-ARC-005`, `SUPA-ARC-006`  |
+| Política SECURITY DEFINER   | `SUPA-ARC-014`                  |
+| Grants y RLS                | `SUPA-ARC-015`                  |
+| Implementación del resolver | `AUTH-DB-033`                   |
+| Persistencia de decisiones  | `AUTH-DB-032`                   |
+| Harness físico              | `AUTH-DB-027`                   |
+| Migración progresiva        | `AUTH-DB-020`                   |
+| Retiro legacy               | `AUTH-DB-030`                   |
+| Certificación final         | `AUTH-DB-031`                   |
+
+No queda pendiente narrativo sin dueño.
+
+---
+
+#### 110. Esqueleto SQL conceptual
+
+```sql
+-- DOCUMENTAL. NO EJECUTAR.
+
+create function <authorization_internal_schema>.get_access_context(
+  p_app_code text
+)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = pg_catalog, <schemas_privados_aprobados>
+as $$
+declare
+  v_resolved_at timestamptz;
+  v_result jsonb;
+begin
+  -- validar invocación;
+  -- capturar instante único;
+  -- resolver principal;
+  -- resolver identidad de dominio;
+  -- resolver actor;
+  -- resolver identidad laboral;
+  -- resolver carril base;
+  -- resolver carril operativo;
+  -- resolver dispositivo;
+  -- consolidar problemas;
+  -- calcular readiness;
+  -- registrar metadata;
+  -- validar contrato;
+  -- serializar AccessContext@1.0.0;
+  return v_result;
+end;
+$$;
+```
+
+No define tablas ni consultas físicas.
+
+---
+
+#### 111. Caso canónico: empleado administrativo sin turno
+
+```text
+p_app_code = viso
+principal = HUMAN_USER
+actor = EMPLOYEE
+employee = ACTIVE
+base_role = válido
+administrative_coverage = válida
+active_shift = null
+base readiness = READY
+operational readiness = UNAVAILABLE
+```
+
+No existe error por ausencia de turno.
+
+---
+
+#### 112. Caso canónico: empleado operativo con turno
+
+```text
+p_app_code = nexo
+principal = HUMAN_USER
+actor = EMPLOYEE
+employee = ACTIVE
+active_shift = válido
+operational_role = válido
+operational_site = válida
+active_checkin_session = null
+operational readiness = READY
+reason_codes = [NO_ACTIVE_CHECKIN]
+```
+
+Posteriormente un permiso `T` podrá evaluarse.
+
+Un permiso `T+C` será denegado por el evaluador.
+
+---
+
+#### 113. Caso canónico: dispositivo compartido con actor
+
+```text
+principal = SHARED_DEVICE
+device_context = ACTIVE
+actor_session = ACTIVE
+actor_effective = EMPLOYEE
+employee = ACTIVE
+```
+
+El rol operativo sigue procediendo del turno, no del dispositivo.
+
+---
+
+#### 114. Caso canónico: dispositivo sin actor
+
+```text
+principal = SHARED_DEVICE
+device_context = ACTIVE
+actor_effective = UNRESOLVED
+base readiness = UNAVAILABLE
+operational readiness = UNAVAILABLE
+```
+
+No se toma el último actor.
+
+---
+
+#### 115. Caso canónico: empleado inactivo
+
+```text
+employee.is_active = false
+base readiness = UNAVAILABLE
+operational readiness = UNAVAILABLE
+reason_codes incluye EMPLOYEE_INACTIVE
+```
+
+No se lanza excepción.
+
+---
+
+#### 116. Caso canónico: turnos solapados
+
+```text
+dos turnos vigentes candidatos
+→ SHIFT_OVERLAP
+→ active_shift = null
+→ operational readiness = INVALID
+```
+
+No se usa `limit 1` para elegir silenciosamente.
+
+---
+
+#### 117. Caso canónico: cliente
+
+```text
+domain_identity = CUSTOMER
+employee = null
+base readiness = NOT_APPLICABLE
+operational readiness = NOT_APPLICABLE
+```
+
+No se fuerza una identidad laboral.
+
+---
+
+#### 118. Caso canónico: sistema
+
+```text
+principal = SYSTEM_SERVICE
+domain_identity = SYSTEM
+actor_effective = SYSTEM
+employee = null
+```
+
+La autoridad se evaluará posteriormente por permiso y recurso.
+
+---
+
+#### 119. Caso canónico: app sin configuración
+
+```text
+p_app_code tiene forma válida
+configuración autoritativa inexistente
+→ RESOLVER_CONFIGURATION_MISSING
+→ carriles INVALID
+```
+
+No se usa `nexo` como fallback.
+
+---
+
+#### 120. Antipatrones prohibidos
+
+```sql
+p_employee_id uuid default auth.uid()
+```
+
+```sql
+p_site_id uuid default null
+```
+
+```sql
+v_active_site_id :=
+  coalesce(
+    p_site_id,
+    selected_site_id,
+    checkin_site_id,
+    shift_site_id,
+    employee_default_site_id
+  );
+```
+
+```sql
+if employee_role in ('propietario', 'gerente_general') then
+  bypass := true;
+end if;
+```
+
+```sql
+effective_operational_role := device.navigation_role;
+```
+
+```sql
+if active_simulation then
+  return simulated_context;
+end if;
+```
+
+```sql
+can_operate := array_length(blocked_reasons, 1) is null;
+```
+
+También queda prohibido:
+
+```text
+auth.uid() → employee_id directo
+app_code null → nexo
+primera identidad → identidad efectiva
+primer turno → turno efectivo
+último check-in → sesión activa
+selected_site → sede operativa
+device site → territorio del actor
+service_role → autoridad
+SQL error → contexto vacío
+contexto parcial → contrato válido
+```
+
+---
+
+#### 121. Pruebas contractuales requeridas
+
+AUTH-CTX-030 deberá incluir, como mínimo:
+
+1. firma exacta;
+2. app obligatoria;
+3. app sin default;
+4. parámetro nulo;
+5. parámetro con espacios;
+6. app desconocida;
+7. app ambigua;
+8. sesión humana;
+9. sesión sin vínculo;
+10. principal ambiguo;
+11. identidad múltiple;
+12. actor personal;
+13. actor delegado;
+14. delegación inválida;
+15. empleado activo;
+16. empleado inactivo;
+17. empleado ausente;
+18. rol base válido;
+19. rol base ambiguo;
+20. varias sedes;
+21. sedes duplicadas;
+22. áreas incompatibles;
+23. cobertura NONE;
+24. cobertura ORGANIZATION explícita;
+25. ausencia de turno;
+26. turno válido;
+27. turno nocturno;
+28. turno solapado;
+29. turno no publicado;
+30. check-in ausente;
+31. check-in válido;
+32. check-in de otro actor;
+33. check-in expirado;
+34. rol operativo inválido;
+35. sede operativa inválida;
+36. área opcional;
+37. área requerida;
+38. dispositivo personal;
+39. dispositivo compartido con actor;
+40. dispositivo compartido sin actor;
+41. dispositivo inactivo;
+42. actor de sistema;
+43. anónimo;
+44. ausencia de simulación;
+45. ausencia de navigation_role;
+46. ausencia de bypass;
+47. ausencia de can_operate;
+48. orden determinista;
+49. deduplicación;
+50. metadata;
+51. serialización;
+52. snapshot único;
+53. error de infraestructura;
+54. exposición segura;
+55. grants;
+56. search_path;
+57. SQL injection;
+58. rendimiento;
+59. tipos generados;
+60. paridad entre ambientes.
+
+---
+
+#### 122. Pruebas físicas requeridas
+
+`AUTH-DB-027` y `AUTH-DB-033` deberán probar:
+
+- función con usuario autenticado;
+- invocación directa no autorizada;
+- `PUBLIC` revocado;
+- `anon` revocado;
+- helpers privados inaccesibles;
+- search path poisoning;
+- objetos homónimos maliciosos;
+- claims manipulados;
+- actor ajeno;
+- dispositivo ajeno;
+- función bajo RLS;
+- mismo snapshot;
+- serialización exacta;
+- planes de ejecución;
+- índices;
+- concurrencia;
+- rollback;
+- drift local/staging/producción.
+
+---
+
+#### 123. Riesgos controlados
+
+| Riesgo                                 | Control                        |
+| -------------------------------------- | ------------------------------ |
+| Caller elige empleado                  | Firma sin `p_employee_id`      |
+| Caller elige sede                      | Firma sin `p_site_id`          |
+| Default silencioso a NEXO              | `p_app_code` obligatorio       |
+| Auth user tratado como empleado        | Mapeo empresarial explícito    |
+| Primer turno elegido                   | Ambigüedad estructural         |
+| Check-in reconstruido incorrectamente  | Sesión canónica                |
+| Rol de navegación usado como autoridad | Prohibición expresa            |
+| Dispositivo crea rol                   | Intersección restrictiva       |
+| Simulación reemplaza realidad          | Contrato separado              |
+| Propietario recibe bypass              | Permiso exacto posterior       |
+| Resultado `can_operate` ambiguo        | Readiness sin decisión         |
+| `SECURITY DEFINER` escala privilegios  | Search path, owner y grants    |
+| Contexto completo filtrado             | Proyección segura              |
+| JSON no reproducible                   | Serialización canónica         |
+| Snapshot mezclado                      | STABLE e instante único        |
+| Resolver sin tarea física              | Nueva `AUTH-DB-033`            |
+| Legacy retirado prematuramente         | AUTH-CTX-027/028 y AUTH-DB-030 |
+| Caché obsoleta                         | AUTH-CTX-029                   |
+| Función no probada                     | AUTH-CTX-030 y AUTH-DB-027     |
+
+---
+
+#### 124. Fuera del alcance
+
+AUTH-CTX-025 no:
+
+- crea la función;
+- crea schemas;
+- crea helpers;
+- crea tablas;
+- modifica Auth;
+- crea vínculos empresariales;
+- crea migraciones;
+- crea grants;
+- crea políticas RLS;
+- crea índices;
+- crea tipos;
+- implementa serializador;
+- implementa fingerprint;
+- implementa caché;
+- implementa invalidación;
+- implementa `evaluate_authorization`;
+- implementa simulación;
+- modifica funciones legacy;
+- adapta consumidores;
+- retira resolvers;
+- modifica Supabase.
+
+Toda responsabilidad diferida tiene tarea explícita.
+
+---
+
+#### 125. Criterios de aprobación
+
+AUTH-CTX-025 podrá aprobarse cuando se acepte que:
+
+1. la función lógica se denomina `get_access_context`;
+2. su firma lógica es `(text) → jsonb`;
+3. existe un único parámetro;
+4. el parámetro es `p_app_code`;
+5. `p_app_code` es obligatorio;
+6. no existe app por defecto;
+7. no se normaliza silenciosamente;
+8. no se aceptan alias;
+9. app mal formada produce error de argumento;
+10. app sin configuración produce problema estructural;
+11. app ambigua produce problema estructural;
+12. no se acepta employee_id;
+13. no se acepta actor_id;
+14. no se acepta principal_id;
+15. no se acepta device_id;
+16. no se acepta site_id;
+17. no se acepta area_id;
+18. no se acepta role;
+19. no se acepta shift_id;
+20. no se acepta checkin_id;
+21. no se acepta simulation_id;
+22. no existe overload inseguro;
+23. la función retorna jsonb;
+24. retorna un objeto;
+25. no retorna tabla plana;
+26. no retorna booleano;
+27. no retorna lista;
+28. no retorna null;
+29. el objeto cumple AccessContext 1.0.0;
+30. incluye metadatos contractuales;
+31. no modifica la forma publicada;
+32. no agrega app_code a la raíz;
+33. no agrega correlation_id;
+34. no agrega permission_key;
+35. no agrega resource;
+36. no agrega can_operate;
+37. no agrega bypass;
+38. context_id se genera en servidor;
+39. context_id es único;
+40. context_id no es token;
+41. resolved_at se genera en servidor;
+42. resolved_at se captura una vez;
+43. resolved_at usa zona horaria;
+44. todos los resolvers usan el mismo instante;
+45. todos los hechos usan el mismo snapshot;
+46. snapshot mezclado falla cerrado;
+47. la función es STABLE;
+48. no es IMMUTABLE;
+49. no usa VOLATILE para escribir;
+50. no produce efectos empresariales;
+51. principal procede de sesión real;
+52. auth.uid es localizador técnico;
+53. auth.uid no es empleado directo;
+54. claims no sustituyen relaciones;
+55. sesión personal separa principal y actor;
+56. identidad de dominio depende de app;
+57. identidades múltiples no se mezclan;
+58. actor efectivo se resuelve explícitamente;
+59. delegación es explícita;
+60. caller no suministra delegación;
+61. empleado procede del actor laboral;
+62. usuario Auth no garantiza empleado;
+63. empleado inactivo queda representado;
+64. empleado inactivo no recupera autoridad residual;
+65. rol base procede de fuente canónica;
+66. rol base no procede del turno;
+67. rol base no procede de navigation_role;
+68. assigned_sites conserva múltiples asignaciones;
+69. lista vacía no significa todas;
+70. sede primaria no concede autoridad;
+71. assigned_sites tiene orden determinista;
+72. assigned_areas conserva sede;
+73. áreas se validan;
+74. assigned_areas tiene orden determinista;
+75. cobertura procede de reglas explícitas;
+76. selected_site no modifica cobertura;
+77. ORGANIZATION exige autoridad explícita;
+78. null no significa organización;
+79. turno debe estar publicado;
+80. turno debe estar vigente;
+81. turno pertenece al actor;
+82. no se usa limit 1 ante ambigüedad;
+83. solapamiento produce SHIFT_OVERLAP;
+84. zona horaria procede de fuente autoritativa;
+85. ausencia normal de turno no invalida base;
+86. check-in usa sesión canónica;
+87. check-in no se reconstruye heurísticamente;
+88. ausencia de check-in es normal;
+89. check-in incompatible produce issue;
+90. rol operativo procede del turno;
+91. navigation_role no participa;
+92. sede operativa procede del turno;
+93. no existe fallback territorial;
+94. área operativa pertenece a sede;
+95. área puede ser opcional;
+96. dispositivo se resuelve canónicamente;
+97. user agent no es device_id;
+98. dispositivo compartido separa principal y actor;
+99. dispositivo no crea rol;
+100. dispositivo sin actor no reutiliza último actor;
+101. simulación queda excluida;
+102. get_access_context no consulta simulación activa;
+103. actor SYSTEM exige principal registrado;
+104. service_role no concede autoridad;
+105. anon no recibe execute por defecto;
+106. lane_readiness no es decisión;
+107. no existe can_operate;
+108. carril base no depende de turno;
+109. carril operativo conserva check-in opcional;
+110. structural_issues usa catálogo congelado;
+111. no se inventan códigos SQL;
+112. cada issue tiene resolver propietario;
+113. se suprimen cascadas;
+114. se deduplican issues;
+115. issues tienen orden determinista;
+116. reason_codes tienen orden determinista;
+117. resolution_metadata se completa;
+118. resolver es identificador lógico;
+119. resolver_version es exacta;
+120. no se usa latest;
+121. contract version coincide;
+122. catalog version se registra;
+123. source versions se registran;
+124. source fingerprints se registran;
+125. no se hashean secretos;
+126. el contexto permite calcular fingerprint;
+127. no se agrega fingerprint a la raíz;
+128. se usa canonical JSON;
+129. jsonb::text no basta como política;
+130. null es explícito;
+131. arrays vacíos son explícitos;
+132. SECURITY DEFINER requiere controles;
+133. owner técnico no implica autoridad;
+134. search_path es fijo;
+135. public no es search path único;
+136. SQL dinámico no es predeterminado;
+137. execute se revoca a PUBLIC;
+138. execute se revoca a anon;
+139. authenticated no recibe contrato completo por defecto;
+140. existe proyección segura;
+141. proyección segura no filtra evidence interna;
+142. AUTH-DB-033 implementa la proyección;
+143. RLS no se desactiva globalmente;
+144. caller no recibe SELECT amplio;
+145. estados normales no lanzan excepción;
+146. errores de infraestructura no devuelven contexto parcial;
+147. mensajes no filtran detalles;
+148. no se consultan permisos;
+149. no se resuelven recursos;
+150. evaluate_authorization consume el resolver;
+151. caché se reserva para AUTH-CTX-029;
+152. cache status inicia NOT_IMPLEMENTED;
+153. no se cachea solo por user_id;
+154. auditoría durable pertenece a AUTH-DB-032;
+155. rendimiento no cambia semántica;
+156. índices se definen físicamente después;
+157. tipos se regeneran con AUTH-DB-026;
+158. get_operational_context queda legacy;
+159. get_effective_context_v1 queda legacy;
+160. AUTH-CTX-027 inventaría consumidores;
+161. AUTH-CTX-028 diseña compatibilidad;
+162. AUTH-DB-030 retira legacy;
+163. se crea AUTH-DB-033;
+164. AUTH-DB-033 pertenece a R1;
+165. AUTH-DB-033 ocurre después de arquitectura E3;
+166. AUTH-DB-033 precede adopción completa en RPC;
+167. existe orden de transición explícito;
+168. AUTH-CTX-030 prueba el contrato;
+169. AUTH-DB-027 prueba la implementación;
+170. no se implementa código ni Supabase en esta tarea.
+
+---
+
+#### 126. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-024` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-025` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-026` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-024 — APROBADA
+        ↓
+AUTH-CTX-025 — APROBADA
+        ↓
+AUTH-CTX-026 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-026` hasta recibir aprobación explícita de
+`AUTH-CTX-025`.
+
 ### [ ] AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
+
 ### [ ] AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
 
 > **PUERTA CONTRACTUAL OBLIGATORIA ANTES DE AUTH-CTX-028**
@@ -112422,7 +126419,9 @@ DISEÑO DE IMPLEMENTACIÓN CANÓNICA
 > `AUTH-MOD-021` no bloquea `AUTH-CTX-009` a `AUTH-CTX-027`.
 
 ### [ ] AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
+
 ### [ ] AUTH-CTX-029 — Definir estrategia de invalidación y caché
+
 ### [ ] AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
 
 Regla de implementación
@@ -112495,7 +126494,6 @@ SimulationContext
   would_deny,
   indeterminate
 }
-
 ## BLOQUE E1
 
 **Descubrimiento integral de operación, capacidades y cobertura de implementación**
@@ -112528,7 +126526,6 @@ BLOQUES POR APLICACIÓN
 
 Durante este bloque no se implementan pantallas, migraciones ni cambios
 físicos en Supabase.
-
 ### Principio obligatorio
 
 El roadmap no se derivará únicamente del código existente.
@@ -112556,7 +126553,6 @@ MATRIZ DE COBERTURA FUNCIONAL Y TÉCNICA
         ↓
 ROADMAP OBJETIVO
 ```
-
 ### AUDITORÍA DE OPERACIÓN REAL
 
 ### [ ] OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
@@ -112574,7 +126570,6 @@ ROADMAP OBJETIVO
 ### [ ] OPS-AUD-013 — Identificar pérdidas de trazabilidad, información y responsabilidad
 ### [ ] OPS-AUD-014 — Identificar contingencias por caída de red, energía, dispositivo o proveedor
 ### [ ] OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso
-
 ### MAPA CANÓNICO DE CAPACIDADES EMPRESARIALES
 
 ### [ ] CAP-MAP-001 — Crear taxonomía jerárquica de capacidades de Vento Group
@@ -112592,7 +126587,6 @@ ROADMAP OBJETIVO
 ### [ ] CAP-MAP-013 — Detectar capacidades duplicadas o con propiedad competidora
 ### [ ] CAP-MAP-014 — Detectar capacidades necesarias que no aparecen en código ni datos actuales
 ### [ ] CAP-MAP-015 — Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group
-
 ### AUDITORÍA DE IMPLEMENTACIÓN ACTUAL
 
 ### [ ] CODE-AUD-001 — Inventariar todos los repositorios y superficies desplegadas
@@ -112615,7 +126609,6 @@ ROADMAP OBJETIVO
 ### [ ] CODE-AUD-018 — Auditar operación offline, reintentos, concurrencia e idempotencia
 ### [ ] CODE-AUD-019 — Vincular cada capacidad con su implementación actual verificable
 ### [ ] CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
-
 ### COBERTURA EMPRESARIAL OBLIGATORIA
 
 E1 deberá evaluar como mínimo los siguientes dominios. Evaluar un dominio
@@ -112654,7 +126647,6 @@ RETIRE
 ### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
 ### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
-
 ### MATRIZ DE COBERTURA
 
 Cada capacidad deberá recibir exactamente un estado principal:
@@ -112685,7 +126677,6 @@ OUT_OF_SCOPE
 ### [ ] CAP-COVER-010 — Registrar dependencias y bloqueos
 ### [ ] CAP-COVER-011 — Priorizar por criticidad, frecuencia, riesgo y valor operativo
 ### [ ] CAP-COVER-012 — Aprobar matriz capacidad × proceso × aplicación × implementación
-
 ### REGISTRO CANÓNICO DE BRECHAS
 
 ### [ ] GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código
@@ -112696,7 +126687,6 @@ OUT_OF_SCOPE
 ### [ ] GAP-CTRL-006 — Vincular cada brecha con tarea y paquete de implementación
 ### [ ] GAP-CTRL-007 — Definir criterio y evidencia de cierre
 ### [ ] GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
-
 ### Salida obligatoria
 
 BLOQUE E1 deberá entregar:
@@ -112713,7 +126703,6 @@ BLOQUE E1 deberá entregar:
 - lista de nuevas necesidades de autorización;
 - lista de servicios transversales requeridos;
 - prioridades y dependencias.
-
 ### Regla de evolución del catálogo
 
 Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
@@ -112926,7 +126915,6 @@ BLOQUE E3
   el plan de transición antes de modificar la base
 
 Durante este bloque no se ejecutan migraciones ni cambios físicos.
-
 ### Principios obligatorios
 
 SUPABASE
@@ -112964,7 +126952,6 @@ Reglas:
 - no utilizar tipos TypeScript como sustituto de RLS o autorización;
 - no implementar el modelo objetivo mediante una migración masiva única;
 - no retirar legacy antes de completar adopción, verificación y rollback.
-
 ### AUDITORÍA INTEGRAL DE SUPABASE
 
 ### [ ] SUPA-AUD-001 — Inventariar todos los esquemas existentes
@@ -112991,7 +126978,6 @@ Reglas:
 ### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
 ### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
 ### [ ] SUPA-AUD-024 — Clasificar riesgos críticos, altos, medios y deuda técnica
-
 ### AUDITORÍA DE NORMALIZACIÓN Y CALIDAD DE DATOS
 
 ### [ ] DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización
@@ -113031,7 +127017,6 @@ Toda posible fusión deberá revisar:
 - integraciones;
 - historial;
 - auditoría.
-
 ### ARQUITECTURA CANÓNICA OBJETIVO
 
 Criterios obligatorios de evaluación
@@ -113076,7 +127061,6 @@ formalmente en SUPA-ARC-025 mediante una ADR aprobada.
 ### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
 ### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
 ### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
-
 ### GOBIERNO CANÓNICO DE NORMALIZACIÓN Y CALIDAD DE TEXTO
 
 ### [ ] DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo
@@ -113249,7 +127233,6 @@ Los nombres preliminares como `organization`, `workforce`, `attendance`,
 `authorization`, `catalog`, `inventory`, `logistics`, `production`,
 `procurement`, `sales`, `finance`, `loyalty`, `api`, `private` y `audit`
 solo podrán convertirse en canónicos después de la auditoría.
-
 ### PLAN DE TRANSICIÓN
 
 ### [ ] SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo
@@ -113267,7 +127250,6 @@ solo podrán convertirse en canónicos después de la auditoría.
 ### [ ] SUPA-TRANS-013 — Definir verificación de paridad local, staging y producción
 ### [ ] SUPA-TRANS-014 — Definir actualización de tipos, contratos y documentación
 ### [ ] SUPA-TRANS-015 — Crear roadmap ejecutable de migraciones en `vento-shell`
-
 ### TRANSICIÓN DE NORMALIZACIÓN Y CALIDAD DE DATOS
 
 ### [ ] DATA-NORM-TRANS-001 — Crear baseline de valores actuales antes de transformar
@@ -113304,7 +127286,6 @@ baseline
 ```
 
 ### [ ] SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R
-
 ### Resultado esperado
 
 PROCESO EMPRESARIAL
@@ -113327,8 +127308,6 @@ Supabase
 
 Aplicaciones
 → consumidoras del modelo aprobado, sin redefinirlo
-
-
 ## BLOQUE E4
 
 **Servicios operativos transversales, colas y evidencia**
@@ -113351,7 +127330,6 @@ BLOQUE X
 → define eventos, integraciones y adaptadores
 
 No implementa todavía adaptadores físicos ni migraciones.
-
 ### Principio de propiedad
 
 ```text
@@ -113364,7 +127342,6 @@ SERVICIO TRANSVERSAL
 
 Un servicio transversal no deberá convertirse en propietario del proceso,
 del permiso empresarial ni de la fuente de verdad del dominio consumidor.
-
 ### CATÁLOGO DE SERVICIOS TRANSVERSALES
 
 ### [ ] TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
@@ -113377,7 +127354,6 @@ del permiso empresarial ni de la fuente de verdad del dominio consumidor.
 ### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
 ### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
 ### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
-
 ### INFRAESTRUCTURA CANÓNICA DE COLAS
 
 ### [ ] QUEUE-ARC-001 — Inventariar colas, cron, jobs y automatizaciones existentes
@@ -113406,7 +127382,6 @@ failed
 cancelled
 expired
 ```
-
 ### SERVICIO TRANSVERSAL DE IMPRESIÓN
 
 ### [ ] PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo
@@ -113443,7 +127418,6 @@ PROCESO EMPRESARIAL
 
 La cola de impresión no autoriza la operación empresarial que originó el
 documento. Solo ejecuta un trabajo ya autorizado.
-
 ### NOTIFICACIONES Y ALERTAS
 
 ### [ ] NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales
@@ -113456,7 +127430,6 @@ documento. Solo ejecuta un trabajo ya autorizado.
 ### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
 ### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
 ### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
-
 ### ARCHIVOS, DOCUMENTOS Y EVIDENCIA
 
 ### [ ] EVID-ARC-001 — Inventariar archivos y evidencia por proceso
@@ -113475,7 +127448,6 @@ Los pilotos operativos reales no se ejecutan durante E4.
 E4 define contratos, arquitectura y criterios. La implementación, readiness,
 cutover, piloto e hypercare se planifican en E5 y se ejecutan después de
 implementar el paquete aprobado.
-
 ### Salida obligatoria
 
 BLOQUE E4 deberá entregar:
@@ -113524,7 +127496,6 @@ BLOQUE E5
 
 Durante este bloque no se implementan código, migraciones ni cambios
 físicos. Se diseña y aprueba cómo se implementará cada alcance.
-
 ### Principios obligatorios
 
 ```text
@@ -113550,7 +127521,6 @@ Una capacidad no podrá pasar a implementación cuando:
 - no tenga pruebas, rollout y rollback definidos;
 - no tenga criterio de aceptación operativo;
 - conserve una brecha crítica sin responsable.
-
 ### PAQUETES DE IMPLEMENTACIÓN
 
 ### [ ] DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación
@@ -113578,7 +127548,6 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
 ### [ ] DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
 ### [ ] DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
-
 ### PUERTA DE READINESS OPERATIVO
 
 ### [ ] READY-GATE-001 — Confirmar código desplegado en el entorno objetivo
@@ -113596,7 +127565,6 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] READY-GATE-013 — Capturar línea base previa al piloto
 ### [ ] READY-GATE-014 — Registrar riesgos aceptados y condiciones de suspensión
 ### [ ] READY-GATE-015 — Aprobar formalmente la entrada al piloto operativo
-
 ### CUTOVER Y PILOTO
 
 ### [ ] CUTOVER-OPS-001 — Definir fecha, ventana y responsables del cutover
@@ -113609,7 +127577,6 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] CUTOVER-OPS-008 — Medir tiempos, errores, adopción y resultado empresarial
 ### [ ] CUTOVER-OPS-009 — Aprobar salida del piloto o exigir correcciones
 ### [ ] CUTOVER-OPS-010 — Retirar el proceso anterior solo con evidencia suficiente
-
 ### HYPERCARE Y ESTABILIZACIÓN
 
 ### [ ] HYPERCARE-OPS-001 — Definir periodo de acompañamiento intensivo
@@ -113622,7 +127589,6 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] HYPERCARE-OPS-008 — Confirmar soporte ordinario y documentación definitiva
 ### [ ] HYPERCARE-OPS-009 — Confirmar retiro controlado de contingencias temporales
 ### [ ] HYPERCARE-OPS-010 — Aprobar cierre con evidencia funcional, técnica y operativa
-
 ### PUERTA DE SALIDA DE E5
 
 ### [ ] E5-GATE-001 — Confirmar que cada capacidad priorizada tiene paquete aprobado
@@ -113633,7 +127599,6 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
 ### [ ] E5-GATE-007 — Confirmar trazabilidad hasta pruebas y evidencia de cierre
 ### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes
-
 ### Salida obligatoria
 
 BLOQUE E5 deberá entregar:
@@ -113831,7 +127796,6 @@ Paquetes candidatos
 ### [ ] SHELL-CON-014 Crear contrato de traspasos entre aplicaciones
 ### [ ] SHELL-CON-015 Crear contrato de tareas pendientes
 ### [ ] SHELL-CON-016 Crear contrato de propiedad funcional
-
 ### CONTRATOS DE INTEGRACIONES EXTERNAS
 
 ### [ ] SHELL-CON-017 Crear contrato de principal técnico de integración
@@ -113842,7 +127806,6 @@ Paquetes candidatos
 ### [ ] SHELL-CON-022 Crear contrato de mapeo de identificadores externos
 ### [ ] SHELL-CON-023 Crear contrato de idempotencia y conciliación
 ### [ ] SHELL-CON-024 Crear contrato de cuarentena, rechazo y compensación
-
 ### NORMALIZACIÓN COMPARTIDA DE DATOS
 
 ### [ ] SHELL-NORM-001 Crear `@vento/data-normalization`
@@ -113927,7 +127890,6 @@ formularios específicos de dominio;
 procesos empresariales completos;
 consultas propias de una aplicación;
 componentes que obliguen a todas las aplicaciones a tener la misma interfaz.
-
 ## BLOQUE H2
 
 **SHELL como aplicación y hub contextual**
@@ -114106,7 +128068,6 @@ EXPERIENCIA
 ### [ ] NEXO-AUTH-018 Migrar a paquetes de vento-shell
 ### [ ] NEXO-AUTH-019 Eliminar helpers duplicados
 ### [ ] NEXO-AUTH-020 Ejecutar pruebas integrales
-
 ### EXTENSIÓN DE DOMINIO — LPN, CONTENEDORES, ACTIVOS Y REUTILIZABLES
 
 Esta extensión deberá ejecutarse como parte de NEXO y no se considerará
@@ -114319,7 +128280,6 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ## BLOQUE O
 
 **NUMERA**
-
 ### AUDITORÍA FUNCIONAL Y TÉCNICA DE NUMERA
 
 ### [ ] NUMERA-AUD-001 — Inventariar rutas, pantallas, componentes y formularios actuales
@@ -114334,7 +128294,6 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ### [ ] NUMERA-AUD-010 — Auditar exportaciones, información sensible y trazabilidad
 ### [ ] NUMERA-AUD-011 — Ejecutar build, lint, tipos y pruebas existentes
 ### [ ] NUMERA-AUD-012 — Crear matriz capacidad financiera × implementación actual
-
 ### MAPA DE ALCANCE FINANCIERO
 
 ### [ ] NUMERA-DOM-001 — Definir alcance ejecutivo, analítico y contable de NUMERA
@@ -114456,7 +128415,6 @@ BLOQUE R no repetirá las auditorías realizadas en BLOQUE E3.
 
 Cada tarea de corrección deberá partir de un hallazgo aprobado,
 un objeto identificado y un paquete de transición definido.
-
 ### R0 — Preparación, pruebas y contención de riesgos
 
 ### [ ] AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
@@ -114487,7 +128445,6 @@ No podrá comenzar ningún paquete estructural mientras no existan:
 - restauración probada;
 - rollback documentado;
 - migración versionada en `vento-shell`.
-
 ### R1 — Fundación física canónica
 
 ### [ ] AUTH-DB-016 — Crear esquemas empresariales aprobados
@@ -114506,7 +128463,6 @@ la capa o esquema transversal de auditoría aprobado en SUPA-ARC-007.
 
 No deberán crear mecanismos de auditoría independientes dentro de cada
 aplicación o dominio.
-
 ### R2 — Migración progresiva por dominio
 
 ### [ ] AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
@@ -114517,7 +128473,6 @@ aplicación o dominio.
 ### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
 ### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
 ### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
-
 ### IMPLEMENTACIÓN FÍSICA DE NORMALIZACIÓN
 
 ### [ ] DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios
@@ -114530,7 +128485,6 @@ aplicación o dominio.
 ### [ ] DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
 ### [ ] DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
 ### [ ] DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
-
 ### INFRAESTRUCTURA DE INTEGRACIONES EXTERNAS
 
 ### [ ] INT-DB-001 — Crear registro de sistemas e integraciones externas
@@ -114580,7 +128534,6 @@ Los tipos deberán regenerarse después de cada cambio contractual de:
 - RPC;
 - enums;
 - contratos expuestos.
-
 ### R3 — Retiro y certificación final
 
 ### [ ] AUTH-DB-030 — Retirar objetos legacy únicamente después de adopción comprobada
@@ -114604,7 +128557,6 @@ Se ejecutarán en la FASE 12 después de comprobar:
 - paridad local, staging y producción.
 
 Ningún objeto legacy se retirará únicamente porque exista su reemplazo.
-
 ## BLOQUE S
 
 **Mensajes y experiencia de bloqueo**

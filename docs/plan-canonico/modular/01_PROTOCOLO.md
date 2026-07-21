@@ -456,3 +456,18 @@
     o cuando cite una tarea que no exista formalmente en el roadmap.
 
 ---
+
+## Regla canónica de granularidad documental
+
+La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.
+
+Reglas obligatorias:
+
+- un archivo puede contener múltiples tareas con encabezado `###`;
+- una tarea no deberá tener archivo propio cuando pertenece a una sección lógica común;
+- los archivos se nombrarán por la responsabilidad documental que agrupan;
+- el estado de cada tarea seguirá derivándose exclusivamente de su marcador;
+- el compilador y el registro global deberán detectar todas las tareas dentro de cada archivo;
+- una sección monolítica podrá dividirse cuando contenga responsabilidades documentales distintas;
+- no se dividirá una tarea internamente entre varios archivos;
+- toda reorganización deberá preservar orden, contenido e inventario de identificadores.
