@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { syncPlanContinuity } from './plan-continuity.mjs';
+import { syncPlanContinuity } from './plan-continuity-markers.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -68,53 +68,9 @@ const authCount = text.match(/^\|\s*Tareas `AUTH` únicas\s*\|\s*\*\*(\d+)\*\*\s
 if (!authCount) fail('no se pudo validar el número de tareas AUTH declarado en la cabecera.');
 if (Number(authCount) !== authIds.length) fail(`la cabecera declara ${authCount} tareas AUTH, pero el compilado contiene ${authIds.length}.`);
 
-const extractTaskState = (section) => {
-  const patterns = [
-    /^\*\*Estado:\*\*\s*([^\n]+)$/m,
-    /^Estado:\s*([^\n]+)$/m,
-    /^\|\s*\*\*Estado(?::)?\*\*\s*\|\s*([^|]+?)\s*\|$/m,
-    /^\|\s*Estado(?::)?\s*\|\s*([^|]+?)\s*\|$/m,
-  ];
-
-  for (const pattern of patterns) {
-    const value = section.match(pattern)?.[1];
-    if (!value) continue;
-
-    return value
-      .replace(/\*\*/g, '')
-      .replace(/^[✅🟡❌⬜]\s*/, '')
-      .trim()
-      .replace(/\s{2,}/g, ' ');
-  }
-
-  return '';
-};
-
-for (let index = 0; index < taskMatches.length; index += 1) {
-  const match = taskMatches[index];
-  const taskId = match[1];
-  if (!taskId.startsWith('AUTH-CTX-')) continue;
-  const section = text.slice(match.index ?? 0, taskMatches[index + 1]?.index ?? text.length);
-  const state = extractTaskState(section);
-  if (match[0].includes('✅') && state !== 'APROBADA') fail(`${taskId} usa ✅ pero su estado es "${state || 'NO DECLARADO'}".`);
-  if (match[0].includes('🟡') && state === 'APROBADA') fail(`${taskId} usa 🟡 pero está declarada como APROBADA.`);
-  const plainHeading = section.match(/^\d+\.\s+(?:Objetivo|Base normativa|Forma contractual|Aplicabilidad|Estado final|Cierre y continuidad)\b[^\n]*$/m);
-  if (plainHeading) fail(`${taskId} contiene un apartado numerado sin encabezado Markdown: "${plainHeading[0]}".`);
-}
-
 for (const token of ['a partirde', 'middlewares,caché', 'responderinequívocamente', 'funcionales ehíbridos', 'permisoOPERATIONAL_ONLY', 'BASE_AND_OPERATIONALautorice', 'anivel global', 'se clasificacomo', 'actor yla modalidad', 'laevidencia', 'deAUTH-']) {
   if (text.includes(token)) fail(`se detectó texto concatenado o mal formado: "${token}".`);
 }
-
-const lastApproved = text.match(/^\|\s*Última tarea aprobada\s*\|\s*\*\*(AUTH-[A-Z0-9-]+-\d{3})\b/m)?.[1];
-const currentTask = text.match(/^\|\s*Tarea actual\s*\|\s*\*\*(AUTH-[A-Z0-9-]+-\d{3})\b/m)?.[1];
-const nextTask = text.match(/^\|\s*Siguiente tarea\s*\|\s*\*\*(AUTH-[A-Z0-9-]+-\d{3})\b/m)?.[1];
-for (const [label, id] of [['Última tarea aprobada', lastApproved], ['Tarea actual', currentTask], ['Siguiente tarea', nextTask]]) {
-  if (!id || !authIds.includes(id)) fail(`${label} no referencia una tarea AUTH existente en el compilado.`);
-}
-if (!new RegExp(`^###\\s+✅\\s+${lastApproved}\\b`, 'm').test(text)) fail(`la cabecera declara ${lastApproved} como última aprobada, pero su encabezado no usa ✅.`);
-if (!new RegExp(`^###\\s+(?:\\[ \\]|🟡)\\s+${currentTask}\\b`, 'm').test(text)) fail(`la tarea actual ${currentTask} no está marcada como no iniciada o propuesta.`);
-if (currentTask === nextTask || lastApproved === currentTask) fail('la continuidad canónica repite la misma tarea en posiciones incompatibles.');
 
 if (checkOnly) {
   if (!fs.existsSync(outputPath)) fail('todavía no existe el documento compilado. Ejecuta primero sin --check.');
