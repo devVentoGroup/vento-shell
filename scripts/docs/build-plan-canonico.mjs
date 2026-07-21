@@ -105,9 +105,27 @@ const nextTask = text.match(/^\|\s*Siguiente tarea\s*\|\s*\*\*(AUTH-[A-Z0-9-]+-\
 for (const [label, id] of [['Última tarea aprobada', lastApproved], ['Tarea actual', currentTask], ['Siguiente tarea', nextTask]]) {
   if (!id || !authIds.includes(id)) fail(`${label} no referencia una tarea AUTH existente en el compilado.`);
 }
-if (!new RegExp(`^###\\s+✅\\s+${lastApproved}\\b`, 'm').test(text)) fail(`la cabecera declara ${lastApproved} como última aprobada, pero su encabezado no usa ✅.`);
-if (!new RegExp(`^###\\s+(?:\\[ \\]|🟡)\\s+${currentTask}\\b`, 'm').test(text)) fail(`la tarea actual ${currentTask} no está marcada como no iniciada o propuesta.`);
-if (currentTask === nextTask || lastApproved === currentTask) fail('la continuidad canónica repite la misma tarea en posiciones incompatibles.');
+
+const continuityIssues = [];
+if (!new RegExp(`^###\\s+✅\\s+${lastApproved}\\b`, 'm').test(text)) {
+  continuityIssues.push(`la cabecera declara ${lastApproved} como última aprobada, pero su encabezado no usa ✅`);
+}
+if (!new RegExp(`^###\\s+(?:\\[ \\]|🟡)\\s+${currentTask}\\b`, 'm').test(text)) {
+  continuityIssues.push(`la tarea actual ${currentTask} no está marcada como no iniciada o propuesta`);
+}
+if (currentTask === nextTask || lastApproved === currentTask) {
+  continuityIssues.push('la continuidad canónica repite la misma tarea en posiciones incompatibles');
+}
+
+if (continuityIssues.length > 0) {
+  const details = continuityIssues.map((issue) => `- ${issue}`).join('\n');
+  const message = `la continuidad administrativa está pendiente de consolidación:\n${details}`;
+
+  if (checkOnly) fail(message);
+
+  console.warn(`ADVERTENCIA: ${message}`);
+  console.warn('ADVERTENCIA: el compilado se generará porque la consolidación administrativa puede realizarse posteriormente en lote.');
+}
 
 if (checkOnly) {
   if (!fs.existsSync(outputPath)) fail('todavía no existe el documento compilado. Ejecuta primero sin --check.');
