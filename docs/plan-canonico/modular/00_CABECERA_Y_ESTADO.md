@@ -17,7 +17,7 @@
 | Estado documental         | **VIGENTE**                                                         |
 | Arquitectura documental   | **MODULAR CANÓNICA**                                                |
 | Fuente de orden canónico  | `manifest.json`                                                     |
-| Fragmentos canónicos      | **62**                                                              |
+| Fragmentos canónicos      | **92**                                                              |
 | Tareas `AUTH` únicas      | **312**                                                             |
 | Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`     |
 | Estado del compilado      | **GENERADO Y VALIDADO**                                             |
@@ -67,6 +67,7 @@
 
 - [Protocolo obligatorio](./01_PROTOCOLO.md)
 - [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
+- [Contexto y decisión de autorización](./bloques/E_CONTEXTO_Y_DECISION/00_INTRO.md)
 - [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_BLOQUE_E1.md)
 - [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
 - [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
