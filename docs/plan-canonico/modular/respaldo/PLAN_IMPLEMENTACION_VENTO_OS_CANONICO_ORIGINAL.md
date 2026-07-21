@@ -57099,11 +57099,24 @@ CAPAS ADICIONALES
 ### [ ] AUTH-RBAC-027 — Validar que no exista acceso operativo global accidental
 ### [ ] AUTH-RBAC-028 — Validar que la administración no dependa del check-in
 
-Regla de implementación de matrices
+### Regla de implementación de matrices
+
+AUTH-CAT-024
+→ valida, publica y congela la versión contractual de entrada
 
 AUTH-RBAC-024 a AUTH-RBAC-026
+→ consumen exclusivamente la versión congelada por AUTH-CAT-024
+→ declaran `catalog_version` y `catalog_hash`
 → definen y aprueban datasets canónicos
 → no insertan, actualizan ni eliminan datos en Supabase
+
+Si el catálogo cambia después de congelar la versión:
+
+CATÁLOGO MODIFICADO
+→ NUEVA VERSIÓN CONTRACTUAL
+→ NUEVO DIFF
+→ INVALIDAR DATASETS NO IMPLEMENTADOS
+→ REGENERAR Y VOLVER A VALIDAR
 
 La aplicación física de estos datasets deberá ejecutarse únicamente
 dentro del BLOQUE R, después de:

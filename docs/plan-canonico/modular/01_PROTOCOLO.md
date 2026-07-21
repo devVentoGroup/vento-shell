@@ -1,8 +1,25 @@
 ## Protocolo obligatorio de continuidad
 
-1. Leer primero el estado documental y la siguiente tarea.
+1. Leer primero el `Estado canónico` y la `Continuidad inmediata`.
 
-2. Continuar exclusivamente con la tarea indicada como siguiente.
+   Ambos bloques deberán coincidir en:
+
+   - última tarea aprobada;
+   - tarea actual;
+   - siguiente tarea reservada;
+   - bloque actual;
+   - estado de implementación.
+
+   Si existe una contradicción, deberá corregirse antes de desarrollar
+   una nueva tarea.
+
+2. Continuar exclusivamente con la tarea indicada como `Tarea actual`.
+
+   La `Siguiente tarea` permanece reservada y no podrá iniciarse hasta que:
+
+   - la tarea actual haya sido aprobada explícitamente;
+   - el usuario solicite expresamente continuar;
+   - se compruebe que no existe una etapa contractual intermedia.
 
 3. No implementar código, migraciones ni cambios en Supabase,
    salvo que la tarea lo ordene expresamente.
@@ -100,6 +117,20 @@
 
 9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
+
+   La continuidad ejecutable se determina exclusivamente mediante:
+
+   1. `Estado canónico`;
+   2. `Continuidad inmediata`;
+   3. orden vigente registrado en `manifest.json`.
+
+   Las referencias de continuidad incluidas dentro de tareas aprobadas
+   representan el estado existente cuando se aprobó esa tarea y no deberán
+   interpretarse automáticamente como continuidad vigente.
+
+   Si una tarea posterior inserta una etapa obligatoria intermedia, deberán
+   actualizarse el encabezado, la continuidad inmediata y la transición de
+   la tarea precedente durante la siguiente consolidación documental.
 
 10. El BLOQUE A contiene evidencia histórica.
     ADR-AUTH-001 y las tareas AUTH aprobadas contienen decisiones normativas.
