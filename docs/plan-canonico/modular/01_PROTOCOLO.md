@@ -118,11 +118,19 @@
 9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
 
-   La continuidad ejecutable se determina exclusivamente mediante:
+   La tarea documental inmediata se determina mediante:
 
    1. `Estado canónico`;
-   2. `Continuidad inmediata`;
-   3. orden vigente registrado en `manifest.json`.
+   2. `Continuidad inmediata`.
+
+   `manifest.json` define exclusivamente el orden físico de compilación
+   de los fragmentos y no el orden de ejecución del roadmap.
+
+   El orden de ejecución posterior se determina mediante:
+
+   `90_ORDEN_DE_IMPLEMENTACION.md`
+   +
+   dependencias y puertas aprobadas de cada bloque.
 
    Las referencias de continuidad incluidas dentro de tareas aprobadas
    representan el estado existente cuando se aprobó esa tarea y no deberán
@@ -410,4 +418,3 @@
     y emitir eventos canónicos antes de afectar otros dominios.
 
 ---
-

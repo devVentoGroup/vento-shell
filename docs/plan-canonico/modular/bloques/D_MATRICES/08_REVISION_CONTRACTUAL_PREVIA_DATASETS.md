@@ -2363,15 +2363,2398 @@ AUTH-CAT-022 podrá aprobarse cuando se acepte que:
 
 #### 37. Estado final de la propuesta
 
-| Tarea        | Estado      |
-| ------------ | ----------- |
-| AUTH-CAT-021 | APROBADA    |
-| AUTH-CAT-022 | APROBADA    |
-| AUTH-CAT-023 | NO INICIADA |
+| Tarea        | Estado   |
+| ------------ | -------- |
+| AUTH-CAT-021 | APROBADA |
+| AUTH-CAT-022 | APROBADA |
+| AUTH-CAT-023 | APROBADA |
+| AUTH-CAT-024 | APROBADA |
 
 No se avanza a AUTH-CAT-023 hasta recibir aprobación explícita.
 
 
-### [ ] AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual
+### ✅ AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual
 
-### [ ] AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+**Estado:** APROBADA  
+**Bloque:** BLOQUE D — Revisión contractual previa a datasets  
+**Naturaleza:** Revisión diferencial de matrices, capas individuales, denegaciones y filtros de dispositivo  
+**Implementación física:** No incluida  
+**Catálogo vigente de referencia:** 112 permisos canónicos activos  
+**Diff contractual recibido:** 29 claves candidatas nuevas y 1 clave activa candidata a sustitución  
+**Conjunto activo objetivo:** 140 permisos, sujeto a validación y congelación en AUTH-CAT-024  
+**Tarea anterior vigente:** AUTH-CAT-022 — APROBADA  
+**Tarea posterior reservada:** AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+
+Esta tarea no publica una versión del catálogo, no crea datasets físicos, no inserta asignaciones, no modifica Supabase, no altera RLS, RPC, aplicaciones, dispositivos desplegados ni migraciones.
+
+Su resultado es exclusivamente el **diff documental objetivo** que AUTH-CAT-024 deberá validar antes de congelar la versión canónica consumida posteriormente por AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026.
+
+---
+
+#### 1. Objetivo
+
+Revisar explícitamente las 29 claves candidatas aprobadas en AUTH-CAT-022 contra:
+
+- matrices de roles base;
+- matrices de roles operativos;
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones de carril y bloqueos transversales;
+- paquetes de capacidades de dispositivos compartidos;
+- asignaciones relacionadas con permisos legacy sustituidos.
+
+La tarea deberá determinar, para cada clave:
+
+1. qué rol recibe una concesión por matriz;
+2. en qué carril se incorpora;
+3. qué roles permanecen sin concesión y, por tanto, bajo denegación por defecto;
+4. qué excepciones individuales podrían otorgarla sin alterar matrices;
+5. cómo deberán revisarse denegaciones legacy relacionadas;
+6. desde qué paquetes de dispositivo podrá intentarse la acción;
+7. qué clave legacy deberá permanecer bloqueada, sustituirse o retirarse posteriormente.
+
+---
+
+#### 2. Decisión principal
+
+El diff contractual no se aplicará copiando permisos legacy ni ampliando roles por semejanza funcional.
+
+```text
+CLAVE NUEVA
+        ↓
+EVALUACIÓN POR PERMISO, ROL Y CARRIL
+        ↓
+CONCESIÓN DE MATRIZ EXPLÍCITA
+O
+EXCEPCIÓN INDIVIDUAL EXPLÍCITA
+O
+DENEGACIÓN POR DEFECTO
+        ↓
+FILTRO RESTRICTIVO DE DISPOSITIVO
+        ↓
+VALIDACIÓN Y CONGELACIÓN EN AUTH-CAT-024
+```
+
+Reglas definitivas de esta propuesta:
+
+```text
+PERMISO LEGACY AMPLIO
+≠
+TODAS SUS CLAVES RESULTANTES
+```
+
+```text
+PAQUETE DE DISPOSITIVO
+≠
+CONCESIÓN DE PERMISO
+```
+
+```text
+AUSENCIA DE CONCESIÓN
+→ DEFAULT_DENY
+```
+
+```text
+BASE_AND_OPERATIONAL
+→ MISMO ACTOR
+→ CARRIL BASE COMPLETO
++
+CARRIL OPERATIVO COMPLETO
+```
+
+```text
+DENY APLICABLE
+>
+ALLOW
+```
+
+Ninguna de las 29 claves se asigna por prefijo, herencia, alias uno-a-muchos, nombre de rol, aplicación abierta, dispositivo utilizado o existencia previa de un permiso legacy relacionado.
+
+---
+
+#### 3. Base normativa conservada
+
+Esta propuesta conserva sin cambios:
+
+- ADR-AUTH-001;
+- AUTH-MOD-001 a AUTH-MOD-020;
+- AUTH-CAT-001 a AUTH-CAT-022;
+- AUTH-RBAC-001 a AUTH-RBAC-023;
+- las cuatro modalidades de autorización;
+- la separación entre rol base y rol operativo;
+- la precedencia de denegaciones;
+- el alcance territorial y contractual por recurso;
+- los requisitos de turno, check-in y área;
+- la atribución obligatoria a un actor humano;
+- la reautenticación fuerte para acciones sensibles;
+- la segregación entre solicitante, aprobador y actor afectado;
+- la prohibición de usar dispositivos como fuente de autoridad;
+- la prohibición de reutilizar claves retiradas con otro significado;
+- la denegación por defecto para permisos nuevos o no asignados.
+
+Las decisiones de esta tarea son diferenciales. No reescriben las matrices completas de 112 permisos ni cambian concesiones ajenas al diff de AUTH-CAT-022.
+
+---
+
+#### 4. Alcance autorizado
+
+Esta tarea sí define:
+
+- adiciones propuestas a matrices base;
+- adiciones propuestas a matrices operativas;
+- retiro documental de la concesión operativa de `nexo.inventory.remissions.dispatch`;
+- compatibilidad de las claves nuevas con concesiones individuales;
+- revisión dirigida de denegaciones legacy;
+- actualización objetivo de siete paquetes de dispositivo;
+- condiciones de segregación y recurso aplicables al diff;
+- conteos de integridad del diff documental.
+
+Esta tarea no define:
+
+- filas físicas de `role_permissions` u otras tablas;
+- dataset definitivo de matrices;
+- migraciones o backfills;
+- aliases físicos;
+- fecha de retiro de claves legacy;
+- versión semántica definitiva;
+- hash contractual;
+- guards, Server Actions, RPC o políticas RLS;
+- interfaces finales de PULSO, NEXO, ORIGO o VISO;
+- procesos diferidos a roadmaps funcionales;
+- nuevos roles base u operativos;
+- nuevas plantillas físicas de dispositivo.
+
+---
+
+#### 5. Resultado ejecutivo del diff
+
+##### 5.1 Claves revisadas
+
+| Aplicación | Claves nuevas revisadas |
+| ---------- | ----------------------: |
+| PULSO      |                       9 |
+| NEXO       |                       5 |
+| ORIGO      |                       1 |
+| VISO       |                      14 |
+| **Total**  |                  **29** |
+
+##### 5.2 Decisiones diferenciales propuestas
+
+| Capa                                                          | Resultado propuesto |
+| ------------------------------------------------------------- | ------------------: |
+| Componentes de concesión añadidos a matrices base             |                  50 |
+| Componentes de concesión añadidos a matrices operativas       |                  29 |
+| Concesiones legacy retiradas de una matriz operativa objetivo |                   1 |
+| Concesiones individuales creadas automáticamente              |                   0 |
+| Denegaciones individuales creadas automáticamente             |                   0 |
+| Paquetes de dispositivo revisados                             |                   7 |
+| Expansiones automáticas desde permisos legacy                 |                   0 |
+
+Los conteos anteriores representan **decisiones documentales por rol, carril y clave**. No representan filas físicas ni autorizaciones desplegadas.
+
+---
+
+#### PULSO — VENTAS, PAGOS Y CAJA
+
+#### 6. Claves PULSO incluidas en el diff
+
+```text
+pulso.sales.orders.create
+pulso.payments.transactions.collect
+pulso.payments.transactions.reverse
+pulso.cash.sessions.start
+pulso.cash.sessions.close
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Se conservan las separaciones aprobadas:
+
+```text
+collect
+≠ reverse
+≠ refund
+```
+
+```text
+cancel order
+≠ create return
+≠ refund payment
+```
+
+```text
+start cash session
+≠ collect payment
+≠ close cash session
+≠ approve cash difference
+```
+
+La aprobación o resolución de diferencias de caja continúa fuera de este diff porque AUTH-CAT-022 no creó una clave madura para esa autoridad.
+
+---
+
+#### 7. Diff de matrices PULSO
+
+##### 7.1 Decisión por clave y carril
+
+| PermissionKey                         | Concesión por matriz base                   | Concesión por matriz operativa                                        | Roles revisados sin concesión por defecto                           |
+| ------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `pulso.sales.orders.create`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.payments.transactions.collect` | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.cash.sessions.start`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.cash.sessions.close`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.payments.transactions.reverse` | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.orders.cancel`           | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.returns.create`          | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.payments.transactions.refund`  | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.discounts.apply`         | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+
+##### 7.2 Interpretación de las acciones ordinarias
+
+Las cuatro claves `OPERATIONAL_ONLY` se incorporan únicamente a las funciones que operan caja de forma ordinaria:
+
+```text
+cajero_satelite
+operador_integral_satelite
+```
+
+`gerencia_operativa` no recibe por matriz:
+
+```text
+orders.create
+transactions.collect
+cash.sessions.start
+cash.sessions.close
+```
+
+La coordinación operativa no sustituye el rol especialista de caja. Cuando una persona de gerencia deba cubrir materialmente la caja deberá:
+
+- asumir un rol operativo compatible; o
+- recibir una concesión individual operativa válida para la clave exacta.
+
+##### 7.3 Interpretación de las acciones sensibles
+
+Las cinco claves sensibles son `BASE_AND_OPERATIONAL`.
+
+El componente base se concede a:
+
+```text
+propietario
+OR
+gerente_general
+OR
+gerente dentro de su territorio asignado
+```
+
+El componente operativo se concede a:
+
+```text
+cajero_satelite
+OR
+operador_integral_satelite
+OR
+gerencia_operativa
+```
+
+La autorización final exige ambos componentes para el mismo actor, el mismo recurso y la misma solicitud.
+
+Ejemplo válido:
+
+```text
+ROL BASE gerente
++
+ROL OPERATIVO cajero_satelite
++
+TURNO Y CHECK-IN VÁLIDOS
++
+SEDE Y ÁREA DE CAJA COMPATIBLES
++
+AMBOS COMPONENTES DE pulso.payments.transactions.refund
++
+REAUTENTICACIÓN FUERTE
++
+RECURSO REEMBOLSABLE
+=
+DECISIÓN POSIBLE
+```
+
+Ejemplos inválidos:
+
+```text
+GERENTE SIN TURNO
+→ NO PUEDE REEMBOLSAR
+```
+
+```text
+CAJERO SIN COMPONENTE BASE
+→ NO PUEDE REEMBOLSAR
+```
+
+```text
+SUPERVISOR + CAJERO
+→ NO PUEDE REEMBOLSAR POR MATRIZ
+```
+
+`supervisor` permanece sin componentes base de doble condición. Una necesidad excepcional deberá resolverse mediante concesión individual base explícita, no ampliando su matriz completa.
+
+##### 7.4 Alcances y condiciones
+
+- `propietario` y `gerente_general` conservan alcance organizacional ordinario, sin incluir APP-REVIEW, demo o entornos aislados por inferencia.
+- `gerente` se limita a sedes y recursos dentro de su cobertura administrativa activa.
+- `cajero_satelite` exige turno, check-in y área de caja compatibles.
+- `operador_integral_satelite` exige sede habilitada como formato integrado y capacidad de caja activada para el área o punto.
+- `gerencia_operativa` se limita a sede, jornada y recurso activos.
+- Las cinco acciones sensibles exigen reautenticación fuerte, motivo, evidencia, versionado del recurso y auditoría.
+- Una sesión de caja pertenece a un actor y punto concretos; el dispositivo no permite reutilizar la sesión de otro actor.
+- Cerrar caja no aprueba automáticamente diferencias.
+- Cancelar una venta no revierte pagos, inventario o producción por implicación.
+- Crear una devolución no ejecuta automáticamente un reembolso.
+
+---
+
+#### NEXO — DIFERENCIAS, CUSTODIA Y TRÁNSITO
+
+#### 8. Claves NEXO incluidas en el diff
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+Se conserva la separación contractual:
+
+```text
+stock_counts.perform
+→ captura
+
+stock_count_variances.approve
+→ decisión de aprobación
+
+stock_count_variances.resolve
+→ registro de resolución
+
+inventory.adjustments.register
+→ ejecución posterior del ajuste autorizado
+```
+
+Y la secuencia logística:
+
+```text
+remissions.prepare
+→ accept_custody
+→ start_transit
+→ deliver
+→ receive
+```
+
+`deliver` registra el handoff del transportador. No autoriza `receive` ni crea inventario en el destino.
+
+---
+
+#### 9. Diff de matrices NEXO
+
+| PermissionKey                                  | Concesión por matriz base                   | Concesión por matriz operativa | Roles revisados sin concesión por defecto                               |
+| ---------------------------------------------- | ------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
+| `nexo.inventory.stock_count_variances.approve` | `propietario`, `gerente_general`, `gerente` | `gerencia_operativa`           | `supervisor`, `bodeguero` y demás roles no listados                     |
+| `nexo.inventory.stock_count_variances.resolve` | `propietario`, `gerente_general`, `gerente` | `gerencia_operativa`           | `supervisor`, `bodeguero` y demás roles no listados                     |
+| `nexo.inventory.remissions.accept_custody`     | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+| `nexo.inventory.remissions.start_transit`      | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+| `nexo.inventory.remissions.deliver`            | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+
+##### 9.1 Diferencias de conteo
+
+Las claves `approve` y `resolve` son `BASE_AND_OPERATIONAL`.
+
+El componente base representa autoridad administrativa sobre inventario dentro del territorio permitido.
+
+El componente operativo de `gerencia_operativa` confirma participación real en la sede, área y jornada donde existe la diferencia.
+
+`bodeguero` no recibe ninguna de las dos claves por matriz porque su función ordinaria comprende:
+
+- capturar el conteo;
+- aportar evidencia;
+- custodiar el inventario;
+- ejecutar movimientos autorizados mediante permisos separados.
+
+No comprende aprobar o resolver unilateralmente la diferencia que él mismo capturó.
+
+Regla mínima de segregación:
+
+```text
+ACTOR QUE CAPTURA
+≠
+ACTOR QUE APRUEBA O RESUELVE
+```
+
+Una política de proceso podrá exigir además que aprobación, resolución y ajuste correspondan a actores distintos. Esa decisión no se relaja mediante esta matriz.
+
+##### 9.2 Custodia y tránsito
+
+`conductor_logistica` recibe tres concesiones operativas exactas:
+
+```text
+accept_custody
+start_transit
+deliver
+```
+
+Condiciones:
+
+- remisión preparada y asignada al actor o segmento logístico;
+- bultos, LPN o cantidades declaradas disponibles;
+- turno y check-in válidos;
+- ruta y vehículo válidos cuando correspondan;
+- transición idempotente;
+- ubicación y hora auditables;
+- el actor no puede modificar cantidades declaradas mediante estas claves;
+- discrepancias no se convierten en ajustes silenciosos.
+
+`bodeguero` conserva `remissions.prepare` y los receptores conservan `remissions.receive` según sus matrices vigentes. Ninguna de esas capacidades se fusiona con las tres claves nuevas.
+
+`gerencia_operativa` no recibe custodia o tránsito por matriz. Una sustitución de emergencia deberá utilizar una concesión individual operativa exacta, con asignación logística, vigencia, ruta, vehículo y motivo documentados.
+
+---
+
+#### ORIGO — RECEPCIÓN COMERCIAL
+
+#### 10. Clave ORIGO incluida en el diff
+
+```text
+origo.procurement.receipts.register
+```
+
+La clave es `BASE_OR_OPERATIONAL`.
+
+Puede satisfacerse mediante un carril base completo o mediante un carril operativo completo. Los carriles no se mezclan entre sí para producir una autorización parcial.
+
+---
+
+#### 11. Diff de matrices ORIGO
+
+| PermissionKey                         | Concesión por matriz base                   | Concesión por matriz operativa | Roles revisados sin concesión por defecto                                               |
+| ------------------------------------- | ------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
+| `origo.procurement.receipts.register` | `propietario`, `gerente_general`, `gerente` | `bodeguero`                    | `supervisor`, `auxiliar_administrativa`, `gerencia_operativa` y demás roles no listados |
+
+##### 11.1 Carril base
+
+- `propietario` y `gerente_general` podrán registrar la recepción comercial dentro de la organización ordinaria autorizada.
+- `gerente` podrá hacerlo exclusivamente para órdenes, proveedores, documentos y sedes dentro de su cobertura administrativa.
+- `supervisor` no recibe esta mutación sensible por matriz.
+- `auxiliar_administrativa` no la recibe por matriz general. Cuando una persona tenga responsabilidad formal de recepción o abastecimiento deberá utilizarse una concesión individual base exacta y territorial.
+
+##### 11.2 Carril operativo
+
+`bodeguero` podrá registrar una recepción comercial cuando:
+
+- tenga turno y check-in válidos;
+- opere en la sede receptora;
+- la orden y el proveedor sean válidos;
+- las líneas y cantidades sean recibibles;
+- exista actor humano identificado;
+- el registro sea atómico e idempotente;
+- se conserve documento, condición, evidencia y auditoría.
+
+La concesión no autoriza:
+
+- crear o aprobar órdenes de compra;
+- modificar proveedores;
+- corregir o revertir recepciones;
+- registrar directamente stock;
+- omitir la entrada física propietaria de NEXO.
+
+Separación obligatoria:
+
+```text
+ORIGO
+→ recepción comercial
+
+NEXO
+→ entrada física y custodia de inventario
+```
+
+Una recepción comercial confirmada podrá originar posteriormente un evento de integración idempotente. La identidad técnica del adaptador no recibe esta concesión humana.
+
+---
+
+#### 12. Claves VISO incluidas en el diff
+
+##### 12.1 Concesiones individuales base
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+##### 12.2 Concesiones individuales operativas
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+##### 12.3 Denegaciones
+
+```text
+viso.authorization.denials.view
+viso.authorization.denials.create
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+Las 14 claves son `BASE_ONLY`, sensibles bajo `AUTHORIZATION_SECURITY`, no dependen de turno ni check-in y exigen reautenticación fuerte.
+
+---
+
+#### 13. Diff de matrices VISO
+
+| PermissionKey                                   | `propietario` | `gerente_general` | `gerente`   | `supervisor` | Otros roles base       |
+| ----------------------------------------------- | ------------- | ----------------- | ----------- | ------------ | ---------------------- |
+| `viso.authorization.base_grants.view`           | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.create`         | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.approve`        | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.suspend`        | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.revoke`         | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.view`    | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.create`  | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.approve` | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.suspend` | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.revoke`  | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.view`               | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.create`             | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.approve`            | Conceder      | No conceder       | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.revoke`             | Conceder      | No conceder       | No conceder | No conceder  | No conceder por matriz |
+
+##### 13.1 Propietario
+
+`propietario` recibe las 14 claves como responsabilidad de gobierno global explícito, no como bypass por nombre de rol.
+
+La existencia simultánea de `create` y `approve` en su matriz no permite autoaprobación sobre el mismo registro.
+
+##### 13.2 Gerente general
+
+`gerente_general` recibe:
+
+- el ciclo completo de consulta, creación, aprobación, suspensión y revocación de concesiones individuales base;
+- el ciclo completo de consulta, creación, aprobación, suspensión y revocación de concesiones individuales operativas;
+- consulta y creación de propuestas de denegación.
+
+No recibe por matriz:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+Estas dos acciones pueden bloquear o restaurar autoridad a través de carriles completos y se reservan a propietario o a una autoridad de seguridad designada mediante concesión individual base.
+
+##### 13.3 Gerente, supervisor y otros roles
+
+`gerente`, `supervisor`, `auxiliar_administrativa`, `contador`, `marketing` y los oficios base legacy permanecen sin concesiones VISO de gobierno de autorización por matriz.
+
+Una responsabilidad delegada deberá representarse mediante una concesión individual base exacta, con:
+
+- alcance territorial explícito;
+- vigencia;
+- motivo;
+- solicitante y aprobador distintos cuando corresponda;
+- reautenticación fuerte;
+- auditoría;
+- prohibición de autoafectación.
+
+##### 13.4 Segregación obligatoria
+
+```text
+CREADOR DE PROPUESTA
+≠
+APROBADOR DEL MISMO REGISTRO
+```
+
+```text
+ACTOR AFECTADO
+≠
+APROBADOR DE SU PROPIA CONCESIÓN O DENEGACIÓN
+```
+
+```text
+REVOKE DENIAL
+≠
+GRANT PERMISSION
+```
+
+Revocar una denegación solo elimina ese bloqueo. La autorización resultante seguirá requiriendo una concesión válida por matriz o excepción.
+
+Las denegaciones no utilizan `suspend`. Terminan por expiración o revocación auditable.
+
+---
+
+####
+ CONCESIONES INDIVIDUALES
+
+#### 14. Actualización de concesiones individuales base
+
+Las 29 claves nuevas no crean concesiones individuales automáticamente.
+
+Podrán ser objetivo de una concesión individual base únicamente cuando su modalidad admita el carril base:
+
+| Familia          | Claves elegibles para concesión individual base                  | Condición                                                                                                        |
+| ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| PULSO sensible   | Las cinco claves `BASE_AND_OPERATIONAL`                          | La concesión aporta solo el componente base; no sustituye turno, rol operativo, check-in ni componente operativo |
+| NEXO diferencias | `stock_count_variances.approve`, `stock_count_variances.resolve` | Aporta solo el componente base y no puede concederse al capturador para su propia diferencia                     |
+| ORIGO recepción  | `origo.procurement.receipts.register`                            | Puede autorizar por carril base completo dentro del territorio concedido                                         |
+| VISO gobierno    | Las 14 claves `BASE_ONLY`                                        | Exige gobierno reforzado, alcance, reautenticación y segregación                                                 |
+| PULSO ordinario  | Ninguna de las cuatro claves `OPERATIONAL_ONLY`                  | Prohibidas en concesiones base                                                                                   |
+| NEXO custodia    | Ninguna de las tres claves `OPERATIONAL_ONLY`                    | Prohibidas en concesiones base                                                                                   |
+
+Reglas:
+
+1. Una concesión individual base no cambia la modalidad del permiso.
+2. Una concesión de una clave `BASE_AND_OPERATIONAL` no crea el componente operativo.
+3. Una concesión VISO no podrá aprobarse por el actor afectado.
+4. Una concesión global sensible exige justificación reforzada y no incorpora APP-REVIEW por inferencia.
+5. Los registros legacy actuales no se consideran concesiones canónicas nuevas.
+6. Las concesiones redundantes con una matriz vigente deberán rechazarse o justificarse como alcance más específico sin pretender restringir el allow de matriz.
+
+---
+
+#### 15. Actualización de concesiones individuales operativas
+
+Podrán ser objetivo de una concesión individual operativa las claves cuya modalidad admita el carril operativo:
+
+| Familia          | Claves elegibles                                                                      | Roles o funciones compatibles mínimas                                                              |
+| ---------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| PULSO ordinario  | `orders.create`, `transactions.collect`, `cash.sessions.start`, `cash.sessions.close` | `cajero_satelite`, `operador_integral_satelite` o cobertura temporal de caja expresamente aprobada |
+| PULSO sensible   | Las cinco claves `BASE_AND_OPERATIONAL`                                               | caja, operador integral o `gerencia_operativa`; la excepción aporta solo el componente operativo   |
+| NEXO diferencias | `stock_count_variances.approve`, `stock_count_variances.resolve`                      | `gerencia_operativa` o futura función de control de inventario expresamente aprobada               |
+| NEXO logística   | `accept_custody`, `start_transit`, `deliver`                                          | `conductor_logistica` o sustituto logístico asignado de forma explícita                            |
+| ORIGO recepción  | `origo.procurement.receipts.register`                                                 | `bodeguero` o futura función operativa de recepción aprobada                                       |
+| VISO gobierno    | Ninguna                                                                               | Las 14 claves son `BASE_ONLY`                                                                      |
+
+Toda concesión individual operativa exige:
+
+- permiso exacto;
+- actor concreto;
+- rol o familia operativa compatible;
+- turno vigente;
+- check-in cuando corresponda;
+- sede y área compatibles;
+- recurso dentro del alcance;
+- vigencia limitada;
+- motivo y solicitante;
+- aprobación;
+- auditoría.
+
+Para sustituciones logísticas de emergencia deberán registrarse además:
+
+- remisión o ruta;
+- vehículo cuando aplique;
+- segmento de custodia;
+- inicio y fin de vigencia;
+- motivo de sustitución.
+
+---
+
+#### 16. Prohibición de migración automática de excepciones legacy
+
+No se admite:
+
+```text
+CONCESIÓN DE pulso.pos.main
+→ CONCEDER 9 CLAVES PULSO
+```
+
+```text
+CONCESIÓN DE viso.staff.permissions.manage
+→ CONCEDER 14 CLAVES VISO
+```
+
+```text
+CONCESIÓN DE remissions.dispatch
+→ CONCEDER accept_custody + start_transit
+```
+
+Cada concesión legacy deberá clasificarse como:
+
+```text
+DISCARD
+REPLACE_WITH_EXACT_GRANT
+KEEP_LEGACY_TEMPORARILY
+REVIEW_REQUIRED
+```
+
+La clasificación física y el backfill se realizarán posteriormente en AUTH-RBAC-026 y BLOQUE R, después de congelar el catálogo.
+
+---
+
+#### 17. Tratamiento de las claves nuevas
+
+Las 29 claves comienzan sin denegaciones individuales creadas automáticamente.
+
+La ausencia de concesión ya produce:
+
+```text
+DEFAULT_DENY
+```
+
+No se crearán filas `deny` redundantes para todos los roles no asignados.
+
+Una denegación nueva deberá mantener el contrato aprobado:
+
+```text
+PERMISO EXACTO
+∩
+SUJETO
+∩
+CARRIL O BLOQUEO TRANSVERSAL
+∩
+ALCANCE
+∩
+VIGENCIA
+∩
+RECURSO
+```
+
+No existen denegaciones por prefijo, aplicación, familia implícita o wildcard.
+
+---
+
+#### 18. Revisión de denegaciones relacionadas con permisos legacy
+
+| Clave legacy relacionada             | Tratamiento                 | Claves que deberán revisarse individualmente si existe una denegación legacy con intención vigente   |
+| ------------------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pulso.pos.main`                     | No expandir automáticamente | Las nueve claves PULSO, una por una                                                                  |
+| `nexo.inventory.remissions.dispatch` | No expandir automáticamente | `accept_custody`, `start_transit` y, cuando la intención sea impedir transporte o entrega, `deliver` |
+| `viso.staff.permissions.manage`      | No expandir automáticamente | Las 14 claves VISO, una por una                                                                      |
+
+Reglas:
+
+1. Una denegación sobre una clave legacy no se convierte en una denegación por prefijo.
+2. Una denegación legacy puede reflejar una intención más amplia o más estrecha que la clave original; exige revisión humana.
+3. Mientras no se cree un allow nuevo, la clave permanece denegada por defecto aunque la denegación legacy no se migre.
+4. Si se propone una nueva concesión, la revisión deberá comprobar primero si existe una intención de bloqueo vigente relacionada.
+5. Una denegación aplicable prevalece sobre matrices y concesiones individuales.
+6. `LANE_DENY` afecta solo el carril declarado; `ACTOR_WIDE_DENY` bloquea ambos carriles para la clave exacta.
+7. Ningún flujo de VISO podrá aprobar una denegación que elimine a todos los actores ordinarios capaces de revocarla sin preservar un mecanismo de recuperación gobernado.
+
+---
+
+#### 19. Denegaciones sobre claves `BASE_AND_OPERATIONAL`
+
+Para una clave `BASE_AND_OPERATIONAL`:
+
+```text
+BASE_LANE_DENY
+→ impide completar el carril base
+→ DENEGAR
+```
+
+```text
+OPERATIONAL_LANE_DENY
+→ impide completar el carril operativo
+→ DENEGAR
+```
+
+```text
+ACTOR_WIDE_DENY
+→ bloquea ambos carriles
+→ DENEGAR
+```
+
+Una concesión individual en el otro carril no vence la denegación.
+
+---
+
+#### 20. Principio de actualización
+
+Los paquetes se actualizan como allowlists técnicas restrictivas.
+
+```text
+PERMISO DEL ACTOR
++
+CONTEXTO VÁLIDO
++
+RECURSO VÁLIDO
++
+CLAVE PERMITIDA POR EL PAQUETE
+=
+ACCIÓN POSIBLE
+```
+
+La inclusión en el paquete nunca crea permiso, rol, turno, check-in, área, componente base, componente operativo ni reautenticación.
+
+Los paquetes conservarán versión independiente y no se desplegarán hasta que AUTH-CAT-024 congele la versión del catálogo y las tareas posteriores generen los datasets correspondientes.
+
+---
+
+#### 21. Diff de paquetes
+
+##### 21.1 `pos_satellite`
+
+Agregar al filtro permitido:
+
+```text
+pulso.sales.orders.create
+pulso.payments.transactions.collect
+pulso.cash.sessions.start
+pulso.cash.sessions.close
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Condiciones:
+
+- las cuatro acciones ordinarias requieren actor `cajero_satelite` o excepción compatible;
+- las cinco acciones sensibles solo se habilitan cuando el mismo actor completa ambos carriles;
+- reautenticación fuerte no puede heredarse del actor anterior;
+- la sesión de caja no puede sobrevivir al cambio de actor;
+- el PIN ligero del dispositivo no satisface reautenticación fuerte.
+
+##### 21.2 `integrated_satellite`
+
+Agregar las mismas nueve claves PULSO.
+
+Condiciones adicionales:
+
+- la sede debe estar configurada como formato integrado;
+- el punto o área debe admitir operación de caja;
+- `operador_integral_satelite` no se convierte en superusuario;
+- ninguna capacidad de inventario, logística central o VISO se incorpora por la naturaleza integrada del dispositivo.
+
+##### 21.3 `operations_management_terminal`
+
+Agregar:
+
+```text
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+Condiciones:
+
+- el paquete solo permite presentar o intentar la acción;
+- PULSO y NEXO continúan exigiendo ambos carriles;
+- la terminal no presta el componente base a un actor operativo;
+- la terminal no presta el componente operativo a un actor administrativo;
+- toda acción exige reautenticación fuerte y recurso exacto.
+
+##### 21.4 `warehouse_kiosk`
+
+No agregar ninguna de las 29 claves por defecto.
+
+En particular, mantener excluidas:
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+`origo.procurement.receipts.register` solo podrá aparecer cuando el mismo dispositivo entre en un modo o paquete `procurement_reception` expresamente habilitado. El modo ordinario de bodega no adquiere autoridad comercial por coexistir en el mismo hardware.
+
+##### 21.5 `logistics_vehicle_terminal`
+
+Retirar del paquete objetivo:
+
+```text
+nexo.inventory.remissions.dispatch
+```
+
+Agregar:
+
+```text
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+Mantener excluido:
+
+```text
+nexo.inventory.remissions.receive
+```
+
+El terminal no autoriza al conductor a recibir por el destino, modificar cantidades declaradas o crear inventario.
+
+##### 21.6 `procurement_reception`
+
+Agregar:
+
+```text
+origo.procurement.receipts.register
+```
+
+Condiciones:
+
+- actor humano identificado;
+- carril base u operativo completo;
+- sede receptora y orden compatibles;
+- sesión estándar de actor;
+- documento y evidencia requeridos;
+- sin escritura directa de stock;
+- sin corrección o reversión por inferencia.
+
+##### 21.7 `management_terminal`
+
+Agregar las 14 claves `viso.authorization.*` definidas en esta tarea.
+
+Condiciones:
+
+- sesión administrativa personal;
+- prohibición de sesión anónima o principal técnico como actor;
+- reautenticación fuerte por acción sensible;
+- cierre de reautenticación al cambiar de actor;
+- segregación creador/aprobador;
+- alcance administrativo real;
+- no permitir estas acciones en simulación ejecutable;
+- las claves `denials.approve` y `denials.revoke` permanecen disponibles solo para actor con concesión real de propietario o seguridad designada.
+
+##### 21.8 Paquetes no listados
+
+Los paquetes y plantillas no incluidos en esta sección mantienen las 29 claves bajo denegación por defecto hasta una revisión contractual posterior.
+
+---
+
+#### TRANSICIÓN LEGACY
+
+#### 22. `pulso.pos.main`
+
+Estado objetivo conservado:
+
+```text
+catalog_status = deprecated
+assignment_status = blocked
+resolution = DECOMPOSE_REQUIRED
+```
+
+Decisiones:
+
+- no se reactiva;
+- no se incorpora a paquetes nuevos;
+- no se convierte en alias hacia las nueve claves;
+- sus asignaciones no se copian;
+- no se retira físicamente todavía porque existen operaciones PULSO inmaduras y consumidores pendientes.
+
+---
+
+#### 23. `viso.staff.permissions.manage`
+
+Estado objetivo conservado:
+
+```text
+catalog_status = deprecated
+authorization_status = blocked
+resolution = DEPRECATED_SPLIT_PENDING_MIGRATION
+```
+
+Decisiones:
+
+- no se sustituye por otro `manage`;
+- no se convierte en alias hacia 14 claves;
+- ninguna matriz o excepción legacy se copia;
+- los consumidores deberán migrarse a la acción exacta;
+- la clave solo podrá retirarse físicamente después de inventario de consumidores, migración, reconciliación y pruebas de segregación.
+
+---
+
+#### 24. `nexo.inventory.remissions.dispatch`
+
+Estado objetivo:
+
+```text
+catalog_status = deprecated
+assignment_status = blocked_for_new_assignments
+resolution = DEPRECATED_SPLIT_PENDING_MIGRATION
+replacement_set:
+  - nexo.inventory.remissions.accept_custody
+  - nexo.inventory.remissions.start_transit
+```
+
+Diff confirmado de matriz:
+
+```text
+conductor_logistica
+- nexo.inventory.remissions.dispatch
++ nexo.inventory.remissions.accept_custody
++ nexo.inventory.remissions.start_transit
++ nexo.inventory.remissions.deliver
+```
+
+`deliver` no es alias ni parte automática del `replacement_set`. Se incorpora porque AUTH-CAT-022 aprobó una tercera capacidad logística distinta para registrar el handoff.
+
+La eliminación física de `dispatch` se reserva para BLOQUE R después de migrar todos los consumidores y después de que AUTH-CAT-024 determine el impacto de versión.
+
+---
+
+#### 25. Conteo por matriz base
+
+| Rol base          |  PULSO |  NEXO | ORIGO |   VISO | Total de componentes añadidos |
+| ----------------- | -----: | ----: | ----: | -----: | ----------------------------: |
+| `propietario`     |      5 |     2 |     1 |     14 |                            22 |
+| `gerente_general` |      5 |     2 |     1 |     12 |                            20 |
+| `gerente`         |      5 |     2 |     1 |      0 |                             8 |
+| `supervisor`      |      0 |     0 |     0 |      0 |                             0 |
+| Otros roles base  |      0 |     0 |     0 |      0 |                             0 |
+| **Total**         | **15** | **6** | **3** | **26** |                        **50** |
+
+`supervisor` y los demás roles fueron revisados. El valor cero es una decisión explícita de no concesión por matriz, no una omisión.
+
+---
+
+#### 26. Conteo por matriz operativa
+
+| Rol operativo                |  PULSO |  NEXO | ORIGO | Total añadido | Retiro legacy |
+| ---------------------------- | -----: | ----: | ----: | ------------: | ------------: |
+| `cajero_satelite`            |      9 |     0 |     0 |             9 |             0 |
+| `operador_integral_satelite` |      9 |     0 |     0 |             9 |             0 |
+| `gerencia_operativa`         |      5 |     2 |     0 |             7 |             0 |
+| `conductor_logistica`        |      0 |     3 |     0 |             3 |  1 `dispatch` |
+| `bodeguero`                  |      0 |     0 |     1 |             1 |             0 |
+| Otros roles operativos       |      0 |     0 |     0 |             0 |             0 |
+| **Total**                    | **23** | **5** | **1** |        **29** |         **1** |
+
+Los componentes operativos de permisos `BASE_AND_OPERATIONAL` no autorizan por sí solos.
+
+---
+
+#### 27. Cobertura de las 29 claves
+
+- ✅ Las nueve claves PULSO fueron evaluadas por modalidad, rol base y rol operativo.
+- ✅ Las cinco claves NEXO fueron evaluadas por autoridad de inventario, custodia, tránsito y handoff.
+- ✅ La clave ORIGO fue evaluada en ambos carriles compatibles.
+- ✅ Las catorce claves VISO fueron evaluadas individualmente.
+- ✅ `propietario`, `gerente_general`, `gerente` y `supervisor` fueron revisados en el carril base.
+- ✅ `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa`, `conductor_logistica` y `bodeguero` fueron revisados en el carril operativo.
+- ✅ Las concesiones individuales base y operativas fueron actualizadas conceptualmente.
+- ✅ Las denegaciones legacy relacionadas quedaron sujetas a revisión exacta y no a expansión automática.
+- ✅ Siete paquetes de dispositivo recibieron un diff explícito.
+- ✅ Ningún permiso nuevo se concedió por nombre de rol, prefijo o dispositivo.
+- ✅ Ninguna clave VISO se incorporó al carril operativo.
+- ✅ Ninguna clave `OPERATIONAL_ONLY` se incorporó a una matriz base.
+- ✅ Ninguna clave `BASE_AND_OPERATIONAL` se presentó como autorización de un solo carril.
+
+---
+
+#### 28. Invariantes
+
+1. El catálogo vigente continúa formalmente en 112 permisos hasta AUTH-CAT-024.
+2. Las 29 claves permanecen candidatas hasta la congelación contractual.
+3. Esta tarea no crea asignaciones físicas.
+4. La ausencia de una concesión produce denegación por defecto.
+5. No se crean denies redundantes para representar ausencia de allow.
+6. Ninguna asignación legacy se copia a varias claves nuevas.
+7. Ningún alias puede apuntar a más de una clave.
+8. `pulso.pos.main` permanece bloqueado.
+9. `viso.staff.permissions.manage` permanece bloqueado hasta migración.
+10. `nexo.inventory.remissions.dispatch` no admite nuevas asignaciones objetivo.
+11. `collect`, `reverse` y `refund` permanecen separados.
+12. `cancel`, `return` y `refund` permanecen separados.
+13. Abrir, cobrar y cerrar caja permanecen separados.
+14. Aprobar o resolver diferencias no equivale a capturarlas ni ajustarlas.
+15. Aceptar custodia, iniciar tránsito, entregar y recibir permanecen separados.
+16. Registrar recepción comercial ORIGO no registra stock NEXO.
+17. Las claves VISO no dependen de turno ni check-in.
+18. Las claves VISO exigen reautenticación fuerte y segregación.
+19. Un paquete de dispositivo restringe, pero nunca amplía.
+20. Un actor técnico no recibe permisos humanos.
+21. Una sesión compartida no conserva identidad o reautenticación del actor anterior.
+22. APP-REVIEW y entornos aislados no se incorporan por inferencia.
+23. Toda acción sensible conserva motivo, evidencia, recurso, versión y auditoría.
+24. Las concesiones individuales no cambian la modalidad del permiso.
+25. Una denegación aplicable prevalece sobre matrices y excepciones.
+26. La simulación no ejecuta mutaciones sensibles.
+27. Ningún flujo diferido a roadmaps funcionales se introduce mediante este diff.
+28. No se fija versión, hash, fecha de retiro ni despliegue en esta tarea.
+
+---
+
+#### 29. Riesgos controlados
+
+##### Riesgo 1 — Convertir `pulso.pos.main` en nueve permisos para todos sus usuarios
+
+Control:
+
+```text
+CERO MIGRACIÓN AUTOMÁTICA
+```
+
+Solo se conceden las claves expresamente listadas por matriz o excepción.
+
+##### Riesgo 2 — Permitir acciones sensibles a cualquier cajero
+
+Control:
+
+- las cinco claves sensibles son `BASE_AND_OPERATIONAL`;
+- el carril operativo del cajero no basta;
+- se exige componente base, reautenticación, recurso y contexto.
+
+##### Riesgo 3 — Convertir `gerencia_operativa` en rol especialista universal
+
+Control:
+
+- no recibe ventas ordinarias, cobro ni sesiones de caja;
+- no recibe custodia o tránsito logístico;
+- solo recibe componentes operativos sensibles explícitos.
+
+##### Riesgo 4 — Permitir que bodega apruebe su propio conteo
+
+Control:
+
+- `bodeguero` no recibe `approve` ni `resolve`;
+- se exige autoridad base y componente operativo compatible;
+- el capturador no aprueba o resuelve su propia diferencia.
+
+##### Riesgo 5 — Permitir que el conductor reciba por el destino
+
+Control:
+
+- `deliver` registra handoff;
+- `receive` permanece excluido del rol y del terminal logístico.
+
+##### Riesgo 6 — Fusionar recepción comercial e inventario
+
+Control:
+
+- ORIGO registra la recepción comercial;
+- NEXO registra entrada y custodia física;
+- cada efecto conserva autorización propia.
+
+##### Riesgo 7 — Crear autoaprobación en VISO
+
+Control:
+
+- `create` y `approve` son claves separadas;
+- el creador no aprueba el mismo registro;
+- el actor afectado no aprueba su propia concesión o denegación.
+
+##### Riesgo 8 — Bloquear toda recuperación mediante denegaciones
+
+Control:
+
+- `denials.approve` y `denials.revoke` no se conceden por matriz a `gerente_general`;
+- se reservan a propietario o autoridad de seguridad individualmente designada;
+- toda política deberá preservar recuperación gobernada.
+
+##### Riesgo 9 — Confundir paquete de dispositivo con permiso
+
+Control:
+
+```text
+PACKAGE_ALLOWLIST
+≠
+RBAC_ALLOW
+```
+
+La decisión final continúa exigiendo actor, carril, contexto y recurso.
+
+##### Riesgo 10 — Publicar un cambio incompatible como versión menor
+
+Control:
+
+AUTH-CAT-024 deberá verificar si `nexo.inventory.remissions.dispatch` fue publicado como clave activa antes de decidir la versión definitiva.
+
+---
+
+#### 30. Impacto sobre tareas posteriores
+
+| Tarea         | Resultado recibido de AUTH-CAT-023                                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-CAT-024  | Diff completo de 29 claves, matrices, excepciones, denegaciones, paquetes y transición legacy para validación, versionado y hash contractual |
+| AUTH-RBAC-024 | Decisiones de matriz base congeladas por la versión publicada                                                                                |
+| AUTH-RBAC-025 | Decisiones de matriz operativa congeladas por la versión publicada                                                                           |
+| AUTH-RBAC-026 | Contratos de concesiones individuales, denegaciones y revisión legacy                                                                        |
+| AUTH-RBAC-027 | Casos para validar que no exista acceso operativo global accidental                                                                          |
+| AUTH-RBAC-028 | Casos para confirmar que la administración base válida no dependa de turno o check-in                                                        |
+| BLOQUE E      | Combinación efectiva de carriles, contexto, recurso, denegaciones y razones de decisión                                                      |
+| BLOQUE E3     | Estructuras objetivo para matrices, concesiones, denegaciones, paquetes y auditoría                                                          |
+| BLOQUE R      | Migraciones, backfills, retiro legacy, reconciliación, compatibilidad y rollback                                                             |
+| BLOQUE QA     | Pruebas de roles, carriles, dispositivos, segregación, transición y denegaciones                                                             |
+
+AUTH-RBAC-024 a AUTH-RBAC-026 no deberán iniciarse con una versión provisional. Consumirán únicamente la versión congelada por AUTH-CAT-024.
+
+---
+
+#### 31. Criterios de aprobación
+
+AUTH-CAT-023 podrá aprobarse cuando se acepte expresamente que:
+
+1. las 29 claves candidatas fueron evaluadas por rol y carril;
+2. las acciones ordinarias PULSO se asignan únicamente a caja y operación integrada;
+3. las cinco acciones sensibles PULSO exigen componentes base y operativo para el mismo actor;
+4. `supervisor` no recibe nuevos componentes de doble condición por matriz;
+5. aprobar y resolver diferencias de conteo permanecen fuera de `bodeguero`;
+6. `gerencia_operativa` aporta el componente operativo para diferencias de conteo, dentro de contexto real;
+7. `conductor_logistica` sustituye `dispatch` por `accept_custody`, `start_transit` y `deliver` como capacidades separadas;
+8. `deliver` no concede `receive`;
+9. ORIGO registra la recepción comercial y NEXO conserva la entrada física;
+10. `propietario` recibe las 14 claves VISO de gobierno explícito;
+11. `gerente_general` recibe el ciclo de concesiones y la propuesta de denegaciones, pero no aprobación o revocación de denegaciones por matriz;
+12. los demás roles no reciben gobierno VISO por nombre o jerarquía implícita;
+13. las concesiones individuales pueden utilizar las claves nuevas solo en carriles compatibles;
+14. ninguna concesión legacy se expande automáticamente;
+15. las denegaciones legacy se revisan clave por clave y no por prefijo;
+16. los siete paquetes de dispositivo actúan únicamente como filtros restrictivos;
+17. `warehouse_kiosk` no incorpora autoridad para aprobar o resolver diferencias;
+18. `logistics_vehicle_terminal` elimina `dispatch` e incorpora las tres acciones logísticas exactas;
+19. `management_terminal` exige actor administrativo y reautenticación fuerte para VISO;
+20. `pulso.pos.main` y `viso.staff.permissions.manage` permanecen bloqueados;
+21. `nexo.inventory.remissions.dispatch` queda destinado a retiro controlado después de migrar consumidores;
+22. no se publica todavía el número de versión ni el hash contractual;
+23. no se implementa código, Supabase, datasets ni migraciones;
+24. AUTH-CAT-024 permanece reservada hasta aprobación explícita de esta tarea.
+
+---
+
+#### 32. Estado final de la propuesta
+
+| Tarea        | Estado      |
+| ------------ | ----------- |
+| AUTH-CAT-022 | APROBADA    |
+| AUTH-CAT-023 | APROBADA    |
+| AUTH-CAT-024 | NO INICIADA |
+
+No se avanza a AUTH-CAT-024 hasta recibir aprobación explícita de AUTH-CAT-023.
+
+
+### ✅ AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE D — Revisión contractual previa a datasets  
+**Naturaleza:** Validación integral, publicación contractual y congelación de versión  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-CAT-023 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-024 — Definir dataset canónico de matriz base  
+**Catálogo contractual de salida:** `vento.authorization@1.0.0`  
+**Schema contractual de referencia:** `1.0.0`  
+**Permisos activos congelados:** 140  
+**Aplicaciones registradas:** 10  
+**Huella contractual propuesta:** `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`
+
+Esta tarea valida y congela el contrato documental que deberán consumir
+AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026.
+
+No crea todavía los archivos físicos de `@vento/contracts`, no publica un
+paquete, no modifica Supabase, no inserta datasets, no altera RLS, RPC,
+aplicaciones, dispositivos desplegados ni migraciones.
+
+La aprobación de esta tarea publicará una **versión contractual documental
+inmutable**. La publicación técnica del catálogo físico continuará reservada
+para la implementación correspondiente y deberá demostrar equivalencia exacta
+con esta versión.
+
+---
+
+#### 1. Objetivo
+
+Cerrar la revisión contractual iniciada en AUTH-CAT-020 y confirmar que:
+
+1. las brechas maduras fueron transformadas en claves atómicas;
+2. las claves nuevas poseen clasificación contractual completa;
+3. las matrices, excepciones, denegaciones y paquetes afectados fueron
+   revisados mediante diff;
+4. el conjunto activo resultante es exacto, único y reproducible;
+5. las claves legacy no se expanden automáticamente;
+6. los datasets posteriores recibirán una versión y una huella inmutables;
+7. ninguna decisión documental se confunde con implementación física.
+
+Flujo de cierre:
+
+```text
+AUTH-CAT-020
+→ consolidación de brechas
+
+AUTH-CAT-021
+→ clasificación de madurez
+
+AUTH-CAT-022
+→ 29 claves atómicas nuevas
+→ 1 clave activa destinada a sustitución
+
+AUTH-CAT-023
+→ diff de matrices
+→ excepciones
+→ denegaciones
+→ paquetes de dispositivo
+
+AUTH-CAT-024
+→ validación integral
+→ versión contractual
+→ huella contractual
+→ congelación
+→ apertura de datasets
+```
+
+---
+
+#### 2. Separación entre publicación contractual y publicación física
+
+Se establecen dos planos distintos.
+
+##### 2.1 Publicación contractual
+
+Ocurre mediante la aprobación expresa de esta tarea.
+
+Produce:
+
+- número de versión;
+- conjunto exacto de permisos activos;
+- estados legacy y retirados;
+- diff contractual aprobado;
+- decisiones de matrices y paquetes;
+- huella documental reproducible;
+- puerta de entrada para datasets.
+
+Estado después de aprobación:
+
+```text
+contractual_status = PUBLISHED
+contractual_catalog_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 2.2 Publicación física
+
+Ocurrirá posteriormente cuando se implementen y validen:
+
+- `manifest.json`;
+- `applications.json`;
+- `permissions.json`;
+- `aliases.json`;
+- `legacy-permissions.json`;
+- `retired-permissions.json`;
+- `resource-contracts.json`;
+- JSON Schema;
+- tipos derivados;
+- checksums;
+- changelog;
+- pruebas contractuales;
+- `current.json`;
+- paquete `@vento/contracts/authorization`.
+
+Estado actual:
+
+```text
+physical_catalog_status = NOT_IMPLEMENTED
+physical_catalog_hash = NOT_GENERATED
+package_publication_status = NOT_PUBLISHED
+```
+
+Regla:
+
+```text
+PUBLICACIÓN CONTRACTUAL
+≠
+PUBLICACIÓN FÍSICA
+```
+
+La publicación física no podrá cambiar el contenido semántico congelado.
+Si detecta una inconsistencia contractual, deberá detenerse y producir una
+nueva tarea y versión; no podrá corregir silenciosamente `1.0.0`.
+
+---
+
+#### 3. Decisión de versión
+
+La versión contractual inicial se congela como:
+
+```text
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+schema_version = 1.0.0
+```
+
+Justificación:
+
+1. AUTH-CAT-017 reservó `1.0.0` para la primera publicación.
+2. No existe una publicación física anterior de `1.0.0`.
+3. La fase vigente continúa siendo exclusivamente documental.
+4. El conjunto intermedio de 112 permisos nunca fue publicado físicamente
+   como versión inmutable.
+5. Por tanto, la primera versión podrá nacer directamente con 140 permisos
+   activos.
+6. No corresponde publicar primero una versión de 112 permisos para luego
+   retirarla artificialmente.
+7. `nexo.inventory.remissions.dispatch` no formará parte del conjunto activo
+   inicial; permanecerá como deuda legacy de migración.
+
+Regla definitiva:
+
+```text
+PRIMERA PUBLICACIÓN CONTRACTUAL
+→ 1.0.0
+→ 140 PERMISOS ACTIVOS
+```
+
+No se utiliza `1.1.0` porque no existe una `1.0.0` publicada previa.
+
+No se utiliza `2.0.0` porque la incompatibilidad de retirar `dispatch`
+solo aplicaría frente a una versión publicada anterior que lo hubiera
+incluido como activo.
+
+---
+
+#### 4. Entradas normativas validadas
+
+La versión queda respaldada por:
+
+- ADR-AUTH-001;
+- AUTH-MOD-001 a AUTH-MOD-020;
+- AUTH-CAT-001 a AUTH-CAT-024;
+- AUTH-RBAC-001 a AUTH-RBAC-023;
+- catálogo de 112 permisos aprobado antes de la revisión contractual;
+- 29 claves aprobadas en AUTH-CAT-022;
+- diff de matrices, excepciones, denegaciones y paquetes aprobado en
+  AUTH-CAT-023.
+
+No se incorpora ninguna decisión pendiente de:
+
+- E1;
+- E2;
+- E3;
+- E4;
+- E5;
+- roadmaps funcionales;
+- auditorías futuras de aplicaciones;
+- implementación física.
+
+Las capacidades futuras descubiertas después de esta congelación requerirán
+otra `catalog_version`.
+
+---
+
+#### 5. Resultado de conteos
+
+##### 5.1 Evolución del conjunto activo
+
+| Concepto                                    | Cantidad |
+| ------------------------------------------- | -------: |
+| Permisos activos de referencia              |      112 |
+| Claves nuevas aprobadas                     |       29 |
+| Clave retirada del conjunto activo objetivo |        1 |
+| **Permisos activos congelados**             |  **140** |
+
+Cálculo:
+
+```text
+112
++ 29
+- 1
+= 140
+```
+
+La clave retirada del conjunto activo es:
+
+```text
+nexo.inventory.remissions.dispatch
+```
+
+##### 5.2 Distribución por aplicación
+
+| Aplicación | Permisos activos en `1.0.0` |
+| ---------- | --------------------------: |
+| `shell`    |                           1 |
+| `anima`    |                          10 |
+| `aura`     |                           1 |
+| `fogo`     |                           6 |
+| `nexo`     |                          67 |
+| `numera`   |                           6 |
+| `origo`    |                           6 |
+| `pass`     |                           1 |
+| `pulso`    |                          11 |
+| `viso`     |                          31 |
+| **Total**  |                     **140** |
+
+##### 5.3 Integridad
+
+- 140 claves activas.
+- 140 claves únicas.
+- 10 aplicaciones.
+- Toda clave activa pertenece a una aplicación registrada.
+- Ninguna clave activa aparece simultáneamente como legacy o retirada.
+- Las 29 claves nuevas aparecen exactamente una vez.
+- `nexo.inventory.remissions.dispatch` no aparece como activa.
+- `pulso.pos.main` no aparece como activa.
+- `viso.staff.permissions.manage` no aparece como activa.
+- No se crean aliases uno-a-muchos.
+- No existen concesiones implícitas derivadas de la publicación.
+
+---
+
+#### 6. Claves agregadas en `1.0.0`
+
+##### 6.1 PULSO — 9
+
+```text
+pulso.cash.sessions.close
+pulso.cash.sessions.start
+pulso.payments.transactions.collect
+pulso.payments.transactions.refund
+pulso.payments.transactions.reverse
+pulso.sales.discounts.apply
+pulso.sales.orders.cancel
+pulso.sales.orders.create
+pulso.sales.returns.create
+```
+
+##### 6.2 NEXO — 5
+
+```text
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.deliver
+nexo.inventory.remissions.start_transit
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+##### 6.3 ORIGO — 1
+
+```text
+origo.procurement.receipts.register
+```
+
+##### 6.4 VISO — 14
+
+```text
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.create
+viso.authorization.base_grants.revoke
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.view
+viso.authorization.denials.approve
+viso.authorization.denials.create
+viso.authorization.denials.revoke
+viso.authorization.denials.view
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.revoke
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.view
+```
+
+---
+
+#### 7. Estado de claves legacy
+
+##### 7.1 Inventario legacy bloqueado
+
+La versión contractual reconoce 22 claves legacy amplias o sustituidas:
+
+```text
+fogo.production.recipes.manage
+nexo.cost_centers.manage
+nexo.internal_prices.manage
+nexo.inventory.remissions.dispatch
+nexo.settings.categories.manage
+nexo.settings.remissions.manage
+nexo.settings.sites.manage
+nexo.settings.supply_routes.manage
+nexo.settings.units.manage
+numera.cost_centers.manage
+numera.expenses.manage
+origo.suppliers.manage
+pulso.pos.main
+viso.app_navigation.manage
+viso.employee_operational_profiles.manage
+viso.menu.images.manage
+viso.operational_points.manage
+viso.site_operational_roles.manage
+viso.staff.documents.manage
+viso.staff.employee_photos.manage
+viso.staff.manage
+viso.staff.permissions.manage
+```
+
+Reglas:
+
+- no son permisos activos;
+- no admiten asignaciones nuevas;
+- no aparecen en datasets de concesiones canónicas;
+- no se expanden automáticamente;
+- pueden conservarse físicamente solo para compatibilidad, telemetría,
+  inventario de consumidores y migración;
+- su retiro físico exige BLOQUE R, pruebas y rollback.
+
+##### 7.2 Claves sustituidas relevantes
+
+| Clave legacy                         | Estado                               | Reemplazo contractual                                                              |
+| ------------------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------- |
+| `pulso.pos.main`                     | `deprecated_incomplete_split`        | Nueve claves PULSO maduras y futuros permisos diferidos                            |
+| `viso.staff.permissions.manage`      | `deprecated_split_pending_migration` | 14 claves VISO                                                                     |
+| `nexo.inventory.remissions.dispatch` | `deprecated_split_pending_migration` | `accept_custody` + `start_transit`; `deliver` es capacidad adicional independiente |
+
+Ninguna forma un alias uno-a-muchos.
+
+---
+
+#### 8. Permisos técnicos retirados
+
+Las siguientes 14 claves permanecen retiradas y no pueden reactivarse:
+
+```text
+nexo.code.view
+nexo.edit.view
+nexo.login.view
+nexo.new.view
+nexo.no_access.view
+nexo.open.view
+nexo.page_tsx.view
+nexo.quick.view
+nexo.scanner.view
+nexo.settings.view
+nexo.setup.view
+nexo.slug.view
+origo.login.view
+origo.no_access.view
+```
+
+Regla:
+
+```text
+PERMISO TÉCNICO RETIRADO SOLICITADO
+→ DENEGAR
+→ REGISTRAR DIAGNÓSTICO
+→ NO REACTIVAR POR FALLBACK
+```
+
+---
+
+#### 9. Validación del diff de matrices
+
+AUTH-CAT-023 dejó congeladas las siguientes cantidades documentales:
+
+| Capa                                                      | Resultado |
+| --------------------------------------------------------- | --------: |
+| Componentes de concesión añadidos a matrices base         |        50 |
+| Componentes añadidos a matrices operativas                |        29 |
+| Concesiones legacy retiradas de matriz operativa objetivo |         1 |
+| Concesiones individuales automáticas                      |         0 |
+| Denegaciones individuales automáticas                     |         0 |
+| Paquetes de dispositivo revisados                         |         7 |
+
+Validaciones:
+
+- PULSO ordinario se concede solo mediante carril operativo compatible.
+- Las cinco acciones sensibles PULSO requieren `BASE_AND_OPERATIONAL`.
+- NEXO separa captura, aprobación, resolución y ajuste.
+- `bodeguero` no aprueba ni resuelve su propia diferencia por matriz.
+- `conductor_logistica` recibe custodia, tránsito y entrega por claves
+  separadas.
+- `deliver` no concede `receive`.
+- ORIGO registra recepción comercial; NEXO conserva entrada física.
+- Las 14 claves VISO son `BASE_ONLY`.
+- Las denegaciones legacy se revisan clave por clave.
+- Los paquetes de dispositivo restringen, pero nunca conceden.
+- Los permisos nuevos no se asignan por prefijo, alias, rol, aplicación o
+  dispositivo.
+
+---
+
+#### 10. Congelación de decisiones de matrices
+
+Los datasets posteriores deberán reproducir exactamente el diff aprobado.
+
+##### 10.1 Matriz base
+
+AUTH-RBAC-024 deberá partir de:
+
+```text
+base_grant_components_added = 50
+```
+
+No podrá:
+
+- incorporar componentes nuevos sin una nueva revisión contractual;
+- conceder permisos `OPERATIONAL_ONLY` a roles base;
+- utilizar roles legacy para reconstruir permisos amplios;
+- otorgar VISO por jerarquía implícita;
+- conceder a `supervisor` componentes no aprobados.
+
+##### 10.2 Matriz operativa
+
+AUTH-RBAC-025 deberá partir de:
+
+```text
+operational_grant_components_added = 29
+operational_legacy_grants_removed = 1
+```
+
+La concesión retirada es:
+
+```text
+conductor_logistica
+- nexo.inventory.remissions.dispatch
+```
+
+Y se sustituye documentalmente por:
+
+```text
+conductor_logistica
++ nexo.inventory.remissions.accept_custody
++ nexo.inventory.remissions.start_transit
++ nexo.inventory.remissions.deliver
+```
+
+##### 10.3 Excepciones y denegaciones
+
+AUTH-RBAC-026 deberá partir de:
+
+```text
+automatic_individual_grants = 0
+automatic_denials = 0
+```
+
+Toda excepción o denegación deberá:
+
+- usar la clave exacta;
+- respetar modalidad y carril;
+- definir sujeto, alcance, vigencia y recurso;
+- conservar aprobación y auditoría;
+- evitar expansiones desde claves legacy.
+
+---
+
+#### 11. Congelación de paquetes de dispositivo
+
+Los siete paquetes revisados son:
+
+```text
+pos_satellite
+integrated_satellite
+operations_management_terminal
+warehouse_kiosk
+logistics_vehicle_terminal
+procurement_reception
+management_terminal
+```
+
+Reglas para datasets y configuraciones posteriores:
+
+1. cada paquete deberá declarar `catalog_version = 1.0.0`;
+2. cada paquete deberá declarar la huella contractual de esta tarea;
+3. ninguna plantilla o instancia puede agregar una clave fuera del paquete;
+4. ninguna inclusión crea autorización;
+5. `warehouse_kiosk` no incorpora las nuevas autoridades sensibles;
+6. `logistics_vehicle_terminal` excluye `dispatch` e incluye las tres claves
+   logísticas nuevas;
+7. `procurement_reception` incluye únicamente la capacidad ORIGO aprobada;
+8. `management_terminal` puede presentar las 14 claves VISO, pero la
+   decisión depende del actor real;
+9. las versiones específicas de cada paquete se definirán en su artefacto
+   correspondiente y no sustituyen `catalog_version`.
+
+---
+
+#### 12. Huella contractual
+
+##### 12.1 Campo publicado
+
+```text
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+Esta huella identifica el contenido semántico congelado para datasets.
+
+No es el futuro `catalog_hash` compuesto de los archivos físicos.
+
+##### 12.2 Algoritmo
+
+La huella se calcula sobre el bloque canónico de la sección 12.4 mediante:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- una asignación por línea;
+- sin espacios finales;
+- listas ordenadas lexicográficamente;
+- campos en el orden publicado;
+- un único salto LF al final;
+- SHA-256 sobre los bytes resultantes;
+- sin fecha, hora ni estado mutable dentro del payload.
+
+Resultado esperado:
+
+```text
+687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 12.3 Separación de hashes
+
+```text
+contract_release_hash
+→ identifica la decisión documental congelada
+
+catalog_hash
+→ identificará posteriormente los archivos físicos publicados
+
+contract_hash
+→ identificará el contrato de recurso usado por una decisión concreta
+```
+
+La implementación física deberá registrar su `catalog_hash`, pero además
+deberá declarar que implementa:
+
+```text
+catalog_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 12.4 Payload canónico de la publicación
+
+```text
+catalog_id=vento.authorization
+catalog_version=1.0.0
+schema_version=1.0.0
+release_kind=contractual_snapshot
+application_count=10
+permission_count=140
+legacy_blocked_count=22
+retired_technical_count=14
+base_grant_components_added=50
+operational_grant_components_added=29
+operational_legacy_grants_removed=1
+automatic_individual_grants=0
+automatic_denials=0
+device_packages_reviewed=7
+physical_changes_allowed=false
+next_dataset_task=AUTH-RBAC-024
+source_task=ADR-AUTH-001
+source_task=AUTH-CAT-001..AUTH-CAT-024
+source_task=AUTH-RBAC-001..AUTH-RBAC-023
+application_permission_count=anima:10
+application_permission_count=aura:1
+application_permission_count=fogo:6
+application_permission_count=nexo:67
+application_permission_count=numera:6
+application_permission_count=origo:6
+application_permission_count=pass:1
+application_permission_count=pulso:11
+application_permission_count=shell:1
+application_permission_count=viso:31
+active_permission=anima.access
+active_permission=anima.attendance.shifts.cancel
+active_permission=anima.attendance.shifts.create
+active_permission=anima.attendance.shifts.update
+active_permission=anima.workforce.employee_documents.delete
+active_permission=anima.workforce.employee_documents.upload
+active_permission=anima.workforce.employee_documents.view
+active_permission=anima.workforce.employee_photos.upload
+active_permission=anima.workforce.staff_invitations.create
+active_permission=anima.workforce.team_members.view
+active_permission=aura.access
+active_permission=fogo.access
+active_permission=fogo.production.batches.create
+active_permission=fogo.production.batches.view
+active_permission=fogo.production.orders.view
+active_permission=fogo.production.recipe_book.view
+active_permission=fogo.production.recipes.view
+active_permission=nexo.access
+active_permission=nexo.analytics.internal_reports.view
+active_permission=nexo.analytics.margin_reports.view
+active_permission=nexo.assets.counts.view
+active_permission=nexo.assets.groups.view
+active_permission=nexo.assets.items.create
+active_permission=nexo.assets.items.view
+active_permission=nexo.catalog.categories.view
+active_permission=nexo.catalog.presentations.view
+active_permission=nexo.catalog.products.create
+active_permission=nexo.catalog.products.view
+active_permission=nexo.catalog.request_policies.view
+active_permission=nexo.catalog.units.view
+active_permission=nexo.finance.cost_centers.view
+active_permission=nexo.finance.internal_invoice_amounts.view
+active_permission=nexo.finance.internal_invoices.cancel
+active_permission=nexo.finance.internal_invoices.generate
+active_permission=nexo.finance.internal_invoices.issue
+active_permission=nexo.finance.internal_invoices.view
+active_permission=nexo.finance.internal_prices.view
+active_permission=nexo.finance.internal_variances.approve
+active_permission=nexo.finance.internal_variances.resolve
+active_permission=nexo.finance.internal_variances.view
+active_permission=nexo.inventory.adjustments.register
+active_permission=nexo.inventory.adjustments.view
+active_permission=nexo.inventory.entries.override
+active_permission=nexo.inventory.entries.register
+active_permission=nexo.inventory.entries.view
+active_permission=nexo.inventory.initial_counts.view
+active_permission=nexo.inventory.location_assignments.assign
+active_permission=nexo.inventory.location_catalog.update
+active_permission=nexo.inventory.locations.view
+active_permission=nexo.inventory.lpns.view
+active_permission=nexo.inventory.movements.view
+active_permission=nexo.inventory.production_batches.view
+active_permission=nexo.inventory.remissions.accept_custody
+active_permission=nexo.inventory.remissions.cancel
+active_permission=nexo.inventory.remissions.deliver
+active_permission=nexo.inventory.remissions.prepare
+active_permission=nexo.inventory.remissions.receive
+active_permission=nexo.inventory.remissions.request
+active_permission=nexo.inventory.remissions.start_transit
+active_permission=nexo.inventory.remissions.update
+active_permission=nexo.inventory.remissions.view
+active_permission=nexo.inventory.stock.view
+active_permission=nexo.inventory.stock_count_variances.approve
+active_permission=nexo.inventory.stock_count_variances.resolve
+active_permission=nexo.inventory.stock_counts.perform
+active_permission=nexo.inventory.stock_counts.view
+active_permission=nexo.inventory.stock_validations.perform
+active_permission=nexo.inventory.storage_positions.view
+active_permission=nexo.inventory.transfers.create
+active_permission=nexo.inventory.transfers.view
+active_permission=nexo.inventory.warehouse_operations.view
+active_permission=nexo.inventory.withdrawals.register
+active_permission=nexo.inventory.withdrawals.view
+active_permission=nexo.inventory.zones.view
+active_permission=nexo.logistics.driver_operations.view
+active_permission=nexo.logistics.fulfillment.view
+active_permission=nexo.logistics.fulfillment_routes.view
+active_permission=nexo.logistics.operations.view
+active_permission=nexo.logistics.operations_board.view
+active_permission=nexo.logistics.supply_routes.view
+active_permission=nexo.printing.jobs.view
+active_permission=nexo.printing.templates.update
+active_permission=nexo.settings.remission_policies.view
+active_permission=nexo.settings.sites.view
+active_permission=numera.access
+active_permission=numera.analytics.break_even.view
+active_permission=numera.analytics.financial_reports.view
+active_permission=numera.analytics.profitability.view
+active_permission=numera.finance.cost_centers.view
+active_permission=numera.finance.expenses.view
+active_permission=origo.access
+active_permission=origo.catalog.product_reviews.view
+active_permission=origo.procurement.purchase_orders.view
+active_permission=origo.procurement.receipts.register
+active_permission=origo.procurement.receipts.view
+active_permission=origo.procurement.suppliers.view
+active_permission=pass.access
+active_permission=pulso.access
+active_permission=pulso.cash.sessions.close
+active_permission=pulso.cash.sessions.start
+active_permission=pulso.delivery.deliveries.override
+active_permission=pulso.payments.transactions.collect
+active_permission=pulso.payments.transactions.refund
+active_permission=pulso.payments.transactions.reverse
+active_permission=pulso.sales.discounts.apply
+active_permission=pulso.sales.orders.cancel
+active_permission=pulso.sales.orders.create
+active_permission=pulso.sales.returns.create
+active_permission=shell.access
+active_permission=viso.access
+active_permission=viso.authorization.audit_logs.view
+active_permission=viso.authorization.base_grants.approve
+active_permission=viso.authorization.base_grants.create
+active_permission=viso.authorization.base_grants.revoke
+active_permission=viso.authorization.base_grants.suspend
+active_permission=viso.authorization.base_grants.view
+active_permission=viso.authorization.context_simulations.view
+active_permission=viso.authorization.denials.approve
+active_permission=viso.authorization.denials.create
+active_permission=viso.authorization.denials.revoke
+active_permission=viso.authorization.denials.view
+active_permission=viso.authorization.operational_grants.approve
+active_permission=viso.authorization.operational_grants.create
+active_permission=viso.authorization.operational_grants.revoke
+active_permission=viso.authorization.operational_grants.suspend
+active_permission=viso.authorization.operational_grants.view
+active_permission=viso.catalog.commercial_categories.view
+active_permission=viso.content.content_blocks.view
+active_permission=viso.content.menu.view
+active_permission=viso.content.website_content.view
+active_permission=viso.delivery.rates.view
+active_permission=viso.finance.accounting.view
+active_permission=viso.loyalty.customers.view
+active_permission=viso.loyalty.products.view
+active_permission=viso.organization.businesses.view
+active_permission=viso.platform.app_updates.view
+active_permission=viso.workforce.employees.view
+active_permission=viso.workforce.schedules.view
+active_permission=viso.workforce.staff_calendar.view
+active_permission=viso.workforce.vacancies.view
+added_permission=nexo.inventory.remissions.accept_custody
+added_permission=nexo.inventory.remissions.deliver
+added_permission=nexo.inventory.remissions.start_transit
+added_permission=nexo.inventory.stock_count_variances.approve
+added_permission=nexo.inventory.stock_count_variances.resolve
+added_permission=origo.procurement.receipts.register
+added_permission=pulso.cash.sessions.close
+added_permission=pulso.cash.sessions.start
+added_permission=pulso.payments.transactions.collect
+added_permission=pulso.payments.transactions.refund
+added_permission=pulso.payments.transactions.reverse
+added_permission=pulso.sales.discounts.apply
+added_permission=pulso.sales.orders.cancel
+added_permission=pulso.sales.orders.create
+added_permission=pulso.sales.returns.create
+added_permission=viso.authorization.base_grants.approve
+added_permission=viso.authorization.base_grants.create
+added_permission=viso.authorization.base_grants.revoke
+added_permission=viso.authorization.base_grants.suspend
+added_permission=viso.authorization.base_grants.view
+added_permission=viso.authorization.denials.approve
+added_permission=viso.authorization.denials.create
+added_permission=viso.authorization.denials.revoke
+added_permission=viso.authorization.denials.view
+added_permission=viso.authorization.operational_grants.approve
+added_permission=viso.authorization.operational_grants.create
+added_permission=viso.authorization.operational_grants.revoke
+added_permission=viso.authorization.operational_grants.suspend
+added_permission=viso.authorization.operational_grants.view
+removed_from_active=nexo.inventory.remissions.dispatch
+legacy_blocked_permission=fogo.production.recipes.manage
+legacy_blocked_permission=nexo.cost_centers.manage
+legacy_blocked_permission=nexo.internal_prices.manage
+legacy_blocked_permission=nexo.inventory.remissions.dispatch
+legacy_blocked_permission=nexo.settings.categories.manage
+legacy_blocked_permission=nexo.settings.remissions.manage
+legacy_blocked_permission=nexo.settings.sites.manage
+legacy_blocked_permission=nexo.settings.supply_routes.manage
+legacy_blocked_permission=nexo.settings.units.manage
+legacy_blocked_permission=numera.cost_centers.manage
+legacy_blocked_permission=numera.expenses.manage
+legacy_blocked_permission=origo.suppliers.manage
+legacy_blocked_permission=pulso.pos.main
+legacy_blocked_permission=viso.app_navigation.manage
+legacy_blocked_permission=viso.employee_operational_profiles.manage
+legacy_blocked_permission=viso.menu.images.manage
+legacy_blocked_permission=viso.operational_points.manage
+legacy_blocked_permission=viso.site_operational_roles.manage
+legacy_blocked_permission=viso.staff.documents.manage
+legacy_blocked_permission=viso.staff.employee_photos.manage
+legacy_blocked_permission=viso.staff.manage
+legacy_blocked_permission=viso.staff.permissions.manage
+retired_technical_permission=nexo.code.view
+retired_technical_permission=nexo.edit.view
+retired_technical_permission=nexo.login.view
+retired_technical_permission=nexo.new.view
+retired_technical_permission=nexo.no_access.view
+retired_technical_permission=nexo.open.view
+retired_technical_permission=nexo.page_tsx.view
+retired_technical_permission=nexo.quick.view
+retired_technical_permission=nexo.scanner.view
+retired_technical_permission=nexo.settings.view
+retired_technical_permission=nexo.setup.view
+retired_technical_permission=nexo.slug.view
+retired_technical_permission=origo.login.view
+retired_technical_permission=origo.no_access.view
+```
+
+---
+
+#### 13. Contrato de consumo para datasets
+
+AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026 deberán incluir obligatoriamente:
+
+```text
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+schema_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+Cada dataset deberá declarar además:
+
+- `dataset_id`;
+- `dataset_version`;
+- tarea fuente;
+- fecha documental de aprobación;
+- cantidad esperada de registros;
+- roles o sujetos incluidos;
+- claves activas utilizadas;
+- claves legacy referenciadas solo para migración;
+- validaciones;
+- checksum propio;
+- estado `proposal`, `approved` o equivalente documental.
+
+Reglas:
+
+1. un dataset no puede crear permisos;
+2. un dataset no puede cambiar propiedades del catálogo;
+3. un dataset no puede incluir claves fuera del conjunto activo;
+4. una clave legacy solo puede aparecer como referencia de transición, nunca
+   como concesión canónica nueva;
+5. las ausencias continúan siendo `DEFAULT_DENY`;
+6. el dataset base y operativo no pueden completar mutuamente componentes
+   para actores distintos;
+7. cada fila deberá poder trazarse a AUTH-CAT-023;
+8. toda divergencia exige detener la tarea y reabrir revisión contractual.
+
+---
+
+#### 14. Validaciones que bloquean datasets
+
+AUTH-RBAC-024 no podrá iniciarse si ocurre cualquiera de estos casos:
+
+- el conjunto activo no contiene exactamente 140 claves;
+- aparece una clave duplicada;
+- falta una de las 29 claves nuevas;
+- `dispatch` aparece como activa;
+- un permiso técnico retirado aparece como activo;
+- una clave legacy aparece como asignable;
+- la distribución por aplicación no coincide;
+- el hash contractual no coincide;
+- el diff de AUTH-CAT-023 no fue aprobado;
+- se detecta una publicación física anterior incompatible;
+- existe una modificación sustantiva posterior no versionada.
+
+Durante el desarrollo de datasets, cualquier inconsistencia deberá producir:
+
+```text
+STOP
+→ DOCUMENTAR DIFERENCIA
+→ NO CORREGIR SILENCIOSAMENTE
+→ REABRIR CATÁLOGO SI CAMBIA EL CONTRATO
+```
+
+---
+
+#### 15. Congelación e inmutabilidad
+
+Después de aprobar AUTH-CAT-024:
+
+- `vento.authorization@1.0.0` será inmutable contractualmente;
+- el conjunto de 140 permisos no podrá editarse en sitio;
+- la huella contractual no podrá recalcularse sobre contenido diferente;
+- las matrices no podrán reinterpretar las propiedades de un permiso;
+- los datasets deberán referenciar versión y hash exactos;
+- una corrección ortográfica sin efecto semántico requerirá al menos una
+  nueva versión documental;
+- una capacidad nueva requerirá `MINOR`;
+- un cambio incompatible requerirá `MAJOR`;
+- una clave retirada nunca podrá reutilizarse;
+- `current` físico solo podrá apuntar posteriormente a una versión publicada
+  y validada.
+
+La existencia de versiones futuras no invalida `1.0.0`. Las decisiones y
+auditorías históricas conservarán su versión exacta.
+
+---
+
+#### 16. Cambios futuros
+
+Después de `1.0.0`:
+
+##### 16.1 Cambio menor
+
+Ejemplos:
+
+- nueva clave atómica;
+- nueva aplicación aprobada;
+- nuevo contrato no usado previamente;
+- metadato opcional compatible.
+
+Resultado:
+
+```text
+1.0.0
+→ 1.1.0
+```
+
+##### 16.2 Cambio mayor
+
+Ejemplos:
+
+- retirar una clave activa publicada;
+- cambiar significado;
+- cambiar modalidad de forma incompatible;
+- ampliar o reducir alcance de forma incompatible;
+- cambiar requisitos de turno, check-in, área, dispositivo o recurso de
+  forma incompatible.
+
+Resultado:
+
+```text
+1.x.x
+→ 2.0.0
+```
+
+##### 16.3 Parche
+
+Solo para correcciones sin cambio de capacidad y mediante nueva versión:
+
+```text
+1.0.0
+→ 1.0.1
+```
+
+Nunca se modifica `1.0.0` en sitio.
+
+---
+
+#### 17. Publicación contractual al aprobar
+
+La aprobación expresa de esta propuesta producirá:
+
+```text
+AUTH-CAT-024 = APROBADA
+catalog_version = 1.0.0
+contractual_status = PUBLISHED
+permission_count = 140
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+next_task = AUTH-RBAC-024
+```
+
+La fecha efectiva deberá registrarse durante la consolidación documental del
+encabezado y no forma parte de la huella semántica.
+
+No será necesario regenerar este archivo únicamente para cambiar el marcador
+🟡 por ✅, salvo que la aprobación incluya una corrección sustantiva.
+
+---
+
+#### 18. Fuera del alcance
+
+AUTH-CAT-024 no implementa:
+
+- archivos físicos del catálogo;
+- paquete `@vento/contracts`;
+- publicación npm o registry;
+- `current.json`;
+- tipos TypeScript físicos;
+- constantes o parsers;
+- migraciones;
+- tablas;
+- filas de matrices;
+- RLS;
+- RPC;
+- guards;
+- dispositivos;
+- backfills;
+- retiro físico de legacy;
+- activación en aplicaciones;
+- rollout;
+- rollback técnico.
+
+La implementación física deberá ocurrir posteriormente mediante paquetes
+versionados en `vento-shell`.
+
+---
+
+#### 19. Riesgos controlados
+
+##### Riesgo 1 — Declarar publicado algo que no existe físicamente
+
+Control:
+
+```text
+PUBLISHED CONTRACTUAL
+≠
+PUBLISHED PHYSICAL
+```
+
+##### Riesgo 2 — Inventar una versión intermedia de 112 permisos
+
+Control:
+
+```text
+NO EXISTIÓ PUBLICACIÓN FÍSICA PREVIA
+→ PRIMERA VERSIÓN = 1.0.0 CON 140 ACTIVOS
+```
+
+##### Riesgo 3 — Conceder automáticamente las 29 claves
+
+Control:
+
+```text
+PERMISO ACTIVO EN CATÁLOGO
+≠
+PERMISO CONCEDIDO
+```
+
+##### Riesgo 4 — Mantener `dispatch` como activo por compatibilidad
+
+Control:
+
+- permanece legacy;
+- no aparece en datasets nuevos;
+- puede existir físicamente solo durante migración controlada.
+
+##### Riesgo 5 — Hash no reproducible
+
+Control:
+
+- payload normativo embebido;
+- normalización exacta;
+- SHA-256 fijo;
+- exclusión de timestamps.
+
+##### Riesgo 6 — Dataset modifica el contrato
+
+Control:
+
+```text
+CATÁLOGO
+→ DEFINE CAPACIDAD
+
+DATASET
+→ DEFINE ASIGNACIÓN
+```
+
+##### Riesgo 7 — Versiones futuras reinterpretan historia
+
+Control:
+
+- versión exacta;
+- hash exacto;
+- snapshots inmutables;
+- trazabilidad en decisiones y auditoría.
+
+---
+
+#### 20. Criterios de aprobación
+
+AUTH-CAT-024 podrá aprobarse cuando se acepte expresamente que:
+
+1. la primera versión contractual se publica como `1.0.0`;
+2. `schema_version` permanece en `1.0.0`;
+3. el conjunto activo contiene exactamente 140 claves;
+4. la distribución por aplicación queda congelada;
+5. las 29 claves de AUTH-CAT-022 quedan activas y asignables únicamente
+   mediante reglas explícitas;
+6. `nexo.inventory.remissions.dispatch` sale del conjunto activo;
+7. existen 22 claves legacy bloqueadas;
+8. existen 14 claves técnicas retiradas;
+9. ninguna clave legacy se expande automáticamente;
+10. AUTH-CAT-023 aporta 50 componentes base, 29 operativos y un retiro
+    legacy;
+11. no se crean concesiones o denegaciones individuales automáticas;
+12. los siete paquetes revisados permanecen como filtros restrictivos;
+13. la huella contractual es
+    `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`;
+14. el payload de la sección 12.4 es la fuente reproducible de esa huella;
+15. la publicación contractual no afirma implementación física;
+16. la implementación posterior deberá declarar versión y huella exactas;
+17. AUTH-RBAC-024 a AUTH-RBAC-026 deberán consumir esta versión;
+18. cualquier divergencia bloqueará datasets y exigirá revisión;
+19. no se modifica Supabase, código, RLS, RPC, dispositivos ni migraciones;
+20. AUTH-RBAC-024 queda habilitada únicamente después de aprobación expresa.
+
+---
+
+#### 21. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-CAT-023  | APROBADA    |
+| AUTH-CAT-024  | APROBADA    |
+| AUTH-RBAC-024 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-024 hasta recibir aprobación explícita de
+AUTH-CAT-024.

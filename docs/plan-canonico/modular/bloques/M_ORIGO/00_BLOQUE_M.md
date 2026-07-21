@@ -35,5 +35,4 @@ SUBBLOQUE M2 — Procesos y experiencia de ORIGO
 ### [ ] ORIGO-UX-013 Evitar repetir recepción manualmente en NEXO
 ### [ ] ORIGO-UX-014 Conectar recepción con entrada de inventario
 ### [ ] ORIGO-UX-015 Conectar compra con evento financiero
-### [ ] ORIGO-UX-016 Ejecutar piloto con compras y recepción
-
+### [ ] ORIGO-UX-016 Validar el prototipo con compras y recepción

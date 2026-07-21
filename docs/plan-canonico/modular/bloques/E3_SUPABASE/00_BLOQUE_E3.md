@@ -7,6 +7,9 @@ de Vento OS.
 
 No reemplaza:
 
+BLOQUE E1
+→ identifica capacidades, procesos reales y cobertura técnica actual
+
 BLOQUE E2
 → define procesos, actores, pantallas y fuentes de verdad empresariales
 
