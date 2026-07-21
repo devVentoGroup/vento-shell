@@ -68200,18 +68200,2401 @@ AUTH-CAT-022 podrá aprobarse cuando se acepte que:
 
 #### 37. Estado final de la propuesta
 
-| Tarea        | Estado      |
-| ------------ | ----------- |
-| AUTH-CAT-021 | APROBADA    |
-| AUTH-CAT-022 | APROBADA    |
-| AUTH-CAT-023 | NO INICIADA |
+| Tarea        | Estado   |
+| ------------ | -------- |
+| AUTH-CAT-021 | APROBADA |
+| AUTH-CAT-022 | APROBADA |
+| AUTH-CAT-023 | APROBADA |
+| AUTH-CAT-024 | APROBADA |
 
 No se avanza a AUTH-CAT-023 hasta recibir aprobación explícita.
 
 
-### [ ] AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual
+### ✅ AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual
 
-### [ ] AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+**Estado:** APROBADA  
+**Bloque:** BLOQUE D — Revisión contractual previa a datasets  
+**Naturaleza:** Revisión diferencial de matrices, capas individuales, denegaciones y filtros de dispositivo  
+**Implementación física:** No incluida  
+**Catálogo vigente de referencia:** 112 permisos canónicos activos  
+**Diff contractual recibido:** 29 claves candidatas nuevas y 1 clave activa candidata a sustitución  
+**Conjunto activo objetivo:** 140 permisos, sujeto a validación y congelación en AUTH-CAT-024  
+**Tarea anterior vigente:** AUTH-CAT-022 — APROBADA  
+**Tarea posterior reservada:** AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+
+Esta tarea no publica una versión del catálogo, no crea datasets físicos, no inserta asignaciones, no modifica Supabase, no altera RLS, RPC, aplicaciones, dispositivos desplegados ni migraciones.
+
+Su resultado es exclusivamente el **diff documental objetivo** que AUTH-CAT-024 deberá validar antes de congelar la versión canónica consumida posteriormente por AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026.
+
+---
+
+#### 1. Objetivo
+
+Revisar explícitamente las 29 claves candidatas aprobadas en AUTH-CAT-022 contra:
+
+- matrices de roles base;
+- matrices de roles operativos;
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones de carril y bloqueos transversales;
+- paquetes de capacidades de dispositivos compartidos;
+- asignaciones relacionadas con permisos legacy sustituidos.
+
+La tarea deberá determinar, para cada clave:
+
+1. qué rol recibe una concesión por matriz;
+2. en qué carril se incorpora;
+3. qué roles permanecen sin concesión y, por tanto, bajo denegación por defecto;
+4. qué excepciones individuales podrían otorgarla sin alterar matrices;
+5. cómo deberán revisarse denegaciones legacy relacionadas;
+6. desde qué paquetes de dispositivo podrá intentarse la acción;
+7. qué clave legacy deberá permanecer bloqueada, sustituirse o retirarse posteriormente.
+
+---
+
+#### 2. Decisión principal
+
+El diff contractual no se aplicará copiando permisos legacy ni ampliando roles por semejanza funcional.
+
+```text
+CLAVE NUEVA
+        ↓
+EVALUACIÓN POR PERMISO, ROL Y CARRIL
+        ↓
+CONCESIÓN DE MATRIZ EXPLÍCITA
+O
+EXCEPCIÓN INDIVIDUAL EXPLÍCITA
+O
+DENEGACIÓN POR DEFECTO
+        ↓
+FILTRO RESTRICTIVO DE DISPOSITIVO
+        ↓
+VALIDACIÓN Y CONGELACIÓN EN AUTH-CAT-024
+```
+
+Reglas definitivas de esta propuesta:
+
+```text
+PERMISO LEGACY AMPLIO
+≠
+TODAS SUS CLAVES RESULTANTES
+```
+
+```text
+PAQUETE DE DISPOSITIVO
+≠
+CONCESIÓN DE PERMISO
+```
+
+```text
+AUSENCIA DE CONCESIÓN
+→ DEFAULT_DENY
+```
+
+```text
+BASE_AND_OPERATIONAL
+→ MISMO ACTOR
+→ CARRIL BASE COMPLETO
++
+CARRIL OPERATIVO COMPLETO
+```
+
+```text
+DENY APLICABLE
+>
+ALLOW
+```
+
+Ninguna de las 29 claves se asigna por prefijo, herencia, alias uno-a-muchos, nombre de rol, aplicación abierta, dispositivo utilizado o existencia previa de un permiso legacy relacionado.
+
+---
+
+#### 3. Base normativa conservada
+
+Esta propuesta conserva sin cambios:
+
+- ADR-AUTH-001;
+- AUTH-MOD-001 a AUTH-MOD-020;
+- AUTH-CAT-001 a AUTH-CAT-022;
+- AUTH-RBAC-001 a AUTH-RBAC-023;
+- las cuatro modalidades de autorización;
+- la separación entre rol base y rol operativo;
+- la precedencia de denegaciones;
+- el alcance territorial y contractual por recurso;
+- los requisitos de turno, check-in y área;
+- la atribución obligatoria a un actor humano;
+- la reautenticación fuerte para acciones sensibles;
+- la segregación entre solicitante, aprobador y actor afectado;
+- la prohibición de usar dispositivos como fuente de autoridad;
+- la prohibición de reutilizar claves retiradas con otro significado;
+- la denegación por defecto para permisos nuevos o no asignados.
+
+Las decisiones de esta tarea son diferenciales. No reescriben las matrices completas de 112 permisos ni cambian concesiones ajenas al diff de AUTH-CAT-022.
+
+---
+
+#### 4. Alcance autorizado
+
+Esta tarea sí define:
+
+- adiciones propuestas a matrices base;
+- adiciones propuestas a matrices operativas;
+- retiro documental de la concesión operativa de `nexo.inventory.remissions.dispatch`;
+- compatibilidad de las claves nuevas con concesiones individuales;
+- revisión dirigida de denegaciones legacy;
+- actualización objetivo de siete paquetes de dispositivo;
+- condiciones de segregación y recurso aplicables al diff;
+- conteos de integridad del diff documental.
+
+Esta tarea no define:
+
+- filas físicas de `role_permissions` u otras tablas;
+- dataset definitivo de matrices;
+- migraciones o backfills;
+- aliases físicos;
+- fecha de retiro de claves legacy;
+- versión semántica definitiva;
+- hash contractual;
+- guards, Server Actions, RPC o políticas RLS;
+- interfaces finales de PULSO, NEXO, ORIGO o VISO;
+- procesos diferidos a roadmaps funcionales;
+- nuevos roles base u operativos;
+- nuevas plantillas físicas de dispositivo.
+
+---
+
+#### 5. Resultado ejecutivo del diff
+
+##### 5.1 Claves revisadas
+
+| Aplicación | Claves nuevas revisadas |
+| ---------- | ----------------------: |
+| PULSO      |                       9 |
+| NEXO       |                       5 |
+| ORIGO      |                       1 |
+| VISO       |                      14 |
+| **Total**  |                  **29** |
+
+##### 5.2 Decisiones diferenciales propuestas
+
+| Capa                                                          | Resultado propuesto |
+| ------------------------------------------------------------- | ------------------: |
+| Componentes de concesión añadidos a matrices base             |                  50 |
+| Componentes de concesión añadidos a matrices operativas       |                  29 |
+| Concesiones legacy retiradas de una matriz operativa objetivo |                   1 |
+| Concesiones individuales creadas automáticamente              |                   0 |
+| Denegaciones individuales creadas automáticamente             |                   0 |
+| Paquetes de dispositivo revisados                             |                   7 |
+| Expansiones automáticas desde permisos legacy                 |                   0 |
+
+Los conteos anteriores representan **decisiones documentales por rol, carril y clave**. No representan filas físicas ni autorizaciones desplegadas.
+
+---
+
+#### PULSO — VENTAS, PAGOS Y CAJA
+
+#### 6. Claves PULSO incluidas en el diff
+
+```text
+pulso.sales.orders.create
+pulso.payments.transactions.collect
+pulso.payments.transactions.reverse
+pulso.cash.sessions.start
+pulso.cash.sessions.close
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Se conservan las separaciones aprobadas:
+
+```text
+collect
+≠ reverse
+≠ refund
+```
+
+```text
+cancel order
+≠ create return
+≠ refund payment
+```
+
+```text
+start cash session
+≠ collect payment
+≠ close cash session
+≠ approve cash difference
+```
+
+La aprobación o resolución de diferencias de caja continúa fuera de este diff porque AUTH-CAT-022 no creó una clave madura para esa autoridad.
+
+---
+
+#### 7. Diff de matrices PULSO
+
+##### 7.1 Decisión por clave y carril
+
+| PermissionKey                         | Concesión por matriz base                   | Concesión por matriz operativa                                        | Roles revisados sin concesión por defecto                           |
+| ------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `pulso.sales.orders.create`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.payments.transactions.collect` | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.cash.sessions.start`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.cash.sessions.close`           | Ninguna; es `OPERATIONAL_ONLY`              | `cajero_satelite`, `operador_integral_satelite`                       | `gerencia_operativa`, demás roles operativos y todos los roles base |
+| `pulso.payments.transactions.reverse` | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.orders.cancel`           | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.returns.create`          | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.payments.transactions.refund`  | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+| `pulso.sales.discounts.apply`         | `propietario`, `gerente_general`, `gerente` | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` | `supervisor` y demás roles base u operativos no listados            |
+
+##### 7.2 Interpretación de las acciones ordinarias
+
+Las cuatro claves `OPERATIONAL_ONLY` se incorporan únicamente a las funciones que operan caja de forma ordinaria:
+
+```text
+cajero_satelite
+operador_integral_satelite
+```
+
+`gerencia_operativa` no recibe por matriz:
+
+```text
+orders.create
+transactions.collect
+cash.sessions.start
+cash.sessions.close
+```
+
+La coordinación operativa no sustituye el rol especialista de caja. Cuando una persona de gerencia deba cubrir materialmente la caja deberá:
+
+- asumir un rol operativo compatible; o
+- recibir una concesión individual operativa válida para la clave exacta.
+
+##### 7.3 Interpretación de las acciones sensibles
+
+Las cinco claves sensibles son `BASE_AND_OPERATIONAL`.
+
+El componente base se concede a:
+
+```text
+propietario
+OR
+gerente_general
+OR
+gerente dentro de su territorio asignado
+```
+
+El componente operativo se concede a:
+
+```text
+cajero_satelite
+OR
+operador_integral_satelite
+OR
+gerencia_operativa
+```
+
+La autorización final exige ambos componentes para el mismo actor, el mismo recurso y la misma solicitud.
+
+Ejemplo válido:
+
+```text
+ROL BASE gerente
++
+ROL OPERATIVO cajero_satelite
++
+TURNO Y CHECK-IN VÁLIDOS
++
+SEDE Y ÁREA DE CAJA COMPATIBLES
++
+AMBOS COMPONENTES DE pulso.payments.transactions.refund
++
+REAUTENTICACIÓN FUERTE
++
+RECURSO REEMBOLSABLE
+=
+DECISIÓN POSIBLE
+```
+
+Ejemplos inválidos:
+
+```text
+GERENTE SIN TURNO
+→ NO PUEDE REEMBOLSAR
+```
+
+```text
+CAJERO SIN COMPONENTE BASE
+→ NO PUEDE REEMBOLSAR
+```
+
+```text
+SUPERVISOR + CAJERO
+→ NO PUEDE REEMBOLSAR POR MATRIZ
+```
+
+`supervisor` permanece sin componentes base de doble condición. Una necesidad excepcional deberá resolverse mediante concesión individual base explícita, no ampliando su matriz completa.
+
+##### 7.4 Alcances y condiciones
+
+- `propietario` y `gerente_general` conservan alcance organizacional ordinario, sin incluir APP-REVIEW, demo o entornos aislados por inferencia.
+- `gerente` se limita a sedes y recursos dentro de su cobertura administrativa activa.
+- `cajero_satelite` exige turno, check-in y área de caja compatibles.
+- `operador_integral_satelite` exige sede habilitada como formato integrado y capacidad de caja activada para el área o punto.
+- `gerencia_operativa` se limita a sede, jornada y recurso activos.
+- Las cinco acciones sensibles exigen reautenticación fuerte, motivo, evidencia, versionado del recurso y auditoría.
+- Una sesión de caja pertenece a un actor y punto concretos; el dispositivo no permite reutilizar la sesión de otro actor.
+- Cerrar caja no aprueba automáticamente diferencias.
+- Cancelar una venta no revierte pagos, inventario o producción por implicación.
+- Crear una devolución no ejecuta automáticamente un reembolso.
+
+---
+
+#### NEXO — DIFERENCIAS, CUSTODIA Y TRÁNSITO
+
+#### 8. Claves NEXO incluidas en el diff
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+Se conserva la separación contractual:
+
+```text
+stock_counts.perform
+→ captura
+
+stock_count_variances.approve
+→ decisión de aprobación
+
+stock_count_variances.resolve
+→ registro de resolución
+
+inventory.adjustments.register
+→ ejecución posterior del ajuste autorizado
+```
+
+Y la secuencia logística:
+
+```text
+remissions.prepare
+→ accept_custody
+→ start_transit
+→ deliver
+→ receive
+```
+
+`deliver` registra el handoff del transportador. No autoriza `receive` ni crea inventario en el destino.
+
+---
+
+#### 9. Diff de matrices NEXO
+
+| PermissionKey                                  | Concesión por matriz base                   | Concesión por matriz operativa | Roles revisados sin concesión por defecto                               |
+| ---------------------------------------------- | ------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
+| `nexo.inventory.stock_count_variances.approve` | `propietario`, `gerente_general`, `gerente` | `gerencia_operativa`           | `supervisor`, `bodeguero` y demás roles no listados                     |
+| `nexo.inventory.stock_count_variances.resolve` | `propietario`, `gerente_general`, `gerente` | `gerencia_operativa`           | `supervisor`, `bodeguero` y demás roles no listados                     |
+| `nexo.inventory.remissions.accept_custody`     | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+| `nexo.inventory.remissions.start_transit`      | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+| `nexo.inventory.remissions.deliver`            | Ninguna; es `OPERATIONAL_ONLY`              | `conductor_logistica`          | `bodeguero`, receptores, `gerencia_operativa` y demás roles no listados |
+
+##### 9.1 Diferencias de conteo
+
+Las claves `approve` y `resolve` son `BASE_AND_OPERATIONAL`.
+
+El componente base representa autoridad administrativa sobre inventario dentro del territorio permitido.
+
+El componente operativo de `gerencia_operativa` confirma participación real en la sede, área y jornada donde existe la diferencia.
+
+`bodeguero` no recibe ninguna de las dos claves por matriz porque su función ordinaria comprende:
+
+- capturar el conteo;
+- aportar evidencia;
+- custodiar el inventario;
+- ejecutar movimientos autorizados mediante permisos separados.
+
+No comprende aprobar o resolver unilateralmente la diferencia que él mismo capturó.
+
+Regla mínima de segregación:
+
+```text
+ACTOR QUE CAPTURA
+≠
+ACTOR QUE APRUEBA O RESUELVE
+```
+
+Una política de proceso podrá exigir además que aprobación, resolución y ajuste correspondan a actores distintos. Esa decisión no se relaja mediante esta matriz.
+
+##### 9.2 Custodia y tránsito
+
+`conductor_logistica` recibe tres concesiones operativas exactas:
+
+```text
+accept_custody
+start_transit
+deliver
+```
+
+Condiciones:
+
+- remisión preparada y asignada al actor o segmento logístico;
+- bultos, LPN o cantidades declaradas disponibles;
+- turno y check-in válidos;
+- ruta y vehículo válidos cuando correspondan;
+- transición idempotente;
+- ubicación y hora auditables;
+- el actor no puede modificar cantidades declaradas mediante estas claves;
+- discrepancias no se convierten en ajustes silenciosos.
+
+`bodeguero` conserva `remissions.prepare` y los receptores conservan `remissions.receive` según sus matrices vigentes. Ninguna de esas capacidades se fusiona con las tres claves nuevas.
+
+`gerencia_operativa` no recibe custodia o tránsito por matriz. Una sustitución de emergencia deberá utilizar una concesión individual operativa exacta, con asignación logística, vigencia, ruta, vehículo y motivo documentados.
+
+---
+
+#### ORIGO — RECEPCIÓN COMERCIAL
+
+#### 10. Clave ORIGO incluida en el diff
+
+```text
+origo.procurement.receipts.register
+```
+
+La clave es `BASE_OR_OPERATIONAL`.
+
+Puede satisfacerse mediante un carril base completo o mediante un carril operativo completo. Los carriles no se mezclan entre sí para producir una autorización parcial.
+
+---
+
+#### 11. Diff de matrices ORIGO
+
+| PermissionKey                         | Concesión por matriz base                   | Concesión por matriz operativa | Roles revisados sin concesión por defecto                                               |
+| ------------------------------------- | ------------------------------------------- | ------------------------------ | --------------------------------------------------------------------------------------- |
+| `origo.procurement.receipts.register` | `propietario`, `gerente_general`, `gerente` | `bodeguero`                    | `supervisor`, `auxiliar_administrativa`, `gerencia_operativa` y demás roles no listados |
+
+##### 11.1 Carril base
+
+- `propietario` y `gerente_general` podrán registrar la recepción comercial dentro de la organización ordinaria autorizada.
+- `gerente` podrá hacerlo exclusivamente para órdenes, proveedores, documentos y sedes dentro de su cobertura administrativa.
+- `supervisor` no recibe esta mutación sensible por matriz.
+- `auxiliar_administrativa` no la recibe por matriz general. Cuando una persona tenga responsabilidad formal de recepción o abastecimiento deberá utilizarse una concesión individual base exacta y territorial.
+
+##### 11.2 Carril operativo
+
+`bodeguero` podrá registrar una recepción comercial cuando:
+
+- tenga turno y check-in válidos;
+- opere en la sede receptora;
+- la orden y el proveedor sean válidos;
+- las líneas y cantidades sean recibibles;
+- exista actor humano identificado;
+- el registro sea atómico e idempotente;
+- se conserve documento, condición, evidencia y auditoría.
+
+La concesión no autoriza:
+
+- crear o aprobar órdenes de compra;
+- modificar proveedores;
+- corregir o revertir recepciones;
+- registrar directamente stock;
+- omitir la entrada física propietaria de NEXO.
+
+Separación obligatoria:
+
+```text
+ORIGO
+→ recepción comercial
+
+NEXO
+→ entrada física y custodia de inventario
+```
+
+Una recepción comercial confirmada podrá originar posteriormente un evento de integración idempotente. La identidad técnica del adaptador no recibe esta concesión humana.
+
+---
+
+#### 12. Claves VISO incluidas en el diff
+
+##### 12.1 Concesiones individuales base
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+##### 12.2 Concesiones individuales operativas
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+##### 12.3 Denegaciones
+
+```text
+viso.authorization.denials.view
+viso.authorization.denials.create
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+Las 14 claves son `BASE_ONLY`, sensibles bajo `AUTHORIZATION_SECURITY`, no dependen de turno ni check-in y exigen reautenticación fuerte.
+
+---
+
+#### 13. Diff de matrices VISO
+
+| PermissionKey                                   | `propietario` | `gerente_general` | `gerente`   | `supervisor` | Otros roles base       |
+| ----------------------------------------------- | ------------- | ----------------- | ----------- | ------------ | ---------------------- |
+| `viso.authorization.base_grants.view`           | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.create`         | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.approve`        | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.suspend`        | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.base_grants.revoke`         | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.view`    | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.create`  | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.approve` | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.suspend` | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.operational_grants.revoke`  | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.view`               | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.create`             | Conceder      | Conceder          | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.approve`            | Conceder      | No conceder       | No conceder | No conceder  | No conceder por matriz |
+| `viso.authorization.denials.revoke`             | Conceder      | No conceder       | No conceder | No conceder  | No conceder por matriz |
+
+##### 13.1 Propietario
+
+`propietario` recibe las 14 claves como responsabilidad de gobierno global explícito, no como bypass por nombre de rol.
+
+La existencia simultánea de `create` y `approve` en su matriz no permite autoaprobación sobre el mismo registro.
+
+##### 13.2 Gerente general
+
+`gerente_general` recibe:
+
+- el ciclo completo de consulta, creación, aprobación, suspensión y revocación de concesiones individuales base;
+- el ciclo completo de consulta, creación, aprobación, suspensión y revocación de concesiones individuales operativas;
+- consulta y creación de propuestas de denegación.
+
+No recibe por matriz:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+Estas dos acciones pueden bloquear o restaurar autoridad a través de carriles completos y se reservan a propietario o a una autoridad de seguridad designada mediante concesión individual base.
+
+##### 13.3 Gerente, supervisor y otros roles
+
+`gerente`, `supervisor`, `auxiliar_administrativa`, `contador`, `marketing` y los oficios base legacy permanecen sin concesiones VISO de gobierno de autorización por matriz.
+
+Una responsabilidad delegada deberá representarse mediante una concesión individual base exacta, con:
+
+- alcance territorial explícito;
+- vigencia;
+- motivo;
+- solicitante y aprobador distintos cuando corresponda;
+- reautenticación fuerte;
+- auditoría;
+- prohibición de autoafectación.
+
+##### 13.4 Segregación obligatoria
+
+```text
+CREADOR DE PROPUESTA
+≠
+APROBADOR DEL MISMO REGISTRO
+```
+
+```text
+ACTOR AFECTADO
+≠
+APROBADOR DE SU PROPIA CONCESIÓN O DENEGACIÓN
+```
+
+```text
+REVOKE DENIAL
+≠
+GRANT PERMISSION
+```
+
+Revocar una denegación solo elimina ese bloqueo. La autorización resultante seguirá requiriendo una concesión válida por matriz o excepción.
+
+Las denegaciones no utilizan `suspend`. Terminan por expiración o revocación auditable.
+
+---
+
+####
+ CONCESIONES INDIVIDUALES
+
+#### 14. Actualización de concesiones individuales base
+
+Las 29 claves nuevas no crean concesiones individuales automáticamente.
+
+Podrán ser objetivo de una concesión individual base únicamente cuando su modalidad admita el carril base:
+
+| Familia          | Claves elegibles para concesión individual base                  | Condición                                                                                                        |
+| ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| PULSO sensible   | Las cinco claves `BASE_AND_OPERATIONAL`                          | La concesión aporta solo el componente base; no sustituye turno, rol operativo, check-in ni componente operativo |
+| NEXO diferencias | `stock_count_variances.approve`, `stock_count_variances.resolve` | Aporta solo el componente base y no puede concederse al capturador para su propia diferencia                     |
+| ORIGO recepción  | `origo.procurement.receipts.register`                            | Puede autorizar por carril base completo dentro del territorio concedido                                         |
+| VISO gobierno    | Las 14 claves `BASE_ONLY`                                        | Exige gobierno reforzado, alcance, reautenticación y segregación                                                 |
+| PULSO ordinario  | Ninguna de las cuatro claves `OPERATIONAL_ONLY`                  | Prohibidas en concesiones base                                                                                   |
+| NEXO custodia    | Ninguna de las tres claves `OPERATIONAL_ONLY`                    | Prohibidas en concesiones base                                                                                   |
+
+Reglas:
+
+1. Una concesión individual base no cambia la modalidad del permiso.
+2. Una concesión de una clave `BASE_AND_OPERATIONAL` no crea el componente operativo.
+3. Una concesión VISO no podrá aprobarse por el actor afectado.
+4. Una concesión global sensible exige justificación reforzada y no incorpora APP-REVIEW por inferencia.
+5. Los registros legacy actuales no se consideran concesiones canónicas nuevas.
+6. Las concesiones redundantes con una matriz vigente deberán rechazarse o justificarse como alcance más específico sin pretender restringir el allow de matriz.
+
+---
+
+#### 15. Actualización de concesiones individuales operativas
+
+Podrán ser objetivo de una concesión individual operativa las claves cuya modalidad admita el carril operativo:
+
+| Familia          | Claves elegibles                                                                      | Roles o funciones compatibles mínimas                                                              |
+| ---------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| PULSO ordinario  | `orders.create`, `transactions.collect`, `cash.sessions.start`, `cash.sessions.close` | `cajero_satelite`, `operador_integral_satelite` o cobertura temporal de caja expresamente aprobada |
+| PULSO sensible   | Las cinco claves `BASE_AND_OPERATIONAL`                                               | caja, operador integral o `gerencia_operativa`; la excepción aporta solo el componente operativo   |
+| NEXO diferencias | `stock_count_variances.approve`, `stock_count_variances.resolve`                      | `gerencia_operativa` o futura función de control de inventario expresamente aprobada               |
+| NEXO logística   | `accept_custody`, `start_transit`, `deliver`                                          | `conductor_logistica` o sustituto logístico asignado de forma explícita                            |
+| ORIGO recepción  | `origo.procurement.receipts.register`                                                 | `bodeguero` o futura función operativa de recepción aprobada                                       |
+| VISO gobierno    | Ninguna                                                                               | Las 14 claves son `BASE_ONLY`                                                                      |
+
+Toda concesión individual operativa exige:
+
+- permiso exacto;
+- actor concreto;
+- rol o familia operativa compatible;
+- turno vigente;
+- check-in cuando corresponda;
+- sede y área compatibles;
+- recurso dentro del alcance;
+- vigencia limitada;
+- motivo y solicitante;
+- aprobación;
+- auditoría.
+
+Para sustituciones logísticas de emergencia deberán registrarse además:
+
+- remisión o ruta;
+- vehículo cuando aplique;
+- segmento de custodia;
+- inicio y fin de vigencia;
+- motivo de sustitución.
+
+---
+
+#### 16. Prohibición de migración automática de excepciones legacy
+
+No se admite:
+
+```text
+CONCESIÓN DE pulso.pos.main
+→ CONCEDER 9 CLAVES PULSO
+```
+
+```text
+CONCESIÓN DE viso.staff.permissions.manage
+→ CONCEDER 14 CLAVES VISO
+```
+
+```text
+CONCESIÓN DE remissions.dispatch
+→ CONCEDER accept_custody + start_transit
+```
+
+Cada concesión legacy deberá clasificarse como:
+
+```text
+DISCARD
+REPLACE_WITH_EXACT_GRANT
+KEEP_LEGACY_TEMPORARILY
+REVIEW_REQUIRED
+```
+
+La clasificación física y el backfill se realizarán posteriormente en AUTH-RBAC-026 y BLOQUE R, después de congelar el catálogo.
+
+---
+
+#### 17. Tratamiento de las claves nuevas
+
+Las 29 claves comienzan sin denegaciones individuales creadas automáticamente.
+
+La ausencia de concesión ya produce:
+
+```text
+DEFAULT_DENY
+```
+
+No se crearán filas `deny` redundantes para todos los roles no asignados.
+
+Una denegación nueva deberá mantener el contrato aprobado:
+
+```text
+PERMISO EXACTO
+∩
+SUJETO
+∩
+CARRIL O BLOQUEO TRANSVERSAL
+∩
+ALCANCE
+∩
+VIGENCIA
+∩
+RECURSO
+```
+
+No existen denegaciones por prefijo, aplicación, familia implícita o wildcard.
+
+---
+
+#### 18. Revisión de denegaciones relacionadas con permisos legacy
+
+| Clave legacy relacionada             | Tratamiento                 | Claves que deberán revisarse individualmente si existe una denegación legacy con intención vigente   |
+| ------------------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pulso.pos.main`                     | No expandir automáticamente | Las nueve claves PULSO, una por una                                                                  |
+| `nexo.inventory.remissions.dispatch` | No expandir automáticamente | `accept_custody`, `start_transit` y, cuando la intención sea impedir transporte o entrega, `deliver` |
+| `viso.staff.permissions.manage`      | No expandir automáticamente | Las 14 claves VISO, una por una                                                                      |
+
+Reglas:
+
+1. Una denegación sobre una clave legacy no se convierte en una denegación por prefijo.
+2. Una denegación legacy puede reflejar una intención más amplia o más estrecha que la clave original; exige revisión humana.
+3. Mientras no se cree un allow nuevo, la clave permanece denegada por defecto aunque la denegación legacy no se migre.
+4. Si se propone una nueva concesión, la revisión deberá comprobar primero si existe una intención de bloqueo vigente relacionada.
+5. Una denegación aplicable prevalece sobre matrices y concesiones individuales.
+6. `LANE_DENY` afecta solo el carril declarado; `ACTOR_WIDE_DENY` bloquea ambos carriles para la clave exacta.
+7. Ningún flujo de VISO podrá aprobar una denegación que elimine a todos los actores ordinarios capaces de revocarla sin preservar un mecanismo de recuperación gobernado.
+
+---
+
+#### 19. Denegaciones sobre claves `BASE_AND_OPERATIONAL`
+
+Para una clave `BASE_AND_OPERATIONAL`:
+
+```text
+BASE_LANE_DENY
+→ impide completar el carril base
+→ DENEGAR
+```
+
+```text
+OPERATIONAL_LANE_DENY
+→ impide completar el carril operativo
+→ DENEGAR
+```
+
+```text
+ACTOR_WIDE_DENY
+→ bloquea ambos carriles
+→ DENEGAR
+```
+
+Una concesión individual en el otro carril no vence la denegación.
+
+---
+
+#### 20. Principio de actualización
+
+Los paquetes se actualizan como allowlists técnicas restrictivas.
+
+```text
+PERMISO DEL ACTOR
++
+CONTEXTO VÁLIDO
++
+RECURSO VÁLIDO
++
+CLAVE PERMITIDA POR EL PAQUETE
+=
+ACCIÓN POSIBLE
+```
+
+La inclusión en el paquete nunca crea permiso, rol, turno, check-in, área, componente base, componente operativo ni reautenticación.
+
+Los paquetes conservarán versión independiente y no se desplegarán hasta que AUTH-CAT-024 congele la versión del catálogo y las tareas posteriores generen los datasets correspondientes.
+
+---
+
+#### 21. Diff de paquetes
+
+##### 21.1 `pos_satellite`
+
+Agregar al filtro permitido:
+
+```text
+pulso.sales.orders.create
+pulso.payments.transactions.collect
+pulso.cash.sessions.start
+pulso.cash.sessions.close
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Condiciones:
+
+- las cuatro acciones ordinarias requieren actor `cajero_satelite` o excepción compatible;
+- las cinco acciones sensibles solo se habilitan cuando el mismo actor completa ambos carriles;
+- reautenticación fuerte no puede heredarse del actor anterior;
+- la sesión de caja no puede sobrevivir al cambio de actor;
+- el PIN ligero del dispositivo no satisface reautenticación fuerte.
+
+##### 21.2 `integrated_satellite`
+
+Agregar las mismas nueve claves PULSO.
+
+Condiciones adicionales:
+
+- la sede debe estar configurada como formato integrado;
+- el punto o área debe admitir operación de caja;
+- `operador_integral_satelite` no se convierte en superusuario;
+- ninguna capacidad de inventario, logística central o VISO se incorpora por la naturaleza integrada del dispositivo.
+
+##### 21.3 `operations_management_terminal`
+
+Agregar:
+
+```text
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+Condiciones:
+
+- el paquete solo permite presentar o intentar la acción;
+- PULSO y NEXO continúan exigiendo ambos carriles;
+- la terminal no presta el componente base a un actor operativo;
+- la terminal no presta el componente operativo a un actor administrativo;
+- toda acción exige reautenticación fuerte y recurso exacto.
+
+##### 21.4 `warehouse_kiosk`
+
+No agregar ninguna de las 29 claves por defecto.
+
+En particular, mantener excluidas:
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+`origo.procurement.receipts.register` solo podrá aparecer cuando el mismo dispositivo entre en un modo o paquete `procurement_reception` expresamente habilitado. El modo ordinario de bodega no adquiere autoridad comercial por coexistir en el mismo hardware.
+
+##### 21.5 `logistics_vehicle_terminal`
+
+Retirar del paquete objetivo:
+
+```text
+nexo.inventory.remissions.dispatch
+```
+
+Agregar:
+
+```text
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+Mantener excluido:
+
+```text
+nexo.inventory.remissions.receive
+```
+
+El terminal no autoriza al conductor a recibir por el destino, modificar cantidades declaradas o crear inventario.
+
+##### 21.6 `procurement_reception`
+
+Agregar:
+
+```text
+origo.procurement.receipts.register
+```
+
+Condiciones:
+
+- actor humano identificado;
+- carril base u operativo completo;
+- sede receptora y orden compatibles;
+- sesión estándar de actor;
+- documento y evidencia requeridos;
+- sin escritura directa de stock;
+- sin corrección o reversión por inferencia.
+
+##### 21.7 `management_terminal`
+
+Agregar las 14 claves `viso.authorization.*` definidas en esta tarea.
+
+Condiciones:
+
+- sesión administrativa personal;
+- prohibición de sesión anónima o principal técnico como actor;
+- reautenticación fuerte por acción sensible;
+- cierre de reautenticación al cambiar de actor;
+- segregación creador/aprobador;
+- alcance administrativo real;
+- no permitir estas acciones en simulación ejecutable;
+- las claves `denials.approve` y `denials.revoke` permanecen disponibles solo para actor con concesión real de propietario o seguridad designada.
+
+##### 21.8 Paquetes no listados
+
+Los paquetes y plantillas no incluidos en esta sección mantienen las 29 claves bajo denegación por defecto hasta una revisión contractual posterior.
+
+---
+
+#### TRANSICIÓN LEGACY
+
+#### 22. `pulso.pos.main`
+
+Estado objetivo conservado:
+
+```text
+catalog_status = deprecated
+assignment_status = blocked
+resolution = DECOMPOSE_REQUIRED
+```
+
+Decisiones:
+
+- no se reactiva;
+- no se incorpora a paquetes nuevos;
+- no se convierte en alias hacia las nueve claves;
+- sus asignaciones no se copian;
+- no se retira físicamente todavía porque existen operaciones PULSO inmaduras y consumidores pendientes.
+
+---
+
+#### 23. `viso.staff.permissions.manage`
+
+Estado objetivo conservado:
+
+```text
+catalog_status = deprecated
+authorization_status = blocked
+resolution = DEPRECATED_SPLIT_PENDING_MIGRATION
+```
+
+Decisiones:
+
+- no se sustituye por otro `manage`;
+- no se convierte en alias hacia 14 claves;
+- ninguna matriz o excepción legacy se copia;
+- los consumidores deberán migrarse a la acción exacta;
+- la clave solo podrá retirarse físicamente después de inventario de consumidores, migración, reconciliación y pruebas de segregación.
+
+---
+
+#### 24. `nexo.inventory.remissions.dispatch`
+
+Estado objetivo:
+
+```text
+catalog_status = deprecated
+assignment_status = blocked_for_new_assignments
+resolution = DEPRECATED_SPLIT_PENDING_MIGRATION
+replacement_set:
+  - nexo.inventory.remissions.accept_custody
+  - nexo.inventory.remissions.start_transit
+```
+
+Diff confirmado de matriz:
+
+```text
+conductor_logistica
+- nexo.inventory.remissions.dispatch
++ nexo.inventory.remissions.accept_custody
++ nexo.inventory.remissions.start_transit
++ nexo.inventory.remissions.deliver
+```
+
+`deliver` no es alias ni parte automática del `replacement_set`. Se incorpora porque AUTH-CAT-022 aprobó una tercera capacidad logística distinta para registrar el handoff.
+
+La eliminación física de `dispatch` se reserva para BLOQUE R después de migrar todos los consumidores y después de que AUTH-CAT-024 determine el impacto de versión.
+
+---
+
+#### 25. Conteo por matriz base
+
+| Rol base          |  PULSO |  NEXO | ORIGO |   VISO | Total de componentes añadidos |
+| ----------------- | -----: | ----: | ----: | -----: | ----------------------------: |
+| `propietario`     |      5 |     2 |     1 |     14 |                            22 |
+| `gerente_general` |      5 |     2 |     1 |     12 |                            20 |
+| `gerente`         |      5 |     2 |     1 |      0 |                             8 |
+| `supervisor`      |      0 |     0 |     0 |      0 |                             0 |
+| Otros roles base  |      0 |     0 |     0 |      0 |                             0 |
+| **Total**         | **15** | **6** | **3** | **26** |                        **50** |
+
+`supervisor` y los demás roles fueron revisados. El valor cero es una decisión explícita de no concesión por matriz, no una omisión.
+
+---
+
+#### 26. Conteo por matriz operativa
+
+| Rol operativo                |  PULSO |  NEXO | ORIGO | Total añadido | Retiro legacy |
+| ---------------------------- | -----: | ----: | ----: | ------------: | ------------: |
+| `cajero_satelite`            |      9 |     0 |     0 |             9 |             0 |
+| `operador_integral_satelite` |      9 |     0 |     0 |             9 |             0 |
+| `gerencia_operativa`         |      5 |     2 |     0 |             7 |             0 |
+| `conductor_logistica`        |      0 |     3 |     0 |             3 |  1 `dispatch` |
+| `bodeguero`                  |      0 |     0 |     1 |             1 |             0 |
+| Otros roles operativos       |      0 |     0 |     0 |             0 |             0 |
+| **Total**                    | **23** | **5** | **1** |        **29** |         **1** |
+
+Los componentes operativos de permisos `BASE_AND_OPERATIONAL` no autorizan por sí solos.
+
+---
+
+#### 27. Cobertura de las 29 claves
+
+- ✅ Las nueve claves PULSO fueron evaluadas por modalidad, rol base y rol operativo.
+- ✅ Las cinco claves NEXO fueron evaluadas por autoridad de inventario, custodia, tránsito y handoff.
+- ✅ La clave ORIGO fue evaluada en ambos carriles compatibles.
+- ✅ Las catorce claves VISO fueron evaluadas individualmente.
+- ✅ `propietario`, `gerente_general`, `gerente` y `supervisor` fueron revisados en el carril base.
+- ✅ `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa`, `conductor_logistica` y `bodeguero` fueron revisados en el carril operativo.
+- ✅ Las concesiones individuales base y operativas fueron actualizadas conceptualmente.
+- ✅ Las denegaciones legacy relacionadas quedaron sujetas a revisión exacta y no a expansión automática.
+- ✅ Siete paquetes de dispositivo recibieron un diff explícito.
+- ✅ Ningún permiso nuevo se concedió por nombre de rol, prefijo o dispositivo.
+- ✅ Ninguna clave VISO se incorporó al carril operativo.
+- ✅ Ninguna clave `OPERATIONAL_ONLY` se incorporó a una matriz base.
+- ✅ Ninguna clave `BASE_AND_OPERATIONAL` se presentó como autorización de un solo carril.
+
+---
+
+#### 28. Invariantes
+
+1. El catálogo vigente continúa formalmente en 112 permisos hasta AUTH-CAT-024.
+2. Las 29 claves permanecen candidatas hasta la congelación contractual.
+3. Esta tarea no crea asignaciones físicas.
+4. La ausencia de una concesión produce denegación por defecto.
+5. No se crean denies redundantes para representar ausencia de allow.
+6. Ninguna asignación legacy se copia a varias claves nuevas.
+7. Ningún alias puede apuntar a más de una clave.
+8. `pulso.pos.main` permanece bloqueado.
+9. `viso.staff.permissions.manage` permanece bloqueado hasta migración.
+10. `nexo.inventory.remissions.dispatch` no admite nuevas asignaciones objetivo.
+11. `collect`, `reverse` y `refund` permanecen separados.
+12. `cancel`, `return` y `refund` permanecen separados.
+13. Abrir, cobrar y cerrar caja permanecen separados.
+14. Aprobar o resolver diferencias no equivale a capturarlas ni ajustarlas.
+15. Aceptar custodia, iniciar tránsito, entregar y recibir permanecen separados.
+16. Registrar recepción comercial ORIGO no registra stock NEXO.
+17. Las claves VISO no dependen de turno ni check-in.
+18. Las claves VISO exigen reautenticación fuerte y segregación.
+19. Un paquete de dispositivo restringe, pero nunca amplía.
+20. Un actor técnico no recibe permisos humanos.
+21. Una sesión compartida no conserva identidad o reautenticación del actor anterior.
+22. APP-REVIEW y entornos aislados no se incorporan por inferencia.
+23. Toda acción sensible conserva motivo, evidencia, recurso, versión y auditoría.
+24. Las concesiones individuales no cambian la modalidad del permiso.
+25. Una denegación aplicable prevalece sobre matrices y excepciones.
+26. La simulación no ejecuta mutaciones sensibles.
+27. Ningún flujo diferido a roadmaps funcionales se introduce mediante este diff.
+28. No se fija versión, hash, fecha de retiro ni despliegue en esta tarea.
+
+---
+
+#### 29. Riesgos controlados
+
+##### Riesgo 1 — Convertir `pulso.pos.main` en nueve permisos para todos sus usuarios
+
+Control:
+
+```text
+CERO MIGRACIÓN AUTOMÁTICA
+```
+
+Solo se conceden las claves expresamente listadas por matriz o excepción.
+
+##### Riesgo 2 — Permitir acciones sensibles a cualquier cajero
+
+Control:
+
+- las cinco claves sensibles son `BASE_AND_OPERATIONAL`;
+- el carril operativo del cajero no basta;
+- se exige componente base, reautenticación, recurso y contexto.
+
+##### Riesgo 3 — Convertir `gerencia_operativa` en rol especialista universal
+
+Control:
+
+- no recibe ventas ordinarias, cobro ni sesiones de caja;
+- no recibe custodia o tránsito logístico;
+- solo recibe componentes operativos sensibles explícitos.
+
+##### Riesgo 4 — Permitir que bodega apruebe su propio conteo
+
+Control:
+
+- `bodeguero` no recibe `approve` ni `resolve`;
+- se exige autoridad base y componente operativo compatible;
+- el capturador no aprueba o resuelve su propia diferencia.
+
+##### Riesgo 5 — Permitir que el conductor reciba por el destino
+
+Control:
+
+- `deliver` registra handoff;
+- `receive` permanece excluido del rol y del terminal logístico.
+
+##### Riesgo 6 — Fusionar recepción comercial e inventario
+
+Control:
+
+- ORIGO registra la recepción comercial;
+- NEXO registra entrada y custodia física;
+- cada efecto conserva autorización propia.
+
+##### Riesgo 7 — Crear autoaprobación en VISO
+
+Control:
+
+- `create` y `approve` son claves separadas;
+- el creador no aprueba el mismo registro;
+- el actor afectado no aprueba su propia concesión o denegación.
+
+##### Riesgo 8 — Bloquear toda recuperación mediante denegaciones
+
+Control:
+
+- `denials.approve` y `denials.revoke` no se conceden por matriz a `gerente_general`;
+- se reservan a propietario o autoridad de seguridad individualmente designada;
+- toda política deberá preservar recuperación gobernada.
+
+##### Riesgo 9 — Confundir paquete de dispositivo con permiso
+
+Control:
+
+```text
+PACKAGE_ALLOWLIST
+≠
+RBAC_ALLOW
+```
+
+La decisión final continúa exigiendo actor, carril, contexto y recurso.
+
+##### Riesgo 10 — Publicar un cambio incompatible como versión menor
+
+Control:
+
+AUTH-CAT-024 deberá verificar si `nexo.inventory.remissions.dispatch` fue publicado como clave activa antes de decidir la versión definitiva.
+
+---
+
+#### 30. Impacto sobre tareas posteriores
+
+| Tarea         | Resultado recibido de AUTH-CAT-023                                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| AUTH-CAT-024  | Diff completo de 29 claves, matrices, excepciones, denegaciones, paquetes y transición legacy para validación, versionado y hash contractual |
+| AUTH-RBAC-024 | Decisiones de matriz base congeladas por la versión publicada                                                                                |
+| AUTH-RBAC-025 | Decisiones de matriz operativa congeladas por la versión publicada                                                                           |
+| AUTH-RBAC-026 | Contratos de concesiones individuales, denegaciones y revisión legacy                                                                        |
+| AUTH-RBAC-027 | Casos para validar que no exista acceso operativo global accidental                                                                          |
+| AUTH-RBAC-028 | Casos para confirmar que la administración base válida no dependa de turno o check-in                                                        |
+| BLOQUE E      | Combinación efectiva de carriles, contexto, recurso, denegaciones y razones de decisión                                                      |
+| BLOQUE E3     | Estructuras objetivo para matrices, concesiones, denegaciones, paquetes y auditoría                                                          |
+| BLOQUE R      | Migraciones, backfills, retiro legacy, reconciliación, compatibilidad y rollback                                                             |
+| BLOQUE QA     | Pruebas de roles, carriles, dispositivos, segregación, transición y denegaciones                                                             |
+
+AUTH-RBAC-024 a AUTH-RBAC-026 no deberán iniciarse con una versión provisional. Consumirán únicamente la versión congelada por AUTH-CAT-024.
+
+---
+
+#### 31. Criterios de aprobación
+
+AUTH-CAT-023 podrá aprobarse cuando se acepte expresamente que:
+
+1. las 29 claves candidatas fueron evaluadas por rol y carril;
+2. las acciones ordinarias PULSO se asignan únicamente a caja y operación integrada;
+3. las cinco acciones sensibles PULSO exigen componentes base y operativo para el mismo actor;
+4. `supervisor` no recibe nuevos componentes de doble condición por matriz;
+5. aprobar y resolver diferencias de conteo permanecen fuera de `bodeguero`;
+6. `gerencia_operativa` aporta el componente operativo para diferencias de conteo, dentro de contexto real;
+7. `conductor_logistica` sustituye `dispatch` por `accept_custody`, `start_transit` y `deliver` como capacidades separadas;
+8. `deliver` no concede `receive`;
+9. ORIGO registra la recepción comercial y NEXO conserva la entrada física;
+10. `propietario` recibe las 14 claves VISO de gobierno explícito;
+11. `gerente_general` recibe el ciclo de concesiones y la propuesta de denegaciones, pero no aprobación o revocación de denegaciones por matriz;
+12. los demás roles no reciben gobierno VISO por nombre o jerarquía implícita;
+13. las concesiones individuales pueden utilizar las claves nuevas solo en carriles compatibles;
+14. ninguna concesión legacy se expande automáticamente;
+15. las denegaciones legacy se revisan clave por clave y no por prefijo;
+16. los siete paquetes de dispositivo actúan únicamente como filtros restrictivos;
+17. `warehouse_kiosk` no incorpora autoridad para aprobar o resolver diferencias;
+18. `logistics_vehicle_terminal` elimina `dispatch` e incorpora las tres acciones logísticas exactas;
+19. `management_terminal` exige actor administrativo y reautenticación fuerte para VISO;
+20. `pulso.pos.main` y `viso.staff.permissions.manage` permanecen bloqueados;
+21. `nexo.inventory.remissions.dispatch` queda destinado a retiro controlado después de migrar consumidores;
+22. no se publica todavía el número de versión ni el hash contractual;
+23. no se implementa código, Supabase, datasets ni migraciones;
+24. AUTH-CAT-024 permanece reservada hasta aprobación explícita de esta tarea.
+
+---
+
+#### 32. Estado final de la propuesta
+
+| Tarea        | Estado      |
+| ------------ | ----------- |
+| AUTH-CAT-022 | APROBADA    |
+| AUTH-CAT-023 | APROBADA    |
+| AUTH-CAT-024 | NO INICIADA |
+
+No se avanza a AUTH-CAT-024 hasta recibir aprobación explícita de AUTH-CAT-023.
+
+
+### ✅ AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE D — Revisión contractual previa a datasets  
+**Naturaleza:** Validación integral, publicación contractual y congelación de versión  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-CAT-023 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-024 — Definir dataset canónico de matriz base  
+**Catálogo contractual de salida:** `vento.authorization@1.0.0`  
+**Schema contractual de referencia:** `1.0.0`  
+**Permisos activos congelados:** 140  
+**Aplicaciones registradas:** 10  
+**Huella contractual propuesta:** `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`
+
+Esta tarea valida y congela el contrato documental que deberán consumir
+AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026.
+
+No crea todavía los archivos físicos de `@vento/contracts`, no publica un
+paquete, no modifica Supabase, no inserta datasets, no altera RLS, RPC,
+aplicaciones, dispositivos desplegados ni migraciones.
+
+La aprobación de esta tarea publicará una **versión contractual documental
+inmutable**. La publicación técnica del catálogo físico continuará reservada
+para la implementación correspondiente y deberá demostrar equivalencia exacta
+con esta versión.
+
+---
+
+#### 1. Objetivo
+
+Cerrar la revisión contractual iniciada en AUTH-CAT-020 y confirmar que:
+
+1. las brechas maduras fueron transformadas en claves atómicas;
+2. las claves nuevas poseen clasificación contractual completa;
+3. las matrices, excepciones, denegaciones y paquetes afectados fueron
+   revisados mediante diff;
+4. el conjunto activo resultante es exacto, único y reproducible;
+5. las claves legacy no se expanden automáticamente;
+6. los datasets posteriores recibirán una versión y una huella inmutables;
+7. ninguna decisión documental se confunde con implementación física.
+
+Flujo de cierre:
+
+```text
+AUTH-CAT-020
+→ consolidación de brechas
+
+AUTH-CAT-021
+→ clasificación de madurez
+
+AUTH-CAT-022
+→ 29 claves atómicas nuevas
+→ 1 clave activa destinada a sustitución
+
+AUTH-CAT-023
+→ diff de matrices
+→ excepciones
+→ denegaciones
+→ paquetes de dispositivo
+
+AUTH-CAT-024
+→ validación integral
+→ versión contractual
+→ huella contractual
+→ congelación
+→ apertura de datasets
+```
+
+---
+
+#### 2. Separación entre publicación contractual y publicación física
+
+Se establecen dos planos distintos.
+
+##### 2.1 Publicación contractual
+
+Ocurre mediante la aprobación expresa de esta tarea.
+
+Produce:
+
+- número de versión;
+- conjunto exacto de permisos activos;
+- estados legacy y retirados;
+- diff contractual aprobado;
+- decisiones de matrices y paquetes;
+- huella documental reproducible;
+- puerta de entrada para datasets.
+
+Estado después de aprobación:
+
+```text
+contractual_status = PUBLISHED
+contractual_catalog_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 2.2 Publicación física
+
+Ocurrirá posteriormente cuando se implementen y validen:
+
+- `manifest.json`;
+- `applications.json`;
+- `permissions.json`;
+- `aliases.json`;
+- `legacy-permissions.json`;
+- `retired-permissions.json`;
+- `resource-contracts.json`;
+- JSON Schema;
+- tipos derivados;
+- checksums;
+- changelog;
+- pruebas contractuales;
+- `current.json`;
+- paquete `@vento/contracts/authorization`.
+
+Estado actual:
+
+```text
+physical_catalog_status = NOT_IMPLEMENTED
+physical_catalog_hash = NOT_GENERATED
+package_publication_status = NOT_PUBLISHED
+```
+
+Regla:
+
+```text
+PUBLICACIÓN CONTRACTUAL
+≠
+PUBLICACIÓN FÍSICA
+```
+
+La publicación física no podrá cambiar el contenido semántico congelado.
+Si detecta una inconsistencia contractual, deberá detenerse y producir una
+nueva tarea y versión; no podrá corregir silenciosamente `1.0.0`.
+
+---
+
+#### 3. Decisión de versión
+
+La versión contractual inicial se congela como:
+
+```text
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+schema_version = 1.0.0
+```
+
+Justificación:
+
+1. AUTH-CAT-017 reservó `1.0.0` para la primera publicación.
+2. No existe una publicación física anterior de `1.0.0`.
+3. La fase vigente continúa siendo exclusivamente documental.
+4. El conjunto intermedio de 112 permisos nunca fue publicado físicamente
+   como versión inmutable.
+5. Por tanto, la primera versión podrá nacer directamente con 140 permisos
+   activos.
+6. No corresponde publicar primero una versión de 112 permisos para luego
+   retirarla artificialmente.
+7. `nexo.inventory.remissions.dispatch` no formará parte del conjunto activo
+   inicial; permanecerá como deuda legacy de migración.
+
+Regla definitiva:
+
+```text
+PRIMERA PUBLICACIÓN CONTRACTUAL
+→ 1.0.0
+→ 140 PERMISOS ACTIVOS
+```
+
+No se utiliza `1.1.0` porque no existe una `1.0.0` publicada previa.
+
+No se utiliza `2.0.0` porque la incompatibilidad de retirar `dispatch`
+solo aplicaría frente a una versión publicada anterior que lo hubiera
+incluido como activo.
+
+---
+
+#### 4. Entradas normativas validadas
+
+La versión queda respaldada por:
+
+- ADR-AUTH-001;
+- AUTH-MOD-001 a AUTH-MOD-020;
+- AUTH-CAT-001 a AUTH-CAT-024;
+- AUTH-RBAC-001 a AUTH-RBAC-023;
+- catálogo de 112 permisos aprobado antes de la revisión contractual;
+- 29 claves aprobadas en AUTH-CAT-022;
+- diff de matrices, excepciones, denegaciones y paquetes aprobado en
+  AUTH-CAT-023.
+
+No se incorpora ninguna decisión pendiente de:
+
+- E1;
+- E2;
+- E3;
+- E4;
+- E5;
+- roadmaps funcionales;
+- auditorías futuras de aplicaciones;
+- implementación física.
+
+Las capacidades futuras descubiertas después de esta congelación requerirán
+otra `catalog_version`.
+
+---
+
+#### 5. Resultado de conteos
+
+##### 5.1 Evolución del conjunto activo
+
+| Concepto                                    | Cantidad |
+| ------------------------------------------- | -------: |
+| Permisos activos de referencia              |      112 |
+| Claves nuevas aprobadas                     |       29 |
+| Clave retirada del conjunto activo objetivo |        1 |
+| **Permisos activos congelados**             |  **140** |
+
+Cálculo:
+
+```text
+112
++ 29
+- 1
+= 140
+```
+
+La clave retirada del conjunto activo es:
+
+```text
+nexo.inventory.remissions.dispatch
+```
+
+##### 5.2 Distribución por aplicación
+
+| Aplicación | Permisos activos en `1.0.0` |
+| ---------- | --------------------------: |
+| `shell`    |                           1 |
+| `anima`    |                          10 |
+| `aura`     |                           1 |
+| `fogo`     |                           6 |
+| `nexo`     |                          67 |
+| `numera`   |                           6 |
+| `origo`    |                           6 |
+| `pass`     |                           1 |
+| `pulso`    |                          11 |
+| `viso`     |                          31 |
+| **Total**  |                     **140** |
+
+##### 5.3 Integridad
+
+- 140 claves activas.
+- 140 claves únicas.
+- 10 aplicaciones.
+- Toda clave activa pertenece a una aplicación registrada.
+- Ninguna clave activa aparece simultáneamente como legacy o retirada.
+- Las 29 claves nuevas aparecen exactamente una vez.
+- `nexo.inventory.remissions.dispatch` no aparece como activa.
+- `pulso.pos.main` no aparece como activa.
+- `viso.staff.permissions.manage` no aparece como activa.
+- No se crean aliases uno-a-muchos.
+- No existen concesiones implícitas derivadas de la publicación.
+
+---
+
+#### 6. Claves agregadas en `1.0.0`
+
+##### 6.1 PULSO — 9
+
+```text
+pulso.cash.sessions.close
+pulso.cash.sessions.start
+pulso.payments.transactions.collect
+pulso.payments.transactions.refund
+pulso.payments.transactions.reverse
+pulso.sales.discounts.apply
+pulso.sales.orders.cancel
+pulso.sales.orders.create
+pulso.sales.returns.create
+```
+
+##### 6.2 NEXO — 5
+
+```text
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.deliver
+nexo.inventory.remissions.start_transit
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+##### 6.3 ORIGO — 1
+
+```text
+origo.procurement.receipts.register
+```
+
+##### 6.4 VISO — 14
+
+```text
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.create
+viso.authorization.base_grants.revoke
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.view
+viso.authorization.denials.approve
+viso.authorization.denials.create
+viso.authorization.denials.revoke
+viso.authorization.denials.view
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.revoke
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.view
+```
+
+---
+
+#### 7. Estado de claves legacy
+
+##### 7.1 Inventario legacy bloqueado
+
+La versión contractual reconoce 22 claves legacy amplias o sustituidas:
+
+```text
+fogo.production.recipes.manage
+nexo.cost_centers.manage
+nexo.internal_prices.manage
+nexo.inventory.remissions.dispatch
+nexo.settings.categories.manage
+nexo.settings.remissions.manage
+nexo.settings.sites.manage
+nexo.settings.supply_routes.manage
+nexo.settings.units.manage
+numera.cost_centers.manage
+numera.expenses.manage
+origo.suppliers.manage
+pulso.pos.main
+viso.app_navigation.manage
+viso.employee_operational_profiles.manage
+viso.menu.images.manage
+viso.operational_points.manage
+viso.site_operational_roles.manage
+viso.staff.documents.manage
+viso.staff.employee_photos.manage
+viso.staff.manage
+viso.staff.permissions.manage
+```
+
+Reglas:
+
+- no son permisos activos;
+- no admiten asignaciones nuevas;
+- no aparecen en datasets de concesiones canónicas;
+- no se expanden automáticamente;
+- pueden conservarse físicamente solo para compatibilidad, telemetría,
+  inventario de consumidores y migración;
+- su retiro físico exige BLOQUE R, pruebas y rollback.
+
+##### 7.2 Claves sustituidas relevantes
+
+| Clave legacy                         | Estado                               | Reemplazo contractual                                                              |
+| ------------------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------- |
+| `pulso.pos.main`                     | `deprecated_incomplete_split`        | Nueve claves PULSO maduras y futuros permisos diferidos                            |
+| `viso.staff.permissions.manage`      | `deprecated_split_pending_migration` | 14 claves VISO                                                                     |
+| `nexo.inventory.remissions.dispatch` | `deprecated_split_pending_migration` | `accept_custody` + `start_transit`; `deliver` es capacidad adicional independiente |
+
+Ninguna forma un alias uno-a-muchos.
+
+---
+
+#### 8. Permisos técnicos retirados
+
+Las siguientes 14 claves permanecen retiradas y no pueden reactivarse:
+
+```text
+nexo.code.view
+nexo.edit.view
+nexo.login.view
+nexo.new.view
+nexo.no_access.view
+nexo.open.view
+nexo.page_tsx.view
+nexo.quick.view
+nexo.scanner.view
+nexo.settings.view
+nexo.setup.view
+nexo.slug.view
+origo.login.view
+origo.no_access.view
+```
+
+Regla:
+
+```text
+PERMISO TÉCNICO RETIRADO SOLICITADO
+→ DENEGAR
+→ REGISTRAR DIAGNÓSTICO
+→ NO REACTIVAR POR FALLBACK
+```
+
+---
+
+#### 9. Validación del diff de matrices
+
+AUTH-CAT-023 dejó congeladas las siguientes cantidades documentales:
+
+| Capa                                                      | Resultado |
+| --------------------------------------------------------- | --------: |
+| Componentes de concesión añadidos a matrices base         |        50 |
+| Componentes añadidos a matrices operativas                |        29 |
+| Concesiones legacy retiradas de matriz operativa objetivo |         1 |
+| Concesiones individuales automáticas                      |         0 |
+| Denegaciones individuales automáticas                     |         0 |
+| Paquetes de dispositivo revisados                         |         7 |
+
+Validaciones:
+
+- PULSO ordinario se concede solo mediante carril operativo compatible.
+- Las cinco acciones sensibles PULSO requieren `BASE_AND_OPERATIONAL`.
+- NEXO separa captura, aprobación, resolución y ajuste.
+- `bodeguero` no aprueba ni resuelve su propia diferencia por matriz.
+- `conductor_logistica` recibe custodia, tránsito y entrega por claves
+  separadas.
+- `deliver` no concede `receive`.
+- ORIGO registra recepción comercial; NEXO conserva entrada física.
+- Las 14 claves VISO son `BASE_ONLY`.
+- Las denegaciones legacy se revisan clave por clave.
+- Los paquetes de dispositivo restringen, pero nunca conceden.
+- Los permisos nuevos no se asignan por prefijo, alias, rol, aplicación o
+  dispositivo.
+
+---
+
+#### 10. Congelación de decisiones de matrices
+
+Los datasets posteriores deberán reproducir exactamente el diff aprobado.
+
+##### 10.1 Matriz base
+
+AUTH-RBAC-024 deberá partir de:
+
+```text
+base_grant_components_added = 50
+```
+
+No podrá:
+
+- incorporar componentes nuevos sin una nueva revisión contractual;
+- conceder permisos `OPERATIONAL_ONLY` a roles base;
+- utilizar roles legacy para reconstruir permisos amplios;
+- otorgar VISO por jerarquía implícita;
+- conceder a `supervisor` componentes no aprobados.
+
+##### 10.2 Matriz operativa
+
+AUTH-RBAC-025 deberá partir de:
+
+```text
+operational_grant_components_added = 29
+operational_legacy_grants_removed = 1
+```
+
+La concesión retirada es:
+
+```text
+conductor_logistica
+- nexo.inventory.remissions.dispatch
+```
+
+Y se sustituye documentalmente por:
+
+```text
+conductor_logistica
++ nexo.inventory.remissions.accept_custody
++ nexo.inventory.remissions.start_transit
++ nexo.inventory.remissions.deliver
+```
+
+##### 10.3 Excepciones y denegaciones
+
+AUTH-RBAC-026 deberá partir de:
+
+```text
+automatic_individual_grants = 0
+automatic_denials = 0
+```
+
+Toda excepción o denegación deberá:
+
+- usar la clave exacta;
+- respetar modalidad y carril;
+- definir sujeto, alcance, vigencia y recurso;
+- conservar aprobación y auditoría;
+- evitar expansiones desde claves legacy.
+
+---
+
+#### 11. Congelación de paquetes de dispositivo
+
+Los siete paquetes revisados son:
+
+```text
+pos_satellite
+integrated_satellite
+operations_management_terminal
+warehouse_kiosk
+logistics_vehicle_terminal
+procurement_reception
+management_terminal
+```
+
+Reglas para datasets y configuraciones posteriores:
+
+1. cada paquete deberá declarar `catalog_version = 1.0.0`;
+2. cada paquete deberá declarar la huella contractual de esta tarea;
+3. ninguna plantilla o instancia puede agregar una clave fuera del paquete;
+4. ninguna inclusión crea autorización;
+5. `warehouse_kiosk` no incorpora las nuevas autoridades sensibles;
+6. `logistics_vehicle_terminal` excluye `dispatch` e incluye las tres claves
+   logísticas nuevas;
+7. `procurement_reception` incluye únicamente la capacidad ORIGO aprobada;
+8. `management_terminal` puede presentar las 14 claves VISO, pero la
+   decisión depende del actor real;
+9. las versiones específicas de cada paquete se definirán en su artefacto
+   correspondiente y no sustituyen `catalog_version`.
+
+---
+
+#### 12. Huella contractual
+
+##### 12.1 Campo publicado
+
+```text
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+Esta huella identifica el contenido semántico congelado para datasets.
+
+No es el futuro `catalog_hash` compuesto de los archivos físicos.
+
+##### 12.2 Algoritmo
+
+La huella se calcula sobre el bloque canónico de la sección 12.4 mediante:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- una asignación por línea;
+- sin espacios finales;
+- listas ordenadas lexicográficamente;
+- campos en el orden publicado;
+- un único salto LF al final;
+- SHA-256 sobre los bytes resultantes;
+- sin fecha, hora ni estado mutable dentro del payload.
+
+Resultado esperado:
+
+```text
+687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 12.3 Separación de hashes
+
+```text
+contract_release_hash
+→ identifica la decisión documental congelada
+
+catalog_hash
+→ identificará posteriormente los archivos físicos publicados
+
+contract_hash
+→ identificará el contrato de recurso usado por una decisión concreta
+```
+
+La implementación física deberá registrar su `catalog_hash`, pero además
+deberá declarar que implementa:
+
+```text
+catalog_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+##### 12.4 Payload canónico de la publicación
+
+```text
+catalog_id=vento.authorization
+catalog_version=1.0.0
+schema_version=1.0.0
+release_kind=contractual_snapshot
+application_count=10
+permission_count=140
+legacy_blocked_count=22
+retired_technical_count=14
+base_grant_components_added=50
+operational_grant_components_added=29
+operational_legacy_grants_removed=1
+automatic_individual_grants=0
+automatic_denials=0
+device_packages_reviewed=7
+physical_changes_allowed=false
+next_dataset_task=AUTH-RBAC-024
+source_task=ADR-AUTH-001
+source_task=AUTH-CAT-001..AUTH-CAT-024
+source_task=AUTH-RBAC-001..AUTH-RBAC-023
+application_permission_count=anima:10
+application_permission_count=aura:1
+application_permission_count=fogo:6
+application_permission_count=nexo:67
+application_permission_count=numera:6
+application_permission_count=origo:6
+application_permission_count=pass:1
+application_permission_count=pulso:11
+application_permission_count=shell:1
+application_permission_count=viso:31
+active_permission=anima.access
+active_permission=anima.attendance.shifts.cancel
+active_permission=anima.attendance.shifts.create
+active_permission=anima.attendance.shifts.update
+active_permission=anima.workforce.employee_documents.delete
+active_permission=anima.workforce.employee_documents.upload
+active_permission=anima.workforce.employee_documents.view
+active_permission=anima.workforce.employee_photos.upload
+active_permission=anima.workforce.staff_invitations.create
+active_permission=anima.workforce.team_members.view
+active_permission=aura.access
+active_permission=fogo.access
+active_permission=fogo.production.batches.create
+active_permission=fogo.production.batches.view
+active_permission=fogo.production.orders.view
+active_permission=fogo.production.recipe_book.view
+active_permission=fogo.production.recipes.view
+active_permission=nexo.access
+active_permission=nexo.analytics.internal_reports.view
+active_permission=nexo.analytics.margin_reports.view
+active_permission=nexo.assets.counts.view
+active_permission=nexo.assets.groups.view
+active_permission=nexo.assets.items.create
+active_permission=nexo.assets.items.view
+active_permission=nexo.catalog.categories.view
+active_permission=nexo.catalog.presentations.view
+active_permission=nexo.catalog.products.create
+active_permission=nexo.catalog.products.view
+active_permission=nexo.catalog.request_policies.view
+active_permission=nexo.catalog.units.view
+active_permission=nexo.finance.cost_centers.view
+active_permission=nexo.finance.internal_invoice_amounts.view
+active_permission=nexo.finance.internal_invoices.cancel
+active_permission=nexo.finance.internal_invoices.generate
+active_permission=nexo.finance.internal_invoices.issue
+active_permission=nexo.finance.internal_invoices.view
+active_permission=nexo.finance.internal_prices.view
+active_permission=nexo.finance.internal_variances.approve
+active_permission=nexo.finance.internal_variances.resolve
+active_permission=nexo.finance.internal_variances.view
+active_permission=nexo.inventory.adjustments.register
+active_permission=nexo.inventory.adjustments.view
+active_permission=nexo.inventory.entries.override
+active_permission=nexo.inventory.entries.register
+active_permission=nexo.inventory.entries.view
+active_permission=nexo.inventory.initial_counts.view
+active_permission=nexo.inventory.location_assignments.assign
+active_permission=nexo.inventory.location_catalog.update
+active_permission=nexo.inventory.locations.view
+active_permission=nexo.inventory.lpns.view
+active_permission=nexo.inventory.movements.view
+active_permission=nexo.inventory.production_batches.view
+active_permission=nexo.inventory.remissions.accept_custody
+active_permission=nexo.inventory.remissions.cancel
+active_permission=nexo.inventory.remissions.deliver
+active_permission=nexo.inventory.remissions.prepare
+active_permission=nexo.inventory.remissions.receive
+active_permission=nexo.inventory.remissions.request
+active_permission=nexo.inventory.remissions.start_transit
+active_permission=nexo.inventory.remissions.update
+active_permission=nexo.inventory.remissions.view
+active_permission=nexo.inventory.stock.view
+active_permission=nexo.inventory.stock_count_variances.approve
+active_permission=nexo.inventory.stock_count_variances.resolve
+active_permission=nexo.inventory.stock_counts.perform
+active_permission=nexo.inventory.stock_counts.view
+active_permission=nexo.inventory.stock_validations.perform
+active_permission=nexo.inventory.storage_positions.view
+active_permission=nexo.inventory.transfers.create
+active_permission=nexo.inventory.transfers.view
+active_permission=nexo.inventory.warehouse_operations.view
+active_permission=nexo.inventory.withdrawals.register
+active_permission=nexo.inventory.withdrawals.view
+active_permission=nexo.inventory.zones.view
+active_permission=nexo.logistics.driver_operations.view
+active_permission=nexo.logistics.fulfillment.view
+active_permission=nexo.logistics.fulfillment_routes.view
+active_permission=nexo.logistics.operations.view
+active_permission=nexo.logistics.operations_board.view
+active_permission=nexo.logistics.supply_routes.view
+active_permission=nexo.printing.jobs.view
+active_permission=nexo.printing.templates.update
+active_permission=nexo.settings.remission_policies.view
+active_permission=nexo.settings.sites.view
+active_permission=numera.access
+active_permission=numera.analytics.break_even.view
+active_permission=numera.analytics.financial_reports.view
+active_permission=numera.analytics.profitability.view
+active_permission=numera.finance.cost_centers.view
+active_permission=numera.finance.expenses.view
+active_permission=origo.access
+active_permission=origo.catalog.product_reviews.view
+active_permission=origo.procurement.purchase_orders.view
+active_permission=origo.procurement.receipts.register
+active_permission=origo.procurement.receipts.view
+active_permission=origo.procurement.suppliers.view
+active_permission=pass.access
+active_permission=pulso.access
+active_permission=pulso.cash.sessions.close
+active_permission=pulso.cash.sessions.start
+active_permission=pulso.delivery.deliveries.override
+active_permission=pulso.payments.transactions.collect
+active_permission=pulso.payments.transactions.refund
+active_permission=pulso.payments.transactions.reverse
+active_permission=pulso.sales.discounts.apply
+active_permission=pulso.sales.orders.cancel
+active_permission=pulso.sales.orders.create
+active_permission=pulso.sales.returns.create
+active_permission=shell.access
+active_permission=viso.access
+active_permission=viso.authorization.audit_logs.view
+active_permission=viso.authorization.base_grants.approve
+active_permission=viso.authorization.base_grants.create
+active_permission=viso.authorization.base_grants.revoke
+active_permission=viso.authorization.base_grants.suspend
+active_permission=viso.authorization.base_grants.view
+active_permission=viso.authorization.context_simulations.view
+active_permission=viso.authorization.denials.approve
+active_permission=viso.authorization.denials.create
+active_permission=viso.authorization.denials.revoke
+active_permission=viso.authorization.denials.view
+active_permission=viso.authorization.operational_grants.approve
+active_permission=viso.authorization.operational_grants.create
+active_permission=viso.authorization.operational_grants.revoke
+active_permission=viso.authorization.operational_grants.suspend
+active_permission=viso.authorization.operational_grants.view
+active_permission=viso.catalog.commercial_categories.view
+active_permission=viso.content.content_blocks.view
+active_permission=viso.content.menu.view
+active_permission=viso.content.website_content.view
+active_permission=viso.delivery.rates.view
+active_permission=viso.finance.accounting.view
+active_permission=viso.loyalty.customers.view
+active_permission=viso.loyalty.products.view
+active_permission=viso.organization.businesses.view
+active_permission=viso.platform.app_updates.view
+active_permission=viso.workforce.employees.view
+active_permission=viso.workforce.schedules.view
+active_permission=viso.workforce.staff_calendar.view
+active_permission=viso.workforce.vacancies.view
+added_permission=nexo.inventory.remissions.accept_custody
+added_permission=nexo.inventory.remissions.deliver
+added_permission=nexo.inventory.remissions.start_transit
+added_permission=nexo.inventory.stock_count_variances.approve
+added_permission=nexo.inventory.stock_count_variances.resolve
+added_permission=origo.procurement.receipts.register
+added_permission=pulso.cash.sessions.close
+added_permission=pulso.cash.sessions.start
+added_permission=pulso.payments.transactions.collect
+added_permission=pulso.payments.transactions.refund
+added_permission=pulso.payments.transactions.reverse
+added_permission=pulso.sales.discounts.apply
+added_permission=pulso.sales.orders.cancel
+added_permission=pulso.sales.orders.create
+added_permission=pulso.sales.returns.create
+added_permission=viso.authorization.base_grants.approve
+added_permission=viso.authorization.base_grants.create
+added_permission=viso.authorization.base_grants.revoke
+added_permission=viso.authorization.base_grants.suspend
+added_permission=viso.authorization.base_grants.view
+added_permission=viso.authorization.denials.approve
+added_permission=viso.authorization.denials.create
+added_permission=viso.authorization.denials.revoke
+added_permission=viso.authorization.denials.view
+added_permission=viso.authorization.operational_grants.approve
+added_permission=viso.authorization.operational_grants.create
+added_permission=viso.authorization.operational_grants.revoke
+added_permission=viso.authorization.operational_grants.suspend
+added_permission=viso.authorization.operational_grants.view
+removed_from_active=nexo.inventory.remissions.dispatch
+legacy_blocked_permission=fogo.production.recipes.manage
+legacy_blocked_permission=nexo.cost_centers.manage
+legacy_blocked_permission=nexo.internal_prices.manage
+legacy_blocked_permission=nexo.inventory.remissions.dispatch
+legacy_blocked_permission=nexo.settings.categories.manage
+legacy_blocked_permission=nexo.settings.remissions.manage
+legacy_blocked_permission=nexo.settings.sites.manage
+legacy_blocked_permission=nexo.settings.supply_routes.manage
+legacy_blocked_permission=nexo.settings.units.manage
+legacy_blocked_permission=numera.cost_centers.manage
+legacy_blocked_permission=numera.expenses.manage
+legacy_blocked_permission=origo.suppliers.manage
+legacy_blocked_permission=pulso.pos.main
+legacy_blocked_permission=viso.app_navigation.manage
+legacy_blocked_permission=viso.employee_operational_profiles.manage
+legacy_blocked_permission=viso.menu.images.manage
+legacy_blocked_permission=viso.operational_points.manage
+legacy_blocked_permission=viso.site_operational_roles.manage
+legacy_blocked_permission=viso.staff.documents.manage
+legacy_blocked_permission=viso.staff.employee_photos.manage
+legacy_blocked_permission=viso.staff.manage
+legacy_blocked_permission=viso.staff.permissions.manage
+retired_technical_permission=nexo.code.view
+retired_technical_permission=nexo.edit.view
+retired_technical_permission=nexo.login.view
+retired_technical_permission=nexo.new.view
+retired_technical_permission=nexo.no_access.view
+retired_technical_permission=nexo.open.view
+retired_technical_permission=nexo.page_tsx.view
+retired_technical_permission=nexo.quick.view
+retired_technical_permission=nexo.scanner.view
+retired_technical_permission=nexo.settings.view
+retired_technical_permission=nexo.setup.view
+retired_technical_permission=nexo.slug.view
+retired_technical_permission=origo.login.view
+retired_technical_permission=origo.no_access.view
+```
+
+---
+
+#### 13. Contrato de consumo para datasets
+
+AUTH-RBAC-024, AUTH-RBAC-025 y AUTH-RBAC-026 deberán incluir obligatoriamente:
+
+```text
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+schema_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+Cada dataset deberá declarar además:
+
+- `dataset_id`;
+- `dataset_version`;
+- tarea fuente;
+- fecha documental de aprobación;
+- cantidad esperada de registros;
+- roles o sujetos incluidos;
+- claves activas utilizadas;
+- claves legacy referenciadas solo para migración;
+- validaciones;
+- checksum propio;
+- estado `proposal`, `approved` o equivalente documental.
+
+Reglas:
+
+1. un dataset no puede crear permisos;
+2. un dataset no puede cambiar propiedades del catálogo;
+3. un dataset no puede incluir claves fuera del conjunto activo;
+4. una clave legacy solo puede aparecer como referencia de transición, nunca
+   como concesión canónica nueva;
+5. las ausencias continúan siendo `DEFAULT_DENY`;
+6. el dataset base y operativo no pueden completar mutuamente componentes
+   para actores distintos;
+7. cada fila deberá poder trazarse a AUTH-CAT-023;
+8. toda divergencia exige detener la tarea y reabrir revisión contractual.
+
+---
+
+#### 14. Validaciones que bloquean datasets
+
+AUTH-RBAC-024 no podrá iniciarse si ocurre cualquiera de estos casos:
+
+- el conjunto activo no contiene exactamente 140 claves;
+- aparece una clave duplicada;
+- falta una de las 29 claves nuevas;
+- `dispatch` aparece como activa;
+- un permiso técnico retirado aparece como activo;
+- una clave legacy aparece como asignable;
+- la distribución por aplicación no coincide;
+- el hash contractual no coincide;
+- el diff de AUTH-CAT-023 no fue aprobado;
+- se detecta una publicación física anterior incompatible;
+- existe una modificación sustantiva posterior no versionada.
+
+Durante el desarrollo de datasets, cualquier inconsistencia deberá producir:
+
+```text
+STOP
+→ DOCUMENTAR DIFERENCIA
+→ NO CORREGIR SILENCIOSAMENTE
+→ REABRIR CATÁLOGO SI CAMBIA EL CONTRATO
+```
+
+---
+
+#### 15. Congelación e inmutabilidad
+
+Después de aprobar AUTH-CAT-024:
+
+- `vento.authorization@1.0.0` será inmutable contractualmente;
+- el conjunto de 140 permisos no podrá editarse en sitio;
+- la huella contractual no podrá recalcularse sobre contenido diferente;
+- las matrices no podrán reinterpretar las propiedades de un permiso;
+- los datasets deberán referenciar versión y hash exactos;
+- una corrección ortográfica sin efecto semántico requerirá al menos una
+  nueva versión documental;
+- una capacidad nueva requerirá `MINOR`;
+- un cambio incompatible requerirá `MAJOR`;
+- una clave retirada nunca podrá reutilizarse;
+- `current` físico solo podrá apuntar posteriormente a una versión publicada
+  y validada.
+
+La existencia de versiones futuras no invalida `1.0.0`. Las decisiones y
+auditorías históricas conservarán su versión exacta.
+
+---
+
+#### 16. Cambios futuros
+
+Después de `1.0.0`:
+
+##### 16.1 Cambio menor
+
+Ejemplos:
+
+- nueva clave atómica;
+- nueva aplicación aprobada;
+- nuevo contrato no usado previamente;
+- metadato opcional compatible.
+
+Resultado:
+
+```text
+1.0.0
+→ 1.1.0
+```
+
+##### 16.2 Cambio mayor
+
+Ejemplos:
+
+- retirar una clave activa publicada;
+- cambiar significado;
+- cambiar modalidad de forma incompatible;
+- ampliar o reducir alcance de forma incompatible;
+- cambiar requisitos de turno, check-in, área, dispositivo o recurso de
+  forma incompatible.
+
+Resultado:
+
+```text
+1.x.x
+→ 2.0.0
+```
+
+##### 16.3 Parche
+
+Solo para correcciones sin cambio de capacidad y mediante nueva versión:
+
+```text
+1.0.0
+→ 1.0.1
+```
+
+Nunca se modifica `1.0.0` en sitio.
+
+---
+
+#### 17. Publicación contractual al aprobar
+
+La aprobación expresa de esta propuesta producirá:
+
+```text
+AUTH-CAT-024 = APROBADA
+catalog_version = 1.0.0
+contractual_status = PUBLISHED
+permission_count = 140
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+next_task = AUTH-RBAC-024
+```
+
+La fecha efectiva deberá registrarse durante la consolidación documental del
+encabezado y no forma parte de la huella semántica.
+
+No será necesario regenerar este archivo únicamente para cambiar el marcador
+🟡 por ✅, salvo que la aprobación incluya una corrección sustantiva.
+
+---
+
+#### 18. Fuera del alcance
+
+AUTH-CAT-024 no implementa:
+
+- archivos físicos del catálogo;
+- paquete `@vento/contracts`;
+- publicación npm o registry;
+- `current.json`;
+- tipos TypeScript físicos;
+- constantes o parsers;
+- migraciones;
+- tablas;
+- filas de matrices;
+- RLS;
+- RPC;
+- guards;
+- dispositivos;
+- backfills;
+- retiro físico de legacy;
+- activación en aplicaciones;
+- rollout;
+- rollback técnico.
+
+La implementación física deberá ocurrir posteriormente mediante paquetes
+versionados en `vento-shell`.
+
+---
+
+#### 19. Riesgos controlados
+
+##### Riesgo 1 — Declarar publicado algo que no existe físicamente
+
+Control:
+
+```text
+PUBLISHED CONTRACTUAL
+≠
+PUBLISHED PHYSICAL
+```
+
+##### Riesgo 2 — Inventar una versión intermedia de 112 permisos
+
+Control:
+
+```text
+NO EXISTIÓ PUBLICACIÓN FÍSICA PREVIA
+→ PRIMERA VERSIÓN = 1.0.0 CON 140 ACTIVOS
+```
+
+##### Riesgo 3 — Conceder automáticamente las 29 claves
+
+Control:
+
+```text
+PERMISO ACTIVO EN CATÁLOGO
+≠
+PERMISO CONCEDIDO
+```
+
+##### Riesgo 4 — Mantener `dispatch` como activo por compatibilidad
+
+Control:
+
+- permanece legacy;
+- no aparece en datasets nuevos;
+- puede existir físicamente solo durante migración controlada.
+
+##### Riesgo 5 — Hash no reproducible
+
+Control:
+
+- payload normativo embebido;
+- normalización exacta;
+- SHA-256 fijo;
+- exclusión de timestamps.
+
+##### Riesgo 6 — Dataset modifica el contrato
+
+Control:
+
+```text
+CATÁLOGO
+→ DEFINE CAPACIDAD
+
+DATASET
+→ DEFINE ASIGNACIÓN
+```
+
+##### Riesgo 7 — Versiones futuras reinterpretan historia
+
+Control:
+
+- versión exacta;
+- hash exacto;
+- snapshots inmutables;
+- trazabilidad en decisiones y auditoría.
+
+---
+
+#### 20. Criterios de aprobación
+
+AUTH-CAT-024 podrá aprobarse cuando se acepte expresamente que:
+
+1. la primera versión contractual se publica como `1.0.0`;
+2. `schema_version` permanece en `1.0.0`;
+3. el conjunto activo contiene exactamente 140 claves;
+4. la distribución por aplicación queda congelada;
+5. las 29 claves de AUTH-CAT-022 quedan activas y asignables únicamente
+   mediante reglas explícitas;
+6. `nexo.inventory.remissions.dispatch` sale del conjunto activo;
+7. existen 22 claves legacy bloqueadas;
+8. existen 14 claves técnicas retiradas;
+9. ninguna clave legacy se expande automáticamente;
+10. AUTH-CAT-023 aporta 50 componentes base, 29 operativos y un retiro
+    legacy;
+11. no se crean concesiones o denegaciones individuales automáticas;
+12. los siete paquetes revisados permanecen como filtros restrictivos;
+13. la huella contractual es
+    `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`;
+14. el payload de la sección 12.4 es la fuente reproducible de esa huella;
+15. la publicación contractual no afirma implementación física;
+16. la implementación posterior deberá declarar versión y huella exactas;
+17. AUTH-RBAC-024 a AUTH-RBAC-026 deberán consumir esta versión;
+18. cualquier divergencia bloqueará datasets y exigirá revisión;
+19. no se modifica Supabase, código, RLS, RPC, dispositivos ni migraciones;
+20. AUTH-RBAC-024 queda habilitada únicamente después de aprobación expresa.
+
+---
+
+#### 21. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-CAT-023  | APROBADA    |
+| AUTH-CAT-024  | APROBADA    |
+| AUTH-RBAC-024 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-024 hasta recibir aprobación explícita de
+AUTH-CAT-024.
 ## DATASETS CANÓNICOS
 
 Los datasets canónicos solo podrán iniciarse cuando AUTH-CAT-024 haya:
@@ -68224,11 +70607,5204 @@ Los datasets canónicos solo podrán iniciarse cuando AUTH-CAT-024 haya:
 - actualizado las matrices, excepciones, denegaciones y paquetes afectados;
 - confirmado que las claves nuevas permanecen sin concesiones implícitas.
 
-### [ ] AUTH-RBAC-024 — Definir dataset canónico de matriz base
-### [ ] AUTH-RBAC-025 — Definir dataset canónico de matriz operativa
-### [ ] AUTH-RBAC-026 — Definir dataset canónico de excepciones y denegaciones
-### [ ] AUTH-RBAC-027 — Validar que no exista acceso operativo global accidental
-### [ ] AUTH-RBAC-028 — Validar que la administración no dependa del check-in
+### ✅ AUTH-RBAC-024 — Definir dataset canónico de matriz base
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE D — Datasets canónicos  
+**Naturaleza:** Definición documental de dataset lógico, versionado e inmutable  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-CAT-024 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-025 — Definir dataset canónico de matriz operativa  
+**Dataset:** `vento.authorization.base-role-grants@1.0.0`  
+**Catálogo:** `vento.authorization@1.0.0`  
+**Huella contractual:** `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`  
+**Registros lógicos:** **499**  
+**Roles base incluidos:** **7**  
+**Hash del dataset propuesto:** `sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1`
+
+Esta tarea convierte las matrices base aprobadas y el diff contractual de
+AUTH-CAT-023 en un dataset lógico único, determinista, verificable y listo
+para su futura materialización física.
+
+No crea tablas, no inserta filas, no modifica Supabase, no genera
+migraciones, no altera RLS o RPC y no publica todavía archivos físicos del
+paquete `@vento/contracts`.
+
+---
+
+#### 1. Objetivo
+
+Definir de manera exacta:
+
+1. qué roles base forman parte de la matriz canónica;
+2. qué permisos activos recibe cada rol;
+3. cuáles concesiones son completas por el carril base;
+4. cuáles filas representan únicamente el componente base de una
+   autorización `BASE_AND_OPERATIONAL`;
+5. qué alcance y condiciones conserva cada concesión;
+6. qué versión contractual y hash debe referenciar el dataset;
+7. cómo se serializa, ordena, valida y verifica el contenido;
+8. qué queda reservado para AUTH-RBAC-025, AUTH-RBAC-026 y BLOQUE R.
+
+Flujo:
+
+```text
+MATRICES BASE APROBADAS
+AUTH-RBAC-001 A AUTH-RBAC-007
+        +
+DIFF CONTRACTUAL APROBADO
+AUTH-CAT-023
+        +
+CATÁLOGO CONGELADO
+AUTH-CAT-024
+        ↓
+DATASET CANÓNICO DE MATRIZ BASE
+AUTH-RBAC-024
+```
+
+---
+
+#### 2. Decisión principal
+
+El dataset de matriz base contiene exclusivamente concesiones positivas
+explícitas para los siete roles base canónicos:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+```
+
+No incluye:
+
+- oficios base legacy;
+- roles operativos;
+- concesiones individuales;
+- denegaciones;
+- wildcards;
+- aliases;
+- claves legacy bloqueadas;
+- permisos técnicos retirados;
+- permisos `OPERATIONAL_ONLY`;
+- expansiones físicas por sede o área;
+- bypasses por nombre de rol.
+
+Regla:
+
+```text
+FILA PRESENTE
+→ CONCESIÓN BASE POTENCIAL
+
+FILA AUSENTE
+→ DEFAULT_DENY
+
+FILA BASE_COMPONENT
+→ NO AUTORIZA POR SÍ SOLA
+```
+
+---
+
+#### 3. Manifiesto contractual del dataset
+
+```json
+{
+  "dataset_id": "vento.authorization.base-role-grants",
+  "dataset_version": "1.0.0",
+  "dataset_schema_version": "1.0.0",
+  "catalog_id": "vento.authorization",
+  "catalog_version": "1.0.0",
+  "catalog_schema_version": "1.0.0",
+  "contract_release_hash": "sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe",
+  "record_count": 499,
+  "role_count": 7,
+  "direct_base_count": 463,
+  "base_component_count": 36,
+  "effect": "ALLOW_ONLY"
+}
+```
+
+El estado de aprobación no forma parte del payload ni del hash. La huella
+permanece estable cuando la propuesta pase de `PROPUESTA` a `APROBADA`,
+siempre que no cambie ningún registro ni metadato contractual.
+
+---
+
+#### 4. Resultado cuantitativo
+
+##### 4.1 Conteo por rol
+
+| Rol base                  | Concesiones directas | Componentes base |   Total |
+| ------------------------- | -------------------: | ---------------: | ------: |
+| `propietario`             |                  109 |               12 |     121 |
+| `gerente_general`         |                  107 |               12 |     119 |
+| `gerente`                 |                   81 |               12 |      93 |
+| `supervisor`              |                   58 |                0 |      58 |
+| `auxiliar_administrativa` |                   47 |                0 |      47 |
+| `contador`                |                   45 |                0 |      45 |
+| `marketing`               |                   16 |                0 |      16 |
+| **Total**                 |              **463** |           **36** | **499** |
+
+##### 4.2 Conteo por tipo de concesión
+
+| Tipo             | Cantidad | Efecto                                                                                                   |
+| ---------------- | -------: | -------------------------------------------------------------------------------------------------------- |
+| `DIRECT_BASE`    |      463 | El carril base puede satisfacer la autorización completa, sujeto a alcance, recurso y demás condiciones. |
+| `BASE_COMPONENT` |       36 | Solo aporta el componente base de una autorización `BASE_AND_OPERATIONAL`.                               |
+| **Total**        |  **499** | Sin duplicados.                                                                                          |
+
+##### 4.3 Conteo por modalidad
+
+| Modalidad              | Cantidad |
+| ---------------------- | -------: |
+| `BASE_ONLY`            |      251 |
+| `BASE_OR_OPERATIONAL`  |      212 |
+| `BASE_AND_OPERATIONAL` |       36 |
+| `OPERATIONAL_ONLY`     |        0 |
+| **Total**              |  **499** |
+
+##### 4.4 Conteo por aplicación
+
+| Aplicación | Registros de concesión base |
+| ---------- | --------------------------: |
+| `shell`    |                           7 |
+| `anima`    |                          48 |
+| `aura`     |                           3 |
+| `fogo`     |                          19 |
+| `nexo`     |                         251 |
+| `numera`   |                          27 |
+| `origo`    |                          31 |
+| `pass`     |                           2 |
+| `pulso`    |                          18 |
+| `viso`     |                          93 |
+| **Total**  |                     **499** |
+
+---
+
+#### 5. Roles incluidos
+
+##### 5.1 `propietario`
+
+- 121 concesiones lógicas.
+- 109 concesiones directas.
+- 12 componentes base de doble condición.
+- Recibe las 14 claves VISO de gobierno aprobadas.
+- No recibe permisos operativos por nombre del rol.
+- No recibe wildcard ni bypass.
+
+##### 5.2 `gerente_general`
+
+- 119 concesiones lógicas.
+- 107 concesiones directas.
+- 12 componentes base de doble condición.
+- Recibe 12 claves VISO.
+- No recibe por matriz:
+  - `viso.authorization.denials.approve`;
+  - `viso.authorization.denials.revoke`.
+
+##### 5.3 `gerente`
+
+- 93 concesiones lógicas.
+- 81 concesiones directas.
+- 12 componentes base de doble condición.
+- Toda concesión territorial se limita a cobertura administrativa activa.
+- No recibe gobierno VISO de autorización por matriz.
+
+##### 5.4 `supervisor`
+
+- 58 concesiones directas.
+- 0 componentes base de doble condición.
+- El cero del diff contractual es una decisión explícita.
+- No recibe las nuevas acciones sensibles PULSO, NEXO, ORIGO o VISO.
+
+##### 5.5 `auxiliar_administrativa`
+
+- 47 concesiones directas.
+- 0 componentes base.
+- No recibe `origo.procurement.receipts.register` por matriz general.
+- Una responsabilidad formal adicional deberá resolverse mediante
+  concesión individual base en AUTH-RBAC-026.
+
+##### 5.6 `contador`
+
+- 45 concesiones directas.
+- 0 componentes base.
+- Mantiene finalidad financiera, de conciliación y evidencia.
+- No recibe las nuevas capacidades sensibles del diff.
+
+##### 5.7 `marketing`
+
+- 16 concesiones directas.
+- 0 componentes base.
+- Mantiene únicamente capacidades de marca, contenido y consulta comercial
+  expresamente aprobadas.
+
+---
+
+#### 6. Roles excluidos
+
+Los siguientes códigos no forman parte del dataset canónico de matriz base:
+
+```text
+barista
+bodeguero
+cajero
+cocinero
+conductor
+mesero
+panadero
+pastelero
+repostero
+```
+
+Son oficios base legacy o conceptos operativos históricos. No se transforman
+en roles base canónicos ni se copian a este dataset.
+
+Su transición deberá:
+
+- inventariar consumidores;
+- migrar trabajadores a roles base válidos cuando corresponda;
+- utilizar roles operativos durante el turno;
+- conservar compatibilidad temporal;
+- ejecutarse mediante BLOQUE R.
+
+La exclusión del dataset no elimina físicamente registros actuales.
+
+---
+
+#### 7. Esquema lógico de registro
+
+Cada línea de concesión utiliza exactamente estos campos y este orden:
+
+| Campo                  | Tipo   | Regla                                                                      |
+| ---------------------- | ------ | -------------------------------------------------------------------------- |
+| `grant_id`             | string | Identificador determinista `base-role-grant:<role_code>:<permission_key>`. |
+| `role_code`            | string | Uno de los siete roles base incluidos.                                     |
+| `permission_key`       | string | Clave exacta activa de `vento.authorization@1.0.0`.                        |
+| `authorization_mode`   | enum   | `BASE_ONLY`, `BASE_OR_OPERATIONAL` o `BASE_AND_OPERATIONAL`.               |
+| `lane`                 | enum   | Siempre `BASE`.                                                            |
+| `grant_type`           | enum   | `DIRECT_BASE` o `BASE_COMPONENT`.                                          |
+| `effect`               | enum   | Siempre `ALLOW`.                                                           |
+| `scope_expression`     | string | Alcance lógico aprobado por la matriz fuente.                              |
+| `condition_expression` | string | Condiciones normativas que deben conservarse.                              |
+| `source_task`          | string | Tarea que originó la fila.                                                 |
+
+El dataset es lógico. `scope_expression` no se traduce todavía a UUID,
+filas territoriales o tablas físicas.
+
+---
+
+#### 8. Semántica de `DIRECT_BASE`
+
+Una fila `DIRECT_BASE` significa:
+
+```text
+ROL BASE VIGENTE
++
+PERMISO ACTIVO
++
+ALCANCE COINCIDENTE
++
+RECURSO VÁLIDO
++
+CONDICIONES SATISFECHAS
++
+SIN DENEGACIÓN APLICABLE
+=
+AUTORIZACIÓN BASE POSIBLE
+```
+
+No significa:
+
+- acceso global automático;
+- acceso a todas las sedes;
+- acceso a APP-REVIEW;
+- omisión de contrato de recurso;
+- autorización por sede seleccionada;
+- eliminación de denegaciones;
+- acceso técnico privilegiado.
+
+---
+
+#### 9. Semántica de `BASE_COMPONENT`
+
+Las 36 filas `BASE_COMPONENT` corresponden exclusivamente a permisos
+`BASE_AND_OPERATIONAL`.
+
+Distribución:
+
+| Familia                               | Roles base                            | Claves por rol | Componentes |
+| ------------------------------------- | ------------------------------------- | -------------: | ----------: |
+| PULSO — acciones sensibles            | propietario, gerente_general, gerente |              5 |          15 |
+| NEXO — diferencias de conteo          | propietario, gerente_general, gerente |              2 |           6 |
+| Matrices originales — doble condición | propietario, gerente_general, gerente |              5 |          15 |
+| **Total**                             | —                                     |              — |      **36** |
+
+Regla:
+
+```text
+BASE_COMPONENT
++
+OPERATIONAL_COMPONENT DEL MISMO ACTOR
++
+MISMO RECURSO Y SOLICITUD
++
+CONTEXTO VÁLIDO
+=
+AUTORIZACIÓN POSIBLE
+```
+
+Un componente base aislado produce denegación.
+
+---
+
+#### 10. Diff contractual incorporado
+
+##### 10.1 PULSO
+
+Se agregan componentes base para `propietario`, `gerente_general` y
+`gerente`:
+
+```text
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Total:
+
+```text
+5 claves × 3 roles = 15 componentes
+```
+
+##### 10.2 NEXO
+
+Se agregan componentes base para los mismos tres roles:
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+Total:
+
+```text
+2 claves × 3 roles = 6 componentes
+```
+
+##### 10.3 ORIGO
+
+Se agrega una concesión base directa para los tres roles:
+
+```text
+origo.procurement.receipts.register
+```
+
+Total:
+
+```text
+1 clave × 3 roles = 3 concesiones
+```
+
+##### 10.4 VISO
+
+Se agregan:
+
+- 14 concesiones directas a `propietario`;
+- 12 concesiones directas a `gerente_general`;
+- 0 concesiones a los demás roles.
+
+Total:
+
+```text
+14 + 12 = 26 concesiones
+```
+
+##### 10.5 Resultado total del diff
+
+```text
+15 PULSO
++ 6 NEXO
++ 3 ORIGO
++ 26 VISO
+= 50 COMPONENTES O CONCESIONES BASE NUEVAS
+```
+
+---
+
+#### 11. Exclusión de claves legacy y retiradas
+
+El dataset no contiene ninguna de las 22 claves legacy bloqueadas ni
+ninguna de las 14 claves técnicas retiradas de AUTH-CAT-024.
+
+En particular, no contiene:
+
+```text
+pulso.pos.main
+viso.staff.permissions.manage
+nexo.inventory.remissions.dispatch
+```
+
+No se admite:
+
+```text
+LEGACY AMPLIO
+→ COPIAR CONCESIÓN
+→ TODAS LAS CLAVES NUEVAS
+```
+
+Cada una de las 50 incorporaciones fue aprobada explícitamente por rol y
+clave.
+
+---
+
+#### 12. Ausencia, denegación y precedencia
+
+Este dataset solo contiene `ALLOW`.
+
+No contiene filas `DENY`.
+
+Reglas:
+
+1. ausencia de fila = denegación por defecto;
+2. ausencia de fila no crea una denegación explícita;
+3. AUTH-RBAC-026 define excepciones y denegaciones;
+4. una denegación aplicable prevalece sobre esta concesión;
+5. revocar una denegación no crea una fila en este dataset;
+6. ninguna concesión individual modifica la matriz base;
+7. no se duplican filas `deny` para representar ausencias.
+
+---
+
+#### 13. Alcance lógico y futura proyección física
+
+La matriz conserva expresiones como:
+
+```text
+NT-APP
+G(B)
+ORG
+AS
+AA
+AS/AA
+AS-REL
+ORG-LOCAL
+G-FUNC
+G-FIN
+G-SRC
+```
+
+Estas expresiones son contractuales y deberán convertirse posteriormente
+en estructuras físicas aprobadas por E3 y BLOQUE R.
+
+Una concesión lógica podrá proyectarse a más de una fila física cuando
+requiera territorios explícitos.
+
+Por tanto:
+
+```text
+499 REGISTROS LÓGICOS
+≠
+499 FILAS FÍSICAS OBLIGATORIAS
+```
+
+La futura materialización deberá conservar equivalencia semántica y producir
+su propio conteo y checksum.
+
+---
+
+#### 14. Orden canónico
+
+Los registros se ordenan por:
+
+```text
+role_code ASC
+permission_key ASC
+```
+
+No se utiliza:
+
+- orden de inserción;
+- UUID;
+- fecha;
+- nombre humano;
+- orden de la interfaz;
+- orden de Supabase.
+
+El orden estable permite reproducir el hash.
+
+---
+
+#### 15. Serialización y hash
+
+La huella se calcula así:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- primera línea = manifiesto JSON compacto;
+- líneas restantes = registros JSON compactos;
+- campos en el orden de la sección 7;
+- registros ordenados por la sección 14;
+- sin espacios finales;
+- un único LF al final;
+- SHA-256 sobre todos los bytes;
+- sin estado de aprobación ni timestamp.
+
+Resultado:
+
+```text
+dataset_hash = sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1
+```
+
+Cualquier cambio en:
+
+- rol;
+- permiso;
+- modalidad;
+- tipo de concesión;
+- alcance;
+- condición;
+- tarea fuente;
+- manifiesto contractual;
+
+deberá producir otra versión y otro hash.
+
+---
+
+#### 16. Validaciones obligatorias
+
+El dataset deberá pasar, como mínimo:
+
+1. `record_count = 499`;
+2. `role_count = 7`;
+3. 499 pares únicos `role_code + permission_key`;
+4. 463 filas `DIRECT_BASE`;
+5. 36 filas `BASE_COMPONENT`;
+6. 251 filas `BASE_ONLY`;
+7. 212 filas `BASE_OR_OPERATIONAL`;
+8. 36 filas `BASE_AND_OPERATIONAL`;
+9. 0 filas `OPERATIONAL_ONLY`;
+10. 0 filas `DENY`;
+11. 0 claves legacy bloqueadas;
+12. 0 claves técnicas retiradas;
+13. todas las claves existen entre los 140 permisos activos;
+14. todo `BASE_COMPONENT` corresponde a `BASE_AND_OPERATIONAL`;
+15. ninguna fila usa wildcard;
+16. ninguna fila utiliza `null` como global;
+17. ninguna fila depende de sede seleccionada;
+18. ninguna fila concede `service_role`;
+19. ninguna fila crea bypass por nombre de rol;
+20. el hash coincide con el publicado.
+
+Resultado documental de validación:
+
+```text
+records = 499
+unique_role_permission_pairs = 499
+direct_base = 463
+base_components = 36
+legacy_matches = 0
+retired_matches = 0
+operational_only_rows = 0
+dataset_hash = sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1
+```
+
+---
+
+#### 17. Relación con tareas posteriores
+
+##### AUTH-RBAC-025
+
+Definirá exclusivamente:
+
+- concesiones de roles operativos;
+- carril `OPERATIONAL`;
+- componentes operativos de `BASE_AND_OPERATIONAL`;
+- retiro de `nexo.inventory.remissions.dispatch`;
+- contexto de turno, check-in, sede y área.
+
+No podrá editar este dataset.
+
+##### AUTH-RBAC-026
+
+Definirá:
+
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones por carril;
+- denegaciones actor-wide;
+- vigencia, motivo y trazabilidad.
+
+No podrá convertir ausencias de esta matriz en filas `DENY` automáticas.
+
+##### AUTH-RBAC-027 y AUTH-RBAC-028
+
+Validarán respectivamente:
+
+- ausencia de acceso operativo global accidental;
+- independencia entre administración base y check-in.
+
+##### BLOQUE R
+
+Materializará los datasets mediante:
+
+- estructuras físicas aprobadas;
+- migraciones versionadas;
+- reconciliación;
+- pruebas;
+- rollback;
+- retiro legacy controlado.
+
+---
+
+#### 18. Payload canónico del dataset
+
+La primera línea es el manifiesto. Las 499 líneas siguientes son los
+registros de concesión.
+
+```jsonl
+{"dataset_id":"vento.authorization.base-role-grants","dataset_version":"1.0.0","dataset_schema_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","catalog_schema_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","record_count":499,"role_count":7,"direct_base_count":463,"base_component_count":36,"effect":"ALLOW_ONLY"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.access","role_code":"auxiliar_administrativa","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.attendance.shifts.create","role_code":"auxiliar_administrativa","permission_key":"anima.attendance.shifts.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Puede registrar turnos dentro de reglas y plantillas aprobadas. No crea roles operativos nuevos ni amplía cobertura laboral.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.attendance.shifts.update","role_code":"auxiliar_administrativa","permission_key":"anima.attendance.shifts.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Puede corregir datos administrativos de turnos autorizados. No cancela, no altera historial cerrado y debe conservar auditoría.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.employee_documents.delete","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.employee_documents.delete","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Solo documentos eliminables según retención y estado. Requiere motivo, auditoría y no puede borrar evidencia legal o ya consolidada.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.employee_documents.upload","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Solo tipos documentales aprobados y trabajadores válidos. Debe registrar actor, fecha y documento objetivo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.employee_documents.view","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Consulta administrativa de documentos laborales. Los campos especialmente sensibles se enmascaran o exigen una capacidad adicional.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.employee_photos.upload","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Solo fotografías laborales autorizadas, vinculadas a un trabajador válido y con trazabilidad.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.staff_invitations.create","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.staff_invitations.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Solo invitaciones basadas en perfiles, sedes y roles previamente aprobados. No permite crear propietarios, conceder permisos ni eludir aprobaciones.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:anima.workforce.team_members.view","role_code":"auxiliar_administrativa","permission_key":"anima.workforce.team_members.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. Consulta transversal de equipo para apoyo administrativo; datos no necesarios permanecen ocultos.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:fogo.access","role_code":"auxiliar_administrativa","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:fogo.production.orders.view","role_code":"auxiliar_administrativa","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Seguimiento administrativo de órdenes de producción relacionadas con su cobertura; no ejecuta producción ni crea lotes.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.access","role_code":"auxiliar_administrativa","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.assets.items.create","role_code":"auxiliar_administrativa","permission_key":"nexo.assets.items.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Registro administrativo inicial de activos dentro de sedes autorizadas. No asigna ubicación, custodia, valoración ni movimiento físico.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.assets.items.view","role_code":"auxiliar_administrativa","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta o registro administrativo dentro de la cobertura autorizada. No sustituye ejecución física ni contexto operativo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.catalog.categories.view","role_code":"auxiliar_administrativa","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.catalog.presentations.view","role_code":"auxiliar_administrativa","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.catalog.products.view","role_code":"auxiliar_administrativa","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.catalog.request_policies.view","role_code":"auxiliar_administrativa","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.catalog.units.view","role_code":"auxiliar_administrativa","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.finance.cost_centers.view","role_code":"auxiliar_administrativa","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.finance.internal_invoice_amounts.view","role_code":"auxiliar_administrativa","permission_key":"nexo.finance.internal_invoice_amounts.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta sensible limitada a documentos vinculados a la cobertura autorizada; debe aplicarse mínimo privilegio y auditoría.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.finance.internal_invoices.view","role_code":"auxiliar_administrativa","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta o soporte administrativo del recurso relacionado. Toda mutación queda limitada por el contrato de recurso y por la cobertura de cada extremo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.adjustments.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta o registro administrativo dentro de la cobertura autorizada. No sustituye ejecución física ni contexto operativo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.entries.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta o registro administrativo dentro de la cobertura autorizada. No sustituye ejecución física ni contexto operativo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.movements.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta o registro administrativo dentro de la cobertura autorizada. No sustituye ejecución física ni contexto operativo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.remissions.update","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Solo actualización de metadatos y correcciones administrativas permitidas por estado. No solicita, prepara, despacha, recibe ni cancela.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.remissions.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta o soporte administrativo del recurso relacionado. Toda mutación queda limitada por el contrato de recurso y por la cobertura de cada extremo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.stock.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta o registro administrativo dentro de la cobertura autorizada. No sustituye ejecución física ni contexto operativo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.inventory.transfers.view","role_code":"auxiliar_administrativa","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta o soporte administrativo del recurso relacionado. Toda mutación queda limitada por el contrato de recurso y por la cobertura de cada extremo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.settings.remission_policies.view","role_code":"auxiliar_administrativa","permission_key":"nexo.settings.remission_policies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:nexo.settings.sites.view","role_code":"auxiliar_administrativa","permission_key":"nexo.settings.sites.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:numera.access","role_code":"auxiliar_administrativa","permission_key":"numera.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:numera.finance.cost_centers.view","role_code":"auxiliar_administrativa","permission_key":"numera.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:numera.finance.expenses.view","role_code":"auxiliar_administrativa","permission_key":"numera.finance.expenses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos vinculados a sedes o áreas activamente asignadas o formalmente atendidas dentro del proceso administrativo autorizado.","condition_expression":"Carril base. Consulta de gastos vinculados a sedes o responsabilidades administrativas autorizadas. No incluye modificación ni analítica estratégica.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:origo.access","role_code":"auxiliar_administrativa","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:origo.catalog.product_reviews.view","role_code":"auxiliar_administrativa","permission_key":"origo.catalog.product_reviews.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta del estado de revisión del catálogo; no aprueba ni modifica productos maestros.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:origo.procurement.purchase_orders.view","role_code":"auxiliar_administrativa","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta o soporte administrativo del recurso relacionado. Toda mutación queda limitada por el contrato de recurso y por la cobertura de cada extremo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:origo.procurement.receipts.view","role_code":"auxiliar_administrativa","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — documento o relación que involucra al menos una sede activamente asignada o formalmente atendida por el rol; la visibilidad de un extremo no concede autoridad sobre los demás.","condition_expression":"Carril base. Consulta o soporte administrativo del recurso relacionado. Toda mutación queda limitada por el contrato de recurso y por la cobertura de cada extremo.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:origo.procurement.suppliers.view","role_code":"auxiliar_administrativa","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta de referencia para apoyo a compras. Datos contractuales, bancarios o restringidos requieren controles separados.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:shell.access","role_code":"auxiliar_administrativa","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.access","role_code":"auxiliar_administrativa","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a recursos ni amplía las capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. El acceso a la aplicación no concede todas sus capacidades.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.delivery.rates.view","role_code":"auxiliar_administrativa","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.organization.businesses.view","role_code":"auxiliar_administrativa","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo o referencia organizacional exacta, en modo de consulta, dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta exacta del dato de referencia; no concede modificación, aprobación ni autoridad organizacional general.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.workforce.employees.view","role_code":"auxiliar_administrativa","permission_key":"viso.workforce.employees.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. No requiere turno ni check-in, pero sí empleado activo, permiso vigente, alcance resuelto, recurso válido y ausencia de denegaciones.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.workforce.schedules.view","role_code":"auxiliar_administrativa","permission_key":"viso.workforce.schedules.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. No requiere turno ni check-in, pero sí empleado activo, permiso vigente, alcance resuelto, recurso válido y ausencia de denegaciones.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.workforce.staff_calendar.view","role_code":"auxiliar_administrativa","permission_key":"viso.workforce.staff_calendar.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. No requiere turno ni check-in, pero sí empleado activo, permiso vigente, alcance resuelto, recurso válido y ausencia de denegaciones.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:auxiliar_administrativa:viso.workforce.vacancies.view","role_code":"auxiliar_administrativa","permission_key":"viso.workforce.vacancies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FUNC — ámbito organizacional ordinario exclusivamente para el proceso administrativo de personal definido por esta clave; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base. No requiere turno ni check-in, pero sí empleado activo, permiso vigente, alcance resuelto, recurso válido y ausencia de denegaciones.","source_task":"AUTH-RBAC-005"}
+{"grant_id":"base-role-grant:contador:anima.access","role_code":"contador","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:fogo.access","role_code":"contador","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:fogo.production.batches.view","role_code":"contador","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia productiva de todas las sedes ordinarias, únicamente para costeo, conciliación y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite verificar cantidades y estados productivos como evidencia de costeo; no crea lotes ni ejecuta producción.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:fogo.production.orders.view","role_code":"contador","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia productiva de todas las sedes ordinarias, únicamente para costeo, conciliación y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite verificar cantidades y estados productivos como evidencia de costeo; no crea lotes ni ejecuta producción.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.access","role_code":"contador","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.analytics.internal_reports.view","role_code":"contador","permission_key":"nexo.analytics.internal_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta consolidada sensible; no autoriza alterar fuentes, aprobar operaciones ni modificar cierres.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.analytics.margin_reports.view","role_code":"contador","permission_key":"nexo.analytics.margin_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta consolidada sensible; no autoriza alterar fuentes, aprobar operaciones ni modificar cierres.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.assets.counts.view","role_code":"contador","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia patrimonial y de conteo de activos de todas las sedes ordinarias para conciliación contable.","condition_expression":"Carril base de consulta. Permite verificar existencia, clasificación y conteos de activos; no registra, asigna, valora ni modifica activos.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.assets.groups.view","role_code":"contador","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia patrimonial y de conteo de activos de todas las sedes ordinarias para conciliación contable.","condition_expression":"Carril base de consulta. Permite verificar existencia, clasificación y conteos de activos; no registra, asigna, valora ni modifica activos.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.assets.items.view","role_code":"contador","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia patrimonial y de conteo de activos de todas las sedes ordinarias para conciliación contable.","condition_expression":"Carril base de consulta. Permite verificar existencia, clasificación y conteos de activos; no registra, asigna, valora ni modifica activos.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.catalog.categories.view","role_code":"contador","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo empresarial exacto requerido para interpretar documentos, cantidades y valoraciones.","condition_expression":"Carril base de consulta. Solo referencia de productos, presentaciones, categorías o unidades para interpretar documentos financieros; no permite modificar el catálogo.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.catalog.presentations.view","role_code":"contador","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo empresarial exacto requerido para interpretar documentos, cantidades y valoraciones.","condition_expression":"Carril base de consulta. Solo referencia de productos, presentaciones, categorías o unidades para interpretar documentos financieros; no permite modificar el catálogo.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.catalog.products.view","role_code":"contador","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo empresarial exacto requerido para interpretar documentos, cantidades y valoraciones.","condition_expression":"Carril base de consulta. Solo referencia de productos, presentaciones, categorías o unidades para interpretar documentos financieros; no permite modificar el catálogo.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.catalog.units.view","role_code":"contador","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — catálogo empresarial exacto requerido para interpretar documentos, cantidades y valoraciones.","condition_expression":"Carril base de consulta. Solo referencia de productos, presentaciones, categorías o unidades para interpretar documentos financieros; no permite modificar el catálogo.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.cost_centers.view","role_code":"contador","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Acceso global específico para revisión y procesamiento contable; aplica minimización, trazabilidad, segregación de funciones y restricciones de período.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_invoice_amounts.view","role_code":"contador","permission_key":"nexo.finance.internal_invoice_amounts.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Acceso global específico para revisión y procesamiento contable; aplica minimización, trazabilidad, segregación de funciones y restricciones de período.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_invoices.generate","role_code":"contador","permission_key":"nexo.finance.internal_invoices.generate","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Exige documento fuente válido, período abierto, numeración y reglas tributarias aplicables, idempotencia, actor identificado y auditoría. No crea ni modifica movimientos físicos de inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_invoices.issue","role_code":"contador","permission_key":"nexo.finance.internal_invoices.issue","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Exige documento fuente válido, período abierto, numeración y reglas tributarias aplicables, idempotencia, actor identificado y auditoría. No crea ni modifica movimientos físicos de inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_invoices.view","role_code":"contador","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Acceso global específico para revisión y procesamiento contable; aplica minimización, trazabilidad, segregación de funciones y restricciones de período.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_prices.view","role_code":"contador","permission_key":"nexo.finance.internal_prices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Acceso global específico para revisión y procesamiento contable; aplica minimización, trazabilidad, segregación de funciones y restricciones de período.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.finance.internal_variances.view","role_code":"contador","permission_key":"nexo.finance.internal_variances.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Acceso global específico para revisión y procesamiento contable; aplica minimización, trazabilidad, segregación de funciones y restricciones de período.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.adjustments.view","role_code":"contador","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.entries.view","role_code":"contador","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.initial_counts.view","role_code":"contador","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.movements.view","role_code":"contador","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.production_batches.view","role_code":"contador","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.remissions.view","role_code":"contador","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.stock.view","role_code":"contador","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.stock_counts.view","role_code":"contador","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.transfers.view","role_code":"contador","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:nexo.inventory.withdrawals.view","role_code":"contador","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia transaccional de inventario de todas las sedes ordinarias para conciliación, valoración y trazabilidad financiera.","condition_expression":"Carril base de consulta. Permite revisar la evidencia fuente del movimiento; no registra, prepara, recibe, despacha, cuenta ni modifica inventario.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.access","role_code":"contador","permission_key":"numera.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.analytics.break_even.view","role_code":"contador","permission_key":"numera.analytics.break_even.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta consolidada sensible; no autoriza alterar fuentes, aprobar operaciones ni modificar cierres.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.analytics.financial_reports.view","role_code":"contador","permission_key":"numera.analytics.financial_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta consolidada sensible; no autoriza alterar fuentes, aprobar operaciones ni modificar cierres.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.analytics.profitability.view","role_code":"contador","permission_key":"numera.analytics.profitability.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta consolidada sensible; no autoriza alterar fuentes, aprobar operaciones ni modificar cierres.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.finance.cost_centers.view","role_code":"contador","permission_key":"numera.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta organizacional sensible del recurso exacto; no autoriza registro, aprobación, cierre o exportación mientras no existan permisos atómicos para esas acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:numera.finance.expenses.view","role_code":"contador","permission_key":"numera.finance.expenses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta organizacional sensible del recurso exacto; no autoriza registro, aprobación, cierre o exportación mientras no existan permisos atómicos para esas acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:origo.access","role_code":"contador","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:origo.procurement.purchase_orders.view","role_code":"contador","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia comercial y de abastecimiento de todas las sedes ordinarias, únicamente para revisión, conciliación y soporte contable.","condition_expression":"Carril base de consulta. Permite verificar documentos fuente y contrapartes para conciliación; no crea órdenes, recibe mercancía, modifica proveedores ni ejecuta operación física.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:origo.procurement.receipts.view","role_code":"contador","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia comercial y de abastecimiento de todas las sedes ordinarias, únicamente para revisión, conciliación y soporte contable.","condition_expression":"Carril base de consulta. Permite verificar documentos fuente y contrapartes para conciliación; no crea órdenes, recibe mercancía, modifica proveedores ni ejecuta operación física.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:origo.procurement.suppliers.view","role_code":"contador","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-SRC — evidencia comercial y de abastecimiento de todas las sedes ordinarias, únicamente para revisión, conciliación y soporte contable.","condition_expression":"Carril base de consulta. Permite verificar documentos fuente y contrapartes para conciliación; no crea órdenes, recibe mercancía, modifica proveedores ni ejecuta operación física.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:shell.access","role_code":"contador","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:viso.access","role_code":"contador","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos ni a capacidades internas.","condition_expression":"Carril base. No requiere turno ni check-in. La entrada no concede acceso automático a módulos, datos o acciones.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:viso.finance.accounting.view","role_code":"contador","permission_key":"viso.finance.accounting.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-FIN — ámbito organizacional ordinario exclusivamente para la capacidad financiera indicada; excluye APP-REVIEW, demo, pruebas y recursos aislados.","condition_expression":"Carril base financiero. Consulta de información contable autorizada; no concede administración general de VISO ni acceso a personal, seguridad o configuración.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:contador:viso.organization.businesses.view","role_code":"contador","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — referencia organizacional exacta en modo de consulta dentro del entorno productivo ordinario.","condition_expression":"Carril base. Consulta de empresas y unidades necesarias para clasificar información financiera; no concede modificación organizacional.","source_task":"AUTH-RBAC-006"}
+{"grant_id":"base-role-grant:gerente:anima.access","role_code":"gerente","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.attendance.shifts.cancel","role_code":"gerente","permission_key":"anima.attendance.shifts.cancel","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.attendance.shifts.create","role_code":"gerente","permission_key":"anima.attendance.shifts.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.attendance.shifts.update","role_code":"gerente","permission_key":"anima.attendance.shifts.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.employee_documents.delete","role_code":"gerente","permission_key":"anima.workforce.employee_documents.delete","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.employee_documents.upload","role_code":"gerente","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.employee_documents.view","role_code":"gerente","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.employee_photos.upload","role_code":"gerente","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.staff_invitations.create","role_code":"gerente","permission_key":"anima.workforce.staff_invitations.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:anima.workforce.team_members.view","role_code":"gerente","permission_key":"anima.workforce.team_members.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:fogo.access","role_code":"gerente","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:fogo.production.batches.view","role_code":"gerente","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:fogo.production.orders.view","role_code":"gerente","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.access","role_code":"gerente","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.analytics.internal_reports.view","role_code":"gerente","permission_key":"nexo.analytics.internal_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.analytics.margin_reports.view","role_code":"gerente","permission_key":"nexo.analytics.margin_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.assets.counts.view","role_code":"gerente","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.assets.groups.view","role_code":"gerente","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.assets.items.create","role_code":"gerente","permission_key":"nexo.assets.items.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.assets.items.view","role_code":"gerente","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.catalog.categories.view","role_code":"gerente","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.catalog.presentations.view","role_code":"gerente","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.catalog.products.view","role_code":"gerente","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.catalog.request_policies.view","role_code":"gerente","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.catalog.units.view","role_code":"gerente","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.cost_centers.view","role_code":"gerente","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_invoice_amounts.view","role_code":"gerente","permission_key":"nexo.finance.internal_invoice_amounts.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_invoices.view","role_code":"gerente","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_prices.view","role_code":"gerente","permission_key":"nexo.finance.internal_prices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_variances.approve","role_code":"gerente","permission_key":"nexo.finance.internal_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA ∩ CTX — componente base limitado a sedes o áreas asignadas; ejecución sobre un recurso concreto dentro del contexto operativo válido.","condition_expression":"La concesión base no ejecuta la acción. Requiere turno, check-in, rol operativo compatible y territorio coincidente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_variances.resolve","role_code":"gerente","permission_key":"nexo.finance.internal_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA ∩ CTX — componente base limitado a sedes o áreas asignadas; ejecución sobre un recurso concreto dentro del contexto operativo válido.","condition_expression":"La concesión base no ejecuta la acción. Requiere turno, check-in, rol operativo compatible y territorio coincidente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.finance.internal_variances.view","role_code":"gerente","permission_key":"nexo.finance.internal_variances.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.adjustments.register","role_code":"gerente","permission_key":"nexo.inventory.adjustments.register","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA ∩ CTX — componente base limitado a sedes o áreas asignadas; ejecución sobre un recurso concreto dentro del contexto operativo válido.","condition_expression":"La concesión base no ejecuta la acción. Requiere turno, check-in, rol operativo compatible y territorio coincidente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.adjustments.view","role_code":"gerente","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.entries.override","role_code":"gerente","permission_key":"nexo.inventory.entries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA ∩ CTX — componente base limitado a sedes o áreas asignadas; ejecución sobre un recurso concreto dentro del contexto operativo válido.","condition_expression":"La concesión base no ejecuta la acción. Requiere turno, check-in, rol operativo compatible y territorio coincidente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.entries.view","role_code":"gerente","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.initial_counts.view","role_code":"gerente","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.location_catalog.update","role_code":"gerente","permission_key":"nexo.inventory.location_catalog.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.locations.view","role_code":"gerente","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.lpns.view","role_code":"gerente","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.movements.view","role_code":"gerente","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.production_batches.view","role_code":"gerente","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.remissions.cancel","role_code":"gerente","permission_key":"nexo.inventory.remissions.cancel","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.remissions.update","role_code":"gerente","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.remissions.view","role_code":"gerente","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.stock.view","role_code":"gerente","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.stock_count_variances.approve","role_code":"gerente","permission_key":"nexo.inventory.stock_count_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.stock_count_variances.resolve","role_code":"gerente","permission_key":"nexo.inventory.stock_count_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.stock_counts.view","role_code":"gerente","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.storage_positions.view","role_code":"gerente","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.transfers.view","role_code":"gerente","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.warehouse_operations.view","role_code":"gerente","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.withdrawals.view","role_code":"gerente","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.inventory.zones.view","role_code":"gerente","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.driver_operations.view","role_code":"gerente","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.fulfillment.view","role_code":"gerente","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.fulfillment_routes.view","role_code":"gerente","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.operations.view","role_code":"gerente","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.operations_board.view","role_code":"gerente","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.logistics.supply_routes.view","role_code":"gerente","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.printing.jobs.view","role_code":"gerente","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del gerente; excluye APP-REVIEW y territorios aislados.","condition_expression":"El gerente usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.printing.templates.update","role_code":"gerente","permission_key":"nexo.printing.templates.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.settings.remission_policies.view","role_code":"gerente","permission_key":"nexo.settings.remission_policies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:nexo.settings.sites.view","role_code":"gerente","permission_key":"nexo.settings.sites.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.access","role_code":"gerente","permission_key":"numera.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.analytics.break_even.view","role_code":"gerente","permission_key":"numera.analytics.break_even.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.analytics.financial_reports.view","role_code":"gerente","permission_key":"numera.analytics.financial_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.analytics.profitability.view","role_code":"gerente","permission_key":"numera.analytics.profitability.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.finance.cost_centers.view","role_code":"gerente","permission_key":"numera.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:numera.finance.expenses.view","role_code":"gerente","permission_key":"numera.finance.expenses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:origo.access","role_code":"gerente","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:origo.catalog.product_reviews.view","role_code":"gerente","permission_key":"origo.catalog.product_reviews.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:origo.procurement.purchase_orders.view","role_code":"gerente","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:origo.procurement.receipts.register","role_code":"gerente","permission_key":"origo.procurement.receipts.register","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Carril base completo. No requiere turno ni check-in; exige orden, proveedor, documentos, sede receptora y recurso válidos. No registra stock ni sustituye la entrada física propietaria de NEXO.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:origo.procurement.receipts.view","role_code":"gerente","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:origo.procurement.suppliers.view","role_code":"gerente","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:pulso.delivery.deliveries.override","role_code":"gerente","permission_key":"pulso.delivery.deliveries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS-COMERCIAL ∩ CTX — componente base limitado a sedes comerciales asignadas; ejecución solo dentro del contexto operativo válido de la entrega.","condition_expression":"La concesión base no ejecuta la acción. Requiere turno, check-in, rol operativo compatible, recurso y sede coincidentes.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:pulso.payments.transactions.refund","role_code":"gerente","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:pulso.payments.transactions.reverse","role_code":"gerente","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:pulso.sales.discounts.apply","role_code":"gerente","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:pulso.sales.orders.cancel","role_code":"gerente","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:pulso.sales.returns.create","role_code":"gerente","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"AS/AA — sedes y áreas dentro de la cobertura administrativa activa del gerente; el recurso debe pertenecer a ese territorio.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente:shell.access","role_code":"gerente","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.access","role_code":"gerente","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.catalog.commercial_categories.view","role_code":"gerente","permission_key":"viso.catalog.commercial_categories.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.content.menu.view","role_code":"gerente","permission_key":"viso.content.menu.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.delivery.rates.view","role_code":"gerente","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo sobre configuración local. No modifica catálogos, políticas ni plantillas globales.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.finance.accounting.view","role_code":"gerente","permission_key":"viso.finance.accounting.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — información financiera y analítica de sedes asignadas o de sus unidades de negocio exactas; nunca consolidado organizacional global.","condition_expression":"Carril base. Lectura sensible local; mantiene filtros por recurso, período, negocio y sede.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.organization.businesses.view","role_code":"gerente","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.workforce.employees.view","role_code":"gerente","permission_key":"viso.workforce.employees.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.workforce.schedules.view","role_code":"gerente","permission_key":"viso.workforce.schedules.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.workforce.staff_calendar.view","role_code":"gerente","permission_key":"viso.workforce.staff_calendar.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente:viso.workforce.vacancies.view","role_code":"gerente","permission_key":"viso.workforce.vacancies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al gerente.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-003"}
+{"grant_id":"base-role-grant:gerente_general:anima.access","role_code":"gerente_general","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.attendance.shifts.cancel","role_code":"gerente_general","permission_key":"anima.attendance.shifts.cancel","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.attendance.shifts.create","role_code":"gerente_general","permission_key":"anima.attendance.shifts.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.attendance.shifts.update","role_code":"gerente_general","permission_key":"anima.attendance.shifts.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.employee_documents.delete","role_code":"gerente_general","permission_key":"anima.workforce.employee_documents.delete","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.employee_documents.upload","role_code":"gerente_general","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.employee_documents.view","role_code":"gerente_general","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.employee_photos.upload","role_code":"gerente_general","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.staff_invitations.create","role_code":"gerente_general","permission_key":"anima.workforce.staff_invitations.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:anima.workforce.team_members.view","role_code":"gerente_general","permission_key":"anima.workforce.team_members.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:aura.access","role_code":"gerente_general","permission_key":"aura.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:fogo.access","role_code":"gerente_general","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:fogo.production.batches.view","role_code":"gerente_general","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:fogo.production.orders.view","role_code":"gerente_general","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:fogo.production.recipes.view","role_code":"gerente_general","permission_key":"fogo.production.recipes.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.access","role_code":"gerente_general","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.analytics.internal_reports.view","role_code":"gerente_general","permission_key":"nexo.analytics.internal_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.analytics.margin_reports.view","role_code":"gerente_general","permission_key":"nexo.analytics.margin_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.assets.counts.view","role_code":"gerente_general","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.assets.groups.view","role_code":"gerente_general","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.assets.items.create","role_code":"gerente_general","permission_key":"nexo.assets.items.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AST/AA/SA/AAT explícitos sobre territorios ordinarios; sin G y sin incorporación automática de sedes futuras.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.assets.items.view","role_code":"gerente_general","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.categories.view","role_code":"gerente_general","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.presentations.view","role_code":"gerente_general","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.products.create","role_code":"gerente_general","permission_key":"nexo.catalog.products.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.products.view","role_code":"gerente_general","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.request_policies.view","role_code":"gerente_general","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.catalog.units.view","role_code":"gerente_general","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.cost_centers.view","role_code":"gerente_general","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_invoice_amounts.view","role_code":"gerente_general","permission_key":"nexo.finance.internal_invoice_amounts.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_invoices.cancel","role_code":"gerente_general","permission_key":"nexo.finance.internal_invoices.cancel","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_invoices.generate","role_code":"gerente_general","permission_key":"nexo.finance.internal_invoices.generate","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_invoices.issue","role_code":"gerente_general","permission_key":"nexo.finance.internal_invoices.issue","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_invoices.view","role_code":"gerente_general","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_prices.view","role_code":"gerente_general","permission_key":"nexo.finance.internal_prices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_variances.approve","role_code":"gerente_general","permission_key":"nexo.finance.internal_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_variances.resolve","role_code":"gerente_general","permission_key":"nexo.finance.internal_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.finance.internal_variances.view","role_code":"gerente_general","permission_key":"nexo.finance.internal_variances.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.adjustments.register","role_code":"gerente_general","permission_key":"nexo.inventory.adjustments.register","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.adjustments.view","role_code":"gerente_general","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.entries.override","role_code":"gerente_general","permission_key":"nexo.inventory.entries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.entries.view","role_code":"gerente_general","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.initial_counts.view","role_code":"gerente_general","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.location_catalog.update","role_code":"gerente_general","permission_key":"nexo.inventory.location_catalog.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AST/AA/SA/AAT explícitos sobre territorios ordinarios; sin G y sin incorporación automática de sedes futuras.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.locations.view","role_code":"gerente_general","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.lpns.view","role_code":"gerente_general","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.movements.view","role_code":"gerente_general","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.production_batches.view","role_code":"gerente_general","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.remissions.cancel","role_code":"gerente_general","permission_key":"nexo.inventory.remissions.cancel","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.remissions.update","role_code":"gerente_general","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.remissions.view","role_code":"gerente_general","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.stock.view","role_code":"gerente_general","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.stock_count_variances.approve","role_code":"gerente_general","permission_key":"nexo.inventory.stock_count_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.stock_count_variances.resolve","role_code":"gerente_general","permission_key":"nexo.inventory.stock_count_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.stock_counts.view","role_code":"gerente_general","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.storage_positions.view","role_code":"gerente_general","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.transfers.view","role_code":"gerente_general","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.warehouse_operations.view","role_code":"gerente_general","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.withdrawals.view","role_code":"gerente_general","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.inventory.zones.view","role_code":"gerente_general","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.driver_operations.view","role_code":"gerente_general","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.fulfillment.view","role_code":"gerente_general","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.fulfillment_routes.view","role_code":"gerente_general","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.operations.view","role_code":"gerente_general","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.operations_board.view","role_code":"gerente_general","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.logistics.supply_routes.view","role_code":"gerente_general","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.printing.jobs.view","role_code":"gerente_general","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.printing.templates.update","role_code":"gerente_general","permission_key":"nexo.printing.templates.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto y, cuando sea local, AS/SS/AST/AA/SA/AAT explícitos; sin G genérico.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.settings.remission_policies.view","role_code":"gerente_general","permission_key":"nexo.settings.remission_policies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:nexo.settings.sites.view","role_code":"gerente_general","permission_key":"nexo.settings.sites.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.access","role_code":"gerente_general","permission_key":"numera.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.analytics.break_even.view","role_code":"gerente_general","permission_key":"numera.analytics.break_even.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.analytics.financial_reports.view","role_code":"gerente_general","permission_key":"numera.analytics.financial_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.analytics.profitability.view","role_code":"gerente_general","permission_key":"numera.analytics.profitability.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.finance.cost_centers.view","role_code":"gerente_general","permission_key":"numera.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:numera.finance.expenses.view","role_code":"gerente_general","permission_key":"numera.finance.expenses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:origo.access","role_code":"gerente_general","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:origo.catalog.product_reviews.view","role_code":"gerente_general","permission_key":"origo.catalog.product_reviews.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:origo.procurement.purchase_orders.view","role_code":"gerente_general","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:origo.procurement.receipts.register","role_code":"gerente_general","permission_key":"origo.procurement.receipts.register","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base completo. No requiere turno ni check-in; exige orden, proveedor, documentos, sede receptora y recurso válidos. No registra stock ni sustituye la entrada física propietaria de NEXO.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:origo.procurement.receipts.view","role_code":"gerente_general","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:origo.procurement.suppliers.view","role_code":"gerente_general","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El gerente general usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:pass.access","role_code":"gerente_general","permission_key":"pass.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-CLIENT-ADMIN — superficie laboral-administrativa no territorial.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:pulso.delivery.deliveries.override","role_code":"gerente_general","permission_key":"pulso.delivery.deliveries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"Cobertura base explícita sobre sedes comerciales ordinarias; ejecución = alcance base ∩ CTX operativo de la entrega.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:pulso.payments.transactions.refund","role_code":"gerente_general","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:pulso.payments.transactions.reverse","role_code":"gerente_general","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:pulso.sales.discounts.apply","role_code":"gerente_general","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:pulso.sales.orders.cancel","role_code":"gerente_general","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:pulso.sales.returns.create","role_code":"gerente_general","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:shell.access","role_code":"gerente_general","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.access","role_code":"gerente_general","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.audit_logs.view","role_code":"gerente_general","permission_key":"viso.authorization.audit_logs.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.base_grants.approve","role_code":"gerente_general","permission_key":"viso.authorization.base_grants.approve","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.base_grants.create","role_code":"gerente_general","permission_key":"viso.authorization.base_grants.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.base_grants.revoke","role_code":"gerente_general","permission_key":"viso.authorization.base_grants.revoke","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.base_grants.suspend","role_code":"gerente_general","permission_key":"viso.authorization.base_grants.suspend","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.base_grants.view","role_code":"gerente_general","permission_key":"viso.authorization.base_grants.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.context_simulations.view","role_code":"gerente_general","permission_key":"viso.authorization.context_simulations.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"OWN más consulta de terceros mediante concesión administrativa sensible explícita; sin impersonación real.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.denials.create","role_code":"gerente_general","permission_key":"viso.authorization.denials.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.denials.view","role_code":"gerente_general","permission_key":"viso.authorization.denials.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.operational_grants.approve","role_code":"gerente_general","permission_key":"viso.authorization.operational_grants.approve","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.operational_grants.create","role_code":"gerente_general","permission_key":"viso.authorization.operational_grants.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.operational_grants.revoke","role_code":"gerente_general","permission_key":"viso.authorization.operational_grants.revoke","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.operational_grants.suspend","role_code":"gerente_general","permission_key":"viso.authorization.operational_grants.suspend","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.authorization.operational_grants.view","role_code":"gerente_general","permission_key":"viso.authorization.operational_grants.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:gerente_general:viso.catalog.commercial_categories.view","role_code":"gerente_general","permission_key":"viso.catalog.commercial_categories.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.content.content_blocks.view","role_code":"gerente_general","permission_key":"viso.content.content_blocks.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.content.menu.view","role_code":"gerente_general","permission_key":"viso.content.menu.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.content.website_content.view","role_code":"gerente_general","permission_key":"viso.content.website_content.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.delivery.rates.view","role_code":"gerente_general","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.finance.accounting.view","role_code":"gerente_general","permission_key":"viso.finance.accounting.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.loyalty.customers.view","role_code":"gerente_general","permission_key":"viso.loyalty.customers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"Dominio cliente o negocio completo mediante concesión base explícita; sede solo como filtro de actividad.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.loyalty.products.view","role_code":"gerente_general","permission_key":"viso.loyalty.products.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.organization.businesses.view","role_code":"gerente_general","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.platform.app_updates.view","role_code":"gerente_general","permission_key":"viso.platform.app_updates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.workforce.employees.view","role_code":"gerente_general","permission_key":"viso.workforce.employees.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.workforce.schedules.view","role_code":"gerente_general","permission_key":"viso.workforce.schedules.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.workforce.staff_calendar.view","role_code":"gerente_general","permission_key":"viso.workforce.staff_calendar.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:gerente_general:viso.workforce.vacancies.view","role_code":"gerente_general","permission_key":"viso.workforce.vacancies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-002"}
+{"grant_id":"base-role-grant:marketing:anima.access","role_code":"marketing","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos, módulos ni acciones internas.","condition_expression":"Carril base. Permite utilizar la superficie laboral personal de ANIMA; no concede gestión de documentos, equipo, invitaciones ni turnos.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:aura.access","role_code":"marketing","permission_key":"aura.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP-DORMANT — entrada no territorial a una aplicación diferida; la concesión permanece inactiva hasta que AURA sea auditada y habilitada formalmente.","condition_expression":"Carril base. Capacidad reservada para el dominio funcional de marketing. No podrá utilizarse productivamente hasta confirmar repositorio, procesos, datos, responsables y controles de AURA.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:nexo.access","role_code":"marketing","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos, módulos ni acciones internas.","condition_expression":"Carril base. Entrada administrativa de consulta al catálogo; no habilita inventario, logística, finanzas, impresión ni operación física.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:nexo.catalog.categories.view","role_code":"marketing","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CATALOG — referencia comercial organizacional exacta para productos, presentaciones, categorías o unidades dentro del entorno productivo ordinario; excluye APP-REVIEW, demo, pruebas y campos internos no necesarios.","condition_expression":"Carril base de solo lectura. Se limita a atributos comerciales necesarios para contenido, menú, fichas y campañas. Costos, márgenes, existencias, proveedores, recetas y campos técnicos requieren permisos separados.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:nexo.catalog.presentations.view","role_code":"marketing","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CATALOG — referencia comercial organizacional exacta para productos, presentaciones, categorías o unidades dentro del entorno productivo ordinario; excluye APP-REVIEW, demo, pruebas y campos internos no necesarios.","condition_expression":"Carril base de solo lectura. Se limita a atributos comerciales necesarios para contenido, menú, fichas y campañas. Costos, márgenes, existencias, proveedores, recetas y campos técnicos requieren permisos separados.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:nexo.catalog.products.view","role_code":"marketing","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CATALOG — referencia comercial organizacional exacta para productos, presentaciones, categorías o unidades dentro del entorno productivo ordinario; excluye APP-REVIEW, demo, pruebas y campos internos no necesarios.","condition_expression":"Carril base de solo lectura. Se limita a atributos comerciales necesarios para contenido, menú, fichas y campañas. Costos, márgenes, existencias, proveedores, recetas y campos técnicos requieren permisos separados.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:nexo.catalog.units.view","role_code":"marketing","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CATALOG — referencia comercial organizacional exacta para productos, presentaciones, categorías o unidades dentro del entorno productivo ordinario; excluye APP-REVIEW, demo, pruebas y campos internos no necesarios.","condition_expression":"Carril base de solo lectura. Se limita a atributos comerciales necesarios para contenido, menú, fichas y campañas. Costos, márgenes, existencias, proveedores, recetas y campos técnicos requieren permisos separados.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:shell.access","role_code":"marketing","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos, módulos ni acciones internas.","condition_expression":"Carril base. Permite ingresar al hub laboral; no amplía la matriz ni concede aplicaciones adicionales.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.access","role_code":"marketing","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — entrada a la aplicación. No concede por sí sola acceso a datos, módulos ni acciones internas.","condition_expression":"Carril base. Entrada a la superficie administrativa de VISO; cada módulo interno exige su permiso explícito.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.catalog.commercial_categories.view","role_code":"marketing","permission_key":"viso.catalog.commercial_categories.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CONTENT — contenido y configuración comercial de las unidades, marcas o canales ordinarios expresamente cubiertos por el recurso; excluye entornos aislados.","condition_expression":"Carril base de consulta. Permite organizar contenido y campañas por categorías comerciales; no autoriza crear, editar o retirar categorías.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.content.content_blocks.view","role_code":"marketing","permission_key":"viso.content.content_blocks.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CONTENT — contenido y configuración comercial de las unidades, marcas o canales ordinarios expresamente cubiertos por el recurso; excluye entornos aislados.","condition_expression":"Carril base de consulta. Permite revisar bloques de contenido; no autoriza crearlos, editarlos, publicarlos ni eliminarlos.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.content.menu.view","role_code":"marketing","permission_key":"viso.content.menu.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CONTENT — contenido y configuración comercial de las unidades, marcas o canales ordinarios expresamente cubiertos por el recurso; excluye entornos aislados.","condition_expression":"Carril base de consulta. Permite revisar el menú y su información comercial; no autoriza editar precios, disponibilidad, recetas ni configuración operativa.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.content.website_content.view","role_code":"marketing","permission_key":"viso.content.website_content.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CONTENT — contenido y configuración comercial de las unidades, marcas o canales ordinarios expresamente cubiertos por el recurso; excluye entornos aislados.","condition_expression":"Carril base de consulta. Permite revisar contenido del sitio web; no concede publicación, edición, infraestructura, analítica ni administración técnica.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.delivery.rates.view","role_code":"marketing","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-COMMERCIAL — tarifas y coberturas necesarias para comunicación comercial y campañas, únicamente en modo de consulta.","condition_expression":"Carril base de consulta. Solo para comunicar coberturas, condiciones y promociones; no permite modificar tarifas ni reglas de entrega.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.loyalty.products.view","role_code":"marketing","permission_key":"viso.loyalty.products.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G-CAMPAIGN — productos y beneficios de fidelización para planeación de campañas; no concede acceso a clientes, puntos, canjes ni administración de PASS.","condition_expression":"Carril base de consulta. Permite diseñar comunicación y campañas sobre beneficios existentes; no concede acceso a clientes ni modificación del programa.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:marketing:viso.organization.businesses.view","role_code":"marketing","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-REF — consulta de empresas, marcas y unidades de negocio necesarias para segmentar contenido y campañas; sin capacidad de modificación.","condition_expression":"Carril base de consulta. Permite identificar empresa, marca, unidad y canal aplicables al contenido; no concede administración organizacional.","source_task":"AUTH-RBAC-007"}
+{"grant_id":"base-role-grant:propietario:anima.access","role_code":"propietario","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.attendance.shifts.cancel","role_code":"propietario","permission_key":"anima.attendance.shifts.cancel","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.attendance.shifts.create","role_code":"propietario","permission_key":"anima.attendance.shifts.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.attendance.shifts.update","role_code":"propietario","permission_key":"anima.attendance.shifts.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.employee_documents.delete","role_code":"propietario","permission_key":"anima.workforce.employee_documents.delete","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.employee_documents.upload","role_code":"propietario","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.employee_documents.view","role_code":"propietario","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.employee_photos.upload","role_code":"propietario","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.staff_invitations.create","role_code":"propietario","permission_key":"anima.workforce.staff_invitations.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:anima.workforce.team_members.view","role_code":"propietario","permission_key":"anima.workforce.team_members.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:aura.access","role_code":"propietario","permission_key":"aura.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:fogo.access","role_code":"propietario","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:fogo.production.batches.view","role_code":"propietario","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:fogo.production.orders.view","role_code":"propietario","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:fogo.production.recipes.view","role_code":"propietario","permission_key":"fogo.production.recipes.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.access","role_code":"propietario","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.analytics.internal_reports.view","role_code":"propietario","permission_key":"nexo.analytics.internal_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.analytics.margin_reports.view","role_code":"propietario","permission_key":"nexo.analytics.margin_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.assets.counts.view","role_code":"propietario","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.assets.groups.view","role_code":"propietario","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.assets.items.create","role_code":"propietario","permission_key":"nexo.assets.items.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AST/AA/SA/AAT explícitos sobre territorios ordinarios; sin G y sin incorporación automática de sedes futuras.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.assets.items.view","role_code":"propietario","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.categories.view","role_code":"propietario","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.presentations.view","role_code":"propietario","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.products.create","role_code":"propietario","permission_key":"nexo.catalog.products.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.products.view","role_code":"propietario","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.request_policies.view","role_code":"propietario","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.catalog.units.view","role_code":"propietario","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.cost_centers.view","role_code":"propietario","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_invoice_amounts.view","role_code":"propietario","permission_key":"nexo.finance.internal_invoice_amounts.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_invoices.cancel","role_code":"propietario","permission_key":"nexo.finance.internal_invoices.cancel","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_invoices.generate","role_code":"propietario","permission_key":"nexo.finance.internal_invoices.generate","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_invoices.issue","role_code":"propietario","permission_key":"nexo.finance.internal_invoices.issue","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_invoices.view","role_code":"propietario","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_prices.view","role_code":"propietario","permission_key":"nexo.finance.internal_prices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_variances.approve","role_code":"propietario","permission_key":"nexo.finance.internal_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_variances.resolve","role_code":"propietario","permission_key":"nexo.finance.internal_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.finance.internal_variances.view","role_code":"propietario","permission_key":"nexo.finance.internal_variances.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.adjustments.register","role_code":"propietario","permission_key":"nexo.inventory.adjustments.register","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.adjustments.view","role_code":"propietario","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.entries.override","role_code":"propietario","permission_key":"nexo.inventory.entries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) para el componente base; ejecución = alcance base ∩ CTX operativo del recurso.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.entries.view","role_code":"propietario","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.initial_counts.view","role_code":"propietario","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.location_catalog.update","role_code":"propietario","permission_key":"nexo.inventory.location_catalog.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AST/AA/SA/AAT explícitos sobre territorios ordinarios; sin G y sin incorporación automática de sedes futuras.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.locations.view","role_code":"propietario","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.lpns.view","role_code":"propietario","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.movements.view","role_code":"propietario","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.production_batches.view","role_code":"propietario","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.remissions.cancel","role_code":"propietario","permission_key":"nexo.inventory.remissions.cancel","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.remissions.update","role_code":"propietario","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.remissions.view","role_code":"propietario","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.stock.view","role_code":"propietario","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.stock_count_variances.approve","role_code":"propietario","permission_key":"nexo.inventory.stock_count_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.stock_count_variances.resolve","role_code":"propietario","permission_key":"nexo.inventory.stock_count_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, contexto vigente, segregación entre captura y aprobación o resolución, recurso compatible, motivo y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.stock_counts.view","role_code":"propietario","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.storage_positions.view","role_code":"propietario","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.transfers.view","role_code":"propietario","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.warehouse_operations.view","role_code":"propietario","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.withdrawals.view","role_code":"propietario","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.inventory.zones.view","role_code":"propietario","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.driver_operations.view","role_code":"propietario","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.fulfillment.view","role_code":"propietario","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.fulfillment_routes.view","role_code":"propietario","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.operations.view","role_code":"propietario","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.operations_board.view","role_code":"propietario","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.logistics.supply_routes.view","role_code":"propietario","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.printing.jobs.view","role_code":"propietario","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.printing.templates.update","role_code":"propietario","permission_key":"nexo.printing.templates.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto y, cuando sea local, AS/SS/AST/AA/SA/AAT explícitos; sin G genérico.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.settings.remission_policies.view","role_code":"propietario","permission_key":"nexo.settings.remission_policies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:nexo.settings.sites.view","role_code":"propietario","permission_key":"nexo.settings.sites.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.access","role_code":"propietario","permission_key":"numera.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.analytics.break_even.view","role_code":"propietario","permission_key":"numera.analytics.break_even.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.analytics.financial_reports.view","role_code":"propietario","permission_key":"numera.analytics.financial_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.analytics.profitability.view","role_code":"propietario","permission_key":"numera.analytics.profitability.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.finance.cost_centers.view","role_code":"propietario","permission_key":"numera.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:numera.finance.expenses.view","role_code":"propietario","permission_key":"numera.finance.expenses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:origo.access","role_code":"propietario","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:origo.catalog.product_reviews.view","role_code":"propietario","permission_key":"origo.catalog.product_reviews.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:origo.procurement.purchase_orders.view","role_code":"propietario","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:origo.procurement.receipts.register","role_code":"propietario","permission_key":"origo.procurement.receipts.register","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base completo. No requiere turno ni check-in; exige orden, proveedor, documentos, sede receptora y recurso válidos. No registra stock ni sustituye la entrada física propietaria de NEXO.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:origo.procurement.receipts.view","role_code":"propietario","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:origo.procurement.suppliers.view","role_code":"propietario","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"El propietario usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:pass.access","role_code":"propietario","permission_key":"pass.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-CLIENT-ADMIN — superficie laboral-administrativa no territorial.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:pulso.delivery.deliveries.override","role_code":"propietario","permission_key":"pulso.delivery.deliveries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"Cobertura base explícita sobre sedes comerciales ordinarias; ejecución = alcance base ∩ CTX operativo de la entrega.","condition_expression":"La concesión base sola no ejecuta la acción: exige turno, check-in y contexto operativo compatibles.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:pulso.payments.transactions.refund","role_code":"propietario","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:pulso.payments.transactions.reverse","role_code":"propietario","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:pulso.sales.discounts.apply","role_code":"propietario","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:pulso.sales.orders.cancel","role_code":"propietario","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:pulso.sales.returns.create","role_code":"propietario","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"BASE","grant_type":"BASE_COMPONENT","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Componente base únicamente. La acción exige además componente operativo del mismo actor, turno y check-in vigentes, caja y recurso compatibles, reautenticación fuerte, motivo, evidencia, control de versión y auditoría.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:shell.access","role_code":"propietario","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.access","role_code":"propietario","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso no territorial a la aplicación.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.audit_logs.view","role_code":"propietario","permission_key":"viso.authorization.audit_logs.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.base_grants.approve","role_code":"propietario","permission_key":"viso.authorization.base_grants.approve","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.base_grants.create","role_code":"propietario","permission_key":"viso.authorization.base_grants.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.base_grants.revoke","role_code":"propietario","permission_key":"viso.authorization.base_grants.revoke","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.base_grants.suspend","role_code":"propietario","permission_key":"viso.authorization.base_grants.suspend","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.base_grants.view","role_code":"propietario","permission_key":"viso.authorization.base_grants.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.context_simulations.view","role_code":"propietario","permission_key":"viso.authorization.context_simulations.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"OWN más consulta de terceros mediante concesión administrativa sensible explícita; sin impersonación real.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.denials.approve","role_code":"propietario","permission_key":"viso.authorization.denials.approve","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.denials.create","role_code":"propietario","permission_key":"viso.authorization.denials.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.denials.revoke","role_code":"propietario","permission_key":"viso.authorization.denials.revoke","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.denials.view","role_code":"propietario","permission_key":"viso.authorization.denials.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.operational_grants.approve","role_code":"propietario","permission_key":"viso.authorization.operational_grants.approve","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.operational_grants.create","role_code":"propietario","permission_key":"viso.authorization.operational_grants.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.operational_grants.revoke","role_code":"propietario","permission_key":"viso.authorization.operational_grants.revoke","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.operational_grants.suspend","role_code":"propietario","permission_key":"viso.authorization.operational_grants.suspend","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.authorization.operational_grants.view","role_code":"propietario","permission_key":"viso.authorization.operational_grants.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG — gobierno organizacional ordinario; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base sensible. Requiere reautenticación fuerte, actor activo, recurso objetivo válido, segregación de funciones y auditoría; no permite autoaprobación ni autoafectación.","source_task":"AUTH-CAT-023"}
+{"grant_id":"base-role-grant:propietario:viso.catalog.commercial_categories.view","role_code":"propietario","permission_key":"viso.catalog.commercial_categories.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.content.content_blocks.view","role_code":"propietario","permission_key":"viso.content.content_blocks.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.content.menu.view","role_code":"propietario","permission_key":"viso.content.menu.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.content.website_content.view","role_code":"propietario","permission_key":"viso.content.website_content.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.delivery.rates.view","role_code":"propietario","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.finance.accounting.view","role_code":"propietario","permission_key":"viso.finance.accounting.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.loyalty.customers.view","role_code":"propietario","permission_key":"viso.loyalty.customers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"Dominio cliente o negocio completo mediante concesión base explícita; sede solo como filtro de actividad.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.loyalty.products.view","role_code":"propietario","permission_key":"viso.loyalty.products.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG, unidad, negocio, canal o campaña exactos; territorio únicamente cuando el recurso lo declare.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.organization.businesses.view","role_code":"propietario","permission_key":"viso.organization.businesses.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.platform.app_updates.view","role_code":"propietario","permission_key":"viso.platform.app_updates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG exacto dentro de la organización ordinaria; no equivale a alcance territorial global.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.workforce.employees.view","role_code":"propietario","permission_key":"viso.workforce.employees.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.workforce.schedules.view","role_code":"propietario","permission_key":"viso.workforce.schedules.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.workforce.staff_calendar.view","role_code":"propietario","permission_key":"viso.workforce.staff_calendar.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:propietario:viso.workforce.vacancies.view","role_code":"propietario","permission_key":"viso.workforce.vacancies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"G(B) — organización productiva ordinaria; excluye APP-REVIEW, demo, pruebas, secretos y dominios aislados.","condition_expression":"Carril base. Sin turno ni check-in.","source_task":"AUTH-RBAC-001"}
+{"grant_id":"base-role-grant:supervisor:anima.access","role_code":"supervisor","permission_key":"anima.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.attendance.shifts.create","role_code":"supervisor","permission_key":"anima.attendance.shifts.create","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — turnos del personal y de las áreas dentro de la cobertura administrativa activa del supervisor.","condition_expression":"Carril base. Apoyo a la programación local. No crea cobertura territorial, no cambia roles base y no sustituye una aprobación superior cuando el flujo la exija.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.attendance.shifts.update","role_code":"supervisor","permission_key":"anima.attendance.shifts.update","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — turnos del personal y de las áreas dentro de la cobertura administrativa activa del supervisor.","condition_expression":"Carril base. Solo cambios permitidos por estado y campo. No cancela turnos ni modifica relaciones laborales fuera de la sede administrada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.workforce.employee_documents.upload","role_code":"supervisor","permission_key":"anima.workforce.employee_documents.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — documentos del personal vinculados a sedes o áreas asignadas al supervisor.","condition_expression":"Carril base. Solo carga de documentos admitidos por el flujo local; no elimina, reclasifica ni administra expedientes fuera de su cobertura.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.workforce.employee_documents.view","role_code":"supervisor","permission_key":"anima.workforce.employee_documents.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al supervisor.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.workforce.employee_photos.upload","role_code":"supervisor","permission_key":"anima.workforce.employee_photos.upload","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores vinculados a sedes o áreas asignadas al supervisor.","condition_expression":"Carril base. Solo actualización autorizada de fotografía; no modifica identidad, rol base, sede ni perfil administrativo.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:anima.workforce.team_members.view","role_code":"supervisor","permission_key":"anima.workforce.team_members.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al supervisor.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:fogo.access","role_code":"supervisor","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:fogo.production.batches.view","role_code":"supervisor","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:fogo.production.orders.view","role_code":"supervisor","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.access","role_code":"supervisor","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.analytics.internal_reports.view","role_code":"supervisor","permission_key":"nexo.analytics.internal_reports.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — reportes operativos de sedes o áreas asignadas.","condition_expression":"Carril base. Excluye margen completo, rentabilidad consolidada y datos de otras unidades.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.assets.counts.view","role_code":"supervisor","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.assets.groups.view","role_code":"supervisor","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.assets.items.view","role_code":"supervisor","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.catalog.categories.view","role_code":"supervisor","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.catalog.presentations.view","role_code":"supervisor","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.catalog.products.view","role_code":"supervisor","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.catalog.request_policies.view","role_code":"supervisor","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.catalog.units.view","role_code":"supervisor","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — recurso organizacional exacto vinculado a las unidades de negocio servidas por las sedes AS; sin acceso al resto de la organización.","condition_expression":"Carril base. Solo lectura. La relación con la unidad o negocio debe resolverse desde el recurso; no se inventa desde la sede seleccionada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.finance.cost_centers.view","role_code":"supervisor","permission_key":"nexo.finance.cost_centers.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/ORG-LOCAL — centros de costo estrictamente vinculados a las sedes asignadas.","condition_expression":"Carril base. Consulta de referencia operativa; no concede reportes financieros completos ni capacidad de configuración.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.finance.internal_invoices.view","role_code":"supervisor","permission_key":"nexo.finance.internal_invoices.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — facturas internas relacionadas con sedes asignadas al supervisor.","condition_expression":"Carril base. Consulta operativa del documento y su estado; no incluye valores protegidos por permiso separado ni permite generar, emitir o cancelar.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.finance.internal_variances.view","role_code":"supervisor","permission_key":"nexo.finance.internal_variances.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — variaciones operativas asociadas a sedes o áreas asignadas.","condition_expression":"Carril base. Solo revisión y seguimiento. No aprueba ni resuelve la variación.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.adjustments.view","role_code":"supervisor","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.entries.view","role_code":"supervisor","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.initial_counts.view","role_code":"supervisor","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.locations.view","role_code":"supervisor","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.lpns.view","role_code":"supervisor","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.movements.view","role_code":"supervisor","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.production_batches.view","role_code":"supervisor","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.remissions.update","role_code":"supervisor","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — remisiones en las que participe una sede asignada y el contrato permita edición desde ese extremo.","condition_expression":"Carril base. Solo correcciones ordinarias en estados y campos editables. No cancela, despacha, recibe ni altera efectos ya consolidados.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.remissions.view","role_code":"supervisor","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.stock.view","role_code":"supervisor","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.stock_counts.view","role_code":"supervisor","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.storage_positions.view","role_code":"supervisor","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.transfers.view","role_code":"supervisor","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.warehouse_operations.view","role_code":"supervisor","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.withdrawals.view","role_code":"supervisor","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.inventory.zones.view","role_code":"supervisor","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.driver_operations.view","role_code":"supervisor","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.fulfillment.view","role_code":"supervisor","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.fulfillment_routes.view","role_code":"supervisor","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.operations.view","role_code":"supervisor","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.operations_board.view","role_code":"supervisor","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.logistics.supply_routes.view","role_code":"supervisor","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.printing.jobs.view","role_code":"supervisor","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — recursos cuya sede o área pertenece a la cobertura administrativa activa del supervisor; excluye APP-REVIEW y territorios aislados.","condition_expression":"El supervisor usa el carril base; el carril operativo continúa independiente.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.settings.remission_policies.view","role_code":"supervisor","permission_key":"nexo.settings.remission_policies.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo consulta o seguimiento local. No modifica catálogos, políticas, plantillas ni estructura de sede.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:nexo.settings.sites.view","role_code":"supervisor","permission_key":"nexo.settings.sites.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — configuración o recurso local de una sede o área asignada; sin G, TST ni incorporación automática de sedes futuras.","condition_expression":"Carril base. Solo consulta o seguimiento local. No modifica catálogos, políticas, plantillas ni estructura de sede.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:origo.access","role_code":"supervisor","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:origo.procurement.purchase_orders.view","role_code":"supervisor","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:origo.procurement.receipts.view","role_code":"supervisor","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS-REL — recursos relacionales que involucren al menos una sede AS; toda mutación exige autoridad sobre los lados obligatorios definidos por el contrato.","condition_expression":"Carril base. La visibilidad de un extremo no concede autoridad general sobre el otro ni sobre sedes no asignadas.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:origo.procurement.suppliers.view","role_code":"supervisor","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"ORG-LOCAL — proveedores relacionados con compras o recepciones de las sedes asignadas.","condition_expression":"Carril base. Solo datos operativos necesarios para seguimiento; campos contractuales o financieros sensibles permanecen enmascarados o denegados.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:shell.access","role_code":"supervisor","permission_key":"shell.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:viso.access","role_code":"supervisor","permission_key":"viso.access","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"NT-APP — acceso a la aplicación. La autorización interna continúa limitada por AS/AA y por el recurso.","condition_expression":"Carril base. No requiere turno ni check-in. Entrar a la aplicación no amplía la cobertura territorial.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:viso.delivery.rates.view","role_code":"supervisor","permission_key":"viso.delivery.rates.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/SS/AA/SA explícitos — tarifas aplicables a sedes o áreas asignadas.","condition_expression":"Carril base. Solo consulta para operación local; no modifica tarifas ni políticas de entrega.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:viso.workforce.employees.view","role_code":"supervisor","permission_key":"viso.workforce.employees.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al supervisor.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:viso.workforce.schedules.view","role_code":"supervisor","permission_key":"viso.workforce.schedules.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al supervisor.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-004"}
+{"grant_id":"base-role-grant:supervisor:viso.workforce.staff_calendar.view","role_code":"supervisor","permission_key":"viso.workforce.staff_calendar.view","authorization_mode":"BASE_ONLY","lane":"BASE","grant_type":"DIRECT_BASE","effect":"ALLOW","scope_expression":"AS/AA — trabajadores, turnos, documentos o vacantes vinculados a sedes o áreas activamente asignadas al supervisor.","condition_expression":"Carril base. No requiere turno ni check-in. La persona o recurso objetivo debe pertenecer a la cobertura administrativa autorizada.","source_task":"AUTH-RBAC-004"}
+```
+
+---
+
+#### 19. Fuera del alcance
+
+AUTH-RBAC-024 no:
+
+- crea un archivo JSON físico dentro del repositorio;
+- publica un paquete;
+- inserta `role_permissions`;
+- elimina permisos legacy;
+- migra empleados;
+- crea roles;
+- genera UUID;
+- expande territorios;
+- cambia RLS;
+- cambia RPC;
+- implementa guards;
+- modifica dispositivos;
+- crea excepciones;
+- crea denegaciones;
+- ejecuta rollback;
+- modifica Supabase.
+
+---
+
+#### 20. Riesgos controlados
+
+##### Riesgo 1 — Wildcard de propietario
+
+Control:
+
+```text
+121 FILAS EXPLÍCITAS
+≠
+propietario = *
+```
+
+##### Riesgo 2 — Gerente se vuelve global
+
+Control:
+
+```text
+scope_expression territorial
++
+recurso real dentro de cobertura
+```
+
+##### Riesgo 3 — Componente base ejecuta acción operativa
+
+Control:
+
+```text
+grant_type = BASE_COMPONENT
+→ insuficiente por sí solo
+```
+
+##### Riesgo 4 — Roles legacy reaparecen
+
+Control:
+
+```text
+solo siete roles base incluidos
+```
+
+##### Riesgo 5 — Clave legacy alimenta el dataset
+
+Control:
+
+```text
+legacy_matches = 0
+```
+
+##### Riesgo 6 — Conteo lógico se confunde con filas físicas
+
+Control:
+
+```text
+dataset lógico versionado
+≠
+proyección física posterior
+```
+
+##### Riesgo 7 — Aprobación modifica el hash
+
+Control:
+
+- estado y timestamp excluidos del payload;
+- contenido semántico inmutable.
+
+---
+
+#### 21. Criterios de aprobación
+
+AUTH-RBAC-024 podrá aprobarse cuando se acepte que:
+
+1. el dataset se identifica como
+   `vento.authorization.base-role-grants@1.0.0`;
+2. referencia `vento.authorization@1.0.0`;
+3. referencia la huella contractual exacta de AUTH-CAT-024;
+4. contiene exactamente 499 registros lógicos;
+5. incluye exactamente siete roles base;
+6. contiene 463 concesiones directas;
+7. contiene 36 componentes base;
+8. no contiene roles operativos;
+9. no contiene oficios base legacy;
+10. no contiene permisos `OPERATIONAL_ONLY`;
+11. no contiene claves legacy o retiradas;
+12. ausencia de fila continúa siendo `DEFAULT_DENY`;
+13. no se crean denegaciones explícitas redundantes;
+14. el diff de 50 incorporaciones queda reproducido;
+15. `BASE_COMPONENT` nunca autoriza por sí solo;
+16. el orden y la serialización son deterministas;
+17. el hash del dataset es
+    `sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1`;
+18. AUTH-RBAC-025 y AUTH-RBAC-026 no podrán modificar este dataset;
+19. la proyección física se reserva para BLOQUE R;
+20. no se implementan código, migraciones ni cambios en Supabase.
+
+---
+
+#### 22. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-CAT-024  | APROBADA    |
+| AUTH-RBAC-024 | APROBADA    |
+| AUTH-RBAC-025 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-025 hasta recibir aprobación explícita de
+AUTH-RBAC-024.
+
+
+### ✅ AUTH-RBAC-025 — Definir dataset canónico de matriz operativa
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE D — Datasets canónicos  
+**Naturaleza:** Definición documental de dataset lógico, versionado e inmutable  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-RBAC-024 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-026 — Definir dataset canónico de excepciones y denegaciones  
+**Dataset:** `vento.authorization.operational-role-grants@1.0.0`  
+**Catálogo:** `vento.authorization@1.0.0`  
+**Huella contractual:** `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`  
+**Registros lógicos:** **240**  
+**Roles operativos incluidos:** **12**  
+**Hash del dataset propuesto:** `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`
+
+Esta tarea convierte las matrices operativas aprobadas en AUTH-RBAC-008 a
+AUTH-RBAC-019 y el diff contractual aprobado en AUTH-CAT-023 en un dataset
+lógico único, determinista, verificable y listo para su futura
+materialización física.
+
+No crea tablas, no inserta filas, no modifica Supabase, no genera
+migraciones, no altera RLS o RPC y no publica archivos físicos del paquete
+`@vento/contracts`.
+
+---
+
+#### 1. Objetivo
+
+Definir de manera exacta:
+
+1. cuáles son los doce roles operativos canónicos;
+2. qué permisos activos recibe cada rol durante contexto operativo válido;
+3. qué concesiones son completas por el carril operativo;
+4. cuáles filas aportan únicamente el componente operativo de una
+   autorización `BASE_AND_OPERATIONAL`;
+5. cómo se expresan turno, check-in, sede, área y recurso;
+6. cómo se incorpora el diff de 29 concesiones y el retiro de `dispatch`;
+7. cómo se serializa, ordena, valida y verifica el dataset;
+8. qué queda reservado para AUTH-RBAC-026, AUTH-RBAC-027,
+   AUTH-RBAC-028 y BLOQUE R.
+
+Flujo:
+
+```text
+MATRICES OPERATIVAS APROBADAS
+AUTH-RBAC-008 A AUTH-RBAC-019
+        +
+DIFF CONTRACTUAL APROBADO
+AUTH-CAT-023
+        +
+CATÁLOGO CONGELADO
+AUTH-CAT-024
+        ↓
+DATASET CANÓNICO DE MATRIZ OPERATIVA
+AUTH-RBAC-025
+```
+
+---
+
+#### 2. Decisión principal
+
+El dataset contiene exclusivamente concesiones positivas explícitas para:
+
+```text
+cajero_satelite
+barista_satelite
+cocinero_satelite
+servicio_salon
+mostrador_satelite
+operador_integral_satelite
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+bodeguero
+conductor_logistica
+gerencia_operativa
+```
+
+No incluye:
+
+- roles base;
+- oficios base legacy;
+- concesiones individuales;
+- denegaciones;
+- wildcards;
+- claves legacy bloqueadas;
+- permisos técnicos retirados;
+- permisos `BASE_ONLY`;
+- contexto operativo global;
+- permisos permanentes;
+- expansión por prefijo, aplicación o dispositivo.
+
+Regla:
+
+```text
+FILA PRESENTE
++
+MISMO ACTOR
++
+ROL OPERATIVO ACTIVO
++
+TURNO VÁLIDO
++
+CHECK-IN CUANDO CORRESPONDA
++
+SEDE Y ÁREA COMPATIBLES
++
+RECURSO VÁLIDO
++
+SIN DENEGACIÓN
+=
+AUTORIZACIÓN OPERATIVA POSIBLE
+```
+
+Una fila no sobrevive al cierre del turno o del contexto operativo que la
+originó.
+
+---
+
+#### 3. Manifiesto contractual
+
+```json
+{
+  "dataset_id": "vento.authorization.operational-role-grants",
+  "dataset_version": "1.0.0",
+  "dataset_schema_version": "1.0.0",
+  "catalog_id": "vento.authorization",
+  "catalog_version": "1.0.0",
+  "catalog_schema_version": "1.0.0",
+  "contract_release_hash": "sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe",
+  "record_count": 240,
+  "operational_role_count": 12,
+  "direct_operational_count": 218,
+  "operational_component_count": 22,
+  "effect": "ALLOW_ONLY"
+}
+```
+
+El estado de aprobación y la fecha documental no forman parte del payload ni
+del hash.
+
+---
+
+#### 4. Resultado cuantitativo
+
+##### 4.1 Conteo por rol operativo
+
+| Rol operativo                | Directas | Componentes operativos |   Total |
+| ---------------------------- | -------: | ---------------------: | ------: |
+| `cajero_satelite`            |       15 |                      5 |      20 |
+| `barista_satelite`           |       11 |                      0 |      11 |
+| `cocinero_satelite`          |       11 |                      0 |      11 |
+| `servicio_salon`             |       11 |                      0 |      11 |
+| `mostrador_satelite`         |       11 |                      0 |      11 |
+| `operador_integral_satelite` |       16 |                      5 |      21 |
+| `produccion_cocina`          |       16 |                      0 |      16 |
+| `produccion_panaderia`       |       16 |                      0 |      16 |
+| `produccion_reposteria`      |       16 |                      0 |      16 |
+| `bodeguero`                  |       36 |                      0 |      36 |
+| `conductor_logistica`        |       16 |                      0 |      16 |
+| `gerencia_operativa`         |       43 |                     12 |      55 |
+| **Total**                    |  **218** |                 **22** | **240** |
+
+##### 4.2 Conteo por tipo
+
+| Tipo                    | Cantidad | Efecto                                                                                                            |
+| ----------------------- | -------: | ----------------------------------------------------------------------------------------------------------------- |
+| `DIRECT_OPERATIONAL`    |      218 | El carril operativo puede satisfacer la autorización completa, sujeto a contexto, alcance, recurso y condiciones. |
+| `OPERATIONAL_COMPONENT` |       22 | Solo aporta el componente operativo de una autorización `BASE_AND_OPERATIONAL`.                                   |
+| **Total**               |  **240** | Sin duplicados.                                                                                                   |
+
+##### 4.3 Conteo por modalidad
+
+| Modalidad              | Cantidad |
+| ---------------------- | -------: |
+| `BASE_OR_OPERATIONAL`  |      174 |
+| `OPERATIONAL_ONLY`     |       44 |
+| `BASE_AND_OPERATIONAL` |       22 |
+| `BASE_ONLY`            |        0 |
+| **Total**              |  **240** |
+
+##### 4.4 Conteo por aplicación
+
+| Aplicación | Registros operativos |
+| ---------- | -------------------: |
+| `fogo`     |                   19 |
+| `nexo`     |                  181 |
+| `origo`    |                    9 |
+| `pulso`    |                   31 |
+| **Total**  |              **240** |
+
+##### 4.5 Evolución desde las matrices originales
+
+| Concepto                              | Cantidad |
+| ------------------------------------- | -------: |
+| Concesiones operativas originales     |      212 |
+| Adiciones contractuales               |       29 |
+| Retiro legacy                         |        1 |
+| **Concesiones operativas congeladas** |  **240** |
+
+Cálculo:
+
+```text
+212
++ 29
+- 1
+= 240
+```
+
+---
+
+#### 5. Esquema lógico de registro
+
+Cada registro utiliza exactamente estos campos:
+
+| Campo                   | Tipo   | Regla                                                               |
+| ----------------------- | ------ | ------------------------------------------------------------------- |
+| `grant_id`              | string | `operational-role-grant:<operational_role_code>:<permission_key>`.  |
+| `operational_role_code` | string | Uno de los doce roles operativos canónicos.                         |
+| `permission_key`        | string | Clave activa exacta de `vento.authorization@1.0.0`.                 |
+| `authorization_mode`    | enum   | `BASE_OR_OPERATIONAL`, `OPERATIONAL_ONLY` o `BASE_AND_OPERATIONAL`. |
+| `lane`                  | enum   | Siempre `OPERATIONAL`.                                              |
+| `grant_type`            | enum   | `DIRECT_OPERATIONAL` u `OPERATIONAL_COMPONENT`.                     |
+| `effect`                | enum   | Siempre `ALLOW`.                                                    |
+| `scope_expression`      | string | Perfil de alcance operativo aprobado.                               |
+| `condition_expression`  | string | Condiciones de turno, check-in, recurso, transición y auditoría.    |
+| `source_task`           | string | Matriz original o `AUTH-CAT-023`.                                   |
+
+El dataset es lógico. No traduce todavía expresiones de alcance a UUID,
+filas físicas o políticas RLS.
+
+---
+
+#### 6. Semántica de `DIRECT_OPERATIONAL`
+
+Una fila `DIRECT_OPERATIONAL` significa:
+
+```text
+ROL OPERATIVO ACTIVO
++
+PERMISO EXACTO
++
+CONTEXTO OPERATIVO VIGENTE
++
+ALCANCE COINCIDENTE
++
+RECURSO VÁLIDO
++
+TRANSICIÓN PERMITIDA
++
+SIN DENEGACIÓN APLICABLE
+=
+AUTORIZACIÓN OPERATIVA POSIBLE
+```
+
+No significa:
+
+- permiso permanente;
+- permiso base;
+- acceso a todas las sedes;
+- acceso fuera de turno;
+- custodia de otro actor;
+- capacidad por compartir dispositivo;
+- autorización sobre recursos ajenos;
+- omisión de idempotencia o auditoría.
+
+---
+
+#### 7. Semántica de `OPERATIONAL_COMPONENT`
+
+Las 22 filas `OPERATIONAL_COMPONENT` corresponden únicamente a
+`BASE_AND_OPERATIONAL`.
+
+Distribución:
+
+| Familia                    | Roles                                                                 | Componentes |
+| -------------------------- | --------------------------------------------------------------------- | ----------: |
+| Matrices originales        | `gerencia_operativa`                                                  |           5 |
+| PULSO sensible             | `cajero_satelite`, `operador_integral_satelite`, `gerencia_operativa` |          15 |
+| NEXO diferencias de conteo | `gerencia_operativa`                                                  |           2 |
+| **Total**                  | —                                                                     |      **22** |
+
+Regla:
+
+```text
+COMPONENTE BASE DEL ACTOR
++
+COMPONENTE OPERATIVO DEL MISMO ACTOR
++
+MISMO PERMISO
++
+MISMO RECURSO
++
+MISMA SOLICITUD
++
+CONTEXTO VÁLIDO
+=
+AUTORIZACIÓN POSIBLE
+```
+
+No se admite combinar:
+
+```text
+BASE DE UNA PERSONA
++
+OPERATIVO DE OTRA PERSONA
+```
+
+Una fila `OPERATIONAL_COMPONENT` aislada produce denegación.
+
+---
+
+#### 8. Diff contractual incorporado
+
+##### 8.1 PULSO — 23 adiciones
+
+Acciones ordinarias para `cajero_satelite` y
+`operador_integral_satelite`:
+
+```text
+pulso.sales.orders.create
+pulso.payments.transactions.collect
+pulso.cash.sessions.start
+pulso.cash.sessions.close
+```
+
+Resultado:
+
+```text
+4 claves × 2 roles = 8 concesiones directas
+```
+
+Acciones sensibles para `cajero_satelite`,
+`operador_integral_satelite` y `gerencia_operativa`:
+
+```text
+pulso.payments.transactions.reverse
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+pulso.payments.transactions.refund
+pulso.sales.discounts.apply
+```
+
+Resultado:
+
+```text
+5 claves × 3 roles = 15 componentes operativos
+```
+
+`gerencia_operativa` no recibe por matriz las cuatro operaciones ordinarias
+de caja.
+
+##### 8.2 NEXO — 5 adiciones
+
+Componentes operativos para `gerencia_operativa`:
+
+```text
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+```
+
+Concesiones directas para `conductor_logistica`:
+
+```text
+nexo.inventory.remissions.accept_custody
+nexo.inventory.remissions.start_transit
+nexo.inventory.remissions.deliver
+```
+
+Resultado:
+
+```text
+2 componentes
++
+3 concesiones directas
+=
+5 adiciones
+```
+
+##### 8.3 ORIGO — 1 adición
+
+```text
+bodeguero
++
+origo.procurement.receipts.register
+```
+
+La concesión registra recepción comercial. No registra stock ni sustituye
+la entrada física de NEXO.
+
+##### 8.4 Resultado
+
+```text
+23 PULSO
++ 5 NEXO
++ 1 ORIGO
+= 29 ADICIONES
+```
+
+---
+
+#### 9. Retiro de `dispatch`
+
+Se elimina del dataset:
+
+```text
+conductor_logistica
+- nexo.inventory.remissions.dispatch
+```
+
+La sustitución es:
+
+```text
+conductor_logistica
++ nexo.inventory.remissions.accept_custody
++ nexo.inventory.remissions.start_transit
++ nexo.inventory.remissions.deliver
+```
+
+No existe equivalencia automática uno-a-muchos.
+
+`dispatch` puede permanecer físicamente durante una migración controlada,
+pero:
+
+- no forma parte del dataset canónico;
+- no admite asignaciones nuevas;
+- no puede reconstruirse desde las tres claves nuevas;
+- debe retirarse mediante BLOQUE R con telemetría, pruebas y rollback.
+
+---
+
+#### 10. Reglas de contexto operativo
+
+Toda fila exige:
+
+1. actor humano identificado;
+2. relación laboral activa;
+3. rol operativo efectivo;
+4. turno publicado y vigente;
+5. sede activa autorizada;
+6. área activa cuando el contrato lo requiera;
+7. check-in activo cuando el permiso lo requiera;
+8. recurso relacionado con la jornada;
+9. contrato de recurso satisfecho;
+10. dispositivo compatible cuando corresponda;
+11. ausencia de denegación aplicable;
+12. auditoría del actor real.
+
+El dispositivo compartido nunca sustituye:
+
+```text
+actor
+rol
+turno
+check-in
+sede
+área
+permiso
+recurso
+```
+
+---
+
+#### 11. Reglas específicas de segregación
+
+##### 11.1 Caja y pagos
+
+- una sesión de caja pertenece a actor y punto concretos;
+- cobrar no concede reversar;
+- cancelar no revierte pagos, inventario o producción por implicación;
+- crear devolución no ejecuta reembolso;
+- cerrar sesión no aprueba diferencias;
+- las acciones sensibles exigen ambos carriles.
+
+##### 11.2 Diferencias de inventario
+
+```text
+ACTOR QUE CAPTURA
+≠
+ACTOR QUE APRUEBA O RESUELVE
+```
+
+`bodeguero` no recibe `approve` ni `resolve` por matriz.
+
+##### 11.3 Custodia logística
+
+- aceptar custodia no inicia tránsito;
+- iniciar tránsito no registra entrega;
+- entregar no registra recepción del destinatario;
+- ninguna de las tres claves modifica cantidades;
+- la discrepancia genera evidencia y flujo de resolución separado.
+
+##### 11.4 Recepción comercial
+
+```text
+ORIGO
+→ recepción comercial
+
+NEXO
+→ entrada física y custodia
+```
+
+El dataset no fusiona ambos efectos.
+
+---
+
+#### 12. Ausencia y denegación
+
+El dataset contiene únicamente `ALLOW`.
+
+Reglas:
+
+1. ausencia de fila = `DEFAULT_DENY`;
+2. ausencia no crea una denegación explícita;
+3. AUTH-RBAC-026 define excepciones y denegaciones;
+4. una denegación aplicable prevalece;
+5. revocar una denegación no crea una concesión;
+6. un permiso nuevo no aparece por prefijo;
+7. un paquete de dispositivo no crea filas en este dataset.
+
+---
+
+#### 13. Alcance lógico y proyección física
+
+Los perfiles `CTX-*` son expresiones contractuales.
+
+Una fila lógica podrá generar varias filas físicas por:
+
+- tipo de sede;
+- sede concreta;
+- tipo de área;
+- área concreta;
+- punto operativo;
+- caja;
+- ruta;
+- vehículo;
+- recurso asignado.
+
+Por tanto:
+
+```text
+240 REGISTROS LÓGICOS
+≠
+240 FILAS FÍSICAS OBLIGATORIAS
+```
+
+La futura proyección deberá conservar equivalencia semántica, producir su
+propio conteo y publicar checksum.
+
+---
+
+#### 14. Orden canónico
+
+Los registros se ordenan por:
+
+```text
+operational_role_code ASC
+permission_key ASC
+```
+
+No se utiliza orden de inserción, UUID, fecha, interfaz o tabla física.
+
+---
+
+#### 15. Serialización y hash
+
+La huella se calcula así:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- primera línea = manifiesto JSON compacto;
+- 240 líneas siguientes = registros JSON compactos;
+- campos en el orden de la sección 5;
+- registros en el orden de la sección 14;
+- sin espacios finales;
+- un único LF al final;
+- SHA-256 sobre todos los bytes;
+- sin estado, fecha o timestamp.
+
+Resultado:
+
+```text
+dataset_hash = sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+---
+
+#### 16. Validaciones obligatorias
+
+El dataset deberá pasar:
+
+1. `record_count = 240`;
+2. `operational_role_count = 12`;
+3. 240 pares únicos `operational_role_code + permission_key`;
+4. 218 filas `DIRECT_OPERATIONAL`;
+5. 22 filas `OPERATIONAL_COMPONENT`;
+6. 174 filas `BASE_OR_OPERATIONAL`;
+7. 44 filas `OPERATIONAL_ONLY`;
+8. 22 filas `BASE_AND_OPERATIONAL`;
+9. 0 filas `BASE_ONLY`;
+10. 0 filas `DENY`;
+11. 0 claves legacy bloqueadas;
+12. 0 claves técnicas retiradas;
+13. 0 apariciones de `nexo.inventory.remissions.dispatch`;
+14. todas las claves pertenecen a los 140 permisos activos;
+15. cada componente corresponde a `BASE_AND_OPERATIONAL`;
+16. no existen wildcards;
+17. no existe contexto operativo global;
+18. no se concede autoridad por dispositivo;
+19. el diff añade 29 decisiones y retira 1;
+20. el hash coincide con el publicado.
+
+Resultado documental:
+
+```text
+records = 240
+unique_role_permission_pairs = 240
+direct_operational = 218
+operational_components = 22
+legacy_matches = 0
+retired_matches = 0
+dispatch_matches = 0
+base_only_rows = 0
+dataset_hash = sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+---
+
+#### 17. Relación con tareas posteriores
+
+##### AUTH-RBAC-026
+
+Definirá:
+
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones por carril;
+- denegaciones actor-wide;
+- vigencia, motivo y trazabilidad.
+
+No podrá modificar este dataset.
+
+##### AUTH-RBAC-027
+
+Validará que no exista acceso operativo global accidental.
+
+##### AUTH-RBAC-028
+
+Validará que administración base y check-in permanezcan independientes.
+
+##### BLOQUE R
+
+Materializará:
+
+- tablas o archivos físicos;
+- expansión territorial;
+- migraciones;
+- reconciliación;
+- sustitución de `dispatch`;
+- pruebas;
+- telemetría;
+- rollback.
+
+---
+
+#### 18. Payload canónico
+
+La primera línea es el manifiesto. Las 240 líneas siguientes son los
+registros.
+
+```jsonl
+{"dataset_id":"vento.authorization.operational-role-grants","dataset_version":"1.0.0","dataset_schema_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","catalog_schema_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","record_count":240,"operational_role_count":12,"direct_operational_count":218,"operational_component_count":22,"effect":"ALLOW_ONLY"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.access","operational_role_code":"barista_satelite","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-APP — turno publicado y vigente, rol efectivo `barista_satelite`, sede activa autorizada y área operativa válida de tipo `bar`. No exige check-in para mostrar la entrada y los bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.catalog.categories.view","operational_role_code":"barista_satelite","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.catalog.presentations.view","operational_role_code":"barista_satelite","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.catalog.products.view","operational_role_code":"barista_satelite","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `barista_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.catalog.request_policies.view","operational_role_code":"barista_satelite","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.catalog.units.view","operational_role_code":"barista_satelite","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.inventory.remissions.request","operational_role_code":"barista_satelite","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `bar`, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.inventory.remissions.update","operational_role_code":"barista_satelite","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.inventory.remissions.view","operational_role_code":"barista_satelite","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:nexo.logistics.supply_routes.view","operational_role_code":"barista_satelite","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:barista_satelite:pulso.access","operational_role_code":"barista_satelite","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-BAR-PULSO — turno publicado y vigente, rol `barista_satelite`, sede autorizada y área operativa válida de tipo `bar`.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar el contexto de barra. No autoriza por sí solo consultar comandas, cambiar estados de preparación, registrar faltantes, rehacer productos, operar ventas, pagos, caja, puntos ni entregas.","source_task":"AUTH-RBAC-009"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.access","operational_role_code":"bodeguero","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-NEXO-APP — Turno publicado y vigente, rol operativo `bodeguero`, sede autorizada y área activa de tipo `warehouse`. Permite entrar a NEXO; no concede ninguna capacidad interna por sí solo.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.catalog.categories.view","operational_role_code":"bodeguero","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-CATALOG — Categorías necesarias para búsqueda, clasificación y operación física del inventario autorizado.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.catalog.presentations.view","operational_role_code":"bodeguero","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-CATALOG — Presentaciones, empaques, conversiones y unidades logísticas necesarias para recibir, contar, ubicar, trasladar, retirar y preparar inventario.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.catalog.products.view","operational_role_code":"bodeguero","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-CATALOG — Productos vigentes que pueden almacenarse, recibirse, ubicarse, trasladarse, retirarse o incluirse en remisiones de la bodega activa. Excluye costos, márgenes, proveedores y configuración administrativa.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.catalog.request_policies.view","operational_role_code":"bodeguero","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-REQUEST-POLICIES — Políticas publicadas aplicables a solicitudes y abastecimiento de las sedes atendidas por la bodega activa. Solo lectura; no permite modificarlas.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.catalog.units.view","operational_role_code":"bodeguero","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-CATALOG — Unidades, equivalencias y factores publicados necesarios para validar cantidades, presentaciones y conversiones.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.adjustments.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-ADJUSTMENTS-READ — Ajustes finalizados que afecten stock bajo custodia de la bodega activa. Durante conteos ciegos no se mostrarán existencias teóricas, variaciones ni información que sesgue el conteo.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.entries.register","operational_role_code":"bodeguero","permission_key":"nexo.inventory.entries.register","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-ENTRY-REGISTER — Registro ordinario de entrada física a la bodega únicamente cuando exista una fuente válida: recepción aprobada, lote productivo liberado, devolución, remisión recibida u otro evento canónico autorizado. No permite crear stock sin soporte.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.entries.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-ENTRIES — Entradas ordinarias y sus líneas vinculadas a la bodega activa, incluida su fuente empresarial, estado, ubicación y trazabilidad visible.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.initial_counts.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-INITIAL-COUNT — Sesiones de conteo inicial asignadas a la bodega activa, con visibilidad limitada por etapa. No concede modificar la base inicial fuera del flujo formal.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.location_assignments.assign","operational_role_code":"bodeguero","permission_key":"nexo.inventory.location_assignments.assign","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PUTAWAY — Asignación de stock o LPN recibidos a una ubicación válida dentro de la bodega activa. Exige compatibilidad de producto, capacidad, lote, estado y restricciones de almacenamiento.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.locations.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-TOPOLOGY — Ubicaciones activas pertenecientes a la sede y al área de bodega del contexto operativo. No concede administrar el catálogo de ubicaciones.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.lpns.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-LPN — LPN y contenedores bajo custodia de la bodega activa, con contenido, lote, ubicación y estado necesarios para operar. No permite reasignarlos sin el permiso correspondiente.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.movements.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-MOVEMENTS — Movimientos que tengan origen, destino o efecto dentro de la bodega activa. La visibilidad de un extremo no habilita actuar sobre territorios no autorizados.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.production_batches.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PRODUCTION-BATCHES — Lotes productivos reflejados en inventario cuando ingresen, se encuentren o deban trazarse dentro de la bodega activa. No concede operar FOGO ni modificar lotes productivos.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.remissions.prepare","operational_role_code":"bodeguero","permission_key":"nexo.inventory.remissions.prepare","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-REMISSION-PREPARE — Preparación de remisiones cuyo origen sea la bodega activa: reserva, alistamiento, cantidades preparadas, faltantes, sustituciones permitidas, empaque y estado listo para transporte. No inicia el tránsito.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.remissions.receive","operational_role_code":"bodeguero","permission_key":"nexo.inventory.remissions.receive","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-REMISSION-RECEIVE — Recepción de remisiones cuyo destino autorizado sea la bodega activa. Exige verificación física, cantidades recibidas, diferencias y transferencia de custodia. El actor no puede recibir una remisión que preparó en el mismo extremo.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.remissions.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-REMISSION — Remisiones donde la bodega activa sea origen, destino receptor o custodio explícito. Excluye visibilidad general de otras sedes y campos no necesarios para la etapa.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.stock.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-STOCK — Existencias de la bodega activa por producto, presentación, lote, LPN y ubicación. No concede acceso a otras sedes ni a áreas no cubiertas por el contexto.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.stock_counts.perform","operational_role_code":"bodeguero","permission_key":"nexo.inventory.stock_counts.perform","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-COUNT-PERFORM — Captura y envío de cantidades físicas en sesiones válidas de la bodega activa. No concede aprobar diferencias, ajustar stock, reabrir sesiones cerradas ni alterar resultados de otro actor.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.stock_counts.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-COUNT-READ — Sesiones de conteo asignadas o ejecutadas en la bodega activa. Antes del envío debe preservar modalidad ciega; las diferencias y el stock teórico solo se muestran según la etapa y autoridad aprobadas.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.stock_validations.perform","operational_role_code":"bodeguero","permission_key":"nexo.inventory.stock_validations.perform","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-STOCK-VALIDATION — Validaciones físicas o dirigidas sobre un conjunto autorizado de stock y ubicaciones. Registra evidencia y diferencias, pero no corrige cantidades ni crea ajustes automáticamente.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.storage_positions.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-TOPOLOGY — Posiciones de almacenamiento pertenecientes a zonas y ubicaciones autorizadas de la bodega activa.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.transfers.create","operational_role_code":"bodeguero","permission_key":"nexo.inventory.transfers.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-TRANSFER-CREATE — Traslados ordinarios entre ubicaciones autorizadas de la misma sede y área de bodega. Los movimientos entre sedes se gestionan mediante remisiones; los movimientos hacia consumo productivo se gestionan mediante retiros o el flujo canónico correspondiente.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.transfers.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-TRANSFERS — Traslados donde la bodega activa sea origen o destino autorizado. La consulta de un extremo no amplía la autoridad sobre el otro.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.warehouse_operations.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-OPERATIONS — Cola y estado de operaciones ordinarias de la bodega activa: recepción física, ubicación, traslado, retiro, conteo, validación y preparación.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.withdrawals.register","operational_role_code":"bodeguero","permission_key":"nexo.inventory.withdrawals.register","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-WITHDRAWAL-REGISTER — Salida física de stock desde ubicación y lote exactos de la bodega activa hacia un destino o motivo válido. Debe impedir stock negativo, duplicidad, retroactividad no autorizada y consumo sin trazabilidad.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.withdrawals.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-WITHDRAWALS — Retiros originados en la bodega activa, incluidos sus productos, cantidades, motivo, destino operativo y actor registrador.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.inventory.zones.view","operational_role_code":"bodeguero","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-TOPOLOGY — Zonas de almacenamiento pertenecientes a la bodega activa.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.logistics.supply_routes.view","operational_role_code":"bodeguero","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-SUPPLY-ROUTES — Rutas y ventanas de abastecimiento publicadas necesarias para priorizar y preparar remisiones desde la bodega activa. No concede modificarlas ni coordinar transporte completo.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:nexo.printing.jobs.view","operational_role_code":"bodeguero","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PRINT-JOBS — Trabajos de impresión originados por operaciones de la bodega activa, como etiquetas de LPN, ubicaciones o preparación. No permite editar plantillas.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:origo.access","operational_role_code":"bodeguero","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-ORIGO-APP — Entrada operativa a ORIGO para verificación física de abastecimiento durante el turno. No concede compras ni recepción por sí sola.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:origo.procurement.purchase_orders.view","operational_role_code":"bodeguero","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PURCHASE-ORDERS — Órdenes de compra aprobadas o vigentes cuyo destino receptor sea la sede o bodega activa. Mostrar solo productos, cantidades, presentaciones, proveedor, estado y datos necesarios para la recepción.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:origo.procurement.receipts.register","operational_role_code":"bodeguero","permission_key":"origo.procurement.receipts.register","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PURCHASE-RECEIPT-REGISTER — recepción comercial de órdenes cuyo destino receptor sea la sede y bodega activas del actor.","condition_expression":"Carril operativo completo. Requiere turno y check-in válidos, orden, proveedor, líneas, cantidades y documentos recibibles, actor humano identificado, atomicidad, idempotencia y auditoría. No crea ni aprueba órdenes, no modifica proveedores y no registra directamente stock; la entrada física continúa siendo propiedad de NEXO.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:bodeguero:origo.procurement.receipts.view","operational_role_code":"bodeguero","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-PURCHASE-RECEIPTS — Recepciones de compra vinculadas a la sede o bodega activa, incluidas sus cantidades, diferencias y estado. No concede registrar, revertir ni aprobar recepciones.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:bodeguero:origo.procurement.suppliers.view","operational_role_code":"bodeguero","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-WH-SUPPLIER-IDENTITY — Proyección mínima del proveedor necesaria para identificar la entrega y validar documentos. Excluye información bancaria, negociación, costos no requeridos y administración del maestro.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, sede, área y recurso deben resolverse en servidor; toda mutación es idempotente y auditable.","source_task":"AUTH-RBAC-017"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.access","operational_role_code":"cajero_satelite","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-APP — turno publicado y vigente, rol efectivo `cajero_satelite`, sede activa autorizada y área operativa válida de tipo `cashier`. No exige check-in para mostrar la entrada y los bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.catalog.categories.view","operational_role_code":"cajero_satelite","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.catalog.presentations.view","operational_role_code":"cajero_satelite","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.catalog.products.view","operational_role_code":"cajero_satelite","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `cajero_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.catalog.request_policies.view","operational_role_code":"cajero_satelite","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.catalog.units.view","operational_role_code":"cajero_satelite","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.inventory.remissions.request","operational_role_code":"cajero_satelite","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `cashier`, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.inventory.remissions.update","operational_role_code":"cajero_satelite","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.inventory.remissions.view","operational_role_code":"cajero_satelite","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:nexo.logistics.supply_routes.view","operational_role_code":"cajero_satelite","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.access","operational_role_code":"cajero_satelite","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-POS — turno publicado y vigente, rol `cajero_satelite`, sede autorizada y área operativa válida de tipo `cashier`.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar el requisito de marcación. No autoriza ventas, pagos, caja, anulaciones, puntos ni entregas por sí solo.","source_task":"AUTH-RBAC-008"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.cash.sessions.close","operational_role_code":"cajero_satelite","permission_key":"pulso.cash.sessions.close","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-PULSO-CLOSE — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo y área o punto de caja compatibles, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.cash.sessions.start","operational_role_code":"cajero_satelite","permission_key":"pulso.cash.sessions.start","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-PULSO-START — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo y área o punto de caja compatibles, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.payments.transactions.collect","operational_role_code":"cajero_satelite","permission_key":"pulso.payments.transactions.collect","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-PULSO-COLLECT — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo y área o punto de caja compatibles, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.payments.transactions.refund","operational_role_code":"cajero_satelite","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-CASHIER-DOUBLE-PULSO-REFUND — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo y área o punto de caja compatibles, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.payments.transactions.reverse","operational_role_code":"cajero_satelite","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-CASHIER-DOUBLE-PULSO-REVERSE — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo y área o punto de caja compatibles, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.sales.discounts.apply","operational_role_code":"cajero_satelite","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-CASHIER-DOUBLE-PULSO-APPLY — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo y área o punto de caja compatibles, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.sales.orders.cancel","operational_role_code":"cajero_satelite","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-CASHIER-DOUBLE-PULSO-CANCEL — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo y área o punto de caja compatibles, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.sales.orders.create","operational_role_code":"cajero_satelite","permission_key":"pulso.sales.orders.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-CASHIER-PULSO-CREATE — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo y área o punto de caja compatibles, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cajero_satelite:pulso.sales.returns.create","operational_role_code":"cajero_satelite","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-CASHIER-DOUBLE-PULSO-CREATE — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo y área o punto de caja compatibles, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.access","operational_role_code":"cocinero_satelite","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-APP — turno publicado y vigente, rol efectivo `cocinero_satelite`, sede activa autorizada y área operativa válida de tipo `kitchen`. No exige check-in para mostrar la entrada y los bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.catalog.categories.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.catalog.presentations.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.catalog.products.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `cocinero_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.catalog.request_policies.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.catalog.units.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.inventory.remissions.request","operational_role_code":"cocinero_satelite","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `kitchen`, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.inventory.remissions.update","operational_role_code":"cocinero_satelite","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.inventory.remissions.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:nexo.logistics.supply_routes.view","operational_role_code":"cocinero_satelite","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:cocinero_satelite:pulso.access","operational_role_code":"cocinero_satelite","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-KITCHEN-PULSO — turno publicado y vigente, rol `cocinero_satelite`, sede autorizada y área operativa válida de tipo `kitchen`.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar el contexto de cocina. No autoriza por sí solo consultar comandas, cambiar estados de preparación, registrar faltantes, rehacer productos, operar ventas, pagos, caja, puntos ni entregas.","source_task":"AUTH-RBAC-010"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.access","operational_role_code":"conductor_logistica","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-NEXO-APP — Turno publicado y vigente, rol `conductor_logistica`, sede logística autorizada y contexto de ruta o vehículo válido. Permite entrar a NEXO; no concede capacidades internas por sí solo.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.catalog.presentations.view","operational_role_code":"conductor_logistica","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-CARGO-CATALOG — Presentaciones y empaques necesarios para verificar físicamente la carga asignada, incluyendo unidades logísticas y equivalencias visibles en el manifiesto.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.catalog.products.view","operational_role_code":"conductor_logistica","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-CARGO-CATALOG — Productos incluidos en remisiones, manifiestos, LPN o incidencias asignadas al conductor. Excluye costos, márgenes, proveedores y catálogo administrativo.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.catalog.units.view","operational_role_code":"conductor_logistica","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-CARGO-CATALOG — Unidades y conversiones necesarias para contrastar cantidades preparadas, cargadas y entregadas. No permite modificar equivalencias.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.lpns.view","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-LPN — LPN, contenedores, sellos y bultos vinculados exclusivamente con remisiones bajo custodia asignada al conductor. No permite reasignar, abrir o alterar contenido por sí solo.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.movements.view","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-CUSTODY-MOVEMENTS — Eventos de inventario y custodia relacionados con remisiones asignadas: preparación final, carga, despacho, tránsito, entrega y recepción. No concede acceso al historial general de inventario.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.remissions.accept_custody","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.remissions.accept_custody","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-ACCEPT-CUSTODY — aceptar custodia de bultos, LPN y cantidades declaradas exclusivamente para remisiones, ruta, vehículo o segmento logístico asignados al actor.","condition_expression":"Carril operativo completo. Requiere turno y check-in válidos, asignación logística vigente, estado previo compatible, transición idempotente, evidencia temporal y ubicación auditable. No permite modificar cantidades declaradas ni convertir discrepancias en ajustes silenciosos.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.remissions.deliver","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.remissions.deliver","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-DELIVER — registrar entrega física al receptor previsto exclusivamente para remisiones, ruta, vehículo o segmento logístico asignados al actor.","condition_expression":"Carril operativo completo. Requiere turno y check-in válidos, asignación logística vigente, estado previo compatible, transición idempotente, evidencia temporal y ubicación auditable. No permite modificar cantidades declaradas ni convertir discrepancias en ajustes silenciosos.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.remissions.start_transit","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.remissions.start_transit","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-START-TRANSIT — iniciar tránsito de una remisión ya recibida en custodia exclusivamente para remisiones, ruta, vehículo o segmento logístico asignados al actor.","condition_expression":"Carril operativo completo. Requiere turno y check-in válidos, asignación logística vigente, estado previo compatible, transición idempotente, evidencia temporal y ubicación auditable. No permite modificar cantidades declaradas ni convertir discrepancias en ajustes silenciosos.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.inventory.remissions.view","operational_role_code":"conductor_logistica","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-REMISSIONS — Remisiones asignadas al conductor, a su ruta o vehículo, y aquellas listas para recogida en un origen autorizado. Incluye origen, destino, líneas, cantidades preparadas, bultos, estado e instrucciones mínimas.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.driver_operations.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-SELF — Operaciones propias del conductor y su trazabilidad durante el turno. No permite consultar desempeño, ubicación o historial de otros conductores.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.fulfillment.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-FULFILLMENT — Cumplimiento de remisiones y paradas asignadas al conductor: pendiente, recogida, en tránsito, entregada, recibida o con incidencia. No expone cumplimiento organizacional global.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.fulfillment_routes.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-FULFILLMENT-ROUTES — Ruta, secuencia de paradas, ventanas, restricciones y destinos asignados para el turno. No permite crear, editar o reasignar rutas.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.operations.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-OPERATIONS — Operaciones logísticas donde el conductor sea actor asignado o custodio vigente. Incluye secuencia, estado, origen, destino, ventanas y bloqueos necesarios para ejecutar la ruta.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.operations_board.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-BOARD — Tablero limitado a las operaciones asignadas al actor, ruta o vehículo durante el turno. No muestra el tablero logístico global ni operaciones de otros conductores.","condition_expression":"Carril operativo con prerrequisito `T+C`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:conductor_logistica:nexo.logistics.supply_routes.view","operational_role_code":"conductor_logistica","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-DRV-SUPPLY-ROUTES — Rutas de abastecimiento publicadas que correspondan a la jornada y a las remisiones asignadas. Solo lectura; no concede coordinación general ni modificación de frecuencias.","condition_expression":"Carril operativo con prerrequisito `T`. Actor, turno, check-in cuando aplique, asignación, ruta, vehículo y recurso deben resolverse en servidor; toda mutación debe ser idempotente y auditable.","source_task":"AUTH-RBAC-018"}
+{"grant_id":"operational-role-grant:gerencia_operativa:fogo.access","operational_role_code":"gerencia_operativa","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-FOGO-APP — Entrada a FOGO durante el turno de coordinación. No concede acciones internas por sí sola.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:fogo.production.batches.view","operational_role_code":"gerencia_operativa","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-PRODUCTION-STATUS — Órdenes y lotes de producción vinculados con la sede activa, sus áreas operativas o abastecimientos que afecten la jornada. Solo seguimiento y coordinación.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:fogo.production.orders.view","operational_role_code":"gerencia_operativa","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-PRODUCTION-STATUS — Órdenes y lotes de producción vinculados con la sede activa, sus áreas operativas o abastecimientos que afecten la jornada. Solo seguimiento y coordinación.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:fogo.production.recipe_book.view","operational_role_code":"gerencia_operativa","permission_key":"fogo.production.recipe_book.view","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-PRODUCTION-RECIPE — Recetario operativo estrictamente necesario para verificar ejecución, rendimientos e incidencias de órdenes activas en la sede o área coordinada.","condition_expression":"Carril operativo. Requiere turno, sede/área compatibles y relación con una orden o incidencia activa. No permite consultar ni administrar el maestro completo de recetas.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.access","operational_role_code":"gerencia_operativa","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-NEXO-APP — Entrada a NEXO durante un turno válido de `gerencia_operativa`. No concede funciones internas ni alcance multisede por sí sola.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.assets.counts.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.assets.counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.assets.groups.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.assets.groups.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.assets.items.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.assets.items.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ASSETS — Activos, grupos y conteos relacionados con la sede o área activa. Solo consulta de estado, custodia e incidencias; no creación ni administración del maestro.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.catalog.categories.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.catalog.presentations.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.catalog.products.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.catalog.request_policies.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.catalog.units.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-CATALOG — Catálogos operativos vigentes necesarios para coordinar inventario, solicitudes, producción y remisiones de la sede activa. Excluye configuración y costos protegidos.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.finance.internal_variances.approve","operational_role_code":"gerencia_operativa","permission_key":"nexo.finance.internal_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-VARIANCE — Componente operativo de una variación vinculada a la sede o jornada activa. Requiere además autoridad base compatible, evidencia, separación de funciones y auditoría reforzada.","condition_expression":"Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, recurso territorialmente compatible y actor distinto de quien originó o capturó la diferencia cuando la segregación lo requiera.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.finance.internal_variances.resolve","operational_role_code":"gerencia_operativa","permission_key":"nexo.finance.internal_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-VARIANCE — Componente operativo de una variación vinculada a la sede o jornada activa. Requiere además autoridad base compatible, evidencia, separación de funciones y auditoría reforzada.","condition_expression":"Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, recurso territorialmente compatible y actor distinto de quien originó o capturó la diferencia cuando la segregación lo requiera.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.adjustments.register","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.adjustments.register","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-ADJUSTMENT — Componente operativo sobre inventario de la sede/área activa. La ejecución final exige además concesión base compatible, diferencia documentada, motivo, reautenticación y auditoría reforzada.","condition_expression":"Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.adjustments.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.adjustments.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-CONTROL — Entradas o ajustes que afecten la sede activa, con actor, documento, motivo, estado y trazabilidad. No amplía por sí sola la capacidad de registrar.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.entries.override","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.entries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-ENTRY — Componente operativo para una entrada excepcional en la sede/área activa. Requiere simultáneamente autoridad base, documento o incidente válido, motivo y control de duplicidad.","condition_expression":"Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.entries.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.entries.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-CONTROL — Entradas o ajustes que afecten la sede activa, con actor, documento, motivo, estado y trazabilidad. No amplía por sí sola la capacidad de registrar.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.initial_counts.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.initial_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-COUNTS-READ — Conteos de la sede o área activa, respetando modalidad ciega, etapa, segregación de funciones y ocultamiento del stock teórico cuando corresponda.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.locations.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.lpns.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.movements.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.movements.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.production_batches.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.remissions.cancel","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.remissions.cancel","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-REMISSION-CANCEL — Cancelación operativa de remisiones relacionadas con la sede activa, solo en estados cancelables, con motivo obligatorio, reautenticación y auditoría. No revierte custodia o inventario por inferencia.","condition_expression":"Carril operativo. Exige turno y check-in activos, recurso relacionado con la sede coordinada, estado cancelable, control de versión, motivo obligatorio y auditoría. La cancelación no ejecuta ajustes ni devoluciones implícitas.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.remissions.request","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-REMISSION-REQUEST — Solicitudes justificadas para la sede o área activa, sujetas a políticas, presentaciones mínimas, disponibilidad y trazabilidad del solicitante.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.remissions.update","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-REMISSION-UPDATE — Actualización de prioridad, programación, observaciones y datos operativos permitidos de remisiones relacionadas con la sede activa. No altera cantidades bajo custodia ni etapas cerradas.","condition_expression":"Carril operativo. Solo campos y estados expresamente editables; cualquier cambio de cantidades, origen, destino, custodia o inventario exige permiso atómico diferente o se deniega.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.remissions.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-REMISSIONS — Remisiones cuyo origen o destino corresponda a la sede activa, o cuya operación requiera coordinación directa del turno. Los datos de la otra sede se proyectan al mínimo necesario.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.stock.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.stock_count_variances.approve","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.stock_count_variances.approve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-STOCK-COUNT-VARIANCE-APPROVE — componente operativo limitado a la diferencia de conteo de la sede, área y jornada activas.","condition_expression":"Componente operativo únicamente. Requiere componente base del mismo actor, contexto vigente, recurso exacto, motivo, evidencia y auditoría. El actor que captura el conteo no puede aprobar o resolver su propia diferencia.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.stock_count_variances.resolve","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.stock_count_variances.resolve","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-STOCK-COUNT-VARIANCE-RESOLVE — componente operativo limitado a la diferencia de conteo de la sede, área y jornada activas.","condition_expression":"Componente operativo únicamente. Requiere componente base del mismo actor, contexto vigente, recurso exacto, motivo, evidencia y auditoría. El actor que captura el conteo no puede aprobar o resolver su propia diferencia.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.stock_counts.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.stock_counts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-COUNTS-READ — Conteos de la sede o área activa, respetando modalidad ciega, etapa, segregación de funciones y ocultamiento del stock teórico cuando corresponda.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.storage_positions.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.storage_positions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.transfers.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.transfers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.warehouse_operations.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.warehouse_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.withdrawals.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.inventory.zones.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.inventory.zones.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-INVENTORY-VIEW — Inventario, ubicaciones, LPN, movimientos, lotes, traslados, retiros, zonas, posiciones y operaciones pertenecientes a la sede o área activa. Sin visibilidad global implícita.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.driver_operations.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.driver_operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.fulfillment.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.fulfillment.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.fulfillment_routes.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.fulfillment_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.operations.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.operations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.operations_board.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.operations_board.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.logistics.supply_routes.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-LOGISTICS — Tablero, operaciones, conductores, cumplimiento y rutas que afecten la sede activa o estén bajo coordinación expresa del turno. Excluye operaciones ajenas y ubicación histórica innecesaria.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:nexo.printing.jobs.view","operational_role_code":"gerencia_operativa","permission_key":"nexo.printing.jobs.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-PRINT-JOBS — Trabajos de impresión originados por operaciones de la sede activa, únicamente para seguimiento, reintento técnico autorizado o diagnóstico; no edición de plantillas.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:origo.access","operational_role_code":"gerencia_operativa","permission_key":"origo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ORIGO-APP — Entrada operativa a ORIGO para coordinar abastecimiento y recepción de la sede activa. No concede compras ni administración de proveedores.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:origo.procurement.purchase_orders.view","operational_role_code":"gerencia_operativa","permission_key":"origo.procurement.purchase_orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:origo.procurement.receipts.view","operational_role_code":"gerencia_operativa","permission_key":"origo.procurement.receipts.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:origo.procurement.suppliers.view","operational_role_code":"gerencia_operativa","permission_key":"origo.procurement.suppliers.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-ORIGO — Órdenes, recepciones y proyección mínima de proveedores vinculadas con entregas o abastecimientos de la sede activa. Solo consulta operativa.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.access","operational_role_code":"gerencia_operativa","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-MGR-PULSO-APP — Entrada a PULSO durante el turno para coordinación comercial de la sede activa. No concede ventas, caja, pagos, pedidos ni cierres por sí sola.","condition_expression":"Carril operativo. Requiere actor activo, turno publicado y vigente, check-in cuando aplique, sede/área compatibles, permiso exacto y recurso resuelto en servidor. Nunca produce alcance global.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.delivery.deliveries.override","operational_role_code":"gerencia_operativa","permission_key":"pulso.delivery.deliveries.override","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-DELIVERY — Componente operativo de una confirmación excepcional de entrega en la sede activa. Exige autoridad base compatible, evidencia, reautenticación, motivo y auditoría reforzada.","condition_expression":"Asignar solo el componente operativo. La autorización final exige componente base válido, turno y check-in activos, sede/área compatibles, motivo, reautenticación y auditoría reforzada.","source_task":"AUTH-RBAC-019"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.payments.transactions.refund","operational_role_code":"gerencia_operativa","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-PULSO-REFUND — componente operativo de coordinación limitado a la sede, jornada, punto de venta y recurso activos.","condition_expression":"Componente operativo únicamente. Requiere turno y contexto válidos de gerencia_operativa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No sustituye el rol ordinario de caja.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.payments.transactions.reverse","operational_role_code":"gerencia_operativa","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-PULSO-REVERSE — componente operativo de coordinación limitado a la sede, jornada, punto de venta y recurso activos.","condition_expression":"Componente operativo únicamente. Requiere turno y contexto válidos de gerencia_operativa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No sustituye el rol ordinario de caja.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.sales.discounts.apply","operational_role_code":"gerencia_operativa","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-PULSO-APPLY — componente operativo de coordinación limitado a la sede, jornada, punto de venta y recurso activos.","condition_expression":"Componente operativo únicamente. Requiere turno y contexto válidos de gerencia_operativa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No sustituye el rol ordinario de caja.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.sales.orders.cancel","operational_role_code":"gerencia_operativa","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-PULSO-CANCEL — componente operativo de coordinación limitado a la sede, jornada, punto de venta y recurso activos.","condition_expression":"Componente operativo únicamente. Requiere turno y contexto válidos de gerencia_operativa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No sustituye el rol ordinario de caja.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:gerencia_operativa:pulso.sales.returns.create","operational_role_code":"gerencia_operativa","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-MGR-DOUBLE-PULSO-CREATE — componente operativo de coordinación limitado a la sede, jornada, punto de venta y recurso activos.","condition_expression":"Componente operativo únicamente. Requiere turno y contexto válidos de gerencia_operativa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No sustituye el rol ordinario de caja.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.access","operational_role_code":"mostrador_satelite","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-APP — turno publicado y vigente, rol efectivo `mostrador_satelite`, sede activa autorizada y área operativa válida de Mostrador, resuelta desde el área exacta del turno y su tipo canónico. No exige check-in para mostrar la entrada y los bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.catalog.categories.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.catalog.presentations.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.catalog.products.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `mostrador_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.catalog.request_policies.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.catalog.units.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.inventory.remissions.request","operational_role_code":"mostrador_satelite","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área de Mostrador activa, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.inventory.remissions.update","operational_role_code":"mostrador_satelite","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.inventory.remissions.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:nexo.logistics.supply_routes.view","operational_role_code":"mostrador_satelite","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:mostrador_satelite:pulso.access","operational_role_code":"mostrador_satelite","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-COUNTER-PULSO — turno publicado y vigente, rol `mostrador_satelite`, sede autorizada y área operativa válida de Mostrador, resuelta desde el área exacta del turno y su tipo canónico.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar el contexto de mostrador. No autoriza por sí solo consultar colas de entrega, alistar o empacar pedidos, cambiar estados, confirmar entregas ordinarias, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios.","source_task":"AUTH-RBAC-012"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.access","operational_role_code":"operador_integral_satelite","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-APP — turno publicado y vigente, rol efectivo `operador_integral_satelite`, sede activa habilitada para formato integrado y área exacta cuando la configuración la exija. No exige check-in para mostrar entrada y bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.catalog.categories.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.catalog.presentations.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.catalog.products.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `operador_integral_satelite` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.catalog.request_policies.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.catalog.units.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.inventory.remissions.receive","operational_role_code":"operador_integral_satelite","permission_key":"nexo.inventory.remissions.receive","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REMISSION-RECEIVE — recepción ordinaria de remisiones cuyo destino sea la sede integrada activa, con recurso, origen, cantidades y estado válidos.","condition_expression":"Turno y check-in activos. Reautenticación fuerte, verificación física, control de concurrencia y auditoría antes/después. Solo confirma recepción en destino; no permite preparar, despachar, cancelar ni alterar el origen.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.inventory.remissions.request","operational_role_code":"operador_integral_satelite","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REMISSION-REQUEST — crear una solicitud para la sede integrada activa y desde el área exacta cuando la configuración la exija, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.inventory.remissions.update","operational_role_code":"operador_integral_satelite","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.inventory.remissions.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:nexo.logistics.supply_routes.view","operational_role_code":"operador_integral_satelite","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.access","operational_role_code":"operador_integral_satelite","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-PULSO — turno publicado y vigente, rol `operador_integral_satelite`, sede habilitada como formato integrado y área exacta cuando corresponda.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar la superficie integrada. No autoriza por sí solo pedidos, preparación, servicio, ventas, pagos, caja, anulaciones, devoluciones, fidelización, entregas ni cierres.","source_task":"AUTH-RBAC-013"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.cash.sessions.close","operational_role_code":"operador_integral_satelite","permission_key":"pulso.cash.sessions.close","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-PULSO-CLOSE — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.cash.sessions.start","operational_role_code":"operador_integral_satelite","permission_key":"pulso.cash.sessions.start","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-PULSO-START — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.payments.transactions.collect","operational_role_code":"operador_integral_satelite","permission_key":"pulso.payments.transactions.collect","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-PULSO-COLLECT — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.payments.transactions.refund","operational_role_code":"operador_integral_satelite","permission_key":"pulso.payments.transactions.refund","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-DOUBLE-PULSO-REFUND — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.payments.transactions.reverse","operational_role_code":"operador_integral_satelite","permission_key":"pulso.payments.transactions.reverse","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-DOUBLE-PULSO-REVERSE — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.sales.discounts.apply","operational_role_code":"operador_integral_satelite","permission_key":"pulso.sales.discounts.apply","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-DOUBLE-PULSO-APPLY — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.sales.orders.cancel","operational_role_code":"operador_integral_satelite","permission_key":"pulso.sales.orders.cancel","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-DOUBLE-PULSO-CANCEL — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.sales.orders.create","operational_role_code":"operador_integral_satelite","permission_key":"pulso.sales.orders.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-PULSO-CREATE — operación ordinaria de venta, cobro o sesión de caja exclusivamente en la sede, área, punto y turno activos del actor.","condition_expression":"Carril operativo completo. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, actor humano identificado, recurso vigente, transición idempotente y auditoría. La sesión de caja es personal y no puede reutilizar la identidad de otro actor.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:operador_integral_satelite:pulso.sales.returns.create","operational_role_code":"operador_integral_satelite","permission_key":"pulso.sales.returns.create","authorization_mode":"BASE_AND_OPERATIONAL","lane":"OPERATIONAL","grant_type":"OPERATIONAL_COMPONENT","effect":"ALLOW","scope_expression":"CTX-INTEGRATED-DOUBLE-PULSO-CREATE — componente operativo limitado a la venta, pago, devolución, descuento o sesión de caja del contexto activo.","condition_expression":"Componente operativo únicamente. Requiere turno publicado, check-in activo, sede integrada habilitada y función de caja activa, componente base del mismo actor, mismo permiso, mismo recurso y misma solicitud; además reautenticación fuerte, motivo, evidencia, control de versión y auditoría. No autoriza por sí solo.","source_task":"AUTH-CAT-023"}
+{"grant_id":"operational-role-grant:produccion_cocina:fogo.access","operational_role_code":"produccion_cocina","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-FOGO-APP — turno publicado y vigente, rol `produccion_cocina`, Centro de Producción habilitado y área activa exacta de Cocina Caliente.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:fogo.production.batches.create","operational_role_code":"produccion_cocina","permission_key":"fogo.production.batches.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Cocina Caliente, con receta publicada, cantidades, unidad, responsable y trazabilidad.","condition_expression":"Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:fogo.production.batches.view","operational_role_code":"produccion_cocina","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-BATCH — lotes vinculados a órdenes y ejecución de Cocina Caliente dentro del Centro de Producción.","condition_expression":"Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:fogo.production.orders.view","operational_role_code":"produccion_cocina","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-ORDER — órdenes de producción destinadas o asignadas a Cocina Caliente y vigentes para el turno o periodo operativo autorizado.","condition_expression":"Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:fogo.production.recipe_book.view","operational_role_code":"produccion_cocina","permission_key":"fogo.production.recipe_book.view","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Cocina Caliente, con porciones, insumos, proceso y controles necesarios.","condition_expression":"Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.access","operational_role_code":"produccion_cocina","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-NEXO-APP — turno publicado y vigente, rol `produccion_cocina`, Centro de Producción y área activa de Cocina Caliente.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.catalog.categories.view","operational_role_code":"produccion_cocina","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-REF — categorías necesarias para localizar insumos y productos relacionados con Cocina Caliente.","condition_expression":"Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.catalog.presentations.view","operational_role_code":"produccion_cocina","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.","condition_expression":"Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.catalog.products.view","operational_role_code":"produccion_cocina","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Cocina Caliente.","condition_expression":"Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.catalog.units.view","operational_role_code":"produccion_cocina","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.","condition_expression":"Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.locations.view","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-INVENTORY-REF — ubicaciones activas desde las que Cocina Caliente está autorizada a consumir o consultar insumos.","condition_expression":"Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.lpns.view","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Cocina Caliente o con el lote productivo activo.","condition_expression":"Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.production_batches.view","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Cocina Caliente o vinculados a sus órdenes activas.","condition_expression":"Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.stock.view","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Cocina Caliente en ubicaciones compatibles.","condition_expression":"Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.withdrawals.register","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.withdrawals.register","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Cocina Caliente.","condition_expression":"Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_cocina:nexo.inventory.withdrawals.view","operational_role_code":"produccion_cocina","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-KITCHEN-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Cocina Caliente dentro del turno vigente.","condition_expression":"Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.","source_task":"AUTH-RBAC-014"}
+{"grant_id":"operational-role-grant:produccion_panaderia:fogo.access","operational_role_code":"produccion_panaderia","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-FOGO-APP — turno publicado y vigente, rol `produccion_panaderia`, Centro de Producción habilitado y área activa exacta de Galletería y Panadería.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:fogo.production.batches.create","operational_role_code":"produccion_panaderia","permission_key":"fogo.production.batches.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Galletería y Panadería, con receta publicada, cantidades, unidad, responsable y trazabilidad.","condition_expression":"Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:fogo.production.batches.view","operational_role_code":"produccion_panaderia","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-BATCH — lotes vinculados a órdenes y ejecución de Galletería y Panadería dentro del Centro de Producción.","condition_expression":"Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:fogo.production.orders.view","operational_role_code":"produccion_panaderia","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-ORDER — órdenes de producción destinadas o asignadas a Galletería y Panadería y vigentes para el turno o periodo operativo autorizado.","condition_expression":"Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:fogo.production.recipe_book.view","operational_role_code":"produccion_panaderia","permission_key":"fogo.production.recipe_book.view","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Galletería y Panadería, con porciones, insumos, proceso y controles necesarios.","condition_expression":"Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.access","operational_role_code":"produccion_panaderia","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-NEXO-APP — turno publicado y vigente, rol `produccion_panaderia`, Centro de Producción y área activa de Galletería y Panadería.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.catalog.categories.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-REF — categorías necesarias para localizar insumos y productos relacionados con Galletería y Panadería.","condition_expression":"Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.catalog.presentations.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.","condition_expression":"Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.catalog.products.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Galletería y Panadería.","condition_expression":"Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.catalog.units.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.","condition_expression":"Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.locations.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-INVENTORY-REF — ubicaciones activas desde las que Galletería y Panadería está autorizada a consumir o consultar insumos.","condition_expression":"Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.lpns.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Galletería y Panadería o con el lote productivo activo.","condition_expression":"Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.production_batches.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Galletería y Panadería o vinculados a sus órdenes activas.","condition_expression":"Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.stock.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Galletería y Panadería en ubicaciones compatibles.","condition_expression":"Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.withdrawals.register","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.withdrawals.register","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Galletería y Panadería.","condition_expression":"Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_panaderia:nexo.inventory.withdrawals.view","operational_role_code":"produccion_panaderia","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-BAKERY-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Galletería y Panadería dentro del turno vigente.","condition_expression":"Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.","source_task":"AUTH-RBAC-015"}
+{"grant_id":"operational-role-grant:produccion_reposteria:fogo.access","operational_role_code":"produccion_reposteria","permission_key":"fogo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-FOGO-APP — turno publicado y vigente, rol `produccion_reposteria`, Centro de Producción habilitado y área activa exacta de Repostería.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a FOGO, ver el estado del contexto y los bloqueos. No concede por sí solo lotes, órdenes, recetario ni otra capacidad.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:fogo.production.batches.create","operational_role_code":"produccion_reposteria","permission_key":"fogo.production.batches.create","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-BATCH-CREATE — creación de lotes para órdenes válidas asignadas a Repostería, con receta publicada, cantidades, unidad, responsable y trazabilidad.","condition_expression":"Turno y check-in activos. La creación debe ser idempotente, validar orden, receta operativa, área, cantidades y estado, y atribuir el lote al actor efectivo. No permite editar recetas maestras.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:fogo.production.batches.view","operational_role_code":"produccion_reposteria","permission_key":"fogo.production.batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-BATCH — lotes vinculados a órdenes y ejecución de Repostería dentro del Centro de Producción.","condition_expression":"Turno y check-in activos. La consulta se limita a lotes del área productiva activa y a la información necesaria para ejecutar y verificar la producción; no concede información de otras áreas.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:fogo.production.orders.view","operational_role_code":"produccion_reposteria","permission_key":"fogo.production.orders.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-ORDER — órdenes de producción destinadas o asignadas a Repostería y vigentes para el turno o periodo operativo autorizado.","condition_expression":"Carril operativo con prerrequisito `T`. Permite preparar la jornada consultando instrucciones y prioridades; no permite modificar, reasignar, aprobar ni cancelar órdenes.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:fogo.production.recipe_book.view","operational_role_code":"produccion_reposteria","permission_key":"fogo.production.recipe_book.view","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-RECIPE-BOOK — proyección operativa publicada de recetas aplicables a órdenes de Repostería, con porciones, insumos, proceso y controles necesarios.","condition_expression":"Carril operativo con prerrequisito `T`. Solo recetario operativo vigente y aplicable; sin costos, márgenes, secretos administrativos, versiones borrador, edición, exportación masiva ni acceso al maestro completo.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.access","operational_role_code":"produccion_reposteria","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-NEXO-APP — turno publicado y vigente, rol `produccion_reposteria`, Centro de Producción y área activa de Repostería.","condition_expression":"Carril operativo con prerrequisito `T`. Permite entrar a NEXO y ver el contexto del área. No concede por sí solo inventario, movimientos, retiros ni otra capacidad.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.catalog.categories.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-REF — categorías necesarias para localizar insumos y productos relacionados con Repostería.","condition_expression":"Turno vigente. Solo lectura y búsqueda; no permite administrar categorías.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.catalog.presentations.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-REF — presentaciones, empaques y conversiones publicadas necesarias para interpretar insumos y cantidades productivas.","condition_expression":"Turno vigente. Solo lectura; no permite crear ni modificar presentaciones.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.catalog.products.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-REF — productos e insumos vigentes aplicables a recetas, lotes o retiros de Repostería.","condition_expression":"Turno vigente. Proyección mínima de identificación; excluye costos, márgenes, proveedores, configuración y campos técnicos no necesarios.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.catalog.units.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-REF — unidades, equivalencias y empaques publicados necesarios para recetas, lotes y consumos.","condition_expression":"Turno vigente. Solo lectura; no permite modificar unidades ni factores de conversión.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.locations.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.locations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-INVENTORY-REF — ubicaciones activas desde las que Repostería está autorizada a consumir o consultar insumos.","condition_expression":"Turno vigente y área activa válida. La consulta se limita a topología necesaria para la operación; no concede asignar ubicaciones ni administrar su catálogo.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.lpns.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.lpns.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-INVENTORY-LPN — LPN o contenedores relacionados con insumos disponibles para Repostería o con el lote productivo activo.","condition_expression":"Turno y check-in activos. Debe limitar contenido, posición, custodia y trazabilidad al recurso que el actor necesita identificar; no concede movimientos ni reasignaciones.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.production_batches.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.production_batches.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-INVENTORY-BATCH — trazabilidad de inventario derivada de lotes creados por Repostería o vinculados a sus órdenes activas.","condition_expression":"Turno y check-in activos. Solo lectura de disponibilidad, lote y trazabilidad necesaria para verificar el efecto productivo; no concede ajustes, entradas manuales ni movimientos.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.stock.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.stock.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-INVENTORY-STOCK — existencias de insumos disponibles para consumo autorizado por Repostería en ubicaciones compatibles.","condition_expression":"Turno y check-in activos. Consulta sensible y acotada al área, ubicación, producto y lote aplicables; no permite consultar inventario general de la sede ni de otras áreas.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.withdrawals.register","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.withdrawals.register","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-WITHDRAWAL-REGISTER — registro de consumo de insumos desde ubicaciones autorizadas hacia una orden o lote de Repostería.","condition_expression":"Turno y check-in activos. Validar stock, presentación, unidad, lote, ubicación, cantidad, receta u orden relacionada, idempotencia y concurrencia. No permite inventario negativo, ajustes, traslados ni consumos sin trazabilidad.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:produccion_reposteria:nexo.inventory.withdrawals.view","operational_role_code":"produccion_reposteria","permission_key":"nexo.inventory.withdrawals.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-PROD-PASTRY-WITHDRAWAL — retiros o consumos asociados al actor, al lote activo o a Repostería dentro del turno vigente.","condition_expression":"Turno y check-in activos. La consulta se limita a consumos propios o del recurso productivo autorizado; no expone retiros generales de otras áreas o trabajadores.","source_task":"AUTH-RBAC-016"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.access","operational_role_code":"servicio_salon","permission_key":"nexo.access","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-APP — turno publicado y vigente, rol efectivo `servicio_salon`, sede activa autorizada y área operativa válida de tipo `service`. No exige check-in para mostrar la entrada y los bloqueos.","condition_expression":"Carril operativo. Permite entrar a NEXO y ver el estado del contexto. No concede por sí solo catálogo, remisiones, inventario ni otra acción.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.catalog.categories.view","operational_role_code":"servicio_salon","permission_key":"nexo.catalog.categories.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta de categorías necesarias para buscar y organizar productos solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar categorías.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.catalog.presentations.view","operational_role_code":"servicio_salon","permission_key":"nexo.catalog.presentations.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta de presentaciones vigentes y solicitables para la sede y ruta aplicables.","condition_expression":"Turno vigente y rol válido. Solo lectura para seleccionar la presentación autorizada en una solicitud.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.catalog.products.view","operational_role_code":"servicio_salon","permission_key":"nexo.catalog.products.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta operativa de productos vigentes aplicables a la sede activa. Excluye costos, márgenes, existencias, recetas, proveedores y campos técnicos no necesarios.","condition_expression":"Turno vigente y rol `servicio_salon` válido. La proyección se utiliza para identificar productos dentro del flujo de solicitud; no permite crear ni modificar el maestro.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.catalog.request_policies.view","operational_role_code":"servicio_salon","permission_key":"nexo.catalog.request_policies.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta de políticas de solicitud aplicables al destino, producto, presentación y ruta de abastecimiento del contexto.","condition_expression":"Turno vigente. No permite modificar políticas ni ignorar mínimos, frecuencias, ventanas o restricciones.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.catalog.units.view","operational_role_code":"servicio_salon","permission_key":"nexo.catalog.units.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta de unidades, empaques y equivalencias publicadas necesarias para interpretar presentaciones solicitables.","condition_expression":"Turno vigente. Solo lectura; no permite administrar unidades ni conversiones.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.inventory.remissions.request","operational_role_code":"servicio_salon","permission_key":"nexo.inventory.remissions.request","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REMISSION-REQUEST — crear una solicitud para la sede activa y desde el área `service`, utilizando origen, ruta, productos, presentaciones y políticas válidas.","condition_expression":"Turno y check-in activos. Creación idempotente; validar destino, ruta, políticas, cantidades y presentaciones. El actor queda registrado como solicitante.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.inventory.remissions.update","operational_role_code":"servicio_salon","permission_key":"nexo.inventory.remissions.update","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REMISSION-OWN — únicamente solicitudes creadas por el actor, en estados editables y sobre campos permitidos del lado solicitante.","condition_expression":"Turno y check-in activos. Control optimista de versión, reautenticación fuerte y auditoría antes/después. No permite preparar, despachar, recibir, cancelar ni modificar el lado de origen.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.inventory.remissions.view","operational_role_code":"servicio_salon","permission_key":"nexo.inventory.remissions.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REMISSION — remisiones donde la sede activa sea destino, el actor sea solicitante o exista otra relación operativa explícita. No concede visibilidad general sobre otras sedes.","condition_expression":"Turno y check-in activos. Recurso resoluble y relacionado con el actor o la sede destino. Mostrar únicamente campos autorizados para el lado solicitante.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:nexo.logistics.supply_routes.view","operational_role_code":"servicio_salon","permission_key":"nexo.logistics.supply_routes.view","authorization_mode":"BASE_OR_OPERATIONAL","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-REF — consulta únicamente de rutas de abastecimiento vigentes relacionadas con la sede activa y utilizables para solicitudes.","condition_expression":"Turno vigente. Solo lectura; no permite modificar rutas ni consultar configuración logística ajena al flujo de solicitud.","source_task":"AUTH-RBAC-011"}
+{"grant_id":"operational-role-grant:servicio_salon:pulso.access","operational_role_code":"servicio_salon","permission_key":"pulso.access","authorization_mode":"OPERATIONAL_ONLY","lane":"OPERATIONAL","grant_type":"DIRECT_OPERATIONAL","effect":"ALLOW","scope_expression":"CTX-SERVICE-PULSO — turno publicado y vigente, rol `servicio_salon`, sede autorizada y área operativa válida de tipo `service`.","condition_expression":"Carril operativo. Permite entrar a PULSO y mostrar el contexto de servicio de salón. No autoriza por sí solo gestionar mesas, tomar pedidos, modificar comandas, confirmar entregas, cobrar, operar caja, anular, devolver, acumular puntos ni cerrar servicios.","source_task":"AUTH-RBAC-011"}
+```
+
+---
+
+#### 19. Fuera del alcance
+
+AUTH-RBAC-025 no:
+
+- crea archivos físicos dentro del repositorio;
+- publica paquetes;
+- inserta filas;
+- elimina físicamente `dispatch`;
+- migra trabajadores;
+- publica turnos;
+- crea check-ins;
+- expande territorios;
+- modifica RLS;
+- modifica RPC;
+- implementa guards;
+- cambia dispositivos;
+- crea excepciones;
+- crea denegaciones;
+- modifica Supabase.
+
+---
+
+#### 20. Riesgos controlados
+
+##### Riesgo 1 — Rol operativo permanente
+
+Control:
+
+```text
+FIN DE CONTEXTO
+→ FIN DE AUTORIDAD OPERATIVA
+```
+
+##### Riesgo 2 — Componente operativo suficiente
+
+Control:
+
+```text
+OPERATIONAL_COMPONENT
+→ INSUFICIENTE POR SÍ SOLO
+```
+
+##### Riesgo 3 — Gerencia como especialista universal
+
+Control:
+
+- no recibe operaciones ordinarias de caja;
+- no recibe custodia o tránsito;
+- solo recibe componentes y coordinación exactos.
+
+##### Riesgo 4 — Bodeguero autoaprueba diferencias
+
+Control:
+
+```text
+capturar
+≠
+aprobar
+≠
+resolver
+```
+
+##### Riesgo 5 — `dispatch` permanece canónico
+
+Control:
+
+```text
+dispatch_matches = 0
+```
+
+##### Riesgo 6 — Dispositivo concede autoridad
+
+Control:
+
+```text
+PAQUETE DE DISPOSITIVO
+→ FILTRA
+→ NO CONCEDE
+```
+
+##### Riesgo 7 — Conteo lógico confundido con filas físicas
+
+Control:
+
+```text
+dataset lógico
+≠
+proyección física
+```
+
+---
+
+#### 21. Criterios de aprobación
+
+AUTH-RBAC-025 podrá aprobarse cuando se acepte que:
+
+1. el dataset se identifica como
+   `vento.authorization.operational-role-grants@1.0.0`;
+2. referencia el catálogo y hash de AUTH-CAT-024;
+3. contiene exactamente 240 registros;
+4. incluye exactamente doce roles operativos;
+5. contiene 218 concesiones directas;
+6. contiene 22 componentes operativos;
+7. no contiene permisos `BASE_ONLY`;
+8. no contiene roles base;
+9. no contiene claves legacy o retiradas;
+10. `dispatch` no aparece;
+11. las 29 adiciones de AUTH-CAT-023 están reproducidas;
+12. el retiro legacy está reproducido;
+13. ausencia de fila continúa siendo `DEFAULT_DENY`;
+14. los componentes no se combinan entre actores;
+15. turno, check-in, sede, área y recurso continúan siendo obligatorios;
+16. los paquetes de dispositivo no conceden;
+17. el orden y serialización son deterministas;
+18. el hash es
+    `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`;
+19. AUTH-RBAC-026 no podrá modificar este dataset;
+20. la materialización física queda reservada para BLOQUE R.
+
+---
+
+#### 22. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-024 | APROBADA    |
+| AUTH-RBAC-025 | APROBADA    |
+| AUTH-RBAC-026 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-026 hasta recibir aprobación explícita de
+AUTH-RBAC-025.
+
+
+### ✅ AUTH-RBAC-026 — Definir dataset canónico de excepciones y denegaciones
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE D — Datasets canónicos  
+**Naturaleza:** Definición documental de dataset lógico inicial, contrato transaccional y transición legacy  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-RBAC-025 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-027 — Validar ausencia de acceso operativo global accidental  
+**Dataset:** `vento.authorization.individual-overrides@1.0.0`  
+**Catálogo:** `vento.authorization@1.0.0`  
+**Huella contractual:** `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe`  
+**Registros canónicos iniciales:** **0**  
+**Filas legacy esperadas para revisión posterior:** **17**  
+**Hash del dataset inicial propuesto:** `sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10`
+
+Esta tarea define el dataset canónico que separa las excepciones positivas
+individuales de las denegaciones explícitas aplicables a trabajadores.
+
+La versión inicial se publica intencionalmente vacía:
+
+```text
+0 concesiones individuales base confirmadas
+0 concesiones individuales operativas confirmadas
+0 denegaciones base confirmadas
+0 denegaciones operativas confirmadas
+0 bloqueos transversales confirmados
+```
+
+Las 17 filas legacy conocidas de `employee_permissions` no se incorporan como
+autorizaciones canónicas. Se reservan para inventario, clasificación y
+migración controlada en BLOQUE R.
+
+Esta tarea no crea tablas, no inserta filas, no modifica Supabase, no genera
+migraciones, no altera RLS o RPC y no publica todavía archivos físicos del
+paquete `@vento/contracts`.
+
+---
+
+#### 1. Objetivo
+
+Definir de manera exacta:
+
+1. el dataset inicial de excepciones y denegaciones;
+2. el contrato común de un override individual;
+3. los campos específicos de concesiones base;
+4. los campos específicos de concesiones operativas;
+5. los campos específicos de denegaciones por carril y transversales;
+6. la semántica de vigencia y ciclo de vida;
+7. la precedencia frente a matrices y contexto;
+8. la transición de las 17 filas legacy;
+9. el orden y hash del dataset inicial;
+10. la separación entre seed canónico y registros transaccionales futuros.
+
+Flujo:
+
+```text
+AUTH-RBAC-020
+→ concesiones individuales base
+
+AUTH-RBAC-021
+→ concesiones individuales operativas
+
+AUTH-RBAC-022
+→ denegaciones por carril y bloqueos transversales
+
+AUTH-RBAC-023
+→ restricciones de dispositivo compartido
+
+AUTH-CAT-023
+→ cero excepciones y cero denegaciones automáticas
+
+AUTH-CAT-024
+→ catálogo 1.0.0 congelado
+
+AUTH-RBAC-024
+→ matriz base congelada
+
+AUTH-RBAC-025
+→ matriz operativa congelada
+
+AUTH-RBAC-026
+→ dataset individual inicial
+→ contrato de runtime
+→ transición legacy
+```
+
+---
+
+#### 2. Decisión principal
+
+El dataset canónico inicial contiene **cero registros**.
+
+Esta ausencia es una decisión normativa, no una omisión.
+
+```text
+SIN NECESIDAD EMPRESARIAL APROBADA
++
+SIN SUJETO HUMANO VALIDADO
++
+SIN PERMISO, CARRIL, ALCANCE, VIGENCIA Y APROBACIÓN
+=
+NO CREAR OVERRIDE
+```
+
+No se migrará automáticamente:
+
+- ninguna concesión individual legacy;
+- ninguna fila negativa legacy;
+- ningún permiso amplio hacia varias claves atómicas;
+- ninguna asignación perteneciente a una identidad técnica o dispositivo;
+- ninguna concesión redundante con la matriz del rol;
+- ninguna intención no verificable.
+
+Regla crítica:
+
+```text
+DEFAULT_DENY
+≠
+EXPLICIT_DENY
+```
+
+La ausencia de una concesión sigue produciendo denegación por defecto. No se
+crean filas `DENY` redundantes para representar ausencias.
+
+---
+
+#### 3. Manifiesto contractual
+
+```json
+{
+  "dataset_id": "vento.authorization.individual-overrides",
+  "dataset_version": "1.0.0",
+  "dataset_schema_version": "1.0.0",
+  "catalog_id": "vento.authorization",
+  "catalog_version": "1.0.0",
+  "catalog_schema_version": "1.0.0",
+  "contract_release_hash": "sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe",
+  "canonical_record_count": 0,
+  "individual_base_grant_count": 0,
+  "individual_operational_grant_count": 0,
+  "base_lane_deny_count": 0,
+  "operational_lane_deny_count": 0,
+  "actor_wide_deny_count": 0,
+  "legacy_source_row_count_expected": 17,
+  "legacy_confirmed_functional_grant_count": 0,
+  "legacy_confirmed_deny_count": 0
+}
+```
+
+El estado de aprobación y la fecha documental quedan fuera del payload y del
+hash.
+
+---
+
+#### 4. Resultado cuantitativo
+
+##### 4.1 Registros canónicos iniciales
+
+| Clase                                | Registros |
+| ------------------------------------ | --------: |
+| Concesiones individuales base        |         0 |
+| Concesiones individuales operativas  |         0 |
+| Denegaciones individuales base       |         0 |
+| Denegaciones individuales operativas |         0 |
+| Bloqueos individuales transversales  |         0 |
+| **Total canónico inicial**           |     **0** |
+
+##### 4.2 Estado legacy conocido
+
+| Concepto                                                         |   Cantidad |
+| ---------------------------------------------------------------- | ---------: |
+| Filas existentes en `employee_permissions`                       |         17 |
+| Excepciones funcionales reales confirmadas                       |          0 |
+| Denegaciones funcionales confirmadas                             |          0 |
+| Identidades involucradas conocidas                               |          2 |
+| Identidades inactivas o con naturaleza de dispositivo detectadas | Al menos 1 |
+| Filas autorizadas para migración automática                      |          0 |
+
+##### 4.3 Resultado de AUTH-CAT-023
+
+| Decisión diferencial                                           | Cantidad |
+| -------------------------------------------------------------- | -------: |
+| Concesiones individuales automáticas por las 29 claves nuevas  |        0 |
+| Denegaciones individuales automáticas por las 29 claves nuevas |        0 |
+| Expansiones automáticas desde permisos legacy                  |        0 |
+
+---
+
+#### 5. Identidad del dataset
+
+```text
+dataset_id = vento.authorization.individual-overrides
+dataset_version = 1.0.0
+dataset_schema_version = 1.0.0
+catalog_id = vento.authorization
+catalog_version = 1.0.0
+catalog_schema_version = 1.0.0
+contract_release_hash = sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe
+```
+
+La versión inicial es un **seed canónico**.
+
+No representa el historial transaccional posterior.
+
+Después de implementar la administración de excepciones:
+
+```text
+SEED DATASET
+→ define estado inicial y contrato de bootstrap
+
+RUNTIME RECORDS
+→ representan decisiones empresariales posteriores
+→ tienen versionado por fila y auditoría
+→ no reescriben el seed 1.0.0
+```
+
+Solo será necesaria una nueva versión del dataset seed cuando cambien:
+
+- registros iniciales incorporados por despliegue;
+- esquema lógico;
+- semántica de clases;
+- reglas de validación;
+- tratamiento de legacy;
+- dependencia contractual con el catálogo.
+
+---
+
+#### 6. Tipos canónicos de registro
+
+El contrato admite dos familias:
+
+```text
+INDIVIDUAL_GRANT
+EXPLICIT_DENY
+```
+
+##### 6.1 `INDIVIDUAL_GRANT`
+
+Subtipos:
+
+```text
+INDIVIDUAL_BASE_GRANT
+INDIVIDUAL_OPERATIONAL_GRANT
+```
+
+Efecto:
+
+```text
+ALLOW
+```
+
+##### 6.2 `EXPLICIT_DENY`
+
+Subtipos:
+
+```text
+BASE_LANE_DENY
+OPERATIONAL_LANE_DENY
+ACTOR_WIDE_DENY
+```
+
+Efecto:
+
+```text
+DENY
+```
+
+`STRUCTURAL_DENY` no se administra mediante este dataset.
+
+Los bloqueos estructurales proceden de:
+
+- identidad inexistente o inválida;
+- trabajador inactivo;
+- aplicación inactiva;
+- permiso inactivo o retirado;
+- sesión inválida;
+- recurso inexistente;
+- contrato imposible;
+- configuración estructural inválida.
+
+---
+
+#### 7. Sobre común de registro
+
+Todo registro futuro deberá conservar:
+
+| Campo                 | Tipo             | Regla                                                    |
+| --------------------- | ---------------- | -------------------------------------------------------- |
+| `override_id`         | string/UUID      | Identificador estable y no reutilizable.                 |
+| `record_kind`         | enum             | `INDIVIDUAL_GRANT` o `EXPLICIT_DENY`.                    |
+| `record_subtype`      | enum             | Subtipo exacto aprobado.                                 |
+| `employee_id`         | UUID             | Trabajador humano exacto.                                |
+| `permission_key`      | string           | Clave exacta activa del catálogo.                        |
+| `authorization_lane`  | enum             | `BASE`, `OPERATIONAL` o `ALL_COMPATIBLE`, según subtipo. |
+| `effect`              | enum             | `ALLOW` o `DENY`, coherente con la familia.              |
+| `scope_type`          | enum             | Tipo de alcance contractual.                             |
+| `scope_mode`          | enum/null        | Modo explícito de cobertura cuando corresponda.          |
+| `organization_id`     | UUID/null        | Organización exacta cuando aplique.                      |
+| `site_id`             | UUID/null        | Sede exacta cuando aplique.                              |
+| `site_type`           | string/null      | Tipo de sede permitido cuando aplique.                   |
+| `area_id`             | UUID/null        | Área exacta cuando aplique.                              |
+| `area_kind`           | string/null      | Tipo de área permitido cuando aplique.                   |
+| `resource_type`       | string/null      | Tipo de recurso restringido.                             |
+| `resource_id`         | UUID/string/null | Recurso exacto cuando aplique.                           |
+| `relation_type`       | string/null      | Relación contractual requerida.                          |
+| `resource_constraint` | object/null      | Propiedad, asignación o conjunto permitido.              |
+| `effective_from`      | timestamptz      | Inicio de vigencia.                                      |
+| `effective_until`     | timestamptz/null | Fin de vigencia o nulo solo con justificación reforzada. |
+| `timezone`            | string           | Zona horaria canónica usada para la vigencia.            |
+| `status`              | enum             | Estado permitido por la familia.                         |
+| `reason_code`         | enum             | Motivo estructurado.                                     |
+| `justification`       | string           | Explicación humana verificable y minimizada.             |
+| `evidence_reference`  | string/null      | Referencia a evidencia en el sistema propietario.        |
+| `source_reference`    | string/null      | Acta, suplencia, proyecto, incidente o solicitud.        |
+| `requested_by`        | UUID             | Actor humano que solicita.                               |
+| `approved_by`         | UUID/null        | Actor autorizado que aprueba.                            |
+| `created_by`          | UUID             | Actor que crea el registro.                              |
+| `created_at`          | timestamptz      | Fecha de servidor.                                       |
+| `updated_by`          | UUID/null        | Último actor que modifica.                               |
+| `updated_at`          | timestamptz      | Última fecha de servidor.                                |
+| `reviewed_at`         | timestamptz/null | Última revisión administrativa.                          |
+| `revoked_by`          | UUID/null        | Actor que revoca.                                        |
+| `revoked_at`          | timestamptz/null | Fecha de revocación.                                     |
+| `revocation_reason`   | string/null      | Motivo estructurado o explicación segura.                |
+| `version`             | integer          | Control optimista de concurrencia.                       |
+| `source_task`         | string           | Tarea contractual que habilita la semántica.             |
+
+Reglas:
+
+1. `null` nunca significa global.
+2. Un campo territorial nulo debe ser coherente con `scope_type`.
+3. Un recurso exacto no puede pertenecer a un territorio incompatible.
+4. La aplicación debe resolver el recurso real en servidor.
+5. No se admiten claves, carriles o clases desconocidas.
+6. No se admite un dispositivo como `employee_id`.
+7. No se admite `service_role` como beneficiario.
+8. El mismo sujeto no puede autoaprobar una decisión sensible.
+
+---
+
+#### 8. Contrato de concesión individual base
+
+```text
+record_kind = INDIVIDUAL_GRANT
+record_subtype = INDIVIDUAL_BASE_GRANT
+authorization_lane = BASE
+effect = ALLOW
+```
+
+##### 8.1 Modalidades compatibles
+
+| Modalidad del permiso  | Resultado                                      |
+| ---------------------- | ---------------------------------------------- |
+| `BASE_ONLY`            | Puede producir allow completo por carril base. |
+| `BASE_OR_OPERATIONAL`  | Puede producir allow completo por carril base. |
+| `BASE_AND_OPERATIONAL` | Solo aporta componente base.                   |
+| `OPERATIONAL_ONLY`     | Configuración inválida.                        |
+
+##### 8.2 Campos adicionales
+
+| Campo                     | Regla                                                                  |
+| ------------------------- | ---------------------------------------------------------------------- |
+| `grant_component_type`    | `DIRECT_ALLOW` o `BASE_COMPONENT`.                                     |
+| `compatible_base_roles`   | Opcional para diagnóstico; nunca crea herencia por rol.                |
+| `redundancy_check_result` | Debe demostrar que la matriz base no cubre completamente la necesidad. |
+| `sensitivity_controls`    | Controles adicionales exigidos por el permiso.                         |
+| `review_frequency`        | Obligatoria para concesiones indefinidas o sensibles.                  |
+
+##### 8.3 Estados
+
+```text
+DRAFT
+PENDING_APPROVAL
+SCHEDULED
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+REJECTED
+```
+
+##### 8.4 Motivos permitidos
+
+```text
+TEMPORARY_ADMINISTRATIVE_COVERAGE
+SPECIALIZED_RESPONSIBILITY
+TERRITORIAL_RESPONSIBILITY_EXTENSION
+PROJECT_ASSIGNMENT
+CONTROLLED_READ_ACCESS
+DOUBLE_CONDITION_BASE_COMPONENT
+BUSINESS_CONTINUITY
+OTHER_APPROVED
+```
+
+`OTHER_APPROVED` exige justificación reforzada.
+
+##### 8.5 Invariantes
+
+- no crea rol base;
+- no reconstruye una matriz completa;
+- no concede `OPERATIONAL_ONLY`;
+- no crea turno o check-in;
+- no reduce un allow existente;
+- no supera el alcance máximo del permiso;
+- no elimina sensibilidad;
+- un deny aplicable prevalece;
+- una concesión redundante debe rechazarse.
+
+---
+
+#### 9. Contrato de concesión individual operativa
+
+```text
+record_kind = INDIVIDUAL_GRANT
+record_subtype = INDIVIDUAL_OPERATIONAL_GRANT
+authorization_lane = OPERATIONAL
+effect = ALLOW
+```
+
+##### 9.1 Modalidades compatibles
+
+| Modalidad del permiso  | Resultado                                           |
+| ---------------------- | --------------------------------------------------- |
+| `BASE_ONLY`            | Configuración inválida.                             |
+| `BASE_OR_OPERATIONAL`  | Puede producir allow completo por carril operativo. |
+| `BASE_AND_OPERATIONAL` | Solo aporta componente operativo.                   |
+| `OPERATIONAL_ONLY`     | Puede producir allow completo por carril operativo. |
+
+##### 9.2 Campos adicionales
+
+| Campo                          | Regla                                                         |
+| ------------------------------ | ------------------------------------------------------------- |
+| `grant_component_type`         | `DIRECT_ALLOW` u `OPERATIONAL_COMPONENT`.                     |
+| `compatible_operational_roles` | Lista no vacía de roles operativos exactos.                   |
+| `requires_published_shift`     | Siempre `true`.                                               |
+| `requires_active_checkin`      | Derivado del permiso.                                         |
+| `requires_active_area`         | Derivado del permiso.                                         |
+| `device_restriction_mode`      | Referencia a la política de AUTH-RBAC-023.                    |
+| `redundancy_check_result`      | Debe demostrar que la matriz operativa no cubre la necesidad. |
+| `review_frequency`             | Obligatoria para concesiones indefinidas o sensibles.         |
+
+##### 9.3 Estados
+
+```text
+DRAFT
+PENDING_APPROVAL
+SCHEDULED
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+REJECTED
+```
+
+##### 9.4 Motivos permitidos
+
+```text
+TEMPORARY_OPERATIONAL_COVERAGE
+SPECIALIZED_OPERATIONAL_RESPONSIBILITY
+SUPERVISED_TRAINING
+PROJECT_OR_PILOT_ASSIGNMENT
+CONTROLLED_OPERATIONAL_READ_ACCESS
+DOUBLE_CONDITION_OPERATIONAL_COMPONENT
+BUSINESS_CONTINUITY
+OTHER_APPROVED
+```
+
+##### 9.5 Invariantes
+
+- no crea rol operativo;
+- no sustituye la asignación de otro oficio completo;
+- exige turno publicado;
+- exige check-in cuando el permiso sea `T+C`;
+- exige rol operativo compatible;
+- no crea sede o área activas;
+- no concede acceso organizacional global;
+- termina con el contexto;
+- el dispositivo puede restringir, nunca ampliar;
+- un deny aplicable prevalece.
+
+---
+
+#### 10. Contrato de denegación explícita
+
+```text
+record_kind = EXPLICIT_DENY
+effect = DENY
+```
+
+Subtipos:
+
+| Subtipo                 | Carril           | Efecto                                                     |
+| ----------------------- | ---------------- | ---------------------------------------------------------- |
+| `BASE_LANE_DENY`        | `BASE`           | Bloquea únicamente allows base coincidentes.               |
+| `OPERATIONAL_LANE_DENY` | `OPERATIONAL`    | Bloquea únicamente allows operativos coincidentes.         |
+| `ACTOR_WIDE_DENY`       | `ALL_COMPATIBLE` | Bloquea la clave exacta en todos sus carriles compatibles. |
+
+##### 10.1 Compatibilidad
+
+| Modalidad              | Base deny | Operational deny | Actor-wide deny |
+| ---------------------- | --------: | ---------------: | --------------: |
+| `BASE_ONLY`            |        Sí |               No |              Sí |
+| `OPERATIONAL_ONLY`     |        No |               Sí |              Sí |
+| `BASE_OR_OPERATIONAL`  |        Sí |               Sí |              Sí |
+| `BASE_AND_OPERATIONAL` |        Sí |               Sí |              Sí |
+
+##### 10.2 Estados
+
+```text
+DRAFT
+SCHEDULED
+ACTIVE
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Las denegaciones no utilizan `SUSPENDED`.
+
+Una denegación activa termina mediante:
+
+- expiración;
+- revocación auditada;
+- sustitución versionada.
+
+##### 10.3 Motivos permitidos
+
+```text
+SEGREGATION_OF_DUTIES
+TEMPORARY_RESPONSIBILITY_RESTRICTION
+TRAINING_OR_CERTIFICATION_REQUIRED
+SECURITY_INCIDENT
+CREDENTIAL_OR_IDENTITY_RISK
+INVESTIGATION_HOLD
+DATA_PROTECTION_RESTRICTION
+FINANCIAL_CONTROL_RESTRICTION
+OPERATIONAL_SAFETY_RESTRICTION
+CONTRACTUAL_RESTRICTION
+OTHER_APPROVED
+```
+
+##### 10.4 Invariantes
+
+- una denegación usa una clave exacta;
+- no existen wildcards;
+- el alcance determina coincidencia, no precedencia;
+- un allow más específico no vence un deny aplicable;
+- revocar un deny no crea un allow;
+- un deny no corrige una matriz mal diseñada;
+- un actor-wide deny no se crea por rol;
+- una denegación ambigua no se activa;
+- una denegación no puede bloquear el principal de recuperación sin control reforzado.
+
+---
+
+#### 11. Precedencia canónica
+
+```text
+STRUCTURAL_DENY
+        ↓
+ACTOR_WIDE_DENY
+        ↓
+LANE_DENY
+        ↓
+ALLOW
+        ↓
+DEFAULT_DENY
+```
+
+Orden de evaluación:
+
+1. resolver principal autenticado;
+2. resolver actor efectivo;
+3. validar identidad laboral;
+4. validar trabajador activo;
+5. validar aplicación y permiso;
+6. resolver modalidad;
+7. resolver recurso y territorio reales;
+8. evaluar `STRUCTURAL_DENY`;
+9. evaluar `ACTOR_WIDE_DENY`;
+10. evaluar carril base;
+11. evaluar `BASE_LANE_DENY`;
+12. combinar matriz base y concesión individual base;
+13. resolver contexto operativo;
+14. evaluar `OPERATIONAL_LANE_DENY`;
+15. combinar matriz operativa y concesión individual operativa;
+16. combinar carriles según modalidad;
+17. aplicar dispositivo, sensibilidad y prerrequisitos;
+18. producir decisión estructurada;
+19. registrar auditoría.
+
+No se admite evaluar allows y omitir la búsqueda posterior de denies.
+
+---
+
+#### 12. Alcance y coincidencia
+
+Tipos conceptuales permitidos:
+
+```text
+ORGANIZATION
+ASSIGNED_SITES
+SPECIFIC_SITE
+SITE_TYPE_EXPLICIT
+ASSIGNED_AREAS
+SPECIFIC_AREA
+AREA_KIND_EXPLICIT
+OWN_RESOURCE
+RELATED_RESOURCE_SET
+SPECIFIC_RESOURCE
+GLOBAL_PERMISSION
+```
+
+Reglas:
+
+1. `GLOBAL_PERMISSION` solo se admite cuando el permiso lo permita y exista
+   aprobación reforzada.
+2. `ACTOR_WIDE_DENY` puede usar `GLOBAL_PERMISSION`.
+3. Una concesión global individual es excepcional.
+4. Un área debe pertenecer a la sede indicada.
+5. Un tipo de sede o área debe declarar modo de cobertura.
+6. APP-REVIEW, demo y territorios aislados nunca se incorporan por
+   coincidencia de tipo.
+7. Una operación multiterritorial se bloquea cuando cualquier recurso
+   obligatorio coincide con un deny aplicable, salvo contrato explícito de
+   ejecución parcial.
+8. La sede seleccionada en frontend no modifica el alcance.
+
+---
+
+#### 13. Vigencia
+
+Todo override debe declarar:
+
+```text
+effective_from
+effective_until
+timezone
+status
+reviewed_at
+```
+
+Reglas:
+
+- una decisión futura no participa antes de `effective_from`;
+- una decisión vencida no autoriza ni bloquea;
+- la expiración se verifica durante autorización;
+- no depende únicamente de cron;
+- no existe renovación silenciosa;
+- extender vigencia produce decisión auditada;
+- una decisión indefinida exige justificación y revisión periódica;
+- trabajador, permiso o aplicación inactivos producen bloqueo estructural;
+- activar, suspender, revocar o expirar invalida caché;
+- los registros históricos no se eliminan.
+
+---
+
+#### 14. Gobierno y segregación
+
+##### 14.1 Concesiones
+
+Las capacidades VISO aprobadas en el catálogo gobiernan:
+
+- consultar;
+- crear;
+- aprobar;
+- suspender;
+- revocar;
+
+de concesiones base y operativas.
+
+Reglas:
+
+- el beneficiario no se autoaprueba;
+- el solicitante no se autoaprueba cuando exista conflicto;
+- el operador técnico no adquiere autoridad empresarial;
+- los permisos sensibles y alcances globales exigen aprobación reforzada;
+- la aprobación debe evaluar el resultado efectivo completo.
+
+##### 14.2 Denegaciones
+
+Las capacidades VISO aprobadas gobiernan:
+
+- consultar;
+- crear;
+- aprobar;
+- revocar;
+
+denegaciones.
+
+No existe `suspend` para denegaciones.
+
+`gerente_general` no recibe por matriz:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+La autoridad deberá proceder de un actor expresamente autorizado.
+
+---
+
+#### 15. Tratamiento de las 29 claves nuevas
+
+Las 29 claves creadas en AUTH-CAT-022:
+
+- admiten overrides solo según su modalidad;
+- comienzan con cero concesiones individuales;
+- comienzan con cero denegaciones explícitas;
+- no heredan asignaciones de permisos legacy;
+- no heredan bloqueos de permisos legacy;
+- requieren revisión humana clave por clave.
+
+Claves legacy especialmente relevantes:
+
+```text
+pulso.pos.main
+nexo.inventory.remissions.dispatch
+viso.staff.permissions.manage
+```
+
+No se admite:
+
+```text
+DENY LEGACY AMPLIO
+→ EXPANDIR A TODAS LAS CLAVES NUEVAS
+```
+
+---
+
+#### 16. Transición de las 17 filas legacy
+
+##### 16.1 Estado conocido
+
+```text
+employee_permissions
+→ 17 concesiones positivas conocidas
+→ 0 denegaciones funcionales confirmadas
+→ 0 excepciones diferenciales confirmadas
+```
+
+##### 16.2 Clasificación obligatoria
+
+Cada fila física deberá clasificarse en una sola categoría:
+
+```text
+LEGACY_REDUNDANT_WITH_BASE_MATRIX
+LEGACY_REDUNDANT_WITH_OPERATIONAL_MATRIX
+LEGACY_DUPLICATE
+LEGACY_INACTIVE_EMPLOYEE
+LEGACY_TECHNICAL_OR_DEVICE_IDENTITY
+LEGACY_PERMISSION_RETIRED
+LEGACY_PERMISSION_REPLACED
+LEGACY_GRANT_UNRESOLVED
+LEGACY_DENY_UNRESOLVED
+MIGRATION_CANDIDATE_PENDING_APPROVAL
+MIGRATED_TO_CANONICAL_OVERRIDE
+RETIRED_AFTER_RECONCILIATION
+```
+
+##### 16.3 Reglas
+
+1. ninguna fila se activa en el dataset por existir físicamente;
+2. una fila redundante se retira después de verificar equivalencia;
+3. una identidad técnica o dispositivo no migra como beneficiario humano;
+4. un duplicado se consolida sin ampliar alcance;
+5. una clave retirada no se reinterpreta;
+6. una clave legacy uno-a-muchos no se expande;
+7. una intención no verificable queda `UNRESOLVED` y no autoriza;
+8. una candidata a migración exige permiso activo, carril, alcance, vigencia,
+   motivo y aprobación;
+9. el backfill debe ser idempotente;
+10. la limpieza física requiere reconciliación y rollback.
+
+##### 16.4 Registro de transición
+
+El inventario legacy deberá conservar:
+
+| Campo                         | Regla                                                     |
+| ----------------------------- | --------------------------------------------------------- |
+| `legacy_source_table`         | Tabla física de origen.                                   |
+| `legacy_source_id`            | Identificador original.                                   |
+| `legacy_employee_reference`   | Identidad encontrada.                                     |
+| `legacy_permission_reference` | Clave o identificador original.                           |
+| `legacy_is_allowed`           | Valor original sin reinterpretación automática.           |
+| `normalized_permission_key`   | Clave canónica candidata o nulo.                          |
+| `candidate_lane`              | Carril candidato o nulo.                                  |
+| `classification`              | Una categoría de la sección 16.2.                         |
+| `review_status`               | `PENDING`, `REVIEWED`, `MIGRATED`, `RETIRED` o `BLOCKED`. |
+| `reviewed_by`                 | Actor humano revisor.                                     |
+| `reviewed_at`                 | Fecha de revisión.                                        |
+| `decision_reference`          | Evidencia de la decisión.                                 |
+| `migration_target_id`         | Override nuevo cuando exista.                             |
+| `notes`                       | Explicación minimizada.                                   |
+
+Este registro es de migración. No es una fuente de autorización.
+
+---
+
+#### 17. Dataset inicial y runtime
+
+##### 17.1 Seed inicial
+
+El payload de `1.0.0` contiene solo el manifiesto porque no existen registros
+individuales aprobados.
+
+##### 17.2 Registros futuros
+
+Después de implementar el gobierno VISO, una decisión aprobada podrá crear un
+registro runtime.
+
+Cada registro deberá:
+
+- cumplir el esquema;
+- validar modalidad;
+- comprobar redundancia;
+- comprobar segregación;
+- registrar versión;
+- emitir eventos;
+- invalidar caché;
+- conservar historial;
+- respetar el catálogo activo.
+
+##### 17.3 Cambios de catálogo
+
+Un override runtime vinculado a una versión anterior:
+
+- conserva su versión histórica;
+- debe revisarse cuando cambia el permiso;
+- no se migra automáticamente a otra clave;
+- se suspende o bloquea cuando la clave queda retirada;
+- requiere decisión nueva cuando cambia la semántica.
+
+---
+
+#### 18. Serialización y hash
+
+La huella del seed inicial se calcula así:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- primera línea = manifiesto JSON compacto;
+- no existen líneas de registros;
+- sin espacios finales;
+- un único LF al final;
+- SHA-256 sobre todos los bytes;
+- sin fecha, timestamp ni estado de aprobación.
+
+Payload:
+
+```jsonl
+{"dataset_id":"vento.authorization.individual-overrides","dataset_version":"1.0.0","dataset_schema_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","catalog_schema_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","canonical_record_count":0,"individual_base_grant_count":0,"individual_operational_grant_count":0,"base_lane_deny_count":0,"operational_lane_deny_count":0,"actor_wide_deny_count":0,"legacy_source_row_count_expected":17,"legacy_confirmed_functional_grant_count":0,"legacy_confirmed_deny_count":0}
+```
+
+Resultado:
+
+```text
+dataset_hash = sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10
+```
+
+---
+
+#### 19. Validaciones obligatorias
+
+El seed deberá validar:
+
+1. `canonical_record_count = 0`;
+2. `individual_base_grant_count = 0`;
+3. `individual_operational_grant_count = 0`;
+4. `base_lane_deny_count = 0`;
+5. `operational_lane_deny_count = 0`;
+6. `actor_wide_deny_count = 0`;
+7. `legacy_source_row_count_expected = 17`;
+8. `legacy_confirmed_functional_grant_count = 0`;
+9. `legacy_confirmed_deny_count = 0`;
+10. no contiene `employee_id`;
+11. no contiene claves legacy;
+12. no contiene permisos retirados;
+13. no contiene wildcards;
+14. no contiene identidades técnicas;
+15. no crea allows o denies por las 29 claves nuevas;
+16. no convierte `DEFAULT_DENY` en filas explícitas;
+17. el hash coincide con el publicado.
+
+Resultado documental:
+
+```text
+canonical_records = 0
+legacy_rows_expected = 17
+automatic_grants = 0
+automatic_denials = 0
+legacy_expansions = 0
+dataset_hash = sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10
+```
+
+---
+
+#### 20. Eventos mínimos de runtime
+
+##### 20.1 Concesiones base
+
+```text
+individual_base_grant_requested
+individual_base_grant_approved
+individual_base_grant_rejected
+individual_base_grant_scheduled
+individual_base_grant_activated
+individual_base_grant_updated
+individual_base_grant_suspended
+individual_base_grant_reactivated
+individual_base_grant_revoked
+individual_base_grant_expired
+individual_base_grant_redundancy_detected
+individual_base_grant_conflict_detected
+```
+
+##### 20.2 Concesiones operativas
+
+```text
+individual_operational_grant_requested
+individual_operational_grant_approved
+individual_operational_grant_rejected
+individual_operational_grant_scheduled
+individual_operational_grant_activated
+individual_operational_grant_used
+individual_operational_grant_blocked
+individual_operational_grant_updated
+individual_operational_grant_suspended
+individual_operational_grant_reactivated
+individual_operational_grant_revoked
+individual_operational_grant_expired
+individual_operational_grant_redundancy_detected
+individual_operational_grant_conflict_detected
+```
+
+##### 20.3 Denegaciones
+
+```text
+deny_created
+deny_scheduled
+deny_approved
+deny_activated
+deny_updated
+deny_revoked
+deny_expired
+deny_rejected
+deny_conflict_detected
+deny_recovery_risk_detected
+```
+
+##### 20.4 Transición legacy
+
+```text
+legacy_override_discovered
+legacy_override_classified
+legacy_override_blocked
+legacy_override_migration_proposed
+legacy_override_migrated
+legacy_override_retired
+legacy_override_reconciliation_failed
+```
+
+---
+
+#### 21. Respuesta de autorización
+
+Cuando un override participe en una decisión, la respuesta deberá poder
+registrar:
+
+```text
+allowed
+decision
+decision_id
+permission_key
+authorization_mode
+authorization_lane
+matrix_sources
+individual_grant_ids
+deny_ids
+deny_class
+deny_scope
+reason_code
+blocked_reasons
+resource_contract_result
+context_result
+device_result
+```
+
+No será suficiente devolver únicamente `true` o `false`.
+
+Los motivos confidenciales deben permanecer protegidos.
+
+---
+
+#### 22. Relación con dispositivos compartidos
+
+Un dispositivo compartido:
+
+- no recibe grants;
+- no recibe denies humanos;
+- no se convierte en beneficiario;
+- no transfiere overrides entre actores;
+- no conserva autoridad después de cerrar sesión;
+- puede filtrar o impedir una capacidad;
+- nunca amplía una concesión;
+- nunca ignora un deny aplicable.
+
+La evaluación usa siempre el actor humano efectivo.
+
+---
+
+#### 23. Relación con AUTH-RBAC-024 y AUTH-RBAC-025
+
+```text
+MATRIZ BASE
++
+MATRIZ OPERATIVA
++
+CONCESIONES INDIVIDUALES
+-
+DENEGACIONES APLICABLES
++
+CONTEXTO Y RECURSO
+=
+DECISIÓN EFECTIVA
+```
+
+AUTH-RBAC-026 no modifica:
+
+- `vento.authorization.base-role-grants@1.0.0`;
+- `vento.authorization.operational-role-grants@1.0.0`.
+
+Los tres datasets son independientes y se combinan durante la evaluación.
+
+Una necesidad general deberá corregirse en la matriz correspondiente.
+
+Una necesidad particular podrá utilizar un override individual aprobado.
+
+---
+
+#### 24. Relación con tareas posteriores
+
+##### AUTH-RBAC-027
+
+Validará que:
+
+- ninguna concesión individual operativa produzca alcance global;
+- `null` no se interprete como global;
+- ningún dispositivo amplíe contexto;
+- las filas legacy no creen acceso accidental.
+
+##### AUTH-RBAC-028
+
+Validará que:
+
+- un allow base no dependa de turno o check-in;
+- una concesión operativa sí exija su contexto;
+- los componentes de doble condición permanezcan separados.
+
+##### BLOQUE E
+
+Diseñará la función unificada de decisión, razones estructuradas, precedencia,
+caché e invalidación.
+
+##### BLOQUE E3
+
+Definirá tablas, relaciones, índices, constraints, RLS, funciones y transición
+objetivo de Supabase.
+
+##### BLOQUE R
+
+Implementará:
+
+- dataset seed;
+- extracción de las 17 filas;
+- clasificación legacy;
+- backfill;
+- reconciliación;
+- migración idempotente;
+- retiro controlado;
+- telemetría;
+- rollback.
+
+##### BLOQUE QA
+
+Probará:
+
+- vigencia;
+- expiración;
+- revocación;
+- cambio de turno;
+- check-out;
+- alcance;
+- recurso;
+- segregación;
+- dispositivos;
+- denies;
+- transición legacy.
+
+---
+
+#### 25. Fuera del alcance
+
+AUTH-RBAC-026 no:
+
+- crea excepciones para personas concretas;
+- crea denegaciones reales;
+- aprueba las 17 filas legacy;
+- publica archivos físicos;
+- crea tablas;
+- inserta registros;
+- ejecuta backfill;
+- elimina `employee_permissions`;
+- migra identidades;
+- modifica RLS;
+- modifica RPC;
+- implementa guards;
+- cambia dispositivos;
+- invalida sesiones;
+- modifica Supabase.
+
+---
+
+#### 26. Riesgos controlados
+
+##### Riesgo 1 — Migrar las 17 filas como válidas
+
+Control:
+
+```text
+17 LEGACY
+→ 0 CANÓNICAS AUTOMÁTICAS
+```
+
+##### Riesgo 2 — Convertir ausencia en deny explícito
+
+Control:
+
+```text
+NO ALLOW
+→ DEFAULT_DENY
+→ NO CREAR FILA
+```
+
+##### Riesgo 3 — Concesión individual como segundo rol
+
+Control:
+
+- verificación de redundancia;
+- finalidad particular;
+- alcance explícito;
+- revisión periódica.
+
+##### Riesgo 4 — Permiso operativo permanente
+
+Control:
+
+- turno obligatorio;
+- rol operativo compatible;
+- check-in cuando corresponda;
+- expiración.
+
+##### Riesgo 5 — Deny legacy expandido a claves nuevas
+
+Control:
+
+```text
+LEGACY UNO-A-MUCHOS
+→ REVISIÓN HUMANA
+→ CERO EXPANSIÓN AUTOMÁTICA
+```
+
+##### Riesgo 6 — Dispositivo como sujeto
+
+Control:
+
+```text
+employee_id
+→ trabajador humano
+```
+
+##### Riesgo 7 — Revocar deny concede permiso
+
+Control:
+
+```text
+REVOKE DENY
+→ REEVALUAR ALLOWS
+→ NO CREAR ALLOW
+```
+
+##### Riesgo 8 — Seed vacío interpretado como tarea incompleta
+
+Control:
+
+- manifiesto versionado;
+- hash reproducible;
+- cero explícito por cada clase;
+- transición legacy separada.
+
+---
+
+#### 27. Criterios de aprobación
+
+AUTH-RBAC-026 podrá aprobarse cuando se acepte que:
+
+1. el dataset se identifica como
+   `vento.authorization.individual-overrides@1.0.0`;
+2. referencia `vento.authorization@1.0.0`;
+3. referencia la huella contractual de AUTH-CAT-024;
+4. el seed inicial contiene exactamente cero registros;
+5. existen cero concesiones base automáticas;
+6. existen cero concesiones operativas automáticas;
+7. existen cero denegaciones automáticas;
+8. las 17 filas legacy no se incorporan como autorizaciones;
+9. `DEFAULT_DENY` no se materializa como deny explícito;
+10. se distinguen grants y denies;
+11. se distinguen carriles base, operativo y todos los compatibles;
+12. `STRUCTURAL_DENY` permanece fuera del dataset administrable;
+13. los grants usan claves exactas y modalidades compatibles;
+14. los denies usan claves exactas, alcance, vigencia y motivo;
+15. un deny aplicable prevalece;
+16. una concesión positiva nunca restringe otra concesión;
+17. los dispositivos no reciben ni transfieren overrides;
+18. la transición legacy tiene clasificación explícita;
+19. el hash inicial es
+    `sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10`;
+20. la implementación física queda reservada para BLOQUE R.
+
+---
+
+#### 28. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-025 | APROBADA    |
+| AUTH-RBAC-026 | APROBADA    |
+| AUTH-RBAC-027 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-027 hasta recibir aprobación explícita de
+AUTH-RBAC-026.
+
+### ✅ AUTH-RBAC-027 — Validar que no exista acceso operativo global accidental
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE D — Validaciones de matrices  
+**Naturaleza:** Validación contractual transversal y puerta de cierre  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-RBAC-026 — APROBADA  
+**Tarea posterior reservada:** AUTH-RBAC-028 — Validar que la administración no dependa del check-in  
+**Catálogo validado:** `vento.authorization@1.0.0`  
+**Dataset base validado:** `vento.authorization.base-role-grants@1.0.0`  
+**Dataset operativo validado:** `vento.authorization.operational-role-grants@1.0.0`  
+**Dataset de overrides validado:** `vento.authorization.individual-overrides@1.0.0`  
+**Aserciones ejecutadas:** **20**  
+**Incumplimientos bloqueantes:** **0**  
+**Resultado propuesto:** **PASS**  
+**Hash de evidencia:** `sha256:83842bb7dc8e727c12f2f8a2f1948cb57d9a793e73308bc2cb71c675f73a337b`
+
+Esta tarea valida documentalmente que ninguna matriz, componente,
+excepción inicial, clave legacy o relación con dispositivos produzca
+autoridad operativa global accidental.
+
+No crea tablas, no inserta filas, no modifica Supabase, no genera
+migraciones, no altera RLS o RPC y no materializa los datasets.
+
+---
+
+#### 1. Objetivo
+
+Confirmar que el modelo contractual cumple simultáneamente:
+
+```text
+AUTORIDAD OPERATIVA
+→ permiso exacto
+→ actor humano efectivo
+→ rol operativo vigente
+→ turno válido
+→ check-in cuando corresponda
+→ sede y área compatibles
+→ recurso real relacionado
+→ dispositivo permitido
+→ ausencia de denegación
+```
+
+Y que no existe ningún camino equivalente a:
+
+```text
+ROL OPERATIVO
+→ TODAS LAS SEDES
+
+CHECK-IN
+→ TODOS LOS PERMISOS
+
+DISPOSITIVO
+→ AUTORIDAD
+
+GERENCIA_OPERATIVA
+→ ESPECIALISTA UNIVERSAL
+
+NULL
+→ GLOBAL
+
+APP ACCESS
+→ TODAS LAS FUNCIONES
+```
+
+---
+
+#### 2. Alcance de la validación
+
+La validación cubre:
+
+1. las 499 concesiones lógicas de la matriz base;
+2. las 240 concesiones lógicas de la matriz operativa;
+3. el seed vacío de excepciones y denegaciones;
+4. las 22 claves legacy bloqueadas;
+5. los 14 permisos técnicos retirados;
+6. las 17 filas legacy pendientes de clasificación;
+7. los 12 roles operativos;
+8. los 22 componentes operativos de doble condición;
+9. la relación entre paquetes de dispositivo y autoridad;
+10. las reglas de resolución territorial y de recurso.
+
+No valida todavía:
+
+- filas físicas;
+- UUID territoriales;
+- RLS;
+- RPC;
+- consultas reales;
+- consumidores de aplicaciones;
+- backfills;
+- migraciones;
+- telemetría de producción.
+
+Esas validaciones pertenecen a E3, BLOQUE R y QA.
+
+---
+
+#### 3. Fuentes contractuales
+
+| Fuente           | Identificador                                       | Hash                                                                      |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| Catálogo         | `vento.authorization@1.0.0`                         | `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe` |
+| Matriz base      | `vento.authorization.base-role-grants@1.0.0`        | `sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1` |
+| Matriz operativa | `vento.authorization.operational-role-grants@1.0.0` | `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f` |
+| Overrides        | `vento.authorization.individual-overrides@1.0.0`    | `sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10` |
+
+Regla:
+
+```text
+VALIDACIÓN CONTRACTUAL
+→ usa snapshots exactos
+→ no reinterpreta matrices
+→ no corrige silenciosamente datasets
+```
+
+---
+
+#### 4. Resultado ejecutivo
+
+| Dimensión                                            | Resultado        |
+| ---------------------------------------------------- | ---------------- |
+| Acceso operativo global accidental                   | **NO DETECTADO** |
+| Wildcards                                            | **0**            |
+| `null` interpretado como global                      | **0**            |
+| Perfiles base/globales dentro de matriz operativa    | **0**            |
+| Permisos `BASE_ONLY` dentro de matriz operativa      | **0**            |
+| Claves legacy o retiradas dentro de matriz operativa | **0**            |
+| `nexo.inventory.remissions.dispatch`                 | **0**            |
+| Dispositivos usados como beneficiarios               | **0**            |
+| Empleados concretos embebidos en matriz operativa    | **0**            |
+| Overrides iniciales capaces de ampliar autoridad     | **0**            |
+| Incumplimientos bloqueantes                          | **0**            |
+| **Veredicto**                                        | **PASS**         |
+
+---
+
+#### 5. Validaciones automatizables
+
+| ID                | Control                                            | Esperado | Obtenido | Resultado |
+| ----------------- | -------------------------------------------------- | -------: | -------: | --------- |
+| `RBAC-GLOBAL-001` | Conteo operativo                                   |      240 |      240 | **PASS**  |
+| `RBAC-GLOBAL-002` | Roles operativos canónicos                         |       12 |       12 | **PASS**  |
+| `RBAC-GLOBAL-003` | Pares rol-permiso únicos                           |      240 |      240 | **PASS**  |
+| `RBAC-GLOBAL-004` | Filas del carril OPERATIONAL                       |      240 |      240 | **PASS**  |
+| `RBAC-GLOBAL-005` | Concesiones operativas directas                    |      218 |      218 | **PASS**  |
+| `RBAC-GLOBAL-006` | Componentes operativos                             |       22 |       22 | **PASS**  |
+| `RBAC-GLOBAL-007` | Permisos BASE_ONLY en matriz operativa             |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-008` | Componentes con modalidad incorrecta               |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-009` | Alcances operativos con prefijo CTX-               |      240 |      240 | **PASS**  |
+| `RBAC-GLOBAL-010` | Perfiles base/globales dentro del carril operativo |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-011` | Uso de null como alcance                           |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-012` | Wildcards                                          |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-013` | Permisos fuera del catálogo activo                 |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-014` | Claves legacy bloqueadas                           |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-015` | Permisos técnicos retirados                        |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-016` | Apariciones de dispatch                            |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-017` | Intersección entre códigos de rol base y operativo |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-018` | Registros del seed de overrides                    |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-019` | Dispositivos usados como sujetos de concesión      |        0 |        0 | **PASS**  |
+| `RBAC-GLOBAL-020` | Empleados concretos embebidos en matriz operativa  |        0 |        0 | **PASS**  |
+
+Resultado:
+
+```text
+assertions = 20
+passed = 20
+failed = 0
+result = PASS
+```
+
+---
+
+#### 6. Cobertura por rol operativo
+
+| Rol operativo                | Registros | Resultado territorial                              |
+| ---------------------------- | --------: | -------------------------------------------------- |
+| `cajero_satelite`            |        20 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `barista_satelite`           |        11 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `cocinero_satelite`          |        11 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `servicio_salon`             |        11 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `mostrador_satelite`         |        11 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `operador_integral_satelite` |        21 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `produccion_cocina`          |        16 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `produccion_panaderia`       |        16 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `produccion_reposteria`      |        16 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `bodeguero`                  |        36 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `conductor_logistica`        |        16 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| `gerencia_operativa`         |        55 | `PASS` — limitado por `CTX-*`, contexto y recurso. |
+| **Total**                    |   **240** | **PASS**                                           |
+
+Ningún código de rol operativo coincide con un código de rol base.
+
+La separación de namespaces evita que una matriz base sea consumida como
+matriz operativa por coincidencia nominal.
+
+---
+
+#### 7. Regla territorial obligatoria
+
+Las 240 filas operativas cumplen:
+
+```text
+scope_expression
+→ comienza por CTX-
+```
+
+No aparece ningún perfil propio del carril base o de alcance global:
+
+```text
+G(B)
+G-FUNC
+G-FIN
+G-SRC
+ORG
+ORG-REF
+ORG-LOCAL
+GLOBAL_PERMISSION
+```
+
+Los perfiles `CTX-*` no son etiquetas suficientes por sí solos. La
+implementación deberá resolver en servidor las dimensiones declaradas por
+cada fila:
+
+- sede activa;
+- área activa;
+- punto operativo;
+- caja;
+- bodega;
+- orden;
+- lote;
+- remisión;
+- ruta;
+- vehículo;
+- recurso asignado;
+- relación de origen o destino.
+
+Regla:
+
+```text
+CTX-* SIN RECURSO RESUELTO
+→ INDETERMINATE
+→ DENY
+```
+
+---
+
+#### 8. Prohibición de globalidad por ausencia de datos
+
+No se admite:
+
+```text
+site_id = null
+→ todas las sedes
+
+area_id = null
+→ todas las áreas
+
+resource_id = null
+→ todos los recursos
+
+route_id = null
+→ todas las rutas
+```
+
+Una dimensión nula deberá significar únicamente:
+
+- no aplicable para ese contrato;
+- dato todavía no resuelto;
+- decisión indeterminada.
+
+Nunca significa global.
+
+La implementación física deberá usar constraints, validadores o contratos
+discriminados que impidan estados ambiguos.
+
+---
+
+#### 9. Acceso a aplicación
+
+Los permisos de entrada como:
+
+```text
+fogo.access
+nexo.access
+origo.access
+pulso.access
+```
+
+solo permiten presentar la aplicación o su estado de entrada.
+
+Regla:
+
+```text
+<app>.access
+≠
+acceso a todas las capacidades internas
+```
+
+La navegación, la URL y cada acción interna deberán volver a evaluar su
+permiso exacto.
+
+Una aplicación no podrá inferir:
+
+```text
+PUEDE ENTRAR
+→ PUEDE OPERAR TODO
+```
+
+---
+
+#### 10. `gerencia_operativa`
+
+`gerencia_operativa` contiene 55 decisiones explícitas.
+
+No es una autoridad operacional global.
+
+Sus alcances se limitan a:
+
+- sede o área activa;
+- jornada coordinada;
+- operaciones que afecten su territorio;
+- recursos bajo coordinación expresa;
+- consultas y componentes sensibles exactos.
+
+No recibe automáticamente:
+
+- operaciones ordinarias de caja;
+- custodia de conductor;
+- ejecución especializada de producción;
+- administración global de catálogo;
+- autoridad sobre todas las sedes;
+- permisos por nombre de rol.
+
+Regla:
+
+```text
+GERENCIA_OPERATIVA
+→ coordina capacidades exactas
+
+GERENCIA_OPERATIVA
+≠
+cajero + bodeguero + conductor + productor
+```
+
+---
+
+#### 11. Producción y recetario operativo
+
+Las tres filas operativas de:
+
+```text
+fogo.production.recipe_book.view
+```
+
+para:
+
+```text
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+```
+
+no se consideran globales porque están limitadas a:
+
+- la disciplina productiva exacta;
+- recetas publicadas aplicables;
+- órdenes de esa disciplina;
+- proyección operativa;
+- exclusión de costos, márgenes, borradores, edición y maestro completo.
+
+Condición obligatoria para implementación:
+
+```text
+RECETARIO OPERATIVO
+→ filtrar por orden, producto, receta publicada y área productiva compatibles
+→ no exponer el maestro completo
+```
+
+Si una consulta física no puede demostrar esa relación, la decisión deberá
+ser `DENY` o `INDETERMINATE`.
+
+---
+
+#### 12. Conductor y custodia
+
+`conductor_logistica` queda limitado a:
+
+- rutas asignadas;
+- vehículo asignado;
+- remisiones asignadas;
+- segmentos logísticos vigentes;
+- custodia aceptada;
+- tránsito iniciado;
+- entrega registrada.
+
+No puede consultar el tablero logístico global ni operaciones de otros
+conductores.
+
+La separación:
+
+```text
+accept_custody
+start_transit
+deliver
+```
+
+impide que una única clave amplia conceda todo el ciclo.
+
+`nexo.inventory.remissions.dispatch` no aparece en el dataset.
+
+---
+
+#### 13. Bodeguero e inventario
+
+`bodeguero` recibe capacidades sobre la bodega activa y recursos bajo su
+custodia.
+
+No recibe por contexto:
+
+- todas las existencias de la organización;
+- otras bodegas;
+- otras sedes;
+- aprobación o resolución de su propia diferencia;
+- administración del catálogo;
+- modificación silenciosa de cantidades;
+- recepción comercial y entrada física como un único efecto.
+
+La visibilidad de un extremo de una transferencia o remisión no concede
+autoridad sobre el otro extremo.
+
+---
+
+#### 14. Caja y PULSO
+
+Las operaciones ordinarias se limitan a:
+
+- actor humano;
+- turno;
+- sede;
+- área;
+- punto de venta;
+- sesión de caja;
+- pedido o pago relacionado.
+
+Las acciones sensibles son componentes operativos:
+
+```text
+reverse
+cancel
+return
+refund
+discount
+```
+
+Y requieren:
+
+```text
+COMPONENTE BASE DEL MISMO ACTOR
++
+COMPONENTE OPERATIVO DEL MISMO ACTOR
++
+MISMO PERMISO
++
+MISMO RECURSO
++
+MISMA SOLICITUD
+```
+
+No pueden combinarse componentes de actores diferentes.
+
+---
+
+#### 15. Excepciones y denegaciones
+
+El seed de:
+
+```text
+vento.authorization.individual-overrides@1.0.0
+```
+
+contiene cero registros.
+
+Por tanto, en la versión contractual inicial:
+
+- ninguna excepción amplía alcance;
+- ninguna concesión operativa individual crea globalidad;
+- ninguna denegación legacy se expande;
+- ninguna de las 17 filas legacy participa;
+- revocar un deny no crea un allow.
+
+Los overrides futuros deberán pasar nuevamente esta validación cuando:
+
+- utilicen alcance organizacional;
+- no tengan expiración;
+- sean operativos;
+- afecten permisos sensibles;
+- utilicen tipos de sede o área;
+- contengan recursos múltiples.
+
+---
+
+#### 16. Dispositivos compartidos
+
+Los datasets no contienen:
+
+```text
+device_id
+device_code
+device_package
+shared_device_id
+```
+
+como sujetos de concesión.
+
+Un paquete de dispositivo:
+
+```text
+→ restringe qué capacidades pueden presentarse o ejecutarse
+→ no añade permisos
+→ no crea turno
+→ no crea check-in
+→ no cambia el actor efectivo
+→ no amplía sede o área
+```
+
+La evaluación deberá usar siempre la intersección:
+
+```text
+AUTORIDAD DEL ACTOR
+∩
+CAPACIDADES PERMITIDAS POR EL DISPOSITIVO
+```
+
+Nunca la unión.
+
+---
+
+#### 17. Filas legacy
+
+Las 17 filas legacy de `employee_permissions` permanecen fuera del dataset
+canónico.
+
+Antes de cualquier backfill deberán clasificarse.
+
+Regla:
+
+```text
+FILA LEGACY NO CLASIFICADA
+→ NO AUTORIZA
+```
+
+Especialmente deberán bloquearse:
+
+- identidades inactivas;
+- identidades técnicas;
+- dispositivos representados como usuarios;
+- claves retiradas;
+- claves legacy uno-a-muchos;
+- duplicados;
+- filas sin alcance verificable.
+
+---
+
+#### 18. Pruebas negativas obligatorias
+
+La implementación deberá demostrar, como mínimo:
+
+| Caso                                              | Resultado esperado       |
+| ------------------------------------------------- | ------------------------ |
+| Rol operativo válido sin turno                    | `DENY`                   |
+| Turno válido sin rol operativo                    | `DENY`                   |
+| Check-in en sede distinta                         | `DENY`                   |
+| Área no perteneciente a la sede activa            | `DENY`                   |
+| Recurso de otra sede                              | `DENY`                   |
+| Ruta no asignada al conductor                     | `DENY`                   |
+| Bodega diferente a la activa                      | `DENY`                   |
+| Sesión de caja de otro actor                      | `DENY`                   |
+| `null` territorial ambiguo                        | `DENY` o `INDETERMINATE` |
+| Dispositivo permitido sin permiso humano          | `DENY`                   |
+| `<app>.access` sin permiso interno                | `DENY`                   |
+| Componente base de actor A y operativo de actor B | `DENY`                   |
+| Fila legacy no clasificada                        | `DENY`                   |
+| Permiso por prefijo                               | `DENY`                   |
+| `dispatch` solicitado                             | `DENY`                   |
+| Recetario maestro desde proyección operativa      | `DENY`                   |
+
+---
+
+#### 19. Pruebas positivas controladas
+
+| Caso                                                     | Resultado esperado                   |
+| -------------------------------------------------------- | ------------------------------------ |
+| Cajero con pedido propio, turno, check-in y caja válidos | Evaluar `ALLOW` según permiso exacto |
+| Bodeguero con stock de bodega activa                     | Evaluar `ALLOW`                      |
+| Conductor con remisión y ruta asignadas                  | Evaluar `ALLOW`                      |
+| Producción con orden y receta publicada del área activa  | Evaluar `ALLOW`                      |
+| Gerencia operativa con recurso de sede coordinada        | Evaluar `ALLOW`                      |
+| Acción sensible con ambos componentes del mismo actor    | Evaluar `ALLOW`                      |
+| Mismo permiso sobre recurso fuera de alcance             | `DENY`                               |
+
+Un caso positivo nunca debe probarse únicamente con el nombre del rol.
+
+---
+
+#### 20. Puertas para implementación física
+
+La materialización futura deberá fallar si detecta:
+
+1. alcance operativo global;
+2. `null` convertido en global;
+3. wildcard;
+4. permiso `BASE_ONLY` en matriz operativa;
+5. rol operativo sin contexto;
+6. paquete de dispositivo como fuente de allow;
+7. empleado o dispositivo embebido en matriz de rol;
+8. clave legacy o retirada;
+9. `dispatch`;
+10. consulta de recetario maestro;
+11. recurso territorial no resuelto;
+12. combinación de componentes entre actores;
+13. fila legacy activa antes de clasificación;
+14. diferencia entre conteos o hashes contractuales.
+
+Resultado requerido:
+
+```text
+FAIL CLOSED
+→ DETENER MIGRACIÓN
+→ NO PUBLICAR DATASET FÍSICO
+→ PRODUCIR EVIDENCIA
+```
+
+---
+
+#### 21. Evidencia canónica
+
+La evidencia se serializa mediante:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- primera línea = manifiesto compacto;
+- líneas siguientes = aserciones compactas;
+- orden por ID;
+- sin timestamps;
+- un único LF final;
+- SHA-256 sobre todos los bytes.
+
+```jsonl
+{"validation_id":"vento.authorization.no-accidental-global-operational-access","validation_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","base_dataset_id":"vento.authorization.base-role-grants","base_dataset_hash":"sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1","operational_dataset_id":"vento.authorization.operational-role-grants","operational_dataset_hash":"sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f","override_dataset_id":"vento.authorization.individual-overrides","override_dataset_hash":"sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10","assertion_count":20,"blocking_failure_count":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-001","control":"Conteo operativo","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-GLOBAL-002","control":"Roles operativos canónicos","expected":12,"actual":12,"result":"PASS"}
+{"id":"RBAC-GLOBAL-003","control":"Pares rol-permiso únicos","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-GLOBAL-004","control":"Filas del carril OPERATIONAL","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-GLOBAL-005","control":"Concesiones operativas directas","expected":218,"actual":218,"result":"PASS"}
+{"id":"RBAC-GLOBAL-006","control":"Componentes operativos","expected":22,"actual":22,"result":"PASS"}
+{"id":"RBAC-GLOBAL-007","control":"Permisos BASE_ONLY en matriz operativa","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-008","control":"Componentes con modalidad incorrecta","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-009","control":"Alcances operativos con prefijo CTX-","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-GLOBAL-010","control":"Perfiles base/globales dentro del carril operativo","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-011","control":"Uso de null como alcance","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-012","control":"Wildcards","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-013","control":"Permisos fuera del catálogo activo","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-014","control":"Claves legacy bloqueadas","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-015","control":"Permisos técnicos retirados","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-016","control":"Apariciones de dispatch","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-017","control":"Intersección entre códigos de rol base y operativo","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-018","control":"Registros del seed de overrides","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-019","control":"Dispositivos usados como sujetos de concesión","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-GLOBAL-020","control":"Empleados concretos embebidos en matriz operativa","expected":0,"actual":0,"result":"PASS"}
+```
+
+Resultado:
+
+```text
+evidence_hash = sha256:83842bb7dc8e727c12f2f8a2f1948cb57d9a793e73308bc2cb71c675f73a337b
+```
+
+---
+
+#### 22. Veredicto
+
+```text
+RESULTADO = PASS
+INCUMPLIMIENTOS BLOQUEANTES = 0
+OBSERVACIONES DE IMPLEMENTACIÓN = 3
+```
+
+Observaciones:
+
+1. el recetario operativo debe materializarse como proyección filtrada y no
+   como acceso al maestro;
+2. `<app>.access` debe permanecer separado de capacidades internas;
+3. la implementación debe resolver territorios y recursos en servidor y
+   fallar cerrada ante ambigüedad.
+
+Estas observaciones no cambian los datasets aprobados y no reabren el
+catálogo.
+
+---
+
+#### 23. Criterios de aprobación
+
+AUTH-RBAC-027 podrá aprobarse cuando se acepte que:
+
+1. las 20 aserciones contractuales pasan;
+2. no existe alcance operativo global;
+3. las 240 filas usan perfiles `CTX-*`;
+4. no existen perfiles base o globales en la matriz operativa;
+5. no existe `null` con semántica global;
+6. no existen wildcards;
+7. no existen claves legacy o retiradas;
+8. `dispatch` no aparece;
+9. los roles base y operativos permanecen separados;
+10. `gerencia_operativa` no es especialista universal;
+11. los permisos de entrada no conceden funciones internas;
+12. los componentes dobles pertenecen al mismo actor;
+13. los dispositivos restringen, pero no conceden;
+14. las 17 filas legacy no participan;
+15. el seed de overrides permanece vacío;
+16. el recetario operativo se limita a proyección aplicable;
+17. toda dimensión territorial se resuelve en servidor;
+18. la implementación futura deberá fallar cerrada;
+19. el hash de evidencia es
+    `sha256:83842bb7dc8e727c12f2f8a2f1948cb57d9a793e73308bc2cb71c675f73a337b`;
+20. AUTH-RBAC-028 queda habilitada únicamente después de aprobación expresa.
+
+---
+
+#### 24. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-026 | APROBADA    |
+| AUTH-RBAC-027 | APROBADA    |
+| AUTH-RBAC-028 | NO INICIADA |
+
+No se avanza a AUTH-RBAC-028 hasta recibir aprobación explícita de
+AUTH-RBAC-027.
+
+
+### ✅ AUTH-RBAC-028 — Validar que la administración no dependa del check-in
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE D — Validaciones de matrices  
+**Naturaleza:** Validación contractual transversal y cierre del BLOQUE D  
+**Implementación física:** No incluida  
+**Tarea anterior vigente:** AUTH-RBAC-027 — APROBADA  
+**Tarea posterior reservada:** AUTH-CTX-001 — Diseñar AccessContext canónico  
+**Catálogo validado:** `vento.authorization@1.0.0`  
+**Dataset base validado:** `vento.authorization.base-role-grants@1.0.0`  
+**Dataset operativo validado:** `vento.authorization.operational-role-grants@1.0.0`  
+**Dataset de overrides validado:** `vento.authorization.individual-overrides@1.0.0`  
+**Aserciones ejecutadas:** **23**  
+**Incumplimientos bloqueantes:** **0**  
+**Resultado propuesto:** **PASS**  
+**Hash de evidencia:** `sha256:84573a502cddc91e8b3acf4603399a5d2812724770084e0381121aee7fe18250`
+
+Esta tarea valida que las capacidades administrativas concedidas por el
+carril base no dependan de turno, check-in, rol operativo, sede operativa o
+área operativa.
+
+También confirma la regla inversa:
+
+```text
+TURNO O CHECK-IN
+→ NO CREAN AUTORIDAD ADMINISTRATIVA
+```
+
+Y preserva la doble condición:
+
+```text
+BASE_AND_OPERATIONAL
+→ componente base independiente
+→ componente operativo contextual
+→ acción final exige ambos componentes del mismo actor
+```
+
+No crea tablas, no inserta filas, no modifica Supabase, no genera
+migraciones, no altera RLS o RPC y no materializa los datasets.
+
+---
+
+#### 1. Objetivo
+
+Confirmar que el modelo contractual cumple simultáneamente:
+
+```text
+BASE_ONLY
+→ carril base
+→ sin turno
+→ sin check-in
+
+BASE_OR_OPERATIONAL POR CARRIL BASE
+→ carril base suficiente
+→ sin turno
+→ sin check-in
+
+BASE_OR_OPERATIONAL POR CARRIL OPERATIVO
+→ contexto operativo vigente
+
+BASE_AND_OPERATIONAL
+→ base no depende de check-in
+→ operación sí depende de contexto
+→ acción final requiere ambos
+```
+
+Y que no exista ningún camino equivalente a:
+
+```text
+SIN CHECK-IN
+→ PERDER ADMINISTRACIÓN
+
+CHECK-IN ACTIVO
+→ GANAR ADMINISTRACIÓN
+
+ROL OPERATIVO
+→ HEREDAR MATRIZ BASE
+
+ROL BASE
+→ EJECUTAR CAPACIDAD OPERATIVA
+
+COMPONENTE BASE
+→ EJECUTAR ACCIÓN DOBLE
+```
+
+---
+
+#### 2. Alcance de la validación
+
+Se validan:
+
+1. 499 registros de matriz base;
+2. siete roles base;
+3. 463 concesiones base directas;
+4. 36 componentes base;
+5. 240 registros de matriz operativa;
+6. doce roles operativos;
+7. 218 concesiones operativas directas;
+8. 22 componentes operativos;
+9. doce claves `BASE_AND_OPERATIONAL`;
+10. el seed inicial de overrides con cero registros;
+11. la separación de carriles;
+12. la independencia entre administración y presencia operativa.
+
+No se valida todavía:
+
+- implementación de `AccessContext`;
+- consultas reales de turno o check-in;
+- RPC;
+- RLS;
+- filas físicas;
+- sesiones reales;
+- consumidores de aplicaciones;
+- caché e invalidación;
+- migraciones;
+- telemetría.
+
+Esas comprobaciones continuarán en BLOQUE E, E3, BLOQUE R y QA.
+
+---
+
+#### 3. Fuentes contractuales
+
+| Fuente           | Identificador                                       | Hash                                                                      |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------------- |
+| Catálogo         | `vento.authorization@1.0.0`                         | `sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe` |
+| Matriz base      | `vento.authorization.base-role-grants@1.0.0`        | `sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1` |
+| Matriz operativa | `vento.authorization.operational-role-grants@1.0.0` | `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f` |
+| Overrides        | `vento.authorization.individual-overrides@1.0.0`    | `sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10` |
+
+La validación consume snapshots exactos. No modifica las matrices ni
+recalcula sus hashes.
+
+---
+
+#### 4. Resultado ejecutivo
+
+| Dimensión                                            | Resultado        |
+| ---------------------------------------------------- | ---------------- |
+| Administración base dependiente de turno             | **NO DETECTADA** |
+| Administración base dependiente de check-in          | **NO DETECTADA** |
+| Permisos `OPERATIONAL_ONLY` en matriz base           | **0**            |
+| Permisos `BASE_ONLY` en matriz operativa             | **0**            |
+| Concesiones directas base con alcance `CTX-*`        | **0**            |
+| Componentes base tratados como autorización completa | **0**            |
+| Roles base confundidos con roles operativos          | **0**            |
+| Diferencias entre familias de doble condición        | **0**            |
+| Overrides iniciales capaces de alterar la separación | **0**            |
+| Incumplimientos bloqueantes                          | **0**            |
+| **Veredicto**                                        | **PASS**         |
+
+---
+
+#### 5. Validaciones ejecutadas
+
+| ID                 | Control                                                  | Esperado | Obtenido | Resultado |
+| ------------------ | -------------------------------------------------------- | -------: | -------: | --------- |
+| `RBAC-CHECKIN-001` | Registros del dataset base                               |      499 |      499 | **PASS**  |
+| `RBAC-CHECKIN-002` | Roles base canónicos                                     |        7 |        7 | **PASS**  |
+| `RBAC-CHECKIN-003` | Filas declaradas en carril BASE                          |      499 |      499 | **PASS**  |
+| `RBAC-CHECKIN-004` | Concesiones base directas                                |      463 |      463 | **PASS**  |
+| `RBAC-CHECKIN-005` | Componentes base                                         |       36 |       36 | **PASS**  |
+| `RBAC-CHECKIN-006` | Permisos OPERATIONAL_ONLY en matriz base                 |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-007` | Concesiones base directas que exigen turno               |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-008` | Concesiones base directas que exigen check-in            |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-009` | Concesiones directas declaradas como carril base         |      463 |      463 | **PASS**  |
+| `RBAC-CHECKIN-010` | Concesiones base directas con alcance CTX                |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-011` | Componentes base con modalidad incorrecta                |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-012` | Componentes base explícitamente insuficientes            |       36 |       36 | **PASS**  |
+| `RBAC-CHECKIN-013` | Registros del dataset operativo                          |      240 |      240 | **PASS**  |
+| `RBAC-CHECKIN-014` | Roles operativos canónicos                               |       12 |       12 | **PASS**  |
+| `RBAC-CHECKIN-015` | Filas declaradas en carril OPERATIONAL                   |      240 |      240 | **PASS**  |
+| `RBAC-CHECKIN-016` | Permisos BASE_ONLY en matriz operativa                   |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-017` | Alcances operativos declarados como CTX-*                |      240 |      240 | **PASS**  |
+| `RBAC-CHECKIN-018` | Componentes operativos con modalidad incorrecta          |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-019` | Intersección entre códigos de rol base y operativo       |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-020` | Diferencia entre familias de permisos de doble condición |        0 |        0 | **PASS**  |
+| `RBAC-CHECKIN-021` | Permisos de doble condición en carril base               |       12 |       12 | **PASS**  |
+| `RBAC-CHECKIN-022` | Permisos de doble condición en carril operativo          |       12 |       12 | **PASS**  |
+| `RBAC-CHECKIN-023` | Registros iniciales de overrides                         |        0 |        0 | **PASS**  |
+
+Resultado:
+
+```text
+assertions = 23
+passed = 23
+failed = 0
+result = PASS
+```
+
+---
+
+#### 6. Cobertura por rol base
+
+| Rol base                  | Directas | Componentes base |   Total | Exigencias positivas de turno/check-in en directas |
+| ------------------------- | -------: | ---------------: | ------: | -------------------------------------------------: |
+| `propietario`             |      109 |               12 |     121 |                                                  0 |
+| `gerente_general`         |      107 |               12 |     119 |                                                  0 |
+| `gerente`                 |       81 |               12 |      93 |                                                  0 |
+| `supervisor`              |       58 |                0 |      58 |                                                  0 |
+| `auxiliar_administrativa` |       47 |                0 |      47 |                                                  0 |
+| `contador`                |       45 |                0 |      45 |                                                  0 |
+| `marketing`               |       16 |                0 |      16 |                                                  0 |
+| **Total**                 |  **463** |           **36** | **499** |                                              **0** |
+
+La independencia aplica a los siete roles base, no únicamente a
+`propietario` y `gerente_general`.
+
+La autoridad base continúa sujeta a:
+
+- trabajador activo;
+- permiso activo;
+- alcance aprobado;
+- recurso válido;
+- contrato de recurso;
+- sensibilidad;
+- reautenticación cuando corresponda;
+- ausencia de denegación aplicable.
+
+No estar sujeta a check-in no equivale a carecer de controles.
+
+---
+
+#### 7. Semántica de la matriz base
+
+Las 463 filas `DIRECT_BASE`:
+
+- están declaradas en el carril `BASE`;
+- no contienen requisitos positivos de turno;
+- no contienen requisitos positivos de check-in;
+- no utilizan alcances `CTX-*`;
+- pueden satisfacerse sin contexto operativo;
+- no dependen de una sede o área seleccionada como contexto de trabajo.
+
+Regla:
+
+```text
+DIRECT_BASE
++
+ROL BASE VIGENTE
++
+ALCANCE BASE COINCIDENTE
++
+RECURSO VÁLIDO
++
+SIN DENEGACIÓN
+=
+AUTORIZACIÓN BASE POSIBLE
+```
+
+No se consulta turno o check-in para crear el allow base.
+
+---
+
+#### 8. `BASE_ONLY`
+
+Un permiso `BASE_ONLY`:
+
+- solo puede resolverse por el carril base;
+- no necesita turno;
+- no necesita check-in;
+- no puede aparecer en la matriz operativa;
+- no se concede por activar un rol operativo;
+- no desaparece al finalizar la jornada.
+
+Regla:
+
+```text
+CHECK-OUT
+→ NO REVOCA BASE_ONLY
+
+AUSENCIA DE TURNO
+→ NO BLOQUEA BASE_ONLY
+```
+
+Sí pueden bloquearlo:
+
+- trabajador inactivo;
+- permiso inactivo;
+- alcance no coincidente;
+- recurso inválido;
+- denegación aplicable;
+- sensibilidad no satisfecha;
+- sesión o identidad inválida.
+
+---
+
+#### 9. `BASE_OR_OPERATIONAL`
+
+Esta modalidad define dos caminos alternativos independientes.
+
+##### 9.1 Camino base
+
+```text
+BASE ALLOW VÁLIDO
+→ AUTORIZACIÓN POSIBLE
+→ SIN TURNO
+→ SIN CHECK-IN
+```
+
+##### 9.2 Camino operativo
+
+```text
+OPERATIONAL ALLOW VÁLIDO
++
+CONTEXTO OPERATIVO
+→ AUTORIZACIÓN POSIBLE
+```
+
+Reglas:
+
+1. el fallo del carril operativo no invalida un allow base válido;
+2. el fallo del carril base no invalida un allow operativo válido;
+3. no se mezclan fragmentos incompletos de caminos alternativos;
+4. el resultado debe identificar qué carril autorizó;
+5. un check-in no transforma un permiso ausente en allow.
+
+---
+
+#### 10. `BASE_AND_OPERATIONAL`
+
+Existen doce claves de doble condición.
+
+Ambos datasets contienen exactamente la misma familia de doce claves:
+
+```text
+nexo.finance.internal_variances.approve
+nexo.finance.internal_variances.resolve
+nexo.inventory.adjustments.register
+nexo.inventory.entries.override
+nexo.inventory.stock_count_variances.approve
+nexo.inventory.stock_count_variances.resolve
+pulso.delivery.deliveries.override
+pulso.payments.transactions.refund
+pulso.payments.transactions.reverse
+pulso.sales.discounts.apply
+pulso.sales.orders.cancel
+pulso.sales.returns.create
+```
+
+El dataset base aporta 36 componentes.
+
+El dataset operativo aporta 22 componentes.
+
+Las cantidades son distintas porque cada clave se concede a combinaciones
+diferentes de roles base y operativos. La familia de permisos es idéntica.
+
+Regla:
+
+```text
+BASE_COMPONENT
+→ no exige check-in para existir como componente
+→ no ejecuta la acción
+
+OPERATIONAL_COMPONENT
+→ exige contexto operativo compatible
+→ no ejecuta la acción por sí solo
+
+AMBOS DEL MISMO ACTOR
++
+MISMO PERMISO
++
+MISMO RECURSO
++
+MISMA SOLICITUD
+=
+AUTORIZACIÓN FINAL POSIBLE
+```
+
+No se admite:
+
+```text
+BASE DE ACTOR A
++
+OPERATIVO DE ACTOR B
+```
+
+---
+
+#### 11. Separación entre rol base y rol operativo
+
+Los siete códigos de rol base y los doce códigos de rol operativo tienen
+intersección cero.
+
+```text
+BASE ROLE CODE
+≠
+OPERATIONAL ROLE CODE
+```
+
+Esto evita:
+
+- activar un rol operativo mediante el cargo administrativo;
+- transformar el check-in en cambio de rol base;
+- retirar administración al finalizar un turno;
+- inferir una matriz base por similitud nominal;
+- inferir operación por jerarquía administrativa.
+
+Un trabajador puede poseer ambos conceptos, pero se resuelven como fuentes
+independientes dentro del mismo `AccessContext`.
+
+---
+
+#### 12. Check-in
+
+El check-in:
+
+- confirma presencia operativa;
+- selecciona un contexto permitido;
+- vincula sede y área operativas;
+- activa únicamente capacidades operativas compatibles;
+- puede ser obligatorio por permiso;
+- debe pertenecer al actor real;
+- expira o se cierra.
+
+El check-in no:
+
+- crea un rol base;
+- concede permisos administrativos;
+- amplía cobertura administrativa;
+- modifica la matriz base;
+- supera denegaciones;
+- convierte una sede activa en alcance global;
+- permite operar con el componente base únicamente.
+
+Regla:
+
+```text
+CHECK-IN
+→ CONTEXTO
+
+CHECK-IN
+≠
+AUTORIDAD ADMINISTRATIVA
+```
+
+---
+
+#### 13. Turno publicado
+
+El turno:
+
+- habilita la posible activación de un rol operativo;
+- define ventana temporal;
+- acota sede y área;
+- soporta validación laboral;
+- no crea permisos por sí solo.
+
+Regla:
+
+```text
+TURNO
++
+CHECK-IN
++
+ROL OPERATIVO
++
+PERMISO OPERATIVO
++
+RECURSO VÁLIDO
+=
+OPERACIÓN POSIBLE
+```
+
+No se admite:
+
+```text
+TURNO PUBLICADO
+→ TODA LA MATRIZ OPERATIVA
+
+TURNO PUBLICADO
+→ MATRIZ BASE
+```
+
+---
+
+#### 14. Cierre de turno y check-out
+
+Cuando termina el contexto operativo:
+
+- las concesiones operativas dejan de participar;
+- los componentes operativos dejan de participar;
+- la sede y área operativas dejan de estar activas;
+- la sesión de dispositivo compartido deberá cerrarse o bloquearse;
+- se invalidan decisiones operativas almacenadas.
+
+No se alteran:
+
+- rol base;
+- concesiones base;
+- componentes base;
+- cobertura administrativa;
+- excepciones individuales base vigentes;
+- denegaciones base vigentes.
+
+Regla:
+
+```text
+CHECK-OUT
+→ REEVALUAR CARRIL OPERATIVO
+
+CHECK-OUT
+≠
+REVOCAR CARRIL BASE
+```
+
+---
+
+#### 15. Interfaz y navegación administrativa
+
+Una pantalla administrativa no debe:
+
+- pedir check-in para consultar una capacidad `BASE_ONLY`;
+- ocultarse por ausencia de turno cuando existe allow base;
+- redirigir a selección operativa para ejercer administración;
+- reutilizar el estado de check-in como señal de autorización base;
+- perder acceso al cerrar jornada;
+- consultar únicamente `get_operational_context`.
+
+Debe usar la decisión unificada:
+
+```text
+AccessContext
++
+AuthorizationDecision
+```
+
+Y mostrar el carril que autorizó.
+
+---
+
+#### 16. Dispositivos compartidos
+
+Un dispositivo compartido puede exigir identificación y contexto para
+operación.
+
+No puede exigir check-in como condición universal para acciones
+administrativas base.
+
+Regla:
+
+```text
+ACCIÓN BASE EN DISPOSITIVO COMPATIBLE
+→ evaluar actor y permiso base
+→ no inventar requisito operativo
+
+ACCIÓN OPERATIVA
+→ evaluar actor, turno, check-in, rol, sede y área
+```
+
+El paquete del dispositivo puede bloquear una capacidad, pero no cambiar su
+modalidad.
+
+---
+
+#### 17. Excepciones y denegaciones
+
+El seed inicial de overrides contiene cero registros.
+
+Los overrides futuros deberán preservar la separación:
+
+##### Concesión individual base
+
+- no requiere check-in;
+- no crea turno;
+- no crea rol operativo;
+- no concede `OPERATIONAL_ONLY`.
+
+##### Concesión individual operativa
+
+- exige turno;
+- exige rol operativo compatible;
+- exige check-in cuando corresponda;
+- termina con el contexto.
+
+##### Denegación
+
+- puede bloquear carril base, operativo o ambos;
+- revocarla no crea un allow;
+- no convierte check-in en fuente de autoridad.
+
+---
+
+#### 18. Pruebas negativas obligatorias
+
+| Caso                                                                       | Resultado esperado                   |
+| -------------------------------------------------------------------------- | ------------------------------------ |
+| Propietario activo sin turno solicita `BASE_ONLY` concedido                | No bloquear por ausencia de turno    |
+| Gerente general sin check-in solicita capacidad base concedida             | No bloquear por ausencia de check-in |
+| Auxiliar administrativa cierra jornada y consulta capacidad base concedida | Mantener evaluación base             |
+| Trabajador con check-in pero sin permiso base solicita administración      | `DENY`                               |
+| Trabajador con turno pero sin rol operativo solicita operación             | `DENY`                               |
+| Rol base intenta permiso `OPERATIONAL_ONLY` sin contexto                   | `DENY`                               |
+| Componente base sin componente operativo                                   | `DENY`                               |
+| Componente operativo sin componente base                                   | `DENY`                               |
+| Componentes pertenecen a actores distintos                                 | `DENY`                               |
+| Check-out seguido de reutilización de decisión operativa en caché          | `DENY`                               |
+| Interfaz administrativa depende solo de `active_checkin_session`           | Prueba debe fallar                   |
+| RPC base exige `checkin_session_id` obligatorio                            | Contrato inválido                    |
+| Matriz operativa contiene `BASE_ONLY`                                      | Publicación bloqueada                |
+| Matriz base contiene `OPERATIONAL_ONLY`                                    | Publicación bloqueada                |
+
+---
+
+#### 19. Pruebas positivas controladas
+
+| Caso                                                                                      | Resultado esperado                            |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Rol base con `BASE_ONLY`, sin turno y sin check-in                                        | Evaluar `ALLOW`                               |
+| Rol base con `BASE_OR_OPERATIONAL`, sin check-in                                          | Evaluar carril base                           |
+| Rol operativo con `BASE_OR_OPERATIONAL` y contexto válido                                 | Evaluar carril operativo                      |
+| Ambos carriles posibles en `BASE_OR_OPERATIONAL`                                          | Registrar carril autorizante sin exigir ambos |
+| `BASE_AND_OPERATIONAL` con ambos componentes del mismo actor                              | Evaluar `ALLOW`                               |
+| Check-out de actor con capacidad base                                                     | Conservar evaluación base                     |
+| Denegación base aplicable con check-in activo                                             | `DENY`                                        |
+| Denegación operativa aplicable con allow base alternativo válido en `BASE_OR_OPERATIONAL` | Evaluar carril base                           |
+
+---
+
+#### 20. Requisitos para `AccessContext`
+
+AUTH-CTX-001 deberá separar explícitamente:
+
+```text
+base_role
+assigned_sites
+assigned_areas
+```
+
+de:
+
+```text
+active_shift
+active_checkin_session
+operational_role
+operational_site
+operational_area
+```
+
+No se admite un único objeto ambiguo como:
+
+```text
+current_role
+current_site
+current_area
+```
+
+porque permitiría confundir cobertura administrativa con contexto
+operativo.
+
+---
+
+#### 21. Requisitos para `AuthorizationDecision`
+
+La decisión deberá informar separadamente:
+
+```text
+base_decision
+operational_decision
+base_matched_allows
+operational_matched_allows
+base_denies
+operational_denies
+authorization_requirement
+authorizing_lane
+blocked_reasons
+final_decision
+```
+
+Para `BASE_ONLY`, el evaluador no debe bloquear porque falte contexto
+operativo.
+
+Para `BASE_OR_OPERATIONAL`, debe evaluar ambos caminos de manera
+independiente.
+
+Para `BASE_AND_OPERATIONAL`, debe exigir ambos componentes del mismo actor.
+
+---
+
+#### 22. Invalidación y caché
+
+Los cambios operativos deben invalidar únicamente decisiones que dependan
+de ellos.
+
+| Evento                             | Invalidar carril base |           Invalidar carril operativo |
+| ---------------------------------- | --------------------: | -----------------------------------: |
+| Inicio de turno                    |                    No |                                   Sí |
+| Fin de turno                       |                    No |                                   Sí |
+| Check-in                           |                    No |                                   Sí |
+| Check-out                          |                    No |                                   Sí |
+| Cambio de sede o área operativa    |                    No |                                   Sí |
+| Cambio de rol operativo            |                    No |                                   Sí |
+| Cambio de rol base                 |                    Sí | Puede requerir reevaluación completa |
+| Cambio de cobertura administrativa |                    Sí |                       No por sí solo |
+| Cambio de permiso o catálogo       |                    Sí |                                   Sí |
+| Denegación actor-wide              |                    Sí |                                   Sí |
+
+La implementación podrá invalidar más ampliamente por seguridad, pero no
+debe interpretar la ausencia de contexto operativo como denegación del
+carril base.
+
+---
+
+#### 23. Puertas para implementación física
+
+La implementación deberá detenerse si detecta:
+
+1. un `BASE_ONLY` condicionado a turno;
+2. un `BASE_ONLY` condicionado a check-in;
+3. una concesión base directa con alcance `CTX-*`;
+4. un permiso `OPERATIONAL_ONLY` en matriz base;
+5. un permiso `BASE_ONLY` en matriz operativa;
+6. un check-in que crea permisos base;
+7. cierre de turno que elimina administración;
+8. combinación de componentes entre actores;
+9. un único campo ambiguo para rol, sede o área;
+10. una caché operativa reutilizada después de check-out;
+11. una interfaz administrativa que solo consume contexto operativo;
+12. un override base que exige check-in;
+13. un override operativo que sobrevive al contexto;
+14. diferencias entre las familias de permisos de doble condición.
+
+Resultado:
+
+```text
+FAIL CLOSED
+→ DETENER PUBLICACIÓN
+→ PRODUCIR EVIDENCIA
+→ NO CORREGIR SILENCIOSAMENTE
+```
+
+---
+
+#### 24. Evidencia canónica
+
+La evidencia se serializa mediante:
+
+- UTF-8 sin BOM;
+- saltos LF;
+- primera línea = manifiesto compacto;
+- líneas siguientes = aserciones compactas;
+- orden por ID;
+- sin timestamps;
+- un único LF final;
+- SHA-256 sobre todos los bytes.
+
+```jsonl
+{"validation_id":"vento.authorization.base-administration-independent-from-checkin","validation_version":"1.0.0","catalog_id":"vento.authorization","catalog_version":"1.0.0","contract_release_hash":"sha256:687e1bc19c0cf7332e76ed940cf5a23b829492ebbee399af718fd326cf473cbe","base_dataset_id":"vento.authorization.base-role-grants","base_dataset_hash":"sha256:bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1","operational_dataset_id":"vento.authorization.operational-role-grants","operational_dataset_hash":"sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f","override_dataset_id":"vento.authorization.individual-overrides","override_dataset_hash":"sha256:ea72b513c482f9a6018ff6e7deb11c20ef986faf15f47cd78f71ddb1230aaf10","assertion_count":23,"blocking_failure_count":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-001","control":"Registros del dataset base","expected":499,"actual":499,"result":"PASS"}
+{"id":"RBAC-CHECKIN-002","control":"Roles base canónicos","expected":7,"actual":7,"result":"PASS"}
+{"id":"RBAC-CHECKIN-003","control":"Filas declaradas en carril BASE","expected":499,"actual":499,"result":"PASS"}
+{"id":"RBAC-CHECKIN-004","control":"Concesiones base directas","expected":463,"actual":463,"result":"PASS"}
+{"id":"RBAC-CHECKIN-005","control":"Componentes base","expected":36,"actual":36,"result":"PASS"}
+{"id":"RBAC-CHECKIN-006","control":"Permisos OPERATIONAL_ONLY en matriz base","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-007","control":"Concesiones base directas que exigen turno","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-008","control":"Concesiones base directas que exigen check-in","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-009","control":"Concesiones directas declaradas como carril base","expected":463,"actual":463,"result":"PASS"}
+{"id":"RBAC-CHECKIN-010","control":"Concesiones base directas con alcance CTX","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-011","control":"Componentes base con modalidad incorrecta","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-012","control":"Componentes base explícitamente insuficientes","expected":36,"actual":36,"result":"PASS"}
+{"id":"RBAC-CHECKIN-013","control":"Registros del dataset operativo","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-CHECKIN-014","control":"Roles operativos canónicos","expected":12,"actual":12,"result":"PASS"}
+{"id":"RBAC-CHECKIN-015","control":"Filas declaradas en carril OPERATIONAL","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-CHECKIN-016","control":"Permisos BASE_ONLY en matriz operativa","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-017","control":"Alcances operativos declarados como CTX-*","expected":240,"actual":240,"result":"PASS"}
+{"id":"RBAC-CHECKIN-018","control":"Componentes operativos con modalidad incorrecta","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-019","control":"Intersección entre códigos de rol base y operativo","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-020","control":"Diferencia entre familias de permisos de doble condición","expected":0,"actual":0,"result":"PASS"}
+{"id":"RBAC-CHECKIN-021","control":"Permisos de doble condición en carril base","expected":12,"actual":12,"result":"PASS"}
+{"id":"RBAC-CHECKIN-022","control":"Permisos de doble condición en carril operativo","expected":12,"actual":12,"result":"PASS"}
+{"id":"RBAC-CHECKIN-023","control":"Registros iniciales de overrides","expected":0,"actual":0,"result":"PASS"}
+```
+
+Resultado:
+
+```text
+evidence_hash = sha256:84573a502cddc91e8b3acf4603399a5d2812724770084e0381121aee7fe18250
+```
+
+---
+
+#### 25. Veredicto
+
+```text
+RESULTADO = PASS
+INCUMPLIMIENTOS BLOQUEANTES = 0
+OBSERVACIONES DE IMPLEMENTACIÓN = 4
+```
+
+Observaciones:
+
+1. `AccessContext` debe separar cobertura administrativa de contexto
+   operativo;
+2. `AuthorizationDecision` debe exponer decisiones por carril;
+3. la caché debe invalidarse por dependencias y nunca convertir falta de
+   check-in en deny base;
+4. las interfaces administrativas no pueden depender exclusivamente del
+   contexto operativo.
+
+Las observaciones no modifican los datasets ni reabren el catálogo.
+
+---
+
+#### 26. Cierre del BLOQUE D
+
+La aprobación de AUTH-RBAC-028 produce:
+
+```text
+BLOQUE D
+→ MATRICES APROBADAS
+→ DATASETS APROBADOS
+→ VALIDACIÓN DE GLOBALIDAD = PASS
+→ VALIDACIÓN DE INDEPENDENCIA DEL CHECK-IN = PASS
+→ CERRADO DOCUMENTALMENTE
+```
+
+Queda habilitado:
+
+```text
+BLOQUE E — Contexto y decisión de autorización unificados
+AUTH-CTX-001 — Diseñar AccessContext canónico
+```
+
+La aplicación física continúa reservada para BLOQUE R, después de aprobar
+arquitectura E3, estructuras, backfills, integridad, pruebas y rollback.
+
+---
+
+#### 27. Criterios de aprobación
+
+AUTH-RBAC-028 podrá aprobarse cuando se acepte que:
+
+1. las 23 aserciones pasan;
+2. las 463 concesiones base directas no exigen turno;
+3. las 463 concesiones base directas no exigen check-in;
+4. no existen permisos `OPERATIONAL_ONLY` en matriz base;
+5. no existen permisos `BASE_ONLY` en matriz operativa;
+6. los 36 componentes base son insuficientes por sí solos;
+7. los 22 componentes operativos son insuficientes por sí solos;
+8. las doce claves de doble condición coinciden entre carriles;
+9. los códigos de rol base y operativo no se confunden;
+10. check-in no crea autoridad administrativa;
+11. check-out no elimina autoridad base;
+12. turno no crea autoridad administrativa;
+13. `BASE_OR_OPERATIONAL` conserva caminos alternativos;
+14. `BASE_AND_OPERATIONAL` exige ambos carriles;
+15. los componentes deben pertenecer al mismo actor;
+16. las concesiones individuales futuras preservarán la separación;
+17. los dispositivos no cambian la modalidad;
+18. `AccessContext` separará ambos planos;
+19. `AuthorizationDecision` expondrá ambos carriles;
+20. el hash de evidencia es
+    `sha256:84573a502cddc91e8b3acf4603399a5d2812724770084e0381121aee7fe18250`;
+21. el BLOQUE D queda cerrado documentalmente;
+22. AUTH-CTX-001 queda habilitada después de aprobación expresa;
+23. no se implementa ningún cambio físico.
+
+---
+
+#### 28. Estado final de la propuesta
+
+| Tarea         | Estado      |
+| ------------- | ----------- |
+| AUTH-RBAC-027 | APROBADA    |
+| AUTH-RBAC-028 | APROBADA    |
+| AUTH-CTX-001  | NO INICIADA |
+
+No se avanza a AUTH-CTX-001 hasta recibir aprobación explícita de
+AUTH-RBAC-028.
+
 
 Regla de implementación de matrices
 
@@ -68773,6 +76349,7 @@ SERVER PROTECTION
 AUDIT
 +
 USABILITY CRITERIA
+
 ## BLOQUE E3
 
 **Arquitectura canónica de datos y gobierno integral de Supabase**

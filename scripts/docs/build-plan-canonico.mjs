@@ -51,7 +51,7 @@ const currentHash = sha256(Buffer.from(compiled, 'utf8'));
 // El compilado original conserva exactamente los bytes de los fragmentos.
 const validationText = compiled.replace(/\r\n?/g, '\n');
 
-const taskRegex = /^###\s+(?:\[[ x~]\]\s+|[✅🟡❌]\s+)?([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b.*$/gm;
+const taskRegex = /^###\s+(?:\[[ x~]\]\s+|[✅🟡❌]\s+)?([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b.*$/gmu;
 const allTaskIds = [...validationText.matchAll(taskRegex)].map((match) => match[1]);
 const duplicatedTaskIds = allTaskIds.filter((task, index, all) => all.indexOf(task) !== index);
 
@@ -90,7 +90,9 @@ const requiredMarkers = [
 
 let previousIndex = -1;
 for (const marker of requiredMarkers) {
-  const index = validationText.indexOf(`${marker}\n`);
+  const escapedMarker = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = validationText.match(new RegExp(`^${escapedMarker}$`, 'm'));
+  const index = match?.index ?? -1;
 
   if (index < 0) {
     console.error(`ERROR: no se encontró el marcador obligatorio ${marker}.`);
