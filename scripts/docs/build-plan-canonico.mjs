@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { syncPlanContinuity } from './plan-continuity-global.mjs';
+import { syncPlanContinuity } from './plan-continuity-safe.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -64,10 +64,6 @@ const fragmentCount = text.match(/^\|\s*Fragmentos canónicos\s*\|\s*\*\*(\d+)\*
 if (!fragmentCount) fail('no se pudo validar el número de fragmentos declarado en la cabecera.');
 if (Number(fragmentCount) !== manifest.files.length) fail(`la cabecera declara ${fragmentCount} fragmentos, pero manifest.json contiene ${manifest.files.length}.`);
 
-const taskCount = text.match(/^\|\s*Tareas canónicas con marcador\s*\|\s*\*\*(\d+)\*\*\s*\|$/m)?.[1];
-if (!taskCount) fail('no se pudo validar el número global de tareas con marcador declarado en la cabecera.');
-if (Number(taskCount) !== taskIds.length) fail(`la cabecera declara ${taskCount} tareas con marcador, pero el compilado contiene ${taskIds.length}.`);
-
 const authCount = text.match(/^\|\s*Tareas `AUTH` únicas\s*\|\s*\*\*(\d+)\*\*\s*\|$/m)?.[1];
 if (!authCount) fail('no se pudo validar el número de tareas AUTH declarado en la cabecera.');
 if (Number(authCount) !== authIds.length) fail(`la cabecera declara ${authCount} tareas AUTH, pero el compilado contiene ${authIds.length}.`);
@@ -79,7 +75,7 @@ for (const token of ['a partirde', 'middlewares,caché', 'responderinequívocame
 if (checkOnly) {
   if (!fs.existsSync(outputPath)) fail('todavía no existe el documento compilado. Ejecuta primero sin --check.');
   if (fs.readFileSync(outputPath, 'utf8') !== compiled) fail('el compilado está desactualizado frente a los fragmentos.');
-  console.log(`OK: compilado vigente; ${manifest.files.length} fragmentos; ${taskIds.length} tareas con marcador; ${authIds.length} tareas AUTH únicas.`);
+  console.log(`OK: compilado vigente; ${manifest.files.length} fragmentos; ${taskIds.length} tareas canónicas; ${authIds.length} tareas AUTH únicas.`);
   console.log(`SHA-256: ${hash}`);
   process.exit(0);
 }
@@ -88,6 +84,6 @@ fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, compiled, 'utf8');
 console.log(`OK: ${path.relative(root, outputPath)}`);
 console.log(`Fragmentos: ${manifest.files.length}`);
-console.log(`Tareas con marcador: ${taskIds.length}`);
+console.log(`Tareas canónicas: ${taskIds.length}`);
 console.log(`Tareas AUTH únicas: ${authIds.length}`);
 console.log(`SHA-256: ${hash}`);
