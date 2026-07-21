@@ -884,7 +884,7 @@ El catálogo continúa con **112 permisos canónicos**.
 | `GAP-PULSO-008` | `NEEDS_FUNCTIONAL_ROADMAP` | Alistamiento, empaque y validación por canal dependen del flujo de mostrador y entrega aún no diseñado.                                  | PULSO-UX-004, 005 y procesos de entrega         |
 | `GAP-PULSO-009` | `NEEDS_FUNCTIONAL_ROADMAP` | La entrega ordinaria requiere definir receptor, evidencia, canal y relación con NEXO.                                                    | PULSO-UX; `GAP-OWN-005`                         |
 | `GAP-PULSO-010` | `READY_FOR_CATALOG_DESIGN` | Crear una venta es una capacidad empresarial inequívoca, propiedad de PULSO, separada de cobrar, anular y cerrar caja.                   | AUTH-CAT-022                                    |
-| `GAP-PULSO-011` | `READY_FOR_CATALOG_DESIGN` | Cobrar y revertir un pago son acciones diferenciables sobre pagos; CAT-022 deberá separarlas y no crear un permiso compuesto.            | AUTH-CAT-022                                    |
+| `GAP-PULSO-011` | `READY_FOR_CATALOG_DESIGN` | Cobrar y revertir un pago son acciones diferenciables sobre pagos; AUTH-CAT-022 deberá separarlas y no crear un permiso compuesto.            | AUTH-CAT-022                                    |
 | `GAP-PULSO-012` | `READY_FOR_CATALOG_DESIGN` | Abrir y cerrar una sesión de caja son transiciones claras y distintas; operar caja no podrá convertirse en un wildcard.                  | AUTH-CAT-022                                    |
 | `GAP-PULSO-013` | `READY_FOR_CATALOG_DESIGN` | Anular, devolver, reembolsar y aplicar descuentos son acciones sensibles reconocidas y deberán diseñarse como claves independientes.     | AUTH-CAT-022                                    |
 | `GAP-PULSO-014` | `NEEDS_OWNER_DECISION`     | La operación laboral está clara, pero la propiedad entre PULSO, PASS y adaptadores aún no está aprobada.                                 | `GAP-OWN-006`; PASS-INT-001 y 002               |
@@ -972,7 +972,7 @@ Resultado NEXO:
 | `GAP-ORIGO-001` | `READY_FOR_CATALOG_DESIGN` | Registrar una recepción comercial es una mutación inequívoca, propiedad de ORIGO y distinta de consultar la recepción o crear la entrada en NEXO. | AUTH-CAT-022                                  |
 | `GAP-ORIGO-002` | `NEEDS_FUNCTIONAL_ROADMAP` | La administración de proveedores requiere definir creación, edición, activación, bloqueo, datos sensibles y deduplicación.                        | ORIGO-AUTH-002, 004 a 010; ORIGO-UX-001 y 002 |
 
-CAT-022 podrá diseñar una capacidad de registro de recepción, pero no decidirá todavía si total, parcial y corrección requieren claves adicionales. Esas diferencias permanecen bajo ORIGO-AUTH-007 y 008.
+AUTH-CAT-022 podrá diseñar una capacidad de registro de recepción, pero no decidirá todavía si total, parcial y corrección requieren claves adicionales. Esas diferencias permanecen bajo ORIGO-AUTH-007 y ORIGO-AUTH-008.
 
 ---
 

@@ -417,4 +417,42 @@
     El adaptador deberá validar, transformar, mapear, deduplicar, auditar
     y emitir eventos canónicos antes de afectar otros dominios.
 
+38. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
+    decisión diferida, supuesto por verificar o elemento fuera de alcance
+    sin destino documental explícito.
+
+    Todo elemento pendiente deberá cumplir una de estas dos condiciones:
+
+    - estar vinculado con una tarea existente mediante su identificador
+      exacto y declarar en qué momento deberá resolverse;
+    - generar inmediatamente una nueva tarea con identificador, bloque,
+      propósito, dependencias y puerta de ejecución definidos.
+
+    No se considerarán destinos válidos expresiones genéricas como:
+
+    - después;
+    - posteriormente;
+    - en una fase futura;
+    - en implementación;
+    - en el bloque funcional;
+    - en Supabase;
+    - en el roadmap de la aplicación;
+    - corresponde a E1, E2, E3, E4, E5 o R;
+
+    salvo que también se indique la tarea exacta responsable.
+
+    `GAP-CTRL-001` deberá consolidar retrospectivamente todos los pendientes
+    y todas las brechas detectados hasta el momento de su ejecución,
+    incluidos los producidos por las tareas anteriores de BLOQUE E1.
+
+    `GAP-CTRL-001` se ejecutará dentro de BLOQUE E1 y antes de
+    `GAP-CTRL-002`.
+
+    `GAP-CTRL-006` deberá vincular cada brecha consolidada con una tarea
+    documental concreta y con su paquete de implementación cuando
+    corresponda.
+
+    Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
+    o cuando cite una tarea que no exista formalmente en el roadmap.
+
 ---

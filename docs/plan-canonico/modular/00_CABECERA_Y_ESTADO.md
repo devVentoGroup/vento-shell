@@ -10,45 +10,48 @@
 
 ## Estado canónico
 
-| Campo                     | Valor                                                                                                                         |
-| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Versión                   | 2026-07-20                                                                                                                    |
-| Revisión documental       | **36**                                                                                                                        |
-| Estado documental         | **VIGENTE**                                                                                                                   |
-| Arquitectura documental   | **MODULAR CANÓNICA**                                                                                                          |
-| Fuente de orden canónico  | `manifest.json`                                                                                                               |
-| Fragmentos canónicos      | **62**                                                                                                                        |
-| Tareas `AUTH` únicas      | **311**                                                                                                                       |
-| Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                                               |
-| Estado del compilado      | **GENERADO Y VALIDADO**                                                                                                       |
-| ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                                                                                     |
-| Última tarea aprobada     | **AUTH-CAT-022 — Descomponer permisos legacy maduros y definir nuevas claves atómicas**                                       |
-| Tarea actual              | **AUTH-CAT-023 — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual** |
-| Estado de la tarea actual | **NO INICIADA**                                                                                                               |
-| Siguiente tarea           | **AUTH-CAT-024 — Validar, publicar y congelar la versión canónica que alimentará los datasets**                               |
-| Bloque actual             | **BLOQUE D — Revisión contractual previa a datasets**                                                                         |
-| Progreso del bloque       | **AUTH-RBAC-001 a AUTH-RBAC-023 y AUTH-CAT-020 a AUTH-CAT-022 aprobadas; AUTH-CAT-023 pendiente**                             |
-| Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**                                                                     |
+| Campo                     | Valor                                                               |
+| ------------------------- | ------------------------------------------------------------------- |
+| Versión                   | 2026-07-21                                                          |
+| Revisión documental       | **38**                                                              |
+| Estado documental         | **VIGENTE**                                                         |
+| Arquitectura documental   | **MODULAR CANÓNICA**                                                |
+| Fuente de orden canónico  | `manifest.json`                                                     |
+| Fragmentos canónicos      | **62**                                                              |
+| Tareas `AUTH` únicas      | **312**                                                             |
+| Compilado derivado        | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`     |
+| Estado del compilado      | **GENERADO Y VALIDADO**                                             |
+| ADR vigente               | `ADR-AUTH-001 — ACCEPTED`                                           |
+| Última tarea aprobada     | **AUTH-CTX-008 — Incluir rol base vigente**                         |
+| Tarea actual              | **AUTH-CTX-009 — Incluir cobertura administrativa por sede y área** |
+| Estado de la tarea actual | **NO INICIADA**                                                     |
+| Siguiente tarea           | **AUTH-CTX-010 — Incluir turno publicado y vigente**                |
+| Bloque actual             | **BLOQUE E — Contexto y decisión de autorización unificados**       |
+| Progreso del bloque       | **AUTH-CTX-001 a AUTH-CTX-008 aprobadas; AUTH-CTX-009 pendiente**   |
+| Estado de implementación  | **No iniciar código, migraciones ni cambios en Supabase**           |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                                                                                         |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CAT-022` — Descomponer permisos legacy maduros y definir nuevas claves atómicas                                                         |
-| Tarea actual    | `AUTH-CAT-023` — Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CAT-024` — Validar, publicar y congelar la versión canónica que alimentará los datasets                                                 |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                                                            |
+| Estado          | Valor                                                                               |
+| --------------- | ----------------------------------------------------------------------------------- |
+| Última aprobada | `AUTH-CTX-008` — Incluir rol base vigente                                           |
+| Tarea actual    | `AUTH-CTX-009` — Incluir cobertura administrativa por sede y área — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-010` — Incluir turno publicado y vigente                                  |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                  |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas                   | Estado          |
-| --------------------------------- | --------------- |
-| `AUTH-CAT-001` a `AUTH-CAT-022`   | **APROBADAS**   |
-| `AUTH-CAT-023`                    | **NO INICIADA** |
-| `AUTH-CAT-024`                    | **NO INICIADA** |
-| `AUTH-RBAC-001` a `AUTH-RBAC-023` | **APROBADAS**   |
-| `AUTH-RBAC-024`                   | **NO INICIADA** |
-| Implementación física             | **NO INICIADA** |
+| Grupo de tareas                   | Estado                                         |
+| --------------------------------- | ---------------------------------------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                  |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                  |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
+| `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
+| `AUTH-CTX-001` a `AUTH-CTX-008`   | **APROBADAS**                                  |
+| `AUTH-CTX-009`                    | **NO INICIADA**                                |
+| `AUTH-CTX-010` a `AUTH-CTX-030`   | **NO INICIADAS**                               |
+| Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
 
@@ -68,7 +71,6 @@
 - [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
 - [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
 - [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_BLOQUE_E4.md)
-
 - [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_BLOQUE_E5.md)
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
@@ -79,18 +81,24 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CAT-022 — Descomponer permisos legacy maduros
-y definir nuevas claves atómicas
+AUTH-CTX-008 — Incluir rol base vigente
         ↓
 TAREA ACTUAL
-AUTH-CAT-023 — Actualizar matrices, excepciones,
-denegaciones y paquetes de dispositivo afectados
-por el diff contractual
+AUTH-CTX-009 — Incluir cobertura
+administrativa por sede y área
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-CAT-024 — Validar, publicar y congelar
-la versión canónica que alimentará los datasets
+AUTH-CTX-010 — Incluir turno
+publicado y vigente
         ↓
-ETAPA POSTERIOR
-AUTH-RBAC-024 — Definir dataset canónico de matriz base
+CONTINUIDAD DEL BLOQUE
+AUTH-CTX-011 a AUTH-CTX-027
+        ↓
+PUERTA CONTRACTUAL OBLIGATORIA
+AUTH-MOD-021 — Definir rol base mínimo
+no privilegiado para trabajadores
+puramente operativos
+        ↓
+CIERRE DEL BLOQUE
+AUTH-CTX-028 a AUTH-CTX-030
 ```

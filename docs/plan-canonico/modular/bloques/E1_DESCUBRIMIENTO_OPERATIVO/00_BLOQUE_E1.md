@@ -190,7 +190,7 @@ OUT_OF_SCOPE
 
 ### REGISTRO CANÓNICO DE BRECHAS
 
-### [ ] GAP-CTRL-001 — Consolidar brechas de auditoría, CAT-021, operación y código
+### [ ] GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código
 ### [ ] GAP-CTRL-002 — Deduplicar brechas equivalentes
 ### [ ] GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación
 ### [ ] GAP-CTRL-004 — Asignar propietario y fecha de decisión

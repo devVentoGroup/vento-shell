@@ -3314,3 +3314,5 @@ El carril base se conservará conceptualmente para las capacidades
 administrativas y funcionales permanentes, sin fijar todavía una estructura
 física definitiva para sus matrices.
 
+### [ ] AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
+

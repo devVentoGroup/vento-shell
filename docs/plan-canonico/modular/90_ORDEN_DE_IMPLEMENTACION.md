@@ -3,10 +3,13 @@
 FASE 1 — DEFINICIÓN CANÓNICA
 
 1. BLOQUE A — Auditoría integral
-2. BLOQUE B — Modelo definitivo
+2. BLOQUE B — Modelo definitivo mediante `AUTH-MOD-001` a `AUTH-MOD-020`
 3. BLOQUE C — Catálogo canónico
 4. BLOQUE D — Matrices y datasets de la versión contractual base
-5. BLOQUE E — Contexto y decisión unificada
+5. Completar BLOQUE E y el cierre diferido de BLOQUE B en este orden:
+   1. `AUTH-CTX-001` a `AUTH-CTX-027`;
+   2. `AUTH-MOD-021`;
+   3. `AUTH-CTX-028` a `AUTH-CTX-030`.
 
 FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLEMENTACIÓN
 
