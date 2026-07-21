@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { syncPlanContinuity } from './plan-continuity-preserve-format.mjs';
+import { syncPlanContinuity } from './plan-continuity-final-newline.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
