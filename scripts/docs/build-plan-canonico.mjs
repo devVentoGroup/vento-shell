@@ -61,13 +61,34 @@ const authCount = text.match(/^\|\s*Tareas `AUTH` únicas\s*\|\s*\*\*(\d+)\*\*\s
 if (!authCount) fail('no se pudo validar el número de tareas AUTH declarado en la cabecera.');
 if (Number(authCount) !== authIds.length) fail(`la cabecera declara ${authCount} tareas AUTH, pero el compilado contiene ${authIds.length}.`);
 
+const extractTaskState = (section) => {
+  const patterns = [
+    /^\*\*Estado:\*\*\s*([^\n]+)$/m,
+    /^Estado:\s*([^\n]+)$/m,
+    /^\|\s*\*\*Estado(?::)?\*\*\s*\|\s*([^|]+?)\s*\|$/m,
+    /^\|\s*Estado(?::)?\s*\|\s*([^|]+?)\s*\|$/m,
+  ];
+
+  for (const pattern of patterns) {
+    const value = section.match(pattern)?.[1];
+    if (!value) continue;
+
+    return value
+      .replace(/\*\*/g, '')
+      .replace(/^[✅🟡❌⬜]\s*/, '')
+      .trim()
+      .replace(/\s{2,}/g, ' ');
+  }
+
+  return '';
+};
+
 for (let index = 0; index < taskMatches.length; index += 1) {
   const match = taskMatches[index];
   const taskId = match[1];
   if (!taskId.startsWith('AUTH-CTX-')) continue;
   const section = text.slice(match.index ?? 0, taskMatches[index + 1]?.index ?? text.length);
-  const stateMatch = section.match(/^\*\*Estado:\*\*\s*([^\n]+)|^Estado:\s*([^\n]+)/m);
-  const state = (stateMatch?.[1] ?? stateMatch?.[2] ?? '').trim().replace(/\s{2,}/g, ' ');
+  const state = extractTaskState(section);
   if (match[0].includes('✅') && state !== 'APROBADA') fail(`${taskId} usa ✅ pero su estado es "${state || 'NO DECLARADO'}".`);
   if (match[0].includes('🟡') && state === 'APROBADA') fail(`${taskId} usa 🟡 pero está declarada como APROBADA.`);
   const plainHeading = section.match(/^\d+\.\s+(?:Objetivo|Base normativa|Forma contractual|Aplicabilidad|Estado final|Cierre y continuidad)\b[^\n]*$/m);
