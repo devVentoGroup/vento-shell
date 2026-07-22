@@ -14,8 +14,19 @@ FASE 1 — DEFINICIÓN CANÓNICA
 FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLEMENTACIÓN
 
 6. BLOQUE E1 — Auditar operación real, capacidades, dominios y cobertura de implementación
+
+   Secuencia interna obligatoria de BLOQUE E1:
+
+   `OPS-AUD-001` a `OPS-AUD-015`
+   → `OPS-ADM-001`
+   → `OPS-GOV-001`
+   → `OPS-ACT-001`
+   → `OPS-PLAN-001` a `OPS-PLAN-004`
+   → `CAP-MAP-001` y continuidad vigente de E1.
+
+   La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
 7. Aprobar línea base de capacidades, registro de brechas y matriz de cobertura por repositorio
-8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales
+8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001` y `OPS-B2B-001`
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
 11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo
@@ -256,7 +267,7 @@ FASE 5 — NEXO
 
 FASE 6 — FOGO Y ORIGO
 
-42. Auditar y diseñar FOGO
+42. Auditar y diseñar FOGO, incluyendo `OPS-REC-001`, `OPS-PRD-001` y `OPS-TRZ-001`
 43. Auditar y diseñar ORIGO
 44. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos de FOGO y ORIGO
 45. Aprobar paquetes E5 de FOGO y ORIGO
@@ -273,7 +284,7 @@ propiedad de NEXO.
 
 FASE 7 — PULSO
 
-52. Auditar venta, caja, pagos, mesas, comandas, preparación, entrega y salón
+52. Auditar venta, caja, pagos, mesas, comandas, preparación, entrega y salón, y ejecutar `OPS-POS-001` antes del diseño detallado del POS
 53. Ejecutar SUBBLOQUE N2 — Procesos y experiencia de PULSO
 54. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor y dispositivo
 55. Aprobar paquetes E5 de PULSO
@@ -284,7 +295,7 @@ FASE 7 — PULSO
 
 FASE 8 — NUMERA
 
-60. Consumir la matriz E1 y ejecutar NUMERA-AUD-001 a NUMERA-AUD-012
+60. Consumir la matriz E1, ejecutar NUMERA-AUD-001 a NUMERA-AUD-012 y resolver `OPS-CST-001` antes de cerrar el alcance financiero objetivo
 61. Aprobar alcance ejecutivo, analítico, financiero y contable de NUMERA
 62. Ejecutar NUMERA-DOM-001 a NUMERA-DOM-015, SUBBLOQUE O2 y AUTH-UI-052 a AUTH-UI-060
 63. Aprobar prototipos y paquetes E5 de NUMERA

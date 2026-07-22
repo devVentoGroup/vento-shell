@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1352** |
+| Tareas con marcador | **1367** |
 | Tareas `AUTH` | **316** |
 | Aprobadas | **124** |
 | En propuesta | **0** |
-| No iniciadas | **1228** |
+| No iniciadas | **1243** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -165,6 +165,13 @@
 | ⬜ NO INICIADA | `OPS-AUD-013` | Identificar pérdidas de trazabilidad, información y responsabilidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-014` | Identificar contingencias por caída de red, energía, dispositivo o proveedor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-015` | Validar hallazgos con trabajadores, supervisores y responsables del proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ⬜ NO INICIADA | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-GOV-001` | Documentar gobernanza AS-IS del ecosistema de marcas y titulares | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-ACT-001` | Inventariar activos y puntos externos de custodia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-PLAN-001` | Definir el programa de auditoría de demanda y requisitos de planificación productiva | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-PLAN-002` | Consolidar fuentes internas para la auditoría de demanda | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-PLAN-003` | Levantar demanda, faltantes y variaciones por canal | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-PLAN-004` | Iniciar registro prospectivo de solicitud, entrega y diferencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `CAP-MAP-001` | Crear taxonomía jerárquica de capacidades de Vento Group | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
 | ⬜ NO INICIADA | `CAP-MAP-002` | Definir capacidad, subcapacidad y resultado empresarial esperado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
 | ⬜ NO INICIADA | `CAP-MAP-003` | Vincular cada capacidad con empresa, sede, área y canal aplicables | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
@@ -334,6 +341,9 @@
 | ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
@@ -958,6 +968,9 @@
 | ⬜ NO INICIADA | `FOGO-UX-013` | Conectar producto terminado con NEXO | `bloques/L_FOGO/00_BLOQUE_L.md` |
 | ⬜ NO INICIADA | `FOGO-UX-014` | Diseñar pantalla para supervisor de producción | `bloques/L_FOGO/00_BLOQUE_L.md` |
 | ⬜ NO INICIADA | `FOGO-UX-015` | Validar el prototipo por área productiva | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `OPS-REC-001` | Definir el contrato canónico de recetas y acceso contextual | `bloques/L_FOGO/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-PRD-001` | Diseñar el Centro de Pesaje, Premezclas y Porcionamiento | `bloques/L_FOGO/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `OPS-TRZ-001` | Definir el contrato empresarial de lotes, etiquetas y trazabilidad productiva | `bloques/L_FOGO/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `ORIGO-AUTH-001` | Inventariar vistas de compras | `bloques/M_ORIGO/00_BLOQUE_M.md` |
 | ⬜ NO INICIADA | `ORIGO-AUTH-002` | Inventariar vistas de proveedores | `bloques/M_ORIGO/00_BLOQUE_M.md` |
 | ⬜ NO INICIADA | `ORIGO-AUTH-003` | Inventariar vistas de recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
@@ -1024,6 +1037,7 @@
 | ⬜ NO INICIADA | `PULSO-UX-017` | Conectar venta con NUMERA | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `PULSO-UX-018` | Conectar venta con PASS | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `PULSO-UX-019` | Validar el prototipo con caja, salón, barra, cocina y mostrador | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `OPS-POS-001` | Definir zonas físicas, mesas y puntos de servicio del POS por sede | `bloques/N_PULSO/01_TAREA_DERIVADA_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-001` | Inventariar rutas, pantallas, componentes y formularios actuales | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-002` | Inventariar Server Actions, API, RPC, consultas y jobs utilizados | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-003` | Inventariar tablas, vistas, eventos y sistemas fuente | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
@@ -1089,6 +1103,7 @@
 | ⬜ NO INICIADA | `NUMERA-UX-023` | Diseñar correcciones y reaperturas sin borrar historial | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-024` | Diseñar tablero de cobertura y conciliación de fuentes | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-025` | Aprobar alcance financiero antes de completar implementación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `OPS-CST-001` | Definir el caso de centro de costo y transferencias internas de Producción y Distribución | `bloques/O_NUMERA/03_TAREA_DERIVADA_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |

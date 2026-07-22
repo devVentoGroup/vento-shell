@@ -12,17 +12,17 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión                       | 2026-07-21                                                                                      |
-| Revisión documental           | **39**                                                                                          |
+| Versión | 2026-07-22 |
+| Revisión documental | **40** |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **110** |
-| Tareas canónicas con marcador | **1352** |
+| Fragmentos canónicos | **115** |
+| Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **124** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1228** |
+| Tareas no iniciadas | **1243** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
@@ -32,7 +32,7 @@
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 1 de 89 aprobadas; OPS-AUD-002 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 1 de 96 aprobadas; OPS-AUD-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **1 DE 89 APROBADAS — ACTUAL OPS-AUD-002** |
+| BLOQUE E1 | **1 DE 96 APROBADAS — ACTUAL OPS-AUD-002** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -96,5 +96,5 @@ SIGUIENTE TAREA RESERVADA
 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 1 de 89 tareas aprobadas
+BLOQUE E1 — 1 de 96 tareas aprobadas
 ```
