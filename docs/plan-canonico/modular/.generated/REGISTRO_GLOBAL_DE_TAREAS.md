@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **732** |
+| Tareas con marcador | **1350** |
 | Tareas `AUTH` | **315** |
 | Aprobadas | **119** |
 | En propuesta | **0** |
-| No iniciadas | **613** |
+| No iniciadas | **1231** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -239,6 +239,74 @@
 | ⬜ NO INICIADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-005` | Definir aplicación propietaria de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-006` | Definir aplicaciones consumidoras de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-007` | Definir actor que inicia cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-008` | Definir actores que continúan cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-009` | Definir estado inicial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-010` | Definir estados intermedios | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-011` | Definir estado final | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-012` | Definir transiciones permitidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-013` | Definir acciones excepcionales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-014` | Definir cancelación, reversión y corrección | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-015` | Definir información de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-016` | Definir información producida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-017` | Definir eventos empresariales emitidos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-004` | Definir procesos personales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-005` | Definir procesos administrativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-006` | Definir procesos operativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-007` | Clasificar pantalla de supervisión | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-008` | Clasificar pantalla de configuración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-009` | Clasificar pantalla de auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-010` | Clasificar pantalla personal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-011` | Clasificar pantalla de cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-012` | Definir actores objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-013` | Definir dispositivos soportados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-014` | Definir acción principal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-015` | Definir acciones secundarias | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-016` | Definir condiciones de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-017` | Definir condiciones de salida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-023` | Definir permiso de lectura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-024` | Definir permisos de cada acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-026` | Identificar pantalla reemplazada o legacy | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-001` | Vincular cada proceso con una capacidad aprobada en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-004` | Clasificar proceso completo, parcial, manual, ausente o diferido | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
@@ -251,6 +319,21 @@
 | ⬜ NO INICIADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-004` | Ocultar funciones irrelevantes para el actor | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-005` | Mantener visible sede, área, turno y rol activos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-006` | Explicar bloqueos con lenguaje humano | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-007` | Evitar registrar dos veces la misma información | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-008` | Reducir pasos para tareas frecuentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-009` | Mantener acciones excepcionales fuera del flujo ordinario | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-010` | Aplicar divulgación progresiva a opciones avanzadas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-011` | Diseñar interfaces táctiles para tablets y kioscos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-012` | Diseñar interfaces densas solo para administración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
@@ -474,6 +557,167 @@
 | ⬜ NO INICIADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-007` | Confirmar trazabilidad hasta pruebas y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-003` | Confirmar área del turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-004` | Confirmar rol operativo del turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-005` | Confirmar que el rol esté permitido en la sede | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-006` | Confirmar que el rol esté permitido en el área | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-007` | Crear contexto operativo al registrar entrada | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-008` | Actualizar contexto cuando cambia el turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-009` | Cerrar contexto al registrar salida | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-010` | Manejar descansos sin cerrar autorización | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-011` | Manejar cambio temporal de área | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-013` | Manejar turnos cruzados de medianoche | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-014` | Manejar cola offline de check-in | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-016` | Mostrar diagnóstico de contexto al trabajador | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-017` | Diferenciar falta de turno y falta de permiso | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-018` | Auditar creación y cierre del contexto | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-AUTH-020` | Mantener Supabase como fuente de verdad | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-001` | Inventariar pantallas personales | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-002` | Inventariar pantallas administrativas | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-003` | Separar experiencia del trabajador y del administrador | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-004` | Diseñar inicio con turno actual y siguiente turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-005` | Mostrar sede, área, horario y rol operativo del turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-006` | Simplificar el flujo de check-in | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-007` | Simplificar el flujo de check-out | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-008` | Mostrar claramente marcación confirmada o pendiente | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-009` | Explicar por qué no se puede marcar | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-010` | Diferenciar error de ubicación, turno y autorización | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-011` | Diseñar manejo comprensible de cola offline | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-013` | Simplificar documentos y datos personales | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-016` | Auditar y completar recordatorios operativos de inicio y cierre de turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-001` | Crear catálogo administrativo de roles base | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-002` | Crear catálogo administrativo de roles operativos | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-003` | Administrar permisos por rol base | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-004` | Administrar permisos por rol operativo | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-005` | Administrar roles permitidos por sede | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-006` | Administrar roles permitidos por área | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-007` | Administrar perfiles operativos por trabajador | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-008` | Administrar sedes asignadas | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-009` | Administrar áreas asignadas | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-010` | Asignar rol operativo al turno | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-011` | Validar turnos sin rol operativo | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-012` | Validar turnos con área incompatible | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-013` | Crear vista previa trabajador × sede × área × turno | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-014` | Crear simulador de permisos efectivos | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-015` | Mostrar origen de cada permiso | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-016` | Mostrar conflictos de configuración | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-017` | Administrar excepciones individuales | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-018` | Auditar cambios de seguridad | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-019` | Restringir quién administra seguridad | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-AUTH-020` | Crear exporte de matriz de acceso | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-001` | Definir el alcance mínimo necesario para habilitar las aplicaciones operativas | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-002` | Priorizar las tareas VISO-AUTH necesarias para el primer piloto | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-003` | Implementar las dependencias administrativas mínimas | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-004` | Validar que NEXO, FOGO, ORIGO y PULSO puedan configurarse desde VISO | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-005` | Validar simulación, conflictos y auditoría del alcance mínimo | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar VISO Core antes del primer piloto operativo | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-001` | Reorganizar navegación por dominios administrativos | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-002` | Crear sección Personal | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-003` | Crear sección Programación | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-004` | Crear sección Acceso y seguridad | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-005` | Crear sección Organización | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-006` | Crear sección Operación | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-007` | Crear sección Auditoría | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-008` | Definir inicio para propietario | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-009` | Definir inicio para gerente general | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-010` | Definir inicio para gerente de sede | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-011` | Definir inicio para auxiliar administrativa | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-012` | Definir inicio para contador | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-013` | Limitar información según alcance territorial | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-014` | Mostrar origen de permisos de forma comprensible | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-015` | Mostrar conflictos antes de guardar | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-016` | Permitir vista previa exacta de cada trabajador | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-017` | Evitar duplicar configuración propia de otras aplicaciones | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-018` | Enlazar a la aplicación propietaria cuando corresponda | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-019` | Aplicar divulgación progresiva a seguridad avanzada | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `VISO-UX-020` | Ejecutar pruebas con administradores reales | `bloques/G_VISO/00_BLOQUE_G.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-001` | Buscar código duplicado entre repositorios | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-002` | Comparar guards de autenticación | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-003` | Comparar helpers de permisos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-004` | Comparar contexto operativo | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-005` | Comparar role override | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-006` | Comparar AppShell y navegación | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-007` | Comparar componentes UI base | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-009` | Comparar tipos y contratos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-010` | Clasificar compartir / generar / mantener local | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-001` | Elegir mecanismo de distribución | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-002` | Definir versionado semántico | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-003` | Definir tags y releases | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-004` | Definir política de compatibilidad | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-005` | Definir política de deprecación | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-006` | Definir rollback por aplicación | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-003` | Centralizar códigos de permisos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-004` | Centralizar roles base | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-005` | Centralizar roles operativos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-006` | Centralizar scopes | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-007` | Centralizar tipos de contexto | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-008` | Centralizar códigos de error | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-009` | Centralizar identificadores de procesos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-010` | Centralizar estados de procesos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-011` | Centralizar identificadores de pantallas | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-012` | Crear contrato de acciones funcionales | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-013` | Crear contrato de eventos empresariales | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-014` | Crear contrato de traspasos entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-015` | Crear contrato de tareas pendientes | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-016` | Crear contrato de propiedad funcional | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-CON-017` | Crear contrato de principal técnico de integración | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-018` | Crear contrato de referencia de credencial externa sin incluir el secreto | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-019` | Crear contrato de evento externo recibido | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-020` | Crear contrato canónico de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-021` | Crear contrato canónico de línea de venta | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-022` | Crear contrato de mapeo de identificadores externos | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-023` | Crear contrato de idempotencia y conciliación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-CON-024` | Crear contrato de cuarentena, rechazo y compensación | `bloques/H_FUNDACION_COMPARTIDA/01_CONTRATOS_DE_INTEGRACIONES_EXTERNAS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-001` | Crear `@vento/data-normalization` | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-002` | Centralizar tipos de campo normalizable | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-003` | Centralizar reglas de espacios, Unicode y capitalización | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-004` | Centralizar conectores y excepciones | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-005` | Centralizar diccionarios ortográficos versionados | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-006` | Crear normalización de búsqueda y comparación | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-007` | Crear previsualización de transformaciones | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-008` | Crear metadatos de versión y auditoría de reglas | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NORM-009` | Probar idempotencia y conservación semántica | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-DB-001` | Crear @vento/supabase | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-DB-002` | Centralizar tipos generados por cada paquete de base de datos aprobado | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-DB-003` | Crear y actualizar wrappers tipados para RPC canónicas | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-DB-004` | Normalizar errores de Supabase | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-DB-005` | Separar cliente server, browser y native | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-001` | Crear @vento/ui-web | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-002` | Compartir Alert | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-003` | Compartir Button | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-004` | Compartir Card | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-005` | Compartir EmptyState | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-006` | Compartir indicador de contexto | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-007` | Compartir selector de sede | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-008` | Compartir selector de área | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-009` | Compartir aviso de rol simulado | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-010` | Evaluar AppShell compartido | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-011` | Compartir navegación orientada a tareas | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-012` | Compartir línea de estados de proceso | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-013` | Compartir panel de acción principal | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-014` | Compartir confirmaciones de acciones sensibles | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-015` | Compartir diagnóstico de contexto | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-016` | Compartir estados de error recuperable | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-017` | Compartir patrón para tablet | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
+| ⬜ NO INICIADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/02_NORMALIZACION_COMPARTIDA_DE_DATOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-001` | Consolidar @vento/os-context como SDK canónico de contexto y autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-002` | Implementar adapters de servidor, cliente y proyecciones seguras | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUTH-003` | Implementar scope por solicitud y registro canónico de consumidores | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
@@ -484,6 +728,26 @@
 | ⬜ NO INICIADA | `SHELL-CTX-003` | Implementar proyecciones seguras de sede y área efectivas | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-003` | Definir aplicaciones visibles por contexto | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-004` | Mostrar turno activo | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-005` | Mostrar sede activa | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-006` | Mostrar área activa | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-007` | Mostrar rol operativo activo | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-008` | Mostrar tareas pendientes transversales | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-009` | Definir página inicial por tipo de usuario | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-010` | Explicar por qué una aplicación está bloqueada | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-011` | Separar aplicaciones laborales de superficies adyacentes sin convertir SHELL en acceso del cliente | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-012` | Mantener PASS fuera del RBAC laboral del cliente | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-013` | Evitar lógica funcional propia de otras aplicaciones | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-014` | Definir retorno seguro entre aplicaciones | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-015` | Conservar contexto al cambiar de aplicación | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-016` | Conservar tarea en curso cuando corresponda | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-017` | Diseñar experiencia para computador | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-018` | Diseñar experiencia para tablet | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-019` | Probar navegación por rol | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
+| ⬜ NO INICIADA | `SHELL-APP-020` | Probar navegación con bloqueos reales | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
 | ⬜ NO INICIADA | `AUTH-UI-001` | Inventariar todas las rutas de NEXO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-002` | Inventariar todas las rutas de FOGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-003` | Inventariar todas las rutas de ORIGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
@@ -562,6 +826,26 @@
 | ⬜ NO INICIADA | `AUTH-SRV-016` | Normalizar errores de autorización | `bloques/J_ACCIONES_DE_SERVIDOR/00_BLOQUE_J.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-017` | Crear helpers server compartidos | `bloques/J_ACCIONES_DE_SERVIDOR/00_BLOQUE_J.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-018` | Revisar acciones administrativas sin turno | `bloques/J_ACCIONES_DE_SERVIDOR/00_BLOQUE_J.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-001` | Separar configuración administrativa de operación | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-002` | Corregir bypass administrativo de remisiones | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-003` | Corregir inventory.remissions.all_sites | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-004` | Proteger creación de solicitudes | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-005` | Proteger edición y cancelación | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-006` | Proteger preparación | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-007` | Proteger producción vinculada | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-008` | Proteger despacho | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-009` | Proteger tránsito | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-010` | Proteger recepción | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-011` | Proteger ajustes de inventario | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-012` | Proteger conteos | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-013` | Proteger movimientos | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-014` | Proteger catálogo y configuraciones | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-015` | Filtrar por sede y área efectivas | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-016` | Integrar dispositivo compartido | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-017` | Integrar simulación estricta | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-018` | Migrar a paquetes de vento-shell | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-019` | Eliminar helpers duplicados | `bloques/K_NEXO/00_INTRO.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-020` | Ejecutar pruebas integrales | `bloques/K_NEXO/00_INTRO.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-001` | Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-002` | Definir propósito y tipos canónicos de LPN | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-003` | Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
@@ -600,6 +884,145 @@
 | ⬜ NO INICIADA | `NEXO-AUTH-028` | Proteger impresión y reimpresión mediante permisos atómicos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-029` | Eliminar dependencia de permisos amplios legacy | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-030` | Ejecutar pruebas integrales del subdominio | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-001` | Inventariar procesos reales de inventario y logística | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-002` | Separar operación, supervisión y configuración | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-003` | Diseñar inicio para solicitante | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-004` | Diseñar inicio para bodeguero | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-005` | Diseñar inicio para conductor | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-006` | Diseñar inicio para receptor | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-007` | Diseñar inicio para supervisor | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-008` | Organizar navegación por tareas y no por rutas técnicas | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-009` | Diseñar flujo completo de solicitud de remisión | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-010` | Diseñar flujo completo de preparación | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-011` | Diseñar flujo completo de despacho | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-012` | Diseñar flujo completo de tránsito | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-013` | Diseñar flujo completo de recepción | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-014` | Diseñar flujo completo de entradas | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-015` | Diseñar flujo completo de ubicación | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-016` | Diseñar flujo completo de movimientos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-017` | Diseñar flujo completo de retiros | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-019` | Diseñar flujo completo de ajustes | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-020` | Simplificar escáner y captura | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-022` | Diseñar manejo de diferencias y excepciones | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-023` | Probar flujos en tablets y kioscos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-024` | Validar el prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-025` | Definir métricas de tiempo, error y capacitación para el piloto operativo | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-026` | Diseñar ciclo de vida completo de LPN | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-027` | Diseñar empaque, desempaque y consulta de contenido | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-028` | Diseñar división, unión, transferencia y reetiquetado | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-029` | Diseñar contenedores anidados y retornables | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-030` | Diseñar catálogo de activos y reutilizables | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-031` | Diseñar custodia, préstamo, devolución y transferencia | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-032` | Diseñar estado, daño, pérdida, reparación y baja | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-033` | Diseñar kits, conjuntos y control de completitud | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-034` | Diseñar conteos de activos y reutilizables | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-035` | Diseñar repuestos, compatibilidad y reposición mínima | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-036` | Diseñar búsqueda por LOC, LPN, código, responsable y contenido | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-037` | Diseñar impresión de LOC, LPN, activo y documento | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-038` | Diseñar operación con escáner y etiquetas dañadas | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-039` | Diseñar inventario inicial de contenedores y activos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-040` | Validar el prototipo del subdominio con decoración, vajilla, herramientas y repuestos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-041` | Definir línea base y métricas objetivo de pérdidas, búsqueda y diferencias | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-042` | Aprobar el diseño del subdominio y remitirlo a E5 antes de implementarlo físicamente | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-001` | Inventariar vistas y acciones productivas | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-002` | Definir permisos por área productiva | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-003` | Filtrar cola por sede y área | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-004` | Restringir Panadería | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-005` | Restringir Repostería | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-006` | Restringir Cocina | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-007` | Restringir Insumos | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-008` | Definir permisos de supervisor | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-009` | Proteger inicio de producción | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-010` | Proteger producción parcial | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-011` | Proteger finalización | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-012` | Proteger correcciones y anulaciones | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-013` | Proteger lotes y recetas | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-014` | Registrar actor y turno | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-015` | Migrar a paquetes de vento-shell | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-AUTH-016` | Ejecutar pruebas integrales | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-001` | Inventariar procesos reales de producción | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-002` | Separar cocina, panadería y repostería | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-003` | Diseñar inicio por área productiva | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-004` | Mostrar producción pendiente del turno | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-005` | Diseñar inicio de lote | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-006` | Diseñar producción parcial | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-007` | Diseñar finalización de lote | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-008` | Mostrar receta resumida para operación | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-009` | Separar recetario operativo y administración de recetas | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-010` | Registrar cantidades, desperdicio y resultado | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-011` | Diseñar correcciones sin alterar historial | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-012` | Conectar consumo de insumos con NEXO | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-013` | Conectar producto terminado con NEXO | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-014` | Diseñar pantalla para supervisor de producción | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `FOGO-UX-015` | Validar el prototipo por área productiva | `bloques/L_FOGO/00_BLOQUE_L.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-001` | Inventariar vistas de compras | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-002` | Inventariar vistas de proveedores | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-003` | Inventariar vistas de recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-004` | Definir permisos de consulta | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-005` | Definir permisos de creación | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-006` | Definir permisos de aprobación | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-007` | Definir permisos de recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-008` | Definir permisos de corrección | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-009` | Limitar órdenes por sede o centro de costo | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-010` | Proteger precios y datos sensibles | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-011` | Registrar actor de recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-012` | Integrar contexto operativo donde aplique | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-013` | Mantener administración sin check-in | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-014` | Migrar a paquetes de vento-shell | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-AUTH-015` | Ejecutar pruebas integrales | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-001` | Inventariar el proceso completo de abastecimiento | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-002` | Separar solicitud, compra, aprobación y recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-003` | Diseñar inicio para solicitante | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-004` | Diseñar inicio para comprador | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-005` | Diseñar inicio para aprobador | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-006` | Diseñar inicio para receptor | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-007` | Diseñar creación de orden de compra | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-008` | Diseñar aprobación y rechazo | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-009` | Diseñar recepción total | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-010` | Diseñar recepción parcial | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-011` | Diseñar diferencias contra orden | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-012` | Ocultar precios cuando no correspondan | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-013` | Evitar repetir recepción manualmente en NEXO | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-014` | Conectar recepción con entrada de inventario | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-015` | Conectar compra con evento financiero | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `ORIGO-UX-016` | Validar el prototipo con compras y recepción | `bloques/M_ORIGO/00_BLOQUE_M.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-001` | Inventariar vistas POS | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-002` | Inventariar órdenes | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-003` | Inventariar salón | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-004` | Inventariar escáner | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-005` | Inventariar importaciones | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-006` | Definir permisos de cajero | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-007` | Definir permisos de supervisor | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-008` | Definir permisos de cierre y anulación | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-009` | Proteger acumulación de puntos | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-010` | Proteger redenciones | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-011` | Limitar operación a sede del turno | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-012` | Integrar dispositivos POS compartidos | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-013` | Registrar trabajador que ejecuta la operación | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-014` | Mantener configuración administrativa separada | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-015` | Migrar a paquetes de vento-shell | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-AUTH-016` | Ejecutar pruebas integrales | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-001` | Inventariar procesos de venta, caja y salón | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-002` | Diseñar inicio para cajero | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-003` | Diseñar inicio para servicio de salón | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-004` | Diseñar inicio para mostrador | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-005` | Diseñar inicio para operador integral | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-006` | Diseñar inicio para supervisor | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-007` | Simplificar creación de venta | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-008` | Simplificar cobro y medios de pago | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-009` | Separar anulación, devolución y reembolso | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-010` | Diseñar apertura y cierre de caja | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-011` | Integrar acumulación de puntos | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-012` | Integrar redención de puntos | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-013` | Diseñar confirmaciones para acciones sensibles | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-014` | Identificar actor real en terminal compartida | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-015` | Diseñar experiencia táctil para POS | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-016` | Conectar venta con inventario | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-017` | Conectar venta con NUMERA | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-018` | Conectar venta con PASS | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-019` | Validar el prototipo con caja, salón, barra, cocina y mostrador | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-001` | Inventariar rutas, pantallas, componentes y formularios actuales | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-002` | Inventariar Server Actions, API, RPC, consultas y jobs utilizados | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-003` | Inventariar tablas, vistas, eventos y sistemas fuente | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
@@ -627,6 +1050,44 @@
 | ⬜ NO INICIADA | `NUMERA-DOM-013` | Definir fronteras frente al sistema contable o fiscal externo | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-DOM-014` | Definir conciliación y tratamiento de diferencias | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-DOM-015` | Aprobar alcance objetivo y capacidades diferidas | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-001` | Vincular módulos y acciones con permisos y contratos aprobados | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-002` | Clasificar información financiera sensible | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-003` | Definir permisos de lectura | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-004` | Definir permisos de registro | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-005` | Definir permisos de aprobación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-006` | Definir permisos de cierre | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-007` | Definir permisos de exportación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-008` | Limitar por empresa, sede o centro de costo | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-009` | Registrar auditoría financiera | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-010` | Evitar dependencia de turno para administración | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-011` | Exigir contexto operativo donde exista captura operacional | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-012` | Migrar a paquetes de vento-shell | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-013` | Ejecutar pruebas integrales | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-001` | Inventariar procesos financieros y analíticos | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-002` | Separar lectura ejecutiva y operación contable | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-003` | Diseñar inicio para propietario | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-004` | Diseñar inicio para gerente general | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-005` | Diseñar inicio para gerente de sede | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-006` | Diseñar inicio para contador | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-007` | Diseñar inicio para auxiliar autorizada | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-008` | Mostrar indicadores antes que tablas detalladas | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-009` | Diseñar flujo de registro de gasto | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-010` | Diseñar flujo de aprobación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-011` | Diseñar flujo de cierre | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-012` | Diseñar exportación con permiso independiente | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-013` | Filtrar por empresa, sede y centro de costo | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-014` | Consumir eventos de PULSO, ORIGO, FOGO y NEXO | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-015` | Evitar registro financiero duplicado | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-016` | Validar el prototipo con contabilidad y dirección | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-017` | Diseñar conciliación de ventas y pagos | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-018` | Diseñar conciliación de compras y recepciones | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-019` | Diseñar conciliación de inventario, producción y variaciones | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-020` | Diseñar cuentas por pagar cuando pertenezcan al alcance aprobado | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-021` | Diseñar caja y bancos cuando pertenezcan al alcance aprobado | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-022` | Diseñar costos y rentabilidad con trazabilidad hasta el origen | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-023` | Diseñar correcciones y reaperturas sin borrar historial | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-024` | Diseñar tablero de cobertura y conciliación de fuentes | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-025` | Aprobar alcance financiero antes de completar implementación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
@@ -729,6 +1190,21 @@
 | ⬜ NO INICIADA | `AUTH-ERR-018` | Permiso no registrado | `bloques/S_MENSAJES_BLOQUEO/00_BLOQUE_S.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-019` | Diferenciar error técnico y denegación | `bloques/S_MENSAJES_BLOQUEO/00_BLOQUE_S.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-020` | Compartir mensajes desde vento-shell | `bloques/S_MENSAJES_BLOQUEO/00_BLOQUE_S.md` |
+| ⬜ NO INICIADA | `SHELL-CI-001` | Crear pruebas de paquetes compartidos | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-002` | Crear build independiente por paquete | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-003` | Crear releases versionados | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-004` | Crear changelog automático | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-005` | Crear matriz de compatibilidad | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-006` | Crear actualización de consumidores mediante PR | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-007` | Probar NEXO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-008` | Probar FOGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-009` | Probar ORIGO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-010` | Probar PULSO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-011` | Probar VISO antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-012` | Probar NUMERA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-014` | Permitir rollback por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `AUTH-QA-001` | Propietario sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-002` | Gerente general sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-003` | Gerente de sede solo opera sus sedes | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
@@ -759,3 +1235,145 @@
 | ⬜ NO INICIADA | `AUTH-QA-028` | Rollback funciona por aplicación | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-029` | Auditoría conserva actor, turno, sede y área | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-030` | Ejecutar prueba de regresión completa | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-001` | El trabajador identifica su siguiente tarea | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-002` | La acción principal se encuentra sin capacitación | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-003` | El trabajador comprende el estado del proceso | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-004` | Los errores indican cómo continuar | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-005` | Un rol no ve opciones irrelevantes | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-006` | Las pantallas táctiles funcionan en tablet | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-007` | Las vistas administrativas no contaminan la operación | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-008` | El proceso continúa correctamente entre aplicaciones | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-009` | No se registra dos veces la misma información | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-010` | Los cambios conservan trazabilidad | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-011` | Las tareas críticas soportan conectividad inestable | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-012` | El retorno entre aplicaciones conserva contexto | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-013` | El retorno conserva el proceso cuando corresponde | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-014` | El trabajador completa la tarea dentro del tiempo objetivo | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-015` | Los bloqueos se entienden sin códigos técnicos | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-016` | La información sensible se oculta correctamente | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-017` | La aplicación propietaria conserva la fuente de verdad | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-018` | Los eventos idempotentes no duplican efectos | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-019` | Los fallos parciales permiten recuperación | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-020` | Cada aplicación supera piloto con usuarios reales | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-021` | Probar SHELL por tipo de actor | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-022` | Probar ANIMA con trabajadores y administradores | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-023` | Probar VISO por rol administrativo | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-024` | Probar NEXO por rol operativo | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-025` | Probar FOGO por área productiva | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-026` | Probar ORIGO por etapa de compra | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-027` | Probar PULSO por punto operativo | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-028` | Probar NUMERA por alcance financiero | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-029` | Probar PASS como cliente | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `UX-QA-030` | Probar AURA únicamente después de aprobar su continuidad | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
+| ⬜ NO INICIADA | `PASS-UX-001` | Inventariar pantallas actuales de cliente | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-002` | Diseñar inicio de puntos y beneficios | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-003` | Diseñar QR personal | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-004` | Diseñar acumulación visible | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-005` | Diseñar redención visible | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-006` | Diseñar historial | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-007` | Diseñar catálogo de recompensas | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-008` | Diseñar perfil del cliente | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-009` | Diferenciar estado pendiente, usado y cancelado | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-010` | Definir mensajes de error comprensibles | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-INT-001` | Definir integración PULSO → PASS para acumulación | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-INT-002` | Definir integración PULSO → PASS para redención | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-INT-003` | Definir administración laboral de productos de fidelización | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-INT-004` | Definir administración laboral de clientes cuando corresponda | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-INT-005` | Evitar mezclar identidad cliente y trabajador | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-QA-001` | Probar flujo completo de acumulación | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-QA-002` | Probar flujo completo de redención | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `AURA-AUD-001` | Confirmar repositorio propietario | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-002` | Confirmar estado real del producto | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-003` | Confirmar usuarios actuales | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-004` | Inventariar rutas y pantallas | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-005` | Inventariar procesos de marketing | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-006` | Identificar datos y permisos utilizados | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-007` | Definir relación con VISO | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-008` | Definir relación con PASS | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-009` | Definir relación con PULSO | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-010` | Decidir continuidad, reemplazo o retiro | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-011` | Documentar decisión mediante ADR si corresponde | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUD-012` | Mantener roadmap de implementación bloqueado hasta decisión | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `INT-APP-001` | Crear catálogo de eventos empresariales | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-002` | Definir aplicación emisora de cada evento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-003` | Definir aplicaciones consumidoras | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-005` | Definir reintentos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-006` | Definir compensaciones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-008` | Definir estados pendientes de sincronización | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-009` | Definir manejo de errores parciales | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-APP-010` | Evitar escrituras cruzadas sin contrato | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-001` | Inventariar sistemas externos, proveedores, propietarios y finalidad | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-002` | Definir principal técnico independiente por integración | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-003` | Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-004` | Definir autenticación mediante API key, OAuth, HMAC, certificado u otro mecanismo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-005` | Definir alcance mínimo de cada credencial | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-006` | Separar credenciales de desarrollo, staging y producción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-007` | Definir almacenamiento seguro de secretos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-008` | Definir rotación, expiración y revocación | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-009` | Definir contratos de entrada y salida versionados | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-010` | Definir estrategia webhook, polling o híbrida | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-011` | Definir validación de firma, origen, timestamp y replay | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-012` | Definir idempotencia y deduplicación por sistema externo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-013` | Definir mapeo de identificadores externos y canónicos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-014` | Definir conservación controlada del payload original | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-015` | Definir rate limits, reintentos, backoff y circuit breaker | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-016` | Definir cuarentena o dead-letter | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-017` | Definir auditoría, métricas, alertas y conciliación | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-018` | Definir contingencia ante indisponibilidad del proveedor | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-019` | Definir retiro de integración y revocación de credenciales | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-EXT-020` | Prohibir credenciales compartidas entre integraciones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-001` | VISO publica turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-002` | ANIMA presenta turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-003` | ANIMA registra asistencia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-004` | Supabase confirma contexto efectivo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-005` | SHELL y aplicaciones consumen contexto | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-001` | ORIGO aprueba orden de compra | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-002` | ORIGO registra recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-003` | NEXO crea entrada de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-004` | NUMERA recibe evento económico | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-005` | Evitar recepción duplicada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-001` | FOGO solicita o reserva insumos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-002` | NEXO registra consumo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-003` | FOGO finaliza lote | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-004` | NEXO registra producto terminado | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-005` | Resolver producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-001` | Auditar documentación, endpoints, webhooks y límites del POS vigente | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-003` | Definir al POS vigente como fuente temporal del hecho de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-004` | Solicitar credencial independiente, revocable e inicialmente de solo lectura | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-006` | Importar encabezados, líneas, estados y timestamps | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-007` | Importar descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-008` | Importar anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-009` | Conservar payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-010` | Mapear empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-011` | Mapear producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-012` | Enviar líneas sin mapeo a cuarentena sin descontar inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-013` | Definir idempotencia por sistema, venta y línea externa | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-014` | Definir webhook cuando exista y polling de conciliación como respaldo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-015` | Emitir evento canónico de venta validada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-016` | Producir salida de inventario en NEXO exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-017` | Producir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-018` | Producir evento de fidelización para PASS cuando corresponda | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-019` | Compensar anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-020` | Ejecutar conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-021` | Ejecutar piloto sin efectos sobre inventario ni finanzas | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-022` | Ejecutar piloto controlado con efectos habilitados | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-023` | Definir transición futura desde POS externo hacia PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-024` | Revocar o reducir credenciales cuando PULSO asuma la fuente | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-001` | PULSO registra venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-002` | PULSO emite el mismo contrato canónico utilizado durante la transición | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-003` | NEXO registra salida de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-004` | NUMERA recibe evento de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-005` | PASS acumula puntos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-006` | PASS procesa redención | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-007` | Evitar efectos duplicados por reintento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-008` | Conciliar convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-010` | Impedir que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-011` | Retirar adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |

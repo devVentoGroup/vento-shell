@@ -9,6 +9,17 @@ const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
 const manifestPath = path.join(baseDir, 'manifest.json');
 const fail = (message) => { console.error(`ERROR: ${message}`); process.exit(1); };
 
+function maskFencedCode(source) {
+  let insideFence = false;
+  return source.split('\n').map((line) => {
+    if (/^\s*```/.test(line)) {
+      insideFence = !insideFence;
+      return '';
+    }
+    return insideFence ? '' : line;
+  }).join('\n');
+}
+
 try {
   syncPlanContinuity({ root, checkOnly });
 } catch (error) {
@@ -35,7 +46,8 @@ const outputPath = path.resolve(root, manifest.compiled_output);
 const hash = crypto.createHash('sha256').update(compiled).digest('hex');
 const text = compiled.replace(/\r\n?/g, '\n');
 const taskRegex = /^###\s+(?:\[[ x~]\]\s+|[✅🟡❌]\s+)([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b.*$/gmu;
-const taskMatches = [...text.matchAll(taskRegex)];
+const taskSource = maskFencedCode(text);
+const taskMatches = [...taskSource.matchAll(taskRegex)];
 const taskIds = taskMatches.map((match) => match[1]);
 const authIds = taskIds.filter((id) => id.startsWith('AUTH-'));
 const duplicateTasks = taskIds.filter((id, index, all) => all.indexOf(id) !== index);
@@ -64,6 +76,10 @@ const fragmentCount = text.match(/^\|\s*Fragmentos canónicos\s*\|\s*\*\*(\d+)\*
 if (!fragmentCount) fail('no se pudo validar el número de fragmentos declarado en la cabecera.');
 if (Number(fragmentCount) !== manifest.files.length) fail(`la cabecera declara ${fragmentCount} fragmentos, pero manifest.json contiene ${manifest.files.length}.`);
 
+const taskCount = text.match(/^\|\s*Tareas canónicas con marcador\s*\|\s*\*\*(\d+)\*\*\s*\|$/m)?.[1];
+if (!taskCount) fail('no se pudo validar el número total de tareas declarado en la cabecera.');
+if (Number(taskCount) !== taskIds.length) fail(`la cabecera declara ${taskCount} tareas, pero el compilado contiene ${taskIds.length} marcadores reales fuera de bloques de código.`);
+
 const authCount = text.match(/^\|\s*Tareas `AUTH` únicas\s*\|\s*\*\*(\d+)\*\*\s*\|$/m)?.[1];
 if (!authCount) fail('no se pudo validar el número de tareas AUTH declarado en la cabecera.');
 if (Number(authCount) !== authIds.length) fail(`la cabecera declara ${authCount} tareas AUTH, pero el compilado contiene ${authIds.length}.`);
@@ -75,7 +91,7 @@ for (const token of ['a partirde', 'middlewares,caché', 'responderinequívocame
 if (checkOnly) {
   if (!fs.existsSync(outputPath)) fail('todavía no existe el documento compilado. Ejecuta primero sin --check.');
   if (fs.readFileSync(outputPath, 'utf8') !== compiled) fail('el compilado está desactualizado frente a los fragmentos.');
-  console.log(`OK: compilado vigente; ${manifest.files.length} fragmentos; ${taskIds.length} tareas canónicas; ${authIds.length} tareas AUTH únicas.`);
+  console.log(`OK: compilado vigente; ${manifest.files.length} fragmentos; ${taskIds.length} tareas canónicas reales; ${authIds.length} tareas AUTH únicas.`);
   console.log(`SHA-256: ${hash}`);
   process.exit(0);
 }
@@ -84,6 +100,6 @@ fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, compiled, 'utf8');
 console.log(`OK: ${path.relative(root, outputPath)}`);
 console.log(`Fragmentos: ${manifest.files.length}`);
-console.log(`Tareas canónicas: ${taskIds.length}`);
+console.log(`Tareas canónicas reales: ${taskIds.length}`);
 console.log(`Tareas AUTH únicas: ${authIds.length}`);
 console.log(`SHA-256: ${hash}`);
