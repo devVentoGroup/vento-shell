@@ -11,6 +11,26 @@
       "to": 15
     },
     {
+      "prefix": "OPS-ADM",
+      "from": 1,
+      "to": 1
+    },
+    {
+      "prefix": "OPS-GOV",
+      "from": 1,
+      "to": 1
+    },
+    {
+      "prefix": "OPS-ACT",
+      "from": 1,
+      "to": 1
+    },
+    {
+      "prefix": "OPS-PLAN",
+      "from": 1,
+      "to": 4
+    },
+    {
       "prefix": "CAP-MAP",
       "from": 1,
       "to": 15

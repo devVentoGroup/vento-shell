@@ -2,8 +2,9 @@
 
 ### ✅ OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
 
-**Bloque:** E1 — Auditoría y diseño operacional integral  
-**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Estado:** APROBADA
+**Naturaleza de las clasificaciones:** Línea base operativa inicial, sujeta a validación de campo y reconciliación técnica
 **Naturaleza:** Definición documental canónica  
 **Implementación técnica:** No autorizada en esta tarea  
 **Migraciones o cambios en Supabase:** No autorizados  
@@ -63,25 +64,25 @@ La asignación detallada de personas, cargos y responsabilidades continuará en 
 
 ## 3. Reglas canónicas de clasificación
 
-### 3.1 Entidad jurídica
+##### 3.1 Entidad jurídica
 
 Persona jurídica o natural responsable legal, tributaria o comercialmente de una operación.
 
-### 3.2 Marca
+##### 3.2 Marca
 
 Identidad comercial con la que una operación se presenta ante clientes, trabajadores o terceros.
 
 Una marca no equivale necesariamente a una entidad jurídica independiente.
 
-### 3.3 Sede
+##### 3.3 Sede
 
 Ubicación física formal y estable donde se desarrolla una parte sustancial de la operación.
 
-### 3.4 Punto operativo externo
+##### 3.4 Punto operativo externo
 
 Ubicación privada, prestada o informal que participa de manera recurrente en la operación, pero que no constituye una sede formal de Vento Group.
 
-### 3.5 Área operativa
+##### 3.5 Área operativa
 
 Unidad funcional con producción, inventario, responsabilidades o procesos diferenciables.
 
@@ -92,11 +93,11 @@ Un área puede existir aunque:
 - el personal rote entre áreas;
 - no tenga una persona fija todos los días.
 
-### 3.6 Zona física
+##### 3.6 Zona física
 
 Subdivisión espacial que facilita ubicación, organización o visualización, pero que no constituye por sí misma un área operativa.
 
-### 3.7 Estación o punto operativo
+##### 3.7 Estación o punto operativo
 
 Punto específico dentro de un área desde el cual se realiza una función concreta, como:
 
@@ -108,13 +109,13 @@ Punto específico dentro de un área desde el cual se realiza una función concr
 - preparación;
 - almacenamiento.
 
-### 3.8 Personal flexible
+##### 3.8 Personal flexible
 
 La pertenencia habitual de un trabajador a un área no impide su asignación temporal a otra.
 
 El contexto operativo efectivo deberá depender de la labor realizada durante el turno, no exclusivamente del cargo o área habitual.
 
-### 3.9 Capacidades futuras
+##### 3.9 Capacidades futuras
 
 Toda capacidad futura deberá quedar marcada expresamente como:
 
@@ -123,11 +124,24 @@ Toda capacidad futura deberá quedar marcada expresamente como:
 - condicionada a tareas previas;
 - sin presentarse como parte de la operación actual.
 
+##### 3.10 Estado de evidencia y validación
+
+Cada afirmación de este inventario deberá distinguir entre:
+
+- confirmación documental;
+- confirmación operativa aportada por un responsable;
+- clasificación inicial pendiente de observación;
+- capacidad futura deseada.
+
+Las clasificaciones de áreas, zonas, estaciones y unidades operativas constituyen una línea base inicial. Deberán validarse mediante `OPS-AUD-003` y `OPS-AUD-015` antes de convertirse en estructura técnica definitiva.
+
+La coincidencia de una instalación física no determina por sí sola si el modelo objetivo utilizará una o varias unidades operativas lógicas. Esa reconciliación corresponde a `CAP-MAP-003`, `CODE-AUD-006`, `CAP-SCOPE-001` y `GAP-CTRL-006`.
+
 ---
 
-# 4. Estructura empresarial, jurídica y comercial
+#### 4. Estructura empresarial, jurídica y comercial
 
-## 4.1 Vento Group S.A.S.
+##### 4.1 Vento Group S.A.S.
 
 Vento Group S.A.S. es la entidad jurídica central del grupo.
 
@@ -144,7 +158,7 @@ En sus registros aparecen los establecimientos:
 - Vento Café;
 - Vento Producción.
 
-### Función operativa de Vento Group
+###### Función operativa de Vento Group
 
 ```text
 VENTO GROUP
@@ -161,7 +175,7 @@ VENTO GROUP
 
 ---
 
-## 4.2 Vento Café
+##### 4.2 Vento Café
 
 Vento Café es:
 
@@ -174,7 +188,7 @@ Cuenta con un único local físico activo.
 
 ---
 
-## 4.3 Vento Producción
+##### 4.3 Vento Producción
 
 Vento Producción es el establecimiento formal asociado al Centro de Producción.
 
@@ -197,7 +211,7 @@ CENTRO DE PRODUCCIÓN Y DISTRIBUCIÓN
 
 ---
 
-## 4.4 Saudo
+##### 4.4 Saudo
 
 Saudo es:
 
@@ -210,7 +224,7 @@ Saudo factura actualmente con el RUT personal de Jefersson García.
 
 ---
 
-## 4.5 Molka
+##### 4.5 Molka
 
 Molka es:
 
@@ -221,7 +235,7 @@ Molka es:
 
 ---
 
-## 4.6 Vaila Vainilla
+##### 4.6 Vaila Vainilla
 
 Vaila Vainilla constituye un caso operativo especial.
 
@@ -242,7 +256,7 @@ Su operación económica no se administra de la misma forma que las operaciones 
 
 ---
 
-## 4.7 Catering
+##### 4.7 Catering
 
 Catering es una línea comercial de Vento Group S.A.S.
 
@@ -258,7 +272,7 @@ Características actuales:
 
 ---
 
-## 4.8 Relación administrativa común
+##### 4.8 Relación administrativa común
 
 Aunque Vento Café, Saudo y Molka tienen estructuras jurídicas o titulares distintos, operativamente comparten:
 
@@ -279,9 +293,9 @@ DIRECCIÓN ADMINISTRATIVA SEPARADA
 
 ---
 
-# 5. Inventario de sedes y puntos físicos
+#### 5. Inventario de sedes y puntos físicos
 
-## 5.1 Complejo físico de Vento Café y oficinas de Vento Group
+##### 5.1 Complejo físico de Vento Café y oficinas de Vento Group
 
 Vento Café y las oficinas administrativas se encuentran dentro del mismo inmueble general, propiedad de un tercero ajeno al grupo.
 
@@ -300,7 +314,7 @@ SEGUNDO PISO
 
 Comparten la misma dirección general, pero constituyen dos puntos operativos diferenciados.
 
-### Hallazgo registral
+###### Hallazgo registral
 
 La dirección principal del RUT de Vento Group continúa asociada al Centro de Producción porque anteriormente las oficinas funcionaban allí.
 
@@ -308,11 +322,11 @@ La ubicación registral está desactualizada frente a la operación administrati
 
 ---
 
-## 5.2 Sede administrativa de Vento Group
+##### 5.2 Sede administrativa de Vento Group
 
 Las oficinas administrativas tienen dos salas.
 
-### Sala administrativa compartida
+###### Sala administrativa compartida
 
 ```text
 SALA ADMINISTRATIVA
@@ -325,7 +339,7 @@ SALA ADMINISTRATIVA
     └── pagos de propinas y otros trámites
 ```
 
-### Sala de propietarios
+###### Sala de propietarios
 
 ```text
 SALA DE PROPIETARIOS
@@ -338,7 +352,7 @@ SALA DE PROPIETARIOS
 
 ---
 
-## 5.3 Vento Café
+##### 5.3 Vento Café
 
 Un único local físico activo.
 
@@ -352,7 +366,7 @@ Espacios principales:
 
 ---
 
-## 5.4 Saudo
+##### 5.4 Saudo
 
 Un único local físico activo.
 
@@ -365,7 +379,7 @@ Espacios principales:
 
 ---
 
-## 5.5 Molka
+##### 5.5 Molka
 
 Un único local físico activo.
 
@@ -379,11 +393,11 @@ Molka no cuenta con cocina productiva propia y recibe la mayoría de sus product
 
 ---
 
-## 5.6 Centro de Producción y Distribución
+##### 5.6 Centro de Producción y Distribución
 
 Sede de dos pisos que integra producción, almacenamiento, preparación y distribución.
 
-### Primer piso
+###### Primer piso
 
 - salón general de producción;
 - Panadería y Bollería;
@@ -396,7 +410,7 @@ Sede de dos pisos que integra producción, almacenamiento, preparación y distri
 - punto informal de alistamiento junto a la salida;
 - puesto administrativo operativo.
 
-### Segundo piso
+###### Segundo piso
 
 - Cocina Caliente;
 - Bodega y Abastecimiento;
@@ -408,7 +422,7 @@ Sede de dos pisos que integra producción, almacenamiento, preparación y distri
 - zona de descanso y alimentación;
 - terraza con materiales y activos fuera de uso habitual.
 
-### Condiciones actuales
+###### Condiciones actuales
 
 No existe:
 
@@ -420,7 +434,7 @@ No existe:
 
 ---
 
-## 5.7 Apartamento de Jeo García
+##### 5.7 Apartamento de Jeo García
 
 Punto privado externo asociado a Vaila Vainilla.
 
@@ -434,7 +448,7 @@ No se clasifica como sede formal de Vento Group.
 
 ---
 
-## 5.8 Apartamento de la gerente general
+##### 5.8 Apartamento de la gerente general
 
 Punto privado externo de resguardo vehicular.
 
@@ -448,7 +462,7 @@ No se clasifica como sede formal.
 
 ---
 
-## 5.9 Apartamento del encargado de decoraciones
+##### 5.9 Apartamento del encargado de decoraciones
 
 Punto privado externo utilizado como:
 
@@ -460,9 +474,9 @@ No se clasifica como sede formal.
 
 ---
 
-# 6. Áreas operativas por sede
+#### 6. Áreas operativas por sede
 
-## 6.1 Vento Café
+##### 6.1 Vento Café
 
 ```text
 VENTO CAFÉ
@@ -476,7 +490,7 @@ VENTO CAFÉ
 └── Barra
 ```
 
-### Reglas
+###### Reglas
 
 - Terraza y salón climatizado pertenecen a una misma área operativa.
 - El personal de servicio rota entre ambas zonas.
@@ -488,7 +502,7 @@ VENTO CAFÉ
 
 ---
 
-## 6.2 Saudo
+##### 6.2 Saudo
 
 ```text
 SAUDO
@@ -516,7 +530,7 @@ No es necesario crear áreas administrativas separadas para cada función.
 
 ---
 
-## 6.3 Molka
+##### 6.3 Molka
 
 ```text
 MOLKA
@@ -533,7 +547,7 @@ Molka no tiene Cocina como área productiva.
 
 ---
 
-## 6.4 Centro de Producción — áreas productivas
+##### 6.4 Centro de Producción — áreas productivas
 
 El primer piso es un salón físico compartido, pero contiene áreas operativas diferenciadas.
 
@@ -546,32 +560,32 @@ SALÓN GENERAL DE PRODUCCIÓN
 └── Producción de Barra
 ```
 
-### Panadería y Bollería
+###### Panadería y Bollería
 
 - dos panaderos dedicados actualmente;
 - producción e insumos diferenciados;
 - responsabilidades propias.
 
-### Repostería
+###### Repostería
 
 - dos reposteras dedicadas actualmente;
 - producción e insumos diferenciados;
 - responsabilidades propias.
 
-### Galletería
+###### Galletería
 
 - una galletera dedicada actualmente;
 - producción e insumos diferenciados;
 - responsabilidades propias.
 
-### Pastelería y Tortas
+###### Pastelería y Tortas
 
 - línea fortalecida recientemente por la oferta de tortas de Molka;
 - una persona actualmente responsable;
 - área operativa diferenciada;
 - puede compartir personal, mesas y equipos con Repostería.
 
-### Producción de Barra
+###### Producción de Barra
 
 ```text
 PRODUCCIÓN DE BARRA
@@ -589,7 +603,7 @@ Se clasifica como área operativa de activación periódica.
 
 ---
 
-## 6.5 Cocina Caliente
+##### 6.5 Cocina Caliente
 
 Área operativa independiente del segundo piso.
 
@@ -604,7 +618,7 @@ Características:
 
 ---
 
-## 6.6 Bodega y Abastecimiento
+##### 6.6 Bodega y Abastecimiento
 
 Área operativa independiente, aunque actualmente el cargo de bodeguero esté vacante.
 
@@ -621,7 +635,7 @@ BODEGA Y ABASTECIMIENTO
 └── apoyo en carga del vehículo
 ```
 
-### Estado actual
+###### Estado actual
 
 - el bodeguero anterior fue retirado;
 - Carlos cubre temporalmente parte de las funciones;
@@ -632,7 +646,7 @@ BODEGA Y ABASTECIMIENTO
 
 ---
 
-## 6.7 Servicios Generales
+##### 6.7 Servicios Generales
 
 Función transversal para todo el Centro de Producción.
 
@@ -655,9 +669,9 @@ No se clasifica como área productiva.
 
 ---
 
-# 7. Zonas e infraestructura compartida del Centro de Producción
+#### 7. Zonas e infraestructura compartida del Centro de Producción
 
-## 7.1 Cámara fría
+##### 7.1 Cámara fría
 
 Zona física compartida.
 
@@ -667,7 +681,7 @@ La separación existe como criterio operativo, aunque se presentan episodios de 
 
 ---
 
-## 7.2 Cuarto de congelación
+##### 7.2 Cuarto de congelación
 
 Zona física compartida.
 
@@ -677,7 +691,7 @@ No constituye un área operativa independiente.
 
 ---
 
-## 7.3 Zona general de lavado
+##### 7.3 Zona general de lavado
 
 Sirve a todo el Centro de Producción.
 
@@ -692,7 +706,7 @@ Cada área conserva la responsabilidad de limpiar sus propios utensilios y estac
 
 ---
 
-## 7.4 Zona de bienestar
+##### 7.4 Zona de bienestar
 
 ```text
 ZONA DE BIENESTAR
@@ -705,7 +719,7 @@ Se clasifica como zona de apoyo al personal.
 
 ---
 
-## 7.5 Terraza del segundo piso
+##### 7.5 Terraza del segundo piso
 
 No funciona como bodega de inventario habitual.
 
@@ -721,7 +735,7 @@ Se clasifica como zona auxiliar de materiales y activos fuera de operación.
 
 ---
 
-## 7.6 Punto administrativo operativo
+##### 7.6 Punto administrativo operativo
 
 Existe un escritorio dentro del Centro de Producción utilizado actualmente por Carlos.
 
@@ -738,13 +752,13 @@ No constituye la sede administrativa principal de Vento Group.
 
 ---
 
-# 8. Recepción, alistamiento y despacho físico
+#### 8. Recepción, alistamiento y despacho físico
 
-## 8.1 Recepción de proveedores
+##### 8.1 Recepción de proveedores
 
 No existe una zona formal de recepción.
 
-### Estado actual
+###### Estado actual
 
 - los productos destinados al segundo piso son subidos y dejados temporalmente en el suelo;
 - Carlos los recibe, desempaqueta y organiza;
@@ -755,7 +769,7 @@ No existe una zona formal de recepción.
 
 ---
 
-## 8.2 Alistamiento de remisiones
+##### 8.2 Alistamiento de remisiones
 
 Existen dos puntos informales:
 
@@ -771,7 +785,7 @@ No existe una zona central formal de despacho.
 
 ---
 
-## 8.3 Canastas de transporte
+##### 8.3 Canastas de transporte
 
 - se separan por satélite;
 - el conductor conoce su destino por memoria y por el orden de organización;
@@ -783,9 +797,9 @@ El detalle del control de canastas no se resuelve dentro de OPS-AUD-001.
 
 ---
 
-# 9. Canales comerciales y corporativos
+#### 9. Canales comerciales y corporativos
 
-## 9.1 Vento Café
+##### 9.1 Vento Café
 
 Canales actuales:
 
@@ -806,7 +820,7 @@ Los pedidos de Rappi y domicilios se entregan desde el mismo punto de caja y mos
 
 ---
 
-## 9.2 Saudo
+##### 9.2 Saudo
 
 Canales actuales:
 
@@ -827,7 +841,7 @@ Los pedidos externos se entregan desde el mismo punto integrado de caja y mostra
 
 ---
 
-## 9.3 Molka
+##### 9.3 Molka
 
 Canales actuales:
 
@@ -845,7 +859,7 @@ Molka:
 
 ---
 
-## 9.4 Vaila Vainilla
+##### 9.4 Vaila Vainilla
 
 Canales actuales:
 
@@ -855,9 +869,9 @@ Canales actuales:
 
 ---
 
-## 9.5 Vento Group
+##### 9.5 Vento Group
 
-### Instagram corporativo
+###### Instagram corporativo
 
 Funciones:
 
@@ -875,18 +889,18 @@ Responsables actuales de respuesta:
 - propietaria;
 - gerente general.
 
-### Página web corporativa
+###### Página web corporativa
 
 - en desarrollo;
 - aún no operativa;
 - desarrollada actualmente por Carlos;
 - requiere definición específica de propósito y contenido.
 
-### WhatsApp corporativo
+###### WhatsApp corporativo
 
 No existe actualmente un canal propio de WhatsApp para Vento Group.
 
-### Correo
+###### Correo
 
 El grupo utiliza principalmente correos bajo:
 
@@ -913,7 +927,7 @@ No se inventariarán individualmente todos los alias dentro de OPS-AUD-001.
 
 ---
 
-## 9.6 Catering
+##### 9.6 Catering
 
 Canal de servicio externo de Vento Group.
 
@@ -927,7 +941,7 @@ No cuenta todavía con un canal digital propio claramente separado.
 
 ---
 
-## 9.7 Centro de Producción — ventas externas
+##### 9.7 Centro de Producción — ventas externas
 
 Actualmente:
 
@@ -939,9 +953,9 @@ Existe la intención de desarrollar un catálogo B2B, pero no está implementado
 
 ---
 
-# 10. Capacidades futuras deseadas
+#### 10. Capacidades futuras deseadas
 
-## 10.1 Centro de Pesaje, Premezclas y Porcionamiento
+##### 10.1 Centro de Pesaje, Premezclas y Porcionamiento
 
 ```text
 ESTADO
@@ -962,7 +976,7 @@ Objetivo futuro:
 - mejorar trazabilidad;
 - limitar exposición innecesaria de fórmulas sensibles.
 
-### Restricción actual
+###### Restricción actual
 
 La mayoría de la producción se define con las remisiones nocturnas.
 
@@ -987,7 +1001,7 @@ Su implementación exige primero:
 
 ---
 
-## 10.2 Punto central de impresión de etiquetas
+##### 10.2 Punto central de impresión de etiquetas
 
 Existe una impresora de etiquetas adquirida, pero actualmente:
 
@@ -1001,7 +1015,7 @@ Se proyecta como punto técnico compartido, no como área operativa independient
 
 ---
 
-## 10.3 Catálogo B2B
+##### 10.3 Catálogo B2B
 
 Capacidad futura para vender productos del Centro de Producción a otras empresas.
 
@@ -1015,7 +1029,7 @@ Estado:
 
 ---
 
-## 10.4 Centro de costo de Producción y Distribución
+##### 10.4 Centro de costo de Producción y Distribución
 
 Se desea que el Centro de Producción y Distribución evolucione hacia una unidad con:
 
@@ -1029,281 +1043,39 @@ Actualmente las transferencias internas no funcionan como ventas o cargos formal
 
 ---
 
-# 11. Brechas y tareas vinculadas
-
-Toda brecha identificada queda vinculada a una tarea explícita.
-
-## OPS-ADM-001 — Regularizar sede administrativa y registros de ubicación
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-002 y antes de implementar el modelo definitivo de sedes.
-
-Debe resolver:
-
-- dirección administrativa actual;
-- dirección registral desactualizada;
-- identificación formal de Oficina 1;
-- relación física entre Local 1 y oficinas;
-- documentos que deban actualizarse.
-
----
-
-## OPS-GOV-001 — Definir gobernanza del ecosistema de marcas
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-002 y antes de centros de costo e integraciones financieras.
-
-Debe definir:
-
-- relación entre Vento Group, Saudo, Molka y Vaila;
-- servicios administrativos compartidos;
-- uso de personal;
-- uso de activos;
-- costos compartidos;
-- facturación;
-- tratamiento de ingresos y gastos;
-- límites entre operación corporativa y operación personal.
-
----
-
-## OPS-CAN-001 — Diseñar la arquitectura de canales corporativos
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-001.
-
-Debe incluir:
-
-- página web de Vento Group;
-- propósito del canal;
-- estructura de marcas;
-- captación de catering;
-- futura oferta B2B;
-- Instagram corporativo;
-- correos y alias;
-- responsables;
-- gobernanza de canales.
-
----
-
-## OPS-POS-001 — Definir zonas físicas y mapas POS por sede
-
-**Bloque:** E1  
-**Momento:** después del inventario de áreas y antes del rediseño de PULSO.
-
-Debe incluir:
-
-- terraza y salón de Vento Café;
-- numeración y agrupación de mesas;
-- vistas por zona;
-- puntos de caja;
-- puntos de entrega de Rappi;
-- configuración de Saudo y Molka.
-
----
-
-## OPS-REC-001 — Definir catálogo y acceso contextual a recetas
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-002 y antes de implementar vistas productivas.
-
-Debe permitir filtrar recetas por:
-
-- sede activa;
-- área activa;
-- estación;
-- rol operativo;
-- tipo de preparación;
-- versión vigente.
-
----
-
-## OPS-LOG-001 — Diseñar y estandarizar Bodega y Abastecimiento
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-002.
-
-Debe definir:
-
-- compras;
-- recepción de proveedores;
-- recepción de producción interna;
-- zona de recepción;
-- almacenamiento;
-- conteos;
-- alistamiento;
-- despacho;
-- entrega al conductor;
-- carga del vehículo;
-- reemplazos cuando el cargo esté vacante;
-- responsabilidad por franjas horarias.
-
----
-
-## OPS-ACT-001 — Formalizar activos y puntos externos de custodia
-
-**Bloque:** E1  
-**Momento:** después de OPS-AUD-002.
-
-Debe incluir:
-
-- taller externo de decoraciones;
-- inventario de decoraciones;
-- materiales residuales de la terraza;
-- mobiliario viejo;
-- elementos pendientes de instalar;
-- resguardo externo del vehículo;
-- responsables y controles.
-
----
-
-## OPS-PLAN-001 — Auditar demanda y diseñar planificación de producción
-
-**Bloque:** E1  
-**Momento:** iniciar en paralelo mientras continúa el documento canónico.
-
-Debe analizar:
-
-- ventas históricas de Makos;
-- pedidos de Rappi;
-- información recuperable de ManyChat;
-- remisiones históricas disponibles;
-- faltantes;
-- sobrantes;
-- mermas;
-- inventarios finales;
-- productos previsibles;
-- productos bajo pedido;
-- mínimos y máximos;
-- producción base;
-- ajustes nocturnos.
-
-### OPS-PLAN-001-A — Consolidar fuentes internas
-
-**Responsable inicial:** contadora.
-
-Debe recopilar:
-
-- Makos;
-- inventarios;
-- compras;
-- recepciones;
-- formatos de remisión;
-- periodos disponibles;
-- periodos faltantes.
-
-### OPS-PLAN-001-B — Levantar demanda y canales
-
-**Responsable inicial:** encargada de pedidos.
-
-Debe recopilar:
-
-- Rappi;
-- ManyChat;
-- entrevistas con responsables de pedidos;
-- productos que faltan;
-- productos que sobran;
-- variaciones recurrentes.
-
-### OPS-PLAN-001-C — Iniciar registro prospectivo
-
-**Responsables:** contadora y encargada de pedidos.
-
-Registro mínimo:
-
-- fecha;
-- satélite;
-- producto;
-- cantidad solicitada;
-- cantidad recibida;
-- faltante;
-- sobrante reportado;
-- observación.
-
----
-
-## OPS-PRD-001 — Diseñar el Centro de Pesaje, Premezclas y Porcionamiento
-
-**Bloque:** E1  
-**Momento:** después de OPS-PLAN-001 y de la estandarización de recetas.
-
-Debe definir:
-
-- ubicación;
-- responsable;
-- equipos;
-- kits;
-- lotes;
-- inventario;
-- reservas;
-- planificación;
-- urgencias;
-- alérgenos;
-- contaminación cruzada;
-- almacenamiento;
-- devoluciones;
-- acceso a fórmulas.
-
----
-
-## OPS-TRZ-001 — Definir lotes, etiquetas e impresión central
-
-**Bloque:** E1  
-**Momento:** después de definir recetas y producción, antes de implementar trazabilidad.
-
-Debe incluir:
-
-- formato de lote;
-- producto;
-- fecha de producción;
-- vencimiento;
-- área;
-- responsable;
-- cantidad;
-- conservación;
-- ubicación de la impresora;
-- reimpresiones;
-- contingencia manual.
-
----
-
-## OPS-B2B-001 — Diseñar el catálogo B2B del Centro de Producción
-
-**Bloque:** E1  
-**Momento:** después de OPS-PLAN-001 y del costeo de productos.
-
-Debe definir:
-
-- catálogo;
-- clientes objetivo;
-- presentaciones;
-- precios;
-- capacidad;
-- pedidos;
-- producción;
-- facturación;
-- despacho.
-
----
-
-## OPS-CST-001 — Diseñar centro de costo y transferencias internas
-
-**Bloque:** E1  
-**Momento:** después de OPS-GOV-001 y de la auditoría de procesos productivos.
-
-Debe definir:
-
-- valorización de producción;
-- costos por área;
-- transferencias a satélites;
-- cargos internos;
-- consumos;
-- desperdicios;
-- rentabilidad del Centro de Producción;
-- ventas externas futuras.
-
----
-
-# 12. Decisiones canónicas resultantes
+#### 11. Brechas y tareas materializadas
+
+Las brechas detectadas en esta tarea ya no se consideran destinos narrativos.
+Sus definiciones canónicas se encuentran en los fragmentos propietarios y con
+marcador formal.
+
+| Necesidad detectada | Tarea canónica | Bloque propietario |
+| --- | --- | --- |
+| Sede administrativa y registros | `OPS-ADM-001` | E1 |
+| Gobernanza de marcas y titulares | `OPS-GOV-001` | E1 |
+| Activos y custodias externas | `OPS-ACT-001` | E1 |
+| Programa de auditoría de demanda | `OPS-PLAN-001` | E1 |
+| Fuentes internas | `OPS-PLAN-002` | E1 |
+| Demanda y canales | `OPS-PLAN-003` | E1 |
+| Registro prospectivo | `OPS-PLAN-004` | E1 |
+| Canales corporativos | `OPS-CAN-001` | E2 |
+| Bodega y Abastecimiento TO-BE | `OPS-LOG-001` | E2 |
+| Venta B2B | `OPS-B2B-001` | E2 |
+| Recetas y acceso contextual | `OPS-REC-001` | FOGO |
+| Centro de Pesaje | `OPS-PRD-001` | FOGO |
+| Lotes, etiquetas y trazabilidad | `OPS-TRZ-001` | FOGO, con salida a NEXO y E4 |
+| Zonas y mapas POS | `OPS-POS-001` | PULSO |
+| Centro de costo y transferencias | `OPS-CST-001` | NUMERA |
+
+Las referencias narrativas `OPS-PLAN-001-A`, `OPS-PLAN-001-B` y
+`OPS-PLAN-001-C` quedan sustituidas respectivamente por
+`OPS-PLAN-002`, `OPS-PLAN-003` y `OPS-PLAN-004`, porque el contrato
+del compilador exige que todo identificador canónico termine en tres dígitos.
+
+
+#### 12. Decisiones canónicas resultantes
+
+Estas decisiones constituyen la línea base operativa inicial aprobada para continuar el descubrimiento. No equivalen todavía a estructura técnica definitiva. Su validez de campo deberá confirmarse en `OPS-AUD-003` y `OPS-AUD-015`; cualquier diferencia generará o actualizará una tarea concreta mediante `GAP-CTRL-001` y `GAP-CTRL-006`.
 
 1. Vento Group constituye el paraguas administrativo y público del ecosistema.
 
@@ -1311,7 +1083,7 @@ Debe definir:
 
 3. Vento Café y las oficinas de Vento Group comparten el mismo inmueble general, pero son puntos operativos distintos.
 
-4. El Centro de Producción y el Centro de Distribución funcionan actualmente como una sola sede física integrada.
+4. El Centro de Producción y el Centro de Distribución funcionan actualmente dentro de una sola instalación física integrada. Esta decisión no define todavía si el modelo objetivo conservará una o dos unidades operativas lógicas; esa resolución deberá considerar procesos, inventario, permisos, costos, turnos, rutas y reportes.
 
 5. Vento Café tiene tres áreas operativas:
    - Servicio / Salón;
@@ -1350,25 +1122,22 @@ Debe definir:
 
 ---
 
-# 13. Criterios de aceptación
+#### 13. Criterios de aceptación
 
-OPS-AUD-001 podrá aprobarse cuando se confirme que:
+OPS-AUD-001 se considera aprobada como inventario inicial cuando:
 
-- todas las entidades y marcas actuales están inventariadas;
-- todos los titulares jurídicos conocidos están diferenciados;
-- todas las sedes físicas están registradas;
-- todos los puntos externos recurrentes están registrados;
-- todas las áreas operativas actuales están identificadas;
-- las zonas físicas no se confunden con áreas;
-- los canales actuales y futuros están diferenciados;
-- las capacidades futuras no aparecen como implementadas;
-- cada brecha tiene tarea, bloque y momento de resolución;
-- no se han definido todavía responsabilidades detalladas propias de OPS-AUD-002;
-- no se ha autorizado implementación técnica.
+- las entidades, marcas, titulares, sedes y puntos conocidos están suficientemente identificados para continuar el levantamiento;
+- cada elemento declara o permite determinar su tipo de evidencia;
+- las clasificaciones pendientes de observación están vinculadas a `OPS-AUD-003` y `OPS-AUD-015`;
+- sede física, unidad operativa lógica, área, zona y estación no se tratan como equivalentes;
+- los canales actuales y las capacidades futuras están diferenciados;
+- los elementos no inventariados individualmente, como alias, activos, impresoras, escáneres, terminales, LOC y estaciones, tienen una tarea propietaria explícita;
+- las quince tareas derivadas están materializadas con identificador válido, bloque propietario, dependencias y momento de ejecución;
+- no se han definido todavía responsabilidades detalladas propias de `OPS-AUD-002`;
+- no se ha autorizado implementación técnica, migraciones ni cambios en Supabase.
 
----
 
-# 14. Resultado y continuidad
+#### 14. Resultado y continuidad
 
 Con la aprobación de OPS-AUD-001 quedará establecido el mapa canónico inicial de:
 
@@ -1385,7 +1154,7 @@ La continuidad documental deberá realizarse exclusivamente conforme al orden de
 
 ---
 
-## Soportes documentales consultados
+#### Soportes documentales consultados
 
 - RUT de Vento Group S.A.S.
 - RUT de Nathalia Carolina Ibarra Ariza / Molka.

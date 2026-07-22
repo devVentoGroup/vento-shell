@@ -189,6 +189,20 @@ BLOQUE E5
 → convierte el diseño aprobado en paquetes implementables
 ```
 
+### Distribución canónica de tareas derivadas de OPS-AUD-001
+
+| Responsabilidad | Tareas | Bloque |
+| --- | --- | --- |
+| Evidencia y línea base AS-IS | `OPS-ADM-001`, `OPS-GOV-001`, `OPS-ACT-001`, `OPS-PLAN-001` a `OPS-PLAN-004` | E1 |
+| Procesos transversales TO-BE | `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` | E2 |
+| Diseño productivo | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001` | FOGO, con salidas a NEXO, E4 y NUMERA |
+| Configuración comercial por sede | `OPS-POS-001` | PULSO |
+| Caso financiero de producción | `OPS-CST-001` | NUMERA |
+
+Una tarea derivada conserva su identificador transversal `OPS-*`, pero se
+materializa en el bloque que posee su resultado. El prefijo no determina por sí
+solo el bloque propietario.
+
 Ningún mapa se considera inmutable hasta cerrar el diseño objetivo y sus
 dependencias contractuales, técnicas y operativas.
 
