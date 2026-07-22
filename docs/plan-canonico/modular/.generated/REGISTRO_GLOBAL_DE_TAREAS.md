@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1350** |
 | Tareas `AUTH` | **315** |
-| Aprobadas | **119** |
+| Aprobadas | **120** |
 | En propuesta | **0** |
-| No iniciadas | **1231** |
+| No iniciadas | **1230** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones | ✅ APROBADA |
-| Tarea actual | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos | ⬜ NO INICIADA |
-| Siguiente | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos | ✅ APROBADA |
+| Tarea actual | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context | ⬜ NO INICIADA |
+| Siguiente | `AUTH-CTX-029` — Definir estrategia de invalidación y caché | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -67,7 +67,7 @@
 | ✅ APROBADA | `AUTH-MOD-018` | Definir precedencia entre permisos base y operativos | `bloques/B_MODELO_AUTORIZACION/04_PRECEDENCIA.md` |
 | ✅ APROBADA | `AUTH-MOD-019` | Definir reglas de denegación explícita | `bloques/B_MODELO_AUTORIZACION/05_DENEGACIONES.md` |
 | ✅ APROBADA | `AUTH-MOD-020` | Documentar el modelo mediante ADR | `bloques/B_MODELO_AUTORIZACION/06_ADR_AUTH_001.md` |
-| ⬜ NO INICIADA | `AUTH-MOD-021` | Definir rol base mínimo no privilegiado para trabajadores puramente operativos | `bloques/B_MODELO_AUTORIZACION/06_ADR_AUTH_001.md` |
+| ✅ APROBADA | `AUTH-MOD-021` | Definir rol base mínimo no privilegiado para trabajadores puramente operativos | `bloques/B_MODELO_AUTORIZACION/06_ADR_AUTH_001.md` |
 | ✅ APROBADA | `AUTH-CAT-001` | Normalizar el catálogo y los códigos de aplicaciones | `bloques/C_CATALOGO/01_APLICACIONES_Y_CONVENCION.md` |
 | ✅ APROBADA | `AUTH-CAT-002` | Definir convención app.modulo.recurso.accion | `bloques/C_CATALOGO/01_APLICACIONES_Y_CONVENCION.md` |
 | ✅ APROBADA | `AUTH-CAT-003` | Normalizar códigos de permisos con la convención aprobada | `bloques/C_CATALOGO/02_NORMALIZACION_Y_DESCRIPCIONES.md` |

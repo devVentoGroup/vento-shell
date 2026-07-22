@@ -3314,5 +3314,1263 @@ El carril base se conservará conceptualmente para las capacidades
 administrativas y funcionales permanentes, sin fijar todavía una estructura
 física definitiva para sus matrices.
 
-### [ ] AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
+### ✅ AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE B — Modelo definitivo de identidad y autorización  
+**Naturaleza:** definición documental aditiva del catálogo de roles base y de su matriz mínima  
+**Implementación física:** no incluida  
+**ADR vigente:** `ADR-AUTH-001 — ACCEPTED`  
+**Tarea anterior vigente:** `AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones — APROBADA`  
+**Tarea posterior reservada:** `AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context`  
+**Restricción:** no implementar código, migraciones ni cambios en Supabase durante esta tarea
+
+---
+
+#### 1. Objetivo
+
+Definir el rol base canónico mínimo que deberá asignarse a los trabajadores cuya responsabilidad permanente es exclusivamente operativa y cuya autoridad para ejecutar procesos empresariales debe proceder del rol operativo de un turno válido.
+
+La tarea cierra expresamente:
+
+1. el código canónico definitivo del rol;
+2. su nombre humano y propósito empresarial;
+3. sus capacidades base permanentes mínimas;
+4. las capacidades que permanecerán prohibidas;
+5. su relación con los siete roles base ya publicados;
+6. el versionado requerido del catálogo lógico de roles y del dataset de matriz base;
+7. el tratamiento de los oficios base legacy;
+8. la compatibilidad temporal previa al cutover;
+9. el impacto sobre matrices, `AccessContext`, evaluación, pruebas y migración;
+10. el impacto sobre `ADR-AUTH-001`;
+11. las tareas físicas exactas de E3, H, VISO, R y QA que materializarán la decisión.
+
+---
+
+#### 2. Problema que se resuelve
+
+El modelo canónico exige que todo empleado activo tenga exactamente un rol base vigente.
+
+Sin embargo, los trabajadores puramente operativos no deben conservar como rol base permanente códigos como:
+
+```text
+barista
+bodeguero
+cajero
+cocinero
+conductor
+mesero
+panadero
+pastelero
+repostero
+```
+
+Esos códigos representan oficios legacy que históricamente otorgaron permisos permanentes y mezclaron:
+
+```text
+RESPONSABILIDAD PERMANENTE
++
+FUNCIÓN OPERATIVA DEL TURNO
+```
+
+La separación aprobada exige:
+
+```text
+ROL BASE
+→ responsabilidad laboral permanente
+
+ROL OPERATIVO
+→ función temporal asignada por un turno válido
+```
+
+La ausencia de un rol base mínimo produjo una brecha contractual:
+
+```text
+trabajador puramente operativo
+→ necesita identidad laboral y autoservicio permanente
+→ no debe recibir autoridad administrativa
+→ no debe operar sin turno
+→ necesita un rol base válido no privilegiado
+```
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin reinterpretar:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — identidad laboral y actor efectivo;
+- `AUTH-MOD-002` — separación entre rol base y rol operativo;
+- `AUTH-MOD-003` a `AUTH-MOD-006` — roles base administrativos y casos híbridos;
+- `AUTH-MOD-007` a `AUTH-MOD-017` — contexto territorial y laboral;
+- `AUTH-MOD-018` y `AUTH-MOD-019` — precedencia y denegaciones;
+- `AUTH-CAT-001` a `AUTH-CAT-024` — catálogo canónico de permisos;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028` — matrices, datasets y validaciones;
+- `AUTH-CTX-001` a `AUTH-CTX-027` — contratos, contexto y decisión unificada.
+
+Principios obligatorios:
+
+```text
+ROL BASE
+≠ IDENTIDAD
+
+ROL BASE
+≠ AUTORIZACIÓN FINAL
+
+ROL BASE
+≠ ROL OPERATIVO
+
+OFICIO LEGACY
+≠ ROL BASE CANÓNICO
+
+TURNO
+≠ PERMISO
+
+APP.ACCESS
+≠ ACCESO TOTAL A LA APLICACIÓN
+
+AUSENCIA DE FILA
+→ DEFAULT_DENY
+```
+
+---
+
+#### 4. Decisión principal
+
+Se crea el octavo rol base canónico:
+
+```text
+role_code = trabajador_operativo
+```
+
+Nombre humano:
+
+```text
+Trabajador operativo
+```
+
+Definición:
+
+> Rol base mínimo no privilegiado para empleados cuya responsabilidad permanente consiste en pertenecer a la fuerza laboral de Vento y utilizar las superficies personales esenciales, mientras que toda autoridad para ejecutar procesos operativos procede exclusivamente de un rol operativo válido asignado mediante turno.
+
+Fórmula:
+
+```text
+EMPLEADO ACTIVO
++
+base_role = trabajador_operativo
+=
+IDENTIDAD LABORAL BASE VÁLIDA
++
+AUTOSERVICIO PERSONAL MÍNIMO
++
+CERO AUTORIDAD OPERATIVA POR EL ROL BASE
+```
+
+Y:
+
+```text
+trabajador_operativo
++
+turno publicado y vigente
++
+rol operativo válido
++
+check-in cuando corresponda
++
+permiso operativo exacto
++
+territorio y recurso compatibles
+=
+AUTORIZACIÓN OPERATIVA POSIBLE
+```
+
+---
+
+#### 5. Identidad canónica del rol
+
+| Propiedad                          | Valor                                                            |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| Código                             | `trabajador_operativo`                                           |
+| Nombre humano                      | Trabajador operativo                                             |
+| Catálogo                           | Rol base                                                         |
+| Naturaleza                         | Permanente                                                       |
+| Nivel de privilegio                | Mínimo no privilegiado                                           |
+| Autoridad administrativa implícita | Ninguna                                                          |
+| Autoridad operativa implícita      | Ninguna                                                          |
+| Dependencia de turno               | No para sus capacidades base; sí para toda operación             |
+| Dependencia de check-in            | No para sus capacidades base; según contrato para toda operación |
+| Alcance administrativo natural     | Ninguno                                                          |
+| Alcance operativo natural          | Ninguno; procede del turno                                       |
+| Asignación                         | Explícita, auditable y singular                                  |
+| Uso como fallback                  | Prohibido                                                        |
+| Uso por dispositivos               | No propio; se utiliza el rol del actor humano                    |
+| Uso en simulación                  | Admitido únicamente como sujeto hipotético                       |
+
+---
+
+#### 6. Justificación del código
+
+Se adopta:
+
+```text
+trabajador_operativo
+```
+
+porque expresa simultáneamente:
+
+- que pertenece al catálogo de trabajadores;
+- que es un rol base de clasificación laboral;
+- que no describe un oficio específico;
+- que la persona obtiene su función operativa concreta mediante el turno;
+- que no equivale a administrador, supervisor ni especialista funcional.
+
+Se descartan:
+
+| Código        | Motivo                                                              |
+| ------------- | ------------------------------------------------------------------- |
+| `empleado`    | Confunde identidad laboral con rol base.                            |
+| `trabajador`  | Es demasiado amplio y podría abarcar cualquier empleado.            |
+| `staff`       | Es genérico, anglicado y ambiguo frente al dominio laboral.         |
+| `colaborador` | No distingue personal puramente operativo de roles administrativos. |
+| `operativo`   | Puede confundirse con el carril o el rol operativo efectivo.        |
+| `sin_rol`     | Modela ausencia en lugar de una asignación válida.                  |
+| `default`     | Sugiere fallback automático y permisivo.                            |
+
+---
+
+#### 7. Propósito empresarial
+
+`trabajador_operativo` deberá permitir que el empleado:
+
+- exista como trabajador activo dentro de Vento OS;
+- ingrese al hub laboral;
+- ingrese a ANIMA antes de iniciar un turno;
+- consulte sus propios documentos laborales autorizados;
+- cargue documentos propios únicamente cuando el tipo documental permita autoservicio;
+- cargue o actualice su propia fotografía laboral conforme al contrato aplicable;
+- reciba posteriormente capacidades operativas exclusivamente por el turno y el rol operativo.
+
+No deberá convertir el rol en:
+
+- cargo contractual completo;
+- oficio diario;
+- rol de sede;
+- rol de área;
+- permiso de aplicación;
+- reemplazo de turno;
+- reemplazo de check-in;
+- reemplazo de perfil operativo;
+- autorización administrativa mínima implícita.
+
+---
+
+#### 8. Matriz base mínima exacta
+
+El rol recibe exactamente cinco concesiones base directas dentro del catálogo vigente:
+
+| Permiso                                     | Modalidad   | Tipo de concesión | Alcance  | Decisión                    |
+| ------------------------------------------- | ----------- | ----------------- | -------- | --------------------------- |
+| `shell.access`                              | `BASE_ONLY` | `DIRECT`          | `NT-APP` | **ASIGNAR**                 |
+| `anima.access`                              | `BASE_ONLY` | `DIRECT`          | `NT-APP` | **ASIGNAR**                 |
+| `anima.workforce.employee_documents.view`   | `BASE_ONLY` | `DIRECT`          | `OWN`    | **ASIGNAR**                 |
+| `anima.workforce.employee_documents.upload` | `BASE_ONLY` | `DIRECT`          | `OWN`    | **ASIGNAR CON RESTRICCIÓN** |
+| `anima.workforce.employee_photos.upload`    | `BASE_ONLY` | `DIRECT`          | `OWN`    | **ASIGNAR CON RESTRICCIÓN** |
+
+Condiciones obligatorias:
+
+##### `shell.access`
+
+```text
+permite entrar al hub laboral
+≠ permite entrar a todas las aplicaciones
+≠ concede permisos internos
+```
+
+##### `anima.access`
+
+```text
+permite abrir ANIMA antes del turno
+≠ permite administrar trabajadores
+≠ permite administrar turnos
+≠ concede check-in automáticamente
+```
+
+##### `anima.workforce.employee_documents.view`
+
+```text
+target_employee_id
+=
+actor_employee_id
+```
+
+Solo admite documentos propios que el contrato de retención, sensibilidad y visibilidad permita mostrar al empleado.
+
+##### `anima.workforce.employee_documents.upload`
+
+Solo admite:
+
+- trabajador objetivo igual al actor;
+- tipos documentales configurados como autoservicio;
+- validación de formato, tamaño, hash y destino;
+- trazabilidad de creación;
+- ausencia de capacidad de aprobar, validar o eliminar el documento.
+
+##### `anima.workforce.employee_photos.upload`
+
+Solo admite:
+
+- fotografía propia;
+- formato y tamaño aprobados;
+- flujo de revisión cuando corresponda;
+- trazabilidad del reemplazo;
+- ausencia de acceso a fotografías de terceros.
+
+---
+
+#### 9. Resultado cuantitativo de la matriz
+
+Sobre el catálogo vigente de 140 permisos:
+
+| Resultado                           | Cantidad |
+| ----------------------------------- | -------: |
+| Concesiones directas                |        5 |
+| Componentes base de doble condición |        0 |
+| Permisos no concedidos              |      135 |
+| Total evaluado                      |      140 |
+
+Regla:
+
+```text
+5 FILAS PRESENTES
+→ CANDIDATOS DE ALLOW BASE
+
+135 FILAS AUSENTES
+→ DEFAULT_DENY
+```
+
+No se crearán 135 denegaciones explícitas redundantes.
+
+---
+
+#### 10. Capacidades expresamente prohibidas
+
+El rol no recibe por defecto:
+
+- `viso.access`;
+- `numera.access`;
+- `aura.access`;
+- `pass.access`;
+- acceso base a NEXO, FOGO u ORIGO;
+- capacidades de PULSO;
+- consulta de trabajadores distintos del actor;
+- invitación de trabajadores;
+- creación, actualización o cancelación de turnos;
+- administración de documentos de terceros;
+- eliminación de documentos;
+- administración de roles, permisos, matrices o denegaciones;
+- configuración de sedes, áreas, dispositivos o aplicaciones;
+- finanzas, contabilidad, compras o proveedores;
+- auditoría organizacional;
+- simulación administrativa;
+- capacidades de seguridad;
+- lectura transversal entre sedes;
+- acceso a APP-REVIEW, demo, pruebas o recursos aislados;
+- cualquier permiso `OPERATIONAL_ONLY`;
+- cualquier componente base de `BASE_AND_OPERATIONAL`.
+
+También queda prohibido:
+
+```text
+trabajador_operativo
+→ todos los permisos operativos
+
+trabajador_operativo
+→ permiso de la aplicación del turno
+
+trabajador_operativo
+→ turno implícito
+
+trabajador_operativo
+→ rol operativo predeterminado
+
+trabajador_operativo
+→ acceso por nombre del rol
+```
+
+---
+
+#### 11. Comportamiento por estado laboral
+
+##### Sin turno vigente
+
+El empleado conserva únicamente las cinco capacidades base definidas.
+
+```text
+base_role = trabajador_operativo
+active_shift = null
+operational_role = null
+```
+
+Resultado:
+
+```text
+puede usar SHELL y autoservicio ANIMA
+no puede ejecutar operación empresarial
+```
+
+##### Con turno vigente, sin check-in
+
+Puede obtener únicamente capacidades operativas cuyo contrato exija `T` y no `T+C`.
+
+El rol base no elimina el requisito de check-in.
+
+##### Con turno y check-in válidos
+
+Las capacidades operativas proceden del rol operativo efectivo, no de `trabajador_operativo`.
+
+##### Después del cierre o expiración del contexto
+
+```text
+fin de contexto operativo
+→ fin de autoridad operativa
+```
+
+Las cinco capacidades base permanecen porque no dependen del turno.
+
+---
+
+#### 12. Excepciones individuales
+
+Un empleado con `base_role = trabajador_operativo` podrá recibir una concesión individual base únicamente cuando:
+
+- el permiso admite el carril base;
+- la responsabilidad permanente está documentada;
+- el alcance es explícito;
+- existe vigencia cuando corresponde;
+- no existe una denegación aplicable;
+- la concesión no sustituye un rol operativo;
+- la concesión no reproduce de hecho la matriz completa de otro rol base.
+
+Regla:
+
+```text
+EXCEPCIÓN INDIVIDUAL BASE
+≠ CAMBIO AUTOMÁTICO DE ROL
+```
+
+Pero:
+
+```text
+CONJUNTO RECURRENTE DE EXCEPCIONES
+QUE REPRODUCE OTRO ROL BASE
+→ REVISAR CLASIFICACIÓN LABORAL
+→ ASIGNAR EL ROL BASE CORRECTO
+```
+
+Una excepción individual nunca podrá conceder un permiso `OPERATIONAL_ONLY` por el carril base.
+
+---
+
+#### 13. Relación con los siete roles base vigentes
+
+El catálogo objetivo queda compuesto por ocho roles:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+```
+
+Clasificación:
+
+| Familia                              | Roles                                              |
+| ------------------------------------ | -------------------------------------------------- |
+| Gobierno organizacional              | `propietario`, `gerente_general`                   |
+| Administración territorial           | `gerente`, `supervisor`                            |
+| Funciones permanentes especializadas | `auxiliar_administrativa`, `contador`, `marketing` |
+| Fuerza laboral puramente operativa   | `trabajador_operativo`                             |
+
+`trabajador_operativo` no es inferior jerárquico de los demás roles dentro del motor de autorización.
+
+Es una plantilla diferente y mínima.
+
+```text
+menos permisos
+≠ menor identidad
+≠ menor trazabilidad
+≠ autorización operativa incompleta
+```
+
+No existe herencia entre roles base.
+
+---
+
+#### 14. Tratamiento de oficios legacy
+
+Los códigos legacy permanecen clasificados como no canónicos:
+
+```text
+barista
+bodeguero
+cajero
+cocinero
+conductor
+mesero
+panadero
+pastelero
+repostero
+```
+
+No se convierten automáticamente durante esta tarea.
+
+La clasificación de cada empleado deberá seguir:
+
+| Situación permanente real                        | Rol base objetivo                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| Solo ejecuta funciones operativas por turno      | `trabajador_operativo`                                            |
+| Tiene responsabilidad administrativa permanente  | Uno de los siete roles base vigentes                              |
+| Tiene una combinación administrativa y operativa | Rol base administrativo correspondiente + rol operativo del turno |
+| La evidencia es ambigua o contradictoria         | Sin conversión automática; reconciliación obligatoria             |
+| Empleado inactivo                                | No se reactiva ni se migra para conceder autoridad                |
+
+Regla:
+
+```text
+legacy_role_code
+≠ prueba suficiente para elegir rol base objetivo
+```
+
+La decisión se basa en la responsabilidad permanente real, no en el texto histórico.
+
+---
+
+#### 15. Candidatos operativos derivados del legado
+
+Las siguientes equivalencias son únicamente candidatos de reconciliación y nunca conversiones automáticas:
+
+| Oficio legacy | Rol operativo candidato                                         |
+| ------------- | --------------------------------------------------------------- |
+| `barista`     | `barista_satelite`                                              |
+| `bodeguero`   | `bodeguero`                                                     |
+| `cajero`      | `cajero_satelite`                                               |
+| `cocinero`    | `cocinero_satelite` o `produccion_cocina`, según sede y proceso |
+| `conductor`   | `conductor_logistica`                                           |
+| `mesero`      | `servicio_salon`                                                |
+| `panadero`    | `produccion_panaderia`                                          |
+| `pastelero`   | `produccion_reposteria`                                         |
+| `repostero`   | `produccion_reposteria`                                         |
+
+Cada caso requiere comprobar:
+
+- sede laboral;
+- área;
+- proceso real;
+- perfiles operativos;
+- turnos publicados;
+- compatibilidad del rol con sede y área;
+- consumidores legacy;
+- datos históricos.
+
+El perfil puede sugerir el rol al crear el turno; no lo convierte en autoridad vigente.
+
+---
+
+#### 16. Caso especial `bodeguero`
+
+El texto `bodeguero` podrá continuar existiendo temporalmente en dos fuentes físicas, pero con significados distintos:
+
+```text
+employees.role = bodeguero
+→ asignación base legacy inválida
+
+active_shift.operational_role = bodeguero
+→ rol operativo potencialmente válido
+```
+
+El cutover objetivo será:
+
+```text
+employees.role = trabajador_operativo
+active_shift.operational_role = bodeguero
+```
+
+para empleados sin responsabilidad administrativa permanente.
+
+La coincidencia textual histórica no permite copiar permisos base, fusionar matrices ni omitir el turno.
+
+---
+
+#### 17. Compatibilidad temporal antes del cutover
+
+Hasta materializar la migración:
+
+1. los siete roles base canónicos actuales continúan válidos;
+2. `trabajador_operativo` será válido solo después de publicarse en el catálogo físico correspondiente;
+3. los oficios base legacy continúan con `role_status = INVALID`;
+4. un oficio legacy no se interpreta automáticamente como `trabajador_operativo`;
+5. no se crea alias de autorización entre el oficio legacy y el nuevo rol;
+6. un carril operativo válido puede seguir evaluándose independientemente del carril base inválido, conforme a la modalidad del permiso;
+7. toda asignación migrada debe conservar el código anterior, la causa, el actor y la fecha para auditoría;
+8. la transición debe admitir rollback mientras no se hayan retirado los objetos legacy.
+
+`AUTH-CTX-028` deberá diseñar el adaptador temporal con esta regla:
+
+```text
+COMPATIBILIDAD
+→ conserva forma y diagnóstico
+→ no inventa grants
+→ no transforma silenciosamente el rol
+→ no crea fallback operativo
+```
+
+---
+
+#### 18. Impacto sobre `AccessContext`
+
+No cambia la forma de `AccessContext@1.x`.
+
+El nodo `base_role` podrá representar:
+
+```text
+role_code = trabajador_operativo
+role_status = ACTIVE
+assignment_source = CANONICAL_EMPLOYEE_BASE_ROLE_ASSIGNMENT
+```
+
+cuando exista una asignación explícita y vigente.
+
+Invariantes:
+
+```text
+employee.base_role_code
+=
+base_role.role_code
+=
+trabajador_operativo
+```
+
+Solo entonces el carril base podrá consultar la matriz del nuevo rol.
+
+El nodo no incluirá la lista completa de permisos.
+
+El evaluador consultará el snapshot versionado de matriz base.
+
+Un código legacy no podrá proyectarse como `trabajador_operativo` dentro de `AccessContext` sin una asignación migrada o un contrato de compatibilidad expresamente aprobado.
+
+---
+
+#### 19. Impacto sobre la decisión de autorización
+
+Para permisos `BASE_ONLY` o para el componente base de permisos compatibles:
+
+```text
+base_role = trabajador_operativo
++
+fila exacta en matriz
++
+alcance coincidente
++
+recurso compatible
++
+sin deny aplicable
+=
+base_decision = ALLOW
+```
+
+La ausencia de fila produce:
+
+```text
+base_decision = DENY
+reason_code = base_allow_not_found
+```
+
+Para permisos `OPERATIONAL_ONLY`, el rol base no participa como fuente de allow.
+
+Para permisos `BASE_OR_OPERATIONAL`, las cinco concesiones base podrán autorizar únicamente las cinco claves exactas. No autorizan otras claves por prefijo, aplicación o proximidad semántica.
+
+Para permisos `BASE_AND_OPERATIONAL`, el nuevo rol no contiene componentes base iniciales.
+
+---
+
+#### 20. Versionado del catálogo de roles base
+
+La introducción de `trabajador_operativo` es un cambio aditivo.
+
+Decisión:
+
+```text
+catálogo lógico de roles base
+1.0.0
+→
+1.1.0
+```
+
+Cambios:
+
+| Dimensión                                  | Versión actual | Versión objetivo |
+| ------------------------------------------ | -------------: | ---------------: |
+| Roles base                                 |              7 |                8 |
+| Nuevos códigos                             |              0 |                1 |
+| Roles retirados                            |              0 |                0 |
+| Cambios de significado en roles existentes |              0 |                0 |
+
+No se reutiliza ningún código existente.
+
+No se altera el significado de los siete roles ya publicados.
+
+---
+
+#### 21. Versionado del dataset de matriz base
+
+El snapshot aprobado actual permanece inmutable:
+
+```text
+vento.authorization.base-role-grants@1.0.0
+```
+
+Se define como sucesor lógico:
+
+```text
+vento.authorization.base-role-grants@1.1.0
+```
+
+Diff exacto:
+
+```text
++ role_code = trabajador_operativo
++ 5 concesiones DIRECT
++ 0 componentes BASE_COMPONENT
+```
+
+Resultado objetivo:
+
+| Campo                  |      `1.0.0` |      `1.1.0` |
+| ---------------------- | -----------: | -----------: |
+| `role_count`           |            7 |            8 |
+| `record_count`         |          499 |          504 |
+| `direct_base_count`    |          463 |          468 |
+| `base_component_count` |           36 |           36 |
+| `effect`               | `ALLOW_ONLY` | `ALLOW_ONLY` |
+
+El catálogo de permisos:
+
+```text
+vento.authorization@1.0.0
+```
+
+no cambia, porque esta tarea no crea, retira ni modifica ninguna clave de permiso.
+
+El hash de `vento.authorization.base-role-grants@1.1.0` deberá calcularse sobre la serialización física determinista durante `SHELL-CON-004` y verificarse mediante `AUTH-DB-027`. Esta tarea define el contenido lógico exacto, pero no publica el archivo físico.
+
+---
+
+#### 22. Capacidades personales todavía no representadas por claves atómicas
+
+El catálogo vigente no contiene claves específicas para:
+
+- consultar el perfil laboral propio;
+- consultar los turnos propios;
+- consultar notificaciones laborales propias.
+
+Estas necesidades no se conceden mediante `anima.access` ni mediante una clave aproximada.
+
+Quedan vinculadas expresamente a:
+
+| Necesidad                                   | Tarea responsable                              | Momento                   |
+| ------------------------------------------- | ---------------------------------------------- | ------------------------- |
+| Consolidar la brecha contractual            | `GAP-CTRL-001`                                 | BLOQUE E1                 |
+| Clasificar y asignar destino                | `GAP-CTRL-003`, `GAP-CTRL-004`, `GAP-CTRL-006` | Antes de cerrar E1        |
+| Diseñar inicio con turno actual y siguiente | `ANIMA-UX-004`                                 | Diseño funcional de ANIMA |
+| Simplificar datos personales y documentos   | `ANIMA-UX-013`                                 | Diseño funcional de ANIMA |
+| Definir recordatorios laborales             | `ANIMA-UX-016`                                 | Diseño funcional de ANIMA |
+| Asignar permiso exacto a vistas y acciones  | `AUTH-UI-030`, `AUTH-UI-031`                   | BLOQUE I                  |
+| Impedir cierre con brecha sin paquete       | `E5-GATE-002`, `E5-GATE-008`                   | BLOQUE E5                 |
+
+Cuando esas tareas demuestren que se requiere una nueva clave, aplicará la regla canónica de evolución del catálogo y se generará una nueva versión, un diff de matrices y la regeneración de datasets afectados.
+
+Hasta entonces:
+
+```text
+CLAVE AUSENTE
+→ NO GRANT
+→ DEFAULT_DENY
+```
+
+---
+
+#### 23. Impacto sobre `ADR-AUTH-001`
+
+La decisión es compatible con `ADR-AUTH-001`.
+
+No contradice:
+
+- la separación de rol base y rol operativo;
+- la singularidad del rol base;
+- la ausencia de roles híbridos;
+- la prohibición de bypass por nombre;
+- la exigencia de permisos exactos;
+- la precedencia de denegaciones;
+- la denegación por defecto.
+
+La tarea cierra una definición expresamente diferida por `AUTH-MOD-002`.
+
+Decisión documental:
+
+```text
+ADR-AUTH-001
+→ permanece ACCEPTED
+→ no se sustituye
+→ recibe ENMIENDA ADITIVA AUTH-MOD-021
+```
+
+La enmienda deberá registrar:
+
+1. `trabajador_operativo` como octavo rol base;
+2. su matriz mínima de cinco concesiones;
+3. la prohibición de autoridad operativa permanente;
+4. la versión `1.1.0` del catálogo lógico de roles base;
+5. el sucesor `vento.authorization.base-role-grants@1.1.0`;
+6. el tratamiento de oficios legacy;
+7. la puerta contractual previa a `AUTH-CTX-028`.
+
+---
+
+#### 24. Materialización exacta en BLOQUE E3
+
+| Tarea            | Responsabilidad sobre esta decisión                                         |
+| ---------------- | --------------------------------------------------------------------------- |
+| `SUPA-AUD-004`   | Inventariar tablas y vistas que almacenan roles base, permisos y empleados. |
+| `SUPA-AUD-005`   | Inventariar FK, constraints, enums e índices afectados.                     |
+| `SUPA-AUD-018`   | Identificar códigos y estructuras legacy de oficios base.                   |
+| `SUPA-AUD-019`   | Detectar duplicidades, huérfanos y fuentes competidoras.                    |
+| `SUPA-ARC-002`   | Ubicar roles y autorización dentro del dominio empresarial estable.         |
+| `SUPA-ARC-003`   | Definir esquema propietario de las fuentes de verdad.                       |
+| `SUPA-ARC-008`   | Incorporar el rol dentro del modelo canónico de identidad y autorización.   |
+| `SUPA-ARC-009`   | Conservar el vínculo entre Auth y empleado sin usar el rol como identidad.  |
+| `SUPA-ARC-012`   | Definir constraints, estados, cardinalidad y timestamps de asignación.      |
+| `SUPA-ARC-015`   | Definir exposición, grants y RLS del catálogo y las asignaciones.           |
+| `SUPA-ARC-023`   | Definir generación de tipos que incluya el nuevo código.                    |
+| `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo.                   |
+| `SUPA-TRANS-002` | Clasificar oficios legacy y objetos relacionados.                           |
+| `SUPA-TRANS-003` | Identificar consumidores y dependencias.                                    |
+| `SUPA-TRANS-004` | Definir orden de migración del dominio de autorización.                     |
+| `SUPA-TRANS-005` | Definir backfill y reconciliación empleado por empleado.                    |
+| `SUPA-TRANS-006` | Definir wrappers temporales sin crear aliases permisivos.                   |
+| `SUPA-TRANS-007` | Coordinar adaptación de consumidores.                                       |
+| `SUPA-TRANS-009` | Definir pruebas antes y después del cutover.                                |
+| `SUPA-TRANS-011` | Definir rollback del paquete.                                               |
+| `SUPA-TRANS-012` | Definir retiro progresivo de oficios base legacy.                           |
+| `SUPA-TRANS-014` | Actualizar tipos, contratos y documentación.                                |
+| `SUPA-TRANS-015` | Convertir el plan en roadmap ejecutable de migraciones.                     |
+
+---
+
+#### 25. Materialización exacta en BLOQUE H
+
+| Tarea            | Responsabilidad sobre esta decisión                                       |
+| ---------------- | ------------------------------------------------------------------------- |
+| `SHELL-PKG-002`  | Aplicar versionado semántico al cambio aditivo.                           |
+| `SHELL-PKG-003`  | Publicar tag y release correspondientes.                                  |
+| `SHELL-PKG-004`  | Declarar compatibilidad entre snapshots `1.0.0` y `1.1.0`.                |
+| `SHELL-PKG-005`  | Declarar deprecación de códigos legacy.                                   |
+| `SHELL-CON-001`  | Publicar contratos y schemas compartidos.                                 |
+| `SHELL-CON-004`  | Centralizar el catálogo de ocho roles base y generar el dataset `1.1.0`.  |
+| `SHELL-CON-007`  | Actualizar tipos de contexto sin cambiar la forma de `AccessContext@1.x`. |
+| `SHELL-AUTH-001` | Incluir la nueva versión en el SDK canónico.                              |
+| `SHELL-CTX-001`  | Resolver el nuevo código dentro del módulo contextual.                    |
+| `SHELL-AUTH-004` | Bloquear nuevos usos de oficios legacy como roles base válidos.           |
+| `SHELL-AUTH-005` | Certificar adopción en todos los repositorios antes del retiro.           |
+
+---
+
+#### 26. Materialización exacta en VISO
+
+| Tarea           | Responsabilidad sobre esta decisión                                      |
+| --------------- | ------------------------------------------------------------------------ |
+| `VISO-AUTH-001` | Administrar el catálogo de roles base incluyendo `trabajador_operativo`. |
+| `VISO-AUTH-003` | Administrar su matriz mínima sin conceder permisos implícitos.           |
+| `VISO-AUTH-008` | Conservar sedes asignadas separadas del rol base.                        |
+| `VISO-AUTH-009` | Conservar áreas asignadas separadas del rol base.                        |
+| `VISO-AUTH-013` | Mostrar la vista previa trabajador × sede × área × turno.                |
+| `VISO-AUTH-015` | Mostrar el origen base u operativo de cada permiso.                      |
+| `VISO-AUTH-016` | Mostrar conflictos y asignaciones legacy todavía no reconciliadas.       |
+
+VISO no podrá asignar `trabajador_operativo` como fallback silencioso.
+
+---
+
+#### 27. Materialización exacta en BLOQUE R
+
+| Tarea         | Responsabilidad sobre esta decisión                                     |
+| ------------- | ----------------------------------------------------------------------- |
+| `AUTH-DB-015` | Crear y versionar las migraciones exclusivamente en `vento-shell`.      |
+| `AUTH-DB-027` | Probar catálogo, dataset, FK, constraints, RLS, RPC y migraciones.      |
+| `AUTH-DB-028` | Comparar local, staging y producción antes del cambio.                  |
+| `AUTH-DB-029` | Verificar respaldo, restauración y rollback.                            |
+| `AUTH-DB-020` | Migrar catálogo, matriz y asignaciones con compatibilidad temporal.     |
+| `AUTH-DB-011` | Aplicar constraints después de backfill y reconciliación.               |
+| `AUTH-DB-026` | Generar y publicar tipos después del paquete aprobado.                  |
+| `AUTH-DB-033` | Proyectar `trabajador_operativo` correctamente en `get_access_context`. |
+| `AUTH-DB-034` | Evaluar las cinco concesiones exactas sin reglas especiales por nombre. |
+| `AUTH-DB-030` | Retirar códigos y objetos legacy solo después de adopción comprobada.   |
+| `AUTH-DB-031` | Certificar paridad documental, técnica y operativa.                     |
+
+---
+
+#### 28. Orden obligatorio de implementación
+
+```text
+AUTH-MOD-021 APROBADA
+        ↓
+AUTH-CTX-028
+        ↓
+AUTH-CTX-029
+        ↓
+AUTH-CTX-030
+        ↓
+SUPA-AUD-004, 005, 018, 019
+        ↓
+SUPA-ARC-002, 003, 008, 009, 012, 015, 023
+        ↓
+SUPA-TRANS-001 a 007, 009, 011, 012, 014, 015
+        ↓
+SHELL-PKG-002 a 005
+        ↓
+SHELL-CON-001, 004, 007
+        ↓
+SHELL-AUTH-001 y SHELL-CTX-001
+        ↓
+AUTH-DB-015, 027, 028, 029
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-011, 026, 033, 034
+        ↓
+VISO-AUTH-001, 003, 008, 009, 013, 015, 016
+        ↓
+migración progresiva de consumidores
+        ↓
+SHELL-AUTH-004 y SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+Este orden no autoriza implementación durante la fase documental actual.
+
+---
+
+#### 29. Reglas de migración de empleados
+
+La futura migración deberá:
+
+1. inventariar todos los empleados con oficios base legacy;
+2. distinguir empleados activos e inactivos;
+3. identificar responsabilidades permanentes reales;
+4. detectar asignaciones administrativas vigentes;
+5. detectar permisos individuales activos;
+6. identificar perfiles y turnos operativos existentes;
+7. clasificar cada empleado como migrable, administrativo, ambiguo o excluido;
+8. producir un plan de cambio individual;
+9. ejecutar backfill idempotente;
+10. conservar el código anterior y la fuente;
+11. validar que ningún permiso operativo quede concedido por el carril base;
+12. validar que el empleado conserve acceso mínimo a SHELL y ANIMA;
+13. validar que la operación proceda exclusivamente del turno;
+14. permitir rollback mientras el retiro legacy no haya comenzado;
+15. registrar evidencia de reconciliación y resultado.
+
+No se permite una sentencia masiva basada únicamente en:
+
+```text
+WHERE role IN (...)
+```
+
+sin reconciliación previa.
+
+---
+
+#### 30. Auditoría obligatoria
+
+La asignación, cambio o migración del rol deberá registrar:
+
+```text
+employee_id
+previous_base_role_code
+new_base_role_code
+assignment_reason
+assignment_source
+legacy_role_code
+decision_reference = AUTH-MOD-021
+catalog_version
+dataset_version
+changed_by
+changed_at
+migration_batch_id
+rollback_reference
+```
+
+También deberá registrar:
+
+- responsabilidades permanentes consideradas;
+- conflictos detectados;
+- perfil operativo existente;
+- turnos activos o futuros relevantes;
+- permisos individuales vigentes;
+- resultado de pruebas;
+- estado de reconciliación.
+
+---
+
+#### 31. Pruebas contractuales obligatorias
+
+`AUTH-CTX-030`, `AUTH-DB-027` y `AUTH-QA-030` deberán cubrir como mínimo:
+
+1. empleado activo con `trabajador_operativo` obtiene `shell.access`;
+2. obtiene `anima.access` sin turno;
+3. puede consultar únicamente documentos propios autorizados;
+4. no puede consultar documentos de otro trabajador;
+5. solo puede cargar documentos propios de tipos autoservicio;
+6. puede cargar únicamente su propia fotografía;
+7. no puede eliminar documentos;
+8. no obtiene acceso base a NEXO, FOGO, ORIGO, PULSO, VISO, NUMERA, AURA o PASS;
+9. sin turno no obtiene permisos operativos;
+10. con turno válido obtiene únicamente permisos del rol operativo;
+11. sin check-in se bloquean los permisos `T+C`;
+12. al cerrar el contexto pierde la autoridad operativa;
+13. un oficio legacy no se convierte automáticamente en el nuevo rol;
+14. un rol legacy inválido no produce allow base;
+15. `bodeguero` base legacy y `bodeguero` operativo permanecen separados;
+16. una excepción individual no concede permisos `OPERATIONAL_ONLY` por base;
+17. una denegación aplicable vence las cinco concesiones;
+18. una URL directa no evita la decisión;
+19. un dispositivo compartido no amplía las capacidades;
+20. rollback restaura la asignación anterior sin perder trazabilidad.
+
+Las pruebas funcionales existentes relacionadas incluyen:
+
+- `AUTH-QA-004`;
+- `AUTH-QA-005`;
+- `AUTH-QA-006`;
+- `AUTH-QA-007`;
+- `AUTH-QA-008`;
+- `AUTH-QA-009`;
+- `AUTH-QA-012`;
+- `AUTH-QA-017`;
+- `AUTH-QA-020`;
+- `AUTH-QA-021`;
+- `AUTH-QA-022`;
+- `AUTH-QA-027`;
+- `AUTH-QA-028`;
+- `AUTH-QA-029`;
+- `AUTH-QA-030`.
+
+---
+
+#### 32. Riesgos controlados
+
+##### Riesgo 1 — Convertir el rol mínimo en acceso general
+
+Control:
+
+```text
+solo 5 filas exactas
++
+135 ausencias
++
+default deny
+```
+
+##### Riesgo 2 — Operar sin turno
+
+Control:
+
+```text
+0 permisos OPERATIONAL_ONLY
++
+0 componentes BASE_AND_OPERATIONAL
+```
+
+##### Riesgo 3 — Convertir automáticamente el legado
+
+Control:
+
+```text
+reconciliación por empleado
++
+sin alias permisivo
++
+sin fallback
+```
+
+##### Riesgo 4 — Perder autoservicio laboral
+
+Control:
+
+```text
+shell.access
++
+anima.access
++
+documentos propios
++
+fotografía propia
+```
+
+##### Riesgo 5 — Crear una tercera clase de rol
+
+Control:
+
+```text
+trabajador_operativo
+→ pertenece al catálogo base
+→ no crea catálogo híbrido
+```
+
+##### Riesgo 6 — Romper consumidores de versiones anteriores
+
+Control:
+
+```text
+snapshot 1.0.0 inmutable
++
+snapshot 1.1.0 aditivo
++
+adaptación por consumidor
++
+rollback
+```
+
+##### Riesgo 7 — Contradecir la ADR
+
+Control:
+
+```text
+enmienda aditiva
++
+ADR permanece ACCEPTED
+```
+
+---
+
+#### 33. Fuera del alcance
+
+AUTH-MOD-021 no:
+
+- modifica Supabase;
+- crea migraciones;
+- cambia `employees.role`;
+- inserta el nuevo rol físicamente;
+- actualiza matrices físicas;
+- publica paquetes;
+- genera hashes;
+- migra empleados;
+- elimina oficios legacy;
+- crea permisos nuevos;
+- resuelve las brechas de perfil, turnos propios o notificaciones;
+- implementa compatibilidad;
+- modifica guards, RPC, RLS o aplicaciones;
+- inicia `AUTH-CTX-028`.
+
+Cada responsabilidad física o diferida tiene destino exacto en las secciones 22 y 24 a 31.
+
+---
+
+#### 34. Invariantes
+
+1. `trabajador_operativo` es un rol base canónico.
+2. Es el octavo rol base.
+3. Su asignación es explícita; no es fallback.
+4. No es identidad laboral.
+5. No es rol operativo.
+6. No representa un oficio.
+7. No concede operación por el nombre.
+8. Tiene exactamente cinco concesiones iniciales.
+9. Tiene cero permisos `OPERATIONAL_ONLY`.
+10. Tiene cero componentes `BASE_AND_OPERATIONAL`.
+11. Los restantes 135 permisos se deniegan por ausencia.
+12. `shell.access` no concede acceso a otras aplicaciones.
+13. `anima.access` no concede capacidades internas.
+14. Los documentos se limitan a `OWN`.
+15. La carga documental se limita a tipos autoservicio.
+16. La fotografía se limita al actor.
+17. No consulta terceros.
+18. No administra turnos.
+19. No administra personal.
+20. No administra permisos.
+21. No recibe autoridad territorial permanente.
+22. El turno determina la función operativa.
+23. El check-in continúa siendo obligatorio cuando el permiso lo exige.
+24. El rol operativo continúa siendo la única plantilla operativa.
+25. Los oficios legacy permanecen no canónicos.
+26. No existe conversión automática del legado.
+27. `bodeguero` base y operativo permanecen separados.
+28. El catálogo de permisos no cambia.
+29. El catálogo lógico de roles base pasa a `1.1.0`.
+30. El dataset base objetivo pasa a `1.1.0`.
+31. El snapshot `1.0.0` permanece inmutable.
+32. `AccessContext@1.x` conserva su forma.
+33. La ADR permanece `ACCEPTED`.
+34. La decisión requiere una enmienda aditiva.
+35. No se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 35. Criterios de aprobación
+
+AUTH-MOD-021 podrá aprobarse cuando se acepte que:
+
+1. el código definitivo es `trabajador_operativo`;
+2. el nombre humano es Trabajador operativo;
+3. pertenece al catálogo de roles base;
+4. es mínimo y no privilegiado;
+5. recibe exactamente cinco concesiones base;
+6. las cinco claves y sus alcances están definidos;
+7. no recibe permisos operativos;
+8. no recibe autoridad administrativa implícita;
+9. los demás 135 permisos quedan en default deny;
+10. el catálogo de roles base pasa de siete a ocho roles;
+11. el catálogo lógico de roles base pasa a `1.1.0`;
+12. `vento.authorization.base-role-grants@1.1.0` será el snapshot sucesor;
+13. sus conteos objetivo son 504 registros, 468 directos y 36 componentes;
+14. `vento.authorization@1.0.0` no cambia;
+15. los oficios legacy no se convierten automáticamente;
+16. la migración se decide empleado por empleado;
+17. `bodeguero` conserva separación de namespaces;
+18. `AccessContext@1.x` no cambia de forma;
+19. `AUTH-CTX-028` deberá diseñar compatibilidad sin inventar grants;
+20. `ADR-AUTH-001` permanece `ACCEPTED`;
+21. la decisión constituye una enmienda aditiva a la ADR;
+22. E3, H, VISO, R y QA tienen tareas exactas asignadas;
+23. las capacidades personales todavía ausentes tienen destino documental exacto;
+24. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 36. Cierre y continuidad
+
+| Relación                  | Tarea          | Estado        |
+| ------------------------- | -------------- | ------------- |
+| Tarea anterior            | `AUTH-CTX-027` | ✅ APROBADA    |
+| Tarea propuesta           | `AUTH-MOD-021` | ✅ APROBADA    |
+| Tarea siguiente reservada | `AUTH-CTX-028` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-027 — APROBADA
+        ↓
+AUTH-MOD-021 — APROBADA
+        ↓
+AUTH-CTX-028 — NO INICIADA
+```
+
+No se inicia `AUTH-CTX-028` hasta recibir aprobación explícita de `AUTH-MOD-021`.
+
 
