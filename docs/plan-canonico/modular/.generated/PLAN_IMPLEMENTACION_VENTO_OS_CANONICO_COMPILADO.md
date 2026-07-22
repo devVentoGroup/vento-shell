@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **115** |
 | Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **124** |
+| Tareas aprobadas | **125** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1243** |
+| Tareas no iniciadas | **1242** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos** |
-| Tarea actual | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
+| Última tarea aprobada | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
+| Tarea actual | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
+| Siguiente tarea | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 1 de 96 aprobadas; OPS-AUD-002 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 2 de 96 aprobadas; OPS-AUD-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos |
-| Tarea actual | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso — **NO INICIADA** |
-| Siguiente tarea | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria |
+| Última aprobada | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
+| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria — **NO INICIADA** |
+| Siguiente tarea | `OPS-AUD-004` — Inventariar procesos ejecutados en papel |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **1 DE 96 APROBADAS — ACTUAL OPS-AUD-002** |
+| BLOQUE E1 | **2 DE 96 APROBADAS — ACTUAL OPS-AUD-003** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
-        ↓
-TAREA ACTUAL
 OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
         ↓
+SIGUIENTE TAREA RESERVADA
+OPS-AUD-004 — Inventariar procesos ejecutados en papel
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 1 de 96 tareas aprobadas
+BLOQUE E1 — 2 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -139691,23 +139691,23 @@ Las brechas detectadas en esta tarea ya no se consideran destinos narrativos.
 Sus definiciones canónicas se encuentran en los fragmentos propietarios y con
 marcador formal.
 
-| Necesidad detectada | Tarea canónica | Bloque propietario |
-| --- | --- | --- |
-| Sede administrativa y registros | `OPS-ADM-001` | E1 |
-| Gobernanza de marcas y titulares | `OPS-GOV-001` | E1 |
-| Activos y custodias externas | `OPS-ACT-001` | E1 |
-| Programa de auditoría de demanda | `OPS-PLAN-001` | E1 |
-| Fuentes internas | `OPS-PLAN-002` | E1 |
-| Demanda y canales | `OPS-PLAN-003` | E1 |
-| Registro prospectivo | `OPS-PLAN-004` | E1 |
-| Canales corporativos | `OPS-CAN-001` | E2 |
-| Bodega y Abastecimiento TO-BE | `OPS-LOG-001` | E2 |
-| Venta B2B | `OPS-B2B-001` | E2 |
-| Recetas y acceso contextual | `OPS-REC-001` | FOGO |
-| Centro de Pesaje | `OPS-PRD-001` | FOGO |
-| Lotes, etiquetas y trazabilidad | `OPS-TRZ-001` | FOGO, con salida a NEXO y E4 |
-| Zonas y mapas POS | `OPS-POS-001` | PULSO |
-| Centro de costo y transferencias | `OPS-CST-001` | NUMERA |
+| Necesidad detectada              | Tarea canónica | Bloque propietario           |
+| -------------------------------- | -------------- | ---------------------------- |
+| Sede administrativa y registros  | `OPS-ADM-001`  | E1                           |
+| Gobernanza de marcas y titulares | `OPS-GOV-001`  | E1                           |
+| Activos y custodias externas     | `OPS-ACT-001`  | E1                           |
+| Programa de auditoría de demanda | `OPS-PLAN-001` | E1                           |
+| Fuentes internas                 | `OPS-PLAN-002` | E1                           |
+| Demanda y canales                | `OPS-PLAN-003` | E1                           |
+| Registro prospectivo             | `OPS-PLAN-004` | E1                           |
+| Canales corporativos             | `OPS-CAN-001`  | E2                           |
+| Bodega y Abastecimiento TO-BE    | `OPS-LOG-001`  | E2                           |
+| Venta B2B                        | `OPS-B2B-001`  | E2                           |
+| Recetas y acceso contextual      | `OPS-REC-001`  | FOGO                         |
+| Centro de Pesaje                 | `OPS-PRD-001`  | FOGO                         |
+| Lotes, etiquetas y trazabilidad  | `OPS-TRZ-001`  | FOGO, con salida a NEXO y E4 |
+| Zonas y mapas POS                | `OPS-POS-001`  | PULSO                        |
+| Centro de costo y transferencias | `OPS-CST-001`  | NUMERA                       |
 
 Las referencias narrativas `OPS-PLAN-001-A`, `OPS-PLAN-001-B` y
 `OPS-PLAN-001-C` quedan sustituidas respectivamente por
@@ -139803,7 +139803,1066 @@ La continuidad documental deberá realizarse exclusivamente conforme al orden de
 - Cámara de Comercio de Saudo.
 
 
-### [ ] OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
+### ✅ OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
+
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Estado:** APROBADO  
+**Naturaleza:** Levantamiento documental AS-IS  
+**Tarea anterior:** `OPS-AUD-001` — APROBADA  
+**Siguiente tarea reservada:** `OPS-AUD-003`  
+**Implementación técnica:** No autorizada  
+**Migraciones o cambios en Supabase:** No autorizados  
+
+---
+
+#### 1. Propósito
+
+Identificar las familias de actores que participan actualmente en la operación real de Vento Group y establecer, para cada familia de procesos conocida:
+
+- quién gobierna el proceso;
+- quién responde actualmente por su resultado;
+- quién lo inicia;
+- quién lo ejecuta;
+- quién lo supervisa;
+- quién lo aprueba cuando existe aprobación;
+- quién conserva bienes, documentos o información;
+- quién recibe el resultado;
+- qué terceros o plataformas participan;
+- dónde existen vacíos, coberturas temporales, responsabilidades compartidas o responsabilidades implícitas.
+
+El resultado deberá permitir continuar el descubrimiento sin confundir:
+
+```text
+PERSONA
+≠
+CARGO CONTRACTUAL
+≠
+FAMILIA DE ACTOR
+≠
+ROL BASE
+≠
+ROL OPERATIVO
+≠
+RESPONSABILIDAD DE PROCESO
+≠
+PERMISO DE SOFTWARE
+```
+
+---
+
+#### 2. Alcance
+
+Esta tarea documenta el estado actual de responsabilidad operativa.
+
+Incluye:
+
+- familias humanas internas;
+- responsables específicos conocidos;
+- trabajadores operativos;
+- responsables administrativos;
+- trabajadores que cubren temporalmente funciones vacantes;
+- personal rotativo entre áreas;
+- terceros, proveedores y clientes;
+- plataformas o sistemas que participan en un proceso;
+- capacidades futuras que todavía no tienen responsable operativo real.
+
+No define todavía:
+
+- organigrama definitivo;
+- catálogo contractual de cargos;
+- matriz final RACI;
+- segregación definitiva de funciones;
+- permisos;
+- roles de autorización;
+- proceso detallado paso a paso;
+- reemplazos formales;
+- dotación necesaria;
+- diseño TO-BE;
+- pantallas;
+- tablas;
+- migraciones;
+- implementación.
+
+El flujo detallado continuará en `OPS-AUD-007`.
+
+Las excepciones, correcciones, anulaciones, devoluciones y reversiones se documentarán en `OPS-AUD-008`.
+
+Las aprobaciones y la segregación de funciones se resolverán en `OPS-AUD-009`.
+
+La validación con trabajadores, supervisores y responsables reales se realizará en `OPS-AUD-015`.
+
+---
+
+#### 3. Principios obligatorios
+
+##### 3.1 La familia de actor es una categoría operativa
+
+Una familia de actor agrupa personas que participan de manera equivalente en uno o más procesos.
+
+Ejemplo:
+
+```text
+FAMILIA
+Operación productiva de Panadería
+
+PERSONAS
+Uno o varios trabajadores concretos
+
+ROL OPERATIVO ACTUAL O FUTURO
+produccion_panaderia
+```
+
+La familia no es por sí misma:
+
+- una persona;
+- un cargo contractual;
+- un rol de autorización;
+- un permiso;
+- un área;
+- una sede.
+
+##### 3.2 La responsabilidad pertenece al proceso
+
+Una persona puede participar en varias familias de procesos.
+
+Ejemplo:
+
+```text
+Jefe de Operaciones
+├── coordinación del Centro de Producción
+├── cobertura temporal de Bodega
+├── recepción de proveedores
+├── soporte administrativo local
+└── desarrollo de herramientas y canales internos
+```
+
+Cada participación deberá registrarse por separado.
+
+##### 3.3 Una vacante no elimina la responsabilidad
+
+Cuando un cargo o función se encuentra vacante:
+
+```text
+RESPONSABILIDAD DEL PROCESO
+→ continúa existiendo
+
+TITULAR HABITUAL
+→ vacante
+
+EJECUTOR ACTUAL
+→ temporal, parcial o distribuido
+```
+
+##### 3.4 El apoyo no transfiere automáticamente la propiedad
+
+Un trabajador que ayuda temporalmente a otra área:
+
+- no se convierte automáticamente en responsable permanente;
+- no adquiere autoridad completa sobre el proceso;
+- no reemplaza al propietario funcional;
+- deberá actuar bajo el contexto operativo correspondiente;
+- deberá poder ser distinguido del responsable habitual.
+
+##### 3.5 Una plataforma no es responsable empresarial
+
+Makos, Rappi, ManyChat, correo, WhatsApp, Excel o cualquier aplicación pueden:
+
+- recibir información;
+- registrar información;
+- transmitir solicitudes;
+- producir documentos;
+- disparar eventos.
+
+No pueden asumir responsabilidad empresarial.
+
+Siempre deberá existir:
+
+- un actor humano responsable; o
+- un proceso de sistema expresamente identificado y gobernado.
+
+##### 3.6 El responsable real no se deduce del rol de software
+
+No se considerará probado que una persona sea responsable de un proceso porque tenga:
+
+- un rol base;
+- un rol operativo;
+- un permiso;
+- acceso a una pantalla;
+- una cuenta en una plataforma;
+- un dispositivo asignado.
+
+La responsabilidad deberá derivarse de la operación real y validarse posteriormente.
+
+##### 3.7 El responsable habitual y el ejecutor efectivo pueden ser distintos
+
+```text
+RESPONSABLE HABITUAL
+≠
+EJECUTOR DEL TURNO
+```
+
+La documentación deberá conservar ambos cuando aplique.
+
+##### 3.8 La propiedad puede ser provisional durante E1
+
+Las asignaciones de esta tarea constituyen una línea base AS-IS inicial.
+
+Deberán verificarse mediante:
+
+- `OPS-AUD-003` — observación directa;
+- `OPS-AUD-007` — levantamiento de flujo ordinario;
+- `OPS-AUD-009` — aprobaciones y segregación;
+- `OPS-AUD-015` — validación con responsables.
+
+---
+
+#### 4. Tipos de participación en un proceso
+
+| Código | Participación            | Definición                                            |
+| ------ | ------------------------ | ----------------------------------------------------- |
+| `GOB`  | Gobierno                 | Define dirección, política o decisión institucional   |
+| `DPR`  | Dueño actual del proceso | Responde por el resultado general del proceso         |
+| `INI`  | Iniciador                | Origina la solicitud, necesidad o evento              |
+| `EJE`  | Ejecutor                 | Realiza materialmente la actividad                    |
+| `SUP`  | Supervisor               | Revisa ejecución, estado o cumplimiento               |
+| `APR`  | Aprobador                | Autoriza una decisión, gasto, excepción o corrección  |
+| `CUS`  | Custodio                 | Conserva bienes, documentos, inventario o recursos    |
+| `REC`  | Receptor                 | Recibe el resultado o continúa el proceso             |
+| `SOP`  | Apoyo                    | Ayuda sin asumir propiedad completa                   |
+| `EXT`  | Externo                  | Tercero, cliente, proveedor o plataforma participante |
+| `SYS`  | Sistema                  | Servicio o aplicación que ejecuta una función técnica |
+
+Una misma familia puede asumir varias participaciones dentro de un proceso.
+
+---
+
+#### 5. Estados de responsabilidad
+
+| Estado             | Significado                                                                     |
+| ------------------ | ------------------------------------------------------------------------------- |
+| `CONFIRMADA`       | Responsabilidad conocida con suficiente claridad documental u operativa         |
+| `PROVISIONAL`      | Identificación inicial pendiente de observación directa                         |
+| `TEMPORAL`         | Una persona cubre actualmente una función que no le pertenece de manera estable |
+| `ROTATIVA`         | La ejecución cambia entre personas, turnos o áreas                              |
+| `COMPARTIDA`       | Varias familias participan sin un único ejecutor                                |
+| `VACANTE`          | Existe la responsabilidad, pero no tiene titular habitual                       |
+| `IMPLÍCITA`        | La responsabilidad se ejerce, pero no está formalmente declarada                |
+| `POR_IDENTIFICAR`  | No existe evidencia suficiente para determinar el responsable                   |
+| `FUTURA_SIN_ACTOR` | La capacidad no opera actualmente y no tiene responsable vigente                |
+
+---
+
+#### 6. Familias canónicas iniciales de actores AS-IS
+
+##### F01 — Gobierno y propiedad
+
+Comprende a propietarios y autoridades de gobierno empresarial.
+
+Participaciones habituales:
+
+- gobierno institucional;
+- decisiones estratégicas;
+- aprobación de cambios estructurales;
+- supervisión general;
+- control final sobre excepciones reservadas.
+
+No equivale automáticamente al rol base técnico `propietario`.
+
+---
+
+##### F02 — Dirección ejecutiva general
+
+Comprende a la gerencia general.
+
+Participaciones habituales:
+
+- dirección administrativa;
+- coordinación multisede;
+- supervisión de responsables;
+- seguimiento de operación;
+- resolución de asuntos administrativos;
+- comunicación institucional.
+
+---
+
+##### F03 — Gerencia o supervisión de sede
+
+Comprende responsables administrativos u operativos de una sede o unidad.
+
+Participaciones habituales:
+
+- supervisión diaria;
+- asignación y coordinación local;
+- atención de excepciones;
+- seguimiento de caja, servicio y producción;
+- escalamiento a gerencia general.
+
+La existencia y cobertura exacta de esta familia por sede deberá verificarse en `OPS-AUD-003` y `OPS-AUD-015`.
+
+---
+
+##### F04 — Coordinación de operaciones
+
+Comprende la función de Jefatura de Operaciones y coordinación transversal del Centro de Producción, logística, inventario y soporte operativo.
+
+Responsable identificado actualmente:
+
+- Carlos Alejandro Ibarra Ariza — Jefe de Operaciones.
+
+Participaciones actuales conocidas:
+
+- coordinación operativa;
+- soporte local del Centro de Producción;
+- recepción y organización parcial de mercancía;
+- cobertura temporal de responsabilidades de Bodega;
+- coordinación de herramientas y sistemas operativos;
+- desarrollo actual de la página corporativa.
+
+Las responsabilidades deberán separarse por proceso y no tratarse como una asignación general ilimitada.
+
+---
+
+##### F05 — Administración y contabilidad
+
+Comprende:
+
+- contabilidad;
+- auxiliares administrativas;
+- archivo;
+- trámites internos;
+- pagos;
+- información financiera;
+- apoyo documental;
+- gestión administrativa de trabajadores.
+
+La distribución exacta entre contabilidad, auxiliares y gerencia deberá validarse en `OPS-AUD-003` y `OPS-AUD-015`.
+
+---
+
+##### F06 — Marketing, comercial y gestión de canales
+
+Comprende:
+
+- marketing;
+- gestión de redes;
+- atención comercial;
+- gestión de pedidos;
+- promoción;
+- campañas;
+- coordinación de catering;
+- comunicación con clientes y empresas.
+
+No deberá confundirse:
+
+```text
+RESPONDER UN MENSAJE
+≠
+SER DUEÑO DEL PROCESO COMERCIAL COMPLETO
+```
+
+---
+
+##### F07 — Caja, mostrador y venta directa
+
+Comprende trabajadores que:
+
+- registran ventas;
+- reciben pagos;
+- operan caja;
+- atienden mostrador;
+- entregan pedidos;
+- coordinan pedidos externos en el punto de venta.
+
+Puede corresponder a funciones distintas aunque físicamente compartan una estación.
+
+---
+
+##### F08 — Servicio de salón
+
+Comprende:
+
+- meseros;
+- atención de mesas;
+- atención de terraza;
+- entrega en salón;
+- acompañamiento al cliente;
+- apoyo al punto de caja cuando esté permitido.
+
+---
+
+##### F09 — Operación integral de satélite
+
+Comprende trabajadores que, por la escala del establecimiento, combinan varias funciones:
+
+- servicio;
+- salón;
+- caja;
+- mostrador;
+- barra;
+- cocina o preparación simple.
+
+Aplica como familia analítica inicial para Saudo y Molka.
+
+No implica que una sola persona pueda ejecutar sin control todas las acciones sensibles.
+
+---
+
+##### F10 — Producción especializada
+
+Subfamilias actuales:
+
+```text
+PRODUCCIÓN ESPECIALIZADA
+├── Panadería y Bollería
+├── Repostería
+├── Pastelería y Tortas
+├── Galletería
+├── Cocina Caliente
+├── Producción de Barra
+└── Producción de cocina en satélites
+```
+
+Cada subfamilia mantiene:
+
+- ejecución especializada;
+- cuidado de insumos y equipos;
+- registro de producción cuando exista;
+- limpieza de su estación;
+- entrega de producto terminado;
+- reporte de faltantes, desperdicios y novedades.
+
+---
+
+##### F11 — Bodega y Abastecimiento
+
+Comprende:
+
+- recepción;
+- almacenamiento;
+- organización;
+- conteos;
+- preparación de compras;
+- recepción de producción;
+- alistamiento;
+- entrega al conductor;
+- apoyo en carga.
+
+Estado actual:
+
+```text
+TITULAR HABITUAL
+→ VACANTE
+
+COBERTURA ACTUAL
+→ PARCIAL Y TEMPORAL
+
+EJECUTOR TEMPORAL IDENTIFICADO
+→ Jefe de Operaciones, junto con trabajadores de las áreas
+```
+
+La responsabilidad objetivo se diseñará posteriormente en `OPS-LOG-001`.
+
+---
+
+##### F12 — Logística y transporte
+
+Comprende principalmente al conductor y a quienes apoyan:
+
+- recogida del vehículo;
+- carga;
+- transporte;
+- entrega;
+- recolección de retornables;
+- retorno del vehículo;
+- reporte de novedades de ruta.
+
+---
+
+##### F13 — Recepción en sede satélite
+
+Comprende a los trabajadores que reciben:
+
+- remisiones;
+- productos;
+- canastas;
+- documentos;
+- novedades de entrega.
+
+La persona concreta puede variar por turno, sede y momento de llegada.
+
+---
+
+##### F14 — Servicios Generales
+
+Comprende:
+
+- limpieza de zonas comunes;
+- lavado de canastas;
+- lavado de trapos;
+- organización general;
+- mantenimiento básico de espacios comunes.
+
+No sustituye la responsabilidad de cada área sobre su estación, equipos y utensilios.
+
+---
+
+##### F15 — Custodia de activos y puntos externos
+
+Comprende a personas que custodian temporal o permanentemente:
+
+- decoraciones;
+- herramientas;
+- materiales;
+- vehículos;
+- inventarios ubicados en puntos privados;
+- activos fuera de las sedes formales.
+
+La custodia no implica propiedad ni autorización para disponer del activo.
+
+---
+
+##### F16 — Responsable de operación asociada
+
+Comprende personas que administran una marca, línea o negocio vinculado, pero con fronteras económicas u operativas particulares.
+
+Caso identificado:
+
+```text
+VAILA VAINILLA
+→ responsable operativo principal: Jeo García
+→ apoyo ocasional: trabajadores de Vento Group
+→ operación económica diferenciada
+```
+
+La frontera definitiva se documentará en `OPS-GOV-001`.
+
+---
+
+##### F17 — Proveedores y prestadores externos
+
+Comprende:
+
+- proveedores de productos;
+- proveedores de servicios;
+- transportadores externos;
+- técnicos;
+- contratistas;
+- aliados comerciales.
+
+Son participantes externos y no propietarios de procesos internos de Vento.
+
+---
+
+##### F18 — Clientes y empresas compradoras
+
+Comprende:
+
+- clientes en mesa;
+- clientes de mostrador;
+- clientes de domicilios;
+- empresas de catering;
+- futuros clientes B2B.
+
+---
+
+##### F19 — Plataformas y sistemas
+
+Comprende:
+
+- Makos;
+- Rappi;
+- ManyChat;
+- páginas web;
+- correo;
+- WhatsApp;
+- hojas de cálculo;
+- Vento OS;
+- servicios automáticos futuros.
+
+Su participación deberá registrarse como `SYS` o `EXT`, nunca como dueño del proceso.
+
+---
+
+##### F20 — Apoyo rotativo y sustitución temporal
+
+Comprende a trabajadores que apoyan otra función por:
+
+- ausencia;
+- descanso;
+- incapacidad;
+- vacante;
+- incremento de demanda;
+- producción periódica;
+- contingencia.
+
+Cada apoyo deberá distinguir:
+
+```text
+FUNCIÓN HABITUAL
++
+FUNCIÓN TEMPORAL
++
+SEDE
++
+ÁREA
++
+TURNO
++
+RESPONSABLE QUE AUTORIZÓ EL APOYO
+```
+
+---
+
+##### F21 — Proceso autónomo del sistema
+
+Comprende servicios, jobs, automatizaciones o integraciones que ejecutan una operación técnica sin actor humano inmediato.
+
+Requisitos conceptuales:
+
+- servicio identificado;
+- operación permitida;
+- propietario funcional;
+- propietario técnico;
+- origen de ejecución;
+- evidencia y auditoría;
+- tratamiento de errores;
+- prohibición de asumir responsabilidad empresarial humana.
+
+Esta familia no autoriza todavía ninguna automatización concreta.
+
+---
+
+#### 7. Matriz inicial de responsabilidades reales por familia de procesos
+
+| Familia de proceso                                | Dueño o responsable actual             | Ejecutores actuales                           | Supervisión o apoyo                      | Estado             |
+| ------------------------------------------------- | -------------------------------------- | --------------------------------------------- | ---------------------------------------- | ------------------ |
+| Gobierno empresarial                              | F01 — Gobierno y propiedad             | F01                                           | F02                                      | `CONFIRMADA`       |
+| Dirección administrativa general                  | F02 — Dirección ejecutiva              | F02, F05                                      | F01                                      | `CONFIRMADA`       |
+| Coordinación operativa transversal                | F04 — Coordinación de operaciones      | F04                                           | F02, F03                                 | `CONFIRMADA`       |
+| Gestión administrativa de trabajadores            | F02 y F05                              | F05                                           | F02, F03                                 | `PROVISIONAL`      |
+| Contabilidad, archivo y pagos administrativos     | F05                                    | F05                                           | F02 y F01 según materia                  | `PROVISIONAL`      |
+| Pago de propinas y trámites internos              | F05                                    | F05                                           | F02                                      | `PROVISIONAL`      |
+| Marketing institucional y campañas                | F06                                    | F06                                           | F01, F02                                 | `CONFIRMADA`       |
+| Respuesta de Instagram corporativo                | F01 y F02                              | Propiedad y gerencia general                  | F06                                      | `CONFIRMADA`       |
+| Gestión comercial de catering                     | F06                                    | Gerentes o responsable de ventas              | F02; apoyo F04                           | `CONFIRMADA`       |
+| Producción para catering                          | F10                                    | Áreas productivas requeridas                  | F04                                      | `PROVISIONAL`      |
+| Despacho de catering                              | F11 y F12                              | Bodega, áreas y conductor                     | F04                                      | `PROVISIONAL`      |
+| Operación de Vaila Vainilla                       | F16                                    | Jeo García                                    | Apoyo ocasional F06, F12 o F20           | `CONFIRMADA`       |
+| Atención en mesa — Vento Café                     | F08                                    | Servicio de salón                             | F03                                      | `PROVISIONAL`      |
+| Venta en caja y mostrador — Vento Café            | F07                                    | Cajero o trabajador autorizado                | F03                                      | `PROVISIONAL`      |
+| Operación integral — Saudo                        | F09                                    | Equipo del turno                              | F03                                      | `PROVISIONAL`      |
+| Operación integral — Molka                        | F09                                    | Equipo del turno                              | F03                                      | `PROVISIONAL`      |
+| Pedidos por Rappi y ManyChat                      | F06                                    | Responsable de pedidos y punto de entrega     | F03, F07 o F09                           | `PROVISIONAL`      |
+| Apertura, operación y cierre de caja              | F07 o F09                              | Cajero u operador autorizado                  | F03                                      | `POR_IDENTIFICAR`  |
+| Correcciones, anulaciones y devoluciones de venta | Por determinar                         | Caja y supervisión                            | Gerencia o supervisor                    | `POR_IDENTIFICAR`  |
+| Solicitud de remisión desde satélite              | F03 o responsable local                | F07, F08, F09 o F13 según sede                | F03                                      | `PROVISIONAL`      |
+| Definición diaria de necesidad productiva         | Compartida entre satélite y producción | Responsables de pedidos, áreas y coordinación | F04                                      | `IMPLÍCITA`        |
+| Producción de Panadería                           | F10 — Panadería                        | Panaderos del área                            | Responsable de área y F04                | `CONFIRMADA`       |
+| Producción de Repostería                          | F10 — Repostería                       | Reposteras del área                           | Responsable de área y F04                | `CONFIRMADA`       |
+| Producción de Pastelería y Tortas                 | F10 — Pastelería                       | Responsable y personal de apoyo               | F04                                      | `CONFIRMADA`       |
+| Producción de Galletería                          | F10 — Galletería                       | Galletera del área                            | F04                                      | `CONFIRMADA`       |
+| Producción de Cocina Caliente                     | F10 — Cocina Caliente                  | Responsable permanente y apoyos rotativos     | F04                                      | `CONFIRMADA`       |
+| Producción periódica de Barra                     | F10 y F20                              | Personal enviado desde satélites              | F04 y responsables de sede               | `ROTATIVA`         |
+| Decisión y emisión de compras                     | Por determinar                         | Administración u operaciones                  | Gerencia                                 | `POR_IDENTIFICAR`  |
+| Recepción de proveedores — segundo piso           | F11, actualmente cubierta por F04      | Jefe de Operaciones                           | F02 o F04                                | `TEMPORAL`         |
+| Recepción de proveedores — primer piso            | F10                                    | Trabajadores de las áreas destinatarias       | F04                                      | `COMPARTIDA`       |
+| Organización y custodia de Bodega                 | F11                                    | Cobertura temporal de F04                     | F02, F04                                 | `VACANTE`          |
+| Custodia de insumos por área productiva           | F10                                    | Trabajadores del área                         | Responsable de área                      | `PROVISIONAL`      |
+| Recepción de producción terminada                 | F11                                    | Bodega o responsables que cubren la función   | F04                                      | `PROVISIONAL`      |
+| Alistamiento de productos del primer piso         | F10                                    | Áreas productivas                             | F04                                      | `COMPARTIDA`       |
+| Alistamiento de productos del segundo piso        | F11 y F10                              | Bodega y Cocina Caliente                      | F04                                      | `COMPARTIDA`       |
+| Consolidación y entrega al conductor              | F11                                    | Bodega, áreas y apoyos                        | F04                                      | `PROVISIONAL`      |
+| Carga del vehículo                                | F11, F12 y F20                         | Bodega, conductor y apoyos                    | F04                                      | `COMPARTIDA`       |
+| Transporte entre sedes                            | F12                                    | Conductor                                     | F04                                      | `CONFIRMADA`       |
+| Recepción de remisión en satélite                 | F13                                    | Trabajador disponible o asignado              | F03                                      | `ROTATIVA`         |
+| Control de canastas retornables                   | Sin dueño formal confirmado            | F11, F12 y F13                                | F04                                      | `IMPLÍCITA`        |
+| Limpieza de zonas comunes del Centro              | F14                                    | Servicios Generales                           | F04                                      | `CONFIRMADA`       |
+| Limpieza de estaciones y utensilios               | Cada familia operativa                 | Trabajadores de cada área                     | Responsable de área                      | `CONFIRMADA`       |
+| Custodia externa de decoraciones                  | F15                                    | Encargado de decoraciones                     | F04 o F01                                | `PROVISIONAL`      |
+| Custodia nocturna del vehículo                    | F15                                    | Punto asociado a gerencia general             | F02                                      | `CONFIRMADA`       |
+| Recogida y devolución del vehículo                | F12                                    | Conductor                                     | F04                                      | `CONFIRMADA`       |
+| Desarrollo de página corporativa                  | F04 en función técnica actual          | Carlos Alejandro Ibarra Ariza                 | Propósito y contenido por F01, F02 y F06 | `TEMPORAL`         |
+| Centro de Pesaje                                  | Ninguno                                | Ninguno                                       | Futuro: FOGO, NEXO y Operaciones         | `FUTURA_SIN_ACTOR` |
+| Punto central de impresión                        | Ninguno formal                         | Ninguno                                       | Futuro: E4 y áreas consumidoras          | `FUTURA_SIN_ACTOR` |
+| Venta B2B del Centro de Producción                | Ninguno                                | Ninguno                                       | Futuro: `OPS-B2B-001`                    | `FUTURA_SIN_ACTOR` |
+| Centro de costo de Producción                     | Ninguno como proceso formal            | Registros parciales administrativos           | Futuro: NUMERA                           | `FUTURA_SIN_ACTOR` |
+
+---
+
+#### 8. Responsables específicos inicialmente identificados
+
+Esta lista no constituye un organigrama definitivo.
+
+| Persona o referencia              | Responsabilidad actualmente identificada                                                                                        | Condición                               |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| Propietarios                      | Gobierno empresarial, decisiones institucionales y supervisión final                                                            | Permanente                              |
+| Gerente general                   | Dirección ejecutiva, supervisión administrativa y respuesta institucional                                                       | Permanente                              |
+| Carlos Alejandro Ibarra Ariza     | Jefatura de Operaciones, coordinación local, recepción parcial, cobertura temporal de Bodega y desarrollo de página corporativa | Mixta: permanente y temporal            |
+| Jeo García                        | Gestión principal de Vaila Vainilla                                                                                             | Operación asociada                      |
+| Contabilidad                      | Información financiera, archivo y procesos administrativos vinculados                                                           | Requiere desglose                       |
+| Marketing                         | Campañas, contenido y gestión de comunicación                                                                                   | Requiere desglose                       |
+| Responsable de pedidos            | Gestión de canales y pedidos externos                                                                                           | Identidad concreta por validar          |
+| Responsables de áreas productivas | Producción y cuidado de recursos de cada área                                                                                   | Requiere validación individual          |
+| Conductor                         | Transporte, entrega y retorno del vehículo                                                                                      | Requiere validar límites exactos        |
+| Encargado de decoraciones         | Custodia y trabajo sobre decoraciones en punto externo                                                                          | Requiere validar inventario y controles |
+| Servicios Generales               | Limpieza y mantenimiento de zonas comunes                                                                                       | Requiere validar cobertura horaria      |
+
+Los nombres y responsables no suficientemente confirmados deberán validarse en `OPS-AUD-015`.
+
+---
+
+#### 9. Brechas de responsabilidad detectadas y destino documental
+
+##### 9.1 Bodega y Abastecimiento
+
+```text
+RESPONSABILIDAD EXISTENTE
++
+TITULAR HABITUAL VACANTE
++
+COBERTURA TEMPORAL PARCIAL
+=
+RIESGO DE PROPIEDAD Y CONTINUIDAD
+```
+
+Destino documental:
+
+- observación: `OPS-AUD-003`;
+- flujo real: `OPS-AUD-007`;
+- segregación: `OPS-AUD-009`;
+- dependencias: `OPS-AUD-011`;
+- pérdida de responsabilidad: `OPS-AUD-013`;
+- validación: `OPS-AUD-015`;
+- diseño objetivo: `OPS-LOG-001`.
+
+##### 9.2 Compras y recepción
+
+No está suficientemente diferenciada la responsabilidad entre:
+
+- decidir la compra;
+- solicitar;
+- aprobar;
+- emitir la orden;
+- recibir;
+- revisar cantidades;
+- revisar calidad;
+- registrar;
+- ubicar;
+- conciliar factura.
+
+Destino documental:
+
+- `OPS-AUD-003`;
+- `OPS-AUD-007`;
+- `OPS-AUD-009`;
+- `OPS-AUD-012`;
+- `OPS-AUD-015`;
+- posteriormente ORIGO y `OPS-LOG-001`.
+
+##### 9.3 Solicitudes, demanda y producción
+
+Actualmente la responsabilidad parece distribuida entre:
+
+- satélites;
+- responsable de pedidos;
+- áreas productivas;
+- coordinación de operaciones;
+- Bodega.
+
+No existe todavía un propietario único documentado para la planificación integral.
+
+Destino documental:
+
+- `OPS-PLAN-001`;
+- `OPS-PLAN-002`;
+- `OPS-PLAN-003`;
+- `OPS-PLAN-004`;
+- `OPS-AUD-007`;
+- `OPS-AUD-015`.
+
+##### 9.4 Caja y excepciones comerciales
+
+Debe confirmarse quién:
+
+- abre caja;
+- cierra caja;
+- recibe diferencias;
+- aprueba anulaciones;
+- autoriza devoluciones;
+- corrige pedidos;
+- responde por medios de pago.
+
+Destino documental:
+
+- `OPS-AUD-003`;
+- `OPS-AUD-008`;
+- `OPS-AUD-009`;
+- `OPS-AUD-015`;
+- `OPS-POS-001`;
+- PULSO.
+
+##### 9.5 Canastas y retornables
+
+Participan Bodega, conductor y satélites, pero no existe un dueño formal claramente identificado.
+
+Destino documental:
+
+- `OPS-AUD-003`;
+- `OPS-AUD-007`;
+- `OPS-AUD-013`;
+- `OPS-ACT-001`;
+- `NEXO-DOM-006`;
+- `NEXO-DOM-008`;
+- `NEXO-DOM-015`.
+
+##### 9.6 Custodias externas
+
+Debe diferenciarse:
+
+- propietario;
+- custodio;
+- usuario;
+- responsable de mantenimiento;
+- responsable de conteo;
+- persona autorizada para mover o disponer del activo.
+
+Destino documental:
+
+- `OPS-ACT-001`;
+- `OPS-AUD-003`;
+- `OPS-AUD-009`;
+- `OPS-AUD-015`;
+- NEXO.
+
+##### 9.7 Fronteras de marcas y operaciones asociadas
+
+La dirección común no elimina las diferencias de:
+
+- titularidad;
+- ingresos;
+- gastos;
+- personal;
+- activos;
+- facturación;
+- responsabilidad.
+
+Destino documental:
+
+- `OPS-GOV-001`;
+- `OPS-AUD-011`;
+- `OPS-AUD-015`;
+- `OPS-CST-001`.
+
+##### 9.8 Marketing, ventas y atención de pedidos
+
+Debe diferenciarse quién:
+
+- crea contenido;
+- publica;
+- responde mensajes;
+- cotiza;
+- confirma pedidos;
+- recibe pagos;
+- transfiere información a producción;
+- resuelve reclamos;
+- conserva evidencia comercial.
+
+Destino documental:
+
+- `OPS-AUD-003`;
+- `OPS-AUD-005`;
+- `OPS-AUD-007`;
+- `OPS-AUD-009`;
+- `OPS-AUD-015`;
+- `OPS-CAN-001`.
+
+##### 9.9 Servicios Generales y limpieza por área
+
+Debe verificarse la frontera entre:
+
+- limpieza general;
+- limpieza de zonas comunes;
+- lavado de canastas y trapos;
+- limpieza de estación;
+- limpieza de utensilios;
+- mantenimiento básico;
+- reporte de daños.
+
+Destino documental:
+
+- `OPS-AUD-003`;
+- `OPS-AUD-007`;
+- `OPS-AUD-011`;
+- `OPS-AUD-015`.
+
+##### 9.10 Capacidades futuras sin actor
+
+Las capacidades futuras no deberán recibir responsables ficticios antes de existir un proceso aprobado.
+
+Destino documental:
+
+| Capacidad                        | Tarea propietaria               |
+| -------------------------------- | ------------------------------- |
+| Centro de Pesaje                 | `OPS-PRD-001`                   |
+| Catálogo B2B                     | `OPS-B2B-001`                   |
+| Punto central de impresión       | `OPS-TRZ-001` y BLOQUE E4       |
+| Centro de costo y transferencias | `OPS-CST-001`                   |
+| Planificación de producción      | `OPS-PLAN-001` a `OPS-PLAN-004` |
+
+---
+
+#### 10. Relación con el modelo de autorización
+
+Las familias identificadas en esta tarea serán una entrada para:
+
+- `CAP-MAP-006` — identificar iniciador, ejecutor, supervisor y aprobador;
+- `PROC-ACTOR-001` — vincular procesos con roles base;
+- `PROC-ACTOR-002` — vincular procesos con roles operativos;
+- `PROC-ACTOR-003` — diferenciar iniciador, ejecutor, supervisor y aprobador;
+- matrices futuras de pantallas;
+- definición de turnos;
+- definición de sedes y áreas activas;
+- permisos;
+- auditoría de actor efectivo.
+
+La transformación futura será:
+
+```text
+FAMILIA DE ACTOR AS-IS
+        ↓
+PROCESO APROBADO
+        ↓
+RESPONSABILIDAD OBJETIVO
+        ↓
+CARGO O PERFIL LABORAL
+        ↓
+ROL BASE, CUANDO APLIQUE
+        +
+ROL OPERATIVO, CUANDO APLIQUE
+        +
+PERMISOS
+        +
+CONTEXTO
+```
+
+No se realizará la conversión automática:
+
+```text
+familia de actor
+→ rol de autorización
+```
+
+---
+
+#### 11. Contrato mínimo para el levantamiento posterior
+
+Cada proceso observado o documentado en las tareas siguientes deberá registrar, como mínimo:
+
+| Campo                   | Descripción                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `process_reference`     | Nombre provisional o identificador del proceso                               |
+| `company_or_brand`      | Empresa, marca o unidad relacionada                                          |
+| `site`                  | Sede o punto operativo                                                       |
+| `area`                  | Área, cuando aplique                                                         |
+| `actor_family`          | Familia F01 a F21                                                            |
+| `participation_type`    | `GOB`, `DPR`, `INI`, `EJE`, `SUP`, `APR`, `CUS`, `REC`, `SOP`, `EXT` o `SYS` |
+| `person_or_group`       | Persona concreta o grupo actual                                              |
+| `responsibility_state`  | Estado definido en la sección 5                                              |
+| `habitual_or_temporary` | Naturaleza habitual, temporal, rotativa o compartida                         |
+| `evidence_source`       | Documento, entrevista, observación o sistema                                 |
+| `validation_task`       | Tarea exacta que deberá confirmar el hallazgo                                |
+| `gap_task`              | Tarea exacta propietaria de cualquier brecha                                 |
+
+---
+
+#### 12. Decisiones canónicas propuestas
+
+1. La familia de actor es una categoría de levantamiento operativo, no un rol de software.
+
+2. Toda operación empresarial deberá poder atribuirse a una persona, familia responsable o proceso de sistema identificado.
+
+3. Una persona puede pertenecer simultáneamente a varias familias de actor dependiendo del proceso.
+
+4. El dueño del proceso, el ejecutor, el supervisor, el aprobador y el custodio pueden ser actores distintos.
+
+5. Una vacante no elimina la responsabilidad del proceso.
+
+6. La cobertura temporal deberá registrarse expresamente y no convertirse en asignación permanente implícita.
+
+7. El apoyo rotativo no transfiere automáticamente propiedad, aprobación ni custodia.
+
+8. Las plataformas y sistemas participan como herramientas, integraciones o procesos técnicos, pero no sustituyen la responsabilidad empresarial.
+
+9. Los roles base y operativos aprobados en el modelo de autorización no se utilizarán como evidencia automática de responsabilidad real.
+
+10. Las familias F01 a F21 constituyen una taxonomía inicial AS-IS y podrán ajustarse durante `OPS-AUD-003` y `OPS-AUD-015` sin perder trazabilidad.
+
+11. Bodega y Abastecimiento conserva una responsabilidad real aunque su titular habitual esté vacante.
+
+12. La cobertura actual de Bodega por parte del Jefe de Operaciones se clasifica como temporal y parcial.
+
+13. Las áreas productivas conservan responsabilidad sobre su producción, recursos, estación y novedades, aunque compartan espacio o personal.
+
+14. Servicios Generales no sustituye la responsabilidad de limpieza propia de cada área.
+
+15. La recepción de proveedores, el alistamiento, la carga, el transporte y la recepción en satélite son responsabilidades diferenciables aunque actualmente estén distribuidas.
+
+16. La planificación de demanda y producción no tiene todavía un único propietario integral confirmado.
+
+17. Las acciones sensibles de caja, compras, correcciones, anulaciones y disposición de activos requieren identificación específica de ejecutor y aprobador.
+
+18. Las operaciones asociadas, como Vaila Vainilla, deberán conservar sus fronteras particulares de responsabilidad y no mezclarse automáticamente con las operaciones centrales.
+
+19. Las capacidades futuras permanecerán sin actor operativo vigente hasta que su proceso TO-BE y su propiedad sean aprobados.
+
+20. Ninguna decisión de esta tarea autoriza cambios de personal, permisos, datos, código, Supabase o estructura organizacional.
+
+---
+
+#### 13. Criterios de aceptación
+
+`OPS-AUD-002` podrá aprobarse cuando se confirme que:
+
+- existe una separación explícita entre persona, cargo, familia de actor, rol base, rol operativo, responsabilidad y permiso;
+- las familias de actores internas, externas, técnicas y temporales están inventariadas;
+- los responsables específicos conocidos están registrados sin presentar supuestos como hechos definitivos;
+- las responsabilidades vacantes, temporales, rotativas, compartidas e implícitas están diferenciadas;
+- cada familia de proceso conocida tiene al menos una hipótesis explícita de dueño, ejecutor o estado `POR_IDENTIFICAR`;
+- las plataformas no aparecen como responsables empresariales;
+- las capacidades futuras permanecen identificadas como `FUTURA_SIN_ACTOR`;
+- cada brecha detectada está vinculada a tareas exactas del roadmap;
+- no se ha definido todavía el proceso detallado propio de `OPS-AUD-007`;
+- no se ha resuelto anticipadamente la segregación propia de `OPS-AUD-009`;
+- no se ha iniciado `OPS-AUD-003`;
+- no se ha autorizado implementación técnica.
+
+---
+
+#### 14. Resultado y continuidad
+
+Con la aprobación de `OPS-AUD-002` quedará establecida la línea base inicial de:
+
+- familias de actores;
+- tipos de participación;
+- estados de responsabilidad;
+- responsables actuales conocidos;
+- coberturas temporales;
+- responsabilidades vacantes;
+- procesos con propiedad implícita o por identificar;
+- actores externos y sistemas participantes;
+- destinos documentales de las brechas detectadas.
+
+La continuidad deberá realizarse exclusivamente con:
+
+```text
+OPS-AUD-003
+— Observar el trabajo real de cada área en operación ordinaria
+```
+
+`OPS-AUD-003` deberá contrastar esta propuesta con la operación real y registrar cualquier diferencia sin modificar silenciosamente la trazabilidad aprobada.
+
+
+
 ### [ ] OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
 ### [ ] OPS-AUD-004 — Inventariar procesos ejecutados en papel
 ### [ ] OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas

@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1367** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **124** |
+| Aprobadas | **125** |
 | En propuesta | **0** |
-| No iniciadas | **1243** |
+| No iniciadas | **1242** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | ✅ APROBADA |
-| Tarea actual | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso | ⬜ NO INICIADA |
-| Siguiente | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria | ⬜ NO INICIADA |
+| Última aprobada | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso | ✅ APROBADA |
+| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria | ⬜ NO INICIADA |
+| Siguiente | `OPS-AUD-004` — Inventariar procesos ejecutados en papel | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -151,7 +151,7 @@
 | ✅ APROBADA | `AUTH-CTX-029` | Definir estrategia de invalidación y caché | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `AUTH-CTX-030` | Definir plan de pruebas contractuales del contexto y la decisión | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `OPS-AUD-001` | Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-002` | Identificar familias de actores y responsables reales por proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-002` | Identificar familias de actores y responsables reales por proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-003` | Observar el trabajo real de cada área en operación ordinaria | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-004` | Inventariar procesos ejecutados en papel | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-005` | Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
