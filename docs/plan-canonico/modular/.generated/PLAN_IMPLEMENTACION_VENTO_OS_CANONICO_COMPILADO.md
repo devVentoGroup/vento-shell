@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **110** |
 | Tareas canónicas con marcador | **1350** |
 | Tareas `AUTH` únicas | **315** |
-| Tareas aprobadas | **120** |
+| Tareas aprobadas | **122** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1230** |
+| Tareas no iniciadas | **1228** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada | **AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos** |
-| Tarea actual | **AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context** |
+| Última tarea aprobada | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
+| Tarea actual | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
+| Siguiente tarea | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
 | Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-CTX-028 pendiente** |
+| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-029 aprobadas; AUTH-CTX-030 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
-| Última aprobada | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos |
-| Tarea actual | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
+| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
+| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
-| `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
-| `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
+| `AUTH-CTX-001` a `AUTH-CTX-029` | **APROBADAS** |
+| `AUTH-CTX-030` | **NO INICIADA** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,16 +87,10 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
-        ↓
-TAREA ACTUAL
-AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-CTX-029 — Definir estrategia de invalidación y caché
         ↓
-CIERRE DEL BLOQUE
-AUTH-CTX-029 a AUTH-CTX-030
+TAREA ACTUAL
+AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -126989,18 +126983,18 @@ Los consumidores no usarán tipos manuales divergentes como fuente de verdad.
 
 #### 104. Responsabilidades sin pendiente narrativo
 
-| Brecha | Responsable |
-| --- | --- |
-| SDK incompatible | `SHELL-AUTH-001` |
-| Contexto fragmentado | `SHELL-CTX-001` a `SHELL-CTX-005` |
-| Adapters y proyecciones | `SHELL-AUTH-002` |
-| Resolución duplicada | `SHELL-AUTH-003` |
-| Nuevos usos legacy | `SHELL-AUTH-004` |
-| Migración multi-repo | `SHELL-AUTH-005` |
-| Resolver, evaluador y persistencia | `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-032` |
-| Migración de objetos, RPC y RLS | `AUTH-DB-020`, `AUTH-DB-006` a `AUTH-DB-010`, `AUTH-DB-021` |
-| Guards y pantallas | `AUTH-UI-040` a `AUTH-UI-051` |
-| Retiro y certificación | `AUTH-DB-030`, `AUTH-DB-031` |
+| Brecha                             | Responsable                                                 |
+| ---------------------------------- | ----------------------------------------------------------- |
+| SDK incompatible                   | `SHELL-AUTH-001`                                            |
+| Contexto fragmentado               | `SHELL-CTX-001` a `SHELL-CTX-005`                           |
+| Adapters y proyecciones            | `SHELL-AUTH-002`                                            |
+| Resolución duplicada               | `SHELL-AUTH-003`                                            |
+| Nuevos usos legacy                 | `SHELL-AUTH-004`                                            |
+| Migración multi-repo               | `SHELL-AUTH-005`                                            |
+| Resolver, evaluador y persistencia | `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-032`                 |
+| Migración de objetos, RPC y RLS    | `AUTH-DB-020`, `AUTH-DB-006` a `AUTH-DB-010`, `AUTH-DB-021` |
+| Guards y pantallas                 | `AUTH-UI-040` a `AUTH-UI-051`                               |
+| Retiro y certificación             | `AUTH-DB-030`, `AUTH-DB-031`                                |
 
 #### 105. Estado actual get_effective_context_v1
 
@@ -129366,24 +129360,24 @@ No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
 
 ### ✅ AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
 
-| Campo                            | Valor                                                                                            |
-| -------------------------------- | ------------------------------------------------------------------------------------------------ |
-| **Estado**                       | **APROBADA**                                                                                     |
-| **Bloque**                       | BLOQUE E — Contexto y decisión de autorización unificados                                        |
-| **Subbloque**                    | DISEÑO DE IMPLEMENTACIÓN CANÓNICA                                                                |
-| **Naturaleza**                   | Definición documental de consumo transversal                                                     |
-| **Implementación física**        | No incluida                                                                                      |
-| **Tarea anterior vigente**       | `AUTH-CTX-026` — APROBADA                                                                        |
-| **Puerta posterior obligatoria** | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos  |
-| **Tarea posterior condicionada** | `AUTH-CTX-028` — Definir compatibilidad temporal con `get_operational_context`                   |
-| **Contratos consumidos**         | `AccessContext@1.0.0`, `AuthorizationDecision@1.0.0` y proyecciones seguras                      |
-| **Núcleo compartido candidato**  | `@vento/os-context` redefinido como SDK canónico                                                 |
-| **Fuente de tipos**              | `@vento/contracts` y tipos generados aprobados                                                   |
-| **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
-| **Cambios físicos permitidos**   | No                                                                                               |
-| **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
-| **Tareas de autorización refinadas** | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan sin reutilizar IDs |
-| **Tareas contextuales refinadas** | `SHELL-CTX-001` a `SHELL-CTX-005`; se consolidan dentro de `@vento/os-context` |
+| Campo                                | Valor                                                                                            |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Estado**                           | **APROBADA**                                                                                     |
+| **Bloque**                           | BLOQUE E — Contexto y decisión de autorización unificados                                        |
+| **Subbloque**                        | DISEÑO DE IMPLEMENTACIÓN CANÓNICA                                                                |
+| **Naturaleza**                       | Definición documental de consumo transversal                                                     |
+| **Implementación física**            | No incluida                                                                                      |
+| **Tarea anterior vigente**           | `AUTH-CTX-026` — APROBADA                                                                        |
+| **Puerta posterior obligatoria**     | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos  |
+| **Tarea posterior condicionada**     | `AUTH-CTX-028` — Definir compatibilidad temporal con `get_operational_context`                   |
+| **Contratos consumidos**             | `AccessContext@1.0.0`, `AuthorizationDecision@1.0.0` y proyecciones seguras                      |
+| **Núcleo compartido candidato**      | `@vento/os-context` redefinido como SDK canónico                                                 |
+| **Fuente de tipos**                  | `@vento/contracts` y tipos generados aprobados                                                   |
+| **Cambio contractual**               | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
+| **Cambios físicos permitidos**       | No                                                                                               |
+| **Brecha física detectada**          | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
+| **Tareas de autorización refinadas** | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan sin reutilizar IDs                             |
+| **Tareas contextuales refinadas**    | `SHELL-CTX-001` a `SHELL-CTX-005`; se consolidan dentro de `@vento/os-context`                   |
 
 Esta tarea define una única arquitectura de consumo para que todas las
 aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
@@ -131352,9 +131346,4409 @@ No se avanza a `AUTH-MOD-021` hasta recibir aprobación explícita de
 >
 > `AUTH-MOD-021` no bloquea `AUTH-CTX-009` a `AUTH-CTX-027`.
 
-### [ ] AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
+### ✅ AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
 
-### [ ] AUTH-CTX-029 — Definir estrategia de invalidación y caché
+**Estado:** APROBADA  
+**Bloque:** BLOQUE E — Contexto y decisión de autorización unificados  
+**Subbloque:** Diseño de implementación y transición  
+**Naturaleza:** definición documental del contrato temporal de compatibilidad legacy  
+**Implementación física:** no incluida  
+**Contrato canónico vigente:** `AccessContext@1.0.0`  
+**Frontera canónica objetivo:** `get_access_context(text) → jsonb`  
+**Frontera legacy afectada:** `public.get_operational_context(uuid, uuid, text)`  
+**Puerta previa:** `AUTH-MOD-021 — APROBADA`  
+**Tarea anterior vigente:** `AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — APROBADA`  
+**Tarea posterior reservada:** `AUTH-CTX-029 — Definir estrategia de invalidación y caché`  
+**Restricción:** no implementar código, funciones, migraciones, RLS, grants ni cambios en Supabase durante esta tarea
+
+---
+
+#### 1. Objetivo
+
+Definir una estrategia temporal, segura, auditable y retirable para que los consumidores actuales de `get_operational_context` puedan continuar funcionando durante la transición hacia `AccessContext@1.0.0`, sin convertir la forma legacy en fuente normativa, sin conservar bypasses incorrectos y sin crear una segunda autoridad de contexto.
+
+La tarea deberá cerrar expresamente:
+
+1. la condición jurídica y técnica de `get_operational_context`;
+2. la firma que podrá conservarse temporalmente;
+3. la dirección correcta de la adaptación;
+4. la relación entre el resolver legacy y `get_access_context`;
+5. la semántica de sus parámetros heredados;
+6. la proyección exacta de los campos legacy;
+7. el significado temporal de `can_operate`;
+8. el retiro de `bypass_applied`;
+9. el tratamiento de los oficios base legacy;
+10. el tratamiento de `trabajador_operativo`;
+11. la separación entre contexto base y operativo;
+12. la relación con `has_operational_permission`;
+13. la relación con `get_effective_context_v1`;
+14. la eliminación del role override como autoridad real;
+15. el comportamiento en dispositivos compartidos;
+16. la exclusión de simulación;
+17. la estrategia de paridad;
+18. la telemetría y el registro de consumidores;
+19. el rollback;
+20. las puertas de deprecación y retiro;
+21. las tareas físicas exactas responsables de cada paso.
+
+---
+
+#### 2. Estado legacy conocido
+
+La firma física actual es:
+
+```sql
+public.get_operational_context(
+  p_employee_id uuid default auth.uid(),
+  p_site_id uuid default null,
+  p_app_code text default 'nexo'
+)
+returns table (...)
+```
+
+La forma actual contiene:
+
+```text
+employee_id
+app_code
+active_site_id
+selected_site_id
+employee_default_site_id
+active_shift_id
+active_shift_site_id
+active_shift_area_id
+active_operational_role
+on_shift_now
+active_checkin_id
+active_checkin_site_id
+active_checkin_area_id
+active_area_id
+active_area_kind
+checked_in_now
+policy_requires_shift
+policy_requires_checkin
+policy_requires_site_match
+bypass_applied
+can_operate
+blocked_reasons
+```
+
+Divergencias conocidas:
+
+1. acepta `p_employee_id` suministrado por el consumidor;
+2. acepta `p_site_id` suministrado por el consumidor;
+3. da precedencia a la sede enviada por el caller;
+4. utiliza sede seleccionada como fallback;
+5. utiliza sede predeterminada del empleado como fallback;
+6. identifica el turno mediante una resolución temporal simplificada;
+7. identifica check-in mediante el último evento abierto;
+8. aplica bypass por `propietario` y `gerente_general`;
+9. permite otro bypass configurado mediante permiso;
+10. mezcla política general de aplicación con contexto;
+11. produce `can_operate` sin un permiso ni recurso exactos;
+12. no separa carril base y carril operativo;
+13. devuelve una forma plana;
+14. no representa principal y actor efectivo por separado;
+15. no representa sesiones de actor de dispositivo de forma canónica;
+16. no representa asignaciones múltiples de sede y área;
+17. no representa fingerprints ni versiones de fuentes;
+18. puede ser modificado posteriormente por helpers locales de aplicación.
+
+---
+
+#### 3. Consumidores legacy identificados
+
+Se reconocen como mínimo los siguientes consumidores o dependencias:
+
+| Consumidor                               | Dependencia actual                                      | Riesgo                                                    |
+| ---------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| NEXO                                     | RPC directa desde `src/lib/auth/operational-context.ts` | Envía empleado, sede y app desde el helper local.         |
+| NEXO role override                       | Modifica rol y área después de recibir la RPC           | Reconstruye autoridad mediante cookie y heurística local. |
+| `has_operational_permission`             | Invoca `get_operational_context`                        | Puede aplicar bypass y booleano previo.                   |
+| `get_effective_context_v1`               | Invoca `get_operational_context`                        | Mezcla contexto real, simulación y dispositivo.           |
+| RLS, RPC o funciones no inventariadas    | Posibles dependencias indirectas                        | Requieren búsqueda física integral antes de migrar.       |
+| Aplicaciones copiadas o wrappers locales | Dependencias potenciales                                | Deben comprobarse mediante inventario multi-repositorio.  |
+
+La lista anterior no se considera exhaustiva.
+
+La fuente definitiva será el registro canónico de consumidores de `SHELL-AUTH-003`.
+
+---
+
+#### 4. Base normativa
+
+Esta propuesta conserva sin reinterpretar:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-021`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-027`;
+- `AccessContext@1.0.0`;
+- `AuthorizationDecision@1.0.0`;
+- `get_access_context(text) → jsonb`;
+- `evaluate_authorization(...)`;
+- la arquitectura de `@vento/contracts`;
+- la arquitectura de `@vento/os-context`;
+- la separación entre contexto real y simulación;
+- la prohibición de bypass por nombre de rol;
+- la prohibición de usar sede seleccionada como autoridad;
+- la resolución del recurso en servidor;
+- la denegación por defecto.
+
+Principios:
+
+```text
+COMPATIBILIDAD
+≠ CANONIZACIÓN DEL LEGACY
+```
+
+```text
+FORMA LEGACY
+≠ AUTORIDAD LEGACY
+```
+
+```text
+GET_OPERATIONAL_CONTEXT
+→ PROYECCIÓN TEMPORAL
+→ NO FUENTE NORMATIVA
+```
+
+```text
+GET_ACCESS_CONTEXT
+→ FUENTE CONTEXTUAL OBJETIVO
+```
+
+```text
+EVALUATE_AUTHORIZATION
+→ FUENTE DE DECISIÓN OBJETIVO
+```
+
+---
+
+#### 5. Decisión principal
+
+`get_operational_context` se clasifica como:
+
+```text
+LEGACY COMPATIBILITY FACADE
+```
+
+No será:
+
+- resolver canónico;
+- fuente de verdad;
+- contrato nuevo;
+- evaluador de permisos;
+- origen de contexto administrativo;
+- origen de simulación;
+- fuente de bypass;
+- API permitida para código nuevo.
+
+La dirección obligatoria será:
+
+```text
+FUENTES CANÓNICAS
+        ↓
+get_access_context
+        ↓
+AccessContext@1.0.0
+        ↓
+PROYECCIÓN LEGACY CONTROLADA
+        ↓
+get_operational_context shape
+```
+
+Nunca:
+
+```text
+get_operational_context
+        ↓
+reconstruir AccessContext
+```
+
+El contexto canónico no se fabricará a partir de una fila legacy.
+
+---
+
+#### 6. Contrato temporal producido
+
+Se define el contrato lógico:
+
+```text
+LegacyOperationalContextProjection@1.0.0
+```
+
+Propósito:
+
+> Proyectar temporalmente un `AccessContext@1.0.0` real hacia la forma plana esperada por consumidores legacy, conservando compatibilidad estructural suficiente para la migración y eliminando toda autoridad que contradiga el modelo canónico.
+
+El contrato no será exportado como contexto canónico.
+
+Ubicación lógica futura:
+
+```text
+@vento/os-context/legacy
+```
+
+El export legacy deberá:
+
+- estar marcado como deprecado;
+- estar prohibido en código nuevo;
+- exigir `app_code` fijado por el adapter;
+- registrar consumidor;
+- emitir telemetría;
+- producir fail closed;
+- declarar versión;
+- tener puerta de retiro.
+
+---
+
+#### 7. Modos temporales de backend
+
+Se permiten tres estados secuenciales:
+
+```text
+LEGACY_NATIVE
+CANONICAL_PROJECTION
+REMOVED
+```
+
+##### 7.1 `LEGACY_NATIVE`
+
+El adapter temporal llama la función física actual.
+
+Solo se admite mientras:
+
+- `AUTH-DB-033` no esté implementada;
+- el consumidor esté inventariado;
+- no exista migración segura disponible;
+- la llamada emita deprecación;
+- no se creen nuevos consumidores.
+
+No se declara paridad canónica.
+
+##### 7.2 `CANONICAL_PROJECTION`
+
+La firma legacy conserva su forma externa, pero el resultado se deriva de:
+
+```text
+get_access_context
++
+proyector de compatibilidad
+```
+
+Este es el único modo aceptable después de implementar `AUTH-DB-033`.
+
+##### 7.3 `REMOVED`
+
+La función, wrapper o export deja de estar disponible.
+
+Solo se alcanza después de completar todas las puertas de retiro.
+
+---
+
+#### 8. Prohibición de mezcla entre backends
+
+Una solicitud utiliza exactamente un backend.
+
+No se permite:
+
+```text
+campo A desde legacy
++
+campo B desde canónico
++
+fallback al que no sea null
+```
+
+No se permite:
+
+```text
+legacy allow
+OR
+canonical allow
+```
+
+No se permite comparar ambos resultados y escoger el más permisivo.
+
+La selección del modo será:
+
+- server-side;
+- versionada;
+- por consumidor registrado;
+- observable;
+- reversible durante transición;
+- inaccesible para el navegador.
+
+---
+
+#### 9. Firma legacy temporal
+
+Podrá conservarse temporalmente la identidad física:
+
+```sql
+get_operational_context(
+  p_employee_id uuid,
+  p_site_id uuid,
+  p_app_code text
+)
+returns table (...)
+```
+
+Conservar la firma no conserva la semántica insegura de sus parámetros.
+
+La compatibilidad es de ABI y forma, no de autoridad.
+
+---
+
+#### 10. Semántica de `p_employee_id`
+
+`p_employee_id` deja de ser una fuente de actor.
+
+Regla:
+
+```text
+ACTOR EFECTIVO
+=
+ACTOR RESUELTO DESDE LA CREDENCIAL REAL
+```
+
+Comportamiento:
+
+| Valor recibido                       | Resultado                                           |
+| ------------------------------------ | --------------------------------------------------- |
+| `null`                               | Se deriva el actor efectivo canónico.               |
+| Igual al empleado actor efectivo     | Se acepta solo como verificación de compatibilidad. |
+| Distinto del empleado actor efectivo | Fail closed.                                        |
+| Actor no empleado                    | No se utiliza el parámetro para fabricar empleado.  |
+| Principal no autenticado             | No se utiliza el parámetro para fabricar actor.     |
+
+Un mismatch deberá producir:
+
+```text
+can_operate = false
+blocked_reasons += legacy_employee_argument_mismatch
+```
+
+No se devolverán datos del empleado solicitado indebidamente.
+
+No se permitirá usar la función para consultar el contexto de terceros.
+
+---
+
+#### 11. Semántica de `p_site_id`
+
+`p_site_id` deja de definir `active_site_id`.
+
+Será únicamente:
+
+```text
+LEGACY REQUESTED SITE HINT
+```
+
+Reglas:
+
+1. no crea sede operativa;
+2. no reemplaza la sede del turno;
+3. no reemplaza la sede del check-in;
+4. no reemplaza la sede del recurso;
+5. no utiliza sede seleccionada como fallback;
+6. no utiliza sede primaria como fallback;
+7. no amplía el alcance.
+
+Comportamiento:
+
+| Estado                                    | Resultado                                                                                         |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `p_site_id = null`                        | Se proyecta la sede operativa canónica o `null`.                                                  |
+| Coincide con la sede operativa            | Puede conservarse la compatibilidad.                                                              |
+| No coincide con la sede operativa         | Fail closed para el flujo legacy relacionado.                                                     |
+| No existe sede operativa                  | No se completa con `p_site_id`.                                                                   |
+| El permiso no requiere contexto operativo | Debe migrarse a evaluación canónica del carril correspondiente; no se resuelve mediante esta RPC. |
+
+Código legacy de compatibilidad para mismatch:
+
+```text
+shift_site_mismatch
+```
+
+La telemetría interna podrá conservar una clasificación más precisa:
+
+```text
+legacy_requested_site_mismatch
+```
+
+---
+
+#### 12. Semántica de `p_app_code`
+
+`p_app_code`:
+
+- se normaliza contra el catálogo;
+- debe existir;
+- debe estar activo;
+- debe corresponder al adapter server-side del consumidor;
+- no puede provenir libremente del navegador;
+- no concede acceso a la aplicación;
+- no define un permiso;
+- no sustituye el recurso.
+
+Los adapters fijarán el código:
+
+```text
+NEXO adapter → nexo
+FOGO adapter → fogo
+ORIGO adapter → origo
+PULSO adapter → pulso
+ANIMA adapter → anima
+SHELL adapter → shell
+```
+
+Un código ausente, desconocido o incompatible produce fail closed.
+
+---
+
+#### 13. Proyección exacta de campos legacy
+
+##### 13.1 Identidad y aplicación
+
+| Campo legacy  | Fuente canónica                 | Regla                                                            |
+| ------------- | ------------------------------- | ---------------------------------------------------------------- |
+| `employee_id` | `employee.employee_id`          | Solo cuando el actor efectivo es un empleado activo y resoluble. |
+| `app_code`    | aplicación validada del adapter | Nunca se deriva de un permiso ni de input cliente libre.         |
+
+##### 13.2 Sedes de presentación legacy
+
+| Campo legacy               | Fuente canónica                           | Regla                                                                |
+| -------------------------- | ----------------------------------------- | -------------------------------------------------------------------- |
+| `active_site_id`           | `operational_site.site_id`                | Solo sede operativa real; nunca selected/default/requested fallback. |
+| `selected_site_id`         | `null`                                    | La sede seleccionada no forma parte de la autoridad canónica.        |
+| `employee_default_site_id` | asignación primaria inequívoca, si existe | Solo información de compatibilidad; nunca autoridad ni fallback.     |
+
+##### 13.3 Turno
+
+| Campo legacy              | Fuente canónica                     | Regla                                                                     |
+| ------------------------- | ----------------------------------- | ------------------------------------------------------------------------- |
+| `active_shift_id`         | `active_shift.shift_id`             | Solo turno publicado, vigente y no ambiguo.                               |
+| `active_shift_site_id`    | `active_shift.site_id`              | Debe coincidir con la sede operativa.                                     |
+| `active_shift_area_id`    | `active_shift.area_id`              | Puede ser `null` únicamente si el contrato del rol permite no tener área. |
+| `active_operational_role` | `operational_role.role_code`        | Exclusivamente desde el turno válido.                                     |
+| `on_shift_now`            | existencia de `active_shift` válido | No se deriva de fecha y horas aisladas dentro del adapter.                |
+
+##### 13.4 Check-in
+
+| Campo legacy             | Fuente canónica                     | Regla                                                |
+| ------------------------ | ----------------------------------- | ---------------------------------------------------- |
+| `active_checkin_id`      | `active_checkin_session.session_id` | Solo sesión canónica activa.                         |
+| `active_checkin_site_id` | sede de la sesión activa            | Debe ser compatible con turno y actor.               |
+| `active_checkin_area_id` | área de la sesión, cuando exista    | No inventa área.                                     |
+| `checked_in_now`         | sesión de check-in activa           | El último evento abierto no es evidencia suficiente. |
+
+##### 13.5 Área
+
+| Campo legacy       | Fuente canónica              | Regla                                     |
+| ------------------ | ---------------------------- | ----------------------------------------- |
+| `active_area_id`   | `operational_area.area_id`   | Solo área operativa canónica.             |
+| `active_area_kind` | `operational_area.area_kind` | Se deriva del catálogo del área resuelta. |
+
+##### 13.6 Política legacy
+
+| Campo legacy                 | Fuente temporal                               | Regla                                                           |
+| ---------------------------- | --------------------------------------------- | --------------------------------------------------------------- |
+| `policy_requires_shift`      | política legacy registrada para la aplicación | Metadato temporal; no sustituye los prerrequisitos por permiso. |
+| `policy_requires_checkin`    | política legacy registrada para la aplicación | Metadato temporal; no sustituye `authorization_requirement`.    |
+| `policy_requires_site_match` | política legacy registrada para la aplicación | Metadato temporal; no define alcance ni recurso.                |
+
+Estos tres campos pueden conservarse únicamente para presentación o paridad de flujos legacy.
+
+No participan en una decisión canónica.
+
+##### 13.7 Resultado legacy
+
+| Campo legacy      | Fuente                                 | Regla                               |
+| ----------------- | -------------------------------------- | ----------------------------------- |
+| `bypass_applied`  | constante `false`                      | Todo bypass legacy queda eliminado. |
+| `can_operate`     | readiness operativo legacy proyectado  | No es permiso ni decisión final.    |
+| `blocked_reasons` | mapping seguro de problemas operativos | No contiene evidencia sensible.     |
+
+---
+
+#### 14. Semántica de `can_operate`
+
+`can_operate` se redefine temporalmente como:
+
+```text
+LEGACY APPLICATION-LEVEL OPERATIONAL READINESS
+```
+
+No significa:
+
+```text
+PERMISSION ALLOW
+```
+
+No significa:
+
+```text
+RESOURCE ALLOW
+```
+
+No significa:
+
+```text
+APP ACCESS
+```
+
+No significa:
+
+```text
+BASE LANE ALLOW
+```
+
+Fórmula temporal:
+
+```text
+actor empleado válido
++
+turno válido cuando la política legacy lo exige
++
+check-in válido cuando la política legacy lo exige
++
+rol operativo efectivo
++
+sede y área compatibles
++
+sin mismatch de argumentos
++
+sin problema estructural operativo bloqueante
+=
+can_operate true
+```
+
+El valor solo podrá:
+
+- mostrar un estado de readiness legacy;
+- conservar temporalmente una experiencia previa;
+- decidir si el consumidor debe pedir una evaluación exacta.
+
+Nunca podrá autorizar:
+
+- una mutación;
+- una lectura sensible;
+- una ruta protegida definitiva;
+- un recurso;
+- un permiso.
+
+---
+
+#### 15. `bypass_applied`
+
+La proyección canónica siempre devuelve:
+
+```text
+bypass_applied = false
+```
+
+Se eliminan:
+
+- bypass por `propietario`;
+- bypass por `gerente_general`;
+- bypass por permiso general de aplicación;
+- bypass por role override;
+- bypass por dispositivo;
+- bypass por simulación.
+
+Un propietario o gerente general que posea una capacidad deberá autorizarse mediante:
+
+```text
+ROL BASE
++
+PERMISO BASE EXPLÍCITO
++
+ALCANCE
++
+RECURSO
++
+SIN DENEGACIÓN
+```
+
+No mediante `get_operational_context`.
+
+La desaparición del bypass se clasifica como:
+
+```text
+CORRECCIÓN INTENCIONAL DE SEGURIDAD
+```
+
+No como incompatibilidad que deba restaurarse.
+
+---
+
+#### 16. Tratamiento de `trabajador_operativo`
+
+`trabajador_operativo` es un rol base.
+
+No se proyectará en:
+
+```text
+active_operational_role
+```
+
+No producirá:
+
+```text
+can_operate = true
+```
+
+por sí solo.
+
+El trabajador podrá tener:
+
+```text
+base_role = trabajador_operativo
+```
+
+y simultáneamente:
+
+```text
+active_operational_role = bodeguero
+```
+
+cuando el turno lo determine.
+
+La proyección legacy solo expone el segundo en `active_operational_role`.
+
+---
+
+#### 17. Tratamiento de oficios base legacy
+
+Los códigos:
+
+```text
+barista
+bodeguero
+cajero
+cocinero
+conductor
+mesero
+panadero
+pastelero
+repostero
+```
+
+no se convertirán automáticamente en:
+
+```text
+trabajador_operativo
+```
+
+Tampoco se convertirán automáticamente en rol operativo.
+
+Reglas:
+
+1. el rol base legacy no llena `active_operational_role`;
+2. no crea turno;
+3. no crea check-in;
+4. no crea sede operativa;
+5. no crea área operativa;
+6. no crea permiso;
+7. no produce bypass;
+8. no se usa como fallback.
+
+La incompatibilidad del carril base no bloqueará automáticamente un carril operativo válido para permisos `OPERATIONAL_ONLY`.
+
+Por tanto:
+
+```text
+base_role legacy inválido
++
+turno operativo canónico válido
+=
+carril base no listo
++
+carril operativo potencialmente listo
+```
+
+La proyección `can_operate` reflejará exclusivamente readiness operativo.
+
+No afirmará que el rol base legacy sea válido.
+
+---
+
+#### 18. Separación entre carriles
+
+La fila legacy es operativa y no puede representar completamente el carril base.
+
+Por tanto:
+
+- no autoriza `BASE_ONLY`;
+- no representa grants base;
+- no representa cobertura administrativa;
+- no resuelve excepciones base;
+- no resuelve `BASE_AND_OPERATIONAL`;
+- no decide `BASE_OR_OPERATIONAL`.
+
+Los consumidores administrativos que hoy utilizan `can_operate` o bypass para entrar deberán migrar a:
+
+```text
+evaluate_authorization(
+  app.access o permiso exacto,
+  recurso exacto
+)
+```
+
+No se intentará mantener acceso administrativo mediante un booleano operativo.
+
+---
+
+#### 19. Relación con `has_operational_permission`
+
+`has_operational_permission` permanece legacy.
+
+Durante transición:
+
+```text
+get_operational_context
+→ readiness temporal
+```
+
+y:
+
+```text
+has_operational_permission
+→ evaluación legacy temporal
+```
+
+No se permite interpretar ambos como modelo canónico.
+
+Destino:
+
+```text
+has_operational_permission
+→ adapter legacy
+→ evaluate_authorization
+```
+
+La migración deberá garantizar:
+
+1. permiso exacto;
+2. `authorization_requirement`;
+3. actor efectivo;
+4. recurso real;
+5. sede y área del recurso;
+6. rol operativo del turno;
+7. allows y denies;
+8. decisión final.
+
+El bypass actual de `has_operational_permission` deberá desaparecer.
+
+---
+
+#### 20. Relación con `get_effective_context_v1`
+
+`get_operational_context` no deberá utilizar `get_effective_context_v1` como fuente.
+
+`get_effective_context_v1` mezcla actualmente:
+
+- contexto real;
+- simulación;
+- dispositivo compartido;
+- rol administrativo;
+- rol de navegación;
+- `can_operate`.
+
+Su destino es independiente:
+
+```text
+contexto real
+→ AccessContext
+
+simulación
+→ SimulationContext
+
+dispositivo
+→ principal + actor session + DeviceContext
+```
+
+No se proyectará simulación como contexto real.
+
+No se proyectará `navigation_role` como rol operativo.
+
+---
+
+#### 21. Role override de NEXO
+
+La lógica local que:
+
+- lee cookies de role override;
+- traduce `cocinero`, `barista` o `cajero` a `area_kind`;
+- busca un área;
+- sustituye `active_operational_role`;
+- sustituye `active_area_id`;
+
+queda clasificada como legacy incompatible.
+
+No se conservará dentro de la proyección.
+
+Su destino será:
+
+```text
+ROLE OVERRIDE LEGACY
+→ SimulationContext
+→ evaluación hipotética separada
+```
+
+Nunca:
+
+```text
+cookie
+→ modificar autoridad real
+```
+
+Los consumidores que dependan de ese comportamiento deberán registrarse y migrarse antes de retirar el helper.
+
+---
+
+#### 22. Dispositivos compartidos
+
+En una credencial de dispositivo:
+
+```text
+principal
+=
+SHARED_DEVICE
+```
+
+El empleado se obtiene únicamente mediante una sesión de actor válida.
+
+Reglas:
+
+1. `p_employee_id` no puede elegir al actor;
+2. `navigation_role` no puede elegir el rol operativo;
+3. el dispositivo no tiene turno propio;
+4. el dispositivo no tiene rol base;
+5. el dispositivo no tiene rol operativo;
+6. el actor humano conserva turno, rol, sede y área;
+7. la política del dispositivo solo restringe.
+
+Sin sesión de actor válida:
+
+```text
+employee_id = null
+can_operate = false
+blocked_reasons += device_actor_required
+```
+
+---
+
+#### 23. Simulación
+
+La función legacy de contexto real no aceptará simulación.
+
+No proyectará:
+
+- sujeto simulado;
+- rol simulado;
+- sede simulada;
+- área simulada;
+- turno simulado;
+- permiso simulado.
+
+La simulación utilizará exclusivamente:
+
+```text
+SimulationContext
++
+evaluate_simulated_authorization
+```
+
+No utilizará la firma legacy para producir resultados hipotéticos.
+
+---
+
+#### 24. Mapping de razones legacy
+
+El adapter podrá traducir razones canónicas a los códigos que los consumidores actuales reconocen.
+
+| Condición canónica                          | Código legacy proyectado               |
+| ------------------------------------------- | -------------------------------------- |
+| Principal no autenticado                    | `unauthenticated`                      |
+| No existe turno requerido                   | `out_of_shift`                         |
+| Check-in requerido ausente                  | `checkin_required`                     |
+| Sede solicitada no coincide con turno       | `shift_site_mismatch`                  |
+| Sede de check-in no coincide                | `checkin_site_mismatch`                |
+| Empleado suministrado no coincide con actor | `legacy_employee_argument_mismatch`    |
+| Aplicación inválida                         | `app_not_allowed`                      |
+| Actor de dispositivo ausente                | `device_actor_required`                |
+| Turno ambiguo                               | `shift_ambiguous`                      |
+| Rol operativo ausente                       | `operational_role_missing`             |
+| Rol no permitido en sede                    | `operational_role_not_allowed_in_site` |
+| Rol no permitido en área                    | `operational_role_not_allowed_in_area` |
+| Área requerida ausente                      | `operational_area_required`            |
+| Error estructural no representable          | `operational_context_invalid`          |
+
+El mapping será:
+
+- determinista;
+- versionado;
+- probado;
+- seguro para UI;
+- no reversible hacia evidencia interna;
+- incapaz de crear un allow.
+
+---
+
+#### 25. Errores técnicos
+
+Se distinguen:
+
+```text
+DENEGACIÓN O READINESS NEGATIVO
+≠
+FALLO DE INFRAESTRUCTURA
+```
+
+Comportamiento:
+
+| Caso                                   | Resultado                                        |
+| -------------------------------------- | ------------------------------------------------ |
+| Contexto válido pero no listo          | Fila con `can_operate = false`.                  |
+| Argumento incompatible                 | Fila fail closed con reason estable.             |
+| Principal no autenticado               | Fila segura sin empleado.                        |
+| Error SQL, timeout o contrato inválido | Error técnico; nunca fila positiva.              |
+| Adapter no puede validar la respuesta  | Resultado técnico fallido; nunca fallback local. |
+
+El SDK podrá convertir un fallo técnico en:
+
+```text
+LegacyOperationalContextError
+```
+
+pero no en:
+
+```text
+can_operate = true
+```
+
+---
+
+#### 26. Compatibilidad de forma y de conducta
+
+Se separan tres dimensiones:
+
+```text
+SHAPE_COMPATIBILITY
+BEHAVIORAL_PARITY
+AUTHORITY_PARITY
+```
+
+##### Shape compatibility
+
+Debe conservar los nombres y tipos legacy mientras exista un consumidor registrado que lo requiera.
+
+##### Behavioral parity
+
+Se busca únicamente para comportamientos no inseguros.
+
+##### Authority parity
+
+No se promete.
+
+No se conservarán:
+
+- bypass por rol;
+- sede enviada como autoridad;
+- sede seleccionada como autoridad;
+- rol base como rol operativo;
+- role override real;
+- simulación mezclada;
+- permiso general por aplicación;
+- allow ante error.
+
+---
+
+#### 27. Clasificación de diferencias
+
+Cada diferencia entre legacy y canónico se clasificará como:
+
+```text
+EXPECTED_EQUAL
+INTENTIONAL_CANONICAL_DENY
+LEGACY_SECURITY_BUG
+LEGACY_DATA_FALLBACK
+CANONICAL_DEFECT
+DATA_GAP
+CONSUMER_DEFECT
+CONTRACT_GAP
+```
+
+Reglas:
+
+- `INTENTIONAL_CANONICAL_DENY` no bloquea la migración si la decisión aprobada exige endurecimiento;
+- `LEGACY_SECURITY_BUG` no se restaura;
+- `DATA_GAP` debe quedar vinculado a backfill o reconciliación;
+- `CANONICAL_DEFECT` bloquea el cutover;
+- `CONTRACT_GAP` exige decisión documental antes de implementar.
+
+---
+
+#### 28. Registro de consumidores
+
+Cada consumidor deberá registrar:
+
+```text
+repository
+path
+symbol
+surface_type
+app_code
+legacy_signature
+arguments_supplied
+fields_read
+can_operate_usage
+bypass_usage
+blocked_reason_usage
+role_override_usage
+permission_followup
+resource_resolution
+migration_owner
+migration_task
+compatibility_mode
+parity_status
+test_evidence
+last_seen_at
+removal_gate
+```
+
+No se aceptará un consumidor anónimo.
+
+La ausencia de registro impide declararlo compatible.
+
+---
+
+#### 29. Telemetría
+
+Se medirán como mínimo:
+
+- llamadas por consumidor;
+- llamadas por aplicación;
+- backend utilizado;
+- latencia;
+- errores técnicos;
+- `can_operate` true/false;
+- mismatch de empleado;
+- mismatch de sede;
+- presencia de bypass legacy;
+- lecturas de campos deprecados;
+- diferencias de paridad;
+- última llamada observada;
+- versión del adapter;
+- versión del contrato canónico.
+
+No se registrarán:
+
+- documentos completos;
+- evidencia sensible;
+- tokens;
+- payloads privados;
+- listas completas de grants o denies.
+
+---
+
+#### 30. Freeze de nuevas dependencias
+
+Desde la aprobación de AUTH-CTX-028 queda prohibido introducir:
+
+```text
+.rpc("get_operational_context"
+```
+
+fuera del adapter legacy aprobado.
+
+También queda prohibido:
+
+- crear un segundo wrapper local;
+- copiar `OperationalContextRow`;
+- añadir campos nuevos a la forma legacy;
+- usar `can_operate` para mutaciones nuevas;
+- crear nuevos bypasses;
+- leer `selected_site_id` como autoridad;
+- reconstruir role override real.
+
+`SHELL-AUTH-004` deberá convertir esta regla en control automático.
+
+---
+
+#### 31. Fases de transición
+
+##### Fase 0 — Inventario y freeze
+
+Responsables:
+
+- `SHELL-AUD-004`;
+- `SHELL-AUTH-003`;
+- `SHELL-AUTH-004`;
+- `AUTH-UI-001` a `AUTH-UI-010`.
+
+Salida:
+
+- inventario completo;
+- allowlist temporal;
+- cero nuevos usos.
+
+##### Fase 1 — Adapter legacy único
+
+Responsables:
+
+- `SHELL-AUTH-001`;
+- `SHELL-AUTH-002`;
+- `SHELL-CTX-001`.
+
+Salida:
+
+- export legacy único;
+- app code fijo;
+- validación de argumentos;
+- telemetría;
+- fail closed.
+
+##### Fase 2 — Resolver canónico
+
+Responsables:
+
+- `AUTH-DB-033`;
+- `SHELL-CTX-002` a `SHELL-CTX-005`;
+- `AUTH-DB-027`.
+
+Salida:
+
+- `AccessContext@1.0.0` físico;
+- fixtures;
+- pruebas de resolución.
+
+##### Fase 3 — Proyector canónico a legacy
+
+Responsables:
+
+- `SHELL-AUTH-002`;
+- `AUTH-DB-020`;
+- `AUTH-DB-026`;
+- `AUTH-DB-027`.
+
+Salida:
+
+- backend `CANONICAL_PROJECTION`;
+- mapping exacto;
+- paridad observada;
+- rollback disponible.
+
+##### Fase 4 — Migración de permisos y recursos
+
+Responsables:
+
+- `AUTH-DB-034`;
+- `AUTH-DB-006` a `AUTH-DB-010`;
+- `AUTH-DB-021`;
+- `SHELL-AUTH-005`;
+- `AUTH-UI-040` a `AUTH-UI-051`.
+
+Salida:
+
+- acciones protegidas por decisión canónica;
+- `can_operate` reducido a presentación legacy;
+- consumidores migrados.
+
+##### Fase 5 — Retiro
+
+Responsables:
+
+- `AUTH-DB-030`;
+- `AUTH-DB-031`;
+- `SHELL-AUTH-005`.
+
+Salida:
+
+- direct calls = 0;
+- telemetría legacy = 0;
+- función retirada;
+- adapter retirado;
+- paridad certificada.
+
+---
+
+#### 32. Rollback
+
+El rollback podrá cambiar temporalmente:
+
+```text
+CANONICAL_PROJECTION
+→ LEGACY_NATIVE
+```
+
+solo por consumidor registrado y mediante configuración server-side.
+
+No podrá:
+
+- combinar resultados;
+- reactivar bypasses eliminados en código nuevo;
+- restaurar role override como autoridad;
+- permitir nuevos consumidores;
+- extender indefinidamente el legacy;
+- omitir auditoría.
+
+Cada rollback deberá registrar:
+
+```text
+consumer
+from_mode
+to_mode
+reason
+incident_id
+approved_by
+started_at
+expires_at
+exit_criteria
+```
+
+Todo rollback tendrá expiración y plan de salida.
+
+---
+
+#### 33. Puertas de cutover a `CANONICAL_PROJECTION`
+
+Un consumidor podrá cambiar cuando:
+
+1. esté inventariado;
+2. tenga propietario;
+3. tenga `app_code` fijo;
+4. no utilice `p_employee_id` para consultar terceros;
+5. no utilice `p_site_id` como autoridad;
+6. no dependa de bypass;
+7. no dependa de role override real;
+8. tenga mapping de campos documentado;
+9. tenga pruebas positivas;
+10. tenga pruebas negativas;
+11. tenga prueba de actor cambiado;
+12. tenga prueba de sede incompatible;
+13. tenga prueba de turno ambiguo;
+14. tenga prueba de check-in;
+15. tenga prueba de dispositivo;
+16. tenga prueba de error técnico;
+17. tenga clasificación de diferencias;
+18. tenga rollback probado;
+19. tenga observabilidad activa;
+20. tenga aprobación del paquete de migración.
+
+---
+
+#### 34. Puertas de retiro
+
+`get_operational_context` solo podrá retirarse cuando se cumplan simultáneamente:
+
+```text
+consumidores registrados pendientes = 0
+```
+
+```text
+búsqueda estática directa = 0
+```
+
+```text
+telemetría de llamadas = 0 durante 30 días consecutivos
+```
+
+```text
+uso de can_operate como autorización = 0
+```
+
+```text
+uso de bypass_applied = 0
+```
+
+```text
+uso de selected_site_id como autoridad = 0
+```
+
+```text
+role override real = 0
+```
+
+```text
+pruebas de paridad aprobadas
+```
+
+```text
+rollback verificado
+```
+
+```text
+AUTH-DB-031 aprobado
+```
+
+La mera existencia de `get_access_context` no autoriza retirar la función legacy.
+
+---
+
+#### 35. Pruebas contractuales mínimas
+
+`AUTH-CTX-030` y `AUTH-DB-027` deberán incluir:
+
+1. `p_employee_id = null` deriva el actor real;
+2. `p_employee_id` igual al actor no cambia autoridad;
+3. `p_employee_id` distinto produce fail closed;
+4. una llamada no puede leer el contexto de otro empleado;
+5. `p_site_id` no sustituye sede operativa;
+6. site mismatch produce bloqueo;
+7. sede seleccionada no crea sede activa;
+8. sede primaria no crea sede activa;
+9. rol base legacy no crea rol operativo;
+10. `trabajador_operativo` no crea rol operativo;
+11. un turno válido sí proyecta rol operativo;
+12. turno ambiguo bloquea;
+13. turno nocturno se resuelve canónicamente;
+14. check-in histórico abierto no basta;
+15. sesión de check-in activa se proyecta;
+16. área proviene del turno y catálogos válidos;
+17. `bypass_applied` siempre es false;
+18. propietario sin turno no obtiene `can_operate` por nombre;
+19. permiso base de propietario se evalúa fuera de la RPC legacy;
+20. role override no modifica rol ni área real;
+21. simulación no aparece en contexto real;
+22. dispositivo sin actor no opera;
+23. dispositivo con actor usa el empleado real;
+24. `navigation_role` no se proyecta como rol operativo;
+25. error técnico no produce allow;
+26. `can_operate` no autoriza una acción;
+27. `has_operational_permission` se compara contra decisión canónica;
+28. las razones legacy se mapean de forma estable;
+29. el backend no mezcla campos;
+30. rollback cambia backend completo;
+31. telemetría identifica consumidor y versión;
+32. direct call fuera del adapter falla lint;
+33. un rol base legacy inválido no bloquea indebidamente un carril operativo válido;
+34. una denegación aplicable vence cualquier compatibilidad;
+35. APP-REVIEW y recursos aislados permanecen excluidos.
+
+---
+
+#### 36. Seguridad SQL futura
+
+La implementación deberá:
+
+- derivar principal desde la sesión real;
+- derivar actor efectivo desde fuentes canónicas;
+- impedir suplantación mediante `p_employee_id`;
+- validar `p_app_code`;
+- usar `search_path` aprobado;
+- aplicar política `SECURITY DEFINER`;
+- mantener grants mínimos;
+- registrar el consumidor;
+- evitar exposición de evidencia interna;
+- emitir fail closed.
+
+La ubicación física final se decidirá mediante:
+
+- `SUPA-ARC-005`;
+- `SUPA-ARC-006`;
+- `SUPA-ARC-013`;
+- `SUPA-ARC-014`;
+- `SUPA-ARC-015`.
+
+---
+
+#### 37. Responsabilidades exactas
+
+| Brecha o responsabilidad                 | Tarea propietaria                          |
+| ---------------------------------------- | ------------------------------------------ |
+| Inventariar contexto operativo duplicado | `SHELL-AUD-004`                            |
+| Crear frontera legacy única              | `SHELL-AUTH-001`                           |
+| Implementar adapter y proyección         | `SHELL-AUTH-002`                           |
+| Registrar consumidores y telemetría      | `SHELL-AUTH-003`                           |
+| Bloquear nuevos usos                     | `SHELL-AUTH-004`                           |
+| Migrar consumidores                      | `SHELL-AUTH-005`                           |
+| Consolidar módulo de contexto            | `SHELL-CTX-001`                            |
+| Resolver turno y check-in                | `SHELL-CTX-002`                            |
+| Proyectar sede y área                    | `SHELL-CTX-003`                            |
+| Resolver readiness                       | `SHELL-CTX-004`                            |
+| Traducir razones seguras                 | `SHELL-CTX-005`                            |
+| Resolver AccessContext físico            | `AUTH-DB-033`                              |
+| Evaluar permisos y recursos              | `AUTH-DB-034`                              |
+| Migrar objetos por dominio               | `AUTH-DB-020`                              |
+| Adaptar RPC sensibles                    | `AUTH-DB-006` a `AUTH-DB-010`              |
+| Alinear RLS y grants                     | `AUTH-DB-021`                              |
+| Generar tipos                            | `AUTH-DB-026`                              |
+| Harness y paridad                        | `AUTH-DB-027`                              |
+| Baseline y drift                         | `AUTH-DB-028`                              |
+| Respaldo y rollback                      | `AUTH-DB-029`                              |
+| Retirar función y objetos legacy         | `AUTH-DB-030`                              |
+| Certificar retiro                        | `AUTH-DB-031`                              |
+| Inventariar superficies                  | `AUTH-UI-001` a `AUTH-UI-010`              |
+| Migrar experiencia y bloqueos            | `AUTH-UI-040` a `AUTH-UI-051`              |
+| Definir caché cross-request              | `AUTH-CTX-029`                             |
+| Consolidar pruebas contractuales         | `AUTH-CTX-030`                             |
+| Arquitectura de esquema y exposición     | `SUPA-ARC-005`, `006`, `013`, `014`, `015` |
+| Plan de transición y rollback            | `SUPA-TRANS-001` a `SUPA-TRANS-015`        |
+
+No queda ninguna brecha detectada en esta tarea sin responsable documental.
+
+---
+
+#### 38. Orden obligatorio
+
+```text
+AUTH-CTX-028 APROBADA
+        ↓
+AUTH-CTX-029
+        ↓
+AUTH-CTX-030
+        ↓
+SHELL-AUD-004
+        ↓
+SHELL-AUTH-001
++
+SHELL-CTX-001
+        ↓
+SHELL-AUTH-002
++
+SHELL-AUTH-003
++
+SHELL-AUTH-004
+        ↓
+AUTH-DB-033
+        ↓
+SHELL-CTX-002 a SHELL-CTX-005
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010
++
+AUTH-DB-021
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027`, `AUTH-DB-028` y `AUTH-DB-029` acompañan los paquetes físicos aplicables.
+
+Este orden no autoriza implementación en la fase documental actual.
+
+---
+
+#### 39. Antipatrones prohibidos
+
+```ts
+await supabase.rpc("get_operational_context", {
+  p_employee_id: anotherEmployeeId,
+  p_site_id: selectedSiteId,
+});
+```
+
+```ts
+if (context.can_operate) {
+  await mutateResource();
+}
+```
+
+```ts
+if (context.bypass_applied) {
+  return true;
+}
+```
+
+```ts
+context.active_operational_role = cookieRole;
+```
+
+```ts
+context.active_area_id = areaSelectedByFrontend;
+```
+
+```ts
+const activeSite = requestedSite ?? selectedSite ?? employeeDefaultSite;
+```
+
+```ts
+const canonical = convertLegacyRowToAccessContext(row);
+```
+
+```text
+error legacy
+→ fallback local
+→ allow
+```
+
+```text
+legacy allow
+OR canonical allow
+→ allow
+```
+
+---
+
+#### 40. Consecuencias positivas
+
+- Los consumidores actuales podrán migrarse sin un corte total.
+- La firma heredada podrá mantenerse temporalmente.
+- La autoridad pasará al contexto canónico.
+- Se elimina suplantación por `p_employee_id`.
+- La sede enviada deja de crear autoridad.
+- Se elimina el bypass por nombre de rol.
+- `trabajador_operativo` permanece separado del rol operativo.
+- Los oficios legacy no se convierten silenciosamente.
+- NEXO deja de modificar autoridad mediante cookies.
+- El dispositivo compartido utiliza actor humano real.
+- La simulación queda separada.
+- Las diferencias de paridad quedan clasificadas.
+- El legacy tendrá telemetría y fecha de retiro.
+- El rollback no exige duplicar lógica por aplicación.
+
+---
+
+#### 41. Costos y consecuencias negativas
+
+- Algunas pantallas administrativas perderán bypasses heredados.
+- Algunos consumidores deberán dejar de usar `can_operate` como guard.
+- Podrán aparecer denegaciones nuevas por datos incompletos.
+- Se requerirá reconciliar empleados con roles base legacy.
+- El mapping de razones deberá mantenerse temporalmente.
+- Habrá una fase con dos backends disponibles, aunque nunca mezclados.
+- La telemetría y el inventario serán obligatorios.
+- El retiro no será inmediato.
+- Las pruebas deberán cubrir diferencias intencionales y no solo igualdad.
+- NEXO deberá reemplazar su role override real por simulación separada.
+
+---
+
+#### 42. Fuera del alcance
+
+AUTH-CTX-028 no:
+
+- modifica la función SQL;
+- crea `get_access_context`;
+- crea adapters;
+- crea paquetes;
+- cambia grants;
+- cambia RLS;
+- modifica aplicaciones;
+- elimina bypasses físicamente;
+- migra role override;
+- cambia empleados;
+- asigna `trabajador_operativo`;
+- ejecuta backfills;
+- crea caché;
+- define TTL;
+- crea pruebas físicas;
+- retira objetos legacy;
+- modifica Supabase.
+
+Cada responsabilidad diferida tiene una tarea explícita.
+
+---
+
+#### 43. Invariantes
+
+1. `get_operational_context` permanece legacy.
+2. No se convierte en fuente normativa.
+3. `AccessContext@1.0.0` permanece canónico.
+4. La adaptación va de canónico a legacy.
+5. Nunca se reconstruye contexto canónico desde la fila legacy.
+6. La firma puede conservarse temporalmente.
+7. `p_employee_id` no define actor.
+8. `p_site_id` no define sede operativa.
+9. `p_app_code` no concede permiso.
+10. La sede seleccionada no autoriza.
+11. La sede primaria no autoriza.
+12. El rol base no llena el rol operativo.
+13. `trabajador_operativo` no llena el rol operativo.
+14. Los oficios legacy no llenan el rol operativo.
+15. El rol operativo procede del turno.
+16. El check-in procede de una sesión válida.
+17. El dispositivo no tiene rol propio.
+18. `navigation_role` no autoriza.
+19. La simulación no se mezcla con contexto real.
+20. `bypass_applied` siempre es false en proyección canónica.
+21. `can_operate` no es una decisión de permiso.
+22. Una mutación exige evaluación canónica.
+23. No se mezclan backends.
+24. No se elige el resultado más permisivo.
+25. Los errores producen fail closed.
+26. Todo consumidor queda registrado.
+27. Todo uso legacy emite telemetría.
+28. No se permiten nuevos direct calls.
+29. El rollback es server-side y temporal.
+30. El retiro exige cero uso comprobado.
+31. La paridad no obliga a conservar bugs.
+32. `AUTH-CTX-029` define la caché posterior.
+33. `AUTH-CTX-030` define las pruebas contractuales completas.
+34. No se implementa código ni migraciones en esta tarea.
+
+---
+
+#### 44. Criterios de aprobación
+
+AUTH-CTX-028 podrá aprobarse cuando se acepte que:
+
+1. `get_operational_context` es una fachada legacy temporal;
+2. no es fuente canónica;
+3. la proyección va de `AccessContext` hacia la forma legacy;
+4. se define `LegacyOperationalContextProjection@1.0.0`;
+5. existen modos `LEGACY_NATIVE`, `CANONICAL_PROJECTION` y `REMOVED`;
+6. no se mezclan backends;
+7. la firma física puede conservarse temporalmente;
+8. `p_employee_id` solo verifica al actor;
+9. un mismatch de empleado falla de forma cerrada;
+10. `p_site_id` es un hint validado y no autoridad;
+11. la sede seleccionada deja de ser fallback;
+12. la sede predeterminada deja de ser fallback;
+13. `p_app_code` queda fijado por adapter;
+14. los 22 campos legacy tienen mapping definido;
+15. `can_operate` significa readiness legacy y no permiso;
+16. `bypass_applied` será siempre false;
+17. `trabajador_operativo` no se proyecta como rol operativo;
+18. los oficios base legacy no se convierten automáticamente;
+19. un carril base legacy inválido no bloquea automáticamente un carril operativo válido;
+20. el carril base no se representa mediante esta fila;
+21. `has_operational_permission` deberá migrar a evaluación canónica;
+22. `get_effective_context_v1` no será fuente del adapter;
+23. role override real no se conserva;
+24. dispositivos requieren actor session válida;
+25. simulación permanece separada;
+26. existe mapping seguro de razones;
+27. errores técnicos se distinguen de denegaciones;
+28. se separan forma, conducta y autoridad;
+29. las diferencias se clasifican;
+30. existe registro de consumidores;
+31. existe telemetría;
+32. se congelan nuevos usos;
+33. se definen fases de transición;
+34. se define rollback;
+35. se definen puertas de cutover;
+36. se definen puertas de retiro;
+37. se definen pruebas mínimas;
+38. cada brecha tiene tarea propietaria;
+39. no se implementa código, migraciones ni cambios en Supabase.
+
+---
+
+#### 45. Cierre y continuidad
+
+| Relación                  | Tarea          | Estado        |
+| ------------------------- | -------------- | ------------- |
+| Tarea anterior            | `AUTH-MOD-021` | ✅ APROBADA    |
+| Tarea propuesta           | `AUTH-CTX-028` | ✅ APROBADA    |
+| Tarea siguiente reservada | `AUTH-CTX-029` | ⬜ NO INICIADA |
+| Tarea posterior           | `AUTH-CTX-030` | ⬜ NO INICIADA |
+
+```text
+AUTH-MOD-021 — APROBADA
+        ↓
+AUTH-CTX-028 — APROBADA
+        ↓
+AUTH-CTX-029 — NO INICIADA
+        ↓
+AUTH-CTX-030 — NO INICIADA
+```
+
+No se inicia `AUTH-CTX-029` hasta recibir aprobación explícita de `AUTH-CTX-028`.
+
+
+### ✅ AUTH-CTX-029 — Definir estrategia de invalidación y caché
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE E — Contexto y decisión de autorización unificados  
+**Subbloque:** Diseño de implementación y transición  
+**Naturaleza:** definición documental de frescura, memoización, caché e invalidación  
+**Implementación física:** no incluida  
+**Contrato contextual vigente:** `AccessContext@1.0.0`  
+**Contrato de decisión vigente:** `AuthorizationDecision@1.0.0`  
+**Contrato de simulación vigente:** `SimulationContext@1.0.0`  
+**Contrato legacy temporal:** `LegacyOperationalContextProjection@1.0.0`  
+**Tarea anterior provisionalmente aprobada:** `AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context`  
+**Tarea posterior reservada:** `AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión`  
+**Restricción:** no implementar código, infraestructura, funciones, migraciones, triggers, colas, RLS, grants ni cambios en Supabase durante esta tarea  
+**Continuidad del lote:** la materialización documental y actualización del remoto se consolidarán después de completar `AUTH-CTX-030`
+
+---
+
+#### 1. Objetivo
+
+Definir una estrategia cerrada, segura y escalable para:
+
+1. reutilizar un mismo `AccessContext` dentro de una solicitud;
+2. evitar resoluciones duplicadas concurrentes;
+3. permitir posteriormente una caché compartida entre solicitudes;
+4. demostrar que una entrada almacenada sigue fresca antes de utilizarla;
+5. invalidar de forma transaccional cambios de identidad, trabajo, autorización y dispositivo;
+6. respetar límites temporales aunque no exista una escritura;
+7. impedir que una entrada obsoleta produzca un `ALLOW`;
+8. definir la relación entre caché de contexto y decisiones de autorización;
+9. definir el tratamiento de proyecciones seguras de cliente;
+10. definir el comportamiento de consumidores legacy;
+11. definir el comportamiento offline;
+12. definir fallos, rollback y observabilidad;
+13. asignar cada responsabilidad física a una tarea concreta;
+14. crear las tareas nuevas estrictamente necesarias.
+
+La estrategia debe optimizar el costo de resolución sin degradar:
+
+- seguridad;
+- consistencia;
+- trazabilidad;
+- separación de actores;
+- separación de carriles;
+- exactitud temporal;
+- aislamiento entre aplicaciones;
+- aislamiento entre entornos;
+- reevaluación por recurso.
+
+---
+
+#### 2. Problema que se resuelve
+
+`AccessContext` consolida hechos procedentes de múltiples fuentes:
+
+```text
+sesión técnica
++
+principal
++
+actor efectivo
++
+identidad de dominio
++
+empleado
++
+rol base
++
+asignaciones
++
+turno
++
+check-in
++
+rol operativo
++
+sede y área operativas
++
+dispositivo
++
+catálogo
++
+matrices
++
+excepciones
++
+denegaciones
+```
+
+Resolverlos repetidamente dentro de una misma solicitud produce:
+
+- consultas duplicadas;
+- riesgo de snapshots temporales diferentes;
+- mayor latencia;
+- mayor costo;
+- resultados contradictorios dentro de una acción.
+
+Reutilizarlos entre solicitudes sin una estrategia formal produce riesgos mayores:
+
+- conservar autoridad después de un check-out;
+- conservar un rol retirado;
+- conservar una denegación antigua;
+- conservar un actor anterior en un dispositivo compartido;
+- conservar un turno después de su fin;
+- reutilizar un contexto de otra aplicación;
+- reutilizar una decisión sobre otro recurso;
+- permitir una acción después de revocar una sesión;
+- servir una entrada local desactualizada desde otra instancia;
+- convertir una caché de frontend en fuente de autorización.
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin reinterpretar:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-021`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-028`;
+- `AccessContext@1.0.0`;
+- `AuthorizationDecision@1.0.0`;
+- `SimulationContext@1.0.0`;
+- `LegacyOperationalContextProjection@1.0.0`;
+- `vento.canonical-json@1.0.0`;
+- `get_access_context(text) → jsonb`;
+- `evaluate_authorization(...)`;
+- el SDK compartido `@vento/os-context`;
+- la resolución única por solicitud aprobada en `AUTH-CTX-027`;
+- la denegación por defecto;
+- la revalidación de mutaciones;
+- la prohibición de usar decisiones como tokens;
+- la prohibición de mezclar contexto real y simulación;
+- la separación entre hechos contextuales y recursos.
+
+Principios obligatorios:
+
+```text
+CACHÉ
+≠ FUENTE DE VERDAD
+```
+
+```text
+TTL
+≠ GARANTÍA DE FRESCURA
+```
+
+```text
+EVENTO DE INVALIDACIÓN
+≠ ÚNICA BARRERA DE SEGURIDAD
+```
+
+```text
+CACHE HIT
+→ SOLO DESPUÉS DE VALIDAR FRESCURA
+```
+
+```text
+CONTEXTO REUTILIZABLE
+≠ DECISIÓN REUTILIZABLE PARA OTRO RECURSO
+```
+
+```text
+ERROR DE CACHÉ
+→ NO PRODUCE ALLOW
+```
+
+---
+
+#### 4. Decisión principal
+
+Se adopta una estrategia por capas:
+
+```text
+L0 — REQUEST-SCOPED MEMOIZATION
+L1 — VALIDATED SHARED CONTEXT CACHE
+L2 — SAFE CLIENT PROJECTION
+```
+
+Cada capa tiene una responsabilidad distinta.
+
+##### L0
+
+Obligatoria desde la primera implementación.
+
+Reutiliza promesas y snapshots únicamente dentro de una solicitud de servidor.
+
+##### L1
+
+Opcional y deshabilitada por defecto hasta superar todas las puertas de activación.
+
+Reutiliza `AccessContext` entre solicitudes únicamente después de validar un token de frescura autoritativo.
+
+##### L2
+
+Solo experiencia de presentación.
+
+Nunca autoriza acciones ni sustituye una evaluación de servidor.
+
+No se crea una caché transversal de `AuthorizationDecision` en la versión inicial.
+
+---
+
+#### 5. Modos operativos
+
+Se definen cuatro modos internos:
+
+```text
+OFF
+REQUEST_ONLY
+SHADOW_SHARED
+VALIDATED_SHARED
+```
+
+##### `OFF`
+
+- no se reutiliza contexto;
+- cada consumo resuelve de nuevo;
+- se admite únicamente para diagnóstico o rollback extremo.
+
+##### `REQUEST_ONLY`
+
+- activa L0;
+- no activa L1;
+- es el modo inicial obligatorio de producción.
+
+##### `SHADOW_SHARED`
+
+- calcula claves;
+- consulta o escribe L1;
+- compara el candidato con una resolución fresca;
+- nunca sirve el candidato como autoridad;
+- permite medir paridad, latencia y cardinalidad.
+
+##### `VALIDATED_SHARED`
+
+- sirve una entrada L1 únicamente cuando el token de frescura coincide;
+- respeta expiración dura y límites temporales;
+- nunca sirve stale;
+- requiere pruebas y observabilidad aprobadas.
+
+La selección del modo será:
+
+- server-side;
+- por entorno;
+- por aplicación;
+- auditable;
+- inaccesible al navegador;
+- reversible sin cambiar consumidores.
+
+---
+
+#### 6. L0 — Memoización por solicitud
+
+L0 es obligatoria.
+
+Forma conceptual:
+
+```text
+REQUEST AUTHORIZATION SCOPE
+        ↓
+Map<ContextRequestKey, Promise<AccessContext>>
+```
+
+Reglas:
+
+1. el valor almacenado será una promesa, no solo el resultado;
+2. llamadas concurrentes con la misma clave comparten la resolución;
+3. una excepción elimina la entrada fallida;
+4. la entrada termina con la solicitud;
+5. no sobrevive al proceso de render, acción, handler, job o RPC;
+6. no se comparte entre usuarios;
+7. no se implementa como singleton global;
+8. no utiliza TTL;
+9. no requiere evento de invalidación externo;
+10. puede invalidarse explícitamente dentro de la misma solicitud mediante una barrera de escritura.
+
+Propietario físico:
+
+```text
+SHELL-AUTH-003
+```
+
+---
+
+#### 7. Clave L0
+
+La clave mínima será:
+
+```text
+environment
+organization_id
+app_code
+principal_type
+principal_id
+auth_session_id
+actor_session_id
+system_process_id
+context_contract_version
+resolver_version
+```
+
+No incluirá:
+
+- permiso;
+- recurso;
+- ruta;
+- botón;
+- sede seleccionada;
+- área seleccionada;
+- role override;
+- datos del frontend.
+
+Para una credencial de dispositivo, `actor_session_id` es obligatorio cuando exista actor humano.
+
+Cambiar el actor produce una clave distinta.
+
+---
+
+#### 8. Barrera de escritura dentro de la solicitud
+
+Una solicitud puede:
+
+1. resolver contexto;
+2. ejecutar una mutación que cambia ese contexto;
+3. necesitar una nueva evaluación.
+
+Ejemplos:
+
+- iniciar o cerrar check-in;
+- cambiar actor de dispositivo;
+- revocar una sesión;
+- actualizar un turno;
+- cambiar rol base;
+- cambiar asignaciones;
+- crear una denegación.
+
+Se define el concepto:
+
+```text
+AUTHORIZATION WRITE BARRIER
+```
+
+Después de confirmar una escritura relevante:
+
+```text
+marcar subject/app como dirty
+→ eliminar memoización L0 aplicable
+→ obtener nuevo token
+→ resolver nuevo contexto
+→ producir nueva decisión
+```
+
+Queda prohibido utilizar el contexto memoizado anterior después de la barrera.
+
+La barrera no espera a que finalice la solicitud.
+
+---
+
+#### 9. L1 — Caché compartida validada
+
+L1 solo almacenará:
+
+```text
+AccessContext real
+```
+
+No almacenará como autoridad:
+
+- `AuthorizationDecision`;
+- `SimulationContext`;
+- recurso resuelto;
+- resultado de una mutación;
+- contexto legacy nativo;
+- payload de auditoría;
+- grants completos;
+- denies completos;
+- secretos;
+- credenciales.
+
+L1 podrá utilizar:
+
+- almacenamiento distribuido privado;
+- almacenamiento administrado aprobado;
+- una implementación equivalente con coherencia demostrable.
+
+No podrá depender únicamente de:
+
+- memoria del proceso;
+- caché local de una instancia;
+- CDN;
+- Service Worker;
+- navegador;
+- `localStorage`;
+- `sessionStorage`;
+- SecureStore móvil;
+- caché automática de páginas;
+- caché automática de framework.
+
+---
+
+#### 10. Condición de seguridad de L1
+
+Una entrada L1 solo será utilizable cuando:
+
+```text
+freshness_token_stored
+=
+freshness_token_current
+```
+
+Y:
+
+```text
+server_now
+<
+hard_expires_at
+```
+
+Y:
+
+```text
+server_now
+<
+next_temporal_boundary_at - safety_margin
+```
+
+cuando exista un límite temporal.
+
+El TTL no sustituye la validación del token.
+
+Los eventos no sustituyen la validación del token.
+
+---
+
+#### 11. Nuevo contrato interno `ContextFreshnessToken@1.0.0`
+
+Se define el contrato lógico interno:
+
+```ts
+type ContextFreshnessToken = {
+  contract_name: "ContextFreshnessToken";
+  contract_version: "1.0.0";
+
+  environment: string;
+  organization_id: string;
+
+  app_code: string;
+  subject_key: string;
+
+  session_generation: string;
+  actor_generation: string;
+  employee_generation: string;
+  base_lane_generation: string;
+  operational_lane_generation: string;
+  device_generation: string;
+
+  app_authorization_generation: string;
+  global_authorization_generation: string;
+
+  next_temporal_boundary_at: string | null;
+  issued_at: string;
+
+  token_fingerprint: string;
+};
+```
+
+La sintaxis es documental.
+
+No constituye todavía un tipo, tabla o función física.
+
+---
+
+#### 12. Semántica del token
+
+##### `session_generation`
+
+Cambia cuando cambia:
+
+- sesión autenticada;
+- revocación;
+- expiración;
+- rotación relevante;
+- vínculo entre sesión y principal;
+- cierre de sesión.
+
+##### `actor_generation`
+
+Cambia cuando cambia:
+
+- actor efectivo;
+- sesión de actor de dispositivo;
+- delegación;
+- atribución;
+- identidad de dominio utilizada.
+
+##### `employee_generation`
+
+Cambia cuando cambia:
+
+- existencia del empleado;
+- estado activo o inactivo;
+- vínculo de identidad;
+- rol base;
+- datos estructurales necesarios para autorización.
+
+##### `base_lane_generation`
+
+Cambia cuando cambia:
+
+- rol base;
+- asignaciones de sede;
+- asignaciones de área;
+- cobertura administrativa;
+- excepciones base del actor;
+- denegaciones base del actor.
+
+##### `operational_lane_generation`
+
+Cambia cuando cambia:
+
+- turno;
+- publicación;
+- cancelación;
+- revisión;
+- check-in;
+- check-out;
+- sesión laboral;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- compatibilidad del rol con sede o área.
+
+##### `device_generation`
+
+Cambia cuando cambia:
+
+- estado del dispositivo;
+- registro del dispositivo;
+- allowlist de aplicaciones;
+- restricciones;
+- actor session;
+- revocación;
+- configuración que pueda limitar autoridad.
+
+##### `app_authorization_generation`
+
+Cambia cuando cambia para una aplicación:
+
+- permiso;
+- política;
+- matriz;
+- requisito;
+- sensibilidad;
+- restricción de dispositivo;
+- mapping autorizado.
+
+##### `global_authorization_generation`
+
+Cambia cuando cambia:
+
+- catálogo global;
+- roles canónicos;
+- matrices transversales;
+- denegaciones globales;
+- política organizacional;
+- versión contractual activa.
+
+---
+
+#### 13. `subject_key`
+
+`subject_key` identifica el conjunto de hechos que puede invalidar el contexto.
+
+Forma conceptual:
+
+```text
+HUMAN_USER
+→ auth_session + actor employee
+
+SHARED_DEVICE
+→ device + actor_session + actor employee
+
+SYSTEM_SERVICE
+→ service principal + process/delegation
+```
+
+No será:
+
+- nombre;
+- correo;
+- documento;
+- teléfono;
+- rol;
+- sede;
+- dato enviado por cliente.
+
+En logs y métricas se utilizará una representación opaca o HMAC.
+
+---
+
+#### 14. Generaciones transaccionales
+
+Toda escritura que afecte una generación deberá:
+
+```text
+actualizar dato empresarial
++
+incrementar generación aplicable
++
+registrar evento outbox
+=
+UNA MISMA TRANSACCIÓN
+```
+
+Si no puede incrementar la generación:
+
+```text
+ROLLBACK DE LA ESCRITURA
+```
+
+No se permite:
+
+```text
+COMMIT DEL CAMBIO
++
+INVALIDACIÓN BEST EFFORT POSTERIOR
+```
+
+como única garantía.
+
+La generación constituye la barrera de corrección.
+
+El evento constituye una optimización de expulsión anticipada.
+
+---
+
+#### 15. Nueva tarea física `AUTH-DB-035`
+
+Se crea:
+
+```text
+AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+```
+
+Ubicación futura:
+
+```text
+docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md
+```
+
+Posición:
+
+```text
+después de AUTH-DB-033
+antes de AUTH-DB-034
+```
+
+Responsabilidades:
+
+1. definir almacenamiento físico de generaciones;
+2. definir granularidad por sujeto, aplicación y organización;
+3. incrementar generaciones en la misma transacción;
+4. implementar lectura autoritativa del token;
+5. calcular `next_temporal_boundary_at`;
+6. generar fingerprint determinista;
+7. producir eventos outbox;
+8. definir triggers o servicios de dominio aprobados;
+9. impedir escrituras relevantes sin incremento;
+10. definir backfill inicial;
+11. definir reconciliación;
+12. definir drift;
+13. definir rollback;
+14. proveer fixtures;
+15. integrarse con `AUTH-DB-027`;
+16. no exponer el token completo al cliente.
+
+---
+
+#### 16. Nueva tarea física `SHELL-CTX-006`
+
+Se crea:
+
+```text
+SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
+```
+
+Ubicación futura:
+
+```text
+docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md
+```
+
+Posición:
+
+```text
+después de SHELL-CTX-005
+```
+
+Responsabilidades:
+
+1. implementar modos `OFF`, `REQUEST_ONLY`, `SHADOW_SHARED` y `VALIDATED_SHARED`;
+2. consumir `ContextFreshnessToken@1.0.0`;
+3. construir claves aisladas;
+4. validar token antes de servir;
+5. validar límites temporales;
+6. implementar single-flight;
+7. impedir stale-while-revalidate de autoridad;
+8. implementar bypass seguro;
+9. implementar rollback a `REQUEST_ONLY`;
+10. implementar métricas;
+11. implementar purga por evento;
+12. impedir almacenamiento en cliente o CDN;
+13. validar integridad de entradas;
+14. coordinar con `SHELL-AUTH-002` y `SHELL-AUTH-003`;
+15. proveer adapters de prueba;
+16. demostrar comportamiento multiinstancia.
+
+---
+
+#### 17. `CachedAccessContextRecord@1.0.0`
+
+Se define el contrato interno:
+
+```ts
+type CachedAccessContextRecord = {
+  contract_name: "CachedAccessContextRecord";
+  contract_version: "1.0.0";
+
+  cache_key_hash: string;
+
+  context: AccessContext;
+  context_fingerprint: string;
+  freshness_token: ContextFreshnessToken;
+
+  stored_at: string;
+  hard_expires_at: string;
+  next_temporal_boundary_at: string | null;
+
+  storage_version: string;
+  integrity_hash: string;
+};
+```
+
+Reglas:
+
+- no se expone al cliente;
+- no contiene secretos adicionales;
+- el contexto se valida contra su schema;
+- el hash de integridad se valida antes de utilizarlo;
+- una entrada corrupta se elimina;
+- una entrada corrupta nunca produce allow.
+
+---
+
+#### 18. Clave L1
+
+Forma conceptual:
+
+```text
+ac
+:
+environment
+:
+organization_id
+:
+app_code
+:
+principal_type
+:
+principal_id_or_device_id
+:
+auth_session_id
+:
+actor_session_id_or_none
+:
+system_process_id_or_none
+:
+context_contract_version
+:
+resolver_version
+:
+freshness_token_fingerprint
+```
+
+Reglas:
+
+1. todas las dimensiones obligatorias deben estar presentes;
+2. `null` se representa de forma inequívoca;
+3. no se usan nombres humanos;
+4. no se usa el rol como dimensión de identidad;
+5. no se usa sede seleccionada;
+6. no se usa ruta;
+7. no se usa permiso;
+8. no se usa recurso;
+9. el entorno es obligatorio;
+10. organización es obligatoria aunque inicialmente exista una sola;
+11. las claves no se registran completas en logs;
+12. los IDs pueden transformarse mediante HMAC para telemetría.
+
+---
+
+#### 19. TTL máximo de L1
+
+Se fijan límites iniciales:
+
+| Principal                               |      TTL duro máximo |
+| --------------------------------------- | -------------------: |
+| Sesión humana personal                  |          60 segundos |
+| Servicio de sistema registrado          |          60 segundos |
+| Dispositivo compartido con actor válido |          15 segundos |
+| Actor no resuelto                       |               Sin L1 |
+| Principal anónimo                       |               Sin L1 |
+| Contexto estructuralmente inválido      |               Sin L1 |
+| Contexto legacy nativo                  | Sin L1 independiente |
+| Simulación                              |               Sin L1 |
+
+El TTL real será:
+
+```text
+min(
+  ttl_maximo_por_principal,
+  expiración_de_sesión,
+  next_temporal_boundary_at - 1 segundo
+)
+```
+
+Cuando el resultado sea menor o igual a cero:
+
+```text
+NO ALMACENAR
+```
+
+---
+
+#### 20. Margen temporal
+
+Se adopta inicialmente:
+
+```text
+safety_margin = 1 segundo
+```
+
+Propósito:
+
+- evitar servir una entrada exactamente en el borde;
+- absorber pequeñas diferencias entre reloj del proceso y reloj autoritativo;
+- no prolongar turnos, check-ins o actor sessions.
+
+El instante autoritativo será del servidor o base de datos.
+
+Nunca el reloj del cliente.
+
+---
+
+#### 21. Límites temporales que invalidan sin escritura
+
+`next_temporal_boundary_at` será el mínimo aplicable entre:
+
+- expiración de sesión;
+- inicio del turno futuro que cambia el contexto;
+- fin del turno vigente;
+- expiración o cierre programado de check-in;
+- expiración de actor session;
+- expiración del dispositivo;
+- expiración de delegación;
+- inicio o fin de una excepción;
+- inicio o fin de una denegación;
+- inicio o fin de una asignación;
+- cambio de versión programado;
+- fin de una ventana operativa aprobada.
+
+El paso del tiempo no requiere evento para invalidar.
+
+La entrada deja de ser utilizable al alcanzar el límite.
+
+---
+
+#### 22. Algoritmo de lectura L1
+
+```text
+1. Construir subject y app.
+2. Leer token T1 desde fuente autoritativa.
+3. Construir clave con T1.
+4. Buscar entrada.
+5. Validar schema e integridad.
+6. Validar TTL.
+7. Validar límite temporal.
+8. Comparar token almacenado con T1.
+9. Si todo coincide → HIT.
+10. Si no coincide → descartar y resolver.
+```
+
+No se permite omitir el paso 2.
+
+No se permite validar el token desde la misma caché L1.
+
+---
+
+#### 23. Algoritmo de escritura L1
+
+```text
+1. Leer token T1.
+2. Resolver AccessContext fresco.
+3. Leer token T2.
+4. Comparar T1 y T2.
+5. Si coinciden:
+   - calcular fingerprint;
+   - calcular expiración;
+   - almacenar.
+6. Si no coinciden:
+   - descartar resultado;
+   - reintentar una vez.
+7. Si vuelve a cambiar:
+   - no almacenar;
+   - producir error seguro o resolver sin caché según el caso.
+```
+
+Esto evita almacenar un contexto construido durante una carrera de cambios.
+
+---
+
+#### 24. Single-flight
+
+En un miss concurrente:
+
+```text
+misma clave
+→ una resolución propietaria
+→ consumidores esperan la misma promesa
+```
+
+Reglas:
+
+- el lock es corto;
+- no contiene datos autoritativos;
+- no sobrevive indefinidamente;
+- una espera vencida no sirve stale;
+- después de timeout se permite resolver directamente o fallar cerrado;
+- no se elige una entrada anterior por comodidad;
+- la resolución fallida libera el lock;
+- se mide tiempo de espera y contención.
+
+Single-flight no sustituye el token.
+
+---
+
+#### 25. Prohibición de stale-while-revalidate
+
+Para contexto con capacidad de influir en autorización:
+
+```text
+STALE-WHILE-REVALIDATE = PROHIBIDO
+```
+
+No se sirve una entrada:
+
+- expirada;
+- con token diferente;
+- después del límite temporal;
+- con integridad inválida;
+- de otro actor;
+- de otra app;
+- de otra sesión;
+- de otro entorno.
+
+Puede existir refresh preventivo de una entrada todavía válida.
+
+No puede servirse una entrada ya inválida mientras se refresca.
+
+---
+
+#### 26. `cache_status`
+
+Se conservan los valores aprobados:
+
+```text
+MISS
+HIT
+BYPASS
+NOT_IMPLEMENTED
+```
+
+Semántica:
+
+| Valor             | Significado                                                         |
+| ----------------- | ------------------------------------------------------------------- |
+| `MISS`            | Se resolvió un contexto nuevo porque no existía una entrada válida. |
+| `HIT`             | Se sirvió una entrada cuyo token y límites fueron validados.        |
+| `BYPASS`          | La política exigió resolver sin L1.                                 |
+| `NOT_IMPLEMENTED` | La capa L1 todavía no existe en ese consumidor o entorno.           |
+
+No se añade `STALE` al contrato `AccessContext@1.0.0`.
+
+Una entrada stale se rechaza y se registra internamente como:
+
+```text
+STALE_REJECTED
+```
+
+---
+
+#### 27. Inmutabilidad y `cache_status`
+
+`AccessContext` conserva sus hechos empresariales inmutables.
+
+Se distingue:
+
+```text
+SEMANTIC SNAPSHOT
+≠ DELIVERY METADATA
+```
+
+Reglas:
+
+1. un HIT conserva `context_id`;
+2. un HIT conserva `resolved_at`;
+3. un HIT conserva `context_fingerprint`;
+4. un HIT conserva todos los hechos empresariales;
+5. el adapter puede proyectar `cache_status = HIT`;
+6. `cache_status` no participa en `context_fingerprint`;
+7. telemetría de entrega no modifica la identidad semántica.
+
+No se genera un nuevo `context_id` por cada lectura de la misma entrada.
+
+---
+
+#### 28. `context_id` y `context_fingerprint`
+
+Se define:
+
+```text
+context_id
+→ identifica una instancia de resolución
+```
+
+```text
+context_fingerprint
+→ identifica el contenido semántico del snapshot
+```
+
+El fingerprint excluirá:
+
+- `cache_status`;
+- tiempos de acceso a caché;
+- nombre del nodo;
+- métricas;
+- información de delivery;
+- correlation IDs externos;
+- claves internas de almacenamiento.
+
+Incluirá:
+
+- versión contractual;
+- resolver;
+- versiones de fuentes;
+- fingerprints de fuentes;
+- principal;
+- actor;
+- identidad;
+- estado laboral;
+- carriles;
+- dispositivo;
+- problemas estructurales.
+
+Dos resoluciones nuevas pueden tener:
+
+```text
+context_id distinto
++
+context_fingerprint igual
+```
+
+cuando los hechos no cambiaron.
+
+---
+
+#### 29. Fingerprints de fuentes
+
+`source_fingerprints` demuestra con qué snapshots se construyó el contexto.
+
+No sustituye `ContextFreshnessToken`.
+
+Diferencia:
+
+```text
+SOURCE FINGERPRINT
+→ evidencia del snapshot utilizado
+```
+
+```text
+FRESHNESS TOKEN
+→ prueba de que las generaciones relevantes no cambiaron
+```
+
+Los fingerprints:
+
+- se calculan mediante serialización determinista;
+- no incluyen secretos;
+- no revelan datos completos;
+- se conservan para auditoría;
+- pueden utilizarse en pruebas de paridad.
+
+---
+
+#### 30. Caché de catálogos y datasets versionados
+
+Los artefactos inmutables identificados por:
+
+```text
+version
++
+hash
+```
+
+pueden almacenarse por periodos largos.
+
+Ejemplos:
+
+- catálogo de permisos;
+- matriz base;
+- matriz operativa;
+- esquemas;
+- reason codes;
+- contratos.
+
+Reglas:
+
+1. la clave incluye versión y hash;
+2. el contenido de una versión publicada no cambia;
+3. la expulsión puede ser política de almacenamiento;
+4. el puntero a la versión activa sí requiere invalidación;
+5. una nueva versión no sobrescribe la anterior;
+6. una decisión histórica conserva la versión utilizada.
+
+Esta caché no equivale a caché de actor.
+
+---
+
+#### 31. AuthorizationDecision — política inicial
+
+Se prohíbe L1 para `AuthorizationDecision@1.0.0`.
+
+Solo se permite memoización L0 dentro de la solicitud.
+
+Clave exacta:
+
+```text
+context_fingerprint
++
+app_code
++
+permission_key
++
+authorization_requirement
++
+operation_kind
++
+resource_type
++
+resource_ids
++
+resource_version
++
+resource_fingerprint
++
+requested_fields
++
+request_source
+```
+
+Reglas:
+
+- no se reutiliza entre solicitudes;
+- no se reutiliza después de una espera relevante;
+- no se reutiliza para otro recurso;
+- no se reutiliza para otra versión;
+- no se reutiliza para una mutación posterior;
+- no se utiliza `decision_id` como token.
+
+Una futura caché cross-request de decisiones requerirá:
+
+```text
+nueva tarea contractual explícita
++
+nueva revisión de seguridad
+```
+
+---
+
+#### 32. Revalidación antes de mutaciones
+
+Toda mutación empresarial protegida deberá:
+
+```text
+resolver o validar contexto actual
++
+resolver recurso actual
++
+evaluar autorización actual
++
+validar concurrencia
++
+ejecutar
+```
+
+No podrá utilizar:
+
+- una proyección de UI;
+- una decisión tomada al renderizar;
+- una decisión anterior guardada en memoria;
+- un `decision_id`;
+- `can_operate`;
+- un botón visible;
+- una entrada offline.
+
+Cuando exista demora entre evaluación y escritura, el contrato del recurso deberá aplicar:
+
+- versión;
+- ETag;
+- lock;
+- condición;
+- comparación optimista;
+- mecanismo equivalente aprobado.
+
+---
+
+#### 33. Operaciones sensibles y bypass de L1
+
+Las siguientes familias utilizarán inicialmente:
+
+```text
+cache_status = BYPASS
+```
+
+para el contexto de la solicitud que realiza el cambio:
+
+- administración de roles;
+- administración de permisos;
+- administración de matrices;
+- administración de denegaciones;
+- revocación de sesiones;
+- cambio de actor de dispositivo;
+- activación o desactivación de dispositivo;
+- activación o desactivación de empleado;
+- publicación, cancelación o modificación crítica de turnos;
+- corrección o cierre de check-in;
+- cambios de identidad o delegación.
+
+Después de la escritura se aplica la barrera de escritura.
+
+La lista definitiva se vinculará a sensibilidad y contratos de permiso.
+
+---
+
+#### 34. SafeContextProjection — L2
+
+La proyección segura de cliente puede almacenarse únicamente para experiencia.
+
+Debe incluir como mínimo:
+
+```text
+projection_id
+context_id
+context_fingerprint
+generated_at
+refresh_at
+expires_at
+actor_marker
+app_code
+safe_fields
+```
+
+No incluye:
+
+- grants completos;
+- denies sensibles;
+- fuente de denegaciones;
+- token de frescura;
+- secretos;
+- decisiones internas;
+- autoridad ejecutable.
+
+---
+
+#### 35. TTL de proyecciones cliente
+
+Límites iniciales:
+
+| Contexto                         |                  TTL visual máximo |
+| -------------------------------- | ---------------------------------: |
+| Sesión humana personal           |                        30 segundos |
+| Dispositivo compartido con actor |                        10 segundos |
+| Servicio de sistema              |                     No aplica a UI |
+| Actor no resuelto                |                         5 segundos |
+| Offline                          | Solo lectura marcada como obsoleta |
+
+La proyección puede refrescarse antes.
+
+No puede autorizar una acción aunque no haya expirado.
+
+---
+
+#### 36. Invalidación inmediata de L2
+
+La proyección se elimina inmediatamente cuando ocurre:
+
+- logout;
+- cambio de usuario;
+- cambio de actor en dispositivo;
+- cierre de actor session;
+- cambio de aplicación;
+- revocación recibida;
+- señal de empleado inactivo;
+- cambio de turno;
+- check-in o check-out;
+- error de validación;
+- incompatibilidad de versión;
+- respuesta de servidor `context_stale`;
+- recuperación desde offline;
+- actualización del SDK que cambia schema.
+
+No se conserva “el último rol” después de cambiar actor.
+
+---
+
+#### 37. Navegador, Next.js y cachés HTTP
+
+Las fronteras autoritativas deberán usar una política equivalente a:
+
+```text
+private
+no-store
+```
+
+cuando la respuesta contenga contexto o decisión.
+
+Queda prohibido utilizar como autoridad:
+
+- Full Route Cache;
+- Data Cache genérica;
+- CDN compartido;
+- ISR;
+- Service Worker;
+- cache-first;
+- stale-while-revalidate;
+- `revalidatePath` como única invalidación de autorización;
+- `revalidateTag` como única barrera de seguridad.
+
+La memoización React o framework solo podrá utilizarse dentro del scope de solicitud aprobado.
+
+---
+
+#### 38. Aplicaciones móviles y offline
+
+SecureStore o almacenamiento local podrá conservar:
+
+- sesión técnica conforme a su contrato;
+- configuración no autoritativa;
+- última proyección segura para presentación.
+
+No podrá conservar como autoridad:
+
+- `AccessContext`;
+- `AuthorizationDecision`;
+- rol efectivo;
+- sede operativa;
+- permisos efectivos;
+- `can_operate`;
+- decisión de mutación.
+
+En offline:
+
+```text
+proyección anterior
+→ mostrar información permitida y marcada como posiblemente obsoleta
+```
+
+```text
+acción protegida
+→ encolar intención cuando el dominio lo permita
+→ autenticar y autorizar de nuevo al ejecutar online
+```
+
+Una autorización obtenida antes de quedar offline no viaja con la cola como permiso.
+
+---
+
+#### 39. LegacyOperationalContextProjection
+
+La proyección legacy:
+
+- no tiene caché L1 independiente;
+- hereda el `AccessContext` validado;
+- no extiende su TTL;
+- no modifica su token;
+- no conserva bypass;
+- no usa `can_operate` como autorización;
+- no crea una segunda invalidación.
+
+Regla:
+
+```text
+AccessContext válido
+→ proyección legacy
+```
+
+No:
+
+```text
+fila legacy cacheada
+→ autoridad
+```
+
+---
+
+#### 40. SimulationContext
+
+`SimulationContext@1.0.0` no utiliza L1.
+
+Se permite L0 dentro de una solicitud de simulación exacta.
+
+La clave incluye:
+
+- actor real;
+- sujeto simulado;
+- versión de simulación;
+- parámetros hipotéticos;
+- app;
+- permiso;
+- recurso hipotético;
+- expiración de sesión de simulación.
+
+La simulación nunca llena la caché real.
+
+La caché real nunca llena la simulación sin una nueva construcción explícita.
+
+---
+
+#### 41. Eventos de invalidación
+
+Se define el catálogo lógico inicial:
+
+```text
+AUTH_SESSION_CHANGED
+DOMAIN_IDENTITY_CHANGED
+ACTOR_ASSIGNMENT_CHANGED
+EMPLOYEE_STATUS_CHANGED
+BASE_ROLE_CHANGED
+ASSIGNED_SITE_CHANGED
+ASSIGNED_AREA_CHANGED
+ADMINISTRATIVE_COVERAGE_CHANGED
+SHIFT_CHANGED
+CHECKIN_SESSION_CHANGED
+OPERATIONAL_ROLE_MAPPING_CHANGED
+DEVICE_CHANGED
+DEVICE_ACTOR_SESSION_CHANGED
+SYSTEM_DELEGATION_CHANGED
+APP_AUTHORIZATION_CHANGED
+PERMISSION_CATALOG_CHANGED
+BASE_GRANTS_CHANGED
+OPERATIONAL_GRANTS_CHANGED
+INDIVIDUAL_OVERRIDE_CHANGED
+DENY_CHANGED
+CONTRACT_VERSION_CHANGED
+```
+
+Los nombres físicos se definirán en arquitectura de eventos.
+
+---
+
+#### 42. Alcances de invalidación
+
+Cada evento declara uno o varios alcances:
+
+```text
+SESSION
+SUBJECT
+DEVICE
+APP
+ORGANIZATION
+GLOBAL
+```
+
+Ejemplos:
+
+| Cambio                                   | Alcance                                                 |
+| ---------------------------------------- | ------------------------------------------------------- |
+| Revocar sesión                           | `SESSION`                                               |
+| Inactivar empleado                       | `SUBJECT`                                               |
+| Cambiar turno                            | `SUBJECT`                                               |
+| Cambiar actor del dispositivo            | `DEVICE` + `SUBJECT`                                    |
+| Cambiar matriz de NEXO                   | `APP`                                                   |
+| Cambiar catálogo global                  | `GLOBAL`                                                |
+| Crear deny individual                    | `SUBJECT` + `APP` cuando aplique                        |
+| Cambiar rol operativo habilitado en sede | `APP` + sujetos afectados o generación global operativa |
+
+No se realizará una purga global cuando exista un alcance menor seguro.
+
+No se utilizará un alcance menor cuando pueda dejar entradas válidas incorrectamente.
+
+---
+
+#### 43. Matriz de causas de invalidación
+
+##### Identidad y sesión
+
+Invalidan:
+
+- login nuevo;
+- logout;
+- revocación;
+- expiración;
+- cambio de claims relevantes;
+- cambio de vínculo Auth-identidad;
+- cambio de principal;
+- cambio de delegación.
+
+##### Empleado y carril base
+
+Invalidan:
+
+- alta o baja;
+- activación o inactivación;
+- cambio de rol base;
+- cambio de sede asignada;
+- cambio de área asignada;
+- cambio de cobertura;
+- cambio de excepción base;
+- cambio de deny base.
+
+##### Carril operativo
+
+Invalidan:
+
+- crear turno;
+- modificar turno;
+- publicar;
+- republicar;
+- cancelar;
+- retirar;
+- cambiar revisión;
+- cambiar rol;
+- cambiar sede;
+- cambiar área;
+- iniciar check-in;
+- cerrar check-in;
+- corregir check-in;
+- invalidar check-in;
+- cambiar mapping rol-sede-área.
+
+##### Dispositivo
+
+Invalidan:
+
+- registrar;
+- activar;
+- desactivar;
+- revocar;
+- cambiar allowlist;
+- cambiar restricciones;
+- iniciar actor session;
+- cambiar actor;
+- terminar actor session;
+- expirar actor session.
+
+##### Autorización
+
+Invalidan:
+
+- publicar catálogo;
+- activar o desactivar permiso;
+- cambiar modalidad;
+- cambiar prerrequisito;
+- cambiar sensibilidad;
+- cambiar política de dispositivo;
+- cambiar grant;
+- cambiar override;
+- crear o retirar deny;
+- cambiar versión activa.
+
+---
+
+#### 44. Cambios que no invalidan `AccessContext`
+
+No invalidan por sí solos:
+
+- cambio visual de ruta;
+- expansión de menú;
+- selección no autoritativa de sede;
+- selección no autoritativa de área;
+- ordenamiento de tabla;
+- cambio de idioma;
+- tema visual;
+- apertura de modal;
+- visibilidad de botón;
+- cambio de un recurso empresarial ajeno al actor.
+
+Un cambio de recurso puede exigir una nueva `AuthorizationDecision`.
+
+No necesariamente un nuevo `AccessContext`.
+
+---
+
+#### 45. Recursos y decisiones
+
+Cambios en:
+
+- estado del recurso;
+- propietario;
+- custodio;
+- sede del recurso;
+- área del recurso;
+- origen;
+- destino;
+- versión;
+- campos solicitados;
+
+no se resuelven mediante invalidación de contexto.
+
+Se resuelven mediante:
+
+```text
+NUEVA RESOLUCIÓN DE RECURSO
++
+NUEVA AUTHORIZATION DECISION
+```
+
+Esta separación evita invalidar todos los contextos por cada cambio empresarial.
+
+---
+
+#### 46. Outbox de invalidación
+
+El evento de invalidación deberá registrarse en un outbox transaccional.
+
+Campos lógicos mínimos:
+
+```text
+event_id
+event_type
+scope_type
+scope_ids
+app_code
+organization_id
+subject_key_hash
+generation_before
+generation_after
+occurred_at
+committed_at
+source_transaction_id
+producer
+schema_version
+delivery_status
+```
+
+El outbox:
+
+- no contiene secretos;
+- no contiene contexto completo;
+- permite replay;
+- permite reconciliación;
+- permite medir lag;
+- no es la única garantía de frescura.
+
+---
+
+#### 47. Realtime, NOTIFY y listeners
+
+Realtime, `NOTIFY`, webhooks o buses podrán:
+
+- expulsar entradas antes de la siguiente lectura;
+- limpiar L2;
+- despertar refresh;
+- actualizar UI;
+- reducir misses.
+
+No podrán ser la única barrera.
+
+Evento perdido:
+
+```text
+NO DEBE
+→ permitir stale HIT
+```
+
+porque la validación del token sigue siendo obligatoria.
+
+---
+
+#### 48. Consistencia y origen de lectura
+
+La lectura del token de frescura deberá utilizar una fuente con consistencia suficiente para observar el commit relevante.
+
+No se utilizará una réplica con lag no acotado como prueba de frescura.
+
+Regla:
+
+```text
+TOKEN STALE
+→ CACHE VALIDATION INSEGURA
+```
+
+Si no puede garantizarse:
+
+```text
+BYPASS L1
+→ RESOLVER DESDE FUENTE AUTORITATIVA
+```
+
+---
+
+#### 49. Fallo del servicio de token
+
+| Caso                                         | Comportamiento                                                 |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| Token no disponible, resolver disponible     | Bypass L1 y resolver fresco.                                   |
+| Token no disponible y resolver no disponible | Error seguro o `DENY`; nunca usar entrada antigua.             |
+| Token inválido                               | Rechazar entrada y emitir error técnico.                       |
+| Token cambia durante resolución              | Reintentar una vez.                                            |
+| Token cambia dos veces                       | No almacenar; fail closed o resolución no cacheada controlada. |
+
+La disponibilidad de caché nunca supera la seguridad.
+
+---
+
+#### 50. Fallo del almacenamiento L1
+
+| Caso                  | Comportamiento                                |
+| --------------------- | --------------------------------------------- |
+| Lectura falla         | Resolver fresco.                              |
+| Escritura falla       | Entregar el contexto fresco; registrar fallo. |
+| Delete falla          | El token distinto impide usar la entrada.     |
+| Entrada corrupta      | Eliminar o ignorar y resolver fresco.         |
+| Deserialización falla | Ignorar y resolver fresco.                    |
+| Timeout               | Bypass; no stale.                             |
+
+La caché es una optimización degradable.
+
+---
+
+#### 51. Caché negativa
+
+No se habilita L1 para contextos:
+
+- anónimos;
+- sin actor;
+- inválidos;
+- con empleado inactivo;
+- con contradicción estructural;
+- con error técnico.
+
+Pueden memoizarse en L0 dentro de la misma solicitud.
+
+Razón:
+
+- evitar prolongar una denegación después de una corrección;
+- evitar ocultar recuperación de actor o sesión;
+- reducir riesgos de mezcla;
+- simplificar la fase inicial.
+
+Esta decisión podrá revisarse mediante una tarea futura específica.
+
+---
+
+#### 52. Aislamiento de entornos
+
+Las claves, tokens, eventos y métricas separan:
+
+```text
+local
+staging
+preview
+production
+```
+
+No se reutiliza:
+
+- contexto de staging en producción;
+- catálogo de preview en producción;
+- generación de local en remoto;
+- evento de un entorno en otro.
+
+El entorno forma parte obligatoria de:
+
+- cache key;
+- token;
+- namespace;
+- métricas;
+- eventos.
+
+---
+
+#### 53. Aislamiento organizacional
+
+Aunque inicialmente exista una sola organización operativa, se incluye:
+
+```text
+organization_id
+```
+
+No se utiliza una caché global sin namespace organizacional.
+
+Esto evita que la arquitectura futura dependa de una suposición monocliente invisible.
+
+`organization_id = null` no significa todas las organizaciones.
+
+---
+
+#### 54. Seguridad del almacenamiento
+
+L1 deberá:
+
+- ser privado;
+- exigir autenticación de servicio;
+- usar cifrado en tránsito;
+- usar cifrado en reposo cuando corresponda;
+- restringir namespaces;
+- impedir acceso desde cliente;
+- impedir enumeración;
+- limitar tamaño;
+- validar schema;
+- aplicar integridad;
+- tener rotación de credenciales;
+- auditar administración.
+
+No se almacenan:
+
+- JWT;
+- refresh tokens;
+- cookies;
+- documentos;
+- salarios;
+- listas completas de denies;
+- evidencia disciplinaria;
+- secretos de dispositivo.
+
+---
+
+#### 55. Observabilidad
+
+Métricas mínimas:
+
+```text
+context_cache_requests_total
+context_cache_hit_total
+context_cache_miss_total
+context_cache_bypass_total
+context_cache_not_implemented_total
+context_cache_stale_rejected_total
+context_cache_token_mismatch_total
+context_cache_boundary_expired_total
+context_cache_corrupt_total
+context_cache_read_error_total
+context_cache_write_error_total
+context_cache_eviction_total
+context_cache_invalidation_event_total
+context_cache_invalidation_lag
+context_cache_singleflight_wait
+context_cache_resolution_retry_total
+context_cache_generation_race_total
+context_cache_entry_age
+context_cache_cardinality
+```
+
+Dimensiones permitidas:
+
+- entorno;
+- aplicación;
+- principal type;
+- modo;
+- resultado;
+- versión;
+- consumidor;
+- error class.
+
+No se incluyen IDs humanos directos.
+
+---
+
+#### 56. Logs
+
+Un log de caché podrá incluir:
+
+```text
+correlation_id
+app_code
+cache_mode
+cache_status
+consumer
+context_contract_version
+resolver_version
+token_prefix
+context_fingerprint_prefix
+entry_age_ms
+decision
+reason_class
+```
+
+No incluirá:
+
+- contexto completo;
+- nombres;
+- correos;
+- documentos;
+- UUID crudos en logs generales;
+- grants completos;
+- denies sensibles;
+- tokens técnicos.
+
+---
+
+#### 57. Auditoría
+
+La auditoría empresarial no registra cada cache hit como evento de negocio.
+
+Se separan:
+
+```text
+TELEMETRÍA OPERATIVA DE CACHÉ
+≠
+AUDITORÍA DE AUTORIZACIÓN
+```
+
+La decisión de autorización conservará:
+
+- referencia al contexto;
+- fingerprint;
+- versiones;
+- resultado;
+- evidencia requerida.
+
+La telemetría de caché permite demostrar:
+
+- si fue HIT;
+- si el token fue validado;
+- edad de la entrada;
+- versión del adapter.
+
+---
+
+#### 58. Despliegue gradual
+
+Orden:
+
+```text
+1. REQUEST_ONLY
+2. implementar AUTH-DB-035
+3. implementar SHELL-CTX-006
+4. SHADOW_SHARED
+5. medir paridad
+6. probar carreras e invalidación
+7. habilitar VALIDATED_SHARED en staging
+8. habilitar por aplicación
+9. habilitar por principal type
+10. conservar rollback
+```
+
+No se activa de forma global en producción como primer paso.
+
+---
+
+#### 59. Puertas para `SHADOW_SHARED`
+
+Requiere:
+
+1. token físico disponible;
+2. generations inicializadas;
+3. claves definidas;
+4. schema de entrada definido;
+5. almacenamiento privado;
+6. métricas;
+7. integridad;
+8. pruebas básicas;
+9. registro de consumidores;
+10. feature flag server-side.
+
+En shadow no se sirve L1.
+
+---
+
+#### 60. Puertas para `VALIDATED_SHARED`
+
+Requiere simultáneamente:
+
+1. `AUTH-DB-033` implementada;
+2. `AUTH-DB-035` implementada;
+3. `SHELL-CTX-006` implementada;
+4. `SHELL-AUTH-003` implementada;
+5. lectura autoritativa del token;
+6. incremento transaccional probado;
+7. límites temporales probados;
+8. double-read probado;
+9. single-flight probado;
+10. multiinstancia probada;
+11. evento perdido probado;
+12. cache outage probado;
+13. token outage probado;
+14. corrupción probada;
+15. actor switch probado;
+16. logout probado;
+17. check-out probado;
+18. deny inmediato probado;
+19. rollback probado;
+20. shadow sin diferencias no explicadas;
+21. observabilidad activa;
+22. aprobación del paquete.
+
+---
+
+#### 61. Rollback
+
+Rollback normal:
+
+```text
+VALIDATED_SHARED
+→ REQUEST_ONLY
+```
+
+Se realiza por configuración server-side.
+
+No requiere:
+
+- borrar código;
+- volver a RPC legacy;
+- restaurar bypass;
+- cambiar consumidores;
+- servir stale.
+
+Al desactivar L1:
+
+- L0 continúa;
+- el resolver canónico continúa;
+- las decisiones continúan;
+- la seguridad no cambia;
+- solo aumenta el costo.
+
+---
+
+#### 62. Limpieza de entradas durante rollback
+
+No es obligatorio eliminar todas las entradas antes de desactivar.
+
+Pero:
+
+- dejan de leerse;
+- pueden expirar naturalmente;
+- podrán purgarse por namespace;
+- no se reutilizan al reactivar si la versión o generación cambió;
+- la reactivación repite validaciones.
+
+---
+
+#### 63. Relación con AUTH-CTX-028
+
+La compatibilidad legacy utiliza:
+
+```text
+AccessContext validado
+→ LegacyOperationalContextProjection
+```
+
+Por tanto:
+
+- `get_operational_context` no crea una caché paralela;
+- `can_operate` no se almacena como autoridad;
+- el role override no modifica una entrada;
+- un cambio de actor invalida el contexto y la proyección;
+- el TTL legacy no excede el TTL canónico;
+- modo `LEGACY_NATIVE` permanece sin L1.
+
+---
+
+#### 64. Relación con AUTH-CTX-030
+
+`AUTH-CTX-030` deberá incorporar todas las pruebas definidas aquí.
+
+No podrá limitarse a:
+
+- pruebas felices;
+- comparación de payload;
+- unit tests del Map L0.
+
+Deberá cubrir:
+
+- transacciones;
+- carreras;
+- tiempo;
+- multiinstancia;
+- dispositivos;
+- eventos perdidos;
+- fallos de infraestructura;
+- rollback;
+- pruebas negativas de stale allow.
+
+---
+
+#### 65. Relación con AUTH-DB-033
+
+`AUTH-DB-033` implementa:
+
+- resolver canónico;
+- `AccessContext`;
+- source versions;
+- source fingerprints;
+- límites temporales derivados;
+- proyección segura del contexto.
+
+No absorbe silenciosamente la infraestructura de generaciones.
+
+La nueva responsabilidad transaccional queda en `AUTH-DB-035`.
+
+---
+
+#### 66. Relación con AUTH-DB-034
+
+`AUTH-DB-034`:
+
+- consume contexto validado;
+- evalúa permiso y recurso;
+- no depende de una decisión L1;
+- no asume que un HIT autoriza;
+- conserva referencia y fingerprint;
+- reevalúa recursos.
+
+La caché contextual no cambia la precedencia.
+
+---
+
+#### 67. Relación con AUTH-DB-032
+
+`AUTH-DB-032` podrá persistir:
+
+- decisión;
+- referencia de contexto;
+- fingerprint;
+- versiones;
+- `cache_status` observado;
+- evidencia de validación cuando corresponda.
+
+No persistirá la entrada L1 completa como sustituto del contexto histórico.
+
+---
+
+#### 68. Relación con SHELL-AUTH-002
+
+`SHELL-AUTH-002`:
+
+- produce adapters;
+- fija app code;
+- produce proyecciones;
+- aplica headers seguros;
+- elimina autoridad de cliente;
+- integra L2.
+
+No implementa por sí sola generaciones transaccionales.
+
+---
+
+#### 69. Relación con SHELL-AUTH-003
+
+`SHELL-AUTH-003`:
+
+- crea scope por solicitud;
+- implementa L0;
+- deduplica promesas;
+- registra consumidor;
+- propaga correlation;
+- implementa write barrier en el scope.
+
+No implementa L1 compartida.
+
+---
+
+#### 70. Relación con SHELL-CTX-006
+
+`SHELL-CTX-006`:
+
+- implementa L1;
+- consume token;
+- aplica TTL;
+- aplica límites temporales;
+- aplica single-flight cross-request;
+- gestiona modos;
+- registra métricas;
+- procesa invalidaciones.
+
+No decide permisos.
+
+---
+
+#### 71. Orden físico actualizado
+
+```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001
++
+SHELL-CTX-001
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-035
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+SHELL-CTX-002 a SHELL-CTX-006
+        ↓
+SHELL-AUTH-002
+        ↓
+SHELL-AUTH-003
+        ↓
+SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010
++
+AUTH-DB-021
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027`, `AUTH-DB-028` y `AUTH-DB-029` acompañan los paquetes físicos aplicables.
+
+---
+
+#### 72. Materialización documental futura
+
+Al consolidar el lote deberá actualizarse:
+
+##### BLOQUE H
+
+Archivo:
+
+```text
+docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md
+```
+
+Agregar:
+
+```md
+### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
+```
+
+después de `SHELL-CTX-005`.
+
+##### BLOQUE R1
+
+Archivo:
+
+```text
+docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md
+```
+
+Agregar:
+
+```md
+### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+```
+
+después de `AUTH-DB-033` y antes de `AUTH-DB-034`.
+
+##### Orden maestro
+
+Archivo:
+
+```text
+docs/plan-canonico/modular/90_ORDEN_DE_IMPLEMENTACION.md
+```
+
+Actualizar las secuencias contractuales para incorporar ambas tareas.
+
+##### Registro global y compilado
+
+Regenerar mediante el build canónico al cerrar el lote.
+
+No se realiza esta materialización durante la aprobación individual de AUTH-CTX-029.
+
+---
+
+#### 73. Pruebas mínimas que se transfieren a AUTH-CTX-030
+
+1. dos resoluciones iguales dentro de una solicitud producen una sola consulta lógica;
+2. llamadas concurrentes comparten promesa;
+3. una promesa fallida se elimina;
+4. write barrier elimina L0;
+5. otra solicitud no recibe L0 anterior;
+6. L1 deshabilitada no cambia semántica;
+7. shadow no sirve entrada;
+8. HIT exige token idéntico;
+9. token distinto rechaza entrada;
+10. TTL expirado rechaza entrada;
+11. límite de turno rechaza entrada;
+12. límite de check-in rechaza entrada;
+13. límite de actor session rechaza entrada;
+14. margen de un segundo se aplica;
+15. actor diferente genera clave diferente;
+16. app diferente genera clave diferente;
+17. entorno diferente genera clave diferente;
+18. organización diferente genera clave diferente;
+19. session ID diferente genera clave diferente;
+20. dispositivo diferente genera clave diferente;
+21. una entrada corrupta no se utiliza;
+22. error de cache read resuelve fresco;
+23. error de cache write no rompe contexto fresco;
+24. fallo de token hace bypass;
+25. fallo de token y resolver produce error seguro;
+26. evento perdido no permite stale hit;
+27. generación cambia durante resolución y fuerza retry;
+28. segunda carrera no almacena;
+29. check-out incrementa generación;
+30. deny individual incrementa generación;
+31. cambio de rol base incrementa generación;
+32. cambio de turno incrementa generación;
+33. cambio de mapping rol-sede incrementa generación;
+34. cambio de actor de dispositivo incrementa generaciones;
+35. catálogo global cambia generación global;
+36. matriz app cambia generación app;
+37. recurso cambia y obliga nueva decisión, no necesariamente nuevo contexto;
+38. decisión no se comparte entre solicitudes;
+39. decisión no se reutiliza para otro recurso;
+40. decisión no se reutiliza para otra versión;
+41. L2 nunca autoriza mutación;
+42. logout purga L2;
+43. actor switch purga L2;
+44. offline no ejecuta autorización almacenada;
+45. legacy no tiene caché independiente;
+46. simulación no llena caché real;
+47. `cache_status` no cambia fingerprint;
+48. HIT conserva `context_id`;
+49. resolución nueva crea nuevo `context_id`;
+50. rollback a `REQUEST_ONLY` funciona sin cambiar consumidores;
+51. dos instancias observan la misma generación;
+52. réplica con lag no se usa para validar;
+53. CDN no almacena contexto;
+54. Service Worker no almacena autoridad;
+55. no aparecen IDs humanos crudos en métricas;
+56. no aparecen secretos en entrada;
+57. invalidación se confirma en la misma transacción;
+58. fallo de incremento revierte escritura;
+59. outbox admite replay;
+60. stale-while-revalidate no puede activarse.
+
+---
+
+#### 74. Riesgos controlados
+
+##### Riesgo 1 — Stale allow
+
+Control:
+
+```text
+token autoritativo
++
+límite temporal
++
+sin stale-while-revalidate
+```
+
+##### Riesgo 2 — Evento perdido
+
+Control:
+
+```text
+evento optimiza
+token garantiza
+```
+
+##### Riesgo 3 — Carrera durante resolución
+
+Control:
+
+```text
+T1
+→ resolver
+→ T2
+→ comparar
+```
+
+##### Riesgo 4 — Mezcla de actores
+
+Control:
+
+```text
+session + actor_session + subject
+→ clave obligatoria
+```
+
+##### Riesgo 5 — Proceso local incoherente
+
+Control:
+
+```text
+L1 compartida o validada
+≠ Map global local
+```
+
+##### Riesgo 6 — Contexto usado como decisión
+
+Control:
+
+```text
+context cache
+≠ decision cache
+```
+
+##### Riesgo 7 — UI como seguridad
+
+Control:
+
+```text
+L2 solo presentación
++
+servidor reevalúa
+```
+
+##### Riesgo 8 — TTL demasiado largo
+
+Control:
+
+```text
+TTL máximo
++
+token
++
+boundary
+```
+
+##### Riesgo 9 — Cambio temporal sin evento
+
+Control:
+
+```text
+next_temporal_boundary_at
+```
+
+##### Riesgo 10 — Rollback inseguro
+
+Control:
+
+```text
+VALIDATED_SHARED
+→ REQUEST_ONLY
+```
+
+---
+
+#### 75. Antipatrones prohibidos
+
+```ts
+const cache = new Map<string, AccessContext>();
+```
+
+como caché global autoritativa entre solicitudes.
+
+```ts
+if (cached && Date.now() - cached.at < 60_000) {
+  return cached.context;
+}
+```
+
+sin validar token.
+
+```ts
+return staleContext;
+void refreshInBackground();
+```
+
+```ts
+localStorage.setItem("access_context", JSON.stringify(context));
+```
+
+```ts
+if (projection.canOperate) {
+  await executeMutation();
+}
+```
+
+```ts
+await unstable_cache(resolveContext, [userId], { revalidate: 60 })();
+```
+
+sin namespace, token y límites temporales.
+
+```ts
+if (cacheError) return previousAllow;
+```
+
+```text
+evento no llegó
+→ conservar entrada
+```
+
+```text
+decision_id
+→ bearer token
+```
+
+```text
+resource changed
+→ reutilizar decisión anterior
+```
+
+---
+
+#### 76. Fuera del alcance
+
+AUTH-CTX-029 no:
+
+- crea almacenamiento de caché;
+- crea Redis o servicio equivalente;
+- crea tablas;
+- crea generaciones;
+- crea triggers;
+- crea outbox;
+- crea listeners;
+- crea feature flags;
+- implementa single-flight;
+- modifica `AccessContext@1.0.0`;
+- modifica `AuthorizationDecision@1.0.0`;
+- añade caché de decisiones cross-request;
+- modifica aplicaciones;
+- modifica Supabase;
+- habilita producción;
+- define todos los casos de prueba de `AUTH-CTX-030`;
+- materializa hoy las dos tareas nuevas en el remoto.
+
+---
+
+#### 77. Invariantes
+
+1. L0 es obligatoria.
+2. L1 es opcional.
+3. L1 inicia deshabilitada.
+4. El modo inicial es `REQUEST_ONLY`.
+5. L1 exige token autoritativo.
+6. TTL no sustituye token.
+7. Eventos no sustituyen token.
+8. Una escritura relevante incrementa generación en la misma transacción.
+9. Si falla el incremento, falla la escritura.
+10. El tiempo puede invalidar sin evento.
+11. Toda entrada respeta `next_temporal_boundary_at`.
+12. Se aplica margen de un segundo.
+13. No existe stale-while-revalidate de autoridad.
+14. No existe L1 de decisiones en la versión inicial.
+15. Decisiones se memoizan solo por solicitud y recurso exacto.
+16. No se reutiliza una decisión para otra mutación.
+17. L2 no autoriza.
+18. Offline no autoriza con datos almacenados.
+19. Legacy no tiene caché independiente.
+20. Simulación no usa la caché real.
+21. Contexto inválido no entra en L1.
+22. Error técnico no entra en caché.
+23. HIT conserva `context_id`.
+24. `cache_status` no participa en fingerprint.
+25. Cambiar actor cambia la clave.
+26. Cambiar app cambia la clave.
+27. Cambiar sesión cambia la clave.
+28. Cambiar entorno cambia la clave.
+29. Cambiar organización cambia la clave.
+30. Cambiar generación invalida la clave.
+31. El token se lee desde fuente consistente.
+32. Una réplica con lag no prueba frescura.
+33. Una entrada corrupta se rechaza.
+34. Un fallo de caché degrada a resolución fresca.
+35. Un fallo total produce error seguro.
+36. Rollback vuelve a `REQUEST_ONLY`.
+37. `AUTH-DB-035` implementa generaciones.
+38. `SHELL-CTX-006` implementa L1.
+39. `AUTH-CTX-030` consolida pruebas.
+40. No se implementa código ni migraciones en esta tarea.
+
+---
+
+#### 78. Criterios de aprobación
+
+AUTH-CTX-029 podrá aprobarse cuando se acepte que:
+
+1. existen L0, L1 y L2;
+2. L0 es obligatoria;
+3. L1 es opcional;
+4. L2 es solo presentación;
+5. se definen cuatro modos;
+6. `REQUEST_ONLY` es el modo inicial;
+7. L0 utiliza promesas;
+8. L0 termina con la solicitud;
+9. existe write barrier;
+10. se define `ContextFreshnessToken@1.0.0`;
+11. el token contiene generaciones separadas;
+12. las generaciones cambian transaccionalmente;
+13. se crea `AUTH-DB-035`;
+14. se crea `SHELL-CTX-006`;
+15. se define `CachedAccessContextRecord@1.0.0`;
+16. se define la clave L1;
+17. se fijan TTL máximos;
+18. se fija margen de un segundo;
+19. se definen límites temporales;
+20. se define algoritmo de lectura;
+21. se define algoritmo de escritura;
+22. se define double-read;
+23. se define retry único;
+24. se define single-flight;
+25. se prohíbe stale-while-revalidate;
+26. se conservan los cuatro valores de `cache_status`;
+27. cache status no cambia fingerprint;
+28. HIT conserva `context_id`;
+29. context ID y fingerprint tienen funciones distintas;
+30. source fingerprint no sustituye token;
+31. snapshots versionados pueden cachearse por hash;
+32. no hay L1 de decisiones;
+33. la clave de decisión L0 es exacta;
+34. mutaciones reevalúan;
+35. operaciones sensibles hacen bypass inicial;
+36. L2 tiene TTL visual;
+37. L2 se purga por actor y sesión;
+38. caches HTTP y framework no son autoridad;
+39. offline no conserva autorización;
+40. legacy no tiene caché paralela;
+41. simulación no usa caché real;
+42. existe catálogo de eventos;
+43. existen alcances de invalidación;
+44. existe matriz de causas;
+45. cambios de recurso producen nueva decisión;
+46. existe outbox transaccional;
+47. Realtime es optimización;
+48. la fuente del token requiere consistencia;
+49. se define comportamiento ante fallos;
+50. no existe caché negativa L1;
+51. existe aislamiento por entorno;
+52. existe aislamiento organizacional;
+53. almacenamiento es privado;
+54. existen métricas y logs seguros;
+55. existe rollout gradual;
+56. existen puertas de shadow;
+57. existen puertas de producción;
+58. existe rollback;
+59. se define orden físico actualizado;
+60. las tareas nuevas tienen ubicación exacta;
+61. `AUTH-CTX-030` recibe las pruebas;
+62. no se implementa código ni migraciones.
+
+---
+
+#### 79. Cierre y continuidad
+
+| Relación                  | Tarea           | Estado        |
+| ------------------------- | --------------- | ------------- |
+| Tarea anterior del lote   | `AUTH-CTX-028`  | ✅ APROBADA    |
+| Tarea propuesta           | `AUTH-CTX-029`  | ✅ APROBADA    |
+| Tarea siguiente reservada | `AUTH-CTX-030`  | ⬜ NO INICIADA |
+| Nueva tarea física        | `AUTH-DB-035`   | ⬜ NO INICIADA |
+| Nueva tarea física        | `SHELL-CTX-006` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-028 — APROBADA
+        ↓
+AUTH-CTX-029 — APROBADA
+        ↓
+AUTH-CTX-030 — NO INICIADA
+```
+
+Después de aprobar y completar `AUTH-CTX-030` se realizará una sola consolidación documental del lote:
+
+```text
+AUTH-MOD-021
++
+AUTH-CTX-028
++
+AUTH-CTX-029
++
+AUTH-CTX-030
++
+AUTH-DB-035
++
+SHELL-CTX-006
+```
+
+No se inicia `AUTH-CTX-030` hasta recibir aprobación explícita de `AUTH-CTX-029`.
+
 
 ### [ ] AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
 

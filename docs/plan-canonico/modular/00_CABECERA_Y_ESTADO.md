@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **110** |
 | Tareas canónicas con marcador | **1350** |
 | Tareas `AUTH` únicas | **315** |
-| Tareas aprobadas | **120** |
+| Tareas aprobadas | **122** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1230** |
+| Tareas no iniciadas | **1228** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada | **AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos** |
-| Tarea actual | **AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context** |
+| Última tarea aprobada | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
+| Tarea actual | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
+| Siguiente tarea | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
 | Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-CTX-028 pendiente** |
+| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-029 aprobadas; AUTH-CTX-030 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
-| Última aprobada | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos |
-| Tarea actual | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
+| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
+| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
-| `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
-| `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
+| `AUTH-CTX-001` a `AUTH-CTX-029` | **APROBADAS** |
+| `AUTH-CTX-030` | **NO INICIADA** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,14 +87,8 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
-        ↓
-TAREA ACTUAL
-AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-CTX-029 — Definir estrategia de invalidación y caché
         ↓
-CIERRE DEL BLOQUE
-AUTH-CTX-029 a AUTH-CTX-030
+TAREA ACTUAL
+AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
 ```

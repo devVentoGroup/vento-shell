@@ -10,18 +10,17 @@
 | --- | ---: |
 | Tareas con marcador | **1350** |
 | Tareas `AUTH` | **315** |
-| Aprobadas | **120** |
+| Aprobadas | **122** |
 | En propuesta | **0** |
-| No iniciadas | **1230** |
+| No iniciadas | **1228** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos | ✅ APROBADA |
-| Tarea actual | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context | ⬜ NO INICIADA |
-| Siguiente | `AUTH-CTX-029` — Definir estrategia de invalidación y caché | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché | ✅ APROBADA |
+| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -147,8 +146,8 @@
 | ✅ APROBADA | `AUTH-CTX-025` | Diseñar contrato SQL de get_access_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `AUTH-CTX-026` | Diseñar contrato canónico de evaluate_authorization | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `AUTH-CTX-027` | Definir consumo centralizado del contexto por las aplicaciones | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
-| ⬜ NO INICIADA | `AUTH-CTX-028` | Definir compatibilidad temporal con get_operational_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
-| ⬜ NO INICIADA | `AUTH-CTX-029` | Definir estrategia de invalidación y caché | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
+| ✅ APROBADA | `AUTH-CTX-028` | Definir compatibilidad temporal con get_operational_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
+| ✅ APROBADA | `AUTH-CTX-029` | Definir estrategia de invalidación y caché | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `AUTH-CTX-030` | Definir plan de pruebas contractuales del contexto y la decisión | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `OPS-AUD-001` | Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-002` | Identificar familias de actores y responsables reales por proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
