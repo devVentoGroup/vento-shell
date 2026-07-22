@@ -1910,25 +1910,21 @@ es ambigua sin permiso y recurso exactos.
 
 ---
 
-#### 94. Sin bypass administrativo
+#### 94. Refinamiento contractual de tareas SHELL-AUTH y SHELL-CTX existentes
 
-Queda prohibido:
+Se refinan contractualmente tareas no iniciadas que ya existían en BLOQUE H.
+No se reutiliza ningún identificador y no se crean paquetes paralelos.
 
 ```text
-role in ('propietario', 'gerente_general')
-→ bypass
+SHELL-AUTH-001..005
+→ SDK, adapters, scope, gates y migración multi-repositorio
+
+SHELL-CTX-001..005
+→ módulo contextual, turno, check-in, territorio, readiness y razones seguras
 ```
 
-Los roles privilegiados siguen sujetos a:
-
-- permiso exacto;
-- modalidad;
-- recurso;
-- alcance;
-- denies;
-- auditoría.
-
----
+Todas permanecen dentro de `@vento/os-context`. Las responsabilidades
+anteriores compatibles quedan absorbidas sin cambiar tareas aprobadas o ejecutadas.
 
 #### 95. Sin fallback territorial
 
@@ -2043,20 +2039,34 @@ La auditoría durable de decisiones pertenece a `AUTH-DB-032`.
 
 ---
 
-#### 101. Rendimiento
+#### 101. Dependencias físicas
 
-La implementación deberá evitar:
+```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001 + SHELL-CTX-001
+        ↓
+AUTH-DB-033 → AUTH-DB-034 → AUTH-DB-032
+        ↓
+SHELL-CTX-002 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002 → SHELL-AUTH-003 → SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010 + AUTH-DB-021
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-030 → AUTH-DB-031
+```
 
-- N+1 por asignación;
-- consulta por cada código;
-- carga de historiales completos;
-- materialización de permisos;
-- selección de columnas innecesarias;
-- funciones repetidas por nodo sin snapshot común.
-
-La optimización no podrá cambiar la semántica.
-
----
+`AUTH-DB-027` acompaña cada paquete físico y `AUTH-DB-029` conserva la
+puerta de rollback antes de cada adopción por dominio.
 
 #### 102. Índices
 
@@ -2094,26 +2104,20 @@ Los consumidores no usarán tipos manuales divergentes como fuente de verdad.
 
 ---
 
-#### 104. Estado actual get_operational_context
+#### 104. Responsabilidades sin pendiente narrativo
 
-`get_operational_context` se clasifica como resolver legacy transitorio.
-
-AUTH-CTX-027 deberá inventariar:
-
-- firmas;
-- consumidores;
-- dependencias;
-- políticas;
-- RLS;
-- RPC;
-- tests;
-- supuestos de sede;
-- bypasses;
-- códigos de error.
-
-No se retirará todavía.
-
----
+| Brecha | Responsable |
+| --- | --- |
+| SDK incompatible | `SHELL-AUTH-001` |
+| Contexto fragmentado | `SHELL-CTX-001` a `SHELL-CTX-005` |
+| Adapters y proyecciones | `SHELL-AUTH-002` |
+| Resolución duplicada | `SHELL-AUTH-003` |
+| Nuevos usos legacy | `SHELL-AUTH-004` |
+| Migración multi-repo | `SHELL-AUTH-005` |
+| Resolver, evaluador y persistencia | `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-032` |
+| Migración de objetos, RPC y RLS | `AUTH-DB-020`, `AUTH-DB-006` a `AUTH-DB-010`, `AUTH-DB-021` |
+| Guards y pantallas | `AUTH-UI-040` a `AUTH-UI-051` |
+| Retiro y certificación | `AUTH-DB-030`, `AUTH-DB-031` |
 
 #### 105. Estado actual get_effective_context_v1
 
@@ -4495,7 +4499,8 @@ No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
 | **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
 | **Cambios físicos permitidos**   | No                                                                                               |
 | **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
-| **Tareas existentes refinadas**   | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan y amplían sin reutilizar IDs                                                              |
+| **Tareas de autorización refinadas** | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan sin reutilizar IDs |
+| **Tareas contextuales refinadas** | `SHELL-CTX-001` a `SHELL-CTX-005`; se consolidan dentro de `@vento/os-context` |
 
 Esta tarea define una única arquitectura de consumo para que todas las
 aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
@@ -6381,13 +6386,13 @@ AUTH-CTX-027 podrá aprobarse cuando se acepte que:
 118. se refina SHELL-AUTH-003 sin cambiar su identificador;
 119. se refina SHELL-AUTH-004 sin cambiar su identificador;
 120. se refina SHELL-AUTH-005 sin cambiar su identificador;
-121. las tareas se materializan en BLOQUE H;
+121. SHELL-AUTH-001..005 y SHELL-CTX-001..005 se materializan en BLOQUE H;
 122. SHELL-AUTH-001 consolida SDK;
 123. SHELL-AUTH-002 implementa adapters;
 124. SHELL-AUTH-003 implementa scope y registro;
 125. SHELL-AUTH-004 implementa gates legacy;
 126. SHELL-AUTH-005 coordina migración multi-repo;
-127. las tareas existentes conservan sus responsabilidades;
+127. SHELL-CTX-001..005 se refinan sin reutilizar IDs y conservan responsabilidades contextuales;
 128. AUTH-DB-033 implementa contexto;
 129. AUTH-DB-034 implementa evaluación;
 130. AUTH-DB-032 persiste decisiones;

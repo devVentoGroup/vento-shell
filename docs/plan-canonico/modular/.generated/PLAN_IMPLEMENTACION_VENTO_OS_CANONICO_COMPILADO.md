@@ -17,22 +17,22 @@
 | Estado documental             | **VIGENTE**                                                                                       |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
 | Fuente de orden canónico      | `manifest.json`                                                                                   |
-| Fragmentos canónicos          | **110**                                                                                           |
-| Tareas canónicas con marcador | **732**                                                                                           |
-| Tareas `AUTH` únicas          | **315**                                                                                           |
-| Tareas aprobadas              | **119**                                                                                           |
-| Tareas en propuesta           | **0**                                                                                             |
-| Tareas no iniciadas           | **613**                                                                                           |
-| Tareas rechazadas             | **0**                                                                                             |
+| Fragmentos canónicos | **110** |
+| Tareas canónicas con marcador | **732** |
+| Tareas `AUTH` únicas | **315** |
+| Tareas aprobadas | **119** |
+| Tareas en propuesta | **0** |
+| Tareas no iniciadas | **613** |
+| Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada         | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones**                            |
-| Tarea actual                  | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
-| Estado de la tarea actual     | **NO INICIADA**                                                                                   |
-| Siguiente tarea               | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context   |
+| Última tarea aprobada | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones** |
+| Tarea actual | **AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context** |
 | Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente**                                 |
+| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
@@ -40,8 +40,8 @@
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
 | Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones |
-| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA**  |
-| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                          |
+| Tarea actual | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -52,7 +52,7 @@
 | `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                  |
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
-| `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
+| `AUTH-MOD-021` | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
 | `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
 | `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
 | Implementación física             | **NO INICIADA**                                |
@@ -72,11 +72,11 @@
 - [Protocolo obligatorio](./01_PROTOCOLO.md)
 - [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
 - [Contexto y decisión de autorización](./bloques/E_CONTEXTO_Y_DECISION/00_INTRO.md)
-- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_BLOQUE_E1.md)
+- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_INTRO.md)
 - [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
-- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
-- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_BLOQUE_E4.md)
-- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_BLOQUE_E5.md)
+- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_INTRO.md)
+- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md)
+- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_INTRO.md)
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
@@ -125535,25 +125535,21 @@ es ambigua sin permiso y recurso exactos.
 
 ---
 
-#### 94. Sin bypass administrativo
+#### 94. Refinamiento contractual de tareas SHELL-AUTH y SHELL-CTX existentes
 
-Queda prohibido:
+Se refinan contractualmente tareas no iniciadas que ya existían en BLOQUE H.
+No se reutiliza ningún identificador y no se crean paquetes paralelos.
 
 ```text
-role in ('propietario', 'gerente_general')
-→ bypass
+SHELL-AUTH-001..005
+→ SDK, adapters, scope, gates y migración multi-repositorio
+
+SHELL-CTX-001..005
+→ módulo contextual, turno, check-in, territorio, readiness y razones seguras
 ```
 
-Los roles privilegiados siguen sujetos a:
-
-- permiso exacto;
-- modalidad;
-- recurso;
-- alcance;
-- denies;
-- auditoría.
-
----
+Todas permanecen dentro de `@vento/os-context`. Las responsabilidades
+anteriores compatibles quedan absorbidas sin cambiar tareas aprobadas o ejecutadas.
 
 #### 95. Sin fallback territorial
 
@@ -125668,20 +125664,34 @@ La auditoría durable de decisiones pertenece a `AUTH-DB-032`.
 
 ---
 
-#### 101. Rendimiento
+#### 101. Dependencias físicas
 
-La implementación deberá evitar:
+```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001 + SHELL-CTX-001
+        ↓
+AUTH-DB-033 → AUTH-DB-034 → AUTH-DB-032
+        ↓
+SHELL-CTX-002 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002 → SHELL-AUTH-003 → SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010 + AUTH-DB-021
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-030 → AUTH-DB-031
+```
 
-- N+1 por asignación;
-- consulta por cada código;
-- carga de historiales completos;
-- materialización de permisos;
-- selección de columnas innecesarias;
-- funciones repetidas por nodo sin snapshot común.
-
-La optimización no podrá cambiar la semántica.
-
----
+`AUTH-DB-027` acompaña cada paquete físico y `AUTH-DB-029` conserva la
+puerta de rollback antes de cada adopción por dominio.
 
 #### 102. Índices
 
@@ -125719,26 +125729,20 @@ Los consumidores no usarán tipos manuales divergentes como fuente de verdad.
 
 ---
 
-#### 104. Estado actual get_operational_context
+#### 104. Responsabilidades sin pendiente narrativo
 
-`get_operational_context` se clasifica como resolver legacy transitorio.
-
-AUTH-CTX-027 deberá inventariar:
-
-- firmas;
-- consumidores;
-- dependencias;
-- políticas;
-- RLS;
-- RPC;
-- tests;
-- supuestos de sede;
-- bypasses;
-- códigos de error.
-
-No se retirará todavía.
-
----
+| Brecha | Responsable |
+| --- | --- |
+| SDK incompatible | `SHELL-AUTH-001` |
+| Contexto fragmentado | `SHELL-CTX-001` a `SHELL-CTX-005` |
+| Adapters y proyecciones | `SHELL-AUTH-002` |
+| Resolución duplicada | `SHELL-AUTH-003` |
+| Nuevos usos legacy | `SHELL-AUTH-004` |
+| Migración multi-repo | `SHELL-AUTH-005` |
+| Resolver, evaluador y persistencia | `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-032` |
+| Migración de objetos, RPC y RLS | `AUTH-DB-020`, `AUTH-DB-006` a `AUTH-DB-010`, `AUTH-DB-021` |
+| Guards y pantallas | `AUTH-UI-040` a `AUTH-UI-051` |
+| Retiro y certificación | `AUTH-DB-030`, `AUTH-DB-031` |
 
 #### 105. Estado actual get_effective_context_v1
 
@@ -128120,7 +128124,8 @@ No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
 | **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
 | **Cambios físicos permitidos**   | No                                                                                               |
 | **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
-| **Tareas existentes refinadas**   | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan y amplían sin reutilizar IDs                                                              |
+| **Tareas de autorización refinadas** | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan sin reutilizar IDs |
+| **Tareas contextuales refinadas** | `SHELL-CTX-001` a `SHELL-CTX-005`; se consolidan dentro de `@vento/os-context` |
 
 Esta tarea define una única arquitectura de consumo para que todas las
 aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
@@ -130006,13 +130011,13 @@ AUTH-CTX-027 podrá aprobarse cuando se acepte que:
 118. se refina SHELL-AUTH-003 sin cambiar su identificador;
 119. se refina SHELL-AUTH-004 sin cambiar su identificador;
 120. se refina SHELL-AUTH-005 sin cambiar su identificador;
-121. las tareas se materializan en BLOQUE H;
+121. SHELL-AUTH-001..005 y SHELL-CTX-001..005 se materializan en BLOQUE H;
 122. SHELL-AUTH-001 consolida SDK;
 123. SHELL-AUTH-002 implementa adapters;
 124. SHELL-AUTH-003 implementa scope y registro;
 125. SHELL-AUTH-004 implementa gates legacy;
 126. SHELL-AUTH-005 coordina migración multi-repo;
-127. las tareas existentes conservan sus responsabilidades;
+127. SHELL-CTX-001..005 se refinan sin reutilizar IDs y conservan responsabilidades contextuales;
 128. AUTH-DB-033 implementa contexto;
 129. AUTH-DB-034 implementa evaluación;
 130. AUTH-DB-032 persiste decisiones;
@@ -131592,17 +131597,15 @@ No se crearán paquetes paralelos `@vento/auth` ni
 ### Orden contractual interno
 
 ```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
 SHELL-CON-001 a SHELL-CON-008
         ↓
 SHELL-AUTH-001
 +
-SHELL-CTX-001 a SHELL-CTX-005
-        ↓
-SHELL-AUTH-002
-        ↓
-SHELL-AUTH-003
-        ↓
-SHELL-AUTH-004
+SHELL-CTX-001
         ↓
 AUTH-DB-033
         ↓
@@ -131610,20 +131613,39 @@ AUTH-DB-034
         ↓
 AUTH-DB-032
         ↓
+SHELL-CTX-002 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002
+        ↓
+SHELL-AUTH-003
+        ↓
+SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010
++
+AUTH-DB-021
+        ↓
 SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
 ```
 
 Reglas:
 
-- `SHELL-AUTH-001` define la estructura y exports del único SDK compartido;
-- `SHELL-CTX-001..005` implementan piezas contextuales dentro del mismo paquete;
-- `SHELL-AUTH-002` depende de los contratos y módulos contextuales;
-- `SHELL-AUTH-003` crea scope por solicitud y registro de consumidores;
-- `SHELL-AUTH-004` impide nuevos consumos legacy antes de la migración;
-- `AUTH-DB-033` y `AUTH-DB-034` implementan las fuentes autoritativas;
-- `AUTH-DB-032` agrega persistencia durable y vínculo con ejecución;
-- `SHELL-AUTH-005` migra consumidores solo después de disponer del backend,
-  adapters, gates, pruebas y rollback.
+- `SHELL-AUTH-001` define estructura, exports, versionado y compatibilidad del único SDK compartido;
+- `SHELL-CTX-001` consolida el módulo contextual dentro del mismo paquete sin crear otro núcleo;
+- `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` implementan contexto, decisión y persistencia autoritativos;
+- `SHELL-CTX-002..005` consumen el contexto canónico ya disponible y producen proyecciones contextuales seguras;
+- `SHELL-AUTH-002` implementa adapters y proyecciones sobre las fronteras canónicas;
+- `SHELL-AUTH-003` implementa scope por solicitud, deduplicación y registro de consumidores;
+- `SHELL-AUTH-004` bloquea nuevos consumos legacy antes de la migración masiva;
+- `AUTH-DB-020`, `AUTH-DB-006..010` y `AUTH-DB-021` migran objetos, RPC y RLS por dominio;
+- `SHELL-AUTH-005` coordina y certifica la migración multi-repositorio después de disponer de backend, adapters, gates y rollback;
+- `AUTH-DB-030` y `AUTH-DB-031` retiran legacy y certifican paridad únicamente al final.
 ## BLOQUE H2
 
 **SHELL como aplicación y hub contextual**
@@ -132161,11 +132183,6 @@ un objeto identificado y un paquete de transición definido.
 ### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
 ### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
 ### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
-### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
-### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
-### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
-### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
-### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
 
 Regla de entrada a migraciones
 
@@ -132204,13 +132221,31 @@ aplicación o dominio.
 ### R2 — Migración progresiva por dominio
 
 ### [ ] AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
-### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+
+### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
+### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
+### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+
 ### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
 ### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
 ### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
 ### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
 ### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
 ### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
+
+Regla de secuencia por dominio
+
+`AUTH-DB-006` a `AUTH-DB-010` solo podrán ejecutarse después de:
+
+- completar R0;
+- disponer de `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` en R1;
+- aprobar el paquete de migración del dominio mediante `AUTH-DB-020`;
+- disponer de pruebas negativas y rollback mediante `AUTH-DB-027` y `AUTH-DB-029`.
+
+Las políticas RLS y grants de `AUTH-DB-021` deberán adoptar el mismo núcleo y demostrar equivalencia con las RPC antes de completar la migración del consumidor correspondiente.
 ### IMPLEMENTACIÓN FÍSICA DE NORMALIZACIÓN
 
 ### [ ] DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios
@@ -132787,32 +132822,34 @@ Reglas:
 ### Secuencia canónica de autorización compartida
 
 ```text
-SHELL-CON-001 a SHELL-CON-008
-        ↓
-SHELL-AUTH-001
-+
-SHELL-CTX-001 a SHELL-CTX-005
-        ↓
-SHELL-AUTH-002 a SHELL-AUTH-004
-        ↓
-AUTH-DB-033
-        ↓
-AUTH-DB-034
-        ↓
-AUTH-DB-032
-        ↓
-SHELL-AUTH-005
-        ↓
-AUTH-DB-006 a AUTH-DB-010
-        ↓
-AUTH-DB-030
-        ↓
-AUTH-DB-031
+FUNDACIÓN COMPARTIDA
+SHELL-AUD-002..005
+→ SHELL-PKG-001..008
+→ SHELL-CON-001..008
+→ SHELL-AUTH-001 + SHELL-CTX-001
+
+PREPARACIÓN Y NÚCLEO FÍSICO
+AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
+→ AUTH-DB-019
+→ AUTH-DB-033
+→ AUTH-DB-034
+→ AUTH-DB-032
+
+CONVERGENCIA Y ADOPCIÓN
+SHELL-CTX-002..005
+→ SHELL-AUTH-002
+→ SHELL-AUTH-003
+→ SHELL-AUTH-004
+→ AUTH-DB-020
+→ AUTH-DB-006..010 + AUTH-DB-021
+→ SHELL-AUTH-005
+→ AUTH-DB-030
+→ AUTH-DB-031
 ```
 
 `AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
-no puede comenzar antes de que existan contratos, SDK, contexto compartido,
-gates, resolver, evaluador, persistencia y pruebas.
+no puede completarse antes de resolver contexto, evaluar, persistir, adaptar
+RPC y RLS, demostrar rollback y bloquear nuevos consumos legacy.
 <!-- SHELL-AUTH-CANONICAL:END -->
 
 FASE 4 — HABILITADORES TRANSVERSALES

@@ -2,7 +2,7 @@
 
 > Archivo derivado. No editar manualmente.
 >
-> La fuente de verdad del estado es exclusivamente el marcador del encabezado.
+> La fuente de verdad del estado es exclusivamente el marcador del encabezado de cada tarea.
 
 ## Resumen global
 
@@ -666,11 +666,6 @@
 | ⬜ NO INICIADA | `AUTH-DB-003` | Endurecer funciones SECURITY DEFINER aprobadas | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-004` | Reducir grants innecesarios de authenticated | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-005` | Revocar grants innecesarios de anon | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-006` | Incorporar contexto canónico en RPC sensibles | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-007` | Validar sede dentro de RPC sensibles | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-008` | Validar área dentro de RPC sensibles | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-009` | Validar permiso exacto dentro de RPC sensibles | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-010` | Validar principal y actor efectivo dentro de RPC sensibles | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-016` | Crear esquemas empresariales aprobados | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-018` | Separar vistas y RPC expuestas de helpers internos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
@@ -682,8 +677,13 @@
 | ⬜ NO INICIADA | `AUTH-DB-013` | Implementar auditoría de simulación | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-014` | Implementar auditoría de dispositivos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-020` | Migrar objetos por dominio con compatibilidad temporal | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
-| ⬜ NO INICIADA | `AUTH-DB-011` | Aplicar constraints después de backfills y reconciliación | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-006` | Incorporar contexto canónico en RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-007` | Validar sede dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-008` | Validar área dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-009` | Validar permiso exacto dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-010` | Validar principal y actor efectivo dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-021` | Implementar políticas RLS y grants canónicos por esquema | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ⬜ NO INICIADA | `AUTH-DB-011` | Aplicar constraints después de backfills y reconciliación | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-022` | Implementar gobierno y políticas de Storage | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-023` | Implementar canales y contratos Realtime aprobados | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-024` | Versionar Edge Functions, webhooks, cron y automatizaciones | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |

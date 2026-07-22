@@ -338,7 +338,8 @@ function buildControlBlock(continuity) {
 }
 
 function updateHeader(header, manifest, taskMap, stats, continuity) {
-  let updated = header;
+  const originalEol = header.includes('\r\n') ? '\r\n' : '\n';
+  let updated = header.replace(/\r\n?/g, '\n');
   updated = replaceRow(updated, 'Fragmentos canónicos', `**${manifest.files.length}**`);
   updated = replaceRegistrySummaryRows(updated, stats);
   updated = replaceRow(updated, 'Última tarea aprobada', `**${formatTask(continuity.lastApproved)}**`);
@@ -366,7 +367,8 @@ function updateHeader(header, manifest, taskMap, stats, continuity) {
   const controlPattern = /## Control de continuidad\n\n```text\n[\s\S]*?\n```/;
   if (!controlPattern.test(updated)) fail('no se encontró el bloque Control de continuidad.');
   updated = updated.replace(controlPattern, buildControlBlock(continuity));
-  return ensureRegistryNavigationLink(updated);
+  updated = ensureRegistryNavigationLink(updated);
+  return originalEol === '\n' ? updated : updated.replace(/\n/g, '\r\n');
 }
 
 function escapeMarkdownCell(value) {

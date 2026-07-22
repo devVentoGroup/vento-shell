@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { syncPlanContinuity as syncPreservingFormat } from './plan-continuity-preserve-format.mjs';
+import { syncPlanContinuity as syncCanonicalContinuity } from './plan-continuity-global.mjs';
 
 function ensureSingleFinalNewline(filePath, checkOnly) {
   const current = fs.readFileSync(filePath, 'utf8');
@@ -21,7 +21,7 @@ function ensureSingleFinalNewline(filePath, checkOnly) {
 }
 
 export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } = {}) {
-  const result = syncPreservingFormat({ root, checkOnly });
+  const result = syncCanonicalContinuity({ root, checkOnly });
   const headerPath = path.resolve(
     root,
     'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'

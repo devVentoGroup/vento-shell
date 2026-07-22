@@ -113,32 +113,34 @@ Reglas:
 ### Secuencia canónica de autorización compartida
 
 ```text
-SHELL-CON-001 a SHELL-CON-008
-        ↓
-SHELL-AUTH-001
-+
-SHELL-CTX-001 a SHELL-CTX-005
-        ↓
-SHELL-AUTH-002 a SHELL-AUTH-004
-        ↓
-AUTH-DB-033
-        ↓
-AUTH-DB-034
-        ↓
-AUTH-DB-032
-        ↓
-SHELL-AUTH-005
-        ↓
-AUTH-DB-006 a AUTH-DB-010
-        ↓
-AUTH-DB-030
-        ↓
-AUTH-DB-031
+FUNDACIÓN COMPARTIDA
+SHELL-AUD-002..005
+→ SHELL-PKG-001..008
+→ SHELL-CON-001..008
+→ SHELL-AUTH-001 + SHELL-CTX-001
+
+PREPARACIÓN Y NÚCLEO FÍSICO
+AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
+→ AUTH-DB-019
+→ AUTH-DB-033
+→ AUTH-DB-034
+→ AUTH-DB-032
+
+CONVERGENCIA Y ADOPCIÓN
+SHELL-CTX-002..005
+→ SHELL-AUTH-002
+→ SHELL-AUTH-003
+→ SHELL-AUTH-004
+→ AUTH-DB-020
+→ AUTH-DB-006..010 + AUTH-DB-021
+→ SHELL-AUTH-005
+→ AUTH-DB-030
+→ AUTH-DB-031
 ```
 
 `AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
-no puede comenzar antes de que existan contratos, SDK, contexto compartido,
-gates, resolver, evaluador, persistencia y pruebas.
+no puede completarse antes de resolver contexto, evaluar, persistir, adaptar
+RPC y RLS, demostrar rollback y bloquear nuevos consumos legacy.
 <!-- SHELL-AUTH-CANONICAL:END -->
 
 FASE 4 — HABILITADORES TRANSVERSALES

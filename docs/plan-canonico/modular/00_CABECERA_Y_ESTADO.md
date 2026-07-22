@@ -17,22 +17,22 @@
 | Estado documental             | **VIGENTE**                                                                                       |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
 | Fuente de orden canónico      | `manifest.json`                                                                                   |
-| Fragmentos canónicos          | **110**                                                                                           |
-| Tareas canónicas con marcador | **732**                                                                                           |
-| Tareas `AUTH` únicas          | **315**                                                                                           |
-| Tareas aprobadas              | **119**                                                                                           |
-| Tareas en propuesta           | **0**                                                                                             |
-| Tareas no iniciadas           | **613**                                                                                           |
-| Tareas rechazadas             | **0**                                                                                             |
+| Fragmentos canónicos | **110** |
+| Tareas canónicas con marcador | **732** |
+| Tareas `AUTH` únicas | **315** |
+| Tareas aprobadas | **119** |
+| Tareas en propuesta | **0** |
+| Tareas no iniciadas | **613** |
+| Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada         | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones**                            |
-| Tarea actual                  | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
-| Estado de la tarea actual     | **NO INICIADA**                                                                                   |
-| Siguiente tarea               | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context   |
+| Última tarea aprobada | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones** |
+| Tarea actual | **AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context** |
 | Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente**                                 |
+| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
@@ -40,8 +40,8 @@
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
 | Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones |
-| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA**  |
-| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                          |
+| Tarea actual | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
+| Siguiente tarea | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -52,7 +52,7 @@
 | `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                  |
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
-| `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
+| `AUTH-MOD-021` | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
 | `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
 | `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
 | Implementación física             | **NO INICIADA**                                |
@@ -72,11 +72,11 @@
 - [Protocolo obligatorio](./01_PROTOCOLO.md)
 - [Roadmap maestro](./02_ROADMAP_MAESTRO.md)
 - [Contexto y decisión de autorización](./bloques/E_CONTEXTO_Y_DECISION/00_INTRO.md)
-- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_BLOQUE_E1.md)
+- [Descubrimiento integral de operación y cobertura](./bloques/E1_DESCUBRIMIENTO_OPERATIVO/00_INTRO.md)
 - [Arquitectura funcional y experiencia](./bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md)
-- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_BLOQUE_E3.md)
-- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_BLOQUE_E4.md)
-- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_BLOQUE_E5.md)
+- [Arquitectura integral de Supabase](./bloques/E3_SUPABASE/00_INTRO.md)
+- [Servicios operativos transversales](./bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md)
+- [Paquetes de implementación y preparación operativa](./bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/00_INTRO.md)
 - [Matrices operativas de caja, barra y cocina](./bloques/D_MATRICES/03_OPERATIVOS_CAJA_BARRA_COCINA.md)
 - [Orden de implementación](./90_ORDEN_DE_IMPLEMENTACION.md)
 - [Estado inicial conocido](./99_ESTADO_INICIAL_CONOCIDO.md)
