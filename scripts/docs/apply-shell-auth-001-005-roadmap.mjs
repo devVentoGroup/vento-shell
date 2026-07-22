@@ -164,14 +164,16 @@ function restore(text, eol = '\n') {
 
 function maskFencedCode(text) {
   let insideFence = false;
+
   return normalize(text)
     .split('\n')
     .map((line) => {
+      const maskedLine = ' '.repeat(line.length);
       if (/^\s*```/.test(line)) {
         insideFence = !insideFence;
-        return '';
+        return maskedLine;
       }
-      return insideFence ? '' : line;
+      return insideFence ? maskedLine : line;
     })
     .join('\n');
 }
@@ -192,19 +194,19 @@ function scanTaskSections(manifest, overrides = new Map()) {
     const original = normalize(
       overrides.has(filePath) ? overrides.get(filePath) : read(filePath),
     );
-    const masked = maskFencedCode(original);
-    const matches = [...masked.matchAll(TASK_HEADING_REGEX)];
+    const matches = [...maskFencedCode(original).matchAll(TASK_HEADING_REGEX)];
 
     for (let index = 0; index < matches.length; index += 1) {
       const match = matches[index];
       const id = match.groups?.id;
       if (!id) continue;
 
-      const lineEnd = original.indexOf('\n', match.index);
       const start = match.index;
+      const lineEnd = original.indexOf('\n', start);
       const end =
         index + 1 < matches.length ? matches[index + 1].index : original.length;
       const entries = taskMap.get(id) ?? [];
+
       entries.push({
         id,
         marker: match.groups?.marker ?? '',
@@ -227,9 +229,7 @@ function validateApprovedSource(manifest) {
   const entries = taskMap.get('AUTH-CTX-027') ?? [];
 
   if (entries.length !== 1) {
-    fail(
-      `AUTH-CTX-027 debe existir exactamente una vez; se encontraron ${entries.length}.`,
-    );
+    fail(`AUTH-CTX-027 debe existir exactamente una vez; se encontraron ${entries.length}.`);
   }
 
   const source = entries[0];
@@ -239,10 +239,11 @@ function validateApprovedSource(manifest) {
     );
   }
 
-  for (const id of TASK_IDS) {
-    if (!source.section.includes(id)) {
-      fail(`AUTH-CTX-027 está aprobada, pero su bloque no justifica ${id}.`);
-    }
+  const missing = TASK_IDS.filter((id) => !source.section.includes(id));
+  if (missing.length) {
+    fail(
+      `AUTH-CTX-027 está aprobada, pero su bloque no justifica: ${missing.join(', ')}.`,
+    );
   }
 
   console.log(
@@ -307,16 +308,15 @@ function updateManifest(manifest) {
   return { ...manifest, files };
 }
 
-function collectOccurrences(manifest, overrides) {
-  return scanTaskSections(manifest, overrides);
-}
-
 function validateInventory(taskMap) {
   const duplicates = [...taskMap.entries()].filter(([, entries]) => entries.length !== 1);
   if (duplicates.length) {
     fail(
       `Identificadores duplicados: ${duplicates
-        .map(([id, entries]) => `${id} (${entries.map((entry) => entry.relativePath).join(', ')})`)
+        .map(
+          ([id, entries]) =>
+            `${id} (${entries.map((entry) => entry.relativePath).join(', ')})`,
+        )
         .join('; ')}`,
     );
   }
@@ -372,7 +372,7 @@ function main() {
     [PATHS.order, orderNext],
   ]);
 
-  validateInventory(collectOccurrences(manifestNext, overrides));
+  validateInventory(scanTaskSections(manifestNext, overrides));
 
   const changes = [
     {
