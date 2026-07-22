@@ -138653,7 +138653,7 @@ ROADMAP OBJETIVO
 
 ---
 
-## 1. Propósito
+#### 1. Propósito
 
 Construir el inventario canónico de la estructura real de Vento Group, distinguiendo de manera explícita:
 
@@ -138683,7 +138683,7 @@ Este inventario deberá servir como base para el diseño posterior de:
 
 ---
 
-## 2. Alcance
+#### 2. Alcance
 
 OPS-AUD-001 define qué organizaciones, sedes, áreas, zonas, puntos y canales existen actualmente y cuáles se proyectan como capacidades futuras.
 
@@ -138704,7 +138704,7 @@ La asignación detallada de personas, cargos y responsabilidades continuará en 
 
 ---
 
-## 3. Reglas canónicas de clasificación
+#### 3. Reglas canónicas de clasificación
 
 ##### 3.1 Entidad jurídica
 
