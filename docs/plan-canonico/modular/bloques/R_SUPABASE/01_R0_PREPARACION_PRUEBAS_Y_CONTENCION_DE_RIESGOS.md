@@ -10,11 +10,6 @@
 ### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
 ### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
 ### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
-### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
-### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
-### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
-### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
-### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
 
 Regla de entrada a migraciones
 
