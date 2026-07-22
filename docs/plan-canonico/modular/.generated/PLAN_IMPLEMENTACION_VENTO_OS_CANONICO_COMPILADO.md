@@ -10,39 +10,39 @@
 
 ## Estado canónico
 
-| Campo                         | Valor                                                             |
-| ----------------------------- | ----------------------------------------------------------------- |
-| Versión                       | 2026-07-21                                                        |
-| Revisión documental           | **39**                                                            |
-| Estado documental             | **VIGENTE**                                                       |
-| Arquitectura documental       | **MODULAR CANÓNICA**                                              |
-| Fuente de orden canónico      | `manifest.json`                                                   |
-| Fragmentos canónicos          | **109**                                                            |
-| Tareas canónicas con marcador | **719**                                                           |
-| Tareas `AUTH` únicas          | **312**                                                           |
-| Tareas aprobadas              | **117**                                                           |
-| Tareas en propuesta           | **0**                                                             |
-| Tareas no iniciadas           | **602**                                                           |
-| Tareas rechazadas             | **0**                                                             |
-| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`   |
-| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                          |
-| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                         |
-| Última tarea aprobada         | **AUTH-CTX-025 — Diseñar contrato SQL de get_access_context**               |
-| Tarea actual                  | `AUTH-CTX-026` — Diseñar contrato canónico de evaluate_authorization — **NO INICIADA**     |
-| Estado de la tarea actual     | **NO INICIADA**                                                   |
-| Siguiente tarea               | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones       |
-| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**     |
-| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-025 aprobadas; AUTH-CTX-026 pendiente** |
-| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**         |
+| Campo                         | Valor                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| Versión                       | 2026-07-21                                                                                        |
+| Revisión documental           | **39**                                                                                            |
+| Estado documental             | **VIGENTE**                                                                                       |
+| Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
+| Fuente de orden canónico      | `manifest.json`                                                                                   |
+| Fragmentos canónicos          | **109**                                                                                           |
+| Tareas canónicas con marcador | **722**                                                                                           |
+| Tareas `AUTH` únicas          | **315**                                                                                           |
+| Tareas aprobadas              | **119**                                                                                           |
+| Tareas en propuesta           | **0**                                                                                             |
+| Tareas no iniciadas           | **603**                                                                                           |
+| Tareas rechazadas             | **0**                                                                                             |
+| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
+| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
+| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
+| Última tarea aprobada         | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones**                            |
+| Tarea actual                  | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
+| Estado de la tarea actual     | **NO INICIADA**                                                                                   |
+| Siguiente tarea               | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context   |
+| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
+| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente**                                 |
+| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                               |
-| --------------- | ------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CTX-025` — Diseñar contrato SQL de get_access_context                   |
-| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                         |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                  |
+| Estado          | Valor                                                                |
+| --------------- | -------------------------------------------------------------------- |
+| Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones |
+| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA**  |
+| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                          |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
 
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
-| `AUTH-CTX-001` a `AUTH-CTX-025` | **APROBADAS** |
-| `AUTH-CTX-026` a `AUTH-CTX-030` | **NO INICIADAS** |
+| `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
+| `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,18 +87,13 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
-        ↓
-TAREA ACTUAL
-AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
         ↓
-PUERTA CONTRACTUAL OBLIGATORIA
-AUTH-MOD-021 — Definir rol base mínimo
-no privilegiado para trabajadores
-puramente operativos
+TAREA ACTUAL
+AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
         ↓
 CIERRE DEL BLOQUE
 AUTH-CTX-028 a AUTH-CTX-030
@@ -561,6 +556,22 @@ AUTH-CTX-028 a AUTH-CTX-030
     o cuando cite una tarea que no exista formalmente en el roadmap.
 
 ---
+
+<!-- TASK-MATERIALIZATION-RULE:START -->
+## Regla canónica de materialización inmediata de tareas nuevas
+
+Cuando una tarea aprobada detecte una brecha y cree un identificador nuevo, la nueva tarea deberá quedar físicamente registrada antes de avanzar a la tarea siguiente.
+
+La materialización obligatoria incluye:
+
+1. insertar el encabezado con marcador en el bloque lógico propietario;
+2. registrar su dependencia en el orden de implementación cuando afecte secuencia o puertas;
+3. comprobar que el identificador aparece exactamente una vez en el plan modular;
+4. ejecutar el compilador y el verificador;
+5. cerrar la respuesta de aprobación con una orden explícita cuando quede una acción manual pendiente.
+
+Una mención narrativa dentro de otra tarea no equivale a crear la tarea nueva.
+<!-- TASK-MATERIALIZATION-RULE:END -->
 
 ## Regla canónica de granularidad documental
 
@@ -123582,7 +123593,7 @@ AUTH-CTX-024 podrá aprobarse cuando se acepte que:
 | Relación        | Tarea          | Estado                      |
 | --------------- | -------------- | --------------------------- |
 | Tarea anterior  | `AUTH-CTX-023` | ✅ APROBADA                  |
-| Tarea propuesta | `AUTH-CTX-024` | 🟡 PROPUESTA PARA APROBACIÓN |
+| Tarea propuesta | `AUTH-CTX-024` | ✅ APROBADA |
 | Tarea siguiente | `AUTH-CTX-025` | ⬜ NO INICIADA               |
 
 ```text
@@ -126402,9 +126413,3655 @@ AUTH-CTX-026 — NO INICIADA
 No se avanza a `AUTH-CTX-026` hasta recibir aprobación explícita de
 `AUTH-CTX-025`.
 
-### [ ] AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
+### ✅ AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
 
-### [ ] AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
+| Campo                           | Valor                                                                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Estado**                      | **APROBADA**                                                                                                        |
+| **Bloque**                      | BLOQUE E — Contexto y decisión de autorización unificados                                                           |
+| **Subbloque**                   | DISEÑO DE IMPLEMENTACIÓN CANÓNICA                                                                                   |
+| **Naturaleza**                  | Diseño documental del evaluador canónico                                                                            |
+| **Implementación física**       | No incluida                                                                                                         |
+| **Tarea anterior vigente**      | `AUTH-CTX-025` — APROBADA                                                                                           |
+| **Tarea posterior reservada**   | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones                                     |
+| **Contrato de entrada**         | `AuthorizationEvaluationRequest@1.0.0`                                                                              |
+| **Contrato de salida**          | `AuthorizationDecision@1.0.0`                                                                                       |
+| **Contexto consumido**          | `AccessContext@1.0.0`                                                                                               |
+| **Perfil de serialización**     | `vento.canonical-json@1.0.0`                                                                                        |
+| **Identidad lógica de función** | `evaluate_authorization(jsonb) → jsonb`                                                                             |
+| **Nombre físico calificado**    | Pendiente de `SUPA-ARC-005`, `SUPA-ARC-006` y `SUPA-ARC-013`                                                        |
+| **Cambio contractual**          | Define la frontera del evaluador sin cambiar contratos publicados                                                   |
+| **Cambios físicos permitidos**  | No                                                                                                                  |
+| **Brecha física detectada**     | No existe tarea específica para implementar el evaluador canónico                                                   |
+| **Nueva tarea requerida**       | `AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo, resolvers de recurso y proyecciones seguras` |
+
+Esta tarea diseña el evaluador central que transforma una solicitud
+estructurada en una `AuthorizationDecision@1.0.0`.
+
+```text
+SOLICITUD CANÓNICA
++
+ACCESS CONTEXT REAL
++
+CONTRATO DEL PERMISO
++
+RECURSO RESUELTO
++
+DATASETS PUBLICADOS
++
+PRECEDENCIA CANÓNICA
+=
+AUTHORIZATION DECISION
+```
+
+```text
+EVALUAR ≠ EJECUTAR
+DECISION_ID ≠ TOKEN DE CAPACIDAD
+BOOLEANO LEGACY ≠ DECISIÓN CANÓNICA
+```
+
+No implementa funciones SQL, helpers, resolvers, tablas, migraciones, RLS,
+grants, persistencia ni cambios físicos en Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir de forma cerrada:
+
+1. identidad y firma lógica del evaluador;
+2. contrato de entrada;
+3. contrato de salida;
+4. relación con `get_access_context`;
+5. resolución de permiso y recurso;
+6. carga de datasets;
+7. evaluación de carriles;
+8. aplicación de denegaciones;
+9. prerrequisitos y dependencias;
+10. dispositivo, sensibilidad y campos;
+11. combinación y decisión final;
+12. auditoría y fingerprints;
+13. seguridad SQL;
+14. proyecciones;
+15. integración con RPC, RLS, jobs y guards;
+16. transición desde evaluadores legacy;
+17. tarea física de implementación.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-026 conserva sin cambios:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-020`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-025`;
+- `SUPA-ARC-005` a `SUPA-ARC-015`;
+- `AUTH-DB-027`, `AUTH-DB-030`, `AUTH-DB-031`;
+- `AUTH-DB-032` y `AUTH-DB-033`.
+
+Principios:
+
+```text
+MISMA SOLICITUD LÓGICA
++
+MISMO SNAPSHOT
++
+MISMAS VERSIONES
+=
+MISMO RESULTADO SEMÁNTICO
+```
+
+```text
+AUSENCIA DE EVIDENCIA POSITIVA = DENY
+ERROR O AMBIGÜEDAD = FAIL CLOSED
+```
+
+---
+
+#### 3. Estado físico conocido
+
+Existen evaluadores parciales como:
+
+```text
+has_permission(...)
+has_operational_permission(...)
+guards locales
+políticas RLS propias
+RPC con verificaciones ad hoc
+```
+
+Son mecanismos legacy, no fuente normativa.
+
+---
+
+#### 4. Divergencias legacy
+
+Los mecanismos actuales pueden:
+
+- retornar solo `boolean`;
+- aceptar sede o área desde el caller;
+- derivar aplicación desde el permiso;
+- aplicar bypass por nombre de rol;
+- consumir contexto legacy;
+- omitir recurso y estado;
+- omitir campos protegidos;
+- mezclar carriles;
+- no registrar grants, denies, hashes ni razones;
+- duplicar lógica entre aplicaciones.
+
+AUTH-CTX-027 deberá inventariarlos.
+
+---
+
+#### 5. Decisión principal
+
+Se define:
+
+```text
+evaluate_authorization(jsonb) → jsonb
+```
+
+Forma conceptual:
+
+```sql
+create function <authorization_internal_schema>.evaluate_authorization(
+  p_evaluation_request jsonb
+)
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = pg_catalog, <schemas_privados_aprobados>;
+```
+
+La sintaxis es documental.
+
+---
+
+#### 6. Contrato de entrada
+
+```ts
+type AuthorizationEvaluationRequest = {
+  contract_family: "vento.authorization.request-contracts";
+  contract_family_version: "1.0.0";
+  contract_name: "AuthorizationEvaluationRequest";
+  contract_version: "1.0.0";
+  schema_version: "1.0.0";
+  correlation_id: string | null;
+  request: AuthorizationRequestContext;
+};
+```
+
+---
+
+#### 7. Firma única
+
+La firma será:
+
+```sql
+evaluate_authorization(p_evaluation_request jsonb)
+returns jsonb
+```
+
+No se crean overloads públicos con actor, empleado, rol, sede, área o recurso
+resuelto.
+
+---
+
+#### 8. Envelope único
+
+La función recibe un objeto versionado, no una colección de parámetros
+independientes.
+
+Esto evita entradas parciales y combinaciones inseguras.
+
+---
+
+#### 9. Campos obligatorios
+
+Deben existir:
+
+```text
+contract_family
+contract_family_version
+contract_name
+contract_version
+schema_version
+correlation_id
+request
+```
+
+`correlation_id` puede ser `null`, pero no omitirse.
+
+---
+
+#### 10. Validación de versión
+
+Una familia, nombre o versión no soportados no se reinterpretan.
+
+Un envelope no parseable produce error contractual de invocación.
+
+---
+
+#### 11. correlation_id
+
+`correlation_id`:
+
+- vincula una operación lógica;
+- no concede autoridad;
+- no sustituye `decision_id`;
+- no sustituye idempotencia;
+- puede permanecer `null`;
+- se propaga solo desde fronteras internas confiables.
+
+---
+
+#### 12. AuthorizationRequestContext
+
+Se conserva:
+
+```ts
+type AuthorizationRequestContext = {
+  app_code: string;
+  permission_key: string;
+  operation_kind:
+    | "READ"
+    | "CREATE"
+    | "UPDATE"
+    | "DELETE"
+    | "EXECUTE"
+    | "TRANSITION"
+    | "EXPORT"
+    | "APP_ACCESS";
+  resource_request:
+    | ExistingResourceRequest
+    | ResourceDraftRequest
+    | CollectionRequest
+    | AggregateRequest
+    | BulkRequest
+    | NonResourceRequest;
+  requested_fields: string[];
+  request_source:
+    | "SERVER_ACTION"
+    | "RPC"
+    | "RLS"
+    | "API"
+    | "UI_GUARD"
+    | "JOB";
+};
+```
+
+---
+
+#### 13. app_code
+
+Debe ser exacto, activo, publicado y propietario del permiso.
+
+No se deriva del prefijo del permiso.
+
+No existe aplicación predeterminada.
+
+---
+
+#### 14. permission_key
+
+Debe existir exactamente, estar activo y tener:
+
+- modalidad;
+- prerrequisitos;
+- contrato de recurso;
+- políticas;
+- versión;
+- hash.
+
+No se admiten wildcards ni prefijos.
+
+---
+
+#### 15. operation_kind
+
+Debe ser compatible con el permiso y el contrato del recurso.
+
+Una operación incompatible produce denegación contractual o de recurso,
+según el origen de la incompatibilidad.
+
+---
+
+#### 16. request_source
+
+Identifica la frontera técnica.
+
+No cambia modalidad, grants, denies, alcance ni resultado.
+
+Debe fijarse o validarse internamente.
+
+---
+
+#### 17. resource_request
+
+Contiene localizadores o borradores no confiables.
+
+El evaluador deberá:
+
+```text
+validar forma
+→ seleccionar contrato
+→ resolver relaciones
+→ resolver territorio
+→ resolver estado
+→ producir ResolvedResourceContext
+```
+
+---
+
+#### 18. requested_fields
+
+La lista:
+
+- se valida;
+- se deduplica;
+- se ordena cuando sea conjunto;
+- solo reduce o precisa;
+- no permite inferir campos ocultos.
+
+---
+
+#### 19. Datos prohibidos
+
+La entrada no puede declarar como autoridad:
+
+```text
+access_context
+context_id
+actor_id
+principal_id
+employee_id
+role
+base_role
+operational_role
+effective_site_id
+effective_area_id
+shift_id
+checkin_id
+effective_device_id
+authorization_requirement
+grant_ids
+deny_ids
+decision_id
+final_outcome
+catalog_hash
+dataset_hashes
+```
+
+---
+
+#### 20. Sin decisión sugerida
+
+Quedan prohibidos:
+
+```text
+expected_outcome
+allow
+can_operate
+bypass
+force_allow
+ignore_denies
+skip_resource_resolution
+skip_prerequisites
+```
+
+---
+
+#### 21. Contrato de salida
+
+La función retorna un único `jsonb` compatible con
+`AuthorizationDecision@1.0.0`.
+
+No retorna booleano, tabla plana, lista, `null` ni decisión parcial válida.
+
+---
+
+#### 22. Forma de salida conservada
+
+```ts
+type AuthorizationDecision = {
+  contract_name: "AuthorizationDecision";
+  contract_version: string;
+  decision_id: string;
+  decided_at: string;
+  correlation_id: string | null;
+  access_context_ref: AccessContextReference;
+  request: AuthorizationRequestContext;
+  permission_contract: PermissionContractSnapshot;
+  resource: ResolvedResourceContext;
+  required_lanes: AuthorizationLane[];
+  base_decision: LaneDecision;
+  operational_decision: LaneDecision;
+  prerequisite_decisions: PrerequisiteDecision[];
+  device_decision: ConstraintDecision;
+  sensitivity_decision: ConstraintDecision;
+  field_policy_decision: FieldPolicyDecision;
+  matched_allows: MatchedGrant[];
+  matched_denies: MatchedDeny[];
+  structural_denies: DecisionReason[];
+  actor_wide_denies: DecisionReason[];
+  lane_denies: DecisionReason[];
+  blocked_reasons: DecisionReason[];
+  combination: DecisionCombination;
+  final_decision: FinalDecision;
+  audit: AuthorizationAuditContext;
+};
+```
+
+---
+
+#### 23. decision_id
+
+Será interno, único, inmutable y no reutilizable.
+
+No es bearer token ni atajo de autorización.
+
+---
+
+#### 24. decided_at
+
+Será timestamp de servidor capturado una sola vez y serializado en UTC.
+
+Todos los validadores temporales usarán el mismo instante lógico.
+
+---
+
+#### 25. Volatilidad y núcleo
+
+La frontera emisora podrá ser `VOLATILE` por la emisión de `decision_id`.
+
+La lógica deberá residir en un núcleo privado determinista, sin escrituras y
+sin acceso público.
+
+---
+
+#### 26. Sin efectos empresariales
+
+El evaluador no crea, modifica, transiciona, paga, mueve inventario, abre
+turnos, crea check-ins ni ejecuta la operación.
+
+---
+
+#### 27. Persistencia separada
+
+La persistencia durable y el vínculo decisión–ejecución corresponden a
+`AUTH-DB-032`.
+
+El núcleo no escribe auditoría durable.
+
+---
+
+#### 28. Pipeline obligatorio
+
+```text
+1. Validar envelope.
+2. Emitir decision_id y decided_at.
+3. Resolver AccessContext.
+4. Validar contexto y fingerprint.
+5. Resolver PermissionContractSnapshot.
+6. Validar catálogo y hash.
+7. Resolver ResolvedResourceContext.
+8. Determinar required_lanes.
+9. Cargar datasets exactos.
+10. Detectar structural denies.
+11. Detectar actor-wide denies.
+12. Evaluar carril base.
+13. Evaluar carril operativo.
+14. Evaluar prerrequisitos.
+15. Evaluar dispositivo.
+16. Evaluar sensibilidad.
+17. Evaluar campos.
+18. Combinar carriles.
+19. Aplicar precedencia final.
+20. Consolidar razones.
+21. Construir audit.
+22. Validar invariantes.
+23. Serializar.
+```
+
+---
+
+#### 29. Resolución de AccessContext
+
+Se invoca lógicamente:
+
+```text
+get_access_context(request.app_code)
+```
+
+exactamente una vez por decisión principal.
+
+No se reconstruyen actor, empleado, roles, turno, check-in o dispositivo.
+
+---
+
+#### 30. Contexto real
+
+Solo se consume un `AccessContext` real y vigente.
+
+No se acepta contexto del cliente, simulado, de otra app, actor o dispositivo.
+
+---
+
+#### 31. AccessContextReference
+
+Se produce una referencia coherente con:
+
+```text
+context_id
+context_contract_version
+resolved_at
+actor_type
+actor_id
+principal_type
+principal_id
+context_fingerprint
+```
+
+---
+
+#### 32. context_fingerprint
+
+Se calcula sobre el objeto canónico exacto con
+`vento.canonical-json@1.0.0`.
+
+No se calcula desde una proyección cliente ni se modifica después.
+
+---
+
+#### 33. Contexto inválido
+
+Los problemas estructurales bloquean según severidad y carril.
+
+`BLOCKING_ALL` impide `ALLOW`.
+
+Un bloqueo de carril no contamina automáticamente el otro.
+
+---
+
+#### 34. Resolución del permiso
+
+Debe existir una única definición efectiva para:
+
+```text
+app_code
++
+permission_key
++
+catalog_version
+```
+
+Cero contratos produce `MISSING`.
+
+Más de uno produce ambigüedad y `DENY`.
+
+---
+
+#### 35. PermissionContractSnapshot
+
+Debe conservar catálogo, versión, hash, app, permiso, estado, modalidad,
+prerrequisitos, área, dispositivo, sensibilidad, simulación, recurso y
+dependencias.
+
+---
+
+#### 36. Contrato inválido
+
+Catálogo ausente, hash ausente, modalidad ausente, recurso ausente o app
+incompatible producen:
+
+```text
+CONTRACT_INVALID
++
+DENY
+```
+
+---
+
+#### 37. Resolución del recurso
+
+Se realiza por el `resource_contract_id` del permiso.
+
+El caller no elige resolver.
+
+---
+
+#### 38. Registro cerrado de resolvers
+
+```text
+resource_contract_id
+→ resolver privado aprobado
+→ versión
+→ fingerprint
+```
+
+No se construyen nombres de función desde texto del cliente.
+
+---
+
+#### 39. Resolver inexistente
+
+Produce `CONTRACT_INVALID` y `DENY`.
+
+No se convierte en `NON_RESOURCE`.
+
+---
+
+#### 40. Recursos existentes y borradores
+
+`EXISTING` valida recurso, relaciones, territorio, estado, campos y versión.
+
+`DRAFT` normaliza payload, relaciones, territorio, estado inicial e
+idempotencia antes de decidir.
+
+---
+
+#### 41. Colecciones y agregados
+
+Las colecciones se construyen en servidor.
+
+Los agregados validan cada fuente territorial y no permiten inferencias sobre
+datos ocultos.
+
+---
+
+#### 42. Operaciones masivas
+
+Requieren permiso masivo explícito o decisiones por recurso.
+
+La atomicidad será `ALL_OR_NOTHING` o `PARTIAL_WITH_RESULTS`, nunca implícita.
+
+---
+
+#### 43. NON_RESOURCE
+
+Solo aplica cuando el contrato lo declara.
+
+No es fallback por fallo de resolución.
+
+---
+
+#### 44. Territorio
+
+Se resuelven organización, unidades, sedes, áreas, tipos, origen, destino,
+rutas, vehículos y aislamiento según contrato.
+
+`null` y `[]` no significan global.
+
+---
+
+#### 45. Estado, propiedad y custodia
+
+Se validan estado actual, transición, versión, propietario, custodio, sujeto,
+responsable y lados obligatorios cuando apliquen.
+
+No se aceptan desde el payload como verdad.
+
+---
+
+#### 46. Campos protegidos
+
+La clasificación de visibilidad, mutabilidad y enmascaramiento procede del
+contrato del recurso.
+
+No se inventa en cada aplicación.
+
+---
+
+#### 47. Concurrencia e idempotencia
+
+Una versión incompatible produce `DENY`.
+
+La idempotencia no concede permiso ni permite reutilizar una decisión
+obsoleta.
+
+---
+
+#### 48. required_lanes
+
+```text
+BASE_ONLY            → [BASE]
+OPERATIONAL_ONLY     → [OPERATIONAL]
+BASE_OR_OPERATIONAL  → [BASE, OPERATIONAL]
+BASE_AND_OPERATIONAL → [BASE, OPERATIONAL]
+```
+
+Se derivan del contrato, no del dataset.
+
+---
+
+#### 49. Carril no admitido
+
+Debe producir:
+
+```text
+outcome = NOT_APPLICABLE
+readiness = NOT_APPLICABLE
+evaluated = false
+matched_allow_ids = []
+matched_deny_ids = []
+```
+
+---
+
+#### 50. Carril admitido
+
+Evalúa readiness, denegaciones, grants, alcance, recurso, prerrequisitos y
+restricciones.
+
+Sin allow suficiente, el resultado es `DENY`.
+
+---
+
+#### 51. Datasets
+
+Se cargan versiones publicadas y verificadas de grants, overrides, denies y
+políticas aplicables.
+
+Cada fuente consultada queda registrada.
+
+---
+
+#### 52. Hashes de datasets
+
+No se aceptan `latest`, `current`, `unknown`, hash vacío o versión sin hash.
+
+Una fuente obligatoria inválida produce `CONTRACT_INVALID`.
+
+---
+
+#### 53. Dataset sin match
+
+Un dataset consultado con cero coincidencias conserva versión y hash en
+auditoría.
+
+No genera grant ni deny.
+
+---
+
+#### 54. Dataset no aplicable
+
+No se consulta ni se registra con valores falsos o nulos.
+
+---
+
+#### 55. Precedencia
+
+El evaluador consume:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW
+>
+DEFAULT_DENY
+```
+
+La razón primaria sigue AUTH-CTX-023.
+
+---
+
+#### 56. matched_allows
+
+Solo incluye grants activos del permiso, actor o rol, carril, alcance,
+territorio y recurso exactos.
+
+---
+
+#### 57. matched_denies
+
+Solo incluye denies activos, vigentes y aplicables.
+
+Un deny no desaparece por existir allow.
+
+---
+
+#### 58. Carril base
+
+Orden:
+
+```text
+modalidad
+→ readiness
+→ actor y empleado
+→ rol base y cobertura
+→ deny transversal
+→ deny base
+→ allows base
+→ alcance y recurso
+→ restricciones
+→ resultado
+```
+
+No toma prestado turno ni check-in.
+
+---
+
+#### 59. Carril operativo
+
+Orden:
+
+```text
+modalidad
+→ readiness
+→ actor y empleado
+→ turno
+→ check-in cuando aplique
+→ rol operativo
+→ sede y área
+→ dispositivo
+→ deny transversal
+→ deny operativo
+→ allows operativos
+→ alcance y recurso
+→ restricciones
+→ resultado
+```
+
+---
+
+#### 60. Prerrequisitos N, T y T+C
+
+```text
+N   → no exige turno ni check-in
+T   → exige turno
+T+C → exige turno y check-in
+```
+
+Un check-in incompatible puede bloquear incluso un permiso `T`.
+
+---
+
+#### 61. Área activa
+
+Cuando `requires_active_area = true`, el área debe existir, pertenecer a la
+sede, ser compatible y coincidir con el recurso cuando aplique.
+
+---
+
+#### 62. Dependencias
+
+Cada dependencia usa el mismo actor y contexto, conserva su contrato y no
+autoriza por sí sola el permiso principal.
+
+---
+
+#### 63. Núcleo recursivo
+
+Las dependencias se evalúan en un helper privado, no invocando de nuevo la
+frontera emisora.
+
+---
+
+#### 64. Ciclos y profundidad
+
+El grafo debe ser acíclico.
+
+Un ciclo o una profundidad superior a:
+
+```text
+MAX_DEPENDENCY_DEPTH = 32
+```
+
+produce `CONTRACT_INVALID` y `DENY`.
+
+---
+
+#### 65. Dispositivo
+
+La regla es:
+
+```text
+autoridad del actor
+∩
+capacidad admitida por dispositivo
+```
+
+El dispositivo puede restringir, nunca conceder.
+
+---
+
+#### 66. Sensibilidad
+
+La clase de sensibilidad puede exigir reautenticación, segundo factor,
+aprobación, motivo, separación de funciones o dispositivo compatible.
+
+No amplía alcance ni elimina denies.
+
+---
+
+#### 67. FieldPolicyDecision
+
+La política se evalúa después de resolver operación, recurso, campos,
+sensibilidad y evidencia.
+
+---
+
+#### 68. Lectura parcial y mutación
+
+Una lectura puede producir `PARTIAL` y una proyección limitada.
+
+Una mutación con campos bloqueados produce `DENY` o requiere reducir y
+reevaluar; nunca elimina campos silenciosamente.
+
+---
+
+#### 69. Combinación de carriles
+
+Se aplican exactamente:
+
+```text
+BASE_ONLY
+OPERATIONAL_ONLY
+BASE_OR_OPERATIONAL
+BASE_AND_OPERATIONAL
+```
+
+Los carriles no prestan componentes incompletos.
+
+---
+
+#### 70. combination_result y final outcome
+
+Una combinación `ALLOW` puede terminar en `DENY` por recurso, prerrequisito,
+dispositivo, sensibilidad, campos, concurrencia o idempotencia.
+
+---
+
+#### 71. Decisión final y default deny
+
+La salida final solo es `ALLOW` o `DENY`.
+
+Sin evidencia positiva suficiente se usa `DEFAULT_DENY`.
+
+---
+
+#### 72. blocked_reasons
+
+Consolida todas las razones aplicables sin eliminar razones secundarias.
+
+El orden es determinista.
+
+---
+
+#### 73. Mensaje seguro
+
+`safe_message_code` procede del catálogo.
+
+No revela grants, denies sensibles, tablas, SQL, IDs ajenos o detalles
+disciplinarios.
+
+---
+
+#### 74. Auditoría
+
+Toda decisión, allow o deny, incluye `audit`.
+
+Los campos duplicados entre audit y decisión deben coincidir.
+
+---
+
+#### 75. evaluator_name y evaluator_version
+
+Identificador lógico inicial:
+
+```text
+vento.authorization.evaluate_authorization
+```
+
+La versión física será exacta e inmutable; nunca `latest`, `main`, `current`
+o `unknown`.
+
+---
+
+#### 76. Separación evaluación–ejecución
+
+Una decisión `ALLOW` no ejecuta ni reserva el recurso.
+
+La ejecución debe revalidar contexto, recurso y concurrencia.
+
+---
+
+#### 77. Frontera transaccional
+
+Para mutaciones:
+
+```text
+construir request
+→ evaluar
+→ verificar outcome
+→ validar versión/lock
+→ persistir evidencia requerida
+→ ejecutar
+→ registrar resultado
+```
+
+en una transacción o protocolo aprobado.
+
+---
+
+#### 78. UI guards, RPC y RLS
+
+Los UI guards consumen proyección segura y no sustituyen servidor.
+
+Las RPC usan el mismo núcleo.
+
+RLS puede usar predicados privados optimizados derivados del mismo núcleo y
+certificados como equivalentes.
+
+---
+
+#### 79. Jobs y SYSTEM
+
+Los jobs suministran app, permiso, operación, recurso y `request_source=JOB`.
+
+El contexto resuelve el principal de sistema.
+
+`service_role` no concede autoridad.
+
+---
+
+#### 80. Dispositivo compartido, unresolved y anónimo
+
+Se conserva principal dispositivo y actor empleado.
+
+`UNRESOLVED` no puede ejecutar mutaciones empresariales.
+
+El anónimo requiere permiso y contrato explícitos.
+
+---
+
+#### 81. Simulación excluida
+
+La función real no acepta actor, rol, contexto o resultado simulado.
+
+La simulación utiliza contrato y evaluador separados.
+
+---
+
+#### 82. Caché
+
+AUTH-CTX-029 definirá TTL, claves e invalidación.
+
+Una futura clave deberá considerar context fingerprint, request fingerprint,
+permission contract, resource fingerprint, hashes y evaluator version.
+
+---
+
+#### 83. Seguridad SQL
+
+La implementación podrá ser `SECURITY DEFINER` solo con:
+
+- owner técnico dedicado;
+- search path fijo;
+- objetos calificados;
+- helpers privados;
+- `PUBLIC` y `anon` revocados;
+- sin SQL dinámico inseguro;
+- pruebas de escalamiento.
+
+La función interna completa no se concede a `authenticated`.
+
+---
+
+#### 84. Proyecciones
+
+La proyección interna conserva evidencia completa autorizada.
+
+La segura incluye outcome, permiso, referencia lógica, safe message, razones
+seguras y correlación de soporte.
+
+---
+
+#### 85. Semántica de errores
+
+```text
+ENVELOPE INVÁLIDO
+→ error contractual SQL
+```
+
+```text
+SOLICITUD BIEN FORMADA PERO NO AUTORIZABLE
+→ AuthorizationDecision DENY
+```
+
+```text
+FALLO QUE IMPIDE CONSTRUIR CONTRATO
+→ excepción controlada
+→ sin decisión parcial
+```
+
+---
+
+#### 86. Transición legacy
+
+`has_permission`, `has_operational_permission`, guards y verificaciones ad hoc
+deberán inventariarse en AUTH-CTX-027, migrarse mediante AUTH-DB-020 y
+retirarse con AUTH-DB-030.
+
+---
+
+#### 87. Nueva tarea AUTH-DB-034
+
+Se crea:
+
+```text
+AUTH-DB-034
+— Implementar evaluate_authorization canónico,
+  su núcleo de evaluación,
+  resolvers de recurso
+  y proyecciones seguras
+```
+
+Ubicación:
+
+```text
+BLOQUE R1
+después de AUTH-DB-033
+antes de AUTH-DB-006 a AUTH-DB-010
+```
+
+La integración final de persistencia de AUTH-DB-032 depende del evaluador.
+
+---
+
+#### 88. Dependencias físicas
+
+```text
+SUPA-ARC-005 a SUPA-ARC-015
+        ↓
+AUTH-DB-019
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+```
+
+`AUTH-DB-027` acompaña cada paquete.
+
+---
+
+#### 89. Alcance futuro de AUTH-DB-034
+
+Deberá implementar:
+
+- frontera emisora;
+- núcleo privado;
+- validación de request;
+- resolución de permiso;
+- registro y resolvers de recurso;
+- carga de datasets;
+- carriles;
+- dependencias;
+- restricciones;
+- combinación;
+- fingerprints;
+- auditoría;
+- proyecciones;
+- predicados RLS;
+- seguridad;
+- telemetría;
+- pruebas;
+- rollback.
+
+---
+
+#### 90. Responsabilidades relacionadas
+
+| Responsabilidad          | Tarea                         |
+| ------------------------ | ----------------------------- |
+| Resolver contexto        | `AUTH-DB-033`                 |
+| Implementar evaluador    | `AUTH-DB-034`                 |
+| Persistir decisiones     | `AUTH-DB-032`                 |
+| Inventariar consumidores | `AUTH-CTX-027`                |
+| Compatibilidad           | `AUTH-CTX-028`                |
+| Caché                    | `AUTH-CTX-029`                |
+| Pruebas contractuales    | `AUTH-CTX-030`                |
+| Adoptar en RPC           | `AUTH-DB-006` a `AUTH-DB-010` |
+| Migrar dominios          | `AUTH-DB-020`                 |
+| RLS                      | `AUTH-DB-021`                 |
+| Tipos                    | `AUTH-DB-026`                 |
+| Harness                  | `AUTH-DB-027`                 |
+| Drift                    | `AUTH-DB-028`                 |
+| Retiro legacy            | `AUTH-DB-030`                 |
+| Certificación            | `AUTH-DB-031`                 |
+
+---
+
+#### 91. Esqueleto SQL conceptual
+
+```sql
+-- DOCUMENTAL. NO EJECUTAR.
+
+create function <authorization_internal_schema>.evaluate_authorization(
+  p_evaluation_request jsonb
+)
+returns jsonb
+language plpgsql
+volatile
+security definer
+set search_path = pg_catalog, <schemas_privados_aprobados>
+as $$
+declare
+  v_decision_id text;
+  v_decided_at timestamptz;
+  v_context jsonb;
+  v_permission_contract jsonb;
+  v_resource jsonb;
+  v_result jsonb;
+begin
+  -- validar envelope;
+  -- resolver contexto;
+  -- resolver permiso y recurso;
+  -- cargar datasets;
+  -- evaluar carriles y restricciones;
+  -- combinar;
+  -- construir auditoría;
+  -- validar invariantes;
+  return v_result;
+end;
+$$;
+```
+
+---
+
+#### 92. Casos canónicos
+
+##### BASE_ONLY autorizado
+
+```text
+base = ALLOW
+operational = NOT_APPLICABLE
+constraints = PASS
+final = ALLOW
+```
+
+##### OPERATIONAL_ONLY T
+
+```text
+turno válido
+check-in ausente
+prerrequisito T
+operational = ALLOW
+```
+
+##### OPERATIONAL_ONLY T+C
+
+```text
+turno válido
+check-in ausente
+operational = DENY
+```
+
+##### BASE_OR_OPERATIONAL
+
+```text
+base = DENY
+operational = ALLOW
+final = ALLOW
+```
+
+##### BASE_AND_OPERATIONAL
+
+```text
+base = ALLOW
+operational = DENY
+final = DENY
+```
+
+##### Actor-wide deny
+
+```text
+grants coinciden
+actor-wide deny coincide
+final = DENY
+```
+
+##### Dispositivo incompatible
+
+```text
+combination = ALLOW
+device = FAIL
+final = DENY
+```
+
+##### Lectura parcial
+
+```text
+field policy = PARTIAL
+final = ALLOW sobre proyección aprobada
+```
+
+##### Dependencia cíclica
+
+```text
+A requiere B
+B requiere A
+→ CONTRACT_INVALID
+→ DENY
+```
+
+##### Recurso modificado
+
+```text
+fingerprint cambia
+→ no ejecutar
+→ reevaluar
+```
+
+---
+
+#### 93. Antipatrones prohibidos
+
+```sql
+evaluate_authorization(
+  p_permission text,
+  p_site_id uuid,
+  p_area_id uuid
+)
+returns boolean
+```
+
+```sql
+if employee_role in ('propietario', 'gerente_general') then
+  return true;
+end if;
+```
+
+También:
+
+```text
+caller site → territorio autorizado
+caller role → rol efectivo
+device role → rol operativo
+allow temprano → omitir denies
+dependency allow → allow principal
+decision_id → token
+UI guard → seguridad suficiente
+service_role → autoridad
+error SQL → allow
+booleano → auditoría completa
+```
+
+---
+
+#### 94. Pruebas contractuales mínimas
+
+AUTH-CTX-030 deberá cubrir:
+
+1. firma exacta;
+2. envelope y versiones;
+3. correlación;
+4. app y permiso exactos;
+5. operation kind;
+6. request source;
+7. requested fields;
+8. contexto humano, dispositivo y SYSTEM;
+9. contexto inválido por carril;
+10. recurso existente, draft, colección, agregado, bulk y non-resource;
+11. territorio, estado, propiedad y lados;
+12. concurrencia e idempotencia;
+13. cuatro modalidades;
+14. N, T y T+C;
+15. área requerida;
+16. datasets con match, sin match y no aplicables;
+17. hashes faltantes;
+18. grants y denies por carril;
+19. actor-wide deny;
+20. default deny;
+21. dependencias, ciclos y profundidad;
+22. dispositivo;
+23. sensibilidad;
+24. campos parciales y bloqueados;
+25. combinación allow con constraint fail;
+26. razón primaria y secundarias;
+27. auditoría;
+28. proyecciones;
+29. contexto obsoleto;
+30. recurso modificado;
+31. errores de infraestructura;
+32. orden determinista;
+33. paridad RLS y RPC;
+34. ausencia de simulación y bypass;
+35. rendimiento y paridad de ambientes.
+
+---
+
+#### 95. Pruebas físicas mínimas
+
+AUTH-DB-027 y AUTH-DB-034 deberán probar:
+
+- grants y revocaciones;
+- search path poisoning;
+- SQL injection;
+- claims manipulados;
+- actor, dispositivo y recurso ajenos;
+- datasets y hashes alterados;
+- ciclos;
+- concurrencia;
+- snapshot;
+- equivalencia RLS/RPC;
+- proyección segura;
+- persistencia vinculada;
+- rollback;
+- planes de ejecución;
+- carga;
+- drift.
+
+---
+
+#### 96. Riesgos controlados
+
+| Riesgo                       | Control                           |
+| ---------------------------- | --------------------------------- |
+| Booleano opaco               | Decisión estructurada             |
+| Caller elige territorio      | Resolver de recurso               |
+| Caller elige actor           | `get_access_context`              |
+| Permiso por prefijo          | Clave exacta                      |
+| Bypass por rol               | Prohibido                         |
+| Allow antes de denies        | Pipeline y precedencia            |
+| Carriles mezclados           | Decisiones separadas              |
+| Dependencias circulares      | Grafo y límite 32                 |
+| Dispositivo amplía autoridad | Intersección                      |
+| Campo sensible               | Field policy                      |
+| Decisión reutilizada         | Revalidación                      |
+| Drift RLS/RPC                | Núcleo compartido                 |
+| Evidencia filtrada           | Proyección segura                 |
+| Evaluador sin dueño          | `AUTH-DB-034`                     |
+| Persistencia sin dueño       | `AUTH-DB-032`                     |
+| Contexto sin dueño           | `AUTH-DB-033`                     |
+| Legacy indefinido            | `AUTH-CTX-027/028`, `AUTH-DB-030` |
+
+---
+
+#### 97. Fuera del alcance
+
+AUTH-CTX-026 no:
+
+- crea la función;
+- crea el núcleo;
+- crea resolvers;
+- crea tablas;
+- publica datasets;
+- crea migraciones;
+- crea RLS o grants;
+- persiste decisiones;
+- ejecuta acciones;
+- adapta RPC o guards;
+- retira legacy;
+- implementa caché;
+- implementa simulación;
+- modifica Supabase.
+
+---
+
+#### 98. Criterios de aprobación
+
+AUTH-CTX-026 podrá aprobarse cuando se acepte que:
+
+1. la función se denomina `evaluate_authorization`;
+2. la firma es `(jsonb) → jsonb`;
+3. usa un único envelope versionado;
+4. correlation_id está presente y puede ser null;
+5. correlation no concede autoridad;
+6. request conserva la forma aprobada;
+7. app_code es exacto;
+8. app no se infiere;
+9. permission_key es exacto;
+10. no hay wildcards;
+11. operation_kind se valida;
+12. request_source no cambia reglas;
+13. resource_request no es autoritativo;
+14. requested_fields se valida;
+15. caller no suministra contexto;
+16. caller no suministra actor;
+17. caller no suministra empleado;
+18. caller no suministra rol;
+19. caller no suministra territorio efectivo;
+20. caller no suministra turno;
+21. caller no suministra check-in;
+22. caller no suministra dispositivo efectivo;
+23. caller no suministra outcome;
+24. no existe force allow;
+25. salida es jsonb;
+26. salida es una decisión;
+27. no retorna booleano;
+28. no retorna lista;
+29. no retorna null;
+30. cumple AuthorizationDecision 1.0.0;
+31. no cambia la forma publicada;
+32. decision_id se genera internamente;
+33. decision_id es único;
+34. decision_id no es token;
+35. decided_at se captura una vez;
+36. la frontera puede ser VOLATILE;
+37. el núcleo es privado y determinista;
+38. el núcleo no escribe;
+39. evaluar no ejecuta;
+40. persistencia pertenece a AUTH-DB-032;
+41. pipeline es cerrado;
+42. allow temprano no omite controles;
+43. get_access_context se invoca una vez;
+44. no se reconstruye contexto;
+45. solo se usa contexto real;
+46. AccessContextReference es coherente;
+47. context fingerprint corresponde al snapshot;
+48. bloqueos estructurales se respetan;
+49. bloqueo de carril no contamina otro;
+50. permiso se resuelve de forma única;
+51. contrato missing produce deny;
+52. contrato ambiguo produce deny;
+53. PermissionContractSnapshot se congela;
+54. catálogo y hash se validan;
+55. no existe contrato predeterminado;
+56. recurso se resuelve por contrato;
+57. caller no elige resolver;
+58. registro de resolvers es cerrado;
+59. resolver ausente produce deny;
+60. existing se valida;
+61. draft se normaliza;
+62. colección se construye en servidor;
+63. agregado evita inferencias;
+64. bulk exige contrato;
+65. atomicidad bulk es explícita;
+66. non-resource no es fallback;
+67. territorio se resuelve;
+68. null no significa global;
+69. estado se valida;
+70. transición se valida;
+71. propiedad y custodia se validan;
+72. clasificación de campos se resuelve;
+73. concurrencia se valida;
+74. idempotencia no concede permiso;
+75. required lanes procede de modalidad;
+76. carril no admitido es NOT_APPLICABLE;
+77. carril admitido se evalúa;
+78. ausencia de allow produce deny;
+79. datasets exactos se cargan;
+80. versiones y hashes se registran;
+81. latest no se acepta;
+82. dataset sin match se registra;
+83. dataset no aplicable no se inventa;
+84. se conserva precedencia;
+85. matched allows son reales;
+86. matched denies son reales;
+87. base no usa turno;
+88. operativo usa turno;
+89. T no exige check-in;
+90. T+C exige check-in;
+91. check-in incompatible bloquea;
+92. área requerida se valida;
+93. dependencias proceden del catálogo;
+94. dependencia usa mismo actor y contexto;
+95. dependencia no autoriza el principal;
+96. núcleo recursivo es privado;
+97. ciclo produce contract invalid;
+98. límite de profundidad es 32;
+99. dispositivo restringe;
+100. dispositivo no concede;
+101. sensibilidad procede del contrato;
+102. reautenticación no amplía;
+103. field policy se evalúa;
+104. lectura parcial puede permitir;
+105. mutación no elimina campos;
+106. cuatro modalidades se combinan correctamente;
+107. carriles no prestan componentes;
+108. combination allow no garantiza final allow;
+109. final solo es allow o deny;
+110. allow exige evidencia completa;
+111. default deny es explícito;
+112. blocked reasons conserva secundarias;
+113. razón primaria usa precedencia;
+114. mensaje seguro no filtra;
+115. audit es obligatorio;
+116. allow y deny tienen audit;
+117. evaluator name es estable;
+118. evaluator version es exacta;
+119. ejecución revalida;
+120. UI guard no reemplaza servidor;
+121. RPC usa el mismo núcleo;
+122. RLS usa predicados equivalentes;
+123. booleanos son proyecciones;
+124. jobs resuelven SYSTEM;
+125. unresolved no muta;
+126. anónimo requiere contrato;
+127. simulación está excluida;
+128. caché se reserva para AUTH-CTX-029;
+129. canonical JSON se aplica;
+130. SECURITY DEFINER tiene controles;
+131. PUBLIC se revoca;
+132. anon se revoca;
+133. authenticated no accede a función interna;
+134. existe proyección interna;
+135. existe proyección segura;
+136. envelope inválido produce error contractual;
+137. invalidez semántica produce DENY;
+138. error de infraestructura no produce parcial;
+139. stale context exige nueva decisión;
+140. recurso cambiado exige reevaluar;
+141. drift se detecta;
+142. evaluadores booleanos quedan legacy;
+143. guards locales se inventarían;
+144. existe orden de transición;
+145. se crea AUTH-DB-034;
+146. AUTH-DB-034 depende de AUTH-DB-033;
+147. AUTH-DB-032 integra persistencia;
+148. AUTH-DB-006 a 010 adoptan el evaluador;
+149. AUTH-DB-027 prueba la implementación;
+150. no se implementa código ni Supabase en esta tarea.
+
+---
+
+#### 99. Cierre y continuidad de la propuesta
+
+| Relación        | Tarea          | Estado        |
+| --------------- | -------------- | ------------- |
+| Tarea anterior  | `AUTH-CTX-025` | ✅ APROBADA    |
+| Tarea propuesta | `AUTH-CTX-026` | ✅ APROBADA    |
+| Tarea siguiente | `AUTH-CTX-027` | ⬜ NO INICIADA |
+
+```text
+AUTH-CTX-025 — APROBADA
+        ↓
+AUTH-CTX-026 — APROBADA
+        ↓
+AUTH-CTX-027 — NO INICIADA
+```
+
+No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
+`AUTH-CTX-026`.
+
+
+### ✅ AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
+
+| Campo                            | Valor                                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Estado**                       | **APROBADA**                                                                                     |
+| **Bloque**                       | BLOQUE E — Contexto y decisión de autorización unificados                                        |
+| **Subbloque**                    | DISEÑO DE IMPLEMENTACIÓN CANÓNICA                                                                |
+| **Naturaleza**                   | Definición documental de consumo transversal                                                     |
+| **Implementación física**        | No incluida                                                                                      |
+| **Tarea anterior vigente**       | `AUTH-CTX-026` — APROBADA                                                                        |
+| **Puerta posterior obligatoria** | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos  |
+| **Tarea posterior condicionada** | `AUTH-CTX-028` — Definir compatibilidad temporal con `get_operational_context`                   |
+| **Contratos consumidos**         | `AccessContext@1.0.0`, `AuthorizationDecision@1.0.0` y proyecciones seguras                      |
+| **Núcleo compartido candidato**  | `@vento/os-context` redefinido como SDK canónico                                                 |
+| **Fuente de tipos**              | `@vento/contracts` y tipos generados aprobados                                                   |
+| **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
+| **Cambios físicos permitidos**   | No                                                                                               |
+| **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
+| **Nuevas tareas requeridas**     | `SHELL-AUTH-001` a `SHELL-AUTH-005`                                                              |
+
+Esta tarea define una única arquitectura de consumo para que todas las
+aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
+reconstruir autoridad localmente.
+
+La regla central es:
+
+```text
+UNA FUENTE DE CONTEXTO
++
+UN NÚCLEO DE EVALUACIÓN
++
+ADAPTADORES COMPARTIDOS
++
+PROYECCIONES SEGURAS
+=
+CONSUMO CONSISTENTE EN TODO VENTO OS
+```
+
+```text
+CONTEXTO CENTRALIZADO
+≠
+OBJETO GLOBAL MUTABLE
+```
+
+```text
+SDK COMPARTIDO
+≠
+BYPASS DE SERVIDOR
+```
+
+```text
+UI GUARD
+≠
+CONTROL DE SEGURIDAD SUFICIENTE
+```
+
+No implementa paquetes, hooks, adapters, RPC, migraciones, políticas RLS,
+server actions, route handlers, cambios en aplicaciones ni modificaciones en
+Supabase.
+
+---
+
+#### 1. Objetivo
+
+Definir de forma cerrada:
+
+1. quién es propietario del consumo compartido;
+2. qué paquete será la frontera canónica;
+3. qué contratos se comparten;
+4. qué lógica permanece exclusivamente en servidor;
+5. qué proyecciones puede recibir el cliente;
+6. cómo se resuelve contexto una sola vez por frontera;
+7. cómo se evalúa cada acción con recurso exacto;
+8. cómo consumen Server Components;
+9. cómo consumen Server Actions;
+10. cómo consumen Route Handlers;
+11. cómo consumen jobs y procesos de sistema;
+12. cómo consumen los clientes React;
+13. cómo consume la navegación;
+14. cómo se bloquean acciones directas;
+15. cómo se evita duplicar contexto;
+16. cómo se evita duplicar reglas;
+17. cómo se prohíben RPC legacy directas;
+18. cómo se migra cada aplicación;
+19. cómo se prueban paridad y fail closed;
+20. cómo se retira el consumo heredado.
+
+---
+
+#### 2. Base normativa
+
+AUTH-CTX-027 conserva sin cambios las decisiones aprobadas en:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-020`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` — `AccessContext`;
+- `AUTH-CTX-002` — `AuthorizationDecision`;
+- `AUTH-CTX-003` — `SimulationContext`;
+- `AUTH-CTX-004` — versionado y serialización;
+- `AUTH-CTX-005` a `AUTH-CTX-015` — nodos del contexto;
+- `AUTH-CTX-016` a `AUTH-CTX-024` — decisión y auditoría;
+- `AUTH-CTX-025` — contrato de `get_access_context`;
+- `AUTH-CTX-026` — contrato de `evaluate_authorization`;
+- `SHELL-AUD-002` a `SHELL-AUD-005` — auditoría de guards, permisos, contexto y overrides;
+- `SHELL-PKG-001` a `SHELL-PKG-008` — distribución, versión y deprecación;
+- `SHELL-CON-001` a `SHELL-CON-008` — contratos, códigos y tipos compartidos;
+- `AUTH-UI-001` a `AUTH-UI-060` — rutas, pantallas, acciones y experiencia;
+- `AUTH-DB-006` a `AUTH-DB-010` — adopción en RPC sensibles;
+- `AUTH-DB-020`, `AUTH-DB-021` y `AUTH-DB-026` — migración, RLS y tipos;
+- `AUTH-DB-027` a `AUTH-DB-031` — pruebas, drift, retiro y certificación;
+- `AUTH-DB-032` — persistencia de decisiones;
+- `AUTH-DB-033` — resolver de contexto;
+- `AUTH-DB-034` — evaluador canónico.
+
+Principios obligatorios:
+
+```text
+APLICACIÓN
+NO RECONSTRUYE
+ACTOR, ROL, TURNO, SEDE, ÁREA O DISPOSITIVO
+```
+
+```text
+CLIENTE
+NO RECIBE
+EVIDENCIA INTERNA COMPLETA
+```
+
+```text
+SERVIDOR
+NO CONFÍA
+EN EL ESTADO DE AUTORIZACIÓN DEL CLIENTE
+```
+
+---
+
+#### 3. Estado físico conocido
+
+El ecosistema contiene actualmente varios modelos de consumo:
+
+- `@vento/os-context` llama directamente RPC legacy;
+- NEXO mantiene un helper operativo local;
+- ORIGO, PULSO y VISO mantienen helpers de permisos similares;
+- ANIMA consulta permisos desde un hook de cliente;
+- guards locales resuelven sesiones, overrides y permisos;
+- políticas RLS y RPC aplican verificaciones propias;
+- aplicaciones normalizan claves de permiso localmente;
+- algunas fronteras reciben sede y área desde el caller.
+
+Este estado es transitorio y no define la arquitectura final.
+
+---
+
+#### 4. Evidencia legacy: paquete compartido actual
+
+El paquete actual `@vento/os-context`:
+
+- llama `get_effective_context_v1`;
+- llama `has_effective_permission_v1`;
+- expone resultados booleanos;
+- incluye inicio y cierre de simulación;
+- documenta precedencia entre dispositivo, simulación, ANIMA y bypass.
+
+Por tanto, el nombre del paquete puede conservarse, pero su implementación y
+responsabilidad deberán redefinirse.
+
+---
+
+#### 5. Evidencia legacy: NEXO
+
+El helper actual de NEXO:
+
+- acepta `employeeId`;
+- acepta `siteId`;
+- usa `get_operational_context`;
+- usa `has_operational_permission`;
+- deriva aplicación desde la clave;
+- aplica role override desde cookies;
+- busca áreas localmente;
+- usa `can_operate`;
+- construye mensajes desde razones legacy.
+
+Ninguna de estas reglas será fuente autoritativa final.
+
+---
+
+#### 6. Evidencia legacy: ORIGO, PULSO y VISO
+
+Los helpers actuales de estas aplicaciones:
+
+- normalizan claves agregando el prefijo de aplicación;
+- aceptan sede y área como contexto del caller;
+- llaman directamente `has_permission`;
+- convierten cualquier error en `false`;
+- retornan únicamente booleanos.
+
+La similitud entre repositorios demuestra duplicación transversal.
+
+---
+
+#### 7. Evidencia legacy: guards de servidor
+
+Los guards actuales pueden:
+
+- resolver usuario;
+- resolver sesión operativa;
+- aplicar política especial para dispositivo compartido;
+- consultar `has_permission` varias veces;
+- aplicar role override;
+- redirigir con razones locales;
+- devolver sede, área y `navigation_role`.
+
+La navegación y la autorización quedan mezcladas en una misma frontera.
+
+---
+
+#### 8. Evidencia legacy: hooks de cliente
+
+Existen hooks que llaman `has_permission` desde el navegador por cada clave.
+
+Esto produce:
+
+- múltiples round trips;
+- decisiones separadas sin snapshot común;
+- exposición de detalles de implementación;
+- posibilidad de drift respecto del servidor;
+- dependencia de booleanos sin razones seguras;
+- uso del cliente como consumidor directo de RPC de autorización.
+
+Este patrón deberá retirarse.
+
+---
+
+#### 9. Decisión principal
+
+Se define un único SDK lógico de consumo:
+
+```text
+@vento/os-context
+```
+
+Responsabilidad final:
+
+```text
+CONTRATOS
++
+ADAPTADORES DE SERVIDOR
++
+PROYECCIONES SEGURAS
++
+INTEGRACIÓN DE CLIENTE
++
+UTILIDADES DE PRUEBA
+```
+
+No contendrá lógica empresarial independiente del resolver y evaluador
+canónicos.
+
+---
+
+#### 10. Propiedad del SDK
+
+El SDK será propiedad de:
+
+```text
+vento-shell
+→ BLOQUE H — Fundación compartida
+```
+
+Las aplicaciones serán consumidoras versionadas.
+
+Ninguna aplicación será propietaria de una bifurcación local del contrato.
+
+---
+
+#### 11. Paquetes y fronteras
+
+La arquitectura conceptual será:
+
+```text
+@vento/contracts
+→ tipos, enums, códigos y schemas
+
+@vento/os-context/server
+→ resolución y evaluación en servidor
+
+@vento/os-context/client
+→ proyecciones seguras y hooks de presentación
+
+@vento/os-context/testing
+→ fixtures, factories y matchers
+
+@vento/os-context/legacy
+→ compatibilidad temporal explícita
+```
+
+Los nombres de exports podrán ajustarse en BLOQUE H sin cambiar esta
+separación.
+
+---
+
+#### 12. Fuente de contratos
+
+Los tipos de:
+
+- `AccessContext`;
+- `AuthorizationDecision`;
+- `SimulationContext`;
+- requests;
+- proyecciones seguras;
+- códigos de razón;
+- códigos de aplicación;
+- códigos de permiso;
+
+procederán de `@vento/contracts` o de tipos generados aprobados.
+
+No se duplicarán interfaces manuales por repositorio.
+
+---
+
+#### 13. Fuente de lógica
+
+La lógica autoritativa procede exclusivamente de:
+
+```text
+get_access_context
++
+evaluate_authorization
++
+resolvers privados
++
+datasets publicados
+```
+
+El SDK adapta y valida.
+
+No vuelve a implementar precedencia, carriles, grants, denies o territorio.
+
+---
+
+#### 14. APIs conceptuales de servidor
+
+El SDK deberá ofrecer conceptualmente:
+
+```ts
+resolveAccessContext({ appCode })
+evaluateAuthorization({ request, correlationId })
+requireAuthorization({ request, correlationId })
+getSafeContextProjection({ context })
+getSafeDecisionProjection({ decision })
+createAuthorizationScope({ appCode })
+```
+
+Los nombres finales se aprobarán en `SHELL-AUTH-001` y `SHELL-AUTH-002`.
+
+---
+
+#### 15. createAuthorizationScope
+
+Una frontera de servidor podrá crear un scope por solicitud:
+
+```text
+scope
+=
+app_code fijo
++
+principal de la solicitud
++
+correlación
++
+resolución memoizada
+```
+
+El scope no concede autoridad y no vive entre solicitudes.
+
+---
+
+#### 16. app_code fijo
+
+Cada aplicación deberá fijar su `app_code` en un adapter propio.
+
+Ejemplo conceptual:
+
+```text
+vento-nexo adapter
+→ app_code = nexo
+```
+
+El código de aplicación no deberá llegar desde:
+
+- query string;
+- body;
+- cookie editable;
+- ruta dinámica;
+- clave de permiso;
+- local storage.
+
+---
+
+#### 17. Frontera de servidor obligatoria
+
+La resolución completa y la evaluación ocurren en servidor para:
+
+- Server Components;
+- layouts protegidos;
+- Server Actions;
+- Route Handlers;
+- API internas;
+- RPC wrappers;
+- jobs;
+- procesos de sistema;
+- operaciones de lectura sensible;
+- mutaciones.
+
+---
+
+#### 18. Server Components
+
+Un Server Component podrá consumir:
+
+- proyección segura de contexto;
+- decisiones seguras de lectura;
+- capacidades necesarias para renderizar.
+
+No deberá serializar al cliente la decisión interna completa.
+
+---
+
+#### 19. Layouts protegidos
+
+El layout podrá:
+
+- resolver contexto una vez;
+- validar acceso de aplicación;
+- producir navegación segura;
+- entregar una proyección mínima al árbol.
+
+No deberá utilizar la autorización del layout para permitir mutaciones
+posteriores.
+
+---
+
+#### 20. Server Actions
+
+Cada Server Action deberá:
+
+1. fijar aplicación;
+2. construir `AuthorizationEvaluationRequest`;
+3. resolver recurso en servidor;
+4. evaluar permiso exacto;
+5. comprobar outcome;
+6. revalidar concurrencia;
+7. ejecutar;
+8. vincular decisión y resultado.
+
+No confiará en un booleano enviado desde UI.
+
+---
+
+#### 21. Route Handlers
+
+Los Route Handlers deberán usar el mismo adapter de servidor.
+
+No mantendrán middleware de permisos con reglas paralelas.
+
+La autenticación temprana puede ocurrir antes, pero la autorización exacta
+permanece en la frontera de recurso.
+
+---
+
+#### 22. Jobs
+
+Los jobs deberán crear un scope con:
+
+- aplicación;
+- principal de sistema;
+- correlación;
+- request source `JOB`.
+
+No usarán `service_role` como permiso empresarial.
+
+---
+
+#### 23. RPC wrappers
+
+Los wrappers compartidos deberán:
+
+- usar funciones aprobadas;
+- validar contratos de respuesta;
+- traducir errores técnicos;
+- conservar correlación;
+- no aceptar actor o territorio efectivo;
+- no exponer helpers internos.
+
+---
+
+#### 24. Cliente React
+
+El cliente recibirá una proyección segura obtenida en servidor.
+
+Podrá consumirla mediante:
+
+- provider;
+- hook;
+- props serializadas;
+- actualización controlada.
+
+No consultará directamente el contexto interno.
+
+---
+
+#### 25. SafeContextProjection
+
+La proyección segura podrá incluir:
+
+- `context_id` cuando sea necesario;
+- actor seguro;
+- aplicación;
+- sede y área operativas seguras;
+- rol visible permitido;
+- estado de readiness seguro;
+- dispositivo seguro;
+- códigos de recuperación seguros;
+- `resolved_at` cuando sea útil.
+
+No incluye evidencia interna completa.
+
+---
+
+#### 26. SafeDecisionProjection
+
+Una decisión segura podrá incluir:
+
+- outcome;
+- permiso exacto;
+- `safe_message_code`;
+- razones seguras;
+- acciones de recuperación;
+- correlación de soporte;
+- campos visibles aprobados.
+
+No incluye grants, denies, hashes o versiones internas.
+
+---
+
+#### 27. Hooks de presentación
+
+Hooks como:
+
+```text
+useAccessContext
+useAuthorization
+useCan
+```
+
+serán consumidores de una proyección ya emitida.
+
+No llamarán RPC internas por cada render o permiso.
+
+---
+
+#### 28. Actualización del contexto cliente
+
+La proyección podrá actualizarse cuando ocurra:
+
+- navegación de servidor;
+- refresh explícito;
+- cambio de actor en dispositivo compartido;
+- inicio o cierre de turno;
+- check-in o check-out;
+- cambio de simulación;
+- invalidación aprobada.
+
+La estrategia de caché corresponde a AUTH-CTX-029.
+
+---
+
+#### 29. Navegación
+
+La navegación utiliza decisiones seguras para:
+
+- ocultar enlaces irrelevantes;
+- ordenar accesos frecuentes;
+- mostrar estados bloqueados;
+- dirigir recuperación.
+
+La navegación no es una frontera de seguridad suficiente.
+
+---
+
+#### 30. Acceso directo por URL
+
+Toda ruta protegida deberá validar en servidor.
+
+Ocultar un enlace no impide acceso directo.
+
+`AUTH-UI-041` implementará la regla en superficies reales.
+
+---
+
+#### 31. Acciones visibles
+
+Un botón visible no implica autorización persistente.
+
+La acción se evalúa de nuevo en servidor con el recurso exacto.
+
+`AUTH-UI-042` y `AUTH-UI-043` gobiernan esta aplicación.
+
+---
+
+#### 32. Prohibición de has_permission directo
+
+Después de la migración, las aplicaciones no podrán invocar directamente:
+
+```text
+has_permission
+has_operational_permission
+has_effective_permission_v1
+get_operational_context
+get_effective_context_v1
+```
+
+salvo dentro del adapter legacy temporal y controlado.
+
+---
+
+#### 33. Prohibición de Supabase directo desde cliente
+
+El navegador no invocará funciones internas de autorización.
+
+Una excepción futura requerirá:
+
+- contrato expuesto específico;
+- proyección segura;
+- grants explícitos;
+- RLS;
+- pruebas negativas;
+- aprobación documental.
+
+---
+
+#### 34. Prohibición de normalización local de permisos
+
+Las aplicaciones no agregarán prefijos a claves de permiso.
+
+La clave canónica completa procederá de:
+
+- catálogo compartido;
+- constante generada;
+- contrato de pantalla o acción.
+
+Una clave incompleta es error de desarrollo.
+
+---
+
+#### 35. Prohibición de roles como permisos
+
+El consumidor no decidirá mediante:
+
+```text
+role === propietario
+role === gerente_general
+role === cajero
+```
+
+Los roles solo aparecen como hechos dentro del contexto y de datasets
+canónicos.
+
+---
+
+#### 36. Prohibición de sede y área efectivas desde UI
+
+La UI puede enviar localizadores del recurso o filtros permitidos.
+
+No puede declarar:
+
+- sede efectiva del actor;
+- área efectiva del actor;
+- turno efectivo;
+- check-in efectivo.
+
+El servidor resuelve esos hechos.
+
+---
+
+#### 37. Contexto por solicitud
+
+Dentro de una solicitud de servidor:
+
+```text
+mismo app_code
++
+mismo principal
++
+mismo snapshot
+→ misma resolución de AccessContext
+```
+
+El SDK deberá deduplicar la resolución dentro de esa frontera.
+
+---
+
+#### 38. No existe singleton global
+
+Queda prohibido mantener `AccessContext` en:
+
+- variable global mutable;
+- singleton de proceso;
+- módulo con actor anterior;
+- cache sin clave completa;
+- estado compartido entre usuarios.
+
+---
+
+#### 39. Memoización request-scoped
+
+La memoización inicial será únicamente request-scoped.
+
+No requiere TTL.
+
+No reemplaza la estrategia posterior de AUTH-CTX-029.
+
+---
+
+#### 40. Contexto frente a decisión
+
+El contexto puede reutilizarse dentro de la misma solicitud.
+
+Cada acción o recurso requiere una decisión exacta.
+
+```text
+UN CONTEXTO
+→ VARIAS DECISIONES
+```
+
+No se reutiliza una decisión para otro recurso.
+
+---
+
+#### 41. Batch de decisiones de UI
+
+La UI podrá solicitar una proyección agregada para una lista cerrada de
+capacidades de presentación.
+
+El servidor deberá:
+
+- resolver contexto una vez;
+- evaluar cada permiso;
+- devolver solo proyecciones seguras;
+- conservar decisiones separadas internamente;
+- limitar cantidad y catálogo.
+
+---
+
+#### 42. Batch no autoriza mutaciones
+
+Una proyección batch de UI no podrá utilizarse como autorización para una
+mutación posterior.
+
+La mutación se evalúa nuevamente con recurso y versión exactos.
+
+---
+
+#### 43. Errores fail closed
+
+Cualquier error al:
+
+- resolver contexto;
+- validar contrato;
+- evaluar permiso;
+- resolver recurso;
+- validar proyección;
+
+produce denegación o error seguro.
+
+Nunca produce `true` por fallback.
+
+---
+
+#### 44. Errores técnicos frente a denegaciones
+
+El SDK distinguirá internamente:
+
+```text
+DENY CANÓNICO
+≠
+FALLO DE INFRAESTRUCTURA
+```
+
+La UI recibirá mensajes seguros diferentes, sin detalles internos.
+
+---
+
+#### 45. Correlación
+
+Cada frontera deberá propagar `correlation_id` cuando exista.
+
+La correlación conectará:
+
+- render protegido;
+- acción;
+- evaluación;
+- ejecución;
+- auditoría;
+- error.
+
+No concede autoridad.
+
+---
+
+#### 46. Observabilidad
+
+El SDK podrá emitir métricas de:
+
+- latencia;
+- cache request-scoped hit/miss;
+- outcome agregado;
+- error técnico;
+- consumidor;
+- versión;
+- uso legacy.
+
+No emitirá secretos ni evidencia sensible.
+
+---
+
+#### 47. Registro de consumidores
+
+Se deberá crear un registro canónico con una fila por consumidor.
+
+Campos mínimos:
+
+```text
+repository
+path
+surface_type
+consumer_name
+app_code
+current_api
+target_api
+permission_source
+resource_source
+legacy_behavior
+migration_task
+owner
+status
+test_evidence
+removal_gate
+```
+
+---
+
+#### 48. surface_type
+
+Valores iniciales:
+
+```text
+SERVER_COMPONENT
+LAYOUT
+SERVER_ACTION
+ROUTE_HANDLER
+CLIENT_HOOK
+CLIENT_COMPONENT
+NAVIGATION
+MIDDLEWARE
+RPC
+RLS
+JOB
+EDGE_FUNCTION
+REALTIME
+```
+
+La clasificación permite diseñar el adapter correcto.
+
+---
+
+#### 49. Inventario obligatorio
+
+El inventario deberá cubrir:
+
+- NEXO;
+- FOGO;
+- ORIGO;
+- PULSO;
+- VISO;
+- NUMERA;
+- ANIMA;
+- SHELL;
+- PASS en superficies laborales relacionadas;
+- AURA;
+- servicios compartidos;
+- SQL, RLS y RPC.
+
+---
+
+#### 50. PASS
+
+PASS no consumirá el contexto laboral interno por defecto.
+
+Podrá compartir:
+
+- contratos generales;
+- códigos;
+- principal técnico;
+- patrones de proyección segura.
+
+Sus decisiones de cliente deberán usar contratos de dominio propios y no
+recibir autoridad de empleado.
+
+---
+
+#### 51. ANIMA
+
+ANIMA es fuente de hechos laborales como turnos y check-in.
+
+ANIMA también es consumidor cuando protege sus propias acciones.
+
+No será el evaluador central ni publicará un contexto alternativo.
+
+---
+
+#### 52. SHELL
+
+SHELL será:
+
+- propietario del SDK;
+- consumidor de acceso a aplicación;
+- consumidor de navegación;
+- consumidor de contexto activo;
+- anfitrión de proyecciones seguras compartidas.
+
+No tendrá bypass por ser shell.
+
+---
+
+#### 53. VISO
+
+VISO consumirá el mismo núcleo para:
+
+- administración;
+- configuración;
+- supervisión;
+- auditoría;
+- soporte autorizado.
+
+Los permisos administrativos no se derivan de rutas o nombres de rol.
+
+---
+
+#### 54. NEXO
+
+NEXO deberá retirar progresivamente:
+
+- contexto operativo local;
+- `can_operate`;
+- role override local;
+- sede elegida como autoridad;
+- `has_operational_permission` directo;
+- mensajes legacy.
+
+Las acciones de inventario y logística se evaluarán por recurso exacto.
+
+---
+
+#### 55. FOGO
+
+FOGO deberá consumir contexto para:
+
+- producción;
+- receta;
+- solicitud;
+- lote;
+- área de producción;
+- operación compartida con NEXO.
+
+No copiará helpers de NEXO.
+
+---
+
+#### 56. ORIGO
+
+ORIGO deberá retirar:
+
+- prefijos locales;
+- `has_permission` directo;
+- sede y área declaradas por guard;
+- role override local;
+- sesión operativa paralela.
+
+Recepciones, compras y correcciones requieren evaluación por recurso.
+
+---
+
+#### 57. PULSO
+
+PULSO deberá consumir contexto para:
+
+- acceso a POS;
+- sesiones de caja;
+- pedidos;
+- pagos;
+- comandas;
+- preparación;
+- entrega;
+- overrides sensibles.
+
+El dispositivo compartido restringe y no crea autoridad.
+
+---
+
+#### 58. NUMERA
+
+NUMERA deberá utilizar la misma frontera para:
+
+- lectura financiera;
+- configuración;
+- cierres;
+- conciliación;
+- exportación;
+- acciones sensibles.
+
+No se autoriza por ser proceso contable o financiero.
+
+---
+
+#### 59. AURA
+
+AURA deberá adoptar contratos y adapters aprobados antes de recibir acceso a
+datos o acciones internas.
+
+No mantendrá un modelo de identidad o permiso separado.
+
+---
+
+#### 60. Aplicaciones futuras
+
+Toda aplicación futura deberá:
+
+- declarar app code;
+- consumir contratos compartidos;
+- usar adapter de servidor;
+- usar proyección segura;
+- registrar consumidores;
+- aprobar pruebas;
+- evitar RPC legacy.
+
+---
+
+#### 61. Role override
+
+El role override actual se clasifica como mecanismo legacy.
+
+La simulación futura deberá usar:
+
+```text
+SimulationContext
++
+evaluador de simulación separado
+```
+
+No modificará cookies para cambiar autoridad real.
+
+---
+
+#### 62. Dispositivo compartido
+
+El SDK no resolverá actor mediante cookies locales.
+
+Consumirá el principal, actor y dispositivo producidos por
+`get_access_context`.
+
+---
+
+#### 63. Cambio de actor en dispositivo
+
+Cuando cambie el actor:
+
+- se invalida la proyección cliente;
+- se crea nuevo contexto;
+- se cancelan decisiones UI anteriores;
+- las acciones en curso se revalidan;
+- no se conserva el último rol.
+
+---
+
+#### 64. Simulación
+
+La simulación no se mezcla con el adapter real.
+
+Exports separados deberán evitar que una aplicación use una simulación como
+contexto de ejecución.
+
+---
+
+#### 65. RLS
+
+RLS no consume el SDK TypeScript.
+
+Debe consumir predicados SQL construidos sobre el mismo núcleo contractual.
+
+Se exige paridad semántica y pruebas de equivalencia.
+
+---
+
+#### 66. RPC
+
+Las RPC sensibles deberán adoptar `AUTH-DB-006` a `AUTH-DB-010`.
+
+Las aplicaciones llamarán wrappers compartidos o RPC de dominio protegidas,
+no evaluadores booleanos genéricos legacy.
+
+---
+
+#### 67. Realtime
+
+Suscribirse a un canal no concede lectura de datos.
+
+La autorización de suscripción y payload deberá usar las políticas aprobadas
+en `AUTH-DB-023` y el contexto canónico aplicable.
+
+---
+
+#### 68. Edge Functions
+
+Las Edge Functions deberán:
+
+- identificar principal técnico;
+- fijar aplicación;
+- construir request;
+- consumir el evaluador mediante frontera aprobada;
+- no usar service role como bypass.
+
+---
+
+#### 69. Middleware
+
+Middleware podrá realizar autenticación o redirección temprana.
+
+No será la única frontera de autorización porque normalmente carece del
+recurso exacto y del snapshot completo.
+
+---
+
+#### 70. Contrato de compatibilidad
+
+Durante la transición, `@vento/os-context/legacy` podrá envolver:
+
+- `get_effective_context_v1`;
+- `has_effective_permission_v1`;
+- `get_operational_context`;
+- `has_operational_permission`;
+- `has_permission`.
+
+Cada uso deberá quedar registrado y emitir deprecación.
+
+---
+
+#### 71. Legacy adapter sin autoridad nueva
+
+El adapter legacy:
+
+- no añade bypass;
+- no convierte contexto antiguo en canónico completo;
+- no declara paridad inexistente;
+- no se usa en código nuevo;
+- tiene fecha y puerta de retiro.
+
+---
+
+#### 72. Política de deprecación
+
+Todo export legacy deberá incluir:
+
+- etiqueta deprecada;
+- consumidor conocido;
+- reemplazo objetivo;
+- métrica de uso;
+- versión de retiro;
+- prueba de ausencia antes de eliminar.
+
+---
+
+#### 73. Freeze de nuevas dependencias
+
+Después de aprobar esta tarea queda prohibido introducir nuevos usos directos
+de RPC legacy.
+
+CI deberá bloquearlos cuando `SHELL-AUTH-004` esté implementada.
+
+---
+
+#### 74. Lint y análisis estático
+
+El control futuro deberá detectar:
+
+- `.rpc("has_permission"`;
+- `.rpc("has_operational_permission"`;
+- `.rpc("get_operational_context"`;
+- `.rpc("get_effective_context_v1"`;
+- claves de permiso literales fuera del catálogo;
+- comparaciones directas de rol para autorizar;
+- helpers locales duplicados.
+
+---
+
+#### 75. Codemods
+
+Podrán crearse codemods para reemplazar patrones repetitivos.
+
+Un codemod no aprobará automáticamente la semántica del recurso.
+
+Cada migración requiere revisión funcional.
+
+---
+
+#### 76. Compatibilidad de versiones
+
+Cada aplicación declarará una versión compatible de:
+
+- `@vento/contracts`;
+- `@vento/os-context`;
+- tipos generados;
+- contratos SQL.
+
+La matriz de compatibilidad pertenece a `SHELL-PKG-004`.
+
+---
+
+#### 77. Distribución
+
+La distribución deberá seguir `SHELL-PKG-001` a `SHELL-PKG-008`.
+
+No se copiarán archivos manualmente entre repositorios.
+
+No se actualizarán aplicaciones sin pruebas.
+
+---
+
+#### 78. Rollback
+
+Cada aplicación deberá poder volver temporalmente al adapter compatible sin
+reintroducir código divergente.
+
+El rollback no convierte legacy en estado final aceptado.
+
+---
+
+#### 79. Migración por olas
+
+Orden propuesto:
+
+```text
+OLA 0 — inventario y freeze
+OLA 1 — contratos y SDK
+OLA 2 — resolver y evaluador físicos
+OLA 3 — SHELL y navegación
+OLA 4 — guards y lecturas de bajo riesgo
+OLA 5 — Server Actions y Route Handlers
+OLA 6 — RPC y RLS sensibles
+OLA 7 — jobs, Edge y Realtime
+OLA 8 — retiro legacy y certificación
+```
+
+---
+
+#### 80. OLA 0
+
+Debe completar:
+
+- `SHELL-AUD-002` a `SHELL-AUD-005`;
+- `AUTH-UI-001` a `AUTH-UI-010`;
+- registro de consumidores;
+- prohibición de nuevos usos legacy.
+
+---
+
+#### 81. OLA 1
+
+Debe completar:
+
+- contratos compartidos;
+- SDK server/client/testing;
+- schemas de validación;
+- proyecciones seguras;
+- versionado;
+- documentación.
+
+---
+
+#### 82. OLA 2
+
+Depende de:
+
+```text
+AUTH-DB-033
+→ AUTH-DB-034
+→ AUTH-DB-032
+```
+
+No se declarará canónico un SDK que todavía llama únicamente funciones
+legacy.
+
+---
+
+#### 83. OLA 3
+
+SHELL deberá ser el primer consumidor transversal porque concentra:
+
+- acceso a aplicaciones;
+- navegación;
+- contexto visible;
+- estados de carga y bloqueo.
+
+No se migran mutaciones sensibles en esta ola.
+
+---
+
+#### 84. OLA 4
+
+Se migrarán:
+
+- layouts;
+- páginas de lectura;
+- guardas de vista;
+- navegación;
+- proyecciones de contexto;
+- mensajes seguros.
+
+---
+
+#### 85. OLA 5
+
+Se migrarán acciones de servidor por dominio con:
+
+- permiso exacto;
+- recurso exacto;
+- pruebas negativas;
+- concurrencia;
+- rollback.
+
+---
+
+#### 86. OLA 6
+
+Se migrarán RPC y RLS únicamente con:
+
+- núcleo implementado;
+- predicados equivalentes;
+- harness;
+- planes de ejecución;
+- pruebas de paridad;
+- observabilidad.
+
+---
+
+#### 87. OLA 7
+
+Se migrarán:
+
+- jobs;
+- integraciones;
+- Edge Functions;
+- Realtime;
+- procesos de sistema.
+
+Cada uno tendrá principal técnico registrado.
+
+---
+
+#### 88. OLA 8
+
+Solo podrá ejecutarse cuando:
+
+- registro de consumidores legacy = 0;
+- búsqueda estática = 0;
+- telemetría legacy = 0;
+- pruebas de paridad aprobadas;
+- rollback verificado;
+- `AUTH-DB-031` aprobado.
+
+---
+
+#### 89. Pruebas unitarias del SDK
+
+Deberán probar:
+
+- validación de contratos;
+- app code fijo;
+- proyección segura;
+- fail closed;
+- errores técnicos;
+- memoización request-scoped;
+- no serialización de evidencia;
+- adapters legacy marcados;
+- fixtures versionadas.
+
+---
+
+#### 90. Pruebas de integración por aplicación
+
+Cada aplicación deberá probar:
+
+- acceso permitido;
+- acceso denegado;
+- URL directa;
+- acción directa;
+- recurso ajeno;
+- sede ajena;
+- área ajena;
+- actor cambiado;
+- dispositivo incompatible;
+- contexto obsoleto;
+- mensaje seguro.
+
+---
+
+#### 91. Pruebas de paridad
+
+Durante transición se comparará:
+
+```text
+resultado legacy
+vs
+resultado canónico
+```
+
+Las diferencias deberán clasificarse:
+
+- corrección intencional;
+- brecha de datos;
+- bug legacy;
+- bug canónico;
+- contrato pendiente.
+
+No se exige conservar un resultado legacy incorrecto.
+
+---
+
+#### 92. Pruebas de seguridad
+
+Se deberán probar:
+
+- manipulación de app code;
+- manipulación de permiso;
+- manipulación de recurso;
+- cambio de actor;
+- replay de proyección;
+- uso de decision ID como token;
+- inyección de sede o área;
+- invocación cliente de RPC interna;
+- exposición de hashes;
+- bypass por rol.
+
+---
+
+#### 93. Pruebas de rendimiento
+
+Se medirán:
+
+- resoluciones por request;
+- evaluaciones por pantalla;
+- latencia de batch UI;
+- serialización;
+- tamaño de proyección;
+- consultas redundantes;
+- impacto de RLS.
+
+La optimización no cambia semántica.
+
+---
+
+#### 94. Nuevas tareas SHELL-AUTH
+
+Se crean explícitamente:
+
+```text
+SHELL-AUTH-001
+— Consolidar @vento/os-context como SDK canónico
+  de contexto y autorización
+
+SHELL-AUTH-002
+— Implementar adapters de servidor, proyecciones seguras
+  y consumo cliente
+
+SHELL-AUTH-003
+— Implementar scope por solicitud, deduplicación
+  y registro canónico de consumidores
+
+SHELL-AUTH-004
+— Implementar lint, métricas y bloqueos
+  contra nuevos consumos legacy
+
+SHELL-AUTH-005
+— Migrar consumidores por repositorio
+  y certificar retiro del SDK legacy
+```
+
+---
+
+#### 95. Ubicación de SHELL-AUTH
+
+Las tareas deberán materializarse en:
+
+```text
+docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md
+```
+
+Bajo una nueva sección lógica:
+
+```text
+AUTORIZACIÓN COMPARTIDA
+```
+
+Después de `SHELL-CON-008` y antes de identificadores de procesos.
+
+---
+
+#### 96. SHELL-AUTH-001
+
+Deberá definir e implementar:
+
+- exports canónicos;
+- separación server/client/testing/legacy;
+- schemas;
+- versionado;
+- dependencia con `@vento/contracts`;
+- política de compatibilidad;
+- documentación de consumo.
+
+---
+
+#### 97. SHELL-AUTH-002
+
+Deberá implementar:
+
+- adapter de `get_access_context`;
+- adapter de `evaluate_authorization`;
+- `requireAuthorization`;
+- proyección segura de contexto;
+- proyección segura de decisión;
+- provider y hooks de presentación;
+- traducción de errores.
+
+---
+
+#### 98. SHELL-AUTH-003
+
+Deberá implementar:
+
+- scope por solicitud;
+- resolución única;
+- memoización segura;
+- correlación;
+- registro de consumidores;
+- metadata de versión;
+- fixtures de pruebas.
+
+---
+
+#### 99. SHELL-AUTH-004
+
+Deberá implementar:
+
+- reglas de lint;
+- búsqueda estática;
+- allowlist temporal;
+- métricas de uso legacy;
+- gate de CI;
+- reporte por repositorio;
+- criterio de cero nuevos usos.
+
+---
+
+#### 100. SHELL-AUTH-005
+
+Deberá coordinar:
+
+- migración de SHELL;
+- NEXO;
+- FOGO;
+- ORIGO;
+- PULSO;
+- VISO;
+- NUMERA;
+- ANIMA;
+- AURA;
+- superficies laborales de PASS;
+- servicios compartidos.
+
+No sustituye las tareas de dominio; las vincula y verifica.
+
+---
+
+#### 101. Dependencias físicas
+
+```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001 a SHELL-AUTH-004
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027` acompaña cada paquete físico.
+
+---
+
+#### 102. Relación con AUTH-UI
+
+| Responsabilidad               | Tarea                         |
+| ----------------------------- | ----------------------------- |
+| Inventario de superficies     | `AUTH-UI-001` a `AUTH-UI-010` |
+| Permisos de vistas y acciones | `AUTH-UI-030` a `AUTH-UI-039` |
+| Ocultar enlaces               | `AUTH-UI-040`                 |
+| Bloquear URL                  | `AUTH-UI-041`                 |
+| Bloquear acciones             | `AUTH-UI-042`                 |
+| Protección de servidor        | `AUTH-UI-043`                 |
+| Evitar permisos por rutas     | `AUTH-UI-044`                 |
+| Unificar navegación           | `AUTH-UI-045`                 |
+| Mostrar contexto              | `AUTH-UI-046`                 |
+| Estados de experiencia        | `AUTH-UI-048` a `AUTH-UI-051` |
+
+---
+
+#### 103. Relación con AUTH-DB
+
+| Responsabilidad      | Tarea                         |
+| -------------------- | ----------------------------- |
+| Resolver contexto    | `AUTH-DB-033`                 |
+| Evaluar autorización | `AUTH-DB-034`                 |
+| Persistir decisión   | `AUTH-DB-032`                 |
+| Adoptar en RPC       | `AUTH-DB-006` a `AUTH-DB-010` |
+| Migrar por dominio   | `AUTH-DB-020`                 |
+| RLS y grants         | `AUTH-DB-021`                 |
+| Tipos                | `AUTH-DB-026`                 |
+| Harness              | `AUTH-DB-027`                 |
+| Drift                | `AUTH-DB-028`                 |
+| Retiro legacy        | `AUTH-DB-030`                 |
+| Certificación        | `AUTH-DB-031`                 |
+
+---
+
+#### 104. Responsabilidades sin pendiente narrativo
+
+| Brecha                  | Responsable                                  |
+| ----------------------- | -------------------------------------------- |
+| SDK actual incompatible | `SHELL-AUTH-001`                             |
+| Adapters y proyecciones | `SHELL-AUTH-002`                             |
+| Resolución duplicada    | `SHELL-AUTH-003`                             |
+| Nuevos usos legacy      | `SHELL-AUTH-004`                             |
+| Migración multi-repo    | `SHELL-AUTH-005`                             |
+| Resolver físico         | `AUTH-DB-033`                                |
+| Evaluador físico        | `AUTH-DB-034`                                |
+| Persistencia            | `AUTH-DB-032`                                |
+| Guards y pantallas      | `AUTH-UI-040` a `AUTH-UI-051`                |
+| RPC y RLS               | `AUTH-DB-006` a `AUTH-DB-010`, `AUTH-DB-021` |
+| Retiro                  | `AUTH-DB-030`                                |
+| Certificación           | `AUTH-DB-031`                                |
+
+---
+
+#### 105. Antipatrones prohibidos
+
+```ts
+const allowed = await supabase.rpc("has_permission", ...);
+```
+
+```ts
+const appCode = permission.split(".")[0];
+```
+
+```ts
+if (user.role === "propietario") return true;
+```
+
+```ts
+const context = {
+  siteId: selectedSiteId,
+  areaId: selectedAreaId,
+};
+```
+
+```ts
+window.localStorage.setItem("can_operate", "true");
+```
+
+También queda prohibido:
+
+```text
+contexto del cliente → autoridad
+provider React → seguridad suficiente
+layout allow → mutación allow
+navigation role → rol operativo
+cookie override → simulación canónica
+error RPC → allow
+booleano → evidencia completa
+múltiples RPC por render → snapshot único
+copy/paste helper → núcleo compartido
+```
+
+---
+
+#### 106. Casos canónicos
+
+##### Caso A — Layout de NEXO
+
+```text
+scope NEXO
+→ resolve context una vez
+→ evaluar nexo.access
+→ producir navegación segura
+```
+
+##### Caso B — Mutación de ORIGO
+
+```text
+Server Action
+→ construir request de recepción
+→ evaluar permiso y recurso
+→ revalidar versión
+→ ejecutar
+```
+
+##### Caso C — Hook de ANIMA
+
+```text
+Server Component produce safe projection
+→ Provider
+→ hook lee memoria local
+→ no RPC por permiso
+```
+
+##### Caso D — Dispositivo compartido PULSO
+
+```text
+principal dispositivo
++
+actor empleado
+→ contexto central
+→ decisión por acción
+```
+
+##### Caso E — UI visible, acción denegada
+
+```text
+proyección anterior permitía mostrar botón
+recurso cambió
+→ servidor reevalúa
+→ DENY
+```
+
+##### Caso F — Error técnico
+
+```text
+adapter falla
+→ no fallback local
+→ error seguro
+→ fail closed
+```
+
+---
+
+#### 107. Criterios de aprobación
+
+AUTH-CTX-027 podrá aprobarse cuando se acepte que:
+
+1. existe un único modelo de consumo;
+2. el SDK pertenece a vento-shell;
+3. `@vento/os-context` puede conservar nombre;
+4. su implementación actual es legacy;
+5. `@vento/contracts` provee contratos;
+6. no se duplican interfaces por app;
+7. el SDK no reimplementa reglas;
+8. el resolver es fuente contextual;
+9. el evaluador es fuente de decisión;
+10. existen exports server;
+11. existen exports client seguros;
+12. existen exports testing;
+13. existe frontera legacy temporal;
+14. app code se fija en adapter;
+15. app code no viene del cliente;
+16. Server Components consumen proyecciones;
+17. layouts resuelven acceso de aplicación;
+18. layouts no autorizan mutaciones;
+19. Server Actions evalúan recurso exacto;
+20. Route Handlers usan el mismo adapter;
+21. jobs usan principal de sistema;
+22. service role no concede autoridad;
+23. RPC wrappers validan contratos;
+24. cliente no recibe decisión interna;
+25. cliente recibe SafeContextProjection;
+26. cliente recibe SafeDecisionProjection;
+27. hooks no llaman RPC por render;
+28. navegación no es seguridad suficiente;
+29. URL directa se valida en servidor;
+30. botón visible no autoriza acción;
+31. `has_permission` directo queda prohibido;
+32. `has_operational_permission` directo queda prohibido;
+33. `has_effective_permission_v1` queda prohibido;
+34. `get_operational_context` directo queda prohibido;
+35. `get_effective_context_v1` directo queda prohibido;
+36. solo adapter legacy puede envolverlos temporalmente;
+37. navegador no invoca evaluadores internos;
+38. claves de permiso no se normalizan localmente;
+39. claves proceden del catálogo;
+40. roles no se comparan para autorizar;
+41. sede efectiva no viene de UI;
+42. área efectiva no viene de UI;
+43. turno no viene de UI;
+44. check-in no viene de UI;
+45. contexto se resuelve una vez por request;
+46. no existe singleton global;
+47. memoización inicial es request-scoped;
+48. caché cross-request se reserva para AUTH-CTX-029;
+49. un contexto puede soportar varias decisiones;
+50. una decisión no se reutiliza para otro recurso;
+51. batch UI conserva decisiones separadas;
+52. batch UI no autoriza mutaciones;
+53. errores fallan cerrados;
+54. deny y error técnico se distinguen;
+55. correlación se propaga;
+56. correlación no concede autoridad;
+57. observabilidad no filtra secretos;
+58. existe registro de consumidores;
+59. cada consumidor tiene owner;
+60. cada consumidor tiene target API;
+61. cada consumidor tiene migration task;
+62. inventario cubre todas las aplicaciones;
+63. PASS no recibe contexto laboral por defecto;
+64. ANIMA es fuente y consumidor separado;
+65. SHELL no tiene bypass;
+66. VISO usa permisos exactos;
+67. NEXO retira can_operate;
+68. NEXO retira role override local;
+69. FOGO no copia helpers de NEXO;
+70. ORIGO retira prefijos locales;
+71. PULSO respeta dispositivo restrictivo;
+72. NUMERA usa la misma frontera;
+73. AURA adopta contratos antes de operar;
+74. apps futuras siguen el mismo estándar;
+75. role override se reemplaza por simulación separada;
+76. dispositivo no se resuelve por cookie local;
+77. cambio de actor invalida proyección;
+78. simulación usa exports separados;
+79. RLS usa núcleo SQL equivalente;
+80. RPC sensibles adoptan evaluador;
+81. Realtime no concede lectura implícita;
+82. Edge Functions registran principal;
+83. middleware no es única frontera;
+84. existe adapter legacy controlado;
+85. adapter legacy no declara paridad falsa;
+86. cada export legacy tiene retiro;
+87. se congela creación de nuevos usos legacy;
+88. lint detecta RPC legacy;
+89. lint detecta roles directos;
+90. lint detecta claves literales indebidas;
+91. codemods requieren revisión funcional;
+92. versiones compatibles se declaran;
+93. no se copian paquetes manualmente;
+94. existe rollback por app;
+95. migración se ejecuta por olas;
+96. OLA 0 completa inventario;
+97. OLA 1 completa SDK;
+98. OLA 2 implementa backend canónico;
+99. OLA 3 migra SHELL;
+100. OLA 4 migra lecturas y guards;
+101. OLA 5 migra acciones;
+102. OLA 6 migra RPC y RLS;
+103. OLA 7 migra procesos técnicos;
+104. OLA 8 retira legacy;
+105. pruebas unitarias cubren adapters;
+106. pruebas por app cubren URL y acción directa;
+107. pruebas de paridad clasifican diferencias;
+108. no se conserva bug legacy por paridad;
+109. pruebas de seguridad manipulan app;
+110. pruebas manipulan recurso;
+111. pruebas cubren replay;
+112. pruebas cubren bypass por rol;
+113. se mide resolución por request;
+114. se mide batch UI;
+115. optimización no cambia semántica;
+116. se crea SHELL-AUTH-001;
+117. se crea SHELL-AUTH-002;
+118. se crea SHELL-AUTH-003;
+119. se crea SHELL-AUTH-004;
+120. se crea SHELL-AUTH-005;
+121. las tareas se materializan en BLOQUE H;
+122. SHELL-AUTH-001 consolida SDK;
+123. SHELL-AUTH-002 implementa adapters;
+124. SHELL-AUTH-003 implementa scope y registro;
+125. SHELL-AUTH-004 implementa gates legacy;
+126. SHELL-AUTH-005 coordina migración multi-repo;
+127. las tareas existentes conservan sus responsabilidades;
+128. AUTH-DB-033 implementa contexto;
+129. AUTH-DB-034 implementa evaluación;
+130. AUTH-DB-032 persiste decisiones;
+131. AUTH-DB-006 a 010 adoptan en RPC;
+132. AUTH-DB-021 protege RLS;
+133. AUTH-DB-027 acompaña paquetes;
+134. AUTH-DB-030 retira SQL legacy;
+135. AUTH-DB-031 certifica paridad;
+136. AUTH-UI-040 a 051 aplican experiencia;
+137. no queda pendiente narrativo sin dueño;
+138. esta tarea no implementa código;
+139. esta tarea no crea migraciones;
+140. esta tarea no modifica Supabase.
+
+---
+
+#### 108. Fuera del alcance
+
+AUTH-CTX-027 no:
+
+- crea paquetes;
+- publica versiones;
+- cambia dependencias;
+- modifica aplicaciones;
+- crea hooks;
+- crea adapters;
+- crea providers;
+- crea lint;
+- crea codemods;
+- crea RPC;
+- crea RLS;
+- implementa contexto;
+- implementa evaluación;
+- migra consumidores;
+- retira legacy;
+- modifica Supabase.
+
+Toda responsabilidad diferida tiene tarea explícita.
+
+---
+
+#### 109. Cierre y continuidad de la propuesta
+
+| Relación                     | Tarea          | Estado                 |
+| ---------------------------- | -------------- | ---------------------- |
+| Tarea anterior               | `AUTH-CTX-026` | ✅ APROBADA             |
+| Tarea propuesta              | `AUTH-CTX-027` | ✅ APROBADA             |
+| Puerta siguiente             | `AUTH-MOD-021` | ⬜ NO INICIADA          |
+| Tarea posterior condicionada | `AUTH-CTX-028` | ⬜ BLOQUEADA POR PUERTA |
+
+```text
+AUTH-CTX-026 — APROBADA
+        ↓
+AUTH-CTX-027 — APROBADA
+        ↓
+AUTH-MOD-021 — PUERTA OBLIGATORIA
+        ↓
+AUTH-CTX-028 — BLOQUEADA HASTA APROBAR LA PUERTA
+```
+
+No se avanza a `AUTH-MOD-021` hasta recibir aprobación explícita de
+`AUTH-CTX-027`.
+
 
 > **PUERTA CONTRACTUAL OBLIGATORIA ANTES DE AUTH-CTX-028**
 >
@@ -128452,6 +132109,10 @@ No podrá comenzar ningún paquete estructural mientras no existan:
 ### [ ] AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 
+### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+
 ### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos
 ### [ ] AUTH-DB-013 — Implementar auditoría de simulación
 ### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
@@ -129018,6 +132679,32 @@ BLOQUE R ejecuta inicialmente:
 R2 continuará progresivamente durante las fases de cada aplicación.
 
 R3 se ejecutará durante el cierre transversal.
+
+<!-- AUTH-DB-032-034:START -->
+### Secuencia contractual obligatoria de autorización dentro de R1
+
+```text
+AUTH-DB-019
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+```
+
+`AUTH-DB-027` deberá acompañar cada paquete como harness obligatorio.
+
+Reglas:
+
+- `AUTH-DB-033` requiere la arquitectura aprobada de esquemas, helpers, `SECURITY DEFINER`, grants y RLS;
+- `AUTH-DB-034` depende del resolver canónico implementado por `AUTH-DB-033`;
+- `AUTH-DB-032` integra persistencia durable después de disponer de decisiones canónicas;
+- `AUTH-DB-006` a `AUTH-DB-010` adoptan el resolver y el evaluador en RPC sensibles;
+- las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
+<!-- AUTH-DB-032-034:END -->
 
 FASE 4 — HABILITADORES TRANSVERSALES
 

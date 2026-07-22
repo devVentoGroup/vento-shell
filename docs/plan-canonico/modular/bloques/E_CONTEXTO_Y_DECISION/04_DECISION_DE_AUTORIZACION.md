@@ -20123,7 +20123,7 @@ AUTH-CTX-024 podrá aprobarse cuando se acepte que:
 | Relación        | Tarea          | Estado                      |
 | --------------- | -------------- | --------------------------- |
 | Tarea anterior  | `AUTH-CTX-023` | ✅ APROBADA                  |
-| Tarea propuesta | `AUTH-CTX-024` | 🟡 PROPUESTA PARA APROBACIÓN |
+| Tarea propuesta | `AUTH-CTX-024` | ✅ APROBADA |
 | Tarea siguiente | `AUTH-CTX-025` | ⬜ NO INICIADA               |
 
 ```text

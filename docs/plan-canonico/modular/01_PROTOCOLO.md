@@ -457,6 +457,22 @@
 
 ---
 
+<!-- TASK-MATERIALIZATION-RULE:START -->
+## Regla canónica de materialización inmediata de tareas nuevas
+
+Cuando una tarea aprobada detecte una brecha y cree un identificador nuevo, la nueva tarea deberá quedar físicamente registrada antes de avanzar a la tarea siguiente.
+
+La materialización obligatoria incluye:
+
+1. insertar el encabezado con marcador en el bloque lógico propietario;
+2. registrar su dependencia en el orden de implementación cuando afecte secuencia o puertas;
+3. comprobar que el identificador aparece exactamente una vez en el plan modular;
+4. ejecutar el compilador y el verificador;
+5. cerrar la respuesta de aprobación con una orden explícita cuando quede una acción manual pendiente.
+
+Una mención narrativa dentro de otra tarea no equivale a crear la tarea nueva.
+<!-- TASK-MATERIALIZATION-RULE:END -->
+
 ## Regla canónica de granularidad documental
 
 La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.

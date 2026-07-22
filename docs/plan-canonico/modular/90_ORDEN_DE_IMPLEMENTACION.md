@@ -83,6 +83,32 @@ R2 continuará progresivamente durante las fases de cada aplicación.
 
 R3 se ejecutará durante el cierre transversal.
 
+<!-- AUTH-DB-032-034:START -->
+### Secuencia contractual obligatoria de autorización dentro de R1
+
+```text
+AUTH-DB-019
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+```
+
+`AUTH-DB-027` deberá acompañar cada paquete como harness obligatorio.
+
+Reglas:
+
+- `AUTH-DB-033` requiere la arquitectura aprobada de esquemas, helpers, `SECURITY DEFINER`, grants y RLS;
+- `AUTH-DB-034` depende del resolver canónico implementado por `AUTH-DB-033`;
+- `AUTH-DB-032` integra persistencia durable después de disponer de decisiones canónicas;
+- `AUTH-DB-006` a `AUTH-DB-010` adoptan el resolver y el evaluador en RPC sensibles;
+- las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
+<!-- AUTH-DB-032-034:END -->
+
 FASE 4 — HABILITADORES TRANSVERSALES
 
 26. BLOQUE F — ANIMA

@@ -10,39 +10,39 @@
 
 ## Estado canónico
 
-| Campo                         | Valor                                                             |
-| ----------------------------- | ----------------------------------------------------------------- |
-| Versión                       | 2026-07-21                                                        |
-| Revisión documental           | **39**                                                            |
-| Estado documental             | **VIGENTE**                                                       |
-| Arquitectura documental       | **MODULAR CANÓNICA**                                              |
-| Fuente de orden canónico      | `manifest.json`                                                   |
-| Fragmentos canónicos          | **109**                                                            |
-| Tareas canónicas con marcador | **719**                                                           |
-| Tareas `AUTH` únicas          | **312**                                                           |
-| Tareas aprobadas              | **117**                                                           |
-| Tareas en propuesta           | **0**                                                             |
-| Tareas no iniciadas           | **602**                                                           |
-| Tareas rechazadas             | **0**                                                             |
-| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`   |
-| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                          |
-| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                         |
-| Última tarea aprobada         | **AUTH-CTX-025 — Diseñar contrato SQL de get_access_context**               |
-| Tarea actual                  | `AUTH-CTX-026` — Diseñar contrato canónico de evaluate_authorization — **NO INICIADA**     |
-| Estado de la tarea actual     | **NO INICIADA**                                                   |
-| Siguiente tarea               | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones       |
-| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**     |
-| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-025 aprobadas; AUTH-CTX-026 pendiente** |
-| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**         |
+| Campo                         | Valor                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| Versión                       | 2026-07-21                                                                                        |
+| Revisión documental           | **39**                                                                                            |
+| Estado documental             | **VIGENTE**                                                                                       |
+| Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
+| Fuente de orden canónico      | `manifest.json`                                                                                   |
+| Fragmentos canónicos          | **109**                                                                                           |
+| Tareas canónicas con marcador | **722**                                                                                           |
+| Tareas `AUTH` únicas          | **315**                                                                                           |
+| Tareas aprobadas              | **119**                                                                                           |
+| Tareas en propuesta           | **0**                                                                                             |
+| Tareas no iniciadas           | **603**                                                                                           |
+| Tareas rechazadas             | **0**                                                                                             |
+| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
+| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
+| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
+| Última tarea aprobada         | **AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones**                            |
+| Tarea actual                  | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos — **NO INICIADA** |
+| Estado de la tarea actual     | **NO INICIADA**                                                                                   |
+| Siguiente tarea               | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context   |
+| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
+| Progreso del bloque           | **AUTH-CTX-001 a AUTH-CTX-027 aprobadas; AUTH-MOD-021 pendiente**                                 |
+| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                               |
-| --------------- | ------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CTX-025` — Diseñar contrato SQL de get_access_context                   |
-| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                         |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                  |
+| Estado          | Valor                                                                |
+| --------------- | -------------------------------------------------------------------- |
+| Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones |
+| Tarea actual    | `AUTH-CTX-023` — Incluir decisión final y razones — **NO INICIADA**  |
+| Siguiente tarea | `AUTH-CTX-024` — Incluir datos de auditoría                          |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
 
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021`                    | **NO INICIADA — PUERTA ANTES DE AUTH-CTX-028** |
-| `AUTH-CTX-001` a `AUTH-CTX-025` | **APROBADAS** |
-| `AUTH-CTX-026` a `AUTH-CTX-030` | **NO INICIADAS** |
+| `AUTH-CTX-001` a `AUTH-CTX-027` | **APROBADAS** |
+| `AUTH-CTX-028` a `AUTH-CTX-030` | **NO INICIADAS** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,18 +87,13 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-025 — Diseñar contrato SQL de get_access_context
-        ↓
-TAREA ACTUAL
-AUTH-CTX-026 — Diseñar contrato canónico de evaluate_authorization
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-CTX-027 — Definir consumo centralizado del contexto por las aplicaciones
         ↓
-PUERTA CONTRACTUAL OBLIGATORIA
-AUTH-MOD-021 — Definir rol base mínimo
-no privilegiado para trabajadores
-puramente operativos
+TAREA ACTUAL
+AUTH-MOD-021 — Definir rol base mínimo no privilegiado para trabajadores puramente operativos
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-CTX-028 — Definir compatibilidad temporal con get_operational_context
         ↓
 CIERRE DEL BLOQUE
 AUTH-CTX-028 a AUTH-CTX-030

@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **719** |
-| Tareas `AUTH` | **312** |
-| Aprobadas | **117** |
+| Tareas con marcador | **722** |
+| Tareas `AUTH` | **315** |
+| Aprobadas | **119** |
 | En propuesta | **0** |
-| No iniciadas | **602** |
+| No iniciadas | **603** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-CTX-025` — Diseñar contrato SQL de get_access_context | ✅ APROBADA |
-| Tarea actual | `AUTH-CTX-026` — Diseñar contrato canónico de evaluate_authorization | ⬜ NO INICIADA |
-| Siguiente | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-CTX-027` — Definir consumo centralizado del contexto por las aplicaciones | ✅ APROBADA |
+| Tarea actual | `AUTH-MOD-021` — Definir rol base mínimo no privilegiado para trabajadores puramente operativos | ⬜ NO INICIADA |
+| Siguiente | `AUTH-CTX-028` — Definir compatibilidad temporal con get_operational_context | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -145,8 +145,8 @@
 | ✅ APROBADA | `AUTH-CTX-023` | Incluir decisión final y razones | `bloques/E_CONTEXTO_Y_DECISION/04_DECISION_DE_AUTORIZACION.md` |
 | ✅ APROBADA | `AUTH-CTX-024` | Incluir datos de auditoría | `bloques/E_CONTEXTO_Y_DECISION/04_DECISION_DE_AUTORIZACION.md` |
 | ✅ APROBADA | `AUTH-CTX-025` | Diseñar contrato SQL de get_access_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
-| ⬜ NO INICIADA | `AUTH-CTX-026` | Diseñar contrato canónico de evaluate_authorization | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
-| ⬜ NO INICIADA | `AUTH-CTX-027` | Definir consumo centralizado del contexto por las aplicaciones | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
+| ✅ APROBADA | `AUTH-CTX-026` | Diseñar contrato canónico de evaluate_authorization | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
+| ✅ APROBADA | `AUTH-CTX-027` | Definir consumo centralizado del contexto por las aplicaciones | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `AUTH-CTX-028` | Definir compatibilidad temporal con get_operational_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `AUTH-CTX-029` | Definir estrategia de invalidación y caché | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `AUTH-CTX-030` | Definir plan de pruebas contractuales del contexto y la decisión | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
@@ -665,6 +665,9 @@
 | ⬜ NO INICIADA | `AUTH-DB-018` | Separar vistas y RPC expuestas de helpers internos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-019` | Implementar vínculos canónicos entre Auth e identidades empresariales | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ⬜ NO INICIADA | `AUTH-DB-033` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ⬜ NO INICIADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ⬜ NO INICIADA | `AUTH-DB-032` | Implementar persistencia canónica y vinculación de decisiones de autorización | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-012` | Implementar auditoría de cambios de permisos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-013` | Implementar auditoría de simulación | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-014` | Implementar auditoría de dispositivos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |

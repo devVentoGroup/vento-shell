@@ -5,6 +5,10 @@
 ### [ ] AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 
+### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+
 ### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos
 ### [ ] AUTH-DB-013 — Implementar auditoría de simulación
 ### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
