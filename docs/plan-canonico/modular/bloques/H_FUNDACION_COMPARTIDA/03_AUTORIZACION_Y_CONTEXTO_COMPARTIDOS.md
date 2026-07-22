@@ -41,17 +41,15 @@ No se crearán paquetes paralelos `@vento/auth` ni
 ### Orden contractual interno
 
 ```text
+SHELL-AUD-002 a SHELL-AUD-005
+        ↓
+SHELL-PKG-001 a SHELL-PKG-008
+        ↓
 SHELL-CON-001 a SHELL-CON-008
         ↓
 SHELL-AUTH-001
 +
-SHELL-CTX-001 a SHELL-CTX-005
-        ↓
-SHELL-AUTH-002
-        ↓
-SHELL-AUTH-003
-        ↓
-SHELL-AUTH-004
+SHELL-CTX-001
         ↓
 AUTH-DB-033
         ↓
@@ -59,17 +57,36 @@ AUTH-DB-034
         ↓
 AUTH-DB-032
         ↓
+SHELL-CTX-002 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002
+        ↓
+SHELL-AUTH-003
+        ↓
+SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010
++
+AUTH-DB-021
+        ↓
 SHELL-AUTH-005
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
 ```
 
 Reglas:
 
-- `SHELL-AUTH-001` define la estructura y exports del único SDK compartido;
-- `SHELL-CTX-001..005` implementan piezas contextuales dentro del mismo paquete;
-- `SHELL-AUTH-002` depende de los contratos y módulos contextuales;
-- `SHELL-AUTH-003` crea scope por solicitud y registro de consumidores;
-- `SHELL-AUTH-004` impide nuevos consumos legacy antes de la migración;
-- `AUTH-DB-033` y `AUTH-DB-034` implementan las fuentes autoritativas;
-- `AUTH-DB-032` agrega persistencia durable y vínculo con ejecución;
-- `SHELL-AUTH-005` migra consumidores solo después de disponer del backend,
-  adapters, gates, pruebas y rollback.
+- `SHELL-AUTH-001` define estructura, exports, versionado y compatibilidad del único SDK compartido;
+- `SHELL-CTX-001` consolida el módulo contextual dentro del mismo paquete sin crear otro núcleo;
+- `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` implementan contexto, decisión y persistencia autoritativos;
+- `SHELL-CTX-002..005` consumen el contexto canónico ya disponible y producen proyecciones contextuales seguras;
+- `SHELL-AUTH-002` implementa adapters y proyecciones sobre las fronteras canónicas;
+- `SHELL-AUTH-003` implementa scope por solicitud, deduplicación y registro de consumidores;
+- `SHELL-AUTH-004` bloquea nuevos consumos legacy antes de la migración masiva;
+- `AUTH-DB-020`, `AUTH-DB-006..010` y `AUTH-DB-021` migran objetos, RPC y RLS por dominio;
+- `SHELL-AUTH-005` coordina y certifica la migración multi-repositorio después de disponer de backend, adapters, gates y rollback;
+- `AUTH-DB-030` y `AUTH-DB-031` retiran legacy y certifican paridad únicamente al final.
