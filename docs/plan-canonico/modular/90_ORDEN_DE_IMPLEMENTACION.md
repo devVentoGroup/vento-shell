@@ -83,13 +83,15 @@ R2 continuará progresivamente durante las fases de cada aplicación.
 
 R3 se ejecutará durante el cierre transversal.
 
-<!-- AUTH-DB-032-034:START -->
+<!-- AUTH-DB-032-035:START -->
 ### Secuencia contractual obligatoria de autorización dentro de R1
 
 ```text
 AUTH-DB-019
         ↓
 AUTH-DB-033
+        ↓
+AUTH-DB-035
         ↓
 AUTH-DB-034
         ↓
@@ -103,11 +105,12 @@ AUTH-DB-006 a AUTH-DB-010
 Reglas:
 
 - `AUTH-DB-033` requiere la arquitectura aprobada de esquemas, helpers, `SECURITY DEFINER`, grants y RLS;
-- `AUTH-DB-034` depende del resolver canónico implementado por `AUTH-DB-033`;
+- `AUTH-DB-035` depende del resolver canónico y debe implementar generaciones transaccionales, token de frescura y outbox de invalidación;
+- `AUTH-DB-034` se implementa después de disponer del resolver y del contrato físico de frescura;
 - `AUTH-DB-032` integra persistencia durable después de disponer de decisiones canónicas;
 - `AUTH-DB-006` a `AUTH-DB-010` adoptan el resolver y el evaluador en RPC sensibles;
 - las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
-<!-- AUTH-DB-032-034:END -->
+<!-- AUTH-DB-032-035:END -->
 
 <!-- SHELL-AUTH-CANONICAL:START -->
 ### Secuencia canónica de autorización compartida
@@ -123,11 +126,12 @@ PREPARACIÓN Y NÚCLEO FÍSICO
 AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
 → AUTH-DB-019
 → AUTH-DB-033
+→ AUTH-DB-035
 → AUTH-DB-034
 → AUTH-DB-032
 
 CONVERGENCIA Y ADOPCIÓN
-SHELL-CTX-002..005
+SHELL-CTX-002..006
 → SHELL-AUTH-002
 → SHELL-AUTH-003
 → SHELL-AUTH-004
@@ -139,7 +143,7 @@ SHELL-CTX-002..005
 ```
 
 `AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
-no puede completarse antes de resolver contexto, evaluar, persistir, adaptar
+no puede completarse antes de resolver contexto, demostrar frescura e invalidación, evaluar, persistir, adaptar
 RPC y RLS, demostrar rollback y bloquear nuevos consumos legacy.
 <!-- SHELL-AUTH-CANONICAL:END -->
 

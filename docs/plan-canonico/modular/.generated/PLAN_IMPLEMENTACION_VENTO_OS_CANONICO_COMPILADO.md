@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
 | Fuente de orden canónico      | `manifest.json`                                                                                   |
 | Fragmentos canónicos | **110** |
-| Tareas canónicas con marcador | **1350** |
-| Tareas `AUTH` únicas | **315** |
-| Tareas aprobadas | **122** |
+| Tareas canónicas con marcador | **1352** |
+| Tareas `AUTH` únicas | **316** |
+| Tareas aprobadas | **123** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1228** |
+| Tareas no iniciadas | **1229** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
-| Tarea actual | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
+| Última tarea aprobada | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
+| Tarea actual | **OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
-| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-029 aprobadas; AUTH-CTX-030 pendiente** |
+| Siguiente tarea | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
+| Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
+| Progreso del bloque | **BLOQUE E1: 0 de 89 aprobadas; OPS-AUD-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
-| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
+| Última aprobada | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
+| Tarea actual | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos — **NO INICIADA** |
+| Siguiente tarea | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
-| `AUTH-CTX-001` a `AUTH-CTX-029` | **APROBADAS** |
-| `AUTH-CTX-030` | **NO INICIADA** |
+| `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
+| BLOQUE E1 | **0 DE 89 APROBADAS — ACTUAL OPS-AUD-001** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,10 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-029 — Definir estrategia de invalidación y caché
+AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
         ↓
 TAREA ACTUAL
-AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
+OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
+        ↓
+SIGUIENTE TAREA RESERVADA
+OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
+        ↓
+CONTINUIDAD DEL BLOQUE
+BLOQUE E1 — 0 de 89 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -135750,7 +135756,2745 @@ SHELL-CTX-006
 No se inicia `AUTH-CTX-030` hasta recibir aprobación explícita de `AUTH-CTX-029`.
 
 
-### [ ] AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
+### ✅ AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE E — Contexto y decisión de autorización unificados  
+**Subbloque:** Diseño de implementación y transición  
+**Naturaleza:** definición documental del plan maestro de verificación, validación y certificación  
+**Implementación física:** no incluida  
+**Contrato contextual:** `AccessContext@1.0.0`  
+**Contrato de decisión:** `AuthorizationDecision@1.0.0`  
+**Contrato de simulación:** `SimulationContext@1.0.0`  
+**Contrato legacy temporal:** `LegacyOperationalContextProjection@1.0.0`  
+**Contrato de frescura:** `ContextFreshnessToken@1.0.0`  
+**Registro de caché:** `CachedAccessContextRecord@1.0.0`  
+**Tarea anterior provisionalmente aprobada:** `AUTH-CTX-029 — Definir estrategia de invalidación y caché`  
+**Cierre del subbloque:** esta tarea cierra documentalmente `AUTH-CTX-001` a `AUTH-CTX-030`  
+**Restricción:** no implementar código, pruebas, infraestructura, migraciones, RLS, grants ni cambios en Supabase durante esta tarea  
+**Continuidad del lote:** la materialización documental y actualización del remoto se realizarán una sola vez después de aprobar esta propuesta
+
+---
+
+#### 1. Objetivo
+
+Definir un plan maestro de pruebas que permita demostrar, con evidencia reproducible, que el modelo canónico de identidad, contexto, autorización, simulación, compatibilidad, caché e invalidación:
+
+1. resuelve correctamente principal y actor;
+2. conserva la separación entre identidad, rol base y rol operativo;
+3. resuelve turno, check-in, sede, área y dispositivo sin fallbacks permisivos;
+4. evalúa permisos y recursos exactos;
+5. aplica correctamente modalidad, alcance, prerrequisitos y precedencia;
+6. deniega ante ausencia, contradicción, manipulación o error;
+7. no mezcla contexto real y simulación;
+8. mantiene compatibilidad temporal sin conservar autoridad legacy incorrecta;
+9. invalida contextos obsoletos;
+10. no reutiliza decisiones fuera de su solicitud y recurso;
+11. mantiene equivalencia entre SQL, SDK, RPC, RLS y consumidores;
+12. soporta concurrencia, rollback, migración y fallos parciales;
+13. produce evidencia suficiente para auditoría y certificación;
+14. impide que una regresión de seguridad llegue a producción.
+
+---
+
+#### 2. Alcance contractual
+
+El plan cubre:
+
+```text
+AccessContext@1.0.0
+AuthorizationDecision@1.0.0
+SimulationContext@1.0.0
+LegacyOperationalContextProjection@1.0.0
+ContextFreshnessToken@1.0.0
+CachedAccessContextRecord@1.0.0
+```
+
+También cubre:
+
+- catálogo canónico de permisos;
+- matrices base y operativas;
+- overrides individuales;
+- denegaciones;
+- recursos;
+- territorios;
+- campos sensibles;
+- dispositivos compartidos;
+- actores de sistema;
+- sesión laboral;
+- turno;
+- check-in;
+- SDK compartido;
+- adapters;
+- RPC;
+- RLS;
+- caché;
+- invalidación;
+- migración;
+- rollback;
+- consumidores por aplicación.
+
+---
+
+#### 3. Base normativa
+
+Esta propuesta conserva sin reinterpretar:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` a `AUTH-MOD-021`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-029`;
+- `AUTH-DB-027` — harness físico;
+- `AUTH-DB-028` — baseline y drift;
+- `AUTH-DB-029` — respaldo, restauración y rollback;
+- `AUTH-DB-031` — certificación final;
+- `AUTH-QA-001` a `AUTH-QA-030`;
+- `UX-QA-001` a `UX-QA-030`;
+- `SHELL-AUTH-001` a `SHELL-AUTH-005`;
+- `SHELL-CTX-001` a `SHELL-CTX-006`;
+- `AUTH-DB-032` a `AUTH-DB-035`.
+
+Principios:
+
+```text
+PRUEBA POSITIVA
+≠ PRUEBA DE SEGURIDAD SUFICIENTE
+```
+
+```text
+ALLOW CORRECTO
++
+DENY CORRECTO
+=
+CONTRATO VERIFICADO
+```
+
+```text
+COBERTURA DE LÍNEAS
+≠ COBERTURA DE DECISIONES
+```
+
+```text
+SNAPSHOT GENERADO POR LA IMPLEMENTACIÓN
+≠ ORÁCULO INDEPENDIENTE
+```
+
+```text
+PRUEBA EN UI
+≠ PROTECCIÓN DE SERVIDOR DEMOSTRADA
+```
+
+```text
+PRUEBA VERDE
+SIN EVIDENCIA REPRODUCIBLE
+≠ CERTIFICACIÓN
+```
+
+---
+
+#### 4. Decisión principal
+
+Se adopta una estrategia de pruebas por capas:
+
+```text
+LAYER 0 — VALIDACIÓN ESTÁTICA Y CONTRACTUAL
+LAYER 1 — PRUEBAS UNITARIAS PURAS
+LAYER 2 — PRUEBAS GENERADAS Y BASADAS EN PROPIEDADES
+LAYER 3 — INTEGRACIÓN SQL Y SDK
+LAYER 4 — RPC, RLS Y FRONTERAS
+LAYER 5 — CONTRATOS DE CONSUMIDOR
+LAYER 6 — END-TO-END POR ACTOR Y APLICACIÓN
+LAYER 7 — SEGURIDAD ADVERSARIAL
+LAYER 8 — CONCURRENCIA, TIEMPO, CACHÉ E INVALIDACIÓN
+LAYER 9 — MIGRACIÓN, PARIDAD Y ROLLBACK
+LAYER 10 — RENDIMIENTO, RESILIENCIA Y OBSERVABILIDAD
+LAYER 11 — REGRESIÓN Y CERTIFICACIÓN
+```
+
+Ninguna capa sustituye a otra.
+
+---
+
+#### 5. Contrato de evidencia
+
+Se define el contrato lógico:
+
+```text
+AuthorizationTestEvidence@1.0.0
+```
+
+Forma conceptual:
+
+```ts
+type AuthorizationTestEvidence = {
+  contract_name: "AuthorizationTestEvidence";
+  contract_version: "1.0.0";
+
+  evidence_id: string;
+  suite_id: string;
+  suite_version: string;
+  run_id: string;
+
+  repository: string;
+  commit_sha: string;
+  branch_or_tag: string;
+
+  environment: string;
+  database_baseline_id: string;
+  migration_hashes: string[];
+
+  contracts: Record<string, string>;
+  package_versions: Record<string, string>;
+  catalog_versions: Record<string, string>;
+  dataset_hashes: Record<string, string>;
+
+  fixture_set_id: string;
+  fixture_seed: string;
+  clock_profile: string;
+
+  started_at: string;
+  completed_at: string;
+
+  totals: {
+    planned: number;
+    executed: number;
+    passed: number;
+    failed: number;
+    skipped: number;
+    quarantined: number;
+  };
+
+  coverage: Record<string, number>;
+  mutation: Record<string, number>;
+  performance: Record<string, number>;
+
+  failures: TestFailureReference[];
+  artifacts: TestArtifactReference[];
+
+  rollback_tested: boolean;
+  drift_status: string;
+  approval_status: string;
+};
+```
+
+La sintaxis es documental.
+
+---
+
+#### 6. Regla de evidencia
+
+Toda ejecución usada como puerta deberá conservar:
+
+- commit exacto;
+- versiones exactas;
+- migraciones exactas;
+- hashes de datasets;
+- fixtures;
+- semilla;
+- reloj;
+- entorno;
+- resultados;
+- fallos;
+- cobertura;
+- mutación;
+- rendimiento;
+- drift;
+- rollback;
+- aprobación.
+
+No se acepta evidencia como:
+
+- captura aislada;
+- mensaje verbal;
+- “funcionó en mi máquina”;
+- resultado sin commit;
+- resultado sin dataset;
+- prueba manual sin pasos;
+- snapshot actualizado automáticamente;
+- ejecución con tests omitidos.
+
+---
+
+#### 7. Identidad de suites
+
+Convención:
+
+```text
+AUTH-CT-<DOMINIO>-<NÚMERO>
+```
+
+Dominios iniciales:
+
+```text
+CONTRACT
+PRINCIPAL
+ACTOR
+IDENTITY
+EMPLOYEE
+BASE
+ASSIGNMENT
+SHIFT
+CHECKIN
+OPROLE
+TERRITORY
+DEVICE
+STRUCTURE
+DECISION
+RESOURCE
+SCOPE
+LANE
+DENY
+FIELD
+AUDIT
+SIMULATION
+LEGACY
+CACHE
+INVALIDATION
+RPC
+RLS
+SDK
+CONSUMER
+E2E
+SECURITY
+CONCURRENCY
+TIME
+MIGRATION
+ROLLBACK
+PERFORMANCE
+RESILIENCE
+OBSERVABILITY
+REGRESSION
+```
+
+Los IDs son estables.
+
+No se reutilizan para otro caso.
+
+---
+
+#### 8. Catálogo de casos
+
+Se deberá mantener un registro versionado con una fila por caso.
+
+Campos mínimos:
+
+```text
+test_case_id
+title
+contract
+invariant_ids
+risk_class
+layer
+preconditions
+fixture_ids
+input
+expected_context
+expected_decision
+expected_reason_codes
+expected_audit
+negative_variant_ids
+owner_task
+repository
+automation_status
+execution_frequency
+evidence_required
+retirement_condition
+```
+
+Una prueba sin `invariant_ids` no demuestra cobertura contractual.
+
+---
+
+#### 9. Clasificación de riesgo
+
+Niveles:
+
+```text
+CRITICAL
+HIGH
+MEDIUM
+LOW
+```
+
+##### `CRITICAL`
+
+Incluye:
+
+- suplantación de actor;
+- bypass por rol;
+- acceso entre sedes;
+- acceso entre áreas;
+- stale allow;
+- denegación ignorada;
+- permiso o recurso manipulado;
+- service role como bypass;
+- dispositivo sin actor;
+- simulación como autoridad real;
+- decisión reutilizada;
+- RLS incompatible;
+- RPC sin validación;
+- cache poisoning.
+
+##### `HIGH`
+
+Incluye:
+
+- scope incorrecto;
+- turno o check-in incorrecto;
+- campo sensible expuesto;
+- auditoría incompleta;
+- recurso ambiguo;
+- fallback legacy;
+- incompatibilidad entre apps.
+
+No se permite omitir ni poner en cuarentena un caso `CRITICAL`.
+
+---
+
+#### 10. Estados de un caso
+
+```text
+DEFINED
+AUTOMATED
+MANUAL_CONTROLLED
+BLOCKED
+DEPRECATED
+```
+
+Reglas:
+
+- `BLOCKED` exige tarea y causa;
+- `MANUAL_CONTROLLED` solo se admite cuando automatizar no sea técnicamente razonable;
+- todo caso `CRITICAL` debe quedar `AUTOMATED`;
+- un caso no puede marcarse ejecutado si su fixture no es reproducible;
+- un caso deprecado conserva historial.
+
+---
+
+#### 11. Frecuencias
+
+```text
+ON_CHANGE
+ON_PULL_REQUEST
+ON_MIGRATION
+NIGHTLY
+PRE_RELEASE
+PRE_CUTOVER
+POST_DEPLOY
+PERIODIC_PRODUCTION
+INCIDENT_REPRODUCTION
+```
+
+Asignación mínima:
+
+| Tipo                     | Frecuencia                    |
+| ------------------------ | ----------------------------- |
+| Contratos y tipos        | `ON_PULL_REQUEST`             |
+| Núcleo de decisión       | `ON_PULL_REQUEST`             |
+| Matriz generada completa | `NIGHTLY` y `PRE_RELEASE`     |
+| Migraciones, RLS y RPC   | `ON_MIGRATION`                |
+| Concurrencia y caché     | `NIGHTLY`                     |
+| Performance              | `NIGHTLY` y `PRE_RELEASE`     |
+| Rollback                 | `PRE_CUTOVER`                 |
+| Smoke productivo seguro  | `POST_DEPLOY`                 |
+| Regresión completa       | `PRE_RELEASE` y `PRE_CUTOVER` |
+
+---
+
+#### 12. Entornos de prueba
+
+##### Local efímero
+
+Debe:
+
+- reconstruirse desde cero;
+- aplicar todas las migraciones;
+- sembrar fixtures;
+- ser desechable;
+- no depender de producción.
+
+##### CI efímero
+
+Debe:
+
+- ser reproducible;
+- ejecutarse por commit;
+- aislar ejecuciones paralelas;
+- producir artefactos.
+
+##### Staging
+
+Debe:
+
+- reflejar arquitectura objetivo;
+- utilizar datos sintéticos o anonimizados;
+- probar integraciones;
+- probar rollback;
+- probar multiinstancia.
+
+##### Producción
+
+Solo admite:
+
+- smoke tests no destructivos;
+- consultas de salud;
+- verificación de versiones;
+- comprobaciones de no exposición;
+- telemetría;
+- canary controlado.
+
+No se ejecutan pruebas destructivas ni de suplantación sobre datos reales.
+
+---
+
+#### 13. Reloj determinista
+
+Toda suite temporal deberá controlar el tiempo.
+
+Perfiles mínimos:
+
+```text
+BOGOTA_NORMAL_DAY
+BOGOTA_MIDNIGHT
+UTC_DAY_BOUNDARY
+SHIFT_START_MINUS_1MS
+SHIFT_START
+SHIFT_END_MINUS_1MS
+SHIFT_END
+OVERNIGHT_SHIFT
+DST_NOT_APPLICABLE_BOGOTA
+SESSION_EXPIRY
+CHECKIN_EXPIRY
+ACTOR_SESSION_EXPIRY
+DENY_EFFECTIVE_FROM
+DENY_EFFECTIVE_TO
+CACHE_BOUNDARY
+```
+
+Reglas:
+
+- el reloj del cliente no es oráculo;
+- la base y el servidor deben compartir instante contractual;
+- no se usan sleeps reales para probar vigencias;
+- no se aceptan tests dependientes de la hora del CI.
+
+---
+
+#### 14. Fixtures canónicas
+
+Los fixtures deberán representar:
+
+- organización;
+- unidades;
+- sedes;
+- áreas;
+- tipos de área;
+- empleados;
+- identidades;
+- sesiones;
+- ocho roles base;
+- todos los roles operativos del dataset vigente;
+- oficios base legacy;
+- turnos;
+- check-ins;
+- dispositivos;
+- actor sessions;
+- aplicaciones;
+- permisos;
+- matrices;
+- overrides;
+- denegaciones;
+- recursos;
+- territorios;
+- campos sensibles;
+- simulaciones;
+- actores de sistema.
+
+Los fixtures se generan desde contratos y datasets versionados.
+
+No se duplican manualmente en cada aplicación.
+
+---
+
+#### 15. Semillas
+
+Cada ejecución deberá registrar una semilla.
+
+Reglas:
+
+- un fallo generado debe poder reproducirse con la misma semilla;
+- la semilla no se cambia para ocultar un fallo;
+- CI conserva las semillas fallidas;
+- nightly rota semillas;
+- los casos críticos tienen además fixtures fijas.
+
+---
+
+#### 16. Aislamiento de pruebas
+
+Cada caso deberá aislar:
+
+- organización;
+- actor;
+- sesión;
+- dispositivo;
+- turno;
+- recurso;
+- caché;
+- generaciones;
+- eventos;
+- auditoría.
+
+No se permite que un caso dependa del orden de otro.
+
+Las pruebas paralelas utilizarán namespaces o identificadores únicos.
+
+---
+
+#### 17. Oráculos
+
+Se definen tres clases.
+
+##### Oráculo contractual primario
+
+Resultado esperado escrito desde la decisión canónica.
+
+No se genera mediante la implementación probada.
+
+##### Oráculo de propiedades
+
+Invariantes que deben cumplirse para cualquier entrada válida.
+
+##### Oráculo diferencial
+
+Compara implementaciones:
+
+- SQL;
+- TypeScript;
+- RPC;
+- RLS;
+- legacy;
+- simulación.
+
+El diferencial detecta divergencias, pero no decide cuál es correcto.
+
+Cuando difieren, prevalece el oráculo contractual.
+
+---
+
+#### 18. Prohibición de autoaprobación de snapshots
+
+Queda prohibido:
+
+```text
+test falla
+→ actualizar snapshot
+→ test verde
+```
+
+sin revisión contractual.
+
+Toda actualización de golden file exige:
+
+- diff;
+- causa;
+- tarea;
+- versión;
+- aprobación.
+
+Los snapshots de seguridad no se actualizan automáticamente en CI.
+
+---
+
+#### 19. Layer 0 — Validación estática y contractual
+
+Debe verificar:
+
+1. schemas válidos;
+2. JSON canónico;
+3. campos obligatorios;
+4. ausencia de campos desconocidos;
+5. enum completos;
+6. reason codes sin duplicados;
+7. permisos sin duplicados;
+8. códigos normalizados;
+9. versiones válidas;
+10. hashes reproducibles;
+11. referencias existentes;
+12. matriz sin permisos inexistentes;
+13. matriz sin roles inexistentes;
+14. modalidad coherente;
+15. scope válido;
+16. app code coherente;
+17. datasets inmutables;
+18. tipos generados sincronizados;
+19. exports permitidos;
+20. imports legacy bloqueados.
+
+---
+
+#### 20. Cobertura estática obligatoria
+
+Se exige:
+
+```text
+100% de permisos del catálogo
+100% de roles base
+100% de roles operativos
+100% de grants
+100% de overrides
+100% de denegaciones
+100% de reason codes
+100% de variantes contractuales
+```
+
+La cobertura es de registros contractuales, no solo de líneas.
+
+---
+
+#### 21. Layer 1 — Pruebas unitarias
+
+Cubren funciones puras de:
+
+- normalización;
+- serialización;
+- hashing;
+- composición de carriles;
+- precedencia;
+- scope;
+- requisitos;
+- reason mapping;
+- proyecciones seguras;
+- claves de caché;
+- fingerprints;
+- validación de versión;
+- clasificación de errores.
+
+Todo branch de seguridad deberá tener prueba positiva y negativa.
+
+---
+
+#### 22. Umbrales de cobertura
+
+Para núcleos críticos:
+
+```text
+statement coverage >= 95%
+branch coverage >= 95%
+function coverage = 100%
+```
+
+Además:
+
+```text
+uncovered critical security branch = 0
+```
+
+Para adapters:
+
+```text
+statement coverage >= 90%
+branch coverage >= 90%
+```
+
+La cobertura no sustituye pruebas generadas, integración ni mutación.
+
+---
+
+#### 23. Layer 2 — Pruebas basadas en propiedades
+
+Propiedades mínimas:
+
+1. cambiar actor nunca conserva autoridad anterior;
+2. reducir scope nunca aumenta acceso;
+3. añadir una denegación nunca convierte `DENY` en `ALLOW`;
+4. eliminar un grant nunca aumenta acceso;
+5. un permiso desconocido siempre deniega;
+6. un recurso no resoluble siempre deniega;
+7. una sede ajena nunca amplía;
+8. un área ajena nunca amplía;
+9. un dispositivo solo restringe;
+10. un contexto más inválido nunca aumenta acceso;
+11. cambiar versión cambia fingerprint;
+12. serializar y deserializar conserva semántica;
+13. reordenar mapas canónicos no cambia hash;
+14. reordenar listas semánticamente ordenadas sí se normaliza;
+15. `null` nunca equivale a global;
+16. lista vacía nunca equivale a todas;
+17. un turno sin rol no produce rol operativo;
+18. un check-in sin turno no produce permiso;
+19. un rol base no produce rol operativo;
+20. una simulación no modifica contexto real;
+21. un token diferente invalida caché;
+22. un límite temporal vencido invalida caché;
+23. una decisión de un recurso no autoriza otro;
+24. un decision ID no funciona como capacidad;
+25. error de infraestructura nunca produce allow.
+
+---
+
+#### 24. Generación combinatoria
+
+No se ejecutará el producto cartesiano completo de todas las dimensiones en cada PR.
+
+Se utilizará:
+
+```text
+EXHAUSTIVO CONTRACTUAL
++
+PAIRWISE GENERAL
++
+COMBINACIÓN COMPLETA DE RIESGO CRÍTICO
+```
+
+##### Exhaustivo contractual
+
+Todos los:
+
+- permisos;
+- grants;
+- denies;
+- roles;
+- mappings;
+- reason codes;
+- modalidades.
+
+##### Pairwise general
+
+Cruces representativos entre:
+
+- principal;
+- actor;
+- rol;
+- turno;
+- check-in;
+- sede;
+- área;
+- dispositivo;
+- permiso;
+- recurso;
+- modalidad.
+
+##### Completo crítico
+
+Producto completo para:
+
+- actor × sesión;
+- deny × grant;
+- scope × territorio;
+- turno × check-in;
+- dispositivo × actor session;
+- caché × invalidación;
+- simulación × contexto real.
+
+---
+
+#### 25. Mutation testing
+
+Se aplicará a:
+
+- precedencia;
+- composición de carriles;
+- scope;
+- actor binding;
+- permiso exacto;
+- recurso exacto;
+- denegaciones;
+- cache freshness;
+- límites temporales;
+- fail closed.
+
+Umbral:
+
+```text
+mutation score >= 90%
+```
+
+En reglas críticas:
+
+```text
+surviving security mutant = 0
+```
+
+Un mutante superviviente crítico bloquea release.
+
+---
+
+#### 26. AccessContext — principal
+
+Casos obligatorios:
+
+1. humano autenticado válido;
+2. humano no autenticado;
+3. sesión expirada;
+4. sesión revocada;
+5. claims manipulados;
+6. dispositivo válido;
+7. dispositivo inactivo;
+8. servicio registrado;
+9. servicio no registrado;
+10. anónimo;
+11. principal desconocido;
+12. service role sin proceso autorizado.
+
+---
+
+#### 27. AccessContext — actor efectivo
+
+Casos:
+
+1. sesión personal;
+2. dispositivo con actor válido;
+3. dispositivo sin actor;
+4. actor session expirada;
+5. cambio de actor;
+6. delegación válida;
+7. delegación expirada;
+8. actor solicitado por cliente;
+9. actor diferente al principal;
+10. actor inexistente;
+11. actor inactivo;
+12. actor customer;
+13. actor system;
+14. actor unresolved.
+
+---
+
+#### 28. AccessContext — identidad de dominio
+
+Casos:
+
+- empleado;
+- cliente;
+- dispositivo;
+- sistema;
+- usuario con identidad dual;
+- identidad inactiva;
+- múltiples identidades aplicables;
+- identidad incompatible con app;
+- vínculo ausente;
+- vínculo ambiguo.
+
+Una identidad dual no mezcla permisos laborales y de cliente.
+
+---
+
+#### 29. AccessContext — empleado
+
+Casos:
+
+- empleado activo;
+- inactivo;
+- suspendido cuando el modelo lo incorpore;
+- inexistente;
+- vínculo duplicado;
+- rol base válido;
+- rol base ausente;
+- rol base legacy;
+- varias asignaciones de rol base;
+- `trabajador_operativo`;
+- empleado administrativo;
+- empleado híbrido administrativo-operativo.
+
+---
+
+#### 30. AccessContext — rol base
+
+Debe probar los ocho roles:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+```
+
+Para cada rol:
+
+- asignación válida;
+- inactiva;
+- fuera de vigencia;
+- duplicada;
+- desconocida;
+- matriz exacta;
+- ausencia de herencia;
+- ausencia de bypass por nombre.
+
+`trabajador_operativo` recibe únicamente las cinco concesiones aprobadas.
+
+---
+
+#### 31. AccessContext — asignaciones
+
+Debe cubrir:
+
+- ninguna sede;
+- una sede;
+- varias sedes;
+- sede primaria válida;
+- sede primaria ausente;
+- sede primaria ambigua;
+- área sin sede;
+- área ajena;
+- área inactiva;
+- cobertura global explícita;
+- cobertura por sede;
+- cobertura por área;
+- cobertura vacía;
+- asignación fuera de vigencia.
+
+---
+
+#### 32. AccessContext — turno
+
+Casos:
+
+1. sin turno;
+2. turno futuro;
+3. turno vigente;
+4. turno vencido;
+5. turno cancelado;
+6. turno no publicado;
+7. turno nocturno;
+8. dos turnos solapados;
+9. dos turnos igualmente aplicables;
+10. revisión retirada;
+11. sede inexistente;
+12. área inexistente;
+13. rol ausente;
+14. rol inválido;
+15. rol no habilitado en sede;
+16. rol no habilitado en área;
+17. cambio exactamente en el límite temporal.
+
+Ambigüedad produce problema estructural.
+
+---
+
+#### 33. AccessContext — check-in
+
+Casos:
+
+- sin check-in;
+- check-in activo;
+- check-out cerrado;
+- check-in de otro actor;
+- check-in de otra sede;
+- check-in de otra área;
+- check-in sin turno;
+- check-in anterior a turno;
+- check-in posterior a turno;
+- dos sesiones activas;
+- evento histórico abierto;
+- sesión invalidada;
+- sesión corregida;
+- límite exacto de expiración.
+
+Check-in nunca concede permisos por sí solo.
+
+---
+
+#### 34. AccessContext — rol operativo
+
+El catálogo de pruebas se genera desde el dataset operativo vigente.
+
+Para cada rol:
+
+- turno válido;
+- sede válida;
+- área válida;
+- área opcional;
+- sede incompatible;
+- área incompatible;
+- rol inactivo;
+- rol desconocido;
+- mapping retirado;
+- cambio durante turno.
+
+No se codifica manualmente una lista paralela.
+
+---
+
+#### 35. AccessContext — territorio operativo
+
+Casos:
+
+- sede desde turno;
+- área desde turno;
+- conductor sin área productiva;
+- área requerida ausente;
+- área de otra sede;
+- selected site ignorada;
+- default site ignorada como autoridad;
+- site enviada por cliente ignorada;
+- recurso de otra sede;
+- origen y destino diferentes;
+- territorio aislado APP-REVIEW.
+
+---
+
+#### 36. AccessContext — dispositivo
+
+Casos:
+
+1. dispositivo registrado;
+2. no registrado;
+3. activo;
+4. inactivo;
+5. revocado;
+6. app permitida;
+7. app no permitida;
+8. actor session válida;
+9. sin actor;
+10. actor cambiado;
+11. actor session expirada;
+12. navegación con role hint;
+13. dispositivo manipulado;
+14. restricciones acumuladas;
+15. administrador autenticado en dispositivo restringido.
+
+El dispositivo solo restringe.
+
+---
+
+#### 37. AccessContext — problemas estructurales
+
+Cada reason code deberá probar:
+
+- producción;
+- severidad;
+- carril afectado;
+- bloqueo esperado;
+- proyección segura;
+- auditoría;
+- ausencia de secretos.
+
+Se exige cobertura del 100% del catálogo de razones.
+
+---
+
+#### 38. AuthorizationDecision — solicitud
+
+Casos:
+
+- app válida;
+- app desconocida;
+- permiso válido;
+- permiso desconocido;
+- app y permiso incompatibles;
+- operation kind válido;
+- operation kind incompatible;
+- fields vacíos;
+- fields sensibles;
+- request source permitido;
+- request source manipulado;
+- colección;
+- agregado;
+- bulk;
+- non-resource;
+- recurso existente;
+- draft.
+
+---
+
+#### 39. AuthorizationDecision — contrato del permiso
+
+Para cada permiso del catálogo:
+
+- estado activo;
+- modalidad;
+- prerrequisito;
+- área;
+- dispositivo;
+- sensibilidad;
+- simulación;
+- recurso;
+- dependencias.
+
+Se prueba que:
+
+```text
+tabla de grant
+≠ modalidad
+```
+
+y:
+
+```text
+prefijo
+≠ permiso
+```
+
+---
+
+#### 40. AuthorizationDecision — modalidades
+
+Casos exhaustivos:
+
+##### `BASE_ONLY`
+
+- base allow;
+- base deny;
+- operacional allow ignorado;
+- base unavailable;
+- deny global.
+
+##### `OPERATIONAL_ONLY`
+
+- operacional allow;
+- operacional deny;
+- base allow ignorado;
+- sin turno;
+- sin check-in;
+- área ausente.
+
+##### `BASE_OR_OPERATIONAL`
+
+- ambos allow;
+- base allow;
+- operacional allow;
+- ambos deny;
+- un carril inválido;
+- deny transversal.
+
+##### `BASE_AND_OPERATIONAL`
+
+- ambos allow;
+- solo base;
+- solo operacional;
+- uno unavailable;
+- uno invalid;
+- deny en cualquiera;
+- deny transversal.
+
+---
+
+#### 41. AuthorizationDecision — allows
+
+Debe probar:
+
+- grant directo;
+- componente base;
+- grant operativo;
+- override individual;
+- alcance exacto;
+- vigencia;
+- estado activo;
+- prioridad no implícita;
+- ausencia de wildcards;
+- ausencia de herencia.
+
+Un allow no elimina un deny aplicable.
+
+---
+
+#### 42. AuthorizationDecision — denegaciones
+
+Casos:
+
+- global;
+- actor-wide;
+- base;
+- operacional;
+- aplicación;
+- permiso;
+- sede;
+- área;
+- dispositivo;
+- recurso;
+- campo;
+- temporal;
+- varias denegaciones;
+- deny vencido;
+- deny futuro;
+- deny sin match.
+
+Toda denegación aplicable debe vencer los allows correspondientes según la precedencia aprobada.
+
+---
+
+#### 43. AuthorizationDecision — scope
+
+Debe cubrir todas las familias de alcance vigentes.
+
+Para cada una:
+
+- match exacto;
+- match parcial inválido;
+- territorio vacío;
+- territorio múltiple;
+- origen;
+- destino;
+- ambos lados;
+- organización;
+- sede;
+- área;
+- propio;
+- asignado;
+- APP-REVIEW;
+- no territorial.
+
+`null` nunca concede alcance.
+
+---
+
+#### 44. AuthorizationDecision — recursos
+
+Casos por forma:
+
+```text
+EXISTING
+DRAFT
+COLLECTION
+AGGREGATE
+BULK
+NON_RESOURCE
+```
+
+Estados:
+
+```text
+RESOLVED
+MULTI_RESOLVED
+NOT_APPLICABLE
+UNRESOLVED
+CONFLICT
+ISOLATED
+```
+
+`UNRESOLVED`, `CONFLICT` e `ISOLATED` producen `DENY`.
+
+---
+
+#### 45. AuthorizationDecision — campos sensibles
+
+Casos:
+
+- campo público;
+- campo interno;
+- campo sensible;
+- campo prohibido;
+- masking;
+- subset permitido;
+- mezcla permitido/prohibido;
+- exportación;
+- payload manipulado;
+- serialización cliente.
+
+La UI no es la única barrera.
+
+---
+
+#### 46. AuthorizationDecision — concurrencia del recurso
+
+Debe probar:
+
+- versión coincidente;
+- versión obsoleta;
+- recurso cambiado después de render;
+- recurso eliminado;
+- custodia cambiada;
+- sede cambiada;
+- estado cambiado;
+- doble ejecución;
+- idempotencia;
+- lock perdido.
+
+Una decisión anterior no autoriza una mutación tardía.
+
+---
+
+#### 47. AuthorizationDecision — auditoría
+
+Toda decisión deberá demostrar:
+
+- actor;
+- principal;
+- aplicación;
+- permiso;
+- recurso;
+- contexto;
+- versiones;
+- allows;
+- denies;
+- razones;
+- resultado;
+- timestamp;
+- correlation;
+- cache status cuando aplique.
+
+La proyección cliente no expone evidencia sensible.
+
+---
+
+#### 48. SimulationContext
+
+Casos:
+
+1. actor real autorizado para simular;
+2. actor no autorizado;
+3. sujeto válido;
+4. sujeto inexistente;
+5. rol simulado válido;
+6. rol inválido;
+7. sede simulada;
+8. área simulada;
+9. recurso hipotético;
+10. expiración;
+11. finalización;
+12. simulación concurrente;
+13. would allow;
+14. would deny;
+15. indeterminate;
+16. no modificación de contexto real;
+17. no modificación de RLS;
+18. no persistencia de mutación real;
+19. auditoría separada;
+20. cache real no contaminada.
+
+---
+
+#### 49. Compatibilidad legacy
+
+Debe cubrir todas las decisiones de `AUTH-CTX-028`.
+
+Casos mínimos:
+
+- `p_employee_id = null`;
+- employee igual al actor;
+- employee diferente;
+- site nula;
+- site coincidente;
+- site diferente;
+- selected site ignorada;
+- default site no autoritativa;
+- app fija;
+- app inválida;
+- mapping de 22 campos;
+- `bypass_applied = false`;
+- `can_operate` no autoriza;
+- `trabajador_operativo` no es rol operativo;
+- oficio legacy no es rol operativo;
+- role override no modifica autoridad;
+- dispositivo requiere actor;
+- simulación separada;
+- backend no mezclado;
+- rollback completo;
+- paridad clasificada.
+
+---
+
+#### 50. Caché e invalidación
+
+Son obligatorios los 60 casos definidos en `AUTH-CTX-029`.
+
+Además deben probarse:
+
+61. key collision deliberada;
+62. namespace de entorno;
+63. namespace organizacional;
+64. integridad alterada;
+65. schema incompatible;
+66. versión vieja;
+67. entrada de otra app;
+68. entrada de otra sesión;
+69. entrada de otro actor;
+70. entrada de otro dispositivo;
+71. token leído desde réplica con lag;
+72. outbox duplicado;
+73. outbox fuera de orden;
+74. replay de evento;
+75. purga fallida;
+76. storage eviction;
+77. single-flight timeout;
+78. stampede después de invalidación;
+79. refresh preventivo;
+80. rollback con entradas existentes.
+
+---
+
+#### 51. RPC
+
+Para cada RPC sensible:
+
+- autenticación;
+- actor;
+- aplicación;
+- permiso;
+- recurso;
+- sede;
+- área;
+- campos;
+- error;
+- auditoría;
+- manipulación directa;
+- llamada sin UI;
+- service role;
+- decisión actual.
+
+`AUTH-DB-006` a `AUTH-DB-010` deben demostrar adopción.
+
+---
+
+#### 52. RLS
+
+Para cada política:
+
+- SELECT;
+- INSERT;
+- UPDATE USING;
+- UPDATE WITH CHECK;
+- DELETE;
+- actor válido;
+- actor ajeno;
+- sede ajena;
+- área ajena;
+- recurso ajeno;
+- campo restringido;
+- service role;
+- rol anon;
+- authenticated;
+- sesión revocada.
+
+Se exige equivalencia semántica con RPC y evaluador.
+
+---
+
+#### 53. Prueba de equivalencia RPC-RLS
+
+Para una misma fixture y acción:
+
+```text
+RPC decision
+=
+RLS outcome
+=
+AuthorizationDecision expected
+```
+
+Toda divergencia se clasifica:
+
+- bug RPC;
+- bug RLS;
+- bug evaluador;
+- gap contractual;
+- fixture incorrecta.
+
+No se acepta “RLS más permisiva”.
+
+---
+
+#### 54. SDK y contratos
+
+`SHELL-AUTH` y `SHELL-CTX` deberán probar:
+
+- exports;
+- separación server/client/testing/legacy;
+- schemas;
+- tipos;
+- versionado;
+- app code fijo;
+- request scope;
+- adapters;
+- proyecciones;
+- errores;
+- correlation;
+- consumer registry;
+- lint;
+- caché;
+- compatibilidad;
+- ausencia de imports prohibidos.
+
+---
+
+#### 55. Consumer-driven contract testing
+
+Cada consumidor registrado deberá publicar:
+
+```text
+consumer
+app_code
+surface_type
+contract_versions
+fields_consumed
+permissions_requested
+resource_shapes
+expected_errors
+legacy_dependencies
+```
+
+El proveedor deberá verificar que:
+
+- los campos existen;
+- los tipos coinciden;
+- la versión es compatible;
+- la proyección no expone más;
+- la aplicación no depende de campos internos;
+- la app no interpreta reason codes desconocidos como allow.
+
+---
+
+#### 56. Pruebas por superficie
+
+Se cubren:
+
+```text
+SERVER_COMPONENT
+LAYOUT
+SERVER_ACTION
+ROUTE_HANDLER
+CLIENT_HOOK
+CLIENT_COMPONENT
+NAVIGATION
+MIDDLEWARE
+RPC
+RLS
+JOB
+EDGE_FUNCTION
+REALTIME
+```
+
+Para cada superficie:
+
+- autenticación;
+- contexto;
+- decisión;
+- error;
+- refresh;
+- acceso directo;
+- manipulación;
+- auditoría.
+
+---
+
+#### 57. Pruebas por aplicación
+
+Deben ejecutarse sobre:
+
+```text
+SHELL
+ANIMA
+VISO
+NEXO
+FOGO
+ORIGO
+PULSO
+NUMERA
+AURA
+PASS cuando corresponda
+```
+
+Cada aplicación debe probar:
+
+- app access;
+- navegación;
+- URL directa;
+- lectura;
+- mutación;
+- recurso ajeno;
+- sede ajena;
+- área ajena;
+- actor cambiado;
+- sesión expirada;
+- dispositivo;
+- error recuperable;
+- contrato incompatible.
+
+---
+
+#### 58. PASS
+
+PASS no recibe autoridad laboral por compartir paquetes.
+
+Debe probar:
+
+- identidad cliente separada;
+- ausencia de employee authority;
+- contratos generales compartidos;
+- proyecciones propias;
+- imposibilidad de invocar fronteras laborales internas;
+- sesión cliente no convertida en empleado.
+
+---
+
+#### 59. Seguridad adversarial
+
+Casos obligatorios:
+
+- JWT manipulado;
+- claim de rol;
+- claim de sede;
+- employee ID ajeno;
+- site ID ajena;
+- area ID ajena;
+- permission key manipulada;
+- app code manipulada;
+- resource ID ajeno;
+- field injection;
+- mass assignment;
+- parameter pollution;
+- replay de decision ID;
+- replay de proyección;
+- cookie role override;
+- localStorage;
+- query string;
+- body manipulado;
+- URL directa;
+- RPC directa;
+- RLS directa;
+- service role usado como bypass;
+- cache poisoning;
+- cache key collision;
+- timing de enumeración;
+- error forzado;
+- respuesta parcial;
+- stale entry;
+- actor switch race;
+- logout race.
+
+Todos deben producir `DENY` o error seguro.
+
+---
+
+#### 60. Fuzzing
+
+Se aplicará fuzzing a:
+
+- JSON contractual;
+- permission keys;
+- app codes;
+- IDs;
+- resource requests;
+- requested fields;
+- reason codes;
+- legacy projection;
+- cache records;
+- token serialization.
+
+Objetivos:
+
+- no crash;
+- no allow inesperado;
+- no exposición;
+- error estable;
+- límites de tamaño;
+- resistencia a payloads malformados.
+
+---
+
+#### 61. Límites de tamaño
+
+Debe probarse:
+
+- contexto máximo permitido;
+- listas de asignaciones;
+- bulk request;
+- campos solicitados;
+- reason codes;
+- evidence;
+- payload cliente;
+- cache record.
+
+Un payload excesivo deberá:
+
+- rechazarse;
+- truncarse solo cuando el contrato lo permita;
+- nunca omitir denegaciones;
+- nunca convertirse en allow.
+
+---
+
+#### 62. Concurrencia
+
+Escenarios:
+
+- cambio de turno durante resolución;
+- check-out durante evaluación;
+- deny creado durante evaluación;
+- actor cambiado durante request;
+- dispositivo revocado;
+- rol base cambiado;
+- recurso transferido;
+- dos mutaciones simultáneas;
+- cache stampede;
+- double-read;
+- rollback concurrente.
+
+El resultado debe ser determinista o fallar cerrado.
+
+---
+
+#### 63. Resiliencia
+
+Fallos inyectados:
+
+- base no disponible;
+- timeout;
+- caché no disponible;
+- token no disponible;
+- outbox retrasado;
+- Realtime caído;
+- paquete incompatible;
+- schema inválido;
+- error de serialización;
+- error de auditoría;
+- réplica retrasada;
+- red intermitente;
+- respuesta truncada.
+
+No se acepta fallback permisivo.
+
+---
+
+#### 64. Performance
+
+Se establecerá baseline en staging.
+
+Puertas:
+
+```text
+p95 no empeora > 20% respecto al baseline aprobado
+```
+
+```text
+L0 elimina resoluciones duplicadas dentro de la solicitud
+```
+
+```text
+VALIDATED_SHARED demuestra mejora p95 >= 30% frente a REQUEST_ONLY
+```
+
+```text
+query count por contexto permanece acotado
+```
+
+```text
+query count no crece con cantidad de botones renderizados
+```
+
+La optimización no cambia resultados.
+
+---
+
+#### 65. Load testing
+
+Perfiles:
+
+- login masivo;
+- inicio de turno;
+- cambio de turno;
+- check-in masivo;
+- apertura simultánea de SHELL;
+- POS compartido;
+- invalidación global de catálogo;
+- invalidación por app;
+- cache cold start;
+- despliegue multiinstancia.
+
+Se medirán:
+
+- latencia;
+- errores;
+- contención;
+- saturación;
+- hit ratio;
+- stampede;
+- lag de invalidación;
+- conexiones;
+- consultas.
+
+---
+
+#### 66. Auditoría y observabilidad
+
+Debe verificarse:
+
+- correlation end-to-end;
+- actor correcto;
+- principal correcto;
+- contexto correcto;
+- decisión correcta;
+- cache status;
+- versiones;
+- no PII innecesaria;
+- no secretos;
+- reason mapping;
+- timestamps;
+- integridad;
+- retención;
+- consulta posterior.
+
+---
+
+#### 67. Migraciones
+
+Cada paquete deberá probar:
+
+1. base limpia;
+2. baseline actual;
+3. upgrade;
+4. backfill;
+5. reconciliación;
+6. constraints;
+7. RLS;
+8. grants;
+9. tipos;
+10. consumidores;
+11. downgrade lógico mediante rollback;
+12. reejecución idempotente;
+13. fallo a mitad;
+14. recuperación;
+15. drift.
+
+---
+
+#### 68. Compatibilidad de datos
+
+Debe cubrir:
+
+- roles base legacy;
+- `trabajador_operativo`;
+- oficios legacy;
+- grants legacy;
+- turnos sin rol;
+- check-ins históricos;
+- sedes seleccionadas;
+- sedes predeterminadas;
+- dispositivos legacy;
+- simulaciones legacy;
+- duplicados;
+- huérfanos;
+- valores desconocidos.
+
+Ningún dato ambiguo se convierte automáticamente en autoridad.
+
+---
+
+#### 69. Rollback
+
+Pruebas:
+
+- rollback de aplicación;
+- rollback de adapter;
+- rollback de caché;
+- rollback de migración;
+- rollback de catálogo activo;
+- rollback de consumer;
+- rollback multiinstancia;
+- datos escritos durante la ventana;
+- auditoría conservada;
+- entradas de caché antiguas;
+- compatibilidad de versiones.
+
+Rollback no restaura bypasses prohibidos.
+
+---
+
+#### 70. Drift
+
+`AUTH-DB-028` deberá comparar:
+
+- esquema;
+- funciones;
+- grants;
+- RLS;
+- tipos;
+- versiones;
+- hashes;
+- triggers;
+- índices;
+- catálogos;
+- matrices;
+- tareas desplegadas.
+
+Drift no aprobado bloquea certificación.
+
+---
+
+#### 71. Pruebas de documentación
+
+Debe verificarse que:
+
+- cada contrato publicado coincide con tipos;
+- cada reason code está documentado;
+- cada tarea tiene propietario;
+- cada cambio de versión tiene changelog;
+- cada deprecación tiene retiro;
+- cada brecha tiene tarea;
+- cada test case tiene evidencia;
+- cada consumidor tiene estado.
+
+---
+
+#### 72. Pruebas funcionales AUTH-QA
+
+Se refinan las tareas existentes.
+
+| Tarea         | Responsabilidad                                        |
+| ------------- | ------------------------------------------------------ |
+| `AUTH-QA-001` | Base administrativa de propietario sin check-in.       |
+| `AUTH-QA-002` | Base administrativa de gerente general sin check-in.   |
+| `AUTH-QA-003` | Cobertura territorial de gerente.                      |
+| `AUTH-QA-004` | Trabajador sin turno.                                  |
+| `AUTH-QA-005` | Turno sin check-in.                                    |
+| `AUTH-QA-006` | Turno y check-in válidos.                              |
+| `AUTH-QA-007` | Restricción por sede.                                  |
+| `AUTH-QA-008` | Restricción por área.                                  |
+| `AUTH-QA-009` | Rotación por turno.                                    |
+| `AUTH-QA-010` | Separación bodeguero-producción.                       |
+| `AUTH-QA-011` | Separación producción-inventario global.               |
+| `AUTH-QA-012` | PULSO operativo sin configuración.                     |
+| `AUTH-QA-013` | Conductor sin área productiva.                         |
+| `AUTH-QA-014` | Límites del conductor.                                 |
+| `AUTH-QA-015` | Compras por alcance.                                   |
+| `AUTH-QA-016` | Separación recepción-aprobación.                       |
+| `AUTH-QA-017` | Dispositivo restringe administrador.                   |
+| `AUTH-QA-018` | Actor humano real por PIN o mecanismo aprobado.        |
+| `AUTH-QA-019` | Simulación sin herencia real.                          |
+| `AUTH-QA-020` | URL directa.                                           |
+| `AUTH-QA-021` | Formulario manipulado.                                 |
+| `AUTH-QA-022` | RPC manipulada.                                        |
+| `AUTH-QA-023` | Cruce de sede.                                         |
+| `AUTH-QA-024` | Cruce de área.                                         |
+| `AUTH-QA-025` | Check-out e invalidación.                              |
+| `AUTH-QA-026` | Cola offline reautorizada.                             |
+| `AUTH-QA-027` | Compatibilidad de paquetes.                            |
+| `AUTH-QA-028` | Rollback por aplicación.                               |
+| `AUTH-QA-029` | Auditoría completa.                                    |
+| `AUTH-QA-030` | Orquestar regresión integral y emitir evidencia final. |
+
+---
+
+#### 73. AUTH-QA-030
+
+`AUTH-QA-030` no será “ejecutar algunos tests”.
+
+Deberá verificar:
+
+```text
+todos los casos CRITICAL = PASS
+todos los casos HIGH obligatorios = PASS
+failed = 0
+skipped CRITICAL = 0
+quarantined CRITICAL = 0
+drift = NONE o APPROVED
+rollback_tested = true
+evidence complete = true
+```
+
+Además deberá consolidar resultados de:
+
+- contratos;
+- SQL;
+- SDK;
+- apps;
+- RLS;
+- RPC;
+- caché;
+- legacy;
+- seguridad;
+- migración;
+- performance;
+- UX.
+
+---
+
+#### 74. UX-QA
+
+Las tareas `UX-QA-001` a `UX-QA-030` validan experiencia y proceso.
+
+No sustituyen pruebas de autorización.
+
+Deben demostrar:
+
+- mensaje comprensible;
+- bloqueo correcto;
+- opciones irrelevantes ocultas;
+- contexto visible correcto;
+- no exposición de datos;
+- recuperación;
+- continuidad entre apps;
+- operación real por usuario.
+
+---
+
+#### 75. Responsabilidades técnicas
+
+| Responsabilidad                     | Tarea                               |
+| ----------------------------------- | ----------------------------------- |
+| Harness SQL, RLS, RPC y migraciones | `AUTH-DB-027`                       |
+| Baseline y drift                    | `AUTH-DB-028`                       |
+| Backup, restauración y rollback     | `AUTH-DB-029`                       |
+| Resolver contextual                 | `AUTH-DB-033`                       |
+| Token e invalidación                | `AUTH-DB-035`                       |
+| Evaluador                           | `AUTH-DB-034`                       |
+| Persistencia de decisiones          | `AUTH-DB-032`                       |
+| Contratos compartidos               | `SHELL-CON-001` a `SHELL-CON-008`   |
+| SDK y adapters                      | `SHELL-AUTH-001` a `SHELL-AUTH-005` |
+| Contexto y caché                    | `SHELL-CTX-001` a `SHELL-CTX-006`   |
+| Funcional y seguridad               | `AUTH-QA-001` a `AUTH-QA-030`       |
+| Experiencia                         | `UX-QA-001` a `UX-QA-030`           |
+| Certificación final                 | `AUTH-DB-031`                       |
+
+---
+
+#### 76. No se crean nuevas tareas
+
+Esta propuesta no crea nuevos identificadores.
+
+Razón:
+
+- el harness ya tiene propietario;
+- las pruebas funcionales ya tienen bloque;
+- la regresión ya tiene tarea;
+- la certificación ya tiene tarea;
+- las pruebas del SDK pertenecen a sus tareas de implementación;
+- las pruebas de caché pertenecen a `AUTH-DB-035` y `SHELL-CTX-006`.
+
+La tarea refina responsabilidades; no duplica el roadmap.
+
+---
+
+#### 77. Puerta de pull request
+
+Un PR relacionado con autorización no podrá fusionarse si falla:
+
+- schema;
+- tipos;
+- lint legacy;
+- pruebas unitarias;
+- propiedades críticas;
+- integración aplicable;
+- migración aplicable;
+- seguridad aplicable.
+
+No se permite override sin aprobación registrada.
+
+---
+
+#### 78. Puerta de migración
+
+Antes de aplicar una migración:
+
+- R0 completo;
+- base reconstruible;
+- upgrade probado;
+- rollback probado;
+- pruebas negativas;
+- drift limpio;
+- backup;
+- evidencia;
+- propietario.
+
+---
+
+#### 79. Puerta de release
+
+Requiere:
+
+- contratos compatibles;
+- packages compatibles;
+- consumer contracts;
+- regresión;
+- seguridad;
+- performance;
+- rollback;
+- release notes;
+- evidencia.
+
+---
+
+#### 80. Puerta de cutover
+
+Requiere:
+
+1. consumidores inventariados;
+2. legacy freeze;
+3. resolver canónico;
+4. evaluador canónico;
+5. token;
+6. SDK;
+7. RLS y RPC equivalentes;
+8. pruebas críticas;
+9. shadow cuando aplique;
+10. rollback;
+11. telemetría;
+12. aprobación.
+
+---
+
+#### 81. Puerta de retiro legacy
+
+Requiere:
+
+- direct calls = 0;
+- telemetría legacy = 0;
+- búsqueda estática = 0;
+- paridad clasificada;
+- regresión completa;
+- rollback;
+- 30 días sin uso cuando aplique;
+- `AUTH-DB-031` aprobada.
+
+---
+
+#### 82. Producción y canary
+
+Despliegue:
+
+```text
+staging
+→ canary interno
+→ porcentaje controlado
+→ expansión por app
+→ expansión total
+```
+
+Durante canary se vigila:
+
+- deny rate;
+- error rate;
+- legacy calls;
+- cache mismatch;
+- actor mismatch;
+- RLS deny;
+- latency;
+- rollback trigger.
+
+---
+
+#### 83. Criterios de rollback automático
+
+Se define rollback automático o inmediato ante:
+
+- allow no esperado confirmado;
+- cruce de actor;
+- cruce de sede;
+- cruce de área;
+- deny ignorado;
+- RLS más permisiva;
+- stale allow;
+- audit actor mismatch;
+- cache contamination;
+- error crítico sostenido;
+- incompatibilidad contractual.
+
+Un aumento de denegaciones se investiga; no se convierte automáticamente en bypass.
+
+---
+
+#### 84. Flakiness
+
+Regla:
+
+```text
+flaky CRITICAL test = release blocked
+```
+
+No se permite:
+
+- retry infinito;
+- ignorar fallo intermitente;
+- cuarentena indefinida;
+- marcar manualmente verde.
+
+Todo flaky test requiere:
+
+- causa;
+- tarea;
+- propietario;
+- fecha;
+- evidencia;
+- límite de resolución.
+
+---
+
+#### 85. Skips
+
+Un skip exige:
+
+- razón;
+- tarea;
+- vencimiento;
+- propietario.
+
+No se permiten skips en:
+
+- actor binding;
+- deny precedence;
+- scope;
+- RLS;
+- RPC;
+- cache freshness;
+- rollback crítico.
+
+---
+
+#### 86. Datos productivos
+
+No se copiarán datos sensibles sin:
+
+- anonimización;
+- aprobación;
+- minimización;
+- retención;
+- eliminación posterior.
+
+Preferencia:
+
+```text
+fixtures sintéticas
+>
+snapshot anonimizado
+>
+datos reales
+```
+
+---
+
+#### 87. Retención de evidencia
+
+Se conservarán:
+
+- evidencia de releases;
+- migraciones;
+- cutovers;
+- rollbacks;
+- incidentes;
+- certificaciones.
+
+La política exacta de retención se alineará con gobierno documental, pero una evidencia de seguridad no se eliminará antes de que expire la versión o el paquete que certifica.
+
+---
+
+#### 88. Reporte de fallos
+
+Todo fallo deberá incluir:
+
+```text
+test_case_id
+expected
+actual
+seed
+fixture
+clock
+commit
+environment
+contract versions
+dataset hashes
+correlation_id
+minimal reproduction
+risk classification
+owner
+```
+
+No se cierra un fallo crítico sin prueba de regresión.
+
+---
+
+#### 89. Incidentes
+
+Un incidente de autorización deberá:
+
+1. crear fixture;
+2. crear test case estable;
+3. reproducir;
+4. corregir;
+5. demostrar fallo previo;
+6. demostrar pass posterior;
+7. agregar regresión;
+8. revisar casos similares;
+9. revisar evidencia;
+10. revisar necesidad de versión contractual.
+
+---
+
+#### 90. Métricas de calidad
+
+Se medirán:
+
+- casos por invariante;
+- casos críticos;
+- automatización;
+- cobertura;
+- mutación;
+- flakiness;
+- duración;
+- skips;
+- fallos;
+- defectos escapados;
+- divergencias RPC-RLS;
+- divergencias legacy-canónico;
+- regresiones por app;
+- tiempo de rollback.
+
+---
+
+#### 91. Definition of Done por paquete
+
+Un paquete de autorización no está completo hasta tener:
+
+- contrato;
+- implementación;
+- pruebas;
+- evidencia;
+- observabilidad;
+- rollback;
+- documentación;
+- consumer migration;
+- no pendientes narrativos.
+
+Código compilado sin estas condiciones no constituye cierre.
+
+---
+
+#### 92. Orden de implementación de pruebas
+
+```text
+AUTH-CTX-030 APROBADA
+        ↓
+R0: AUTH-DB-027 a AUTH-DB-029
+        ↓
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001 + SHELL-CTX-001
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-035
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+SHELL-CTX-002 a SHELL-CTX-006
+        ↓
+SHELL-AUTH-002 a SHELL-AUTH-004
+        ↓
+AUTH-DB-020
+        ↓
+AUTH-DB-006 a AUTH-DB-010
++
+AUTH-DB-021
+        ↓
+AUTH-QA-001 a AUTH-QA-029
++
+UX-QA aplicables
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-QA-030
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027` acompaña todos los paquetes físicos.
+
+---
+
+#### 93. Consolidación documental del lote
+
+Después de aprobar AUTH-CTX-030 se realizará una única consolidación que incluirá:
+
+```text
+AUTH-CTX-028 — APROBADA
+AUTH-CTX-029 — APROBADA
+AUTH-CTX-030 — APROBADA
+AUTH-DB-035 — NUEVA TAREA NO INICIADA
+SHELL-CTX-006 — NUEVA TAREA NO INICIADA
+```
+
+También se actualizarán:
+
+- continuidad;
+- métricas;
+- orden maestro;
+- bloque H;
+- bloque R1;
+- registro global;
+- compilado;
+- referencias históricas necesarias.
+
+No se harán pushes intermedios.
+
+---
+
+#### 94. Resultado de la consolidación
+
+El total esperado aumentará en dos tareas:
+
+```text
+1350
+→
+1352 tareas canónicas
+```
+
+Las tareas aprobadas del remoto aumentarán provisionalmente de:
+
+```text
+120
+→
+123
+```
+
+porque se materializarán:
+
+- `AUTH-CTX-028`;
+- `AUTH-CTX-029`;
+- `AUTH-CTX-030`.
+
+Las tareas no iniciadas quedarán:
+
+```text
+1229
+```
+
+Cálculo:
+
+```text
+1230 pendientes actuales
+- 3 aprobaciones materializadas
++ 2 tareas nuevas
+=
+1229 pendientes
+```
+
+El total `AUTH` aumentará:
+
+```text
+315
+→
+316
+```
+
+porque `AUTH-DB-035` es `AUTH` y `SHELL-CTX-006` no lo es.
+
+---
+
+#### 95. Fuera del alcance
+
+AUTH-CTX-030 no:
+
+- escribe pruebas;
+- crea harness;
+- crea fixtures físicas;
+- modifica CI;
+- modifica Supabase;
+- ejecuta cargas;
+- ejecuta fuzzing;
+- activa canary;
+- modifica apps;
+- migra consumidores;
+- certifica producción;
+- aprueba `AUTH-QA-030`;
+- aprueba `AUTH-DB-031`;
+- actualiza hoy el remoto.
+
+---
+
+#### 96. Invariantes
+
+1. Toda regla crítica tiene prueba negativa.
+2. Todo permiso participa en validación contractual.
+3. Todo rol participa en pruebas.
+4. Todo grant participa en pruebas.
+5. Toda denegación participa en pruebas.
+6. Todo reason code participa en pruebas.
+7. UI no sustituye servidor.
+8. RPC no sustituye RLS.
+9. RLS no puede ser más permisiva.
+10. Error nunca produce allow.
+11. Stale nunca produce allow.
+12. Simulación nunca modifica realidad.
+13. Legacy nunca define lo canónico.
+14. Decision ID nunca es token.
+15. Contexto no se reutiliza tras actor switch.
+16. Decisión no se reutiliza para otro recurso.
+17. Datos de cliente no definen hechos autoritativos.
+18. Service role no concede autoridad empresarial.
+19. Mutantes críticos supervivientes son cero.
+20. Tests críticos flaky bloquean release.
+21. Tests críticos no se omiten.
+22. Golden files no se autoaprueban.
+23. Evidencia incluye commit y versiones.
+24. Migraciones prueban rollback.
+25. Drift bloquea certificación.
+26. Producción solo ejecuta smoke seguro.
+27. Incidentes crean regresión.
+28. AUTH-QA-030 orquesta el cierre.
+29. AUTH-DB-031 certifica.
+30. No se crean nuevas tareas en esta propuesta.
+
+---
+
+#### 97. Criterios de aprobación
+
+AUTH-CTX-030 podrá aprobarse cuando se acepte que:
+
+1. existe una estrategia de 12 capas;
+2. se define `AuthorizationTestEvidence@1.0.0`;
+3. toda evidencia es reproducible;
+4. existe convención de IDs;
+5. existe catálogo versionado de casos;
+6. existe clasificación de riesgo;
+7. casos críticos deben automatizarse;
+8. existen frecuencias;
+9. existen entornos;
+10. existe reloj determinista;
+11. existen fixtures y semillas;
+12. existe aislamiento;
+13. existen oráculos independientes;
+14. snapshots no se autoaprueban;
+15. existe validación estática;
+16. cobertura contractual es 100%;
+17. existen pruebas unitarias;
+18. se fijan umbrales de cobertura;
+19. existen propiedades;
+20. existe estrategia combinatoria;
+21. existe mutation testing;
+22. se cubre principal;
+23. se cubre actor;
+24. se cubre identidad;
+25. se cubre empleado;
+26. se cubre rol base;
+27. se cubren asignaciones;
+28. se cubre turno;
+29. se cubre check-in;
+30. se cubre rol operativo;
+31. se cubre territorio;
+32. se cubre dispositivo;
+33. se cubren problemas estructurales;
+34. se cubre solicitud de decisión;
+35. se cubre contrato del permiso;
+36. se cubren modalidades;
+37. se cubren allows;
+38. se cubren denegaciones;
+39. se cubre scope;
+40. se cubren recursos;
+41. se cubren campos;
+42. se cubre concurrencia;
+43. se cubre auditoría;
+44. se cubre simulación;
+45. se cubre legacy;
+46. se cubren 80 casos de caché;
+47. se cubren RPC;
+48. se cubre RLS;
+49. se exige equivalencia;
+50. se cubre SDK;
+51. existen consumer contracts;
+52. se cubren superficies;
+53. se cubren aplicaciones;
+54. PASS permanece separado;
+55. existe seguridad adversarial;
+56. existe fuzzing;
+57. existen límites de tamaño;
+58. existe concurrencia;
+59. existe resiliencia;
+60. existe performance;
+61. existe load testing;
+62. existe observabilidad;
+63. se cubren migraciones;
+64. se cubren datos legacy;
+65. existe rollback;
+66. existe drift;
+67. se prueba documentación;
+68. se refinan AUTH-QA;
+69. AUTH-QA-030 es puerta final;
+70. UX-QA no sustituye seguridad;
+71. no se crean tareas nuevas;
+72. existen puertas de PR, migración, release, cutover y retiro;
+73. existe canary;
+74. existen criterios de rollback;
+75. flakiness y skips críticos bloquean;
+76. datos productivos se minimizan;
+77. evidencia se retiene;
+78. fallos son reproducibles;
+79. incidentes crean regresión;
+80. existe Definition of Done;
+81. el orden de implementación queda definido;
+82. el lote se consolida una sola vez;
+83. los conteos esperados quedan definidos;
+84. no se implementa código ni migraciones.
+
+---
+
+#### 98. Cierre del BLOQUE E contractual
+
+Con la aprobación de AUTH-CTX-030 quedarán documentalmente definidos:
+
+```text
+AccessContext
+AuthorizationDecision
+SimulationContext
+versionado
+serialización
+principal
+actor
+identidad
+empleado
+rol base
+asignaciones
+turno
+check-in
+rol operativo
+territorio
+dispositivo
+problemas estructurales
+aplicación
+permiso
+requisitos
+recursos
+precedencia
+auditoría
+contratos SQL
+consumo centralizado
+compatibilidad legacy
+caché
+invalidación
+pruebas
+```
+
+El diseño contractual del BLOQUE E quedará cerrado.
+
+La implementación física continuará en los bloques de auditoría, arquitectura, fundación, Supabase, aplicaciones y QA.
+
+---
+
+#### 99. Cierre y continuidad
+
+| Relación                       | Tarea                          | Estado        |
+| ------------------------------ | ------------------------------ | ------------- |
+| Tarea anterior del lote        | `AUTH-CTX-029`                 | ✅ APROBADA    |
+| Tarea propuesta                | `AUTH-CTX-030`                 | ✅ APROBADA    |
+| Nueva tarea pendiente del lote | `AUTH-DB-035`                  | ⬜ NO INICIADA |
+| Nueva tarea pendiente del lote | `SHELL-CTX-006`                | ⬜ NO INICIADA |
+| Próxima acción tras aprobación | Consolidación documental única | ⬜ PENDIENTE   |
+
+```text
+AUTH-CTX-029 — APROBADA
+        ↓
+AUTH-CTX-030 — APROBADA
+        ↓
+CONSOLIDACIÓN DOCUMENTAL DEL LOTE
+```
+
+No se inicia otra tarea sustantiva hasta consolidar:
+
+```text
+AUTH-CTX-028
+AUTH-CTX-029
+AUTH-CTX-030
+AUTH-DB-035
+SHELL-CTX-006
+```
+
 
 Regla de implementación
 
@@ -135822,6 +138566,7 @@ SimulationContext
   would_deny,
   indeterminate
 }
+
 ## BLOQUE E1
 
 **Descubrimiento integral de operación, capacidades y cobertura de implementación**
@@ -137245,6 +139990,7 @@ No se crearán paquetes paralelos `@vento/auth` ni
 ### [ ] SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
 ### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
 ### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+### [ ] SHELL-CTX-006 — Implementar caché compartida, single-flight y validación de frescura
 
 ### Orden contractual interno
 
@@ -137261,11 +140007,13 @@ SHELL-CTX-001
         ↓
 AUTH-DB-033
         ↓
+AUTH-DB-035
+        ↓
 AUTH-DB-034
         ↓
 AUTH-DB-032
         ↓
-SHELL-CTX-002 a SHELL-CTX-005
+SHELL-CTX-002 a SHELL-CTX-006
         ↓
 SHELL-AUTH-002
         ↓
@@ -137290,8 +140038,10 @@ Reglas:
 
 - `SHELL-AUTH-001` define estructura, exports, versionado y compatibilidad del único SDK compartido;
 - `SHELL-CTX-001` consolida el módulo contextual dentro del mismo paquete sin crear otro núcleo;
-- `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` implementan contexto, decisión y persistencia autoritativos;
-- `SHELL-CTX-002..005` consumen el contexto canónico ya disponible y producen proyecciones contextuales seguras;
+- `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-032` implementan contexto, frescura, decisión y persistencia autoritativos;
+- `SHELL-CTX-002..006` consumen el contexto canónico ya disponible y producen proyecciones contextuales seguras;
+- `AUTH-DB-035` implementa el token transaccional de frescura y los eventos de invalidación;
+- `SHELL-CTX-006` implementa la caché compartida validada y el single-flight sin decidir permisos;
 - `SHELL-AUTH-002` implementa adapters y proyecciones sobre las fronteras canónicas;
 - `SHELL-AUTH-003` implementa scope por solicitud, deduplicación y registro de consumidores;
 - `SHELL-AUTH-004` bloquea nuevos consumos legacy antes de la migración masiva;
@@ -137856,6 +140606,7 @@ No podrá comenzar ningún paquete estructural mientras no existan:
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 
 ### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
 ### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
 ### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
 
@@ -137893,7 +140644,7 @@ Regla de secuencia por dominio
 `AUTH-DB-006` a `AUTH-DB-010` solo podrán ejecutarse después de:
 
 - completar R0;
-- disponer de `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` en R1;
+- disponer de `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-032` en R1;
 - aprobar el paquete de migración del dominio mediante `AUTH-DB-020`;
 - disponer de pruebas negativas y rollback mediante `AUTH-DB-027` y `AUTH-DB-029`.
 
@@ -138444,13 +141195,15 @@ R2 continuará progresivamente durante las fases de cada aplicación.
 
 R3 se ejecutará durante el cierre transversal.
 
-<!-- AUTH-DB-032-034:START -->
+<!-- AUTH-DB-032-035:START -->
 ### Secuencia contractual obligatoria de autorización dentro de R1
 
 ```text
 AUTH-DB-019
         ↓
 AUTH-DB-033
+        ↓
+AUTH-DB-035
         ↓
 AUTH-DB-034
         ↓
@@ -138464,11 +141217,12 @@ AUTH-DB-006 a AUTH-DB-010
 Reglas:
 
 - `AUTH-DB-033` requiere la arquitectura aprobada de esquemas, helpers, `SECURITY DEFINER`, grants y RLS;
-- `AUTH-DB-034` depende del resolver canónico implementado por `AUTH-DB-033`;
+- `AUTH-DB-035` depende del resolver canónico y debe implementar generaciones transaccionales, token de frescura y outbox de invalidación;
+- `AUTH-DB-034` se implementa después de disponer del resolver y del contrato físico de frescura;
 - `AUTH-DB-032` integra persistencia durable después de disponer de decisiones canónicas;
 - `AUTH-DB-006` a `AUTH-DB-010` adoptan el resolver y el evaluador en RPC sensibles;
 - las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
-<!-- AUTH-DB-032-034:END -->
+<!-- AUTH-DB-032-035:END -->
 
 <!-- SHELL-AUTH-CANONICAL:START -->
 ### Secuencia canónica de autorización compartida
@@ -138484,11 +141238,12 @@ PREPARACIÓN Y NÚCLEO FÍSICO
 AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
 → AUTH-DB-019
 → AUTH-DB-033
+→ AUTH-DB-035
 → AUTH-DB-034
 → AUTH-DB-032
 
 CONVERGENCIA Y ADOPCIÓN
-SHELL-CTX-002..005
+SHELL-CTX-002..006
 → SHELL-AUTH-002
 → SHELL-AUTH-003
 → SHELL-AUTH-004
@@ -138500,7 +141255,7 @@ SHELL-CTX-002..005
 ```
 
 `AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
-no puede completarse antes de resolver contexto, evaluar, persistir, adaptar
+no puede completarse antes de resolver contexto, demostrar frescura e invalidación, evaluar, persistir, adaptar
 RPC y RLS, demostrar rollback y bloquear nuevos consumos legacy.
 <!-- SHELL-AUTH-CANONICAL:END -->
 

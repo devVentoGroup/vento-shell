@@ -4,6 +4,7 @@ import path from 'node:path';
 const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
 
 const REGISTRY_OUTPUT = '.generated/REGISTRO_GLOBAL_DE_TAREAS.md';
+const ACTIVE_SEQUENCE_CONFIG = 'active-sequence.json';
 
 function fail(message) {
   throw new Error(message);
@@ -28,17 +29,53 @@ function maskFencedCode(text) {
     .join('\n');
 }
 
-function buildExecutionSequence() {
-  const ctxBeforeGate = Array.from(
-    { length: 27 },
-    (_, index) => `AUTH-CTX-${String(index + 1).padStart(3, '0')}`
-  );
-  const ctxAfterGate = Array.from(
-    { length: 3 },
-    (_, index) => `AUTH-CTX-${String(index + 28).padStart(3, '0')}`
-  );
+function expandSequenceSegments(segments) {
+  if (!Array.isArray(segments) || segments.length === 0) {
+    fail('active-sequence.json no contiene segmentos válidos.');
+  }
 
-  return [...ctxBeforeGate, 'AUTH-MOD-021', ...ctxAfterGate];
+  const ids = segments.flatMap((segment) => {
+    const { prefix, from, to } = segment ?? {};
+    if (
+      typeof prefix !== 'string'
+      || !Number.isInteger(from)
+      || !Number.isInteger(to)
+      || from < 1
+      || to < from
+    ) {
+      fail('active-sequence.json contiene un segmento inválido.');
+    }
+
+    return Array.from(
+      { length: to - from + 1 },
+      (_, index) => `${prefix}-${String(from + index).padStart(3, '0')}`
+    );
+  });
+
+  if (new Set(ids).size !== ids.length) {
+    fail('active-sequence.json genera tareas duplicadas.');
+  }
+  return ids;
+}
+
+function readActiveSequenceConfig(baseDir) {
+  const configPath = path.join(baseDir, ACTIVE_SEQUENCE_CONFIG);
+  if (!fs.existsSync(configPath)) {
+    fail(`no existe ${path.relative(baseDir, configPath)}; debe definirse el bloque activo.`);
+  }
+
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  if (config.schema_version !== 1) fail('active-sequence.json utiliza una versión no soportada.');
+  if (typeof config.sequence_id !== 'string') fail('active-sequence.json no define sequence_id.');
+  if (typeof config.block_code !== 'string') fail('active-sequence.json no define block_code.');
+  if (typeof config.block_title !== 'string') fail('active-sequence.json no define block_title.');
+  if (typeof config.previous_task_id !== 'string') fail('active-sequence.json no define previous_task_id.');
+
+  return { ...config, taskIds: expandSequenceSegments(config.segments) };
+}
+
+function buildExecutionSequence(activeConfig) {
+  return [activeConfig.previous_task_id, ...activeConfig.taskIds];
 }
 
 function stateFromMarker(marker) {
@@ -222,18 +259,9 @@ function progressStatus(task) {
   return 'pendiente';
 }
 
-function buildProgressSummary(taskMap, continuity) {
-  let highestApproved = 0;
-  for (let number = 1; number <= 30; number += 1) {
-    const id = `AUTH-CTX-${String(number).padStart(3, '0')}`;
-    if (taskMap.get(id)?.state === 'APROBADA') highestApproved = number;
-  }
-
-  const approvedText = highestApproved > 1
-    ? `AUTH-CTX-001 a AUTH-CTX-${String(highestApproved).padStart(3, '0')} aprobadas`
-    : 'AUTH-CTX-001 aprobada';
-
-  return `${approvedText}; ${continuity.current.id} ${progressStatus(continuity.current)}`;
+function buildProgressSummary(continuity, activeConfig) {
+  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
+  return `${activeConfig.block_code}: ${approved} de ${continuity.sequence.length - 1} aprobadas; ${continuity.current.id} ${progressStatus(continuity.current)}`;
 }
 
 function pluralState(state, count) {
@@ -271,7 +299,7 @@ function buildCtxProgressRows(taskMap) {
   });
 }
 
-function updateProgressSection(section, taskMap) {
+function updateProgressSection(section, taskMap, continuity, activeConfig) {
   const gate = taskMap.get('AUTH-MOD-021');
   const gateValue = gate.state === 'APROBADA'
     ? '**APROBADA — PUERTA SUPERADA**'
@@ -285,10 +313,23 @@ function updateProgressSection(section, taskMap) {
   }
 
   const rows = `${buildCtxProgressRows(taskMap).join('\n')}\n`;
-  return updated.slice(0, firstCtxRow) + rows + updated.slice(implementationRow);
+  updated = updated.slice(0, firstCtxRow) + rows + updated.slice(implementationRow);
+
+  const activePattern = new RegExp(
+    `^\\|\\s*${escapeRegex(activeConfig.block_code)}\\s*\\|[^\\n]*\\|\\n?`,
+    'm'
+  );
+  updated = updated.replace(activePattern, '');
+
+  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
+  const activeRow = `| ${activeConfig.block_code} | **${approved} DE ${continuity.sequence.length - 1} APROBADAS — ACTUAL ${continuity.current.id}** |`;
+  const implementationPattern = /^\|\s*Implementación física\s*\|[^\n]*\|$/m;
+  if (!implementationPattern.test(updated)) fail('no se encontró la fila Implementación física.');
+  return updated.replace(implementationPattern, `${activeRow}\n$&`);
 }
 
-function buildControlBlock(continuity) {
+function buildControlBlock(continuity, activeConfig) {
+  const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
   const lines = [
     '## Control de continuidad',
     '',
@@ -304,40 +345,16 @@ function buildControlBlock(continuity) {
     lines.push('        ↓', 'SIGUIENTE TAREA RESERVADA', formatTask(continuity.next));
   }
 
-  const currentNumber = continuity.current.id.startsWith('AUTH-CTX-')
-    ? Number(continuity.current.id.slice(-3))
-    : null;
-  const gateApproved = continuity.sequence.find((task) => task.id === 'AUTH-MOD-021')?.state === 'APROBADA';
-
-  if (currentNumber !== null && currentNumber < 27 && currentNumber + 2 <= 27) {
-    lines.push(
-      '        ↓',
-      'CONTINUIDAD DEL BLOQUE',
-      `AUTH-CTX-${String(currentNumber + 2).padStart(3, '0')} a AUTH-CTX-027`
-    );
-  }
-
-  if (!gateApproved && continuity.current.id !== 'AUTH-MOD-021' && !(currentNumber !== null && currentNumber >= 28)) {
-    lines.push(
-      '        ↓',
-      'PUERTA CONTRACTUAL OBLIGATORIA',
-      'AUTH-MOD-021 — Definir rol base mínimo',
-      'no privilegiado para trabajadores',
-      'puramente operativos'
-    );
-  }
-
-  if (currentNumber === null || currentNumber < 28) {
-    lines.push('        ↓', 'CIERRE DEL BLOQUE', 'AUTH-CTX-028 a AUTH-CTX-030');
-  } else if (currentNumber < 30) {
-    lines.push('        ↓', 'CIERRE DEL BLOQUE', `AUTH-CTX-${String(currentNumber + 1).padStart(3, '0')} a AUTH-CTX-030`);
-  }
-
-  lines.push('```');
+  lines.push(
+    '        ↓',
+    'CONTINUIDAD DEL BLOQUE',
+    `${activeConfig.block_code} — ${approved} de ${continuity.sequence.length - 1} tareas aprobadas`,
+    '```'
+  );
   return lines.join('\n');
 }
 
-function updateHeader(header, manifest, taskMap, stats, continuity) {
+function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig) {
   const originalEol = header.includes('\r\n') ? '\r\n' : '\n';
   let updated = header.replace(/\r\n?/g, '\n');
   updated = replaceRow(updated, 'Fragmentos canónicos', `**${manifest.files.length}**`);
@@ -345,28 +362,27 @@ function updateHeader(header, manifest, taskMap, stats, continuity) {
   updated = replaceRow(updated, 'Última tarea aprobada', `**${formatTask(continuity.lastApproved)}**`);
   updated = replaceRow(updated, 'Tarea actual', `**${formatTask(continuity.current)}**`);
   updated = replaceRow(updated, 'Estado de la tarea actual', `**${continuity.current.state}**`);
-  if (continuity.next) {
-    updated = replaceRow(updated, 'Siguiente tarea', `**${formatTask(continuity.next)}**`);
-  }
-  updated = replaceRow(updated, 'Progreso del bloque', `**${buildProgressSummary(taskMap, continuity)}**`);
+  updated = replaceRow(updated, 'Bloque actual', `**${activeConfig.block_code} — ${activeConfig.block_title}**`);
+  updated = replaceRow(updated, 'Siguiente tarea', continuity.next ? `**${formatTask(continuity.next)}**` : '**NINGUNA — CIERRE DEL BLOQUE**');
+  updated = replaceRow(updated, 'Progreso del bloque', `**${buildProgressSummary(continuity, activeConfig)}**`);
 
   updated = replaceSection(updated, '### Continuidad inmediata', (section) => {
     let result = section;
     result = replaceRow(result, 'Última aprobada', formatTask(continuity.lastApproved, true));
     result = replaceRow(result, 'Tarea actual', `${formatTask(continuity.current, true)} — **${continuity.current.state}**`);
-    if (continuity.next) result = replaceRow(result, 'Siguiente tarea', formatTask(continuity.next, true));
+    result = replaceRow(result, 'Siguiente tarea', continuity.next ? formatTask(continuity.next, true) : 'NINGUNA — CIERRE DEL BLOQUE');
     return result;
   });
 
   updated = replaceSection(
     updated,
     '## Progreso documental aprobado',
-    (section) => updateProgressSection(section, taskMap)
+    (section) => updateProgressSection(section, taskMap, continuity, activeConfig)
   );
 
   const controlPattern = /## Control de continuidad\n\n```text\n[\s\S]*?\n```/;
   if (!controlPattern.test(updated)) fail('no se encontró el bloque Control de continuidad.');
-  updated = updated.replace(controlPattern, buildControlBlock(continuity));
+  updated = updated.replace(controlPattern, buildControlBlock(continuity, activeConfig));
   updated = ensureRegistryNavigationLink(updated);
   return originalEol === '\n' ? updated : updated.replace(/\n/g, '\r\n');
 }
@@ -444,11 +460,12 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
 
   const taskMap = readGlobalTaskRegistry(baseDir, manifest);
   const stats = summarizeRegistry(taskMap);
-  const sequenceIds = buildExecutionSequence();
+  const activeConfig = readActiveSequenceConfig(baseDir);
+  const sequenceIds = buildExecutionSequence(activeConfig);
   const continuity = resolveContinuity(taskMap, sequenceIds);
 
   const currentHeader = fs.readFileSync(headerPath, 'utf8');
-  const nextHeader = updateHeader(currentHeader, manifest, taskMap, stats, continuity);
+  const nextHeader = updateHeader(currentHeader, manifest, taskMap, stats, continuity, activeConfig);
   const nextRegistry = buildRegistryMarkdown(taskMap, stats, continuity);
   const headerChanged = nextHeader !== currentHeader;
   const registryChanged = !fs.existsSync(registryPath) || fs.readFileSync(registryPath, 'utf8') !== nextRegistry;
@@ -477,5 +494,5 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current.id}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`
   );
 
-  return { changed: headerChanged || registryChanged, stats, taskMap, ...continuity };
+  return { changed: headerChanged || registryChanged, stats, taskMap, activeConfig, ...continuity };
 }

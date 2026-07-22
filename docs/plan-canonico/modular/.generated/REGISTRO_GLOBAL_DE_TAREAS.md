@@ -8,19 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1350** |
-| Tareas `AUTH` | **315** |
-| Aprobadas | **122** |
+| Tareas con marcador | **1352** |
+| Tareas `AUTH` | **316** |
+| Aprobadas | **123** |
 | En propuesta | **0** |
-| No iniciadas | **1228** |
+| No iniciadas | **1229** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché | ✅ APROBADA |
-| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión | ✅ APROBADA |
+| Tarea actual | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | ⬜ NO INICIADA |
+| Siguiente | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -148,7 +149,7 @@
 | ✅ APROBADA | `AUTH-CTX-027` | Definir consumo centralizado del contexto por las aplicaciones | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `AUTH-CTX-028` | Definir compatibilidad temporal con get_operational_context | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ✅ APROBADA | `AUTH-CTX-029` | Definir estrategia de invalidación y caché | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
-| ⬜ NO INICIADA | `AUTH-CTX-030` | Definir plan de pruebas contractuales del contexto y la decisión | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
+| ✅ APROBADA | `AUTH-CTX-030` | Definir plan de pruebas contractuales del contexto y la decisión | `bloques/E_CONTEXTO_Y_DECISION/05_IMPLEMENTACION_Y_TRANSICION.md` |
 | ⬜ NO INICIADA | `OPS-AUD-001` | Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-002` | Identificar familias de actores y responsables reales por proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-AUD-003` | Observar el trabajo real de cada área en operación ordinaria | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
@@ -727,6 +728,7 @@
 | ⬜ NO INICIADA | `SHELL-CTX-003` | Implementar proyecciones seguras de sede y área efectivas | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-006` | Implementar caché compartida, single-flight y validación de frescura | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
 | ⬜ NO INICIADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
 | ⬜ NO INICIADA | `SHELL-APP-003` | Definir aplicaciones visibles por contexto | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
@@ -1131,6 +1133,7 @@
 | ⬜ NO INICIADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-019` | Implementar vínculos canónicos entre Auth e identidades empresariales | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-033` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ⬜ NO INICIADA | `AUTH-DB-035` | Implementar token transaccional de frescura e invalidación del contexto | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-032` | Implementar persistencia canónica y vinculación de decisiones de autorización | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-012` | Implementar auditoría de cambios de permisos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |

@@ -21,7 +21,7 @@ Regla de secuencia por dominio
 `AUTH-DB-006` a `AUTH-DB-010` solo podrán ejecutarse después de:
 
 - completar R0;
-- disponer de `AUTH-DB-033`, `AUTH-DB-034` y `AUTH-DB-032` en R1;
+- disponer de `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-032` en R1;
 - aprobar el paquete de migración del dominio mediante `AUTH-DB-020`;
 - disponer de pruebas negativas y rollback mediante `AUTH-DB-027` y `AUTH-DB-029`.
 

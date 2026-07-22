@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
 | Fuente de orden canónico      | `manifest.json`                                                                                   |
 | Fragmentos canónicos | **110** |
-| Tareas canónicas con marcador | **1350** |
-| Tareas `AUTH` únicas | **315** |
-| Tareas aprobadas | **122** |
+| Tareas canónicas con marcador | **1352** |
+| Tareas `AUTH` únicas | **316** |
+| Tareas aprobadas | **123** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1228** |
+| Tareas no iniciadas | **1229** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
-| Última tarea aprobada | **AUTH-CTX-029 — Definir estrategia de invalidación y caché** |
-| Tarea actual | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
+| Última tarea aprobada | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
+| Tarea actual | **OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
-| Bloque actual                 | **BLOQUE E — Contexto y decisión de autorización unificados**                                     |
-| Progreso del bloque | **AUTH-CTX-001 a AUTH-CTX-029 aprobadas; AUTH-CTX-030 pendiente** |
+| Siguiente tarea | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
+| Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
+| Progreso del bloque | **BLOQUE E1: 0 de 89 aprobadas; OPS-AUD-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                |
 | --------------- | -------------------------------------------------------------------- |
-| Última aprobada | `AUTH-CTX-029` — Definir estrategia de invalidación y caché |
-| Tarea actual | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión — **NO INICIADA** |
-| Siguiente tarea | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
+| Última aprobada | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
+| Tarea actual | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos — **NO INICIADA** |
+| Siguiente tarea | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
 
 ## Progreso documental aprobado
@@ -53,8 +53,8 @@
 | BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
-| `AUTH-CTX-001` a `AUTH-CTX-029` | **APROBADAS** |
-| `AUTH-CTX-030` | **NO INICIADA** |
+| `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
+| BLOQUE E1 | **0 DE 89 APROBADAS — ACTUAL OPS-AUD-001** |
 | Implementación física             | **NO INICIADA**                                |
 
 ## Reglas de edición
@@ -87,8 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-CTX-029 — Definir estrategia de invalidación y caché
+AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
         ↓
 TAREA ACTUAL
-AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión
+OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
+        ↓
+SIGUIENTE TAREA RESERVADA
+OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
+        ↓
+CONTINUIDAD DEL BLOQUE
+BLOQUE E1 — 0 de 89 tareas aprobadas
 ```

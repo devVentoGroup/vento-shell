@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "sequence_id": "E1-DISCOVERY-001",
+  "block_code": "BLOQUE E1",
+  "block_title": "Descubrimiento integral de operación, capacidades y cobertura de implementación",
+  "previous_task_id": "AUTH-CTX-030",
+  "segments": [
+    {
+      "prefix": "OPS-AUD",
+      "from": 1,
+      "to": 15
+    },
+    {
+      "prefix": "CAP-MAP",
+      "from": 1,
+      "to": 15
+    },
+    {
+      "prefix": "CODE-AUD",
+      "from": 1,
+      "to": 20
+    },
+    {
+      "prefix": "CAP-SCOPE",
+      "from": 1,
+      "to": 19
+    },
+    {
+      "prefix": "CAP-COVER",
+      "from": 1,
+      "to": 12
+    },
+    {
+      "prefix": "GAP-CTRL",
+      "from": 1,
+      "to": 8
+    }
+  ]
+}

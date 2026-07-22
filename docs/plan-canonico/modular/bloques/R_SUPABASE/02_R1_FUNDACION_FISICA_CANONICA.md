@@ -6,6 +6,7 @@
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 
 ### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
 ### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
 ### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
 
