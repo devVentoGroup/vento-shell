@@ -1,0 +1,47 @@
+name: Aplicar integracion OPS-AUD-001
+
+on:
+  push:
+    branches:
+      - agent/integrar-ops-aud-001
+    paths:
+      - scripts/docs/apply-ops-aud-001-integration.mjs
+      - .github/workflows/apply-ops-aud-001-integration.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: agent/integrar-ops-aud-001
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Apply integration
+        run: node scripts/docs/apply-ops-aud-001-integration.mjs
+
+      - name: Build canonical plan
+        run: node scripts/docs/build-plan-canonico.mjs
+
+      - name: Validate canonical plan
+        run: node scripts/docs/build-plan-canonico.mjs --check
+
+      - name: Commit generated integration
+        run: |
+          git add docs/plan-canonico/modular
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "docs: integrar tareas derivadas de OPS-AUD-001"
+            git push origin agent/integrar-ops-aud-001
+          fi
