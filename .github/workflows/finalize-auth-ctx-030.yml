@@ -32,6 +32,21 @@ jobs:
         with:
           node-version: 24
 
+      - name: Corregir interpolación del generador
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('scripts/docs/finalize-auth-ctx-030.mjs')
+          text = path.read_text(encoding='utf-8')
+          old = "(_, index) => \\`${prefix}-\\${String(from + index).padStart(3, '0')}\\`"
+          new = "(_, index) => \\`\\${prefix}-\\${String(from + index).padStart(3, '0')}\\`"
+          if old not in text:
+              raise SystemExit('No se encontró la interpolación defectuosa esperada.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+      - name: Validar sintaxis del cierre
+        run: node --check scripts/docs/finalize-auth-ctx-030.mjs
+
       - name: Validar materialización
         run: node scripts/docs/finalize-auth-ctx-030.mjs
 
