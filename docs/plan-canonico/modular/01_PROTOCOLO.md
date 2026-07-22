@@ -473,6 +473,22 @@ La materialización obligatoria incluye:
 Una mención narrativa dentro de otra tarea no equivale a crear la tarea nueva.
 <!-- TASK-MATERIALIZATION-RULE:END -->
 
+<!-- TASK-ID-UNIQUENESS:START -->
+## Regla canónica de unicidad y evolución de identificadores
+
+Antes de proponer o materializar una tarea nueva se deberá buscar su
+identificador exacto en todos los archivos de `manifest.json`.
+
+- un identificador existente no podrá reutilizarse con otro significado;
+- cuando una decisión posterior refine una tarea no iniciada, deberá conservar
+  el identificador y declarar expresamente la sustitución de responsabilidad;
+- una tarea aprobada o ejecutada no podrá cambiar de significado; deberá
+  crearse un identificador nuevo y registrar la relación;
+- el compilador deberá rechazar identificadores duplicados;
+- la materialización deberá validar también coherencia de bloque, dependencias
+  y orden de implementación, no solo existencia física.
+<!-- TASK-ID-UNIQUENESS:END -->
+
 ## Regla canónica de granularidad documental
 
 La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.

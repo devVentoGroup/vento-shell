@@ -168,8 +168,7 @@ El nombre del repositorio no es el código de la aplicación.
 Ejemplos futuros:
 
 @vento/contracts
-@vento/auth
-@vento/operational-context
+@vento/os-context
 @vento/supabase
 
 Un paquete no debe registrarse como aplicación por el solo hecho de contener código compartido.
@@ -3841,4 +3840,3 @@ AUTH-CAT-001
 
 AUTH-CAT-002
 → APROBADA
-

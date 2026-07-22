@@ -4495,7 +4495,7 @@ No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
 | **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
 | **Cambios físicos permitidos**   | No                                                                                               |
 | **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
-| **Nuevas tareas requeridas**     | `SHELL-AUTH-001` a `SHELL-AUTH-005`                                                              |
+| **Tareas existentes refinadas**   | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan y amplían sin reutilizar IDs                                                              |
 
 Esta tarea define una única arquitectura de consumo para que todas las
 aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
@@ -5950,9 +5950,9 @@ La optimización no cambia semántica.
 
 ---
 
-#### 94. Nuevas tareas SHELL-AUTH
+#### 94. Refinamiento contractual de tareas SHELL-AUTH existentes
 
-Se crean explícitamente:
+Se refinan contractualmente las tareas no iniciadas ya existentes:
 
 ```text
 SHELL-AUTH-001
@@ -5978,12 +5978,12 @@ SHELL-AUTH-005
 
 ---
 
-#### 95. Ubicación de SHELL-AUTH
+#### 95. Ubicación canónica de SHELL-AUTH y SHELL-CTX
 
 Las tareas deberán materializarse en:
 
 ```text
-docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md
+docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md
 ```
 
 Bajo una nueva sección lógica:
@@ -5992,7 +5992,7 @@ Bajo una nueva sección lógica:
 AUTORIZACIÓN COMPARTIDA
 ```
 
-Después de `SHELL-CON-008` y antes de identificadores de procesos.
+Después de contratos y normalización compartida, antes de la adopción física y de la migración multi-repositorio.
 
 ---
 
@@ -6376,11 +6376,11 @@ AUTH-CTX-027 podrá aprobarse cuando se acepte que:
 113. se mide resolución por request;
 114. se mide batch UI;
 115. optimización no cambia semántica;
-116. se crea SHELL-AUTH-001;
-117. se crea SHELL-AUTH-002;
-118. se crea SHELL-AUTH-003;
-119. se crea SHELL-AUTH-004;
-120. se crea SHELL-AUTH-005;
+116. se refina SHELL-AUTH-001 sin cambiar su identificador;
+117. se refina SHELL-AUTH-002 sin cambiar su identificador;
+118. se refina SHELL-AUTH-003 sin cambiar su identificador;
+119. se refina SHELL-AUTH-004 sin cambiar su identificador;
+120. se refina SHELL-AUTH-005 sin cambiar su identificador;
 121. las tareas se materializan en BLOQUE H;
 122. SHELL-AUTH-001 consolida SDK;
 123. SHELL-AUTH-002 implementa adapters;

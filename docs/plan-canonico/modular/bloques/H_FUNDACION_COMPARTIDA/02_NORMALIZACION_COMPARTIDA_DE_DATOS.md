@@ -19,18 +19,6 @@ BLOQUE R
 → implementa únicamente persistencia, backfills, funciones SQL,
   constraints, índices y triggers defensivos
 
-### [ ] SHELL-AUTH-001 Crear @vento/auth
-### [ ] SHELL-AUTH-002 Compartir guards administrativos
-### [ ] SHELL-AUTH-003 Compartir resolución de rol efectivo
-### [ ] SHELL-AUTH-004 Compartir simulación estricta
-### [ ] SHELL-AUTH-005 Compartir validación de permisos
-
-### [ ] SHELL-CTX-001 Crear @vento/operational-context
-### [ ] SHELL-CTX-002 Compartir resolución del turno
-### [ ] SHELL-CTX-003 Compartir sede y área efectivas
-### [ ] SHELL-CTX-004 Compartir permisos operativos
-### [ ] SHELL-CTX-005 Compartir razones de bloqueo
-
 ### [ ] SHELL-DB-001 Crear @vento/supabase
 ### [ ] SHELL-DB-002 Centralizar tipos generados por cada paquete de base de datos aprobado
 ### [ ] SHELL-DB-003 Crear y actualizar wrappers tipados para RPC canónicas

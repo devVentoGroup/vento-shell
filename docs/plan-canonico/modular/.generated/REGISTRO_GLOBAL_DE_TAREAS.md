@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **722** |
+| Tareas con marcador | **732** |
 | Tareas `AUTH` | **315** |
 | Aprobadas | **119** |
 | En propuesta | **0** |
-| No iniciadas | **603** |
+| No iniciadas | **613** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -474,6 +474,16 @@
 | ⬜ NO INICIADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-007` | Confirmar trazabilidad hasta pruebas y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
+| ⬜ NO INICIADA | `SHELL-AUTH-001` | Consolidar @vento/os-context como SDK canónico de contexto y autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-AUTH-002` | Implementar adapters de servidor, cliente y proyecciones seguras | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-AUTH-003` | Implementar scope por solicitud y registro canónico de consumidores | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-AUTH-004` | Implementar lint, métricas y gates contra consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-AUTH-005` | Migrar consumidores de autorización en todos los repositorios | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-001` | Consolidar el módulo de contexto dentro de @vento/os-context | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-002` | Implementar consumo canónico de turno y check-in | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-003` | Implementar proyecciones seguras de sede y área efectivas | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-001` | Inventariar todas las rutas de NEXO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-002` | Inventariar todas las rutas de FOGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-003` | Inventariar todas las rutas de ORIGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |

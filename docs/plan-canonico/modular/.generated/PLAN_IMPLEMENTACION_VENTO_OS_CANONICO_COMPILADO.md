@@ -17,12 +17,12 @@
 | Estado documental             | **VIGENTE**                                                                                       |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
 | Fuente de orden canónico      | `manifest.json`                                                                                   |
-| Fragmentos canónicos          | **109**                                                                                           |
-| Tareas canónicas con marcador | **722**                                                                                           |
+| Fragmentos canónicos          | **110**                                                                                           |
+| Tareas canónicas con marcador | **732**                                                                                           |
 | Tareas `AUTH` únicas          | **315**                                                                                           |
 | Tareas aprobadas              | **119**                                                                                           |
 | Tareas en propuesta           | **0**                                                                                             |
-| Tareas no iniciadas           | **603**                                                                                           |
+| Tareas no iniciadas           | **613**                                                                                           |
 | Tareas rechazadas             | **0**                                                                                             |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
@@ -572,6 +572,22 @@ La materialización obligatoria incluye:
 
 Una mención narrativa dentro de otra tarea no equivale a crear la tarea nueva.
 <!-- TASK-MATERIALIZATION-RULE:END -->
+
+<!-- TASK-ID-UNIQUENESS:START -->
+## Regla canónica de unicidad y evolución de identificadores
+
+Antes de proponer o materializar una tarea nueva se deberá buscar su
+identificador exacto en todos los archivos de `manifest.json`.
+
+- un identificador existente no podrá reutilizarse con otro significado;
+- cuando una decisión posterior refine una tarea no iniciada, deberá conservar
+  el identificador y declarar expresamente la sustitución de responsabilidad;
+- una tarea aprobada o ejecutada no podrá cambiar de significado; deberá
+  crearse un identificador nuevo y registrar la relación;
+- el compilador deberá rechazar identificadores duplicados;
+- la materialización deberá validar también coherencia de bloque, dependencias
+  y orden de implementación, no solo existencia física.
+<!-- TASK-ID-UNIQUENESS:END -->
 
 ## Regla canónica de granularidad documental
 
@@ -29002,8 +29018,7 @@ El nombre del repositorio no es el código de la aplicación.
 Ejemplos futuros:
 
 @vento/contracts
-@vento/auth
-@vento/operational-context
+@vento/os-context
 @vento/supabase
 
 Un paquete no debe registrarse como aplicación por el solo hecho de contener código compartido.
@@ -32675,7 +32690,6 @@ AUTH-CAT-001
 
 AUTH-CAT-002
 → APROBADA
-
 ### ✅ AUTH-CAT-003 — Normalizar códigos de permisos con la convención aprobada
 
 #### 1. Estado de implementación
@@ -128106,7 +128120,7 @@ No se avanza a `AUTH-CTX-027` hasta recibir aprobación explícita de
 | **Cambio contractual**           | Define cómo consumen las aplicaciones; no modifica los contratos publicados                      |
 | **Cambios físicos permitidos**   | No                                                                                               |
 | **Brecha física detectada**      | El consumo está fragmentado entre paquetes, helpers, guards, hooks, RPC booleanas y lógica local |
-| **Nuevas tareas requeridas**     | `SHELL-AUTH-001` a `SHELL-AUTH-005`                                                              |
+| **Tareas existentes refinadas**   | `SHELL-AUTH-001` a `SHELL-AUTH-005`; se conservan y amplían sin reutilizar IDs                                                              |
 
 Esta tarea define una única arquitectura de consumo para que todas las
 aplicaciones de Vento OS utilicen el mismo contexto y la misma decisión sin
@@ -129561,9 +129575,9 @@ La optimización no cambia semántica.
 
 ---
 
-#### 94. Nuevas tareas SHELL-AUTH
+#### 94. Refinamiento contractual de tareas SHELL-AUTH existentes
 
-Se crean explícitamente:
+Se refinan contractualmente las tareas no iniciadas ya existentes:
 
 ```text
 SHELL-AUTH-001
@@ -129589,12 +129603,12 @@ SHELL-AUTH-005
 
 ---
 
-#### 95. Ubicación de SHELL-AUTH
+#### 95. Ubicación canónica de SHELL-AUTH y SHELL-CTX
 
 Las tareas deberán materializarse en:
 
 ```text
-docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md
+docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md
 ```
 
 Bajo una nueva sección lógica:
@@ -129603,7 +129617,7 @@ Bajo una nueva sección lógica:
 AUTORIZACIÓN COMPARTIDA
 ```
 
-Después de `SHELL-CON-008` y antes de identificadores de procesos.
+Después de contratos y normalización compartida, antes de la adopción física y de la migración multi-repositorio.
 
 ---
 
@@ -129987,11 +130001,11 @@ AUTH-CTX-027 podrá aprobarse cuando se acepte que:
 113. se mide resolución por request;
 114. se mide batch UI;
 115. optimización no cambia semántica;
-116. se crea SHELL-AUTH-001;
-117. se crea SHELL-AUTH-002;
-118. se crea SHELL-AUTH-003;
-119. se crea SHELL-AUTH-004;
-120. se crea SHELL-AUTH-005;
+116. se refina SHELL-AUTH-001 sin cambiar su identificador;
+117. se refina SHELL-AUTH-002 sin cambiar su identificador;
+118. se refina SHELL-AUTH-003 sin cambiar su identificador;
+119. se refina SHELL-AUTH-004 sin cambiar su identificador;
+120. se refina SHELL-AUTH-005 sin cambiar su identificador;
 121. las tareas se materializan en BLOQUE H;
 122. SHELL-AUTH-001 consolida SDK;
 123. SHELL-AUTH-002 implementa adapters;
@@ -131484,18 +131498,6 @@ BLOQUE R
 → implementa únicamente persistencia, backfills, funciones SQL,
   constraints, índices y triggers defensivos
 
-### [ ] SHELL-AUTH-001 Crear @vento/auth
-### [ ] SHELL-AUTH-002 Compartir guards administrativos
-### [ ] SHELL-AUTH-003 Compartir resolución de rol efectivo
-### [ ] SHELL-AUTH-004 Compartir simulación estricta
-### [ ] SHELL-AUTH-005 Compartir validación de permisos
-
-### [ ] SHELL-CTX-001 Crear @vento/operational-context
-### [ ] SHELL-CTX-002 Compartir resolución del turno
-### [ ] SHELL-CTX-003 Compartir sede y área efectivas
-### [ ] SHELL-CTX-004 Compartir permisos operativos
-### [ ] SHELL-CTX-005 Compartir razones de bloqueo
-
 ### [ ] SHELL-DB-001 Crear @vento/supabase
 ### [ ] SHELL-DB-002 Centralizar tipos generados por cada paquete de base de datos aprobado
 ### [ ] SHELL-DB-003 Crear y actualizar wrappers tipados para RPC canónicas
@@ -131547,6 +131549,81 @@ formularios específicos de dominio;
 procesos empresariales completos;
 consultas propias de una aplicación;
 componentes que obliguen a todas las aplicaciones a tener la misma interfaz.
+## AUTORIZACIÓN Y CONTEXTO COMPARTIDOS
+
+Este archivo materializa la frontera compartida aprobada por
+`AUTH-CTX-027` y consolida las tareas que anteriormente estaban mezcladas
+con normalización de datos.
+
+Arquitectura obligatoria:
+
+```text
+@vento/contracts/authorization
+→ contratos, catálogos, schemas y códigos
+
+@vento/os-context
+→ adapters, scopes por solicitud, proyecciones seguras,
+  compatibilidad temporal y utilidades de prueba
+
+Supabase
+→ get_access_context, evaluate_authorization,
+  resolvers privados, datasets y persistencia
+```
+
+No se crearán paquetes paralelos `@vento/auth` ni
+`@vento/operational-context`.
+
+### Fundación del SDK de autorización
+
+### [ ] SHELL-AUTH-001 — Consolidar @vento/os-context como SDK canónico de contexto y autorización
+### [ ] SHELL-AUTH-002 — Implementar adapters de servidor, cliente y proyecciones seguras
+### [ ] SHELL-AUTH-003 — Implementar scope por solicitud y registro canónico de consumidores
+### [ ] SHELL-AUTH-004 — Implementar lint, métricas y gates contra consumidores legacy
+### [ ] SHELL-AUTH-005 — Migrar consumidores de autorización en todos los repositorios
+
+### Módulos internos de contexto
+
+### [ ] SHELL-CTX-001 — Consolidar el módulo de contexto dentro de @vento/os-context
+### [ ] SHELL-CTX-002 — Implementar consumo canónico de turno y check-in
+### [ ] SHELL-CTX-003 — Implementar proyecciones seguras de sede y área efectivas
+### [ ] SHELL-CTX-004 — Implementar readiness operativo sin booleanos de autorización
+### [ ] SHELL-CTX-005 — Implementar razones seguras de bloqueo contextual
+
+### Orden contractual interno
+
+```text
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001
++
+SHELL-CTX-001 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002
+        ↓
+SHELL-AUTH-003
+        ↓
+SHELL-AUTH-004
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+SHELL-AUTH-005
+```
+
+Reglas:
+
+- `SHELL-AUTH-001` define la estructura y exports del único SDK compartido;
+- `SHELL-CTX-001..005` implementan piezas contextuales dentro del mismo paquete;
+- `SHELL-AUTH-002` depende de los contratos y módulos contextuales;
+- `SHELL-AUTH-003` crea scope por solicitud y registro de consumidores;
+- `SHELL-AUTH-004` impide nuevos consumos legacy antes de la migración;
+- `AUTH-DB-033` y `AUTH-DB-034` implementan las fuentes autoritativas;
+- `AUTH-DB-032` agrega persistencia durable y vínculo con ejecución;
+- `SHELL-AUTH-005` migra consumidores solo después de disponer del backend,
+  adapters, gates, pruebas y rollback.
 ## BLOQUE H2
 
 **SHELL como aplicación y hub contextual**
@@ -132705,6 +132782,38 @@ Reglas:
 - `AUTH-DB-006` a `AUTH-DB-010` adoptan el resolver y el evaluador en RPC sensibles;
 - las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
 <!-- AUTH-DB-032-034:END -->
+
+<!-- SHELL-AUTH-CANONICAL:START -->
+### Secuencia canónica de autorización compartida
+
+```text
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001
++
+SHELL-CTX-001 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002 a SHELL-AUTH-004
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
+no puede comenzar antes de que existan contratos, SDK, contexto compartido,
+gates, resolver, evaluador, persistencia y pruebas.
+<!-- SHELL-AUTH-CANONICAL:END -->
 
 FASE 4 — HABILITADORES TRANSVERSALES
 

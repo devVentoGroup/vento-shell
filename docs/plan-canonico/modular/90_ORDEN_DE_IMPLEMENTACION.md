@@ -109,6 +109,38 @@ Reglas:
 - las funciones boolean legacy solo se retiran después de compatibilidad, pruebas y certificación.
 <!-- AUTH-DB-032-034:END -->
 
+<!-- SHELL-AUTH-CANONICAL:START -->
+### Secuencia canónica de autorización compartida
+
+```text
+SHELL-CON-001 a SHELL-CON-008
+        ↓
+SHELL-AUTH-001
++
+SHELL-CTX-001 a SHELL-CTX-005
+        ↓
+SHELL-AUTH-002 a SHELL-AUTH-004
+        ↓
+AUTH-DB-033
+        ↓
+AUTH-DB-034
+        ↓
+AUTH-DB-032
+        ↓
+SHELL-AUTH-005
+        ↓
+AUTH-DB-006 a AUTH-DB-010
+        ↓
+AUTH-DB-030
+        ↓
+AUTH-DB-031
+```
+
+`AUTH-DB-027` acompaña cada paquete físico. La migración multi-repositorio
+no puede comenzar antes de que existan contratos, SDK, contexto compartido,
+gates, resolver, evaluador, persistencia y pruebas.
+<!-- SHELL-AUTH-CANONICAL:END -->
+
 FASE 4 — HABILITADORES TRANSVERSALES
 
 26. BLOQUE F — ANIMA
