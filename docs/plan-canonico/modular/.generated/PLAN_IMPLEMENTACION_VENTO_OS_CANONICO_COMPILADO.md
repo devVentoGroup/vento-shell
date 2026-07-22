@@ -10,13 +10,13 @@
 
 ## Estado canónico
 
-| Campo                         | Valor                                                                                             |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| Versión                       | 2026-07-21                                                                                        |
-| Revisión documental           | **39**                                                                                            |
-| Estado documental             | **VIGENTE**                                                                                       |
-| Arquitectura documental       | **MODULAR CANÓNICA**                                                                              |
-| Fuente de orden canónico      | `manifest.json`                                                                                   |
+| Campo                         | Valor                                                                                           |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| Versión                       | 2026-07-21                                                                                      |
+| Revisión documental           | **39**                                                                                          |
+| Estado documental             | **VIGENTE**                                                                                     |
+| Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
+| Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **110** |
 | Tareas canónicas con marcador | **1352** |
 | Tareas `AUTH` únicas | **316** |
@@ -24,38 +24,38 @@
 | Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1229** |
 | Tareas rechazadas | **0** |
-| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                   |
-| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                          |
-| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                         |
+| Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
+| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
+| ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **AUTH-CTX-030 — Definir plan de pruebas contractuales del contexto y la decisión** |
 | Tarea actual | **OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos** |
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
 | Progreso del bloque | **BLOQUE E1: 0 de 89 aprobadas; OPS-AUD-001 pendiente** |
-| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                         |
+| Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                |
-| --------------- | -------------------------------------------------------------------- |
+| Estado          | Valor                                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------- |
 | Última aprobada | `AUTH-CTX-030` — Definir plan de pruebas contractuales del contexto y la decisión |
 | Tarea actual | `OPS-AUD-001` — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos — **NO INICIADA** |
 | Siguiente tarea | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                   |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas                   | Estado                                         |
-| --------------------------------- | ---------------------------------------------- |
-| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                  |
-| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                  |
-| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                    |
-| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                  |
+| Grupo de tareas                   | Estado                                     |
+| --------------------------------- | ------------------------------------------ |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                              |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                              |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | BLOQUE E1 | **0 DE 89 APROBADAS — ACTUAL OPS-AUD-001** |
-| Implementación física             | **NO INICIADA**                                |
+| Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
 
