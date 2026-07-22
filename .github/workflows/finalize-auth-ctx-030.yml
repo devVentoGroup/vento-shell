@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - scripts/docs/finalize-auth-ctx-030.mjs
+      - .github/workflows/finalize-auth-ctx-030.yml
   workflow_dispatch:
 
 permissions:
