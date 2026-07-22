@@ -2221,7 +2221,727 @@ OPS-AUD-003
 
 
 
-### [ ] OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+### 🟡 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Estado:** PROPUESTA PARA APROBACIÓN  
+**Naturaleza:** Auditoría de campo AS-IS  
+**Tarea anterior:** `OPS-AUD-002` — APROBADA  
+**Siguiente tarea reservada:** `OPS-AUD-004` — Inventariar procesos ejecutados en papel  
+**Implementación técnica:** No autorizada  
+**Migraciones o cambios en Supabase:** No autorizados  
+
+---
+
+#### 1. Propósito
+
+Observar directamente cómo trabaja cada área de Vento Group durante la operación real, sin sustituir la evidencia de campo por:
+
+- entrevistas aisladas;
+- descripciones ideales;
+- manuales;
+- roles configurados en software;
+- procedimientos que deberían cumplirse;
+- supuestos administrativos;
+- conocimiento parcial de una sola persona.
+
+La tarea deberá producir una línea base verificable del trabajo ordinario, incluyendo:
+
+- qué activa el trabajo;
+- quién interviene realmente;
+- qué pasos se ejecutan;
+- en qué orden;
+- qué decisiones se toman;
+- qué información se consulta;
+- qué documentos, aplicaciones, equipos y canales se utilizan;
+- qué se entrega a otra persona o área;
+- dónde existen esperas, interrupciones, retrabajos, atajos o controles informales;
+- qué diferencias existen entre lo declarado y lo observado.
+
+---
+
+#### 2. Decisión metodológica principal
+
+`OPS-AUD-003` no se resolverá mediante una visita general ni una conversación grupal.
+
+Se ejecutará como una campaña estructurada de observación de campo:
+
+```text
+PREPARAR LA SESIÓN
+        ↓
+OBSERVAR SIN INTERRUMPIR
+        ↓
+REGISTRAR SECUENCIA Y EVIDENCIA
+        ↓
+PREGUNTAR DESPUÉS DE LA EJECUCIÓN
+        ↓
+CONTRASTAR CON OPS-AUD-001 Y OPS-AUD-002
+        ↓
+CLASIFICAR HALLAZGOS Y CONTRADICCIONES
+        ↓
+VINCULAR CADA BRECHA A UNA TAREA EXACTA
+```
+
+La observación deberá capturar el proceso como ocurre actualmente, incluso cuando sea:
+
+- manual;
+- informal;
+- ineficiente;
+- inconsistente;
+- dependiente de memoria;
+- contrario al proceso esperado;
+- ejecutado por una persona distinta de la responsable habitual.
+
+---
+
+#### 3. Principios obligatorios
+
+##### 3.1 Observar antes de diseñar
+
+Durante la sesión no se rediseñará el proceso ni se indicará al trabajador cómo debería realizarlo.
+
+```text
+OBSERVACIÓN
+≠
+CAPACITACIÓN
+≠
+CORRECCIÓN
+≠
+IMPLEMENTACIÓN
+```
+
+Las mejoras se documentarán como hallazgos y se resolverán en sus tareas propietarias.
+
+##### 3.2 Registrar trabajo real, no trabajo ideal
+
+Cuando exista diferencia entre:
+
+- lo que se cree que ocurre;
+- lo que el trabajador dice que ocurre;
+- lo que efectivamente se observa;
+
+se conservarán las tres versiones por separado.
+
+##### 3.3 No convertir una observación aislada en regla general
+
+Cada hallazgo deberá indicar su nivel de evidencia:
+
+| Estado de evidencia | Significado |
+| --- | --- |
+| `OBSERVADO_UNA_VEZ` | Ocurrió durante una sesión, sin repetición confirmada |
+| `OBSERVADO_REPETIDO` | Ocurrió en dos o más sesiones comparables |
+| `CONFIRMADO_POR_ACTOR` | Fue explicado por quien ejecuta el trabajo |
+| `CONFIRMADO_POR_RESPONSABLE` | Fue validado por supervisor o dueño del proceso |
+| `RESPALDADO_POR_ARTEFACTO` | Existe documento, registro, sistema, foto o evidencia asociada |
+| `CONTRADICTORIO` | Existen versiones o evidencias incompatibles |
+| `PENDIENTE_VALIDACION` | Requiere confirmación posterior en `OPS-AUD-015` |
+
+##### 3.4 Observar handoffs, no solo tareas internas
+
+El límite de una sesión no termina cuando el trabajador completa su actividad.
+
+También deberá registrarse:
+
+- a quién entrega;
+- qué entrega;
+- cómo informa que terminó;
+- qué espera la siguiente persona;
+- cómo se confirma la recepción;
+- qué ocurre cuando la siguiente persona no está disponible.
+
+##### 3.5 Separar área, zona, estación y actor
+
+La observación deberá registrar por separado:
+
+```text
+SEDE
+→ ÁREA OPERATIVA
+→ ZONA FÍSICA
+→ ESTACIÓN
+→ ACTOR EFECTIVO
+→ ACTIVIDAD
+```
+
+##### 3.6 No ocultar variabilidad
+
+Si dos trabajadores realizan el mismo trabajo de manera distinta, deberán documentarse ambas variantes.
+
+No se elegirá silenciosamente una como proceso oficial.
+
+##### 3.7 Toda brecha tendrá destino documental
+
+Ningún hallazgo podrá quedar únicamente como comentario narrativo.
+
+Cada hallazgo deberá:
+
+- vincularse a una tarea existente; o
+- generar una nueva tarea explícita con identificador, bloque, propósito, dependencias y momento de resolución.
+
+---
+
+#### 4. Técnicas de observación obligatorias
+
+##### 4.1 Shadowing operativo
+
+Acompañar al trabajador durante una actividad completa sin asumir su función.
+
+Se registrará:
+
+- inicio;
+- secuencia;
+- interrupciones;
+- decisiones;
+- herramientas;
+- desplazamientos;
+- entrega final.
+
+##### 4.2 Registro cronológico
+
+Cada paso deberá conservar:
+
+- hora de inicio;
+- hora de finalización;
+- actor;
+- acción;
+- entrada;
+- salida;
+- herramienta;
+- espera;
+- observación.
+
+##### 4.3 Trazado de artefactos
+
+Seguir físicamente o digitalmente un elemento representativo, por ejemplo:
+
+- una remisión;
+- un pedido;
+- una compra;
+- un producto recibido;
+- un lote producido;
+- una canasta;
+- una devolución;
+- un cierre de caja;
+- una solicitud de producción.
+
+##### 4.4 Observación de handoff
+
+Acompañar el traspaso entre:
+
+- área y área;
+- sede y sede;
+- trabajador y supervisor;
+- proveedor y receptor;
+- bodega y conductor;
+- conductor y satélite;
+- aplicación y operación física.
+
+##### 4.5 Entrevista posterior breve
+
+Las preguntas se realizarán después del paso observado, para no modificar la ejecución.
+
+Preguntas mínimas:
+
+1. ¿Qué activó esta tarea?
+2. ¿Cómo supiste qué hacer?
+3. ¿Qué información necesitaste?
+4. ¿Qué haces cuando falta información o producto?
+5. ¿Quién puede autorizar una excepción?
+6. ¿Qué haces si la siguiente persona no está?
+7. ¿Qué parte se repite o se registra dos veces?
+8. ¿Qué error ocurre con mayor frecuencia?
+9. ¿Qué parte depende de memoria o experiencia?
+10. ¿Cómo se sabe que el trabajo quedó terminado?
+
+---
+
+#### 5. Cobertura mínima por sede y área
+
+##### 5.1 Vento Café
+
+Observar como mínimo:
+
+- Servicio / Salón;
+- terraza y salón interior cuando operen de forma diferente;
+- Caja y Mostrador;
+- recepción y entrega de pedidos externos;
+- Cocina;
+- Barra;
+- apertura;
+- periodo ordinario;
+- periodo de mayor demanda;
+- cierre;
+- recepción de remisiones.
+
+##### 5.2 Saudo
+
+Aunque se mantenga inicialmente como área integral, deberán distinguirse las funciones observadas de:
+
+- caja;
+- mostrador;
+- servicio;
+- cocina;
+- barra;
+- pedidos externos;
+- recepción de remisiones;
+- apertura y cierre.
+
+##### 5.3 Molka
+
+Observar separadamente, aunque exista operación integral:
+
+- venta;
+- caja;
+- atención;
+- cocina o preparación;
+- barra cuando aplique;
+- pedidos de ManyChat y Rappi;
+- recepción de remisiones;
+- apertura y cierre.
+
+##### 5.4 Centro de Producción y Distribución
+
+Observar como unidades operativas diferenciables:
+
+- Panadería y Bollería;
+- Repostería;
+- Pastelería y Tortas;
+- Galletería;
+- Producción de Barra en un día real de producción;
+- Cocina Caliente;
+- Bodega y Abastecimiento;
+- recepción de proveedores;
+- recepción de producción terminada;
+- alistamiento de remisiones del primer piso;
+- alistamiento de remisiones del segundo piso;
+- consolidación de pedidos;
+- entrega al conductor;
+- carga del vehículo;
+- Servicios Generales;
+- punto administrativo operativo;
+- uso de cámara fría;
+- uso del cuarto de congelación;
+- lavado y manejo de canastas.
+
+##### 5.5 Logística y transporte
+
+Observar al menos un ciclo completo:
+
+```text
+RECOGIDA O DISPONIBILIDAD DEL VEHÍCULO
+→ RECEPCIÓN DE CARGA
+→ VERIFICACIÓN
+→ TRANSPORTE
+→ ENTREGA EN SATÉLITE
+→ NOVEDADES
+→ RETORNABLES
+→ CIERRE DE RUTA
+→ DEVOLUCIÓN DEL VEHÍCULO
+```
+
+##### 5.6 Administración y canales
+
+Observar tareas representativas de:
+
+- contabilidad;
+- gestión administrativa;
+- marketing;
+- atención de mensajes;
+- gestión de pedidos;
+- catering;
+- coordinación operativa;
+- gestión de incidencias entre sedes.
+
+La observación administrativa deberá registrar también trabajo digital, reuniones, aprobaciones y esperas, no únicamente actividad física.
+
+##### 5.7 Puntos externos recurrentes
+
+Cuando exista actividad operativa real, observar o documentar mediante evidencia suficiente:
+
+- custodia de decoraciones;
+- custodia nocturna del vehículo;
+- operación de Vaila Vainilla;
+- cualquier punto externo con inventario, activos o trabajo recurrente.
+
+---
+
+#### 6. Cobertura temporal mínima
+
+No será suficiente observar únicamente una franja tranquila.
+
+Para cada área se deberá cubrir, cuando aplique:
+
+| Momento | Propósito |
+| --- | --- |
+| Apertura o inicio de turno | Preparación, chequeos, faltantes iniciales y asignaciones |
+| Operación ordinaria | Secuencia habitual sin presión extraordinaria |
+| Pico de demanda o carga | Priorización, atajos, errores, comunicación y capacidad |
+| Cambio de turno o relevo | Handoff de información, pendientes y custodia |
+| Cierre | Conciliación, limpieza, reportes, devoluciones y preparación del día siguiente |
+| Evento periódico | Actividades que no ocurren todos los días |
+| Contingencia real, si ocurre | Respuesta ante fallos, faltantes, retrasos o ausencias |
+
+Regla mínima recomendada:
+
+- dos sesiones por área o familia de trabajo;
+- una sesión ordinaria;
+- una sesión de pico, apertura, cierre o evento crítico;
+- una tercera sesión cuando las dos primeras sean contradictorias o insuficientes.
+
+Para actividades poco frecuentes, se permitirá evidencia histórica o una sesión programada real, pero no una simulación presentada como observación ordinaria.
+
+---
+
+#### 7. Unidad mínima de observación
+
+Cada registro deberá representar una actividad suficientemente concreta.
+
+Ejemplo válido:
+
+```text
+07:42–07:49
+Actor: responsable de Cocina Caliente
+Actividad: recibe insumos entregados por proveedor
+Entrada: productos, factura y pedido verbal
+Acción: revisa visualmente, cuenta, separa y lleva al refrigerador
+Herramientas: factura física y memoria
+Salida: producto almacenado
+Handoff: informa verbalmente a Jefe de Operaciones
+Espera: 3 minutos por falta de espacio
+Hallazgo: no existe confirmación formal de cantidad recibida
+```
+
+Ejemplo inválido:
+
+```text
+“La cocina recibe productos y los organiza.”
+```
+
+---
+
+#### 8. Datos obligatorios por sesión
+
+##### 8.1 Identificación
+
+- código de sesión;
+- fecha;
+- sede;
+- área;
+- zona y estación;
+- franja horaria;
+- tipo de jornada;
+- observador;
+- actores presentes;
+- condición de demanda;
+- evento observado.
+
+##### 8.2 Secuencia operativa
+
+Por cada paso:
+
+- número;
+- hora inicial y final;
+- actor efectivo;
+- familia de actor;
+- acción;
+- entrada;
+- fuente de información;
+- herramienta o equipo;
+- documento o sistema;
+- decisión;
+- aprobación, cuando exista;
+- salida;
+- receptor;
+- espera;
+- retrabajo;
+- excepción;
+- evidencia.
+
+##### 8.3 Condiciones del entorno
+
+- disponibilidad de personal;
+- estado de equipos;
+- conectividad;
+- espacio;
+- orden físico;
+- disponibilidad de inventario;
+- presión de demanda;
+- interrupciones;
+- dependencia de otras áreas.
+
+##### 8.4 Hallazgos
+
+Cada hallazgo deberá clasificarse como:
+
+- diferencia frente a `OPS-AUD-001`;
+- diferencia frente a `OPS-AUD-002`;
+- proceso en papel;
+- proceso en WhatsApp, correo, Excel u otra herramienta;
+- artefacto o documento no inventariado;
+- excepción o corrección;
+- aprobación o segregación;
+- volumen o tiempo relevante;
+- dependencia;
+- doble digitación;
+- pérdida de trazabilidad;
+- contingencia;
+- capacidad ausente;
+- riesgo de seguridad, calidad o continuidad.
+
+---
+
+#### 9. Código de observación y trazabilidad
+
+Formato recomendado:
+
+```text
+OBS-{SEDE}-{AREA}-{AAAAMMDD}-{SECUENCIA}
+```
+
+Ejemplos:
+
+```text
+OBS-CP-PAN-20260723-01
+OBS-VC-SALON-20260724-02
+OBS-SA-INT-20260725-01
+OBS-LOG-RUTA-20260726-01
+```
+
+Cada fotografía, nota, documento o evidencia deberá usar el mismo código de sesión.
+
+No se incluirán datos personales, financieros o de clientes que no sean necesarios para el análisis.
+
+---
+
+#### 10. Reglas de evidencia
+
+##### 10.1 Evidencia permitida
+
+- notas estructuradas;
+- fotografías de estaciones, documentos o equipos, cuando estén autorizadas;
+- capturas de pantalla sin secretos ni datos personales innecesarios;
+- copias o referencias de formatos;
+- tiempos registrados;
+- registros del sistema;
+- ejemplos anonimizados;
+- diagramas del recorrido;
+- confirmación posterior del actor.
+
+##### 10.2 Evidencia prohibida o restringida
+
+No deberá capturarse sin necesidad y control:
+
+- contraseñas;
+- tokens;
+- credenciales;
+- datos completos de clientes;
+- datos bancarios;
+- conversaciones privadas irrelevantes;
+- información sensible de trabajadores;
+- fórmulas o recetas sensibles fuera del alcance aprobado.
+
+##### 10.3 Separación entre hecho e interpretación
+
+Cada registro distinguirá:
+
+```text
+HECHO OBSERVADO
+INTERPRETACIÓN DEL OBSERVADOR
+EXPLICACIÓN DEL ACTOR
+DECISIÓN PENDIENTE
+```
+
+---
+
+#### 11. Hallazgos que no deben corregirse durante la sesión
+
+Durante la observación no se corregirán silenciosamente:
+
+- pasos duplicados;
+- formatos incompletos;
+- uso de memoria;
+- controles informales;
+- responsabilidades mezcladas;
+- uso de WhatsApp;
+- diferencias entre áreas;
+- espera por aprobaciones;
+- falta de identificación de canastas;
+- falta de zonas formales;
+- accesos incorrectos en aplicaciones;
+- ausencia de registros.
+
+Solo se interrumpirá la observación cuando exista un riesgo inmediato para:
+
+- personas;
+- inocuidad;
+- seguridad;
+- activos;
+- cumplimiento legal;
+- continuidad crítica de la operación.
+
+La intervención deberá quedar registrada como parte de la evidencia.
+
+---
+
+#### 12. Orden recomendado de ejecución
+
+##### Ola 1 — Centro de Producción y Distribución
+
+Prioridad alta porque concentra:
+
+- producción;
+- inventario;
+- recepción;
+- almacenamiento;
+- remisiones;
+- transporte;
+- múltiples áreas y handoffs.
+
+Orden sugerido:
+
+1. Bodega y recepción de proveedores.
+2. Panadería y Bollería.
+3. Repostería.
+4. Pastelería y Tortas.
+5. Galletería.
+6. Cocina Caliente.
+7. Producción de Barra en su día real.
+8. Alistamiento y consolidación de remisiones.
+9. Carga y salida del conductor.
+10. Servicios Generales y zonas compartidas.
+
+##### Ola 2 — Logística y recepción en satélites
+
+1. Carga.
+2. Ruta.
+3. Entrega en Vento Café.
+4. Entrega en Saudo.
+5. Entrega en Molka.
+6. Retorno de canastas y novedades.
+
+##### Ola 3 — Vento Café
+
+1. Apertura.
+2. Caja y mostrador.
+3. Servicio / Salón.
+4. Barra.
+5. Cocina.
+6. Pedidos externos.
+7. Pico de demanda.
+8. Cierre.
+
+##### Ola 4 — Saudo y Molka
+
+Observar primero la operación integral y después distinguir funciones internas reales.
+
+##### Ola 5 — Administración, comercial y puntos externos
+
+1. Gerencia y coordinación.
+2. Contabilidad y administración.
+3. Marketing y canales.
+4. Catering.
+5. Vaila Vainilla.
+6. Custodias externas.
+
+---
+
+#### 13. Regla de saturación
+
+Un área no se considerará suficientemente observada solo por completar un formulario.
+
+Se considerará alcanzada la saturación cuando:
+
+- las sesiones adicionales ya no revelen pasos ordinarios nuevos relevantes;
+- los principales actores y handoffs estén identificados;
+- las variantes conocidas estén registradas;
+- las contradicciones tengan destino de validación;
+- el inicio y el cierre del trabajo estén claros;
+- los artefactos y sistemas utilizados estén inventariados o vinculados;
+- las brechas estén asociadas con tareas exactas.
+
+---
+
+#### 14. Salidas obligatorias
+
+`OPS-AUD-003` deberá producir:
+
+1. Inventario de sesiones de observación.
+2. Registro cronológico por sesión.
+3. Mapa de actores efectivos por actividad.
+4. Inventario de entradas y salidas observadas.
+5. Inventario de documentos, sistemas, canales, equipos y estaciones utilizados.
+6. Mapa de handoffs entre actores, áreas y sedes.
+7. Registro de esperas, interrupciones y retrabajos.
+8. Registro de decisiones y aprobaciones observadas.
+9. Registro de diferencias frente a `OPS-AUD-001` y `OPS-AUD-002`.
+10. Registro de variantes del mismo trabajo.
+11. Lista de hallazgos vinculados a tareas posteriores.
+12. Matriz de cobertura de áreas, franjas y eventos.
+13. Lista de observaciones que requieren validación en `OPS-AUD-015`.
+
+---
+
+#### 15. Distribución obligatoria de hallazgos
+
+| Hallazgo observado | Tarea propietaria |
+| --- | --- |
+| Formularios y procesos en papel | `OPS-AUD-004` |
+| WhatsApp, correo, Excel y herramientas externas | `OPS-AUD-005` |
+| Remisiones, órdenes, etiquetas, comprobantes y reportes | `OPS-AUD-006` |
+| Flujo ordinario completo | `OPS-AUD-007` |
+| Excepciones, correcciones, anulaciones y devoluciones | `OPS-AUD-008` |
+| Aprobaciones y segregación | `OPS-AUD-009` |
+| Frecuencia, volumen, criticidad y tiempos | `OPS-AUD-010` |
+| Dependencias entre áreas, sedes y terceros | `OPS-AUD-011` |
+| Doble digitación y conciliación manual | `OPS-AUD-012` |
+| Pérdida de trazabilidad o responsabilidad | `OPS-AUD-013` |
+| Contingencias de red, energía, dispositivo o proveedor | `OPS-AUD-014` |
+| Confirmación con trabajadores y responsables | `OPS-AUD-015` |
+| Brecha registral de sede administrativa | `OPS-ADM-001` |
+| Gobernanza entre marcas y titulares | `OPS-GOV-001` |
+| Activos y custodias externas | `OPS-ACT-001` |
+| Auditoría de demanda | `OPS-PLAN-001` a `OPS-PLAN-004` |
+| Diseño de Bodega y Abastecimiento | `OPS-LOG-001` |
+| Diseño de recetas, pesaje y trazabilidad productiva | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001` |
+| Zonas y puntos POS | `OPS-POS-001` |
+| Costos y transferencias internas | `OPS-CST-001` |
+
+---
+
+#### 16. Criterios de aceptación
+
+`OPS-AUD-003` podrá aprobarse cuando:
+
+- todas las áreas y familias de trabajo actuales tengan cobertura registrada o una justificación explícita de imposibilidad;
+- se hayan observado operación ordinaria y al menos una condición adicional relevante por área;
+- se hayan registrado actores efectivos, secuencia, entradas, salidas, herramientas y handoffs;
+- se distingan hechos, interpretaciones y explicaciones de los actores;
+- las diferencias frente a `OPS-AUD-001` y `OPS-AUD-002` estén trazadas;
+- las variantes entre trabajadores o turnos estén documentadas;
+- las áreas integrales de Saudo y Molka hayan sido observadas sin asumir que todas sus funciones son idénticas;
+- Bodega haya sido registrada como responsabilidad vacante con cobertura real observada;
+- se haya seguido al menos un ciclo completo de remisión y transporte;
+- se hayan identificado documentos, herramientas externas y artefactos para las tareas siguientes;
+- ninguna brecha quede sin tarea propietaria;
+- no se haya diseñado todavía el proceso TO-BE;
+- no se hayan modificado permisos, código, datos o Supabase.
+
+---
+
+#### 17. Resultado y continuidad
+
+Con la aprobación de `OPS-AUD-003` existirá evidencia de campo suficiente para continuar con:
+
+```text
+OPS-AUD-004
+— Inventariar procesos ejecutados en papel
+```
+
+Las sesiones y evidencias de `OPS-AUD-003` serán fuente obligatoria para `OPS-AUD-004` a `OPS-AUD-015`.
+
+No deberá reconstruirse posteriormente la operación únicamente desde memoria o entrevistas si existe evidencia directa de campo.
+
+
+
 ### [ ] OPS-AUD-004 — Inventariar procesos ejecutados en papel
 ### [ ] OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas
 ### [ ] OPS-AUD-006 — Inventariar formularios, remisiones, órdenes, etiquetas, comprobantes y reportes

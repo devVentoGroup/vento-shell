@@ -21,18 +21,18 @@
 | Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **125** |
-| Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1242** |
+| Tareas en propuesta | **1** |
+| Tareas no iniciadas | **1241** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
 | Tarea actual | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
-| Estado de la tarea actual | **NO INICIADA** |
+| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
 | Siguiente tarea | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 2 de 96 aprobadas; OPS-AUD-003 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 2 de 96 aprobadas; OPS-AUD-003 en propuesta** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -40,7 +40,7 @@
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
 | Última aprobada | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
-| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria — **NO INICIADA** |
+| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria — **PROPUESTA PARA APROBACIÓN** |
 | Siguiente tarea | `OPS-AUD-004` — Inventariar procesos ejecutados en papel |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
