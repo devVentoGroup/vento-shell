@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **115** |
 | Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **125** |
-| Tareas en propuesta | **1** |
+| Tareas aprobadas | **126** |
+| Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1241** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
-| Tarea actual | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
+| Última tarea aprobada | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
+| Tarea actual | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 2 de 96 aprobadas; OPS-AUD-003 en propuesta** |
+| Progreso del bloque | **BLOQUE E1: 3 de 96 aprobadas; OPS-AUD-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
-| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `OPS-AUD-004` — Inventariar procesos ejecutados en papel |
+| Última aprobada | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria |
+| Tarea actual | `OPS-AUD-004` — Inventariar procesos ejecutados en papel — **NO INICIADA** |
+| Siguiente tarea | `OPS-AUD-005` — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **2 DE 96 APROBADAS — ACTUAL OPS-AUD-003** |
+| BLOQUE E1 | **3 DE 96 APROBADAS — ACTUAL OPS-AUD-004** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
-        ↓
-TAREA ACTUAL
 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 OPS-AUD-004 — Inventariar procesos ejecutados en papel
         ↓
+SIGUIENTE TAREA RESERVADA
+OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 2 de 96 tareas aprobadas
+BLOQUE E1 — 3 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -138613,6 +138613,56 @@ BLOQUES POR APLICACIÓN
 
 Durante este bloque no se implementan pantallas, migraciones ni cambios
 físicos en Supabase.
+
+### Regla de interpretación AS-IS y TO-BE
+
+El resultado de BLOQUE E1 describe la operación real y sus restricciones,
+pero no convierte automáticamente el funcionamiento actual en requisito de
+diseño.
+
+```text
+AS-IS
+→ evidencia de necesidades, actores, dependencias, riesgos y restricciones
+
+AS-IS
+≠
+TO-BE obligatorio
+```
+
+Los procesos manuales, informales, duplicados, inseguros o no trazables se
+registrarán como evidencia y brecha. Su corrección se diseñará en BLOQUE E2,
+se sustentará en la arquitectura de BLOQUES E3, E4 y X, y se convertirá en
+paquetes ejecutables mediante BLOQUE E5.
+
+No deberá digitalizarse una práctica defectuosa únicamente porque sea la
+forma de trabajo vigente.
+
+### Regla de suficiencia y avance de E1
+
+El descubrimiento deberá alcanzar evidencia suficiente para diseñar sin
+inventar, pero no exigirá resolver cada variación menor antes de avanzar.
+
+Una duda será bloqueante únicamente cuando pueda modificar de forma material:
+
+- la propiedad funcional o técnica de un proceso;
+- la fuente de verdad de un dato;
+- dinero, impuestos, contabilidad o responsabilidad legal;
+- autorización, segregación de funciones o seguridad;
+- el contrato entre aplicaciones;
+- un estado, transición o reversión crítica;
+- una migración irreversible o de alto riesgo.
+
+Las incertidumbres no bloqueantes deberán:
+
+1. quedar registradas con su evidencia disponible;
+2. vincularse con `OPS-AUD-015` u otra tarea exacta existente;
+3. validarse con el responsable real antes del diseño definitivo o durante el
+   prototipo y piloto correspondiente;
+4. no provocar entrevistas indefinidas ni impedir el avance de la secuencia.
+
+`OPS-AUD-004` a `OPS-AUD-014` deberán reutilizar prioritariamente la evidencia
+ya obtenida en las tareas anteriores. Solo se formularán nuevas preguntas
+cuando falte una decisión bloqueante según esta regla.
 ### Principio obligatorio
 
 El roadmap no se derivará únicamente del código existente.
@@ -138640,6 +138690,55 @@ MATRIZ DE COBERTURA FUNCIONAL Y TÉCNICA
         ↓
 ROADMAP OBJETIVO
 ```
+
+### Principio de no reproducción automática del estado actual
+
+La operación real constituye evidencia, no una orden de conservar sus fallas.
+
+BLOQUE E1 deberá distinguir expresamente entre:
+
+- necesidad empresarial legítima;
+- restricción física o legal real;
+- práctica temporal;
+- workaround;
+- defecto operativo;
+- ausencia de control;
+- deuda técnica;
+- comportamiento que debe retirarse.
+
+Una práctica vigente no se convertirá en requisito TO-BE únicamente porque:
+
+- sea conocida por los trabajadores;
+- dependa de Excel, WhatsApp, papel o comunicación verbal;
+- haya funcionado históricamente;
+- exista parcialmente en código;
+- esté respaldada por una tabla o pantalla legacy.
+
+BLOQUE E2 deberá conservar la necesidad empresarial y diseñar el proceso
+objetivo, eliminando o controlando las fallas detectadas.
+
+### Principio de avance por evidencia suficiente
+
+El descubrimiento no se utilizará para posponer indefinidamente la
+implementación futura.
+
+Cada tarea de E1 deberá:
+
+1. consolidar primero la evidencia ya disponible;
+2. identificar únicamente los vacíos que cambian decisiones materiales;
+3. separar vacíos bloqueantes de vacíos validables posteriormente;
+4. vincular todo vacío no bloqueante con una tarea exacta;
+5. cerrar cuando exista base suficiente para la tarea siguiente, aunque
+   permanezcan variaciones menores pendientes de validación.
+
+No será válido:
+
+- repetir entrevistas sin una decisión concreta que proteger;
+- detener una tarea por detalles que no modifican proceso, datos,
+  autorización, integración o riesgo;
+- declarar una práctica actual como diseño objetivo sin análisis TO-BE;
+- iniciar código, migraciones o cambios físicos antes de superar las puertas
+  documentales y técnicas definidas por `90_ORDEN_DE_IMPLEMENTACION.md`.
 ### AUDITORÍA DE OPERACIÓN REAL
 
 ### ✅ OPS-AUD-001 — Inventariar todas las empresas, sedes, áreas, canales y puntos operativos
@@ -140863,11 +140962,9 @@ OPS-AUD-003
 
 
 
-### 🟡 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+### ✅ OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
 
-# OPS-AUD-003 — Levantar la operación ordinaria real por sede y área
-
-**Estado:** PROPUESTA PARA APROBACIÓN  
+**Estado:** aprobado  
 **Fecha:** 2026-07-22  
 **Método:** entrevista estructurada con el Jefe de Operaciones y validación posterior con responsables reales.  
 **Alcance:** fotografía representativa de la operación ordinaria. Los documentos, excepciones, aprobaciones, tiempos, conciliaciones y trazabilidad detallada se desarrollan en `OPS-AUD-004` a `OPS-AUD-015`.

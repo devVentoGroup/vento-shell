@@ -2221,11 +2221,9 @@ OPS-AUD-003
 
 
 
-### 🟡 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+### ✅ OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
 
-# OPS-AUD-003 — Levantar la operación ordinaria real por sede y área
-
-**Estado:** PROPUESTA PARA APROBACIÓN  
+**Estado:** aprobado  
 **Fecha:** 2026-07-22  
 **Método:** entrevista estructurada con el Jefe de Operaciones y validación posterior con responsables reales.  
 **Alcance:** fotografía representativa de la operación ordinaria. Los documentos, excepciones, aprobaciones, tiempos, conciliaciones y trazabilidad detallada se desarrollan en `OPS-AUD-004` a `OPS-AUD-015`.

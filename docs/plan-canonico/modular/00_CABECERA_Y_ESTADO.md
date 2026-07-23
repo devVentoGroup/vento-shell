@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **115** |
 | Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **125** |
-| Tareas en propuesta | **1** |
+| Tareas aprobadas | **126** |
+| Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1241** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso** |
-| Tarea actual | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
+| Última tarea aprobada | **OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria** |
+| Tarea actual | **OPS-AUD-004 — Inventariar procesos ejecutados en papel** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 2 de 96 aprobadas; OPS-AUD-003 en propuesta** |
+| Progreso del bloque | **BLOQUE E1: 3 de 96 aprobadas; OPS-AUD-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `OPS-AUD-002` — Identificar familias de actores y responsables reales por proceso |
-| Tarea actual | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `OPS-AUD-004` — Inventariar procesos ejecutados en papel |
+| Última aprobada | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria |
+| Tarea actual | `OPS-AUD-004` — Inventariar procesos ejecutados en papel — **NO INICIADA** |
+| Siguiente tarea | `OPS-AUD-005` — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **2 DE 96 APROBADAS — ACTUAL OPS-AUD-003** |
+| BLOQUE E1 | **3 DE 96 APROBADAS — ACTUAL OPS-AUD-004** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-OPS-AUD-002 — Identificar familias de actores y responsables reales por proceso
-        ↓
-TAREA ACTUAL
 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 OPS-AUD-004 — Inventariar procesos ejecutados en papel
         ↓
+SIGUIENTE TAREA RESERVADA
+OPS-AUD-005 — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 2 de 96 tareas aprobadas
+BLOQUE E1 — 3 de 96 tareas aprobadas
 ```
