@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1367** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **126** |
+| Aprobadas | **138** |
 | En propuesta | **0** |
-| No iniciadas | **1241** |
+| No iniciadas | **1229** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `OPS-AUD-003` — Observar el trabajo real de cada área en operación ordinaria | ✅ APROBADA |
-| Tarea actual | `OPS-AUD-004` — Inventariar procesos ejecutados en papel | ⬜ NO INICIADA |
-| Siguiente | `OPS-AUD-005` — Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas | ⬜ NO INICIADA |
+| Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso | ✅ APROBADA |
+| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa | ⬜ NO INICIADA |
+| Siguiente | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -153,18 +153,18 @@
 | ✅ APROBADA | `OPS-AUD-001` | Inventariar todas las empresas, sedes, áreas, canales y puntos operativos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-002` | Identificar familias de actores y responsables reales por proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-003` | Observar el trabajo real de cada área en operación ordinaria | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-004` | Inventariar procesos ejecutados en papel | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-005` | Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-006` | Inventariar formularios, remisiones, órdenes, etiquetas, comprobantes y reportes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-007` | Documentar flujo ordinario de cada proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-008` | Documentar excepciones, correcciones, anulaciones, devoluciones y reversión | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-009` | Documentar aprobaciones, segregación de funciones y controles manuales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-010` | Medir frecuencia, volumen, criticidad, tiempos y estacionalidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-011` | Identificar dependencias entre áreas, sedes, aplicaciones y terceros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-012` | Identificar puntos de doble digitación y conciliación manual | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-013` | Identificar pérdidas de trazabilidad, información y responsabilidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-014` | Identificar contingencias por caída de red, energía, dispositivo o proveedor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-AUD-015` | Validar hallazgos con trabajadores, supervisores y responsables del proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-004` | Inventariar procesos ejecutados en papel | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-005` | Inventariar procesos ejecutados por WhatsApp, correo, Excel u otras herramientas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-006` | Inventariar formularios, remisiones, órdenes, etiquetas, comprobantes y reportes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-007` | Documentar flujo ordinario de cada proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-008` | Documentar excepciones, correcciones, anulaciones, devoluciones y reversión | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-009` | Documentar aprobaciones, segregación de funciones y controles manuales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-010` | Medir frecuencia, volumen, criticidad, tiempos y estacionalidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-011` | Identificar dependencias entre áreas, sedes, aplicaciones y terceros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-012` | Identificar puntos de doble digitación y conciliación manual | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-013` | Identificar pérdidas de trazabilidad, información y responsabilidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-014` | Identificar contingencias por caída de red, energía, dispositivo o proveedor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
+| ✅ APROBADA | `OPS-AUD-015` | Validar hallazgos con trabajadores, supervisores y responsables del proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ⬜ NO INICIADA | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-GOV-001` | Documentar gobernanza AS-IS del ecosistema de marcas y titulares | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-ACT-001` | Inventariar activos y puntos externos de custodia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
