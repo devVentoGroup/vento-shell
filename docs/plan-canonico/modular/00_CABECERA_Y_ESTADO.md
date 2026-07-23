@@ -21,18 +21,18 @@
 | Tareas canónicas con marcador | **1367** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **138** |
-| Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1229** |
+| Tareas en propuesta | **1** |
+| Tareas no iniciadas | **1228** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso** |
 | Tarea actual | **OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa** |
-| Estado de la tarea actual | **NO INICIADA** |
+| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
 | Siguiente tarea | **OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 15 de 96 aprobadas; OPS-ADM-001 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 15 de 96 aprobadas; OPS-ADM-001 en propuesta** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -40,7 +40,7 @@
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
 | Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso |
-| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa — **NO INICIADA** |
+| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa — **PROPUESTA PARA APROBACIÓN** |
 | Siguiente tarea | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 

@@ -11,8 +11,8 @@
 | Tareas con marcador | **1367** |
 | Tareas `AUTH` | **316** |
 | Aprobadas | **138** |
-| En propuesta | **0** |
-| No iniciadas | **1229** |
+| En propuesta | **1** |
+| No iniciadas | **1228** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -20,7 +20,7 @@
 | Relación | Tarea | Estado |
 | --- | --- | --- |
 | Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso | ✅ APROBADA |
-| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa | ⬜ NO INICIADA |
+| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa | 🟡 PROPUESTA PARA APROBACIÓN |
 | Siguiente | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares | ⬜ NO INICIADA |
 
 ## Registro completo
@@ -165,7 +165,7 @@
 | ✅ APROBADA | `OPS-AUD-013` | Identificar pérdidas de trazabilidad, información y responsabilidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-014` | Identificar contingencias por caída de red, energía, dispositivo o proveedor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-015` | Validar hallazgos con trabajadores, supervisores y responsables del proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| ⬜ NO INICIADA | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| 🟡 PROPUESTA PARA APROBACIÓN | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-GOV-001` | Documentar gobernanza AS-IS del ecosistema de marcas y titulares | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-ACT-001` | Inventariar activos y puntos externos de custodia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-PLAN-001` | Definir el programa de auditoría de demanda y requisitos de planificación productiva | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
