@@ -1,0 +1,37 @@
+name: Fix OPS-AUD-003 heading hierarchy
+
+on:
+  push:
+    branches:
+      - agent/corregir-jerarquia-ops-aud-003
+    paths:
+      - scripts/docs/fix-ops-aud-003-heading-hierarchy.mjs
+      - .github/workflows/fix-ops-aud-003-heading-hierarchy.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/corregir-jerarquia-ops-aud-003
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Correct hierarchy
+        run: node scripts/docs/fix-ops-aud-003-heading-hierarchy.mjs
+      - name: Commit generated correction
+        run: |
+          if git diff --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md
+          git commit -m "fix(docs): corregir jerarquía de encabezados en OPS-AUD-003"
+          git push
