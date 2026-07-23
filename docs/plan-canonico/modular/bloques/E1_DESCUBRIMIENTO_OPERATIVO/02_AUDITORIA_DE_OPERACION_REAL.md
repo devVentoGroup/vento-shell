@@ -2221,16 +2221,18 @@ OPS-AUD-003
 
 
 
-### ✅ OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
+### 🟡 OPS-AUD-003 — Observar el trabajo real de cada área en operación ordinaria
 
-**Estado:** aprobado  
+# OPS-AUD-003 — Levantar la operación ordinaria real por sede y área
+
+**Estado:** PROPUESTA PARA APROBACIÓN  
 **Fecha:** 2026-07-22  
 **Método:** entrevista estructurada con el Jefe de Operaciones y validación posterior con responsables reales.  
 **Alcance:** fotografía representativa de la operación ordinaria. Los documentos, excepciones, aprobaciones, tiempos, conciliaciones y trazabilidad detallada se desarrollan en `OPS-AUD-004` a `OPS-AUD-015`.
 
 ---
 
-## 1. Objetivo
+#### 1. Objetivo
 
 Registrar por área:
 
@@ -2244,9 +2246,9 @@ Registrar por área:
 
 ---
 
-# 2. Centro de Producción
+#### 2. Centro de Producción
 
-## 2.1. Bodega, abastecimiento y logística
+##### 2.1. Bodega, abastecimiento y logística
 
 **Inicio.** El conductor llega aproximadamente a las 05:30, abre el Centro de Producción y prepara las remisiones enviadas el día anterior. Las áreas solicitan mediante Excel enviado como fotografía o captura a grupos operativos.
 
@@ -2276,13 +2278,13 @@ Registrar por área:
 - trazabilidad: `OPS-AUD-013`;
 - validaciones pendientes: `OPS-AUD-015`.
 
-## 2.2. Cocina Caliente
+##### 2.2. Cocina Caliente
 
 Trabaja con un plan semanal fijo y mantiene preparaciones refrigeradas. La responsable aplica un esquema heredado y su propio criterio. No recibe directamente las remisiones: el conductor las consulta y retira porciones empacadas al vacío en cantidades predefinidas. Las sedes solicitan múltiplos de esas presentaciones. Cuando no alcanza, se envía lo disponible y se prioriza la reposición.
 
 **Pendiente:** confirmar si el plan está escrito o memorizado (`OPS-AUD-015`).
 
-## 2.3. Panadería y Bollería
+##### 2.3. Panadería y Bollería
 
 Combina fermentaciones de varios días, stock anticipado y horneado según remisiones. El jefe de Panadería decide cantidades por experiencia y distribuye el trabajo. Los productos terminados se dejan como fondo común sin separación formal por sede. El conductor cuenta y distribuye.
 
@@ -2294,35 +2296,35 @@ El reporte final de producción se publica en un grupo para supervisión, pero n
 
 El cuello de botella está en los tiempos técnicos de fermentación, reposo y horneado.
 
-## 2.4. Repostería
+##### 2.4. Repostería
 
 Angélica revisa remisiones y distribuye el trabajo entre Chelsy y Valentina. Los productos se separan por sede en canastas, reconocidas por su combinación de referencias y no por una etiqueta formal. Si no se alcanza la cantidad solicitada, se deja lo producido y normalmente solo se explica el faltante cuando la sede reclama.
 
-## 2.5. Pastelería y Tortas
+##### 2.5. Pastelería y Tortas
 
 Angélica coordina y Valentina ejecuta habitualmente el proceso completo. Las tortas son referencias estandarizadas, no personalizadas. Se dejan listas sin identificación formal por sede y el conductor reconoce el destino.
 
-## 2.6. Galletería
+##### 2.6. Galletería
 
 Mantiene stock anticipado. Una trabajadora dedicada prepara, controla y hornea, consultando a Angélica antes de producir más masa. Una o dos recetas producen aproximadamente 104 galletas y suelen cubrir cerca de una semana. Los productos se separan por sede.
 
 **Pendiente:** confirmar nombre y alcance exacto de la responsable (`OPS-AUD-015`).
 
-## 2.7. Producción semanal de Barra
+##### 2.7. Producción semanal de Barra
 
 Se realiza los martes con una persona de Barra de Vento Café o Saudo, asignada por rotación. La cantidad es estandarizada, no calculada desde remisiones. El producto se porciona y almacena congelado o refrigerado. El conductor retira según solicitud. Si no alcanza, envía menos sin aviso.
 
 **Pendiente:** confirmar si la lista estándar está escrita (`OPS-AUD-015`).
 
-## 2.8. Servicios Generales
+##### 2.8. Servicios Generales
 
 Prioriza instrucciones directas de Nathalia, Carlos o responsables de área. Después atiende rutina, necesidades observadas y criterio propio. No utiliza checklist ni reporte. El lavado de canastas se activa por solicitud, normalmente después de acumulación de suciedad.
 
 ---
 
-# 3. Vento Café
+#### 3. Vento Café
 
-## 3.1. Servicio y Caja
+##### 3.1. Servicio y Caja
 
 Normalmente existen dos meseros: uno para interior y otro para exterior. La asignación se define al iniciar el turno, pero ambos apoyan entregas.
 
@@ -2342,7 +2344,7 @@ Vento Café maneja dos turnos de Caja con cierres independientes.
 
 **Necesidad detectada:** impresoras de resumen cercanas a zona exterior, interior y sala. Esta necesidad pasa a planificación funcional posterior.
 
-## 3.2. Cocina
+##### 3.2. Cocina
 
 Makos imprime la comanda. El cocinero más cercano la coloca en la comandera y el equipo distribuye las tareas internamente. Se trabaja por orden de llegada. Las entradas deberían priorizarse, aunque a veces se omite.
 
@@ -2350,7 +2352,7 @@ El plato listo se coloca en la ventana, se toca una campana y se dice verbalment
 
 No existe confirmación digital de plato listo, recogido o entregado.
 
-## 3.3. Bar y Barra
+##### 3.3. Bar y Barra
 
 Existen dos impresoras:
 
@@ -2363,7 +2365,7 @@ Los faltantes habituales corresponden a productos terminados de vitrina. Makos n
 
 ---
 
-# 4. Saudo
+#### 4. Saudo
 
 Los pedidos entran por:
 
@@ -2383,7 +2385,7 @@ El pago funciona como en Vento Café.
 
 ---
 
-# 5. Molka
+#### 5. Molka
 
 No existe toma de pedidos en mesa. Todo se recibe en mostrador, se registra y se cobra antes de preparar.
 
@@ -2395,7 +2397,7 @@ Los pedidos se atienden por orden de llegada. La entrega puede hacerse en mostra
 
 ---
 
-# 6. Centro de Distribución — corrección canónica
+#### 6. Centro de Distribución — corrección canónica
 
 Se confirmó que:
 
@@ -2408,13 +2410,13 @@ Se confirmó que:
 
 ---
 
-# 7. Gerencia General, Administración y Contabilidad
+#### 7. Gerencia General, Administración y Contabilidad
 
-## 7.1. Gerencia
+##### 7.1. Gerencia
 
 El trabajo se activa por necesidades, novedades y problemas. No existe un flujo administrativo uniforme. La gerente general actúa como puente entre sedes, propietarios, Contabilidad, auxiliares, proveedores y terceros.
 
-## 7.2. Efectivo y Contabilidad
+##### 7.2. Efectivo y Contabilidad
 
 Cada sede conserva una base de Caja y entrega a la gerente general el excedente del día anterior junto con el cierre impreso de Makos. Ella cuenta, compara y administra el efectivo según las necesidades del grupo.
 
@@ -2426,7 +2428,7 @@ El problema más habitual es registrar como “gasto” lo que realmente es un r
 
 ---
 
-# 8. Programación, asistencia, propinas y nómina
+#### 8. Programación, asistencia, propinas y nómina
 
 La gerente general y la gerente de Vento Café definen los horarios de todas las sedes. Vento Café aporta la mayor parte del personal rotativo.
 
@@ -2440,7 +2442,7 @@ La nómina formal se carga en Bancolombia Nóminas.
 
 ---
 
-# 9. Marketing
+#### 9. Marketing
 
 Las solicitudes provienen de Nathalia o Jeo y llegan verbalmente o por WhatsApp. No existe calendario, sistema formal de tareas ni criterios estables de objetivo, prioridad, fecha o formato.
 
@@ -2452,7 +2454,7 @@ El bloqueo principal es la expectativa creativa subjetiva y no documentada, lo q
 
 ---
 
-# 10. Compras y proveedores
+#### 10. Compras y proveedores
 
 Existen compras semanales, pero las necesidades se determinan principalmente preguntando a las áreas qué falta o recibiendo avisos.
 
@@ -2468,7 +2470,7 @@ La excepción es el fruver, que llega directamente a Vento Café y lo recibe Coc
 
 ---
 
-# 11. Vaila Vainilla
+#### 11. Vaila Vainilla
 
 Información confirmada:
 
@@ -2486,7 +2488,7 @@ Información confirmada:
 
 ---
 
-# 12. Jefatura de Operaciones, desarrollo y soporte
+#### 12. Jefatura de Operaciones, desarrollo y soporte
 
 El trabajo principal actual es el desarrollo de aplicaciones. Los incidentes tecnológicos tienen prioridad y se reportan por WhatsApp o verbalmente.
 
@@ -2498,7 +2500,7 @@ No queda registro del incidente, causa, solución o activo afectado.
 
 ---
 
-# 13. Gestión laboral, inducción y accesos
+#### 13. Gestión laboral, inducción y accesos
 
 Las vacantes se publican en Instagram. La gerente general filtra hojas de vida, llama y entrevista. El candidato pasa por un período de prueba. Evalúan el responsable del área, la gerente general y Nathalia. Si aprueban, se remite a la empresa externa de abogados para formalización.
 
@@ -2512,7 +2514,7 @@ La baja debería notificarse, pero el Jefe de Operaciones suele descubrir el ret
 
 ---
 
-# 14. Mantenimiento
+#### 14. Mantenimiento
 
 El modelo predominante es correctivo. Cuando aparece una falla, se informa a la gerente general, quien contacta al técnico.
 
@@ -2525,7 +2527,7 @@ Los retrasos principales son:
 
 ---
 
-# 15. Hallazgos transversales
+#### 15. Hallazgos transversales
 
 1. **Polivalencia real.** El trabajador efectivo puede desempeñar varias funciones según la carga.
 2. **Cuentas y dispositivos compartidos.** El sistema identifica el área, no siempre a la persona.
@@ -2538,7 +2540,7 @@ Los retrasos principales son:
 
 ---
 
-# 16. Cierre propuesto
+#### 16. Cierre propuesto
 
 La cobertura representativa inicial está completa. La siguiente acción no es profundizar indefinidamente esta entrevista, sino validar las fichas con los responsables reales y consolidar correcciones mediante `OPS-AUD-015`.
 
