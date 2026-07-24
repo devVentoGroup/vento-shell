@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1397** |
+| Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **172** |
+| Tareas aprobadas | **181** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1225** |
+| Tareas no iniciadas | **1220** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable** |
-| Tarea actual | **CODE-AUD-012 — Detectar procesos implementados solo parcialmente** |
+| Última tarea aprobada | **CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio** |
+| Tarea actual | **CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CODE-AUD-013 — Detectar código legacy todavía activo** |
+| Siguiente tarea | **CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 48 de 96 aprobadas; CODE-AUD-012 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 57 de 96 aprobadas; CAP-SCOPE-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable |
-| Tarea actual | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-013` — Detectar código legacy todavía activo |
+| Última aprobada | `CODE-AUD-020` — Crear backlog técnico y funcional trazable por repositorio |
+| Tarea actual | `CAP-SCOPE-001` — Evaluar gobierno, empresas, sedes y organización — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-002` — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **48 DE 96 APROBADAS — ACTUAL CODE-AUD-012** |
+| BLOQUE E1 | **57 DE 96 APROBADAS — ACTUAL CAP-SCOPE-001** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
+CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
         ↓
 TAREA ACTUAL
-CODE-AUD-012 — Detectar procesos implementados solo parcialmente
+CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
         ↓
 SIGUIENTE TAREA RESERVADA
-CODE-AUD-013 — Detectar código legacy todavía activo
+CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 48 de 96 tareas aprobadas
+BLOQUE E1 — 57 de 96 tareas aprobadas
 ```

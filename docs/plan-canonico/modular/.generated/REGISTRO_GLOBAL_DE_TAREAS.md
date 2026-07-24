@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1397** |
+| Tareas con marcador | **1401** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **172** |
+| Aprobadas | **181** |
 | En propuesta | **0** |
-| No iniciadas | **1225** |
+| No iniciadas | **1220** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable | ✅ APROBADA |
-| Tarea actual | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente | ⬜ NO INICIADA |
-| Siguiente | `CODE-AUD-013` — Detectar código legacy todavía activo | ⬜ NO INICIADA |
+| Última aprobada | `CODE-AUD-020` — Crear backlog técnico y funcional trazable por repositorio | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-001` — Evaluar gobierno, empresas, sedes y organización | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-002` — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -200,15 +200,15 @@
 | ✅ APROBADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-011` | Detectar infraestructura sin proceso funcional utilizable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-012` | Detectar procesos implementados solo parcialmente | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-013` | Detectar código legacy todavía activo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-014` | Detectar código duplicado y fuentes de verdad competidoras | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-015` | Detectar rutas, componentes, funciones y tablas sin consumidores | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-016` | Ejecutar build, lint, tipos y pruebas disponibles por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-017` | Auditar autorización, validación de servidor y exposición de datos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-012` | Detectar procesos implementados solo parcialmente | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-013` | Detectar código legacy todavía activo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-014` | Detectar código duplicado y fuentes de verdad competidoras | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-015` | Detectar rutas, componentes, funciones y tablas sin consumidores | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-016` | Ejecutar build, lint, tipos y pruebas disponibles por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-017` | Auditar autorización, validación de servidor y exposición de datos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `QA-REG-001` | Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
@@ -629,6 +629,7 @@
 | ⬜ NO INICIADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/00_BLOQUE_F.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/00_BLOQUE_F.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-016` | Auditar y completar recordatorios operativos de inicio y cierre de turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
+| ⬜ NO INICIADA | `ANIMA-UX-017` | Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | `bloques/F_ANIMA/00_BLOQUE_F.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-001` | Crear catálogo administrativo de roles base | `bloques/G_VISO/00_BLOQUE_G.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-002` | Crear catálogo administrativo de roles operativos | `bloques/G_VISO/00_BLOQUE_G.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-003` | Administrar permisos por rol base | `bloques/G_VISO/00_BLOQUE_G.md` |
@@ -685,6 +686,7 @@
 | ⬜ NO INICIADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-009` | Comparar tipos y contratos | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-010` | Clasificar compartir / generar / mantener local | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
+| ⬜ NO INICIADA | `SHELL-AUD-011` | Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-001` | Elegir mecanismo de distribución | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-002` | Definir versionado semántico | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-003` | Definir tags y releases | `bloques/H_FUNDACION_COMPARTIDA/00_INTRO.md` |
@@ -1063,6 +1065,8 @@
 | ⬜ NO INICIADA | `PULSO-UX-017` | Conectar venta con NUMERA | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `PULSO-UX-018` | Conectar venta con PASS | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `PULSO-UX-019` | Validar el prototipo con caja, salón, barra, cocina y mostrador | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-020` | Auditar el prototipo POS histórico de vento-platform y clasificar cada pieza como reutilizable, adaptable o descartable | `bloques/N_PULSO/00_BLOQUE_N.md` |
+| ⬜ NO INICIADA | `PULSO-UX-021` | Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como contrato el prototipo histórico | `bloques/N_PULSO/00_BLOQUE_N.md` |
 | ⬜ NO INICIADA | `OPS-POS-001` | Definir zonas físicas, mesas y puntos de servicio del POS por sede | `bloques/N_PULSO/01_TAREA_DERIVADA_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-001` | Inventariar rutas, pantallas, componentes y formularios actuales | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |
 | ⬜ NO INICIADA | `NUMERA-AUD-002` | Inventariar Server Actions, API, RPC, consultas y jobs utilizados | `bloques/O_NUMERA/01_AUDITORIA_FUNCIONAL_Y_TECNICA_DE_NUMERA.md` |

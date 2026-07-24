@@ -12,6 +12,7 @@
 ### [ ] SHELL-AUD-008 — Comparar clientes Supabase
 ### [ ] SHELL-AUD-009 — Comparar tipos y contratos
 ### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
 Arquitectura de paquetes
 ### [ ] SHELL-PKG-001 — Elegir mecanismo de distribución
 ### [ ] SHELL-PKG-002 — Definir versionado semántico

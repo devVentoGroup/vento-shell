@@ -40,3 +40,5 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ### [ ] PULSO-UX-017 — Conectar venta con NUMERA
 ### [ ] PULSO-UX-018 — Conectar venta con PASS
 ### [ ] PULSO-UX-019 — Validar el prototipo con caja, salón, barra, cocina y mostrador
+### [ ] PULSO-UX-020 — Auditar el prototipo POS histórico de vento-platform y clasificar cada pieza como reutilizable, adaptable o descartable
+### [ ] PULSO-UX-021 — Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como contrato el prototipo histórico

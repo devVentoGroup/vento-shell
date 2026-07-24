@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1397** |
+| Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **172** |
+| Tareas aprobadas | **181** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1225** |
+| Tareas no iniciadas | **1220** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable** |
-| Tarea actual | **CODE-AUD-012 — Detectar procesos implementados solo parcialmente** |
+| Última tarea aprobada | **CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio** |
+| Tarea actual | **CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CODE-AUD-013 — Detectar código legacy todavía activo** |
+| Siguiente tarea | **CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 48 de 96 aprobadas; CODE-AUD-012 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 57 de 96 aprobadas; CAP-SCOPE-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable |
-| Tarea actual | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-013` — Detectar código legacy todavía activo |
+| Última aprobada | `CODE-AUD-020` — Crear backlog técnico y funcional trazable por repositorio |
+| Tarea actual | `CAP-SCOPE-001` — Evaluar gobierno, empresas, sedes y organización — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-002` — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **48 DE 96 APROBADAS — ACTUAL CODE-AUD-012** |
+| BLOQUE E1 | **57 DE 96 APROBADAS — ACTUAL CAP-SCOPE-001** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
+CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
         ↓
 TAREA ACTUAL
-CODE-AUD-012 — Detectar procesos implementados solo parcialmente
+CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
         ↓
 SIGUIENTE TAREA RESERVADA
-CODE-AUD-013 — Detectar código legacy todavía activo
+CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 48 de 96 tareas aprobadas
+BLOQUE E1 — 57 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -167324,6 +167324,8 @@ La continuidad será:
 CODE-AUD-002
 — Inventariar rutas, layouts, pantallas, componentes y formularios
 ```
+
+
 ### ✅ CODE-AUD-002 — Inventariar rutas, layouts, pantallas, componentes y formularios
 
 **Estado:** APROBADA
@@ -168009,6 +168011,8 @@ La continuidad será:
 CODE-AUD-003
 — Inventariar acciones de usuario y comportamiento efectivo
 ```
+
+
 ### ✅ CODE-AUD-003 — Inventariar acciones de usuario y comportamiento efectivo
 
 **Estado:** APROBADA
@@ -168519,6 +168523,8 @@ La continuidad será:
 CODE-AUD-004
 — Inventariar hooks, servicios, adaptadores, consultas y estado local
 ```
+
+
 ### ✅ CODE-AUD-004 — Inventariar hooks, servicios, adaptadores, consultas y estado local
 
 **Estado:** APROBADA
@@ -169209,6 +169215,8 @@ La continuidad será:
 CODE-AUD-005
 — Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
 ```
+
+
 ### ✅ CODE-AUD-005 — Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
 
 **Estado:** APROBADA
@@ -170006,6 +170014,8 @@ La continuidad será:
 CODE-AUD-006
 — Vincular código con tablas, vistas, Storage, Realtime y eventos
 ```
+
+
 ### ✅ CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
 
 **Estado:** APROBADA
@@ -170496,6 +170506,8 @@ La continuidad será:
 CODE-AUD-007
 — Inventariar pruebas, fixtures, mocks y datos de demostración
 ```
+
+
 ### ✅ CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
 
 **Estado:** APROBADA  
@@ -171007,7 +171019,6 @@ QA-GOV-001
 ```
 
 
-**PROPUESTA PARA APROBACIÓN**
 ### ✅ QA-GOV-001 — Definir gobierno, registro y ciclo de vida de requisitos de prueba
 
 **Estado:** APROBADA
@@ -172236,7 +172247,6 @@ CODE-AUD-008
 ```
 
 
-**PROPUESTA PARA APROBACIÓN**
 ### ✅ CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
 
 **Estado:** APROBADA 
@@ -172862,7 +172872,7 @@ CODE-AUD-009
 — Detectar valores hardcodeados y decisiones técnicas temporales
 ```
 
-**PROPUESTA PARA APROBACIÓN**
+
 ### ✅ CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
 
 **Estado:** APROBADA 
@@ -173690,7 +173700,6 @@ CODE-AUD-010
 ```
 
 
-**PROPUESTA PARA APROBACIÓN**
 ### ✅ CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa
 
 **Estado:** APROBADA
@@ -174533,7 +174542,7 @@ La continuidad será:
 CODE-AUD-011
 — Detectar infraestructura sin proceso funcional utilizable
 ```
-**PROPUESTA PARA APROBACIÓN**
+
 
 ### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
 
@@ -175235,88 +175244,28 @@ Todos los hallazgos quedan cerrados o vinculados a tareas existentes.
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-##### 12.1. Requisitos nuevos completos
+Requisitos nuevos derivados:
 
-| ID               | Regla protegida                                                                                                                                                                                                                                               | Origen                                               | Riesgo                                                                                                 | Tipo / modalidad                                                                                | Prioridad | Tarea responsable inmediata                                                                 | Estado         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------- | -------------- |
-| `TREQ-SHELL-001` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001`                    | catálogo engañoso, permisos sin capacidad y activación prematura                                       | contractual + estática + integración / automatizada                                             | media     | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`                                    | `IDENTIFICADO` |
-| `TREQ-NEXO-004`  | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización.                       | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa                 | contractual + integración + base de datos + E2E / automatizada con validación operativa         | alta      | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | `IDENTIFICADO` |
-| `TREQ-PULSO-001` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo.                          | `CODE-AUD-011` / `H-CODE-011-006`                    | ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | crítica   | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                | `IDENTIFICADO` |
+- `TREQ-SHELL-001`;
+- `TREQ-NEXO-004`;
+- `TREQ-PULSO-001`.
 
-##### 12.2. Requisitos reutilizados
+Requisitos reutilizados:
 
-| ID              | Uso                                                                          |
-| --------------- | ---------------------------------------------------------------------------- |
-| `TREQ-NEXO-003` | mantiene la regla de fidelidad y validación física de impresión              |
-| `TREQ-AUTH-001` | protege que infraestructura sensible no dependa únicamente de nombres de rol |
-| `TREQ-AUTH-002` | protege que permisos de la infraestructura existan en el catálogo canónico   |
+- `TREQ-NEXO-003`;
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`.
 
-No se cambia su estado.
-
-##### 12.3. Filas completas nuevas para el Registro Canónico
-
-Al aprobar `CODE-AUD-011`, agregar:
-
-```md
-| `TREQ-SHELL-001` | `SHELL` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001` | Catálogo engañoso, permisos sin capacidad y activación prematura / media | contractual + estática + integración / automatizada | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro` | Pendiente de asignación en E5 si AURA continúa | `vento-shell` y futura aplicación propietaria / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-NEXO-004` | `NEXO` | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización. | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | Existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa / alta | contractual + integración + base de datos + E2E / automatizada con validación operativa | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | Pendiente de asignación en E5 | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-PULSO-001` | `PULSO` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo. | `CODE-AUD-011` / `H-CODE-011-006` | Ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos / crítica | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón` | Pendiente de asignación en E5 | `vento-pulso`, `vento-shell`, `vento-nexo`, `vento-numera` y `vento-pass` / CI, staging y terminal POS pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
----
-
-#### 13. Corrección documental obligatoria de 04A
-
-La revisión remota de:
+Las definiciones completas, estados, responsables, ambientes y evidencias de estos requisitos existen únicamente en:
 
 ```text
-04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
 ```
 
-detectó:
-
-1. `TREQ-AUTH-001` concatenado al final de la fila `TREQ-NEXO-001`;
-2. ausencia de:
-   - `TREQ-ANIMA-001`;
-   - `TREQ-ANIMA-002`;
-   - `TREQ-NEXO-003`;
-   - `TREQ-INTEGRATION-002`.
-
-Estas cuatro filas fueron creadas por `CODE-AUD-010`, ya aprobada.
-
-##### 13.1. Corregir la fila concatenada
-
-Reemplazar la fila que actualmente contiene `TREQ-NEXO-001` y `TREQ-AUTH-001` en una sola línea por estas dos filas:
-
-```md
-| `TREQ-NEXO-001` | `NEXO` | La selección privilegiada de área solicitante deberá funcionar desde el código canónico y superar build y validación sin depender de workflows o scripts temporales que reescriban automáticamente una rama. | `CODE-AUD-008` / `H-CODE-008-008` y `H-CODE-008-009` | Deriva de código, mutación insegura de ramas, implementación parcial y reejecución accidental de un parche / alta | integración + seguridad + regresión / automatizada | `CODE-AUD-016 — Revisar estado de build, lint, typecheck y pruebas` | Pendiente de asignación en E5 | `vento-nexo` / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-AUTH-001` | `AUTH` | Toda capacidad protegida deberá resolverse mediante permisos, contexto y alcance canónicos; una lista local de nombres de rol no podrá conceder por sí sola autorización final. | `CODE-AUD-009` / `H-CODE-009-001` | Acceso indebido, denegación incorrecta y divergencia entre aplicaciones / crítica | seguridad + autorización + regresión / automatizada | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad` | Pendiente de asignación en E5 | transversal / CI, staging y ambientes pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
-##### 13.2. Agregar los requisitos aprobados de CODE-AUD-010
-
-Agregar:
-
-```md
-| `TREQ-ANIMA-001` | `ANIMA` | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer. | `CODE-AUD-010` / `H-CODE-010-001` | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta | contractual + autorización + integración + E2E / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-ANIMA-002` | `ANIMA` | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente. | `CODE-AUD-010` / `H-CODE-010-002` | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta | interfaz + regresión / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-NEXO-003` | `NEXO` | Toda vista previa usada para aprobar una impresión deberá identificar si es simulación y demostrar correspondencia suficiente entre plantilla, ZPL, DPI, dimensiones, códigos y muestra física antes de considerarse validación de salida. | `CODE-AUD-010` / `H-CODE-010-003` | Etiquetas recortadas, códigos ilegibles y diferencia entre vista previa e impresión física / alta | contractual + interfaz + hardware + regresión / híbrida | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-nexo` / local, CI, staging e impresora física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-INTEGRATION-002` | `INTEGRATION` | Toda interfaz pública de newsletter deberá registrar una suscripción y consentimiento reales mediante el contrato aprobado, comunicar el resultado verdadero y permitir el tratamiento definido; de lo contrario no deberá publicarse. | `CODE-AUD-010` / `H-CODE-010-004` | Falsa confirmación, pérdida de contactos y tratamiento de datos sin contrato verificable / alta | integración + privacidad + E2E / automatizada | `WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz` | Pendiente de asignación en el plan web y E5 cuando corresponda | `Vento-Group` y `vento-viso` / CI, preview y producción pública pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
-Después agregar las tres filas nuevas de `CODE-AUD-011`.
-
-Esta corrección:
-
-- no crea tareas;
-- no cambia estados;
-- restaura requisitos ya aprobados;
-- debe realizarse antes de continuar después de aprobar `CODE-AUD-011`.
-
+No se duplican filas completas del Registro Canónico dentro de esta tarea.
 
 ---
-
-#### 14. Decisiones propuestas
+#### 13. Decisiones aprobadas
 
 1. La infraestructura no se considerará proceso.
 2. Una aplicación registrada no se considerará producto disponible.
@@ -175336,17 +175285,16 @@ Esta corrección:
 16. Impresión NEXO se excluye como falso positivo porque sí envía ZPL.
 17. Dispositivos compartidos se excluyen como falso positivo puro porque ya tienen acciones funcionales.
 18. Tablas vacías no bastan para declarar ausencia de proceso.
-19. Se crea `TREQ-SHELL-001`.
-20. Se crea `TREQ-NEXO-004`.
-21. Se crea `TREQ-PULSO-001`.
+19. Se deriva `TREQ-SHELL-001`.
+20. Se deriva `TREQ-NEXO-004`.
+21. Se deriva `TREQ-PULSO-001`.
 22. Los tres requisitos quedan en estado `IDENTIFICADO`.
-23. Se corrige el registro 04A antes de avanzar.
-24. No se crea una tarea nueva del roadmap.
-25. `CODE-AUD-012` será la única continuidad inmediata.
+23. No se crea una tarea nueva del roadmap.
+24. `CODE-AUD-012` será la única continuidad inmediata.
 
 ---
 
-#### 15. Límites de certeza
+#### 14. Límites de certeza
 
 Esta tarea no confirma:
 
@@ -175368,7 +175316,7 @@ Esta tarea no confirma:
 
 ---
 
-#### 16. Criterios de aceptación
+#### 15. Criterios de aceptación
 
 `CODE-AUD-011` podrá aprobarse cuando:
 
@@ -175384,9 +175332,6 @@ Esta tarea no confirma:
 - impresión NEXO sea excluida como falso positivo;
 - dispositivos compartidos sean excluidos como falso positivo puro;
 - cada hallazgo tenga destino exacto;
-- se creen las tres filas nuevas `TREQ-*`;
-- se corrija la fila concatenada en 04A;
-- se materialicen los cuatro requisitos aprobados de `CODE-AUD-010`;
 - no se cree ninguna tarea nueva;
 - no se modifique código;
 - no se modifique Supabase;
@@ -175394,7 +175339,7 @@ Esta tarea no confirma:
 
 ---
 
-#### 17. Resultado y continuidad
+#### 16. Resultado y continuidad
 
 Al aprobarse quedará definida la cadena:
 
@@ -175420,15 +175365,8025 @@ CODE-AUD-012
 ```
 
 
-### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente
-### [ ] CODE-AUD-013 — Detectar código legacy todavía activo
-### [ ] CODE-AUD-014 — Detectar código duplicado y fuentes de verdad competidoras
-### [ ] CODE-AUD-015 — Detectar rutas, componentes, funciones y tablas sin consumidores
-### [ ] CODE-AUD-016 — Ejecutar build, lint, tipos y pruebas disponibles por repositorio
-### [ ] CODE-AUD-017 — Auditar autorización, validación de servidor y exposición de datos
-### [ ] CODE-AUD-018 — Auditar operación offline, reintentos, concurrencia e idempotencia
-### [ ] CODE-AUD-019 — Vincular cada capacidad con su implementación actual verificable
-### [ ] CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
+### ✅ CODE-AUD-012 — Detectar procesos implementados solo parcialmente
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de recorridos funcionales que ya ejecutan efectos reales, pero todavía no completan el contrato empresarial de extremo a extremo  
+**Dependencia anterior:** `CODE-AUD-011`  
+**Continuidad reservada:** `CODE-AUD-013`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea identifica procesos que:
+
+- ya tienen una entrada alcanzable;
+- ejecutan al menos una validación o mutación real;
+- producen algún resultado visible o persistente;
+- pero todavía omiten una etapa, excepción, transición, integración, corrección, recuperación o cierre obligatorio.
+
+Resultado general:
+
+- se confirman procesos parciales en `vento-anima`, `vento-pass`, `vento-nexo`, `vento-viso`, `vento-fogo` y `vento-origo`;
+- no se reclasifican como parciales las capacidades inexistentes o puramente técnicas ya cubiertas por `CODE-AUD-010` y `CODE-AUD-011`;
+- no se declara un defecto por la sola existencia de un modo piloto, degradado o de solo registro;
+- cada modo parcial deberá quedar explícitamente diferenciado de la operación final;
+- se reutilizan requisitos de prueba ya existentes;
+- se derivan cinco requisitos de prueba nuevos;
+- se propone una sola tarea nueva del roadmap, porque no existe una tarea funcional exacta para cerrar el ciclo de novedades internas de ANIMA;
+- no se modifican repositorios funcionales;
+- no se modifica Supabase.
+
+---
+
+#### 2. Definición canónica de proceso parcial
+
+Un proceso se clasifica como **parcialmente implementado** cuando existe esta base:
+
+```text
+actor
+  ↓
+entrada alcanzable
+  ↓
+validación
+  ↓
+acción real
+  ↓
+persistencia o efecto observable
+```
+
+pero falta uno o más componentes del contrato completo:
+
+```text
+estado inicial
+→ ejecución
+→ transición
+→ confirmación
+→ excepción
+→ corrección
+→ recuperación
+→ integración posterior
+→ cierre auditable
+```
+
+No es suficiente que una pantalla “haga algo”.
+
+Para considerarse completo, el proceso deberá demostrar:
+
+1. propósito empresarial aprobado;
+2. actor y contexto autorizados;
+3. entrada alcanzable;
+4. datos de entrada completos;
+5. validación de servidor;
+6. estados y transiciones válidos;
+7. persistencia atómica cuando corresponda;
+8. resultado visible;
+9. manejo de diferencias;
+10. corrección sin destruir historial;
+11. reintento o recuperación;
+12. efecto sobre dominios consumidores;
+13. evidencia auditable;
+14. finalización inequívoca.
+
+---
+
+#### 3. Diferencia frente a otras tareas CODE-AUD
+
+##### 3.1. No corresponde a CODE-AUD-010
+
+`CODE-AUD-010` cubre interfaces que aparentan capacidad, pero no tienen lógica real suficiente detrás.
+
+Ejemplos ya clasificados:
+
+- acción de movimientos de PASS que solo muestra “Próximamente”;
+- escaneo de mesa de PASS que solo muestra una alerta;
+- newsletter pública sin persistencia real.
+
+##### 3.2. No corresponde a CODE-AUD-011
+
+`CODE-AUD-011` cubre infraestructura sin proceso utilizable.
+
+Ejemplos ya clasificados:
+
+- AURA como reserva;
+- LPN sin ciclo operativo alcanzable;
+- POS interno de PULSO sin recorrido completo;
+- TALENTO sin despliegue productivo.
+
+##### 3.3. Sí corresponde a CODE-AUD-012
+
+Esta tarea cubre recorridos que sí ejecutan una parte real del proceso, pero quedan incompletos.
+
+Ejemplos:
+
+- crear una novedad y enviar notificación, pero no persistir ni aplicar su audiencia;
+- enviar ZPL a la impresora, pero eliminar la cola antes de confirmar el resultado;
+- registrar una remisión operativa, pero no afectar inventario porque el modo real está desactivado;
+- crear un dispositivo compartido, pero no poder revocarlo o rotar sus credenciales desde una superficie administrativa;
+- registrar producción real en una sola acción, pero no manejar inicio, producción parcial, finalización y corrección;
+- registrar una recepción en modo solo registro, pero no completar la entrada de inventario y sus integraciones posteriores.
+
+---
+
+#### 4. Método aplicado
+
+Para cada proceso se contrastó:
+
+```text
+actor
+→ ruta o pantalla
+→ acción de servidor
+→ tabla, RPC o función
+→ estado
+→ resultado visible
+→ consumidor posterior
+→ corrección
+→ cierre
+```
+
+Se revisaron especialmente:
+
+- rutas alcanzables;
+- formularios;
+- server actions;
+- RPC;
+- flags de operación;
+- persistencia local;
+- estados declarados;
+- transiciones encontradas;
+- ausencia de consumidores posteriores;
+- modos piloto, fallback o solo registro;
+- tareas funcionales ya existentes en el plan.
+
+La ausencia de una coincidencia en búsqueda de código no se interpreta por sí sola como prueba absoluta de inexistencia. Los hallazgos se formulan como estado comprobado de las ramas principales inspeccionadas al corte.
+
+---
+
+#### 5. ANIMA — novedades con CRUD y notificación, pero sin contrato completo de audiencia
+
+Archivo principal revisado:
+
+```text
+vento-anima/src/components/announcements/use-announcements-screen.ts
+```
+
+##### 5.1. Capacidad real confirmada
+
+El flujo permite:
+
+- consultar novedades activas;
+- crear una novedad;
+- editar título, cuerpo y etiqueta;
+- eliminar una novedad;
+- invocar `announcement-notify`;
+- seleccionar sedes y roles al crear.
+
+Por tanto, no es una interfaz ficticia.
+
+##### 5.2. Brecha de audiencia
+
+Las selecciones:
+
+```text
+formSiteIds
+formRoleCodes
+```
+
+solo se envían a:
+
+```text
+announcement-notify
+```
+
+después de insertar una novedad.
+
+La fila persistida en `announcements` no conserva en ese flujo:
+
+- sedes objetivo;
+- roles objetivo;
+- regla global o segmentada;
+- versión de audiencia;
+- criterio de visibilidad persistente.
+
+La lectura posterior consulta todas las novedades activas y no aplica la audiencia seleccionada.
+
+Por tanto, la interfaz actualmente puede significar:
+
+```text
+audiencia de la notificación
+```
+
+pero no demuestra:
+
+```text
+audiencia persistente de la novedad
+```
+
+##### 5.3. Edición incompleta
+
+Al editar:
+
+- no se cargan sedes o roles anteriores;
+- no se actualiza una audiencia persistida;
+- no se define si una edición vuelve a notificar;
+- no se distingue edición editorial de redistribución;
+- no se conserva historial de versiones.
+
+##### 5.4. Eliminación
+
+La acción encontrada ejecuta eliminación física sobre `announcements`.
+
+No se encontró en este recorrido:
+
+- archivo;
+- despublicación;
+- vigencia;
+- motivo;
+- historial de edición o retiro.
+
+La política final deberá decidir si la eliminación física está permitida.
+
+##### 5.5. Modo fallback
+
+Cuando la tabla no existe:
+
+- se cargan datos locales;
+- la pantalla indica “modo local”;
+- el guardado se rechaza con una alerta.
+
+Este comportamiento ya está protegido por `TREQ-ANIMA-002`, pero sigue siendo un proceso degradado que deberá expresarse sin controles engañosos.
+
+##### 5.6. Clasificación
+
+**Proceso parcial confirmado.**
+
+Capacidades reales:
+
+```text
+lectura
++ creación
++ edición básica
++ eliminación
++ notificación
+```
+
+Contrato incompleto:
+
+```text
+audiencia persistente
++ visibilidad
++ edición de audiencia
++ reenvío
++ archivo
++ historial
+```
+
+Destinos:
+
+- nueva tarea `ANIMA-UX-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- `TREQ-ANIMA-001`;
+- `TREQ-ANIMA-002`.
+
+---
+
+#### 6. PASS — historial de Saudo con atribución incompleta de sede
+
+Archivo revisado:
+
+```text
+vento-pass/src/components/Saudo.tsx
+```
+
+La vista filtra transacciones por:
+
+```text
+metadata.site_id
+```
+
+Cuando una transacción no contiene ese campo:
+
+```text
+return false
+```
+
+Por tanto:
+
+- la carga de transacciones es real;
+- el historial se renderiza;
+- el filtro por sede es real;
+- pero una transacción legítima sin `metadata.site_id` desaparece silenciosamente.
+
+No existe en este flujo una alternativa para:
+
+- resolver la sede desde el beneficio;
+- resolverla desde la orden;
+- mostrar “sin atribución”;
+- solicitar reconciliación;
+- advertir al usuario que el historial está incompleto.
+
+**Clasificación:** proceso de historial parcialmente implementado.
+
+Destino exacto:
+
+- `PASS-UX-006 — Diseñar historial`;
+- `PASS-UX-009 — Diferenciar estado pendiente, usado y cancelado`;
+- `PASS-QA-001 — Probar flujo completo de acumulación`;
+- `PASS-QA-002 — Probar flujo completo de redención`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-PASS-003`.
+
+No se crea un requisito nuevo porque la regla ya está registrada.
+
+---
+
+#### 7. NEXO — ajustes con cobertura parcial del catálogo elegible
+
+Archivo revisado:
+
+```text
+vento-nexo/src/app/inventory/adjust/page.tsx
+```
+
+##### 7.1. Capacidad real confirmada
+
+La pantalla:
+
+- exige permiso;
+- resuelve sedes;
+- permite seleccionar LOC;
+- consulta stock por sede, LOC y posición;
+- carga productos controlados;
+- presenta el formulario de ajuste.
+
+##### 7.2. Corte de productos
+
+La consulta inicial utiliza:
+
+```text
+.limit(500)
+```
+
+Después se recuperan productos omitidos únicamente cuando aparecen con cantidad positiva en:
+
+- stock por sede;
+- stock por LOC;
+- stock por posición.
+
+Este rescate evita perder productos con existencia positiva, pero no recupera necesariamente:
+
+- productos activos elegibles con stock cero;
+- productos nuevos;
+- productos fuera de los primeros quinientos por orden alfabético;
+- productos que deban ajustarse desde cero por conteo o corrección.
+
+Por tanto, el proceso de ajuste es real, pero su selector puede conservar una cobertura parcial del catálogo.
+
+##### 7.3. Clasificación
+
+**Proceso parcial confirmado.**
+
+Destino exacto:
+
+- `NEXO-UX-019 — Diseñar flujo completo de ajustes`;
+- `NEXO-UX-021 — Mostrar solo información necesaria según etapa`;
+- `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`;
+- `NEXO-UX-023 — Probar flujos en tablets y kioscos`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-NEXO-002`.
+
+No se crea un requisito nuevo porque la regla ya está registrada.
+
+---
+
+#### 8. NEXO — impresión local sin ciclo durable del trabajo
+
+Archivos revisados:
+
+```text
+vento-nexo/src/app/printing/jobs/page.tsx
+vento-nexo/src/app/printing/jobs/_components/QueuePanel.tsx
+```
+
+##### 8.1. Capacidad real confirmada
+
+El flujo:
+
+- detecta impresoras con BrowserPrint;
+- conecta un dispositivo;
+- genera ZPL;
+- prepara una cola;
+- conserva texto de cola en `localStorage`;
+- envía ZPL mediante `device.send`;
+- informa callback de éxito o error.
+
+Por tanto, sí existe impresión local real.
+
+##### 8.2. Cola no durable
+
+La “cola” es texto local del navegador.
+
+No se encontró en este recorrido:
+
+- identificador de trabajo;
+- estado `pending`;
+- estado `sending`;
+- estado `sent`;
+- estado `confirmed`;
+- estado `failed`;
+- número de intentos;
+- propietario;
+- dispositivo;
+- plantilla usada;
+- hash del ZPL;
+- evidencia de impresión;
+- reimpresión controlada;
+- recuperación desde otra terminal.
+
+##### 8.3. Eliminación anticipada
+
+En modo de una columna:
+
+```text
+sendZpl(...)
+setQueueText("")
+```
+
+En modo con layout:
+
+```text
+sendZpl(...)
+setQueueText("")
+```
+
+La cola se limpia inmediatamente después de invocar el envío, no después de que el callback confirme éxito.
+
+En modo `3-up`, las filas se retiran de la cola después de invocar el envío.
+
+Esto permite el escenario:
+
+```text
+envío iniciado
+→ cola retirada
+→ callback de error
+→ trabajo perdido de la cola visible
+```
+
+##### 8.4. Confirmación limitada
+
+El mensaje:
+
+```text
+Impresión enviada
+```
+
+confirma que BrowserPrint aceptó el envío, pero no demuestra:
+
+- que la impresora imprimió;
+- que el papel estaba disponible;
+- que la etiqueta fue legible;
+- que el trabajo no se duplicó;
+- que el operador recibió la salida correcta.
+
+##### 8.5. Clasificación
+
+**Proceso parcial confirmado.**
+
+Destino exacto:
+
+- `NEXO-UX-037 — Diseñar impresión de LOC, LPN, activo y documento`;
+- `NEXO-UX-038 — Diseñar operación con escáner y etiquetas dañadas`;
+- `NEXO-AUTH-028 — Proteger impresión y reimpresión mediante permisos atómicos`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-NEXO-003`;
+- crea `TREQ-NEXO-005`.
+
+---
+
+#### 9. NEXO — remisiones operativas con publicación de inventario desactivable
+
+Archivo principal revisado:
+
+```text
+vento-nexo/src/app/inventory/remissions/[id]/detail-actions.ts
+```
+
+##### 9.1. Capacidad real confirmada
+
+El dominio contiene:
+
+- solicitud;
+- preparación;
+- cantidades preparadas;
+- cantidades despachadas;
+- validaciones de presentación;
+- ubicaciones;
+- faltantes;
+- tránsito;
+- recepción;
+- estados operativos;
+- firmas de actor en acciones aplicables.
+
+No es infraestructura vacía.
+
+##### 9.2. Modo operativo sin inventario
+
+La publicación de inventario depende de:
+
+```text
+remissions.inventory_posting_enabled
+```
+
+El fallback global es:
+
+```text
+false
+```
+
+También existen flags por ubicación:
+
+```text
+inventory_real_enabled
+remissions_posting_enabled
+```
+
+cuyo valor predeterminado es falso.
+
+Por tanto, el sistema puede conservar el flujo operativo y sus eventos sin que necesariamente exista el efecto final sobre inventario real.
+
+Este modo corresponde al piloto actualmente conocido y no se clasifica por sí mismo como error.
+
+##### 9.3. Brecha contractual
+
+El proceso permanece parcial mientras no exista una distinción inequívoca entre:
+
+```text
+remisión operativa registrada
+```
+
+y:
+
+```text
+remisión con inventario publicado
+```
+
+También deberán definirse:
+
+- puerta de activación;
+- responsables;
+- LOC habilitados;
+- comportamiento mixto entre ubicaciones;
+- reconciliación del período piloto;
+- prevención de doble publicación;
+- tratamiento de remisiones completadas antes de activar inventario;
+- evidencia de qué movimiento fue emitido;
+- reversión o corrección.
+
+##### 9.4. Clasificación
+
+**Proceso parcial e intencionalmente degradado.**
+
+Destino exacto:
+
+- `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`;
+- `NEXO-UX-010 — Diseñar flujo completo de preparación`;
+- `NEXO-UX-011 — Diseñar flujo completo de despacho`;
+- `NEXO-UX-012 — Diseñar flujo completo de tránsito`;
+- `NEXO-UX-013 — Diseñar flujo completo de recepción`;
+- `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`;
+- `NEXO-UX-023 — Probar flujos en tablets y kioscos`;
+- `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-NEXO-006`.
+
+---
+
+#### 10. Dispositivos compartidos — creación completa, administración del ciclo de vida incompleta
+
+Archivos y superficies revisadas:
+
+```text
+vento-viso/src/app/staff/shared-devices/new/page.tsx
+vento-viso/src/app/staff/page.tsx
+vento-nexo/src/lib/auth/shared-device-signature.ts
+vento-shell/supabase/migrations/*shared_device*
+```
+
+##### 10.1. Capacidad real confirmada
+
+VISO puede:
+
+- seleccionar una plantilla;
+- asignar sede;
+- asignar área;
+- seleccionar aplicaciones;
+- definir aplicación principal;
+- crear usuario técnico;
+- generar contraseña temporal;
+- crear el registro del dispositivo;
+- copiar políticas de actor;
+- registrar el evento `device.created`.
+
+NEXO ya puede exigir firma de actor por PIN en acciones concretas.
+
+Por tanto, el modelo no es solo infraestructura.
+
+##### 10.2. Superficie administrativa parcial
+
+En VISO se localizó la creación del dispositivo, pero no una superficie equivalente y completa para:
+
+- listar todos los dispositivos;
+- ver estado;
+- editar sede o área;
+- cambiar aplicaciones;
+- cambiar plantilla;
+- suspender;
+- revocar;
+- rotar contraseña;
+- recuperar credenciales;
+- transferir un dispositivo;
+- consultar sesiones;
+- cerrar sesiones;
+- consultar eventos;
+- marcar pérdida o daño;
+- retirar físicamente una estación.
+
+##### 10.3. Experiencia de actor parcial
+
+El modelo técnico contempla firma por PIN, pero el ciclo final todavía requiere definir y probar:
+
+- identificación inicial;
+- cambio de trabajador;
+- cierre explícito;
+- expiración;
+- trabajador sin turno;
+- trabajador sin PIN;
+- PIN bloqueado;
+- contingencia;
+- operación offline;
+- estación sin periférico;
+- revocación inmediata.
+
+##### 10.4. Clasificación
+
+**Proceso parcial confirmado.**
+
+Destino exacto:
+
+- `AUTH-DEV-011 — Permitir revocar un dispositivo`;
+- `AUTH-DEV-012 — Manejar sesión expirada`;
+- `AUTH-DEV-013 — Manejar cambio de trabajador`;
+- `AUTH-DEV-014 — Probar tablets de NEXO`;
+- `AUTH-DEV-015 — Probar terminales de PULSO`;
+- `AUTH-DEV-016 — Probar pantallas de FOGO`;
+- `UX-STATION-004 — Diseñar identificación, cambio y cierre de actor en estaciones compartidas`;
+- `UX-STATION-007 — Definir operación degradada, offline, contingencia y recuperación`;
+- `UX-STATION-008 — Prototipar alternativas con trabajadores reales`;
+- `UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico`;
+- `UX-STATION-011 — Diseñar bandeja contextual de trabajo y siguiente acción`;
+- `UX-STATION-012 — Definir composición dinámica de pasos mediante componentes operativos aprobados`;
+- `CODE-AUD-017`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-AUTH-003`.
+
+---
+
+#### 11. ORIGO — recepción con modos inventario y solo registro
+
+Archivos revisados:
+
+```text
+vento-origo/src/app/receipts/new/page.tsx
+vento-origo/src/components/vento/receipts/receipt-form.tsx
+```
+
+##### 11.1. Capacidad real confirmada
+
+El proceso contiene:
+
+- selección de proveedor;
+- orden de compra opcional;
+- recepción directa de emergencia;
+- productos;
+- presentaciones;
+- cantidades;
+- costos e impuestos;
+- lote y vencimiento;
+- LOC y posición;
+- solicitud de maestro de datos;
+- corrección;
+- firma de actor en dispositivo compartido;
+- modos `inventory` y `record_only`.
+
+##### 11.2. Modo solo registro
+
+El servidor resuelve:
+
+```text
+receipt_operation_mode
+```
+
+como:
+
+```text
+inventory
+```
+
+o:
+
+```text
+record_only
+```
+
+En modo solo registro, la compra puede conservar evidencia administrativa sin mover inventario.
+
+Este modo puede ser válido durante transición, pero no equivale a una recepción completa de inventario.
+
+##### 11.3. Brechas que permanecen
+
+El proceso final deberá definir y demostrar:
+
+- cuándo se permite `record_only`;
+- quién puede seleccionarlo;
+- cómo se muestra en listados;
+- si puede convertirse posteriormente en entrada real;
+- cómo se evita una segunda recepción manual en NEXO;
+- cómo se tratan recepciones parciales;
+- cómo se tratan diferencias contra la orden;
+- cómo se actualizan cantidades recibidas;
+- cómo se emite el evento financiero;
+- cómo se corrige sin duplicar stock ni costo;
+- cómo se concilia una compra registrada sin entrada de inventario.
+
+##### 11.4. Clasificación
+
+**Proceso parcial e intencionalmente dual.**
+
+Destino exacto:
+
+- `ORIGO-UX-001 — Inventariar el proceso completo de abastecimiento`;
+- `ORIGO-UX-002 — Separar solicitud, compra, aprobación y recepción`;
+- `ORIGO-UX-009 — Diseñar recepción total`;
+- `ORIGO-UX-010 — Diseñar recepción parcial`;
+- `ORIGO-UX-011 — Diseñar diferencias contra orden`;
+- `ORIGO-UX-013 — Evitar repetir recepción manualmente en NEXO`;
+- `ORIGO-UX-014 — Conectar recepción con entrada de inventario`;
+- `ORIGO-UX-015 — Conectar compra con evento financiero`;
+- `ORIGO-AUTH-006 — Definir permisos de aprobación`;
+- `ORIGO-AUTH-007 — Definir permisos de recepción`;
+- `ORIGO-AUTH-008 — Definir permisos de corrección`;
+- `ORIGO-AUTH-011 — Registrar actor de recepción`;
+- `ORIGO-AUTH-012 — Integrar contexto operativo donde aplique`;
+- `CODE-AUD-017`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-ORIGO-001`.
+
+---
+
+#### 12. FOGO — registro real de lote sin ciclo operativo completo de producción
+
+Archivos revisados:
+
+```text
+vento-fogo/src/app/production-batches/new/page.tsx
+vento-fogo/src/app/production-batches/page.tsx
+```
+
+##### 12.1. Capacidad real confirmada
+
+FOGO puede:
+
+- seleccionar una receta publicada;
+- resolver ruta productiva;
+- capturar rendimiento;
+- capturar consumo real;
+- capturar empaques;
+- capturar coproductos y subproductos;
+- exigir LOC destino cuando corresponde;
+- exigir firma de actor en estación compartida;
+- invocar `fogo_create_real_production_batch`;
+- listar lote, consumo, costos, empaque y destino.
+
+Esto demuestra una mutación productiva real.
+
+##### 12.2. Modelo de una sola acción
+
+El flujo encontrado registra el lote real mediante una acción final.
+
+En la superficie inspeccionada no se localizó un recorrido de usuario para:
+
+- iniciar un lote;
+- marcarlo en progreso;
+- registrar producción parcial;
+- pausar;
+- reanudar;
+- cambiar responsable;
+- registrar desperdicio durante ejecución;
+- bloquear por control de calidad;
+- finalizar;
+- cancelar;
+- corregir mediante evento compensatorio.
+
+La lista conoce etiquetas como:
+
+```text
+draft
+posted
+completed
+cancelled
+```
+
+pero no se localizaron en `vento-fogo` acciones equivalentes que gestionen todo ese ciclo.
+
+##### 12.3. Consecuencia
+
+El proceso actual puede servir como:
+
+```text
+registro posterior de producción ejecutada
+```
+
+pero no demuestra todavía:
+
+```text
+gestión operativa del lote durante el turno
+```
+
+##### 12.4. Clasificación
+
+**Proceso parcial confirmado.**
+
+Destino exacto:
+
+- `FOGO-AUTH-009 — Proteger inicio de producción`;
+- `FOGO-AUTH-010 — Proteger producción parcial`;
+- `FOGO-AUTH-011 — Proteger finalización`;
+- `FOGO-AUTH-012 — Proteger correcciones y anulaciones`;
+- `FOGO-AUTH-014 — Registrar actor y turno`;
+- `FOGO-UX-001 — Inventariar procesos reales de producción`;
+- `FOGO-UX-003 — Diseñar inicio por área productiva`;
+- `FOGO-UX-004 — Mostrar producción pendiente del turno`;
+- `FOGO-UX-005 — Diseñar inicio de lote`;
+- `FOGO-UX-006 — Diseñar producción parcial`;
+- `FOGO-UX-007 — Diseñar finalización de lote`;
+- `FOGO-UX-010 — Registrar cantidades, desperdicio y resultado`;
+- `FOGO-UX-011 — Diseñar correcciones sin alterar historial`;
+- `FOGO-UX-012 — Conectar consumo de insumos con NEXO`;
+- `FOGO-UX-013 — Conectar producto terminado con NEXO`;
+- `CODE-AUD-017`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-FOGO-001`.
+
+---
+
+#### 13. Falsos positivos y exclusiones
+
+##### 13.1. AURA
+
+No es un proceso parcial.
+
+Es una reserva sin producto y permanece en `CODE-AUD-011`.
+
+##### 13.2. LPN
+
+No es un proceso parcial alcanzable.
+
+La infraestructura sin ciclo pertenece a `CODE-AUD-011`.
+
+##### 13.3. POS interno completo de PULSO
+
+No se reclasifica como parcial.
+
+La fundación técnica sin recorrido de venta y caja completo pertenece a `CODE-AUD-011`.
+
+##### 13.4. PASS movimientos y escaneo de mesa
+
+Son acciones sin lógica completa detrás.
+
+Permanecen en `CODE-AUD-010`.
+
+##### 13.5. Newsletter pública
+
+La interfaz no persiste una suscripción real.
+
+Permanence en `CODE-AUD-010` y `WEB-FRM-011`.
+
+##### 13.6. Corrección de marcaciones y pagos
+
+No se encontró un proceso aprobado de corrección.
+
+Permanecen como infraestructura de datos sin proceso en `CODE-AUD-011`.
+
+##### 13.7. Código legacy
+
+La existencia de rutas o estructuras antiguas no se resuelve aquí.
+
+Continúa en:
+
+```text
+CODE-AUD-013
+— Detectar código legacy todavía activo
+```
+
+##### 13.8. Artefactos sin consumidor
+
+La falta de consumidor se profundizará en:
+
+```text
+CODE-AUD-015
+— Detectar rutas, componentes, funciones y tablas sin consumidores
+```
+
+---
+
+#### 14. Matriz por repositorio
+
+| Repositorio     | Resultado de CODE-AUD-012                                                                                     | Clasificación                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `vento-shell`   | soporta contratos y persistencia de varios procesos parciales; no se detecta una nueva superficie propia      | infraestructura transversal    |
+| `vento-viso`    | creación de dispositivo compartido real, sin ciclo administrativo completo                                    | proceso parcial                |
+| `vento-nexo`    | ajustes, impresión y remisiones tienen recorridos reales con brechas de cobertura, confirmación e integración | procesos parciales confirmados |
+| `vento-fogo`    | registro real de lote, pero sin ciclo operativo completo de inicio, parcialidad, finalización y corrección    | proceso parcial                |
+| `vento-origo`   | recepción real con modos inventario y solo registro; integración final todavía condicionada                   | proceso parcial                |
+| `vento-pulso`   | salón y llamados tienen lógica; POS integral sigue clasificado en CODE-AUD-011                                | sin nuevo hallazgo parcial     |
+| `vento-numera`  | no se confirma una nueva brecha parcial durante este corte                                                    | continuar en CODE-AUD-019      |
+| `Vento-Group`   | newsletter pertenece a interfaz sin lógica completa                                                           | excluido                       |
+| `vento-anima`   | novedades tienen CRUD y notificación, pero audiencia y ciclo editorial están incompletos                      | proceso parcial                |
+| `vento-pass`    | historial de Saudo omite transacciones sin atribución de sede                                                 | proceso parcial                |
+| `vento-talento` | producto no desplegado                                                                                        | excluido                       |
+| `vento-vital`   | proyecto separado                                                                                             | fuera de Vento OS              |
+| AURA            | reserva sin aplicación                                                                                        | excluido                       |
+
+---
+
+#### 15. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                             | Destino                                                                  |
+| ---------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `H-CODE-012-001` | ANIMA crea y notifica novedades, pero no persiste ni aplica audiencia de lectura                     | `ANIMA-UX-017`, `CODE-AUD-019`, `020`, `TREQ-ANIMA-001`                  |
+| `H-CODE-012-002` | ANIMA no recupera audiencia al editar ni define reenvío                                              | `ANIMA-UX-017`, `TREQ-ANIMA-001`                                         |
+| `H-CODE-012-003` | ANIMA elimina físicamente y no demuestra archivo o historial editorial                               | `ANIMA-UX-017`, `CODE-AUD-019`, `020`                                    |
+| `H-CODE-012-004` | ANIMA fallback permite lectura, pero rechaza mutaciones                                              | `TREQ-ANIMA-002`, `CODE-AUD-020`                                         |
+| `H-CODE-012-005` | PASS excluye silenciosamente transacciones de Saudo sin `metadata.site_id`                           | `PASS-UX-006`, `PASS-QA-001`, `002`, `TREQ-PASS-003`                     |
+| `H-CODE-012-006` | NEXO ajustes corta el catálogo inicial a 500 y solo rescata omitidos con stock positivo              | `NEXO-UX-019`, `021`, `022`, `023`, `TREQ-NEXO-002`                      |
+| `H-CODE-012-007` | la cola de impresión NEXO es estado local, no un trabajo durable                                     | `NEXO-UX-037`, `038`, `CODE-AUD-018`, `019`, `020`, `TREQ-NEXO-005`      |
+| `H-CODE-012-008` | NEXO limpia elementos de impresión antes del callback definitivo                                     | mismo destino de `H-CODE-012-007`                                        |
+| `H-CODE-012-009` | una remisión puede avanzar operativamente sin publicar inventario real                               | `NEXO-UX-009` a `013`, `022`, `023`, `025`, `TREQ-NEXO-006`              |
+| `H-CODE-012-010` | no está cerrado el contrato de activación y reconciliación del piloto de remisiones                  | mismo destino de `H-CODE-012-009`                                        |
+| `H-CODE-012-011` | VISO crea dispositivos compartidos, pero no demuestra administración completa posterior              | `AUTH-DEV-011` a `016`, `UX-STATION-004`, `007` a `012`, `TREQ-AUTH-003` |
+| `H-CODE-012-012` | ORIGO permite `record_only` e `inventory` sin que el cierre integral de abastecimiento esté definido | `ORIGO-UX-001`, `002`, `009` a `015`, `TREQ-ORIGO-001`                   |
+| `H-CODE-012-013` | FOGO registra un lote real en una acción final, pero no gestiona el ciclo durante el turno           | `FOGO-AUTH-009` a `014`, `FOGO-UX-001`, `003` a `013`, `TREQ-FOGO-001`   |
+| `H-CODE-012-014` | las etiquetas de estado de lote no equivalen a transiciones operativas alcanzables                   | mismo destino de `H-CODE-012-013`                                        |
+| `H-CODE-012-015` | no todo modo parcial es un defecto; deberá quedar identificado y no confundirse con operación final  | `PROC-CAT-002`, `CODE-AUD-019`, `020`                                    |
+
+Todos los hallazgos quedan cerrados, reutilizan una tarea existente o generan una tarea explícita.
+
+---
+
+#### 16. Nueva tarea propuesta
+
+No existe una tarea funcional exacta para el ciclo de novedades internas de ANIMA.
+
+Se propone agregar en:
+
+```text
+docs/plan-canonico/modular/bloques/F_ANIMA/00_BLOQUE_F.md
+```
+
+inmediatamente después de:
+
+```md
+### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+```
+
+la línea completa:
+
+```md
+### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
+```
+
+Esta tarea deberá definir:
+
+- audiencia de notificación;
+- audiencia de lectura;
+- publicación global o segmentada;
+- persistencia;
+- edición;
+- reenvío;
+- archivo;
+- vigencia;
+- historial;
+- permisos;
+- evidencia;
+- comportamiento fallback.
+
+No se crea ninguna otra tarea nueva.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 17.1. Requisitos reutilizados
+
+- `TREQ-ANIMA-001`;
+- `TREQ-ANIMA-002`;
+- `TREQ-PASS-003`;
+- `TREQ-NEXO-002`;
+- `TREQ-NEXO-003`;
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`.
+
+No se cambia su estado durante esta tarea.
+
+##### 17.2. Requisitos nuevos
+
+###### `TREQ-NEXO-005`
+
+Un trabajo de impresión no podrá retirarse definitivamente de la cola antes de recibir el resultado del envío; deberá poder conservar estado, error, reintento, dispositivo, contenido e identificación suficientes para evitar pérdida o duplicación.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-NEXO-006`
+
+Toda remisión deberá indicar de forma verificable si fue únicamente registrada de manera operativa o si publicó movimientos reales de inventario; la activación, mezcla por LOC, reconciliación y reintento no podrán producir doble contabilización.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-AUTH-003`
+
+Todo dispositivo compartido deberá tener un ciclo auditable de creación, activación, uso, cambio de actor, expiración, suspensión, revocación, rotación de credenciales y retiro, sin conservar acceso después de quedar inactivo.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-ORIGO-001`
+
+Toda recepción deberá declarar si mueve inventario o si es solo registro, conservar esa modalidad de forma visible y auditable, y evitar que su conversión, corrección o repetición duplique cantidades, costos, orden recibida o evento financiero.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-FOGO-001`
+
+Todo lote productivo deberá demostrar el ciclo aprobado de inicio, producción parcial, consumo, desperdicio, resultado, finalización, cancelación o corrección, con actor, turno, cantidades y efectos de inventario auditables.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+Las filas canónicas completas se agregarán únicamente en:
+
+```text
+04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+después de la aprobación de `CODE-AUD-012`.
+
+No se duplican filas completas de `04A` dentro de esta tarea.
+
+---
+
+#### 18. Decisiones propuestas
+
+1. Un proceso parcial deberá ejecutar al menos un efecto real.
+2. Una interfaz sin efecto continuará en `CODE-AUD-010`.
+3. Infraestructura sin recorrido continuará en `CODE-AUD-011`.
+4. ANIMA novedades se declara proceso parcial.
+5. Audiencia de notificación y audiencia de lectura no se presumirán equivalentes.
+6. La eliminación física de novedades deberá someterse a decisión funcional.
+7. Se crea `ANIMA-UX-017`.
+8. PASS Saudo mantiene `TREQ-PASS-003`.
+9. NEXO ajustes mantiene `TREQ-NEXO-002`.
+10. Impresión NEXO se reconoce como funcional, pero no durable.
+11. Se deriva `TREQ-NEXO-005`.
+12. El piloto de remisiones no se considera un defecto por estar desactivado el inventario.
+13. El modo operativo de remisiones no podrá confundirse con inventario publicado.
+14. Se deriva `TREQ-NEXO-006`.
+15. Dispositivos compartidos se reconocen como proceso parcial, no como infraestructura vacía.
+16. Se deriva `TREQ-AUTH-003`.
+17. ORIGO `record_only` se reconoce como modalidad transitoria o específica, no como recepción completa de inventario.
+18. Se deriva `TREQ-ORIGO-001`.
+19. FOGO tiene registro productivo real, pero no ciclo operativo completo.
+20. Se deriva `TREQ-FOGO-001`.
+21. No se crea ninguna tarea adicional fuera de `ANIMA-UX-017`.
+22. No se modifican estados de requisitos existentes.
+23. No se modifica código.
+24. No se modifica Supabase.
+25. `CODE-AUD-013` será la única continuidad inmediata.
+
+---
+
+#### 19. Límites de certeza
+
+Esta tarea no confirma:
+
+- que ninguna otra rama contenga administración adicional de dispositivos;
+- que BrowserPrint nunca confirme impresión física mediante capacidades no inspeccionadas;
+- que todas las remisiones actuales operen con inventario desactivado;
+- que todos los LOC tengan flags desactivados;
+- que `record_only` de ORIGO deba eliminarse;
+- que toda recepción deba mover inventario;
+- que FOGO deba adoptar obligatoriamente estados largos para todas las áreas;
+- que toda novedad de ANIMA deba tener audiencia segmentada;
+- que una eliminación física esté siempre prohibida;
+- que ninguna integración externa complete los procesos observados;
+- que todos los procesos parciales existentes hayan sido detectados.
+
+Las tareas siguientes deberán profundizar:
+
+- `CODE-AUD-013`: código legacy activo;
+- `CODE-AUD-015`: artefactos sin consumidor;
+- `CODE-AUD-017`: autorización y seguridad;
+- `CODE-AUD-018`: offline, reintentos, concurrencia e idempotencia;
+- `CODE-AUD-019`: vínculo entre capacidad e implementación verificable;
+- `CODE-AUD-020`: backlog técnico y funcional.
+
+---
+
+#### 20. Criterios de aceptación
+
+`CODE-AUD-012` podrá aprobarse cuando:
+
+- exista una definición verificable de proceso parcial;
+- se diferencie de interfaz ficticia e infraestructura aislada;
+- ANIMA novedades quede evaluado;
+- PASS historial quede evaluado;
+- NEXO ajustes quede evaluado;
+- NEXO impresión quede evaluado;
+- NEXO remisiones quede evaluado;
+- dispositivos compartidos queden evaluados;
+- ORIGO recepción quede evaluado;
+- FOGO producción quede evaluado;
+- cada hallazgo tenga destino exacto;
+- la única tarea nueva sea `ANIMA-UX-017`;
+- los requisitos reutilizados estén identificados;
+- los cinco requisitos nuevos estén identificados;
+- las filas completas no se dupliquen dentro de esta tarea;
+- no se modifique código;
+- no se modifique Supabase;
+- `CODE-AUD-013` permanezca como continuidad inmediata.
+
+---
+
+#### 21. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+recorrido real
+→ etapa disponible
+→ etapa ausente o degradada
+→ riesgo
+→ tarea funcional
+→ requisito de prueba
+→ paquete posterior
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-013
+— Detectar código legacy todavía activo
+```
+
+
+### ✅ CODE-AUD-013 — Detectar código legacy todavía activo
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de código, contratos, aliases, fallbacks y estructuras heredadas que todavía participan en ejecución real  
+**Dependencia anterior:** `CODE-AUD-012`  
+**Continuidad reservada:** `CODE-AUD-014`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea identifica elementos legacy que todavía intervienen en:
+
+- renderizado;
+- navegación;
+- autorización;
+- persistencia;
+- resolución de contexto;
+- selección de datos;
+- transición de estados;
+- contratos entre aplicaciones;
+- compatibilidad con filas antiguas;
+- ejecución de procesos actuales.
+
+La clasificación no depende del nombre del archivo ni de que el código contenga la palabra `legacy`.
+
+Un elemento se considera **legacy todavía activo** cuando:
+
+```text
+fue reemplazado, superado o declarado transitorio
+        +
+todavía es consumido durante la ejecución actual
+```
+
+Resultado general:
+
+- PULSO continúa montando su tablero operativo actual sobre `orders-board-legacy`;
+- PULSO acepta simultáneamente dos nombres para un mismo estado de tránsito;
+- NEXO mantiene fallbacks activos para esquemas antiguos de configuración de producto por sede;
+- NEXO deriva comportamiento operativo desde roles, nombres de sede y conjuntos hardcodeados cuando faltan contratos canónicos;
+- NEXO permite operar productos sin perfil canónico y les asigna semántica predeterminada;
+- NEXO conserva compatibilidad explícita con productos sin SKU;
+- VISO y PASS mantienen `logo_url` como contrato heredado junto a `card_logo_url` y `header_logo_url`;
+- VISO conserva un tipo de carga `legacy`;
+- el sistema de simulación mediante role override sigue activo y distribuido en varias aplicaciones;
+- migraciones históricas, scripts no invocados y etiquetas textuales no se consideran automáticamente legado activo;
+- no se crea ninguna tarea nueva del roadmap;
+- se derivan cinco requisitos de prueba;
+- no se modifica código ni Supabase.
+
+---
+
+#### 2. Definiciones utilizadas
+
+##### 2.1. Código legacy activo
+
+Código antiguo o transitorio que todavía es alcanzado por el recorrido actual.
+
+Ejemplos:
+
+- componente nuevo que importa y renderiza un componente `legacy`;
+- wrapper que delega la mayor parte de la operación a una implementación antigua;
+- columna antigua que todavía se escribe y consulta;
+- alias de estado aceptado en producción;
+- fallback que sustituye columnas o tablas canónicas ausentes;
+- lógica basada en nombres que reemplaza temporalmente un catálogo;
+- datos sin migrar que reciben supuestos automáticos.
+
+##### 2.2. Compatibilidad temporal válida
+
+Puente explícito que:
+
+- tiene propietario;
+- tiene consumidores conocidos;
+- está limitado;
+- preserva comportamiento;
+- produce evidencia cuando se activa;
+- tiene pruebas de paridad;
+- posee criterio y momento de retiro.
+
+No todo puente temporal es un defecto.
+
+##### 2.3. Legado dormido
+
+Código que permanece en el repositorio, pero no tiene consumidor o entrada alcanzable confirmada.
+
+Corresponde principalmente a:
+
+```text
+CODE-AUD-015
+— Detectar rutas, componentes, funciones y tablas sin consumidores
+```
+
+##### 2.4. Código histórico
+
+No se considera legado activo por sí solo:
+
+- migraciones ya ejecutadas;
+- documentos históricos;
+- changelogs;
+- commits;
+- fixtures;
+- scripts de migración no conectados con build o runtime;
+- copias archivadas no importadas.
+
+##### 2.5. Alias de compatibilidad
+
+Nombre antiguo aceptado junto con el nombre actual.
+
+Ejemplos:
+
+```text
+on_the_way
+in_transit
+```
+
+o:
+
+```text
+received
+closed
+```
+
+El alias puede ser necesario durante una transición, pero no debe permanecer indefinidamente sin contrato.
+
+---
+
+#### 3. Criterios de clasificación
+
+Para declarar un hallazgo se verificó al menos una de estas condiciones:
+
+1. existe importación desde una ruta activa;
+2. existe invocación desde una pantalla o acción actual;
+3. una columna legacy todavía se escribe;
+4. una columna legacy todavía se usa como fallback;
+5. el código acepta dos contratos equivalentes;
+6. un error de esquema activa una rama heredada;
+7. faltan datos canónicos y el sistema aplica supuestos;
+8. una regla basada en nombre o rol sustituye una fuente canónica;
+9. la compatibilidad no tiene criterio de retiro visible;
+10. el elemento puede alterar resultados actuales.
+
+No se declara brecha únicamente porque:
+
+- el archivo contiene `legacy` en su nombre;
+- existe una migración de limpieza;
+- una dependencia externa está marcada deprecated;
+- un mensaje de interfaz dice “producto legacy”;
+- existe un fallback visual inocuo;
+- la compatibilidad está aprobada y acotada;
+- el código pertenece a una versión antigua, pero no es consumido.
+
+---
+
+#### 4. PULSO — el tablero actual depende directamente de `orders-board-legacy`
+
+Archivos revisados:
+
+```text
+vento-pulso/src/app/orders/orders-board.tsx
+vento-pulso/src/app/orders/orders-board-live.tsx
+vento-pulso/src/app/orders/orders-board-legacy.tsx
+vento-pulso/src/app/orders/page.tsx
+```
+
+##### 4.1. Dependencia runtime confirmada
+
+El componente actual:
+
+```text
+orders-board.tsx
+```
+
+importa:
+
+```ts
+import { OrdersBoard as BaseOrdersBoard } from "./orders-board-legacy";
+```
+
+Después agrega comportamiento de regalos y finalmente renderiza:
+
+```tsx
+<BaseOrdersBoard {...props} orders={orders} />
+```
+
+Por tanto:
+
+```text
+OrdersBoardLive
+        ↓
+OrdersBoard actual
+        ↓
+OrdersBoard legacy
+```
+
+El archivo `orders-board-legacy.tsx` no es una copia dormida. Continúa siendo la base visual y funcional del tablero activo.
+
+##### 4.2. Responsabilidades todavía concentradas en la base legacy
+
+La implementación heredada conserva contratos y comportamiento para:
+
+- tarjetas de pedido;
+- modal;
+- pestañas de pedido, chat e historial;
+- facturación;
+- mensajes;
+- eventos;
+- estados;
+- despacho;
+- acciones operativas.
+
+Las mejoras actuales se montan alrededor de ella mediante wrappers.
+
+Riesgos:
+
+- cambiar el wrapper no elimina la dependencia legacy;
+- la lógica puede repartirse entre tres capas;
+- tipos y estados pueden divergir;
+- una corrección puede aplicarse en la capa equivocada;
+- retirar el archivo sin mapa de paridad puede romper chat, historial o facturación;
+- el nombre “legacy” puede hacer que se subestime que sigue siendo producción.
+
+##### 4.3. Scripts históricos de parche
+
+Persisten scripts que fueron utilizados para redirigir modificaciones hacia el tablero legacy.
+
+Sin embargo, el `package.json` actual no contiene hooks `predev` o `prebuild` que demuestren su ejecución automática.
+
+Clasificación:
+
+```text
+orders-board-legacy.tsx
+→ legacy activo confirmado
+
+scripts de parche
+→ artefactos sin activación actual confirmada
+→ CODE-AUD-015
+```
+
+##### 4.4. Destino
+
+- `PULSO-AUTH-002 — Inventariar órdenes`;
+- `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`;
+- `PULSO-UX-007 — Simplificar creación de venta`;
+- `PULSO-UX-013 — Diseñar confirmaciones para acciones sensibles`;
+- `PULSO-UX-019 — Validar el prototipo con caja, salón, barra, cocina y mostrador`;
+- `SHELL-AUD-001 — Buscar código duplicado entre repositorios`;
+- `SHELL-PKG-004 — Definir política de compatibilidad`;
+- `SHELL-PKG-005 — Definir política de deprecación`;
+- `CODE-AUD-014`;
+- `CODE-AUD-015`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se autoriza reemplazar el tablero antes de levantar una matriz de paridad.
+
+---
+
+#### 5. PULSO — vocabulario doble de estados de tránsito
+
+En las superficies actuales se aceptan:
+
+```text
+in_transit
+on_the_way
+```
+
+Ambos se muestran como:
+
+```text
+En camino
+```
+
+y ambos permiten avanzar a:
+
+```text
+delivered
+```
+
+Esto constituye un alias de compatibilidad activo.
+
+No se determina todavía cuál debe ser el nombre final.
+
+La decisión deberá establecer:
+
+- estado canónico;
+- consumidores de cada alias;
+- datos existentes;
+- eventos emitidos;
+- filtros;
+- Realtime;
+- integraciones;
+- backfill;
+- ventana de compatibilidad;
+- criterio de retiro.
+
+Riesgos:
+
+- órdenes excluidas por filtros;
+- transiciones distintas para el mismo significado;
+- métricas divididas;
+- eventos incompatibles;
+- consultas que contemplan solo uno de los valores;
+- aliases que se vuelven permanentes.
+
+Destino:
+
+- `PULSO-UX-001`;
+- `SHELL-CON-010 — Centralizar estados de procesos`;
+- `SUPA-AUD-018`;
+- `SUPA-AUD-019`;
+- `SUPA-TRANS-001`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-006`;
+- `SUPA-TRANS-007`;
+- `SUPA-TRANS-012`;
+- `SUPA-TRANS-013`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 6. NEXO — fallback de configuración antigua de producto por sede
+
+Archivo principal:
+
+```text
+vento-nexo/src/app/inventory/remissions/page-helpers.ts
+```
+
+##### 6.1. Consulta canónica intentada
+
+La primera consulta solicita:
+
+```text
+product_id
+is_active
+default_area_kind
+area_kinds
+remission_category_id
+audience
+remission_enabled
+updated_at
+created_at
+```
+
+##### 6.2. Rama legacy activa
+
+Cuando esa consulta produce error, el código ejecuta otra consulta sin:
+
+```text
+audience
+remission_enabled
+```
+
+Después completa artificialmente:
+
+```ts
+audience: null
+remission_enabled: null
+```
+
+La compatibilidad puede permitir operar contra un esquema o despliegue desactualizado.
+
+Pero actualmente:
+
+- el fallback se activa por cualquier error de la primera consulta;
+- no distingue columna ausente de error de permisos, red o consulta;
+- no produce evidencia visible;
+- no declara ambiente;
+- no tiene fecha de retiro;
+- puede degradar silenciosamente reglas de audiencia o habilitación.
+
+Consecuencia:
+
+```text
+error de consulta moderna
+        ↓
+modelo antiguo asumido
+        ↓
+operación continúa con semántica reducida
+```
+
+**Clasificación:** puente legacy activo sin observabilidad suficiente.
+
+Destinos:
+
+- `SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de vento-shell`;
+- `SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración`;
+- `SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy`;
+- `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`;
+- `SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos`;
+- `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos`;
+- `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`;
+- `SUPA-TRANS-007 — Definir adaptación coordinada de consumidores`;
+- `SUPA-TRANS-012 — Definir retiro progresivo de objetos legacy`;
+- `SUPA-TRANS-013 — Definir verificación de paridad local, staging y producción`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 7. NEXO — alcance de remisiones derivado desde roles y fallbacks hardcodeados
+
+El flujo actual contiene reglas de compatibilidad como:
+
+```text
+cajero
+→ cajero / mostrador
+
+barista
+→ bar / barra
+
+cocinero
+→ cocina
+```
+
+Además, cuando falla la consulta del catálogo `area_kinds`, utiliza:
+
+```text
+cajero
+mostrador
+bar
+barra
+cocina
+```
+
+como conjunto permitido para remisiones.
+
+Esta lógica sigue activa dentro de la resolución de área.
+
+No se trata únicamente de un valor hardcodeado. Es una segunda fuente de verdad que puede sustituir:
+
+- roles operativos;
+- áreas activas;
+- catálogo de tipos de área;
+- reglas por sede;
+- capacidades configuradas.
+
+Riesgos:
+
+- un rol nuevo no recibe área;
+- una sede con códigos distintos opera incorrectamente;
+- una falla de catálogo cambia silenciosamente autorización o alcance;
+- el rol base se usa como proxy del contexto operativo;
+- la compatibilidad evita detectar una configuración incompleta.
+
+Destino:
+
+- `PROC-ACTOR-002 — Vincular cada proceso con roles operativos aplicables`;
+- `PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol`;
+- `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`;
+- `NEXO-UX-021 — Mostrar solo información necesaria según etapa`;
+- `NEXO-AUTH-029 — Eliminar dependencia de permisos amplios legacy`;
+- `AUTH-DEV-*` cuando aplique a estaciones;
+- `CODE-AUD-014`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-AUTH-001`.
+
+---
+
+#### 8. NEXO — aliases de estado de remisión todavía aceptados
+
+La presentación actual reconoce, entre otros:
+
+```text
+pending
+preparing
+dispatch_ready
+in_transit
+partial
+received
+closed
+cancelled
+```
+
+Los valores:
+
+```text
+received
+closed
+```
+
+se muestran ambos como:
+
+```text
+Recibida
+```
+
+y la matriz de acciones acepta ambos para reversión.
+
+Esto indica que dos estados con significado potencialmente distinto o sucesivo continúan tratados como equivalentes en ciertas superficies.
+
+La tarea no declara que uno deba eliminarse inmediatamente.
+
+Debe definirse:
+
+- si `received` es recepción física;
+- si `closed` es cierre administrativo;
+- si son sinónimos históricos;
+- qué transiciones existen;
+- cuál consume inventario;
+- cuál habilita reversión;
+- cuál es final;
+- cómo se migran registros existentes.
+
+Destino:
+
+- `NEXO-UX-009` a `NEXO-UX-013`;
+- `PROC-CAT-009` a `PROC-CAT-014`;
+- `SHELL-CON-010`;
+- `SUPA-AUD-018`;
+- `SUPA-TRANS-001`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-006`;
+- `SUPA-TRANS-012`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 9. NEXO — productos sin perfil canónico reciben semántica predeterminada
+
+En creación de remisiones se consulta primero:
+
+```text
+product_inventory_profiles
+```
+
+Cuando un producto no aparece allí, el flujo lo recupera desde:
+
+```text
+products
+```
+
+y le asigna:
+
+```text
+inventory_kind: null
+measurement_mode: fixed_presentation
+default_tolerance_percent: null
+requires_actual_dispatch_qty: false
+requires_count_alongside_weight: false
+```
+
+Esto mantiene utilizables productos antiguos sin perfil.
+
+Sin embargo, el fallback no es neutro.
+
+Define comportamiento operativo:
+
+- modalidad de medición;
+- captura de cantidad;
+- tolerancia;
+- conteo;
+- despacho real.
+
+Un producto sin perfil puede comportarse como presentación fija aunque su naturaleza real sea:
+
+- peso variable;
+- conteo con peso;
+- volumen;
+- lote;
+- empaque;
+- producto producido.
+
+**Clasificación:** compatibilidad de datos legacy activa con riesgo semántico.
+
+Destino:
+
+- `CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas`;
+- `CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN`;
+- `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores`;
+- `SUPA-AUD-019`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-007`;
+- `SUPA-TRANS-012`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 10. NEXO — productos legacy sin SKU continúan soportados
+
+El componente:
+
+```text
+vento-nexo/src/components/inventory/SkuField.tsx
+```
+
+muestra expresamente:
+
+```text
+Sin SKU (legacy)
+Producto legacy sin SKU
+```
+
+y permite:
+
+- conservar el registro sin SKU;
+- editar el SKU manualmente;
+- asignar SKU automático si queda vacío.
+
+La compatibilidad es razonable durante saneamiento del catálogo.
+
+El riesgo aparece si no existe:
+
+- inventario completo de registros afectados;
+- regla de unicidad;
+- prioridad de backfill;
+- bloqueo para nuevos productos sin SKU;
+- distinción entre identificador visible y clave técnica;
+- verificación de consumidores que usan SKU;
+- criterio de retiro de la compatibilidad.
+
+**Clasificación:** datos legacy activos, con mecanismo de regularización parcial.
+
+Destino:
+
+- `CAP-SCOPE-004`;
+- `SUPA-AUD-019`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-007`;
+- `SUPA-TRANS-012`;
+- `DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 11. NEXO — clasificación de sede inferida desde nombre cuando falta contrato
+
+El editor de configuración de producto intenta utilizar:
+
+```text
+site_type
+```
+
+y capacidades de sede.
+
+Cuando faltan, puede inferir:
+
+```text
+nombre contiene "centro de producción"
+→ production_center
+
+cualquier otro nombre
+→ satellite
+```
+
+La misma inferencia influye en qué sedes aparecen como productivas o satélites cuando no existe registro de capacidades.
+
+Esto es un puente de compatibilidad activo con modelos anteriores de sede.
+
+Riesgos:
+
+- un cambio de nombre altera comportamiento;
+- una sede administrativa puede clasificarse como satélite;
+- una nueva sede productiva queda fuera;
+- una traducción o variación ortográfica rompe la inferencia;
+- la ausencia de capacidades queda oculta;
+- el nombre visible se convierte en regla empresarial.
+
+Destino:
+
+- `CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización`;
+- `PROC-CAT-005 — Definir aplicación propietaria de cada proceso`;
+- `SUPA-AUD-019`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-007`;
+- `SUPA-TRANS-012`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+---
+
+#### 12. VISO y PASS — `logo_url` continúa como contrato heredado activo
+
+Archivos revisados:
+
+```text
+vento-viso/src/components/viso/business-form.tsx
+vento-viso/src/app/businesses/[id]/page.tsx
+vento-viso/src/app/api/viso/upload-logo/route.ts
+vento-pass/src/utils/satelliteLogos.ts
+```
+
+##### 12.1. Modelo actual
+
+El modelo nuevo contiene:
+
+```text
+card_logo_url
+header_logo_url
+```
+
+pero conserva:
+
+```text
+logo_url
+```
+
+##### 12.2. Escritura legacy confirmada
+
+VISO:
+
+- inicializa card y header desde `logo_url`;
+- calcula un `legacyLogo`;
+- envía `logo_url` como campo oculto;
+- guarda simultáneamente las tres columnas;
+- muestra diagnóstico “Legacy logo URL”.
+
+##### 12.3. Lectura legacy confirmada
+
+PASS elige:
+
+```text
+card_logo_url
+→ fallback logo_url
+```
+
+o:
+
+```text
+header_logo_url
+→ fallback logo_url
+```
+
+Por tanto, `logo_url` todavía forma parte del contrato de ejecución y no es una columna histórica pasiva.
+
+##### 12.4. Carga legacy
+
+El endpoint de VISO acepta:
+
+```text
+kind = legacy
+```
+
+como valor predeterminado cuando no recibe `card` o `header`.
+
+Esto permite generar nuevos objetos legacy.
+
+##### 12.5. Evaluación
+
+La compatibilidad evita romper satélites sin logos separados.
+
+Pero falta definir:
+
+- backfill de card y header;
+- precedencia definitiva;
+- consumidores;
+- prohibición de nuevas escrituras legacy;
+- tratamiento de satélites antiguos;
+- prueba visual de paridad;
+- retiro de `kind=legacy`;
+- retiro futuro de la columna.
+
+Destino:
+
+- `VISO-UX-017 — Evitar duplicar configuración propia de otras aplicaciones`;
+- `VISO-UX-018 — Enlazar a la aplicación propietaria cuando corresponda`;
+- `PASS-UX-001 — Inventariar pantallas actuales de cliente`;
+- `SUPA-AUD-018`;
+- `SUPA-AUD-019`;
+- `SUPA-TRANS-005`;
+- `SUPA-TRANS-006`;
+- `SUPA-TRANS-007`;
+- `SUPA-TRANS-012`;
+- `SUPA-TRANS-013`;
+- `CODE-AUD-014`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-PASS-004`.
+
+---
+
+#### 13. Role override — puente activo de simulación distribuido
+
+Se localizaron implementaciones de:
+
+```text
+checkPermissionWithRoleOverride
+```
+
+en varias aplicaciones.
+
+La función de NEXO:
+
+- lee un rol simulado desde cookie;
+- consulta permisos de `role_permissions`;
+- resuelve alcance;
+- sustituye estrictamente el rol efectivo durante simulación;
+- contiene una excepción especial para conductor en tránsito.
+
+No se clasifica el role override como defecto por existir.
+
+El plan ya aprobó una simulación separada.
+
+La brecha es de transición y distribución:
+
+- la implementación está copiada entre repositorios;
+- puede divergir;
+- combina simulación con excepciones operativas;
+- consulta contratos legacy de permisos;
+- el comportamiento depende de cada copia;
+- no existe todavía paquete compartido aprobado.
+
+Destino:
+
+- `SHELL-AUD-005 — Comparar role override`;
+- `SHELL-AUD-003 — Comparar helpers de permisos`;
+- `SHELL-PKG-004 — Definir política de compatibilidad`;
+- `SHELL-PKG-005 — Definir política de deprecación`;
+- `SHELL-CON-003 — Centralizar códigos de permisos`;
+- `SHELL-CON-007 — Centralizar tipos de contexto`;
+- `CODE-AUD-014`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-AUTH-001`;
+- mantiene `TREQ-AUTH-002`.
+
+---
+
+#### 14. Artefactos excluidos como falsos positivos
+
+##### 14.1. Migraciones históricas
+
+Archivos con nombres como:
+
+```text
+cleanup_legacy
+drop_legacy
+deactivate_legacy
+```
+
+no son código runtime por el solo hecho de permanecer en:
+
+```text
+supabase/migrations
+```
+
+Deben conservarse como historial reproducible.
+
+E3 verificará el estado final de los objetos, no eliminará migraciones aplicadas.
+
+##### 14.2. Scripts de parche no conectados
+
+Los scripts de PULSO que apuntaron al tablero legacy no aparecen en los scripts actuales de `package.json`.
+
+Se reservan para `CODE-AUD-015`.
+
+##### 14.3. Dependencias deprecated del lockfile
+
+Una advertencia de paquete no demuestra lógica empresarial legacy.
+
+Corresponde a build y dependencias:
+
+```text
+CODE-AUD-016
+```
+
+##### 14.4. Valores de dominio antiguos no declarados obsoletos
+
+Códigos como:
+
+```text
+preparacion
+venta
+```
+
+no se consideran legacy sin una decisión canónica que los reemplace.
+
+##### 14.5. Modo `record_only`
+
+El modo de ORIGO fue clasificado como proceso parcial en `CODE-AUD-012`.
+
+No se reclasifica como legacy únicamente por ser transitorio.
+
+##### 14.6. Código sin consumidor
+
+Aunque un archivo parezca antiguo, si no se confirma importación o ruta activa deberá resolverse en `CODE-AUD-015`.
+
+---
+
+#### 15. Matriz por repositorio
+
+| Repositorio     | Legado activo confirmado                                                                                                     | Clasificación                   |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| `vento-shell`   | objetos legacy deberán verificarse en E3; migraciones históricas se excluyen como runtime                                    | pendiente de auditoría de datos |
+| `vento-viso`    | escritura de `logo_url`, fallback de logos y carga `legacy`; role override distribuido                                       | compatibilidad activa           |
+| `vento-nexo`    | columnas opcionales con fallback, áreas por rol, aliases de estado, productos sin perfil/SKU, sedes inferidas, role override | legado activo transversal       |
+| `vento-fogo`    | role override distribuido; no se confirma otro legado funcional específico                                                   | compatibilidad compartida       |
+| `vento-origo`   | role override distribuido; no se confirma otro legado funcional específico                                                   | compatibilidad compartida       |
+| `vento-pulso`   | tablero legacy en la cadena runtime y aliases de estado                                                                      | legado activo crítico           |
+| `vento-numera`  | no se confirma legado activo específico en este corte                                                                        | sin cierre de integridad        |
+| `Vento-Group`   | no se confirma legado activo específico en este corte                                                                        | sin cierre de integridad        |
+| `vento-anima`   | no se confirma legado activo específico en este corte                                                                        | sin cierre de integridad        |
+| `vento-pass`    | lectura de `logo_url` como fallback activo                                                                                   | compatibilidad activa           |
+| `vento-talento` | no se confirma legado activo específico; producto futuro                                                                     | fuera de producción             |
+| `vento-vital`   | proyecto separado                                                                                                            | fuera de Vento OS               |
+
+“Sin legado activo específico confirmado” no equivale a certificación de ausencia.
+
+---
+
+#### 16. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                         | Clasificación                  | Destino                                                                                    |
+| ---------------- | ------------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------------ |
+| `H-CODE-013-001` | el tablero actual de órdenes PULSO importa y renderiza `orders-board-legacy`                     | dependencia runtime legacy     | `PULSO-AUTH-002`, `PULSO-UX-001`, `007`, `013`, `019`, `CODE-AUD-014`, `015`, `019`, `020` |
+| `H-CODE-013-002` | la funcionalidad del tablero queda distribuida entre live, wrapper actual y base legacy          | transición sin consolidar      | `SHELL-AUD-001`, `SHELL-PKG-004`, `005`, `CODE-AUD-014`                                    |
+| `H-CODE-013-003` | PULSO acepta `in_transit` y `on_the_way` para el mismo estado visible                            | alias activo                   | `SHELL-CON-010`, `SUPA-TRANS-*`, `CODE-AUD-014`, `019`, `020`                              |
+| `H-CODE-013-004` | scripts históricos apuntan al tablero legacy, pero no se prueba ejecución actual                 | posible artefacto huérfano     | `CODE-AUD-015`                                                                             |
+| `H-CODE-013-005` | NEXO cambia a una consulta antigua cuando falla la consulta con `audience` y `remission_enabled` | fallback legacy activo         | `SUPA-AUD-016` a `019`, `SUPA-TRANS-003`, `005` a `007`, `012`, `013`                      |
+| `H-CODE-013-006` | NEXO deriva áreas de remisión desde nombres de rol y listas hardcodeadas                         | fuente de verdad legacy        | `PROC-ACTOR-002`, `010`, `NEXO-AUTH-029`, `CODE-AUD-014`, `017`, `019`, `020`              |
+| `H-CODE-013-007` | NEXO trata `received` y `closed` como equivalentes en superficies operativas                     | alias de estados               | `PROC-CAT-009` a `014`, `SHELL-CON-010`, `SUPA-TRANS-*`                                    |
+| `H-CODE-013-008` | productos sin perfil reciben supuestos operativos predeterminados                                | compatibilidad de datos legacy | `CAP-SCOPE-004`, `006`, `SUPA-TRANS-005`, `007`, `012`, `CODE-AUD-019`, `020`              |
+| `H-CODE-013-009` | productos sin SKU continúan operables mediante tratamiento legacy                                | compatibilidad de datos        | `CAP-SCOPE-004`, `DATA-NORM-AUD-004`, `SUPA-TRANS-005`, `007`, `012`                       |
+| `H-CODE-013-010` | la clase de una sede puede inferirse desde su nombre cuando faltan datos canónicos               | fallback semántico legacy      | `CAP-SCOPE-001`, `SUPA-AUD-019`, `SUPA-TRANS-005`, `007`, `012`                            |
+| `H-CODE-013-011` | VISO continúa escribiendo `logo_url` junto a card/header y PASS todavía lo consume               | columna legacy activa          | `VISO-UX-017`, `018`, `PASS-UX-001`, `SUPA-AUD-018`, `019`, `SUPA-TRANS-*`                 |
+| `H-CODE-013-012` | el endpoint de logos conserva `kind=legacy`                                                      | entrada legacy activa          | mismo destino de `H-CODE-013-011`                                                          |
+| `H-CODE-013-013` | role override permanece duplicado entre aplicaciones                                             | puente distribuido             | `SHELL-AUD-003`, `005`, `SHELL-PKG-004`, `005`, `CODE-AUD-014`, `017`                      |
+| `H-CODE-013-014` | migraciones históricas con nombre legacy no son runtime                                          | falso positivo                 | cerrado                                                                                    |
+| `H-CODE-013-015` | no se confirma legado activo específico en ANIMA, NUMERA, TALENTO o Vento Group                  | límite de evidencia            | continuar `CODE-AUD-014` a `020`                                                           |
+
+Todos los hallazgos quedan cerrados o vinculados a tareas existentes.
+
+**No se crea ninguna tarea nueva del roadmap.**
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 17.1. Requisitos reutilizados
+
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`;
+- `TREQ-PASS-004`;
+- `TREQ-NEXO-002`;
+- `TREQ-NEXO-006`.
+
+No se cambia su estado.
+
+##### 17.2. Requisitos nuevos
+
+###### `TREQ-PULSO-002`
+
+El tablero operativo de órdenes deberá migrar desde `orders-board-legacy` sin perder paridad comprobada de pedidos, filtros, transiciones, despacho, conversación, historial, facturación, regalos, eventos y actualización en tiempo real; después del retiro no podrá existir una importación runtime hacia la implementación legacy.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-NEXO-007`
+
+Todo fallback legacy de configuración de remisiones deberá distinguir errores de esquema de errores de permisos, red o consulta, registrar cuándo se activa y demostrar que no amplía ni reduce silenciosamente productos, audiencia, áreas, alcance o estados antes de su retiro.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-NEXO-008`
+
+Ningún producto podrá participar en una operación de inventario aplicando silenciosamente semántica predeterminada por ausencia de SKU o perfil canónico; toda excepción transitoria deberá ser identificable, auditable, regularizable y protegida por pruebas de paridad.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-PASS-005`
+
+La selección de logos de cada experiencia PASS deberá utilizar `card_logo_url` y `header_logo_url` como contrato canónico; `logo_url` solo podrá funcionar como fallback temporal identificado, y su backfill y retiro deberán preservar paridad visual antes de impedir nuevas escrituras legacy.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+###### `TREQ-SUPABASE-001`
+
+Todo wrapper, alias, columna, vista o fallback legacy todavía activo deberá tener propietario, consumidores, condición de activación, evidencia de uso, prueba de paridad, estrategia de rollback y puerta explícita de retiro antes de modificar o eliminar el contrato heredado.
+
+**Estado inicial propuesto:** `IDENTIFICADO`.
+
+Las filas canónicas completas deberán agregarse únicamente en:
+
+```text
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+después de la aprobación de `CODE-AUD-013`.
+
+No se duplican filas completas de `04A` dentro de esta tarea.
+
+---
+
+#### 18. Decisiones propuestas
+
+1. El nombre `legacy` no bastará para clasificar un artefacto.
+2. Se exigirá evidencia de consumo o ejecución actual.
+3. `orders-board-legacy` se declara legado runtime activo.
+4. Su retiro exigirá matriz de paridad funcional.
+5. Los scripts históricos de parche pasan a `CODE-AUD-015`.
+6. `in_transit` y `on_the_way` se declaran aliases activos pendientes de normalización.
+7. `received` y `closed` deberán diferenciarse o consolidarse mediante decisión de proceso.
+8. El fallback de columnas de NEXO se declara compatibilidad activa.
+9. Un error genérico no deberá activar silenciosamente un contrato antiguo.
+10. Las reglas de área por nombre de rol no serán fuente canónica definitiva.
+11. Los productos sin perfil no deberán recibir semántica operativa silenciosa en el estado objetivo.
+12. Los productos sin SKU deberán regularizarse antes de retirar compatibilidad.
+13. La inferencia de sede por nombre se declara fallback legacy.
+14. `logo_url` se declara contrato heredado todavía activo.
+15. `card_logo_url` y `header_logo_url` serán el contrato objetivo sujeto a validación.
+16. El endpoint no deberá seguir creando objetos `legacy` después de cerrar el backfill.
+17. Role override se conserva como simulación, pero deberá consolidarse.
+18. Las migraciones históricas no se eliminarán por contener la palabra legacy.
+19. Se derivan cinco requisitos de prueba.
+20. No se crea ninguna tarea nueva.
+21. No se modifica código.
+22. No se modifica Supabase.
+23. `CODE-AUD-014` será la única continuidad inmediata.
+
+---
+
+#### 19. Límites de certeza
+
+Esta tarea no confirma:
+
+- que todos los registros existentes utilicen columnas legacy;
+- que todos los aliases aparezcan en producción;
+- que `logo_url` pueda eliminarse inmediatamente;
+- que `on_the_way` o `in_transit` sea el estado definitivo;
+- que `closed` y `received` deban fusionarse;
+- que todos los productos sin perfil sean operativamente incorrectos;
+- que todo producto deba tener SKU visible;
+- que los scripts históricos de PULSO no sean ejecutados manualmente;
+- que ninguna otra rama contenga consumidores legacy;
+- que la inferencia por nombre se active actualmente para todas las sedes;
+- que role override deba retirarse;
+- que todas las migraciones legacy hayan cumplido su objetivo;
+- que no exista legado activo adicional en repositorios sin hallazgo específico.
+
+E3 deberá verificar datos y objetos reales antes de cualquier retiro.
+
+---
+
+#### 20. Criterios de aceptación
+
+`CODE-AUD-013` podrá aprobarse cuando:
+
+- legacy activo, dormido e histórico estén diferenciados;
+- PULSO tenga documentada la dependencia runtime hacia su tablero legacy;
+- se documenten los aliases de estado;
+- los scripts sin activación probada no se clasifiquen como runtime;
+- el fallback de columnas NEXO quede registrado;
+- las reglas por rol y nombre de sede tengan destino;
+- los productos sin perfil y sin SKU tengan tratamiento explícito;
+- el contrato heredado de logos quede documentado;
+- role override quede clasificado como puente distribuido;
+- las migraciones históricas queden excluidas como falsos positivos;
+- cada hallazgo tenga destino exacto;
+- no se cree ninguna tarea nueva;
+- los cinco requisitos nuevos estén identificados;
+- las filas completas no se dupliquen dentro de la tarea;
+- no se modifique código;
+- no se modifique Supabase;
+- `CODE-AUD-014` permanezca como continuidad inmediata.
+
+---
+
+#### 21. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+artefacto heredado
+→ consumidor actual
+→ motivo de compatibilidad
+→ riesgo de permanencia
+→ prueba de paridad
+→ adaptación de consumidores
+→ retiro controlado
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-014
+— Detectar código duplicado y fuentes de verdad competidoras
+```
+
+
+### ✅ CODE-AUD-014 — Detectar código duplicado y fuentes de verdad competidoras
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de duplicación ejecutable, contratos replicados y fuentes de verdad paralelas  
+**Dependencia anterior:** `CODE-AUD-013`  
+**Continuidad reservada:** `CODE-AUD-015`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea identifica dos familias de riesgo:
+
+1. **código duplicado activo**, cuando una misma responsabilidad está implementada en varios repositorios o archivos y puede evolucionar de forma distinta;
+2. **fuentes de verdad competidoras**, cuando un mismo hecho empresarial puede obtenerse, inferirse o modificarse desde más de una fuente sin un propietario, precedencia o reconciliación inequívocos.
+
+Resultado general:
+
+- la fundación de Vento OS continúa copiada dentro de varias aplicaciones;
+- AppShell, contexto operativo, role override, permisos, navegación y contratos básicos presentan implementaciones locales;
+- ya existe divergencia funcional entre copias del evaluador de role override;
+- el catálogo visible de aplicaciones se encuentra hardcodeado en cada AppShell mientras la navegación se consulta dinámicamente desde Supabase;
+- NEXO resuelve la habilitación de remisiones mediante varias capas de configuración y fallbacks distribuidos;
+- NEXO compone la semántica operativa de un producto desde varias tablas y reglas locales;
+- inventario mantiene un ledger de movimientos y tres proyecciones mutables que ciertas rutas actualizan de forma secuencial;
+- PASS conserva simultáneamente experiencias estáticas de Vento Café y Saudo y la experiencia dinámica basada en `pass_satellites`;
+- PASS puede resolver la sede por heurística sobre `sites` o mediante `pass_satellites.site_id`;
+- las duplicaciones de compatibilidad ya detectadas en `CODE-AUD-013` se reutilizan y no se registran dos veces;
+- no se crea ninguna tarea nueva del roadmap;
+- se derivan siete requisitos de prueba;
+- no se modifica código ni Supabase.
+
+---
+
+#### 2. Definiciones utilizadas
+
+##### 2.1. Duplicación técnica
+
+Dos o más implementaciones ejecutables de la misma responsabilidad.
+
+Ejemplos:
+
+- dos evaluadores de permisos;
+- varios resolutores de contexto;
+- AppShell copiado por repositorio;
+- normalización de unidades repetida;
+- listas de aplicaciones replicadas;
+- lógica de stock escrita en varias rutas.
+
+##### 2.2. Duplicación deliberada
+
+Duplicación permitida temporalmente cuando:
+
+- existe propietario;
+- tiene alcance conocido;
+- se conserva paridad;
+- se prueba;
+- tiene mecanismo de actualización;
+- posee criterio de retiro.
+
+##### 2.3. Fuente de verdad canónica
+
+Única fuente autorizada para crear o modificar un hecho empresarial.
+
+Puede existir más de una representación, pero las demás deberán ser:
+
+- proyecciones;
+- cachés;
+- vistas;
+- snapshots;
+- índices;
+- réplicas;
+- adaptadores.
+
+Cada representación derivada deberá declarar de qué fuente proviene y cómo se reconcilia.
+
+##### 2.4. Fuente competidora
+
+Fuente que puede decidir o modificar el mismo hecho sin una precedencia inequívoca.
+
+Ejemplos:
+
+- capacidad de una sede definida por tabla especializada y por `site_type`;
+- permiso evaluado por helper canónico y por lista local de roles;
+- unidad base tomada de perfil, política, presentación o columna del producto;
+- stock calculado por ledger y también escrito directamente en varias tablas;
+- sede cliente resuelta por relación explícita y por búsqueda de nombre.
+
+##### 2.5. Proyección válida
+
+Tabla o vista derivada que:
+
+- no redefine la regla empresarial;
+- se actualiza atómicamente;
+- puede reconstruirse;
+- se reconcilia;
+- tiene semántica documentada;
+- no puede divergir silenciosamente.
+
+---
+
+#### 3. Método aplicado
+
+Para cada responsabilidad se contrastó:
+
+```text
+hecho empresarial
+→ escritor o resolutor
+→ fuentes consultadas
+→ precedencia
+→ consumidores
+→ mecanismos de actualización
+→ pruebas
+→ reconciliación
+```
+
+Se buscó especialmente:
+
+- el mismo archivo o helper en varios repositorios;
+- estructuras TypeScript repetidas;
+- constantes repetidas;
+- decisiones locales de autorización;
+- lecturas de tablas diferentes para el mismo hecho;
+- fallbacks basados en nombres o tipos;
+- escrituras paralelas;
+- proyecciones actualizadas desde cliente o API;
+- rutas antiguas y nuevas disponibles simultáneamente;
+- contratos configurados en Supabase y replicados en código.
+
+No se clasifica como duplicación problemática:
+
+- una interfaz específica de aplicación;
+- una copia generada automáticamente;
+- un adaptador local pequeño;
+- un tipo derivado de contrato versionado;
+- una caché con fuente y TTL explícitos;
+- una proyección reconstruible y reconciliada;
+- una configuración por sede con jerarquía formalmente aprobada.
+
+---
+
+#### 4. Fundación compartida copiada entre aplicaciones
+
+Se confirmaron archivos equivalentes dentro de aplicaciones como:
+
+```text
+src/components/vento/standard/vento-shell.tsx
+src/components/vento/standard/vento-chrome.tsx
+src/lib/auth/role-override.ts
+src/lib/auth/operational-context.ts
+src/lib/auth/operational-session.ts
+src/lib/auth/permissions.ts
+src/lib/supabase/server.ts
+```
+
+Las copias de `vento-shell.tsx` en NEXO, VISO y PULSO contienen la misma estructura base:
+
+- tipos de sede;
+- asignaciones del trabajador;
+- contexto activo;
+- dispositivo compartido;
+- puertas operativas;
+- catálogo de aplicaciones;
+- navegación;
+- bypass administrativo;
+- resolución de jornada;
+- permisos por navegación;
+- renderizado de Chrome.
+
+No son simples componentes visuales.
+
+Cada copia participa en:
+
+- autorización;
+- visibilidad;
+- contexto;
+- disponibilidad de aplicaciones;
+- bloqueo por jornada;
+- navegación;
+- dispositivos compartidos.
+
+##### 4.1. Divergencias ya visibles
+
+NEXO agrega responsabilidades que otras copias no tienen o no manejan igual:
+
+- `checkOperationalPermission`;
+- cookie local de sede;
+- permisos operativos específicos de remisión;
+- conjunto ampliado de iconos;
+- lógica específica de aplicaciones y rutas.
+
+PULSO y VISO conservan catálogos e iconos diferentes.
+
+Estas diferencias pueden ser válidas como extensiones, pero actualmente el límite entre:
+
+```text
+núcleo compartido
+```
+
+y:
+
+```text
+extensión local
+```
+
+no está materializado mediante contrato o paquete.
+
+##### 4.2. Riesgo
+
+- una corrección de seguridad puede aplicarse solo en una aplicación;
+- la misma sesión puede resolverse de forma distinta;
+- los dispositivos compartidos pueden tener puertas diferentes;
+- el app switcher puede divergir;
+- los tipos copiados pueden dejar de representar la base;
+- cada repositorio puede interpretar distinto un cambio de Supabase.
+
+##### 4.3. Destino
+
+- `SHELL-AUD-001` a `SHELL-AUD-010`;
+- `SHELL-PKG-001` a `SHELL-PKG-008`;
+- `SHELL-CON-001` a `SHELL-CON-016`;
+- `CODE-AUD-016`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se ordena extraer todo a un único paquete.
+
+`SHELL-AUD-010` deberá clasificar cada pieza como:
+
+```text
+compartir
+generar
+mantener local
+```
+
+---
+
+#### 5. Evaluadores de role override ya divergentes
+
+Se compararon las implementaciones de NEXO y FOGO.
+
+##### 5.1. FOGO
+
+FOGO carga desde `role_permissions`:
+
+```text
+scope_site_id
+scope_area_id
+scope_site_type
+scope_area_kind
+```
+
+y evalúa esos campos directamente.
+
+##### 5.2. NEXO
+
+NEXO no selecciona `scope_site_id` ni `scope_area_id` dentro de esa carga.
+
+En su lugar:
+
+- asigna ambos como `null`;
+- consulta todos los `employee_sites` activos;
+- exige que el contexto de sede esté dentro de ese conjunto;
+- contiene una excepción específica para conductor y tránsito.
+
+Por tanto, dos aplicaciones que afirman ejecutar:
+
+```text
+checkPermissionWithRoleOverride
+```
+
+no aplican exactamente el mismo contrato de alcance.
+
+##### 5.3. Riesgo
+
+- una simulación puede permitir en una app y denegar en otra;
+- un scope por sede concreta puede ignorarse;
+- la cobertura del trabajador puede reemplazar el scope del permiso;
+- una excepción funcional puede quedar incrustada en el helper general;
+- una prueba de una copia no protege a las demás.
+
+##### 5.4. Clasificación
+
+**Duplicación crítica con divergencia funcional confirmada.**
+
+Destinos:
+
+- `SHELL-AUD-003`;
+- `SHELL-AUD-004`;
+- `SHELL-AUD-005`;
+- `SHELL-AUD-009`;
+- `SHELL-CON-003`;
+- `SHELL-CON-006`;
+- `SHELL-CON-007`;
+- `AUTH-CTX-025` a `AUTH-CTX-030`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-AUTH-001`;
+- mantiene `TREQ-AUTH-002`;
+- crea `TREQ-AUTH-004`.
+
+---
+
+#### 6. Catálogo de aplicaciones y navegación distribuido
+
+Cada AppShell conserva un arreglo local:
+
+```text
+APP_SWITCHER_ITEMS
+```
+
+con:
+
+- identificador;
+- nombre;
+- descripción;
+- URL;
+- logo;
+- color;
+- estado;
+- grupo.
+
+Al mismo tiempo, la navegación interna se obtiene desde:
+
+```text
+app_navigation_items
+```
+
+y el acceso depende de permisos y aplicaciones permitidas.
+
+##### 6.1. Fuentes actuales
+
+```text
+APP_SWITCHER_ITEMS local
+→ qué aplicación existe, URL, marca y estado
+
+app_navigation_items
+→ qué navegación tiene la aplicación
+
+shared_operational_devices.allowed_app_codes
+→ qué aplicación puede abrir un dispositivo
+
+apps / app_permissions
+→ qué aplicación y permisos existen en autorización
+```
+
+Estas fuentes representan aspectos diferentes, pero el código no contiene un contrato central que garantice:
+
+- que todos los IDs existan;
+- que las URLs coincidan;
+- que un estado `soon` no contradiga el catálogo;
+- que un dispositivo no reciba una aplicación ausente del switcher;
+- que todos los repositorios tengan la misma lista;
+- que la eliminación de una aplicación se propague.
+
+##### 6.2. Riesgo
+
+- AURA puede aparecer diferente entre aplicaciones;
+- un dominio puede cambiar sin actualizar todos los repositorios;
+- una app activa puede seguir marcada `soon`;
+- una aplicación permitida puede no tener URL;
+- el mismo color, logo o descripción puede divergir;
+- el switcher puede presentar una capacidad inexistente.
+
+##### 6.3. Destino
+
+- `SHELL-AUD-006`;
+- `SHELL-AUD-009`;
+- `SHELL-AUD-010`;
+- `SHELL-CON-002`;
+- `SHELL-CON-011`;
+- `SHELL-PKG-004`;
+- `SHELL-PKG-005`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-SHELL-001`;
+- crea `TREQ-SHELL-003`.
+
+---
+
+#### 7. NEXO — varias fuentes resuelven si una sede puede operar remisiones
+
+Se localizaron estas fuentes activas:
+
+```text
+area_kinds.use_for_remission
+site_purpose_settings
+site_area_purpose_rules
+site_operational_capabilities
+sites.site_type
+areas.kind
+contexto operativo activo
+shared_operational_devices.site_id / area_id
+product_site_settings.remission_enabled
+product_site_settings.area_kinds
+```
+
+##### 7.1. Jerarquía parcial existente
+
+La configuración administrativa permite:
+
+```text
+global
+→ area_kinds.use_for_remission
+
+por sede
+→ site_purpose_settings.mode
+
+excepciones por sede y área
+→ site_area_purpose_rules
+```
+
+El resolutor de áreas intenta primero las reglas específicas y después combina áreas activas con el catálogo global.
+
+##### 7.2. Segunda decisión para la sede
+
+La creación de remisiones consulta:
+
+```text
+site_operational_capabilities.can_request_remissions
+```
+
+Cuando no existe fila, vuelve a:
+
+```text
+sites.site_type === satellite
+```
+
+Por tanto, la capacidad “esta sede solicita remisiones” puede depender de:
+
+1. una capacidad explícita; o
+2. una clasificación general de sede.
+
+##### 7.3. Decisiones adicionales
+
+Después se filtran:
+
+- productos habilitados;
+- áreas del producto;
+- contexto del trabajador;
+- contexto del dispositivo;
+- permiso.
+
+Estas condiciones son legítimas, pero están distribuidas entre páginas, helpers y acciones.
+
+##### 7.4. Riesgo
+
+- dos superficies pueden usar una parte distinta de la jerarquía;
+- la ausencia de una fila puede interpretarse como herencia o como denegación;
+- `site_type` puede reactivar una capacidad no configurada;
+- el catálogo global puede competir con una excepción vacía;
+- un producto puede aparecer en catálogo y ser rechazado al guardar;
+- un dispositivo y un trabajador pueden obtener resultados diferentes.
+
+##### 7.5. Clasificación
+
+**Fuentes de decisión distribuidas con precedencia parcialmente codificada.**
+
+Destinos:
+
+- `PROC-CAT-003` a `PROC-CAT-018`;
+- `PROC-ACTOR-001` a `PROC-ACTOR-010`;
+- `NEXO-UX-009` a `NEXO-UX-013`;
+- `NEXO-AUTH-029`;
+- `SHELL-CON-009`;
+- `SHELL-CON-012`;
+- `SUPA-AUD-019`;
+- `SUPA-AUD-022`;
+- `SUPA-AUD-023`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-NEXO-009`.
+
+No se elimina la configuración por capas.
+
+Se exige convertirla en una jerarquía canónica única y reutilizable.
+
+---
+
+#### 8. NEXO — semántica operativa de producto compuesta desde varias fuentes
+
+En remisiones se utilizan:
+
+```text
+products.unit
+products.stock_unit_code
+products.product_type
+product_inventory_profiles.inventory_kind
+product_inventory_profiles.measurement_mode
+product_inventory_profiles.default_tolerance_percent
+product_inventory_profiles.requires_actual_dispatch_qty
+product_inventory_profiles.requires_count_alongside_weight
+product_uom_profiles
+product_request_policies
+product_site_settings
+```
+
+##### 8.1. Precedencias actuales
+
+El flujo puede decidir la cantidad base mediante:
+
+1. una política de solicitud;
+2. una presentación física;
+3. la unidad de stock;
+4. la unidad legacy del producto;
+5. el fallback `"un"`.
+
+La modalidad de medición puede provenir de:
+
+1. `product_inventory_profiles.measurement_mode`;
+2. una normalización local;
+3. `fixed_presentation` cuando falta perfil.
+
+La disponibilidad depende adicionalmente de `product_site_settings`.
+
+##### 8.2. Lógica repetida
+
+La interpretación de unidades, presentaciones y perfiles aparece en:
+
+- remisiones;
+- conteo inicial;
+- retiro desde kiosco;
+- tablero de LOC;
+- catálogo;
+- configuración de remisiones;
+- presentación de productos.
+
+Existen helpers comunes, pero también normalizadores, tipos y fallbacks locales.
+
+##### 8.3. Riesgo
+
+- una pantalla convierte distinto que otra;
+- la unidad mostrada puede no ser la unidad persistida;
+- una política puede contradecir un perfil;
+- una presentación inactiva puede seguir siendo aceptada por otro flujo;
+- un producto sin perfil recibe semántica de código;
+- un cambio de unidad puede no propagarse a todas las superficies;
+- la configuración por sede puede alterar disponibilidad sin alterar conversión.
+
+##### 8.4. Clasificación
+
+No se declara que las tablas sean duplicadas por diseño.
+
+El hallazgo es:
+
+```text
+la precedencia y las invariantes viven parcialmente en código consumidor
+```
+
+en lugar de existir como contrato único.
+
+Destinos:
+
+- `CAP-SCOPE-004`;
+- `CAP-SCOPE-006`;
+- `SHELL-AUD-009`;
+- `SHELL-CON-001`;
+- `SHELL-CON-009`;
+- `SHELL-CON-012`;
+- `SUPA-AUD-019`;
+- `SUPA-AUD-022`;
+- `SUPA-AUD-023`;
+- `SUPA-ARC-*`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-NEXO-008`;
+- crea `TREQ-NEXO-010`.
+
+---
+
+#### 9. Inventario — ledger y proyecciones mutables actualizados desde una misma ruta
+
+La ruta de ajustes utiliza:
+
+```text
+inventory_movements
+inventory_stock_by_site
+inventory_stock_by_location
+inventory_stock_by_position
+```
+
+##### 9.1. Comportamiento confirmado
+
+La ruta:
+
+1. lee las tres proyecciones;
+2. calcula diferencias;
+3. inserta un movimiento;
+4. actualiza stock por sede;
+5. actualiza stock por LOC;
+6. actualiza stock por posición;
+7. puede ejecutar RPC de reconciliación;
+8. puede actualizar costo del producto;
+9. puede insertar un evento de costo.
+
+Estas operaciones se ejecutan mediante llamadas sucesivas desde la ruta.
+
+##### 9.2. Competencia potencial de verdad
+
+Si `inventory_movements` es el ledger canónico, las tablas de stock deberían ser proyecciones derivadas.
+
+Sin embargo, las proyecciones son modificadas directamente y luego utilizadas para decidir cantidades futuras.
+
+Un fallo después de insertar el movimiento puede dejar:
+
+```text
+movimiento creado
++
+una o más proyecciones sin actualizar
+```
+
+Un fallo posterior puede dejar costo y stock en estados distintos.
+
+##### 9.3. Riesgo
+
+- stock por sede distinto de la suma de LOC;
+- stock de LOC distinto de posiciones;
+- movimiento sin proyección;
+- proyección sin evento equivalente;
+- reintento que duplica el movimiento;
+- costo actualizado sin evento o viceversa;
+- correcciones especiales acumuladas como lógica local.
+
+##### 9.4. Clasificación
+
+**Fuentes mutables múltiples sin atomicidad demostrada en esta ruta.**
+
+Destinos:
+
+- `SUPA-AUD-004` a `SUPA-AUD-008`;
+- `SUPA-AUD-018`;
+- `SUPA-AUD-019`;
+- `SUPA-AUD-022`;
+- `SUPA-AUD-023`;
+- `SUPA-ARC-003`;
+- `SUPA-ARC-005`;
+- `SUPA-ARC-006`;
+- `SUPA-ARC-012`;
+- `SUPA-ARC-013`;
+- `SUPA-ARC-014`;
+- `SUPA-TRANS-*`;
+- `CODE-AUD-018`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-SUPABASE-002`.
+
+No se decide todavía si el ledger o una tabla de stock será la fuente final.
+
+E3 deberá aprobarlo explícitamente.
+
+---
+
+#### 10. PASS — experiencias estáticas y dinámicas activas en paralelo
+
+`App.js` registra simultáneamente:
+
+```text
+VentoCafe
+Saudo
+SatelliteExperience
+SatellitePass
+```
+
+Las rutas de Vento Café y Saudo usan componentes específicos.
+
+La experiencia nueva utiliza:
+
+```text
+pass_satellites
+→ site_id
+→ configuración de marca
+→ experiencia dinámica
+```
+
+##### 10.1. Resolución antigua de sede
+
+La utilidad `site.ts` busca la sede mediante una combinación de:
+
+```text
+sites.type
+sites.name
+sites.code
+BUSINESS_SEARCH_TERMS
+```
+
+y toma el primer resultado activo.
+
+##### 10.2. Resolución dinámica
+
+La experiencia dinámica utiliza:
+
+```text
+pass_satellites.site_id
+```
+
+y puede combinar:
+
+```text
+sites.address / latitude / longitude
+```
+
+con:
+
+```text
+pass_satellites.address_override
+pass_satellites.latitude_override
+pass_satellites.longitude_override
+```
+
+##### 10.3. Doble implementación
+
+Para una misma marca pueden coexistir:
+
+```text
+componente específico
++
+búsqueda heurística de sede
+```
+
+y:
+
+```text
+componente dinámico
++
+relación explícita pass_satellites.site_id
+```
+
+Esto no es únicamente una diferencia visual.
+
+Afecta:
+
+- sede de recompensas;
+- historial;
+- marca;
+- dirección;
+- coordenadas;
+- enlaces;
+- navegación;
+- pedidos;
+- filtros;
+- caché.
+
+##### 10.4. Riesgo
+
+- una ruta usa un `site_id` y otra usa otro;
+- una marca corregida en VISO no cambia el componente estático;
+- la experiencia dinámica y la específica muestran datos distintos;
+- una nueva sede queda fuera de la heurística;
+- una ruta vieja permanece accesible después de migrar;
+- pruebas sobre una experiencia no protegen la otra.
+
+##### 10.5. Destino
+
+- `PASS-UX-001 — Inventariar pantallas actuales de cliente`;
+- `PASS-UX-002 — Diseñar navegación principal`;
+- `PASS-UX-003 — Diseñar inicio`;
+- `PASS-UX-004 — Diseñar identificación por QR`;
+- `PASS-UX-006 — Diseñar historial`;
+- `PASS-UX-010 — Simplificar interfaz móvil`;
+- `PASS-UX-013 — Ejecutar pruebas con clientes reales`;
+- `SHELL-AUD-001`;
+- `SHELL-AUD-009`;
+- `SUPA-AUD-019`;
+- `SUPA-AUD-022`;
+- `SUPA-AUD-023`;
+- `CODE-AUD-015`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-PASS-004`;
+- mantiene `TREQ-PASS-005`;
+- crea `TREQ-PASS-006`.
+
+---
+
+#### 11. Duplicaciones ya cubiertas por tareas anteriores
+
+##### 11.1. PULSO `orders-board-legacy`
+
+Permanece cubierto por:
+
+```text
+CODE-AUD-013
+TREQ-PULSO-002
+```
+
+`CODE-AUD-014` añade que la responsabilidad está distribuida entre:
+
+- live bridge;
+- wrapper actual;
+- implementación legacy;
+- bridges adicionales.
+
+No se crea otro requisito.
+
+##### 11.2. Aliases de estados
+
+Los estados equivalentes de PULSO y NEXO permanecen cubiertos por:
+
+- `TREQ-SUPABASE-001`;
+- transición de Supabase;
+- centralización de estados.
+
+##### 11.3. `logo_url`
+
+La columna legacy y sus nuevos campos permanecen cubiertos por:
+
+```text
+TREQ-PASS-005
+```
+
+`CODE-AUD-014` amplía el análisis hacia la coexistencia de experiencia estática y dinámica.
+
+##### 11.4. Role override
+
+La compatibilidad legacy permanece cubierta por:
+
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`;
+- `TREQ-SUPABASE-001`.
+
+Se crea `TREQ-AUTH-004` únicamente para proteger la paridad entre evaluadores duplicados.
+
+---
+
+#### 12. Falsos positivos excluidos
+
+##### 12.1. Componentes visuales parecidos
+
+No se clasifican como duplicación crítica cuando representan:
+
+- una composición propia;
+- estilo de aplicación;
+- pantalla de dominio;
+- layout específico.
+
+##### 12.2. Configuración global con override por sede
+
+No es fuente competidora si existe una jerarquía inequívoca:
+
+```text
+global
+→ override por sede
+→ override por área
+```
+
+El hallazgo aparece cuando esa jerarquía se implementa de manera distinta en cada consumidor o incluye fallbacks no declarados.
+
+##### 12.3. Cachés
+
+AsyncStorage, caché de memoria y snapshots no son fuentes canónicas si:
+
+- tienen TTL;
+- pueden invalidarse;
+- no escriben el hecho empresarial;
+- la fuente remota prevalece.
+
+##### 12.4. Vistas y proyecciones
+
+No son fuentes competidoras por existir.
+
+Se convierten en riesgo cuando:
+
+- son directamente mutables;
+- no pueden reconstruirse;
+- no se actualizan atómicamente;
+- no existe conciliación.
+
+##### 12.5. Datos comerciales y operativos separados
+
+`pass_satellites` puede ser propietario de la experiencia comercial y `sites` de la sede operativa.
+
+La separación es válida si el contrato define:
+
+- campos propios;
+- campos heredados;
+- overrides permitidos;
+- precedencia;
+- sincronización;
+- consumidores.
+
+##### 12.6. Tipos locales
+
+Un tipo local pequeño no exige paquete compartido si no representa un contrato transversal.
+
+---
+
+#### 13. Matriz por repositorio
+
+| Repositorio     | Duplicación o competencia confirmada                                                          | Clasificación           |
+| --------------- | --------------------------------------------------------------------------------------------- | ----------------------- |
+| `vento-shell`   | contiene la base y los contratos candidatos, pero todavía no se distribuyen como fuente única | fundación pendiente     |
+| `vento-viso`    | AppShell y auth locales; administra `pass_satellites`; catálogo de apps local                 | duplicación compartida  |
+| `vento-nexo`    | AppShell/auth locales; múltiples resolutores de capacidad, producto y stock                   | crítica                 |
+| `vento-fogo`    | AppShell/auth locales con evaluador de scope distinto a NEXO                                  | crítica de autorización |
+| `vento-origo`   | AppShell/auth locales; requiere comparación completa en SHELL-AUD                             | duplicación compartida  |
+| `vento-pulso`   | AppShell local y responsabilidad de órdenes distribuida                                       | duplicación activa      |
+| `vento-numera`  | AppShell y contratos locales pendientes de comparación                                        | duplicación compartida  |
+| `Vento-Group`   | no se confirma fuente competidora nueva en este corte                                         | sin hallazgo nuevo      |
+| `vento-anima`   | implementación móvil propia; contratos de contexto deberán compararse                         | pendiente               |
+| `vento-pass`    | experiencias estáticas y dinámicas, dos resoluciones de sede y múltiples capas de marca       | competencia activa      |
+| `vento-talento` | producto futuro; no se clasifica como riesgo productivo                                       | diferido                |
+| `vento-vital`   | proyecto separado                                                                             | fuera de Vento OS       |
+
+---
+
+#### 14. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                | Destino                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `H-CODE-014-001` | AppShell y fundación operativa están copiados entre aplicaciones                        | `SHELL-AUD-001` a `010`, `SHELL-PKG-*`, `SHELL-CON-*`, `TREQ-SHELL-002` |
+| `H-CODE-014-002` | las copias ya contienen extensiones y comportamientos diferentes                        | mismo destino de `H-CODE-014-001`                                       |
+| `H-CODE-014-003` | NEXO y FOGO evalúan role override con semántica territorial distinta                    | `SHELL-AUD-003` a `005`, `CODE-AUD-017`, `TREQ-AUTH-004`                |
+| `H-CODE-014-004` | cada AppShell conserva un catálogo local de aplicaciones                                | `SHELL-AUD-006`, `SHELL-CON-002`, `TREQ-SHELL-003`                      |
+| `H-CODE-014-005` | el catálogo local debe coexistir con navegación, permisos y apps permitidas en Supabase | `SHELL-AUD-006`, `009`, `010`, `CODE-AUD-019`, `020`                    |
+| `H-CODE-014-006` | la capacidad de remisiones de una sede se resuelve desde varias tablas y fallbacks      | `PROC-CAT-*`, `NEXO-UX-009` a `013`, `SUPA-AUD-019`, `TREQ-NEXO-009`    |
+| `H-CODE-014-007` | la semántica de producto se compone desde varias tablas y precedencias locales          | `CAP-SCOPE-004`, `006`, `SUPA-AUD-019`, `TREQ-NEXO-010`                 |
+| `H-CODE-014-008` | la interpretación de unidades y perfiles se repite entre varios consumidores NEXO       | `SHELL-AUD-009`, `SHELL-CON-001`, `012`, `CODE-AUD-019`, `020`          |
+| `H-CODE-014-009` | ajustes escribe ledger y tres proyecciones mediante pasos sucesivos                     | `SUPA-AUD-*`, `SUPA-ARC-*`, `CODE-AUD-018`, `TREQ-SUPABASE-002`         |
+| `H-CODE-014-010` | PASS registra rutas específicas y dinámicas para experiencias equivalentes              | `PASS-UX-*`, `CODE-AUD-015`, `019`, `020`, `TREQ-PASS-006`              |
+| `H-CODE-014-011` | PASS puede resolver sede mediante heurística o relación explícita                       | `PASS-UX-001`, `006`, `SUPA-AUD-019`, `TREQ-PASS-006`                   |
+| `H-CODE-014-012` | datos operativos de `sites` y overrides comerciales requieren contrato de propiedad     | `SUPA-AUD-022`, `023`, `PASS-UX-001`, `TREQ-PASS-006`                   |
+| `H-CODE-014-013` | tablero legacy, aliases y logos legacy ya están cubiertos por requisitos anteriores     | reutilización                                                           | mantener `TREQ-PULSO-002`, `TREQ-PASS-005`, `TREQ-SUPABASE-001` |
+| `H-CODE-014-014` | no toda configuración por capas constituye competencia                                  | regla de clasificación                                                  | cerrado                                                         |
+| `H-CODE-014-015` | no se confirma una fuente competidora nueva en Vento Group, TALENTO o VITAL             | límite de evidencia                                                     | continuar auditoría                                             |
+
+Todos los hallazgos quedan cerrados o vinculados a tareas existentes.
+
+**No se crea ninguna tarea nueva del roadmap.**
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 15.1. Requisitos reutilizados
+
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`;
+- `TREQ-SHELL-001`;
+- `TREQ-NEXO-006`;
+- `TREQ-NEXO-007`;
+- `TREQ-NEXO-008`;
+- `TREQ-PASS-004`;
+- `TREQ-PASS-005`;
+- `TREQ-PULSO-002`;
+- `TREQ-SUPABASE-001`.
+
+No se cambia su estado.
+
+##### 15.2. Requisitos nuevos
+
+- `TREQ-SHELL-002` — paridad y distribución controlada de la fundación compartida;
+- `TREQ-SHELL-003` — catálogo único de aplicaciones, destinos y estado;
+- `TREQ-AUTH-004` — equivalencia de decisiones entre evaluadores de autorización;
+- `TREQ-NEXO-009` — jerarquía única de capacidad de remisiones por sede y área;
+- `TREQ-NEXO-010` — precedencia única de semántica operativa de producto;
+- `TREQ-PASS-006` — convergencia entre experiencia estática, experiencia dinámica y sede;
+- `TREQ-SUPABASE-002` — atomicidad y reconciliación entre ledger y proyecciones de inventario.
+
+Las filas canónicas completas deberán agregarse únicamente en:
+
+```text
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+No se duplican filas completas de `04A` dentro de esta tarea.
+
+---
+
+#### 16. Decisiones propuestas
+
+1. No toda duplicación será eliminada.
+2. Cada pieza se clasificará como compartir, generar o mantener local.
+3. La fundación común no seguirá dependiendo de copias manuales sin pruebas de paridad.
+4. Las extensiones locales deberán separarse del núcleo.
+5. Los evaluadores de autorización deberán producir la misma decisión para el mismo contexto.
+6. Las excepciones de negocio no deberán incrustarse en una copia general sin contrato.
+7. El catálogo de aplicaciones deberá tener una fuente canónica.
+8. La navegación podrá seguir siendo dinámica.
+9. La jerarquía de capacidad de remisiones deberá centralizarse en un resolutor único.
+10. `site_type` no deberá competir indefinidamente con capacidades explícitas.
+11. La semántica de producto deberá tener precedencia aprobada.
+12. Los consumidores no deberán inventar fallbacks incompatibles.
+13. E3 deberá decidir la fuente canónica de stock.
+14. Ledger y proyecciones deberán actualizarse atómicamente o reconciliarse.
+15. PASS deberá decidir y ejecutar la convergencia entre rutas específicas y dinámicas.
+16. `sites` y `pass_satellites` podrán coexistir con propiedad de campos explícita.
+17. Se derivan siete requisitos de prueba.
+18. No se crea ninguna tarea nueva.
+19. No se modifica código.
+20. No se modifica Supabase.
+21. `CODE-AUD-015` será la única continuidad inmediata.
+
+---
+
+#### 17. Límites de certeza
+
+Esta tarea no confirma:
+
+- que cada copia de AppShell tenga exactamente el mismo número de líneas;
+- que toda diferencia entre aplicaciones sea incorrecta;
+- que el mecanismo final de distribución deba ser un paquete npm;
+- que `apps` contenga actualmente toda la metadata del switcher;
+- que las proyecciones de stock no tengan triggers adicionales;
+- que todos los ajustes terminen en divergencia;
+- que `inventory_movements` deba ser obligatoriamente la fuente definitiva;
+- que todas las rutas estáticas de PASS sean alcanzadas desde Home;
+- que `pass_satellites` y `sites` deban fusionarse;
+- que toda regla por sede deba vivir en una sola tabla;
+- que todas las duplicaciones existentes hayan sido detectadas;
+- que ausencia de hallazgo en un repositorio equivalga a integridad.
+
+E3 deberá revisar objetos, triggers, funciones y datos reales antes de aprobar una fuente de verdad.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CODE-AUD-014` podrá aprobarse cuando:
+
+- duplicación técnica, deliberada y proyección válida estén diferenciadas;
+- las copias de AppShell estén inventariadas;
+- la divergencia del role override esté documentada;
+- el catálogo de aplicaciones tenga destino;
+- la jerarquía de remisiones tenga destino;
+- las fuentes de semántica de producto tengan destino;
+- ledger y proyecciones de stock estén contrastados;
+- PASS estático y dinámico estén contrastados;
+- cada hallazgo tenga tarea responsable;
+- no se cree ninguna tarea nueva;
+- los siete requisitos nuevos estén identificados;
+- las filas completas se entreguen fuera de esta tarea;
+- no se modifique código;
+- no se modifique Supabase;
+- `CODE-AUD-015` permanezca como continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+hecho empresarial
+→ implementaciones y fuentes actuales
+→ propietario
+→ fuente canónica
+→ proyecciones y adaptadores
+→ pruebas de paridad y reconciliación
+→ retiro de duplicación accidental
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-015
+— Detectar rutas, componentes, funciones y tablas sin consumidores
+```
+
+
+### ✅ CODE-AUD-015 — Detectar rutas, componentes, funciones y tablas sin consumidores
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de alcanzabilidad, referencias, consumidores y artefactos huérfanos  
+**Dependencia anterior:** `CODE-AUD-014`  
+**Continuidad reservada:** `CODE-AUD-016`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea identifica artefactos que existen en los repositorios o en el esquema, pero para los cuales no se localizó una cadena funcional completa y actualmente alcanzable.
+
+Se revisaron:
+
+- rutas y páginas;
+- componentes;
+- hooks y helpers;
+- exports;
+- endpoints;
+- server actions;
+- scripts;
+- tablas;
+- vistas;
+- RPC;
+- funciones;
+- navegación;
+- registros de pantalla;
+- imports estáticos;
+- manifests de build históricos disponibles;
+- referencias textuales;
+- comandos de `package.json`;
+- consumidores actuales e históricos.
+
+Resultado general:
+
+- NEXO conserva una superficie LPN fragmentada: componente de creación sin montaje localizado, ruta que redirige, endpoint de lectura sin caller interno localizado y tablas sin ciclo completo;
+- PASS conserva una cadena alternativa de seguimiento de pedidos que no está registrada en la navegación activa;
+- PASS conserva al menos un export auxiliar sin consumidor localizado;
+- PULSO conserva scripts manuales de parche que no forman parte de sus comandos actuales;
+- el repositorio archivado `vento-platform` contiene un prototipo POS histórico, pero la ruta POS alcanzable del último build inspeccionado solo consumía identificación de cliente, puntos y canjes;
+- las acciones históricas de creación de orden y pago existen en código fuente, pero no aparecen conectadas a la ruta POS compilada inspeccionada;
+- algunos objetos `pos.*` sí tienen consumidores actuales en el salón de `vento-pulso`;
+- otros objetos solo tienen consumidores históricos dormidos, referencias de tipos o ninguna referencia ejecutable confirmada;
+- el prototipo histórico no se adopta como arquitectura base del nuevo POS;
+- se crearán tareas explícitas para auditar el prototipo y diseñar un POS integral nuevo;
+- no se autoriza eliminar ningún artefacto durante E1;
+- se reutilizan requisitos existentes;
+- se derivan cuatro requisitos de prueba nuevos;
+- no se modifica código ni Supabase.
+
+---
+
+#### 2. Regla de clasificación
+
+Un artefacto se clasifica como **sin consumidor confirmado** cuando no se localiza una cadena demostrable como:
+
+```text
+entrada alcanzable
+→ consumidor
+→ invocación
+→ resultado
+```
+
+Para código:
+
+```text
+ruta, import, registro, navegación, script o build
+→ artefacto
+```
+
+Para datos:
+
+```text
+aplicación, RPC, trigger, vista, función, integración o proceso externo
+→ objeto
+```
+
+Para scripts:
+
+```text
+package.json, workflow, hook, documentación operativa vigente o ejecución controlada
+→ script
+```
+
+Estados de clasificación permitidos:
+
+```text
+CONSUMIDO_ACTUAL
+CONSUMIDO_HISTORICO_DORMIDO
+SIN_CONSUMIDOR_CONFIRMADO
+CONSUMO_PARCIAL
+CONSUMO_TRANSITIVO_HUERFANO
+RESERVA_APROBADA
+CONSUMIDOR_EXTERNO_PENDIENTE
+NO_DETERMINADO
+```
+
+---
+
+#### 3. “Sin consumidor” no significa “seguro para eliminar”
+
+No se deberá eliminar un artefacto únicamente porque una búsqueda textual no encuentre referencias.
+
+Antes de retirar deberá comprobarse:
+
+1. imports estáticos;
+2. imports dinámicos;
+3. resolución por convención;
+4. rutas de framework;
+5. navegación;
+6. registros en base de datos;
+7. llamadas mediante URL;
+8. RPC por nombre construido;
+9. triggers;
+10. funciones SQL;
+11. vistas;
+12. Edge Functions;
+13. webhooks;
+14. workflows;
+15. scripts manuales aprobados;
+16. clientes móviles;
+17. consumidores externos;
+18. ambientes y ramas;
+19. datos históricos;
+20. rollback.
+
+También deberá distinguirse:
+
+```text
+existe en el código fuente
+≠
+está enlazado a una entrada
+≠
+fue incluido en el build
+≠
+es utilizado actualmente
+```
+
+---
+
+#### 4. NEXO — fragmentos LPN sin recorrido consumidor completo
+
+Artefactos revisados:
+
+```text
+src/features/inventory/lpns/lpn-create-form.tsx
+src/app/inventory/lpns/page.tsx
+src/app/api/inventory/lpns/route.ts
+inventory_lpns
+inventory_lpn_items
+```
+
+##### 4.1. Componente de creación
+
+`LpnCreateForm` contiene:
+
+- selector de sede;
+- preview del código;
+- `site_id`;
+- acción de creación;
+- botón “Crear LPN”.
+
+La búsqueda del símbolo solo localizó su propio archivo.
+
+No se localizó:
+
+- importación;
+- página que lo monte;
+- server action conectada;
+- entrada desde navegación;
+- prueba;
+- historia;
+- uso desde otra aplicación.
+
+**Clasificación:** `SIN_CONSUMIDOR_CONFIRMADO`.
+
+##### 4.2. Ruta `/inventory/lpns`
+
+La ruta existe, pero su única acción es:
+
+```text
+redirect("/inventory/stock")
+```
+
+El sincronizador de navegación la clasifica dentro de:
+
+```text
+NEVER_MENU_EXACT
+```
+
+Por tanto, no monta un flujo LPN ni promueve la pantalla como candidato de menú.
+
+**Clasificación:** ruta técnica sin proceso LPN propio.
+
+##### 4.3. Endpoint LPN
+
+Existe:
+
+```text
+GET /api/inventory/lpns
+```
+
+El endpoint:
+
+- autentica;
+- consulta `inventory_lpns`;
+- devuelve `id`, `code`, `site_id` y `created_at`.
+
+No se localizó dentro de `vento-nexo` una referencia a:
+
+```text
+/api/inventory/lpns
+```
+
+No se descarta un consumidor externo, manual o futuro.
+
+**Clasificación:** `CONSUMIDOR_EXTERNO_PENDIENTE`.
+
+##### 4.4. Tablas LPN
+
+`inventory_lpns` tiene al menos un consumidor de lectura mediante el endpoint.
+
+`inventory_lpn_items` no presentó consumidor de aplicación localizado durante la búsqueda.
+
+No se revisaron todavía exhaustivamente todas las dependencias SQL remotas.
+
+**Clasificación:**
+
+```text
+inventory_lpns
+→ CONSUMO_PARCIAL
+
+inventory_lpn_items
+→ SIN_CONSUMIDOR_DE_APLICACION_CONFIRMADO
+```
+
+##### 4.5. Conclusión
+
+La capacidad LPN no está ausente por completo, pero sus piezas no forman una cadena utilizable:
+
+```text
+ruta
+→ redirección
+
+componente
+→ sin montaje
+
+endpoint
+→ sin caller interno
+
+tablas
+→ sin ciclo funcional completo
+```
+
+Destinos:
+
+- `NEXO-DOM-002` a `NEXO-DOM-008`;
+- `NEXO-DOM-019` a `NEXO-DOM-024`;
+- `NEXO-UX-026` a `NEXO-UX-040`;
+- nueva tarea `SHELL-AUD-011`;
+- `SUPA-AUD-022`;
+- `SUPA-AUD-023`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-NEXO-004`.
+
+No se crea un requisito LPN nuevo porque `TREQ-NEXO-004` ya exige el ciclo completo.
+
+---
+
+#### 5. PASS — cadena alternativa de seguimiento sin registro de navegación
+
+Artefactos revisados:
+
+```text
+src/components/OrderTrackingScreen.tsx
+src/components/OrderPlacedScreenLive.tsx
+src/components/OrderPlacedScreen.tsx
+App.js
+```
+
+##### 5.1. Navegación activa
+
+`App.js` registra:
+
+```text
+OrderPlaced
+→ OrderPlacedScreen
+```
+
+No registra:
+
+```text
+OrderTrackingScreen
+OrderPlacedScreenLive
+```
+
+##### 5.2. Cadena alternativa
+
+`OrderTrackingScreen` importa:
+
+```text
+OrderPlacedScreenLive
+```
+
+y agrega lógica de:
+
+- estado de entrega;
+- PIN de entrega;
+- consulta de la orden;
+- presentación del seguimiento.
+
+La búsqueda de `OrderTrackingScreen` solo localizó su propio archivo y archivos de configuración, no un import o registro de pantalla.
+
+`OrderPlacedScreenLive` tiene como consumidor localizado a `OrderTrackingScreen`.
+
+Esto forma:
+
+```text
+OrderTrackingScreen
+→ sin entrada localizada
+
+OrderPlacedScreenLive
+→ consumido solo por OrderTrackingScreen
+```
+
+**Clasificación:**
+
+```text
+OrderTrackingScreen
+→ SIN_CONSUMIDOR_CONFIRMADO
+
+OrderPlacedScreenLive
+→ CONSUMO_TRANSITIVO_HUERFANO
+```
+
+##### 5.3. Riesgo
+
+- dos implementaciones evolucionan por separado;
+- correcciones de pagos o estados se aplican en una sola;
+- una ruta profunda futura puede montar una pantalla no probada;
+- código muerto sigue aumentando superficie de mantenimiento;
+- eliminación impulsiva puede perder lógica útil de PIN o seguimiento.
+
+##### 5.4. Destino
+
+- `PASS-UX-001`;
+- `PASS-UX-002`;
+- `PASS-UX-006`;
+- `PASS-UX-013`;
+- nueva tarea `SHELL-AUD-011`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- crea `TREQ-PASS-007`.
+
+No se ordena eliminar la cadena.
+
+Primero deberá compararse contra el flujo canónico y decidir:
+
+```text
+integrar
+fusionar
+reemplazar
+retirar
+```
+
+---
+
+#### 6. PASS — export auxiliar sin consumidor localizado
+
+Archivo:
+
+```text
+src/utils/site.ts
+```
+
+Export:
+
+```text
+clearSiteIdCache()
+```
+
+La búsqueda solo localizó la definición.
+
+El módulo sí tiene consumidores reales para:
+
+- `getCurrentSiteIdCached`;
+- `getSiteIdByBusinessType`.
+
+Por tanto, no se considera huérfano el archivo completo.
+
+**Clasificación:** export individual sin consumidor confirmado.
+
+Destino:
+
+- nueva tarea `SHELL-AUD-011`;
+- `PASS-UX-001`;
+- `CODE-AUD-020`.
+
+Prioridad: baja.
+
+No genera requisito de prueba independiente.
+
+---
+
+#### 7. PULSO — antecedente histórico real en `vento-platform`
+
+Repositorio:
+
+```text
+devVentoGroup/vento-platform
+```
+
+Ruta histórica:
+
+```text
+apps/vento-os/modules/pos
+```
+
+Entrada histórica:
+
+```text
+apps/vento-os/app/staff/pos/page.tsx
+```
+
+##### 7.1. Qué estaba realmente alcanzable
+
+La página histórica importaba y utilizaba:
+
+- `decodeQRCode`;
+- `processRedemptionAction`;
+- `awardPointsAction`;
+- identificación de clientes;
+- validación de canjes;
+- otorgamiento manual de puntos.
+
+La misma pantalla mostraba:
+
+```text
+Sistema POS (Próximamente)
+```
+
+con el control deshabilitado.
+
+Por tanto, la entrada alcanzable era:
+
+```text
+scanner de cliente
++ loyalty
++ canjes
+```
+
+y no:
+
+```text
+POS completo
+```
+
+##### 7.2. Evidencia del build histórico
+
+El manifest de rutas inspeccionado contenía:
+
+```text
+/staff/pos
+```
+
+pero no una segunda ruta para venta, caja, pagos o administración POS.
+
+El manifest de server actions incluía para `/staff/pos`:
+
+- `validateRedemption`;
+- `processRedemptionAction`;
+- `awardPointsAction`.
+
+No incluía como acciones consumidas por esa ruta:
+
+- `createOrderAction`;
+- `processPaymentAction`.
+
+Esto permite distinguir:
+
+```text
+acción presente en source
+```
+
+de:
+
+```text
+acción conectada al build alcanzable
+```
+
+##### 7.3. Documentación histórica inconsistente
+
+Un documento histórico marcaba PULSO como:
+
+```text
+POS funcional
+```
+
+pero esa afirmación contradice:
+
+- la pantalla que dice “Próximamente”;
+- el manifest del build;
+- las acciones realmente enlazadas.
+
+La documentación histórica no se utilizará como prueba de capacidad.
+
+**Clasificación:** documentación sobreestimada y obsoleta.
+
+---
+
+#### 8. PULSO histórico — acciones fuente dormidas y objetos referenciados
+
+##### 8.1. `createOrderAction`
+
+El archivo histórico:
+
+```text
+apps/vento-os/modules/pos/actions/create-order.action.ts
+```
+
+sí contiene lógica para:
+
+- crear `orders`;
+- crear `order_items`;
+- consultar `pos_tables`;
+- consultar o crear `pos_sessions`;
+- insertar `pos_session_orders`.
+
+Sin embargo:
+
+- no aparece conectado a la ruta POS compilada inspeccionada;
+- usa pasos sucesivos;
+- aplica eliminaciones compensatorias manuales;
+- utiliza bypass administrativo para owner;
+- no falla la orden si falla la creación de sesión;
+- no falla la orden si falla `pos_session_orders`;
+- deja un `TODO` para cursos;
+- no demuestra idempotencia;
+- no demuestra concurrencia de mesa;
+- no demuestra cierre de sesión;
+- no demuestra split, merge, transferencia o corrección.
+
+**Clasificación de consumidor:** `CONSUMIDO_HISTORICO_DORMIDO`.
+
+##### 8.2. `processPaymentAction`
+
+El archivo histórico:
+
+```text
+apps/vento-os/modules/pos/actions/process-payment.action.ts
+```
+
+sí invoca:
+
+```text
+process_order_payment
+```
+
+pero tampoco aparece conectado a la ruta POS compilada inspeccionada.
+
+Además, su comentario afirma que la RPC crea movimientos de inventario.
+
+La RPC actual inspeccionada:
+
+- actualiza la orden;
+- inserta `pos_payments`;
+- actualiza puntos;
+- inserta `loyalty_transactions`;
+- no crea movimientos de inventario.
+
+Por tanto, el comentario y la implementación real divergen.
+
+**Clasificación de consumidor:** `CONSUMIDO_HISTORICO_DORMIDO`.
+
+##### 8.3. Datos mock
+
+`types.ts` mezcla:
+
+- tipos de tablas reales;
+- modelos de orden;
+- tipos de caja y pagos;
+- mesas, zonas y cursos;
+- datos mock;
+- menú con precios de demostración;
+- meseros ficticios;
+- órdenes mock;
+- modificadores mock.
+
+La coexistencia de tipos y mocks confirma que el módulo era una combinación de:
+
+```text
+prototipo visual
++ contratos tentativos
++ acciones parciales
++ scanner real
+```
+
+No constituye una arquitectura POS aprobada.
+
+---
+
+#### 9. Matriz real de consumidores POS
+
+| Objeto o capacidad            | Consumidor histórico en `vento-platform` | Conectado al build POS histórico inspeccionado | Consumidor actual en `vento-pulso`     | Clasificación                             |
+| ----------------------------- | ---------------------------------------- | ---------------------------------------------: | -------------------------------------- | ----------------------------------------- |
+| identificación QR de cliente  | sí                                       |                                             sí | sí, mediante scanner actual            | `CONSUMIDO_ACTUAL`                        |
+| canje PASS                    | sí                                       |                                             sí | sí                                     | `CONSUMIDO_ACTUAL`                        |
+| otorgamiento manual de puntos | sí                                       |                                             sí | sí, con implementación actual distinta | `CONSUMIDO_ACTUAL`                        |
+| `orders` y `order_items`      | `createOrderAction`                      |                                  no confirmado | sí, órdenes operativas y PASS          | dominio activo, creación POS no conectada |
+| `pos_zones`                   | tipos y prototipo                        |                                  no confirmado | sí, salón                              | `CONSUMIDO_ACTUAL`                        |
+| `pos_tables`                  | `createOrderAction`                      |                                             no | sí, salón                              | `CONSUMIDO_ACTUAL`                        |
+| `pos_sessions`                | `createOrderAction`                      |                                             no | sí, salón                              | `CONSUMIDO_ACTUAL`                        |
+| `pos_table_service_calls`     | no corresponde al prototipo inicial      |                                             no | sí, salón                              | `CONSUMIDO_ACTUAL`                        |
+| `pos_session_orders`          | `createOrderAction`                      |                                             no | no localizado en aplicación actual     | `CONSUMIDO_HISTORICO_DORMIDO`             |
+| `process_order_payment`       | `processPaymentAction`                   |                                             no | no localizado                          | `CONSUMIDO_HISTORICO_DORMIDO`             |
+| `pos_payments`                | indirectamente mediante RPC              |                                             no | no localizado                          | `CONSUMIDO_HISTORICO_DORMIDO`             |
+| `pos_cash_shifts`             | tipo declarado                           |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+| `pos_cash_movements`          | tipo declarado                           |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+| `pos_modifiers`               | tipo y mock                              |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+| `pos_modifier_options`        | tipo y mock                              |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+| `pos_product_modifiers`       | tipo declarado                           |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+| `pos_order_item_modifiers`    | tipo declarado                           |                                             no | no localizado                          | `SIN_CONSUMIDOR_EJECUTABLE_CONFIRMADO`    |
+
+Esta matriz reemplaza la conclusión simplificada de que todos los objetos POS estaban completamente huérfanos.
+
+---
+
+#### 10. Decisión canónica sobre el nuevo POS
+
+El POS nuevo **no se basará en el modelo histórico**.
+
+El prototipo de `vento-platform` se utilizará únicamente como:
+
+- inventario forense;
+- referencia de necesidades detectadas;
+- fuente de piezas puntuales reutilizables;
+- evidencia de contratos y datos que ya pudieron crearse;
+- insumo para migración o retiro.
+
+No se reutilizará automáticamente:
+
+- esquema;
+- nombres de estados;
+- acciones;
+- componentes;
+- tipos;
+- cálculos;
+- RPC;
+- reglas de autorización;
+- modelos de mesa;
+- modelo de caja;
+- modelo de pago;
+- mocks;
+- flujos visuales.
+
+Cada pieza deberá clasificarse como:
+
+```text
+REUTILIZAR
+ADAPTAR
+REESCRIBIR
+REEMPLAZAR
+RETIRAR
+CONSERVAR_SOLO_COMO_HISTORIA
+```
+
+---
+
+#### 11. Alcance mínimo del POS integral objetivo
+
+La arquitectura nueva deberá diseñar, como mínimo, los siguientes dominios.
+
+##### 11.1. Venta, cuenta y pedido
+
+- orden comercial;
+- cuenta o check;
+- líneas;
+- snapshots de producto, nombre, precio e impuesto;
+- asientos;
+- cursos;
+- notas;
+- modificadores;
+- combos;
+- cantidades;
+- estados;
+- canales;
+- consumo en mesa;
+- mostrador;
+- recogida;
+- domicilio;
+- pedidos programados;
+- venta rápida;
+- venta sin cliente;
+- cliente identificado.
+
+##### 11.2. Salón
+
+- sedes;
+- zonas;
+- mesas;
+- capacidad;
+- estado derivado;
+- sesión de servicio;
+- mesero responsable;
+- transferencia;
+- unión y separación de mesas;
+- apertura y cierre;
+- cambio de mesa;
+- cuentas simultáneas;
+- llamados;
+- reservas futuras si se aprueban.
+
+##### 11.3. Menú, disponibilidad y precios
+
+- catálogo vendible por sede;
+- horarios;
+- canal;
+- lista de precios;
+- impuestos;
+- cargos de servicio;
+- disponibilidad;
+- agotados;
+- modificadores;
+- opciones obligatorias;
+- sustituciones;
+- promociones;
+- descuentos;
+- autorizaciones;
+- cortesías;
+- precio manual controlado.
+
+##### 11.4. Cocina, barra y despacho
+
+- estaciones;
+- routing por producto;
+- comandas;
+- impresoras;
+- KDS;
+- fire;
+- hold;
+- cursos;
+- prioridades;
+- reimpresión;
+- recall;
+- preparación parcial;
+- listo;
+- entregado;
+- trazabilidad de actor y tiempos.
+
+##### 11.5. Pagos
+
+- intención de pago;
+- tender;
+- efectivo;
+- tarjeta;
+- transferencia;
+- bono;
+- crédito aprobado;
+- pago mixto;
+- pago parcial;
+- propina;
+- vuelto;
+- referencia;
+- autorización;
+- captura;
+- fallo;
+- reversión;
+- devolución;
+- reembolso;
+- chargeback cuando aplique;
+- conciliación.
+
+##### 11.6. Caja
+
+- terminal;
+- cajón;
+- turno de caja;
+- apertura;
+- fondo inicial;
+- ingresos;
+- egresos;
+- retiros;
+- consignaciones;
+- arqueos;
+- conteos;
+- cierre;
+- diferencia;
+- aprobación;
+- reapertura controlada;
+- reporte por actor, terminal y sede.
+
+##### 11.7. Integraciones
+
+- NEXO para inventario;
+- PASS para cliente, acumulación y redención;
+- NUMERA para hechos económicos y conciliación;
+- facturación electrónica;
+- impresión;
+- dispositivos compartidos;
+- periféricos;
+- notificaciones;
+- delivery;
+- KDS;
+- reporting.
+
+##### 11.8. Integridad técnica
+
+- comandos de servidor;
+- transacciones atómicas;
+- idempotency key;
+- control de concurrencia;
+- ledger financiero inmutable;
+- correcciones compensatorias;
+- outbox de eventos;
+- reintentos;
+- operación offline o degradada;
+- recuperación;
+- observabilidad;
+- auditoría;
+- RLS;
+- autorización atómica;
+- actor real;
+- sede;
+- área;
+- turno;
+- dispositivo;
+- versionado de contratos.
+
+##### 11.9. Principio de separación
+
+La arquitectura deberá decidir explícitamente la relación entre:
+
+```text
+orders
+pos_sessions
+cuentas/checks
+pagos
+turnos de caja
+movimientos de inventario
+hechos económicos
+```
+
+No se asumirá que:
+
+```text
+una orden
+=
+una cuenta
+=
+un pago
+=
+una mesa
+```
+
+---
+
+#### 12. PULSO — scripts manuales sin integración actual confirmada
+
+Se localizaron scripts como:
+
+```text
+scripts/apply-orders-chat-inbox-mount.py
+scripts/apply-order-modal-operational-improvements.py
+scripts/run-order-modal-operational-improvements.py
+scripts/apply-electronic-billing-ui.mjs
+```
+
+El `package.json` actual contiene únicamente:
+
+```text
+dev
+build
+start
+lint
+audit:i18n
+```
+
+No contiene:
+
+- `predev`;
+- `prebuild`;
+- `postinstall`;
+- comando de parche;
+- comando de migración de UI.
+
+El runner inspeccionado:
+
+- abre otro script;
+- cambia el target desde el tablero actual al tablero legacy;
+- compila y ejecuta el código modificado.
+
+**Clasificación:** `SIN_CONSUMIDOR_AUTOMATICO_CONFIRMADO`.
+
+No se puede afirmar que nunca sea ejecutado manualmente.
+
+Destinos:
+
+- nueva tarea `SHELL-AUD-011`;
+- `PULSO-UX-001`;
+- `PULSO-UX-019`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-PULSO-002`.
+
+---
+
+#### 13. Falsos positivos excluidos
+
+##### 13.1. `pos_tables`, `pos_zones` y `pos_sessions`
+
+Tienen consumidores actuales confirmados en PULSO salón.
+
+**Clasificación:** `CONSUMIDO_ACTUAL`.
+
+##### 13.2. `pos_table_service_calls`
+
+Tiene consumidor actual y Realtime.
+
+No pertenece al prototipo POS inicial.
+
+**Clasificación:** `CONSUMIDO_ACTUAL`.
+
+##### 13.3. `process_order_payment`
+
+No está completamente “sin consumidor histórico”.
+
+Tiene un caller en código fuente archivado.
+
+Su clasificación correcta es:
+
+```text
+CONSUMIDOR_HISTORICO_DORMIDO
++
+SIN_CALLER_ACTUAL_LOCALIZADO
+```
+
+##### 13.4. `pos_session_orders`
+
+Tiene escritor en una acción histórica dormida.
+
+No tiene consumidor actual localizado.
+
+##### 13.5. Bridges de órdenes PULSO
+
+Se confirmaron consumidores para:
+
+```text
+OrdersLiveBridge
+DeliveryOverrideBridge
+DeliveryDispatchBridge
+```
+
+desde `page.tsx` o `layout.tsx`.
+
+**Clasificación:** `CONSUMIDO_ACTUAL`.
+
+##### 13.6. Rutas Next.js
+
+Un `page.tsx` es una entrada por convención aunque no aparezca en búsqueda textual.
+
+La auditoría diferencia:
+
+```text
+ruta existente
+ruta compilada
+ruta promovida
+ruta enlazada
+ruta funcional
+```
+
+##### 13.7. Migraciones
+
+Las migraciones aplicadas son historial reproducible.
+
+No se eliminan por no ser importadas desde TypeScript.
+
+##### 13.8. `app_screen_registry`
+
+Tiene productor desde el sincronizador y consumidor administrativo en VISO.
+
+**Clasificación:** `CONSUMIDO_ACTUAL`.
+
+---
+
+#### 14. Cobertura por repositorio
+
+| Repositorio      | Resultado                                                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `vento-shell`    | conserva objetos POS con consumidores actuales, históricos dormidos y no confirmados; E3 decidirá fuente, migración o retiro |
+| `vento-platform` | prototipo histórico archivado; scanner/loyalty alcanzable, POS completo no conectado                                         |
+| `vento-viso`     | no se confirma artefacto huérfano nuevo; consume `app_screen_registry`                                                       |
+| `vento-nexo`     | componente LPN sin montaje, ruta redirigida, endpoint sin caller interno y consumo LPN incompleto                            |
+| `vento-fogo`     | no se confirma huérfano nuevo durante este corte                                                                             |
+| `vento-origo`    | no se confirma huérfano nuevo durante este corte                                                                             |
+| `vento-pulso`    | salón y órdenes activos; POS integral ausente; scripts manuales sin integración; varios objetos sin consumidor actual        |
+| `vento-numera`   | no se confirma huérfano nuevo durante este corte                                                                             |
+| `Vento-Group`    | no se confirma huérfano nuevo durante este corte                                                                             |
+| `vento-anima`    | no se confirma huérfano nuevo durante este corte                                                                             |
+| `vento-pass`     | cadena alternativa de seguimiento desconectada y export auxiliar sin consumidor                                              |
+| `vento-talento`  | producto futuro; ausencia de navegación productiva no equivale a código muerto                                               |
+| `vento-vital`    | fuera de Vento OS                                                                                                            |
+
+“No se confirma huérfano nuevo” no equivale a certificación de ausencia.
+
+---
+
+#### 15. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                  | Clasificación                        | Destino                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------- |
+| `H-CODE-015-001` | `LpnCreateForm` no tiene importación o montaje localizado                                 | `SIN_CONSUMIDOR_CONFIRMADO`          | `NEXO-DOM-*`, `NEXO-UX-026` a `040`, `SHELL-AUD-011`, `TREQ-NEXO-004` |
+| `H-CODE-015-002` | `/inventory/lpns` solo redirige a stock                                                   | ruta sin proceso propio              | mismo destino                                                         |
+| `H-CODE-015-003` | el sincronizador excluye `/inventory/lpns` del menú                                       | no promovida                         | mismo destino                                                         |
+| `H-CODE-015-004` | `GET /api/inventory/lpns` no tiene caller interno localizado                              | `CONSUMIDOR_EXTERNO_PENDIENTE`       | `SHELL-AUD-011`, `SUPA-AUD-022`, `023`                                |
+| `H-CODE-015-005` | `inventory_lpn_items` no tiene consumidor de aplicación localizado                        | objeto sin consumidor app confirmado | `SUPA-AUD-019`, `022`, `023`, `TREQ-SUPABASE-003`                     |
+| `H-CODE-015-006` | `OrderTrackingScreen` no está registrado ni importado por la navegación activa            | `SIN_CONSUMIDOR_CONFIRMADO`          | `PASS-UX-001`, `002`, `006`, `013`, `SHELL-AUD-011`, `TREQ-PASS-007`  |
+| `H-CODE-015-007` | `OrderPlacedScreenLive` solo es consumido por una pantalla desconectada                   | `CONSUMO_TRANSITIVO_HUERFANO`        | mismo destino                                                         |
+| `H-CODE-015-008` | `clearSiteIdCache` no tiene consumidor localizado                                         | export huérfano de baja prioridad    | `SHELL-AUD-011`, `CODE-AUD-020`                                       |
+| `H-CODE-015-009` | scripts manuales PULSO no están conectados a comandos actuales                            | sin consumidor automático confirmado | `SHELL-AUD-011`, `PULSO-UX-019`, `CODE-AUD-020`                       |
+| `H-CODE-015-010` | la ruta POS histórica solo consumía scanner, loyalty y canjes                             | prototipo parcial alcanzable         | `PULSO-UX-020`, `PULSO-UX-021`, `TREQ-PULSO-003`                      |
+| `H-CODE-015-011` | `createOrderAction` existe, pero no estaba conectada al build POS inspeccionado           | consumidor histórico dormido         | `PULSO-UX-020`, `SUPA-AUD-022`, `023`                                 |
+| `H-CODE-015-012` | `processPaymentAction` llama la RPC, pero no estaba conectada al build POS inspeccionado  | consumidor histórico dormido         | mismo destino                                                         |
+| `H-CODE-015-013` | el comentario de pago afirma movimientos de inventario que la RPC inspeccionada no crea   | contrato divergente                  | `PULSO-UX-020`, `PULSO-UX-021`, `TREQ-PULSO-003`                      |
+| `H-CODE-015-014` | tipos reales, mocks y contratos tentativos están mezclados en el módulo histórico         | prototipo no canónico                | `PULSO-UX-020`, `PULSO-UX-021`                                        |
+| `H-CODE-015-015` | `pos_zones`, `pos_tables` y `pos_sessions` sí tienen consumidores actuales                | falso positivo corregido             | cerrado                                                               |
+| `H-CODE-015-016` | `pos_session_orders`, `pos_payments` y la RPC tienen consumo histórico dormido, no actual | clasificación corregida              | `SUPA-AUD-022`, `023`, `TREQ-SUPABASE-003`                            |
+| `H-CODE-015-017` | caja y modificadores no tienen consumidor ejecutable actual o histórico confirmado        | objeto sin consumidor confirmado     | `PULSO-UX-020`, `PULSO-UX-021`, `SUPA-AUD-022`, `023`                 |
+| `H-CODE-015-018` | una búsqueda textual no prueba ausencia de consumidores dinámicos o externos              | regla de seguridad                   | `SHELL-AUD-011`, `TREQ-SHELL-004`                                     |
+| `H-CODE-015-019` | no se confirma un nuevo huérfano en VISO, FOGO, ORIGO, NUMERA, ANIMA o Vento Group        | límite de evidencia                  | continuar `CODE-AUD-016` a `020`                                      |
+
+Todos los hallazgos quedan cerrados o vinculados a tareas concretas.
+
+---
+
+#### 16. Tareas nuevas propuestas
+
+##### 16.1. Fundación compartida
+
+Agregar:
+
+```md
+### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
+```
+
+La tarea deberá:
+
+- generar inventario;
+- registrar evidencia de consumidor;
+- distinguir uso estático, dinámico, por convención y externo;
+- clasificar conservar, integrar, fusionar, reemplazar o retirar;
+- verificar impacto;
+- ejecutar eliminación mediante PR;
+- exigir build, typecheck, lint y pruebas;
+- conservar rollback;
+- actualizar documentación y navegación.
+
+##### 16.2. PULSO
+
+Agregar:
+
+```md
+### [ ] PULSO-UX-020 — Auditar el prototipo POS histórico de vento-platform y clasificar cada pieza como reutilizable, adaptable o descartable
+### [ ] PULSO-UX-021 — Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como contrato el prototipo histórico
+```
+
+`PULSO-UX-020` deberá producir una matriz por:
+
+- pantalla;
+- componente;
+- acción;
+- función;
+- tabla;
+- vista;
+- RPC;
+- estado;
+- permiso;
+- integración;
+- dato existente.
+
+`PULSO-UX-021` deberá definir:
+
+- dominios;
+- agregados;
+- estados;
+- comandos;
+- eventos;
+- ownership;
+- atomicidad;
+- idempotencia;
+- concurrencia;
+- offline;
+- auditoría;
+- integraciones;
+- interfaces operativas;
+- pruebas;
+- estrategia de migración.
+
+No se crea ninguna otra tarea nueva.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 17.1. Requisitos reutilizados
+
+- `TREQ-NEXO-004`;
+- `TREQ-PULSO-001`;
+- `TREQ-PULSO-002`;
+- `TREQ-SHELL-002`;
+- `TREQ-SUPABASE-001`;
+- `TREQ-SUPABASE-002`.
+
+No se cambia su estado.
+
+##### 17.2. Requisitos nuevos
+
+###### `TREQ-SHELL-004`
+
+Ninguna ruta, componente, función, script o endpoint podrá retirarse por “no usado” sin evidencia reproducible que cubra imports estáticos y dinámicos, convenciones de framework, navegación, scripts, CI, consumidores externos y ambientes; el retiro deberá superar build, typecheck, lint y pruebas aplicables.
+
+###### `TREQ-PASS-007`
+
+El retorno de pago y el seguimiento de un pedido deberán abrir una única experiencia canónica; cualquier pantalla alternativa deberá integrarse con paridad demostrada o retirarse, y ninguna cadena transitivamente huérfana podrá permanecer como implementación paralela sin decisión explícita.
+
+###### `TREQ-SUPABASE-003`
+
+Ninguna tabla, vista, función, RPC, trigger, política, publicación o bucket podrá eliminarse o declararse operativo sin un mapa verificable de propietarios, consumidores directos, dependencias SQL, consumidores externos, datos existentes, reemplazo y puerta de retiro.
+
+###### `TREQ-PULSO-003`
+
+Ninguna pieza del prototipo POS histórico podrá incorporarse al POS objetivo por la sola existencia de código, tablas o datos; deberá demostrar ajuste al proceso aprobado, contrato canónico, seguridad, atomicidad, idempotencia, concurrencia, recuperación, auditoría, integraciones y pruebas, o deberá adaptarse, reemplazarse o descartarse.
+
+Las filas completas se entregan fuera de esta tarea para agregarlas únicamente al registro `04A`.
+
+---
+
+#### 18. Decisiones propuestas
+
+1. “Sin referencia textual” no equivaldrá a “seguro para eliminar”.
+2. Se distinguirán consumidores actuales, históricos dormidos, dinámicos, SQL y externos.
+3. `LpnCreateForm` se clasifica como sin consumidor confirmado.
+4. `/inventory/lpns` no se considera una superficie LPN funcional.
+5. El endpoint LPN queda pendiente de confirmar consumidor externo.
+6. `inventory_lpns` no se considera completamente huérfana.
+7. `inventory_lpn_items` requiere mapa SQL y funcional.
+8. `OrderTrackingScreen` se clasifica como desconectada.
+9. `OrderPlacedScreenLive` se clasifica como huérfano transitivo.
+10. Los scripts PULSO se clasifican como manuales sin integración actual confirmada.
+11. `vento-platform` se reconoce como antecedente histórico real.
+12. Su ruta POS alcanzable se clasifica como scanner, loyalty y canjes.
+13. `createOrderAction` y `processPaymentAction` se clasifican como código histórico dormido.
+14. `pos_zones`, `pos_tables`, `pos_sessions` y `pos_table_service_calls` se reconocen como consumidos actualmente.
+15. `pos_session_orders`, `pos_payments` y `process_order_payment` tienen antecedente histórico, pero no caller actual localizado.
+16. Caja y modificadores no tienen consumidor ejecutable confirmado.
+17. El documento histórico que decía “POS funcional” no prevalece sobre el código.
+18. El prototipo histórico no será arquitectura base.
+19. Solo se rescatarán piezas aprobadas mediante matriz explícita.
+20. El POS objetivo se diseñará desde cero como sistema integral.
+21. Se crean `SHELL-AUD-011`, `PULSO-UX-020` y `PULSO-UX-021`.
+22. Se derivan cuatro requisitos de prueba.
+23. No se modifica código.
+24. No se modifica Supabase.
+25. `CODE-AUD-016` será la única continuidad inmediata.
+
+---
+
+#### 19. Límites de certeza
+
+Esta tarea no confirma:
+
+- que un endpoint sin caller interno no tenga consumidor externo;
+- que un script no sea ejecutado manualmente;
+- que una tabla sin referencia TypeScript no tenga trigger, vista o función;
+- que el manifest inspeccionado represente todos los builds históricos;
+- que ninguna rama histórica haya conectado las acciones POS;
+- que el índice de búsqueda incluya todas las ramas;
+- que todos los objetos remotos correspondan al repositorio;
+- que los objetos POS existentes deban conservar su diseño;
+- que todos los huérfanos hayan sido detectados;
+- que un artefacto clasificado pueda eliminarse inmediatamente.
+
+E3 deberá inspeccionar el Supabase remoto y sus dependencias antes de migrar o retirar objetos.
+
+---
+
+#### 20. Criterios de aceptación
+
+`CODE-AUD-015` podrá aprobarse cuando:
+
+- exista definición de consumidor;
+- se distinga ausencia confirmada de incertidumbre;
+- LPN quede evaluado por ruta, componente, endpoint y tablas;
+- PASS seguimiento alternativo quede evaluado;
+- los scripts PULSO queden evaluados;
+- `vento-platform` quede reconocido como prototipo histórico;
+- se diferencie código fuente dormido de consumidor compilado;
+- cada objeto POS tenga clasificación individual;
+- los objetos usados por salón queden excluidos como huérfanos;
+- el prototipo histórico no se adopte como contrato;
+- se materialicen `SHELL-AUD-011`, `PULSO-UX-020` y `PULSO-UX-021`;
+- se identifiquen los cuatro requisitos nuevos;
+- no se autorice eliminación durante E1;
+- no se modifique código;
+- no se modifique Supabase;
+- `CODE-AUD-016` permanezca como continuidad inmediata.
+
+---
+
+#### 21. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+artefacto
+→ consumidor actual o histórico
+→ alcanzabilidad
+→ clasificación
+→ propietario
+→ conservar / rescatar / adaptar / reemplazar / retirar
+→ pruebas
+→ cambio controlado
+```
+
+Para PULSO:
+
+```text
+prototipo histórico
+→ auditoría de rescate
+→ proceso empresarial objetivo
+→ arquitectura POS nueva
+→ contratos canónicos
+→ implementación progresiva
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-016
+— Revisar estado de build, lint, typecheck y pruebas
+```
+
+
+### ✅ CODE-AUD-016 — Ejecutar build, lint, tipos y pruebas disponibles por repositorio
+
+**Estado:** APROBADO
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de salud de build, análisis estático, tipos y pruebas declaradas  
+**Dependencia anterior:** `CODE-AUD-015`  
+**Continuidad reservada:** `CODE-AUD-017`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no realizados. Se instalaron dependencias locales ya declaradas para poder ejecutar la validación de NUMERA y Vento Group Web; no se modificaron manifiestos, lógica ni Supabase.
+
+---
+
+#### 1. Resultado de esta tarea
+
+Se ejecutaron las validaciones declaradas y las equivalencias locales disponibles en los doce repositorios VENTO reconocidos. La evidencia separa:
+
+- éxito de build o smoke build;
+- éxito de typecheck;
+- resultado de lint, incluidos avisos no bloqueantes;
+- pruebas automatizadas declaradas;
+- validación no disponible por ausencia de script;
+- bloqueo de herramienta, dependencia o código.
+
+La cadena de control resultante es:
+
+```text
+repositorio
+→ scripts y dependencias declaradas
+→ build / export o smoke build disponible
+→ typecheck
+→ lint
+→ pruebas automatizadas disponibles
+→ hallazgo trazable
+→ backlog y puerta de regresión
+```
+
+No se interpreta una compilación exitosa como evidencia de flujo operativo, autorización, datos remotos o dispositivo físico. Es una evidencia local del corte indicado.
+
+---
+
+#### 2. Método y alcance ejecutado
+
+1. Se inventariaron los scripts de cada `package.json`.
+2. En aplicaciones Next se ejecutaron `npm run build`, `npm run lint` y `npx tsc --noEmit` cuando las dependencias estaban presentes.
+3. En aplicaciones Expo se ejecutaron `npx expo export --platform android --output-dir <temporal> --clear` y `npx tsc --noEmit` cuando aplicaba. La exportación es un smoke build local, no un build firmado ni QA en dispositivo.
+4. En VITAL se ejecutó `npm run ci:contracts`.
+5. NUMERA y Vento Group Web recibieron `npm install` porque faltaban dependencias locales necesarias para completar la auditoría; la segunda ya declaraba `lenis` en su manifiesto.
+6. No se ejecutaron builds EAS, despliegues, migraciones, pruebas contra Supabase remoto ni flujos manuales.
+
+---
+
+#### 3. Matriz de resultados por repositorio
+
+| Repositorio       | Build o smoke build                | Typecheck                            | Lint                                       | Pruebas disponibles      | Resultado de corte                                     |
+| ----------------- | ---------------------------------- | ------------------------------------ | ------------------------------------------ | ------------------------ | ------------------------------------------------------ |
+| `vento-anima`     | ✅ export Android                   | ✅                                    | No declara script                          | No declara script        | validación local disponible aprobada                   |
+| `vento-fogo`      | ✅                                  | ✅                                    | ✅ 8 warnings, 0 errores                    | No declara script        | build y tipos aprobados; deuda no bloqueante           |
+| `vento-group-web` | ✅ después de instalar dependencias | ✅ después de instalar dependencias   | ❌ `next lint` no es compatible con Next 16 | No declara script        | build y tipos aprobados; herramienta de lint bloqueada |
+| `vento-nexo`      | ❌                                  | ❌                                    | ❌ 54 errores, 128 warnings                 | No declara script        | bloqueo de tipos/build y deuda de lint                 |
+| `vento-numera`    | ✅ después de instalar dependencias | ✅                                    | ✅                                          | No declara script        | validación local disponible aprobada                   |
+| `vento-origo`     | ✅                                  | ✅                                    | ❌ 4 errores, 5 warnings                    | No declara script        | deuda de lint bloqueante                               |
+| `vento-pass`      | ✅ export Android                   | ✅                                    | No declara script                          | No declara script        | validación local disponible aprobada                   |
+| `vento-pulso`     | ✅                                  | ✅                                    | ❌ 20 errores                               | No declara script        | deuda de lint bloqueante                               |
+| `vento-shell`     | ✅                                  | ✅                                    | ❌ 10 errores, 7 warnings                   | No declara script        | deuda de lint bloqueante                               |
+| `vento-talento`   | ✅ export Android                   | ✅                                    | No declara script                          | No declara script        | validación local disponible aprobada                   |
+| `vento-viso`      | ✅                                  | ✅                                    | ❌ 17 errores, 35 warnings                  | No declara script        | deuda de lint bloqueante                               |
+| `vento-vital`     | No declara build raíz ejecutable   | No declara typecheck raíz ejecutable | No declara script                          | ✅ 13 de 13 contratos API | pruebas contractuales aprobadas                        |
+
+`vento-vital` conserva estructura monorepo con scripts de build móvil remotos; no se ejecutaron porque son EAS/producción y no constituyen una prueba local disponible equivalente.
+
+---
+
+#### 4. Hallazgos confirmados
+
+| ID               | Hallazgo                                                                                                                                                                                                                                                                                                     | Evidencia reproducida                                                                                                                                                                               | Impacto                                                                                                                                         | Destino obligatorio                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `H-CODE-016-001` | Vento Group Web declara `lint=next lint`, pero Next 16 interpreta `lint` como directorio y no ejecuta análisis.                                                                                                                                                                                              | `npm run lint` termina con código 1: `Invalid project directory ... vento-group-web\\lint`. Build y tipos pasan tras sincronizar dependencias.                                                      | La calidad estática de este repositorio no tiene puerta ejecutable.                                                                             | `CODE-AUD-020` y `QA-REG-001`          |
+| `H-CODE-016-002` | NEXO no puede completar typecheck ni build por una API de hoja de cálculo no presente en el tipo instalado.                                                                                                                                                                                                  | `src/app/api/inventory/catalog/export-suppliers/route.ts:423`: `Property 'dataValidations' does not exist on type 'Worksheet'`.                                                                     | La aplicación no tiene build de producción verificable.                                                                                         | `CODE-AUD-020` y `QA-REG-001`          |
+| `H-CODE-016-003` | Cinco repositorios tienen errores de lint bloqueantes.                                                                                                                                                                                                                                                       | NEXO: 54; ORIGO: 4; PULSO: 20; SHELL: 10; VISO: 17.                                                                                                                                                 | La puerta estática no es verde aunque varios builds y tipos pasen.                                                                              | `CODE-AUD-020` y `QA-REG-001`          |
+| `H-CODE-016-004` | FOGO pasa lint con deuda no bloqueante.                                                                                                                                                                                                                                                                      | 8 warnings y 0 errores.                                                                                                                                                                             | La puerta actual permite el build, pero la deuda debe priorizarse antes de endurecer CI.                                                        | `CODE-AUD-020`                         |
+| `H-CODE-016-005` | NUMERA no tenía dependencias instaladas al inicio del corte; después de `npm install` pasa build, tipos y lint. La instalación reporta 8 vulnerabilidades y scripts de `sharp` y `unrs-resolver` pendientes de aprobación. Vento Group Web también reporta 4 vulnerabilidades y script de `sharp` pendiente. | `npm install` completado en ambos repositorios; no cambió el manifiesto.                                                                                                                            | La reproducibilidad local depende de instalar y revisar dependencias; los avisos no se deben resolver automáticamente mediante `npm audit fix`. | `CODE-AUD-020`                         |
+| `H-CODE-016-006` | La mayor parte de los repositorios no declara pruebas automatizadas y los clientes Expo no declaran lint o build local en scripts.                                                                                                                                                                           | Solo VITAL declara y ejecuta pruebas: 13/13 contratos API. ANIMA, PASS y TALENTO solo aportan export Android y tipos; FOGO, Group Web, NEXO, NUMERA, ORIGO, PULSO, SHELL y VISO no declaran `test`. | La evidencia de build no protege regresiones de proceso, autorización o integración.                                                            | `QA-REG-001` después de `CODE-AUD-020` |
+
+---
+
+#### 5. Clasificación de resultados
+
+```text
+APROBADO LOCALMENTE
+ANIMA, FOGO, NUMERA, PASS, TALENTO y VITAL
+
+APROBADO CON BLOQUEO DE HERRAMIENTA
+Vento Group Web: build y tipos verdes; lint no ejecutable por script obsoleto
+
+BLOQUEADO POR CÓDIGO
+NEXO: typecheck y build fallan en exportación de catálogo
+
+BLOQUEADO POR LINT
+NEXO, ORIGO, PULSO, SHELL y VISO
+
+EVIDENCIA DE PRUEBAS DISPONIBLE
+VITAL: 13 contratos API aprobados
+```
+
+FOGO queda en estado de observación: sus ocho warnings no bloquean la configuración actual, pero no equivalen a calidad limpia.
+
+---
+
+#### 6. Decisiones propuestas
+
+1. La matriz de esta tarea será la baseline local de calidad del corte 2026-07-24.
+2. Un build o export exitoso no cerrará deuda de lint ni sustituirá pruebas de flujo.
+3. NEXO no podrá declararse apto para build de producción hasta resolver `H-CODE-016-002`.
+4. Vento Group Web deberá reemplazar o actualizar su comando de lint antes de exigir una puerta verde.
+5. Los errores de lint se deberán descomponer por repositorio y propietario en `CODE-AUD-020`; no se corregirán silenciosamente durante esta auditoría.
+6. Los warnings de FOGO y los avisos de vulnerabilidades o scripts de instalación se registrarán como deuda, sin ejecutar `npm audit fix` ni aprobar scripts automáticamente.
+7. `QA-REG-001` deberá definir la matriz mínima de CI y pruebas de regresión después de `CODE-AUD-020`.
+8. No se modificará código, CI, despliegues ni Supabase como consecuencia de esta tarea documental.
+9. `CODE-AUD-017` permanecerá como continuidad reservada.
+
+---
+
+#### 7. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea registra evidencia de validaciones ya existentes y sus brechas; no introduce ni modifica una regla de negocio, autorización, cálculo, transición, contrato de integración o comportamiento ejecutable. La definición de la matriz y de las puertas de regresión corresponde a `QA-REG-001` después de `CODE-AUD-020`.
+
+---
+
+#### 8. Límites de certeza
+
+Esta tarea no confirma:
+
+- que los builds aprobados se conecten correctamente a Supabase remoto;
+- que las variables locales representen staging o producción;
+- que los flujos operativos, permisos, RLS o RPC estén correctos;
+- que las exportaciones Expo funcionen en dispositivos físicos;
+- que los builds EAS remotos funcionen;
+- que la ausencia de script `test` implique ausencia total de pruebas fuera del repositorio;
+- que los avisos de `npm audit` sean explotables en el contexto de cada aplicación;
+- que aprobar scripts nativos pendientes sea seguro sin revisión de dependencias;
+- que las reglas de lint identificadas sean todas defectos funcionales.
+
+La autorización y la exposición de datos continúan reservadas para `CODE-AUD-017`; la operación offline para `CODE-AUD-018`; la asignación de implementación verificable para `CODE-AUD-019`; y el backlog propietario para `CODE-AUD-020`.
+
+---
+
+#### 9. Criterios de aceptación
+
+`CODE-AUD-016` podrá aprobarse cuando:
+
+- los doce repositorios reconocidos tengan resultado explícito de build, smoke build, tipos, lint y pruebas disponibles o ausencia declarada;
+- los resultados distingan éxito, warning, bloqueo de herramienta, bloqueo de código y validación no disponible;
+- NEXO tenga evidencia exacta de su bloqueo de build y tipos;
+- Vento Group Web tenga evidencia exacta de su bloqueo de lint;
+- la deuda de lint por repositorio tenga conteo y destino;
+- las instalaciones necesarias estén diferenciadas de cambios de código;
+- las limitaciones de Expo, EAS, CI y Supabase remoto estén declaradas;
+- cada hallazgo tenga destino documental exacto;
+- se declare expresamente que no genera requisitos de prueba nuevos;
+- no se modifique código, CI, despliegues ni Supabase;
+- `CODE-AUD-017` permanezca como continuidad reservada.
+
+---
+
+#### 10. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+estado local de calidad
+→ hallazgo reproducible
+→ repositorio propietario
+→ backlog técnico
+→ matriz de regresión y CI
+→ corrección controlada
+→ nueva validación
+```
+
+La continuidad reservada será:
+
+```text
+CODE-AUD-017
+— Auditar autorización, validación de servidor y exposición de datos
+```
+
+
+### ✅ CODE-AUD-017 — Auditar autorización, validación de servidor y exposición de datos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de autorización efectiva, límites privilegiados, RLS, grants, contratos de servidor y exposición de datos  
+**Dependencia anterior:** `CODE-AUD-016` — APROBADA  
+**Continuidad reservada:** `CODE-AUD-018`  
+**Fecha de corte:** 2026-07-24  
+**Proyecto Supabase comprobado:** `vento-os-dev` (`clzdpinthhtknkmefsxx`)  
+**Cambios en código, CI, despliegues o Supabase:** no realizados. Las consultas remotas fueron de solo lectura; no se invocaron mutaciones, RPC operativas, Edge Functions, webhooks, jobs ni enlaces productivos.
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea contrasta las protecciones declaradas en código con la autorización que realmente aplican las fronteras de servidor y Supabase:
+
+```text
+actor autenticado o enlace externo
+→ entrada de aplicación, API, Edge Function o RPC
+→ validación de identidad
+→ permiso y alcance territorial
+→ política RLS, grant o privilegio elevado
+→ columnas y datos efectivamente accesibles
+→ efecto autorizado o denegación
+```
+
+La auditoría identifica tres categorías:
+
+1. **fallos confirmados**, porque la combinación vigente de código, grants, políticas o funciones permite una acción más amplia que el contrato empresarial;
+2. **controles condicionales o fail-open**, porque la protección depende de que exista un secreto y, si falta, la ejecución continúa;
+3. **controles correctos localizados**, que se conservan para evitar falsos positivos y para usarlos como referencia de implementación.
+
+Resultado consolidado:
+
+| Clasificación                     | Cantidad |
+| --------------------------------- | -------: |
+| hallazgos críticos confirmados    |    **3** |
+| hallazgos altos confirmados       |    **8** |
+| controles condicionales fail-open |    **3** |
+| hallazgos medios o de gobierno    |    **3** |
+| controles positivos explícitos    |    **6** |
+
+Los hallazgos críticos confirmados son:
+
+1. la aceptación de invitaciones laborales permite que el cuerpo enviado por el cliente proponga `role` y `site_id`, y después usa `service_role` para materializarlos en `employees`;
+2. `public.users` permite que cada usuario autenticado actualice su propia fila completa, incluyendo campos que no deben ser autoadministrables como `loyalty_points`, `role` e `is_active`;
+3. `pass.loyalty_transactions` permite inserciones directas del propio usuario y un trigger `SECURITY DEFINER` aplica `points_delta` al saldo de `public.users`.
+
+Estos tres hallazgos constituyen bloqueos de seguridad. No deberán esperar a una remodelación visual ni a una prueba operativa para ser reconocidos.
+
+---
+
+#### 2. Alcance y fuentes contrastadas
+
+La auditoría revisó:
+
+- políticas RLS de tablas críticas;
+- grants de `anon`, `authenticated` y `service_role`;
+- columnas y constraints relevantes;
+- funciones `SECURITY DEFINER`;
+- permisos `EXECUTE`;
+- vistas con y sin `security_invoker`;
+- buckets y políticas de `storage.objects`;
+- configuración `verify_jwt` de las 24 Edge Functions activas;
+- fuente remota de Edge Functions sin código local canónico;
+- Server Actions y rutas que construyen clientes privilegiados;
+- contratos de perfil, fidelización, documentos, compras, pedidos, dispositivos y asistencia;
+- búsquedas de secretos literales en los repositorios;
+- visibilidad de repositorios;
+- decisiones aprobadas en `CODE-AUD-001` a `CODE-AUD-016`.
+
+Se excluyeron:
+
+- VITAL, salvo para conservar su separación;
+- AURA, porque no existe implementación;
+- explotación activa;
+- lectura o descarga de objetos de Storage;
+- intentos de escalamiento;
+- creación de usuarios, invitaciones, transacciones, redenciones, órdenes o documentos;
+- ejecución de funciones sin JWT;
+- inspección del valor de secretos remotos.
+
+La ausencia de una prueba ofensiva no reduce la certeza cuando el defecto se demuestra directamente por código, grants y política vigente.
+
+---
+
+#### 3. Estados de certeza
+
+| Estado                     | Significado                                                               |
+| -------------------------- | ------------------------------------------------------------------------- |
+| `CONFIRMADO`               | la definición vigente permite o expone el comportamiento                  |
+| `CONDICIONAL`              | el riesgo depende de configuración o secreto no inspeccionado             |
+| `CONTROL_PRESENTE`         | existe autenticación o autorización explícita suficiente a nivel estático |
+| `REQUIERE_PRUEBA_NEGATIVA` | el contrato parece correcto, pero debe ejecutarse con actores denegados   |
+| `GOBIERNO`                 | requiere decisión de visibilidad, propiedad, versionado o retiro          |
+| `FUERA_DE_ALCANCE`         | no pertenece a Vento OS o no existe implementación                        |
+
+Ningún hallazgo se clasifica solo por el nombre de una función, tabla, rol o política.
+
+---
+
+#### 4. Escalamiento de privilegios durante la aceptación de invitaciones
+
+La Edge Function `staff-invitations-accept`:
+
+1. valida que exista un usuario autenticado;
+2. acepta `role` y `site_id` desde el cuerpo enviado por el cliente o desde `user_metadata`;
+3. comprueba únicamente que el rol y la sede existan y estén activos;
+4. actualiza `auth.users.user_metadata`;
+5. hace `upsert` de `employees` con ese rol y esa sede;
+6. crea o actualiza la sede primaria del trabajador;
+7. intenta marcar una invitación como aceptada después de materializar la identidad laboral.
+
+No existe una lectura previa obligatoria de una invitación pendiente, vigente, vinculada al correo o usuario, cuyo rol y sede sean la única fuente aceptada.
+
+Consecuencia:
+
+```text
+usuario autenticado
+→ propone role y site_id
+→ función valida existencia, no asignación
+→ service_role materializa employees.role y employees.site_id
+```
+
+Clasificación: **CRÍTICA — CONFIRMADA**.
+
+El contrato correcto deberá ser:
+
+```text
+token o sesión autenticada
+→ invitación pendiente y vigente localizada en servidor
+→ identidad, rol, sede y demás alcance tomados de la invitación
+→ consumo atómico de la invitación
+→ creación laboral
+→ imposibilidad de elevar o sustituir valores desde el cliente
+```
+
+Destinos obligatorios:
+
+- `ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`;
+- `ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad`;
+- `AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz`;
+- `AUTH-SRV-005 — Validar permiso en cada escritura`;
+- `AUTH-SRV-006 — Validar sede en cada escritura`;
+- `SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales`;
+- `SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema`;
+- `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`;
+- `AUTH-DB-004 — Reducir grants innecesarios de authenticated`;
+- `CODE-AUD-020`;
+- `TREQ-AUTH-005`.
+
+**Puerta inmediata propuesta:** no ampliar el flujo de invitaciones a nuevos actores hasta que el rol y la sede queden vinculados en servidor a una invitación válida.
+
+---
+
+#### 5. Autoadministración excesiva de `public.users`
+
+La tabla `public.users` contiene, entre otros:
+
+- identidad y contacto;
+- documento;
+- fecha de nacimiento;
+- correo;
+- `role`;
+- `is_active`;
+- `loyalty_points`;
+- preferencias y metadatos.
+
+La combinación vigente es:
+
+```text
+grant UPDATE para authenticated
++
+users_update_self
+USING id = auth.uid()
+WITH CHECK id = auth.uid()
+```
+
+La política restringe la fila, pero no las columnas. Por tanto, el propietario de la fila puede enviar una actualización que incluya campos no autoadministrables.
+
+El código legítimo de PASS solo necesita modificar un subconjunto de perfil:
+
+- `full_name`;
+- `document_id`;
+- `phone`;
+- `birth_date`.
+
+Ese caso no justifica conceder actualización general sobre toda la fila.
+
+Clasificación:
+
+- modificación de `loyalty_points`: **CRÍTICA — CONFIRMADA**;
+- modificación de `role` o `is_active`: **ALTA — CONFIRMADA** como ruptura de integridad de identidad, aunque la autorización laboral principal use `employees`;
+- actualización de datos de perfil permitidos: capacidad válida que debe conservarse mediante contrato limitado.
+
+Contrato objetivo:
+
+```text
+cliente
+→ RPC o acción de servidor de perfil
+→ allowlist de campos editables
+→ validación y normalización
+→ columnas protegidas fuera del payload
+```
+
+Destinos:
+
+- `PASS-INT-004 — Definir administración laboral de clientes cuando corresponda`;
+- `PASS-INT-005 — Evitar mezclar identidad cliente y trabajador`;
+- `AUTH-SRV-004`;
+- `AUTH-SRV-005`;
+- `SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol`;
+- `SUPA-AUD-010`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `TREQ-AUTH-006`.
+
+---
+
+#### 6. Lectura excesiva de datos personales de clientes
+
+`public.users` permite lectura mediante:
+
+- `users_select_self`;
+- políticas específicas de caja;
+- `staff_select_all_users`, cuyo criterio es `is_active_staff()`.
+
+`is_active_staff()` no exige una capacidad concreta de atención, caja, fidelización o consulta de clientes. La política expone la fila completa y no una proyección mínima.
+
+Los campos disponibles incluyen:
+
+- nombre;
+- documento;
+- teléfono;
+- correo;
+- fecha de nacimiento;
+- saldo de puntos;
+- estado y metadatos.
+
+PULSO ya demuestra un patrón más adecuado: una Server Action valida `pulso.pos.main` para una sede y devuelve solo una proyección concreta del cliente escaneado. Sin embargo, ese control de aplicación no elimina la política amplia de base.
+
+Clasificación: **ALTA — CONFIRMADA**.
+
+Contrato objetivo:
+
+```text
+capacidad autorizada
+→ búsqueda por identificador permitido
+→ proyección mínima para el proceso
+→ sin SELECT general de toda la tabla
+→ auditoría del actor y la sede cuando corresponda
+```
+
+Destinos:
+
+- `PULSO-AUTH-006 — Definir permisos de cajero`;
+- `PULSO-AUTH-009 — Proteger acumulación de puntos`;
+- `PULSO-AUTH-010 — Proteger redenciones`;
+- `PASS-INT-004`;
+- `AUTH-SRV-005`;
+- `AUTH-SRV-006`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `TREQ-AUTH-006`.
+
+---
+
+#### 7. Escritura directa del ledger de fidelización
+
+`pass.loyalty_transactions` permite:
+
+```text
+INSERT
+WITH CHECK auth.uid() = user_id
+```
+
+La fila incluye:
+
+- `kind`;
+- `points_delta`;
+- descripción;
+- metadatos.
+
+El constraint valida forma básica, pero no prueba que el incremento provenga de una venta, ajuste autorizado o evento económico legítimo.
+
+Después de cada inserción, el trigger:
+
+```text
+on_loyalty_transaction_created
+→ pass.update_loyalty_balance()
+→ public.users.loyalty_points += new.points_delta
+```
+
+Consecuencia:
+
+```text
+cliente autenticado
+→ inserta transacción propia con points_delta positivo
+→ trigger privilegiado actualiza saldo
+```
+
+Clasificación: **CRÍTICA — CONFIRMADA**.
+
+Debe revocarse la escritura directa del cliente sobre el ledger. La acumulación, ajuste, gasto y reversión deberán ejecutarse mediante contratos de servidor diferenciados, con actor, origen, idempotencia, referencia y autorización.
+
+Destinos:
+
+- `PULSO-AUTH-009`;
+- `PULSO-AUTH-010`;
+- `PASS-INT-001 — Definir integración PULSO → PASS para acumulación`;
+- `PASS-INT-002 — Definir integración PULSO → PASS para redención`;
+- `PASS-QA-001 — Probar flujo completo de acumulación`;
+- `PASS-QA-002 — Probar flujo completo de redención`;
+- `AUTH-SRV-004`;
+- `AUTH-SRV-005`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `TREQ-PASS-008`.
+
+---
+
+#### 8. Redención no atómica y validación de personal demasiado amplia
+
+PASS procesa actualmente una redención desde el cliente mediante varios pasos:
+
+1. lee recompensa;
+2. lee saldo;
+3. genera QR;
+4. inserta `loyalty_redemptions`;
+5. inserta `loyalty_transactions`;
+6. intenta eliminar la redención si falla la transacción.
+
+La compensación desde el cliente no constituye una transacción atómica y puede dejar diferencias ante cierre de aplicación, red, concurrencia o fallo parcial.
+
+Además, conviven políticas específicas por rol y sede con:
+
+```text
+staff_select_all_redemptions
+staff_validate_redemptions
+```
+
+Las políticas RLS permisivas se combinan con OR. La política general para cualquier trabajador activo amplía las específicas y permite que personal sin capacidad de caja o fuera de la sede vea o valide redenciones.
+
+Clasificación:
+
+- falta de atomicidad: **ALTA — CONFIRMADA**;
+- ampliación por política permisiva: **ALTA — CONFIRMADA**.
+
+Contrato objetivo:
+
+```text
+RPC o acción de servidor
+→ recompensa activa y sede válida
+→ saldo bloqueado o cálculo transaccional
+→ redención + ledger en una transacción
+→ idempotency key
+→ validación limitada a permiso, sede y estado
+→ evento de auditoría
+```
+
+Destinos:
+
+- `PULSO-AUTH-009`;
+- `PULSO-AUTH-010`;
+- `PASS-INT-001`;
+- `PASS-INT-002`;
+- `PASS-QA-001`;
+- `PASS-QA-002`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `CODE-AUD-018`;
+- `TREQ-PASS-008`.
+
+---
+
+#### 9. Documentos laborales: política amplia y bucket público
+
+La tabla `public.documents` permite selección cuando el actor:
+
+- es propietario o destinatario;
+- tiene permisos administrativos;
+- o simplemente pertenece de forma activa a la misma sede del documento.
+
+La pertenencia a una sede no equivale a autorización para leer documentos personales de otros trabajadores.
+
+El bucket `documents` está configurado como público. En un bucket público, una URL conocida no depende de la política SELECT de `storage.objects`. Esto invalida la expectativa de que RLS de Storage proteja el contenido confidencial.
+
+No se descargaron objetos ni se confirmó que todos sean sensibles. El defecto es el contrato de exposición:
+
+```text
+documento laboral
+→ ruta en bucket público
+→ acceso anónimo por URL conocida
+```
+
+Clasificación:
+
+- política de metadatos por simple pertenencia de sede: **ALTA — CONFIRMADA**;
+- bucket público para documentos laborales: **ALTA — CONFIRMADA** como superficie de exposición; la sensibilidad de cada objeto deberá inventariarse.
+
+Contrato objetivo:
+
+```text
+tipo documental y sensibilidad
+→ bucket privado
+→ objeto vinculado a propietario y recurso
+→ permiso por actor, proceso y alcance
+→ URL firmada o proxy de servidor de corta duración
+→ auditoría de consulta
+→ retención y eliminación
+```
+
+Destinos:
+
+- `ANIMA-UX-013 — Simplificar documentos y datos personales`;
+- `EVID-ARC-001` a `EVID-ARC-010`;
+- `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `AUTH-DB-005`;
+- `TREQ-SUPABASE-004`.
+
+---
+
+#### 10. Vistas administrativas sin `security_invoker`
+
+Cuatro vistas no declaran `security_invoker=true`:
+
+- `permission_catalog_human_v1`;
+- `shared_operational_device_actor_policies_admin_v1`;
+- `shared_operational_device_templates_admin_v1`;
+- `shared_operational_devices_admin_v1`.
+
+Las cuatro son propiedad de un rol privilegiado y permiten `SELECT` a `authenticated`.
+
+Las tres vistas de dispositivos compartidos exponen información administrativa como:
+
+- identificadores de dispositivo;
+- `auth_user_id`;
+- sede y área;
+- aplicaciones permitidas;
+- políticas de actor;
+- banderas de PIN, sesión y acciones;
+- metadatos.
+
+Una vista sin `security_invoker` puede ejecutar con privilegios del propietario y eludir las políticas RLS de las tablas subyacentes.
+
+Clasificación:
+
+- vistas administrativas de dispositivos: **ALTA — CONFIRMADA**;
+- catálogo humano de permisos: **REQUIERE DECISIÓN**, porque la lectura puede ser deliberadamente pública para usuarios autenticados, pero debe quedar explícita.
+
+Destinos:
+
+- `SUPA-AUD-003`;
+- `SUPA-AUD-007`;
+- `SUPA-AUD-009`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `AUTH-DB-005`;
+- `AUTH-DEV-*`;
+- `TREQ-SUPABASE-005`.
+
+---
+
+#### 11. RPC privilegiadas ejecutables por `anon`
+
+Se localizaron funciones `SECURITY DEFINER` ejecutables por `anon` sin una guarda interna de autenticación, entre ellas:
+
+- `get_site_cost_center`;
+- `resolve_internal_transfer_price`;
+- `resolve_internal_transfer_price_for_profile`;
+- `assert_inventory_uom_profile_stock_input`;
+- `shared_device_actor_is_allowed_v1`.
+
+El riesgo varía:
+
+| Función                                    | Exposición                                             |
+| ------------------------------------------ | ------------------------------------------------------ |
+| `get_site_cost_center`                     | identificador interno de centro de costo por sede      |
+| `resolve_internal_transfer_price*`         | precios internos, moneda, listas y factores            |
+| `assert_inventory_uom_profile_stock_input` | existencia y conversión de perfiles/ubicaciones        |
+| `shared_device_actor_is_allowed_v1`        | inferencia de elegibilidad de trabajador y dispositivo |
+
+La exposición de precios internos a `anon` no corresponde a un contrato público aprobado.
+
+Clasificación: **ALTA — CONFIRMADA** para precios y centros de costo; **MEDIA — CONFIRMADA** para inferencias de validación.
+
+Destinos:
+
+- `SUPA-AUD-003`;
+- `SUPA-AUD-006`;
+- `SUPA-AUD-007`;
+- `SUPA-AUD-009`;
+- `AUTH-DB-003`;
+- `AUTH-DB-005`;
+- `TREQ-SUPABASE-005`.
+
+---
+
+#### 12. Órdenes de compra con autorización genérica de trabajador
+
+`public.purchase_orders` tiene una política `ALL` cuyo criterio es únicamente que exista una fila en `employees` con el identificador del actor.
+
+No exige:
+
+- trabajador activo;
+- permiso de ORIGO;
+- rol;
+- sede;
+- centro de costo;
+- alcance sobre la orden;
+- estado permitido;
+- separación entre consulta, creación, aprobación, recepción, corrección o eliminación.
+
+Clasificación: **ALTA — CONFIRMADA**.
+
+Contrato objetivo:
+
+```text
+acción sobre orden
+→ permiso ORIGO específico
+→ sede o centro de costo autorizado
+→ estado actual compatible
+→ campos permitidos para la transición
+→ actor y auditoría
+```
+
+Destinos:
+
+- `ORIGO-AUTH-004` a `ORIGO-AUTH-010`;
+- `AUTH-SRV-005`;
+- `AUTH-SRV-006`;
+- `AUTH-SRV-011`;
+- `AUTH-SRV-012`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `TREQ-ORIGO-002`.
+
+---
+
+#### 13. Enlace público de PDF de orden de compra
+
+La ruta de PDF permite:
+
+- sesión autenticada con `origo.access`;
+- o token público firmado.
+
+Cuando el token es válido, la ruta usa `service_role` para leer la orden, líneas, productos, proveedor y sede.
+
+El helper del token:
+
+- admite una vigencia de 30 días;
+- usa HMAC;
+- pero, si no existen secretos de ambiente, termina usando una cadena predeterminada incorporada al código.
+
+Esto es un patrón fail-open: la ausencia de configuración no bloquea la generación ni validación; vuelve predecible el secreto.
+
+No se comprobó si producción tiene configurado un secreto real. Por tanto:
+
+- defecto de diseño: **ALTO — CONFIRMADO**;
+- explotación actual: **CONDICIONAL**.
+
+Contrato objetivo:
+
+```text
+secreto obligatorio
+→ fallo de arranque o 500 si falta
+→ token de alcance único para una orden
+→ expiración corta y explícita
+→ revocación o rotación
+→ contenido mínimo para proveedor
+→ auditoría de emisión y acceso
+```
+
+Destinos:
+
+- `ORIGO-AUTH-009`;
+- `ORIGO-AUTH-010`;
+- `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`;
+- `AUTH-SRV-011`;
+- `CODE-AUD-020`;
+- `TREQ-ORIGO-002`.
+
+---
+
+#### 14. Mutación amplia de pedidos y líneas
+
+Las políticas de `public.orders` y `public.order_items` permiten a cualquier trabajador con acceso a la sede actualizar la fila completa.
+
+El criterio de sitio es necesario, pero no suficiente. Las filas contienen campos relacionados con:
+
+- estado;
+- despacho;
+- pago;
+- total;
+- fidelización;
+- inventario;
+- anulación;
+- entrega;
+- referencias externas;
+- precios, cantidades y compensaciones.
+
+La base no distingue en la política si el actor está autorizado para cambiar un estado operativo, modificar un precio, marcar pago, alterar fidelización o anular.
+
+Clasificación: **ALTA — CONFIRMADA**.
+
+Contrato objetivo:
+
+```text
+acción nombrada
+→ permiso específico
+→ sede activa
+→ estado de origen
+→ transición permitida
+→ columnas limitadas
+→ RPC transaccional
+→ evento de auditoría
+```
+
+Destinos:
+
+- `PULSO-AUTH-006` a `PULSO-AUTH-011`;
+- `AUTH-SRV-005`;
+- `AUTH-SRV-006`;
+- `AUTH-SRV-011`;
+- `AUTH-SRV-012`;
+- `AUTH-DB-002`;
+- `AUTH-DB-004`;
+- `CODE-AUD-018`;
+- `TREQ-PULSO-004`.
+
+---
+
+#### 15. Administración de autorización sin alcance territorial suficiente
+
+Las políticas de:
+
+- `employee_site_operational_profiles`;
+- `site_operational_roles`;
+- `operational_role_permissions`;
+
+permiten administración a `is_manager()`, `is_manager_or_owner()` o equivalentes.
+
+La función `is_manager()` identifica el rol `gerente`, pero la política no limita la fila administrada a la sede del gerente.
+
+Consecuencia:
+
+```text
+gerente de una sede
+→ política global de administración
+→ posibilidad de modificar configuración de otras sedes o filas globales
+```
+
+Clasificación: **ALTA — CONFIRMADA**.
+
+Destinos:
+
+- `VISO-AUTH-005` a `VISO-AUTH-009`;
+- `VISO-AUTH-018`;
+- `VISO-AUTH-019`;
+- `VISO-UX-013`;
+- `AUTH-SRV-005`;
+- `AUTH-SRV-006`;
+- `AUTH-SRV-012`;
+- `AUTH-DB-002`;
+- `TREQ-AUTH-007`.
+
+---
+
+#### 16. Edge Functions con `verify_jwt=false`
+
+Las 24 Edge Functions activas se distribuyen así:
+
+```text
+12 con verify_jwt=true
+12 con verify_jwt=false
+```
+
+La revisión de las doce sin JWT automático produjo:
+
+| Función                     | Control propio                              | Resultado                                                   |
+| --------------------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| `staff-invitations-accept`  | bearer válido                               | autenticación presente, autorización de rol/sede defectuosa |
+| `document-alerts`           | secreto cron opcional                       | fail-open si falta el secreto                               |
+| `process-account-deletions` | bearer igual a secreto obligatorio          | control presente                                            |
+| `register-push-token`       | bearer validado con `auth.getUser`          | control presente                                            |
+| `announcement-notify`       | bearer + rol de gestión activo              | control presente                                            |
+| `employee-delete`           | bearer + UID propietario configurado        | control presente, contrato rígido                           |
+| `payments-webhook`          | checksum del proveedor obligatorio          | control presente                                            |
+| `staff-invitations-resend`  | bearer + rol + sede para gerente            | control presente                                            |
+| `staff-invitations-cancel`  | bearer + rol + sede para gerente            | control presente                                            |
+| `shift-runtime-processor`   | secreto cron opcional                       | fail-open si no existe secreto en tabla ni ambiente         |
+| `payments-return`           | superficie pública sin mutación             | exposición deliberada aceptable                             |
+| `delivery-portal`           | token aleatorio hasheado + expiración + PIN | control presente; fuente solo remota                        |
+
+`document-alerts` y `shift-runtime-processor` usan el patrón:
+
+```text
+si existe secreto y no coincide → denegar
+si no existe secreto → continuar
+```
+
+Esto debe convertirse en:
+
+```text
+si no existe secreto → fallar
+si no coincide → denegar
+si coincide → ejecutar
+```
+
+Clasificación:
+
+- dos funciones cron: **ALTA — CONDICIONAL**;
+- `staff-invitations-accept`: cubierta por el hallazgo crítico;
+- las demás: `CONTROL_PRESENTE` o superficie pública deliberada.
+
+Destinos:
+
+- `SUPA-AUD-014`;
+- `SUPA-AUD-015`;
+- `AUTH-DB-003`;
+- `AUTH-DB-005`;
+- `CODE-AUD-020`;
+- `TREQ-SUPABASE-006`.
+
+---
+
+#### 17. `delivery-portal`: contrato razonable, pero fuente solo remota
+
+La función remota usa:
+
+- token aleatorio de 32 bytes;
+- almacenamiento del hash;
+- vigencia de 12 horas;
+- bloqueo por estado;
+- PIN hasheado para confirmar entrega;
+- contador máximo de intentos;
+- eventos de auditoría;
+- validación del estado y pago antes de tránsito.
+
+No se clasifica como exposición sin control.
+
+Sin embargo:
+
+- la Edge Function existe solo en remoto;
+- su código no está versionado en el directorio canónico de `vento-shell`;
+- la URL del proyecto está incrustada en el RPC generador;
+- el contrato debe quedar reproducible mediante migración y fuente local.
+
+Clasificación: **GOBIERNO / DRIFT**, no vulnerabilidad confirmada.
+
+Destinos:
+
+- `SUPA-AUD-014`;
+- `SUPA-AUD-016`;
+- `SUPA-AUD-017`;
+- `CODE-AUD-020`;
+- mantiene `TREQ-SUPABASE-003`.
+
+---
+
+#### 18. Controles positivos que deben conservarse
+
+##### 18.1. Cliente administrativo de VISO
+
+`createAdminClient()`:
+
+- importa `server-only`;
+- exige `SUPABASE_SERVICE_ROLE_KEY`;
+- no persiste sesión;
+- no tiene fallback público.
+
+Estado: `CONTROL_PRESENTE`.
+
+El control debe complementarse con validación obligatoria antes de cada consumidor.
+
+##### 18.2. Identificación de cliente en PULSO
+
+La Server Action:
+
+- valida sesión;
+- exige `pulso.pos.main` para la sede recibida;
+- usa cliente privilegiado solo después de autorizar;
+- devuelve una proyección limitada.
+
+Estado: `CONTROL_PRESENTE`, aunque la política general de `public.users` siga siendo demasiado amplia.
+
+##### 18.3. Registro de push token
+
+`register-push-token` valida manualmente el bearer mediante `auth.getUser` y vincula la escritura al usuario autenticado.
+
+Estado: `CONTROL_PRESENTE`.
+
+##### 18.4. Webhook de pagos
+
+`payments-webhook`:
+
+- falla si no existe secreto;
+- verifica checksum;
+- registra eventos;
+- detecta duplicados;
+- resuelve la transacción antes de cambiar su estado.
+
+Estado: `CONTROL_PRESENTE`; concurrencia e idempotencia completas continúan a `CODE-AUD-018`.
+
+##### 18.5. Funciones `SECURITY DEFINER`
+
+Las funciones `SECURITY DEFINER` de los esquemas revisados tienen `search_path` fijado.
+
+Estado: **control transversal positivo**. No sustituye la revisión de grants ni autorización interna.
+
+##### 18.6. Esquema `viso`
+
+Las tablas internas de planificación del esquema `viso` no conceden acceso ordinario a `authenticated`. Sus consumidores localizados usan cliente administrativo en servidor.
+
+Estado: `CONTROL_PRESENTE`, sujeto a que todos los endpoints conserven la guarda previa.
+
+---
+
+#### 19. Repositorios públicos y secretos
+
+El inventario mantiene diez repositorios públicos y dos privados.
+
+La búsqueda no localizó una `service_role` real escrita literalmente en los archivos revisados. Sí localizó:
+
+- referencias a variables de ambiente;
+- scripts que leen `.env.local`;
+- un secreto de desarrollo predeterminado para PDF de ORIGO;
+- esquema, migraciones, nombres de funciones, políticas y arquitectura en repositorios públicos.
+
+Un repositorio público no constituye por sí solo una vulnerabilidad. Sí incrementa la obligación de:
+
+- eliminar fallbacks secretos;
+- aplicar mínimo privilegio;
+- no depender de ocultar nombres;
+- definir una política de visibilidad;
+- revisar historial Git, no solo el estado actual;
+- impedir que scripts temporales o dumps contengan credenciales.
+
+Clasificación: **GOBIERNO — MEDIA**.
+
+Destinos:
+
+- `SUPA-AUD-015`;
+- `CODE-AUD-020`.
+
+No se crea un requisito de prueba solo por la visibilidad del repositorio.
+
+---
+
+#### 20. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                                | Certeza / riesgo            | Destino                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------- |
+| `H-CODE-017-001` | aceptación de invitación materializa rol y sede enviados por el cliente                                 | `CONFIRMADO` / crítico      | `ANIMA-AUTH-019`, `020`; `AUTH-SRV-004`, `005`, `006`; `AUTH-DB-002`, `004`; `TREQ-AUTH-005`       |
+| `H-CODE-017-002` | `public.users` permite autoadministrar columnas protegidas                                              | `CONFIRMADO` / crítico      | `PASS-INT-004`, `005`; `AUTH-SRV-004`, `005`; `AUTH-DB-002`, `004`; `TREQ-AUTH-006`                |
+| `H-CODE-017-003` | personal activo puede leer la fila completa de todos los clientes                                       | `CONFIRMADO` / alto         | `PULSO-AUTH-006`, `009`, `010`; `PASS-INT-004`; `AUTH-DB-002`, `004`; `TREQ-AUTH-006`              |
+| `H-CODE-017-004` | cliente puede insertar transacciones propias que incrementan su saldo                                   | `CONFIRMADO` / crítico      | `PULSO-AUTH-009`, `010`; `PASS-INT-001`, `002`; `AUTH-DB-002`, `004`; `TREQ-PASS-008`              |
+| `H-CODE-017-005` | redención se compone en cliente sin transacción atómica                                                 | `CONFIRMADO` / alto         | `PASS-INT-002`; `PASS-QA-002`; `CODE-AUD-018`; `TREQ-PASS-008`                                     |
+| `H-CODE-017-006` | políticas generales de personal amplían consulta y validación de redenciones                            | `CONFIRMADO` / alto         | `PULSO-AUTH-010`; `AUTH-DB-002`, `004`; `TREQ-PASS-008`                                            |
+| `H-CODE-017-007` | pertenencia a sede permite leer metadatos documentales de otros trabajadores                            | `CONFIRMADO` / alto         | `EVID-ARC-*`; `SUPA-AUD-012`; `AUTH-DB-002`, `004`; `TREQ-SUPABASE-004`                            |
+| `H-CODE-017-008` | bucket `documents` es público                                                                           | `CONFIRMADO` / alto         | `EVID-ARC-*`; `SUPA-AUD-012`; `AUTH-DB-002`, `004`, `005`; `TREQ-SUPABASE-004`                     |
+| `H-CODE-017-009` | tres vistas administrativas de dispositivos no usan `security_invoker` y son legibles por authenticated | `CONFIRMADO` / alto         | `SUPA-AUD-003`, `007`, `009`; `AUTH-DB-002`, `004`, `005`; `TREQ-SUPABASE-005`                     |
+| `H-CODE-017-010` | RPC anónimas exponen precios internos, centros de costo y validaciones                                  | `CONFIRMADO` / alto         | `SUPA-AUD-003`, `006`, `007`, `009`; `AUTH-DB-003`, `005`; `TREQ-SUPABASE-005`                     |
+| `H-CODE-017-011` | cualquier fila de trabajador habilita CRUD total de órdenes de compra                                   | `CONFIRMADO` / alto         | `ORIGO-AUTH-004..010`; `AUTH-SRV-005`, `006`, `011`, `012`; `AUTH-DB-002`, `004`; `TREQ-ORIGO-002` |
+| `H-CODE-017-012` | enlace público de PDF tiene secreto fallback y vigencia de 30 días                                      | `CONDICIONAL` / alto        | `ORIGO-AUTH-009`, `010`; `SUPA-AUD-015`; `TREQ-ORIGO-002`                                          |
+| `H-CODE-017-013` | personal con acceso a sede puede actualizar filas completas de pedidos y líneas                         | `CONFIRMADO` / alto         | `PULSO-AUTH-006..011`; `AUTH-SRV-005`, `006`, `011`, `012`; `AUTH-DB-002`, `004`; `TREQ-PULSO-004` |
+| `H-CODE-017-014` | gerentes pueden administrar configuración operativa sin filtro territorial de fila                      | `CONFIRMADO` / alto         | `VISO-AUTH-005..009`, `018`, `019`; `VISO-UX-013`; `AUTH-DB-002`; `TREQ-AUTH-007`                  |
+| `H-CODE-017-015` | `document-alerts` falla abierto si falta secreto cron                                                   | `CONDICIONAL` / alto        | `SUPA-AUD-014`, `015`; `AUTH-DB-003`, `005`; `TREQ-SUPABASE-006`                                   |
+| `H-CODE-017-016` | `shift-runtime-processor` falla abierto si no hay secreto en tabla ni ambiente                          | `CONDICIONAL` / alto        | mismo destino                                                                                      |
+| `H-CODE-017-017` | ocho funciones sin JWT tienen control propio suficiente a nivel estático                                | `CONTROL_PRESENTE`          | conservar y probar negativamente                                                                   |
+| `H-CODE-017-018` | `payments-return` es pública, pero no muta datos                                                        | `CONTROL_PRESENTE`          | cerrado                                                                                            |
+| `H-CODE-017-019` | `delivery-portal` tiene token fuerte y controles, pero fuente solo remota                               | `GOBIERNO` / alto por drift | `SUPA-AUD-014`, `016`, `017`; `CODE-AUD-020`; mantiene `TREQ-SUPABASE-003`                         |
+| `H-CODE-017-020` | VISO mantiene el cliente admin bajo `server-only`                                                       | `CONTROL_PRESENTE`          | conservar                                                                                          |
+| `H-CODE-017-021` | las funciones `SECURITY DEFINER` revisadas tienen `search_path` fijado                                  | `CONTROL_PRESENTE`          | conservar                                                                                          |
+| `H-CODE-017-022` | no se localizó una service role literal en el estado actual de los repositorios                         | límite de evidencia         | revisar historial en `SUPA-AUD-015`                                                                |
+| `H-CODE-017-023` | diez repositorios continúan públicos                                                                    | `GOBIERNO` / medio          | `SUPA-AUD-015`, `CODE-AUD-020`                                                                     |
+
+Todos los hallazgos tienen destino.
+
+**No se crea ninguna tarea nueva del roadmap.**
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 21.1. Requisitos reutilizados
+
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`;
+- `TREQ-AUTH-003`;
+- `TREQ-AUTH-004`;
+- `TREQ-ORIGO-001`;
+- `TREQ-PULSO-001`;
+- `TREQ-PULSO-003`;
+- `TREQ-SUPABASE-003`.
+
+No se cambia su estado.
+
+##### 21.2. Requisitos nuevos
+
+- `TREQ-AUTH-005`;
+- `TREQ-AUTH-006`;
+- `TREQ-AUTH-007`;
+- `TREQ-PASS-008`;
+- `TREQ-PULSO-004`;
+- `TREQ-ORIGO-002`;
+- `TREQ-SUPABASE-004`;
+- `TREQ-SUPABASE-005`;
+- `TREQ-SUPABASE-006`.
+
+Las filas canónicas completas deberán agregarse exclusivamente en:
+
+```text
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+No se duplican filas completas de `04A` dentro de esta tarea.
+
+---
+
+#### 22. Decisiones propuestas
+
+1. Autenticación y autorización permanecerán diferenciadas.
+2. Un bearer válido no autoriza a elegir rol, sede, permiso o alcance.
+3. La invitación persistida será la única fuente del rol y sede durante activación laboral.
+4. Los clientes no podrán escribir directamente campos derivados, privilegiados o de saldo.
+5. El perfil autoadministrable se implementará mediante una allowlist de campos.
+6. La consulta de clientes devolverá una proyección mínima para el proceso autorizado.
+7. El ledger de puntos no admitirá inserciones directas de clientes.
+8. Acumulación, gasto, ajuste, reversión y redención serán operaciones de servidor trazables.
+9. La redención será atómica e idempotente.
+10. Un trabajador activo no obtendrá por sí solo acceso general a clientes, redenciones, órdenes o configuración.
+11. Las políticas permisivas duplicadas deberán analizarse como una unión lógica OR.
+12. Los documentos laborales no permanecerán en buckets públicos.
+13. La pertenencia a una sede no será permiso suficiente para leer documentos de otros trabajadores.
+14. Las vistas administrativas deberán usar `security_invoker` o revocar acceso directo y exponerse mediante contrato autorizado.
+15. Toda función `SECURITY DEFINER` deberá combinar `search_path` fijo, grants mínimos y autorización interna.
+16. Los RPC de precios internos y configuración no serán ejecutables por `anon`.
+17. Cada mutación de compra o pedido deberá limitar permiso, sede, estado y columnas.
+18. La administración de seguridad por gerente deberá respetar su alcance territorial.
+19. Toda Edge Function sin JWT automático deberá implementar un control propio obligatorio y fail-closed.
+20. Un secreto opcional no se considerará autenticación.
+21. Los enlaces públicos privilegiados deberán exigir secretos obligatorios, alcance, expiración y revocación.
+22. El patrón server-only de VISO y los controles correctos localizados se conservarán.
+23. La fuente de `delivery-portal` deberá recuperarse y versionarse antes de remodelarla.
+24. Los hallazgos críticos bloquearán ampliaciones del flujo afectado hasta su contención.
+25. No se ejecutarán pruebas ofensivas ni mutaciones productivas durante E1.
+26. Los nueve requisitos nuevos se registrarán únicamente en `04A`.
+27. No se crea una tarea nueva del roadmap.
+28. `CODE-AUD-018` será la única continuidad inmediata después de la aprobación.
+
+---
+
+#### 23. Límites de certeza
+
+Esta tarea no confirma:
+
+- qué secretos existen actualmente en los ambientes remotos;
+- que el fallback de ORIGO esté activo en producción;
+- que las funciones cron sin secreto configurado sean invocables actualmente sin control;
+- que un objeto específico del bucket `documents` haya sido descargado sin autorización;
+- que todos los repositorios públicos hayan sido clonados por terceros;
+- que no existan secretos en el historial Git;
+- que toda función con control estático correcto resista concurrencia o replay;
+- que los controles de entrega y pagos sean completamente idempotentes;
+- que la política empresarial final de visibilidad de clientes ya esté decidida;
+- que cada campo de documentos tenga la misma sensibilidad.
+
+La explotación no es necesaria para concluir los fallos de diseño y autorización demostrados por políticas, grants y código.
+
+---
+
+#### 24. Criterios de aceptación
+
+`CODE-AUD-017` podrá aprobarse cuando:
+
+- autenticación, autorización, alcance, RLS, grant y privilegio elevado estén diferenciados;
+- las 24 Edge Functions queden clasificadas por JWT y control propio;
+- las doce funciones sin JWT tengan evaluación individual;
+- el escalamiento de invitaciones quede clasificado como crítico;
+- la escritura amplia de `public.users` quede documentada;
+- la escritura directa del ledger de puntos quede documentada;
+- la redención cliente y las políticas generales tengan destino;
+- la lectura amplia de PII tenga destino;
+- documentos, bucket y URLs públicas tengan destino;
+- vistas sin `security_invoker` y grants directos tengan destino;
+- RPC anónimas y `SECURITY DEFINER` estén diferenciadas;
+- órdenes de compra, pedidos y configuración operativa tengan destino;
+- los controles positivos no se conviertan en falsos positivos;
+- cada hallazgo tenga tarea responsable y momento de resolución;
+- los requisitos nuevos tengan identificador único;
+- las filas completas se incorporen únicamente a `04A`;
+- no se creen tareas redundantes;
+- no se modifique código, CI, despliegues ni Supabase;
+- `CODE-AUD-018` permanezca como continuidad reservada.
+
+---
+
+#### 25. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+actor, sesión o token
+→ frontera de servidor
+→ permiso y alcance
+→ RLS, grant o función privilegiada
+→ columnas y datos accesibles
+→ acción autorizada o denegada
+→ evidencia y requisito de regresión
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-018
+— Auditar operación offline, reintentos, concurrencia e idempotencia
+```
+
+
+### ✅ CODE-AUD-018 — Auditar operación offline, reintentos, concurrencia e idempotencia
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de tolerancia a conectividad intermitente, persistencia local, reintentos, replay, concurrencia, atomicidad e idempotencia  
+**Dependencia anterior:** `CODE-AUD-017` — APROBADA  
+**Continuidad reservada:** `CODE-AUD-019`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no realizados. La revisión fue documental y estática; no se enviaron operaciones productivas, pagos, redenciones, movimientos, recepciones, impresiones, webhooks ni eventos offline.
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea determina qué ocurre cuando una operación empresarial:
+
+- se inicia sin conexión;
+- pierde conectividad después de que el servidor pudo recibirla;
+- se reintenta manual o automáticamente;
+- llega dos o más veces;
+- compite con otra operación sobre el mismo recurso;
+- se ejecuta parcialmente;
+- se recibe fuera de orden;
+- queda pendiente en el dispositivo;
+- cruza una frontera asíncrona, un webhook, una cola o un periférico;
+- necesita distinguir entre envío, aceptación, procesamiento y efecto empresarial confirmado.
+
+La cadena auditada es:
+
+```text
+intención del actor
+→ identificador estable de operación
+→ persistencia local o envío inmediato
+→ frontera de servidor
+→ revalidación de identidad, permiso, contexto y versión
+→ deduplicación y control de concurrencia
+→ transacción o efecto reconciliable
+→ confirmación estable
+→ retiro seguro de la cola
+→ auditoría y recuperación
+```
+
+Resultado consolidado:
+
+| Clasificación                                           | Cantidad |
+| ------------------------------------------------------- | -------: |
+| controles positivos explícitos                          |    **6** |
+| brechas críticas confirmadas                            |    **4** |
+| riesgos críticos parciales o pendientes de prueba       |    **2** |
+| brechas altas confirmadas                               |    **3** |
+| riesgos altos parciales, no implementados o de gobierno |    **6** |
+| brechas medias de gobierno                              |    **1** |
+| superficies con operación offline empresarial real      |    **1** |
+| superficies con borrador o cola únicamente local        |    **2** |
+
+La conclusión principal es:
+
+```text
+ANIMA
+→ posee la única implementación offline empresarial explícita y parcialmente robusta
+
+NEXO impresión
+→ posee una cola local, pero no una cola durable de trabajos confirmados
+
+ORIGO
+→ conserva borradores de formulario, pero no ejecuta recepciones offline
+
+RESTO DEL ECOSISTEMA
+→ opera principalmente online y no demuestra un contrato transversal de
+  idempotencia, reintento, concurrencia o recuperación
+```
+
+No existe todavía una política canónica única que obligue a cada mutación a declarar:
+
+- si admite operación offline;
+- qué identificador idempotente utiliza;
+- qué errores pueden reintentarse;
+- qué recurso o versión protege;
+- qué atomicidad ofrece;
+- cómo resuelve duplicados y eventos fuera de orden;
+- cuándo la interfaz puede comunicar éxito;
+- cómo se recupera una operación parcialmente aplicada.
+
+---
+
+#### 2. Alcance y fuentes contrastadas
+
+La auditoría utilizó:
+
+- las decisiones aprobadas en `CODE-AUD-001` a `CODE-AUD-017`;
+- el código canónico actual de ANIMA, PASS, NEXO, ORIGO y VENTO-SHELL;
+- los contratos de asistencia y sincronización de ANIMA;
+- las migraciones de idempotencia de asistencia;
+- la redención de puntos de PASS;
+- la creación y conciliación de pagos;
+- el webhook de Wompi;
+- los ajustes de inventario de NEXO;
+- la cola de impresión BrowserPrint de NEXO;
+- la creación, corrección y reversión de recepciones de ORIGO;
+- los hallazgos previos sobre remisiones, POS, automatizaciones, Edge Functions, cron, notificaciones y consumidores legacy;
+- las tareas existentes de E2, E3, E4, E5 y los roadmaps por aplicación.
+
+Cortes estáticos principales:
+
+| Repositorio   | Referencia revisada                        | Superficie principal                            |
+| ------------- | ------------------------------------------ | ----------------------------------------------- |
+| `vento-anima` | `50b77742cc0ae85f873d42152108a50acc9d6964` | cola offline, sincronización y asistencia       |
+| `vento-pass`  | `b5a4aec908ef12226f798078577ab089a29ccda2` | redenciones, historial y cliente móvil          |
+| `vento-shell` | `1bad886843d2c3300611680f98a266e59899e064` | RPC, migraciones, pagos, webhook y conciliación |
+| `vento-nexo`  | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` | ajustes de inventario e impresión               |
+| `vento-origo` | `71de15eacae4b91ced5357bf021cac459dd6fff0` | recepción, inventario, costos y correcciones    |
+
+No se ejecutaron:
+
+- pruebas de doble envío contra producción;
+- pruebas de pérdida de red durante una transacción;
+- carreras concurrentes reales;
+- replays de webhook;
+- impresiones físicas;
+- pagos reales o de prueba;
+- redenciones;
+- recepciones;
+- movimientos de inventario;
+- cambios de reloj del dispositivo;
+- reinstalación de aplicaciones con colas pendientes.
+
+La ausencia de ejecución dinámica no reduce la certeza de las brechas que se demuestran directamente mediante secuencias de lectura y escritura no transaccionales, retiro prematuro de colas o ausencia de clave idempotente.
+
+---
+
+#### 3. Estados de certeza
+
+| Estado                            | Significado                                                                                    |
+| --------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `CONTROL_PRESENTE`                | existe un mecanismo explícito y verificable a nivel estático                                   |
+| `PARCIAL`                         | existe una parte del contrato, pero no cubre toda la operación o todos sus efectos             |
+| `CONFIRMADO`                      | el código demuestra una posibilidad concreta de duplicación, pérdida, carrera o estado parcial |
+| `NO_IMPLEMENTADO`                 | no existe una capacidad offline o un control transversal demostrable                           |
+| `REQUIERE_PRUEBA_CONCURRENTE`     | el diseño contiene controles, pero necesita ejecución simultánea para cerrar certeza           |
+| `REQUIERE_PRUEBA_DE_RECUPERACIÓN` | debe comprobarse pérdida de red, reinicio, replay o fallo intermedio                           |
+| `GOBIERNO`                        | falta contrato canónico, propietario, métrica, retención o política de operación               |
+
+Un bloqueo de doble clic en la interfaz no se clasifica como control de integridad. Un `loading`, una referencia `inFlight`, un botón deshabilitado o una comparación local solo protege una instancia de interfaz; no protege:
+
+- dos pestañas;
+- dos dispositivos;
+- una retransmisión de red;
+- un webhook repetido;
+- dos workers;
+- dos actores sobre el mismo recurso;
+- una respuesta perdida después de que el servidor aplicó el efecto.
+
+---
+
+#### 4. Definiciones obligatorias usadas en la auditoría
+
+##### 4.1. Operación offline
+
+Una capacidad es realmente offline cuando puede:
+
+1. aceptar una intención sin conexión;
+2. persistirla de manera durable;
+3. conservar identidad, contexto, recurso, versión y evidencia suficientes;
+4. sobrevivir al cierre o reinicio de la aplicación;
+5. sincronizarse después;
+6. revalidarse en servidor;
+7. producir un único efecto empresarial o un conflicto explícito;
+8. mostrar estado pendiente, confirmado, rechazado o fallido.
+
+Guardar un borrador en `localStorage`, `sessionStorage` o memoria no convierte la acción empresarial en offline.
+
+##### 4.2. Reintento
+
+Un reintento reutiliza la misma intención y la misma clave idempotente. Repetir una acción generando una clave nueva se considera una operación nueva, aunque el usuario perciba que solo está intentando de nuevo.
+
+##### 4.3. Idempotencia
+
+Para una misma clave y el mismo contenido lógico:
+
+```text
+primer procesamiento
+→ aplica el efecto y conserva el resultado
+
+replay posterior
+→ no repite el efecto
+→ devuelve el mismo resultado estable o su referencia
+```
+
+Si la misma clave llega con un contenido distinto, deberá producir un conflicto y no reemplazar silenciosamente la intención original.
+
+##### 4.4. Atomicidad
+
+Una operación es atómica cuando sus efectos empresariales indivisibles se confirman juntos o no se confirma ninguno. Cuando una transacción única no sea posible, deberá existir una saga o compensación durable, idempotente y observable; un `delete` de mejor esfuerzo desde el cliente no constituye una garantía equivalente.
+
+##### 4.5. Concurrencia
+
+Toda mutación deberá declarar uno de estos mecanismos o una combinación aprobada:
+
+- bloqueo de fila;
+- versión optimista;
+- compare-and-swap;
+- restricción única;
+- serialización por recurso;
+- reserva;
+- clave idempotente;
+- cola con exclusión por recurso;
+- transacción con nivel de aislamiento adecuado.
+
+##### 4.6. Semántica de entrega
+
+Las colas, webhooks y redes se asumirán como **al menos una vez**. El sistema no dependerá de que el transporte entregue exactamente una vez. El efecto empresarial exactamente una vez se aproximará mediante deduplicación, atomicidad, control de versión y conciliación.
+
+---
+
+#### 5. Matriz transversal por aplicación y superficie
+
+| Aplicación o superficie | Operación offline actual                                | Reintentos                                                                                 | Concurrencia                                                                                | Idempotencia                                                                                                  | Resultado                               |
+| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| ANIMA asistencia        | cola durable en SecureStore para marcación y descansos  | backoff para errores semejantes a red; sincronización periódica y al volver a primer plano | referencias `inFlight` locales; deduplicación de marcaciones en servidor                    | marcaciones normales con `client_event_id` e índice único; descansos sin deduplicación contractual demostrada | `PARCIAL`, es la base más avanzada      |
+| PASS redención          | no demostrada                                           | nuevo intento manual                                                                       | lectura de saldo antes de dos escrituras separadas                                          | no existe clave idempotente en el flujo cliente                                                               | `CONFIRMADO` crítico                    |
+| PASS pagos              | requiere conexión                                       | replay del proveedor y conciliación programada                                             | bloqueo de transacción al aplicar estado; creación de intentos no serializada completamente | referencia persistida y registro de eventos, pero claim y efecto no son una sola unidad                       | `PARCIAL`                               |
+| NEXO ajustes            | no demostrada                                           | reenvío manual de la solicitud                                                             | lectura-modificación-escritura sobre proyecciones                                           | no existe identificador de operación                                                                          | `CONFIRMADO` crítico                    |
+| NEXO remisiones         | no demostrada como offline                              | cobertura incompleta ya registrada                                                         | transiciones y efectos requieren revisión por estado/recurso                                | no se ha demostrado exactamente una vez en todos los efectos                                                  | `PARCIAL`; conserva `TREQ-NEXO-006`     |
+| NEXO impresión          | cola de texto local                                     | reimpresión manual; sin estado durable de reintento                                        | no existe claim de trabajo por dispositivo                                                  | no existe ID durable de trabajo ni acuse verificable                                                          | `CONFIRMADO` alto                       |
+| ORIGO recepción         | borrador en `sessionStorage`; envío online              | reenvío manual                                                                             | múltiples lecturas y escrituras secuenciales                                                | no existe clave de operación para recepción o corrección                                                      | `CONFIRMADO` crítico                    |
+| PULSO                   | no demostrada                                           | depende de reenvío o integraciones futuras                                                 | modelo operativo todavía en definición                                                      | no existe contrato transversal comprobado                                                                     | `NO_IMPLEMENTADO` / pendiente de diseño |
+| FOGO                    | no demostrada                                           | no demostrados                                                                             | no demostrada                                                                               | no demostrada                                                                                                 | `NO_IMPLEMENTADO`                       |
+| VISO                    | no demostrada                                           | reenvío manual de formularios                                                              | protecciones locales variables                                                              | no existe convención transversal comprobada                                                                   | `NO_IMPLEMENTADO`                       |
+| NUMERA                  | no demostrada                                           | reenvío manual                                                                             | no demostrada                                                                               | no demostrada                                                                                                 | `NO_IMPLEMENTADO`                       |
+| SHELL                   | no ejecuta la mayoría de mutaciones de dominio          | no aplica como aplicación para muchas acciones                                             | actúa como hub                                                                              | contratos compartidos todavía no unificados                                                                   | `GOBIERNO`                              |
+| TALENTO                 | sin superficie productiva                               | no aplica                                                                                  | no aplica                                                                                   | no aplica                                                                                                     | fuera de operación actual               |
+| web pública             | no existen mutaciones empresariales offline demostradas | variable por formulario                                                                    | no demostrada                                                                               | no demostrada                                                                                                 | online                                  |
+
+La matriz no exige que todas las aplicaciones trabajen offline. Exige que cada capacidad declare su modalidad real y no permita que la interfaz confunda:
+
+```text
+borrador local
+≠ operación en cola
+≠ solicitud recibida por servidor
+≠ operación procesada
+≠ efecto empresarial conciliado
+```
+
+---
+
+#### 6. Control positivo: marcaciones offline de ANIMA
+
+ANIMA contiene la implementación más completa encontrada:
+
+- cola de marcaciones por usuario en SecureStore;
+- identificador de evento creado antes del envío;
+- `occurred_at`, sede, geolocalización, dispositivo y contexto de turno;
+- estados `pending`, `syncing`, `failed` y `conflict`;
+- número de intentos, último error y próximo reintento;
+- sincronización cada quince segundos mientras existen pendientes;
+- sincronización forzada al volver la aplicación a primer plano;
+- procesamiento secuencial de la cola;
+- diferenciación entre aplicado, duplicado, conflicto y error;
+- índice único por trabajador y `client_event_id`;
+- RPC que convierte una violación única en resultado `duplicate`;
+- registro separado de conflictos de sincronización;
+- revalidación de trabajador activo y acceso a sede en servidor;
+- estados visibles de cola, sincronización, fallo y bloqueo.
+
+Clasificación:
+
+```text
+persistencia local                    CONTROL_PRESENTE
+identificador estable                 CONTROL_PRESENTE
+replay de marcación normal            CONTROL_PRESENTE
+revalidación básica de servidor       CONTROL_PRESENTE
+conflicto explícito                    CONTROL_PRESENTE
+prueba de reinicio, pérdida y carrera  PENDIENTE
+```
+
+Este patrón deberá conservarse como referencia, pero no se considera completo para toda asistencia ni automáticamente reutilizable por otros dominios.
+
+---
+
+#### 7. Brecha ANIMA: persistencia local no confirmada antes de comunicar cola
+
+Las funciones que escriben las colas en SecureStore capturan el error, lo registran y terminan sin propagarlo.
+
+Consecuencia posible:
+
+```text
+la acción online falla
+→ ANIMA intenta guardar el evento
+→ SecureStore falla
+→ el helper no lanza error
+→ la capa superior puede continuar como si el evento hubiera quedado en cola
+→ el usuario recibe éxito optimista
+→ al cerrar la app, la intención puede no existir
+```
+
+**Hallazgo:** `H-CODE-018-001`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** crítica  
+**Riesgo:** pérdida silenciosa de una marcación o descanso que el trabajador cree guardado.  
+**Destino:** `ANIMA-AUTH-014`, `ANIMA-UX-011`, `ANIMA-UX-012`, `AUTH-QA-026`, `NFR-REQ-004`.  
+**Prueba:** `TREQ-ANIMA-003`.
+
+Decisión propuesta:
+
+Una acción solo podrá responder `queued: true` después de confirmar que la cola fue persistida. Si la persistencia local falla, la interfaz deberá comunicar que la operación no fue guardada y conservar una ruta de recuperación explícita.
+
+---
+
+#### 8. Brecha ANIMA: descansos sin idempotencia demostrada en servidor
+
+Los eventos de descanso crean un `clientEventId` y lo incluyen dentro de `notes`, pero las llamadas vigentes a:
+
+- `start_attendance_break`;
+- `end_attendance_break`;
+
+no demuestran una columna idempotente, restricción única ni resultado estable por evento. La sincronización decide localmente si debe aplicar, descartar o marcar conflicto y luego invoca la RPC.
+
+La secuencia:
+
+```text
+consultar estado actual
+→ decidir proceder
+→ llamar RPC
+```
+
+no es atómica. Dos dispositivos o un replay después de una respuesta perdida pueden observar el mismo estado previo.
+
+**Hallazgo:** `H-CODE-018-002`  
+**Estado:** `CONFIRMADO` a nivel contractual; requiere prueba concurrente para medir la manifestación  
+**Severidad:** alta  
+**Riesgo:** doble inicio, doble cierre, cierre del descanso equivocado o resultado local divergente.  
+**Destino:** `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `QUEUE-ARC-003`, `QUEUE-ARC-009`, `AUTH-QA-026`.  
+**Prueba:** `TREQ-ANIMA-004`.
+
+Decisión propuesta:
+
+Los descansos deberán usar una clave idempotente persistida en una columna propia y procesarse mediante una operación de servidor que:
+
+- bloquee o versione el estado de asistencia relevante;
+- aplique la transición válida;
+- devuelva `applied`, `duplicate` o `conflict`;
+- conserve el mismo resultado para replays posteriores.
+
+---
+
+#### 9. Brecha ANIMA: fallback que reduce el contrato de sincronización
+
+Cuando el cliente interpreta que `sync_attendance_events` no existe, ejecuta una inserción alternativa mediante `insertAttendanceLogWithRetry` y devuelve `applied`.
+
+Aunque la tabla dispone de un índice único para `client_event_id`, el fallback:
+
+- evita el contrato explícito de resultados `duplicate` y `conflict`;
+- puede diferir en validaciones, auditoría y tratamiento de errores;
+- convierte drift de esquema en una ruta funcional silenciosa;
+- permite que ambientes distintos procesen la misma cola mediante contratos diferentes.
+
+**Hallazgo:** `H-CODE-018-003`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** alta  
+**Riesgo:** divergencia entre ambientes y pérdida de semántica de sincronización.  
+**Destino:** `ANIMA-AUTH-014`, `ANIMA-AUTH-015`, `SUPA-TRANS-006`, `CODE-AUD-020`, `TREQ-SUPABASE-001`.  
+**Prueba:** se incorpora a `TREQ-ANIMA-003` y reutiliza `TREQ-SUPABASE-001`.
+
+Decisión propuesta:
+
+La ausencia del contrato de sincronización deberá ser un error de despliegue observable y no una razón para degradar a una escritura alternativa sin equivalencia probada. Cualquier compatibilidad temporal deberá estar versionada, tener prueba de paridad y fecha de retiro.
+
+---
+
+#### 10. Brecha transversal: reintento basado en heurísticas locales
+
+ANIMA identifica errores semejantes a conectividad mediante cadenas como:
+
+- `network request failed`;
+- `failed to fetch`;
+- `timeout`;
+- `enotfound`;
+- `econnrefused`.
+
+Después usa backoff exponencial con tope. Este control es útil, pero no constituye una política transversal porque:
+
+- depende del texto del error;
+- no incorpora jitter;
+- no usa `Retry-After`;
+- no diferencia timeout antes de envío y timeout después de posible commit;
+- no clasifica conflictos, validación, autorización, rate limit, indisponibilidad o error permanente mediante códigos canónicos;
+- no establece un máximo canónico de edad o intentos para todas las colas;
+- no existe una cola de fallos durable común.
+
+**Hallazgo:** `H-CODE-018-004`  
+**Estado:** `PARCIAL`  
+**Severidad:** alta  
+**Destino:** `TSVC-CAT-006`, `QUEUE-ARC-006`, `QUEUE-ARC-008`, `NFR-REQ-004`, `NFR-REQ-009`.  
+**Prueba:** `TREQ-INTEGRATION-003`.
+
+Decisión propuesta:
+
+Cada frontera deberá devolver una clasificación estable:
+
+```text
+RETRYABLE_NETWORK
+RETRYABLE_TIMEOUT_UNKNOWN_COMMIT
+RETRYABLE_RATE_LIMIT
+RETRYABLE_SERVER
+CONFLICT_VERSION
+DUPLICATE_APPLIED
+DENIED
+INVALID
+EXPIRED
+PERMANENT_FAILURE
+```
+
+La política de reintento deberá depender del código, no de texto libre.
+
+---
+
+#### 11. Brecha crítica: redención de puntos de PASS no atómica
+
+El flujo vigente de redención:
+
+1. consulta el producto y su costo;
+2. consulta el saldo del usuario;
+3. genera un QR en el cliente;
+4. inserta la redención;
+5. inserta una transacción de gasto;
+6. intenta borrar la redención si falla la segunda inserción.
+
+No existe una única operación de servidor que bloquee o versione el saldo y confirme ambos registros juntos. Tampoco existe una clave idempotente de redención.
+
+Carrera posible:
+
+```text
+solicitud A lee 100 puntos
+solicitud B lee 100 puntos
+A valida costo 80
+B valida costo 80
+A crea redención
+B crea redención
+A registra -80
+B registra -80
+```
+
+Fallo parcial posible:
+
+```text
+se crea redención
+→ se pierde conexión o falla ledger
+→ el cliente intenta compensar con delete
+→ la compensación falla o se repite
+→ queda redención huérfana o estado ambiguo
+```
+
+**Hallazgo:** `H-CODE-018-005`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** crítica  
+**Destino:** `PULSO-AUTH-010`, `PASS-INT-002`, `PASS-QA-002`, `INT-SALES-006`, `INT-SALES-007`.  
+**Prueba:** reutiliza `TREQ-PASS-008`.
+
+Decisión propuesta:
+
+La redención deberá ejecutarse mediante una única acción de servidor atómica e idempotente que:
+
+- reciba clave estable de operación;
+- bloquee o versione el saldo;
+- valide producto, sede, estado, costo y actor;
+- cree redención y movimiento de puntos en una misma transacción;
+- genere o reserve el código de canje en servidor;
+- devuelva el mismo resultado ante replay;
+- impida saldo negativo y doble gasto;
+- audite validación, cancelación y reversión.
+
+---
+
+#### 12. Control parcial: creación de pagos con referencia persistida
+
+El flujo de pagos conserva controles positivos:
+
+- una transacción previa con `idempotency_key` persistida;
+- uso de esa clave como referencia del proveedor;
+- validación de propietario, proveedor, moneda, monto y estado;
+- estados `pending` y `requires_action`;
+- conciliación periódica de checkouts vencidos;
+- bloqueo de fila durante la actualización del estado recibida por webhook.
+
+Esto reduce el riesgo de crear referencias empresariales diferentes para el mismo registro de pago.
+
+Clasificación:
+
+```text
+referencia estable de proveedor  CONTROL_PRESENTE
+validación de propietario         CONTROL_PRESENTE
+bloqueo al aplicar estado         CONTROL_PRESENTE
+creación concurrente de intentos  PARCIAL
+replay completo                   REQUIERE_PRUEBA_CONCURRENTE
+```
+
+---
+
+#### 13. Brecha de pagos: intentos concurrentes con resultado mutable
+
+Dos solicitudes simultáneas de creación de intent pueden leer la misma transacción en `pending` o `requires_action`, generar expiraciones distintas y construir URLs diferentes con la misma referencia. La RPC posterior actualiza `raw_request`, pero no demuestra un claim exclusivo que garantice que solo una solicitud construya el resultado canónico.
+
+Consecuencias posibles:
+
+- dos respuestas distintas para la misma transacción;
+- sobrescritura de la solicitud persistida;
+- diferencia entre la URL abierta por el cliente y el snapshot conservado;
+- expiraciones competidoras;
+- conciliación difícil después de una respuesta perdida.
+
+**Hallazgo:** `H-CODE-018-006`  
+**Estado:** `REQUIERE_PRUEBA_CONCURRENTE`, con brecha contractual confirmada  
+**Severidad:** alta  
+**Destino:** `INT-EXT-012`, `INT-EXT-015`, `SUPA-ARC-020`, `PASS-QA-001`, `PASS-QA-002`.  
+**Prueba:** `TREQ-PASS-009`.
+
+Decisión propuesta:
+
+La creación de intento deberá reclamar la transacción de manera atómica y conservar un resultado reutilizable. Un replay válido deberá devolver la URL y expiración ya asignadas mientras sigan vigentes, o crear una nueva versión explícita después de expirar la anterior.
+
+---
+
+#### 14. Brecha de pagos: deduplicación de webhook separada del efecto
+
+El webhook:
+
+1. verifica la firma;
+2. consulta si el evento ya está procesado;
+3. aplica el estado de la transacción;
+4. registra o actualiza el evento como procesado.
+
+El registro de eventos tiene una clave única y la actualización de la transacción usa bloqueo de fila, ambos controles positivos. Sin embargo, la secuencia de consulta, efecto y registro no es una única operación atómica.
+
+Dos entregas concurrentes pueden superar la consulta antes de que cualquiera marque el evento. Además, cuando el proveedor no entrega un ID utilizable se genera un UUID nuevo, por lo que dos replays del mismo payload no compartirían clave de deduplicación.
+
+También falta una política explícita para eventos válidos fuera de orden, por ejemplo:
+
+```text
+approved
+→ webhook retrasado de rejected
+
+refunded
+→ replay posterior de approved
+```
+
+**Hallazgo:** `H-CODE-018-007`  
+**Estado:** `PARCIAL` / `REQUIERE_PRUEBA_CONCURRENTE`  
+**Severidad:** crítica  
+**Destino:** `SUPA-AUD-014`, `SUPA-ARC-020`, `INT-EXT-010`, `INT-EXT-012`, `INT-EXT-015`.  
+**Prueba:** `TREQ-PASS-009` y `TREQ-INTEGRATION-003`.
+
+Decisión propuesta:
+
+La recepción del webhook deberá:
+
+- derivar una clave determinista del identificador del proveedor o de un hash canónico aprobado;
+- reclamar el evento atómicamente antes del efecto;
+- conservar payload original, firma, hash, fechas y número de intento;
+- aplicar una máquina de estados monotónica o una regla explícita de precedencia;
+- registrar efecto y evento en una misma transacción o mediante outbox/inbox reconciliable;
+- devolver éxito estable para duplicados ya procesados.
+
+---
+
+#### 15. Brecha crítica: ajustes de inventario NEXO no son atómicos
+
+La ruta de ajuste vigente:
+
+1. lee stock de sede;
+2. lee stock de LOC;
+3. lee stock de posición;
+4. calcula el delta en la aplicación;
+5. inserta el movimiento;
+6. actualiza la proyección por sede;
+7. actualiza la proyección por LOC;
+8. actualiza la proyección por posición;
+9. puede actualizar costo del producto;
+10. puede insertar un evento de costo.
+
+Estas operaciones se ejecutan secuencialmente fuera de una transacción única.
+
+Carrera posible:
+
+```text
+A lee stock 10
+B lee stock 10
+A suma 5 y escribe 15
+B resta 3 y escribe 7
+resultado esperado 12
+resultado final posible 7
+```
+
+Fallo parcial posible:
+
+```text
+movimiento insertado
+→ stock de sede actualizado
+→ falla stock de LOC
+→ la respuesta devuelve error
+→ el usuario reintenta
+→ se inserta otro movimiento
+```
+
+**Hallazgo:** `H-CODE-018-008`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** crítica  
+**Destino:** `NEXO-AUTH-011`, `SUPA-AUD-019`, `SUPA-AUD-022`, `SUPA-AUD-023`, `SHELL-CON-023`.  
+**Prueba:** reutiliza `TREQ-SUPABASE-002`.
+
+Decisión propuesta:
+
+Todo ajuste deberá procesarse en servidor mediante un contrato que:
+
+- reciba clave idempotente;
+- bloquee o versione el stock objetivo;
+- inserte el ledger una sola vez;
+- actualice o derive las proyecciones de sede, LOC y posición dentro de la misma transacción;
+- actualice costo y evento asociado de forma atómica cuando corresponda;
+- devuelva el resultado previo ante replay;
+- rechace la misma clave con payload diferente;
+- preserve conciliación y reconstrucción desde la fuente de verdad.
+
+---
+
+#### 16. Brecha crítica: recepción ORIGO compone múltiples efectos sin transacción única
+
+La creación de una recepción puede ejecutar, entre otros efectos:
+
+- inserción de cabecera;
+- inserción de líneas;
+- vinculación de firma de dispositivo compartido;
+- inserción de movimientos;
+- actualización de stock por sede;
+- actualización por LOC;
+- actualización de costos;
+- inserción de eventos de costo;
+- incremento de cantidad recibida por línea de orden;
+- cambio de estado de orden de compra;
+- creación de solicitudes de maestro de datos;
+- cierre de relación entre recepción original y corrección.
+
+No existe una clave idempotente de recepción ni una transacción única que abarque el efecto empresarial completo.
+
+El propio código reconoce estados parciales mediante mensajes como:
+
+```text
+la recepción se registró,
+pero no se pudieron guardar las solicitudes...
+```
+
+o:
+
+```text
+la recepción corregida se creó,
+pero no se pudo cerrar la auditoría...
+```
+
+La corrección además puede reversar primero la recepción original y fallar antes de crear o vincular la sustituta.
+
+**Hallazgo:** `H-CODE-018-009`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** crítica  
+**Destino:** `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016`, `INT-PROC-002`, `INT-PROC-003`, `INT-PROC-005`.  
+**Prueba:** `TREQ-ORIGO-003`.
+
+Decisión propuesta:
+
+La recepción deberá convertirse en una operación de servidor transaccional e idempotente. La corrección deberá ser una transición compuesta indivisible o una saga durable que nunca deje la original reversada sin un estado explícito y recuperable de sustitución pendiente.
+
+---
+
+#### 17. Brecha alta: cola de impresión NEXO no es una cola empresarial durable
+
+La cola de impresión actual:
+
+- es texto guardado en `localStorage` del navegador;
+- no registra un ID durable por trabajo;
+- no tiene actor, sede, área, dispositivo, plantilla, versión ni payload hash canónicos;
+- envía ZPL directamente mediante BrowserPrint;
+- vacía la cola inmediatamente después de invocar el envío;
+- no espera el callback de éxito antes de retirar el trabajo;
+- no puede distinguir con certeza envío, recepción por bridge, procesamiento por impresora o salida física;
+- no conserva una cola de fallos ni reintentos auditables;
+- no separa reintento técnico de reimpresión empresarial.
+
+Fallo posible:
+
+```text
+se invoca send
+→ la interfaz limpia localStorage
+→ BrowserPrint devuelve error
+→ el trabajo ya no está en cola
+```
+
+Ambigüedad posible:
+
+```text
+la impresora recibió el trabajo
+→ se pierde el callback
+→ el usuario reimprime
+→ sale una etiqueta duplicada
+```
+
+**Hallazgo:** `H-CODE-018-010`  
+**Estado:** `CONFIRMADO`  
+**Severidad:** alta  
+**Destino:** `NEXO-UX-037`, `NEXO-UX-038`, `PRINT-ARC-006`, `PRINT-ARC-010`, `PRINT-ARC-011`, `PRINT-ARC-012`, `PRINT-ARC-014`, `PRINT-ARC-017`.  
+**Prueba:** reutiliza `TREQ-NEXO-005`.
+
+Decisión propuesta:
+
+Un trabajo no se retirará antes de una confirmación definida. Cuando el periférico no pueda confirmar impresión física, el sistema deberá distinguir al menos:
+
+```text
+queued
+claimed
+sent_to_adapter
+adapter_acknowledged
+unknown_outcome
+failed
+cancelled
+reprint_requested
+```
+
+La reimpresión deberá crear una acción nueva, enlazada con el trabajo original y con motivo obligatorio cuando corresponda.
+
+---
+
+#### 18. Remisiones: idempotencia todavía no demostrada de extremo a extremo
+
+Las tareas previas ya comprobaron que las remisiones pueden operar en modo de registro y que la publicación de movimientos reales no está uniformemente consolidada.
+
+Para `CODE-AUD-018` no se declara un defecto nuevo adicional sin una prueba completa de todas las transiciones. Se conserva el riesgo existente:
+
+- activar inventario después de operar en modo registro;
+- reintentar preparación, despacho, tránsito o recepción;
+- mezclar efectos por LOC;
+- conciliar operaciones históricas;
+- repetir movimientos después de una respuesta perdida.
+
+**Hallazgo:** `H-CODE-018-011`  
+**Estado:** `REQUIERE_PRUEBA_DE_RECUPERACIÓN`  
+**Severidad:** crítica por impacto potencial  
+**Destino:** `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013`, `INT-SALES-007`, `SHELL-CON-023`.  
+**Prueba:** reutiliza `TREQ-NEXO-006`.
+
+No se afirma que exista doble contabilización actual. Se afirma que el contrato exactamente una vez todavía no está demostrado.
+
+---
+
+#### 19. Brecha transversal: protecciones locales no sustituyen concurrencia de servidor
+
+Se identificaron controles útiles como:
+
+- `actionInFlightRef`;
+- `syncInFlightRef`;
+- botones deshabilitados;
+- estados `loading`;
+- procesamiento secuencial dentro de una instancia;
+- comparación local del último estado conocido.
+
+Estos mecanismos reducen repeticiones accidentales dentro de la misma instancia, pero no resuelven:
+
+- dos dispositivos del mismo actor;
+- dos actores sobre el mismo recurso;
+- dos pestañas;
+- dos procesos de servidor;
+- dos webhooks;
+- una respuesta perdida;
+- un reintento después de reinicio;
+- una cola recuperada en otro dispositivo.
+
+**Hallazgo:** `H-CODE-018-012`  
+**Estado:** `GOBIERNO` con manifestaciones confirmadas en flujos específicos  
+**Severidad:** alta  
+**Destino:** `NFR-REQ-002`, `TSVC-CAT-006`, `QUEUE-ARC-009`, `SHELL-CON-023`, `INT-APP-004`.  
+**Prueba:** `TREQ-INTEGRATION-003`.
+
+Decisión propuesta:
+
+Toda integridad crítica deberá estar protegida en la frontera que posee la fuente de verdad. El cliente podrá mejorar experiencia, pero nunca será la única defensa contra duplicación o carrera.
+
+---
+
+#### 20. Brecha transversal: no existe contrato canónico de operación pendiente
+
+Fuera de ANIMA no se encontró una semántica común para diferenciar:
+
+```text
+local_draft
+queued
+sending
+server_received
+processing
+applied
+duplicate
+conflict
+retry_scheduled
+failed_permanent
+cancelled
+expired
+unknown_outcome
+```
+
+Como resultado, distintas superficies pueden usar “guardado”, “enviado”, “registrado”, “procesado” o “impreso” con significados diferentes.
+
+**Hallazgo:** `H-CODE-018-013`  
+**Estado:** `NO_IMPLEMENTADO`  
+**Severidad:** alta  
+**Destino:** `NFR-REQ-004`, `UX-STATION-007`, `TSVC-CAT-006`, `QUEUE-ARC-002`, `QUEUE-ARC-010`, `INT-APP-008`.  
+**Prueba:** `TREQ-INTEGRATION-003`.
+
+Decisión propuesta:
+
+Cada proceso deberá declarar:
+
+- estado local;
+- estado de transporte;
+- estado de procesamiento;
+- estado empresarial;
+- mensaje visible;
+- acción permitida;
+- responsable de recuperación;
+- tiempo máximo antes de escalar.
+
+---
+
+#### 21. Brecha transversal: no existe registro canónico de idempotencia
+
+Los patrones actuales son heterogéneos:
+
+| Patrón                | Ejemplo                | Limitación                                                             |
+| --------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| restricción única     | marcaciones ANIMA      | localizada a una tabla y tipo de evento                                |
+| referencia persistida | pagos                  | no cubre por sí sola claim, respuesta estable y eventos fuera de orden |
+| comprobación previa   | webhook                | puede competir antes de registrar el claim                             |
+| comparación de estado | descansos              | consulta y efecto no son una unidad atómica                            |
+| bloqueo local         | formularios y acciones | no protege concurrencia distribuida                                    |
+| compensación cliente  | redención PASS         | no garantiza reversión                                                 |
+| reenvío manual        | múltiples formularios  | puede crear una nueva operación duplicada                              |
+| cola local de texto   | impresión NEXO         | no conserva identidad ni acuse durable                                 |
+
+**Hallazgo:** `H-CODE-018-014`  
+**Estado:** `GOBIERNO`  
+**Severidad:** alta  
+**Destino:** `SHELL-CON-023`, `TSVC-CAT-006`, `QUEUE-ARC-003`, `INT-APP-004`, `INT-EXT-012`, `INT-DB-005`.  
+**Prueba:** `TREQ-INTEGRATION-003`.
+
+Contrato mínimo propuesto:
+
+```text
+operation_id
+operation_type
+actor_id
+subject_id o device_id
+resource_type
+resource_id o draft_fingerprint
+payload_hash
+contract_version
+client_occurred_at
+server_received_at
+status
+result_reference
+attempt_count
+last_error_code
+expires_at
+```
+
+Reglas:
+
+1. la clave se genera antes del primer intento;
+2. permanece igual durante todos los reintentos de la misma intención;
+3. el servidor guarda hash y versión del payload;
+4. misma clave + mismo hash devuelve el resultado anterior;
+5. misma clave + hash distinto produce conflicto;
+6. la retención supera la ventana máxima de replay;
+7. las claves no contienen secretos ni PII innecesaria;
+8. el ámbito evita colisiones entre dominios y actores;
+9. el resultado conserva referencia al recurso o evento creado;
+10. la limpieza del registro es controlada y auditable.
+
+---
+
+#### 22. Brecha transversal: falta patrón outbox/inbox para efectos asíncronos
+
+Las integraciones actuales combinan:
+
+- escrituras de dominio;
+- triggers;
+- Edge Functions;
+- notificaciones;
+- webhooks;
+- cron;
+- GitHub Actions;
+- callbacks de periféricos.
+
+No se ha demostrado un patrón transversal en el que:
+
+```text
+transacción de negocio
++ evento de salida durable
+→ commit único
+→ entrega reintentable
+→ consumidor deduplicado
+→ auditoría y conciliación
+```
+
+Tampoco se ha demostrado una inbox canónica para eventos externos.
+
+**Hallazgo:** `H-CODE-018-015`  
+**Estado:** `GOBIERNO`  
+**Severidad:** alta  
+**Destino:** `SUPA-AUD-014`, `SUPA-ARC-020`, `QUEUE-ARC-001`, `QUEUE-ARC-002`, `QUEUE-ARC-003`, `QUEUE-ARC-006`, `QUEUE-ARC-008`, `QUEUE-ARC-009`, `INT-DB-007`.  
+**Prueba:** `TREQ-INTEGRATION-003`.
+
+No se impone todavía una tecnología específica. E3 y E4 deberán decidir cuándo usar:
+
+- transacción directa;
+- outbox;
+- inbox;
+- cron reconciliador;
+- cola gestionada;
+- worker;
+- Edge Function;
+- adaptador local;
+- compensación.
+
+---
+
+#### 23. Borradores locales y operación degradada
+
+Se encontraron usos legítimos de almacenamiento local o de sesión para:
+
+- cola de asistencia;
+- borrador de recepción ORIGO;
+- cola y configuración de impresión;
+- sesión y preferencias;
+- caches de lectura.
+
+Cada uso deberá clasificarse por separado:
+
+| Tipo                     | Puede comunicar “operación realizada” | Debe sincronizar             | Requiere idempotencia de servidor |
+| ------------------------ | ------------------------------------- | ---------------------------- | --------------------------------- |
+| preferencia local        | no                                    | no necesariamente            | no                                |
+| cache de lectura         | no                                    | refresca                     | no para lectura                   |
+| borrador local           | no                                    | solo cuando el usuario envía | sí al enviar una mutación crítica |
+| cola offline empresarial | solo como “pendiente”                 | sí                           | sí                                |
+| trabajo periférico       | solo según estado confirmado          | sí o adaptador local         | sí                                |
+
+**Hallazgo:** `H-CODE-018-016`  
+**Estado:** `GOBIERNO`  
+**Severidad:** media  
+**Destino:** `NFR-REQ-004`, `UX-STATION-007`, `ANIMA-UX-011`, `PRINT-ARC-017`.  
+**Prueba:** cubierta por `TREQ-ANIMA-003`, `TREQ-NEXO-005` y `TREQ-INTEGRATION-003`.
+
+---
+
+#### 24. Política canónica propuesta de operación offline
+
+Cada capacidad deberá elegir explícitamente una modalidad:
+
+| Modalidad                | Comportamiento                                                               |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `ONLINE_REQUIRED`        | bloquea envío sin conexión y conserva borrador cuando corresponda            |
+| `READ_CACHED`            | permite consulta de snapshot claramente fechado, sin presentarlo como actual |
+| `LOCAL_DRAFT`            | permite preparar datos, pero no afirma efecto empresarial                    |
+| `OFFLINE_QUEUED`         | acepta intención durable y la sincroniza con idempotencia y revalidación     |
+| `LOCAL_PERIPHERAL_QUEUE` | entrega a adaptador local con estados y acuses definidos                     |
+| `MANUAL_CONTINGENCY`     | usa procedimiento alterno documentado y posterior conciliación               |
+
+Una aplicación no será declarada “offline” de forma global. La modalidad pertenece a cada capacidad.
+
+Toda capacidad `OFFLINE_QUEUED` deberá definir:
+
+- motivo empresarial que justifica offline;
+- actor y dispositivo permitidos;
+- datos mínimos que pueden conservarse localmente;
+- cifrado y retención;
+- clave idempotente;
+- versión o snapshot del recurso;
+- vencimiento;
+- orden relativo con otros eventos;
+- política de revalidación;
+- resolución de conflicto;
+- UX de estado pendiente;
+- mecanismo de reintento;
+- procedimiento de recuperación;
+- auditoría;
+- prueba de reinstalación, reinicio y múltiples dispositivos.
+
+---
+
+#### 25. Política canónica propuesta de reintentos
+
+Reglas mínimas:
+
+1. Un retry conserva `operation_id` y payload lógico.
+2. Los errores de validación, permiso o conflicto no se reintentan automáticamente.
+3. Los timeouts de resultado desconocido se reintentan consultando primero el resultado por clave.
+4. Los rate limits respetan `Retry-After` cuando exista.
+5. El backoff usa exponencial con jitter y límite.
+6. Toda cola define intentos máximos, edad máxima y expiración.
+7. Al agotar política, el trabajo pasa a fallo permanente o cola de revisión.
+8. Un operador autorizado puede reintentar sin cambiar la identidad de la operación original.
+9. Una corrección del payload crea una nueva operación y referencia la anterior.
+10. Los reintentos no omiten autorización, validación ni control de versión.
+11. El sistema registra intento, fecha, error, duración y resultado.
+12. Las respuestas duplicadas no se muestran como errores cuando el efecto ya existe.
+
+---
+
+#### 26. Política canónica propuesta de concurrencia
+
+Cada mutación deberá declarar:
+
+| Campo                 | Pregunta obligatoria                                                       |
+| --------------------- | -------------------------------------------------------------------------- |
+| recurso protegido     | ¿qué entidad o agregado no puede modificarse simultáneamente sin control?  |
+| granularidad          | ¿fila, producto+sede, pedido, turno, caja, LPN, recepción, pago o trabajo? |
+| versión               | ¿qué versión leyó el cliente?                                              |
+| estrategia            | ¿bloqueo, versión optimista, unique, serialización, reserva o combinación? |
+| transición            | ¿qué estados de origen permiten la acción?                                 |
+| resultado concurrente | ¿espera, conflicto, duplicate o merge?                                     |
+| compensación          | ¿qué ocurre si un efecto secundario falla?                                 |
+| auditoría             | ¿qué actor, operación y versión quedan registrados?                        |
+
+No se permitirá un patrón de lectura-modificación-escritura de cantidades críticas sin bloqueo, compare-and-swap o función atómica en servidor.
+
+---
+
+#### 27. Política canónica propuesta de tiempo y orden
+
+Las acciones offline y asíncronas deberán conservar dos tiempos:
+
+```text
+client_occurred_at
+→ cuándo afirma el dispositivo que ocurrió la acción
+
+server_received_at / server_applied_at
+→ cuándo fue recibida y aplicada por la fuente de verdad
+```
+
+El reloj del dispositivo no definirá por sí solo precedencia, cierre contable, turno, vencimiento, saldo ni orden definitivo.
+
+Cuando el orden sea relevante se deberá incluir:
+
+- secuencia por agregado;
+- versión esperada;
+- dependencia de evento anterior;
+- política para huecos;
+- política para eventos tardíos;
+- política para expirados;
+- resolución humana cuando no sea seguro ordenar automáticamente.
+
+---
+
+#### 28. Política canónica propuesta de confirmación visible
+
+Los mensajes deberán corresponder al estado real:
+
+| Estado técnico        | Mensaje admisible                             |
+| --------------------- | --------------------------------------------- |
+| borrador local        | “Borrador guardado en este dispositivo”       |
+| cola persistida       | “Pendiente de sincronización”                 |
+| servidor recibió      | “Recibido; procesando”                        |
+| aplicado              | “Registrado” o equivalente empresarial        |
+| duplicado aplicado    | “Ya estaba registrado”                        |
+| conflicto             | “No se aplicó porque el recurso cambió”       |
+| resultado desconocido | “Verificando resultado; no repitas la acción” |
+| fallo permanente      | “No se aplicó; requiere revisión”             |
+
+No se comunicará éxito definitivo inmediatamente después de:
+
+- una actualización optimista;
+- guardar en memoria;
+- invocar `send` a un periférico;
+- iniciar un `fetch`;
+- recibir un timeout;
+- crear solo una parte de una operación compuesta.
+
+---
+
+#### 29. Inventario consolidado de hallazgos y destinos
+
+| ID               | Hallazgo                                                                    | Estado / severidad                          | Destino exacto                                                                                                                                                                                        | Requisito                               |
+| ---------------- | --------------------------------------------------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `H-CODE-018-001` | ANIMA puede comunicar cola aunque falle persistencia en SecureStore         | `CONFIRMADO` / crítica                      | `ANIMA-AUTH-014`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `NFR-REQ-004`                                                                                                                        | `TREQ-ANIMA-003`                        |
+| `H-CODE-018-002` | descansos no demuestran deduplicación atómica por `clientEventId`           | `CONFIRMADO` / alta                         | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                                                                                                   | `TREQ-ANIMA-004`                        |
+| `H-CODE-018-003` | fallback de marcación evita el contrato completo de sincronización          | `CONFIRMADO` / alta                         | `SUPA-TRANS-006`; `CODE-AUD-020`; `ANIMA-AUTH-015`                                                                                                                                                    | `TREQ-ANIMA-003`; `TREQ-SUPABASE-001`   |
+| `H-CODE-018-004` | política de retry depende de heurísticas y no es transversal                | `PARCIAL` / alta                            | `TSVC-CAT-006`; `QUEUE-ARC-006`; `QUEUE-ARC-008`; `NFR-REQ-004`; `NFR-REQ-009`                                                                                                                        | `TREQ-INTEGRATION-003`                  |
+| `H-CODE-018-005` | redención PASS se compone en cliente sin atomicidad ni clave idempotente    | `CONFIRMADO` / crítica                      | `PULSO-AUTH-010`; `PASS-INT-002`; `PASS-QA-002`; `INT-SALES-006`; `INT-SALES-007`                                                                                                                     | `TREQ-PASS-008`                         |
+| `H-CODE-018-006` | creación concurrente de intentos puede producir respuestas distintas        | `REQUIERE_PRUEBA_CONCURRENTE` / alta        | `INT-EXT-012`; `INT-EXT-015`; `SUPA-ARC-020`; `PASS-QA-002`                                                                                                                                           | `TREQ-PASS-009`                         |
+| `H-CODE-018-007` | webhook consulta duplicado antes del efecto y registra después              | `PARCIAL` / crítica                         | `SUPA-AUD-014`; `SUPA-ARC-020`; `INT-EXT-010`; `INT-EXT-012`; `INT-EXT-015`                                                                                                                           | `TREQ-PASS-009`; `TREQ-INTEGRATION-003` |
+| `H-CODE-018-008` | ajuste NEXO actualiza ledger, proyecciones y costo secuencialmente          | `CONFIRMADO` / crítica                      | `NEXO-AUTH-011`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SHELL-CON-023`                                                                                                                      | `TREQ-SUPABASE-002`                     |
+| `H-CODE-018-009` | recepción y corrección ORIGO pueden quedar parcialmente aplicadas           | `CONFIRMADO` / crítica                      | `ORIGO-UX-009`; `ORIGO-UX-010`; `ORIGO-UX-014`; `ORIGO-UX-016`; `INT-PROC-002`; `INT-PROC-003`; `INT-PROC-005`                                                                                        | `TREQ-ORIGO-003`                        |
+| `H-CODE-018-010` | impresión retira trabajo antes del callback de éxito                        | `CONFIRMADO` / alta                         | `NEXO-UX-037`; `NEXO-UX-038`; `PRINT-ARC-006`; `PRINT-ARC-010`; `PRINT-ARC-011`; `PRINT-ARC-012`; `PRINT-ARC-014`; `PRINT-ARC-017`                                                                    | `TREQ-NEXO-005`                         |
+| `H-CODE-018-011` | exactamente una vez en remisiones no está demostrado                        | `REQUIERE_PRUEBA_DE_RECUPERACIÓN` / crítica | `NEXO-UX-009`; `NEXO-UX-010`; `NEXO-UX-011`; `NEXO-UX-012`; `NEXO-UX-013`; `INT-SALES-007`; `SHELL-CON-023`                                                                                           | `TREQ-NEXO-006`                         |
+| `H-CODE-018-012` | bloqueos locales no protegen concurrencia distribuida                       | `GOBIERNO` / alta                           | `NFR-REQ-002`; `TSVC-CAT-006`; `QUEUE-ARC-009`; `SHELL-CON-023`; `INT-APP-004`                                                                                                                        | `TREQ-INTEGRATION-003`                  |
+| `H-CODE-018-013` | no existe estado común de operación pendiente                               | `NO_IMPLEMENTADO` / alta                    | `NFR-REQ-004`; `UX-STATION-007`; `QUEUE-ARC-002`; `QUEUE-ARC-010`; `INT-APP-008`                                                                                                                      | `TREQ-INTEGRATION-003`                  |
+| `H-CODE-018-014` | no existe registro canónico de idempotencia                                 | `GOBIERNO` / alta                           | `SHELL-CON-023`; `TSVC-CAT-006`; `QUEUE-ARC-003`; `INT-APP-004`; `INT-EXT-012`; `INT-DB-005`                                                                                                          | `TREQ-INTEGRATION-003`                  |
+| `H-CODE-018-015` | no existe patrón transversal outbox/inbox                                   | `GOBIERNO` / alta                           | `SUPA-AUD-014`; `SUPA-ARC-020`; `QUEUE-ARC-001`; `QUEUE-ARC-002`; `QUEUE-ARC-003`; `QUEUE-ARC-004`; `QUEUE-ARC-005`; `QUEUE-ARC-006`; `QUEUE-ARC-007`; `QUEUE-ARC-008`; `QUEUE-ARC-009`; `INT-DB-007` | `TREQ-INTEGRATION-003`                  |
+| `H-CODE-018-016` | borrador, cache, cola y efecto confirmado no están clasificados globalmente | `GOBIERNO` / media                          | `NFR-REQ-004`; `UX-STATION-007`; `ANIMA-UX-011`; `PRINT-ARC-017`                                                                                                                                      | requisitos asociados                    |
+
+Todos los hallazgos tienen destino.
+
+**No se crea ninguna tarea nueva del roadmap.**
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 30.1. Requisitos reutilizados
+
+- `TREQ-PASS-008` — redención y ledger atómicos e idempotentes;
+- `TREQ-NEXO-005` — cola de impresión no pierde ni duplica trabajos;
+- `TREQ-NEXO-006` — remisiones y movimientos no producen doble contabilización;
+- `TREQ-SUPABASE-001` — fallback legacy con paridad y retiro controlado;
+- `TREQ-SUPABASE-002` — operaciones de inventario atómicas o reconciliables.
+
+No se cambia su estado.
+
+##### 30.2. Requisitos nuevos
+
+- `TREQ-ANIMA-003` — una marcación offline solo se presenta como encolada después de persistencia durable; sobrevive reinicio y reintentos y produce un único efecto confirmado por `client_event_id`;
+- `TREQ-ANIMA-004` — inicio y cierre de descanso usan identificador idempotente, transición atómica y resultado estable frente a replay, carrera y eventos fuera de orden;
+- `TREQ-PASS-009` — creación de intentos y recepción de webhooks de pago resisten solicitudes concurrentes, duplicadas, tardías y fuera de orden sin duplicar ni retroceder efectos;
+- `TREQ-ORIGO-003` — una recepción, su efecto de inventario, costo, orden y auditoría se confirman atómicamente o quedan en estado recuperable; el replay no crea una segunda recepción;
+- `TREQ-INTEGRATION-003` — toda operación asíncrona o reintentable conserva clave, hash, versión, resultado y política de retry; mismo evento no produce más de un efecto y payload diferente con la misma clave genera conflicto.
+
+Las filas canónicas completas deberán agregarse exclusivamente en:
+
+```text
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+No se duplican filas completas de `04A` dentro de esta tarea.
+
+---
+
+#### 31. Decisiones propuestas
+
+1. La operación offline se definirá por capacidad, no por aplicación completa.
+2. Se distinguirán `ONLINE_REQUIRED`, `READ_CACHED`, `LOCAL_DRAFT`, `OFFLINE_QUEUED`, `LOCAL_PERIPHERAL_QUEUE` y `MANUAL_CONTINGENCY`.
+3. Un borrador local nunca equivaldrá a una operación empresarial registrada.
+4. Una cola solo podrá comunicar estado pendiente después de confirmar persistencia durable.
+5. Toda intención reintentable obtendrá un `operation_id` estable antes del primer envío.
+6. Todos los reintentos de la misma intención reutilizarán la misma clave y el mismo payload lógico.
+7. Misma clave y mismo hash devolverán el resultado estable anterior.
+8. Misma clave y payload distinto producirán conflicto.
+9. Toda cola offline revalidará actor, permiso, contexto, recurso, versión y vigencia en servidor.
+10. Una acción offline pendiente no activará por sí sola contexto, autorización, saldo, stock, pago ni transición terminal.
+11. Los errores se clasificarán por códigos canónicos y no únicamente por texto.
+12. Los reintentos automáticos usarán backoff con jitter, límites de intentos y edad, expiración y cola de fallos.
+13. Un timeout de resultado desconocido se resolverá consultando por clave antes de generar una operación nueva.
+14. Los bloqueos de interfaz se conservarán como UX, pero no se considerarán integridad.
+15. Las cantidades y transiciones críticas se protegerán mediante bloqueo, versión, unique, serialización o compare-and-swap en servidor.
+16. Las operaciones compuestas usarán transacción única o una saga durable e idempotente.
+17. Las compensaciones de mejor esfuerzo desde el cliente no sustituirán atomicidad.
+18. Webhooks y colas se diseñarán bajo entrega al menos una vez.
+19. Todo webhook reclamará o registrará el evento atómicamente antes de producir efectos.
+20. Los eventos externos conservarán payload, firma, hash, fuente, intento y fechas.
+21. Las máquinas de estado definirán tratamiento de eventos duplicados, tardíos y fuera de orden.
+22. La redención PASS se trasladará a una acción de servidor atómica e idempotente.
+23. La creación de intentos de pago devolverá un resultado canónico reutilizable para la transacción vigente.
+24. El webhook de pagos no dependerá de un UUID aleatorio para deduplicar un evento sin ID del proveedor.
+25. Los ajustes de inventario no actualizarán ledger y proyecciones mediante escrituras independientes desde una ruta de aplicación.
+26. Las recepciones ORIGO y sus correcciones se convertirán en operaciones atómicas o sagas recuperables.
+27. Un trabajo de impresión no se eliminará antes del acuse definido.
+28. Reimpresión y retry técnico serán acciones diferentes y auditables.
+29. ANIMA conservará su índice único y resultados `applied`, `duplicate` y `conflict` como patrón positivo.
+30. ANIMA no degradará silenciosamente a un contrato de inserción alternativo cuando falte la RPC canónica.
+31. Los descansos incorporarán idempotencia real en servidor.
+32. El sistema conservará hora del dispositivo y hora de servidor sin usar el reloj cliente como única precedencia.
+33. E3 decidirá persistencia, constraints, bloqueo, outbox/inbox y conciliación.
+34. E4 decidirá contratos de cola, impresión, notificaciones, reintentos y fallos.
+35. E5 asignará cada requisito a un paquete con pruebas de pérdida de red, replay, concurrencia, recuperación y hardware cuando aplique.
+36. Los cinco requisitos nuevos se registrarán únicamente en `04A`.
+37. No se crea una tarea nueva del roadmap.
+38. `CODE-AUD-019` permanecerá como única continuidad reservada después de la aprobación.
+
+---
+
+#### 32. Límites de certeza
+
+Esta tarea no confirma:
+
+- que una duplicación o pérdida ya haya ocurrido en producción;
+- el comportamiento de SecureStore cuando el sistema operativo elimina credenciales o la aplicación se reinstala;
+- la misma semántica de almacenamiento entre iOS y Android;
+- que dos webhooks concurrentes hayan aplicado un efecto dos veces;
+- que Wompi entregue eventos sin identificador;
+- la precedencia final aprobada entre estados de pago fuera de orden;
+- qué nivel de confirmación física soporta cada modelo de impresora;
+- que BrowserPrint pueda confirmar impresión material y no solo recepción del comando;
+- la atomicidad interna de RPC no inspeccionadas en esta tarea;
+- la cobertura completa de cada transición de remisiones;
+- el comportamiento del POS externo ante replay;
+- los límites de rate, timeout y retry de proveedores externos;
+- la política final de retención de claves idempotentes;
+- la tecnología definitiva de cola, worker, outbox o inbox;
+- qué capacidades adicionales deberán admitir operación offline después del diseño E2.
+
+Estas incertidumbres tienen destino en tareas existentes y no invalidan los defectos estáticos confirmados.
+
+---
+
+#### 33. Criterios de aceptación
+
+`CODE-AUD-018` podrá aprobarse cuando:
+
+- operación offline, borrador local, cache y cola periférica estén diferenciados;
+- la única cola empresarial offline actual quede identificada;
+- los controles positivos de ANIMA queden preservados;
+- la pérdida posible por fallo de persistencia local quede documentada;
+- los descansos queden separados de la idempotencia de marcaciones normales;
+- el fallback de sincronización quede clasificado;
+- reintento y nueva operación no se confundan;
+- los errores retryable y permanentes requieran códigos canónicos;
+- la redención PASS quede clasificada como no atómica;
+- intentos y webhooks de pagos queden evaluados por replay y concurrencia;
+- ajustes NEXO queden evaluados por carrera, atomicidad y reintento;
+- recepción ORIGO quede evaluada como operación compuesta;
+- la cola de impresión no se considere durable ni confirmada;
+- remisiones conserven su requisito de exactamente una vez sin afirmar un fallo no probado;
+- los bloqueos locales no se presenten como control distribuido;
+- exista una política propuesta de modalidad offline;
+- exista una política propuesta de idempotencia, retry, tiempo, orden y confirmación visible;
+- cada hallazgo tenga destino documental exacto;
+- los requisitos reutilizados y nuevos tengan identificador único;
+- las filas completas nuevas se incorporen únicamente en `04A`;
+- no se creen tareas redundantes;
+- no se modifique código, CI, despliegues ni Supabase;
+- `CODE-AUD-019` permanezca como continuidad reservada.
+
+---
+
+#### 34. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+capacidad y modalidad de conectividad
+→ operación identificada antes del primer envío
+→ persistencia local cuando corresponda
+→ reintento con la misma identidad
+→ revalidación y control de versión en servidor
+→ deduplicación y concurrencia
+→ transacción o saga recuperable
+→ resultado estable
+→ confirmación visible correcta
+→ auditoría, conciliación y prueba
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-019
+— Vincular cada capacidad con su implementación actual verificable
+```
+
+
+### ✅ CODE-AUD-019 — Vincular cada capacidad con su implementación actual verificable
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** consolidación transversal de trazabilidad capacidad → implementación → contrato → evidencia → brecha  
+**Dependencia anterior:** `CODE-AUD-018` — APROBADA  
+**Continuidad reservada:** `CODE-AUD-020`  
+**Línea base funcional:** `LB-CAP-VENTO-001 v1.0` — 18 familias y 217 subcapacidades  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no realizados  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea crea el registro `MAP-IMPL-CAP-001`, que vincula individualmente las **217 subcapacidades** de `LB-CAP-VENTO-001 v1.0` con la implementación actual que puede comprobarse mediante repositorios, superficies, contratos de servidor, objetos de datos, despliegues, uso operativo o evidencia manual y externa.
+
+La cadena aprobable será:
+
+```text
+capacidad empresarial
+→ aplicación propietaria candidata
+→ repositorio o medio que la representa actualmente
+→ ruta, acción, contrato, dato, dispositivo o tercero
+→ estado de vinculación verificable
+→ limitación o brecha
+→ tarea exacta que deberá resolverla
+```
+
+Resultado cuantitativo:
+
+| Estado de vinculación                      | Subcapacidades |
+| ------------------------------------------ | -------------: |
+| `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         |         **29** |
+| `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        |         **96** |
+| `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` |         **27** |
+| `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   |         **48** |
+| `SIN_IMPLEMENTACIÓN_VERIFICABLE`           |         **16** |
+| `FUTURA_CON_BASE_TÉCNICA`                  |          **1** |
+| **Total**                                  |        **217** |
+
+Las cantidades describen la evidencia localizada en el corte. No equivalen a porcentaje de avance, prioridad ni aceptación operativa.
+
+---
+
+#### 2. Qué significa vincular una capacidad
+
+Una capacidad queda vinculada cuando el registro identifica, como mínimo:
+
+1. su identificador y resultado empresarial;
+2. la aplicación propietaria candidata aprobada;
+3. el repositorio, servicio, archivo, documento, dispositivo o tercero que la representa hoy;
+4. una superficie o contrato reproducible;
+5. la persistencia, evento o evidencia que conserva el resultado;
+6. el estado real de esa vinculación;
+7. la limitación que impide declararla completa;
+8. la tarea exacta que deberá convertir la brecha en backlog, diseño o implementación.
+
+No basta con encontrar:
+
+- un permiso;
+- una tabla;
+- una ruta;
+- un componente;
+- un prototipo;
+- una pantalla vacía;
+- una migración histórica;
+- una aplicación registrada;
+- una operación manual no confirmada.
+
+La vinculación debe conservar la diferencia entre **existencia técnica**, **uso comprobado**, **estructura sin uso**, **operación manual o externa**, **ausencia** y **base futura**.
+
+---
+
+#### 3. Estados de vinculación
+
+| Estado                                     | Regla                                                                                                                                                                |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | se localizaron superficie, contrato y persistencia, además de datos o evidencia de operación suficiente; puede seguir siendo parcial respecto del resultado objetivo |
+| `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | existe una representación reproducible, pero faltan etapas, autorización, adopción, corrección, auditoría, integración o evidencia de uso completa                   |
+| `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | existen código, tablas, RPC o pantallas, pero no datos o adopción operativa comprobada                                                                               |
+| `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | el resultado se obtiene actualmente mediante personas, archivos, papel, mensajes, sistemas externos o terceros; no se presenta como implementación interna           |
+| `SIN_IMPLEMENTACIÓN_VERIFICABLE`           | no se localizó una representación técnica suficiente ni evidencia operativa concreta para vincular el resultado sin inventarlo                                       |
+| `FUTURA_CON_BASE_TÉCNICA`                  | existe una base técnica reutilizable, pero no un producto desplegado, adoptado y aprobado como operación actual                                                      |
+
+Un estado de vinculación no sustituye los estados de cobertura de `CAP-MAP-014`, la clasificación empresarial de `CAP-MAP-012` ni la propiedad definitiva que se resolverá en `CAP-SCOPE-001` a `CAP-SCOPE-019`.
+
+---
+
+#### 4. Fuentes y corte de evidencia
+
+El mapa consolida exclusivamente evidencia ya obtenida en:
+
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-018`;
+- repositorios reconocidos de Vento OS;
+- proyecto Supabase `vento-os-dev`;
+- despliegues Vercel, Expo/EAS y tiendas comprobados;
+- procesos manuales, externos y documentos registrados en `OPS-AUD-*` y `OPS-PLAN-*`;
+- requisitos de prueba vigentes en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+El repositorio `vento-shell` se reconoce como propietario técnico de migraciones y contratos compartidos. No se convierte por ello en propietario empresarial de todas las capacidades.
+
+---
+
+#### 5. Paquetes de evidencia reutilizables
+
+Cada fila de la matriz referencia uno o más paquetes. El paquete permite repetir evidencia sin ocultar la vinculación individual de las 217 subcapacidades.
+
+| Código   | Paquete                                   | Evidencia reproducible                                                                                                                                                                                                                                                                                                                              |
+| -------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EVC-01` | Gobierno y estructura VISO                | `vento-viso`: Server Actions de empresas, sedes, áreas, roles, permisos y navegación; relaciones `companies`, `sites`, `areas`, `roles`, `app_permissions`, `role_permissions` y `employee_permissions`. Contraste: `CODE-AUD-003`, `005`, `006`, `009`, `014` y `017`.                                                                             |
+| `EVC-02` | Personas, turnos e invitaciones           | `vento-viso` y `vento-shell`: trabajadores, perfiles, sedes, áreas, turnos, publicación, invitaciones y retiro; Edge Functions `staff-invitations-*`, `attendance-report`, `employee-delete` y `shift-runtime-processor`. Contraste: `CODE-AUD-003`, `005`, `006`, `011`, `012` y `017`.                                                            |
+| `EVC-03` | Asistencia y experiencia ANIMA            | `vento-anima`: pantallas y hooks de asistencia; `queue-storage.ts`, `queue-sync.ts`, `use-attendance.ts`, `break-rpc.ts`; RPC `sync_attendance_events`, `start_attendance_break`, `end_attendance_break`; cron de cierre. Contraste: `CODE-AUD-003`, `005`, `006`, `012`, `017` y `018`.                                                            |
+| `EVC-04` | Base técnica TALENTO                      | `vento-talento`: vacantes, postulación, perfil, documentos, entrevistas y ofertas; RPC `bootstrap_my_candidate`, `submit_application`, `confirm_interview`, `respond_to_offer`; esquema `talento` y buckets privados. No hay despliegue ni registros operativos comprobados. Contraste: `CAP-MAP-014`, `CODE-AUD-001`, `003`, `005`, `006` y `011`. |
+| `EVC-05` | Catálogo de producto NEXO/VISO            | `vento-nexo` y `vento-viso`: productos, categorías, presentaciones, unidades, ingredientes, imágenes, menú y disponibilidad; buckets `nexo-catalog-images`, `product-images` y `commercial-menu-images`. Contraste: `CODE-AUD-003`, `005`, `006`, `014` y `017`.                                                                                    |
+| `EVC-06` | Recetas y conocimiento FOGO               | `vento-fogo`: acciones de recetas, ingredientes, salidas, pasos, rendimientos y fotos; bucket `recipe-step-photos`; tablas de recetas con datos. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006` y `012`.                                                                                                                                    |
+| `EVC-07` | Compras y proveedores ORIGO               | `vento-origo`: proveedores, órdenes, líneas, revisión maestra y recepción; Server Actions y RPC `origo_mark_inventory_entry_corrected`, `origo_reverse_inventory_entry`, `upsert_inventory_stock_by_location`. La recepción nueva conserva estructura sin adopción comprobada. Contraste: `CODE-AUD-003`, `005`, `006`, `012`, `017` y `018`.       |
+| `EVC-08` | Inventario, ubicaciones y remisiones NEXO | `vento-nexo`: existencias, movimientos, entradas, ubicaciones, posiciones, conteos, solicitudes, remisiones y traslados; APIs `/api/inventory/*`; RPC de conteo, consumo, recepción, reversión y remisión. Contraste: `CODE-AUD-003`, `005`, `006`, `011`, `012`, `014`, `017` y `018`.                                                             |
+| `EVC-09` | Activos y reutilizables NEXO              | `vento-nexo`: activos, grupos, custodia, movimientos, mantenimiento, conteos, documentos y vehículos. Hay superficies y tablas; mantenimiento y conteos patrimoniales no tienen uso comprobado. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006`, `011` y `012`.                                                                              |
+| `EVC-10` | Ejecución productiva FOGO                 | `vento-fogo` y objetos compartidos: solicitudes, lotes, consumos, salidas, paquetes, cantidades, firma de dispositivo y efectos de inventario. Las estructuras productivas revisadas no tienen registros operativos comprobados. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006`, `011`, `012` y `018`.                                      |
+| `EVC-11` | Pedidos, venta, salón y POS PULSO         | `vento-pulso`: pedidos, transiciones, conversación, atención de mesa, identificación, importación de ventas y RPC POS; Realtime de pedidos y mensajes. El POS integral, caja y cierre conservan tablas sin uso comprobado. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006`, `011`, `012`, `014`, `017` y `018`.                              |
+| `EVC-12` | Cliente, fidelización y comercio PASS     | `vento-pass`: perfil, membresía, QR, redención, direcciones, checkout, pedido, pago, seguimiento, chat, Wallet y notificaciones; RPC de wallet, checkout, chat y entrega; Edge Functions de pago, dirección, entrega y cuenta. Contraste: `CODE-AUD-003`, `005`, `006`, `008` a `018`.                                                              |
+| `EVC-13` | Transporte y entrega                      | NEXO cubre traslados y remisiones; PULSO/PASS cubren pedido y entrega; `delivery-portal` remoto opera por token y `service_role`; las sesiones de entrega nuevas no tienen uso comprobado. Contraste: `CODE-AUD-005`, `006`, `011`, `012`, `015`, `017` y `018`.                                                                                    |
+| `EVC-14` | Finanzas, pagos y costos                  | `vento-numera`: gastos, centros de costo, presupuestos y resúmenes; PULSO/PASS: pagos y venta; ORIGO/NEXO: costos, compras y documentos internos. Bancos, cartera, tesorería, impuestos y cierre contable no están completos. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006`, `011`, `012`, `017` y `018`.                                  |
+| `EVC-15` | Instalaciones                             | Sedes, áreas, ubicaciones y activos permiten identificar espacios y equipos, pero no existe módulo ni ciclo dedicado para mantenimiento de instalaciones, limpieza, plagas, servicios, calibración, llaves, obras y cierre de novedades. Contraste: `CAP-MAP-014`, `CODE-AUD-011`, `012` y `015`.                                                   |
+| `EVC-16` | CMS y web pública                         | `vento-viso`: `website_blocks`, `website_items`, medios y publicación; `Vento-Group`: rutas públicas y contenido; `website-media` requiere reconciliar su entrega. Newsletter no tiene efecto. Contraste: `CODE-AUD-003`, `006`, `010`, `012`, `014`, `017` y `018`.                                                                                |
+| `EVC-17` | Tecnología, autorización y periféricos    | `vento-shell`, SHELL y aplicaciones: Auth, contexto efectivo, permisos, dispositivos compartidos, navegación, builds, workflows, soporte ANIMA e impresión NEXO/BrowserPrint. Contraste: `CODE-AUD-001`, `003`, `005`, `006`, `011`, `012`, `014`, `016`, `017` y `018`.                                                                            |
+| `EVC-18` | Documentos y evidencia                    | ANIMA/VISO usan `documents`; VISO usa medios e imágenes; TALENTO usa tres buckets privados; existen reglas, tipos y solicitudes, pero retención, versiones, firmas, acceso temporal y eliminación integral siguen incompletos. Contraste: `CODE-AUD-003`, `006`, `012`, `015` y `017`.                                                              |
+| `EVC-19` | Reportes y analítica                      | NUMERA ofrece resúmenes, equilibrio y rentabilidad; NEXO y VISO exportan o reportan dominios puntuales; PULSO carece de exportación de auditoría comprobada. No existe marco común completo de indicadores, calidad y mejora. Contraste: `CAP-MAP-014`, `CODE-AUD-003`, `005`, `006`, `011` y `016`.                                                |
+| `EVC-20` | Continuidad y recuperación                | Existen colas offline ANIMA, tickets, cron, reconciliación de pagos, account deletion, backups de plataforma y estados técnicos aislados; no existe un ciclo empresarial integral de continuidad, incorporación posterior y cierre de pendientes. Contraste: `CAP-MAP-014`, `CODE-AUD-005`, `006`, `011`, `016` y `018`.                            |
+| `EVC-21` | Operación manual o externa                | Evidencia AS-IS en papel, Excel, WhatsApp, Makos, Rappi, ManyChat, Shopify, bancos, asesores, proveedores y coordinación humana. Esta evidencia demuestra que la capacidad existe, no que esté implementada en Vento OS. Contraste: `OPS-AUD-*`, `OPS-PLAN-*`, `CAP-MAP-005`, `014` y `CODE-AUD-003`.                                               |
+| `EVC-22` | Ausencia técnica comprobada               | No se localizó una ruta, servicio, contrato, objeto de datos y ciclo utilizable suficiente para el resultado. La ausencia se conserva como brecha y no se transforma en código ficticio. Contraste: `CAP-MAP-014`, `CODE-AUD-010`, `011`, `012` y `015`.                                                                                            |
+| `EVC-23` | Plataforma Supabase compartida            | `vento-shell` conserva migraciones, RLS, funciones, triggers, Edge Functions, cron y contratos compartidos. Es propietario técnico de la plataforma, no propietario empresarial universal. Contraste: `CODE-AUD-005`, `006`, `013`, `014`, `015`, `017` y `018`.                                                                                    |
+
+---
+
+#### 6. Reglas de lectura de la matriz
+
+1. **Propietaria candidata** conserva las decisiones de `CAP-MAP-004`; no es propiedad definitiva.
+2. **Implementación actual localizada** describe dónde se representa hoy el resultado, aunque la representación sea parcial, manual o inexistente.
+3. **Evidencia** remite a los paquetes de la sección 5 y a las auditorías allí enumeradas.
+4. **Destino** siempre contiene tareas existentes; `CODE-AUD-020` deberá convertir la evidencia en backlog técnico y funcional por repositorio.
+5. Una fila `VERIFICADA_EN_USO` no declara terminada la capacidad TO-BE.
+6. Una fila `ESTRUCTURA_SIN_USO_COMPROBADO` no autoriza poblar datos ni desplegar el flujo.
+7. Una fila `MANUAL_O_EXTERNA_DOCUMENTADA` no autoriza eliminar el método actual antes del reemplazo y la transición.
+8. Una fila `SIN_IMPLEMENTACIÓN_VERIFICABLE` no se interpreta como capacidad innecesaria.
+
+---
+
+#### 7. Matriz completa de las 217 subcapacidades
+
+##### 7.1. `CAP-01` — Dirección y gobierno
+
+| ID          | Subcapacidad                                    | Propietaria candidata | Implementación actual localizada                                        | Evidencia          | Estado de vinculación                    | Destino exacto                  |
+| ----------- | ----------------------------------------------- | --------------------- | ----------------------------------------------------------------------- | ------------------ | ---------------------------------------- | ------------------------------- |
+| `CAP-01.01` | Definir dirección y objetivos                   | VISO                  | Decisión o relación humana; VISO conserva estructura relacionada.       | `EVC-01`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.02` | Tomar y registrar decisiones empresariales      | VISO                  | Decisión o relación humana; VISO conserva estructura relacionada.       | `EVC-01`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.03` | Gobernar empresas, marcas y establecimientos    | VISO                  | VISO: empresas, sedes, áreas y estructura organizativa desplegada.      | `EVC-01`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.04` | Gobernar sedes, oficinas y áreas                | VISO                  | VISO: empresas, sedes, áreas y estructura organizativa desplegada.      | `EVC-01`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.05` | Definir responsabilidades y límites de decisión | VISO                  | VISO: roles, permisos, reglas y coordinación administrativa parcial.    | `EVC-01`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.06` | Gestionar políticas y reglas internas           | VISO                  | VISO: roles, permisos, reglas y coordinación administrativa parcial.    | `EVC-01`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.07` | Gestionar riesgos empresariales                 | VISO                  | VISO: roles, permisos, reglas y coordinación administrativa parcial.    | `EVC-01`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.08` | Coordinar operación entre negocios y sedes      | VISO                  | VISO: roles, permisos, reglas y coordinación administrativa parcial.    | `EVC-01`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.09` | Gestionar relaciones con asesores y autoridades | VISO                  | Decisión o relación humana; VISO conserva estructura relacionada.       | `EVC-01`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-001` |
+| `CAP-01.10` | Verificar cumplimiento de decisiones            | VISO                  | No se localizó ciclo técnico para comprobar cumplimiento de decisiones. | `EVC-01`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-001` |
+
+##### 7.2. `CAP-02` — Personas y trabajo
+
+| ID          | Subcapacidad                                | Propietaria candidata         | Implementación actual localizada                                                             | Evidencia                              | Estado de vinculación                    | Destino exacto                                                                                                            |
+| ----------- | ------------------------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-02.01` | Planear necesidades de personal             | VISO                          | VISO: administración laboral parcial.                                                        | `EVC-02`                               | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.02` | Reclutar y seleccionar                      | TALENTO + VISO                | VISO publica vacantes; TALENTO tiene código y esquema sin despliegue ni datos.               | `EVC-04`, `EVC-02`                     | `FUTURA_CON_BASE_TÉCNICA`                | `CODE-AUD-020`, `CAP-SCOPE-002`, `CAP-TAL-001`, `CAP-TAL-002`, `CAP-TAL-003`, `CAP-TAL-004`, `CAP-TAL-005`, `CAP-TAL-006` |
+| `CAP-02.03` | Vincular e incorporar trabajadores          | TALENTO → VISO / ANIMA        | VISO/Edge Functions gestionan invitación; ANIMA completa acceso; traspaso TALENTO pendiente. | `EVC-04`, `EVC-02`, `EVC-03`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`, `CAP-TAL-001`, `CAP-TAL-002`, `CAP-TAL-003`, `CAP-TAL-004`, `CAP-TAL-005`, `CAP-TAL-006` |
+| `CAP-02.04` | Mantener información laboral                | VISO                          | VISO: empleados, sedes, áreas, perfiles y turnos con datos operativos.                       | `EVC-02`                               | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.05` | Asignar sedes, áreas y funciones            | VISO                          | VISO: empleados, sedes, áreas, perfiles y turnos con datos operativos.                       | `EVC-02`                               | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.06` | Programar turnos                            | VISO                          | VISO: empleados, sedes, áreas, perfiles y turnos con datos operativos.                       | `EVC-02`                               | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.07` | Registrar asistencia y tiempo trabajado     | ANIMA                         | ANIMA: marcación, ubicación, descansos, cola offline y RPC de sincronización.                | `EVC-03`, `EVC-23`                     | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`, `INT-WORK-003`, `ANIMA-UX-011`, `ANIMA-UX-012`                                           |
+| `CAP-02.08` | Gestionar novedades, ausencias y reemplazos | VISO                          | VISO/ANIMA: novedades y asistencia parcial, sin corrección auditable completa.               | `EVC-02`, `EVC-03`                     | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`, `INT-WORK-003`, `ANIMA-UX-011`, `ANIMA-UX-012`                                           |
+| `CAP-02.09` | Capacitar y comprobar preparación           | VISO                          | Seguimiento principalmente humano; documentos y datos parciales en VISO/ANIMA.               | `EVC-02`, `EVC-21`                     | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.10` | Acompañar desempeño y desarrollo            | VISO                          | Seguimiento principalmente humano; documentos y datos parciales en VISO/ANIMA.               | `EVC-02`, `EVC-21`                     | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.11` | Gestionar documentos laborales              | ANIMA / VISO / TALENTO        | Storage y tablas laborales en ANIMA/VISO; TALENTO conserva base futura.                      | `EVC-18`, `EVC-02`, `EVC-03`, `EVC-04` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`, `CAP-TAL-001`, `CAP-TAL-002`, `CAP-TAL-003`, `CAP-TAL-004`, `CAP-TAL-005`, `CAP-TAL-006` |
+| `CAP-02.12` | Gestionar pagos y beneficios laborales      | NUMERA (candidata pendiente)  | Pago laboral atendido fuera del sistema; NUMERA no cubre nómina completa.                    | `EVC-14`, `EVC-21`                     | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-002`                                                                                           |
+| `CAP-02.13` | Gestionar retiro y cierre de accesos        | VISO + aplicaciones afectadas | VISO y Edge Functions permiten retiro parcial; cierre transversal de accesos incompleto.     | `EVC-02`, `EVC-17`                     | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-002`, `CAP-TAL-001`, `CAP-TAL-002`, `CAP-TAL-003`, `CAP-TAL-004`, `CAP-TAL-005`, `CAP-TAL-006` |
+
+##### 7.3. `CAP-03` — Seguridad, salud y cumplimiento
+
+| ID          | Subcapacidad                                 | Propietaria candidata | Implementación actual localizada                                                             | Evidencia                    | Estado de vinculación               | Destino exacto                  |
+| ----------- | -------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------------------- | ------------------------------- |
+| `CAP-03.01` | Identificar peligros y riesgos laborales     | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.02` | Prevenir accidentes y enfermedades           | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.03` | Entregar y controlar elementos de protección | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.04` | Reportar e investigar incidentes             | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.05` | Gestionar emergencias y evacuación           | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.06` | Controlar higiene e inocuidad                | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.07` | Realizar inspecciones obligatorias           | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.08` | Gestionar requisitos legales y certificados  | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.09` | Conservar evidencia de cumplimiento          | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+| `CAP-03.10` | Gestionar acciones correctivas               | VISO                  | Documentos, reglas y controles dispersos en VISO/NEXO/FOGO; operación principalmente manual. | `EVC-02`, `EVC-18`, `EVC-21` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-003` |
+
+##### 7.4. `CAP-04` — Productos, preparaciones y conocimiento
+
+| ID          | Subcapacidad                                  | Propietaria candidata | Implementación actual localizada                                                    | Evidencia                    | Estado de vinculación               | Destino exacto                  |
+| ----------- | --------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------- | ---------------------------- | ----------------------------------- | ------------------------------- |
+| `CAP-04.01` | Definir productos y servicios                 | NEXO                  | NEXO/VISO: catálogo, presentaciones, unidades, categorías e ingredientes con datos. | `EVC-05`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.02` | Definir presentaciones y unidades             | NEXO                  | NEXO/VISO: catálogo, presentaciones, unidades, categorías e ingredientes con datos. | `EVC-05`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.03` | Clasificar productos                          | NEXO                  | NEXO/VISO: catálogo, presentaciones, unidades, categorías e ingredientes con datos. | `EVC-05`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.04` | Gestionar ingredientes y componentes          | NEXO                  | NEXO/VISO: catálogo, presentaciones, unidades, categorías e ingredientes con datos. | `EVC-05`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.05` | Definir recetas y métodos de preparación      | FOGO                  | FOGO: recetas, pasos, rendimientos y porciones con persistencia comprobada.         | `EVC-06`, `EVC-05`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.06` | Definir rendimientos y porciones              | FOGO                  | FOGO: recetas, pasos, rendimientos y porciones con persistencia comprobada.         | `EVC-06`, `EVC-05`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.07` | Gestionar menús y disponibilidad              | PULSO                 | VISO/NEXO/PULSO/PASS: menú, oferta y disponibilidad parcial por canal.              | `EVC-05`, `EVC-11`, `EVC-12` | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.08` | Gestionar información nutricional y alérgenos | NEXO / FOGO           | NEXO/FOGO: campos y reglas parciales de especificación, calidad y vigencia.         | `EVC-05`, `EVC-06`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.09` | Gestionar calidad y especificaciones          | NEXO / FOGO           | NEXO/FOGO: campos y reglas parciales de especificación, calidad y vigencia.         | `EVC-05`, `EVC-06`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-004` |
+| `CAP-04.10` | Gestionar cambios y vigencia del conocimiento | NEXO / FOGO           | NEXO/FOGO: campos y reglas parciales de especificación, calidad y vigencia.         | `EVC-05`, `EVC-06`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-004` |
+
+##### 7.5. `CAP-05` — Abastecimiento
+
+| ID          | Subcapacidad                                | Propietaria candidata | Implementación actual localizada                                                                   | Evidencia                    | Estado de vinculación                      | Destino exacto                                                                                  |
+| ----------- | ------------------------------------------- | --------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `CAP-05.01` | Planear necesidades de abastecimiento       | ORIGO                 | ORIGO: proveedores, solicitudes y órdenes mediante acciones y tablas; adopción parcial.            | `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.02` | Solicitar productos, materiales o servicios | ORIGO                 | ORIGO: proveedores, solicitudes y órdenes mediante acciones y tablas; adopción parcial.            | `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.03` | Buscar y evaluar proveedores                | ORIGO                 | ORIGO: proveedores, solicitudes y órdenes mediante acciones y tablas; adopción parcial.            | `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.04` | Solicitar y comparar ofertas                | ORIGO                 | ORIGO conserva datos parciales; comparación, negociación, devolución o evaluación siguen manuales. | `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.05` | Negociar condiciones                        | ORIGO                 | ORIGO conserva datos parciales; comparación, negociación, devolución o evaluación siguen manuales. | `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.06` | Aprobar compras                             | ORIGO                 | ORIGO: proveedores, solicitudes y órdenes mediante acciones y tablas; adopción parcial.            | `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.07` | Emitir y controlar órdenes                  | ORIGO                 | ORIGO: proveedores, solicitudes y órdenes mediante acciones y tablas; adopción parcial.            | `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.08` | Recibir productos y servicios               | ORIGO                 | ORIGO: recepción y verificación implementadas como estructura; cero uso comprobado.                | `EVC-07`, `EVC-08`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.09` | Verificar cantidades, calidad y documentos  | ORIGO                 | ORIGO: recepción y verificación implementadas como estructura; cero uso comprobado.                | `EVC-07`, `EVC-08`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.10` | Gestionar diferencias y devoluciones        | ORIGO                 | ORIGO conserva datos parciales; comparación, negociación, devolución o evaluación siguen manuales. | `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.11` | Evaluar cumplimiento de proveedores         | ORIGO                 | ORIGO conserva datos parciales; comparación, negociación, devolución o evaluación siguen manuales. | `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+| `CAP-05.12` | Gestionar compras urgentes                  | ORIGO                 | ORIGO conserva datos parciales; comparación, negociación, devolución o evaluación siguen manuales. | `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-005`, `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-014`, `ORIGO-UX-016` |
+
+##### 7.6. `CAP-06` — Inventario y almacenamiento
+
+| ID          | Subcapacidad                                   | Propietaria candidata | Implementación actual localizada                                                          | Evidencia          | Estado de vinculación                    | Destino exacto                                                                                             |
+| ----------- | ---------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------- | ------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `CAP-06.01` | Definir lugares de almacenamiento              | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.02` | Identificar productos, lotes y recipientes     | NEXO                  | NEXO: productos, lotes/LPN y recipientes; ciclo LPN todavía incompleto.                   | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.03` | Registrar entradas                             | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.04` | Ubicar y reubicar existencias                  | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.05` | Consultar disponibilidad                       | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.06` | Reservar o separar existencias                 | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.07` | Registrar consumo y salida                     | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.08` | Trasladar entre lugares                        | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.09` | Solicitar y gestionar remisiones               | NEXO                  | NEXO: remisiones y estados con uso piloto/parcial; efectos de inventario por reconciliar. | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.10` | Preparar y despachar remisiones                | NEXO                  | NEXO: remisiones y estados con uso piloto/parcial; efectos de inventario por reconciliar. | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.11` | Recibir y confirmar remisiones                 | NEXO                  | NEXO: remisiones y estados con uso piloto/parcial; efectos de inventario por reconciliar. | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.12` | Contar inventario                              | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.13` | Investigar y ajustar diferencias               | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.14` | Controlar vencimiento, daño y pérdida          | NEXO                  | NEXO: ubicaciones, existencias, movimientos, conteos y ajustes con datos y contratos.     | `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+| `CAP-06.15` | Controlar frío y condiciones de almacenamiento | NEXO                  | Condiciones de frío se controlan operativamente; no hay integración técnica completa.     | `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-006`, `NEXO-UX-009`, `NEXO-UX-010`, `NEXO-UX-011`, `NEXO-UX-012`, `NEXO-UX-013` |
+
+##### 7.7. `CAP-07` — Activos y reutilizables
+
+| ID          | Subcapacidad                                        | Propietaria candidata | Implementación actual localizada                                                              | Evidencia          | Estado de vinculación                      | Destino exacto                  |
+| ----------- | --------------------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------ | ------------------------------- |
+| `CAP-07.01` | Identificar y clasificar activos                    | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.02` | Registrar ubicación y custodia                      | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.03` | Entregar, prestar y devolver                        | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.04` | Transferir custodia                                 | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.05` | Contar activos y reutilizables                      | NEXO                  | NEXO: sesiones y líneas de conteo patrimonial sin uso comprobado.                             | `EVC-09`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.06` | Registrar condición, daño, pérdida y faltante       | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.07` | Planear y ejecutar mantenimiento                    | NEXO                  | NEXO: estructura de mantenimiento/garantías/baja; adopción no comprobada o ejecución externa. | `EVC-09`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.08` | Gestionar reparación y repuestos                    | NEXO                  | NEXO: estructura de mantenimiento/garantías/baja; adopción no comprobada o ejecución externa. | `EVC-09`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.09` | Controlar garantías y seguros                       | NEXO                  | NEXO: estructura de mantenimiento/garantías/baja; adopción no comprobada o ejecución externa. | `EVC-09`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.10` | Gestionar baja, venta, descarte o reemplazo         | NEXO                  | NEXO: estructura de mantenimiento/garantías/baja; adopción no comprobada o ejecución externa. | `EVC-09`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.11` | Gestionar kits y conjuntos                          | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.12` | Gestionar vehículos y equipos de transporte         | NEXO                  | NEXO: activos, ubicación, custodia y movimientos con cobertura parcial.                       | `EVC-09`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-007` |
+| `CAP-07.13` | Controlar combustible, kilometraje y disponibilidad | NEXO                  | Combustible, kilometraje y disponibilidad se controlan fuera del ciclo canónico.              | `EVC-09`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-007` |
+
+##### 7.8. `CAP-08` — Producción
+
+| ID          | Subcapacidad                                   | Propietaria candidata | Implementación actual localizada                                                                                    | Evidencia                    | Estado de vinculación                      | Destino exacto                                                                                                                           |
+| ----------- | ---------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-08.01` | Recopilar necesidades de producción            | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.02` | Planear cantidades y fechas                    | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.03` | Revisar capacidad, personal, equipos e insumos | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.04` | Priorizar trabajo productivo                   | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.05` | Programar producción                           | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.06` | Preparar ingredientes y materiales             | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.07` | Ejecutar lotes o preparaciones                 | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.08` | Registrar cantidades producidas                | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.09` | Registrar consumo, rendimiento y merma         | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.10` | Controlar calidad durante producción           | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.11` | Empacar y etiquetar                            | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.12` | Liberar, retener o rechazar producto           | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.13` | Gestionar reproceso y aprovechamiento          | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+| `CAP-08.14` | Cerrar y conciliar producción                  | FOGO                  | FOGO/NEXO: solicitudes, lotes, consumos, salidas y paquetes implementados como estructura sin operación comprobada. | `EVC-10`, `EVC-08`, `EVC-06` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-008`, `FOGO-UX-005`, `FOGO-UX-006`, `FOGO-UX-007`, `FOGO-UX-010`, `FOGO-UX-011`, `FOGO-UX-012`, `FOGO-UX-013` |
+
+##### 7.9. `CAP-09` — Venta, cobro y pedidos
+
+| ID          | Subcapacidad                                               | Propietaria candidata | Implementación actual localizada                                                               | Evidencia                    | Estado de vinculación                      | Destino exacto                                                                |
+| ----------- | ---------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------- |
+| `CAP-09.01` | Definir oferta y precios de venta                          | PULSO                 | VISO/NEXO/PULSO: oferta y precios disponibles por catálogo y menú.                             | `EVC-05`, `EVC-11`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.02` | Recibir solicitudes y pedidos                              | PULSO                 | PASS/PULSO y sistemas externos registran pedidos digitales con uso limitado.                   | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.03` | Confirmar disponibilidad y condiciones                     | PULSO                 | PULSO/PASS: estados y acciones de pedido parciales.                                            | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.04` | Registrar pedidos                                          | PULSO                 | PASS/PULSO y sistemas externos registran pedidos digitales con uso limitado.                   | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.05` | Modificar, sustituir o cancelar pedidos                    | PULSO                 | PULSO/PASS: estados y acciones de pedido parciales.                                            | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.06` | Enviar pedidos a preparación                               | PULSO                 | PULSO/PASS: estados y acciones de pedido parciales.                                            | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.07` | Coordinar preparación y entrega                            | PULSO                 | PULSO/PASS: estados y acciones de pedido parciales.                                            | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.08` | Registrar ventas                                           | PULSO                 | Pedidos/pagos digitales parciales; POS, caja, corrección y facturación integral no operativos. | `EVC-11`, `EVC-12`, `EVC-14` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.09` | Cobrar y confirmar pagos                                   | PULSO                 | Pedidos/pagos digitales parciales; POS, caja, corrección y facturación integral no operativos. | `EVC-11`, `EVC-12`, `EVC-14` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.10` | Emitir factura o soporte                                   | PULSO                 | Pedidos/pagos digitales parciales; POS, caja, corrección y facturación integral no operativos. | `EVC-11`, `EVC-12`, `EVC-14` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.11` | Gestionar mesas y servicio presencial                      | PULSO                 | PULSO: sesiones de salón y llamados de mesa con comportamiento real localizado.                | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.12` | Gestionar pedidos para llevar                              | PULSO                 | PULSO/PASS: estados y acciones de pedido parciales.                                            | `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.13` | Gestionar pedidos recibidos por aplicaciones o mensajes    | PULSO                 | Makos/Rappi/ManyChat/WhatsApp y coordinación humana; integración canónica pendiente.           | `EVC-11`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.14` | Gestionar pedidos especiales, catering y ventas a empresas | PULSO                 | Makos/Rappi/ManyChat/WhatsApp y coordinación humana; integración canónica pendiente.           | `EVC-11`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+| `CAP-09.15` | Cerrar y revisar la jornada de venta                       | PULSO                 | Tablas de sesión y cierre POS existen sin jornada propia comprobada.                           | `EVC-11`, `EVC-12`, `EVC-14` | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-009`, `PULSO-UX-001`, `INT-POS-001`, `INT-POS-019` |
+
+##### 7.10. `CAP-10` — Clientes y relaciones
+
+| ID          | Subcapacidad                             | Propietaria candidata | Implementación actual localizada                                               | Evidencia                    | Estado de vinculación                      | Destino exacto                                 |
+| ----------- | ---------------------------------------- | --------------------- | ------------------------------------------------------------------------------ | ---------------------------- | ------------------------------------------ | ---------------------------------------------- |
+| `CAP-10.01` | Identificar y conocer clientes           | PASS / PULSO          | PASS/public.users: identidad de cliente y perfil con datos.                    | `EVC-12`, `EVC-11`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`         | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.02` | Registrar preferencias y autorizaciones  | PASS / PULSO          | PASS/PULSO: perfil, chat, mensajes, preferencias y comunicación parcial.       | `EVC-12`, `EVC-11`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.03` | Atender preguntas y solicitudes          | PULSO                 | PASS/PULSO: perfil, chat, mensajes, preferencias y comunicación parcial.       | `EVC-12`, `EVC-11`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.04` | Recibir y resolver reclamos              | PULSO                 | Atención manual o por chat; no existe ciclo canónico completo.                 | `EVC-12`, `EVC-11`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.05` | Gestionar devoluciones y compensaciones  | PULSO                 | Atención manual o por chat; no existe ciclo canónico completo.                 | `EVC-12`, `EVC-11`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.06` | Medir satisfacción                       | PULSO                 | Tabla de feedback y superficies relacionadas sin uso comprobado.               | `EVC-12`, `EVC-11`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.07` | Gestionar fidelización y beneficios      | PASS / PULSO          | PASS: membresía, wallet y redención; ledger y atomicidad requieren corrección. | `EVC-12`, `EVC-11`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.08` | Gestionar reservas y eventos             | PULSO                 | Atención manual o por chat; no existe ciclo canónico completo.                 | `EVC-12`, `EVC-11`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.09` | Comunicar cambios que afecten al cliente | PULSO                 | PASS/PULSO: perfil, chat, mensajes, preferencias y comunicación parcial.       | `EVC-12`, `EVC-11`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+| `CAP-10.10` | Proteger información del cliente         | PULSO                 | PASS/PULSO: perfil, chat, mensajes, preferencias y comunicación parcial.       | `EVC-12`, `EVC-11`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-010`, `PASS-UX-001` |
+
+##### 7.11. `CAP-11` — Transporte, despacho y entrega
+
+| ID          | Subcapacidad                              | Propietaria candidata | Implementación actual localizada                                                  | Evidencia                                        | Estado de vinculación                      | Destino exacto                                                 |
+| ----------- | ----------------------------------------- | --------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------ | -------------------------------------------------------------- |
+| `CAP-11.01` | Planear necesidades de transporte         | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.02` | Definir recorridos y prioridades          | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.03` | Asignar vehículo y responsable            | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.04` | Preparar carga                            | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.05` | Confirmar cantidades y condición al salir | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.06` | Transferir custodia para transporte       | NEXO                  | NEXO: remisiones, traslados, carga y custodia parcial; planeación todavía manual. | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.07` | Ejecutar recorrido                        | NEXO / PULSO          | NEXO/PULSO/PASS y terceros: entrega y novedades con cobertura parcial o manual.   | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.08` | Registrar novedades durante transporte    | NEXO / PULSO          | NEXO/PULSO/PASS y terceros: entrega y novedades con cobertura parcial o manual.   | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.09` | Entregar y confirmar recepción            | NEXO / PULSO          | Sesiones de entrega y portal existen; uso operativo nuevo no comprobado.          | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.10` | Gestionar faltantes, daños y devoluciones | NEXO / PULSO          | NEXO/PULSO/PASS y terceros: entrega y novedades con cobertura parcial o manual.   | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.11` | Cerrar y revisar el recorrido             | NEXO / PULSO          | NEXO/PULSO/PASS y terceros: entrega y novedades con cobertura parcial o manual.   | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+| `CAP-11.12` | Gestionar entregas mediante terceros      | NEXO / PULSO          | NEXO/PULSO/PASS y terceros: entrega y novedades con cobertura parcial o manual.   | `EVC-13`, `EVC-08`, `EVC-11`, `EVC-12`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-011`, `NEXO-UX-009`, `PULSO-UX-001` |
+
+##### 7.12. `CAP-12` — Dinero, costos y obligaciones
+
+| ID          | Subcapacidad                       | Propietaria candidata | Implementación actual localizada                                                                     | Evidencia                                        | Estado de vinculación                      | Destino exacto                  |
+| ----------- | ---------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------ | ------------------------------- |
+| `CAP-12.01` | Registrar hechos económicos        | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.02` | Gestionar caja                     | PULSO                 | PULSO conserva modelo de caja y sesiones sin uso comprobado.                                         | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.03` | Gestionar bancos y pagos           | NUMERA                | Proceso externo/manual; NUMERA no contiene ciclo completo de bancos, cartera, tesorería o impuestos. | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.04` | Gestionar cuentas por cobrar       | NUMERA                | Proceso externo/manual; NUMERA no contiene ciclo completo de bancos, cartera, tesorería o impuestos. | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.05` | Gestionar cuentas por pagar        | NUMERA                | Proceso externo/manual; NUMERA no contiene ciclo completo de bancos, cartera, tesorería o impuestos. | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.06` | Facturar y controlar documentos    | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.07` | Conciliar ventas, pagos y entregas | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.08` | Conciliar compras y recepciones    | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.09` | Calcular costos                    | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.10` | Distribuir costos compartidos      | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.11` | Gestionar presupuestos             | NUMERA                | NUMERA tiene tablas de presupuesto sin registros operativos comprobados.                             | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.12` | Gestionar tesorería                | NUMERA                | Proceso externo/manual; NUMERA no contiene ciclo completo de bancos, cartera, tesorería o impuestos. | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.13` | Gestionar impuestos y obligaciones | NUMERA                | Proceso externo/manual; NUMERA no contiene ciclo completo de bancos, cartera, tesorería o impuestos. | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA`   | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.14` | Cerrar períodos y emitir reportes  | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+| `CAP-12.15` | Analizar rentabilidad              | NUMERA                | NUMERA/PULSO/ORIGO/NEXO: costos, pagos, documentos y resúmenes parciales.                            | `EVC-14`, `EVC-11`, `EVC-07`, `EVC-08`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`        | `CODE-AUD-020`, `CAP-SCOPE-012` |
+
+##### 7.13. `CAP-13` — Instalaciones
+
+| ID          | Subcapacidad                                | Propietaria candidata | Implementación actual localizada                                                   | Evidencia          | Estado de vinculación               | Destino exacto                  |
+| ----------- | ------------------------------------------- | --------------------- | ---------------------------------------------------------------------------------- | ------------------ | ----------------------------------- | ------------------------------- |
+| `CAP-13.01` | Inventariar espacios e instalaciones        | NEXO                  | VISO/NEXO identifican sedes, áreas, ubicaciones y activos.                         | `EVC-15`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.02` | Planear mantenimiento                       | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.03` | Solicitar y ejecutar reparaciones           | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.04` | Gestionar limpieza y saneamiento            | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.05` | Controlar plagas                            | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.06` | Controlar agua, energía, gas y servicios    | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.07` | Inspeccionar condiciones                    | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.08` | Calibrar equipos                            | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.09` | Gestionar llaves, acceso físico y seguridad | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.10` | Gestionar obras y adecuaciones              | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+| `CAP-13.11` | Registrar y cerrar novedades                | NEXO                  | No existe módulo o ciclo técnico dedicado; evidencia operativa pendiente o manual. | `EVC-15`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`    | `CODE-AUD-020`, `CAP-SCOPE-013` |
+
+##### 7.14. `CAP-14` — Comunicación y promoción
+
+| ID          | Subcapacidad                                 | Propietaria candidata                 | Implementación actual localizada                                                                | Evidencia                    | Estado de vinculación                    | Destino exacto                                                 |
+| ----------- | -------------------------------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------- | -------------------------------------------------------------- |
+| `CAP-14.01` | Definir identidad y mensajes                 | VISO CMS / AURA futura                | Identidad y mensajes existen en configuración, CMS y aplicaciones, sin gobierno único completo. | `EVC-16`                     | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.02` | Planear comunicación y promociones           | VISO CMS / AURA futura                | CMS y operación manual cubren una parte; AURA no existe como aplicación.                        | `EVC-16`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.03` | Crear y aprobar contenido                    | VISO CMS / AURA futura                | VISO CMS y web pública crean, publican y presentan contenido con datos.                         | `EVC-16`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.04` | Publicar y administrar medios                | VISO CMS / AURA futura                | VISO CMS y web pública crean, publican y presentan contenido con datos.                         | `EVC-16`                     | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.05` | Gestionar campañas                           | AURA futura / operación actual manual | No se localizó implementación canónica suficiente; AURA continúa diferida.                      | `EVC-16`, `EVC-21`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.06` | Gestionar promociones y cupones              | PULSO / PASS / AURA futura            | PASS/PULSO/VISO contienen beneficios, disponibilidad y reglas promocionales parciales.          | `EVC-12`, `EVC-11`, `EVC-16` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.07` | Captar oportunidades de venta                | AURA futura / operación actual manual | No se localizó implementación canónica suficiente; AURA continúa diferida.                      | `EVC-16`, `EVC-21`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.08` | Gestionar ventas a empresas                  | AURA futura / operación actual manual | Ventas empresariales, catering y eventos se coordinan manualmente.                              | `EVC-16`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.09` | Gestionar catering y eventos comerciales     | AURA futura / operación actual manual | Ventas empresariales, catering y eventos se coordinan manualmente.                              | `EVC-16`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.10` | Medir resultados de comunicación y promoción | AURA futura / operación actual manual | No se localizó implementación canónica suficiente; AURA continúa diferida.                      | `EVC-16`, `EVC-21`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `CAP-14.11` | Gestionar reputación y comentarios públicos  | AURA futura / operación actual manual | CMS y operación manual cubren una parte; AURA no existe como aplicación.                        | `EVC-16`, `EVC-21`           | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+
+##### 7.15. `CAP-15` — Tecnología y soporte
+
+| ID          | Subcapacidad                                         | Propietaria candidata                     | Implementación actual localizada                                                                     | Evidencia                    | Estado de vinculación                    | Destino exacto                                                  |
+| ----------- | ---------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------- | --------------------------------------------------------------- |
+| `CAP-15.01` | Gestionar cuentas y accesos                          | VISO / SHELL / aplicación afectada        | SHELL/VISO/aplicaciones: Auth, permisos, contexto y dispositivos; controles de servidor desiguales.  | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`       | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.02` | Gestionar computadores, celulares y tabletas         | NEXO / aplicación afectada                | NEXO y dispositivos compartidos representan equipos parcialmente.                                    | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.03` | Gestionar redes y conectividad                       | NEXO / aplicación afectada                | Redes y conectividad se administran fuera de una aplicación canónica.                                | `EVC-17`, `EVC-23`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.04` | Gestionar impresoras y periféricos                   | NEXO / aplicación afectada                | NEXO: impresión BrowserPrint/ZPL y colas locales; periféricos sin gobierno integral.                 | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.05` | Gestionar aplicaciones y proveedores tecnológicos    | SHELL / VENTO-SHELL                       | SHELL/vento-shell: catálogo, navegación, repositorios, despliegues y proveedores técnicos parciales. | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.06` | Atender solicitudes de soporte                       | Aplicación afectada + soporte transversal | ANIMA: tickets y mensajes de soporte; no es mesa de servicio transversal completa.                   | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.07` | Gestionar fallas e incidentes tecnológicos           | Aplicación afectada + soporte transversal | Tickets, logs y operación humana; clasificación y cierre de incidentes incompletos.                  | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.08` | Gestionar cambios y versiones                        | Aplicación afectada + soporte transversal | GitHub, Vercel, EAS y actualizaciones por aplicación; gobierno de cambio fragmentado.                | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.09` | Probar soluciones antes de usarlas                   | Aplicación afectada + soporte transversal | APP-REVIEW, builds y validaciones puntuales; suite transversal insuficiente.                         | `EVC-17`, `EVC-23`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.10` | Gestionar licencias, contratos y costos tecnológicos | Aplicación afectada + soporte transversal | Gestión manual sin registro canónico completo.                                                       | `EVC-17`, `EVC-23`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-15.11` | Capacitar en el uso de herramientas                  | Aplicación afectada + soporte transversal | Gestión manual sin registro canónico completo.                                                       | `EVC-17`, `EVC-23`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-015`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+
+##### 7.16. `CAP-16` — Información, documentos y evidencia
+
+| ID          | Subcapacidad                              | Propietaria candidata                                   | Implementación actual localizada                                                               | Evidencia                    | Estado de vinculación               | Destino exacto                                                  |
+| ----------- | ----------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------------------------- | ----------------------------------- | --------------------------------------------------------------- |
+| `CAP-16.01` | Clasificar información y documentos       | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.02` | Crear y aprobar documentos                | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.03` | Guardar y localizar documentos            | Aplicación propietaria del hecho + gobierno transversal | Storage, tablas y búsquedas permiten guardar y localizar documentos en varios dominios.        | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_VERIFICADA_EN_USO`  | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.04` | Controlar versiones y vigencia            | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.05` | Compartir información de forma autorizada | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.06` | Proteger datos personales y sensibles     | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.07` | Conservar registros y evidencia           | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.08` | Archivar y eliminar de forma controlada   | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.09` | Gestionar firmas y aprobaciones           | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.10` | Atender solicitudes sobre información     | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-16.11` | Investigar accesos o cambios indebidos    | Aplicación propietaria del hecho + gobierno transversal | Storage y tablas distribuidas; clasificación, versión, retención, firma y auditoría parciales. | `EVC-18`, `EVC-17`, `EVC-23` | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA` | `CODE-AUD-020`, `CAP-SCOPE-016`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+
+##### 7.17. `CAP-17` — Medición, análisis y mejora
+
+| ID          | Subcapacidad                          | Propietaria candidata        | Implementación actual localizada                                                     | Evidencia          | Estado de vinculación                    | Destino exacto                                                  |
+| ----------- | ------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------ | ------------------ | ---------------------------------------- | --------------------------------------------------------------- |
+| `CAP-17.01` | Definir medidas e indicadores         | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.02` | Recopilar información                 | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.03` | Verificar calidad de información      | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.04` | Preparar reportes                     | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.05` | Analizar ventas y demanda             | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.06` | Analizar inventario y abastecimiento  | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.07` | Analizar producción y rendimiento     | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.08` | Analizar servicio y clientes          | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.09` | Analizar costos y rentabilidad        | NUMERA + aplicaciones fuente | NUMERA y reportes/exportaciones por dominio; métricas y calidad no están unificadas. | `EVC-19`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.10` | Identificar problemas y oportunidades | NUMERA + aplicaciones fuente | Análisis y seguimiento principalmente humanos; no existe ciclo común de mejora.      | `EVC-19`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.11` | Definir y seguir acciones de mejora   | NUMERA + aplicaciones fuente | Análisis y seguimiento principalmente humanos; no existe ciclo común de mejora.      | `EVC-19`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-17.12` | Comprobar resultados                  | NUMERA + aplicaciones fuente | Análisis y seguimiento principalmente humanos; no existe ciclo común de mejora.      | `EVC-19`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-017`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+
+##### 7.18. `CAP-18` — Continuidad e incidentes
+
+| ID          | Subcapacidad                                  | Propietaria candidata       | Implementación actual localizada                                                            | Evidencia                    | Estado de vinculación                    | Destino exacto                                                  |
+| ----------- | --------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------- | --------------------------------------------------------------- |
+| `CAP-18.01` | Identificar dependencias críticas             | Aplicación afectada + SHELL | No se localizó inventario/priorización empresarial canónica de continuidad.                 | `EVC-20`, `EVC-17`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.02` | Preparar respuestas alternativas              | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.03` | Detectar y reportar incidentes                | Aplicación afectada + SHELL | Tickets y eventos técnicos permiten reportar algunos incidentes.                            | `EVC-20`, `EVC-17`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.04` | Evaluar impacto y prioridad                   | Aplicación afectada + SHELL | No se localizó inventario/priorización empresarial canónica de continuidad.                 | `EVC-20`, `EVC-17`, `EVC-22` | `SIN_IMPLEMENTACIÓN_VERIFICABLE`         | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.05` | Mantener operación mínima                     | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.06` | Recuperar equipos, servicios e información    | Aplicación afectada + SHELL | Infraestructura y cron ofrecen recuperación parcial; no hay prueba empresarial por dominio. | `EVC-20`, `EVC-17`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.07` | Registrar trabajo realizado durante la falla  | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.08` | Incorporar posteriormente lo ocurrido         | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.09` | Confirmar que no quedaron pendientes          | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.10` | Aprender del incidente y mejorar la respuesta | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.11` | Gestionar respaldos y recuperación            | Aplicación afectada + SHELL | Infraestructura y cron ofrecen recuperación parcial; no hay prueba empresarial por dominio. | `EVC-20`, `EVC-17`           | `IMPLEMENTACIÓN_PARCIAL_VERIFICADA`      | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+| `CAP-18.12` | Coordinar comunicación durante incidentes     | Aplicación afectada + SHELL | Contingencias y reincorporación se ejecutan manualmente; no existe ciclo integral.          | `EVC-20`, `EVC-17`, `EVC-21` | `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` | `CODE-AUD-020`, `CAP-SCOPE-018`, `GAP-CTRL-001`, `GAP-CTRL-006` |
+
+---
+
+#### 8. Mapa inverso por repositorio y superficie
+
+| Repositorio o medio                                                                     | Capacidades vinculadas actualmente                                                                                                                                                  | Límite que debe conservar `CODE-AUD-020`                                                                              |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `vento-shell`                                                                           | contratos compartidos, Auth, autorización, Edge Functions, cron, migraciones, eventos e infraestructura transversal de `CAP-02`, `CAP-09` a `CAP-12`, `CAP-15`, `CAP-16` y `CAP-18` | no convertir infraestructura compartida en propiedad empresarial universal; reconciliar remoto y repositorio          |
+| `vento-viso`                                                                            | `CAP-01`, gran parte de `CAP-02` y `CAP-03`, administración de catálogo, CMS, vacantes y documentos                                                                                 | separar gobierno administrativo, producto, CMS y funciones consumidoras; endurecer autorización y alcance             |
+| `vento-anima`                                                                           | asistencia, turnos personales, documentos, anuncios, soporte, carné y configuración de `CAP-02`, `CAP-15` y `CAP-16`                                                                | completar corrección, idempotencia, Realtime, segundo plano y límites de datos                                        |
+| `vento-talento`                                                                         | base futura de reclutamiento, postulación, documentos, entrevistas y oferta de `CAP-02`                                                                                             | no declararlo operativo; diseñar traspaso TALENTO → VISO/ANIMA sin duplicar identidad                                 |
+| `vento-nexo`                                                                            | producto, inventario, remisiones, traslados, activos, ubicaciones, impresión y parte de instalaciones: `CAP-04`, `CAP-06`, `CAP-07`, `CAP-11`, `CAP-13` y `CAP-15`                  | separar fuente de verdad, retirar contratos legacy, completar LPN/activos/remisiones y asegurar atomicidad            |
+| `vento-fogo`                                                                            | recetas y base de ejecución productiva: `CAP-04` y `CAP-08`                                                                                                                         | distinguir recetas en uso de lotes sin adopción; completar ciclo productivo y efectos de inventario                   |
+| `vento-origo`                                                                           | proveedores, órdenes, revisión maestra y recepción: `CAP-05` y vínculos con `CAP-06` y `CAP-12`                                                                                     | convertir recepción secuencial en operación atómica, idempotente y adoptada                                           |
+| `vento-pulso`                                                                           | pedidos, estados, salón, conversación, importación y base POS: `CAP-09`, `CAP-10`, `CAP-11` y caja de `CAP-12`                                                                      | completar POS, consumidor final, caja, facturación, correcciones y cierre; retirar dependencia legacy controladamente |
+| `vento-numera`                                                                          | gastos, centros de costo, resúmenes, equilibrio y rentabilidad: `CAP-12` y `CAP-17`                                                                                                 | no presentar analítica parcial como contabilidad, cartera, tesorería o cierre completos                               |
+| `vento-pass`                                                                            | cliente, membresía, fidelización, pedido, pago, entrega, chat y Wallet: `CAP-09`, `CAP-10` y `CAP-11`                                                                               | centralizar sedes, contratos, redención y pagos; separar cliente de RBAC laboral                                      |
+| `Vento-Group` + CMS VISO                                                                | contenido público, empleos publicados, marca y oferta: `CAP-14`                                                                                                                     | distinguir publicación actual de AURA futura; implementar o retirar newsletter ficticia                               |
+| Makos, Rappi, ManyChat, Shopify, WhatsApp, Excel, papel, bancos, asesores y proveedores | ejecución AS-IS manual o externa de ventas, pedidos, pagos, abastecimiento, cumplimiento, instalaciones, mercadeo y continuidad                                                     | mantener coexistencia, reconciliación, evidencia y cutover antes de retirar el método actual                          |
+
+---
+
+#### 9. Artefactos técnicos que no constituyen una capacidad por sí mismos
+
+| Artefacto                                   | Clasificación                                    | Vinculación o destino                                                                          |
+| ------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| aplicación `aura` registrada y permiso base | reserva técnica, no implementación               | capacidades `CAP-14`; decisión en `AURA-AUD-010` e `INT-MKT-001`                               |
+| repositorio y esquema TALENTO               | base futura                                      | `CAP-02.02`, `CAP-02.03`, `CAP-02.11` y `CAP-02.13`; `CAP-TAL-001` a `CAP-TAL-006`             |
+| VITAL                                       | producto personal separado                       | fuera de `LB-CAP-VENTO-001`; no se incorpora al backlog Vento OS                               |
+| sede `APP-REVIEW`                           | dato de demostración aislado                     | soporte de `CAP-15.09`; conservación o retiro en `CODE-AUD-020`                                |
+| scripts y migraciones históricas de sandbox | historial o residuo técnico                      | `CODE-AUD-020`; no representan una capacidad actual                                            |
+| `delivery-portal` solo remoto               | implementación no reproducible desde repositorio | `CAP-11.07` a `CAP-11.12`; versionar y auditar mediante `CODE-AUD-020` y tareas de integración |
+| buckets sin consumidor localizado           | infraestructura no asignada                      | clasificar en `CODE-AUD-020` y E3 antes de conservar, migrar o retirar                         |
+| permisos, tablas, triggers y RPC aislados   | piezas técnicas                                  | solo cuentan cuando la matriz los vincula a una capacidad, actor, contrato y resultado         |
+
+---
+
+#### 10. Contratos distribuidos que requieren una única frontera
+
+| Frente                                       | Capacidad principal          | Implementación actual                                    | Riesgo conservado                                        | Destino                                                                                              |
+| -------------------------------------------- | ---------------------------- | -------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| identidad laboral y acceso                   | `CAP-02`, `CAP-15.01`        | VISO, ANIMA, SHELL, `vento-shell` y Supabase             | reglas duplicadas, alcance desigual y cierre incompleto  | `CODE-AUD-020`, `CAP-SCOPE-002`, `CAP-SCOPE-015`                                                     |
+| producto y presentación                      | `CAP-04`                     | NEXO, VISO, FOGO, ORIGO, PULSO y PASS                    | fuentes competidoras y conversiones incompatibles        | `CODE-AUD-020`, `CAP-SCOPE-004`                                                                      |
+| compra → recepción → inventario → costo      | `CAP-05`, `CAP-06`, `CAP-12` | ORIGO, NEXO, NUMERA y Supabase                           | efectos parciales, duplicación y conciliación incompleta | `CODE-AUD-020`, `CAP-SCOPE-005`, `CAP-SCOPE-006`, `CAP-SCOPE-012`                                    |
+| producción → inventario → costo              | `CAP-08`, `CAP-06`, `CAP-12` | FOGO, NEXO y NUMERA                                      | estructuras sin uso, cierre y efectos no probados        | `CODE-AUD-020`, `CAP-SCOPE-008`, `CAP-SCOPE-006`, `CAP-SCOPE-012`                                    |
+| pedido → venta → pago → inventario → lealtad | `CAP-09`, `CAP-10`, `CAP-12` | PULSO, PASS, NEXO, NUMERA, POS externos y Edge Functions | doble emisión, pago fuera de orden y efectos no atómicos | `CODE-AUD-020`, `CAP-SCOPE-009`, `CAP-SCOPE-010`, `CAP-SCOPE-012`, `INT-SALES-001` a `INT-SALES-011` |
+| remisión, transporte y entrega               | `CAP-06`, `CAP-11`           | NEXO, PULSO, PASS y `delivery-portal`                    | custodia, estados y reintentos distribuidos              | `CODE-AUD-020`, `CAP-SCOPE-006`, `CAP-SCOPE-011`                                                     |
+| documentos y evidencia                       | `CAP-16`                     | ANIMA, VISO, TALENTO, Storage y funciones                | acceso, retención, versión y sensibilidad inconsistentes | `CODE-AUD-020`, `CAP-SCOPE-016`                                                                      |
+| incidentes y continuidad                     | `CAP-18`                     | colas, tickets, cron, backups y operación manual         | recuperación sin reconciliación empresarial integral     | `CODE-AUD-020`, `CAP-SCOPE-018`                                                                      |
+
+---
+
+#### 11. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                                                       | Clasificación                     | Destino                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | ------------------------------------------------------------------------- |
+| `H-CODE-019-001` | las 217 subcapacidades pueden vincularse sin crear una taxonomía paralela                                                      | control documental                | cerrado mediante `MAP-IMPL-CAP-001`                                       |
+| `H-CODE-019-002` | una misma capacidad puede tener productora actual, propietaria candidata y consumidores distintos                              | frontera arquitectónica           | `CAP-SCOPE-001` a `CAP-SCOPE-019`; `CODE-AUD-020`                         |
+| `H-CODE-019-003` | VISO y NEXO concentran la mayor superficie técnica, pero no son propietarios universales                                       | concentración de implementación   | `CODE-AUD-020`; `CAP-SCOPE-001`, `004`, `006`, `007`, `013`, `015`, `016` |
+| `H-CODE-019-004` | TALENTO vincula capacidades reales, pero permanece como base futura sin despliegue ni adopción                                 | futuro con base técnica           | `CAP-TAL-001` a `CAP-TAL-006`; `CODE-AUD-020`                             |
+| `H-CODE-019-005` | AURA no cubre actualmente ninguna capacidad aunque exista reserva de catálogo                                                  | reserva sin implementación        | `AURA-AUD-010`; `INT-MKT-001`; `CODE-AUD-020`                             |
+| `H-CODE-019-006` | varias capacidades dependen de medios manuales o externos que no pueden retirarse por la sola existencia de código             | coexistencia operativa            | `CODE-AUD-020`; E5 y tareas de integración correspondientes               |
+| `H-CODE-019-007` | recepción, producción, POS, mantenimiento de activos, entrega, gastos y presupuestos contienen estructuras sin uso comprobado  | adopción no demostrada            | `CODE-AUD-020`; `CAP-SCOPE-005`, `007`, `008`, `009`, `011`, `012`        |
+| `H-CODE-019-008` | instalaciones y continuidad carecen de implementación empresarial integral verificable                                         | brecha funcional                  | `CAP-SCOPE-013`, `CAP-SCOPE-018`, `CODE-AUD-020`                          |
+| `H-CODE-019-009` | contratos de identidad, producto, pagos, inventario, documentos y entrega están distribuidos entre repositorios                | contrato transversal              | `CODE-AUD-020`, BLOQUE X, E3 y E4 mediante tareas ya existentes           |
+| `H-CODE-019-010` | `vento-shell` contiene contratos y migraciones compartidos, pero no debe absorber propiedad funcional                          | regla de propiedad                | `CAP-SCOPE-001` a `CAP-SCOPE-019`; `SHELL-CON-023`                        |
+| `H-CODE-019-011` | `TREQ-PASS-004` y `TREQ-INTEGRATION-001` quedan vinculados a las evidencias de sedes, dominios y contratos distribuidos        | obligación de regresión existente | conservar en `04A`; implementación en sus paquetes E5                     |
+| `H-CODE-019-012` | artefactos sin capacidad o sin consumidor deben entrar al backlog técnico, no convertirse en funciones empresariales ficticias | deuda o residuo técnico           | `CODE-AUD-020`                                                            |
+
+No se crea ninguna tarea nueva del roadmap. Todos los hallazgos tienen destino existente y exacto.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Justificación:** esta tarea consolida trazabilidad documental y no introduce ni modifica comportamiento ejecutable. Mantiene vigentes, entre otros, `TREQ-PASS-004`, `TREQ-INTEGRATION-001`, `TREQ-SUPABASE-001`, `TREQ-SUPABASE-002`, `TREQ-NEXO-005`, `TREQ-NEXO-006`, `TREQ-ORIGO-001`, `TREQ-ORIGO-003`, `TREQ-ANIMA-003`, `TREQ-ANIMA-004`, `TREQ-PASS-009` y `TREQ-INTEGRATION-003`.
+
+La matriz no marca ningún requisito como implementado o verificado. `CODE-AUD-020` y los paquetes E5 deberán conservar la relación entre capacidad, hallazgo, requisito y corrección.
+
+---
+
+#### 13. Decisiones propuestas
+
+1. Se adopta `MAP-IMPL-CAP-001` como mapa técnico de referencia de `LB-CAP-VENTO-001 v1.0`.
+2. Las 217 subcapacidades quedan vinculadas individualmente con una representación actual o con una ausencia explícita.
+3. Propietaria candidata, productora actual, consumidora y repositorio técnico permanecen como conceptos separados.
+4. Una tabla, permiso, ruta, RPC o componente aislado no prueba cobertura empresarial.
+5. Una operación manual o externa se conserva como implementación AS-IS y no se borra del mapa.
+6. Una estructura sin datos no se presenta como operación adoptada.
+7. TALENTO conserva su vínculo con capacidades de personas sin declararse operativo.
+8. AURA permanece como idea futura y no recibe cobertura ficticia.
+9. VITAL permanece fuera de Vento OS.
+10. `vento-shell` conserva migraciones y contratos compartidos sin convertirse en propietario universal.
+11. Los contratos distribuidos deberán converger mediante las tareas de propiedad, integración, datos y servicios ya existentes.
+12. `CODE-AUD-020` convertirá cada vínculo parcial, manual, ausente, futuro o competidor en backlog trazable por repositorio.
+13. No se modifican código, datos, despliegues, Supabase ni el registro de requisitos de prueba.
+14. No se crean tareas ni requisitos de prueba nuevos.
+15. `CODE-AUD-020` será la única continuidad inmediata.
+
+---
+
+#### 14. Límites de certeza
+
+Esta tarea no confirma:
+
+- adopción cotidiana de cada ruta o pantalla;
+- que el despliegue productivo corresponda exactamente al checkout inspeccionado;
+- que una relación con datos contenga información suficiente y correcta;
+- que una operación manual haya sido observada en todas las sedes;
+- que una implementación parcial sea la arquitectura que deberá conservarse;
+- que todos los permisos, RLS, RPC, Edge Functions, reintentos y transacciones sean correctos;
+- que una capacidad vinculada esté lista para cutover;
+- que una tabla vacía deba poblarse;
+- que un artefacto sin consumidor pueda retirarse sin análisis;
+- que los nombres actuales de rutas, tablas o repositorios sean los nombres objetivo.
+
+Los límites no impiden vincular la evidencia existente. Impiden transformar inferencias en hechos.
+
+---
+
+#### 15. Criterios de aceptación
+
+`CODE-AUD-019` podrá aprobarse cuando:
+
+- las 18 familias y 217 subcapacidades estén presentes exactamente una vez;
+- cada subcapacidad tenga propietaria candidata, implementación actual, evidencia, estado y destino;
+- uso, parcialidad, estructura sin uso, manual/external, ausencia y base futura estén diferenciados;
+- la matriz no confunda repositorio técnico con aplicación propietaria;
+- VISO y NEXO no se conviertan en propietarios universales por concentración de código;
+- TALENTO permanezca futuro, AURA permanezca diferida y VITAL permanezca separado;
+- las capacidades manuales y externas permanezcan visibles;
+- los contratos distribuidos tengan destino exacto;
+- los artefactos sin capacidad o consumidor queden reservados para `CODE-AUD-020`;
+- todos los hallazgos tengan tareas existentes;
+- se declare expresamente que no genera requisitos de prueba nuevos;
+- no se modifique código, CI, despliegues, Supabase ni 04A;
+- `CODE-AUD-020` permanezca como única continuidad inmediata.
+
+---
+
+#### 16. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+LB-CAP-VENTO-001 v1.0
+→ 217 subcapacidades
+→ MAP-IMPL-CAP-001
+→ repositorio, superficie, contrato, dato o medio actual
+→ estado de vinculación y limitación
+→ hallazgo con destino exacto
+→ backlog técnico y funcional por repositorio
+```
+
+La continuidad será exclusivamente:
+
+```text
+CODE-AUD-020
+— Crear backlog técnico y funcional trazable por repositorio
+```
+
+`CODE-AUD-020` deberá transformar esta matriz en unidades de backlog sin reabrir la taxonomía, sin duplicar brechas y sin asignar una corrección a un repositorio que solo sea consumidor.
+
+
+### ✅ CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
+
+**Estado:** APROBADO
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** consolidación final de brechas de código, capacidad, datos, seguridad, adopción y operación  
+**Dependencia anterior:** `CODE-AUD-019` — APROBADA  
+**Continuidad obligatoria:** `QA-REG-001` — Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001  
+**Línea base funcional:** `MAP-IMPL-CAP-001` / `LB-CAP-VENTO-001 v1.0`  
+**Fecha de corte conservada:** 2026-07-24  
+**Cambios en código, CI, despliegues o Supabase:** no realizados  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea crea el registro documental `BKL-REPO-001`, que transforma la evidencia de `CODE-AUD-001` a `CODE-AUD-019` y las 217 filas de `MAP-IMPL-CAP-001` en un backlog accionable, propietario y trazable por repositorio o medio operativo.
+
+La cadena resultante es:
+
+```text
+capacidad o hallazgo
+→ repositorio, aplicación o medio actual
+→ brecha técnica o funcional consolidada
+→ prioridad y puerta
+→ tarea canónica existente
+→ requisito de prueba existente cuando aplique
+→ evidencia exigida para cerrar
+```
+
+El registro contiene **18 entradas funcionales** y **65 entradas técnicas**, para un total de **83 elementos de backlog**.
+
+| Cobertura de entrada                                                          | Resultado |
+| ----------------------------------------------------------------------------- | --------: |
+| Subcapacidades de `MAP-IMPL-CAP-001`                                          |   **217** |
+| Subcapacidades sin remediación inmediata (`IMPLEMENTACIÓN_VERIFICADA_EN_USO`) |    **29** |
+| Subcapacidades abiertas consolidadas en backlog funcional                     |   **188** |
+| Familias funcionales                                                          |    **18** |
+| Elementos técnicos por repositorio o superficie                               |    **65** |
+| Hallazgos con destino explícito a `CODE-AUD-020` cubiertos                    |    **94** |
+| Hallazgos de límite o control conservados sin acción nueva                    |     **3** |
+
+Los identificadores `BKL-*` son **registros del backlog**, no tareas del roadmap. No deberán insertarse como encabezados `###`, no alteran el orden de implementación y no sustituyen las tareas canónicas indicadas en cada fila.
+
+---
+
+#### 2. Fuentes obligatorias y alcance
+
+El backlog consolida:
+
+- `CODE-AUD-001` a `CODE-AUD-019`;
+- `MAP-IMPL-CAP-001` y sus 217 subcapacidades;
+- requisitos vigentes de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- tareas existentes de E2, E3, E4, E5, BLOQUE X, GAP y QA;
+- procesos manuales y terceros registrados como operación AS-IS.
+
+No se vuelve a auditar el código ni se actualiza el corte. `CODE-AUD-020` organiza y asigna la evidencia ya aprobada; una revisión posterior deberá registrar un nuevo corte y no sobrescribir este historial.
+
+---
+
+#### 3. Convención y estados del backlog
+
+| Elemento         | Convención                      | Uso                                           |
+| ---------------- | ------------------------------- | --------------------------------------------- |
+| Registro         | `BKL-REPO-001`                  | contenedor documental de esta tarea           |
+| Brecha funcional | `BKL-FUNC-NNN`                  | agrupación por familia `CAP-*`                |
+| Brecha técnica   | `BKL-<REPO>-NNN` o `BKL-XR-NNN` | trabajo técnico por repositorio o transversal |
+
+Estado inicial de todas las filas abiertas: `REGISTRADO`.
+
+| Prioridad | Regla                                                                                                                   |
+| --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `P0`      | riesgo crítico de seguridad, integridad, dinero, inventario, identidad, build bloqueado o activación operativa insegura |
+| `P1`      | necesario antes de adopción, cutover, ampliación de alcance o siguiente release relevante                               |
+| `P2`      | mejora funcional o técnica necesaria antes de escalar, pero con control actual aceptable                                |
+| `P3`      | saneamiento, retiro o deuda de bajo riesgo que exige evidencia antes de eliminar                                        |
+
+Una fila solo podrá pasar a `CERRADO` cuando la tarea canónica responsable registre evidencia reproducible y los `TREQ-*` relacionados estén implementados y verificados cuando corresponda.
+
+---
+
+#### 4. Reglas de consolidación
+
+1. Una fila funcional puede agrupar varias subcapacidades, pero enumera todos sus identificadores abiertos.
+2. Una fila técnica puede agrupar hallazgos equivalentes del mismo repositorio y resultado de cierre.
+3. Ninguna fila crea una tarea nueva; el destino utiliza identificadores ya materializados.
+4. `IMPLEMENTACIÓN_VERIFICADA_EN_USO` se conserva como baseline y pasa a protección mediante QA, no a remediación automática.
+5. `ESTRUCTURA_VERIFICADA_SIN_USO_COMPROBADO` exige diseño, piloto y evidencia antes de activarse.
+6. `OPERACIÓN_MANUAL_O_EXTERNA_DOCUMENTADA` exige coexistencia y cutover; no autoriza retirar el método AS-IS.
+7. `SIN_IMPLEMENTACIÓN_VERIFICABLE` exige decisión en `CAP-SCOPE-*`; no obliga automáticamente a construir software.
+8. Hallazgos de seguridad P0 deben contenerse antes de ampliar el proceso afectado.
+9. Toda corrección de base, RLS, función, trigger, Storage o Edge Function se materializa en `vento-shell`.
+10. `QA-REG-001` se ejecutará inmediatamente después de esta tarea y antes de `CAP-SCOPE-001`.
+
+---
+
+#### 5. Backlog funcional consolidado
+
+Las 29 subcapacidades con implementación verificada en uso aparecen como baseline protegida; las otras 188 aparecen exactamente una vez en la columna **Brechas abiertas**.
+
+| ID             | Familia                                            | Repositorios o medios actuales                                                                   | Prioridad | Brechas abiertas por estado                                                                                                                                                                                                                                                  | Baseline verificada en uso                                                                             | Decisión y resultado requerido                                                                                                                    | Destino exacto                                                                                                                                            |
+| -------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BKL-FUNC-001` | `CAP-01` — Dirección y gobierno                    | `vento-viso`                                                                                     | `P1`      | **Parcial (4):** `CAP-01.05`, `CAP-01.06`, `CAP-01.07`, `CAP-01.08`<br>**Manual o externa (3):** `CAP-01.01`, `CAP-01.02`, `CAP-01.09`<br>**Sin implementación (1):** `CAP-01.10`                                                                                            | `CAP-01.03`, `CAP-01.04`                                                                               | Definir propiedad y ciclo TO-BE de decisiones, políticas, riesgos y verificación de cumplimiento sin convertir VISO en propietario universal.     | `CAP-SCOPE-001`                                                                                                                                           |
+| `BKL-FUNC-002` | `CAP-02` — Personas y trabajo                      | `vento-viso`, `vento-anima`, `vento-talento`, `vento-numera`, `vento-shell`                      | `P0`      | **Parcial (6):** `CAP-02.01`, `CAP-02.03`, `CAP-02.07`, `CAP-02.08`, `CAP-02.11`, `CAP-02.13`<br>**Manual o externa (3):** `CAP-02.09`, `CAP-02.10`, `CAP-02.12`<br>**Futura con base técnica (1):** `CAP-02.02`                                                             | `CAP-02.04`, `CAP-02.05`, `CAP-02.06`                                                                  | Separar TALENTO, VISO y ANIMA; cerrar asistencia, novedades, documentos, retiro de accesos y tratamiento del proceso laboral externo.             | `CAP-SCOPE-002`; `CAP-TAL-001`; `CAP-TAL-002`; `CAP-TAL-003`; `CAP-TAL-004`; `CAP-TAL-005`; `CAP-TAL-006`; `INT-WORK-003`; `ANIMA-UX-011`; `ANIMA-UX-012` |
+| `BKL-FUNC-003` | `CAP-03` — Seguridad, salud y cumplimiento         | `vento-viso`, `vento-nexo`, `vento-fogo` y operación manual                                      | `P1`      | **Parcial (10):** `CAP-03.01`, `CAP-03.02`, `CAP-03.03`, `CAP-03.04`, `CAP-03.05`, `CAP-03.06`, `CAP-03.07`, `CAP-03.08`, `CAP-03.09`, `CAP-03.10`                                                                                                                           | —                                                                                                      | Decidir qué controles se digitalizan, integran o permanecen manuales y crear evidencia auditable de inspección y corrección.                      | `CAP-SCOPE-003`                                                                                                                                           |
+| `BKL-FUNC-004` | `CAP-04` — Productos, preparaciones y conocimiento | `vento-nexo`, `vento-fogo`, `vento-pulso`, `vento-pass`, `vento-viso`                            | `P1`      | **Parcial (3):** `CAP-04.08`, `CAP-04.09`, `CAP-04.10`                                                                                                                                                                                                                       | `CAP-04.01`, `CAP-04.02`, `CAP-04.03`, `CAP-04.04`, `CAP-04.05`, `CAP-04.06`, `CAP-04.07`              | Conservar el catálogo en uso, cerrar calidad, alérgenos, vigencia y precedencias compartidas de producto, presentación y receta.                  | `CAP-SCOPE-004`                                                                                                                                           |
+| `BKL-FUNC-005` | `CAP-05` — Abastecimiento                          | `vento-origo`, `vento-nexo`, `vento-numera`, `vento-shell`                                       | `P0`      | **Parcial (5):** `CAP-05.01`, `CAP-05.02`, `CAP-05.03`, `CAP-05.06`, `CAP-05.07`<br>**Estructura sin uso (2):** `CAP-05.08`, `CAP-05.09`<br>**Manual o externa (5):** `CAP-05.04`, `CAP-05.05`, `CAP-05.10`, `CAP-05.11`, `CAP-05.12`                                        | —                                                                                                      | Completar abastecimiento y recepción, preservar negociación manual cuando corresponda y conectar inventario, costos y documentos sin duplicación. | `CAP-SCOPE-005`; `ORIGO-UX-009`; `ORIGO-UX-010`; `ORIGO-UX-014`; `ORIGO-UX-016`                                                                           |
+| `BKL-FUNC-006` | `CAP-06` — Inventario y almacenamiento             | `vento-nexo`, `vento-shell`                                                                      | `P0`      | **Parcial (6):** `CAP-06.02`, `CAP-06.06`, `CAP-06.09`, `CAP-06.10`, `CAP-06.11`, `CAP-06.14`<br>**Manual o externa (1):** `CAP-06.15`                                                                                                                                       | `CAP-06.01`, `CAP-06.03`, `CAP-06.04`, `CAP-06.05`, `CAP-06.07`, `CAP-06.08`, `CAP-06.12`, `CAP-06.13` | Cerrar LPN, remisiones, frío, reconciliación y atomicidad del ledger y sus proyecciones.                                                          | `CAP-SCOPE-006`; `NEXO-UX-009`; `NEXO-UX-010`; `NEXO-UX-011`; `NEXO-UX-012`; `NEXO-UX-013`                                                                |
+| `BKL-FUNC-007` | `CAP-07` — Activos y reutilizables                 | `vento-nexo`                                                                                     | `P1`      | **Parcial (7):** `CAP-07.01`, `CAP-07.02`, `CAP-07.03`, `CAP-07.04`, `CAP-07.06`, `CAP-07.11`, `CAP-07.12`<br>**Estructura sin uso (5):** `CAP-07.05`, `CAP-07.07`, `CAP-07.08`, `CAP-07.09`, `CAP-07.10`<br>**Manual o externa (1):** `CAP-07.13`                           | —                                                                                                      | Completar ciclo de activos, conteo patrimonial, mantenimiento, garantías, baja, vehículos y consumibles reutilizables.                            | `CAP-SCOPE-007`                                                                                                                                           |
+| `BKL-FUNC-008` | `CAP-08` — Producción                              | `vento-fogo`, `vento-nexo`, `vento-shell`                                                        | `P0`      | **Estructura sin uso (14):** `CAP-08.01`, `CAP-08.02`, `CAP-08.03`, `CAP-08.04`, `CAP-08.05`, `CAP-08.06`, `CAP-08.07`, `CAP-08.08`, `CAP-08.09`, `CAP-08.10`, `CAP-08.11`, `CAP-08.12`, `CAP-08.13`, `CAP-08.14`                                                            | —                                                                                                      | No activar estructuras productivas hasta aprobar el ciclo de lote, consumo, desperdicio, resultado, corrección e inventario.                      | `CAP-SCOPE-008`; `FOGO-UX-005`; `FOGO-UX-006`; `FOGO-UX-007`; `FOGO-UX-010`; `FOGO-UX-011`; `FOGO-UX-012`; `FOGO-UX-013`                                  |
+| `BKL-FUNC-009` | `CAP-09` — Venta, cobro y pedidos                  | `vento-pulso`, `vento-pass`, `vento-nexo`, `vento-numera`, `vento-shell` y POS externo           | `P0`      | **Parcial (8):** `CAP-09.03`, `CAP-09.05`, `CAP-09.06`, `CAP-09.07`, `CAP-09.08`, `CAP-09.09`, `CAP-09.10`, `CAP-09.12`<br>**Estructura sin uso (1):** `CAP-09.15`<br>**Manual o externa (2):** `CAP-09.13`, `CAP-09.14`                                                     | `CAP-09.01`, `CAP-09.02`, `CAP-09.04`, `CAP-09.11`                                                     | Completar POS, caja, cobro, facturación, anulaciones y efectos exactamente una vez, conservando coexistencia con el POS externo.                  | `CAP-SCOPE-009`; `PULSO-UX-001`; `INT-POS-001`; `INT-POS-019`                                                                                             |
+| `BKL-FUNC-010` | `CAP-10` — Clientes y relaciones                   | `vento-pass`, `vento-pulso`, `vento-viso`                                                        | `P0`      | **Parcial (4):** `CAP-10.02`, `CAP-10.03`, `CAP-10.09`, `CAP-10.10`<br>**Estructura sin uso (2):** `CAP-10.06`, `CAP-10.07`<br>**Manual o externa (3):** `CAP-10.04`, `CAP-10.05`, `CAP-10.08`                                                                               | `CAP-10.01`                                                                                            | Cerrar identidad de cliente, reclamos, servicio, fidelización, redención y experiencia de seguimiento sin exponer PII ni saldo.                   | `CAP-SCOPE-010`; `PASS-UX-001`                                                                                                                            |
+| `BKL-FUNC-011` | `CAP-11` — Transporte, despacho y entrega          | `vento-nexo`, `vento-pulso`, `vento-pass`, `vento-shell` y `delivery-portal`                     | `P1`      | **Parcial (3):** `CAP-11.04`, `CAP-11.05`, `CAP-11.06`<br>**Estructura sin uso (1):** `CAP-11.09`<br>**Manual o externa (8):** `CAP-11.01`, `CAP-11.02`, `CAP-11.03`, `CAP-11.07`, `CAP-11.08`, `CAP-11.10`, `CAP-11.11`, `CAP-11.12`                                        | —                                                                                                      | Definir planeación, custodia, transporte, portal, entrega, novedades, evidencia y conciliación entre NEXO, PULSO, PASS y terceros.                | `CAP-SCOPE-011`; `NEXO-UX-009`; `PULSO-UX-001`                                                                                                            |
+| `BKL-FUNC-012` | `CAP-12` — Dinero, costos y obligaciones           | `vento-numera`, `vento-pulso`, `vento-origo`, `vento-nexo`, `vento-shell` y terceros financieros | `P0`      | **Parcial (8):** `CAP-12.01`, `CAP-12.06`, `CAP-12.07`, `CAP-12.08`, `CAP-12.09`, `CAP-12.10`, `CAP-12.14`, `CAP-12.15`<br>**Estructura sin uso (2):** `CAP-12.02`, `CAP-12.11`<br>**Manual o externa (5):** `CAP-12.03`, `CAP-12.04`, `CAP-12.05`, `CAP-12.12`, `CAP-12.13` | —                                                                                                      | Distinguir costos y resúmenes existentes de contabilidad, tesorería, cartera, bancos, impuestos y presupuesto todavía no adoptados.               | `CAP-SCOPE-012`                                                                                                                                           |
+| `BKL-FUNC-013` | `CAP-13` — Instalaciones                           | `vento-nexo`, `vento-viso` y operación manual                                                    | `P1`      | **Parcial (1):** `CAP-13.01`<br>**Sin implementación (10):** `CAP-13.02`, `CAP-13.03`, `CAP-13.04`, `CAP-13.05`, `CAP-13.06`, `CAP-13.07`, `CAP-13.08`, `CAP-13.09`, `CAP-13.10`, `CAP-13.11`                                                                                | —                                                                                                      | Decidir BUILD, BUY, integración o operación manual para mantenimiento de instalaciones, limpieza, plagas, servicios, llaves y calibración.        | `CAP-SCOPE-013`                                                                                                                                           |
+| `BKL-FUNC-014` | `CAP-14` — Comunicación y promoción                | `vento-viso`, `Vento-Group`, `vento-pass`, `vento-pulso` y AURA futura                           | `P2`      | **Parcial (2):** `CAP-14.01`, `CAP-14.06`<br>**Manual o externa (4):** `CAP-14.02`, `CAP-14.08`, `CAP-14.09`, `CAP-14.11`<br>**Sin implementación (3):** `CAP-14.05`, `CAP-14.07`, `CAP-14.10`                                                                               | `CAP-14.03`, `CAP-14.04`                                                                               | Conservar CMS y web actuales, resolver newsletter y decidir AURA antes de crear campañas o automatizaciones nuevas.                               | `CAP-SCOPE-014`; `AURA-AUD-010`; `INT-MKT-001`                                                                                                            |
+| `BKL-FUNC-015` | `CAP-15` — Tecnología y soporte                    | `vento-shell` y todos los repositorios consumidores                                              | `P0`      | **Parcial (7):** `CAP-15.02`, `CAP-15.04`, `CAP-15.05`, `CAP-15.06`, `CAP-15.07`, `CAP-15.08`, `CAP-15.09`<br>**Manual o externa (3):** `CAP-15.03`, `CAP-15.10`, `CAP-15.11`                                                                                                | `CAP-15.01`                                                                                            | Consolidar Auth, contratos, dispositivos, impresión, soporte, observabilidad, despliegues y gobierno técnico transversal.                         | `CAP-SCOPE-015`; `GAP-CTRL-001`; `GAP-CTRL-006`                                                                                                           |
+| `BKL-FUNC-016` | `CAP-16` — Información, documentos y evidencia     | `vento-shell`, `vento-viso`, `vento-anima`, `vento-talento` y aplicaciones propietarias          | `P0`      | **Parcial (10):** `CAP-16.01`, `CAP-16.02`, `CAP-16.04`, `CAP-16.05`, `CAP-16.06`, `CAP-16.07`, `CAP-16.08`, `CAP-16.09`, `CAP-16.10`, `CAP-16.11`                                                                                                                           | `CAP-16.03`                                                                                            | Definir clasificación, acceso, versión, retención, firma, auditoría y eliminación de documentos y evidencia por dominio.                          | `CAP-SCOPE-016`; `GAP-CTRL-001`; `GAP-CTRL-006`                                                                                                           |
+| `BKL-FUNC-017` | `CAP-17` — Medición, análisis y mejora             | `vento-numera` y aplicaciones fuente                                                             | `P1`      | **Parcial (9):** `CAP-17.01`, `CAP-17.02`, `CAP-17.03`, `CAP-17.04`, `CAP-17.05`, `CAP-17.06`, `CAP-17.07`, `CAP-17.08`, `CAP-17.09`<br>**Manual o externa (3):** `CAP-17.10`, `CAP-17.11`, `CAP-17.12`                                                                      | —                                                                                                      | Aprobar definiciones de métricas, calidad, fuentes, periodicidad y ciclo de mejora sin presentar reportes parciales como analítica integral.      | `CAP-SCOPE-017`; `GAP-CTRL-001`; `GAP-CTRL-006`                                                                                                           |
+| `BKL-FUNC-018` | `CAP-18` — Continuidad e incidentes                | `vento-shell`, aplicaciones afectadas y operación manual                                         | `P0`      | **Parcial (3):** `CAP-18.03`, `CAP-18.06`, `CAP-18.11`<br>**Manual o externa (7):** `CAP-18.02`, `CAP-18.05`, `CAP-18.07`, `CAP-18.08`, `CAP-18.09`, `CAP-18.10`, `CAP-18.12`<br>**Sin implementación (2):** `CAP-18.01`, `CAP-18.04`                                        | —                                                                                                      | Crear inventario de procesos críticos, contingencia, recuperación, reincorporación y cierre auditable por dominio.                                | `CAP-SCOPE-018`; `GAP-CTRL-001`; `GAP-CTRL-006`                                                                                                           |
+
+---
+
+#### 6. Backlog técnico transversal y por repositorio
+
+| ID               | Repositorio o superficie                     | Prioridad / tipo              | Brecha consolidada                                                          | Hallazgos origen                                                                                                                                                                                     | Acción y resultado esperado                                                                                                                                                                           | Destino exacto                                                                                                                                                                                                                                                                                                                                                           | Requisitos existentes                                               | Evidencia de cierre                                                                                                                   | Momento                                                                               |
+| ---------------- | -------------------------------------------- | ----------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `BKL-XR-001`     | `vento-shell` / Supabase                     | `P0` / `DATOS`                | Reconciliar estado remoto, migraciones y contratos locales                  | `H-CODE-004-001`; `H-CODE-005-006`; `H-CODE-006-001`; `H-CODE-006-005`; `H-CODE-006-014`; `H-CODE-019-009`                                                                                           | Crear el inventario reproducible de relaciones, funciones, vistas, triggers y dependencias; identificar drift y convertir toda diferencia aceptada en migración versionada.                           | `SUPA-AUD-004`; `SUPA-AUD-006`; `SUPA-AUD-008`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-AUD-024`; `SUPA-TRANS-001`; `SUPA-TRANS-003`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                   | `TREQ-SUPABASE-001`; `TREQ-SUPABASE-003`                            | Mapa objeto → capacidad → consumidor completo, diff local/remoto explicado, migraciones y rollback definidos.                         | E3, antes de cualquier paquete de migración o retiro                                  |
+| `BKL-XR-002`     | `vento-shell` / Edge Functions               | `P0` / `INTEGRACIÓN`          | Versionar funciones, cron y superficies remotas no reproducibles            | `H-CODE-005-008`; `H-CODE-005-009`; `H-CODE-017-019`                                                                                                                                                 | Clasificar funciones solo locales, remoto-only y cron; incorporar o retirar `delivery-portal` mediante fuente, configuración y despliegue reproducibles sin perder controles de token.                | `SUPA-AUD-014`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-TRANS-003`; `SUPA-TRANS-007`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                                                   | `TREQ-SUPABASE-003`; `TREQ-SUPABASE-006`                            | Cada función y cron tiene fuente, configuración, propietario, consumidor, despliegue, secreto y prueba negativa.                      | E3/E4, antes de modificar funciones o portales productivos                            |
+| `BKL-XR-003`     | `vento-shell` / Storage / Realtime           | `P0` / `SEGURIDAD`            | Corregir Storage, publicaciones y consumidores Realtime                     | `H-CODE-006-007`; `H-CODE-006-008`; `H-CODE-006-009`; `H-CODE-006-010`; `H-CODE-006-011`; `H-CODE-006-013`                                                                                           | Clasificar buckets sin consumidor, privatizar contenido sensible, corregir entrega de medios y alinear publicaciones con suscripciones reales; retirar publicaciones sin consumidor confirmado.       | `SUPA-AUD-012`; `SUPA-AUD-013`; `SUPA-AUD-016`; `SUPA-AUD-017`; `EVID-ARC-003`; `EVID-ARC-007`; `EVID-ARC-008`; `SUPA-TRANS-001`; `SUPA-TRANS-007`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                   | `TREQ-SUPABASE-004`; `TREQ-SUPABASE-003`                            | Matriz bucket/ruta/sensibilidad y publicación/canal/consumidor aprobada, con acceso temporal y regresión.                             | P0 de seguridad antes de ampliar documentos, medios o Realtime                        |
+| `BKL-XR-004`     | `vento-shell` / datos de entorno             | `P1` / `GOBIERNO`             | Clasificar seeds, cleanup, baseline y datos demo                            | `H-CODE-007-009`; `H-CODE-007-011`; `H-CODE-007-012`; `H-CODE-007-013`; `H-CODE-008-003`                                                                                                             | Separar datos canónicos de fixtures, retirar scripts o templates peligrosos, decidir `APP-REVIEW` y documentar el marcador histórico sin ejecutar cleanup sobre producción.                           | `SUPA-AUD-015`; `SUPA-AUD-018`; `SHELL-AUD-011`; `SUPA-TRANS-002`; `SUPA-TRANS-012`; `SUPA-TRANS-015`; `QA-REG-001`                                                                                                                                                                                                                                                      | —                                                                   | Todo artefacto queda clasificado como conservar, fixture, histórico o retirar; no permanece script destructivo activable sin control. | E3 y consolidación de QA, antes de crear entornos de prueba                           |
+| `BKL-XR-005`     | SHELL + consumidores                         | `P0` / `AUTORIZACIÓN`         | Centralizar permisos, roles, contexto y propiedad funcional                 | `H-CODE-009-001`; `H-CODE-009-002`; `H-CODE-014-003`; `H-CODE-014-004`; `H-CODE-019-002`                                                                                                             | Sustituir listas locales y strings manuales por contratos compartidos; conservar diferencias legítimas por aplicación y validar equivalencia territorial.                                             | `SHELL-AUD-003`; `SHELL-AUD-004`; `SHELL-AUD-005`; `SHELL-AUD-006`; `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-006`; `SHELL-CON-007`; `SHELL-CON-016`; `AUTH-SRV-017`                                                                                                                              | `TREQ-AUTH-001`; `TREQ-AUTH-002`; `TREQ-AUTH-004`; `TREQ-SHELL-003` | Mismos casos de actor/contexto producen decisión equivalente en todos los consumidores y el catálogo no diverge.                      | E4, antes de refactorizar autorización en aplicaciones                                |
+| `BKL-XR-006`     | Transversal / `vento-shell`                  | `P0` / `ASINCRONÍA`           | Definir estado de operación, retry, idempotencia, outbox e inbox            | `H-CODE-004-003`; `H-CODE-009-007`; `H-CODE-018-004`; `H-CODE-018-012`; `H-CODE-018-013`; `H-CODE-018-014`; `H-CODE-018-015`; `H-CODE-019-009`                                                       | Crear contratos compartidos para operación pendiente, error canónico, reintento, deduplicación, concurrencia, compensación, conciliación y cola de fallos.                                            | `TSVC-CAT-001`; `TSVC-CAT-002`; `TSVC-CAT-003`; `TSVC-CAT-004`; `TSVC-CAT-006`; `TSVC-CAT-007`; `TSVC-CAT-008`; `QUEUE-ARC-001`; `QUEUE-ARC-002`; `QUEUE-ARC-003`; `QUEUE-ARC-006`; `QUEUE-ARC-008`; `QUEUE-ARC-009`; `QUEUE-ARC-010`; `SHELL-CON-008`; `SHELL-CON-012`; `SHELL-CON-013`; `SHELL-CON-015`; `SHELL-CON-023`; `SHELL-CON-024`                              | `TREQ-INTEGRATION-003`                                              | Contrato y ADR aprobados; cada operación reintentable declara clave, hash, estados, timeout desconocido, retry y recuperación.        | E3/E4, puerta previa a pagos, inventario, recepción, producción, impresión y webhooks |
+| `BKL-XR-007`     | SHELL + aplicaciones web                     | `P1` / `ARQUITECTURA`         | Consolidar AppShell, navegación, tipos y contratos compartidos              | `H-CODE-002-004`; `H-CODE-004-011`; `H-CODE-014-001`; `H-CODE-014-002`; `H-CODE-014-005`; `H-CODE-019-003`; `H-CODE-019-010`                                                                         | Comparar copias, clasificar compartir/generar/local y migrar por PR con compatibilidad y rollback; `vento-shell` no asume propiedad empresarial.                                                      | `SHELL-AUD-001`; `SHELL-AUD-006`; `SHELL-AUD-007`; `SHELL-AUD-008`; `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-PKG-002`; `SHELL-PKG-004`; `SHELL-PKG-005`; `SHELL-PKG-006`; `SHELL-PKG-007`; `SHELL-PKG-008`; `SHELL-CON-001`; `SHELL-CON-002`                                                                                                            | `TREQ-SHELL-002`; `TREQ-SHELL-003`                                  | Matriz de paridad y plan de migración por repositorio; ninguna copia se retira antes de pruebas y rollback.                           | E4, antes de extraer paquetes compartidos                                             |
+| `BKL-XR-008`     | Transversal                                  | `P3` / `RETIRO`               | Clasificar artefactos y exports sin consumidor confirmado                   | `H-CODE-015-008`; `H-CODE-019-012`                                                                                                                                                                   | Aplicar búsqueda estática, dinámica, framework, base, CI y consumidores externos antes de retirar o conservar artefactos.                                                                             | `SHELL-AUD-011`; `SUPA-AUD-022`; `SUPA-AUD-023`                                                                                                                                                                                                                                                                                                                          | `TREQ-SHELL-004`; `TREQ-SUPABASE-003`                               | Cada artefacto tiene consumidor confirmado o evidencia de retiro seguro y PR verificable.                                             | Después de definir reemplazos; nunca antes de la paridad                              |
+| `BKL-XR-009`     | Todos los repositorios                       | `P0` / `CALIDAD`              | Crear baseline de CI, pruebas y validaciones por repositorio                | `H-CODE-007-001`; `H-CODE-007-015`; `H-CODE-016-003`; `H-CODE-016-006`                                                                                                                               | Descomponer build, typecheck, lint y test por repositorio; asignar propietario y bloquear paquetes E5 sin puertas mínimas.                                                                            | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`; `GAP-CTRL-008`                                                                                                                                                                                                                                                                             | —                                                                   | QA-REG-001 produce matriz de comandos, ambientes, fixtures, requisitos TREQ y evidencia reproducible por paquete.                     | Inmediatamente después de CODE-AUD-020 y antes de CAP-SCOPE-001                       |
+| `BKL-XR-010`     | GitHub / repositorios                        | `P1` / `GOBIERNO`             | Decidir visibilidad y controles de repositorios                             | `H-CODE-001-001`; `H-CODE-017-023`                                                                                                                                                                   | Clasificar repositorios públicos y privados, secretos, datos y riesgos de exposición; documentar la decisión sin asumir que visibilidad pública equivale a vulnerabilidad.                            | `SUPA-AUD-015`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                           | —                                                                   | Decisión de visibilidad, inventario de secretos y controles de publicación aprobados por repositorio.                                 | Antes de ampliar integraciones o publicar nuevos repositorios                         |
+| `BKL-XR-011`     | Móvil y web                                  | `P1` / `ESTADO_LOCAL`         | Separar preferencia, borrador, caché, cola y efecto confirmado              | `H-CODE-004-014`; `H-CODE-012-015`; `H-CODE-018-016`                                                                                                                                                 | Definir taxonomía y almacenamiento permitido, caducidad, cifrado, invalidación, reanudación y relación con el estado del servidor.                                                                    | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CON-012`; `QUEUE-ARC-002`; `QUEUE-ARC-010`; `TSVC-CAT-008`                                                                                                                                                                                                                                                     | `TREQ-ANIMA-003`; `TREQ-INTEGRATION-003`                            | Cada dato local tiene clase, propietario, persistencia, TTL y regla de reconciliación; la interfaz no confunde cola con confirmación. | E4 y paquete de cada aplicación que use almacenamiento local                          |
+| `BKL-XR-012`     | NEXO, VISO, ANIMA y PASS                     | `P0` / `FRONTERA_SERVIDOR`    | Normalizar lectura y mutación entre cliente, servidor, RPC y Edge Functions | `H-CODE-003-002`; `H-CODE-004-010`; `H-CODE-004-012`; `H-CODE-005-002`; `H-CODE-019-003`                                                                                                             | Clasificar cada escritura y consulta por frontera autorizada, minimizar clientes privilegiados y eliminar confianza exclusiva en UI o código móvil.                                                   | `AUTH-SRV-001`; `AUTH-SRV-002`; `AUTH-SRV-003`; `AUTH-SRV-004`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-007`; `AUTH-SRV-010`; `AUTH-SRV-011`; `AUTH-SRV-012`; `AUTH-SRV-013`; `AUTH-SRV-017`; `SUPA-AUD-022`; `SUPA-AUD-023`                                                                                                                                           | `TREQ-AUTH-001`; `TREQ-AUTH-005`; `TREQ-AUTH-006`; `TREQ-AUTH-007`  | Matriz acción → frontera → permiso → alcance → datos → auditoría aprobada y pruebas negativas asociadas.                              | P0, antes de conservar o reescribir mutaciones                                        |
+| `BKL-VISO-001`   | `vento-viso`                                 | `P0` / `AUTORIZACIÓN`         | Restringir administración de seguridad por territorio y capacidad           | `H-CODE-017-014`                                                                                                                                                                                     | Sustituir la concesión global derivada de `gerente` por permiso, sede, área y columnas autorizadas; auditar cambios.                                                                                  | `VISO-AUTH-005`; `VISO-AUTH-006`; `VISO-AUTH-007`; `VISO-AUTH-008`; `VISO-AUTH-009`; `VISO-AUTH-018`; `VISO-AUTH-019`; `VISO-UX-013`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-012`; `AUTH-DB-002`                                                                                                                                                                      | `TREQ-AUTH-007`                                                     | Pruebas de gerente global, gerente de sede y actor sin permiso demuestran aislamiento territorial.                                    | P0 antes de ampliar administración de roles o perfiles                                |
+| `BKL-VISO-002`   | `vento-viso` / `vento-shell`                 | `P0` / `SEGURIDAD`            | Encapsular cliente administrativo y tablas `viso.*`                         | `H-CODE-004-013`; `H-CODE-006-017`; `H-CODE-017-020`                                                                                                                                                 | Mantener `server-only`, identificar cada uso de `service_role`, validar autorización antes de invocarlo y reducir operaciones directas sobre tablas administrativas.                                  | `AUTH-SRV-001`; `AUTH-SRV-004`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-017`; `SUPA-AUD-009`; `SUPA-AUD-022`; `SUPA-AUD-023`; `AUTH-DB-002`; `AUTH-DB-004`                                                                                                                                                                                                             | `TREQ-AUTH-001`; `TREQ-AUTH-007`                                    | Ningún cliente privilegiado es importable desde browser y cada acción administrativa tiene guard y auditoría.                         | P0 junto con endurecimiento de RLS                                                    |
+| `BKL-VISO-003`   | `vento-viso` + `Vento-Group`                 | `P1` / `MEDIOS`               | Corregir contrato de `website-media`                                        | `H-CODE-006-010`                                                                                                                                                                                     | Alinear privacidad del bucket, URL entregada, caché, autorización y ciclo de vida con el uso público aprobado del CMS.                                                                                | `SUPA-AUD-012`; `SUPA-AUD-016`; `SUPA-AUD-017`; `EVID-ARC-003`; `EVID-ARC-007`; `SUPA-TRANS-001`; `SUPA-TRANS-007`                                                                                                                                                                                                                                                       | `TREQ-SUPABASE-004`                                                 | La ruta pública o firmada corresponde a la clasificación del medio y no expone otros objetos.                                         | Antes de migrar o ampliar el CMS                                                      |
+| `BKL-VISO-004`   | `vento-viso`                                 | `P1` / `CALIDAD`              | Resolver errores de lint bloqueantes                                        | `H-CODE-016-003`                                                                                                                                                                                     | Descomponer los errores por módulo, corregirlos sin cambios semánticos ocultos y establecer el comando reproducible en CI.                                                                            | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Lint verde con baseline documentada y sin desactivar reglas para ocultar errores.                                                     | Antes del primer paquete E5 de VISO                                                   |
+| `BKL-VISO-005`   | `vento-viso`                                 | `P1` / `PROPIEDAD_FUNCIONAL`  | Separar administración, catálogo, CMS y capacidades consumidoras            | `H-CODE-002-005`; `H-CODE-019-003`                                                                                                                                                                   | Usar VISO como superficie administrativa sin convertirlo en propietario de producto, marketing, inventario o procesos de otras aplicaciones.                                                          | `CAP-SCOPE-001`; `CAP-SCOPE-002`; `CAP-SCOPE-003`; `CAP-SCOPE-004`; `CAP-SCOPE-014`; `CAP-SCOPE-016`; `CAP-SCOPE-019`; `SHELL-CON-016`; `VISO-UX-017`; `VISO-UX-018`                                                                                                                                                                                                     | —                                                                   | Cada acción de VISO enlaza o administra mediante contrato de la aplicación propietaria y no duplica lógica empresarial.               | E2, al aprobar propiedad de dominios                                                  |
+| `BKL-ANIMA-001`  | `vento-anima`                                | `P1` / `FUNCIONAL`            | Completar audiencia, lectura, edición y archivo de novedades                | `H-CODE-010-001`; `H-CODE-012-001`; `H-CODE-012-002`; `H-CODE-012-003`                                                                                                                               | Persistir audiencia, aplicarla al leer, recuperarla al editar, definir reenvío y reemplazar eliminación destructiva por archivo/historial cuando corresponda.                                         | `ANIMA-UX-017`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-011`; `SUPA-AUD-022`; `SUPA-AUD-023`                                                                                                                                                                                                                                                                           | `TREQ-ANIMA-001`                                                    | Pruebas por audiencia, edición, archivo y lectura fuera de alcance; historial editorial auditable.                                    | Paquete ANIMA de novedades en E5                                                      |
+| `BKL-ANIMA-002`  | `vento-anima`                                | `P1` / `DEGRADACIÓN`          | Alinear interfaz de fallback con capacidades reales                         | `H-CODE-010-002`; `H-CODE-012-004`                                                                                                                                                                   | Ocultar o deshabilitar mutaciones cuando el origen solo admite lectura y mostrar el modo degradado de forma explícita.                                                                                | `ANIMA-UX-017`; `TSVC-CAT-008`; `SHELL-CON-008`                                                                                                                                                                                                                                                                                                                          | `TREQ-ANIMA-002`                                                    | Modo fallback no ofrece acciones imposibles y recupera la capacidad al restablecer el contrato principal.                             | Junto con el paquete ANIMA que retire o formalice el fallback                         |
+| `BKL-ANIMA-003`  | `vento-anima` / `vento-viso`                 | `P1` / `PROCESO`              | Diseñar corrección auditable de asistencia y novedades                      | `H-CODE-011-009`                                                                                                                                                                                     | Definir solicitud, aprobación, corrección, motivo, actor, antes/después y efecto sobre reportes sin editar historia silenciosamente.                                                                  | `PROC-CAT-002`; `PROC-CAT-013`; `PROC-CAT-014`; `PROC-CAT-018`; `CAP-SCOPE-002`; `ANIMA-UX-011`; `ANIMA-UX-012`                                                                                                                                                                                                                                                          | —                                                                   | Proceso TO-BE y eventos de corrección aprobados; cada ajuste conserva original, actor y evidencia.                                    | E2 antes de implementar correcciones                                                  |
+| `BKL-ANIMA-004`  | `vento-anima` / `vento-shell`                | `P0` / `AUTORIZACIÓN`         | Eliminar confianza en rol y sede enviados al aceptar invitación             | `H-CODE-017-001`                                                                                                                                                                                     | Tomar rol, sede, vigencia e identidad solo de invitación persistida y pendiente; rechazar metadatos o payload autoadministrables.                                                                     | `ANIMA-AUTH-019`; `ANIMA-AUTH-020`; `AUTH-SRV-004`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-DB-002`; `AUTH-DB-004`                                                                                                                                                                                                                                                         | `TREQ-AUTH-005`                                                     | Pruebas de manipulación de payload no cambian rol ni sede; replay y expiración quedan controlados.                                    | P0 antes de aceptar nuevas invitaciones productivas                                   |
+| `BKL-ANIMA-005`  | `vento-anima` / `vento-shell`                | `P0` / `OFFLINE`              | Confirmar persistencia durable y contrato único de marcación                | `H-CODE-004-004`; `H-CODE-018-001`; `H-CODE-018-003`                                                                                                                                                 | No comunicar “encolado” si SecureStore falla; conservar `client_event_id`, sobrevivir reinicio y retirar fallback que evita semántica `applied/duplicate/conflict` sin paridad.                       | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `SUPA-TRANS-006`                                                                                                                                                                                                                                                                      | `TREQ-ANIMA-003`; `TREQ-SUPABASE-001`                               | Escenarios de cierre, reinicio, respuesta perdida y replay convergen sin pérdida ni doble marcación.                                  | P0 en paquete de sincronización ANIMA                                                 |
+| `BKL-ANIMA-006`  | `vento-anima` / `vento-shell`                | `P0` / `CONCURRENCIA`         | Hacer idempotentes las transiciones de descanso                             | `H-CODE-018-002`                                                                                                                                                                                     | Usar identificador persistido y RPC atómica para inicio/cierre; resolver duplicado, conflicto y eventos fuera de orden.                                                                               | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                                                                                                                                                                                                                                                                      | `TREQ-ANIMA-004`                                                    | Dos dispositivos y replays no crean dos descansos ni cierran uno distinto.                                                            | P0 junto con asistencia offline                                                       |
+| `BKL-ANIMA-007`  | `vento-anima`                                | `P1` / `ENTREGA`              | Formalizar build, tienda, segundo plano y validaciones móviles              | `H-CODE-001-003`; `H-CODE-003-006`; `H-CODE-016-006`                                                                                                                                                 | Vincular build productivo, ficha pública, permisos, tareas de segundo plano, notificaciones y comandos de validación reproducibles.                                                                   | `QA-REG-001`; `CAP-SCOPE-015`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                                            | —                                                                   | Build y ficha están vinculados; escenarios de permisos, background y notificación tienen evidencia en dispositivo.                    | Antes de siguiente release móvil                                                      |
+| `BKL-TAL-001`    | `vento-talento`                              | `P2` / `PRODUCTO_FUTURO`      | Mantener TALENTO no operativo hasta aprobar alcance y despliegue            | `H-CODE-001-004`; `H-CODE-002-006`; `H-CODE-003-008`; `H-CODE-004-008`; `H-CODE-011-008`; `H-CODE-019-004`                                                                                           | No activar pantallas, servicios, buckets ni esquema como producto actual; definir alcance, postulación, expediente, evaluación, oferta y período de prueba.                                           | `CAP-TAL-001`; `CAP-TAL-002`; `CAP-TAL-003`; `CAP-TAL-004`; `CAP-TAL-005`; `CAP-TAL-006`; `CAP-SCOPE-002`                                                                                                                                                                                                                                                                | —                                                                   | Producto y transición aprobados, ambiente y despliegue definidos, datos piloto autorizados y sin duplicar identidad laboral.          | E2; diferido hasta aprobar CAP-TAL-001 a CAP-TAL-006                                  |
+| `BKL-TAL-002`    | `vento-talento`, `vento-viso`, `vento-anima` | `P1` / `TRASPASO`             | Definir handoff idempotente de candidato a trabajador                       | `H-CODE-019-002`; `H-CODE-019-004`                                                                                                                                                                   | Separar candidato, pre-registro y trabajador; transferir datos, consentimiento, documentos, rol provisional y cierre sin crear identidades duplicadas.                                                | `CAP-TAL-001`; `CAP-TAL-003`; `CAP-TAL-004`; `CAP-TAL-005`; `CAP-TAL-006`; `SHELL-CON-014`; `SHELL-CON-023`                                                                                                                                                                                                                                                              | —                                                                   | Contrato de traspaso, claves, estados y rollback aprobados antes de cualquier integración.                                            | E2/E4 antes de implementar TALENTO                                                    |
+| `BKL-NEXO-001`   | `vento-nexo`                                 | `P0` / `CALIDAD`              | Restablecer typecheck, build y lint reproducibles                           | `H-CODE-016-002`; `H-CODE-016-003`                                                                                                                                                                   | Resolver incompatibilidad de `Worksheet.dataValidations`, separar errores de lint y no silenciar el problema mediante casts globales o desactivación de reglas.                                       | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Instalación limpia, typecheck, build y lint verdes con comandos documentados.                                                         | P0 antes de cualquier paquete E5 de NEXO                                              |
+| `BKL-NEXO-002`   | `vento-nexo`                                 | `P0` / `GOBIERNO_CI`          | Retirar workflow, script y log de parche temporal                           | `H-CODE-008-008`; `H-CODE-008-009`; `H-CODE-009-010`                                                                                                                                                 | Eliminar capacidad de mutar `preview` automáticamente, conservar historia necesaria y verificar que el código canónico ya contiene la solución aprobada.                                              | `SHELL-AUD-011`; `QA-REG-001`; `SHELL-PKG-007`; `SHELL-PKG-008`                                                                                                                                                                                                                                                                                                          | `TREQ-NEXO-001`                                                     | No queda workflow activable con `contents: write`; rama y código canónico pasan build y regresión.                                    | P0 de saneamiento antes de nuevos cambios NEXO                                        |
+| `BKL-NEXO-003`   | `vento-nexo`                                 | `P1` / `CATÁLOGO`             | Eliminar truncamiento de productos en ajustes                               | `H-CODE-009-008`; `H-CODE-010-007`; `H-CODE-012-006`                                                                                                                                                 | Implementar búsqueda/paginación completa y demostrar que todo producto elegible puede localizarse independientemente de stock actual.                                                                 | `NEXO-UX-019`; `NEXO-UX-021`; `NEXO-UX-022`; `NEXO-UX-023`                                                                                                                                                                                                                                                                                                               | `TREQ-NEXO-002`                                                     | Prueba con más de 500 productos y producto sin stock confirma selección sin omisiones.                                                | Paquete NEXO de ajustes                                                               |
+| `BKL-NEXO-004`   | `vento-nexo` / `vento-shell`                 | `P1` / `LPN`                  | Construir ciclo alcanzable y auditable de LPN                               | `H-CODE-011-002`; `H-CODE-011-003`; `H-CODE-011-004`; `H-CODE-011-005`; `H-CODE-015-001`; `H-CODE-015-002`; `H-CODE-015-003`; `H-CODE-015-004`; `H-CODE-015-005`                                     | Conectar creación, contenido, ubicación, custodia, movimiento, cierre, anulación y reetiquetado; clasificar endpoint y objetos sin consumidor.                                                        | `NEXO-DOM-002`; `NEXO-DOM-003`; `NEXO-DOM-004`; `NEXO-DOM-005`; `NEXO-DOM-006`; `NEXO-DOM-007`; `NEXO-DOM-008`; `NEXO-DOM-019`; `NEXO-DOM-020`; `NEXO-DOM-021`; `NEXO-DOM-022`; `NEXO-DOM-023`; `NEXO-DOM-024`; `NEXO-UX-026`; `NEXO-UX-027`; `NEXO-UX-036`; `NEXO-UX-037`; `NEXO-UX-038`; `NEXO-UX-039`; `NEXO-UX-040`; `SHELL-AUD-011`; `SUPA-AUD-022`; `SUPA-AUD-023` | `TREQ-NEXO-004`; `TREQ-SUPABASE-003`                                | Flujo E2E en tablet y base, sin doble contabilización; todo objeto LPN tiene consumidor y propietario.                                | E2 diseño; E3 datos; E5 implementación NEXO                                           |
+| `BKL-NEXO-005`   | `vento-nexo` / `vento-shell`                 | `P0` / `CONTRATO_DATOS`       | Resolver relaciones ausentes y fallbacks legacy de remisiones               | `H-CODE-006-003`; `H-CODE-006-004`; `H-CODE-013-005`; `H-CODE-013-010`                                                                                                                               | Determinar contrato canónico de `locations_validation` y resumen operativo, distinguir error de esquema de permisos/red y retirar inferencias por nombre o consulta legacy con transición controlada. | `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-AUD-018`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-001`; `SUPA-TRANS-005`; `SUPA-TRANS-006`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                             | `TREQ-NEXO-007`; `TREQ-SUPABASE-001`                                | Paridad entre contrato nuevo y fallback demostrada; ausencia de objeto no se oculta como éxito parcial.                               | P0 antes de retirar compatibilidad o ampliar remisiones                               |
+| `BKL-NEXO-006`   | `vento-nexo`, `vento-fogo`, `vento-origo`    | `P0` / `PRODUCTO`             | Unificar perfil, unidades, SKU y precedencias de producto                   | `H-CODE-013-008`; `H-CODE-013-009`; `H-CODE-014-007`; `H-CODE-014-008`                                                                                                                               | Definir fuente canónica y backfill para stock, entrada, conversión, modalidad y tolerancias; no inventar defaults silenciosos.                                                                        | `CAP-SCOPE-004`; `CAP-SCOPE-006`; `DATA-NORM-AUD-004`; `SUPA-AUD-019`; `SUPA-TRANS-005`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SHELL-AUD-009`; `SHELL-CON-001`; `SHELL-CON-012`                                                                                                                                                                                           | `TREQ-NEXO-008`; `TREQ-NEXO-010`                                    | Mismos casos producen misma unidad y conversión en todos los consumidores; excepciones quedan identificadas y migrables.              | E2/E3 antes de modificar inventario o producción                                      |
+| `BKL-NEXO-007`   | `vento-nexo` / `vento-shell`                 | `P0` / `ATOMICIDAD`           | Convertir ajuste de inventario en operación atómica e idempotente           | `H-CODE-014-009`; `H-CODE-018-008`                                                                                                                                                                   | Unificar movimiento, stock por sede/LOC/posición, costo y evento derivado mediante RPC transaccional o mecanismo reconciliable con clave estable.                                                     | `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-ARC-016`; `SUPA-ARC-017`; `SUPA-TRANS-008`; `SHELL-CON-023`                                                                                                                                                                                                                                                        | `TREQ-SUPABASE-002`                                                 | Fallos inyectados y solicitudes concurrentes no dejan proyecciones divergentes ni duplican movimientos.                               | P0 en paquete E3/E5 de ajustes                                                        |
+| `BKL-NEXO-008`   | `vento-nexo` / `vento-shell`                 | `P0` / `REMISIONES`           | Cerrar autorización y exactamente-una-vez en remisiones                     | `H-CODE-012-009`; `H-CODE-012-010`; `H-CODE-013-006`; `H-CODE-014-006`; `H-CODE-018-011`                                                                                                             | Resolver capacidad por permisos/contexto, declarar modo record-only o inventory, publicar efectos idempotentes y conciliar estados y LOC.                                                             | `PROC-ACTOR-002`; `PROC-ACTOR-010`; `NEXO-AUTH-029`; `NEXO-UX-009`; `NEXO-UX-010`; `NEXO-UX-011`; `NEXO-UX-012`; `NEXO-UX-013`; `NEXO-UX-022`; `NEXO-UX-023`; `NEXO-UX-025`; `SUPA-AUD-019`; `SHELL-CON-023`                                                                                                                                                             | `TREQ-NEXO-006`; `TREQ-NEXO-009`                                    | Piloto y replay demuestran un solo efecto, alcance correcto y reconciliación completa.                                                | P0 antes de activar inventario del piloto                                             |
+| `BKL-NEXO-009`   | `vento-nexo`                                 | `P1` / `IMPRESIÓN`            | Crear trabajo durable de impresión y validar salida física                  | `H-CODE-007-005`; `H-CODE-007-006`; `H-CODE-010-003`; `H-CODE-011-011`; `H-CODE-012-007`; `H-CODE-012-008`; `H-CODE-018-010`                                                                         | Separar preview de aprobación física; conservar trabajo, dispositivo, ZPL, resultado, error, reintento y motivo de reimpresión hasta ack definitivo.                                                  | `NEXO-UX-037`; `NEXO-UX-038`; `NEXO-AUTH-028`; `QUEUE-ARC-002`; `QUEUE-ARC-003`; `QUEUE-ARC-006`; `QUEUE-ARC-008`; `QUEUE-ARC-009`; `QUEUE-ARC-010`                                                                                                                                                                                                                      | `TREQ-NEXO-003`; `TREQ-NEXO-005`                                    | Pruebas BrowserPrint y físicas por DPI/tamaño/código; pérdida de conexión no pierde ni duplica trabajo.                               | Paquete NEXO de impresión y hardware                                                  |
+| `BKL-NEXO-010`   | `vento-nexo`                                 | `P1` / `ACTIVOS`              | Validar adopción de conteo, mantenimiento, garantías y baja                 | `H-CODE-019-007`                                                                                                                                                                                     | No declarar operativas las estructuras de activos; definir ciclo, responsables, evidencia, repuestos, vehículo y transición desde controles externos.                                                 | `CAP-SCOPE-007`; `PROC-CAT-002`; `GAP-CTRL-005`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                          | —                                                                   | Clasificación empresarial y proceso TO-BE aprobados; piloto demuestra uso y trazabilidad antes del rollout.                           | E2 y paquete NEXO de activos                                                          |
+| `BKL-NEXO-011`   | `vento-nexo` / operación                     | `P1` / `INSTALACIONES`        | Definir solución para mantenimiento de instalaciones                        | `H-CODE-019-008`                                                                                                                                                                                     | Evaluar BUILD, BUY, integración o control manual para limpieza, plagas, servicios, calibración, llaves, obras y cierre de novedades.                                                                  | `CAP-SCOPE-013`; `PROC-CAT-002`; `GAP-CTRL-005`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                          | —                                                                   | Decisión aprobada por subcapacidad y método actual conservado hasta cutover.                                                          | E1/E2 antes de asignar implementación                                                 |
+| `BKL-FOGO-001`   | `vento-fogo` / `vento-nexo`                  | `P0` / `PRODUCCIÓN`           | Completar y adoptar el ciclo productivo                                     | `H-CODE-012-013`; `H-CODE-012-014`; `H-CODE-019-007`                                                                                                                                                 | Diseñar inicio, parciales, consumos, desperdicio, resultado, finalización, cancelación y corrección; conectar inventario y costo sin borrar historia.                                                 | `CAP-SCOPE-008`; `FOGO-AUTH-009`; `FOGO-AUTH-010`; `FOGO-AUTH-011`; `FOGO-AUTH-012`; `FOGO-AUTH-013`; `FOGO-AUTH-014`; `FOGO-UX-005`; `FOGO-UX-006`; `FOGO-UX-007`; `FOGO-UX-010`; `FOGO-UX-011`; `FOGO-UX-012`; `FOGO-UX-013`                                                                                                                                           | `TREQ-FOGO-001`                                                     | Piloto con lote real autorizado demuestra estados, actor, consumo, terminado, corrección e inventario coherentes.                     | P0 de diseño y piloto antes de activar producción                                     |
+| `BKL-FOGO-002`   | `vento-fogo`                                 | `P2` / `CALIDAD`              | Resolver warnings de lint antes de endurecer CI                             | `H-CODE-016-004`                                                                                                                                                                                     | Clasificar los ocho warnings, corregir los que representen riesgo y documentar baseline temporal sin convertir warnings en deuda permanente.                                                          | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Lint sin warnings no aceptados o con excepciones temporales, justificadas y fechadas.                                                 | Antes de activar lint estricto en CI                                                  |
+| `BKL-ORIGO-001`  | `vento-origo` / `vento-shell`                | `P0` / `RECEPCIÓN`            | Hacer atómica e idempotente la recepción y corrección                       | `H-CODE-003-004`; `H-CODE-012-012`; `H-CODE-018-009`; `H-CODE-019-007`                                                                                                                               | Unificar cabecera, líneas, movimientos, stock, costos, cantidades de orden, estado, solicitudes maestras y corrección bajo una operación durable y reconciliable.                                     | `CAP-SCOPE-005`; `ORIGO-UX-009`; `ORIGO-UX-010`; `ORIGO-UX-014`; `ORIGO-UX-016`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-008`; `SHELL-CON-023`                                                                                                                                                                                                       | `TREQ-ORIGO-001`; `TREQ-ORIGO-003`; `TREQ-SUPABASE-002`             | Fallos inyectados y replay no duplican recepción, inventario, costo ni orden recibida; corrección garantiza reemplazo.                | P0 antes del piloto con efecto de inventario                                          |
+| `BKL-ORIGO-002`  | `vento-origo` / `vento-shell`                | `P0` / `AUTORIZACIÓN`         | Restringir órdenes de compra y endurecer PDF público                        | `H-CODE-017-011`; `H-CODE-017-012`                                                                                                                                                                   | Aplicar permiso, sede/centro de costo, estado y columnas; eliminar secreto fallback y usar token scoped, corto y revocable.                                                                           | `ORIGO-AUTH-004`; `ORIGO-AUTH-005`; `ORIGO-AUTH-006`; `ORIGO-AUTH-007`; `ORIGO-AUTH-008`; `ORIGO-AUTH-009`; `ORIGO-AUTH-010`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-011`; `AUTH-SRV-012`; `AUTH-DB-002`; `AUTH-DB-004`; `SUPA-AUD-015`                                                                                                                               | `TREQ-ORIGO-002`                                                    | Pruebas por rol/sede/estado y token expirado/revocado; enlace sin secreto configurado falla cerrado.                                  | P0 antes de compartir documentos de compra                                            |
+| `BKL-ORIGO-003`  | `vento-origo`                                | `P1` / `CALIDAD`              | Resolver errores de lint bloqueantes                                        | `H-CODE-016-003`                                                                                                                                                                                     | Corregir los errores de lint con instalación limpia y crear puerta CI reproducible.                                                                                                                   | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Lint verde y sin supresiones globales no justificadas.                                                                                | Antes del primer paquete E5 de ORIGO                                                  |
+| `BKL-PULSO-001`  | `vento-pulso` / `vento-shell`                | `P0` / `POS`                  | Construir ciclo E2E de venta, caja y pago                                   | `H-CODE-003-005`; `H-CODE-011-006`; `H-CODE-011-010`; `H-CODE-015-010`; `H-CODE-015-011`; `H-CODE-015-012`; `H-CODE-015-013`; `H-CODE-015-014`; `H-CODE-015-016`; `H-CODE-015-017`; `H-CODE-019-007` | Separar prototipo, mocks y contratos reales; completar apertura, venta, líneas, modificadores, cobro, pago, inventario, lealtad, reversión y cierre.                                                  | `CAP-SCOPE-009`; `PULSO-UX-001`; `PULSO-UX-007`; `PULSO-UX-008`; `PULSO-UX-009`; `PULSO-UX-010`; `PULSO-UX-016`; `PULSO-UX-017`; `PULSO-UX-018`; `PULSO-UX-020`; `PULSO-UX-021`; `PULSO-AUTH-006`; `PULSO-AUTH-007`; `PULSO-AUTH-008`; `PULSO-AUTH-009`; `PULSO-AUTH-010`; `SUPA-AUD-022`; `SUPA-AUD-023`                                                                | `TREQ-PULSO-001`; `TREQ-PULSO-003`                                  | Escenario E2E en terminal controlada cuadra caja, inventario, pago, lealtad, anulación y auditoría.                                   | P0 de diseño y arquitectura antes de activar POS interno                              |
+| `BKL-PULSO-002`  | `vento-pulso`                                | `P1` / `LEGACY`               | Migrar tablero legacy y normalizar estados                                  | `H-CODE-013-001`; `H-CODE-013-002`; `H-CODE-013-003`                                                                                                                                                 | Demostrar paridad del tablero, retirar import runtime legacy y resolver `in_transit`/`on_the_way` mediante contrato canónico y migración.                                                             | `PULSO-AUTH-002`; `PULSO-UX-001`; `PULSO-UX-007`; `PULSO-UX-013`; `PULSO-UX-019`; `SHELL-AUD-001`; `SHELL-PKG-004`; `SHELL-PKG-005`; `SHELL-CON-010`; `SUPA-TRANS-001`; `SUPA-TRANS-006`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SUPA-TRANS-013`                                                                                                                           | `TREQ-PULSO-002`; `TREQ-SUPABASE-001`                               | Pruebas de paridad aprobadas y cero imports runtime al módulo legacy después del cutover.                                             | Antes de retirar `orders-board-legacy`                                                |
+| `BKL-PULSO-003`  | `vento-pulso` / `vento-shell`                | `P0` / `AUTORIZACIÓN`         | Proteger mutaciones de pedidos y líneas                                     | `H-CODE-017-013`                                                                                                                                                                                     | Reemplazar update amplio por acciones nombradas con permiso, sede, estado inicial, transición y columnas permitidas.                                                                                  | `PULSO-AUTH-006`; `PULSO-AUTH-007`; `PULSO-AUTH-008`; `PULSO-AUTH-009`; `PULSO-AUTH-010`; `PULSO-AUTH-011`; `AUTH-SRV-005`; `AUTH-SRV-006`; `AUTH-SRV-011`; `AUTH-SRV-012`; `AUTH-DB-002`; `AUTH-DB-004`                                                                                                                                                                 | `TREQ-PULSO-004`                                                    | Pruebas negativas impiden cambiar pago, precio, inventario, lealtad o estado fuera de transición autorizada.                          | P0 antes de usar PULSO con pedidos reales                                             |
+| `BKL-PULSO-004`  | `vento-pulso`                                | `P3` / `RETIRO`               | Clasificar scripts manuales sin comando actual                              | `H-CODE-015-009`                                                                                                                                                                                     | Confirmar uso histórico/externo, documentar reemplazo y retirar o integrar scripts sin convertirlos en fuente productiva accidental.                                                                  | `SHELL-AUD-011`; `PULSO-UX-019`                                                                                                                                                                                                                                                                                                                                          | `TREQ-SHELL-004`                                                    | Cada script queda vinculado a comando/documentación o retirado con evidencia.                                                         | Después de decidir arquitectura POS                                                   |
+| `BKL-PULSO-005`  | `vento-pulso` / Supabase                     | `P1` / `REALTIME`             | Corregir suscripciones sobre vistas y publicación                           | `H-CODE-006-011`; `H-CODE-006-012`                                                                                                                                                                   | Determinar tablas/eventos reales, evitar Postgres Changes sobre vistas no servidas y definir fallback/polling con estado visible.                                                                     | `SUPA-AUD-013`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-ARC-019`; `SUPA-TRANS-001`; `SUPA-TRANS-007`; `SUPA-TRANS-013`                                                                                                                                                                                                                                                     | —                                                                   | Suscripciones reciben eventos reproducibles o usan contrato alterno probado sin silencio.                                             | Antes de depender de actualización en tiempo real                                     |
+| `BKL-PULSO-006`  | `vento-pulso`                                | `P1` / `CALIDAD`              | Resolver errores de lint bloqueantes                                        | `H-CODE-016-003`                                                                                                                                                                                     | Corregir los errores por módulo y establecer puerta CI reproducible.                                                                                                                                  | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Lint verde sin desactivar reglas para ocultar deuda.                                                                                  | Antes del primer paquete E5 de PULSO                                                  |
+| `BKL-NUMERA-001` | `vento-numera`                               | `P1` / `ALCANCE_FUNCIONAL`    | Separar costos/reportes de contabilidad y tesorería completas               | `H-CODE-019-007`                                                                                                                                                                                     | Clasificar gastos, presupuestos, bancos, cartera, obligaciones, impuestos, cierres y rentabilidad; no presentar tablas vacías como proceso operativo.                                                 | `CAP-SCOPE-012`; `CAP-SCOPE-017`; `PROC-CAT-002`; `GAP-CTRL-005`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                         | —                                                                   | Clasificación BUILD/BUY/INTEGRATE/MANUAL y propietario aprobados por subcapacidad.                                                    | E1/E2 antes de ampliar NUMERA                                                         |
+| `BKL-NUMERA-002` | `vento-numera`                               | `P1` / `DEPENDENCIAS`         | Reproducir instalación y resolver vulnerabilidades/scripts pendientes       | `H-CODE-016-005`                                                                                                                                                                                     | Documentar versión de runtime, lockfile y aprobación de scripts; evaluar vulnerabilidades sin ejecutar `npm audit fix` indiscriminado.                                                                | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Instalación limpia reproducible, scripts revisados y vulnerabilidades con decisión explícita.                                         | Antes del primer release posterior al corte                                           |
+| `BKL-PASS-001`   | `vento-pass`                                 | `P2` / `RETIRO_UX`            | Resolver stubs y pantallas desconectadas                                    | `H-CODE-008-004`; `H-CODE-008-005`; `H-CODE-010-005`; `H-CODE-015-006`; `H-CODE-015-007`                                                                                                             | Confirmar consumidor, implementar flujo real o retirar acciones/pantallas; evitar cadenas transitivamente huérfanas.                                                                                  | `PASS-UX-001`; `PASS-UX-002`; `PASS-UX-006`; `PASS-UX-013`; `SHELL-AUD-011`                                                                                                                                                                                                                                                                                              | `TREQ-PASS-001`; `TREQ-PASS-002`; `TREQ-PASS-007`                   | Navegación activa no expone “Próximamente” como capacidad y no conserva pantallas paralelas sin decisión.                             | Paquete de convergencia UX PASS                                                       |
+| `BKL-PASS-002`   | `vento-pass`                                 | `P1` / `HISTORIAL`            | Corregir atribución de transacciones Saudo                                  | `H-CODE-008-007`; `H-CODE-009-009`; `H-CODE-010-006`; `H-CODE-012-005`                                                                                                                               | Resolver sede determinísticamente o mostrar sin atribución; backfill y retiro del filtro temporal sin omitir transacciones legítimas.                                                                 | `PASS-UX-006`; `PASS-QA-001`; `PASS-QA-002`; `SUPA-AUD-019`; `SUPA-TRANS-005`; `SUPA-TRANS-007`                                                                                                                                                                                                                                                                          | `TREQ-PASS-003`                                                     | Historial incluye todos los casos y distingue atribución, no atribución y datos legacy.                                               | Antes de retirar filtro temporal                                                      |
+| `BKL-PASS-003`   | `vento-pass`, `vento-viso`, `vento-shell`    | `P1` / `CONTRATOS`            | Centralizar sedes, identidad comercial, dominios y enlaces                  | `H-CODE-009-003`; `H-CODE-009-004`; `H-CODE-009-005`; `H-CODE-009-006`; `H-CODE-014-011`; `H-CODE-014-012`                                                                                           | Definir fuente canónica de site, marca, dirección, coordenadas, URLs y esquemas; retirar heurísticas y literales con compatibilidad controlada.                                                       | `PASS-UX-001`; `PASS-UX-006`; `SHELL-CON-002`; `SHELL-CON-014`; `SHELL-CON-016`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-005`; `SUPA-TRANS-007`                                                                                                                                                                                                      | `TREQ-PASS-004`; `TREQ-INTEGRATION-001`; `TREQ-PASS-006`            | Todas las rutas resuelven la misma sede y datos comerciales; links por ambiente pasan E2E.                                            | E3/E4 antes de consolidar experiencias                                                |
+| `BKL-PASS-004`   | `vento-pass`                                 | `P1` / `CONVERGENCIA_UX`      | Consolidar experiencias y rutas equivalentes                                | `H-CODE-002-002`; `H-CODE-002-003`; `H-CODE-003-010`; `H-CODE-014-010`                                                                                                                               | Elegir rutas canónicas para experiencias, legales, retorno y seguimiento; conservar compatibilidad solo con consumidor y puerta de retiro.                                                            | `PASS-UX-001`; `PASS-UX-002`; `PASS-UX-003`; `PASS-UX-006`; `PASS-UX-013`; `SHELL-AUD-011`                                                                                                                                                                                                                                                                               | `TREQ-PASS-006`; `TREQ-PASS-007`                                    | Una sola experiencia canónica por flujo y rutas reemplazadas con redirects/deep links probados.                                       | Antes de siguiente reorganización de navegación                                       |
+| `BKL-PASS-005`   | `vento-pass` / `vento-pulso` / `vento-shell` | `P0` / `FIDELIZACIÓN`         | Mover ledger y redención a contratos autorizados y atómicos                 | `H-CODE-017-004`; `H-CODE-017-005`; `H-CODE-017-006`; `H-CODE-018-005`                                                                                                                               | Impedir inserción cliente, validar permiso/sede/estado y ejecutar redención y saldo mediante operación server atómica e idempotente.                                                                  | `PULSO-AUTH-009`; `PULSO-AUTH-010`; `PASS-INT-001`; `PASS-INT-002`; `PASS-QA-002`; `AUTH-DB-002`; `AUTH-DB-004`; `SHELL-CON-023`                                                                                                                                                                                                                                         | `TREQ-PASS-008`                                                     | Pruebas concurrentes y de autorización no permiten crear puntos, doble gasto ni redención fuera de sede.                              | P0 antes de ampliar fidelización o canjes                                             |
+| `BKL-PASS-006`   | `vento-pass` / `vento-shell`                 | `P0` / `PAGOS`                | Serializar intentos y aplicar webhooks exactamente una vez                  | `H-CODE-018-006`; `H-CODE-018-007`                                                                                                                                                                   | Reclamar idempotency key/evento de forma atómica, conservar resultado, impedir regresión de estados y conciliar eventos tardíos o ambiguos.                                                           | `INT-EXT-010`; `INT-EXT-012`; `INT-EXT-015`; `SUPA-ARC-020`; `SUPA-AUD-014`; `PASS-QA-002`; `SHELL-CON-023`                                                                                                                                                                                                                                                              | `TREQ-PASS-009`; `TREQ-INTEGRATION-003`                             | Carreras, replay y orden invertido convergen en una transacción y estado terminal válidos.                                            | P0 en paquete de pagos y webhooks                                                     |
+| `BKL-PASS-007`   | `vento-pass`, `vento-pulso`, `vento-shell`   | `P0` / `PRIVACIDAD`           | Proteger columnas de usuario y limitar lectura de PII                       | `H-CODE-017-002`; `H-CODE-017-003`                                                                                                                                                                   | Separar campos autoadministrables y protegidos; ofrecer proyecciones mínimas por proceso, permiso y sede.                                                                                             | `PASS-INT-004`; `PASS-INT-005`; `PULSO-AUTH-006`; `PULSO-AUTH-009`; `PULSO-AUTH-010`; `AUTH-SRV-004`; `AUTH-SRV-005`; `AUTH-DB-002`; `AUTH-DB-004`                                                                                                                                                                                                                       | `TREQ-AUTH-006`                                                     | Cliente no modifica saldo/rol/estado y personal no consulta PII fuera del proceso autorizado.                                         | P0 antes de ampliar acceso a clientes                                                 |
+| `BKL-PASS-008`   | `vento-pass` / móvil                         | `P1` / `ARQUITECTURA_MÓVIL`   | Reducir consultas directas, cachés y dependencias dispersas                 | `H-CODE-003-007`; `H-CODE-004-005`; `H-CODE-004-010`; `H-CODE-016-006`                                                                                                                               | Clasificar acceso directo permitido, centralizar adaptadores, separar caché de estado servidor y definir comandos de validación móvil.                                                                | `SHELL-AUD-008`; `SHELL-AUD-009`; `SHELL-AUD-010`; `TSVC-CAT-004`; `TSVC-CAT-008`; `QA-REG-001`                                                                                                                                                                                                                                                                          | —                                                                   | Acceso y caché tienen contrato/TTL/error; build móvil y regresiones se ejecutan reproduciblemente.                                    | Antes de ampliar pagos, Wallet o mapas                                                |
+| `BKL-WEB-001`    | `Vento-Group` / `vento-viso`                 | `P1` / `FORMULARIO`           | Implementar o retirar newsletter pública                                    | `H-CODE-003-001`; `H-CODE-010-004`                                                                                                                                                                   | Registrar consentimiento y resultado real mediante contrato aprobado o retirar completamente la promesa y controles.                                                                                  | `WEB-FRM-011`                                                                                                                                                                                                                                                                                                                                                            | `TREQ-INTEGRATION-002`                                              | E2E demuestra alta/baja/duplicado/error o la interfaz ya no existe.                                                                   | Paquete web correspondiente                                                           |
+| `BKL-WEB-002`    | `Vento-Group` y `vento-numera`               | `P1` / `CALIDAD_DEPENDENCIAS` | Corregir lint web y revisar instalación/vulnerabilidades                    | `H-CODE-016-001`; `H-CODE-016-005`                                                                                                                                                                   | Reemplazar comando inválido de Next 16, validar scripts de dependencias y decidir vulnerabilidades sin actualización automática destructiva.                                                          | `QA-REG-001`; `GAP-CTRL-003`; `GAP-CTRL-004`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                                                                                                                                                             | —                                                                   | Instalación limpia, lint real y decisiones de scripts/vulnerabilidades reproducibles.                                                 | Antes del siguiente despliegue web o NUMERA                                           |
+| `BKL-WEB-003`    | `Vento-Group` / `vento-viso`                 | `P1` / `CMS`                  | Alinear consumo público con contrato de medios                              | `H-CODE-006-010`                                                                                                                                                                                     | Resolver cómo el CMS publica medios privados, evitar URLs permanentes no autorizadas y mantener compatibilidad con bloques existentes.                                                                | `SUPA-AUD-012`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-TRANS-001`; `SUPA-TRANS-007`; `EVID-ARC-003`; `EVID-ARC-007`                                                                                                                                                                                                                                                       | `TREQ-SUPABASE-004`                                                 | Carga, publicación, reemplazo y eliminación usan el mismo contrato y no exponen objetos ajenos.                                       | Antes de migrar media o endurecer el bucket                                           |
+| `BKL-AURA-001`   | AURA / `vento-shell` / `vento-viso`          | `P2` / `DECISIÓN`             | Decidir continuidad, reemplazo o retiro de AURA                             | `H-CODE-001-008`; `H-CODE-002-010`; `H-CODE-011-001`; `H-CODE-019-005`                                                                                                                               | No considerar aplicación ni permiso como capacidad implementada; decidir producto, propietario, alcance y relación con CMS/marketing.                                                                 | `AURA-AUD-010`; `INT-MKT-001`; `CAP-SCOPE-014`; `CAP-SCOPE-019`                                                                                                                                                                                                                                                                                                          | `TREQ-SHELL-001`                                                    | Decisión aprobada: construir con roadmap, reemplazar reserva o retirar catálogo/permiso sin navegación engañosa.                      | E1/E2 antes de diseñar campañas AURA                                                  |
+| `BKL-EXT-001`    | Operación manual y terceros                  | `P1` / `CUTOVER`              | Conservar coexistencia y reconciliación de métodos AS-IS                    | `H-CODE-019-006`; `H-CODE-019-007`; `H-CODE-019-008`                                                                                                                                                 | Para papel, Excel, WhatsApp, Makos, Rappi, bancos y proveedores, definir fuente temporal, captura paralela, conciliación, criterio de corte y rollback.                                               | `CAP-SCOPE-005`; `CAP-SCOPE-007`; `CAP-SCOPE-008`; `CAP-SCOPE-009`; `CAP-SCOPE-011`; `CAP-SCOPE-012`; `CAP-SCOPE-013`; `CAP-SCOPE-018`; `PROC-CAT-001`; `PROC-CAT-002`; `GAP-CTRL-005`; `GAP-CTRL-006`; `GAP-CTRL-007`                                                                                                                                                   | —                                                                   | Cada método externo tiene propietario, dato maestro, conciliación, fecha/puerta de retiro y contingencia.                             | E2 y paquete de transición de cada dominio                                            |
+| `BKL-EXT-002`    | `delivery-portal` / `vento-shell`            | `P0` / `DRIFT`                | Versionar y gobernar portal de entrega remoto                               | `H-CODE-005-009`; `H-CODE-017-019`                                                                                                                                                                   | Conservar token fuerte, recuperar fuente/configuración, registrar despliegue y vincularlo con capacidades de entrega y auditoría.                                                                     | `SUPA-AUD-014`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-003`; `SUPA-TRANS-007`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                   | `TREQ-SUPABASE-003`                                                 | Fuente reproducible y prueba de token/expiración; no existe función remota sin propietario ni rollback.                               | P0 antes de modificar portal o sesiones de entrega                                    |
+| `BKL-EXT-003`    | POS externo / PULSO / NEXO / NUMERA / PASS   | `P0` / `INTEGRACIÓN`          | Formalizar convivencia y transición del POS externo                         | `H-CODE-019-006`; `H-CODE-019-007`; `H-CODE-019-009`                                                                                                                                                 | Auditar API, importar hechos con payload/hash, mapear entidades, usar cuarentena e idempotencia y producir efectos internos exactamente una vez.                                                      | `INT-POS-001`; `INT-POS-002`; `INT-POS-003`; `INT-POS-004`; `INT-POS-005`; `INT-POS-006`; `INT-POS-007`; `INT-POS-008`; `INT-POS-009`; `INT-POS-010`; `INT-POS-011`; `INT-POS-012`; `INT-POS-013`; `INT-POS-014`; `INT-POS-015`; `INT-POS-016`; `INT-POS-017`; `INT-POS-018`; `INT-POS-019`; `INT-POS-020`; `INT-POS-021`; `INT-POS-022`; `INT-POS-023`; `INT-POS-024`   | `TREQ-PULSO-001`; `TREQ-PULSO-003`; `TREQ-INTEGRATION-003`          | Piloto sin efectos y piloto con efectos concilian ventas, inventario, finanzas y lealtad; credenciales se reducen al cutover.         | BLOQUE X y E5, antes de retirar Makos/POS vigente                                     |
+
+---
+
+#### 7. Distribución y puertas
+
+| Puerta         | Elementos                                   | Regla                                                                          |
+| -------------- | ------------------------------------------- | ------------------------------------------------------------------------------ |
+| Contención P0  | **28 técnicos** más familias funcionales P0 | no ampliar ni activar la superficie afectada antes de diseño, control y prueba |
+| Corrección P1  | **31 técnicos**                             | completar antes de adopción, cutover o siguiente release relevante             |
+| Evolución P2   | **4 técnicos**                              | ejecutar después de propiedad y proceso TO-BE aprobados                        |
+| Saneamiento P3 | **2 técnicos**                              | retirar solo con consumidor, reemplazo, regresión y rollback comprobados       |
+
+Secuencia obligatoria:
+
+```text
+CODE-AUD-020 aprobado
+→ QA-REG-001
+→ CAP-SCOPE-001 a CAP-SCOPE-019
+→ GAP-CTRL-001 a GAP-CTRL-008
+→ diseño E2 / arquitectura E3 y E4 / integraciones BLOQUE X
+→ paquetes E5 por repositorio
+→ pruebas y pilotos
+→ cierre de filas BKL con evidencia
+```
+
+No se permite saltar desde este backlog directamente a cambios de producción. Las tareas destino determinan diseño, arquitectura, migración, autorización y pruebas.
+
+---
+
+#### 8. Hallazgos conservados sin acción nueva
+
+| Hallazgo         | Disposición                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| `H-CODE-010-010` | límite de evidencia: no se confirmó una pantalla incompleta adicional; se conserva como resultado negativo |
+| `H-CODE-013-015` | límite de evidencia: no se confirmó legado activo adicional en los repositorios indicados                  |
+| `H-CODE-015-019` | límite de evidencia: no se confirmó un huérfano adicional; no autoriza omitir futuras comprobaciones       |
+
+Los controles positivos y hallazgos cerrados de `CODE-AUD-001` a `019` permanecen en su tarea de origen. No se duplican como deuda.
+
+---
+
+#### 9. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Justificación:** esta tarea organiza brechas y vincula requisitos ya identificados; no introduce ni modifica comportamiento ejecutable. `QA-REG-001` deberá comprobar que todos los requisitos anteriores estén registrados con filas completas y que cada paquete posterior declare cuáles implementa.
+
+Se conservan expresamente los requisitos asociados en las filas del backlog, incluidos los dominios `AUTH`, `SHELL`, `SUPABASE`, `ANIMA`, `NEXO`, `FOGO`, `ORIGO`, `PULSO`, `PASS` e `INTEGRATION`.
+
+---
+
+#### 10. Decisiones propuestas
+
+1. Se adopta `BKL-REPO-001` como backlog derivado y trazable del corte de auditoría E1.
+2. El backlog se compone de 18 filas funcionales y 65 filas técnicas.
+3. Las 188 subcapacidades no verificadas en uso quedan enumeradas exactamente una vez en el backlog funcional.
+4. Las 29 subcapacidades verificadas en uso permanecen como baseline, no como trabajo terminado.
+5. Las brechas técnicas se asignan por repositorio o superficie, aunque la propiedad funcional pueda pertenecer a otra aplicación.
+6. `vento-shell` es propietario técnico de migraciones y contratos compartidos, no propietario empresarial universal.
+7. Los identificadores `BKL-*` no son tareas del roadmap y no requieren materialización como encabezados.
+8. No se crea ninguna tarea nueva porque todos los elementos tienen destino canónico existente.
+9. Las operaciones manuales y externas se conservan hasta cumplir su puerta de cutover y rollback.
+10. `QA-REG-001` es la continuidad inmediata y obligatoria.
+
+---
+
+#### 11. Límites de certeza
+
+- El backlog refleja el corte de evidencia del 24 de julio de 2026; no afirma el estado de commits posteriores.
+- Una fila técnica puede requerir subdivisión durante diseño o implementación, pero no podrá perder sus capacidades, hallazgos, requisitos ni destino.
+- Una fila funcional no decide todavía BUILD, BUY, integración, manual, diferido o retiro; esa decisión pertenece a `CAP-SCOPE-*`.
+- Los conteos no equivalen a porcentaje de avance ni estimación de esfuerzo.
+- Ninguna evidencia manual o externa fue retirada ni reemplazada durante esta tarea.
+- No se ejecutaron migraciones, pruebas destructivas, cambios de permisos, builds productivos ni despliegues.
+
+---
+
+#### 12. Criterios de aceptación
+
+`CODE-AUD-020` podrá aprobarse cuando:
+
+- exista un registro único `BKL-REPO-001`;
+- las 217 subcapacidades estén contabilizadas como baseline o brecha;
+- las 188 subcapacidades abiertas aparezcan exactamente una vez en el backlog funcional;
+- las 29 verificadas en uso permanezcan visibles como baseline protegida;
+- cada fila funcional tenga repositorio o medio, prioridad, decisión, destino y puerta;
+- cada fila técnica tenga repositorio, hallazgos, acción, destino y evidencia de cierre;
+- todos los hallazgos con destino explícito a `CODE-AUD-020` estén cubiertos o conservados como límite de evidencia;
+- ningún destino cite una tarea inexistente;
+- los `BKL-*` se declaren registros y no tareas nuevas;
+- se conserve VITAL fuera del backlog de Vento OS;
+- AURA y TALENTO no se presenten como productos operativos;
+- los medios manuales y externos conserven coexistencia y cutover;
+- los P0 tengan puerta previa a ampliación o activación;
+- no se generen requisitos de prueba duplicados;
+- `QA-REG-001` quede como continuidad inmediata;
+- no se modifique código, CI, despliegues ni Supabase.
+
+---
+
+#### 13. Resultado y continuidad
+
+Al aprobarse quedará cerrada la auditoría documental de implementación actual con la cadena:
+
+```text
+inventario de repositorios y superficies
+→ contratos y datos
+→ procesos parciales, legacy y huérfanos
+→ seguridad, concurrencia e idempotencia
+→ mapa capacidad ↔ implementación
+→ backlog por repositorio
+```
+
+La continuidad obligatoria será:
+
+```text
+QA-REG-001
+— Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001
+```
+
 ## REGISTRO CANÓNICO DE REQUISITOS DE PRUEBA
 
 ### Propósito
@@ -175505,18 +183460,59 @@ Dominios iniciales:
 
 ### Registro
 
-| ID                     | Dominio                                                                                                                                                                                                                                 | Regla protegida                                                                                                                                                                                                           | Origen                                                                                                 | Riesgo / prioridad                                                                                                | Tipo / modalidad                                                                       | Tarea responsable                                                                           | Paquete                       | Repositorio / ambiente                                            | Estado         | Artefacto | Último resultado | Evidencia | Relación |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------- | -------------- | --------- | ---------------- | --------- | -------- |
-| `TREQ-PASS-001`        | `PASS`                                                                                                                                                                                                                                  | Toda acción visible de movimientos deberá abrir una capacidad real y autorizada, o no deberá exponerse como acción disponible.                                                                                            | `CODE-AUD-008` / `H-CODE-008-004`                                                                      | Acción engañosa, navegación muerta y exposición de una capacidad inexistente / alta                               | interfaz + E2E / automatizada                                                          | `CODE-AUD-010 — Detectar interfaces sin lógica real detrás`                                 | Pendiente de asignación en E5 | `vento-pass` / ambiente pendiente                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-PASS-002`        | `PASS`                                                                                                                                                                                                                                  | Toda acción visible de escaneo de mesa deberá ejecutar el flujo aprobado con validación de dispositivo y servidor, o permanecer retirada de la navegación hasta que exista la capacidad completa.                         | `CODE-AUD-008` / `H-CODE-008-005`                                                                      | Capacidad operativa ficticia, uso incorrecto de códigos QR y experiencia engañosa / alta                          | interfaz + hardware + E2E / híbrida                                                    | `CODE-AUD-010 — Detectar interfaces sin lógica real detrás`                                 | Pendiente de asignación en E5 | `vento-pass` / ambiente pendiente                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-PASS-003`        | `PASS`                                                                                                                                                                                                                                  | El historial de Saudo deberá atribuir cada transacción a una sede de forma determinista o mostrar explícitamente su estado sin atribución, sin omitir silenciosamente registros legítimos.                                | `CODE-AUD-008` / `H-CODE-008-007`                                                                      | Historial incompleto, pérdida de trazabilidad visible y decisiones basadas en información parcial / alta          | integración + regresión / automatizada                                                 | `CODE-AUD-012 — Detectar procesos parcialmente implementados`                               | Pendiente de asignación en E5 | `vento-pass` / ambiente pendiente                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-NEXO-001`        | `NEXO`                                                                                                                                                                                                                                  | La selección privilegiada de área solicitante deberá funcionar desde el código canónico y superar build y validación sin depender de workflows o scripts temporales que reescriban automáticamente una rama.              | `CODE-AUD-008` / `H-CODE-008-008` y `H-CODE-008-009`                                                   | Deriva de código, mutación insegura de ramas, implementación parcial y reejecución accidental de un parche / alta | integración + seguridad + regresión / automatizada                                     | `CODE-AUD-016 — Revisar estado de build, lint, typecheck y pruebas`                         | Pendiente de asignación en E5 | `vento-nexo` / CI y ambiente pendientes                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |  | `TREQ-AUTH-001`  | `AUTH`                                                                                                                                                                                                                                                        | Toda capacidad protegida deberá resolverse mediante permisos, contexto y alcance canónicos; una lista local de nombres de rol no podrá conceder por sí sola autorización final. | `CODE-AUD-009` / `H-CODE-009-001`                                | Acceso indebido, denegación incorrecta y divergencia entre aplicaciones / crítica | seguridad + autorización + regresión / automatizada | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad` | Pendiente de asignación en E5 | transversal / CI, staging y ambientes pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-AUTH-002`        | `AUTH`                                                                                                                                                                                                                                  | Todo identificador de permiso consumido por código deberá existir en la versión vigente del catálogo, utilizar la convención aprobada y quedar libre de strings huérfanos, duplicados o mal escritos.                     | `CODE-AUD-009` / `H-CODE-009-002`                                                                      | Controles inoperantes, permisos obsoletos y fallos silenciosos de autorización / crítica                          | contractual + estática + integración / automatizada                                    | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad`                            | Pendiente de asignación en E5 | transversal / CI pendiente                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-PASS-004`        | `PASS`                                                                                                                                                                                                                                  | El nombre operativo, dirección, coordenadas, enlaces y demás datos administrables de una sede mostrados por PASS deberán corresponder a la fuente canónica vigente y no divergir por literales duplicados en componentes. | `CODE-AUD-009` / `H-CODE-009-003` y `H-CODE-009-004`                                                   | Información comercial incorrecta, navegación errónea y divergencia entre sedes / alta                             | contractual + integración + interfaz / automatizada con validación manual de ubicación | `CODE-AUD-019 — Mapear dependencias, contratos y consumidores`                              | Pendiente de asignación en E5 | `vento-pass` / local, CI, staging y dispositivo físico pendientes | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-INTEGRATION-001` | `INTEGRATION`                                                                                                                                                                                                                           | Los esquemas, dominios y URLs externas utilizados por una aplicación deberán corresponder al ambiente y contrato aprobados, y no podrán divergir entre configuración móvil, web, pagos, notificaciones o navegación.      | `CODE-AUD-009` / `H-CODE-009-005` y `H-CODE-009-006`                                                   | Deep links rotos, retorno incorrecto, navegación a destinos obsoletos y diferencias entre ambientes / alta        | contractual + integración + E2E / automatizada                                         | `CODE-AUD-019 — Mapear dependencias, contratos y consumidores`                              | Pendiente de asignación en E5 | transversal / CI, staging y builds móviles pendientes             | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |
-| `TREQ-NEXO-002`        | `NEXO`                                                                                                                                                                                                                                  | Todo producto activo y elegible para un ajuste deberá poder localizarse y seleccionarse sin quedar omitido silenciosamente por límites fijos de consulta.                                                                 | `CODE-AUD-009` / `H-CODE-009-008`                                                                      | Imposibilidad de ajustar productos válidos y cobertura incompleta del catálogo / alta                             | integración + paginación + E2E / automatizada                                          | `CODE-AUD-012 — Detectar procesos parcialmente implementados`                               | Pendiente de asignación en E5 | `vento-nexo` / local, CI y staging pendientes                     | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | —        |  | `TREQ-SHELL-001` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001`                                                                                                                                               | catálogo engañoso, permisos sin capacidad y activación prematura | contractual + estática + integración / automatizada                               | media                                               | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`         | `IDENTIFICADO`                |
-| `TREQ-NEXO-004`        | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización. | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005`                                                                                                                                                                      | existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa                 | contractual + integración + base de datos + E2E / automatizada con validación operativa                           | alta                                                                                   | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | `IDENTIFICADO`                |
-| `TREQ-PULSO-001`       | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo.    | `CODE-AUD-011` / `H-CODE-011-006`                                                                                                                                                                                         | ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa                   | crítica                                                                                | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                | `IDENTIFICADO`                |
+| ID                     | Dominio       | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Origen                                                                                                                       | Riesgo / prioridad                                                                                                                                                                                                                       | Tipo / modalidad                                                                                                                                                            | Tarea responsable                                                                                                                                                                                                                                                                                                                            | Paquete                                                                                                                                                          | Repositorio / ambiente                                                                                                                                                                                                   | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                                                                    | Relación                                                                                                                                                                      |
+| ---------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- | --------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-PASS-001`        | `PASS`        | Toda acción visible de movimientos deberá abrir una capacidad real y autorizada, o no deberá exponerse como acción disponible.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `CODE-AUD-008` / `H-CODE-008-004`                                                                                            | Acción engañosa, navegación muerta y exposición de una capacidad inexistente / alta                                                                                                                                                      | interfaz + E2E / automatizada                                                                                                                                               | `CODE-AUD-010 — Detectar interfaces sin lógica real detrás`                                                                                                                                                                                                                                                                                  | Pendiente de asignación en E5                                                                                                                                    | `vento-pass` / ambiente pendiente                                                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-PASS-002`        | `PASS`        | Toda acción visible de escaneo de mesa deberá ejecutar el flujo aprobado con validación de dispositivo y servidor, o permanecer retirada de la navegación hasta que exista la capacidad completa.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `CODE-AUD-008` / `H-CODE-008-005`                                                                                            | Capacidad operativa ficticia, uso incorrecto de códigos QR y experiencia engañosa / alta                                                                                                                                                 | interfaz + hardware + E2E / híbrida                                                                                                                                         | `CODE-AUD-010 — Detectar interfaces sin lógica real detrás`                                                                                                                                                                                                                                                                                  | Pendiente de asignación en E5                                                                                                                                    | `vento-pass` / ambiente pendiente                                                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-PASS-003`        | `PASS`        | El historial de Saudo deberá atribuir cada transacción a una sede de forma determinista o mostrar explícitamente su estado sin atribución, sin omitir silenciosamente registros legítimos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `CODE-AUD-008` / `H-CODE-008-007`                                                                                            | Historial incompleto, pérdida de trazabilidad visible y decisiones basadas en información parcial / alta                                                                                                                                 | integración + regresión / automatizada                                                                                                                                      | `CODE-AUD-012 — Detectar procesos parcialmente implementados`                                                                                                                                                                                                                                                                                | Pendiente de asignación en E5                                                                                                                                    | `vento-pass` / ambiente pendiente                                                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-NEXO-001`        | `NEXO`        | La selección privilegiada de área solicitante deberá funcionar desde el código canónico y superar build y validación sin depender de workflows o scripts temporales que reescriban automáticamente una rama.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `CODE-AUD-008` / `H-CODE-008-008` y `H-CODE-008-009`                                                                         | Deriva de código, mutación insegura de ramas, implementación parcial y reejecución accidental de un parche / alta                                                                                                                        | integración + seguridad + regresión / automatizada                                                                                                                          | `CODE-AUD-016 — Revisar estado de build, lint, typecheck y pruebas`                                                                                                                                                                                                                                                                          | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` / CI y ambiente pendientes                                                                                                                                                                                  | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-AUTH-001`        | `AUTH`        | Toda capacidad protegida deberá resolverse mediante permisos, contexto y alcance canónicos; una lista local de nombres de rol no podrá conceder por sí sola autorización final.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-009` / `H-CODE-009-001`                                                                                            | Acceso indebido, denegación incorrecta y divergencia entre aplicaciones / crítica                                                                                                                                                        | seguridad + autorización + regresión / automatizada                                                                                                                         | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad`                                                                                                                                                                                                                                                                             | Pendiente de asignación en E5                                                                                                                                    | transversal / CI, staging y ambientes pendientes                                                                                                                                                                         | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-AUTH-002`        | `AUTH`        | Todo identificador de permiso consumido por código deberá existir en la versión vigente del catálogo, utilizar la convención aprobada y quedar libre de strings huérfanos, duplicados o mal escritos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CODE-AUD-009` / `H-CODE-009-002`                                                                                            | Controles inoperantes, permisos obsoletos y fallos silenciosos de autorización / crítica                                                                                                                                                 | contractual + estática + integración / automatizada                                                                                                                         | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad`                                                                                                                                                                                                                                                                             | Pendiente de asignación en E5                                                                                                                                    | transversal / CI pendiente                                                                                                                                                                                               | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-PASS-004`        | `PASS`        | El nombre operativo, dirección, coordenadas, enlaces y demás datos administrables de una sede mostrados por PASS deberán corresponder a la fuente canónica vigente y no divergir por literales duplicados en componentes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-009` / `H-CODE-009-003` y `H-CODE-009-004`                                                                         | Información comercial incorrecta, navegación errónea y divergencia entre sedes / alta                                                                                                                                                    | contractual + integración + interfaz / automatizada con validación manual de ubicación                                                                                      | `CODE-AUD-019 — Mapear dependencias, contratos y consumidores`                                                                                                                                                                                                                                                                               | Pendiente de asignación en E5                                                                                                                                    | `vento-pass` / local, CI, staging y dispositivo físico pendientes                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-INTEGRATION-001` | `INTEGRATION` | Los esquemas, dominios y URLs externas utilizados por una aplicación deberán corresponder al ambiente y contrato aprobados, y no podrán divergir entre configuración móvil, web, pagos, notificaciones o navegación.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `CODE-AUD-009` / `H-CODE-009-005` y `H-CODE-009-006`                                                                         | Deep links rotos, retorno incorrecto, navegación a destinos obsoletos y diferencias entre ambientes / alta                                                                                                                               | contractual + integración + E2E / automatizada                                                                                                                              | `CODE-AUD-019 — Mapear dependencias, contratos y consumidores`                                                                                                                                                                                                                                                                               | Pendiente de asignación en E5                                                                                                                                    | transversal / CI, staging y builds móviles pendientes                                                                                                                                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-NEXO-002`        | `NEXO`        | Todo producto activo y elegible para un ajuste deberá poder localizarse y seleccionarse sin quedar omitido silenciosamente por límites fijos de consulta.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-009` / `H-CODE-009-008`                                                                                            | Imposibilidad de ajustar productos válidos y cobertura incompleta del catálogo / alta                                                                                                                                                    | integración + paginación + E2E / automatizada                                                                                                                               | `CODE-AUD-012 — Detectar procesos parcialmente implementados`                                                                                                                                                                                                                                                                                | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` / local, CI y staging pendientes                                                                                                                                                                            | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-ANIMA-001`       | `ANIMA`       | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `CODE-AUD-010` / `H-CODE-010-001`                                                                                            | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta                                                                                                                                   | contractual + autorización + integración + E2E / automatizada                                                                                                               | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente`                                                                                                                                                                                                                                                                           | Pendiente de asignación en E5                                                                                                                                    | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-ANIMA-002`       | `ANIMA`       | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                | `CODE-AUD-010` / `H-CODE-010-002`                                                                                            | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta                                                                                                                                                        | interfaz + regresión / automatizada                                                                                                                                         | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente`                                                                                                                                                                                                                                                                           | Pendiente de asignación en E5                                                                                                                                    | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-NEXO-003`        | `NEXO`        | Toda vista previa usada para aprobar una impresión deberá identificar si es simulación y demostrar correspondencia suficiente entre plantilla, ZPL, DPI, dimensiones, códigos y muestra física antes de considerarse validación de salida.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `CODE-AUD-010` / `H-CODE-010-003`                                                                                            | Etiquetas recortadas, códigos ilegibles y diferencia entre vista previa e impresión física / alta                                                                                                                                        | contractual + interfaz + hardware + regresión / híbrida                                                                                                                     | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente`                                                                                                                                                                                                                                                                           | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` / local, CI, staging e impresora física pendientes                                                                                                                                                          | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-INTEGRATION-002` | `INTEGRATION` | Toda interfaz pública de newsletter deberá registrar una suscripción y consentimiento reales mediante el contrato aprobado, comunicar el resultado verdadero y permitir el tratamiento definido; de lo contrario no deberá publicarse.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `CODE-AUD-010` / `H-CODE-010-004`                                                                                            | Falsa confirmación, pérdida de contactos y tratamiento de datos sin contrato verificable / alta                                                                                                                                          | integración + privacidad + E2E / automatizada                                                                                                                               | `WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz`                                                                                                                                                                                                                                                                  | Pendiente de asignación en el plan web y E5 cuando corresponda                                                                                                   | `Vento-Group` y `vento-viso` / CI, preview y producción pública pendientes                                                                                                                                               | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-SHELL-001`       | `SHELL`       | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-011` / `H-CODE-011-001`                                                                                            | Catálogo engañoso, permisos sin capacidad y activación prematura / media                                                                                                                                                                 | contractual + estática + integración / automatizada                                                                                                                         | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`                                                                                                                                                                                                                                                                                     | Pendiente de asignación en E5 si AURA continúa                                                                                                                   | `vento-shell` y futura aplicación propietaria / CI y ambiente pendientes                                                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-NEXO-004`        | `NEXO`        | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005`                                                                         | Existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa / alta                                                                                                                                            | contractual + integración + base de datos + E2E / automatizada con validación operativa                                                                                     | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar`                                                                                                                                                                                                                                                  | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación física pendientes                                                                                                                                  | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-PULSO-001`       | `PULSO`       | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `CODE-AUD-011` / `H-CODE-011-006`                                                                                            | Ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos / crítica                                                                                                                         | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa                                                                             | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                                                                                                                                                                                                                                                                 | Pendiente de asignación en E5                                                                                                                                    | `vento-pulso`, `vento-shell`, `vento-nexo`, `vento-numera` y `vento-pass` / CI, staging y terminal POS pendientes                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | —                                                                                                                                                                             |
+| `TREQ-NEXO-005`        | `NEXO`        | Un trabajo de impresión no podrá retirarse definitivamente de la cola antes de recibir el resultado del envío; deberá conservar estado, error, reintento, dispositivo, contenido e identificación suficientes para evitar pérdida o duplicación.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-012` / `H-CODE-012-007` y `H-CODE-012-008`                                                                         | Pérdida de trabajos, duplicación de etiquetas, reimpresión no controlada y ausencia de trazabilidad / alta                                                                                                                               | integración + idempotencia + hardware + E2E / híbrida                                                                                                                       | `NEXO-UX-037 — Diseñar impresión de LOC, LPN, activo y documento`                                                                                                                                                                                                                                                                            | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` / local, CI, staging, BrowserPrint e impresora física pendientes                                                                                                                                            | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `NEXO-UX-038`; `NEXO-AUTH-028`; `CODE-AUD-018`                                                                                                                                |
+| `TREQ-NEXO-006`        | `NEXO`        | Toda remisión deberá indicar de forma verificable si fue únicamente registrada de manera operativa o si publicó movimientos reales de inventario; la activación, mezcla por LOC, reconciliación y reintento no podrán producir doble contabilización.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CODE-AUD-012` / `H-CODE-012-009` y `H-CODE-012-010`                                                                         | Doble contabilización, remisiones completadas sin efecto real, inventario divergente y reconciliación incorrecta del piloto / crítica                                                                                                    | contractual + integración + base de datos + idempotencia + E2E / automatizada con validación operativa                                                                      | `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`                                                                                                                                                                                                                                                                              | Pendiente de asignación en E5                                                                                                                                    | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación física pendientes                                                                                                                                  | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `NEXO-UX-010`; `NEXO-UX-011`; `NEXO-UX-012`; `NEXO-UX-013`; `NEXO-UX-022`; `NEXO-UX-025`; `CODE-AUD-018`                                                                      |
+| `TREQ-AUTH-003`        | `AUTH`        | Todo dispositivo compartido deberá tener un ciclo auditable de creación, activación, uso, cambio de actor, expiración, suspensión, revocación, rotación de credenciales y retiro, sin conservar acceso después de quedar inactivo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-012` / `H-CODE-012-011`                                                                                            | Acceso persistente desde dispositivos retirados, actor incorrecto, credenciales comprometidas y acciones sin atribución válida / crítica                                                                                                 | seguridad + autorización + integración + E2E / híbrida                                                                                                                      | `AUTH-DEV-011 — Permitir revocar un dispositivo`                                                                                                                                                                                                                                                                                             | Pendiente de asignación en E5                                                                                                                                    | transversal / `vento-viso`, `vento-nexo`, `vento-fogo`, `vento-pulso`, `vento-shell`, CI, staging y estaciones físicas pendientes                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `AUTH-DEV-012`; `AUTH-DEV-013`; `UX-STATION-004`; `UX-STATION-007`; `UX-STATION-008`; `UX-STATION-009`                                                                        |
+| `TREQ-ORIGO-001`       | `ORIGO`       | Toda recepción deberá declarar si mueve inventario o si es solo registro, conservar esa modalidad de forma visible y auditable, y evitar que su conversión, corrección o repetición duplique cantidades, costos, orden recibida o evento financiero.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `CODE-AUD-012` / `H-CODE-012-012`                                                                                            | Inventario duplicado, costos inconsistentes, órdenes recibidas varias veces, compras sin conciliación y hechos financieros divergentes / crítica                                                                                         | contractual + integración + base de datos + idempotencia + E2E / automatizada con validación operativa                                                                      | `ORIGO-UX-014 — Conectar recepción con entrada de inventario`                                                                                                                                                                                                                                                                                | Pendiente de asignación en E5                                                                                                                                    | `vento-origo`, `vento-nexo`, `vento-numera` y `vento-shell` / local, CI, staging y recepción operativa pendientes                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `ORIGO-UX-009`; `ORIGO-UX-010`; `ORIGO-UX-011`; `ORIGO-UX-013`; `ORIGO-UX-015`; `ORIGO-AUTH-007`; `ORIGO-AUTH-008`                                                            |
+| `TREQ-FOGO-001`        | `FOGO`        | Todo lote productivo deberá demostrar el ciclo aprobado de inicio, producción parcial, consumo, desperdicio, resultado, finalización, cancelación o corrección, con actor, turno, cantidades y efectos de inventario auditables.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-012` / `H-CODE-012-013` y `H-CODE-012-014`                                                                         | Producción incompleta, consumos y terminados divergentes, desperdicio no trazado, correcciones destructivas y lotes sin cierre confiable / crítica                                                                                       | contractual + integración + base de datos + concurrencia + idempotencia + E2E / automatizada con validación operativa                                                       | `FOGO-UX-005 — Diseñar inicio de lote`                                                                                                                                                                                                                                                                                                       | Pendiente de asignación en E5                                                                                                                                    | `vento-fogo`, `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación productiva pendientes                                                                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `FOGO-UX-006`; `FOGO-UX-007`; `FOGO-UX-010`; `FOGO-UX-011`; `FOGO-UX-012`; `FOGO-UX-013`; `FOGO-AUTH-009`; `FOGO-AUTH-010`; `FOGO-AUTH-011`; `FOGO-AUTH-012`; `FOGO-AUTH-014` |
+| `TREQ-PULSO-002`       | `PULSO`       | El tablero operativo de órdenes deberá migrar desde `orders-board-legacy` sin perder paridad comprobada de pedidos, filtros, transiciones, despacho, conversación, historial, facturación, regalos, eventos y actualización en tiempo real; después del retiro no podrá existir una importación runtime hacia la implementación legacy.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | `CODE-AUD-013` / `H-CODE-013-001` y `H-CODE-013-002`                                                                         | Pérdida de capacidades operativas, ruptura de pedidos activos, divergencia entre capas y retiro incompleto del tablero heredado / crítica                                                                                                | contractual + integración + E2E + regresión / automatizada con validación operativa                                                                                         | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                                                                                                                                                                                                                                                                 | Pendiente de asignación en E5                                                                                                                                    | `vento-pulso` / local, CI, staging y terminal POS pendientes                                                                                                                                                             | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-PULSO-001`                                                                                                                                              |
+| `TREQ-NEXO-007`        | `NEXO`        | Todo fallback legacy de configuración de remisiones deberá distinguir errores de esquema de errores de permisos, red o consulta, registrar cuándo se activa y demostrar que no amplía ni reduce silenciosamente productos, audiencia, áreas, alcance o estados antes de su retiro.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-013` / `H-CODE-013-005`, `H-CODE-013-006` y `H-CODE-013-010`                                                       | Degradación silenciosa del contrato, ampliación o reducción indebida del alcance operativo, ocultamiento de drift y decisiones incorrectas por configuración incompleta / crítica                                                        | contractual + integración + seguridad + regresión / automatizada                                                                                                            | `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`                                                                                                                                                                                                                                                           | Pendiente de asignación en E5 y en el roadmap ejecutable de transición de Supabase                                                                               | `vento-nexo` y `vento-shell` / local, CI, staging y Supabase remoto pendientes                                                                                                                                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-AUTH-001` y `TREQ-NEXO-006`                                                                                                                             |
+| `TREQ-NEXO-008`        | `NEXO`        | Ningún producto podrá participar en una operación de inventario aplicando silenciosamente semántica predeterminada por ausencia de SKU o perfil canónico; toda excepción transitoria deberá ser identificable, auditable, regularizable y protegida por pruebas de paridad.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-013` / `H-CODE-013-008` y `H-CODE-013-009`                                                                         | Cantidades interpretadas con una modalidad incorrecta, pérdidas de trazabilidad, duplicidad de productos, despacho erróneo y permanencia indefinida de datos sin regularizar / alta                                                      | contractual + base de datos + migración + regresión / automatizada con validación controlada de datos                                                                       | `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos`                                                                                                                                                                                                                                                                      | Pendiente de asignación en E5 y en el roadmap ejecutable de transición de Supabase                                                                               | `vento-nexo` y `vento-shell` / local, CI, staging y Supabase remoto pendientes                                                                                                                                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-NEXO-002` y `TREQ-NEXO-006`                                                                                                                             |
+| `TREQ-PASS-005`        | `PASS`        | La selección de logos de cada experiencia PASS deberá utilizar `card_logo_url` y `header_logo_url` como contrato canónico; `logo_url` solo podrá funcionar como fallback temporal identificado, y su backfill y retiro deberán preservar paridad visual antes de impedir nuevas escrituras legacy.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-013` / `H-CODE-013-011` y `H-CODE-013-012`                                                                         | Logos incorrectos o ausentes, divergencia visual entre superficies, creación de nuevos datos legacy y retiro prematuro de compatibilidad / alta                                                                                          | contractual + integración + interfaz + regresión / automatizada con validación visual manual                                                                                | `SUPA-TRANS-007 — Definir adaptación coordinada de consumidores`                                                                                                                                                                                                                                                                             | Pendiente de asignación en E5 y en el roadmap ejecutable de transición de Supabase                                                                               | `vento-pass`, `vento-viso` y `vento-shell` / local, CI, staging, builds móviles y dispositivos físicos pendientes                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-PASS-004`                                                                                                                                               |
+| `TREQ-SUPABASE-001`    | `SUPABASE`    | Todo wrapper, alias, columna, vista o fallback legacy todavía activo deberá tener propietario, consumidores, condición de activación, evidencia de uso, prueba de paridad, estrategia de rollback y puerta explícita de retiro antes de modificar o eliminar el contrato heredado.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-013` / `H-CODE-013-003`, `H-CODE-013-005`, `H-CODE-013-007`, `H-CODE-013-011` y `H-CODE-013-013`                   | Eliminación prematura de compatibilidad, pérdida o interpretación incorrecta de datos, consumidores rotos, transiciones irreversibles y permanencia indefinida de fuentes competidoras / crítica                                         | contractual + base de datos + migración + integración + regresión / híbrida                                                                                                 | `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`                                                                                                                                                                                                                                                           | Pendiente de asignación en el roadmap ejecutable de migraciones y en E5                                                                                          | `vento-shell` y todos los repositorios consumidores / local, CI, staging y Supabase remoto pendientes                                                                                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-AUTH-002`, `TREQ-NEXO-007` y `TREQ-PASS-005`                                                                                                            |
+| `TREQ-SHELL-002`       | `SHELL`       | Toda responsabilidad compartida de autenticación, contexto operativo, AppShell, navegación, permisos o dispositivos deberá provenir de una implementación compartida, generada o local explícitamente clasificada; las copias manuales deberán demostrar paridad contractual antes de desplegarse.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-014` / `H-CODE-014-001` y `H-CODE-014-002`                                                                         | Correcciones aplicadas solo en una aplicación, comportamiento divergente, fallos de seguridad y contratos incompatibles entre repositorios / crítica                                                                                     | contractual + integración + regresión / automatizada                                                                                                                        | `SHELL-AUD-001 — Buscar código duplicado entre repositorios`                                                                                                                                                                                                                                                                                 | Pendiente de asignación en el paquete de fundación compartida y E5                                                                                               | `vento-nexo`, `vento-viso`, `vento-fogo`, `vento-origo`, `vento-pulso`, `vento-numera` y `vento-shell` / local, CI y staging pendientes                                                                                  | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `SHELL-AUD-002` a `SHELL-AUD-010`; `SHELL-PKG-001` a `SHELL-PKG-008`                                                                                                          |
+| `TREQ-SHELL-003`       | `SHELL`       | El identificador, nombre, destino, estado, marca y disponibilidad de cada aplicación deberán corresponder a un catálogo canónico único; ningún AppShell, dispositivo compartido o navegación podrá presentar valores divergentes mediante listas locales desactualizadas.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-014` / `H-CODE-014-004` y `H-CODE-014-005`                                                                         | Aplicaciones inexistentes presentadas como activas, URLs incorrectas, estados divergentes y dispositivos autorizados para destinos no disponibles / alta                                                                                 | contractual + estática + integración + regresión / automatizada                                                                                                             | `SHELL-CON-002 — Centralizar códigos de aplicaciones`                                                                                                                                                                                                                                                                                        | Pendiente de asignación en el paquete de contratos compartidos y E5                                                                                              | transversal / repositorios web, CI, staging y dominios desplegados pendientes                                                                                                                                            | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `SHELL-AUD-006`; `SHELL-AUD-009`; `SHELL-CON-011`; relacionado con `TREQ-SHELL-001`                                                                                           |
+| `TREQ-AUTH-004`        | `AUTH`        | Para el mismo principal, actor, simulación, permiso, sede, área y contexto, todos los evaluadores de autorización deberán producir la misma decisión y razones equivalentes; ninguna copia podrá ignorar scopes, agregar cobertura o incorporar excepciones locales no declaradas en el contrato canónico.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | `CODE-AUD-014` / `H-CODE-014-003`                                                                                            | Autorización concedida en una aplicación y denegada en otra, simulaciones inexactas, scopes ignorados y acceso territorial accidental / crítica                                                                                          | contractual + seguridad + autorización + integración + regresión / automatizada                                                                                             | `SHELL-AUD-003 — Comparar helpers de permisos`                                                                                                                                                                                                                                                                                               | Pendiente de asignación en el paquete canónico de autorización y E5                                                                                              | transversal / `vento-nexo`, `vento-fogo`, `vento-viso`, `vento-origo`, `vento-pulso`, CI y staging pendientes                                                                                                            | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `SHELL-AUD-004`; `SHELL-AUD-005`; `AUTH-CTX-030`; relacionado con `TREQ-AUTH-001` y `TREQ-AUTH-002`                                                                           |
+| `TREQ-NEXO-009`        | `NEXO`        | La capacidad de una sede y área para solicitar, preparar, despachar, transportar o recibir remisiones deberá resolverse mediante una jerarquía canónica única y reutilizable; capacidades explícitas, reglas globales, overrides, contexto, permisos y fallbacks deberán producir la misma decisión en interfaz y servidor.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-014` / `H-CODE-014-006`                                                                                            | Sedes habilitadas o bloqueadas incorrectamente, productos visibles que no pueden guardarse, ampliación silenciosa de alcance y diferencias entre trabajador y dispositivo compartido / crítica                                           | contractual + autorización + integración + E2E + regresión / automatizada con validación operativa                                                                          | `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`                                                                                                                                                                                                                                                                              | Pendiente de asignación en el paquete NEXO de remisiones y E5                                                                                                    | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y estación compartida pendientes                                                                                                                               | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `NEXO-UX-010` a `NEXO-UX-013`; `NEXO-AUTH-029`; relacionado con `TREQ-NEXO-006` y `TREQ-NEXO-007`                                                                             |
+| `TREQ-NEXO-010`        | `NEXO`        | Para un mismo producto, sede, presentación y operación, todos los consumidores deberán resolver de forma equivalente la unidad de stock, unidad de entrada, factor de conversión, modalidad de medición, tolerancia, disponibilidad y política de solicitud; ningún flujo podrá inventar una precedencia o fallback incompatible.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `CODE-AUD-014` / `H-CODE-014-007` y `H-CODE-014-008`                                                                         | Cantidades convertidas de forma distinta, presentaciones inconsistentes, stock incorrecto, productos aceptados en una pantalla y rechazados en otra y pérdida de trazabilidad de unidades / crítica                                      | contractual + integración + base de datos + regresión + E2E / automatizada con validación operativa                                                                         | `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`                                                                                                                                                                                                                                                     | Pendiente de asignación en E3, paquete de contratos de producto y E5                                                                                             | `vento-nexo`, `vento-shell`, `vento-fogo` y `vento-origo` / local, CI, staging y Supabase remoto pendientes                                                                                                              | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `CAP-SCOPE-004`; `CAP-SCOPE-006`; relacionado con `TREQ-NEXO-008`                                                                                                             |
+| `TREQ-PASS-006`        | `PASS`        | Una experiencia comercial deberá resolver el mismo `site_id`, marca, dirección, coordenadas, enlaces, recompensas e historial independientemente de la ruta utilizada; las experiencias estáticas y dinámicas deberán converger y las rutas reemplazadas no podrán permanecer accesibles sin una decisión explícita de compatibilidad.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `CODE-AUD-014` / `H-CODE-014-010`, `H-CODE-014-011` y `H-CODE-014-012`                                                       | Clientes vinculados a una sede incorrecta, historial incompleto, recompensas divergentes, información comercial inconsistente y mantenimiento duplicado de experiencias / alta                                                           | contractual + integración + interfaz + E2E + regresión / automatizada con validación móvil                                                                                  | `PASS-UX-001 — Inventariar pantallas actuales de cliente`                                                                                                                                                                                                                                                                                    | Pendiente de asignación en el paquete de convergencia de experiencias PASS y E5                                                                                  | `vento-pass`, `vento-viso` y `vento-shell` / local, CI, staging, builds móviles y dispositivos físicos pendientes                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `PASS-UX-002`; `PASS-UX-003`; `PASS-UX-006`; relacionado con `TREQ-PASS-004` y `TREQ-PASS-005`                                                                                |
+| `TREQ-SUPABASE-002`    | `SUPABASE`    | Toda operación de inventario que afecte ledger, stock por sede, stock por LOC, stock por posición, costos o eventos derivados deberá ejecutarse atómicamente o mediante un mecanismo idempotente y reconciliable; un fallo intermedio no podrá dejar representaciones mutuamente inconsistentes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-014` / `H-CODE-014-009`                                                                                            | Movimientos sin stock equivalente, proyecciones divergentes, reintentos duplicados, costos inconsistentes y pérdida de capacidad para reconstruir la existencia real / crítica                                                           | base de datos + RPC + concurrencia + idempotencia + integración + regresión / automatizada                                                                                  | `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`                                                                                                                                                                                                                                                     | Pendiente de asignación en E3, roadmap ejecutable de migraciones y E5                                                                                            | `vento-shell` y `vento-nexo` / Supabase local, CI, staging y remoto pendientes                                                                                                                                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `SUPA-AUD-022`; `SUPA-AUD-023`; `CODE-AUD-018`; relacionado con `TREQ-SUPABASE-001`                                                                                           |
+| `TREQ-SHELL-004`       | `SHELL`       | Ninguna ruta, componente, función, script o endpoint podrá retirarse por “no usado” sin evidencia reproducible que cubra imports estáticos y dinámicos, convenciones de framework, navegación, registros en base de datos, scripts, CI, consumidores externos y ambientes; el retiro deberá superar build, typecheck, lint y pruebas aplicables.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-015` / `H-CODE-015-001`, `H-CODE-015-004`, `H-CODE-015-006`, `H-CODE-015-008`, `H-CODE-015-009` y `H-CODE-015-018` | Eliminación de capacidades utilizadas indirectamente, ruptura de rutas o integraciones, pérdida de rollback y permanencia de código muerto por falta de clasificación / alta                                                             | contractual + estática + integración + regresión / automatizada con revisión controlada                                                                                     | `SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados`                                                                                                                                                                                                                       | Pendiente de asignación en el paquete de saneamiento transversal y E5                                                                                            | transversal / repositorios, CI, staging y ambientes desplegados pendientes                                                                                                                                               | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-SHELL-002` y `TREQ-SUPABASE-003`                                                                                                                        |
+| `TREQ-PASS-007`        | `PASS`        | El retorno de pago y el seguimiento de un pedido deberán abrir una única experiencia canónica; cualquier pantalla alternativa deberá integrarse con paridad demostrada o retirarse, y ninguna cadena transitivamente huérfana podrá permanecer como implementación paralela sin decisión explícita.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `CODE-AUD-015` / `H-CODE-015-006` y `H-CODE-015-007`                                                                         | Estados de pedido divergentes, PIN o información de entrega ausentes, retorno de pago dirigido a una pantalla incorrecta y mantenimiento duplicado / alta                                                                                | contractual + integración + E2E + regresión / automatizada con validación móvil                                                                                             | `PASS-UX-001 — Inventariar pantallas actuales de cliente`                                                                                                                                                                                                                                                                                    | Pendiente de asignación en el paquete de convergencia de pedidos PASS y E5                                                                                       | `vento-pass` / local, CI, staging, deep links, builds móviles y dispositivos físicos pendientes                                                                                                                          | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | Relacionado con `TREQ-PASS-006` y `TREQ-INTEGRATION-001`                                                                                                                      |
+| `TREQ-SUPABASE-003`    | `SUPABASE`    | Ninguna tabla, vista, función, RPC, trigger, política, publicación o bucket podrá eliminarse o declararse operativo sin un mapa verificable de propietario, consumidores actuales, consumidores históricos, dependencias SQL, consumidores externos, datos existentes, reemplazo, estrategia de rollback y puerta de retiro.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `CODE-AUD-015` / `H-CODE-015-005`, `H-CODE-015-011`, `H-CODE-015-012`, `H-CODE-015-016` y `H-CODE-015-017`                   | Eliminación de objetos todavía utilizados, conservación indefinida de infraestructura sin proceso, datos huérfanos, consumidores rotos y drift entre repositorio, prototipos históricos y remoto / crítica                               | contractual + base de datos + migración + integración + regresión / híbrida                                                                                                 | `SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales`                                                                                                                                                                                                                           | Pendiente de asignación en E3, roadmap ejecutable de transición y E5                                                                                             | `vento-shell`, `vento-platform` y repositorios consumidores / Supabase local, CI, staging, remoto e integraciones externas pendientes                                                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `SUPA-AUD-023`; relacionado con `TREQ-SUPABASE-001`, `TREQ-SUPABASE-002`, `TREQ-PULSO-001` y `TREQ-NEXO-004`                                                                  |
+| `TREQ-PULSO-003`       | `PULSO`       | Ninguna tabla, acción, función, RPC, estado, cálculo, componente o flujo del prototipo POS histórico podrá incorporarse al POS objetivo por su sola existencia; cada pieza deberá demostrar ajuste al proceso aprobado, contrato canónico, seguridad, atomicidad, idempotencia, concurrencia, recuperación, auditoría, integraciones y pruebas, o deberá adaptarse, reemplazarse o descartarse.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-015` / `H-CODE-015-010` a `H-CODE-015-017`                                                                         | Heredar un modelo incompleto, reproducir errores históricos, conservar contratos divergentes, pagos o inventarios inconsistentes y limitar prematuramente la arquitectura del POS integral / crítica                                     | contractual + seguridad + base de datos + integración + concurrencia + idempotencia + E2E + regresión / híbrida                                                             | `PULSO-UX-020 — Auditar el prototipo POS histórico de vento-platform y clasificar cada pieza como reutilizable, adaptable o descartable`                                                                                                                                                                                                     | Pendiente de asignación en el paquete de arquitectura PULSO y E5                                                                                                 | `vento-platform`, `vento-pulso`, `vento-shell`, `vento-nexo`, `vento-numera` y `vento-pass` / histórico, local, CI, staging y terminales físicas pendientes                                                              | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                                                    | `PULSO-UX-021`; relacionado con `TREQ-PULSO-001`, `TREQ-PULSO-002` y `TREQ-SUPABASE-003`                                                                                      |
+| `TREQ-AUTH-005`        | `AUTH`        | La activación de una invitación laboral deberá tomar rol, sede, identidad y alcance exclusivamente de una invitación persistida, pendiente, vigente y vinculada al actor; ningún valor enviado por el cliente o contenido en metadatos autoadministrables podrá elevar, sustituir o ampliar esa asignación.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-017` / `H-CODE-017-001`                                                                                            | Escalamiento de privilegios, creación de trabajador con rol o sede no autorizados y toma de control administrativo / crítica                                                                                                             | seguridad + autorización + RPC + integración + regresión / automatizada                                                                                                     | `AUTH-SRV-004 — Eliminar confianza exclusiva en la interfaz`; `ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`; `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`                                                                                                                         | Pendiente de asignación prioritaria en E5; contención obligatoria antes de ampliar invitaciones                                                                  | `vento-shell`, `vento-anima` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                                      | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `staff-invitations-accept` y metadatos remotos                                                                                                                                                                         | `TREQ-AUTH-001`, `TREQ-AUTH-002`                                                                                                                                              |
+| `TREQ-AUTH-006`        | `AUTH`        | Los datos de identidad de cliente deberán separar campos autoadministrables, campos protegidos y proyecciones por proceso; un usuario no podrá modificar saldo, rol, estado u otros campos privilegiados, y el personal solo recibirá los campos mínimos autorizados para la acción y sede correspondientes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `CODE-AUD-017` / `H-CODE-017-002`, `H-CODE-017-003`                                                                          | Alteración de saldo o identidad, exposición de documento, teléfono, correo y fecha de nacimiento, y consulta masiva sin necesidad operacional / crítica                                                                                  | seguridad + privacidad + RLS + contractual + regresión / automatizada                                                                                                       | `PASS-INT-004 — Definir administración laboral de clientes cuando corresponda`; `AUTH-SRV-005 — Validar permiso en cada escritura`; `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`; `AUTH-DB-004 — Reducir grants innecesarios de authenticated`                                                        | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-pass`, `vento-pulso`, `vento-shell` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas y grants de `public.users`; proyección de identificación PULSO                                                                                                                                                                     | `TREQ-AUTH-001`, `TREQ-PASS-008`                                                                                                                                              |
+| `TREQ-AUTH-007`        | `AUTH`        | Toda administración de roles operativos, perfiles de trabajador, permisos y disponibilidad por sede o área deberá validar una capacidad administrativa explícita y limitar cada fila al territorio autorizado del actor; el rol `gerente` no concederá administración global por sí solo.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-017` / `H-CODE-017-014`                                                                                            | Modificación transversal de seguridad, asignación indebida de roles y permisos y afectación de sedes ajenas / crítica                                                                                                                    | seguridad + autorización + RLS + territorial + regresión / automatizada                                                                                                     | `VISO-AUTH-019 — Restringir quién administra seguridad`; `AUTH-SRV-006 — Validar sede en cada escritura`; `AUTH-SRV-012 — Evitar operaciones entre sedes no autorizadas`; `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`                                                                                | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-viso`, `vento-shell` y Supabase VENTO / CI y staging                                                                                                                                                              | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de perfiles, roles por sede y permisos operativos                                                                                                                                                                                  | `TREQ-AUTH-001`, `TREQ-AUTH-004`                                                                                                                                              |
+| `TREQ-PASS-008`        | `PASS`        | La acumulación, gasto, ajuste, reversión y redención de puntos deberán ejecutarse únicamente mediante contratos de servidor autorizados, atómicos e idempotentes; el cliente no podrá insertar el ledger ni fijar el saldo, y la validación de un canje deberá limitarse por permiso, sede, estado y actor.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-017` / `H-CODE-017-004`, `H-CODE-017-005`, `H-CODE-017-006`                                                        | Creación fraudulenta de puntos, saldo inconsistente, doble gasto, redenciones huérfanas y validación fuera de sede / crítica                                                                                                             | seguridad + RPC + base de datos + concurrencia + idempotencia + E2E / automatizada                                                                                          | `PULSO-AUTH-009 — Proteger acumulación de puntos`; `PULSO-AUTH-010 — Proteger redenciones`; `PASS-INT-001 — Definir integración PULSO → PASS para acumulación`; `PASS-INT-002 — Definir integración PULSO → PASS para redención`                                                                                                             | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-pass`, `vento-pulso`, `vento-shell` y Supabase VENTO / CI, staging y terminal POS                                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de `pass.loyalty_transactions` y `loyalty_redemptions`; trigger de saldo; flujo cliente de redención                                                                                                                               | `TREQ-PULSO-001`, `TREQ-AUTH-006`                                                                                                                                             |
+| `TREQ-PULSO-004`       | `PULSO`       | Toda mutación de pedidos y líneas deberá realizarse mediante una acción nombrada que valide permiso, sede, estado de origen, transición y columnas permitidas; el acceso general de un trabajador a una sede no podrá autorizar cambios directos sobre pago, total, fidelización, inventario, anulación, despacho o precio.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-017` / `H-CODE-017-013`                                                                                            | Manipulación de pagos, precios, estados, inventario o fidelización y transiciones imposibles o no auditadas / crítica                                                                                                                    | seguridad + autorización + RPC + transición de estados + regresión / automatizada                                                                                           | `PULSO-AUTH-006 — Definir permisos de cajero`; `PULSO-AUTH-007 — Definir permisos de supervisor`; `PULSO-AUTH-008 — Definir permisos de cierre y anulación`; `AUTH-SRV-011 — Validar estado actual de la entidad`                                                                                                                            | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-pulso`, `vento-pass`, `vento-shell` y Supabase VENTO / CI, staging y terminal POS                                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de `public.orders` y `public.order_items`                                                                                                                                                                                          | `TREQ-PULSO-001`, `TREQ-PULSO-003`                                                                                                                                            |
+| `TREQ-ORIGO-002`       | `ORIGO`       | Cada orden de compra deberá limitar lectura y mutación por permiso, sede o centro de costo, estado y columnas; cualquier documento externo para proveedor deberá usar un token obligatorio, scoped, de corta duración, revocable y generado con un secreto sin fallback, sin exponer datos internos adicionales.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-017` / `H-CODE-017-011`, `H-CODE-017-012`                                                                          | Lectura, aprobación, modificación o eliminación de compras fuera de alcance y falsificación de enlaces públicos con acceso privilegiado / crítica                                                                                        | seguridad + autorización + RLS + token firmado + integración + regresión / automatizada                                                                                     | `ORIGO-AUTH-004 — Definir permisos de consulta`; `ORIGO-AUTH-006 — Definir permisos de aprobación`; `ORIGO-AUTH-009 — Limitar órdenes por sede o centro de costo`; `ORIGO-AUTH-010 — Proteger precios y datos sensibles`                                                                                                                     | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-origo`, `vento-shell` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                                      | `IDENTIFICADO` | Pendiente | Pendiente        | Política `employees_crud_purchase_orders`; ruta y helper de PDF público                                                                                                                                                                      | `TREQ-ORIGO-001`, `TREQ-AUTH-001`                                                                                                                                             |
+| `TREQ-SUPABASE-004`    | `SUPABASE`    | Todo archivo o metadato documental sensible deberá residir en almacenamiento privado y solo podrá consultarse mediante permiso explícito, relación con el actor o recurso y acceso temporal auditable; pertenecer a la misma sede o conocer una ruta no deberá conceder acceso.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-017` / `H-CODE-017-007`, `H-CODE-017-008`                                                                          | Exposición de documentos laborales, descarga anónima, acceso lateral entre trabajadores y ausencia de trazabilidad / crítica                                                                                                             | seguridad + privacidad + Storage + RLS + integración + regresión / automatizada con revisión manual                                                                         | `EVID-ARC-003 — Definir clasificación de sensibilidad`; `EVID-ARC-007 — Definir acceso temporal y URLs firmadas`; `EVID-ARC-008 — Definir auditoría de consulta y modificación`; `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`                                                                              | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-anima`, `vento-viso`, `vento-shell`, Storage VENTO / CI, staging y producción no mutante                                                                                                                          | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de `public.documents` y bucket `documents`                                                                                                                                                                                         | `TREQ-AUTH-006`, `TREQ-SUPABASE-003`                                                                                                                                          |
+| `TREQ-SUPABASE-005`    | `SUPABASE`    | Toda vista, función o RPC expuesta al Data API deberá aplicar mínimo privilegio: `security_invoker` cuando corresponda, `search_path` fijo, grants mínimos y autorización interna por actor, permiso y alcance; precios internos, configuración administrativa y elegibilidad de actores no podrán quedar disponibles para `anon` sin contrato público aprobado.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-017` / `H-CODE-017-009`, `H-CODE-017-010`                                                                          | Exposición de configuración, identidad de dispositivos, precios internos y metadatos empresariales; bypass de RLS por propietario / crítica                                                                                              | seguridad + RLS + RPC + contractual + regresión / automatizada                                                                                                              | `SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API`; `SUPA-AUD-007 — Inventariar funciones SECURITY DEFINER y SECURITY INVOKER`; `SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon` | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-shell` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                                                     | `IDENTIFICADO` | Pendiente | Pendiente        | Vistas administrativas y RPC ejecutables por `anon`                                                                                                                                                                                          | `TREQ-SUPABASE-003`, `TREQ-AUTH-003`                                                                                                                                          |
+| `TREQ-SUPABASE-006`    | `SUPABASE`    | Toda Edge Function con `verify_jwt=false` deberá declarar una razón aprobada y aplicar un control propio obligatorio y fail-closed; la ausencia de secreto, firma, token o identidad deberá bloquear la ejecución antes de crear un cliente `service_role` o leer y mutar datos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `CODE-AUD-017` / `H-CODE-017-015`, `H-CODE-017-016`, revisión de las doce funciones sin JWT                                  | Ejecución anónima de jobs privilegiados, envío masivo, lectura transversal y mutaciones con service role / crítica                                                                                                                       | seguridad + Edge Function + contractual + integración + regresión / automatizada                                                                                            | `SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones`; `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon`                                               | Pendiente de asignación prioritaria en E5                                                                                                                        | `vento-shell`, Edge Functions VENTO / CI, staging y producción no mutante                                                                                                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | `document-alerts`, `shift-runtime-processor` y matriz de funciones sin JWT                                                                                                                                                                   | `TREQ-INTEGRATION-001`, `TREQ-SUPABASE-003`                                                                                                                                   |  | `TREQ-ANIMA-003` | `ANIMA` | Una marcación offline solo podrá presentarse como encolada después de confirmar su persistencia durable en el dispositivo. La intención deberá obtener un `client_event_id` estable antes del primer envío, conservar actor, sede, turno, instante, geolocalización y contexto, sobrevivir al cierre y reinicio de la aplicación y sincronizarse sin producir más de un efecto. El replay del mismo evento y contenido deberá devolver el resultado ya aplicado; el mismo identificador con contenido distinto deberá producir conflicto. La ausencia o incompatibilidad del contrato canónico de sincronización no podrá degradarse silenciosamente a una escritura alternativa sin paridad demostrada. | `CODE-AUD-018` / `H-CODE-018-001` y `H-CODE-018-003` | Pérdida silenciosa de marcaciones, confirmación falsa al trabajador, duplicación al reintentar, divergencia entre ambientes y asistencia no reconstruible / crítica | integración + base de datos + idempotencia + recuperación + E2E + regresión / automatizada con validación en dispositivo móvil | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `SUPA-TRANS-006`; `NFR-REQ-004` | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de sincronización offline de ANIMA; cualquier migración o contrato de Supabase deberá quedar documentado y creado en `vento-shell` | `vento-anima` y `vento-shell` / CI, Supabase local, staging, Android e iOS físicos; escenarios de cierre forzado, reinicio, pérdida de red, respuesta perdida y replay pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Evidencia estática en `queue-storage.ts`, `queue-sync.ts`, `use-attendance.ts`, `sync_attendance_events` e índice único por `client_event_id` | `TREQ-ANIMA-004`; `TREQ-SUPABASE-001`; `TREQ-INTEGRATION-003` |
+| `TREQ-ANIMA-004`       | `ANIMA`       | El inicio y cierre de descanso deberán utilizar un identificador idempotente persistido y procesarse mediante una transición de servidor atómica sobre el estado de asistencia correspondiente. Dos dispositivos, replays, respuestas perdidas o eventos fuera de orden no podrán crear dos descansos, cerrar un descanso distinto ni dejar el estado local y remoto divergentes. La operación deberá devolver un resultado estable `applied`, `duplicate` o `conflict`, conservar el evento original y permitir reconciliación auditable.                                                                                                                                                                                                                                                                                                                                    | `CODE-AUD-018` / `H-CODE-018-002`                                                                                            | Descansos duplicados, cierres incorrectos, secuencias imposibles, tiempos laborales erróneos y divergencia entre dispositivos / alta                                                                                                     | RPC + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con ejecución concurrente y replay                                         | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                                                                                                                                                                                                                                          | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de asistencia y descansos de ANIMA; toda migración o función deberá quedar en `vento-shell` | `vento-anima` y `vento-shell` / CI, Supabase local, staging y dos dispositivos o sesiones concurrentes pendientes                                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `break-rpc.ts`, `queue-decisions.ts`, `queue-sync.ts`, `start_attendance_break` y `end_attendance_break`; el `clientEventId` se conserva en notas sin deduplicación contractual demostrada                             | `TREQ-ANIMA-003`; `TREQ-INTEGRATION-003`                                                                                                                                      |
+| `TREQ-PASS-009`        | `PASS`        | La creación de intentos de pago y el procesamiento de webhooks deberán resistir solicitudes concurrentes, duplicadas, tardías y fuera de orden. Para una misma transacción e `idempotency_key`, las solicitudes concurrentes deberán converger en un único intento y resultado estable. Cada evento del proveedor deberá reclamarse de forma atómica antes de aplicar efectos; un replay no podrá confirmar, cancelar, reembolsar ni registrar dos veces una orden o transacción. Un evento tardío no podrá retroceder un estado terminal válido y toda ambigüedad deberá quedar pendiente de conciliación auditable.                                                                                                                                                                                                                                                         | `CODE-AUD-018` / `H-CODE-018-006` y `H-CODE-018-007`                                                                         | Múltiples URLs o intentos para una misma transacción, doble aplicación de pagos, regresión de estados, pedidos confirmados o cancelados incorrectamente y conciliación incompleta / crítica                                              | seguridad + RPC + webhook + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con sandbox del proveedor                            | `INT-EXT-010`; `INT-EXT-012`; `INT-EXT-015`; `SUPA-ARC-020`; `SUPA-AUD-014`; `PASS-QA-002`                                                                                                                                                                                                                                                   | Pendiente de asignación prioritaria en E5, en el paquete de pagos PASS y en el roadmap ejecutable de migraciones y Edge Functions de `vento-shell`               | `vento-pass` y `vento-shell` / CI, Supabase local, staging, Edge Functions y sandbox Wompi; carreras, replay, retraso y orden invertido pendientes                                                                       | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `payments-create-intent`, `payments-webhook`, `checkout_payment_rpc` y `payment_webhook_and_reconciliation`; existen referencia y registro de eventos, pero el claim y el efecto no forman una única unidad demostrada | `TREQ-PASS-008`; `TREQ-INTEGRATION-003`; `TREQ-SUPABASE-005`; `TREQ-SUPABASE-006`                                                                                             |
+| `TREQ-ORIGO-003`       | `ORIGO`       | Una recepción deberá tratar como una sola operación empresarial la cabecera, líneas, movimientos, stock por sede, LOC y posición, costos, eventos de costo, cantidades recibidas de la orden, estado de la orden, solicitudes de maestro de datos, firma y auditoría. Todos los efectos deberán confirmarse atómicamente o quedar en un estado durable, identificable y reconciliable. La operación deberá recibir una clave idempotente estable; su replay no podrá crear una segunda recepción ni volver a sumar inventario, costo o cantidades recibidas. Una corrección no podrá reversar definitivamente la recepción original sin garantizar la creación y vinculación de su reemplazo.                                                                                                                                                                                 | `CODE-AUD-018` / `H-CODE-018-009`                                                                                            | Recepciones parciales o duplicadas, stock y costos divergentes, órdenes recibidas varias veces, reversión sin reemplazo, auditoría incompleta y hechos financieros inconsistentes / crítica                                              | base de datos + RPC + concurrencia + idempotencia + integración + E2E + regresión / automatizada con validación operativa controlada                                        | `ORIGO-UX-009`; `ORIGO-UX-010`; `ORIGO-UX-014`; `ORIGO-UX-016`; `INT-PROC-002`; `INT-PROC-003`; `INT-PROC-005`; `SUPA-AUD-019`; `SUPA-AUD-023`                                                                                                                                                                                               | Pendiente de asignación prioritaria en E5, en el paquete ORIGO de recepción y en el roadmap ejecutable de migraciones de Supabase documentado en `vento-shell`   | `vento-origo`, `vento-shell`, `vento-nexo` y `vento-numera` / Supabase local, CI, staging y recepción operativa controlada; fallos inyectados después de cada escritura, doble envío y corrección concurrente pendientes | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `receipts/new/page.tsx`: creación de entrada, líneas, movimientos, proyecciones, costos, orden, solicitudes y corrección mediante escrituras secuenciales con retornos intermedios                                     | `TREQ-ORIGO-001`; `TREQ-SUPABASE-002`; `TREQ-INTEGRATION-003`                                                                                                                 |
+| `TREQ-INTEGRATION-003` | `INTEGRATION` | Toda operación asíncrona, reintentable, encolada, enviada a un periférico o recibida mediante webhook deberá obtener antes del primer envío una clave estable de operación, hash del contenido lógico, recurso y versión afectados, estado durable y resultado recuperable. El mismo identificador con el mismo contenido no podrá producir más de un efecto y deberá devolver el resultado original; el mismo identificador con contenido distinto deberá producir conflicto. Los reintentos deberán depender de códigos canónicos, aplicar backoff con jitter, límites de intentos y edad, respetar `Retry-After` cuando exista y distinguir timeout con resultado desconocido. Las fronteras deberán usar outbox, inbox, claim atómico, bloqueo, versión o mecanismo equivalente, además de observabilidad, conciliación, cola de fallos y recuperación manual controlada. | `CODE-AUD-018` / `H-CODE-018-004`, `H-CODE-018-007` y `H-CODE-018-012` a `H-CODE-018-015`                                    | Duplicación o pérdida de efectos entre aplicaciones, reintentos infinitos, carreras distribuidas, eventos fuera de orden, estados desconocidos, webhooks o jobs aplicados varias veces y operaciones imposibles de reconciliar / crítica | contractual + integración + colas + webhook + RPC + concurrencia + idempotencia + recuperación + E2E + regresión / automatizada con procedimientos híbridos de contingencia | `TSVC-CAT-006`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `SHELL-CON-023`; `SUPA-ARC-020`; `SUPA-AUD-014`; `INT-APP-004`; `INT-APP-008`; `INT-DB-005`; `INT-DB-007`; `NFR-REQ-002`; `NFR-REQ-004`; `NFR-REQ-009`                                                                                                                                    | Pendiente de asignación transversal en E3, arquitectura de colas e integraciones, roadmap ejecutable de Supabase y paquetes E5 de cada dominio consumidor        | Transversal / `vento-shell`, aplicaciones consumidoras, Supabase local, CI, staging, Edge Functions, cron, webhooks, colas, dispositivos y periféricos pendientes                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia transversal de `CODE-AUD-018` en ANIMA, PASS, NEXO y ORIGO; no existe todavía un registro canónico único de idempotencia, clasificación de errores, outbox o inbox compartidos                                                     | `TREQ-ANIMA-003`; `TREQ-ANIMA-004`; `TREQ-PASS-009`; `TREQ-ORIGO-003`; `TREQ-NEXO-005`; `TREQ-NEXO-006`; `TREQ-SUPABASE-001`; `TREQ-SUPABASE-002`                             |
+
 
 ### Reglas obligatorias
 
@@ -176707,6 +184703,7 @@ SUBBLOQUE F2 — Experiencia funcional de ANIMA
 ### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
 ### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
 ### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
 
 ## BLOQUE G
 
@@ -176816,6 +184813,7 @@ ORIGO, PULSO, NUMERA, PASS o AURA
 ### [ ] SHELL-AUD-008 — Comparar clientes Supabase
 ### [ ] SHELL-AUD-009 — Comparar tipos y contratos
 ### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
 Arquitectura de paquetes
 ### [ ] SHELL-PKG-001 — Elegir mecanismo de distribución
 ### [ ] SHELL-PKG-002 — Definir versionado semántico
@@ -177435,6 +185433,8 @@ SUBBLOQUE N2 — Procesos y experiencia de PULSO
 ### [ ] PULSO-UX-017 — Conectar venta con NUMERA
 ### [ ] PULSO-UX-018 — Conectar venta con PASS
 ### [ ] PULSO-UX-019 — Validar el prototipo con caja, salón, barra, cocina y mostrador
+### [ ] PULSO-UX-020 — Auditar el prototipo POS histórico de vento-platform y clasificar cada pieza como reutilizable, adaptable o descartable
+### [ ] PULSO-UX-021 — Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como contrato el prototipo histórico
 ### TAREA POS DERIVADA DE OPS-AUD-001
 
 ### [ ] OPS-POS-001 — Definir zonas físicas, mesas y puntos de servicio del POS por sede

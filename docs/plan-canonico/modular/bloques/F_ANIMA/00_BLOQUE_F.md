@@ -43,4 +43,5 @@ SUBBLOQUE F2 — Experiencia funcional de ANIMA
 ### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
 ### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
 ### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
 
