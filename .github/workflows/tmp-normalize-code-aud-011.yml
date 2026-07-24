@@ -47,33 +47,34 @@ jobs:
           if req_start < 0 or decisions < 0:
               raise SystemExit('Expected duplicated requirements sections not found')
 
-          clean_requirements = '''#### 12. Requisitos de prueba derivados
-
-**Resultado:** GENERA REQUISITOS DE PRUEBA
-
-Requisitos nuevos derivados:
-
-- `TREQ-SHELL-001`;
-- `TREQ-NEXO-004`;
-- `TREQ-PULSO-001`.
-
-Requisitos reutilizados:
-
-- `TREQ-NEXO-003`;
-- `TREQ-AUTH-001`;
-- `TREQ-AUTH-002`.
-
-Las definiciones completas, estados, responsables, ambientes y evidencias de estos requisitos existen únicamente en:
-
-```text
-docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
-```
-
-No se duplican filas completas del Registro Canónico dentro de esta tarea.
-
----
-
-'''
+          clean_requirements = '\n'.join([
+              '#### 12. Requisitos de prueba derivados',
+              '',
+              '**Resultado:** GENERA REQUISITOS DE PRUEBA',
+              '',
+              'Requisitos nuevos derivados:',
+              '',
+              '- `TREQ-SHELL-001`;',
+              '- `TREQ-NEXO-004`;',
+              '- `TREQ-PULSO-001`.',
+              '',
+              'Requisitos reutilizados:',
+              '',
+              '- `TREQ-NEXO-003`;',
+              '- `TREQ-AUTH-001`;',
+              '- `TREQ-AUTH-002`.',
+              '',
+              'Las definiciones completas, estados, responsables, ambientes y evidencias de estos requisitos existen únicamente en:',
+              '',
+              '```text',
+              'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md',
+              '```',
+              '',
+              'No se duplican filas completas del Registro Canónico dentro de esta tarea.',
+              '',
+              '---',
+              '',
+          ])
           block = block[:req_start] + clean_requirements + block[decisions:]
           block = block.replace('#### 14. Decisiones propuestas', '#### 13. Decisiones aprobadas', 1)
           block = block.replace('#### 15. Límites de certeza', '#### 14. Límites de certeza', 1)
