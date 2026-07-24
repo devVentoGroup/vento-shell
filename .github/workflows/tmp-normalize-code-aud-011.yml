@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   normalize:
-    if: github.head_ref == 'trigger-code-aud-011-normalization'
+    if: startsWith(github.head_ref, 'trigger-code-aud-011-normalization')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -121,4 +121,3 @@ No se duplican filas completas del Registro Canónico dentro de esta tarea.
           git add -A
           git commit -m 'docs(e1): normalize CODE-AUD-011 and QA registry'
           git push origin main
-          git push origin --delete trigger-code-aud-011-normalization || true
