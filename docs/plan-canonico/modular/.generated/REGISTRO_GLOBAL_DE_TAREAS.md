@@ -210,12 +210,6 @@
 | ⬜ NO INICIADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-004` | Evaluar catálogo, productos, presentaciones, unidades, menús y recetas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-005` | Evaluar compras, proveedores, contratos, precios y abastecimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
@@ -348,6 +342,12 @@
 | ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |

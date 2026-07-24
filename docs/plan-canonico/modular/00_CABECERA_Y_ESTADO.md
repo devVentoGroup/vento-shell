@@ -32,7 +32,7 @@
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 43 de 97 aprobadas; CODE-AUD-007 pendiente; EXT-GOV-001 condicional y no bloqueante** |
+| Progreso del bloque | **BLOQUE E1: 43 de 96 aprobadas; CODE-AUD-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **43 DE 97 APROBADAS — ACTUAL CODE-AUD-007** |
+| BLOQUE E1 | **43 DE 96 APROBADAS — ACTUAL CODE-AUD-007** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -96,6 +96,5 @@ SIGUIENTE TAREA RESERVADA
 CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 43 de 97 tareas aprobadas
-EXT-GOV-001 — condicional, paralela y no bloqueante
+BLOQUE E1 — 43 de 96 tareas aprobadas
 ```

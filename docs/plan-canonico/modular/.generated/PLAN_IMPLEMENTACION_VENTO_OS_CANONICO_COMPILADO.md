@@ -12,8 +12,8 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión | 2026-07-23 |
-| Revisión documental | **56** |
+| Versión | 2026-07-24 |
+| Revisión documental | **57** |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
@@ -25,14 +25,14 @@
 | Tareas no iniciadas | **1208** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
-| Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
+| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos** |
 | Tarea actual | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 43 de 102 aprobadas; CODE-AUD-007 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 43 de 96 aprobadas; CODE-AUD-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **43 DE 102 APROBADAS — ACTUAL CODE-AUD-007** |
+| BLOQUE E1 | **43 DE 96 APROBADAS — ACTUAL CODE-AUD-007** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -96,7 +96,7 @@ SIGUIENTE TAREA RESERVADA
 CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 43 de 102 tareas aprobadas
+BLOQUE E1 — 43 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -124,20 +124,21 @@ BLOQUE E1 — 43 de 102 tareas aprobadas
 3. No implementar código, migraciones ni cambios en Supabase,
    salvo que la tarea lo ordene expresamente.
 
-4. Cada tarea `AUTH-*` deberá entregarse como un archivo Markdown
-   descargable e independiente que contenga exclusivamente el bloque
-   completo de la tarea desarrollada.
+4. Cada tarea documental desarrollada, independientemente de su prefijo
+   (`AUTH-*`, `OPS-*`, `CAP-*`, `CODE-*`, `GAP-*` u otro identificador
+   canónico), deberá entregarse como un archivo Markdown descargable e
+   independiente que contenga exclusivamente el bloque completo de la tarea.
 
    El archivo deberá estar listo para reemplazar el marcador o bloque
    correspondiente dentro del documento canónico.
 
    Convención obligatoria de nombre:
 
-   `AUTH-<BLOQUE>-<NÚMERO>_PROPUESTA_PARA_REEMPLAZAR.md`
+   `<ID-DE-TAREA>_PROPUESTA_PARA_REEMPLAZAR.md`
 
    Ejemplo:
 
-   `AUTH-CAT-018_PROPUESTA_PARA_REEMPLAZAR.md`
+   `CODE-AUD-007_PROPUESTA_PARA_REEMPLAZAR.md`
 
    En el mensaje del chat deberá incluirse únicamente:
 
@@ -163,13 +164,18 @@ BLOQUE E1 — 43 de 102 tareas aprobadas
    El archivo deberá ser Markdown plano codificado en UTF-8 y utilizar
    la extensión `.md`.
 
+   El archivo entregado es un artefacto transitorio de revisión y reemplazo.
+   No convierte la tarea en un fragmento canónico individual. Durante la
+   consolidación, el contenido aprobado deberá insertarse dentro del archivo
+   lógico propietario definido por la arquitectura modular.
+
 5. Toda tarea nueva inicia con:
 
    **PROPUESTA PARA APROBACIÓN**
 
    Mientras permanezca en propuesta deberá utilizar dentro del archivo:
 
-   `### 🟡 AUTH-...`
+   `### 🟡 <ID-DE-TAREA> — <TÍTULO>`
 
    El archivo deberá contener toda la definición sustantiva necesaria
    para evaluar y aprobar la tarea, sin depender de explicaciones
@@ -201,7 +207,7 @@ BLOQUE E1 — 43 de 102 tareas aprobadas
    - cuando una aprobación requiera corregir el contenido sustantivo
      del archivo, deberá entregarse un nuevo archivo llamado:
 
-     `AUTH-<BLOQUE>-<NÚMERO>_APROBADA_PARA_REEMPLAZAR.md`
+     `<ID-DE-TAREA>_APROBADA_PARA_REEMPLAZAR.md`
 
    La versión aprobada deberá conservar íntegramente las decisiones
    aceptadas y no incluir tareas adicionales.
@@ -607,7 +613,7 @@ Reglas obligatorias:
 
 **Autorización, capacidades, operación, datos, procesos, pantallas, integraciones y experiencia Vento**
 
-Este roadmap cubre las diez aplicaciones canónicas del ecosistema:
+Este roadmap contempla once aplicaciones canónicas actuales, futuras o diferidas del ecosistema:
 
 shell
 anima
@@ -617,6 +623,7 @@ fogo
 origo
 pulso
 numera
+talento
 aura
 pass
 
@@ -632,7 +639,8 @@ origo
 pulso
 numera
 
-APLICACIÓN LABORAL DIFERIDA
+APLICACIONES LABORALES FUTURAS O DIFERIDAS
+talento
 aura
 
 APLICACIÓN ADYACENTE DEL DOMINIO CLIENTE
@@ -648,10 +656,14 @@ vento-fogo
 vento-origo
 vento-pulso
 vento-numera
+vento-talento
 vento-pass
 
-AURA deberá auditarse antes de confirmar su repositorio propietario,
-su continuidad o su implementación futura.
+TALENTO conserva un repositorio técnico y una base remota parcial, pero su
+alcance funcional objetivo se diseñará en E2 antes de autorizar implementación.
+
+AURA no tiene repositorio ni implementación funcional confirmada. Deberá
+mantenerse diferida hasta decidir formalmente su continuidad, reemplazo o retiro.
 
 Separación obligatoria:
 
@@ -676,6 +688,11 @@ VISO
 ANIMA
 → consulta turnos, registra asistencia e inicia o termina
   el contexto operativo cuando corresponda
+
+TALENTO
+→ administra la experiencia previa a la vinculación laboral: vacantes,
+  postulaciones, expediente progresivo, evaluación, decisión y traspaso
+  autorizado hacia VISO y ANIMA
 
 Supabase
 → conserva y ejecuta las fuentes de verdad de identidad, contexto,
@@ -845,6 +862,7 @@ dependencias contractuales, técnicas y operativas.
 | V | PASS |
 | W | AURA |
 | X | Integraciones internas y externas |
+| Y | TALENTO — candidatos, selección y vinculación previa a ANIMA |
 ## BLOQUE A
 
 **Auditoría integral del ecosistema**
@@ -170424,12 +170442,6 @@ RETIRE
 
 ### [ ] CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
 ### [ ] CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro
-### [ ] CAP-TAL-001 — Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA
-### [ ] CAP-TAL-002 — Diseñar publicación de vacantes, consulta y postulación en TALENTO
-### [ ] CAP-TAL-003 — Diseñar expediente progresivo de datos, documentos, consentimiento y conservación
-### [ ] CAP-TAL-004 — Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato
-### [ ] CAP-TAL-005 — Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO
-### [ ] CAP-TAL-006 — Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre
 ### [ ] CAP-SCOPE-003 — Evaluar seguridad y salud en el trabajo
 ### [ ] CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas
 ### [ ] CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
@@ -170448,18 +170460,10 @@ RETIRE
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
 ### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
 
-Las tareas `CAP-TAL-001` a `CAP-TAL-006` son destinos futuros derivados de
-`BRECHA-CAP-013`. No adelantan la continuidad vigente ni autorizan
-implementación. Deberán preservar estas reglas:
-
-1. la persona postulada continúa siendo candidata hasta la vinculación autorizada;
-2. TALENTO conserva postulación y expediente de selección;
-3. VISO conserva vacantes, decisiones laborales y permisos administrativos;
-4. ANIMA recibe al trabajador vinculado y su experiencia operativa;
-5. candidato y trabajador comparten identidad enlazada, sin duplicación;
-6. el período de prueba es un estado del vínculo laboral;
-7. el rechazo, retiro o cierre conserva trazabilidad y retira accesos cuando corresponda;
-8. cualquier migración o cambio de Supabase se creará y ejecutará desde `vento-shell`.
+Las tareas `CAP-TAL-001` a `CAP-TAL-006` fueron reubicadas en BLOQUE E2 porque
+definen procesos, estados, actores y experiencia TO-BE. Conservan sus
+identificadores, dependencias y reglas aprobadas, pero no forman parte del
+conteo ni de la secuencia de cierre de E1.
 ### MATRIZ DE COBERTURA
 
 Cada capacidad deberá recibir exactamente un estado principal:
@@ -170638,7 +170642,6 @@ COBERTURA DE PROCESOS
 ### [ ] PROC-COVER-006 — Definir alcance mínimo y alcance objetivo
 ### [ ] PROC-COVER-007 — Prohibir declarar completo un proceso con solo infraestructura
 ### [ ] PROC-COVER-008 — Aprobar matriz capacidad → proceso → pantalla → implementación
-
 ### [ ] PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE
 ### [ ] PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1
 
@@ -170675,6 +170678,31 @@ PRINCIPIOS DE EXPERIENCIA
 ### [ ] UX-BASE-014 — Definir reanudación del proceso después de interrupciones
 ### [ ] UX-BASE-015 — Validar terminología con trabajadores reales
 
+PROCESO TO-BE DE TALENTO Y VINCULACIÓN
+
+Las tareas siguientes fueron reubicadas desde E1 porque diseñan el proceso,
+los actores, estados, pantallas, contratos e integraciones objetivo de una
+aplicación futura. Conservan sus identificadores y no autorizan implementación.
+
+### [ ] CAP-TAL-001 — Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA
+### [ ] CAP-TAL-002 — Diseñar publicación de vacantes, consulta y postulación en TALENTO
+### [ ] CAP-TAL-003 — Diseñar expediente progresivo de datos, documentos, consentimiento y conservación
+### [ ] CAP-TAL-004 — Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato
+### [ ] CAP-TAL-005 — Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO
+### [ ] CAP-TAL-006 — Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre
+
+Reglas preservadas:
+
+1. la persona postulada continúa siendo candidata hasta la vinculación autorizada;
+2. TALENTO conserva postulación y expediente de selección;
+3. VISO conserva vacantes, decisiones laborales y permisos administrativos;
+4. ANIMA recibe al trabajador vinculado y su experiencia operativa;
+5. candidato y trabajador comparten identidad enlazada, sin duplicación;
+6. el período de prueba es un estado del vínculo laboral;
+7. el rechazo, retiro o cierre conserva trazabilidad y retira accesos cuando corresponda;
+8. cualquier migración o cambio de Supabase se creará y ejecutará desde `vento-shell`;
+9. `CAP-TAL-006` deberá definir la puerta para materializar el roadmap propio del BLOQUE Y.
+
 Resultado esperado:
 
 PROCESS
@@ -170698,7 +170726,6 @@ SERVER PROTECTION
 AUDIT
 +
 USABILITY CRITERIA
-
 ### TAREAS TRANSVERSALES TO-BE DERIVADAS DE OPS-AUD-001
 
 Estas tareas se ejecutan dentro de BLOQUE E2 después de consolidar la línea base
@@ -172941,11 +172968,19 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    → `OPS-GOV-001`
    → `OPS-ACT-001`
    → `OPS-PLAN-001` a `OPS-PLAN-004`
-   → `CAP-MAP-001` y continuidad vigente de E1.
+   → `CAP-MAP-001` a `CAP-MAP-015`
+   → `CODE-AUD-001` a `CODE-AUD-020`
+   → `CAP-SCOPE-001` a `CAP-SCOPE-019`
+   → `CAP-COVER-001` a `CAP-COVER-012`
+   → `GAP-CTRL-001` a `GAP-CTRL-008`.
+
+   `EXT-GOV-001` podrá ejecutarse después de `OPS-GOV-001` cuando exista el
+   expediente requerido. Su ejecución es paralela, condicional y no bloquea
+   la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
 7. Aprobar línea base de capacidades, registro de brechas y matriz de cobertura por repositorio
-8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001` y `OPS-B2B-001`
+8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
 11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo
@@ -173245,36 +173280,44 @@ FASE 10 — PASS
 82. Ejecutar conciliación, correcciones e hypercare
 83. Aprobar PASS con evidencia de cierre
 
-FASE 11 — AURA
+FASE 11 — TALENTO
 
-84. Ejecutar BLOQUE W — AURA como aplicación diferida
-85. Completar auditoría funcional
-86. Decidir continuidad, reemplazo o retiro
-87. Crear roadmap propio y paquetes E5 únicamente si continúa
-88. No ampliar permisos ni procesos antes de la decisión
+84. Completar `CAP-TAL-001` a `CAP-TAL-006` dentro de E2
+85. Materializar BLOQUE Y y su roadmap propio únicamente después de la puerta definida en `CAP-TAL-006`
+86. Auditar y reconciliar la base técnica existente antes de adoptarla
+87. Aprobar prototipos, contratos TALENTO → VISO → ANIMA y paquetes E5
+88. Implementar y pilotear sin conceder acceso laboral antes de la vinculación autorizada
 
-FASE 12 — CIERRE TRANSVERSAL
+FASE 12 — AURA
 
-89. Completar y validar BLOQUE X de extremo a extremo
-90. Confirmar idempotencia, reintentos y compensaciones
-91. Confirmar que no existan registros manuales duplicados
-92. Completar BLOQUE T — CI, versionado y despliegue
-93. Ejecutar BLOQUE U — Pruebas integrales
-94. Ejecutar pruebas de seguridad
-95. Ejecutar pruebas funcionales
-96. Ejecutar pruebas de experiencia
-97. Ejecutar pruebas de integración
-98. Validar rollback por aplicación
-99. Ejecutar validación final de AUTH-DB-029 — respaldo, restauración y rollback
-100. Ejecutar AUTH-DB-030 — retiro controlado de objetos legacy
-101. Ejecutar AUTH-DB-031 — certificación de paridad documental, técnica y operativa
-102. Confirmar ausencia de drift entre vento-shell, local, staging y producción
-103. Certificar reglas de normalización, diccionarios, excepciones, backfills e idempotencia
-104. Confirmar inventario, almacenamiento, rotación y revocación de credenciales externas
-105. Confirmar que no existan secretos en código, frontend, logs ni tablas expuestas
-106. Confirmar estado final del POS externo: vigente, reemplazado por PULSO o retirado
-107. Confirmar conciliación entre ventas, inventario, NUMERA y PASS
-108. Aprobar cierre documental y operativo
+89. Ejecutar BLOQUE W — AURA como aplicación diferida
+90. Completar auditoría funcional
+91. Decidir continuidad, reemplazo o retiro
+92. Crear roadmap propio y paquetes E5 únicamente si continúa
+93. No ampliar permisos ni procesos antes de la decisión
+
+FASE 13 — CIERRE TRANSVERSAL
+
+94. Completar y validar BLOQUE X de extremo a extremo
+95. Confirmar idempotencia, reintentos y compensaciones
+96. Confirmar que no existan registros manuales duplicados
+97. Completar BLOQUE T — CI, versionado y despliegue
+98. Ejecutar BLOQUE U — Pruebas integrales
+99. Ejecutar pruebas de seguridad
+100. Ejecutar pruebas funcionales
+101. Ejecutar pruebas de experiencia
+102. Ejecutar pruebas de integración
+103. Validar rollback por aplicación
+104. Ejecutar validación final de AUTH-DB-029 — respaldo, restauración y rollback
+105. Ejecutar AUTH-DB-030 — retiro controlado de objetos legacy
+106. Ejecutar AUTH-DB-031 — certificación de paridad documental, técnica y operativa
+107. Confirmar ausencia de drift entre vento-shell, local, staging y producción
+108. Certificar reglas de normalización, diccionarios, excepciones, backfills e idempotencia
+109. Confirmar inventario, almacenamiento, rotación y revocación de credenciales externas
+110. Confirmar que no existan secretos en código, frontend, logs ni tablas expuestas
+111. Confirmar estado final del POS externo: vigente, reemplazado por PULSO o retirado
+112. Confirmar conciliación entre ventas, inventario, NUMERA y PASS
+113. Aprobar cierre documental y operativo
 
 Regla de avance:
 
@@ -173310,6 +173353,12 @@ las integraciones sean idempotentes;
 la trazabilidad sea completa;
 el piloto operativo haya sido aprobado.
 ## Estado inicial conocido
+
+> Esta sección conserva la fotografía histórica previa al desarrollo de BLOQUE E1.
+> No representa el progreso documental vigente.
+>
+> El estado vigente debe consultarse exclusivamente en `Estado canónico`,
+> `Continuidad inmediata` y `Registro global de tareas`.
 
 BASE EXISTENTE
 
