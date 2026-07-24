@@ -18,11 +18,11 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **116** |
-| Tareas canónicas con marcador | **1389** |
+| Tareas canónicas con marcador | **1397** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **171** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1218** |
+| Tareas no iniciadas | **1226** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |

@@ -6708,7 +6708,6 @@ CODE-AUD-010
 
 
 **PROPUESTA PARA APROBACIÓN**
-
 ### ✅ CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa
 
 **Estado:** APROBADA
@@ -7551,8 +7550,6 @@ La continuidad será:
 CODE-AUD-011
 — Detectar infraestructura sin proceso funcional utilizable
 ```
-
-
 ### [ ] CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
 ### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente
 ### [ ] CODE-AUD-013 — Detectar código legacy todavía activo

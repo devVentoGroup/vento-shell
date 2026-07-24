@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1389** |
+| Tareas con marcador | **1397** |
 | Tareas `AUTH` | **316** |
 | Aprobadas | **171** |
 | En propuesta | **0** |
-| No iniciadas | **1218** |
+| No iniciadas | **1226** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -288,6 +288,14 @@
 | ⬜ NO INICIADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
