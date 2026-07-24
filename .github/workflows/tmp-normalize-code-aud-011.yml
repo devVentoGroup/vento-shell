@@ -1,16 +1,16 @@
 name: Normalize CODE-AUD-011 and QA registry
 
-# Second push intentionally triggers this temporary workflow after registration.
 on:
-  push:
-    paths:
-      - '.github/workflows/tmp-normalize-code-aud-011.yml'
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   normalize:
+    if: github.head_ref == 'trigger-code-aud-011-normalization'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -91,3 +91,4 @@ jobs:
           git add -A
           git commit -m 'docs(e1): normalize CODE-AUD-011 and QA registry'
           git push origin main
+          git push origin --delete trigger-code-aud-011-normalization || true
