@@ -1,0 +1,92 @@
+name: Normalize CODE-AUD-011 and QA registry
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tmp-normalize-code-aud-011.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Normalize canonical documents
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip
+
+          audit_path = Path('docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md')
+          registry_path = Path('docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md')
+          temp_dir = Path('.github/tmp-code-aud-011')
+
+          def decode_file(path: Path) -> str:
+              raw = base64.b64decode(path.read_text(encoding='utf-8').strip())
+              return gzip.decompress(raw).decode('utf-8')
+
+          clean_task = decode_file(temp_dir / 'task.md.gz.b64').rstrip() + '\n'
+          clean_registry = decode_file(temp_dir / 'registry.md.gz.b64').rstrip() + '\n'
+
+          audit = audit_path.read_text(encoding='utf-8')
+          marker = '### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable'
+          next_marker = '### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente'
+          start = audit.find(marker)
+          if start < 0:
+              raise SystemExit('CODE-AUD-011 marker not found')
+          proposal = audit.rfind('**PROPUESTA PARA APROBACIÓN**', 0, start)
+          if proposal >= 0 and start - proposal < 200:
+              start = proposal
+          end = audit.find(next_marker, start)
+          if end < 0:
+              raise SystemExit('CODE-AUD-012 marker not found')
+          audit = audit[:start].rstrip() + '\n' + clean_task + '\n' + audit[end:]
+          audit_path.write_text(audit, encoding='utf-8')
+          registry_path.write_text(clean_registry, encoding='utf-8')
+
+          assert audit.count('### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable') == 1
+          assert audit.count('#### 12. Requisitos de prueba derivados') == 1
+          assert '##### 12.3. Filas completas nuevas para el Registro Canónico' not in audit
+          assert '#### 13. Corrección documental obligatoria de 04A' not in audit
+          assert '**PROPUESTA PARA APROBACIÓN**\n\n### ✅ CODE-AUD-011' not in audit
+
+          required = [
+              'TREQ-PASS-001','TREQ-PASS-002','TREQ-PASS-003','TREQ-NEXO-001',
+              'TREQ-AUTH-001','TREQ-AUTH-002','TREQ-PASS-004','TREQ-INTEGRATION-001',
+              'TREQ-NEXO-002','TREQ-ANIMA-001','TREQ-ANIMA-002','TREQ-NEXO-003',
+              'TREQ-INTEGRATION-002','TREQ-SHELL-001','TREQ-NEXO-004','TREQ-PULSO-001'
+          ]
+          registry = registry_path.read_text(encoding='utf-8')
+          for req in required:
+              count = registry.count(f'`{req}`')
+              if count != 1:
+                  raise SystemExit(f'{req} appears {count} times')
+          rows = [line for line in registry.splitlines() if line.startswith('| `TREQ-')]
+          if len(rows) != len(required):
+              raise SystemExit(f'Expected {len(required)} rows, found {len(rows)}')
+          for line in rows:
+              if line.count('|') != 15:
+                  raise SystemExit(f'Invalid column count: {line[:80]}')
+          PY
+
+      - name: Remove temporary migration files
+        shell: bash
+        run: |
+          rm -rf .github/tmp-code-aud-011
+          rm -f .github/workflows/tmp-normalize-code-aud-011.yml
+
+      - name: Commit canonical normalization
+        shell: bash
+        run: |
+          git config user.name 'devVentoGroup'
+          git config user.email 'dev.ventogroup@gmail.com'
+          git add -A
+          git commit -m 'docs(e1): normalize CODE-AUD-011 and QA registry'
+          git push origin main
