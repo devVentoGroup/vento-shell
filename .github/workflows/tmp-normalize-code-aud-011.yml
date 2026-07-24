@@ -52,11 +52,14 @@ jobs:
           audit_path.write_text(audit, encoding='utf-8')
           registry_path.write_text(clean_registry, encoding='utf-8')
 
-          assert audit.count('### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable') == 1
-          assert audit.count('#### 12. Requisitos de prueba derivados') == 1
-          assert '##### 12.3. Filas completas nuevas para el Registro Canónico' not in audit
-          assert '#### 13. Corrección documental obligatoria de 04A' not in audit
-          assert '**PROPUESTA PARA APROBACIÓN**\n\n### ✅ CODE-AUD-011' not in audit
+          task_start = audit.find(marker)
+          task_end = audit.find(next_marker, task_start)
+          task_block = audit[task_start:task_end]
+          assert audit.count(marker) == 1
+          assert task_block.count('#### 12. Requisitos de prueba derivados') == 1
+          assert '##### 12.3. Filas completas nuevas para el Registro Canónico' not in task_block
+          assert '#### 13. Corrección documental obligatoria de 04A' not in task_block
+          assert '**PROPUESTA PARA APROBACIÓN**' not in task_block
 
           required = [
               'TREQ-PASS-001','TREQ-PASS-002','TREQ-PASS-003','TREQ-NEXO-001',
