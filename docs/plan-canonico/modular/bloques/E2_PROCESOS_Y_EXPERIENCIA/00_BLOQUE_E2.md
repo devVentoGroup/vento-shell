@@ -63,6 +63,18 @@ MAPA DE ACTORES
 ### [ ] PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo
 ### [ ] PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
 
+MODELO DE ESTACIONES OPERATIVAS COMPARTIDAS
+
+### [ ] UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
+### [ ] UX-STATION-002 — Comparar modalidades de interacción para cada paso operativo
+### [ ] UX-STATION-003 — Definir perfiles canónicos de estación compartida
+### [ ] UX-STATION-004 — Diseñar identificación, cambio y cierre de actor en estaciones compartidas
+### [ ] UX-STATION-005 — Diseñar la superficie operativa contextual por estación, zona y proceso
+### [ ] UX-STATION-006 — Definir periféricos, montaje, alimentación, conectividad y mantenimiento
+### [ ] UX-STATION-007 — Definir operación degradada, offline, contingencia y recuperación
+### [ ] UX-STATION-008 — Prototipar alternativas con trabajadores reales
+### [ ] UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico
+
 CONTRATO DE PANTALLAS
 
 ### [ ] PROC-SCREEN-001 — Crear identificador estable para cada pantalla

@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1379** |
+| Tareas con marcador | **1389** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **167** |
+| Aprobadas | **171** |
 | En propuesta | **0** |
-| No iniciadas | **1212** |
+| No iniciadas | **1218** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración | ✅ APROBADA |
-| Tarea actual | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | ⬜ NO INICIADA |
-| Siguiente | `CODE-AUD-009` — Detectar valores hardcodeados y decisiones técnicas temporales | ⬜ NO INICIADA |
+| Última aprobada | `CODE-AUD-010` — Detectar pantallas con interfaz pero sin lógica completa | ✅ APROBADA |
+| Tarea actual | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable | ⬜ NO INICIADA |
+| Siguiente | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -195,10 +195,10 @@
 | ✅ APROBADA | `CODE-AUD-005` | Inventariar Server Actions, API routes, RPC, Edge Functions y jobs | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-006` | Vincular código con tablas, vistas, Storage, Realtime y eventos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-007` | Inventariar pruebas, fixtures, mocks y datos de demostración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `QA-GOV-001` | Definir gobierno, registro y ciclo de vida de requisitos de prueba | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `QA-GOV-001` | Definir gobierno, registro y ciclo de vida de requisitos de prueba | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-011` | Detectar infraestructura sin proceso funcional utilizable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-012` | Detectar procesos implementados solo parcialmente | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-013` | Detectar código legacy todavía activo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
@@ -209,6 +209,7 @@
 | ⬜ NO INICIADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ⬜ NO INICIADA | `QA-REG-001` | Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
@@ -278,6 +279,15 @@
 | ⬜ NO INICIADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-005` | Diseñar la superficie operativa contextual por estación, zona y proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-006` | Definir periféricos, montaje, alimentación, conectividad y mantenimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
+| ⬜ NO INICIADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |

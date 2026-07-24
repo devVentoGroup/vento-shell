@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **116** |
-| Tareas canónicas con marcador | **1379** |
+| Tareas canónicas con marcador | **1389** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **167** |
+| Tareas aprobadas | **171** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1212** |
+| Tareas no iniciadas | **1218** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
-| Tarea actual | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
+| Última tarea aprobada | **CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa** |
+| Tarea actual | **CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales** |
+| Siguiente tarea | **CODE-AUD-012 — Detectar procesos implementados solo parcialmente** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 44 de 96 aprobadas; CODE-AUD-008 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 47 de 96 aprobadas; CODE-AUD-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración |
-| Tarea actual | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-009` — Detectar valores hardcodeados y decisiones técnicas temporales |
+| Última aprobada | `CODE-AUD-010` — Detectar pantallas con interfaz pero sin lógica completa |
+| Tarea actual | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable — **NO INICIADA** |
+| Siguiente tarea | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **44 DE 96 APROBADAS — ACTUAL CODE-AUD-008** |
+| BLOQUE E1 | **47 DE 96 APROBADAS — ACTUAL CODE-AUD-011** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
+CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa
         ↓
 TAREA ACTUAL
-CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
+CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
         ↓
 SIGUIENTE TAREA RESERVADA
-CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
+CODE-AUD-012 — Detectar procesos implementados solo parcialmente
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 44 de 96 tareas aprobadas
+BLOQUE E1 — 47 de 96 tareas aprobadas
 ```
