@@ -1,5 +1,6 @@
 name: Normalize CODE-AUD-011 and QA registry
 
+# Second push intentionally triggers this temporary workflow after registration.
 on:
   push:
     paths:
