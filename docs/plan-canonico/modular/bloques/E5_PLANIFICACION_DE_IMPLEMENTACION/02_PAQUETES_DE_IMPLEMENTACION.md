@@ -15,7 +15,7 @@
 ### [ ] DELIV-PKG-013 — Definir requisitos no funcionales aplicables
 ### [ ] DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
 ### [ ] DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación
-### [ ] DELIV-PKG-016 — Definir pruebas unitarias, contractuales, integración, seguridad y E2E
+### [ ] DELIV-PKG-016 — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E
 ### [ ] DELIV-PKG-017 — Definir observabilidad, métricas, logs, alertas y auditoría
 ### [ ] DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva
 ### [ ] DELIV-PKG-019 — Definir estrategia de despliegue y rollout

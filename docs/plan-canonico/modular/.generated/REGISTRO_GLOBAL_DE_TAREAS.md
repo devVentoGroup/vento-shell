@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1374** |
+| Tareas con marcador | **1379** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **166** |
+| Aprobadas | **167** |
 | En propuesta | **0** |
-| No iniciadas | **1208** |
+| No iniciadas | **1212** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos | ✅ APROBADA |
-| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración | ⬜ NO INICIADA |
-| Siguiente | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | ⬜ NO INICIADA |
+| Última aprobada | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración | ✅ APROBADA |
+| Tarea actual | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | ⬜ NO INICIADA |
+| Siguiente | `CODE-AUD-009` — Detectar valores hardcodeados y decisiones técnicas temporales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -194,7 +194,8 @@
 | ✅ APROBADA | `CODE-AUD-004` | Inventariar hooks, servicios, adaptadores, consultas y estado local | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-005` | Inventariar Server Actions, API routes, RPC, Edge Functions y jobs | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-006` | Vincular código con tablas, vistas, Storage, Realtime y eventos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-007` | Inventariar pruebas, fixtures, mocks y datos de demostración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-007` | Inventariar pruebas, fixtures, mocks y datos de demostración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ⬜ NO INICIADA | `QA-GOV-001` | Definir gobierno, registro y ciclo de vida de requisitos de prueba | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
@@ -521,7 +522,7 @@
 | ⬜ NO INICIADA | `DELIV-PKG-013` | Definir requisitos no funcionales aplicables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-014` | Enumerar archivos exactos que se crearán, modificarán o retirarán | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-015` | Definir dependencias, bloqueos y orden de aplicación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `DELIV-PKG-016` | Definir pruebas unitarias, contractuales, integración, seguridad y E2E | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
+| ⬜ NO INICIADA | `DELIV-PKG-016` | Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-017` | Definir observabilidad, métricas, logs, alertas y auditoría | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-018` | Definir feature flags, configuración y activación progresiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-019` | Definir estrategia de despliegue y rollout | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
@@ -572,7 +573,7 @@
 | ⬜ NO INICIADA | `E5-GATE-004` | Confirmar que rollout, rollback y contingencia son ejecutables | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-005` | Confirmar que el piloto tiene criterios medibles | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-006` | Confirmar que capacitación y soporte están planificados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
-| ⬜ NO INICIADA | `E5-GATE-007` | Confirmar trazabilidad hasta pruebas y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
+| ⬜ NO INICIADA | `E5-GATE-007` | Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/00_BLOQUE_F.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/00_BLOQUE_F.md` |
@@ -1229,6 +1230,10 @@
 | ⬜ NO INICIADA | `SHELL-CI-013` | Probar ANIMA antes de actualizar | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `SHELL-CI-014` | Permitir rollback por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `SHELL-CI-015` | Evitar despliegue simultáneo obligatorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-016` | Estandarizar un comando de pruebas automatizadas por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-017` | Crear verificador automático del Registro Canónico de Requisitos de Prueba | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-018` | Bloquear merge o despliegue cuando fallen pruebas obligatorias | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `AUTH-QA-001` | Propietario sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-002` | Gerente general sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-003` | Gerente de sede solo opera sus sedes | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |

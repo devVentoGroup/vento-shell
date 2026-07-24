@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **115** |
-| Tareas canónicas con marcador | **1374** |
+| Tareas canónicas con marcador | **1375** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **166** |
+| Tareas aprobadas | **167** |
 | Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1208** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos** |
-| Tarea actual | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Última tarea aprobada | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Tarea actual | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
+| Siguiente tarea | **CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 43 de 96 aprobadas; CODE-AUD-007 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 44 de 96 aprobadas; CODE-AUD-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos |
-| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas |
+| Última aprobada | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración |
+| Tarea actual | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas — **NO INICIADA** |
+| Siguiente tarea | `CODE-AUD-009` — Detectar valores hardcodeados y decisiones técnicas temporales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **43 DE 96 APROBADAS — ACTUAL CODE-AUD-007** |
+| BLOQUE E1 | **44 DE 96 APROBADAS — ACTUAL CODE-AUD-008** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
-        ↓
-TAREA ACTUAL
 CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
+SIGUIENTE TAREA RESERVADA
+CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 43 de 96 tareas aprobadas
+BLOQUE E1 — 44 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -146,6 +146,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    - el marcador exacto que debe reemplazarse;
    - el marcador de la tarea siguiente que debe conservarse;
    - un resumen breve de las decisiones propuestas;
+   - los identificadores de requisitos de prueba generados o la declaración expresa `NO GENERA REQUISITOS DE PRUEBA`;
    - el estado de la tarea.
 
    No deberá pegarse en el chat el contenido completo de la tarea.
@@ -169,7 +170,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    consolidación, el contenido aprobado deberá insertarse dentro del archivo
    lógico propietario definido por la arquitectura modular.
 
-5. Toda tarea nueva inicia con:
+1. Toda tarea nueva inicia con:
 
    **PROPUESTA PARA APROBACIÓN**
 
@@ -181,7 +182,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    para evaluar y aprobar la tarea, sin depender de explicaciones
    complementarias del chat.
 
-6. No marcar una tarea como aprobada hasta que el usuario diga
+2. No marcar una tarea como aprobada hasta que el usuario diga
    explícitamente:
 
    **APROBADO**
@@ -194,7 +195,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    - no iniciar implementación;
    - no avanzar automáticamente a la tarea siguiente.
 
-7. Después de la aprobación:
+3. Después de la aprobación:
 
    - la tarea quedará conceptualmente aprobada para la siguiente
      consolidación documental;
@@ -212,7 +213,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    La versión aprobada deberá conservar íntegramente las decisiones
    aceptadas y no incluir tareas adicionales.
 
-8. No avanzar a la tarea siguiente hasta que el usuario lo solicite
+4. No avanzar a la tarea siguiente hasta que el usuario lo solicite
    expresamente.
 
    Cuando el usuario solicite la siguiente tarea, deberá entregarse
@@ -221,7 +222,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    La ausencia de una consolidación inmediata no invalida las
    aprobaciones expresas ya otorgadas.
 
-9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
+5. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
 
    La tarea documental inmediata se determina mediante:
@@ -246,26 +247,26 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
    actualizarse el encabezado, la continuidad inmediata y la transición de
    la tarea precedente durante la siguiente consolidación documental.
 
-10. El BLOQUE A contiene evidencia histórica.
+6.  El BLOQUE A contiene evidencia histórica.
     ADR-AUTH-001 y las tareas AUTH aprobadas contienen decisiones normativas.
 
-11. Toda futura migración de Supabase deberá crearse y documentarse
+7.  Toda futura migración de Supabase deberá crearse y documentarse
     en vento-shell.
 
-12. No reducir silenciosamente el alcance de una tarea.
+8.  No reducir silenciosamente el alcance de una tarea.
 
-13. El roadmap de autorización define quién puede ejecutar una capacidad,
+9.  El roadmap de autorización define quién puede ejecutar una capacidad,
     bajo qué modalidad, alcance, contexto y recurso.
 
-14. El roadmap funcional y de experiencia define qué proceso resuelve
+10. El roadmap funcional y de experiencia define qué proceso resuelve
     cada aplicación, qué pantallas utiliza cada actor y cómo se conecta
     el proceso entre aplicaciones.
 
-15. Las decisiones funcionales, de navegación o experiencia no podrán
+11. Las decisiones funcionales, de navegación o experiencia no podrán
     contradecir el catálogo canónico, las matrices, el contexto efectivo,
     la precedencia ni las denegaciones aprobadas.
 
-16. Ninguna pantalla, ruta o componente se considerará terminado únicamente
+12. Ninguna pantalla, ruta o componente se considerará terminado únicamente
     porque exista técnicamente. Deberá estar vinculado con:
     - un proceso empresarial;
     - un actor objetivo;
@@ -275,21 +276,21 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - criterios de usabilidad;
     - trazabilidad cuando corresponda.
 
-17. Las aplicaciones se reorganizarán por procesos y responsabilidades
+13. Las aplicaciones se reorganizarán por procesos y responsabilidades
     empresariales, no por carpetas, rutas técnicas o nombres de componentes.
 
-18. Toda función transversal deberá tener una aplicación propietaria.
+14. Toda función transversal deberá tener una aplicación propietaria.
     Las demás aplicaciones podrán consumirla, pero no duplicar su lógica,
     su autorización ni su fuente de verdad.
 
-19. Los cambios funcionales o de experiencia que no requieran modificar
+15. Los cambios funcionales o de experiencia que no requieran modificar
     Supabase deberán documentarse en el roadmap y en el repositorio
     propietario de la aplicación.
 
     Cuando el cambio requiera una migración de Supabase,
     aplicará obligatoriamente el punto 11.
 
-20. Toda nueva necesidad funcional o técnica deberá analizarse primero
+16. Toda nueva necesidad funcional o técnica deberá analizarse primero
     contra:
 
     - el documento canónico vigente;
@@ -297,7 +298,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - el código actual del repositorio propietario;
     - las decisiones aprobadas que afecten el proceso.
 
-21. Antes de entregar una implementación deberá determinarse expresamente
+17. Antes de entregar una implementación deberá determinarse expresamente
     si el cambio afecta:
 
     - permisos;
@@ -315,7 +316,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - auditoría;
     - experiencia o navegación.
 
-22. Todo cambio contractual deberá pasar por:
+18. Todo cambio contractual deberá pasar por:
 
     - propuesta documental;
     - análisis de impacto;
@@ -325,10 +326,10 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - pruebas;
     - actualización documental.
 
-23. Un cambio que no afecte autorización deberá declararlo expresamente
+19. Un cambio que no afecte autorización deberá declararlo expresamente
     antes de implementarse.
 
-24. Todo paquete de implementación deberá incluir, cuando corresponda:
+20. Todo paquete de implementación deberá incluir, cuando corresponda:
 
     - repositorio propietario;
     - archivos exactos que se crean o modifican;
@@ -341,11 +342,11 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - mecanismo de rollback;
     - actualización documental requerida.
 
-25. Ningún cambio entregado en otra conversación deberá aplicarse
+21. Ningún cambio entregado en otra conversación deberá aplicarse
     automáticamente sin verificarlo contra el documento canónico vigente
     y el estado actual de los repositorios.
 
-26. Supabase deberá tratarse como una plataforma canónica integral y no
+22. Supabase deberá tratarse como una plataforma canónica integral y no
     únicamente como un conjunto de tablas en `public`.
 
     Su gobierno incluirá, como mínimo:
@@ -367,7 +368,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - tipos generados;
     - auditoría, rendimiento, retención y recuperación.
 
-27. La organización física de Supabase se definirá en el BLOQUE E3 y se
+23. La organización física de Supabase se definirá en el BLOQUE E3 y se
     implementará en el BLOQUE R.
 
     El BLOQUE E3 auditará el estado real, definirá la arquitectura objetivo
@@ -376,7 +377,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     El BLOQUE R aplicará las migraciones, protecciones, pruebas y retiro
     controlado de estructuras legacy.
 
-28. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
+24. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
     Edge Function, webhook, tarea programada o secreto podrá reorganizarse,
     renombrarse, trasladarse o retirarse sin:
 
@@ -392,14 +393,14 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - rollback;
     - actualización documental.
 
-29. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
+25. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
     `realtime`, `extensions` y `supabase_migrations`, deberán distinguirse
     de los esquemas empresariales de Vento.
 
     No deberán moverse, renombrarse ni utilizarse como contenedores de
     lógica empresarial salvo mediante mecanismos oficialmente soportados.
 
-30. Los esquemas empresariales de Vento deberán organizarse por dominios
+26. Los esquemas empresariales de Vento deberán organizarse por dominios
     estables y fuentes de verdad, no por:
 
     - aplicación;
@@ -412,7 +413,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     Una aplicación podrá consumir varios dominios y un dominio podrá ser
     consumido por varias aplicaciones sin duplicar sus datos.
 
-31. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
+27. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
 
     Cada objeto deberá declarar expresamente:
 
@@ -428,7 +429,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - estrategia de auditoría;
     - ciclo de vida.
 
-32. El estado desplegado de Supabase deberá ser reproducible desde
+28. El estado desplegado de Supabase deberá ser reproducible desde
     `vento-shell`.
 
     Los cambios directos realizados desde Dashboard, Table Editor,
@@ -436,7 +437,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     emergencia controlada y convertirse después en una migración
     versionada, verificable y documentada.
 
-33. La autenticación técnica, la identidad empresarial y la autorización
+29. La autenticación técnica, la identidad empresarial y la autorización
     deberán permanecer separadas.
 
     `auth.users`
@@ -448,13 +449,13 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     catálogo, matrices, contexto y recurso
     → autorización efectiva
 
-34. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
+30. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
     con las aplicaciones existentes.
 
     No se moverán objetos entre esquemas ni se retirarán nombres legacy
     mediante un cambio único si existen consumidores activos.
 
-35. La normalización de datos deberá definirse por dominio, entidad y campo.
+31. La normalización de datos deberá definirse por dominio, entidad y campo.
 
     No existirá una transformación universal aplicada indiscriminadamente
     a todo valor textual.
@@ -484,7 +485,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     Las correcciones ortográficas ambiguas no se aplicarán silenciosamente.
     Deberán enviarse a revisión o aprobación humana.
 
-36. Las claves de permisos, credenciales de integración y secretos técnicos
+32. Las claves de permisos, credenciales de integración y secretos técnicos
     deberán mantenerse como conceptos separados.
 
     `PermissionKey`
@@ -509,7 +510,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     - compartirse entre producción, staging y desarrollo;
     - entregarse a un proveedor para escribir directamente en Supabase.
 
-37. Toda integración externa deberá operar mediante un adaptador y un
+33. Toda integración externa deberá operar mediante un adaptador y un
     contrato empresarial canónico.
 
     Un sistema externo no deberá:
@@ -523,7 +524,7 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
     El adaptador deberá validar, transformar, mapear, deduplicar, auditar
     y emitir eventos canónicos antes de afectar otros dominios.
 
-38. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
+34. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
     decisión diferida, supuesto por verificar o elemento fuera de alcance
     sin destino documental explícito.
 
@@ -560,6 +561,95 @@ BLOQUE E1 — 43 de 96 tareas aprobadas
 
     Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
     o cuando cite una tarea que no exista formalmente en el roadmap.
+
+Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
+o cuando cite una tarea que no exista formalmente en el roadmap.
+
+39. Toda tarea documental, funcional, técnica o de implementación deberá
+    incluir, antes de sus criterios de aceptación, una sección denominada:
+
+    `#### Requisitos de prueba derivados`
+
+    La sección deberá usar uno de los siguientes formatos.
+
+    Cuando la tarea genere requisitos de prueba:
+
+    ```md
+    #### Requisitos de prueba derivados
+
+    **Resultado:** GENERA REQUISITOS DE PRUEBA
+
+    | ID              | Regla protegida                                              | Tipo        | Prioridad | Momento de implementación      | Destino                    |
+    | --------------- | ------------------------------------------------------------ | ----------- | --------- | ------------------------------ | -------------------------- |
+    | `TREQ-NEXO-001` | Un retiro parcial descuenta unidades y no paquetes completos | integración | crítica   | paquete que implemente retiros | paquete E5 correspondiente |
+    ```
+
+    Cuando la tarea no genere requisitos de prueba:
+
+    ```md
+    #### Requisitos de prueba derivados
+
+    **Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+    **Justificación:** cambio exclusivamente documental, sin comportamiento
+    ejecutable nuevo o modificado.
+    ```
+
+    No se permitirá omitir esta sección.
+
+40. Toda regla de negocio, autorización, cálculo, transformación, transición
+    de estado, restricción de integridad, contrato de integración, incidente,
+    regresión o comportamiento técnicamente verificable que requiera protección
+    deberá generar inmediatamente un requisito de prueba identificable.
+
+    Los requisitos utilizarán la convención:
+
+    `TREQ-<DOMINIO>-<NNN>`
+
+    Ejemplos:
+
+    - `TREQ-AUTH-001`;
+    - `TREQ-NEXO-001`;
+    - `TREQ-SUPABASE-001`;
+    - `TREQ-PASS-001`.
+
+    Detectar una necesidad de prueba no obliga a implementarla durante una
+    tarea documental. Sí obliga a:
+
+    - asignarle identificador;
+    - describir la regla protegida;
+    - indicar el riesgo que evita;
+    - clasificar el tipo de prueba;
+    - registrar su origen;
+    - vincularla con una tarea o paquete de implementación;
+    - definir el momento en que deberá implementarse;
+    - incorporarla al Registro Canónico de Requisitos de Prueba.
+
+    No se considerarán requisitos materializados expresiones como:
+
+    - probar después;
+    - revisar en QA;
+    - validar durante implementación;
+    - comprobar posteriormente;
+    - agregar pruebas cuando exista infraestructura.
+
+    Ninguna tarea podrá aprobarse cuando identifique una necesidad de prueba y:
+
+    - no genere el requisito `TREQ-*`;
+    - no lo vincule con el registro canónico;
+    - no declare su tarea o paquete destino;
+    - no declare expresamente por qué la prueba no aplica.
+
+    Cuando se detecte un defecto o regresión, deberá generarse un requisito de
+    prueba de regresión antes o conjuntamente con su corrección.
+
+    Las pruebas unitarias, contractuales, de integración, seguridad y
+    migraciones deberán implementarse junto con el paquete que modifica el
+    comportamiento protegido.
+
+    El BLOQUE U no deberá utilizarse para aplazar pruebas que debieron
+    implementarse junto con el código. El BLOQUE U ejecutará regresión integral,
+    escenarios de extremo a extremo, seguridad, experiencia y pilotos.
 
 ---
 
@@ -170407,7 +170497,518 @@ CODE-AUD-007
 — Inventariar pruebas, fixtures, mocks y datos de demostración
 ```
 
-### [ ] CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
+### ✅ CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** inventario técnico transversal de mecanismos de validación y datos no operativos  
+**Dependencia anterior:** `CODE-AUD-006`  
+**Continuidad reservada:** `QA-GOV-001` 
+**Fecha de corte:** 2026-07-24  
+**Cambios en código o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea inventaría y diferencia:
+
+1. pruebas automatizadas ejecutables;
+2. utilidades y dobles de prueba;
+3. fixtures persistentes o cargables;
+4. mocks visuales o de interfaz;
+5. datos de demostración;
+6. datos históricos de sandbox;
+7. configuraciones de prueba todavía presentes en código;
+8. datos técnicos que pueden parecer de prueba, pero cumplen una función vigente.
+
+La revisión confirma que **Vento OS no posee actualmente una suite automatizada de pruebas identificable en sus aplicaciones operativas**.
+
+Los repositorios web, móviles y de infraestructura revisados no declaran comandos `test` ni dependencias de Jest, Vitest, Playwright, Cypress u otro framework equivalente. Sus scripts actuales se limitan principalmente a desarrollo, build, lint, sincronización, auditorías de texto, releases y compilación móvil.
+
+La única suite automatizada localizada pertenece a **VITAL**, proyecto separado y fuera de la cobertura funcional de Vento OS.
+
+---
+
+#### 2. Repositorios incluidos
+
+| Repositorio     | Producto                  | Pruebas automatizadas localizadas |                Fixtures o mocks localizados | Clasificación      |
+| --------------- | ------------------------- | --------------------------------: | ------------------------------------------: | ------------------ |
+| `vento-shell`   | SHELL + Supabase canónico |                                no | scripts y migraciones históricas de sandbox | Vento OS           |
+| `vento-viso`    | VISO                      |                                no |    previews funcionales, sin fixture formal | Vento OS           |
+| `vento-nexo`    | NEXO                      |                                no |         mocks visuales y valores de preview | Vento OS           |
+| `vento-fogo`    | FOGO                      |                                no |       no se localizó infraestructura formal | Vento OS           |
+| `vento-origo`   | ORIGO                     |                                no |       no se localizó infraestructura formal | Vento OS           |
+| `vento-pulso`   | PULSO                     |                                no |       no se localizó infraestructura formal | Vento OS           |
+| `vento-numera`  | NUMERA                    |                                no |       no se localizó infraestructura formal | Vento OS           |
+| `Vento-Group`   | web pública               |                                no |       no se localizó infraestructura formal | superficie pública |
+| `vento-anima`   | ANIMA                     |                                no |       no se localizó infraestructura formal | Vento OS móvil     |
+| `vento-pass`    | PASS                      |                                no |       no se localizó infraestructura formal | Vento OS móvil     |
+| `vento-talento` | TALENTO                   |                                no |       no se localizó infraestructura formal | base futura        |
+| `vento-vital`   | VITAL                     |                                sí |   utilidades HTTP y controladores simulados | proyecto separado  |
+
+FOGO, ORIGO, PULSO y NUMERA solo declaran comandos de desarrollo, build, lint o sincronización.
+
+La web pública, ANIMA, PASS y TALENTO tampoco declaran un comando de pruebas.
+
+---
+
+#### 3. Pruebas automatizadas
+
+##### 3.1. Vento OS
+
+No se localizaron archivos o configuraciones verificables correspondientes a:
+
+- Jest;
+- Vitest;
+- Playwright;
+- Cypress;
+- React Testing Library;
+- Expo Jest;
+- pruebas unitarias TypeScript o JavaScript;
+- pruebas E2E;
+- pruebas de componentes;
+- pruebas automatizadas de Edge Functions;
+- pruebas automatizadas de migraciones;
+- pruebas automatizadas de políticas RLS;
+- pruebas automatizadas de contratos RPC;
+- pruebas automatizadas de Realtime;
+- pruebas automatizadas de flujos móviles.
+
+Esto no demuestra que nunca se hayan realizado pruebas manuales. Demuestra que **no existe evidencia de una suite automatizada reproducible y vinculada a los paquetes actuales**.
+
+`CODE-AUD-016` ejecutará únicamente los comandos realmente disponibles. No deberá presentar `build`, `lint` o `typecheck` como sustitutos de pruebas funcionales.
+
+##### 3.2. VITAL
+
+VITAL declara:
+
+```text
+test:contracts:api
+ci:contracts
+```
+
+y su paquete API ejecuta:
+
+```text
+node --test tests/contracts/**/*.test.js
+```
+
+Se localizaron cinco archivos de prueba contractual:
+
+1. `staffRoutes.test.js`;
+2. `planningRoutes.test.js`;
+3. `planningController.test.js`;
+4. `telemetryRoutes.test.js`;
+5. `telemetryService.test.js`.
+
+Estas pruebas verifican, entre otros comportamientos:
+
+- despacho correcto de rutas;
+- respuesta `404` para rutas desconocidas;
+- validación de parámetros;
+- exigencia de token bearer;
+- reglas de campos obligatorios;
+- limitación de valores de consulta.
+
+**Decisión de alcance:** estas pruebas se conservan como evidencia técnica de VITAL, pero no se contabilizan como cobertura de Vento OS.
+
+---
+
+#### 4. Utilidades y dobles de prueba
+
+VITAL contiene una utilidad `testUtils.js` con:
+
+- `createMockRes()`;
+- `createJsonReq()`;
+- `parseBody()`.
+
+Estas funciones construyen solicitudes y respuestas HTTP simuladas para las pruebas de contrato.
+
+No se localizaron utilidades equivalentes compartidas en los repositorios de Vento OS.
+
+No existe actualmente:
+
+- librería transversal de factories;
+- servidor HTTP mock;
+- cliente Supabase simulado;
+- generador de usuarios;
+- generador de sedes o áreas;
+- simulador de RLS;
+- simulador de permisos;
+- simulador de dispositivos compartidos;
+- simulador de impresión;
+- simulador de pagos;
+- simulador de notificaciones.
+
+La creación de esas herramientas no pertenece a esta tarea de inventario y no se prescribe automáticamente.
+
+---
+
+#### 5. Mocks visuales y previews de interfaz
+
+NEXO contiene un componente denominado:
+
+```text
+MockMiniLabel.tsx
+```
+
+El término `Mock` en este caso no representa un doble de prueba. Es un **renderizador visual de etiquetas** utilizado para mostrar una aproximación de la impresión dentro de la interfaz. Recibe dimensiones, código, título, tipo de código de barras y escala de renderizado.
+
+La pantalla de trabajos de impresión también usa datos de fallback como:
+
+```text
+EJEMPLO-001
+EJ-001
+EJ-002
+EJ-003
+Demo
+```
+
+cuando la cola de impresión está vacía.
+
+El hook de preview ZPL conserva el mismo fallback para generar una vista previa sin requerir una ubicación real.
+
+**Clasificación canónica:**
+
+- no son pruebas automatizadas;
+- no son fixtures persistentes;
+- no escriben datos en Supabase;
+- no deben contarse como cobertura;
+- sí constituyen datos sintéticos embebidos en una interfaz productiva.
+
+Su necesidad funcional se revisará en `CODE-AUD-009` por tratarse de valores hardcodeados y en `CODE-AUD-010` para confirmar que el preview no se confunda con una impresión real.
+
+---
+
+#### 6. Simulación de rol
+
+NEXO conserva lógica que denomina el override de rol como modo `sandbox/test`.
+
+La implementación determina que un override válido debe comportarse como una simulación estricta y evitar mezclar permisos reales con permisos del rol simulado.
+
+**Clasificación:**
+
+- no es una prueba automatizada;
+- no es un mock;
+- no es un fixture;
+- es una capacidad funcional de simulación administrativa;
+- actúa sobre evaluación real de permisos;
+- debe someterse a la auditoría de autorización de `CODE-AUD-017`.
+
+El uso de palabras como `sandbox` o `test` no autoriza su eliminación. Primero debe comprobarse quién puede activar el override, qué cookie usa, qué rutas afecta y si existe trazabilidad.
+
+---
+
+#### 7. Seeds y datos persistentes
+
+##### 7.1. Seed local
+
+La configuración obsoleta que apuntaba a `supabase/seed.sql` fue eliminada y el seeding local quedó desactivado.
+
+Por tanto:
+
+- no existe un seed local canónico;
+- no existe un dataset demo que se cargue mediante `supabase db reset`;
+- no se propone crear uno;
+- no se restaurarán datos antiguos de prueba.
+
+##### 7.2. Migraciones cuyo nombre contiene `seed`
+
+No toda migración con la palabra `seed` representa datos de demostración.
+
+Ejemplo:
+
+```text
+20260530174500_seed_cost_centers_from_sites.sql
+```
+
+puebla centros de costo reales a partir de sedes existentes, es idempotente y forma parte del estado funcional de facturación interna.
+
+Por tanto, las migraciones se clasifican por propósito y no por nombre.
+
+| Tipo                          | Ejemplo                                   | Clasificación              |
+| ----------------------------- | ----------------------------------------- | -------------------------- |
+| inicialización funcional      | centros de costo desde sedes              | dato canónico              |
+| catálogo funcional            | pantallas, capacidades o presets vigentes | dato canónico              |
+| migración de datos existentes | catálogo PASS desde productos             | transformación productiva  |
+| sandbox temporal              | productos `SBXV1-*`                       | prueba histórica retirada  |
+| limpieza de sandbox           | eliminación `SBXV1-*`                     | historial técnico aplicado |
+
+---
+
+#### 8. Sandbox histórico NEXO
+
+Se localizaron las siguientes migraciones históricas:
+
+- `20260317110000_nexo_v1_validation_sandbox_seed.sql`;
+- `20260317123000_nexo_v1_validation_sandbox_audience_fix.sql`;
+- `20260317124500_nexo_v1_validation_sandbox_site_code_fix.sql`;
+- `20260318100117_nexo_v1_validation_sandbox_cleanup.sql`;
+- `20260318213000_nexo_v1_validation_sandbox_reseed.sql`;
+- `20260324124500_nexo_cleanup_sandbox_v1_catalog.sql`;
+- `20260326123000_nexo_cleanup_sandbox_products_and_locs.sql`.
+
+También permanecen:
+
+- `scripts/run-nexo-v1-validation-sandbox-cleanup.ps1`;
+- `supabase/templates/nexo_v1_validation_sandbox_cleanup.sql`.
+
+El script genera otra migración de limpieza a partir del template y ejecuta `supabase db push`.
+
+El template elimina explícitamente:
+
+- productos `SBXV1-*`;
+- categorías `sbx-v1-*`;
+- ubicaciones `LOC-CP-SBX-*`;
+- movimientos;
+- entradas;
+- transferencias;
+- remisiones;
+- existencias;
+- costos relacionados.
+
+La inspección remota confirmó que actualmente permanecen **cero** categorías, productos, ubicaciones y movimientos del sandbox `SBXV1`.
+
+**Clasificación canónica:**
+
+- los datos de sandbox ya no existen;
+- las migraciones aplicadas forman parte del historial remoto;
+- no deben borrarse individualmente durante esta fase;
+- el script y el template de limpieza son candidatos a residuo técnico porque su objetivo ya fue cumplido.
+
+**Destino obligatorio:**
+
+| Hallazgo                               | Destino                                              |
+| -------------------------------------- | ---------------------------------------------------- |
+| script de cleanup todavía ejecutable   | `CODE-AUD-015`, `CODE-AUD-020`                       |
+| template de cleanup todavía disponible | `CODE-AUD-015`, `CODE-AUD-020`                       |
+| migraciones históricas de sandbox      | `CODE-AUD-020` y bloque de consolidación de Supabase |
+| ausencia actual de datos `SBXV1`       | cerrar como verificado                               |
+
+---
+
+#### 9. Sede `APP-REVIEW`
+
+Supabase conserva:
+
+```text
+code: APP-REVIEW
+name: App Review (Demo)
+site_type: admin
+is_active: true
+operational_visibility: app_review
+```
+
+La sede tiene actualmente:
+
+- una área;
+- un centro de costo;
+- una relación en `employee_sites`;
+- cero configuraciones de producto por sede.
+
+Una migración específica añadió `operational_visibility` y clasificó esta sede como `app_review`, excluyéndola de selectores operativos normales.
+
+**Clasificación provisional:**
+
+- es un dato de demostración vigente;
+- no es un fixture local;
+- está presente en la base productiva;
+- está aislado de la operación normal mediante clasificación;
+- probablemente cumple una función de revisión de aplicaciones móviles;
+- no se autoriza eliminarlo por inferencia.
+
+**Destino obligatorio:**
+
+| Comprobación                                                     | Tarea                          |
+| ---------------------------------------------------------------- | ------------------------------ |
+| identificar consumidor actual de `APP-REVIEW`                    | `CODE-AUD-015`                 |
+| comprobar si Apple/Google o cuentas de revisión aún lo requieren | `CODE-AUD-019`, `CODE-AUD-020` |
+| revisar autorización y aislamiento                               | `CODE-AUD-017`                 |
+| decidir conservación, sustitución o eliminación                  | `CODE-AUD-020`                 |
+
+No se crea una pregunta operativa para el usuario todavía. La existencia de consumidores puede comprobarse mediante código, cuentas asociadas y configuración de publicación.
+
+---
+
+#### 10. Otros valores de prueba o demostración remotos
+
+La búsqueda remota por nombres asociados a:
+
+```text
+demo
+test
+sandbox
+sbx
+example
+ejemplo
+review
+```
+
+solo encontró como elementos empresariales relevantes:
+
+1. la sede `APP-REVIEW`;
+2. su centro de costo `ADM-APP-REVIEW`;
+3. un punto operativo oculto llamado `pickup_camioneta_principal`.
+
+El punto de recogida oculto no se clasifica como dato demo solamente por estar oculto. Su uso pertenece al inventario operativo y debe conservarse hasta analizar sus consumidores.
+
+No se localizaron productos ni categorías remotas con marcas de demo, test o sandbox.
+
+---
+
+#### 11. Datos de ejemplo embebidos
+
+Se consideran datos de ejemplo embebidos aquellos valores incluidos directamente en código para:
+
+- placeholders;
+- previews;
+- ejemplos de formato;
+- estados vacíos;
+- documentación visual;
+- formatos de cola;
+- códigos de etiqueta.
+
+Estos valores no son necesariamente incorrectos.
+
+Su inventario detallado y decisión de limpieza corresponden a:
+
+```text
+CODE-AUD-009
+— Detectar valores hardcodeados y decisiones técnicas temporales
+```
+
+`CODE-AUD-007` únicamente establece que no deben confundirse con fixtures ni pruebas automatizadas.
+
+---
+
+#### 12. Cobertura real por categoría
+
+| Categoría                     |                Vento OS |                      VITAL separado |
+| ----------------------------- | ----------------------: | ----------------------------------: |
+| pruebas unitarias             |           0 localizadas |                                  sí |
+| pruebas de contrato           |           0 localizadas |                          5 archivos |
+| pruebas E2E                   |           0 localizadas |                       0 localizadas |
+| pruebas de componentes        |           0 localizadas |                       0 localizadas |
+| pruebas móviles               |           0 localizadas |                       0 localizadas |
+| pruebas de migraciones        |           0 localizadas |                       0 localizadas |
+| pruebas RLS                   |           0 localizadas |                       0 localizadas |
+| fixtures formales             |           0 localizados | objetos construidos dentro de tests |
+| mocks HTTP                    |           0 localizados |                                  sí |
+| previews con datos sintéticos | sí, principalmente NEXO |                        no relevante |
+| sandbox persistente activo    |                      no |                       no comprobado |
+| dato demo remoto activo       |            `APP-REVIEW` |                    fuera de alcance |
+
+La cifra cero significa “no localizado en el corte”, no “imposible que exista fuera de los repositorios inspeccionados”.
+
+---
+
+#### 13. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                           | Destino                                                        |
+| ---------------- | ------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `H-CODE-007-001` | Vento OS no tiene suite automatizada identificable                 | `CODE-AUD-016`, `CODE-AUD-020`                                 |
+| `H-CODE-007-002` | build y lint no deben presentarse como pruebas funcionales         | `CODE-AUD-016`                                                 |
+| `H-CODE-007-003` | VITAL sí tiene cinco archivos de pruebas de contrato               | conservar fuera de Vento OS                                    |
+| `H-CODE-007-004` | VITAL contiene mocks HTTP reutilizables dentro de su suite         | conservar fuera de Vento OS                                    |
+| `H-CODE-007-005` | NEXO usa datos `EJEMPLO` y `Demo` para previews de impresión       | `CODE-AUD-009`, `CODE-AUD-010`                                 |
+| `H-CODE-007-006` | `MockMiniLabel` es preview funcional, no infraestructura de prueba | `CODE-AUD-009`, `CODE-AUD-010`                                 |
+| `H-CODE-007-007` | el override de rol se denomina sandbox/test, pero es lógica real   | `CODE-AUD-017`                                                 |
+| `H-CODE-007-008` | no existe seed local canónico y el seeding quedó desactivado       | cerrado                                                        |
+| `H-CODE-007-009` | migraciones con `seed` pueden contener datos canónicos reales      | `CODE-AUD-020`                                                 |
+| `H-CODE-007-010` | el sandbox `SBXV1` fue eliminado completamente del remoto          | cerrado                                                        |
+| `H-CODE-007-011` | permanece un script ejecutable para recrear cleanup de sandbox     | `CODE-AUD-015`, `CODE-AUD-020`                                 |
+| `H-CODE-007-012` | permanece un template SQL de cleanup ya ejecutado                  | `CODE-AUD-015`, `CODE-AUD-020`                                 |
+| `H-CODE-007-013` | `APP-REVIEW` sigue activo como dato demo aislado                   | `CODE-AUD-015`, `CODE-AUD-017`, `CODE-AUD-019`, `CODE-AUD-020` |
+| `H-CODE-007-014` | no hay productos o categorías demo/sandbox activos                 | cerrado                                                        |
+| `H-CODE-007-015` | no existe estrategia transversal comprobable de pruebas            | `CODE-AUD-020`                                                 |
+
+Todos los hallazgos quedan vinculados a una tarea existente o cerrados con evidencia.
+
+---
+
+#### 14. Decisiones propuestas
+
+1. Se adopta que Vento OS no posee actualmente pruebas automatizadas localizadas.
+2. `build`, `lint`, `typecheck` y auditorías de texto no se clasificarán como pruebas funcionales.
+3. La suite de VITAL permanece fuera del cómputo de Vento OS.
+4. `MockMiniLabel` se clasifica como componente de preview.
+5. Los valores `EJEMPLO-*` y `Demo` de impresión se clasifican como datos sintéticos embebidos.
+6. No se creará un sistema de seeds como consecuencia automática de esta auditoría.
+7. El seeding local permanecerá deshabilitado.
+8. Las migraciones de datos canónicos no se clasificarán como demo solo por contener la palabra `seed`.
+9. Los datos `SBXV1` se consideran completamente retirados.
+10. Las migraciones históricas de sandbox no se borrarán individualmente.
+11. El script y template de cleanup pasan a revisión de código sin consumidor.
+12. `APP-REVIEW` se considera un dato demo vigente y aislado, pendiente de comprobar consumidores antes de decidir su eliminación.
+13. No se crearán fixtures, mocks ni pruebas durante la fase de descubrimiento.
+14. La estrategia futura de pruebas, si se aprueba, deberá salir de brechas funcionales verificadas y no de una plantilla genérica.
+15. `CODE-AUD-008` será la única continuidad inmediata.
+
+---
+
+#### 15. Límites de certeza
+
+Esta tarea no confirma:
+
+- que jamás hayan existido pruebas eliminadas anteriormente;
+- que GitHub Actions externos ejecuten pruebas no visibles en los paquetes;
+- que una prueba manual documentada siga vigente;
+- que `APP-REVIEW` continúe siendo utilizada por una tienda;
+- que todos los valores de ejemplo embebidos sean innecesarios;
+- que los scripts históricos puedan eliminarse sin revisar referencias;
+- que VITAL deba adoptar la futura estrategia de Vento OS;
+- que la ausencia de pruebas implique automáticamente que cada función sea defectuosa.
+
+---
+
+#### 16. Criterios de aceptación
+
+`CODE-AUD-007` podrá aprobarse cuando:
+
+- los doce repositorios estén clasificados;
+- Vento OS y VITAL estén separados;
+- pruebas, fixtures, mocks y demos no se confundan;
+- los paquetes sin comando `test` estén identificados;
+- la suite contractual de VITAL esté registrada;
+- los mocks HTTP de VITAL estén registrados;
+- los previews de impresión de NEXO estén clasificados correctamente;
+- el sandbox histórico `SBXV1` tenga estado remoto comprobado;
+- el seeding local desactivado quede documentado;
+- las migraciones canónicas con palabra `seed` no se marquen como basura;
+- `APP-REVIEW` tenga destino verificable antes de decidir su eliminación;
+- scripts y templates históricos tengan tarea de revisión;
+- cada hallazgo tenga destino canónico;
+- no se haya creado ni restaurado información de prueba;
+- `CODE-AUD-008` permanezca como única continuidad.
+
+---
+
+#### 17. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+repositorio o superficie
+        ↓
+mecanismo de validación localizado
+        ↓
+prueba, mock, preview, demo o historial
+        ↓
+clasificación correcta
+        ↓
+hallazgo con destino canónico
+```
+
+La continuidad será:
+
+```text
+QA-GOV-001
+— Definir gobierno, registro y ciclo de vida de requisitos de prueba
+```
+
+
+### [ ] QA-GOV-001 — Definir gobierno, registro y ciclo de vida de requisitos de prueba
 ### [ ] CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
 ### [ ] CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
 ### [ ] CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa

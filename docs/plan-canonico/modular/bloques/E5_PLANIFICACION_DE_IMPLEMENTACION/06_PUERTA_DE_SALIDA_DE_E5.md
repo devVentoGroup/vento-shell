@@ -6,5 +6,5 @@
 ### [ ] E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
 ### [ ] E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
 ### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
-### [ ] E5-GATE-007 — Confirmar trazabilidad hasta pruebas y evidencia de cierre
+### [ ] E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
 ### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes

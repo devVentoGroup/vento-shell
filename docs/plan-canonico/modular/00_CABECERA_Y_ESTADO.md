@@ -17,31 +17,31 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **115** |
-| Tareas canónicas con marcador | **1374** |
+| Fragmentos canónicos | **116** |
+| Tareas canónicas con marcador | **1379** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **166** |
+| Tareas aprobadas | **167** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1208** |
+| Tareas no iniciadas | **1212** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos** |
-| Tarea actual | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Última tarea aprobada | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Tarea actual | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
+| Siguiente tarea | **CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 43 de 96 aprobadas; CODE-AUD-007 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 44 de 96 aprobadas; CODE-AUD-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos |
-| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas |
+| Última aprobada | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración |
+| Tarea actual | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas — **NO INICIADA** |
+| Siguiente tarea | `CODE-AUD-009` — Detectar valores hardcodeados y decisiones técnicas temporales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **43 DE 96 APROBADAS — ACTUAL CODE-AUD-007** |
+| BLOQUE E1 | **44 DE 96 APROBADAS — ACTUAL CODE-AUD-008** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
-        ↓
-TAREA ACTUAL
 CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
+SIGUIENTE TAREA RESERVADA
+CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 43 de 96 tareas aprobadas
+BLOQUE E1 — 44 de 96 tareas aprobadas
 ```

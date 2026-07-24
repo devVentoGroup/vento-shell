@@ -23,7 +23,9 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    → `OPS-ACT-001`
    → `OPS-PLAN-001` a `OPS-PLAN-004`
    → `CAP-MAP-001` a `CAP-MAP-015`
-   → `CODE-AUD-001` a `CODE-AUD-020`
+   → `CODE-AUD-001` a `CODE-AUD-007`
+   → `QA-GOV-001`
+   → `CODE-AUD-008` a `CODE-AUD-020`
    → `CAP-SCOPE-001` a `CAP-SCOPE-019`
    → `CAP-COVER-001` a `CAP-COVER-012`
    → `GAP-CTRL-001` a `GAP-CTRL-008`.
@@ -62,6 +64,30 @@ En esta fase se define:
 
 Todavía no se implementan interfaces definitivas ni se reorganiza
 físicamente Supabase.
+
+### Ciclo obligatorio de los requisitos de prueba
+
+```text
+E1 — DESCUBRIMIENTO
+identificar la regla y crear `TREQ-*`
+        ↓
+E2 / E3 / E4 — DISEÑO
+definir escenario, datos, resultado esperado y riesgo
+        ↓
+E5 — PLANIFICACIÓN
+vincular el requisito con un paquete mediante `DELIV-PKG-016`
+        ↓
+T / R0 — INFRAESTRUCTURA
+crear runner, harness, entorno reproducible y CI
+        ↓
+IMPLEMENTACIÓN POR PAQUETE
+escribir y ejecutar la prueba junto con el código
+        ↓
+PILOTO E HYPERCARE
+convertir cada defecto encontrado en una prueba de regresión
+        ↓
+U — CIERRE INTEGRAL
+ejecutar regresión completa, E2E, seguridad, UX y pruebas operativas
 
 FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 

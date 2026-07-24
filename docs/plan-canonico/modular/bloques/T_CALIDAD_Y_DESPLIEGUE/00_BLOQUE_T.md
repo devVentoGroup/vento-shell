@@ -17,4 +17,8 @@
 ### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
 ### [ ] SHELL-CI-014 — Permitir rollback por repositorio
 ### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
+### [ ] SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio
+### [ ] SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba
+### [ ] SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+### [ ] SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
 

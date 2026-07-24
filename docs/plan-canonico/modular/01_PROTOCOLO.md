@@ -46,6 +46,7 @@
    - el marcador exacto que debe reemplazarse;
    - el marcador de la tarea siguiente que debe conservarse;
    - un resumen breve de las decisiones propuestas;
+   - los identificadores de requisitos de prueba generados o la declaración expresa `NO GENERA REQUISITOS DE PRUEBA`;
    - el estado de la tarea.
 
    No deberá pegarse en el chat el contenido completo de la tarea.
@@ -69,7 +70,7 @@
    consolidación, el contenido aprobado deberá insertarse dentro del archivo
    lógico propietario definido por la arquitectura modular.
 
-5. Toda tarea nueva inicia con:
+1. Toda tarea nueva inicia con:
 
    **PROPUESTA PARA APROBACIÓN**
 
@@ -81,7 +82,7 @@
    para evaluar y aprobar la tarea, sin depender de explicaciones
    complementarias del chat.
 
-6. No marcar una tarea como aprobada hasta que el usuario diga
+2. No marcar una tarea como aprobada hasta que el usuario diga
    explícitamente:
 
    **APROBADO**
@@ -94,7 +95,7 @@
    - no iniciar implementación;
    - no avanzar automáticamente a la tarea siguiente.
 
-7. Después de la aprobación:
+3. Después de la aprobación:
 
    - la tarea quedará conceptualmente aprobada para la siguiente
      consolidación documental;
@@ -112,7 +113,7 @@
    La versión aprobada deberá conservar íntegramente las decisiones
    aceptadas y no incluir tareas adicionales.
 
-8. No avanzar a la tarea siguiente hasta que el usuario lo solicite
+4. No avanzar a la tarea siguiente hasta que el usuario lo solicite
    expresamente.
 
    Cuando el usuario solicite la siguiente tarea, deberá entregarse
@@ -121,7 +122,7 @@
    La ausencia de una consolidación inmediata no invalida las
    aprobaciones expresas ya otorgadas.
 
-9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
+5. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
 
    La tarea documental inmediata se determina mediante:
@@ -146,26 +147,26 @@
    actualizarse el encabezado, la continuidad inmediata y la transición de
    la tarea precedente durante la siguiente consolidación documental.
 
-10. El BLOQUE A contiene evidencia histórica.
+6.  El BLOQUE A contiene evidencia histórica.
     ADR-AUTH-001 y las tareas AUTH aprobadas contienen decisiones normativas.
 
-11. Toda futura migración de Supabase deberá crearse y documentarse
+7.  Toda futura migración de Supabase deberá crearse y documentarse
     en vento-shell.
 
-12. No reducir silenciosamente el alcance de una tarea.
+8.  No reducir silenciosamente el alcance de una tarea.
 
-13. El roadmap de autorización define quién puede ejecutar una capacidad,
+9.  El roadmap de autorización define quién puede ejecutar una capacidad,
     bajo qué modalidad, alcance, contexto y recurso.
 
-14. El roadmap funcional y de experiencia define qué proceso resuelve
+10. El roadmap funcional y de experiencia define qué proceso resuelve
     cada aplicación, qué pantallas utiliza cada actor y cómo se conecta
     el proceso entre aplicaciones.
 
-15. Las decisiones funcionales, de navegación o experiencia no podrán
+11. Las decisiones funcionales, de navegación o experiencia no podrán
     contradecir el catálogo canónico, las matrices, el contexto efectivo,
     la precedencia ni las denegaciones aprobadas.
 
-16. Ninguna pantalla, ruta o componente se considerará terminado únicamente
+12. Ninguna pantalla, ruta o componente se considerará terminado únicamente
     porque exista técnicamente. Deberá estar vinculado con:
     - un proceso empresarial;
     - un actor objetivo;
@@ -175,21 +176,21 @@
     - criterios de usabilidad;
     - trazabilidad cuando corresponda.
 
-17. Las aplicaciones se reorganizarán por procesos y responsabilidades
+13. Las aplicaciones se reorganizarán por procesos y responsabilidades
     empresariales, no por carpetas, rutas técnicas o nombres de componentes.
 
-18. Toda función transversal deberá tener una aplicación propietaria.
+14. Toda función transversal deberá tener una aplicación propietaria.
     Las demás aplicaciones podrán consumirla, pero no duplicar su lógica,
     su autorización ni su fuente de verdad.
 
-19. Los cambios funcionales o de experiencia que no requieran modificar
+15. Los cambios funcionales o de experiencia que no requieran modificar
     Supabase deberán documentarse en el roadmap y en el repositorio
     propietario de la aplicación.
 
     Cuando el cambio requiera una migración de Supabase,
     aplicará obligatoriamente el punto 11.
 
-20. Toda nueva necesidad funcional o técnica deberá analizarse primero
+16. Toda nueva necesidad funcional o técnica deberá analizarse primero
     contra:
 
     - el documento canónico vigente;
@@ -197,7 +198,7 @@
     - el código actual del repositorio propietario;
     - las decisiones aprobadas que afecten el proceso.
 
-21. Antes de entregar una implementación deberá determinarse expresamente
+17. Antes de entregar una implementación deberá determinarse expresamente
     si el cambio afecta:
 
     - permisos;
@@ -215,7 +216,7 @@
     - auditoría;
     - experiencia o navegación.
 
-22. Todo cambio contractual deberá pasar por:
+18. Todo cambio contractual deberá pasar por:
 
     - propuesta documental;
     - análisis de impacto;
@@ -225,10 +226,10 @@
     - pruebas;
     - actualización documental.
 
-23. Un cambio que no afecte autorización deberá declararlo expresamente
+19. Un cambio que no afecte autorización deberá declararlo expresamente
     antes de implementarse.
 
-24. Todo paquete de implementación deberá incluir, cuando corresponda:
+20. Todo paquete de implementación deberá incluir, cuando corresponda:
 
     - repositorio propietario;
     - archivos exactos que se crean o modifican;
@@ -241,11 +242,11 @@
     - mecanismo de rollback;
     - actualización documental requerida.
 
-25. Ningún cambio entregado en otra conversación deberá aplicarse
+21. Ningún cambio entregado en otra conversación deberá aplicarse
     automáticamente sin verificarlo contra el documento canónico vigente
     y el estado actual de los repositorios.
 
-26. Supabase deberá tratarse como una plataforma canónica integral y no
+22. Supabase deberá tratarse como una plataforma canónica integral y no
     únicamente como un conjunto de tablas en `public`.
 
     Su gobierno incluirá, como mínimo:
@@ -267,7 +268,7 @@
     - tipos generados;
     - auditoría, rendimiento, retención y recuperación.
 
-27. La organización física de Supabase se definirá en el BLOQUE E3 y se
+23. La organización física de Supabase se definirá en el BLOQUE E3 y se
     implementará en el BLOQUE R.
 
     El BLOQUE E3 auditará el estado real, definirá la arquitectura objetivo
@@ -276,7 +277,7 @@
     El BLOQUE R aplicará las migraciones, protecciones, pruebas y retiro
     controlado de estructuras legacy.
 
-28. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
+24. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
     Edge Function, webhook, tarea programada o secreto podrá reorganizarse,
     renombrarse, trasladarse o retirarse sin:
 
@@ -292,14 +293,14 @@
     - rollback;
     - actualización documental.
 
-29. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
+25. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
     `realtime`, `extensions` y `supabase_migrations`, deberán distinguirse
     de los esquemas empresariales de Vento.
 
     No deberán moverse, renombrarse ni utilizarse como contenedores de
     lógica empresarial salvo mediante mecanismos oficialmente soportados.
 
-30. Los esquemas empresariales de Vento deberán organizarse por dominios
+26. Los esquemas empresariales de Vento deberán organizarse por dominios
     estables y fuentes de verdad, no por:
 
     - aplicación;
@@ -312,7 +313,7 @@
     Una aplicación podrá consumir varios dominios y un dominio podrá ser
     consumido por varias aplicaciones sin duplicar sus datos.
 
-31. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
+27. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
 
     Cada objeto deberá declarar expresamente:
 
@@ -328,7 +329,7 @@
     - estrategia de auditoría;
     - ciclo de vida.
 
-32. El estado desplegado de Supabase deberá ser reproducible desde
+28. El estado desplegado de Supabase deberá ser reproducible desde
     `vento-shell`.
 
     Los cambios directos realizados desde Dashboard, Table Editor,
@@ -336,7 +337,7 @@
     emergencia controlada y convertirse después en una migración
     versionada, verificable y documentada.
 
-33. La autenticación técnica, la identidad empresarial y la autorización
+29. La autenticación técnica, la identidad empresarial y la autorización
     deberán permanecer separadas.
 
     `auth.users`
@@ -348,13 +349,13 @@
     catálogo, matrices, contexto y recurso
     → autorización efectiva
 
-34. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
+30. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
     con las aplicaciones existentes.
 
     No se moverán objetos entre esquemas ni se retirarán nombres legacy
     mediante un cambio único si existen consumidores activos.
 
-35. La normalización de datos deberá definirse por dominio, entidad y campo.
+31. La normalización de datos deberá definirse por dominio, entidad y campo.
 
     No existirá una transformación universal aplicada indiscriminadamente
     a todo valor textual.
@@ -384,7 +385,7 @@
     Las correcciones ortográficas ambiguas no se aplicarán silenciosamente.
     Deberán enviarse a revisión o aprobación humana.
 
-36. Las claves de permisos, credenciales de integración y secretos técnicos
+32. Las claves de permisos, credenciales de integración y secretos técnicos
     deberán mantenerse como conceptos separados.
 
     `PermissionKey`
@@ -409,7 +410,7 @@
     - compartirse entre producción, staging y desarrollo;
     - entregarse a un proveedor para escribir directamente en Supabase.
 
-37. Toda integración externa deberá operar mediante un adaptador y un
+33. Toda integración externa deberá operar mediante un adaptador y un
     contrato empresarial canónico.
 
     Un sistema externo no deberá:
@@ -423,7 +424,7 @@
     El adaptador deberá validar, transformar, mapear, deduplicar, auditar
     y emitir eventos canónicos antes de afectar otros dominios.
 
-38. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
+34. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
     decisión diferida, supuesto por verificar o elemento fuera de alcance
     sin destino documental explícito.
 
@@ -460,6 +461,95 @@
 
     Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
     o cuando cite una tarea que no exista formalmente en el roadmap.
+
+Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
+o cuando cite una tarea que no exista formalmente en el roadmap.
+
+39. Toda tarea documental, funcional, técnica o de implementación deberá
+    incluir, antes de sus criterios de aceptación, una sección denominada:
+
+    `#### Requisitos de prueba derivados`
+
+    La sección deberá usar uno de los siguientes formatos.
+
+    Cuando la tarea genere requisitos de prueba:
+
+    ```md
+    #### Requisitos de prueba derivados
+
+    **Resultado:** GENERA REQUISITOS DE PRUEBA
+
+    | ID              | Regla protegida                                              | Tipo        | Prioridad | Momento de implementación      | Destino                    |
+    | --------------- | ------------------------------------------------------------ | ----------- | --------- | ------------------------------ | -------------------------- |
+    | `TREQ-NEXO-001` | Un retiro parcial descuenta unidades y no paquetes completos | integración | crítica   | paquete que implemente retiros | paquete E5 correspondiente |
+    ```
+
+    Cuando la tarea no genere requisitos de prueba:
+
+    ```md
+    #### Requisitos de prueba derivados
+
+    **Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+    **Justificación:** cambio exclusivamente documental, sin comportamiento
+    ejecutable nuevo o modificado.
+    ```
+
+    No se permitirá omitir esta sección.
+
+40. Toda regla de negocio, autorización, cálculo, transformación, transición
+    de estado, restricción de integridad, contrato de integración, incidente,
+    regresión o comportamiento técnicamente verificable que requiera protección
+    deberá generar inmediatamente un requisito de prueba identificable.
+
+    Los requisitos utilizarán la convención:
+
+    `TREQ-<DOMINIO>-<NNN>`
+
+    Ejemplos:
+
+    - `TREQ-AUTH-001`;
+    - `TREQ-NEXO-001`;
+    - `TREQ-SUPABASE-001`;
+    - `TREQ-PASS-001`.
+
+    Detectar una necesidad de prueba no obliga a implementarla durante una
+    tarea documental. Sí obliga a:
+
+    - asignarle identificador;
+    - describir la regla protegida;
+    - indicar el riesgo que evita;
+    - clasificar el tipo de prueba;
+    - registrar su origen;
+    - vincularla con una tarea o paquete de implementación;
+    - definir el momento en que deberá implementarse;
+    - incorporarla al Registro Canónico de Requisitos de Prueba.
+
+    No se considerarán requisitos materializados expresiones como:
+
+    - probar después;
+    - revisar en QA;
+    - validar durante implementación;
+    - comprobar posteriormente;
+    - agregar pruebas cuando exista infraestructura.
+
+    Ninguna tarea podrá aprobarse cuando identifique una necesidad de prueba y:
+
+    - no genere el requisito `TREQ-*`;
+    - no lo vincule con el registro canónico;
+    - no declare su tarea o paquete destino;
+    - no declare expresamente por qué la prueba no aplica.
+
+    Cuando se detecte un defecto o regresión, deberá generarse un requisito de
+    prueba de regresión antes o conjuntamente con su corrección.
+
+    Las pruebas unitarias, contractuales, de integración, seguridad y
+    migraciones deberán implementarse junto con el paquete que modifica el
+    comportamiento protegido.
+
+    El BLOQUE U no deberá utilizarse para aplazar pruebas que debieron
+    implementarse junto con el código. El BLOQUE U ejecutará regresión integral,
+    escenarios de extremo a extremo, seguridad, experiencia y pilotos.
 
 ---
 
