@@ -1,2 +1,2 @@
 Trigger temporal para normalizar CODE-AUD-011 y 04A.
-Ejecución final sin validación previa bloqueante.
+Ejecución directa sobre el bloque documental.
