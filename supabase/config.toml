@@ -57,11 +57,8 @@ enabled = true
 schema_paths = []
 
 [db.seed]
-# If enabled, seeds the database after migrations during a db reset.
-enabled = true
-# Specifies an ordered list of seed files to load during db reset.
-# Supports glob patterns relative to supabase directory: "./seeds/*.sql"
-sql_paths = ["./seed.sql"]
+# This repository has no canonical seed dataset. Do not load demo or test data during db reset.
+enabled = false
 
 [db.network_restrictions]
 # Enable management of network restrictions.
@@ -185,7 +182,7 @@ token_refresh = 150
 sign_in_sign_ups = 30
 # Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.
 token_verifications = 30
-# Number of Web3 logins that can be made in a 5 minute interval per IP address.
+# Number of Web3 logins that can be made per hour per IP address.
 web3 = 30
 
 # Configure one of the supported captcha providers: `hcaptcha`, `turnstile`.
@@ -273,7 +270,7 @@ auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
 
 # Multi-factor-authentication is available to Supabase Pro plan.
 [auth.mfa]
-# Control how many MFA factors can be enrolled at once per user.
+# Control how many MFA factors can be enrolled at once.
 max_enrolled_factors = 10
 
 # Control MFA via App Authenticator (TOTP)
@@ -313,7 +310,7 @@ skip_nonce_check = false
 email_optional = false
 
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
-# You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
+# You can configure "web3" rate limit in [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
 [auth.web3.solana]
 enabled = false
 
