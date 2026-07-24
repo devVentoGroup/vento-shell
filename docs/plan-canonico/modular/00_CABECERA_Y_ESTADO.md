@@ -41,7 +41,7 @@
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
 | Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos |
 | Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración — **NO INICIADA** |
-| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas` |
+| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
