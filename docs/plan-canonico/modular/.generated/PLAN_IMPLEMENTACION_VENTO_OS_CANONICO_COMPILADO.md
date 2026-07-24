@@ -12,36 +12,36 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión | 2026-07-22 |
-| Revisión documental | **40** |
+| Versión | 2026-07-23 |
+| Revisión documental | **56** |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **115** |
-| Tareas canónicas con marcador | **1367** |
+| Tareas canónicas con marcador | **1374** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **138** |
-| Tareas en propuesta | **1** |
-| Tareas no iniciadas | **1228** |
+| Tareas aprobadas | **166** |
+| Tareas en propuesta | **0** |
+| Tareas no iniciadas | **1208** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso** |
-| Tarea actual | **OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares** |
+| Última tarea aprobada | **CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos** |
+| Tarea actual | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 15 de 96 aprobadas; OPS-ADM-001 en propuesta** |
+| Progreso del bloque | **BLOQUE E1: 43 de 102 aprobadas; CODE-AUD-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso |
-| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares |
+| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos |
+| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración — **NO INICIADA** |
+| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **15 DE 96 APROBADAS — ACTUAL OPS-ADM-001** |
+| BLOQUE E1 | **43 DE 102 APROBADAS — ACTUAL CODE-AUD-007** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso
+CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
         ↓
 TAREA ACTUAL
-OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa
+CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
         ↓
 SIGUIENTE TAREA RESERVADA
-OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares
+CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 15 de 96 tareas aprobadas
+BLOQUE E1 — 43 de 102 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -156531,9 +156531,9 @@ de `CAP-MAP-001`. La recolección de evidencia de `OPS-PLAN-002`,
 `OPS-PLAN-003` y `OPS-PLAN-004` puede comenzar antes, sin alterar la tarea
 actual ni permitir aprobaciones fuera de secuencia.
 
-### 🟡 OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa
+### ✅ OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa
 
-**Estado:** PROPUESTA PARA APROBACIÓN  
+**Estado:** APROBADA
 **Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
 **Dependencia cumplida:** `OPS-AUD-015`  
 **Naturaleza:** Documentación AS-IS de una brecha registral, física y documental  
@@ -157167,47 +157167,2710 @@ OPS-GOV-001
 `OPS-GOV-001` deberá documentar cómo se relacionan actualmente Vento Group, Vento Café, Saudo, Molka, Vaila Vainilla y catering, sin diseñar todavía el modelo financiero, contable o societario objetivo.
 
 
-**Dependencias:** `OPS-AUD-015`.  
-**Propósito:** reconciliar la ubicación administrativa real, la dirección registral vigente, la identificación de Oficina 1 y la relación física con Vento Café.  
-**Salida obligatoria:** evidencia, estado actual, responsables, documentos afectados, decisiones requeridas y tarea de ejecución externa cuando corresponda.  
-**Límite:** esta tarea no modifica registros legales ni reemplaza asesoría contable o jurídica.
+### ✅ OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares
 
-### [ ] OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencia cumplida:** `OPS-AUD-015` y `OPS-ADM-001` aprobada conceptualmente
+**Naturaleza:** documentación AS-IS de fronteras de marca, titularidad, operación y recursos
+**Implementación técnica:** no autorizada
+**Cambios legales, societarios, contables, tributarios o registrales:** no autorizados por esta tarea
+**Migraciones o cambios en Supabase:** no autorizados
+**Límite profesional:** esta tarea no sustituye certificados, contratos, registros, asesoría jurídica, tributaria o contable.
 
-**Dependencias:** `OPS-AUD-015`.  
-**Propósito:** documentar la relación operativa, administrativa, económica y de recursos entre Vento Group, Vento Café, Saudo, Molka, Vaila Vainilla y catering.  
-**Salida obligatoria:** fronteras actuales, servicios compartidos, uso de personal y activos, facturación observada, costos compartidos, riesgos y decisiones pendientes.  
-**Límite:** el modelo financiero y contable objetivo se diseña posteriormente en NUMERA y las integraciones correspondientes.
+---
 
-### [ ] OPS-ACT-001 — Inventariar activos y puntos externos de custodia
+#### 1. Propósito
 
-**Dependencias:** `OPS-AUD-015`.  
-**Propósito:** completar el inventario AS-IS de decoraciones, vehículo, materiales residuales, mobiliario, elementos pendientes de instalar y demás activos ubicados fuera de sedes formales.  
-**Salida obligatoria:** activo o familia, propietario, custodio, ubicación, condición, uso, riesgo, evidencia y destino documental.  
-**Continuidad:** alimenta `NEXO-DOM-008`, `NEXO-DOM-010`, `NEXO-DOM-011`, `NEXO-DOM-017` y `NEXO-DOM-027`.
+Documentar, sin presumir una estructura jurídica o financiera objetivo, cómo se distinguen actualmente Vento Group, Vento Café, Saudo, Molka, Vaila Vainilla y catering; qué evidencia existe de su operación; qué recursos parecen atravesar más de un frente; y qué debe confirmarse antes de declarar titularidades, facturación, costos o responsabilidades.
 
-### [ ] OPS-PLAN-001 — Definir el programa de auditoría de demanda y requisitos de planificación productiva
+La salida de la tarea será:
 
-**Dependencias:** `OPS-AUD-015`.  
-**Propósito:** establecer preguntas, periodos, granularidad, fuentes, responsables, calidad mínima, criterios de conciliación y límites de la auditoría de demanda.  
-**Salida obligatoria:** protocolo de análisis AS-IS para ventas, pedidos, remisiones, faltantes, sobrantes, mermas, inventarios finales, productos previsibles y productos bajo pedido.  
-**Límite:** no aprueba todavía el algoritmo, los mínimos, la producción base ni el proceso TO-BE.
+```text
+EVIDENCIA DISPONIBLE
+→ FRENTERAS AS-IS
+→ RECURSOS Y SERVICIOS COMPARTIDOS OBSERVADOS
+→ HECHOS NO CONFIRMADOS
+→ RIESGOS
+→ RESPONSABLES DE VALIDACIÓN
+→ DESTINO DOCUMENTAL O EXTERNO DE CADA BRECHA
+```
 
-### [ ] OPS-PLAN-002 — Consolidar fuentes internas para la auditoría de demanda
+No crea empresas, marcas, sedes, centros de costo, catálogos, permisos, integraciones ni reglas de facturación.
 
-**Sustituye la referencia narrativa:** `OPS-PLAN-001-A`.  
-**Dependencias:** `OPS-PLAN-001`.  
-**Responsable inicial de evidencia:** contabilidad.  
-**Salida obligatoria:** inventario de fuentes de Makos, inventarios, compras, recepciones, remisiones, periodos disponibles, periodos faltantes, formato, acceso, propietario y calidad conocida.
+---
 
-### [ ] OPS-PLAN-003 — Levantar demanda, faltantes y variaciones por canal
+#### 2. Principios obligatorios
+
+1. Marca, titular jurídico, sede operativa, canal comercial, línea de producto, centro de costo y aplicación no son equivalentes.
+2. La presencia de una sede o una marca en la operación no demuestra por sí misma quién factura, contrata, posee activos o asume obligaciones frente a terceros.
+3. Compartir personal, instalaciones, administración, proveedores o canales no demuestra por sí mismo identidad jurídica, mezcla patrimonial ni autorización para imputar costos.
+4. Las fronteras documentadas aquí describen el estado observado; el modelo TO-BE se reserva para E2, NUMERA, BLOQUE X y las tareas de dominio correspondientes.
+5. Ninguna conclusión de esta tarea autoriza una modificación externa o de sistemas internos.
+
+---
+
+#### 3. Inventario AS-IS de frentes identificados
+
+| Frente         | Clasificación AS-IS                                   | Evidencia disponible                                                                 | Lo que no queda probado por esta tarea                                                                  |
+| -------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Vento Group    | referencia organizacional y punto administrativo real | `OPS-ADM-001` documenta `Oficina 1` como punto administrativo real                   | razón social exacta, titularidad de cada operación, relación jurídica con las demás marcas              |
+| Vento Café     | sede comercial y operativa                            | aparece como sede con áreas operativas, asignaciones laborales y dispositivo de caja | titular jurídico, facturación, propiedad de activos o relación societaria con otros frentes             |
+| Saudo          | sede operativa diferenciada                           | aparece como sede con áreas, roles, turnos y operación propia                        | titular jurídico, facturación, activos, costos o relación jurídica con Vento Café/Molka                 |
+| Molka          | sede operativa diferenciada                           | aparece como sede con asignaciones laborales y rol operativo                         | titular jurídico, facturación, activos, costos o relación jurídica con los demás frentes                |
+| Vaila Vainilla | línea, marca o canal comercial por confirmar          | Shopify y mensajería se asocian operativamente con Vaila Vainilla                    | titular de marca, canal de venta exacto, inventario, facturación, producción, recaudo y responsabilidad |
+| Catering       | capacidad o canal comercial por confirmar             | figura como elemento que debe gobernarse y diseñarse en tareas posteriores           | titular, oferta, operación, facturación, activos, personal, contratos y canales efectivos               |
+
+La tabla no clasifica jurídicamente ninguno de los frentes. Su función es impedir que nombres operativos se conviertan prematuramente en entidades, sedes, empresas o centros de costo.
+
+---
+
+#### 4. Relaciones observadas y límites de evidencia
+
+##### 4.1. Administración transversal
+
+`OPS-ADM-001` confirma un punto administrativo real denominado provisionalmente `Vento Group — Oficina 1`. Desde allí se asocian funciones administrativas como gerencia, coordinación, compras, gestión documental, programación laboral, marketing, soporte tecnológico y administración de aplicaciones.
+
+Esto confirma una concentración administrativa observada; no confirma qué frente es titular de cada obligación, documento, activo, ingreso, gasto o relación laboral.
+
+##### 4.2. Operación por sede
+
+Vento Café, Saudo y Molka se encuentran representados como sedes diferenciadas en la configuración laboral y operativa. Existen trabajadores con asignaciones en más de una sede.
+
+Esto evidencia movilidad o cobertura operativa multisede. No permite inferir que los trabajadores, costos, cajas, inventarios o activos sean compartidos sin reglas o documentos específicos.
+
+##### 4.3. Canales y plataformas externas
+
+La documentación de contingencias asocia Shopify y mensajería con Vaila Vainilla, y contempla catering entre los canales o capacidades que deberán diseñarse posteriormente.
+
+No existe, dentro de la evidencia revisada, una conciliación que pruebe para cada canal: titular de la cuenta, emisor de factura, cuenta receptora, responsable del pedido, responsable de la entrega, inventario usado y tratamiento de devoluciones.
+
+##### 4.4. Producción, distribución y frentes comerciales
+
+Centro de Producción, Vento Café, Saudo y Molka aparecen como contextos operativos distintos. La relación económica entre producción, distribución y sedes comerciales no se define en esta tarea; su destino es `OPS-CST-001` y las tareas de NUMERA indicadas allí.
+
+---
+
+#### 5. Matriz de evidencia y estado
+
+| Código    | Afirmación                                                                      | Estado                      | Evidencia o destino de validación                              |
+| --------- | ------------------------------------------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
+| `GOV-001` | Existe una referencia organizacional Vento Group y un punto administrativo real | `CONFIRMADO`                | `OPS-ADM-001`                                                  |
+| `GOV-002` | Vento Café, Saudo y Molka se operan como sedes diferenciadas                    | `CONFIRMADO`                | configuraciones de sede, áreas, roles y asignaciones auditadas |
+| `GOV-003` | Existe cobertura laboral multisede                                              | `CONFIRMADO`                | asignaciones y ejemplos de roles por sede auditados            |
+| `GOV-004` | Vaila Vainilla depende operativamente de Shopify y mensajería                   | `CONFIRMADO_PARCIAL`        | auditoría de contingencias; flujo comercial completo pendiente |
+| `GOV-005` | Catering corresponde a una capacidad o canal que requiere gobierno explícito    | `CONFIRMADO_PARCIAL`        | `OPS-CAN-001` lo incluye como alcance futuro                   |
+| `GOV-006` | La titularidad jurídica de cada frente está reconciliada                        | `PENDIENTE_DOCUMENTAL`      | `EXT-GOV-001` condicional                                      |
+| `GOV-007` | La titularidad de cada marca y canal externo está reconciliada                  | `PENDIENTE_DOCUMENTAL`      | `EXT-GOV-001` condicional + `OPS-CAN-001`                      |
+| `GOV-008` | Facturación, recaudo y cuentas receptoras están asignados por frente            | `PENDIENTE_DE_CONCILIACION` | `OPS-CST-001` + auditoría funcional de NUMERA                  |
+| `GOV-009` | Costos, activos y personal compartidos tienen regla de imputación aprobada      | `PENDIENTE_DE_DISENO`       | `OPS-ACT-001`, `OPS-CST-001` y NUMERA                          |
+| `GOV-010` | Cada canal tiene propietario funcional y responsable de atención                | `PENDIENTE_DE_DISENO`       | `OPS-CAN-001`                                                  |
+
+---
+
+#### 6. Fronteras provisionales de lectura
+
+Hasta contar con evidencia documental y decisiones posteriores, se usará la siguiente lectura AS-IS:
+
+```text
+Vento Group
+→ referencia organizacional y administrativa observada
+
+Vento Café / Saudo / Molka / Centro de Producción
+→ sedes operativas diferenciadas
+
+Vaila Vainilla / catering
+→ frentes comerciales o capacidades por caracterizar
+
+Titular jurídico, titular de marca, emisor de factura,
+propietario de cuenta, centro de costo y dueño de activo
+→ NO PRESUMIDOS A PARTIR DEL NOMBRE O LA SEDE
+```
+
+Esta regla evita dos errores opuestos: fusionar frentes por conveniencia operativa o inventar separaciones jurídicas sin soporte.
+
+---
+
+#### 7. Servicios y recursos potencialmente transversales
+
+| Recurso o servicio                  | Estado AS-IS                            | Riesgo si se presume una regla                                               | Destino                                       |
+| ----------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------- |
+| Administración y coordinación       | concentrada parcialmente en Oficina 1   | atribuir obligaciones o decisiones al frente incorrecto                      | `OPS-ADM-001` y `CAP-MAP-001` a `CAP-MAP-006` |
+| Personal multisede                  | observado                               | tratar la asignación laboral como imputación de costo o pertenencia jurídica | `CAP-MAP-003`, `CAP-MAP-006`, `OPS-CST-001`   |
+| Activos y puntos de custodia        | incompleto                              | asignar propiedad por ubicación física                                       | `OPS-ACT-001`                                 |
+| Producción y transferencias         | relación operativa por caracterizar     | duplicar inventario, ingreso o costo entre producción y sede                 | `OPS-LOG-001`, `OPS-CST-001`                  |
+| Shopify, mensajería y otros canales | asociados parcialmente a Vaila Vainilla | perder trazabilidad de pedido, recaudo, entrega o devolución                 | `OPS-CAN-001` y BLOQUE X                      |
+| Catering                            | sin caracterización AS-IS suficiente    | abrir ventas o compromisos sin propietario ni contrato operativo             | `OPS-CAN-001`, `OPS-B2B-001` cuando aplique   |
+
+---
+
+#### 8. Riesgos registrados
+
+| Riesgo                                                                        | Consecuencia                                                             | Tratamiento documental                             |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
+| Marca, sede y titular se usan como sinónimos                                  | facturación, contratos, permisos o reportes atribuidos incorrectamente   | `EXT-GOV-001` condicional y `CAP-MAP-003`          |
+| Un canal externo no tiene propietario funcional y económico distinguible      | pedidos, recaudos, devoluciones o soporte sin responsable claro          | `OPS-CAN-001`                                      |
+| Personal o activos multisede se interpretan como compartidos sin trazabilidad | costo, custodia, autorización y responsabilidad ambiguos                 | `OPS-ACT-001` y `OPS-CST-001`                      |
+| Producción y venta se reconcilian solo de forma informal                      | duplicación u omisión de inventario, costo o ingreso                     | `OPS-LOG-001`, `OPS-CST-001`, NUMERA               |
+| Catering se trata como marca, sede o canal sin definición                     | compromisos comerciales sin proceso, responsable ni capacidad confirmada | `OPS-CAN-001` y `OPS-B2B-001` si supera viabilidad |
+
+---
+
+#### 9. Validaciones requeridas y responsables
+
+| Validación                                                                 | Responsable inicial                          | Evidencia mínima                                            | Destino                                                 |
+| -------------------------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
+| Titular jurídico, representación y registros aplicables por frente         | Gerencia + Contabilidad + asesoría aplicable | certificados, registros y contratos vigentes                | `EXT-GOV-001` condicional                               |
+| Titularidad y uso autorizado de marcas, dominios, redes y cuentas externas | Gerencia / Marketing + asesoría aplicable    | cuenta, contrato, registro o autorización                   | `EXT-GOV-001` condicional; `OPS-CAN-001` para operación |
+| Emisor de factura, recaudo y conciliación por canal                        | Contabilidad                                 | facturas, extractos, contratos de plataforma y conciliación | `OPS-CST-001` + NUMERA                                  |
+| Activo, custodio y ubicación de recursos compartidos                       | Operaciones                                  | inventario y evidencia de custodia                          | `OPS-ACT-001`                                           |
+| Propietario funcional, actor y flujo de cada canal                         | Operaciones / Comercial                      | proceso observado, responsables y excepciones               | `OPS-CAN-001`                                           |
+
+---
+
+#### 10. Tarea externa condicional propuesta
+
+### [ ] EXT-GOV-001 — Verificar soporte documental de titulares, marcas y cuentas externas del ecosistema
+
+**Estado:** NO ACTIVADA — requiere evidencia documental y decisión de Gerencia
+**Naturaleza:** validación documental, administrativa y profesional; no es implementación de software
+**Dependencia:** `OPS-GOV-001` aprobada + expediente disponible
+
+**Propósito:** reconciliar, por cada frente identificado, el titular jurídico, denominación o marca usada, representación, cuenta o canal externo, documento de soporte, vigencia y responsable interno.
+
+**Entrada obligatoria:** inventario de frentes, documentos disponibles, cuentas/canales conocidos, discrepancias y responsable de aportar evidencia.
+
+**Salida obligatoria:** matriz documental por frente; diferencias confirmadas; decisiones requeridas; lista de cambios externos aplicables; y autorización explícita para normalización posterior cuando corresponda.
+
+**Límite:** no crea ni modifica registros, contratos, marcas, cuentas, facturación, permisos o datos de aplicaciones.
+
+Esta tarea queda materializada como identificador único dentro del fragmento canónico propietario y deberá aparecer en el registro global de tareas.
+
+---
+
+#### 11. Decisiones propuestas
+
+1. Vento Group se reconoce provisionalmente como referencia organizacional y administrativa observada, no como sustituto automático del titular de cada frente.
+2. Vento Café, Saudo y Molka se reconocen como sedes operativas diferenciadas; esa clasificación no decide titularidad jurídica, económica o de activos.
+3. Vaila Vainilla y catering se mantienen como frentes por caracterizar; no se les atribuye automáticamente empresa, sede, marca registrada, inventario, cuenta de recaudo ni proceso definitivo.
+4. La asignación multisede de trabajadores no equivale a mezcla de costos, activos, inventario o responsabilidad jurídica.
+5. Todo canal externo deberá distinguir: titular de cuenta, propietario funcional, emisor de factura, receptor de recaudo, responsable de preparación, responsable de entrega y tratamiento de devolución.
+6. Los activos se atribuirán por evidencia de propiedad y custodia, no solo por ubicación; el destino inmediato es `OPS-ACT-001`.
+7. La relación económica entre producción, distribución y sedes se definirá en `OPS-CST-001` y NUMERA, no en esta tarea.
+8. La arquitectura objetivo de canales, incluidos catering y Vaila Vainilla, se definirá en `OPS-CAN-001` después del cierre de E1.
+9. Se propone `EXT-GOV-001` como tarea externa condicional para verificar soporte documental de titulares, marcas y cuentas externas.
+10. Ninguna decisión de esta tarea autoriza cambios legales, financieros, contables, tributarios, de código, migraciones o Supabase.
+
+---
+
+#### 12. Criterios de aceptación
+
+`OPS-GOV-001` podrá aprobarse cuando se confirme que:
+
+- cada frente está descrito sin convertir nombres operativos en conclusiones jurídicas;
+- se distinguen marca, titular, sede, canal, línea de producto, centro de costo y aplicación;
+- están documentados los recursos y servicios compartidos observados, con sus límites de evidencia;
+- toda incertidumbre de titularidad, canal, activo, costo o facturación tiene destino concreto;
+- existe una tarea externa condicional para validar soportes documentales;
+- la tarea no diseña aún el modelo financiero, contable, societario ni TO-BE;
+- no se han realizado cambios en registros, contratos, plataformas, sistemas, código o Supabase.
+
+---
+
+#### 13. Resultado y continuidad
+
+Con la aprobación de `OPS-GOV-001` quedará disponible una lectura AS-IS controlada del ecosistema de frentes operativos y comerciales, sin convertir ambigüedades documentales en decisiones de arquitectura.
+
+La continuidad deberá realizarse exclusivamente con:
+
+```text
+OPS-ACT-001
+— Inventariar activos y puntos externos de custodia
+```
+
+`OPS-ACT-001` deberá identificar activo o familia, propietario, custodio, ubicación, condición, uso, riesgo, evidencia y destino documental, sin inferir propiedad solo por sede o marca.
+
+
+
+### ✅ OPS-ACT-001 — Inventariar activos y puntos externos de custodia
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencia cumplida:** `OPS-AUD-015`, `OPS-ADM-001` y `OPS-GOV-001`
+**Naturaleza:** inventario AS-IS de activos, reutilizables, puntos de custodia y evidencia disponible
+**Implementación técnica:** no autorizada
+**Cambios contables, patrimoniales, registrales o de seguros:** no autorizados
+**Migraciones o cambios en Supabase:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Crear la línea base verificable de los activos y recursos físicos que se encuentran fuera de una sede formal, en tránsito, en custodia administrativa o cuya ubicación, titularidad, condición o responsable no estén inequívocamente documentados.
+
+La tarea produce:
+
+```text
+ACTIVO O FAMILIA
+→ UBICACIÓN O PUNTO DE CUSTODIA
+→ CUSTODIO OBSERVADO
+→ CONDICIÓN Y USO
+→ EVIDENCIA DISPONIBLE
+→ RIESGO
+→ DESTINO DE CADA BRECHA
+```
+
+No determina depreciación, propiedad legal, valor contable, baja, seguro, compra, venta, transferencia ni asignación definitiva en aplicaciones.
+
+---
+
+#### 2. Principios obligatorios
+
+1. Ubicación física, custodio, propietario, responsable operativo, usuario y centro de costo son atributos distintos.
+2. Un activo no se atribuye a una sede, marca, empresa o persona únicamente por estar allí o ser usado por ella.
+3. Un recurso reutilizable controlado por cantidad no se inventa como activo individual si no existe identificación o evidencia suficiente; se clasifica provisionalmente como familia pendiente de modelo.
+4. La existencia de un vehículo, canastas, hornos, decoración, mobiliario o materiales no demuestra por sí misma propiedad, disponibilidad, condición ni cobertura de seguro.
+5. Este inventario documenta AS-IS y no sustituye conteo físico, avalúo, contabilidad ni controles de seguridad.
+
+---
+
+#### 3. Alcance inicial
+
+| Familia o punto                                                      | Estado de evidencia                           | Riesgo operativo conocido                                | Destino documental                             |
+| -------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------- |
+| Decoraciones y elementos de marca                                    | inventario incompleto                         | pérdida, préstamo informal o atribución incorrecta       | `NEXO-DOM-008` a `NEXO-DOM-011`                |
+| Vehículo                                                             | dependencia crítica identificada              | interrupción de remisiones y abastecimiento              | `NEXO-DOM-027`                                 |
+| Canastas y reutilizables de transporte                               | cantidad, ubicación y custodia no conciliadas | pérdida de trazabilidad, empaque improvisado y faltantes | `NEXO-DOM-009`, `NEXO-DOM-011`, `NEXO-DOM-014` |
+| Mobiliario, herramientas y repuestos fuera de sede formal            | inventario y custodia incompletos             | mantenimiento, reposición y costo no trazables           | `NEXO-DOM-010` a `NEXO-DOM-013`                |
+| Equipos pendientes de instalar o reubicar                            | ubicación y destino por confirmar             | activos o capacidades inactivas sin responsable          | `NEXO-DOM-008`, `NEXO-DOM-012`                 |
+| Documentos físicos, soportes y efectivo bajo custodia administrativa | punto y responsable por confirmar             | pérdida de trazabilidad y exposición financiera          | `OPS-ADM-001`, `OPS-CST-001` y E4              |
+| Activos en tránsito o en poder de terceros                           | relación y evidencia por levantar             | pérdida de custodia o devolución no verificable          | `NEXO-DOM-011`                                 |
+
+---
+
+#### 4. Hechos y límites confirmados
+
+Se encuentra documentado que:
+
+- el vehículo y el conductor son dependencias distintas y críticas para remisiones y abastecimiento;
+- canastas y mensajería son recursos relevantes para transporte y entrega;
+- existen activos, soportes o efectivo que pueden permanecer en el punto administrativo `Vento Group — Oficina 1`;
+- el modelo actual de activos es parcial y aún no define integralmente reutilizables, custodia y mantenimiento;
+- Vento Café, Saudo, Molka y Centro de Producción son contextos operativos diferenciados, pero ello no determina la propiedad de los recursos ubicados allí.
+
+No se afirma todavía:
+
+- que exista un inventario físico completo;
+- quién es propietario jurídico o contable de cada ítem;
+- que todos los recursos estén disponibles, asegurados, identificados o en buen estado;
+- que una persona, sede o marca deba absorber un costo por custodiar o usar el recurso;
+- que una ubicación temporal sea un punto de almacenamiento autorizado.
+
+---
+
+#### 5. Registro mínimo obligatorio
+
+Cada ítem individual o familia deberá registrarse con los siguientes campos. Si el dato se desconoce, se anotará `POR_VERIFICAR`, nunca se inferirá.
+
+| Campo                    | Regla                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| Código temporal          | único para la evidencia, sin convertirlo aún en código de inventario definitivo    |
+| Familia y descripción    | qué recurso es y para qué se usa                                                   |
+| Control                  | individual, por cantidad, kit, consumible, documento, efectivo o por definir       |
+| Identificador disponible | placa, serial, etiqueta, foto, referencia o `NO_DISPONIBLE`                        |
+| Ubicación actual         | sede, punto externo, tránsito, tercero o `POR_VERIFICAR`                           |
+| Custodio observado       | persona, equipo o tercero que lo conserva o entrega; no equivale a propietario     |
+| Responsable operativo    | quien requiere el recurso para el proceso, si es distinto del custodio             |
+| Condición                | operativo, degradado, en reparación, pendiente de instalar, perdido, por verificar |
+| Uso y proceso asociado   | producción, venta, logística, administración, marketing, catering u otro           |
+| Titularidad              | confirmada documentalmente, atribuida provisionalmente o por verificar             |
+| Evidencia                | foto, factura, contrato, acta, placa, conteo, conversación o ausencia documentada  |
+| Riesgo y prioridad       | pérdida, seguridad, operación, financiero, legal o mantenimiento                   |
+| Destino                  | tarea concreta que resuelve la brecha                                              |
+
+---
+
+#### 6. Estados permitidos
+
+| Campo      | Valores AS-IS permitidos                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| Ubicación  | `SEDE_CONFIRMADA`, `PUNTO_ADMINISTRATIVO`, `TRANSITO`, `TERCERO`, `EXTERNO_NO_FORMAL`, `POR_VERIFICAR` |
+| Custodia   | `CONFIRMADA`, `OBSERVADA`, `DISPUTADA`, `NO_DEFINIDA`, `POR_VERIFICAR`                                 |
+| Condición  | `OPERATIVO`, `DEGRADADO`, `EN_REPARACION`, `PENDIENTE_INSTALAR`, `NO_LOCALIZADO`, `POR_VERIFICAR`      |
+| Evidencia  | `DOCUMENTAL`, `FISICA`, `FOTOGRAFICA`, `TESTIMONIAL`, `NINGUNA`, `POR_RECOLECTAR`                      |
+| Criticidad | `IC1` a `IC5`, usando la escala ya documentada de continuidad                                          |
+
+---
+
+#### 7. Procedimiento de levantamiento
+
+1. Crear listado inicial por familia, no por presunta propiedad.
+2. Realizar conteo físico o verificación remota identificando ubicación y custodia observada.
+3. Capturar evidencia mínima sin publicar números de serie, placas o documentos sensibles fuera del repositorio de evidencia autorizado.
+4. Separar activos individuales, reutilizables por cantidad, consumibles, documentos y efectivo.
+5. Marcar diferencias entre existencia observada, ubicación declarada, custodio declarado y soporte disponible.
+6. Vincular cada diferencia con una tarea existente; si no hay tarea responsable, crear una tarea formal antes de cerrar E1.
+7. No efectuar bajas, movimientos, reasignaciones, correcciones contables ni cambios de sistemas durante el levantamiento.
+
+---
+
+#### 8. Brechas y destinos obligatorios
+
+| Brecha                                                          | Destino exacto                                                                  |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Custodio actual no definido                                     | `NEXO-DOM-008`                                                                  |
+| Condición, daño, pérdida o faltante                             | `NEXO-DOM-010`                                                                  |
+| Préstamo, devolución, transferencia o tránsito                  | `NEXO-DOM-011`                                                                  |
+| Mantenimiento, reparación o disponibilidad                      | `NEXO-DOM-012` y `NEXO-DOM-026`                                                 |
+| Baja, descarte, venta o reemplazo                               | `NEXO-DOM-013`                                                                  |
+| Kit, conjunto, canasta o completitud                            | `NEXO-DOM-014`                                                                  |
+| Vehículo, kilometraje, combustible o mantenimiento              | `NEXO-DOM-027`                                                                  |
+| Impacto económico de adquisición, reparación, pérdida o baja    | `NEXO-DOM-028` y NUMERA                                                         |
+| Propiedad, custodia o documento físico del punto administrativo | `OPS-ADM-001`, `EXT-ADM-001` cuando aplique, y `EXT-GOV-001` cuando corresponda |
+| Relación entre activos, costos y frentes operativos             | `OPS-CST-001`                                                                   |
+
+---
+
+#### 9. Riesgos prioritarios
+
+| Riesgo                                     | Impacto                                                | Tratamiento en esta fase                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Vehículo no disponible o sin alternativa   | `IC5` para remisiones y abastecimiento                 | identificar vehículo, custodio, condición, documentos disponibles y dependencia; diseño posterior en `NEXO-DOM-027` |
+| Canastas o reutilizables sin control       | pérdida, faltantes y empaque improvisado               | conteo por familia y punto; modelo posterior en `NEXO-DOM-009`, `NEXO-DOM-011`, `NEXO-DOM-014`                      |
+| Activo fuera de sede sin custodio          | pérdida o imposibilidad de reconstruir responsabilidad | registrar ubicación/custodia observada y evidencia; resolver con `NEXO-DOM-008`                                     |
+| Equipo pendiente de instalar               | capacidad bloqueada y deterioro                        | identificar destino y condición; resolver disponibilidad con `NEXO-DOM-012`                                         |
+| Documento o efectivo sin punto de custodia | riesgo financiero, legal y de trazabilidad             | registrar sin exponer contenido; destino `OPS-ADM-001`, `OPS-CST-001` y E4                                          |
+
+---
+
+#### 10. Responsables
+
+| Responsabilidad                                                 | Responsable inicial                                    |
+| --------------------------------------------------------------- | ------------------------------------------------------ |
+| Coordinar inventario físico y evidencia                         | Jefatura de Operaciones                                |
+| Identificar uso, estado y ubicación observada                   | responsable de cada sede, área o proceso               |
+| Aportar soportes de adquisición, contrato, seguro o titularidad | Gerencia / Administración / Contabilidad según aplique |
+| Validar vehículo y recursos de logística                        | Operaciones + responsable de logística                 |
+| Evaluar impacto contable o tributario                           | Contabilidad o asesoría aplicable                      |
+| Mantener evidencia sensible                                     | responsable documental autorizado                      |
+| Consolidar brechas y destinos                                   | Responsable de E1 / `GAP-CTRL-001` a `GAP-CTRL-006`    |
+
+---
+
+#### 11. Decisiones propuestas
+
+1. Se creará una línea base de inventario AS-IS antes de diseñar el modelo definitivo de activos.
+2. Todo recurso se clasificará por evidencia y control requerido, no por supuesto propietario.
+3. Vehículo, canastas, recursos en tránsito y activos fuera de sede se consideran prioritarios por su riesgo operativo.
+4. La custodia observada se registrará sin convertirla en autorización, propiedad o imputación de costo.
+5. Ninguna diferencia habilita una baja, compra, transferencia, ajuste contable o cambio de sistema.
+6. Cada diferencia tendrá uno de los destinos definidos en la sección 8; ninguna quedará solo como observación.
+7. Los datos sensibles de documentos, efectivo, placas y seriales permanecerán en el repositorio de evidencia autorizado, no en el plan canónico.
+
+---
+
+#### 12. Criterios de aceptación
+
+`OPS-ACT-001` podrá aprobarse cuando:
+
+- exista un inventario AS-IS por familia o ítem con ubicación, custodia, condición, evidencia y riesgo;
+- se distingan activo, reutilizable, consumible, documento y efectivo;
+- vehículo, canastas, activos externos y recursos pendientes de instalar estén identificados o declarados explícitamente no localizados;
+- ninguna titularidad, valor, baja o transferencia se presente como confirmada sin soporte;
+- cada brecha tenga tarea, responsable y evidencia de cierre;
+- no se hayan realizado cambios contables, legales, físicos, de código o Supabase.
+
+---
+
+#### 13. Resultado y continuidad
+
+Con la aprobación de `OPS-ACT-001` quedará trazada la evidencia mínima para que los modelos de custodia, reutilizables, mantenimiento, flota y costo se diseñen después sin ocultar activos fuera de los catálogos actuales.
+
+La continuidad deberá realizarse exclusivamente con:
+
+```text
+OPS-PLAN-001
+— Definir el programa de auditoría de demanda y requisitos de planificación productiva
+```
+
+`OPS-PLAN-001` definirá preguntas, períodos, fuentes, responsables y calidad mínima para auditar demanda; no aprobará todavía algoritmo, mínimos, producción base ni proceso TO-BE.
+
+### ✅ OPS-PLAN-001 — Definir el programa de auditoría de demanda y requisitos de planificación productiva
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencia cumplida:** `OPS-AUD-015`, `OPS-ADM-001`, `OPS-GOV-001` y `OPS-ACT-001`
+**Naturaleza:** protocolo AS-IS de evidencia y conciliación de demanda
+**Implementación técnica, algoritmo, mínimos o automatización:** no autorizados
+**Cambios en Supabase:** no autorizados
+**Ejecución de la auditoría:** diferida; esta aprobación define el instrumento, pero no obliga a ejecutarlo ahora
+
+---
+
+#### 1. Propósito
+
+Definir cómo se levantará evidencia suficiente de ventas, pedidos, remisiones, faltantes, sobrantes, mermas e inventario para comprender la demanda real y los requisitos de planificación productiva.
+
+```text
+FUENTES DISPONIBLES
+→ CALIDAD Y VACÍOS
+→ DEMANDA OBSERVADA
+→ FALTANTES / SOBRANTES / MERMAS
+→ CONCILIACIÓN
+→ REQUISITOS DE PLANIFICACIÓN
+→ DESTINO DE BRECHAS
+```
+
+No decide todavía qué producir, cuánto producir, qué inventario mínimo mantener, cómo asignar costo ni qué sistema será fuente de verdad definitiva.
+
+---
+
+#### 2. Preguntas obligatorias
+
+1. ¿Qué se solicitó, vendió, preparó, despachó, recibió, devolvió o quedó pendiente por producto, presentación, canal y sede?
+2. ¿Qué fuente registra cada hecho y con qué período, acceso, granularidad y confiabilidad?
+3. ¿Dónde se originan faltantes, sobrantes, sustituciones, cancelaciones, mermas y diferencias de inventario?
+4. ¿Qué productos son previsibles, estacionales, bajo pedido, críticos o de producción limitada?
+5. ¿Qué restricciones de capacidad, equipos, personal, ventana horaria, logística e insumos afectan el cumplimiento?
+6. ¿Qué datos no se pueden recuperar históricamente y deben comenzar a registrarse prospectivamente?
+
+---
+
+#### 3. Fuentes a auditar
+
+| Fuente                                | Hecho potencial                                           | Responsable inicial                | Destino        |
+| ------------------------------------- | --------------------------------------------------------- | ---------------------------------- | -------------- |
+| Makos / POS vigente                   | ventas, mesas, pedidos, descuentos, pagos y cancelaciones | Contabilidad / operación comercial | `OPS-PLAN-002` |
+| Inventarios, compras y recepciones    | disponibilidad, entrada, faltante y costo observado       | Contabilidad / bodega              | `OPS-PLAN-002` |
+| Remisiones y hojas de solicitud       | pedido entre puntos, preparado, entregado y recibido      | Operaciones                        | `OPS-PLAN-002` |
+| Rappi                                 | pedidos externos, cancelaciones y demanda por canal       | Responsable de pedidos             | `OPS-PLAN-003` |
+| ManyChat, WhatsApp y canales directos | solicitud, conversación, pedido y entrega                 | Responsable de pedidos             | `OPS-PLAN-003` |
+| Shopify / Vaila Vainilla              | pedidos, pago, preparación y despacho por confirmar       | Comercial / operaciones            | `OPS-PLAN-003` |
+| Conteo y observación operativa        | sobrantes, faltantes, merma, sustitución y no venta       | Responsable de sede o producción   | `OPS-PLAN-004` |
+
+---
+
+#### 4. Unidad mínima de análisis
+
+Cada registro recuperable o prospectivo deberá poder distinguir, cuando aplique:
+
+| Campo                               | Regla                                                                                     |
+| ----------------------------------- | ----------------------------------------------------------------------------------------- |
+| Fecha y hora                        | conservar zona y período de corte                                                         |
+| Producto y presentación             | no agregar presentaciones distintas sin trazabilidad                                      |
+| Canal                               | sede, POS, Rappi, directo, Shopify, B2B u `OTRO_POR_VERIFICAR`                            |
+| Sede solicitante / origen / destino | separar cuando exista transferencia o remisión                                            |
+| Cantidad                            | solicitada, confirmada, preparada, enviada, recibida, vendida, faltante, sobrante o merma |
+| Estado                              | completado, parcial, cancelado, sustituido, pendiente o desconocido                       |
+| Evidencia                           | sistema, documento, mensaje, conteo u observación                                         |
+| Calidad                             | completa, parcial, inconsistente, no recuperable o por validar                            |
+| Responsable                         | propietario de la fuente y persona que valida el dato                                     |
+| Observación                         | causa conocida, limitación o discrepancia, sin corrección silenciosa                      |
+
+---
+
+#### 5. Reglas de calidad y conciliación
+
+1. No sumar fuentes distintas como si fueran ventas independientes sin identificar su relación.
+2. Una cifra sin producto, presentación, fecha o canal se clasifica como agregada y no sirve para cálculo fino.
+3. Las diferencias entre pedido, preparación, despacho, recepción y venta se conservan; no se corrigen para forzar coincidencia.
+4. Una ausencia histórica se registra como `NO_RECUPERABLE` con período y responsable, no como cero demanda.
+5. Cualquier estimación debe señalar método, fuente, responsable y nivel de confianza.
+6. El programa separará demanda observada de capacidad disponible y de decisión futura de producción.
+
+---
+
+#### 6. Salidas de las tareas derivadas
+
+| Tarea          | Salida aprobable                                                                                 |
+| -------------- | ------------------------------------------------------------------------------------------------ |
+| `OPS-PLAN-002` | inventario de fuentes internas, períodos, formatos, acceso, propietario y calidad conocida       |
+| `OPS-PLAN-003` | evidencia por canal, faltantes, sobrantes, variaciones, estacionalidad y límites de recuperación |
+| `OPS-PLAN-004` | registro prospectivo de solicitud, entrega y diferencia con responsables y frecuencia            |
+
+La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar tras esta propuesta; su aprobación formal conserva el orden canónico.
+
+Cada tarea derivada deberá entregar un checklist operativo reutilizable. La ejecución puede posponerse, pero las preguntas, variables, fuentes, responsables y evidencias requeridas deberán permanecer documentadas para no depender de esta conversación.
+
+##### 6.1. Regla de resolución delegable
+
+Cada duda deberá convertirse en una pregunta concreta que pueda responder la persona más cercana al hecho mediante observación, conteo, demostración, documento o descripción de su trabajo. El cuestionario indicará:
+
+- rol adecuado para responder;
+- lugar, momento y proceso que debe observar;
+- pregunta en lenguaje cotidiano;
+- opciones de respuesta y cuándo usar `NO SÉ` o `NO APLICA`;
+- evidencia mínima esperada;
+- repregunta según cada respuesta;
+- criterio para considerar la duda resuelta;
+- responsable que valida y tarea que recibe el resultado.
+
+El trabajador no será responsable de diseñar soluciones, interpretar arquitectura, consultar bases de datos ni emitir conclusiones jurídicas o contables. Cajeros, meseros, operarios, responsables de pedidos y encargados responderán sobre hechos observables; Contabilidad y Gerencia responderán sobre soportes, decisiones y responsabilidades empresariales. Solo los casos que requieran acceso técnico, seguridad o inspección de sistemas se escalarán posteriormente, conservando primero la descripción funcional obtenida del trabajador.
+
+---
+
+#### 7. Brechas y destinos
+
+| Brecha                                                      | Destino                                                  |
+| ----------------------------------------------------------- | -------------------------------------------------------- |
+| Fuente inexistente, inaccesible o no recuperable            | `OPS-PLAN-002` o `OPS-PLAN-003`                          |
+| Diferencia persistente entre solicitud, entrega y recepción | `OPS-PLAN-004`, `OPS-LOG-001` y `NEXO-DOM` aplicable     |
+| Producto, presentación o unidad ambigua                     | `CAP-MAP-001` a `CAP-MAP-015` y catálogo correspondiente |
+| Capacidad productiva, equipo o personal insuficiente        | `CAP-SCOPE-008`, `OPS-LOG-001` y FOGO                    |
+| Falta de trazabilidad económica                             | `OPS-CST-001` y NUMERA                                   |
+| Canal sin responsable o flujo definido                      | `OPS-CAN-001` y BLOQUE X                                 |
+
+---
+
+#### 8. Decisiones propuestas
+
+1. La auditoría partirá de hechos observables y conservará diferencias, vacíos y calidad de fuente.
+2. No se aprobará algoritmo, pronóstico, mínimo, lote, producción base ni compra automática desde esta tarea.
+3. La recuperación histórica y el registro prospectivo se tratarán como fuentes diferentes y conciliables, no intercambiables.
+4. Ningún dato sin trazabilidad mínima se usará como base única de una decisión de producción.
+5. Cada vacío tendrá el destino definido en la sección 7.
+6. La auditoría puede ejecutarse posteriormente; `OPS-PLAN-002` a `OPS-PLAN-004` conservarán sus instrumentos, variables y controles específicos.
+7. Las dudas se formularán como cuestionarios delegables y no exigirán conocimientos de ingeniería para describir el hecho empresarial.
+
+---
+
+#### 9. Criterios de aceptación
+
+`OPS-PLAN-001` podrá aprobarse cuando estén definidas preguntas, fuentes, unidad mínima de análisis, reglas de calidad, responsables, salidas de `OPS-PLAN-002` a `OPS-PLAN-004` y destino de brechas; sin diseñar todavía el proceso TO-BE, algoritmo, mínimos, automatización o cambios de sistemas.
+
+---
+
+#### 10. Resultado y continuidad
+
+Al aprobarse, quedará definido el protocolo de evidencia necesario para iniciar la consolidación de fuentes internas.
+
+La continuidad será:
+
+```text
+OPS-PLAN-002
+— Consolidar fuentes internas para la auditoría de demanda
+```
+
+
+### ✅ OPS-PLAN-002 — Consolidar fuentes internas para la auditoría de demanda
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencia cumplida:** `OPS-PLAN-001`
+**Responsable inicial de evidencia:** Contabilidad, con apoyo de Operaciones, Bodega y responsables de sistema
+**Naturaleza:** inventario y plan de acceso a fuentes internas AS-IS
+**Extracción, análisis estadístico o modificación de datos:** no autorizados por esta tarea
+**Cambios en código, Supabase o sistemas externos:** no autorizados
+**Ejecución:** puede realizarse posteriormente mediante el checklist definido aquí
+
+---
+
+#### 1. Propósito
+
+Construir el inventario operativo de las fuentes internas necesarias para auditar demanda, disponibilidad y cumplimiento, dejando claro:
+
+```text
+QUÉ FUENTE EXISTE
+→ QUIÉN LA CONTROLA
+→ CÓMO SE ACCEDE
+→ QUÉ PERÍODO CUBRE
+→ QUÉ CAMPOS CONTIENE
+→ QUÉ HECHO EMPRESARIAL REPRESENTA
+→ QUÉ CALIDAD Y LIMITACIONES TIENE
+→ QUÉ ACCIÓN POSTERIOR REQUIERE
+```
+
+Esta tarea no descarga todavía todos los datos ni calcula demanda. Su salida es la lista verificable para ejecutar la auditoría después sin improvisación.
+
+---
+
+#### 2. Checklist maestro por fuente
+
+Cada fuente deberá responder todas las variables siguientes:
+
+| Grupo           | Variable de control     | Pregunta de auditoría                                                                       |
+| --------------- | ----------------------- | ------------------------------------------------------------------------------------------- |
+| Identidad       | código y nombre         | ¿Cómo se identifica inequívocamente la fuente?                                              |
+| Propiedad       | propietario empresarial | ¿Quién responde por su significado y uso?                                                   |
+| Custodia        | administrador técnico   | ¿Quién concede acceso, exporta o recupera información?                                      |
+| Acceso          | mecanismo y estado      | ¿Existe acceso activo, solicitado, restringido o perdido?                                   |
+| Seguridad       | clasificación           | ¿Contiene datos personales, financieros, comerciales o credenciales?                        |
+| Cobertura       | fecha inicial y final   | ¿Qué período real está disponible?                                                          |
+| Frecuencia      | actualización           | ¿Es tiempo real, diaria, semanal, mensual o manual?                                         |
+| Granularidad    | unidad de registro      | ¿Venta, línea, pedido, producto, remisión, movimiento, conteo o agregado?                   |
+| Formato         | soporte                 | ¿Base de datos, API, CSV, Excel, PDF, papel, mensaje o interfaz?                            |
+| Identificadores | claves disponibles      | ¿Hay producto, presentación, sede, canal, pedido, documento y timestamps?                   |
+| Cantidades      | medidas disponibles     | ¿Registra solicitado, vendido, preparado, enviado, recibido, faltante, sobrante o merma?    |
+| Estados         | ciclo registrado        | ¿Distingue completado, parcial, cancelado, sustituido y pendiente?                          |
+| Calidad         | estado evaluado         | ¿Es completa, parcial, inconsistente, no recuperable o por validar?                         |
+| Conciliación    | claves de cruce         | ¿Con qué otra fuente puede relacionarse sin asumir equivalencia?                            |
+| Limitaciones    | vacíos conocidos        | ¿Qué dato falta y desde cuándo?                                                             |
+| Evidencia       | prueba de existencia    | ¿Hay captura, diccionario, exportación de muestra o responsable que la confirme?            |
+| Acción          | siguiente paso          | ¿Exportar, solicitar acceso, documentar, conciliar, excluir o iniciar registro prospectivo? |
+
+---
+
+#### 3. Fuentes internas mínimas a confirmar
+
+| Código provisional | Fuente                               | Hechos esperados                                                       | Responsable inicial                | Estado inicial               |
+| ------------------ | ------------------------------------ | ---------------------------------------------------------------------- | ---------------------------------- | ---------------------------- |
+| `SRC-DEM-001`      | Makos / POS vigente                  | ventas, líneas, productos, descuentos, impuestos, pagos, cancelaciones | Contabilidad / operación comercial | `POR_CONFIRMAR_ACCESO`       |
+| `SRC-DEM-002`      | inventario actual                    | existencias, movimientos, conteos, ajustes y disponibilidad            | Bodega / Operaciones               | `POR_CONFIRMAR_COBERTURA`    |
+| `SRC-DEM-003`      | compras y órdenes                    | solicitudes, proveedor, cantidades, fechas y estados                   | Compras / Contabilidad             | `POR_CONFIRMAR_FORMATO`      |
+| `SRC-DEM-004`      | recepciones de proveedor             | recibido, diferencias, fecha, producto y presentación                  | Bodega / Compras                   | `POR_CONFIRMAR_GRANULARIDAD` |
+| `SRC-DEM-005`      | solicitudes de remisión              | solicitado por sede, producto, presentación y fecha                    | Operaciones                        | `POR_INVENTARIAR`            |
+| `SRC-DEM-006`      | preparación y despacho de remisiones | preparado, sustituido, faltante, enviado y responsable                 | Bodega / Logística                 | `POR_INVENTARIAR`            |
+| `SRC-DEM-007`      | recepción de remisiones              | recibido, diferencia, rechazo, ajuste y fecha                          | Sede receptora                     | `POR_INVENTARIAR`            |
+| `SRC-DEM-008`      | conteos e inventarios finales        | saldo, sobrante, faltante, merma y momento de corte                    | Producción / Bodega / sedes        | `POR_CONFIRMAR_EXISTENCIA`   |
+| `SRC-DEM-009`      | producción ejecutada                 | lote, producto, cantidad, rendimiento, merma y fecha                   | Producción                         | `POR_CONFIRMAR_FUENTE`       |
+| `SRC-DEM-010`      | archivos y hojas manuales            | solicitudes, consolidaciones y correcciones no presentes en sistemas   | Operaciones / Contabilidad         | `POR_LOCALIZAR`              |
+
+Rappi, ManyChat, WhatsApp, Shopify y entrevistas por canal se detallarán en `OPS-PLAN-003`; solo se registrarán aquí cuando exista una copia o conciliación interna controlada.
+
+---
+
+#### 4. Estados normalizados
+
+Cada fuente tendrá exactamente un estado principal:
+
+```text
+CONFIRMADA_ACCESIBLE
+CONFIRMADA_RESTRINGIDA
+ACCESO_SOLICITADO
+ACCESO_PERDIDO
+EXISTENCIA_POR_CONFIRMAR
+NO_RECUPERABLE
+SUSTITUIDA
+FUERA_DE_ALCANCE
+```
+
+Y una clasificación de calidad:
+
+```text
+UTILIZABLE
+UTILIZABLE_CON_LIMITACIONES
+REQUIERE_CONCILIACION
+SOLO_AGREGADA
+INCONSISTENTE
+SIN_MUESTRA
+NO_EVALUADA
+```
+
+`NO_RECUPERABLE` nunca se interpretará como ausencia de demanda ni como valor cero.
+
+---
+
+#### 5. Evidencia mínima antes de declarar una fuente confirmada
+
+Una fuente solo podrá marcarse `CONFIRMADA_ACCESIBLE` cuando exista:
+
+1. responsable empresarial identificado;
+2. mecanismo de acceso verificado;
+3. período disponible confirmado;
+4. granularidad conocida;
+5. lista mínima de campos;
+6. muestra controlada o evidencia equivalente;
+7. clasificación de sensibilidad;
+8. limitaciones documentadas;
+9. acción siguiente asignada.
+
+No se incluirán credenciales, datos personales, números financieros sensibles ni exportaciones completas dentro del plan canónico.
+
+---
+
+#### 6. Procedimiento de ejecución posterior
+
+Cuando la auditoría sea activada:
+
+1. entrevistar al propietario de cada fuente;
+2. completar el checklist sin solicitar aún extracciones masivas;
+3. obtener una muestra mínima y segura;
+4. verificar fechas, granularidad, identificadores y estados;
+5. documentar campos disponibles y significado;
+6. identificar cruces posibles y evitar uniones por nombre libre;
+7. registrar períodos faltantes y datos no recuperables;
+8. clasificar calidad y utilidad;
+9. asignar acción, responsable y evidencia de cierre;
+10. aprobar el inventario antes de iniciar análisis cuantitativo.
+
+---
+
+#### 7. Variables para la muestra de validación
+
+La muestra de cada fuente deberá permitir revisar, cuando aplique:
+
+| Dimensión  | Campos esperados                                                                      |
+| ---------- | ------------------------------------------------------------------------------------- |
+| Tiempo     | fecha de creación, actualización, operación y cierre                                  |
+| Producto   | identificador, nombre, presentación y unidad                                          |
+| Territorio | sede, origen, destino y área cuando aplique                                           |
+| Canal      | POS, remisión, compra, producción u otro                                              |
+| Documento  | pedido, factura, recepción, remisión, lote o movimiento                               |
+| Cantidad   | solicitada, confirmada, preparada, enviada, recibida, vendida y ajustada              |
+| Estado     | pendiente, parcial, completado, cancelado, sustituido o rechazado                     |
+| Actor      | creador, responsable, aprobador o receptor, sin exponer datos personales innecesarios |
+| Evidencia  | referencia estable que permita volver al registro original                            |
+
+---
+
+#### 8. Criterios de conciliación preliminar
+
+1. Producto y presentación deberán reconciliarse mediante identificadores o una tabla explícita de equivalencias.
+2. Pedido, remisión, recepción y venta son hechos diferentes; no se fusionarán por compartir fecha o producto.
+3. Las cantidades deberán conservar unidad y presentación originales.
+4. Los timestamps se compararán usando zona horaria y regla de corte conocida.
+5. Cancelaciones, sustituciones y parciales permanecerán visibles.
+6. Los archivos manuales se conservarán como fuente separada hasta demostrar equivalencia.
+7. Una fuente agregada no reemplazará registros detallados para análisis por producto, sede o canal.
+
+---
+
+#### 9. Registro de dudas puntuales
+
+Toda duda encontrada se registrará con:
+
+| Campo                         | Contenido                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| ID                            | `DQ-DEM-###`                                                                    |
+| Fuente                        | código `SRC-DEM-###` relacionado                                                |
+| Pregunta exacta               | una sola duda verificable                                                       |
+| Impacto                       | qué cálculo o decisión queda afectado                                           |
+| Responsable de respuesta      | persona o función empresarial                                                   |
+| Evidencia requerida           | documento, muestra, entrevista o acceso                                         |
+| Fecha o condición de revisión | momento concreto, no “más adelante”                                             |
+| Destino                       | `OPS-PLAN-003`, `OPS-PLAN-004`, CAP-MAP, FOGO, NEXO, NUMERA u otra tarea exacta |
+| Estado                        | abierta, respondida, no recuperable, diferida o descartada con motivo           |
+
+Este registro será la lista de dudas que el usuario podrá resolver posteriormente una por una.
+
+---
+
+#### 10. Cuestionario delegable por duda
+
+Cada registro `DQ-DEM-###` deberá incluir una guía autocontenida que pueda entregarse directamente al trabajador o responsable seleccionado.
+
+##### 10.1. Ficha de asignación
+
+| Campo               | Contenido obligatorio                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| Duda                | una sola pregunta empresarial                                                             |
+| Persona adecuada    | rol o función, no nombre obligatorio                                                      |
+| Motivo de selección | por qué esa persona observa o controla el hecho                                           |
+| Lugar               | caja, salón, cocina, bodega, oficina, plataforma o sede                                   |
+| Momento             | apertura, pedido, cierre, recepción, conteo, despacho u otro evento                       |
+| Duración estimada   | minutos necesarios para observar o responder                                              |
+| Preparación         | documento, dispositivo, producto o proceso que debe tener a la vista                      |
+| Riesgo              | advertencia si no debe compartir datos personales, claves, valores o documentos completos |
+
+##### 10.2. Estructura de preguntas
+
+El cuestionario deberá seguir este orden:
+
+1. **Contexto:** “Cuéntame qué ocurre desde que sucede X hasta que termina Y”.
+2. **Observación:** “Muéstrame dónde ves o registras ese dato”.
+3. **Frecuencia:** “¿Esto ocurre siempre, algunas veces o solo en una excepción?”.
+4. **Variación:** “¿Qué cambia cuando falta producto, llega tarde o el pedido cambia?”.
+5. **Responsabilidad:** “¿Quién recibe el dato, quién lo modifica y quién confirma que terminó?”.
+6. **Evidencia:** “¿Qué queda guardado para demostrar lo ocurrido?”.
+7. **Excepción:** “¿Qué haces cuando el sistema, documento o responsable no está disponible?”.
+8. **Cierre:** “¿Cómo sabes que no quedó nada pendiente?”.
+
+Cada pregunta deberá ofrecer `SÍ`, `NO`, `A VECES`, `NO SÉ` y `NO APLICA` cuando corresponda, además de un espacio breve para describir lo observado.
+
+##### 10.3. Repreguntas condicionadas
+
+| Respuesta                  | Repregunta obligatoria                                           |
+| -------------------------- | ---------------------------------------------------------------- |
+| `SÍ`                       | ¿Dónde puede observarse y qué evidencia queda?                   |
+| `NO`                       | ¿Qué se hace en su lugar y quién decide?                         |
+| `A VECES`                  | ¿En qué casos cambia y con qué frecuencia?                       |
+| `NO SÉ`                    | ¿Quién lo sabría o qué documento permitiría comprobarlo?         |
+| `NO APLICA`                | ¿Por qué no aplica a este rol, sede, canal o proceso?            |
+| Respuestas contradictorias | observar el proceso y solicitar una segunda fuente independiente |
+
+##### 10.4. Evidencia accesible para trabajadores
+
+Se aceptarán:
+
+- observación directa acompañada;
+- demostración del flujo habitual;
+- captura con datos sensibles ocultos;
+- nombre de pantalla, reporte, cuaderno, formato o archivo;
+- conteo manual;
+- fotografía autorizada de elemento físico;
+- ticket, comanda, remisión o documento con información sensible protegida;
+- identificación de la persona que ejecuta el paso siguiente.
+
+No se pedirá al trabajador consultar SQL, inspeccionar código, explicar integraciones, interpretar tablas, entregar contraseñas ni formular una solución técnica.
+
+##### 10.5. Asignación por perfil
+
+| Tipo de duda                                                     | Perfil preferente                                                                      |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| toma de pedido, mesa, comanda, entrega y reclamo                 | mesero, cajero o responsable de atención                                               |
+| apertura, cierre, venta, descuento, pago y cancelación           | cajero o responsable de sede                                                           |
+| preparación, faltante, sustitución, merma y rendimiento          | operario, cocinero, panadero, repostero o responsable productivo                       |
+| recepción, almacenamiento, conteo, despacho y devolución         | bodeguero, receptor o responsable logístico                                            |
+| pedido digital y seguimiento                                     | responsable de pedidos o canal                                                         |
+| factura, soporte, período, pago, costo y conciliación            | Contabilidad                                                                           |
+| propiedad, decisión, excepción y responsable empresarial         | Gerencia General                                                                       |
+| acceso, exportación, disponibilidad o comportamiento del sistema | responsable funcional primero; soporte técnico únicamente para la comprobación técnica |
+
+##### 10.6. Criterio de resolución
+
+Una duda se considerará resuelta cuando:
+
+1. la respuesta identifique un hecho observable;
+2. exista evidencia o una segunda fuente concordante;
+3. estén diferenciados procedimiento habitual y excepción;
+4. se conozca quién inicia, ejecuta, confirma y recibe el resultado;
+5. se hayan registrado variaciones por sede, canal o rol;
+6. el validador funcional confirme que la respuesta permite continuar.
+
+Si el trabajador no conoce la respuesta, la tarea correcta es identificar a la siguiente persona o evidencia; nunca completar el cuestionario por suposición.
+
+---
+
+#### 11. Salidas obligatorias
+
+`OPS-PLAN-002` deberá entregar:
+
+- matriz completa de fuentes internas;
+- checklist por fuente;
+- responsables empresariales y técnicos;
+- estado de acceso;
+- períodos y granularidad;
+- campos y claves disponibles;
+- clasificación de sensibilidad;
+- muestra o evidencia mínima;
+- calidad y limitaciones;
+- mapa preliminar de conciliación;
+- registro `DQ-DEM-###` de dudas puntuales;
+- acción y destino de cada brecha.
+
+---
+
+#### 12. Decisiones propuestas
+
+1. No se iniciará análisis cuantitativo hasta aprobar el inventario de fuentes.
+2. El plan documentará metadatos, controles y dudas; los datos sensibles permanecerán en ubicaciones autorizadas.
+3. Cada fuente tendrá propietario, acceso, cobertura, granularidad, calidad, evidencia y acción.
+4. Cada duda tendrá identificador, responsable, evidencia requerida y destino exacto.
+5. Las fuentes externas y entrevistas por canal se profundizarán en `OPS-PLAN-003`.
+6. Los vacíos no recuperables alimentarán el registro prospectivo de `OPS-PLAN-004`.
+7. La ejecución puede diferirse sin perder el checklist aprobado.
+8. Cada duda deberá convertirse en una guía entregable a un rol disponible y resolverse mediante observación o evidencia accesible.
+9. El trabajador describirá el hecho; la validación, priorización y decisión permanecerán en el responsable funcional correspondiente.
+10. No se exigirá conocimiento de ingeniería, bases de datos o arquitectura para responder preguntas operativas.
+
+---
+
+#### 13. Criterios de aceptación
+
+`OPS-PLAN-002` podrá aprobarse cuando el instrumento permita inventariar todas las fuentes internas mínimas, clasificar acceso y calidad, verificar una muestra segura, registrar dudas puntuales, generar cuestionarios delegables y asignar destinos; sin descargar datos masivamente, analizar demanda, modificar sistemas ni exponer información sensible.
+
+---
+
+#### 14. Resultado y continuidad
+
+Con la aprobación quedará preparada la lista específica de auditoría interna para ejecutarla cuando exista tiempo, acceso y responsables disponibles.
+
+La continuidad será exclusivamente:
+
+```text
+OPS-PLAN-003
+— Levantar demanda, faltantes y variaciones por canal
+```
+
+`OPS-PLAN-003` deberá completar el instrumento para Rappi, ManyChat, WhatsApp, Shopify, entrevistas y demás canales, conservando las mismas reglas de evidencia, calidad y registro de dudas.
+
+
+### ✅ OPS-PLAN-003 — Levantar demanda, faltantes y variaciones por canal
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento de la operación actual
+**Dependencias cumplidas:** `OPS-PLAN-001` y `OPS-PLAN-002`
+**Propósito:** crear autocuestionarios de WhatsApp para saber cómo llegan los pedidos, qué suele faltar y qué suele sobrar
+**Aplicación:** cada persona podrá completar su cuestionario sola
+**No se realizará todavía:** cálculo de producción futura, cambios de sistemas o decisiones automáticas
+
+---
+
+#### 1. Regla obligatoria de los autocuestionarios
+
+Cada pregunta deberá indicar exactamente:
+
+1. qué debe marcar;
+2. qué espacio debe completar;
+3. qué debe escribir si marca `OTRO`;
+4. qué debe hacer si responde `NO SÉ`;
+5. un ejemplo de respuesta;
+6. si debe adjuntar una foto, audio o ningún archivo.
+
+No se usarán instrucciones abiertas como:
+
+- “muéstrame el proceso”;
+- “explica cómo funciona”;
+- “describe el canal”;
+- “indica la trazabilidad”;
+- “revisa el sistema”.
+
+---
+
+#### 2. Mensaje inicial para copiar en WhatsApp
+
+```text
+Hola. Necesitamos conocer mejor lo que pasa con los pedidos durante el trabajo.
+
+Te enviaré un formulario corto relacionado únicamente con las tareas que tú
+realizas.
+
+COPIA cada mensaje, marca las opciones con una X y completa los espacios.
+
+Ejemplo:
+[X] Sí
+[ ] No
+
+Puedes escribir NO SÉ. No es una evaluación de tu trabajo.
+
+No envíes contraseñas, datos de clientes, números de tarjetas ni fotos donde
+aparezca información privada.
+```
+
+---
+
+#### 3. Formulario para meseros
+
+##### MES-01 — Dónde anotas el pedido
+
+```text
+MES-01
+
+Cuando una persona te pide comida o bebida, ¿dónde anotas el pedido?
+
+Marca UNA opción:
+[ ] En una tableta
+[ ] En un computador
+[ ] En un celular
+[ ] En una comanda de papel
+[ ] Lo digo de palabra
+[ ] En otro lugar
+[ ] NO SÉ
+
+Nombre de la aplicación, aparato o papel:
+________________________________
+
+Si marcaste “En otro lugar”, escribe cuál:
+________________________________
+
+Ejemplo: “En la tableta negra, en Makos”.
+
+NO envíes foto.
+```
+
+##### MES-02 — Cómo sabes si hay producto
+
+```text
+MES-02
+
+Antes de confirmar un pedido, ¿cómo sabes si el producto sí está disponible?
+
+Marca TODAS las que ocurran:
+[ ] La tableta o computador lo muestra
+[ ] Hay una lista escrita de productos agotados
+[ ] Cocina o barra avisa
+[ ] Pregunto cada vez
+[ ] Solo me entero después de enviar el pedido
+[ ] No hay una forma definida
+[ ] Otra forma
+[ ] NO SÉ
+
+Si marcaste “Otra forma”, completa:
+Me entero porque __________________________________
+
+Escribe un producto que se haya agotado recientemente:
+________________________________
+
+Ejemplo: “Cocina avisa por el grupo de WhatsApp. Se agotó la lasaña”.
+```
+
+##### MES-03 — Qué pasa cuando no hay
+
+```text
+MES-03
+
+Piensa en la ÚLTIMA VEZ que una persona pidió algo que no había.
+
+Producto que pidió:
+________________________________
+
+¿Qué hiciste primero?
+[ ] Le ofrecí otro producto
+[ ] Pregunté a cocina o barra
+[ ] Pedí ayuda al cajero
+[ ] Cancelé ese producto
+[ ] Otra cosa
+[ ] No recuerdo un caso
+
+¿Dónde quedó anotado que no había?
+[ ] En el pedido
+[ ] En una nota o papel
+[ ] En un chat
+[ ] No quedó anotado
+[ ] NO SÉ
+
+¿La persona compró otra cosa?
+[ ] Sí. Compró: ________________________________
+[ ] No
+[ ] NO SÉ
+```
+
+##### MES-04 — Pedido incompleto o equivocado
+
+```text
+MES-04
+
+En los últimos 7 días, ¿te entregaron algún pedido incompleto o equivocado?
+
+[ ] Sí
+[ ] No
+[ ] No trabajé durante esos días
+[ ] No recuerdo
+
+Si respondiste SÍ:
+
+¿Qué faltó o llegó equivocado?
+________________________________
+
+¿A quién avisaste?
+________________________________
+
+¿Dónde quedó anotada la corrección?
+[ ] En la tableta o computador
+[ ] En papel
+[ ] En un chat
+[ ] No quedó anotada
+[ ] NO SÉ
+
+Ejemplo: “Faltó una bebida. Avisé en barra. No quedó anotado”.
+```
+
+##### MES-05 — Productos que las personas buscan
+
+```text
+MES-05
+
+Escribe hasta 3 productos que las personas hayan pedido y no hayan podido
+comprar durante el último mes.
+
+1. Producto: ________________________________
+   Motivo:
+   [ ] Se había agotado
+   [ ] No estaba en el menú
+   [ ] No se podía preparar en ese momento
+   [ ] NO SÉ
+
+2. Producto: ________________________________
+   Motivo:
+   [ ] Se había agotado
+   [ ] No estaba en el menú
+   [ ] No se podía preparar en ese momento
+   [ ] NO SÉ
+
+3. Producto: ________________________________
+   Motivo:
+   [ ] Se había agotado
+   [ ] No estaba en el menú
+   [ ] No se podía preparar en ese momento
+   [ ] NO SÉ
+
+Si no recuerdas ninguno, escribe: NO RECUERDO NINGUNO.
+```
+
+---
+
+#### 4. Formulario para cajeros
+
+##### CAJ-01 — De dónde recibes pedidos
+
+```text
+CAJ-01
+
+¿De cuáles lugares recibes pedidos durante tu trabajo?
+
+Marca TODOS:
+[ ] Mesas
+[ ] Mostrador
+[ ] Rappi
+[ ] WhatsApp
+[ ] ManyChat
+[ ] Shopify
+[ ] Llamadas
+[ ] Otro
+[ ] NO SÉ
+
+Si marcaste “Otro”, escribe cuál:
+________________________________
+
+¿Cuál de esas opciones revisas con mayor frecuencia?
+________________________________
+```
+
+##### CAJ-02 — Pedidos que debes copiar
+
+```text
+CAJ-02
+
+¿Hay pedidos que debes copiar manualmente de un celular, tableta, chat o papel
+a otro aparato?
+
+[ ] Sí
+[ ] No
+[ ] NO SÉ
+
+Si respondiste SÍ, completa:
+
+El pedido llega primero a:
+________________________________
+
+Después lo copio en:
+________________________________
+
+Lo copio:
+[ ] Siempre
+[ ] Solo algunas veces
+[ ] Solo si me lo piden
+
+Ejemplo: “Llega por WhatsApp y lo copio en Makos”.
+```
+
+##### CAJ-03 — Aviso de producto agotado
+
+```text
+CAJ-03
+
+Cuando un producto se termina, ¿cómo te avisan?
+
+Marca TODAS:
+[ ] Aparece como agotado en pantalla
+[ ] Me escriben por WhatsApp
+[ ] Cocina o barra me avisa de palabra
+[ ] Hay una lista escrita
+[ ] Me entero cuando intento venderlo
+[ ] No hay una forma definida
+[ ] Otra forma
+[ ] NO SÉ
+
+Si marcaste “Otra forma”:
+Me avisan así: ________________________________
+
+¿Quién suele avisarte?
+________________________________
+```
+
+##### CAJ-04 — Pedido pagado pero no preparado
+
+```text
+CAJ-04
+
+¿Te ha pasado que un pedido ya está pagado pero no se puede preparar?
+
+[ ] Sí
+[ ] No
+[ ] No recuerdo
+
+Si respondiste SÍ, piensa en el caso más reciente:
+
+¿Por qué no se pudo preparar?
+[ ] Producto agotado
+[ ] Faltó un ingrediente
+[ ] Falló un equipo
+[ ] Hubo un error en el pedido
+[ ] Otra razón
+[ ] NO SÉ
+
+¿Qué hicieron con el pago?
+[ ] Lo devolvieron
+[ ] Cambiaron el producto
+[ ] Dejaron el pedido pendiente
+[ ] Otra solución
+[ ] NO SÉ
+
+Otra razón o solución:
+________________________________
+```
+
+##### CAJ-05 — Revisión al cerrar
+
+```text
+CAJ-05
+
+Al terminar el turno, ¿qué revisas para saber si quedaron pedidos pendientes?
+
+Marca TODAS:
+[ ] Pantalla o reporte de caja
+[ ] Rappi
+[ ] WhatsApp
+[ ] ManyChat
+[ ] Shopify
+[ ] Comandas o papeles
+[ ] Pregunto a otra persona
+[ ] No hago una revisión
+[ ] Otro
+
+Nombre exacto de la pantalla, reporte, chat o papel:
+________________________________
+
+Ejemplo: “Reviso pedidos abiertos en Makos y la tableta de Rappi”.
+```
+
+---
+
+#### 5. Formulario para quien atiende pedidos por aplicaciones o mensajes
+
+Se responderá un formulario separado para Rappi, WhatsApp, ManyChat y Shopify.
+
+Antes de enviarlo, reemplazar `[FORMA DE PEDIDO]` por el nombre correspondiente.
+
+##### PED-01 — Cómo avisa que llegó
+
+```text
+PED-01 — [FORMA DE PEDIDO]
+
+Cuando llega una nueva solicitud, ¿cómo te avisa?
+
+Marca TODAS:
+[ ] Suena una alarma
+[ ] Sale un aviso en pantalla
+[ ] Llega un mensaje al celular
+[ ] Otra persona me avisa
+[ ] Debo abrir y revisar para descubrirla
+[ ] No hay aviso
+[ ] Otra forma
+[ ] NO SÉ
+
+Nombre del aparato donde aparece:
+________________________________
+
+Si marcaste “Otra forma”:
+Me avisa así: ________________________________
+
+Ejemplo: “Suena la tableta blanca que está junto a la caja”.
+```
+
+##### PED-02 — Cuándo se vuelve pedido real
+
+```text
+PED-02 — [FORMA DE PEDIDO]
+
+¿Cuál de estas acciones significa que el pedido ya quedó confirmado?
+
+Marca UNA:
+[ ] La persona envía el primer mensaje
+[ ] La persona acepta el precio
+[ ] La persona realiza el pago
+[ ] Nosotros presionamos aceptar
+[ ] Cocina o producción confirma
+[ ] Otra acción
+[ ] No hay un momento claro
+[ ] NO SÉ
+
+Si marcaste “Otra acción”, escribe exactamente cuál:
+________________________________
+
+Completa esta frase:
+“Yo sé que ya es un pedido real cuando ________________________________”.
+```
+
+##### PED-03 — Información que recibes
+
+```text
+PED-03 — [FORMA DE PEDIDO]
+
+Cuando recibes el pedido, ¿cuáles datos puedes ver?
+
+Marca TODOS:
+[ ] Nombre del producto
+[ ] Tamaño o presentación
+[ ] Cantidad
+[ ] Precio
+[ ] Nombre de la persona
+[ ] Dirección
+[ ] Teléfono
+[ ] Forma de pago
+[ ] Hora esperada
+[ ] Lugar que debe prepararlo
+[ ] Otro dato
+
+Escribe qué dato necesitas pero normalmente NO aparece:
+________________________________
+
+NO envíes capturas con datos del cliente.
+```
+
+##### PED-04 — Dónde vuelves a escribirlo
+
+```text
+PED-04 — [FORMA DE PEDIDO]
+
+Después de recibirlo, ¿debes volver a escribir el pedido en otro lugar?
+
+[ ] Sí
+[ ] No
+[ ] Solo algunas veces
+[ ] NO SÉ
+
+Si respondiste SÍ o ALGUNAS VECES:
+
+Lo recibo en: ________________________________
+Lo vuelvo a escribir en: ________________________________
+La persona que lo copia es: ________________________________
+
+¿Cómo revisas que no quedó repetido?
+[ ] Reviso el nombre
+[ ] Reviso el número del pedido
+[ ] Reviso la hora
+[ ] No lo reviso
+[ ] Otra forma: ________________________________
+```
+
+##### PED-05 — Cuando no hay producto
+
+```text
+PED-05 — [FORMA DE PEDIDO]
+
+Piensa en el último pedido que no pudo completarse por falta de producto.
+
+Producto que faltó:
+________________________________
+
+¿Quién descubrió que faltaba?
+[ ] Caja
+[ ] Cocina o barra
+[ ] Producción
+[ ] Bodega
+[ ] Cliente
+[ ] Otra persona: ________________________________
+[ ] NO SÉ
+
+¿Cómo le avisaron a la persona que compraba?
+[ ] Mensaje
+[ ] Llamada
+[ ] La aplicación avisó
+[ ] No le avisaron
+[ ] NO SÉ
+
+¿Qué decidió la persona?
+[ ] Aceptó otro producto
+[ ] Aceptó recibir menos
+[ ] Canceló
+[ ] Quedó pendiente
+[ ] NO SÉ
+```
+
+##### PED-06 — Pago, preparación y entrega
+
+```text
+PED-06 — [FORMA DE PEDIDO]
+
+Completa cada línea con el nombre del lugar, pantalla, chat o persona:
+
+Sé que el pago llegó porque:
+________________________________
+
+Sé que empezaron a preparar porque:
+________________________________
+
+Sé que el pedido quedó listo porque:
+________________________________
+
+Sé que salió para entrega porque:
+________________________________
+
+Sé que fue entregado porque:
+________________________________
+
+Si alguna de estas cosas NO se puede saber, escribe NO SE PUEDE SABER en esa
+línea.
+
+Ejemplo: “Sé que quedó listo porque cocina escribe LISTO en el grupo”.
+```
+
+##### PED-07 — Pedidos que quedan sin cerrar
+
+```text
+PED-07 — [FORMA DE PEDIDO]
+
+En el último mes, ¿viste algún pedido que:
+
+[ ] quedó pagado pero no preparado?
+[ ] fue preparado pero no salió?
+[ ] salió pero no fue entregado?
+[ ] fue entregado pero siguió apareciendo pendiente?
+[ ] apareció dos veces?
+[ ] ninguna de las anteriores?
+[ ] NO SÉ?
+
+Si marcaste alguna situación, completa:
+
+Qué ocurrió:
+________________________________
+
+Cómo se dieron cuenta:
+________________________________
+
+Qué hicieron:
+________________________________
+
+Dónde quedó anotada la solución:
+________________________________
+```
+
+---
+
+#### 6. Formulario para cocina, barra y producción
+
+##### PRO-01 — Cómo recibes lo que debes preparar
+
+```text
+PRO-01
+
+¿Cómo recibes la lista de lo que debes preparar?
+
+Marca TODAS:
+[ ] Pantalla
+[ ] Impresora
+[ ] Papel escrito a mano
+[ ] WhatsApp
+[ ] Alguien lo dice de palabra
+[ ] Excel
+[ ] Otra forma
+[ ] No hay una forma definida
+
+Nombre del aparato, papel, chat o archivo:
+________________________________
+
+Ejemplo: “La impresora de cocina saca una comanda”.
+```
+
+##### PRO-02 — Cantidad pedida y cantidad preparada
+
+```text
+PRO-02
+
+¿Dónde ves cuántas unidades debes preparar?
+________________________________
+
+¿Dónde anotas cuántas unidades sí preparaste?
+
+[ ] En el mismo lugar
+[ ] En otro lugar: ________________________________
+[ ] No se anota
+[ ] NO SÉ
+
+Si preparas menos de lo pedido, ¿dónde anotas cuánto faltó?
+
+[ ] En: ________________________________
+[ ] No se anota
+[ ] NO SÉ
+```
+
+##### PRO-03 — Motivos por los que no se completa
+
+```text
+PRO-03
+
+Durante el último mes, ¿por cuáles razones no pudieron preparar todo lo pedido?
+
+Marca TODAS:
+[ ] Faltó un ingrediente
+[ ] Faltó producto preparado
+[ ] No alcanzó el tiempo
+[ ] Faltó personal
+[ ] Falló un equipo
+[ ] Llegó tarde la solicitud
+[ ] Se pidió más de lo habitual
+[ ] Otra razón
+[ ] No ocurrió
+[ ] NO SÉ
+
+La razón que más se repitió fue:
+________________________________
+
+Producto más afectado:
+________________________________
+```
+
+##### PRO-04 — Lo que sobra
+
+```text
+PRO-04
+
+Escribe hasta 3 productos que suelen quedar sobrando:
+
+1. Producto: ________________________________
+   ¿Cuándo suele sobrar?: ________________________________
+   ¿Dónde se anota cuánto sobró?: ________________________________
+
+2. Producto: ________________________________
+   ¿Cuándo suele sobrar?: ________________________________
+   ¿Dónde se anota cuánto sobró?: ________________________________
+
+3. Producto: ________________________________
+   ¿Cuándo suele sobrar?: ________________________________
+   ¿Dónde se anota cuánto sobró?: ________________________________
+
+Si no recuerdas ninguno, escribe: NO RECUERDO NINGUNO.
+```
+
+##### PRO-05 — Lo que se pierde o daña
+
+```text
+PRO-05
+
+Cuando un producto se cae, se daña, se vence o no se puede usar:
+
+¿Dónde se anota?
+[ ] En una aplicación
+[ ] En papel
+[ ] En Excel
+[ ] En un chat
+[ ] No se anota
+[ ] NO SÉ
+
+Nombre del lugar donde se anota:
+________________________________
+
+¿Quién revisa esa anotación?
+________________________________
+```
+
+---
+
+#### 7. Formulario para bodega y recepción
+
+##### BOD-01 — Solicitud, preparación y entrega
+
+```text
+BOD-01
+
+Completa:
+
+Veo lo que cada sede pide en:
+________________________________
+
+Anoto cuánto pude preparar en:
+________________________________
+
+Anoto cuánto salió de bodega en:
+________________________________
+
+La sede confirma cuánto recibió en:
+________________________________
+
+Si algo no se anota, escribe NO SE ANOTA.
+```
+
+##### BOD-02 — Diferencias
+
+```text
+BOD-02
+
+En el último mes, ¿qué diferencias viste?
+
+[ ] Se pidió más de lo enviado
+[ ] Se envió más de lo pedido
+[ ] La sede recibió menos de lo enviado
+[ ] Llegó un producto diferente
+[ ] Llegó producto dañado
+[ ] No hubo diferencias
+[ ] NO SÉ
+
+La diferencia más reciente fue:
+________________________________
+
+¿Quién la revisó?
+________________________________
+
+¿Dónde quedó anotada?
+________________________________
+```
+
+---
+
+#### 8. Formulario para Contabilidad
+
+##### CON-01 — Información que puede entregar
+
+```text
+CON-01
+
+Marca qué información puedes obtener actualmente:
+
+[ ] Ventas por día
+[ ] Ventas por producto
+[ ] Ventas por sede
+[ ] Ventas separadas por Rappi, WhatsApp, Shopify u otra forma
+[ ] Pedidos cancelados
+[ ] Devoluciones
+[ ] Descuentos
+[ ] Pagos recibidos
+[ ] Compras
+[ ] Recepciones
+[ ] Inventario final
+
+La información más antigua disponible comienza en:
+Mes: __________ Año: __________
+
+La información que NO se puede obtener es:
+________________________________
+```
+
+##### CON-02 — Archivo o reporte exacto
+
+```text
+CON-02
+
+Para cada lugar, archivo o reporte que utilizas, completa una fila:
+
+Nombre exacto: ________________________________
+Lo abre: ________________________________
+Está en: [ ] computador [ ] correo [ ] nube [ ] papel [ ] otro
+Se actualiza: [ ] diario [ ] semanal [ ] mensual [ ] cuando lo solicitan
+Contiene información desde: ________________________________
+La persona que lo cuida es: ________________________________
+
+Copia este bloque una vez por cada archivo o reporte.
+```
+
+##### CON-03 — Correcciones manuales
+
+```text
+CON-03
+
+¿Qué información debes corregir o completar manualmente?
+
+Nombre de la información:
+________________________________
+
+¿Por qué debes corregirla?
+________________________________
+
+¿Quién realiza la corrección?
+________________________________
+
+¿Quién la revisa o autoriza?
+________________________________
+
+¿Dónde queda guardada la corrección?
+________________________________
+
+Si no realizas correcciones manuales, escribe: NINGUNA.
+```
+
+---
+
+#### 9. Formulario para Gerencia General
+
+##### GER-01 — Responsables
+
+```text
+GER-01
+
+Completa una línea por cada forma de recibir pedidos:
+
+Forma de recibir pedidos: ________________________________
+Persona responsable: ________________________________
+Sede o negocio: ________________________________
+Quién puede aceptar una excepción: ________________________________
+
+Ejemplo:
+Forma: Rappi
+Responsable: cajero de turno
+Sede: Vento Café
+Excepción: gerente de sede
+```
+
+##### GER-02 — Cuando no alcanza
+
+```text
+GER-02
+
+Cuando no alcanza un producto para todos los pedidos:
+
+¿Quién decide cuáles se atienden primero?
+________________________________
+
+¿Qué regla utiliza?
+[ ] Orden de llegada
+[ ] Pedido ya pagado
+[ ] Tipo de cliente
+[ ] Sede
+[ ] Decisión del momento
+[ ] Otra: ________________________________
+[ ] No hay una regla definida
+[ ] NO SÉ
+
+¿Dónde queda anotada esa decisión?
+________________________________
+```
+
+##### GER-03 — Información que hace falta
+
+```text
+GER-03
+
+Completa hasta 5 líneas:
+
+Para decidir cuánto producir necesito saber:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+4. ________________________________
+5. ________________________________
+
+Actualmente recibo esa información:
+1. [ ] Sí [ ] No [ ] A veces
+2. [ ] Sí [ ] No [ ] A veces
+3. [ ] Sí [ ] No [ ] A veces
+4. [ ] Sí [ ] No [ ] A veces
+5. [ ] Sí [ ] No [ ] A veces
+```
+
+---
+
+#### 10. Qué hacer con una respuesta incompleta
+
+No se devolverá un mensaje diciendo solamente “explica mejor”.
+
+Se enviará la pregunta correspondiente:
+
+| Respuesta recibida      | Mensaje que debe enviarse                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| “En el sistema”         | “Escribe el nombre de la aplicación y el nombre que ves en la pantalla.”                                  |
+| “Le aviso al encargado” | “Escribe el trabajo o cargo de esa persona y cómo le avisas: de palabra, llamada o mensaje.”              |
+| “A veces”               | “Escribe un ejemplo de cuándo sí ocurre y otro de cuándo no.”                                             |
+| “Depende”               | “Marca de qué depende: producto, cantidad, hora, sede, persona u otra razón.”                             |
+| “No sé”                 | “Escribe quién podría saberlo o dónde podría comprobarse. Si tampoco sabes eso, escribe NO SÉ.”           |
+| respuesta sin ejemplo   | “Piensa en la última vez que ocurrió y escribe: qué pasó, cuándo, quién participó y dónde quedó anotado.” |
+
+---
+
+#### 11. Cómo guardar las respuestas
+
+Cada formulario diligenciado deberá conservar:
+
+```text
+Código de respuesta:
+Trabajo de la persona:
+Sede o lugar:
+Fecha:
+Códigos de preguntas respondidas:
+Respuesta original:
+Resumen confirmado por la persona:
+Foto o audio guardado en:
+Pregunta que todavía falta responder:
+Persona que podría responderla:
+```
+
+El resumen deberá enviarse nuevamente a la persona:
+
+```text
+Esto fue lo que entendimos de tus respuestas:
+
+[RESUMEN]
+
+Responde:
+[ ] Sí, eso es correcto
+[ ] No. La corrección es: ________________________________
+```
+
+---
+
+#### 12. Lista de preguntas que queden pendientes
+
+Cada pregunta sin respuesta tendrá su propio bloque:
+
+```text
+Número de pregunta pendiente:
+Pregunta que se enviará por WhatsApp:
+Trabajo de la persona que puede responder:
+Sede o lugar:
+Opciones que deberá marcar:
+Espacio que deberá completar:
+Ejemplo incluido:
+Foto o audio permitido:
+Cómo sabremos que quedó respondida:
+Dónde se usará la respuesta:
+Estado: PENDIENTE / RESPONDIDA / NO SE PUDO COMPROBAR
+```
+
+No se aceptará escribir solamente “preguntar después”.
+
+---
+
+#### 13. Reglas de cuidado
+
+1. No enviar más de cinco preguntas por mensaje.
+2. No pedir explicaciones técnicas.
+3. No pedir cálculos ni porcentajes.
+4. No pedir contraseñas o datos privados.
+5. Permitir responder `NO SÉ`.
+6. Dar siempre un ejemplo.
+7. Permitir texto o audio.
+8. Confirmar el resumen con la persona.
+9. No usar las respuestas para buscar culpables.
+
+---
+
+#### 14. Resultado esperado
+
+Al aplicar los formularios deberá quedar una lista concreta de:
+
+- productos que las personas pidieron y no encontraron;
+- productos que se agotaron;
+- productos que se sustituyeron;
+- pedidos cancelados o incompletos;
+- productos que sobraron;
+- información que actualmente no se anota;
+- diferencias entre sedes y formas de recibir pedidos;
+- preguntas que todavía necesitan respuesta;
+- persona adecuada para responder cada pregunta.
+
+---
+
+#### 15. Decisiones propuestas
+
+1. Los formularios podrán copiarse directamente a WhatsApp.
+2. Cada pregunta indicará qué marcar y qué completar.
+3. Cada pregunta incluirá un ejemplo.
+4. Cada persona recibirá únicamente preguntas relacionadas con su trabajo.
+5. Los trabajadores no deberán analizar sistemas ni proponer soluciones.
+6. Las respuestas podrán enviarse por texto o audio.
+7. Las preguntas pendientes conservarán responsable y forma exacta de responderse.
+8. La aplicación de los formularios podrá realizarse posteriormente.
+
+---
+
+#### 16. Criterios de aceptación
+
+`OPS-PLAN-003` podrá aprobarse cuando una persona pueda completar su formulario sola, sin preguntar qué debe escribir; cada pregunta tenga opciones, espacios, ejemplo y tratamiento de `NO SÉ`; y las respuestas puedan guardarse y confirmarse sin conocimientos técnicos.
+
+---
+
+#### 17. Resultado y continuidad
+
+Con la aprobación quedarán disponibles autocuestionarios que pueden enviarse directamente por WhatsApp a meseros, cajeros, responsables de pedidos, cocina, producción, bodega, Contabilidad y Gerencia.
+
+La continuidad será:
+
+```text
+OPS-PLAN-004
+— Iniciar registro prospectivo de solicitud, entrega y diferencia
+```
+
+`OPS-PLAN-004` preparará un formato igualmente sencillo para comenzar a anotar la información que no pueda recuperarse de períodos anteriores.
 
 **Sustituye la referencia narrativa:** `OPS-PLAN-001-B`.  
 **Dependencias:** `OPS-PLAN-001`.  
 **Responsable inicial de evidencia:** responsable de pedidos.  
 **Salida obligatoria:** fuentes de Rappi y ManyChat, entrevistas, productos faltantes, sobrantes, variaciones recurrentes, estacionalidad conocida y limitaciones de recuperación.
 
-### [ ] OPS-PLAN-004 — Iniciar registro prospectivo de solicitud, entrega y diferencia
+### ✅ OPS-PLAN-004 — Iniciar registro prospectivo de solicitud, entrega y diferencia
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento de la operación actual
+**Dependencias cumplidas:** `OPS-PLAN-001`, `OPS-PLAN-002` y `OPS-PLAN-003`
+**Propósito:** dejar listo un formato sencillo para anotar desde ahora lo que se pide, lo que se envía, lo que se recibe y cualquier diferencia
+**Aplicación:** WhatsApp, papel o formulario sencillo
+**Inicio del registro:** no obligatorio desde esta aprobación; Gerencia u Operaciones definirá cuándo comenzar
+**No constituye:** sistema definitivo, inventario oficial, autorización de ajustes ni cálculo automático
+**Cambios en código o Supabase:** no autorizados
+
+---
+
+#### 1. Para qué sirve
+
+Este formato permitirá conocer información que no puede reconstruirse de meses anteriores:
+
+```text
+LO QUE SE PIDIÓ
+→ LO QUE SE CONFIRMÓ
+→ LO QUE SE PREPARÓ
+→ LO QUE SALIÓ
+→ LO QUE LLEGÓ
+→ LO QUE FALTÓ, SOBRÓ O CAMBIÓ
+→ CÓMO SE RESOLVIÓ
+```
+
+Cada persona completará únicamente la parte que le corresponde.
+
+---
+
+#### 2. Reglas sencillas
+
+1. Usar un solo número para relacionar solicitud, envío y recepción.
+2. Escribir un producto por bloque.
+3. No borrar el dato original cuando haya un error; anotar la corrección.
+4. Usar la misma unidad en las cantidades: unidades, kilos, gramos, bolsas, cajas u otra.
+5. Si no se conoce un dato, escribir `NO SÉ`.
+6. Si algo no corresponde, escribir `NO APLICA`.
+7. No incluir precios, datos privados o contraseñas.
+8. No ajustar inventarios ni pagos usando únicamente este formato.
+
+---
+
+#### 3. Cómo crear el número de seguimiento
+
+La persona que inicia la solicitud escribirá:
+
+```text
+Número:
+PED-[FECHA]-[SEDE]-[NÚMERO DEL DÍA]
+```
+
+Ejemplo:
+
+```text
+PED-2026-08-05-SAUDO-01
+```
+
+Si no sabe qué abreviatura usar, podrá escribir el nombre completo:
+
+```text
+PED-2026-08-05-VENTO-CAFE-01
+```
+
+El mismo número deberá copiarse sin cambios en preparación, envío, recepción y corrección.
+
+---
+
+#### 4. Mensaje inicial para el equipo
+
+```text
+Hola. Vamos a comenzar a anotar con mayor claridad lo que cada lugar pide y lo
+que finalmente recibe.
+
+Cada persona llenará solamente la parte que le corresponde.
+
+COPIA el bloque, marca las casillas con una X y completa los espacios.
+
+Si no sabes un dato, escribe NO SÉ. No cambies una cantidad para hacerla
+coincidir con otra.
+
+Este formato no es una evaluación de tu trabajo.
+```
+
+---
+
+#### 5. Formulario de solicitud
+
+Lo completa la persona que necesita el producto.
+
+##### SOL-01 — Datos generales
+
+```text
+SOL-01 — NUEVA SOLICITUD
+
+Número:
+________________________________
+
+Fecha en que estoy haciendo la solicitud:
+Día: ____ Mes: ____ Año: ____
+
+Hora:
+____ : ____  [ ] a. m.  [ ] p. m.
+
+Lugar que solicita:
+________________________________
+
+Nombre o trabajo de quien solicita:
+________________________________
+
+¿Para qué fecha se necesita?
+Día: ____ Mes: ____ Año: ____
+
+¿Para qué momento?
+[ ] Apertura
+[ ] Mañana
+[ ] Tarde
+[ ] Noche
+[ ] Hora exacta: __________
+[ ] NO SÉ
+```
+
+##### SOL-02 — Producto solicitado
+
+Copiar una vez por cada producto.
+
+```text
+SOL-02 — PRODUCTO SOLICITADO
+
+Número de la solicitud:
+________________________________
+
+Nombre exacto del producto:
+________________________________
+
+Tamaño, presentación o empaque:
+________________________________
+
+Cantidad solicitada:
+________________________________
+
+Unidad:
+[ ] unidades
+[ ] kilos
+[ ] gramos
+[ ] bolsas
+[ ] cajas
+[ ] bandejas
+[ ] otra: ________________________________
+
+¿Por qué se necesita?
+[ ] Reponer lo consumido
+[ ] Pedido de una persona
+[ ] Pedido especial
+[ ] Evento
+[ ] Se agotó
+[ ] Prevención para próximos días
+[ ] Otra razón: ________________________________
+[ ] NO SÉ
+
+¿Cuánto queda actualmente en el lugar que solicita?
+Cantidad: ________________________________
+Unidad: ________________________________
+[ ] No se contó
+[ ] NO SÉ
+
+Ejemplo:
+Producto: Croissant de almendras
+Presentación: unidad
+Cantidad solicitada: 20
+Quedan actualmente: 3 unidades
+```
+
+##### SOL-03 — Confirmación de envío
+
+```text
+SOL-03 — SOLICITUD ENVIADA
+
+Número:
+________________________________
+
+¿A quién se envió?
+________________________________
+
+¿Cómo se envió?
+[ ] WhatsApp
+[ ] Papel
+[ ] Excel
+[ ] Aplicación
+[ ] Llamada
+[ ] De palabra
+[ ] Otro: ________________________________
+
+Fecha y hora del envío:
+________________________________
+
+¿Recibiste confirmación?
+[ ] Sí
+[ ] No
+[ ] NO SÉ
+
+Si respondiste SÍ, ¿quién confirmó?
+________________________________
+```
+
+---
+
+#### 6. Formulario de revisión y preparación
+
+Lo completa quien recibe la solicitud y prepara el envío.
+
+##### PRE-01 — Solicitud recibida
+
+```text
+PRE-01 — SOLICITUD RECIBIDA
+
+Número:
+________________________________
+
+Fecha y hora en que la recibí:
+________________________________
+
+Mi nombre o trabajo:
+________________________________
+
+¿La solicitud se entiende?
+[ ] Sí
+[ ] No
+[ ] Falta el producto exacto
+[ ] Falta la presentación
+[ ] Falta la cantidad
+[ ] Falta la fecha de entrega
+[ ] Otra información: ________________________________
+
+Si falta información, ¿a quién se la pedí?
+________________________________
+
+¿Cómo se la pedí?
+[ ] WhatsApp
+[ ] Llamada
+[ ] De palabra
+[ ] Otro: ________________________________
+```
+
+##### PRE-02 — Cantidad que se puede preparar
+
+Copiar una vez por producto.
+
+```text
+PRE-02 — PRODUCTO REVISADO
+
+Número:
+________________________________
+
+Producto:
+________________________________
+
+Presentación:
+________________________________
+
+Cantidad que pidieron:
+________________________________
+
+Cantidad que sí puedo preparar:
+________________________________
+
+Usé la misma unidad:
+[ ] Sí
+[ ] No. La unidad que usé es: ________________________________
+
+Resultado:
+[ ] Se puede preparar todo
+[ ] Se puede preparar solo una parte
+[ ] No se puede preparar
+[ ] Debe cambiarse por otro producto
+[ ] Quedará para otra fecha
+[ ] NO SÉ
+
+Si no se puede completar, marca la razón:
+[ ] No hay suficiente producto
+[ ] No hay suficiente ingrediente
+[ ] No alcanza el tiempo
+[ ] Falta personal
+[ ] Falló un equipo
+[ ] La solicitud llegó tarde
+[ ] Otra razón: ________________________________
+[ ] NO SÉ
+
+¿A quién informaste?
+________________________________
+
+Fecha y hora del aviso:
+________________________________
+```
+
+##### PRE-03 — Cambio aceptado
+
+Se usa solamente si cambia producto, cantidad o fecha.
+
+```text
+PRE-03 — CAMBIO PROPUESTO
+
+Número:
+________________________________
+
+El cambio es de:
+[ ] Producto
+[ ] Presentación
+[ ] Cantidad
+[ ] Fecha
+[ ] Hora
+
+Lo que se pidió originalmente:
+________________________________
+
+Lo que se propone entregar:
+________________________________
+
+Persona que propuso el cambio:
+________________________________
+
+Persona que aceptó o rechazó:
+________________________________
+
+Respuesta:
+[ ] Aceptado
+[ ] Rechazado
+[ ] Pendiente
+[ ] NO SÉ
+
+Fecha y hora de la respuesta:
+________________________________
+```
+
+---
+
+#### 7. Formulario de salida
+
+Lo completa quien entrega el producto al conductor, mensajero o responsable del traslado.
+
+##### ENV-01 — Producto que salió
+
+Copiar una vez por producto.
+
+```text
+ENV-01 — PRODUCTO ENVIADO
+
+Número:
+________________________________
+
+Producto:
+________________________________
+
+Presentación:
+________________________________
+
+Cantidad preparada:
+________________________________
+
+Cantidad que realmente salió:
+________________________________
+
+Unidad:
+________________________________
+
+Si salió menos de lo preparado, ¿qué pasó?
+________________________________
+
+Condición al salir:
+[ ] Completo y en buen estado
+[ ] Empaque dañado
+[ ] Producto incompleto
+[ ] Pendiente de revisión
+[ ] Otra: ________________________________
+
+Fecha y hora de salida:
+________________________________
+```
+
+##### ENV-02 — Persona que transporta
+
+```text
+ENV-02 — ENTREGA PARA TRANSPORTE
+
+Número:
+________________________________
+
+Nombre o trabajo de quien entrega:
+________________________________
+
+Nombre o trabajo de quien recibe para transportar:
+________________________________
+
+Forma de transporte:
+[ ] Vehículo de la empresa
+[ ] Moto
+[ ] Mensajería externa
+[ ] Persona a pie
+[ ] Otro: ________________________________
+
+Cantidad de paquetes, cajas, bolsas o canastas:
+________________________________
+
+¿La persona que transporta confirmó la cantidad?
+[ ] Sí
+[ ] No
+[ ] NO SÉ
+
+Fecha y hora:
+________________________________
+```
+
+---
+
+#### 8. Formulario de recepción
+
+Lo completa la persona que recibe en el lugar de destino.
+
+##### REC-01 — Recepción general
+
+```text
+REC-01 — PEDIDO RECIBIDO
+
+Número:
+________________________________
+
+Lugar que recibe:
+________________________________
+
+Nombre o trabajo de quien recibe:
+________________________________
+
+Fecha y hora de recepción:
+________________________________
+
+Cantidad de paquetes, cajas, bolsas o canastas recibidas:
+________________________________
+
+¿La entrega llegó?
+[ ] Completa
+[ ] Incompleta
+[ ] Con algo diferente
+[ ] Con producto dañado
+[ ] No llegó
+[ ] Pendiente de revisar
+```
+
+##### REC-02 — Producto recibido
+
+Copiar una vez por producto.
+
+```text
+REC-02 — PRODUCTO RECIBIDO
+
+Número:
+________________________________
+
+Producto:
+________________________________
+
+Presentación:
+________________________________
+
+Cantidad que aparece como enviada:
+________________________________
+
+Cantidad que conté al recibir:
+________________________________
+
+Unidad:
+________________________________
+
+Resultado:
+[ ] Llegó exactamente lo enviado
+[ ] Llegó menos
+[ ] Llegó más
+[ ] Llegó otro producto
+[ ] Llegó dañado
+[ ] No llegó
+
+Diferencia encontrada:
+________________________________
+
+¿Tomaste foto?
+[ ] Sí, está guardada en: ________________________________
+[ ] No
+[ ] No era necesaria
+
+No enviar fotografías con personas o datos privados.
+```
+
+---
+
+#### 9. Formulario para resolver una diferencia
+
+Lo completa la persona encargada de revisar el faltante, sobrante, cambio o daño.
+
+```text
+DIF-01 — DIFERENCIA EN REVISIÓN
+
+Número:
+________________________________
+
+Producto:
+________________________________
+
+La diferencia fue:
+[ ] Faltó cantidad
+[ ] Sobró cantidad
+[ ] Llegó otro producto
+[ ] Llegó dañado
+[ ] No llegó
+[ ] La cantidad se escribió mal
+[ ] Otra: ________________________________
+
+Cantidad esperada:
+________________________________
+
+Cantidad encontrada:
+________________________________
+
+¿Quién informó la diferencia?
+________________________________
+
+¿Quién la revisó?
+________________________________
+
+¿Qué se comprobó?
+[ ] Error al solicitar
+[ ] Error al preparar
+[ ] Error al contar la salida
+[ ] Error durante transporte
+[ ] Error al contar la recepción
+[ ] Error al escribir
+[ ] No se pudo saber
+[ ] Otra causa: ________________________________
+
+¿Qué se hizo?
+[ ] Se envió lo faltante
+[ ] Se devolvió lo sobrante
+[ ] Se cambió el producto
+[ ] Se aceptó la diferencia
+[ ] Se dejó pendiente
+[ ] Otra acción: ________________________________
+
+¿Quién aceptó la solución?
+________________________________
+
+Fecha y hora de cierre:
+________________________________
+
+¿Quedó algo pendiente?
+[ ] No
+[ ] Sí. Quedó pendiente: ________________________________
+```
+
+---
+
+#### 10. Formulario de sobrantes y faltantes sin solicitud
+
+Se usa cuando al terminar un día se descubre que sobró o faltó producto, aunque no exista una solicitud relacionada.
+
+```text
+EXI-01 — SOBRANTE O FALTANTE OBSERVADO
+
+Fecha:
+________________________________
+
+Sede o lugar:
+________________________________
+
+Producto:
+________________________________
+
+Presentación:
+________________________________
+
+Situación:
+[ ] Sobró producto
+[ ] Faltó producto
+[ ] Se dañó producto
+[ ] Se venció producto
+[ ] NO SÉ
+
+Cantidad:
+________________________________
+
+Unidad:
+________________________________
+
+¿Cómo se descubrió?
+[ ] Conteo
+[ ] Durante una venta
+[ ] Durante preparación
+[ ] Durante recepción
+[ ] Al cerrar
+[ ] Otra forma: ________________________________
+
+¿Dónde quedó anotado además de este mensaje?
+________________________________
+
+¿Quién debe revisarlo?
+________________________________
+```
+
+---
+
+#### 11. Resumen diario sencillo
+
+Lo completa únicamente la persona designada para reunir los formularios del día.
+
+```text
+RES-01 — RESUMEN DEL DÍA
+
+Fecha:
+________________________________
+
+Sede o lugar:
+________________________________
+
+Solicitudes realizadas:
+________________________________
+
+Solicitudes entregadas completas:
+________________________________
+
+Solicitudes entregadas incompletas:
+________________________________
+
+Solicitudes no entregadas:
+________________________________
+
+Productos con faltante:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+Productos con sobrante:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+Diferencias que siguen pendientes:
+1. Número: ______________ Pendiente: ________________________________
+2. Número: ______________ Pendiente: ________________________________
+3. Número: ______________ Pendiente: ________________________________
+
+Nombre o trabajo de quien hizo el resumen:
+________________________________
+```
+
+El resumen no reemplaza los formularios individuales.
+
+---
+
+#### 12. Quién completa cada parte
+
+| Parte               | Persona disponible                                |
+| ------------------- | ------------------------------------------------- |
+| `SOL-01` a `SOL-03` | quien solicita para la sede o área                |
+| `PRE-01` a `PRE-03` | bodega, producción o quien prepara                |
+| `ENV-01` y `ENV-02` | quien despacha y entrega para transportar         |
+| `REC-01` y `REC-02` | quien recibe y cuenta                             |
+| `DIF-01`            | encargado designado por Operaciones               |
+| `EXI-01`            | persona que descubre el sobrante, faltante o daño |
+| `RES-01`            | responsable diario designado                      |
+
+La persona no deberá completar partes que no observó.
+
+---
+
+#### 13. Qué hacer si una respuesta está incompleta
+
+| Falta                 | Mensaje que debe enviarse                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| falta número          | “Copia el número que aparece en la solicitud original. Si no existe, responde SIN NÚMERO.” |
+| falta presentación    | “Escribe cómo viene el producto: unidad, bolsa, caja, tamaño o peso.”                      |
+| falta cantidad        | “Escribe el número y después la unidad. Ejemplo: 12 unidades.”                             |
+| no coincide la unidad | “No conviertas la cantidad. Escribe la unidad original y la nueva por separado.”           |
+| no sabe quién decidió | “Escribe NO SÉ y el nombre o trabajo de la persona que podría saberlo.”                    |
+| falta evidencia       | “Indica dónde podría comprobarse: chat, papel, pantalla, conteo o persona.”                |
+
+---
+
+#### 14. Revisión semanal
+
+Cuando se active el registro, una persona designada revisará semanalmente:
+
+- números repetidos;
+- solicitudes sin recepción;
+- envíos sin confirmación;
+- diferencias sin cerrar;
+- productos que faltaron varias veces;
+- productos que sobraron varias veces;
+- datos que las personas no pudieron completar;
+- formularios demasiado difíciles de usar.
+
+La revisión no decidirá todavía cuánto producir. Solo identificará información completa, faltante o repetida.
+
+---
+
+#### 15. Tiempo de prueba antes de usarlo de forma ordinaria
+
+Antes de adoptarlo, deberá probarse con:
+
+- una sede solicitante;
+- una persona que prepara;
+- una persona que despacha;
+- una persona que recibe;
+- entre tres y cinco productos;
+- entre tres y siete días de operación.
+
+Al terminar la prueba se preguntará:
+
+```text
+¿Qué pregunta fue difícil de entender?
+________________________________
+
+¿Qué dato no pudiste conseguir?
+________________________________
+
+¿Qué parte tomó demasiado tiempo?
+________________________________
+
+¿Qué pregunta hizo falta?
+________________________________
+
+¿Qué parte se llenó dos veces?
+________________________________
+```
+
+La prueba no autoriza todavía implementación técnica.
+
+---
+
+#### 16. Información que no debe enviarse
+
+- contraseñas;
+- datos bancarios;
+- números de tarjeta;
+- documentos de identidad;
+- direcciones o teléfonos de clientes;
+- fotografías de personas sin autorización;
+- información médica;
+- precios o costos si la persona no está autorizada.
+
+---
+
+#### 17. Qué deberá quedar cuando se aplique
+
+- cantidad solicitada por producto y lugar;
+- cantidad que pudo prepararse;
+- cantidad que salió;
+- cantidad recibida;
+- faltantes, sobrantes, cambios y daños;
+- motivo conocido de cada diferencia;
+- persona que revisó;
+- forma de solución;
+- asuntos que siguen pendientes;
+- productos con diferencias repetidas.
+
+---
+
+#### 18. Decisiones propuestas
+
+1. El registro podrá usarse por WhatsApp, papel o formulario sencillo.
+2. Cada persona completará solo la parte que observó.
+3. Solicitud, preparación, salida y recepción conservarán cantidades separadas.
+4. Las diferencias no se borrarán ni se corregirán para que coincidan.
+5. El formato no será fuente oficial ni autorizará ajustes.
+6. Su aplicación comenzará únicamente cuando Gerencia u Operaciones defina responsables y período de prueba.
+7. La prueba inicial será limitada y podrá simplificar preguntas difíciles.
+8. No se realizarán cambios en código o Supabase desde esta tarea.
+
+---
+
+#### 19. Criterios de aceptación
+
+`OPS-PLAN-004` podrá aprobarse cuando cada participante pueda completar su parte sin conocimientos técnicos; las cantidades solicitada, preparada, enviada y recibida permanezcan separadas; exista un formato para diferencias y cierre; y esté definido un período de prueba antes del uso ordinario.
+
+---
+
+#### 20. Resultado y continuidad
+
+Con la aprobación quedará listo el instrumento para comenzar a reunir, cuando se autorice, la información que no existe históricamente.
+
+La continuidad documental regresará a:
+
+```text
+CAP-MAP-001
+— Crear taxonomía jerárquica de capacidades de Vento Group
+```
+
+La recolección futura mediante estos formatos podrá continuar en paralelo, pero no bloqueará la elaboración del mapa de capacidades mientras cada vacío permanezca registrado con responsable y destino.
 
 **Sustituye la referencia narrativa:** `OPS-PLAN-001-C`.  
 **Dependencias:** `OPS-PLAN-001`.  
@@ -157216,29 +159879,10516 @@ OPS-GOV-001
 **Límite:** el registro prospectivo no se convierte por sí solo en fuente de verdad ni autoriza automatización.
 ### MAPA CANÓNICO DE CAPACIDADES EMPRESARIALES
 
-### [ ] CAP-MAP-001 — Crear taxonomía jerárquica de capacidades de Vento Group
-### [ ] CAP-MAP-002 — Definir capacidad, subcapacidad y resultado empresarial esperado
-### [ ] CAP-MAP-003 — Vincular cada capacidad con empresa, sede, área y canal aplicables
-### [ ] CAP-MAP-004 — Definir dominio y aplicación propietaria candidata
-### [ ] CAP-MAP-005 — Definir aplicaciones y sistemas consumidores
-### [ ] CAP-MAP-006 — Identificar actor iniciador, ejecutor, supervisor y aprobador
-### [ ] CAP-MAP-007 — Identificar información de entrada y resultado producido
-### [ ] CAP-MAP-008 — Identificar fuente de verdad actual y fuente de verdad objetivo
-### [ ] CAP-MAP-009 — Identificar eventos e integraciones requeridos
-### [ ] CAP-MAP-010 — Identificar permisos y controles de autorización requeridos
-### [ ] CAP-MAP-011 — Identificar pantallas, dispositivos, documentos y evidencia requeridos
-### [ ] CAP-MAP-012 — Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance
-### [ ] CAP-MAP-013 — Detectar capacidades duplicadas o con propiedad competidora
-### [ ] CAP-MAP-014 — Detectar capacidades necesarias que no aparecen en código ni datos actuales
-### [ ] CAP-MAP-015 — Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group
+### ✅ CAP-MAP-001 — Crear taxonomía jerárquica de capacidades de Vento Group
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencias cumplidas:** `OPS-PLAN-004` y tareas anteriores de E1
+**Naturaleza:** mapa jerárquico de lo que Vento Group necesita poder hacer
+**No define todavía:** responsables, aplicaciones, pantallas, permisos, datos, procesos objetivo, prioridad ni implementación
+**Cambios en código o Supabase:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Crear un lenguaje común para describir lo que Vento Group necesita poder hacer, sin confundirlo con departamentos, cargos, aplicaciones, pantallas, tablas, sedes o procedimientos temporales.
+
+```text
+Gestionar abastecimiento
+├── Planear necesidades
+├── Solicitar productos
+├── Comprar
+├── Recibir
+├── Almacenar
+└── Despachar
+```
+
+---
+
+#### 2. Niveles
+
+| Nivel | Nombre              | Uso                                                     |
+| ----- | ------------------- | ------------------------------------------------------- |
+| 0     | Vento Group         | organización completa                                   |
+| 1     | Familia empresarial | grupo amplio de responsabilidades                       |
+| 2     | Capacidad           | resultado estable que la organización necesita producir |
+| 3     | Subcapacidad        | parte específica y separable de una capacidad           |
+
+`CAP-MAP-002` definirá después qué significa cada capacidad y qué resultado debe producir.
+
+---
+
+#### 3. Reglas de nombres e identificadores
+
+1. Usar verbo en infinitivo más objeto empresarial.
+2. Describir qué debe poder hacer la organización, no la herramienta actual.
+3. No usar aplicaciones, tablas, pantallas, cargos, marcas o sedes como estructura.
+4. No duplicar la misma capacidad en varias familias.
+5. Separar capacidades que produzcan resultados diferentes.
+6. Permitir trabajo manual, externo, actual o futuro.
+
+Identificadores:
+
+```text
+CAP-01
+CAP-01.01
+CAP-01.01.01
+```
+
+Los códigos no serán permisos, rutas ni nombres de aplicaciones. No se reutilizarán identificadores retirados.
+
+---
+
+#### 4. Árbol principal
+
+```text
+VENTO GROUP
+├── CAP-01 Dirigir y gobernar la organización
+├── CAP-02 Gestionar personas y trabajo
+├── CAP-03 Proteger salud, seguridad y cumplimiento
+├── CAP-04 Gestionar productos, preparaciones y conocimiento
+├── CAP-05 Abastecer la operación
+├── CAP-06 Controlar inventario y almacenamiento
+├── CAP-07 Gestionar activos, equipos y elementos reutilizables
+├── CAP-08 Planear y ejecutar producción
+├── CAP-09 Vender, cobrar y atender pedidos
+├── CAP-10 Atender clientes y fortalecer relaciones
+├── CAP-11 Transportar, despachar y entregar
+├── CAP-12 Gestionar dinero, costos y obligaciones
+├── CAP-13 Mantener instalaciones y condiciones de operación
+├── CAP-14 Comunicar, promocionar y desarrollar ventas
+├── CAP-15 Gestionar tecnología y soporte
+├── CAP-16 Proteger información, documentos y evidencia
+├── CAP-17 Medir, analizar y mejorar
+└── CAP-18 Mantener continuidad y responder a incidentes
+```
+
+---
+
+#### 5. CAP-01 — Dirigir y gobernar la organización
+
+```text
+CAP-01.01 Definir dirección y objetivos
+CAP-01.02 Tomar y registrar decisiones empresariales
+CAP-01.03 Gobernar empresas, marcas y establecimientos
+CAP-01.04 Gobernar sedes, oficinas y áreas
+CAP-01.05 Definir responsabilidades y límites de decisión
+CAP-01.06 Gestionar políticas y reglas internas
+CAP-01.07 Gestionar riesgos empresariales
+CAP-01.08 Coordinar operación entre negocios y sedes
+CAP-01.09 Gestionar relaciones con asesores y autoridades
+CAP-01.10 Verificar cumplimiento de decisiones
+```
+
+---
+
+#### 6. CAP-02 — Gestionar personas y trabajo
+
+```text
+CAP-02.01 Planear necesidades de personal
+CAP-02.02 Reclutar y seleccionar
+CAP-02.03 Vincular e incorporar trabajadores
+CAP-02.04 Mantener información laboral
+CAP-02.05 Asignar sedes, áreas y funciones
+CAP-02.06 Programar turnos
+CAP-02.07 Registrar asistencia y tiempo trabajado
+CAP-02.08 Gestionar novedades, ausencias y reemplazos
+CAP-02.09 Capacitar y comprobar preparación
+CAP-02.10 Acompañar desempeño y desarrollo
+CAP-02.11 Gestionar documentos laborales
+CAP-02.12 Gestionar pagos y beneficios laborales
+CAP-02.13 Gestionar retiro y cierre de accesos
+```
+
+---
+
+#### 7. CAP-03 — Proteger salud, seguridad y cumplimiento
+
+```text
+CAP-03.01 Identificar peligros y riesgos laborales
+CAP-03.02 Prevenir accidentes y enfermedades
+CAP-03.03 Entregar y controlar elementos de protección
+CAP-03.04 Reportar e investigar incidentes
+CAP-03.05 Gestionar emergencias y evacuación
+CAP-03.06 Controlar higiene e inocuidad
+CAP-03.07 Realizar inspecciones obligatorias
+CAP-03.08 Gestionar requisitos legales y certificados
+CAP-03.09 Conservar evidencia de cumplimiento
+CAP-03.10 Gestionar acciones correctivas
+```
+
+---
+
+#### 8. CAP-04 — Gestionar productos, preparaciones y conocimiento
+
+```text
+CAP-04.01 Definir productos y servicios
+CAP-04.02 Definir presentaciones y unidades
+CAP-04.03 Clasificar productos
+CAP-04.04 Gestionar ingredientes y componentes
+CAP-04.05 Definir recetas y métodos de preparación
+CAP-04.06 Definir rendimientos y porciones
+CAP-04.07 Gestionar menús y disponibilidad
+CAP-04.08 Gestionar información nutricional y alérgenos
+CAP-04.09 Gestionar calidad y especificaciones
+CAP-04.10 Gestionar cambios y vigencia del conocimiento
+```
+
+---
+
+#### 9. CAP-05 — Abastecer la operación
+
+```text
+CAP-05.01 Planear necesidades de abastecimiento
+CAP-05.02 Solicitar productos, materiales o servicios
+CAP-05.03 Buscar y evaluar proveedores
+CAP-05.04 Solicitar y comparar ofertas
+CAP-05.05 Negociar condiciones
+CAP-05.06 Aprobar compras
+CAP-05.07 Emitir y controlar órdenes
+CAP-05.08 Recibir productos y servicios
+CAP-05.09 Verificar cantidades, calidad y documentos
+CAP-05.10 Gestionar diferencias y devoluciones
+CAP-05.11 Evaluar cumplimiento de proveedores
+CAP-05.12 Gestionar compras urgentes
+```
+
+---
+
+#### 10. CAP-06 — Controlar inventario y almacenamiento
+
+```text
+CAP-06.01 Definir lugares de almacenamiento
+CAP-06.02 Identificar productos, lotes y recipientes
+CAP-06.03 Registrar entradas
+CAP-06.04 Ubicar y reubicar existencias
+CAP-06.05 Consultar disponibilidad
+CAP-06.06 Reservar o separar existencias
+CAP-06.07 Registrar consumo y salida
+CAP-06.08 Trasladar entre lugares
+CAP-06.09 Solicitar y gestionar remisiones
+CAP-06.10 Preparar y despachar remisiones
+CAP-06.11 Recibir y confirmar remisiones
+CAP-06.12 Contar inventario
+CAP-06.13 Investigar y ajustar diferencias
+CAP-06.14 Controlar vencimiento, daño y pérdida
+CAP-06.15 Controlar frío y condiciones de almacenamiento
+```
+
+---
+
+#### 11. CAP-07 — Gestionar activos, equipos y elementos reutilizables
+
+```text
+CAP-07.01 Identificar y clasificar activos
+CAP-07.02 Registrar ubicación y custodia
+CAP-07.03 Entregar, prestar y devolver
+CAP-07.04 Transferir custodia
+CAP-07.05 Contar activos y reutilizables
+CAP-07.06 Registrar condición, daño, pérdida y faltante
+CAP-07.07 Planear y ejecutar mantenimiento
+CAP-07.08 Gestionar reparación y repuestos
+CAP-07.09 Controlar garantías y seguros
+CAP-07.10 Gestionar baja, venta, descarte o reemplazo
+CAP-07.11 Gestionar kits y conjuntos
+CAP-07.12 Gestionar vehículos y equipos de transporte
+CAP-07.13 Controlar combustible, kilometraje y disponibilidad
+```
+
+---
+
+#### 12. CAP-08 — Planear y ejecutar producción
+
+```text
+CAP-08.01 Recopilar necesidades de producción
+CAP-08.02 Planear cantidades y fechas
+CAP-08.03 Revisar capacidad, personal, equipos e insumos
+CAP-08.04 Priorizar trabajo productivo
+CAP-08.05 Programar producción
+CAP-08.06 Preparar ingredientes y materiales
+CAP-08.07 Ejecutar lotes o preparaciones
+CAP-08.08 Registrar cantidades producidas
+CAP-08.09 Registrar consumo, rendimiento y merma
+CAP-08.10 Controlar calidad durante producción
+CAP-08.11 Empacar y etiquetar
+CAP-08.12 Liberar, retener o rechazar producto
+CAP-08.13 Gestionar reproceso y aprovechamiento
+CAP-08.14 Cerrar y conciliar producción
+```
+
+---
+
+#### 13. CAP-09 — Vender, cobrar y atender pedidos
+
+```text
+CAP-09.01 Definir oferta y precios de venta
+CAP-09.02 Recibir solicitudes y pedidos
+CAP-09.03 Confirmar disponibilidad y condiciones
+CAP-09.04 Registrar pedidos
+CAP-09.05 Modificar, sustituir o cancelar pedidos
+CAP-09.06 Enviar pedidos a preparación
+CAP-09.07 Coordinar preparación y entrega
+CAP-09.08 Registrar ventas
+CAP-09.09 Cobrar y confirmar pagos
+CAP-09.10 Emitir factura o soporte
+CAP-09.11 Gestionar mesas y servicio presencial
+CAP-09.12 Gestionar pedidos para llevar
+CAP-09.13 Gestionar pedidos recibidos por aplicaciones o mensajes
+CAP-09.14 Gestionar pedidos especiales, catering y ventas a empresas
+CAP-09.15 Cerrar y revisar la jornada de venta
+```
+
+---
+
+#### 14. CAP-10 — Atender clientes y fortalecer relaciones
+
+```text
+CAP-10.01 Identificar y conocer clientes
+CAP-10.02 Registrar preferencias y autorizaciones
+CAP-10.03 Atender preguntas y solicitudes
+CAP-10.04 Recibir y resolver reclamos
+CAP-10.05 Gestionar devoluciones y compensaciones
+CAP-10.06 Medir satisfacción
+CAP-10.07 Gestionar fidelización y beneficios
+CAP-10.08 Gestionar reservas y eventos
+CAP-10.09 Comunicar cambios que afecten al cliente
+CAP-10.10 Proteger información del cliente
+```
+
+---
+
+#### 15. CAP-11 — Transportar, despachar y entregar
+
+```text
+CAP-11.01 Planear necesidades de transporte
+CAP-11.02 Definir recorridos y prioridades
+CAP-11.03 Asignar vehículo y responsable
+CAP-11.04 Preparar carga
+CAP-11.05 Confirmar cantidades y condición al salir
+CAP-11.06 Transferir custodia para transporte
+CAP-11.07 Ejecutar recorrido
+CAP-11.08 Registrar novedades durante transporte
+CAP-11.09 Entregar y confirmar recepción
+CAP-11.10 Gestionar faltantes, daños y devoluciones
+CAP-11.11 Cerrar y revisar el recorrido
+CAP-11.12 Gestionar entregas mediante terceros
+```
+
+---
+
+#### 16. CAP-12 — Gestionar dinero, costos y obligaciones
+
+```text
+CAP-12.01 Registrar hechos económicos
+CAP-12.02 Gestionar caja
+CAP-12.03 Gestionar bancos y pagos
+CAP-12.04 Gestionar cuentas por cobrar
+CAP-12.05 Gestionar cuentas por pagar
+CAP-12.06 Facturar y controlar documentos
+CAP-12.07 Conciliar ventas, pagos y entregas
+CAP-12.08 Conciliar compras y recepciones
+CAP-12.09 Calcular costos
+CAP-12.10 Distribuir costos compartidos
+CAP-12.11 Gestionar presupuestos
+CAP-12.12 Gestionar tesorería
+CAP-12.13 Gestionar impuestos y obligaciones
+CAP-12.14 Cerrar períodos y emitir reportes
+CAP-12.15 Analizar rentabilidad
+```
+
+---
+
+#### 17. CAP-13 — Mantener instalaciones y condiciones de operación
+
+```text
+CAP-13.01 Inventariar espacios e instalaciones
+CAP-13.02 Planear mantenimiento
+CAP-13.03 Solicitar y ejecutar reparaciones
+CAP-13.04 Gestionar limpieza y saneamiento
+CAP-13.05 Controlar plagas
+CAP-13.06 Controlar agua, energía, gas y servicios
+CAP-13.07 Inspeccionar condiciones
+CAP-13.08 Calibrar equipos
+CAP-13.09 Gestionar llaves, acceso físico y seguridad
+CAP-13.10 Gestionar obras y adecuaciones
+CAP-13.11 Registrar y cerrar novedades
+```
+
+---
+
+#### 18. CAP-14 — Comunicar, promocionar y desarrollar ventas
+
+```text
+CAP-14.01 Definir identidad y mensajes
+CAP-14.02 Planear comunicación y promociones
+CAP-14.03 Crear y aprobar contenido
+CAP-14.04 Publicar y administrar medios
+CAP-14.05 Gestionar campañas
+CAP-14.06 Gestionar promociones y cupones
+CAP-14.07 Captar oportunidades de venta
+CAP-14.08 Gestionar ventas a empresas
+CAP-14.09 Gestionar catering y eventos comerciales
+CAP-14.10 Medir resultados de comunicación y promoción
+CAP-14.11 Gestionar reputación y comentarios públicos
+```
+
+---
+
+#### 19. CAP-15 — Gestionar tecnología y soporte
+
+```text
+CAP-15.01 Gestionar cuentas y accesos
+CAP-15.02 Gestionar computadores, celulares y tabletas
+CAP-15.03 Gestionar redes y conectividad
+CAP-15.04 Gestionar impresoras y periféricos
+CAP-15.05 Gestionar aplicaciones y proveedores tecnológicos
+CAP-15.06 Atender solicitudes de soporte
+CAP-15.07 Gestionar fallas e incidentes tecnológicos
+CAP-15.08 Gestionar cambios y versiones
+CAP-15.09 Probar soluciones antes de usarlas
+CAP-15.10 Gestionar licencias, contratos y costos tecnológicos
+CAP-15.11 Capacitar en el uso de herramientas
+```
+
+---
+
+#### 20. CAP-16 — Proteger información, documentos y evidencia
+
+```text
+CAP-16.01 Clasificar información y documentos
+CAP-16.02 Crear y aprobar documentos
+CAP-16.03 Guardar y localizar documentos
+CAP-16.04 Controlar versiones y vigencia
+CAP-16.05 Compartir información de forma autorizada
+CAP-16.06 Proteger datos personales y sensibles
+CAP-16.07 Conservar registros y evidencia
+CAP-16.08 Archivar y eliminar de forma controlada
+CAP-16.09 Gestionar firmas y aprobaciones
+CAP-16.10 Atender solicitudes sobre información
+CAP-16.11 Investigar accesos o cambios indebidos
+```
+
+---
+
+#### 21. CAP-17 — Medir, analizar y mejorar
+
+```text
+CAP-17.01 Definir medidas e indicadores
+CAP-17.02 Recopilar información
+CAP-17.03 Verificar calidad de información
+CAP-17.04 Preparar reportes
+CAP-17.05 Analizar ventas y demanda
+CAP-17.06 Analizar inventario y abastecimiento
+CAP-17.07 Analizar producción y rendimiento
+CAP-17.08 Analizar servicio y clientes
+CAP-17.09 Analizar costos y rentabilidad
+CAP-17.10 Identificar problemas y oportunidades
+CAP-17.11 Definir y seguir acciones de mejora
+CAP-17.12 Comprobar resultados
+```
+
+---
+
+#### 22. CAP-18 — Mantener continuidad y responder a incidentes
+
+```text
+CAP-18.01 Identificar dependencias críticas
+CAP-18.02 Preparar respuestas alternativas
+CAP-18.03 Detectar y reportar incidentes
+CAP-18.04 Evaluar impacto y prioridad
+CAP-18.05 Mantener operación mínima
+CAP-18.06 Recuperar equipos, servicios e información
+CAP-18.07 Registrar trabajo realizado durante la falla
+CAP-18.08 Incorporar posteriormente lo ocurrido
+CAP-18.09 Confirmar que no quedaron pendientes
+CAP-18.10 Aprender del incidente y mejorar la respuesta
+CAP-18.11 Gestionar respaldos y recuperación
+CAP-18.12 Coordinar comunicación durante incidentes
+```
+
+---
+
+#### 23. Relaciones entre familias
+
+| Necesidad               | Familia principal | Familias relacionadas                  |
+| ----------------------- | ----------------- | -------------------------------------- |
+| pedido de cliente       | `CAP-09`          | `CAP-08`, `CAP-10`, `CAP-11`, `CAP-12` |
+| remisión entre sedes    | `CAP-06`          | `CAP-08`, `CAP-11`, `CAP-12`           |
+| compra de insumo        | `CAP-05`          | `CAP-06`, `CAP-12`                     |
+| trabajador en turno     | `CAP-02`          | `CAP-03`, `CAP-15`, `CAP-16`           |
+| mantenimiento de equipo | `CAP-07`          | `CAP-05`, `CAP-12`, `CAP-13`           |
+| reclamo por entrega     | `CAP-10`          | `CAP-09`, `CAP-11`, `CAP-12`           |
+| falta de producto       | `CAP-06`          | `CAP-08`, `CAP-09`, `CAP-17`           |
+| caída de sistema        | `CAP-18`          | `CAP-09`, `CAP-15`, `CAP-16`           |
+
+Las relaciones no crean capacidades duplicadas.
+
+---
+
+#### 24. Lo que no se convierte en capacidad
+
+- cada pantalla o ruta;
+- cada tabla o función;
+- cada documento individual;
+- cada cargo;
+- cada sede o marca;
+- cada estado de un pedido;
+- cada botón;
+- cada excepción temporal;
+- cada herramienta actual.
+
+Estos elementos se vincularán después con la capacidad correspondiente.
+
+---
+
+#### 25. Trabajo actual, futuro o externo
+
+Cada capacidad podrá clasificarse posteriormente como:
+
+```text
+ACTUAL
+NECESARIA
+FUTURA
+EXTERNA
+MANUAL_CONTROLADA
+POR_CONFIRMAR
+FUERA_DE_ALCANCE
+```
+
+Esta tarea no asigna todavía esas clasificaciones.
+
+---
+
+#### 26. Dudas que resolverán las tareas siguientes
+
+| Duda                                           | Tarea         |
+| ---------------------------------------------- | ------------- |
+| significado y resultado de cada capacidad      | `CAP-MAP-002` |
+| empresa, sede, área o forma de venta aplicable | `CAP-MAP-003` |
+| aplicación o área propietaria                  | `CAP-MAP-004` |
+| aplicaciones y sistemas que la utilizan        | `CAP-MAP-005` |
+| quién inicia, ejecuta, supervisa y aprueba     | `CAP-MAP-006` |
+| información de entrada y resultado             | `CAP-MAP-007` |
+| fuente actual y futura de información          | `CAP-MAP-008` |
+| relaciones y comunicaciones                    | `CAP-MAP-009` |
+| permisos y controles                           | `CAP-MAP-010` |
+| pantallas, aparatos, documentos y evidencia    | `CAP-MAP-011` |
+| clasificación empresarial                      | `CAP-MAP-012` |
+| duplicados o responsables en conflicto         | `CAP-MAP-013` |
+| capacidades ausentes en sistemas               | `CAP-MAP-014` |
+| aprobación de la línea base                    | `CAP-MAP-015` |
+
+---
+
+#### 27. Decisiones propuestas
+
+1. Vento Group utilizará un único árbol de capacidades.
+2. El nivel principal tendrá 18 familias.
+3. Las capacidades se nombrarán por lo que la organización necesita hacer.
+4. Aplicaciones, cargos, sedes y herramientas no definirán la estructura.
+5. Cada capacidad tendrá una familia principal.
+6. El mapa admitirá trabajo actual, necesario, futuro, externo y manual.
+7. Esta tarea no asignará responsables, aplicaciones, permisos o datos.
+8. Las dudas restantes tendrán destino en `CAP-MAP-002` a `CAP-MAP-015`.
+
+---
+
+#### 28. Criterios de aceptación
+
+`CAP-MAP-001` podrá aprobarse cuando:
+
+- exista un árbol único y comprensible;
+- las familias cubran la operación empresarial mínima;
+- cada capacidad tenga identificador y nombre estable;
+- aplicaciones y cargos no definan la estructura;
+- no se dupliquen capacidades por sede o herramienta;
+- cada decisión posterior tenga tarea responsable;
+- no se hayan diseñado procesos, pantallas, permisos, datos o implementación.
+
+---
+
+#### 29. Resultado y continuidad
+
+Con la aprobación quedará establecida la estructura base para organizar el descubrimiento funcional y técnico.
+
+La continuidad será:
+
+```text
+CAP-MAP-002
+— Definir capacidad, subcapacidad y resultado empresarial esperado
+```
+
+`CAP-MAP-002` definirá qué significa cada elemento, qué incluye, qué excluye y qué resultado debe producir, sin asignar todavía aplicaciones o responsables definitivos.
+
+
+### ✅ CAP-MAP-002 — Definir capacidad, subcapacidad y resultado empresarial esperado
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencia cumplida:** `CAP-MAP-001`
+**Naturaleza:** definiciones y reglas para describir cada elemento del árbol de capacidades
+**No define todavía:** empresa, sede, área, forma de venta, responsables, aplicaciones, permisos, información o implementación
+**Cambios en código o Supabase:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir qué significa cada nivel del árbol aprobado y cómo deberá escribirse el resultado que Vento Group espera obtener.
+
+Esta tarea evita que el mapa termine mezclando:
+
+- cosas que la empresa necesita poder hacer;
+- pasos de un procedimiento;
+- tareas de una persona;
+- herramientas;
+- documentos;
+- resultados.
+
+---
+
+#### 2. Definiciones aprobables
+
+##### 2.1. Capacidad empresarial
+
+Algo que Vento Group necesita poder hacer de manera estable para operar, dirigir, controlar o mejorar.
+
+Una capacidad:
+
+- sigue siendo necesaria aunque cambie la aplicación;
+- puede involucrar varias personas;
+- puede realizarse manualmente, con apoyo tecnológico o mediante un tercero;
+- produce un resultado empresarial reconocible;
+- no describe una secuencia detallada de pasos.
+
+Ejemplo:
+
+```text
+CAPACIDAD
+Gestionar turnos
+
+RESULTADO
+El trabajo requerido queda asignado a personas, fechas, horas, lugares y
+funciones de forma comprensible y verificable.
+```
+
+##### 2.2. Subcapacidad
+
+Parte concreta de una capacidad que produce un resultado propio y puede analizarse por separado.
+
+Ejemplo:
+
+```text
+CAPACIDAD
+Gestionar turnos
+
+SUBCAPACIDADES
+├── Crear programación
+├── Comunicar programación
+├── Registrar cambios
+└── Resolver ausencias
+```
+
+##### 2.3. Resultado empresarial esperado
+
+Estado verificable que debe existir después de ejecutar correctamente una capacidad o subcapacidad.
+
+Debe responder:
+
+```text
+¿QUÉ QUEDA CREADO, CONFIRMADO, ENTREGADO, CONTROLADO O RESUELTO?
+```
+
+No será una frase genérica como:
+
+```text
+Proceso realizado correctamente
+Información actualizada
+Gestión completada
+```
+
+##### 2.4. Proceso
+
+Secuencia ordenada que conecta varias capacidades o subcapacidades para resolver un caso de principio a fin.
+
+Ejemplo:
+
+```text
+PEDIDO DE CLIENTE
+→ recibir pedido
+→ confirmar disponibilidad
+→ preparar
+→ cobrar
+→ entregar
+→ cerrar
+```
+
+El proceso se diseñará después. No sustituye el mapa de capacidades.
+
+##### 2.5. Actividad
+
+Paso específico realizado por una persona o sistema dentro de un proceso.
+
+Ejemplos:
+
+- contar unidades;
+- imprimir una comanda;
+- llamar a un proveedor;
+- marcar una casilla;
+- adjuntar una fotografía.
+
+Las actividades no se registrarán como capacidades independientes salvo que produzcan un resultado empresarial separable.
+
+---
+
+#### 3. Prueba para reconocer una capacidad
+
+Una candidata será capacidad cuando pueda responder afirmativamente:
+
+| Pregunta                                                            | Debe cumplirse |
+| ------------------------------------------------------------------- | -------------- |
+| ¿La organización necesita conservarla aunque cambie la herramienta? | Sí             |
+| ¿Produce un resultado útil y reconocible?                           | Sí             |
+| ¿Puede evaluarse si existe, está incompleta o falta?                | Sí             |
+| ¿Es más estable que un procedimiento actual?                        | Sí             |
+| ¿Puede tener varias formas de ejecución?                            | Sí             |
+
+Si solo describe una pantalla, archivo, cargo, botón o paso, no es capacidad.
+
+---
+
+#### 4. Prueba para separar subcapacidades
+
+Dos elementos permanecerán separados cuando:
+
+- produzcan resultados distintos;
+- puedan existir uno sin el otro;
+- tengan controles o riesgos diferentes;
+- uno pueda estar completo mientras el otro falta;
+- requieran decisiones empresariales diferentes.
+
+Se mantendrán unidos cuando sean únicamente pasos inseparables de un mismo resultado.
+
+Ejemplo:
+
+```text
+Recibir productos
+≠
+Verificar productos
+
+La recepción confirma que algo llegó.
+La verificación confirma cantidad, condición y correspondencia.
+```
+
+---
+
+#### 5. Forma obligatoria de redactar resultados
+
+Cada resultado utilizará esta estructura:
+
+```text
+[OBJETO O SITUACIÓN]
+QUEDA
+[ESTADO OBSERVABLE]
+CON
+[CONDICIONES MÍNIMAS]
+```
+
+Ejemplo:
+
+```text
+La solicitud de compra queda registrada y lista para evaluación, con
+solicitante, necesidad, cantidades, fecha y soporte mínimo identificables.
+```
+
+Un resultado no deberá indicar todavía:
+
+- qué aplicación lo guarda;
+- qué tabla se modifica;
+- qué cargo lo ejecuta;
+- qué permiso lo autoriza;
+- qué pantalla se utiliza.
+
+---
+
+#### 6. Campos que tendrá cada capacidad
+
+| Campo              | Contenido                                                   |
+| ------------------ | ----------------------------------------------------------- |
+| Identificador      | código aprobado en `CAP-MAP-001`                            |
+| Nombre             | verbo más objeto empresarial                                |
+| Definición         | qué significa                                               |
+| Incluye            | situaciones cubiertas                                       |
+| Excluye            | situaciones cercanas que pertenecen a otra capacidad        |
+| Resultado esperado | estado verificable que debe quedar                          |
+| Evidencia posible  | ejemplo de cómo podría comprobarse, sin definir herramienta |
+| Dudas              | elementos que requieren tareas posteriores                  |
+
+Los campos empresa, sede, área y forma de venta se agregarán en `CAP-MAP-003`.
+
+---
+
+#### 7. Resultados esperados de las 18 familias
+
+| Código   | Familia                                           | Resultado empresarial esperado                                                                                             |
+| -------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-01` | Dirigir y gobernar la organización                | Las decisiones, reglas, responsabilidades y riesgos quedan definidos, comunicados y sujetos a seguimiento.                 |
+| `CAP-02` | Gestionar personas y trabajo                      | La organización dispone de personas vinculadas, preparadas, programadas y acompañadas para realizar el trabajo requerido.  |
+| `CAP-03` | Proteger salud, seguridad y cumplimiento          | Los riesgos y obligaciones quedan identificados, prevenidos, atendidos y respaldados con evidencia.                        |
+| `CAP-04` | Gestionar productos, preparaciones y conocimiento | Los productos, presentaciones, recetas, condiciones y cambios quedan definidos y disponibles para uso controlado.          |
+| `CAP-05` | Abastecer la operación                            | Las necesidades de productos y servicios quedan atendidas mediante proveedores y compras verificables.                     |
+| `CAP-06` | Controlar inventario y almacenamiento             | Las existencias quedan identificadas, ubicadas, disponibles y explicables desde entrada hasta consumo, traslado o pérdida. |
+| `CAP-07` | Gestionar activos, equipos y reutilizables        | Los recursos físicos quedan identificados, custodiados, mantenidos y disponibles durante su vida útil.                     |
+| `CAP-08` | Planear y ejecutar producción                     | Las necesidades se convierten en productos terminados con cantidades, calidad, consumo y diferencias conocidos.            |
+| `CAP-09` | Vender, cobrar y atender pedidos                  | Las solicitudes se convierten en pedidos, ventas, pagos y entregas completos o en excepciones claramente resueltas.        |
+| `CAP-10` | Atender clientes y fortalecer relaciones          | Las necesidades, reclamos, preferencias y compromisos con clientes quedan atendidos y protegidos.                          |
+| `CAP-11` | Transportar, despachar y entregar                 | Los productos o recursos llegan al destino previsto con cantidades, condición, custodia y recepción confirmadas.           |
+| `CAP-12` | Gestionar dinero, costos y obligaciones           | Los movimientos económicos quedan registrados, conciliados, cumplidos y disponibles para decisión.                         |
+| `CAP-13` | Mantener instalaciones y condiciones de operación | Los espacios y servicios permanecen seguros, limpios, disponibles y aptos para operar.                                     |
+| `CAP-14` | Comunicar, promocionar y desarrollar ventas       | La organización comunica su oferta, genera oportunidades y conoce el resultado de sus esfuerzos comerciales.               |
+| `CAP-15` | Gestionar tecnología y soporte                    | Las herramientas tecnológicas permanecen disponibles, controladas y acompañadas durante su uso.                            |
+| `CAP-16` | Proteger información, documentos y evidencia      | La información queda clasificada, protegida, localizable, vigente y conservada durante el tiempo necesario.                |
+| `CAP-17` | Medir, analizar y mejorar                         | La organización convierte información confiable en conclusiones, decisiones y mejoras verificables.                        |
+| `CAP-18` | Mantener continuidad y responder a incidentes     | La operación crítica puede sostenerse, recuperarse y reconciliarse después de una interrupción.                            |
+
+---
+
+#### 8. Contrato de resultado para las subcapacidades
+
+Cada subcapacidad de `CAP-MAP-001` deberá cumplir esta plantilla:
+
+```text
+ID:
+NOMBRE:
+
+DEFINICIÓN:
+Esta subcapacidad permite...
+
+INCLUYE:
+- ...
+
+EXCLUYE:
+- ...
+
+RESULTADO ESPERADO:
+... queda ...
+
+PUEDE COMPROBARSE MEDIANTE:
+- observación;
+- registro;
+- documento;
+- confirmación;
+- conteo;
+- otro tipo de evidencia.
+
+PREGUNTAS PENDIENTES:
+- ...
+```
+
+La plantilla se completará durante el desarrollo progresivo del mapa y deberá estar completa antes de `CAP-MAP-015`.
+
+---
+
+#### 9. Ejemplos aplicados
+
+##### 9.1. CAP-05.02 — Solicitar productos, materiales o servicios
+
+**Definición:** expresar una necesidad de compra o contratación para que pueda revisarse y atenderse.
+
+**Incluye:**
+
+- necesidad;
+- producto, material o servicio;
+- cantidad cuando aplique;
+- fecha requerida;
+- lugar solicitante;
+- motivo o soporte.
+
+**Excluye:**
+
+- elegir proveedor;
+- aprobar compra;
+- emitir orden;
+- recibir producto.
+
+**Resultado esperado:** la necesidad queda registrada de forma suficiente para ser evaluada, aprobada, rechazada o devuelta para corrección.
+
+##### 9.2. CAP-06.11 — Recibir y confirmar remisiones
+
+**Definición:** comprobar y registrar lo que llega a un lugar como resultado de una remisión.
+
+**Incluye:**
+
+- identificación de la remisión;
+- conteo recibido;
+- condición;
+- diferencias;
+- persona que recibe;
+- fecha y hora.
+
+**Excluye:**
+
+- preparar el envío;
+- transportarlo;
+- realizar ajustes automáticos;
+- decidir el costo.
+
+**Resultado esperado:** la entrega queda confirmada con cantidad y condición recibidas, y cualquier diferencia queda visible y asignada para resolución.
+
+##### 9.3. CAP-08.09 — Registrar consumo, rendimiento y merma
+
+**Definición:** dejar evidencia de lo utilizado, lo obtenido y lo perdido durante producción.
+
+**Incluye:**
+
+- cantidades utilizadas;
+- cantidades producidas;
+- merma observada;
+- unidad;
+- preparación o lote relacionado.
+
+**Excluye:**
+
+- calcular costo definitivo;
+- aprobar ajustes de inventario;
+- definir receta.
+
+**Resultado esperado:** cada ejecución productiva queda explicada mediante consumo, producción obtenida y diferencia observada.
+
+##### 9.4. CAP-09.05 — Modificar, sustituir o cancelar pedidos
+
+**Definición:** cambiar un pedido existente conservando qué se pidió originalmente, qué cambió y por qué.
+
+**Incluye:**
+
+- producto;
+- cantidad;
+- presentación;
+- fecha;
+- sustitución;
+- cancelación;
+- motivo.
+
+**Excluye:**
+
+- devolución posterior a la entrega;
+- corrección contable;
+- cambio de receta.
+
+**Resultado esperado:** el pedido queda en un estado comprensible y el cambio conserva motivo, aceptación y efecto sobre preparación, cobro y entrega.
+
+##### 9.5. CAP-11.09 — Entregar y confirmar recepción
+
+**Definición:** transferir el producto o recurso al destinatario y dejar confirmación de lo recibido.
+
+**Incluye:**
+
+- destinatario;
+- momento;
+- cantidad;
+- condición;
+- diferencias;
+- confirmación.
+
+**Excluye:**
+
+- preparación;
+- cobro;
+- ajuste de inventario;
+- investigación de pérdidas.
+
+**Resultado esperado:** el destino confirma qué recibió, cuándo y en qué condición, y cualquier diferencia queda pendiente de una resolución identificable.
+
+---
+
+#### 10. Diferencia entre resultado y evidencia
+
+```text
+RESULTADO
+El pedido queda entregado y confirmado.
+
+EVIDENCIA POSIBLE
+Firma, mensaje, fotografía autorizada, registro, comprobante o confirmación de
+la persona que recibe.
+```
+
+La evidencia prueba el resultado; no es el resultado.
+
+---
+
+#### 11. Diferencia entre resultado y medida
+
+```text
+RESULTADO
+El reclamo queda atendido y cerrado.
+
+MEDIDAS POSIBLES
+Tiempo de respuesta
+Cantidad de reaperturas
+Porcentaje resuelto
+```
+
+Las medidas se definirán después. No reemplazan el resultado esperado.
+
+---
+
+#### 12. Resultados completos, parciales y fallidos
+
+Cada capacidad podrá producir:
+
+| Estado           | Significado                                                |
+| ---------------- | ---------------------------------------------------------- |
+| `COMPLETO`       | resultado alcanzado y comprobable                          |
+| `PARCIAL`        | una parte quedó pendiente o fue aceptada parcialmente      |
+| `NO_REALIZADO`   | no se obtuvo el resultado                                  |
+| `CANCELADO`      | se decidió no continuar y quedó motivo                     |
+| `EXCEPCIONAL`    | se obtuvo mediante una regla extraordinaria                |
+| `NO_COMPROBABLE` | se afirma que ocurrió, pero no existe evidencia suficiente |
+
+Estos estados son conceptuales; no crean todavía estados de base de datos.
+
+---
+
+#### 13. Resultado mínimo y resultado ampliado
+
+Cuando una capacidad tenga distintas formas de cumplimiento se distinguirá:
+
+```text
+RESULTADO MÍNIMO
+lo indispensable para considerar atendida la necesidad
+
+RESULTADO AMPLIADO
+información, evidencia o control adicional deseable
+```
+
+Ejemplo:
+
+```text
+Recibir productos
+
+Mínimo:
+producto, cantidad, fecha y receptor.
+
+Ampliado:
+condición, lote, vencimiento, temperatura, fotografía y diferencias.
+```
+
+La clasificación exacta se definirá cuando se documente cada subcapacidad.
+
+---
+
+#### 14. Casos que no deben confundirse
+
+| No confundir               | Diferencia                                          |
+| -------------------------- | --------------------------------------------------- |
+| capacidad y responsable    | la capacidad existe aunque cambie la persona        |
+| capacidad y aplicación     | la capacidad existe aunque cambie la herramienta    |
+| capacidad y proceso        | el proceso conecta varias capacidades               |
+| capacidad y actividad      | la actividad es un paso concreto                    |
+| resultado y documento      | el documento puede demostrar el resultado           |
+| resultado y estado técnico | el resultado describe una condición empresarial     |
+| subcapacidad y excepción   | una excepción no crea automáticamente una capacidad |
+
+---
+
+#### 15. Control de duplicados
+
+Si dos nombres parecen similares, se comparará:
+
+1. objeto afectado;
+2. resultado esperado;
+3. inicio y final;
+4. evidencia;
+5. situaciones incluidas;
+6. situaciones excluidas.
+
+Si producen el mismo resultado, se unifican. Si producen resultados diferentes, permanecen separadas.
+
+La decisión final sobre duplicados se registrará en `CAP-MAP-013`.
+
+---
+
+#### 16. Preguntas que esta tarea no responde
+
+| Pregunta                                     | Tarea         |
+| -------------------------------------------- | ------------- |
+| ¿Dónde aplica?                               | `CAP-MAP-003` |
+| ¿Qué aplicación o área es propietaria?       | `CAP-MAP-004` |
+| ¿Qué sistemas la utilizan?                   | `CAP-MAP-005` |
+| ¿Quién inicia, ejecuta, supervisa o aprueba? | `CAP-MAP-006` |
+| ¿Qué información recibe y produce?           | `CAP-MAP-007` |
+| ¿Cuál es la fuente actual o futura?          | `CAP-MAP-008` |
+| ¿Qué comunicaciones requiere?                | `CAP-MAP-009` |
+| ¿Qué permisos necesita?                      | `CAP-MAP-010` |
+| ¿Qué pantallas, aparatos o documentos usa?   | `CAP-MAP-011` |
+| ¿Cómo se clasifica?                          | `CAP-MAP-012` |
+| ¿Está duplicada?                             | `CAP-MAP-013` |
+| ¿Falta en los sistemas actuales?             | `CAP-MAP-014` |
+| ¿Está lista la línea base?                   | `CAP-MAP-015` |
+
+---
+
+#### 17. Decisiones propuestas
+
+1. Capacidad, subcapacidad, proceso, actividad, resultado y evidencia tendrán significados separados.
+2. Cada capacidad deberá producir un resultado empresarial observable.
+3. Los resultados no mencionarán aplicaciones, tablas, cargos o permisos.
+4. Las 18 familias tendrán los resultados generales definidos en esta tarea.
+5. Cada subcapacidad usará la plantilla de la sección 8.
+6. La plantilla deberá completarse antes de aprobar la línea base en `CAP-MAP-015`.
+7. Resultados incompletos, parciales o no comprobables permanecerán visibles.
+8. Los posibles duplicados se resolverán mediante comparación de resultados.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-002` podrá aprobarse cuando:
+
+- capacidad, subcapacidad, proceso, actividad, resultado y evidencia estén claramente separados;
+- exista una prueba para reconocer y dividir capacidades;
+- exista una forma obligatoria de redactar resultados;
+- cada familia tenga resultado general;
+- exista plantilla para completar cada subcapacidad;
+- los ejemplos demuestren cómo aplicar la regla;
+- las preguntas posteriores tengan tarea responsable;
+- no se hayan asignado todavía sedes, responsables, aplicaciones, permisos o datos.
+
+---
+
+#### 19. Resultado y continuidad
+
+Con la aprobación quedará definido el contrato descriptivo que deberá cumplir cada elemento de la taxonomía.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-003
+— Vincular cada capacidad con empresa, sede, área y canal aplicables
+```
+
+`CAP-MAP-003` determinará dónde aplica cada capacidad sin confundir empresa, sede, área o forma de recibir y atender pedidos.
+
+
+### ✅ CAP-MAP-003 — Vincular cada capacidad con empresa, sede, área y canal aplicables
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencias cumplidas:** `CAP-MAP-001` y `CAP-MAP-002`
+**Propósito:** indicar en qué parte de la organización se necesita cada capacidad, sin confundir empresas, marcas, sedes, áreas, aplicaciones o formas de recibir pedidos
+**No define todavía:** propietario funcional, responsables, aplicaciones, permisos, datos, diseño futuro ni titularidades sin soporte documental
+
+---
+
+#### 1. Resultado de esta tarea
+
+Cada una de las 217 subcapacidades definidas en `CAP-MAP-001` quedará vinculada de forma controlada con:
+
+1. la empresa o titular, cuando exista soporte documental;
+2. el frente de operación observado;
+3. el lugar físico donde se necesita;
+4. el área de trabajo donde se usa o produce el resultado;
+5. la forma de recibir o atender solicitudes, únicamente cuando aplique;
+6. el estado de certeza de cada vínculo;
+7. la pregunta concreta que permitirá resolver cualquier vínculo pendiente.
+
+Esta tarea describe alcance. No decide todavía quién es dueño de la capacidad ni quién debe ejecutarla.
+
+---
+
+#### 2. Palabras que no se tratarán como equivalentes
+
+| Palabra                    | Qué significa en esta tarea                                               | Ejemplo                                             |
+| -------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| Empresa o titular          | persona jurídica o natural que aparece en documentos y asume obligaciones | quien factura, contrata o figura en un certificado  |
+| Frente observado           | nombre con el que actualmente se reconoce una operación                   | Vento Café, Saudo o Molka                           |
+| Sede o lugar               | espacio físico donde se realiza trabajo                                   | Oficina 1, Centro de Producción, cocina o bodega    |
+| Área de trabajo            | tipo de trabajo realizado dentro de un lugar                              | caja, cocina, compras o contabilidad                |
+| Marca                      | nombre usado frente al público                                            | no demuestra por sí solo quién factura o contrata   |
+| Forma de recibir o atender | manera concreta por la cual llega o se atiende una solicitud              | mesa, mostrador, llamada, WhatsApp, Rappi o Shopify |
+| Aplicación                 | herramienta utilizada para trabajar                                       | Makos, Shopify o una hoja de cálculo                |
+
+En las tablas se podrá conservar la palabra **canal** por compatibilidad con el plan, pero siempre significará **forma concreta de recibir o atender una solicitud**.
+
+---
+
+#### 3. Regla obligatoria sobre empresas y titulares
+
+No se convertirá automáticamente una marca, una sede o un nombre operativo en empresa.
+
+Hasta completar la verificación documental prevista en `EXT-GOV-001`, el campo **empresa o titular** utilizará uno de estos valores:
+
+| Valor                            | Cuándo se usa                                                                         |
+| -------------------------------- | ------------------------------------------------------------------------------------- |
+| `CONFIRMADO_DOCUMENTALMENTE`     | existe documento vigente que permite identificar al titular                           |
+| `POR_CONFIRMAR_DOCUMENTALMENTE`  | se conoce el frente operativo, pero no existe conciliación documental suficiente      |
+| `VARIOS_TITULARES_POR_CONFIRMAR` | la capacidad parece compartida entre varios frentes y no se ha separado jurídicamente |
+| `NO_APLICA`                      | el campo no corresponde al vínculo evaluado                                           |
+
+Con la evidencia disponible, ninguna familia recibirá un titular jurídico definitivo en esta tarea.
+
+---
+
+#### 4. Estados permitidos para cada vínculo
+
+| Estado               | Significado                                                                   |
+| -------------------- | ----------------------------------------------------------------------------- |
+| `CONFIRMADO`         | existe evidencia suficiente en la documentación revisada                      |
+| `CONFIRMADO_PARCIAL` | existe evidencia, pero faltan lugares, variantes o límites                    |
+| `POR_CONFIRMAR`      | hay una duda específica que puede resolverse mediante observación o documento |
+| `NO_APLICA`          | la capacidad no necesita ese lugar, área o forma de atención                  |
+| `NO_OBSERVADO`       | no se encontró evidencia de que actualmente ocurra                            |
+| `FUTURO_POR_DECIDIR` | podría necesitarse después, pero no se declarará como operación actual        |
+
+`POR_CONFIRMAR`, `NO_OBSERVADO` y `FUTURO_POR_DECIDIR` no significan lo mismo.
+
+---
+
+#### 5. Inventario base de frentes y lugares
+
+| Código provisional | Nombre usado actualmente | Clasificación permitida en esta tarea        | Estado               |
+| ------------------ | ------------------------ | -------------------------------------------- | -------------------- |
+| `ORG-VENTO`        | Vento Group              | referencia organizacional                    | `CONFIRMADO`         |
+| `LUG-OFI-01`       | Oficina 1                | punto administrativo real                    | `CONFIRMADO`         |
+| `LUG-PROD-01`      | Centro de Producción     | contexto operativo diferenciado              | `CONFIRMADO`         |
+| `LUG-CAF-01`       | Vento Café               | sede comercial y operativa                   | `CONFIRMADO`         |
+| `LUG-SAU-01`       | Saudo                    | sede operativa diferenciada                  | `CONFIRMADO`         |
+| `LUG-MOL-01`       | Molka                    | sede operativa diferenciada                  | `CONFIRMADO`         |
+| `FRE-VAI-01`       | Vaila Vainilla           | frente comercial por caracterizar            | `CONFIRMADO_PARCIAL` |
+| `FRE-CAT-01`       | Catering                 | servicio o frente comercial por caracterizar | `CONFIRMADO_PARCIAL` |
+
+Los códigos son referencias documentales provisionales. No crean registros, empresas, centros de costo ni configuraciones.
+
+---
+
+#### 6. Áreas de trabajo que podrán marcarse
+
+Para evitar respuestas abiertas, se utilizará inicialmente esta lista:
+
+| Código    | Área de trabajo                                      |
+| --------- | ---------------------------------------------------- |
+| `ARE-DIR` | dirección o gerencia                                 |
+| `ARE-ADM` | administración                                       |
+| `ARE-CON` | contabilidad y tesorería                             |
+| `ARE-PER` | personal, turnos y asuntos laborales                 |
+| `ARE-SST` | seguridad, salud, higiene y cumplimiento             |
+| `ARE-COM` | compras y relación con proveedores                   |
+| `ARE-BOD` | bodega y almacenamiento                              |
+| `ARE-PRO` | producción                                           |
+| `ARE-COC` | cocina o preparación en sede                         |
+| `ARE-CAJ` | caja y cobro                                         |
+| `ARE-SAL` | salón, mesas y atención presencial                   |
+| `ARE-PED` | recepción y seguimiento de pedidos                   |
+| `ARE-DES` | despacho, transporte y entrega                       |
+| `ARE-MER` | mercadeo, comunicación y ventas empresariales        |
+| `ARE-MAN` | mantenimiento, limpieza e instalaciones              |
+| `ARE-TEC` | tecnología y soporte                                 |
+| `ARE-DOC` | documentos e información                             |
+| `ARE-ANA` | medición, análisis y mejora                          |
+| `ARE-OTR` | otra, indicando el nombre usado por los trabajadores |
+
+Esta lista indica dónde se usa una capacidad. No asigna propiedad ni responsabilidad.
+
+---
+
+#### 7. Formas concretas de recibir o atender
+
+| Código      | Forma concreta                                      |
+| ----------- | --------------------------------------------------- |
+| `FOR-MES`   | cliente atendido en una mesa                        |
+| `FOR-MOS`   | cliente atendido en mostrador                       |
+| `FOR-LLE`   | pedido para llevar                                  |
+| `FOR-LLA`   | llamada telefónica                                  |
+| `FOR-WHA`   | mensaje de WhatsApp                                 |
+| `FOR-RAP`   | pedido recibido por Rappi                           |
+| `FOR-MAN`   | solicitud o pedido recibido por ManyChat            |
+| `FOR-SHO`   | pedido recibido por Shopify                         |
+| `FOR-EMP`   | solicitud directa de una empresa                    |
+| `FOR-EVE`   | evento o catering                                   |
+| `FOR-INT`   | solicitud interna entre áreas o sedes               |
+| `FOR-PRO`   | solicitud enviada por un proveedor                  |
+| `FOR-AUT`   | otra forma identificada por nombre                  |
+| `NO_APLICA` | la capacidad no depende de cómo llega una solicitud |
+
+Makos u otra aplicación no será una forma de atención. Será la herramienta en la que puede registrarse una solicitud recibida por alguna de las formas anteriores.
+
+---
+
+#### 8. Regla de vinculación sin repetir 217 filas
+
+Cada subcapacidad heredará el vínculo de su familia, salvo que aparezca en la tabla de excepciones del apartado 10.
+
+La lectura será:
+
+```text
+VÍNCULO DE LA SUBCAPACIDAD
+=
+VÍNCULO BASE DE SU FAMILIA
++
+EXCEPCIÓN ESPECÍFICA, SI EXISTE
+```
+
+Así, ninguna subcapacidad queda sin clasificación y se evita copiar 217 veces la misma información.
+
+---
+
+#### 9. Mapa base aplicable a todas las subcapacidades
+
+| Familia                                                    | Frentes o lugares observados                                             | Áreas donde se necesita el resultado                                      | Forma de recibir o atender                                                                  | Estado               |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------- |
+| `CAP-01` Dirigir y gobernar                                | Oficina 1 y operación transversal                                        | dirección y administración                                                | solicitudes internas                                                                        | `CONFIRMADO_PARCIAL` |
+| `CAP-02` Gestionar personas y trabajo                      | Oficina 1, Centro de Producción, Vento Café, Saudo y Molka               | personal, administración y áreas con trabajadores                         | solicitudes internas                                                                        | `CONFIRMADO`         |
+| `CAP-03` Proteger salud, seguridad y cumplimiento          | todos los lugares físicos observados                                     | seguridad, salud, higiene y cada área expuesta                            | solicitudes internas y avisos de incidentes                                                 | `CONFIRMADO_PARCIAL` |
+| `CAP-04` Gestionar productos, preparaciones y conocimiento | Oficina 1, Centro de Producción y sedes que ofrecen o preparan productos | administración, producción, cocina, caja, pedidos y mercadeo              | todas las formas donde se ofrece un producto                                                | `CONFIRMADO_PARCIAL` |
+| `CAP-05` Abastecer la operación                            | Oficina 1 y cada lugar que solicita o recibe productos o servicios       | compras, bodega, producción, cocina y administración                      | solicitudes internas y comunicaciones de proveedores                                        | `CONFIRMADO_PARCIAL` |
+| `CAP-06` Controlar inventario y almacenamiento             | Centro de Producción y lugares con existencias                           | bodega, producción, cocina, caja y despacho cuando custodien productos    | solicitudes internas entre lugares                                                          | `CONFIRMADO_PARCIAL` |
+| `CAP-07` Gestionar activos, equipos y reutilizables        | todos los lugares físicos observados                                     | administración, mantenimiento y cada área que custodie recursos           | solicitudes internas                                                                        | `CONFIRMADO_PARCIAL` |
+| `CAP-08` Planear y ejecutar producción                     | Centro de Producción y sedes que preparen productos                      | producción, cocina, bodega y control de calidad                           | necesidades internas y pedidos que generan preparación                                      | `CONFIRMADO_PARCIAL` |
+| `CAP-09` Vender, cobrar y atender pedidos                  | sedes comerciales y frentes de venta por caracterizar                    | caja, salón, pedidos, cocina y despacho                                   | mesa, mostrador, para llevar, llamada, WhatsApp, Rappi, ManyChat, Shopify, empresa y evento | `CONFIRMADO_PARCIAL` |
+| `CAP-10` Atender clientes y fortalecer relaciones          | sedes comerciales y frentes de venta por caracterizar                    | salón, caja, pedidos, mercadeo y administración                           | todas las formas usadas por clientes                                                        | `CONFIRMADO_PARCIAL` |
+| `CAP-11` Transportar, despachar y entregar                 | Centro de Producción, sedes receptoras y destinos de clientes            | bodega, producción, despacho, transporte y recepción                      | solicitud interna, domicilio, aplicación, mensaje, empresa o evento                         | `CONFIRMADO_PARCIAL` |
+| `CAP-12` Gestionar dinero, costos y obligaciones           | Oficina 1 y lugares con caja, ventas, compras o consumo                  | contabilidad, tesorería, caja y administración                            | todas las formas que generen venta, compra, pago o cobro                                    | `CONFIRMADO_PARCIAL` |
+| `CAP-13` Mantener instalaciones y condiciones de operación | todos los lugares físicos observados                                     | mantenimiento, limpieza, administración y área afectada                   | solicitudes internas y reporte de novedades                                                 | `CONFIRMADO_PARCIAL` |
+| `CAP-14` Comunicar, promocionar y desarrollar ventas       | Oficina 1, sedes comerciales, Vaila Vainilla y catering                  | mercadeo, dirección, pedidos y atención                                   | mostrador, llamada, WhatsApp, Rappi, ManyChat, Shopify, empresa y evento                    | `CONFIRMADO_PARCIAL` |
+| `CAP-15` Gestionar tecnología y soporte                    | Oficina 1 y lugares que utilicen equipos o aplicaciones                  | tecnología, administración y área usuaria                                 | solicitudes internas                                                                        | `CONFIRMADO_PARCIAL` |
+| `CAP-16` Proteger información, documentos y evidencia      | todos los frentes y lugares que produzcan documentos                     | administración, contabilidad, personal, documentos y cada área generadora | `NO_APLICA`, salvo solicitudes de información                                               | `CONFIRMADO_PARCIAL` |
+| `CAP-17` Medir, analizar y mejorar                         | Oficina 1 y todas las operaciones que produzcan información              | dirección, administración, contabilidad, análisis y área evaluada         | `NO_APLICA`                                                                                 | `CONFIRMADO_PARCIAL` |
+| `CAP-18` Mantener continuidad y responder a incidentes     | todos los lugares y frentes que ejecuten trabajo crítico                 | dirección, administración, tecnología y área afectada                     | avisos de incidentes y solicitudes internas                                                 | `CONFIRMADO_PARCIAL` |
+
+En todas las familias, **empresa o titular** permanece `POR_CONFIRMAR_DOCUMENTALMENTE`.
+
+---
+
+#### 10. Excepciones que afinan el mapa base
+
+| Subcapacidad              | Vínculo específico que reemplaza o limita el vínculo base                                                      |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `CAP-01.03`               | aplica a todos los frentes identificados y exige separar empresa, marca y establecimiento                      |
+| `CAP-01.04`               | aplica a Oficina 1, Centro de Producción, Vento Café, Saudo, Molka y cualquier lugar adicional que se confirme |
+| `CAP-01.08`               | aplica únicamente cuando dos o más frentes o lugares participan en el mismo resultado                          |
+| `CAP-02.05` a `CAP-02.08` | aplican por cada lugar donde haya trabajadores asignados o cubriendo turnos                                    |
+| `CAP-03.05`               | aplica por cada lugar físico; no se hereda automáticamente a un frente sin presencia física confirmada         |
+| `CAP-03.06`               | aplica a producción, cocina, almacenamiento, despacho y atención de alimentos                                  |
+| `CAP-04.07`               | aplica por cada forma concreta en la que se muestre o prometa disponibilidad                                   |
+| `CAP-05.08` a `CAP-05.10` | aplican en cada lugar que reciba físicamente un producto o confirme un servicio                                |
+| `CAP-06.08` a `CAP-06.11` | aplican cuando existen origen y destino diferentes; deben marcarse ambos lugares                               |
+| `CAP-06.15`               | aplica solamente en lugares que almacenen productos bajo temperatura o condición controlada                    |
+| `CAP-07.12` y `CAP-07.13` | aplican donde existan vehículos o equipos de transporte; actualmente queda `POR_CONFIRMAR`                     |
+| `CAP-08.06` a `CAP-08.14` | aplican en Centro de Producción y en cada sede que realmente prepare o transforme productos                    |
+| `CAP-09.11`               | aplica solamente a atención en mesa                                                                            |
+| `CAP-09.12`               | aplica solamente a mostrador o pedido para llevar                                                              |
+| `CAP-09.13`               | aplica separadamente a WhatsApp, Rappi, ManyChat, Shopify y cualquier otra aplicación o mensajería confirmada  |
+| `CAP-09.14`               | aplica separadamente a solicitudes de empresas, pedidos especiales, eventos y catering                         |
+| `CAP-10.08`               | aplica donde se acepten reservas o eventos; lugares exactos `POR_CONFIRMAR`                                    |
+| `CAP-11.01` a `CAP-11.11` | deben indicar origen, destino y si el traslado es entre lugares internos o hacia un cliente                    |
+| `CAP-11.12`               | aplica únicamente cuando la entrega se delega a Rappi, mensajería u otro tercero                               |
+| `CAP-12.02`               | aplica por cada caja física o equivalente que reciba y entregue dinero                                         |
+| `CAP-12.07`               | se separa por forma de venta para comparar pedido, venta, pago y entrega                                       |
+| `CAP-12.10`               | aplica cuando dos o más frentes o lugares comparten un costo                                                   |
+| `CAP-13.01` a `CAP-13.11` | se registran por lugar físico y no por marca                                                                   |
+| `CAP-14.04` a `CAP-14.06` | se separan por medio publicado: redes, WhatsApp, Rappi, ManyChat, Shopify u otro                               |
+| `CAP-14.08` y `CAP-14.09` | aplican respectivamente a ventas a empresas y a catering o eventos                                             |
+| `CAP-15.02` a `CAP-15.04` | se registran por ubicación física del equipo                                                                   |
+| `CAP-15.05`               | se registra por aplicación y frente usuario, sin convertir la aplicación en canal o área                       |
+| `CAP-16.06`               | aplica donde se consulten o conserven datos de trabajadores, clientes, proveedores u otras personas            |
+| `CAP-17.05` a `CAP-17.09` | se analizan por frente, lugar y forma de atención cuando la información lo permita                             |
+| `CAP-18.05` a `CAP-18.09` | se registran por lugar afectado y por forma alternativa usada durante la falla                                 |
+
+Las subcapacidades no listadas conservan íntegramente el vínculo base de su familia.
+
+---
+
+#### 11. Registro mínimo para consultar cualquier subcapacidad
+
+Cuando el mapa se convierta en tabla o sistema, cada fila deberá contener:
+
+| Campo                      | Regla                                                      |
+| -------------------------- | ---------------------------------------------------------- |
+| Código de subcapacidad     | identificador de `CAP-MAP-001`                             |
+| Empresa o titular          | valor confirmado o pendiente documental                    |
+| Frente observado           | uno o varios códigos del apartado 5                        |
+| Lugar                      | lugar físico específico o `NO_APLICA`                      |
+| Área de trabajo            | una o varias opciones del apartado 6                       |
+| Forma de recibir o atender | una o varias opciones del apartado 7 o `NO_APLICA`         |
+| Estado                     | valor permitido del apartado 4                             |
+| Evidencia                  | documento, observación o respuesta que respalda el vínculo |
+| Duda pendiente             | pregunta única y concreta, si el estado no es `CONFIRMADO` |
+| Tarea de resolución        | tarea posterior encargada de cerrar la duda                |
+
+---
+
+#### 12. Preguntas pendientes que no bloquean el avance
+
+| Código         | Duda puntual                                                               | Quién puede resolverla                          | Evidencia necesaria                                           | Destino                       |
+| -------------- | -------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------- | ----------------------------- |
+| `D-CAP003-001` | ¿Qué titular aparece en los documentos de cada frente?                     | Contabilidad o Gerencia                         | certificado, factura, contrato o registro                     | `EXT-GOV-001`                 |
+| `D-CAP003-002` | ¿En cuáles sedes se prepara o transforma producto actualmente?             | responsable de cada sede                        | respuesta marcada y foto no sensible del lugar de preparación | auditoría operativa posterior |
+| `D-CAP003-003` | ¿Qué lugares almacenan productos y cuáles controlan frío?                  | responsable de bodega, cocina o sede            | respuesta marcada y foto del equipo o zona                    | `OPS-LOG-001`                 |
+| `D-CAP003-004` | ¿Qué formas de recibir pedidos usa realmente cada sede?                    | cajero o responsable de pedidos                 | autocuestionario `OPS-PLAN-003`                               | `OPS-CAN-001`                 |
+| `D-CAP003-005` | ¿Qué frente vende, produce, cobra y entrega los pedidos de Vaila Vainilla? | Gerencia, Contabilidad y responsable de pedidos | respuestas separadas y soportes disponibles                   | `OPS-CAN-001`, `OPS-CST-001`  |
+| `D-CAP003-006` | ¿Catering ya opera, quién lo recibe y desde dónde se prepara?              | Gerencia y responsable operativo                | respuesta marcada, ejemplo de pedido y lugar                  | `OPS-CAN-001`                 |
+| `D-CAP003-007` | ¿Qué vehículos o equipos de transporte existen y dónde permanecen?         | responsable de operación                        | listado y foto sin placas visibles si no son necesarias       | `OPS-ACT-001`                 |
+| `D-CAP003-008` | ¿Qué aplicaciones o medios utiliza cada lugar?                             | trabajador que los usa                          | nombre visible de la herramienta y tarea realizada            | `CAP-MAP-005`                 |
+
+Estas dudas se conservan en el plan; no deben quedar únicamente en notas de revisión.
+
+---
+
+#### 13. Autocuestionario para Contabilidad o Gerencia
+
+Se enviará un bloque independiente por cada nombre: Vento Group, Vento Café, Saudo, Molka, Vaila Vainilla y Catering.
+
+```text
+CAP003-DOC — [NOMBRE]
+
+Revisa únicamente documentos que tengas autorizados.
+
+¿En cuál documento aparece quién responde legalmente por [NOMBRE]?
+
+Marca TODOS los que encontraste:
+[ ] Certificado de Cámara de Comercio
+[ ] RUT
+[ ] Factura de venta
+[ ] Contrato
+[ ] Cuenta bancaria o documento de recaudo
+[ ] Contrato de Rappi, Shopify u otra plataforma
+[ ] No encontré documento
+[ ] No tengo permiso para revisarlo
+[ ] NO SÉ
+
+Escribe exactamente el nombre o razón social que aparece:
+________________________________
+
+Escribe el NIT solo si está permitido; de lo contrario escribe “DATO RESERVADO”:
+________________________________
+
+Nombre del documento revisado:
+________________________________
+
+Fecha visible del documento:
+________________________________
+
+No envíes contraseñas, números de cuenta completos, datos de tarjetas ni
+documentos personales por WhatsApp.
+```
+
+---
+
+#### 14. Autocuestionario para responsable de sede
+
+Se enviará un bloque separado por cada lugar.
+
+```text
+CAP003-SEDE — [NOMBRE DEL LUGAR]
+
+Marca qué trabajos ocurren físicamente en este lugar:
+
+[ ] Se atienden clientes en mesas
+[ ] Se atienden clientes en mostrador
+[ ] Se reciben pedidos para llevar
+[ ] Se reciben pedidos por llamada
+[ ] Se reciben pedidos por WhatsApp
+[ ] Se reciben pedidos por Rappi
+[ ] Se reciben pedidos por ManyChat
+[ ] Se reciben pedidos por Shopify
+[ ] Se preparan o transforman alimentos
+[ ] Se guardan productos
+[ ] Se guardan productos en frío
+[ ] Se reciben compras de proveedores
+[ ] Se envían productos a otra sede
+[ ] Se reciben productos de otra sede
+[ ] Se maneja caja o dinero
+[ ] Se guardan documentos
+[ ] Ninguna de las anteriores
+[ ] NO SÉ
+
+Si ocurre otro trabajo que no aparece, escribe una sola frase:
+________________________________
+
+Nombre del cargo o función de quien respondió:
+________________________________
+
+Fecha de la respuesta:
+________________________________
+
+No escribas nombres de clientes, contraseñas ni datos de tarjetas.
+```
+
+---
+
+#### 15. Autocuestionario corto para cualquier trabajador
+
+Este formulario se utilizará solamente cuando exista una duda sobre un trabajo que esa persona realiza.
+
+```text
+CAP003-TRABAJO — [NOMBRE DEL TRABAJO]
+
+Durante una jornada normal, ¿tú realizas [NOMBRE DEL TRABAJO]?
+
+Marca UNA:
+[ ] Sí
+[ ] No
+[ ] Algunas veces
+[ ] NO SÉ
+
+¿En qué lugar lo haces?
+[ ] Oficina 1
+[ ] Centro de Producción
+[ ] Vento Café
+[ ] Saudo
+[ ] Molka
+[ ] Otro lugar
+
+Si marcaste “Otro lugar”, escribe el nombre que usan ustedes:
+________________________________
+
+¿Cómo recibes el aviso o la solicitud para hacerlo?
+[ ] Me lo dicen personalmente
+[ ] Me llaman
+[ ] Me escriben por WhatsApp
+[ ] Lo veo en una pantalla o aplicación
+[ ] Lo veo en un papel
+[ ] Lo hago sin recibir una solicitud
+[ ] Otra forma
+
+Si marcaste “pantalla o aplicación”, escribe el nombre visible:
+________________________________
+
+Si marcaste “otra forma”, escribe qué ocurre:
+________________________________
+
+Ejemplo de respuesta:
+“Sí. Lo hago en Saudo. Me escriben por WhatsApp y después lo registro en Makos”.
+```
+
+---
+
+#### 16. Lo que queda decidido con esta tarea
+
+1. Empresa, frente, sede, área, forma de atención y aplicación permanecerán separados.
+2. Las 217 subcapacidades se vincularán mediante una regla base por familia y excepciones explícitas.
+3. No se inventará un titular jurídico cuando solo exista evidencia de marca o sede.
+4. Vento Café, Saudo, Molka, Oficina 1 y Centro de Producción se reconocerán como lugares o contextos observados, no como empresas por presunción.
+5. Vaila Vainilla y catering permanecerán como frentes por caracterizar.
+6. “Canal” significará siempre una forma concreta de recibir o atender.
+7. Una aplicación no será tratada automáticamente como forma de atención.
+8. Toda duda tendrá pregunta, persona capaz de responderla, evidencia esperada y tarea de destino.
+9. Los cuestionarios podrán enviarse por WhatsApp sin intervención de un ingeniero.
+10. Los pendientes documentales no bloquearán `CAP-MAP-004`; permanecerán visibles y trazables.
+
+---
+
+#### 17. Criterios de aceptación
+
+`CAP-MAP-003` podrá aprobarse cuando:
+
+- exista una diferencia inequívoca entre empresa, frente, sede, área, forma de atención y aplicación;
+- todas las subcapacidades puedan resolverse mediante mapa base más excepción;
+- no se haya atribuido una titularidad jurídica sin documento;
+- los lugares y frentes ya observados estén incluidos;
+- las formas de recibir pedidos estén expresadas con palabras reconocibles por los trabajadores;
+- las excepciones de venta, producción, traslado, caja y atención estén identificadas;
+- cada duda pendiente tenga una vía no técnica y específica de resolución;
+- `CAP-MAP-004` permanezca como única continuidad inmediata.
+
+---
+
+#### 18. Resultado y continuidad
+
+Con la aprobación quedará definido dónde se necesita cada capacidad según la evidencia disponible, qué vínculos siguen pendientes y cómo podrá confirmarlos personal operativo, administrativo o contable.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-004
+— Definir dominio y aplicación propietaria candidata
+```
+
+`CAP-MAP-004` propondrá qué área funcional y qué aplicación deberían gobernar cada capacidad, sin confundir uso, propiedad, ejecución o aprobación.
+
+
+### ✅ CAP-MAP-004 — Definir dominio y aplicación propietaria candidata
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencias cumplidas:** `CAP-MAP-001`, `CAP-MAP-002` y `CAP-MAP-003`
+**Propósito:** proponer qué grupo de trabajo empresarial y qué aplicación deberían gobernar el resultado principal de cada capacidad
+**No define todavía:** aplicaciones consumidoras, responsables humanos, permisos, tablas, integraciones, fuente de verdad definitiva ni implementación
+
+---
+
+#### 1. Resultado de esta tarea
+
+Cada una de las 217 subcapacidades quedará asociada con:
+
+1. un grupo estable de trabajo empresarial;
+2. una aplicación propietaria candidata;
+3. la razón empresarial de la candidatura;
+4. el estado de certeza de la propuesta;
+5. la frontera que la aplicación no deberá cruzar;
+6. una pregunta específica cuando falte evidencia.
+
+La palabra **candidata** significa que la asignación orienta el análisis y la remodelación, pero aún debe contrastarse con procesos, información e implementación en `CAP-MAP-005` a `CAP-MAP-015`.
+
+---
+
+#### 2. Definiciones en lenguaje directo
+
+##### 2.1. Grupo de trabajo empresarial
+
+Conjunto de capacidades que persiguen un mismo tipo de resultado.
+
+Ejemplos:
+
+- comprar y recibir de proveedores;
+- controlar existencias;
+- producir;
+- vender y cobrar;
+- gestionar personas;
+- controlar costos.
+
+En el plan podrá conservarse la palabra **dominio**, pero significará siempre este grupo de trabajo.
+
+##### 2.2. Aplicación propietaria candidata
+
+Aplicación propuesta para:
+
+- crear o aceptar el registro principal;
+- aplicar sus reglas;
+- permitir su corrección autorizada;
+- conservar su estado;
+- explicar qué ocurrió con ese resultado.
+
+No significa que toda la tarea humana ocurra dentro de esa aplicación.
+
+##### 2.3. Aplicación consumidora
+
+Aplicación que consulta, presenta o utiliza un resultado gobernado por otra.
+
+Las consumidoras se identificarán en `CAP-MAP-005`; esta tarea solo evita confundirlas con la propietaria.
+
+##### 2.4. Repositorio técnico
+
+Lugar donde se conserva código, documentación, migraciones o paquetes.
+
+`vento-shell` es un repositorio técnico. No es automáticamente la aplicación propietaria de todas las capacidades ni equivale a la aplicación SHELL.
+
+---
+
+#### 3. Prueba obligatoria para elegir una candidata
+
+Una aplicación podrá proponerse como propietaria únicamente si obtiene respuestas favorables en estas preguntas:
+
+1. ¿Su propósito canónico coincide con el resultado empresarial?
+2. ¿Debe controlar el registro principal y no solo mostrarlo?
+3. ¿Puede definir las reglas sin apropiarse de trabajo de otro grupo?
+4. ¿Es el lugar lógico para corregir el resultado?
+5. ¿Puede explicar su estado completo, parcial, cancelado o fallido?
+6. ¿Evita que dos aplicaciones creen versiones independientes del mismo hecho?
+
+Si las respuestas no son suficientes, la capacidad quedará pendiente o deberá dividirse por resultado.
+
+---
+
+#### 4. Estados de la candidatura
+
+| Estado                       | Significado                                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------- |
+| `CANDIDATA_FUERTE`           | el propósito canónico de la aplicación coincide claramente                      |
+| `CANDIDATA_CON_FRONTERA`     | la aplicación es adecuada si se respeta un límite explícito                     |
+| `CANDIDATA_DIFERIDA`         | existe una aplicación adecuada, pero su roadmap está diferido                   |
+| `REQUIERE_DIVIDIR_RESULTADO` | una sola subcapacidad mezcla resultados que pertenecen a aplicaciones distintas |
+| `PENDIENTE_DE_EVIDENCIA`     | falta observar dónde se crea, corrige o controla el resultado                   |
+| `SIN_CANDIDATA_ADECUADA`     | ninguna aplicación actual cubre limpiamente el resultado                        |
+
+`SIN_CANDIDATA_ADECUADA` no autoriza a crear una aplicación nueva. Solo registra una brecha.
+
+---
+
+#### 5. Catálogo de aplicaciones permitido
+
+| Código   | Aplicación | Propósito canónico relevante                                                                             |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `shell`  | Vento OS   | entrada al ecosistema, navegación, selección y coordinación entre aplicaciones                           |
+| `anima`  | ANIMA      | turnos, asistencia, entrada y salida, documentos e información personal del trabajador                   |
+| `viso`   | VISO       | administración de trabajadores, roles, permisos, turnos, perfiles, sedes, áreas y auditoría de seguridad |
+| `nexo`   | NEXO       | inventario, logística, remisiones, ubicaciones, conteos, activos, despacho y recepción                   |
+| `fogo`   | FOGO       | producción, órdenes, lotes, recetas y ejecución productiva                                               |
+| `origo`  | ORIGO      | compras, proveedores, órdenes de compra, recepción y abastecimiento                                      |
+| `pulso`  | PULSO      | punto de venta, pedidos, ventas, pagos, salón, entregas, puntos y caja                                   |
+| `numera` | NUMERA     | gastos, costos, rentabilidad, información financiera, reportes y centros de costo                        |
+| `aura`   | AURA       | trabajo administrativo de comunicación y mercadeo; aplicación conservada pero diferida                   |
+| `pass`   | Vento Pass | experiencia e identidad del cliente                                                                      |
+
+No se crea ningún código adicional en esta tarea.
+
+---
+
+#### 6. Reglas que impiden propietarios falsos
+
+1. SHELL no será propietaria por el solo hecho de enlazar a otras aplicaciones.
+2. `vento-shell` no será tratado como aplicación.
+3. Supabase no será tratado como aplicación propietaria empresarial.
+4. Una pantalla que muestra información no se vuelve propietaria de esa información.
+5. La aplicación donde una persona copia un dato no necesariamente gobierna el hecho original.
+6. Una aplicación externa como Rappi o Shopify no se convierte automáticamente en propietaria de la capacidad empresarial.
+7. Una capacidad no se duplicará por sede, dispositivo o forma de recibir pedidos.
+8. Si dos aplicaciones necesitan el mismo resultado, una lo gobernará y la otra lo consumirá.
+9. Si una subcapacidad produce dos resultados independientes, se marcará `REQUIERE_DIVIDIR_RESULTADO`.
+10. La propiedad candidata no concede permisos ni acceso.
+
+---
+
+#### 7. Regla de cobertura para las 217 subcapacidades
+
+Cada subcapacidad heredará la candidatura de su familia, salvo que aparezca en el apartado 9.
+
+```text
+CANDIDATURA DE LA SUBCAPACIDAD
+=
+CANDIDATURA BASE DE SU FAMILIA
++
+EXCEPCIÓN ESPECÍFICA, SI EXISTE
+```
+
+Esta regla cubre las 217 subcapacidades sin repetir filas idénticas y permite consultar la candidatura de cualquiera de ellas.
+
+---
+
+#### 8. Mapa base por familia
+
+| Familia                                          | Grupo de trabajo empresarial         | Aplicación candidata base         | Estado                       | Frontera principal                                                                            |
+| ------------------------------------------------ | ------------------------------------ | --------------------------------- | ---------------------------- | --------------------------------------------------------------------------------------------- |
+| `CAP-01` Dirigir y gobernar                      | gobierno organizacional              | `viso`                            | `CANDIDATA_CON_FRONTERA`     | VISO administra estructura y controles; no reemplaza decisiones de Gerencia                   |
+| `CAP-02` Gestionar personas y trabajo            | personas y contexto laboral          | `viso`                            | `CANDIDATA_CON_FRONTERA`     | ANIMA gobierna registros personales y operativos indicados en las excepciones                 |
+| `CAP-03` Salud, seguridad y cumplimiento         | seguridad y cumplimiento laboral     | `viso`                            | `CANDIDATA_CON_FRONTERA`     | no convierte a VISO en sistema fiscal, sanitario o de autoridades externas                    |
+| `CAP-04` Productos, preparaciones y conocimiento | catálogo y conocimiento de producto  | `nexo`                            | `CANDIDATA_CON_FRONTERA`     | recetas y ejecución productiva pertenecen a FOGO                                              |
+| `CAP-05` Abastecer la operación                  | compras y proveedores                | `origo`                           | `CANDIDATA_FUERTE`           | NEXO gobierna existencias después de la recepción aceptada                                    |
+| `CAP-06` Inventario y almacenamiento             | existencias y logística interna      | `nexo`                            | `CANDIDATA_FUERTE`           | no gobierna compras, producción ni contabilidad                                               |
+| `CAP-07` Activos y reutilizables                 | activos, custodia y equipos          | `nexo`                            | `CANDIDATA_CON_FRONTERA`     | mantenimiento detallado y soporte tecnológico requieren excepciones                           |
+| `CAP-08` Producción                              | planificación y ejecución productiva | `fogo`                            | `CANDIDATA_FUERTE`           | NEXO conserva existencias; FOGO gobierna orden, lote y resultado producido                    |
+| `CAP-09` Pedidos, ventas y cobro                 | venta y atención operativa           | `pulso`                           | `CANDIDATA_FUERTE`           | las plataformas externas son medios de entrada, no propietarias internas                      |
+| `CAP-10` Clientes y relaciones                   | servicio y relación con clientes     | `pulso`                           | `CANDIDATA_CON_FRONTERA`     | PASS gobierna acciones realizadas directamente por el cliente                                 |
+| `CAP-11` Transporte, despacho y entrega          | logística y entrega                  | `nexo`                            | `REQUIERE_DIVIDIR_RESULTADO` | traslado interno pertenece a NEXO; entrega al cliente pertenece a PULSO                       |
+| `CAP-12` Dinero, costos y obligaciones           | finanzas y control económico         | `numera`                          | `CANDIDATA_CON_FRONTERA`     | PULSO gobierna la operación de caja y el pago de la venta                                     |
+| `CAP-13` Instalaciones y condiciones             | instalaciones y mantenimiento        | `nexo`                            | `CANDIDATA_CON_FRONTERA`     | NEXO gobernaría el activo y la novedad, no necesariamente toda ejecución técnica              |
+| `CAP-14` Comunicación y promoción                | comunicación y mercadeo              | `aura`                            | `CANDIDATA_DIFERIDA`         | PULSO gobierna aplicación de promociones dentro de la venta                                   |
+| `CAP-15` Tecnología y soporte                    | tecnología empresarial               | sin candidata única               | `REQUIERE_DIVIDIR_RESULTADO` | accesos, activos, aplicaciones y soporte tienen propietarios diferentes                       |
+| `CAP-16` Información, documentos y evidencia     | gobierno de información              | aplicación del resultado original | `REQUIERE_DIVIDIR_RESULTADO` | cada documento permanece con la aplicación que gobierna el hecho respaldado                   |
+| `CAP-17` Medición, análisis y mejora             | análisis empresarial                 | `numera`                          | `CANDIDATA_CON_FRONTERA`     | cada aplicación de origen conserva sus hechos; NUMERA no debe recrearlos                      |
+| `CAP-18` Continuidad e incidentes                | continuidad empresarial              | aplicación afectada               | `REQUIERE_DIVIDIR_RESULTADO` | SHELL coordina acceso y navegación, pero no se apropia de los datos de todas las aplicaciones |
+
+---
+
+#### 9. Excepciones específicas
+
+##### 9.1. Gobierno y personas
+
+| Subcapacidad              | Aplicación candidata   | Estado                   | Razón o frontera                                                                                     |
+| ------------------------- | ---------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `CAP-01.01` y `CAP-01.02` | `viso`                 | `CANDIDATA_CON_FRONTERA` | conserva objetivos y decisiones; la decisión sigue siendo humana                                     |
+| `CAP-01.03` y `CAP-01.04` | `viso`                 | `CANDIDATA_FUERTE`       | VISO ya gobierna sedes, áreas y estructura laboral                                                   |
+| `CAP-01.09`               | sin candidata adecuada | `PENDIENTE_DE_EVIDENCIA` | las relaciones con autoridades y asesores no tienen aplicación canónica confirmada                   |
+| `CAP-02.01` a `CAP-02.06` | `viso`                 | `CANDIDATA_FUERTE`       | administración de personal, asignaciones y programación                                              |
+| `CAP-02.07`               | `anima`                | `CANDIDATA_FUERTE`       | ANIMA gobierna entrada, salida y registro de asistencia                                              |
+| `CAP-02.08` a `CAP-02.10` | `viso`                 | `CANDIDATA_CON_FRONTERA` | VISO administra la novedad y seguimiento; ANIMA puede ser superficie personal                        |
+| `CAP-02.11`               | `anima`                | `CANDIDATA_CON_FRONTERA` | documentos personales del trabajador; los documentos administrativos se consultarán en `CAP-MAP-005` |
+| `CAP-02.12`               | `numera`               | `PENDIENTE_DE_EVIDENCIA` | pagos y beneficios laborales requieren confirmar alcance real de NUMERA                              |
+| `CAP-02.13`               | `viso`                 | `CANDIDATA_CON_FRONTERA` | VISO gobierna cierre laboral y permisos; cada aplicación ejecuta el cierre de sus accesos            |
+
+##### 9.2. Cumplimiento, productos y compras
+
+| Subcapacidad              | Aplicación candidata | Estado                       | Razón o frontera                                                                  |
+| ------------------------- | -------------------- | ---------------------------- | --------------------------------------------------------------------------------- |
+| `CAP-03.01` a `CAP-03.10` | `viso`               | `CANDIDATA_CON_FRONTERA`     | registro administrativo de riesgos, inspecciones y acciones                       |
+| `CAP-04.01` a `CAP-04.04` | `nexo`               | `CANDIDATA_FUERTE`           | catálogo, presentación, clasificación, ingredientes y componentes                 |
+| `CAP-04.05` y `CAP-04.06` | `fogo`               | `CANDIDATA_FUERTE`           | receta, método, rendimiento y porción productiva                                  |
+| `CAP-04.07`               | `pulso`              | `CANDIDATA_CON_FRONTERA`     | PULSO gobierna oferta vendible y disponibilidad mostrada durante la venta         |
+| `CAP-04.08` y `CAP-04.09` | `nexo`               | `CANDIDATA_CON_FRONTERA`     | especificación maestra; FOGO aplica controles durante producción                  |
+| `CAP-04.10`               | `nexo`               | `REQUIERE_DIVIDIR_RESULTADO` | catálogo en NEXO y recetas en FOGO requieren vigencias coordinadas, no duplicadas |
+| `CAP-05.01` a `CAP-05.12` | `origo`              | `CANDIDATA_FUERTE`           | ciclo completo de abastecimiento y proveedor                                      |
+
+##### 9.3. Inventario, activos y producción
+
+| Subcapacidad              | Aplicación candidata | Estado                   | Razón o frontera                                                            |
+| ------------------------- | -------------------- | ------------------------ | --------------------------------------------------------------------------- |
+| `CAP-06.01` a `CAP-06.15` | `nexo`               | `CANDIDATA_FUERTE`       | lugares, existencias, movimientos, remisiones, conteos y diferencias        |
+| `CAP-07.01` a `CAP-07.06` | `nexo`               | `CANDIDATA_FUERTE`       | identificación, ubicación, custodia, transferencia y conteo                 |
+| `CAP-07.07` a `CAP-07.10` | `nexo`               | `CANDIDATA_CON_FRONTERA` | NEXO gobierna activo, necesidad y estado; la reparación puede ser externa   |
+| `CAP-07.11` a `CAP-07.13` | `nexo`               | `CANDIDATA_FUERTE`       | kits, vehículos, combustible, kilometraje y disponibilidad                  |
+| `CAP-08.01` a `CAP-08.14` | `fogo`               | `CANDIDATA_FUERTE`       | necesidad, orden, lote, ejecución, rendimiento, calidad y cierre productivo |
+
+##### 9.4. Ventas, clientes y entregas
+
+| Subcapacidad              | Aplicación candidata           | Estado                       | Razón o frontera                                                                   |
+| ------------------------- | ------------------------------ | ---------------------------- | ---------------------------------------------------------------------------------- |
+| `CAP-09.01` a `CAP-09.15` | `pulso`                        | `CANDIDATA_FUERTE`           | oferta de venta, pedido, preparación comercial, cobro y cierre                     |
+| `CAP-10.01` a `CAP-10.07` | `pulso`                        | `CANDIDATA_CON_FRONTERA`     | relación operacional con el cliente y beneficios asociados a ventas                |
+| `CAP-10.08` y `CAP-10.09` | `pulso`                        | `CANDIDATA_FUERTE`           | reservas, eventos y comunicación que afecta pedidos vigentes                       |
+| `CAP-10.10`               | `pass`                         | `REQUIERE_DIVIDIR_RESULTADO` | PASS protege identidad del cliente; PULSO protege datos usados en la venta         |
+| `CAP-11.01` a `CAP-11.06` | `nexo`                         | `CANDIDATA_CON_FRONTERA`     | planificación, carga y custodia logística antes de entrega                         |
+| `CAP-11.07` a `CAP-11.11` | `nexo` o `pulso` según destino | `REQUIERE_DIVIDIR_RESULTADO` | NEXO para recorrido entre lugares; PULSO para entrega asociada a pedido de cliente |
+| `CAP-11.12`               | `pulso`                        | `CANDIDATA_CON_FRONTERA`     | PULSO conserva el pedido y resultado de entrega aunque intervenga un tercero       |
+
+##### 9.5. Finanzas, instalaciones y mercadeo
+
+| Subcapacidad              | Aplicación candidata | Estado                   | Razón o frontera                                                              |
+| ------------------------- | -------------------- | ------------------------ | ----------------------------------------------------------------------------- |
+| `CAP-12.01`               | `numera`             | `CANDIDATA_FUERTE`       | registro y clasificación del hecho económico                                  |
+| `CAP-12.02`               | `pulso`              | `CANDIDATA_FUERTE`       | apertura, operación, arqueo y cierre de caja                                  |
+| `CAP-12.03` a `CAP-12.15` | `numera`             | `CANDIDATA_CON_FRONTERA` | finanzas, obligaciones, conciliaciones, costos, cierres y rentabilidad        |
+| `CAP-13.01` a `CAP-13.11` | `nexo`               | `CANDIDATA_CON_FRONTERA` | inventario de espacios, solicitudes, estado y cierre de novedades             |
+| `CAP-14.01` a `CAP-14.05` | `aura`               | `CANDIDATA_DIFERIDA`     | identidad, contenido, medios y campañas; no habilita implementación inmediata |
+| `CAP-14.06`               | `pulso`              | `CANDIDATA_CON_FRONTERA` | PULSO aplica cupón o promoción a la venta; AURA conserva intención de campaña |
+| `CAP-14.07` a `CAP-14.11` | `aura`               | `CANDIDATA_DIFERIDA`     | oportunidades, ventas empresariales, eventos, medición y reputación           |
+
+##### 9.6. Tecnología, información, análisis y continuidad
+
+| Subcapacidad              | Aplicación candidata            | Estado                       | Razón o frontera                                                                                              |
+| ------------------------- | ------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `CAP-15.01`               | `viso`                          | `CANDIDATA_FUERTE`           | VISO gobierna roles, permisos y accesos laborales                                                             |
+| `CAP-15.02` a `CAP-15.04` | `nexo`                          | `CANDIDATA_CON_FRONTERA`     | inventario y ubicación de equipos; soporte y configuración no pertenecen automáticamente a NEXO               |
+| `CAP-15.05`               | `shell`                         | `CANDIDATA_CON_FRONTERA`     | SHELL gobierna catálogo y navegación, no contratos ni funcionamiento interno de cada aplicación               |
+| `CAP-15.06` a `CAP-15.09` | sin candidata adecuada          | `SIN_CANDIDATA_ADECUADA`     | solicitudes, incidentes, cambios y pruebas tecnológicas necesitan decisión posterior                          |
+| `CAP-15.10`               | `numera`                        | `REQUIERE_DIVIDIR_RESULTADO` | NUMERA gobierna costo; contratos y licencias requieren soporte documental adicional                           |
+| `CAP-15.11`               | `viso`                          | `PENDIENTE_DE_EVIDENCIA`     | capacitación administrativa candidata; debe confirmarse cómo se registra actualmente                          |
+| `CAP-16.01` a `CAP-16.11` | aplicación del hecho respaldado | `REQUIERE_DIVIDIR_RESULTADO` | el documento de compra queda con ORIGO, el laboral con ANIMA/VISO, el productivo con FOGO y así sucesivamente |
+| `CAP-17.01` a `CAP-17.04` | `numera`                        | `CANDIDATA_CON_FRONTERA`     | definición, recopilación validada, reporte y análisis transversal                                             |
+| `CAP-17.05`               | `pulso` + `numera`              | `REQUIERE_DIVIDIR_RESULTADO` | PULSO gobierna ventas; NUMERA gobierna análisis consolidado                                                   |
+| `CAP-17.06`               | `nexo` + `numera`               | `REQUIERE_DIVIDIR_RESULTADO` | NEXO gobierna existencias; NUMERA analiza efecto económico                                                    |
+| `CAP-17.07`               | `fogo` + `numera`               | `REQUIERE_DIVIDIR_RESULTADO` | FOGO gobierna producción; NUMERA analiza costo y rendimiento consolidado                                      |
+| `CAP-17.08`               | `pulso`                         | `CANDIDATA_CON_FRONTERA`     | servicio y clientes; NUMERA podrá consumir medidas consolidadas                                               |
+| `CAP-17.09`               | `numera`                        | `CANDIDATA_FUERTE`           | costos y rentabilidad                                                                                         |
+| `CAP-17.10` a `CAP-17.12` | `numera`                        | `CANDIDATA_CON_FRONTERA`     | seguimiento transversal sin apropiarse de los hechos operativos                                               |
+| `CAP-18.01` a `CAP-18.12` | aplicación afectada             | `REQUIERE_DIVIDIR_RESULTADO` | cada aplicación recupera y reconcilia su información; SHELL solo coordina acceso cuando corresponda           |
+
+---
+
+#### 10. Qué significa `REQUIERE_DIVIDIR_RESULTADO`
+
+No implica crear dos copias del mismo registro.
+
+Ejemplos:
+
+```text
+Venta confirmada
+→ PULSO gobierna pedido, pago y entrega
+
+Ingreso y rentabilidad resultantes
+→ NUMERA gobierna clasificación y análisis financiero
+```
+
+```text
+Producción terminada
+→ FOGO gobierna orden, lote y rendimiento
+
+Existencia disponible
+→ NEXO gobierna cantidad y ubicación después de recibir el resultado
+```
+
+La separación exacta de información y eventos se realizará en `CAP-MAP-007` a `CAP-MAP-009`.
+
+---
+
+#### 11. Registro mínimo de cada candidatura
+
+| Campo                       | Contenido                                         |
+| --------------------------- | ------------------------------------------------- |
+| Código de subcapacidad      | identificador canónico                            |
+| Grupo de trabajo            | resultado empresarial al que pertenece            |
+| Aplicación candidata        | un código del catálogo o estado sin candidata     |
+| Registro principal esperado | hecho que debería gobernar                        |
+| Razón                       | por qué coincide con el propósito canónico        |
+| Frontera                    | qué no debe gobernar                              |
+| Estado                      | valor del apartado 4                              |
+| Evidencia                   | documento, pantalla, observación o regla aprobada |
+| Duda                        | pregunta puntual pendiente                        |
+| Destino                     | tarea que resolverá la duda                       |
+
+---
+
+#### 12. Dudas que permanecen visibles
+
+| Código         | Duda concreta                                                               | Quién puede responder                                   | Evidencia esperada                         | Destino                      |
+| -------------- | --------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------ | ---------------------------- |
+| `D-CAP004-001` | ¿Dónde se registra actualmente una decisión de Gerencia y dónde se corrige? | Gerencia o auxiliar administrativa                      | nombre del documento, carpeta o pantalla   | `CAP-MAP-005`, `CAP-MAP-008` |
+| `D-CAP004-002` | ¿Dónde se calcula y conserva actualmente el pago laboral?                   | Contabilidad                                            | nombre del archivo, proveedor o aplicación | `CAP-MAP-005`, `CAP-MAP-008` |
+| `D-CAP004-003` | ¿Dónde se guardan inspecciones y acciones de seguridad?                     | responsable SST o Gerencia                              | formato o ubicación usada                  | `CAP-MAP-005`                |
+| `D-CAP004-004` | ¿Cómo se separa hoy un traslado entre sedes de una entrega al cliente?      | despachador, domiciliario o cajero                      | ejemplo de ambos registros                 | `CAP-MAP-007`, `CAP-MAP-009` |
+| `D-CAP004-005` | ¿Dónde se recibe, asigna y cierra una solicitud de soporte tecnológico?     | persona que atiende soporte                             | nombre del chat, papel o herramienta       | `CAP-MAP-005`                |
+| `D-CAP004-006` | ¿Quién puede corregir un documento cuando contiene un error?                | trabajador que crea el documento y responsable del área | ejemplo sin datos sensibles                | `CAP-MAP-006`                |
+| `D-CAP004-007` | ¿Qué parte de AURA existe y se usa actualmente?                             | Gerencia o Mercadeo                                     | nombre de ruta, pantalla o tarea utilizada | auditoría de AURA            |
+| `D-CAP004-008` | ¿Qué se hace en cada aplicación cuando deja de funcionar?                   | trabajador usuario de la aplicación                     | pasos observados durante una falla         | `CAP-MAP-015`                |
+
+Estas dudas no se eliminan al aprobar la candidatura. Se conservan hasta obtener evidencia.
+
+##### 12.1. Lista acumulada de preguntas dirigidas al usuario
+
+Las dudas que requieran una decisión o confirmación directa del usuario se marcarán como `RESPONDE_USUARIO` durante `CAP-MAP-004` a `CAP-MAP-015`.
+
+Al cerrar `CAP-MAP-015`, y antes de avanzar a la etapa siguiente, se entregará una sola lista consolidada con estas reglas:
+
+1. cada número contendrá una sola duda;
+2. cada duda admitirá una sola respuesta;
+3. se indicará el formato esperado: `SÍ/NO`, una opción, un nombre, una fecha, un número o una frase corta;
+4. no se mezclarán dos decisiones en la misma pregunta;
+5. las preguntas para trabajadores, Contabilidad u otros responsables permanecerán en listas separadas;
+6. ninguna pregunta respondida desaparecerá: respuesta, fecha y decisión resultante quedarán registradas en el plan.
+
+---
+
+#### 13. Autocuestionario para trabajadores
+
+Se enviará un bloque separado por cada trabajo que la persona realice.
+
+```text
+CAP004-USO — [NOMBRE DEL TRABAJO]
+
+Ejemplo del nombre del trabajo:
+“Recibir una compra de proveedor” o “Cerrar la caja”.
+
+Cuando haces este trabajo, ¿dónde escribes la información POR PRIMERA VEZ?
+
+Marca UNA:
+[ ] En ANIMA
+[ ] En VISO
+[ ] En NEXO
+[ ] En FOGO
+[ ] En ORIGO
+[ ] En PULSO
+[ ] En NUMERA
+[ ] En AURA
+[ ] En Vento Pass
+[ ] En WhatsApp
+[ ] En una hoja de cálculo
+[ ] En papel
+[ ] No escribo nada
+[ ] En otro lugar
+[ ] NO SÉ
+
+Si marcaste “otro lugar”, escribe el nombre que ves:
+________________________________
+
+Si cometiste un error, ¿dónde lo corriges?
+________________________________
+
+¿En qué lugar miras para saber si el trabajo quedó terminado?
+________________________________
+
+Si debes copiar lo mismo en otro lugar, escribe dónde:
+________________________________
+
+Ejemplo:
+“El pedido llega por WhatsApp, lo registro en PULSO y miro en PULSO si quedó pagado”.
+
+No envíes nombres de clientes, contraseñas, números de tarjeta ni información
+privada.
+```
+
+---
+
+#### 14. Autocuestionario para responsable del área
+
+```text
+CAP004-CONTROL — [NOMBRE DEL RESULTADO]
+
+Ejemplo:
+“Compra recibida”, “lote terminado”, “venta pagada” o “turno trabajado”.
+
+Para confirmar que [NOMBRE DEL RESULTADO] es correcto, ¿qué revisas?
+
+Marca TODAS:
+[ ] Una pantalla o aplicación
+[ ] Un documento
+[ ] Un mensaje
+[ ] Una hoja de cálculo
+[ ] Un papel
+[ ] Pregunto a otra persona
+[ ] No existe una revisión definida
+[ ] NO SÉ
+
+Nombre exacto de la pantalla, documento o archivo:
+________________________________
+
+Si está incorrecto, ¿quién solicita la corrección?
+Escribe el cargo, no el nombre de la persona:
+________________________________
+
+¿Dónde se hace la corrección?
+________________________________
+
+¿Qué señal te permite saber que ya quedó corregido?
+________________________________
+```
+
+---
+
+#### 15. Regla para resolver contradicciones
+
+Si dos personas indican aplicaciones distintas:
+
+1. no se escogerá la respuesta del cargo más alto automáticamente;
+2. se comparará dónde nace el registro;
+3. se verificará dónde se corrige;
+4. se comprobará cuál conserva el estado final;
+5. se registrará si existe una copia manual;
+6. se marcará la candidatura como `PENDIENTE_DE_EVIDENCIA` hasta reconciliarla.
+
+La aplicación más visible no necesariamente será la propietaria.
+
+---
+
+#### 16. Lo que queda decidido
+
+1. Las 217 subcapacidades tienen una candidatura consultable mediante familia más excepción.
+2. ORIGO es candidata principal para compras y proveedores.
+3. NEXO es candidata principal para inventario, logística interna y activos.
+4. FOGO es candidata principal para producción.
+5. PULSO es candidata principal para pedidos, ventas, caja y entrega al cliente.
+6. NUMERA es candidata principal para finanzas, costos y análisis económico.
+7. VISO y ANIMA quedan separados entre administración laboral y registro personal u operativo.
+8. AURA conserva la candidatura de mercadeo, pero permanece diferida.
+9. PASS se limita a resultados gobernados directamente por la identidad o acción del cliente.
+10. SHELL se limita a entrada, navegación y coordinación; no hereda todos los dominios.
+11. Documentos, análisis y continuidad conservan propiedad por resultado y no por conveniencia.
+12. Toda candidatura incierta mantiene una duda y una guía concreta para resolverla.
+13. Esta tarea no cambia código, datos, permisos ni aplicaciones.
+
+---
+
+#### 17. Criterios de aceptación
+
+`CAP-MAP-004` podrá aprobarse cuando:
+
+- grupo de trabajo, aplicación, repositorio y aplicación consumidora estén separados;
+- todas las subcapacidades tengan candidatura o estado explícito;
+- las candidaturas respeten el catálogo canónico;
+- SHELL y `vento-shell` no se confundan;
+- las fronteras ANIMA/VISO, NEXO/FOGO, ORIGO/NEXO, PULSO/NUMERA y NEXO/PULSO estén documentadas;
+- no se haya creado una aplicación nueva para ocultar una brecha;
+- las candidaturas inciertas tengan una pregunta observable;
+- `CAP-MAP-005` permanezca como única continuidad inmediata.
+
+---
+
+#### 18. Resultado y continuidad
+
+Con la aprobación quedará una primera distribución de propiedad funcional para orientar la auditoría de sistemas y la remodelación, sin convertirla todavía en arquitectura definitiva.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-005
+— Definir aplicaciones y sistemas consumidores
+```
+
+`CAP-MAP-005` identificará qué otras aplicaciones, plataformas, archivos o personas necesitan consultar o utilizar cada resultado sin duplicar su propiedad.
+
+
+### ✅ CAP-MAP-005 — Definir aplicaciones y sistemas consumidores
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencias cumplidas:** `CAP-MAP-001` a `CAP-MAP-004`
+**Propósito:** identificar qué aplicaciones, plataformas o medios necesitan consultar o utilizar el resultado de cada capacidad sin duplicar su propiedad
+**No define todavía:** responsables humanos, información exacta intercambiada, fuente de verdad, integraciones, permisos, funcionamiento sin conexión ni implementación
+
+---
+
+#### 1. Resultado de esta tarea
+
+Cada una de las 217 subcapacidades quedará relacionada con:
+
+1. su aplicación propietaria candidata definida en `CAP-MAP-004`;
+2. las aplicaciones VENTO que necesitan utilizar su resultado;
+3. las plataformas externas que intervienen;
+4. los archivos, mensajes o papeles que actualmente actúan como medios auxiliares;
+5. el motivo por el cual cada consumidor necesita el resultado;
+6. el estado de certeza del vínculo;
+7. una pregunta concreta cuando el consumidor actual no esté confirmado.
+
+Esta tarea identifica necesidades de uso. No autoriza copias, accesos ni integraciones.
+
+---
+
+#### 2. Qué es un consumidor
+
+Un consumidor es una aplicación, plataforma o medio que necesita un resultado producido y gobernado en otro lugar.
+
+Ejemplos:
+
+```text
+ORIGO gobierna una compra recibida
+→ NEXO necesita conocer qué producto fue aceptado para registrar existencias
+→ NUMERA necesita conocer la obligación económica
+```
+
+```text
+PULSO gobierna una venta
+→ NEXO necesita conocer la salida de existencias
+→ NUMERA necesita conocer el ingreso y el pago
+```
+
+Consumir no significa convertirse en propietario ni poder corregir directamente el registro original.
+
+---
+
+#### 3. Elementos que no son consumidores
+
+No se registrarán como consumidores:
+
+- una persona o cargo; se tratará en `CAP-MAP-006`;
+- una tabla de base de datos;
+- una biblioteca de código;
+- un repositorio;
+- Supabase por el solo hecho de almacenar información;
+- una pantalla dentro de la misma aplicación propietaria;
+- una copia de respaldo;
+- una sede o área;
+- un dispositivo;
+- una impresión que solo reproduce información para consulta momentánea.
+
+Un papel, archivo o chat sí se registrará cuando actualmente sea necesario para que otra parte del trabajo continúe.
+
+---
+
+#### 4. Tipos de consumidor
+
+| Tipo                  | Significado                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| `VENTO_INTERNO`       | otra aplicación del catálogo VENTO                                                      |
+| `EXTERNO_COMERCIAL`   | plataforma de pedidos, venta, mensajería o relación con clientes                        |
+| `EXTERNO_EMPRESARIAL` | sistema de banco, autoridad, proveedor, asesor u otro tercero                           |
+| `MEDIO_MANUAL`        | WhatsApp, hoja de cálculo, archivo, carpeta o papel utilizado para continuar el trabajo |
+| `SIN_CONSUMIDOR`      | el resultado puede permanecer únicamente en su propietaria                              |
+| `POR_CONFIRMAR`       | existe una necesidad probable, pero no hay evidencia suficiente                         |
+
+---
+
+#### 5. Estados del vínculo
+
+| Estado                     | Significado                                                                   |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| `CONFIRMADO_ACTUAL`        | existe evidencia de que el consumidor se usa hoy                              |
+| `OBSERVADO_PARCIAL`        | se conoce el consumidor, pero no el alcance completo                          |
+| `CANDIDATO_OBJETIVO`       | el consumidor se propone para el modelo futuro                                |
+| `TEMPORAL_HASTA_REEMPLAZO` | medio actual que deberá conservarse durante una transición                    |
+| `PENDIENTE_DE_EVIDENCIA`   | falta una respuesta u observación                                             |
+| `NO_APLICA`                | no necesita consumir ese resultado                                            |
+| `NO_AUTORIZADO_A_DUPLICAR` | puede consultar el resultado, pero no crear una segunda versión independiente |
+
+Un mismo vínculo podrá tener estado actual y estado objetivo separados.
+
+---
+
+#### 6. Catálogo inicial de posibles consumidores
+
+##### 6.1. Aplicaciones VENTO
+
+| Código   | Aplicación |
+| -------- | ---------- |
+| `shell`  | Vento OS   |
+| `anima`  | ANIMA      |
+| `viso`   | VISO       |
+| `nexo`   | NEXO       |
+| `fogo`   | FOGO       |
+| `origo`  | ORIGO      |
+| `pulso`  | PULSO      |
+| `numera` | NUMERA     |
+| `aura`   | AURA       |
+| `pass`   | Vento Pass |
+
+##### 6.2. Plataformas y medios ya observados
+
+| Código provisional | Nombre                                              | Clasificación                                                  |
+| ------------------ | --------------------------------------------------- | -------------------------------------------------------------- |
+| `EXT-RAPPI`        | Rappi                                               | plataforma externa de pedidos y entrega                        |
+| `EXT-SHOPIFY`      | Shopify                                             | plataforma externa de comercio                                 |
+| `EXT-MANYCHAT`     | ManyChat                                            | mensajería o automatización comercial                          |
+| `MED-WHATSAPP`     | WhatsApp                                            | mensajería utilizada para solicitudes y coordinación           |
+| `LEG-MAKOS`        | Makos                                               | sistema operativo actual mencionado en respuestas y documentos |
+| `MED-HOJA`         | hoja de cálculo                                     | medio manual estructurado                                      |
+| `MED-PAPEL`        | papel, comanda o formato impreso                    | medio manual físico                                            |
+| `MED-ARCHIVO`      | archivo o carpeta compartida                        | medio documental                                               |
+| `EXT-BANCO`        | banco o portal bancario por identificar             | sistema empresarial externo                                    |
+| `EXT-AUTORIDAD`    | portal o medio de una autoridad por identificar     | sistema empresarial externo                                    |
+| `EXT-PROVEEDOR`    | portal, correo o medio de proveedor por identificar | sistema empresarial externo                                    |
+
+La presencia en esta lista no demuestra uso activo. Cada vínculo necesita su propio estado.
+
+---
+
+#### 7. Regla de consumo mínimo
+
+Un consumidor solo deberá recibir lo necesario para continuar su propio trabajo.
+
+Para cada vínculo deberá responderse:
+
+1. ¿Qué resultado necesita?
+2. ¿Para qué lo necesita?
+3. ¿Necesita verlo o actuar a partir de él?
+4. ¿Debe conocer cambios posteriores?
+5. ¿Qué ocurriría si no lo recibe?
+6. ¿Puede consultar el original o necesita una copia controlada?
+
+Los campos exactos se definirán en `CAP-MAP-007` y las comunicaciones en `CAP-MAP-009`.
+
+---
+
+#### 8. Regla de cobertura de las 217 subcapacidades
+
+Cada subcapacidad heredará los consumidores base de su familia, salvo que aparezca en el apartado 10.
+
+```text
+CONSUMIDORES DE LA SUBCAPACIDAD
+=
+CONSUMIDORES BASE DE LA FAMILIA
++
+EXCEPCIONES ESPECÍFICAS
+```
+
+Un consumidor base no recibirá automáticamente todos los datos de la familia. Solo declara una necesidad empresarial que deberá detallarse posteriormente.
+
+---
+
+#### 9. Mapa base por familia
+
+| Familia                           | Propietaria candidata           | Consumidores VENTO candidatos                                                            | Externos o medios por confirmar                      | Motivo principal                                             |
+| --------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------ |
+| `CAP-01` Gobierno                 | `viso`                          | `shell` y aplicaciones afectadas por la regla                                            | documentos, archivos o actas actuales                | aplicar estructura, decisiones y límites vigentes            |
+| `CAP-02` Personas                 | `viso` / `anima`                | aplicaciones que requieren contexto laboral: `nexo`, `fogo`, `origo`, `pulso` y `numera` | archivos laborales actuales                          | conocer vinculación, sede, área, turno o novedad necesaria   |
+| `CAP-03` Seguridad y cumplimiento | `viso`                          | `anima` y aplicación del área afectada                                                   | formatos, documentos y portales de autoridad         | prevenir, reportar y demostrar cumplimiento                  |
+| `CAP-04` Productos y conocimiento | `nexo` / `fogo` / `pulso`       | `origo`, `nexo`, `fogo`, `pulso`, `aura` y `pass` cuando aplique                         | Rappi, Shopify, ManyChat y Makos                     | comprar, producir, ofrecer y vender el mismo producto        |
+| `CAP-05` Compras                  | `origo`                         | `nexo` y `numera`; `fogo` cuando la necesidad nazca de producción                        | proveedor, WhatsApp, hoja o documento                | recibir existencias y reconocer obligación económica         |
+| `CAP-06` Inventario               | `nexo`                          | `origo`, `fogo`, `pulso` y `numera`                                                      | Makos, hojas, papel o WhatsApp actuales              | conocer disponibilidad, consumo, traslado y valor            |
+| `CAP-07` Activos                  | `nexo`                          | `viso` y `numera`                                                                        | archivos, hojas y proveedores de mantenimiento       | conocer custodia, disponibilidad, costo y condición          |
+| `CAP-08` Producción               | `fogo`                          | `nexo`, `pulso` y `numera`                                                               | hojas, papel y WhatsApp actuales                     | actualizar existencias, disponibilidad de venta y costo      |
+| `CAP-09` Ventas                   | `pulso`                         | `nexo`, `fogo`, `numera`, `aura` y `pass` cuando aplique                                 | Rappi, Shopify, ManyChat, WhatsApp y Makos           | preparar, descontar existencias, cobrar, entregar y analizar |
+| `CAP-10` Clientes                 | `pulso` / `pass`                | `aura` y aplicaciones que atiendan una solicitud autorizada                              | Rappi, Shopify, ManyChat y WhatsApp                  | atender, comunicar y conservar preferencias autorizadas      |
+| `CAP-11` Entregas                 | `nexo` / `pulso`                | `numera` y la aplicación propietaria del pedido o traslado                               | Rappi, mensajería y WhatsApp                         | confirmar custodia, recepción, devolución y costo            |
+| `CAP-12` Finanzas                 | `numera` / `pulso`              | `viso` y aplicaciones que deban conocer aprobación o conciliación                        | bancos, autoridades, hojas y archivos                | pagar, conciliar, controlar costos y reportar                |
+| `CAP-13` Instalaciones            | `nexo`                          | `viso` y `numera`                                                                        | proveedores, WhatsApp, hojas y formatos              | atender riesgos, reparaciones, servicios y costos            |
+| `CAP-14` Mercadeo                 | `aura` / `pulso`                | `pass`, `pulso` y `numera` para resultados autorizados                                   | Rappi, Shopify, ManyChat, WhatsApp y medios públicos | publicar, aplicar promoción y medir resultado                |
+| `CAP-15` Tecnología               | propietaria según resultado     | `shell`, `viso`, `nexo` y aplicación afectada                                            | WhatsApp, hojas, archivos y proveedores              | administrar acceso, activo, solicitud, falla o cambio        |
+| `CAP-16` Información              | aplicación del hecho respaldado | consumidores autorizados del mismo hecho                                                 | archivos, carpetas, correo, papel y autoridades      | conservar, localizar y compartir evidencia necesaria         |
+| `CAP-17` Análisis                 | `numera` y aplicación del hecho | `viso`, `aura` y aplicación del área evaluada                                            | hojas y reportes actuales                            | convertir hechos confiables en decisiones y mejoras          |
+| `CAP-18` Continuidad              | aplicación afectada             | `shell` y aplicaciones dependientes                                                      | WhatsApp, papel, hojas y respaldos autorizados       | operar durante una falla y reconciliar lo ocurrido           |
+
+---
+
+#### 10. Excepciones y fronteras específicas
+
+##### 10.1. Personas y contexto laboral
+
+| Subcapacidades            | Consumidor                                 | Necesidad                                         | Frontera                                                  |
+| ------------------------- | ------------------------------------------ | ------------------------------------------------- | --------------------------------------------------------- |
+| `CAP-02.05` y `CAP-02.06` | `anima`                                    | mostrar asignación y turno al trabajador          | ANIMA no redefine la asignación aprobada en VISO          |
+| `CAP-02.07`               | `viso`                                     | revisar asistencia y novedades                    | VISO consulta o administra; no crea una segunda marcación |
+| `CAP-02.07` y `CAP-02.08` | aplicaciones operativas                    | comprobar contexto laboral cuando sea obligatorio | no reciben historia laboral completa                      |
+| `CAP-02.12`               | `numera`                                   | calcular o registrar efecto económico laboral     | alcance actual `PENDIENTE_DE_EVIDENCIA`                   |
+| `CAP-02.13`               | todas las aplicaciones laborales afectadas | cerrar accesos correspondientes                   | cada aplicación conserva su autorización interna          |
+
+##### 10.2. Producto, compra, inventario y producción
+
+| Subcapacidades            | Consumidor                                       | Necesidad                                                                 | Frontera                                      |
+| ------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------- | --------------------------------------------- |
+| `CAP-04.01` a `CAP-04.04` | `origo`, `fogo` y `pulso`                        | usar identificación, presentación y componentes coherentes                | no crean catálogos independientes             |
+| `CAP-04.05` y `CAP-04.06` | `nexo` y `numera`                                | conocer componentes, rendimiento y efecto sobre existencias o costo       | no modifican la receta                        |
+| `CAP-04.07`               | Rappi, Shopify, ManyChat y otros medios de venta | mostrar oferta disponible                                                 | reciben solo oferta autorizada para ese medio |
+| `CAP-05.07` a `CAP-05.10` | `nexo`                                           | preparar y registrar recepción aceptada                                   | NEXO no aprueba ni corrige la compra          |
+| `CAP-05.08` a `CAP-05.12` | `numera`                                         | reconocer obligación, diferencia o devolución                             | NUMERA no altera cantidades recibidas         |
+| `CAP-06.05`               | `origo`, `fogo` y `pulso`                        | consultar disponibilidad necesaria para comprar, producir o vender        | consulta no equivale a reserva                |
+| `CAP-06.07` a `CAP-06.11` | `fogo`, `pulso` o `numera` según origen          | conocer consumo, salida o traslado confirmado                             | no recrean el movimiento                      |
+| `CAP-08.08` a `CAP-08.14` | `nexo`                                           | recibir cantidad liberada, consumos y diferencias que afectan existencias | NEXO no modifica el lote productivo           |
+| `CAP-08.09` y `CAP-08.14` | `numera`                                         | calcular costo y rendimiento consolidado                                  | NUMERA no sustituye el cierre productivo      |
+
+##### 10.3. Venta, cliente y entrega
+
+| Subcapacidades            | Consumidor                                             | Necesidad                                                            | Frontera                                                 |
+| ------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------- | -------------------------------------------------------- |
+| `CAP-09.02` a `CAP-09.05` | Rappi, Shopify, ManyChat o WhatsApp cuando sean origen | enviar solicitud y recibir confirmación correspondiente              | la plataforma externa no crea una venta interna paralela |
+| `CAP-09.06` y `CAP-09.07` | `fogo` o pantalla de preparación que se confirme       | conocer qué debe prepararse y su prioridad                           | no cobra ni modifica condiciones comerciales             |
+| `CAP-09.08` y `CAP-09.09` | `numera`                                               | reconocer venta, ingreso y pago confirmados                          | NUMERA no reabre la caja                                 |
+| `CAP-09.08`               | `nexo`                                                 | registrar efecto confirmado sobre existencias                        | no recrea el pedido                                      |
+| `CAP-09.13`               | Rappi, Shopify, ManyChat y WhatsApp                    | intercambiar estados necesarios del pedido                           | cada medio se valida separadamente                       |
+| `CAP-09.14`               | `aura` y `numera`                                      | seguimiento comercial y económico de empresa, evento o catering      | no administran la ejecución del pedido                   |
+| `CAP-10.01` y `CAP-10.02` | `pass`                                                 | permitir al cliente administrar información y autorizaciones propias | no expone notas internas ni datos laborales              |
+| `CAP-10.03` a `CAP-10.09` | medio por el cual llegó la solicitud                   | responder por el mismo medio cuando sea necesario                    | la respuesta oficial permanece asociada al caso interno  |
+| `CAP-11.07` a `CAP-11.12` | aplicación propietaria del pedido o traslado           | conocer estado, recepción y novedad                                  | no cambia la custodia sin confirmación                   |
+| `CAP-11.12`               | Rappi u otro tercero                                   | recibir datos mínimos de entrega y devolver resultado                | no recibe información financiera o personal innecesaria  |
+
+##### 10.4. Finanzas, mercadeo y análisis
+
+| Subcapacidades            | Consumidor                                           | Necesidad                                                   | Frontera                                                 |
+| ------------------------- | ---------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------- |
+| `CAP-12.02`               | `numera`                                             | conocer cierres y diferencias confirmadas de caja           | no opera la caja                                         |
+| `CAP-12.04` y `CAP-12.05` | banco, proveedor o cliente cuando corresponda        | emitir o recibir pago y confirmación                        | intercambio externo sujeto a autorización posterior      |
+| `CAP-12.07`               | `pulso` y medios de venta                            | resolver diferencias entre pedido, venta, pago y entrega    | la conciliación no reescribe el pedido sin procedimiento |
+| `CAP-12.08`               | `origo` y `nexo`                                     | resolver diferencias entre compra, recepción y obligación   | NUMERA conserva la conciliación económica                |
+| `CAP-12.13`               | autoridad aplicable                                  | presentar información obligatoria                           | contenido y método pendientes de evidencia               |
+| `CAP-14.03` a `CAP-14.06` | Rappi, Shopify, ManyChat, WhatsApp y medios públicos | publicar contenido o aplicar promoción                      | solo reciben versión aprobada y vigente                  |
+| `CAP-14.10`               | `numera` y `pulso`                                   | comparar gasto, ventas y resultado promocional              | AURA no recrea ventas ni costos                          |
+| `CAP-17.05` a `CAP-17.09` | `numera`                                             | consolidar hechos de PULSO, NEXO, FOGO y otras propietarias | conserva referencia al hecho original                    |
+
+##### 10.5. Tecnología, documentos y continuidad
+
+| Subcapacidades            | Consumidor                                           | Necesidad                                 | Frontera                                              |
+| ------------------------- | ---------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------- |
+| `CAP-15.01`               | cada aplicación laboral                              | aplicar accesos aprobados                 | la aplicación conserva sus controles internos         |
+| `CAP-15.02` a `CAP-15.04` | aplicación o trabajador que usa el equipo            | conocer disponibilidad y novedad          | no obtiene propiedad del activo                       |
+| `CAP-15.05`               | `shell`                                              | mostrar catálogo, disponibilidad y acceso | SHELL no administra funciones internas                |
+| `CAP-15.06` a `CAP-15.09` | aplicación afectada y medio de soporte por confirmar | reportar, atender, probar y cerrar        | no existe consumidor canónico confirmado              |
+| `CAP-16.01` a `CAP-16.11` | consumidor autorizado del hecho original             | consultar o aportar evidencia necesaria   | no se crea un archivo maestro paralelo sin control    |
+| `CAP-18.03` a `CAP-18.05` | `shell` cuando afecte acceso al ecosistema           | informar indisponibilidad y alternativa   | SHELL no reconcilia datos internos de otra aplicación |
+| `CAP-18.06` a `CAP-18.11` | aplicaciones dependientes del resultado recuperado   | reanudar y comprobar continuidad          | cada propietaria valida su propia información         |
+
+---
+
+#### 11. Relación actual frente a relación objetivo
+
+Cada vínculo se registrará en dos columnas:
+
+| Columna             | Pregunta                                                                     |
+| ------------------- | ---------------------------------------------------------------------------- |
+| Consumidor actual   | ¿Qué aplicación, plataforma, archivo, chat o papel utiliza hoy el resultado? |
+| Consumidor objetivo | ¿Qué aplicación debería utilizarlo cuando se remodele el flujo?              |
+
+No se eliminará un consumidor actual hasta demostrar:
+
+1. que su función fue reemplazada;
+2. que la información histórica necesaria fue conservada;
+3. que los usuarios pueden continuar trabajando;
+4. que las excepciones tienen tratamiento;
+5. que existe reversión o alternativa proporcional al riesgo.
+
+---
+
+#### 12. Registro mínimo de cada vínculo consumidor
+
+| Campo                 | Contenido                                  |
+| --------------------- | ------------------------------------------ |
+| Subcapacidad          | código canónico                            |
+| Propietaria candidata | aplicación de `CAP-MAP-004`                |
+| Consumidor            | aplicación, plataforma o medio             |
+| Tipo                  | valor del apartado 4                       |
+| Uso esperado          | acción empresarial que necesita realizar   |
+| Resultado requerido   | descripción sin definir todavía campos     |
+| Estado actual         | valor del apartado 5                       |
+| Estado objetivo       | valor del apartado 5                       |
+| Evidencia             | pantalla, mensaje, documento u observación |
+| Riesgo si no recibe   | efecto operativo concreto                  |
+| Riesgo de duplicación | qué versión paralela podría producirse     |
+| Duda                  | pregunta única pendiente                   |
+| Destino               | tarea posterior                            |
+
+---
+
+#### 13. Dudas operativas pendientes
+
+| Código         | Pregunta única                                                           | Quién puede responder                         | Respuesta esperada                     | Destino       |
+| -------------- | ------------------------------------------------------------------------ | --------------------------------------------- | -------------------------------------- | ------------- |
+| `D-CAP005-001` | ¿En qué aplicación se registra hoy por primera vez una venta presencial? | cajero                                        | un nombre                              | `CAP-MAP-008` |
+| `D-CAP005-002` | ¿En qué aplicación se registra hoy por primera vez una compra?           | responsable de compras                        | un nombre                              | `CAP-MAP-008` |
+| `D-CAP005-003` | ¿Dónde consulta cocina los pedidos pendientes?                           | cocinero o responsable                        | un nombre de pantalla, papel o medio   | `CAP-MAP-007` |
+| `D-CAP005-004` | ¿Dónde consulta producción lo que debe fabricar?                         | responsable de producción                     | un nombre de pantalla, archivo o medio | `CAP-MAP-007` |
+| `D-CAP005-005` | ¿Dónde se consulta actualmente el saldo de inventario?                   | responsable de bodega o sede                  | un nombre                              | `CAP-MAP-008` |
+| `D-CAP005-006` | ¿Qué medio se usa actualmente para reportar una falla tecnológica?       | cualquier trabajador usuario                  | una opción                             | `CAP-MAP-015` |
+| `D-CAP005-007` | ¿Qué aplicación recibe el cierre de caja para conciliación?              | cajero o Contabilidad                         | un nombre o `NINGUNA`                  | `CAP-MAP-008` |
+| `D-CAP005-008` | ¿Dónde se consulta el estado de una entrega al cliente?                  | cajero, responsable de pedidos o domiciliario | un nombre                              | `CAP-MAP-007` |
+
+---
+
+#### 14. Decisiones ya resueltas que no deben volver a preguntarse
+
+| Asunto   | Decisión o hecho vigente                                                                                                          | Estado                             | Evidencia canónica                                      |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------- |
+| Makos    | es un sistema operativo actual y se tratará como solución temporal hasta que PULSO cubra, valide y migre el flujo correspondiente | `RESUELTA_POR_EVIDENCIA_Y_ROADMAP` | auditoría E1, contrato temporal Makos y `INT-SALES-002` |
+| Shopify  | recibe los pedidos principales de Vaila Vainilla y se conservará durante la transición hasta que exista reemplazo validado        | `RESUELTA_POR_EVIDENCIA`           | auditoría E1 de Vaila Vainilla                          |
+| Rappi    | recibe pedidos de Vento Café y Saudo y se conservará durante la transición hasta que exista reemplazo validado                    | `RESUELTA_POR_EVIDENCIA`           | auditoría E1 de pedidos Rappi                           |
+| ManyChat | recibe pedidos directos y domicilios de Vento Café y se conservará durante la transición hasta que exista reemplazo validado      | `RESUELTA_POR_EVIDENCIA`           | auditoría E1 de pedidos directos                        |
+| WhatsApp | funciona como medio operativo informal y se conservará únicamente mientras sus funciones no hayan sido reemplazadas y verificadas | `RESUELTA_POR_EVIDENCIA`           | auditoría E1 de operación real                          |
+| AURA     | permanece en el catálogo, asociada al trabajo administrativo de mercadeo y diferida en el roadmap                                 | `RESUELTA_POR_DECISION_CANONICA`   | catálogo canónico y BLOQUE W                            |
+
+`CAP-MAP-005` no genera preguntas `RESPONDE_USUARIO`.
+
+##### 14.1. Puerta obligatoria antes de preguntar al usuario
+
+Una duda solo podrá marcarse `RESPONDE_USUARIO` después de comprobar, en este orden:
+
+1. si ya fue respondida por el usuario;
+2. si una tarea aprobada contiene la respuesta;
+3. si una auditoría, documento, artefacto, código o configuración aporta evidencia suficiente;
+4. si una decisión canónica previa permite resolverla;
+5. si la respuesta puede obtenerse de un trabajador o responsable funcional;
+6. si realmente requiere una decisión exclusiva del usuario.
+
+Si existe respuesta suficiente, se registrará como hecho o decisión con su evidencia y no se volverá a preguntar.
+
+La lista final excluirá:
+
+- preguntas repetidas;
+- preguntas cuya respuesta pueda inferirse de una decisión aprobada;
+- preguntas técnicas comprobables mediante inspección;
+- preguntas que deba contestar otro responsable;
+- preguntas que no cambien ninguna decisión.
+
+---
+
+#### 15. Autocuestionario para identificar consumidores actuales
+
+Se enviará un bloque por cada resultado que el trabajador reciba de otra persona o sistema.
+
+```text
+CAP005-RECIBO — [NOMBRE DEL RESULTADO]
+
+Ejemplos:
+“Pedido confirmado”, “compra recibida” o “turno asignado”.
+
+¿Dónde ves [NOMBRE DEL RESULTADO] para poder continuar tu trabajo?
+
+Marca UNA:
+[ ] ANIMA
+[ ] VISO
+[ ] NEXO
+[ ] FOGO
+[ ] ORIGO
+[ ] PULSO
+[ ] NUMERA
+[ ] AURA
+[ ] Vento Pass
+[ ] Makos
+[ ] Rappi
+[ ] Shopify
+[ ] ManyChat
+[ ] WhatsApp
+[ ] Hoja de cálculo
+[ ] Papel
+[ ] Otra
+[ ] No lo recibo
+[ ] NO SÉ
+
+Si marcaste “otra”, escribe el nombre:
+________________________________
+
+¿Qué haces después de verlo?
+Marca UNA:
+[ ] Preparo algo
+[ ] Entrego algo
+[ ] Registro información
+[ ] Cobro o pago
+[ ] Reviso y apruebo
+[ ] Corrijo una diferencia
+[ ] Solo lo consulto
+[ ] Otra acción
+
+Si marcaste “otra acción”, escribe una frase:
+________________________________
+
+Si no recibes esa información, ¿puedes terminar el trabajo?
+[ ] Sí
+[ ] No
+[ ] Algunas veces
+[ ] NO SÉ
+
+No envíes contraseñas, nombres de clientes, datos bancarios ni información
+privada.
+```
+
+---
+
+#### 16. Regla para copias manuales
+
+Cuando una persona copie información entre dos lugares, se registrará:
+
+1. dónde apareció primero;
+2. dónde se volvió a escribir;
+3. quién necesita la copia, sin asignar todavía responsabilidad formal;
+4. qué permite hacer la copia;
+5. qué ocurre si se omite;
+6. cómo se detecta una diferencia;
+7. si la copia debe conservarse temporalmente durante la remodelación.
+
+La copia manual será evidencia de una necesidad de consumo, no prueba de que ambos lugares sean propietarios.
+
+---
+
+#### 17. Lo que queda decidido
+
+1. Las 217 subcapacidades tienen consumidores consultables mediante familia más excepción.
+2. Propietaria, consumidora, plataforma externa y medio manual permanecen separados.
+3. Las plataformas externas no se convertirán en propietarias internas.
+4. Los consumidores recibirán únicamente el resultado necesario.
+5. Las relaciones actuales y objetivo se documentarán por separado.
+6. Makos, WhatsApp, hojas y papel podrán conservarse temporalmente hasta validar su reemplazo.
+7. No se eliminará un medio actual únicamente porque exista una aplicación futura.
+8. Las copias manuales se registrarán como brechas o transiciones.
+9. Los actores humanos se definirán en `CAP-MAP-006`.
+10. La información exacta y su fuente de verdad se definirán en `CAP-MAP-007` y `CAP-MAP-008`.
+11. Solo las dudas no resueltas después de agotar evidencia podrán acumularse bajo `RESPONDE_USUARIO`.
+12. Esta tarea no crea integraciones, accesos ni cambios de sistema.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-005` podrá aprobarse cuando:
+
+- todas las subcapacidades tengan una regla de consumidores;
+- aplicación propietaria y consumidora estén separadas;
+- sistemas actuales, futuros, externos y manuales tengan estados distintos;
+- se documenten las relaciones principales entre compras, inventario, producción, ventas y finanzas;
+- las copias manuales no se confundan con fuentes definitivas;
+- las plataformas externas no reciban información innecesaria;
+- las dudas operativas indiquen quién puede responderlas sin conocimientos técnicos;
+- no se repitan preguntas ya resueltas por auditorías, decisiones, código, configuración o respuestas anteriores;
+- toda eventual pregunta reservada para el usuario haya superado la puerta de deduplicación y tenga una sola respuesta esperada;
+- `CAP-MAP-006` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Con la aprobación quedará definido quién necesita utilizar cada resultado empresarial, sin decidir todavía quién realiza, supervisa o aprueba el trabajo.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-006
+— Identificar actor iniciador, ejecutor, supervisor y aprobador
+```
+
+`CAP-MAP-006` identificará funciones humanas y responsabilidades observadas o candidatas sin confundir persona, cargo, rol operativo o permiso.
+
+### ✅ CAP-MAP-006 — Identificar actor iniciador, ejecutor, supervisor y aprobador
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Dependencias cumplidas:** `CAP-MAP-001` a `CAP-MAP-005`
+**Propósito:** identificar qué función humana, tercero, sistema o evento inicia, ejecuta, supervisa y aprueba cada capacidad
+**No define todavía:** personas asignadas permanentemente, cargos objetivo, permisos, montos de aprobación, reglas técnicas, información intercambiada ni implementación
+
+---
+
+#### 1. Resultado de esta tarea
+
+Cada una de las 217 subcapacidades quedará relacionada con:
+
+1. quién o qué origina la necesidad;
+2. quién realiza materialmente el trabajo;
+3. quién revisa el estado o resultado;
+4. quién autoriza la decisión cuando realmente se necesita autorización;
+5. el estado actual de cada responsabilidad;
+6. las funciones temporales, rotativas, compartidas o vacantes;
+7. la pregunta específica que permita resolver una responsabilidad todavía no confirmada.
+
+La asignación se realizará por función, no por nombre de una persona.
+
+---
+
+#### 2. Cuatro participaciones obligatorias
+
+| Código | Participación | Pregunta que responde                                                         |
+| ------ | ------------- | ----------------------------------------------------------------------------- |
+| `INI`  | iniciador     | ¿Quién o qué hace que el trabajo deba comenzar?                               |
+| `EJE`  | ejecutor      | ¿Quién realiza el trabajo o registra el resultado?                            |
+| `SUP`  | supervisor    | ¿Quién revisa que el trabajo ocurra correctamente?                            |
+| `APR`  | aprobador     | ¿Quién autoriza una decisión, gasto, excepción, corrección o efecto sensible? |
+
+Cada subcapacidad tendrá los cuatro campos, aunque alguno contenga:
+
+- `NO_REQUIERE_APROBACIÓN`;
+- `NO_REQUIERE_SUPERVISIÓN_SEPARADA`;
+- `PROCESO_AUTOMÁTICO`;
+- `POR_IDENTIFICAR`;
+- `FUTURA_SIN_ACTOR`.
+
+No se inventará un aprobador únicamente para llenar una casilla.
+
+---
+
+#### 3. Participaciones adicionales que no deben perderse
+
+Aunque el mapa principal utilice cuatro campos, también se conservarán cuando sean relevantes:
+
+| Código | Participación                                           |
+| ------ | ------------------------------------------------------- |
+| `DPR`  | responde por el resultado general                       |
+| `REV`  | comprueba cantidades, documentos o resultado            |
+| `CUS`  | custodia dinero, bienes, documentos o accesos           |
+| `REG`  | incorpora la operación a un sistema o soporte           |
+| `REC`  | recibe el resultado o continúa el trabajo               |
+| `COR`  | modifica, ajusta o revierte                             |
+| `ESC`  | resuelve situaciones fuera de la autoridad ordinaria    |
+| `AUD`  | revisa posteriormente mediante conciliación o auditoría |
+| `EXT`  | participa como cliente, proveedor, técnico o tercero    |
+| `SYS`  | aplicación o servicio que ejecuta una función técnica   |
+
+Ejecutar, aprobar, custodiar, registrar y corregir no significan lo mismo.
+
+---
+
+#### 4. Estados de responsabilidad
+
+| Estado             | Significado                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| `CONFIRMADA`       | la responsabilidad se conoce con evidencia suficiente             |
+| `PROVISIONAL`      | existe una identificación inicial que debe contrastarse           |
+| `TEMPORAL`         | una persona o función cubre transitoriamente otra responsabilidad |
+| `ROTATIVA`         | cambia según turno, sede, área o disponibilidad                   |
+| `COMPARTIDA`       | participan varias funciones sin un único ejecutor                 |
+| `VACANTE`          | la responsabilidad existe, pero no tiene titular habitual         |
+| `IMPLÍCITA`        | se ejerce por costumbre sin declaración formal                    |
+| `POR_IDENTIFICAR`  | la evidencia actual no permite determinarla                       |
+| `FUTURA_SIN_ACTOR` | la capacidad todavía no opera                                     |
+
+Los estados AS-IS no se presentarán como diseño objetivo.
+
+---
+
+#### 5. Familias de actores ya confirmadas por la auditoría
+
+| Código | Función reconocible                                    |
+| ------ | ------------------------------------------------------ |
+| `F01`  | gobierno y propiedad                                   |
+| `F02`  | Gerencia General                                       |
+| `F03`  | gerencia o supervisión de sede                         |
+| `F04`  | coordinación de operaciones                            |
+| `F05`  | administración y Contabilidad                          |
+| `F06`  | marketing, comercial y atención de medios de venta     |
+| `F07`  | caja, mostrador y venta directa                        |
+| `F08`  | servicio de salón y mesas                              |
+| `F09`  | operación integral de sede pequeña                     |
+| `F10`  | producción especializada                               |
+| `F11`  | bodega y abastecimiento                                |
+| `F12`  | logística y transporte                                 |
+| `F13`  | recepción en sede                                      |
+| `F14`  | servicios generales                                    |
+| `F15`  | custodia de activos y puntos externos                  |
+| `F16`  | responsable de operación asociada, como Vaila Vainilla |
+| `F17`  | proveedores, técnicos y prestadores externos           |
+| `F18`  | clientes y empresas compradoras                        |
+| `F19`  | plataformas, aplicaciones y medios                     |
+| `F20`  | apoyo rotativo o sustitución temporal                  |
+| `F21`  | proceso autónomo de un sistema                         |
+
+Estas familias describen funciones observadas. No equivalen automáticamente a cargos, permisos ni cuentas de usuario.
+
+---
+
+#### 6. Reglas obligatorias
+
+1. Se registrará la función y no el nombre de la persona.
+2. Cuando una persona cubra varias funciones, cada función se registrará por separado.
+3. Una cobertura temporal no se convertirá en responsabilidad permanente.
+4. Una responsabilidad vacante no desaparecerá del mapa.
+5. Un sistema puede iniciar o ejecutar una operación técnica, pero no asumir responsabilidad empresarial humana.
+6. Un cliente o proveedor puede iniciar un proceso sin convertirse en dueño del proceso interno.
+7. Realizar una acción no implica poder aprobarla o corregirla.
+8. Supervisar no implica tener permiso para modificar.
+9. Las acciones ordinarias podrán usar `NO_REQUIERE_APROBACIÓN`.
+10. Descuentos, anulaciones, pagos, ajustes, bajas, contrataciones y excepciones deberán revisar si necesitan aprobación separada.
+11. La concentración de iniciación, ejecución, aprobación y custodia se registrará como hallazgo.
+12. Esta tarea documenta AS-IS y formula candidaturas; no concede autoridad.
+
+---
+
+#### 7. Regla de cobertura de las 217 subcapacidades
+
+Cada subcapacidad heredará los actores base de su familia, salvo que aparezca en el apartado 9.
+
+```text
+ACTORES DE LA SUBCAPACIDAD
+=
+ACTORES BASE DE LA FAMILIA
++
+EXCEPCIÓN ESPECÍFICA
+```
+
+Las excepciones reemplazan únicamente el campo indicado. Los demás campos continúan heredados.
+
+---
+
+#### 8. Mapa base por familia
+
+| Familia                           | `INI` iniciador                                      | `EJE` ejecutor                                       | `SUP` supervisor                                  | `APR` aprobador                                                      |
+| --------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------- |
+| `CAP-01` Gobierno                 | F01 o F02                                            | F01, F02 o F05                                       | F01                                               | F01 cuando la decisión sea reservada                                 |
+| `CAP-02` Personas                 | F02, F03 o trabajador según caso                     | F05, F02, F03 o trabajador                           | F02 y F03                                         | F02; F01 en decisiones reservadas                                    |
+| `CAP-03` Seguridad y cumplimiento | trabajador, F03, F04, F14 u obligación externa       | responsable del área, F03, F04, F05 o F14            | F02, F03 o responsable designado                  | F02; F01 cuando corresponda a política o riesgo mayor                |
+| `CAP-04` Productos y conocimiento | F06, F07, F10, F11, F16 o F02                        | responsable de catálogo, F10 o responsable comercial | F04, F06 o F02                                    | F02 o responsable autorizado del frente                              |
+| `CAP-05` Compras                  | área solicitante, F10, F11, F03 o F04                | F02, F04 o F05 según compra                          | F02                                               | F02 según evidencia actual                                           |
+| `CAP-06` Inventario               | área que necesita entrada, salida, traslado o conteo | F11; actualmente también F04, F10, F13 o F20         | F04 y responsable del lugar                       | no requiere en movimientos ordinarios; excepciones `POR_IDENTIFICAR` |
+| `CAP-07` Activos                  | usuario, custodio, F03, F04 o F15                    | F04, F15, custodio o F17                             | F02, F03 o F04                                    | F02 para compra, baja, venta o disposición                           |
+| `CAP-08` Producción               | necesidad de sede, plan, stock o F04                 | F10 y apoyos F20                                     | responsable productivo y F04                      | no requiere para ejecución ordinaria; F04 o F02 para excepción       |
+| `CAP-09` Ventas                   | F18, plataforma F19 o F06                            | F07, F08, F09 o F16                                  | F03, F07 o F16 según frente                       | no requiere para venta ordinaria; excepción sensible por identificar |
+| `CAP-10` Clientes                 | F18 o medio F19                                      | F06, F07, F08, F09 o F16                             | F03, F06 o F16                                    | responsable del frente para compensación o excepción                 |
+| `CAP-11` Transporte               | pedido, remisión, F03, F11 o F16                     | F11, F12, F13 y apoyos F20                           | F04 y responsable receptor                        | F04 o F03 para cambios y excepciones                                 |
+| `CAP-12` Finanzas                 | venta, compra, obligación, F02 o F05                 | F05; F07 o F09 para caja                             | F02 y F05                                         | F02, F01 o usuario bancario autorizado según acción                  |
+| `CAP-13` Instalaciones            | cualquier trabajador, F03, F04 o F14                 | F14, F04 o F17                                       | F03 o F04                                         | F02 cuando genere contratación o gasto                               |
+| `CAP-14` Mercadeo                 | F01, F02, F06 o F16                                  | F06                                                  | F01, F02, F06 o F16 según frente                  | responsable de marca o frente cuando requiera aprobación             |
+| `CAP-15` Tecnología               | cualquier usuario o sistema F21                      | F04 actualmente, F17 o sistema F21                   | F02 o responsable funcional                       | según riesgo; situación actual concentrada en F04                    |
+| `CAP-16` Información              | actor que produce el hecho o solicita información    | actor del área, F05 o custodio autorizado            | responsable del área y F02 cuando sea transversal | autoridad del documento para compartir, eliminar o corregir          |
+| `CAP-17` Análisis                 | F01, F02, F03 o responsable del área                 | F05 o responsable analítico del área                 | F02 o dueño del resultado                         | F01 o F02 cuando se convierta en decisión                            |
+| `CAP-18` Continuidad              | trabajador afectado, supervisor, tercero o sistema   | equipo del área afectada, F04, F17 o F21             | F03, F04 o F02                                    | F02 o F01 para alternativas de alto impacto                          |
+
+---
+
+#### 9. Excepciones específicas basadas en la auditoría
+
+##### 9.1. Personas, turnos y asistencia
+
+| Subcapacidad | Campo     | Actor                                                                 | Estado                       | Evidencia o frontera                                                 |
+| ------------ | --------- | --------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| `CAP-02.02`  | `EJE`     | F02 para filtrar; apoyo administrativo cuando aplique                 | `CONFIRMADA`                 | revisión de hojas de vida                                            |
+| `CAP-02.02`  | `APR`     | F01 y F02                                                             | `CONFIRMADA_PARCIAL`         | aprobación de candidato y prueba                                     |
+| `CAP-02.03`  | `EJE`     | F17 para formalización documental después de decisión interna         | `CONFIRMADA`                 | abogados externos                                                    |
+| `CAP-02.06`  | `EJE`     | F02 y F03 de Vento Café                                               | `CONFIRMADA`                 | creación actual de horarios                                          |
+| `CAP-02.06`  | `APR`     | las mismas funciones según su operación                               | `CONFIRMADA`                 | publicación actual en VISO                                           |
+| `CAP-02.07`  | `INI/EJE` | trabajador                                                            | `CONFIRMADA`                 | el trabajador registra su entrada o salida                           |
+| `CAP-02.07`  | `SYS`     | ANIMA acepta y conserva la marcación                                  | `CONFIRMADA`                 | no sustituye supervisión humana                                      |
+| `CAP-02.08`  | `COR/APR` | por identificar para correcciones de asistencia y horario             | `POR_IDENTIFICAR`            | auditoría dejó el flujo pendiente                                    |
+| `CAP-02.12`  | `EJE/SUP` | F02 y F05                                                             | `CONFIRMADA_PARCIAL`         | preparación y revisión de información laboral                        |
+| `CAP-02.12`  | `APR`     | usuario bancario autorizado para ejecutar pago                        | `CONFIRMADA`                 | control bancario externo                                             |
+| `CAP-02.13`  | `INI/APR` | F02 para altas; no existe iniciador obligatorio confirmado para bajas | `CONFIRMADA_PARCIAL/AUSENTE` | la solicitud de baja depende actualmente del descubrimiento informal |
+| `CAP-02.13`  | `EJE`     | F04 actualmente desactiva cuentas                                     | `CONFIRMADA_PARCIAL`         | ejecución manual posterior                                           |
+
+##### 9.2. Compras, recepción e inventario
+
+| Subcapacidad              | Campo     | Actor                                                 | Estado                | Evidencia o frontera                                    |
+| ------------------------- | --------- | ----------------------------------------------------- | --------------------- | ------------------------------------------------------- |
+| `CAP-05.01` y `CAP-05.02` | `INI`     | responsables de áreas, F03, F10 o F11                 | `COMPARTIDA`          | faltantes y avisos de las áreas                         |
+| `CAP-05.01`               | `EJE/APR` | F02 consolida la necesidad                            | `CONFIRMADA`          | preguntas y experiencia                                 |
+| `CAP-05.05` y `CAP-05.06` | `EJE/APR` | F02                                                   | `CONFIRMADA`          | acepta precios, cambios y decisión de compra            |
+| `CAP-05.07`               | `EJE`     | F02 o apoyo administrativo autorizado                 | `CONFIRMADA_PARCIAL`  | pedido enviado por Gerencia o apoyo                     |
+| `CAP-05.08` y `CAP-05.09` | `EJE`     | F04 en segundo piso; F10 en primer piso               | `TEMPORAL/COMPARTIDA` | recepción según ubicación                               |
+| `CAP-05.09`               | `REV`     | quien recibe compara visualmente y contra factura     | `CONFIRMADA_PARCIAL`  | control manual                                          |
+| `CAP-05.10`               | `APR`     | por identificar para rechazo o diferencia             | `POR_IDENTIFICAR`     | no existe procedimiento confirmado                      |
+| `CAP-06.01` a `CAP-06.07` | `EJE`     | F11; cobertura actual F04 y áreas F10                 | `VACANTE/TEMPORAL`    | Bodega no tiene titular habitual                        |
+| `CAP-06.07`               | `APR`     | no existe aprobación confirmada para retiro ordinario | `POR_IDENTIFICAR`     | actualmente hay acceso físico libre                     |
+| `CAP-06.08` a `CAP-06.11` | `EJE`     | F11, F12 y F13                                        | `COMPARTIDA/ROTATIVA` | origen, conductor y receptor                            |
+| `CAP-06.12`               | `EJE`     | F11 y responsables del lugar                          | `PROVISIONAL`         | conteo físico                                           |
+| `CAP-06.13` y `CAP-06.14` | `APR/COR` | por identificar                                       | `POR_IDENTIFICAR`     | ajustes, merma y disposición sin segregación suficiente |
+
+##### 9.3. Producción, despacho y transporte
+
+| Subcapacidad              | Campo     | Actor                                        | Estado                   | Evidencia o frontera                                          |
+| ------------------------- | --------- | -------------------------------------------- | ------------------------ | ------------------------------------------------------------- |
+| `CAP-08.01` a `CAP-08.05` | `INI`     | solicitudes de sedes, stock observado y plan | `COMPARTIDA/IMPLÍCITA`   | no existe un único propietario integral                       |
+| `CAP-08.02` a `CAP-08.05` | `EJE/SUP` | responsables productivos y F04               | `DEPENDIENTE_DE_PERSONA` | cantidades y prioridades usan experiencia                     |
+| `CAP-08.06` a `CAP-08.14` | `EJE`     | subfamilia F10 correspondiente               | `CONFIRMADA`             | Panadería, Repostería, Pastelería, Galletería, Cocina o Barra |
+| `CAP-08.07` y `CAP-08.10` | `SUP`     | responsable del área y F04                   | `CONFIRMADA`             | revisión productiva                                           |
+| `CAP-08.12` y `CAP-08.13` | `APR`     | responsable productivo; escalamiento a F04   | `PROVISIONAL`            | liberación, rechazo o reproceso requiere formalización        |
+| `CAP-11.04` a `CAP-11.06` | `EJE`     | F11, F12 y apoyos F20                        | `COMPARTIDA`             | carga y transferencia de custodia                             |
+| `CAP-11.07`               | `EJE`     | F12                                          | `CONFIRMADA`             | conductor                                                     |
+| `CAP-11.09`               | `EJE/REC` | F12 entrega y F13 recibe                     | `ROTATIVA`               | receptor varía según sede y turno                             |
+| `CAP-11.10`               | `APR`     | F04 o F03 según origen y destino             | `PROVISIONAL`            | faltantes, daños y devoluciones                               |
+| `CAP-11.11`               | `SUP`     | F04                                          | `CONFIRMADA`             | cierre y novedades de recorrido                               |
+
+##### 9.4. Pedidos, venta, caja y clientes
+
+| Subcapacidad              | Campo     | Actor                                                                         | Estado               | Evidencia o frontera                       |
+| ------------------------- | --------- | ----------------------------------------------------------------------------- | -------------------- | ------------------------------------------ |
+| `CAP-09.02`               | `INI`     | F18, Rappi, ManyChat, Shopify o comunicación directa                          | `CONFIRMADA`         | origen depende de la forma de pedido       |
+| `CAP-09.02` a `CAP-09.07` | `EJE`     | F08 para mesas; F07 para caja, mostrador y plataformas; F09 en sedes pequeñas | `CONFIRMADA_PARCIAL` | funciones cambian por sede                 |
+| `CAP-09.05`               | `APR/COR` | caja y supervisión; aprobador exacto por identificar                          | `POR_IDENTIFICAR`    | corrección, anulación y devolución         |
+| `CAP-09.08` a `CAP-09.10` | `EJE`     | F07 o F09                                                                     | `CONFIRMADA`         | registro, cobro y soporte de venta         |
+| `CAP-09.09`               | `EJE`     | cualquier trabajador puede procesar tarjeta; F07 registra el pago             | `COMPARTIDA`         | doble intervención actual                  |
+| `CAP-09.09`               | `APR`     | cliente autoriza el pago; caja confirma registro                              | `CONFIRMADA_PARCIAL` | datáfono y aviso verbal                    |
+| `CAP-09.11`               | `EJE`     | F08; apoyo eventual F07                                                       | `CONFIRMADA`         | servicio de mesa                           |
+| `CAP-09.12` y `CAP-09.13` | `EJE`     | F07 o F09                                                                     | `CONFIRMADA`         | mostrador, Rappi y pedidos directos        |
+| `CAP-09.14`               | `EJE/SUP` | F06; F16 para Vaila Vainilla                                                  | `CONFIRMADA`         | catering, empresa y frente asociado        |
+| `CAP-09.15`               | `EJE`     | F07 o F09                                                                     | `CONFIRMADA`         | cierre de caja y jornada                   |
+| `CAP-09.15`               | `SUP`     | F03 y revisión posterior F05                                                  | `PROVISIONAL`        | cierre, efectivo y Contabilidad            |
+| `CAP-10.03` a `CAP-10.05` | `EJE`     | función que atiende el medio: F06, F07, F08, F09 o F16                        | `PROVISIONAL`        | debe conservarse el origen de la solicitud |
+| `CAP-10.04` y `CAP-10.05` | `APR`     | responsable de sede o frente; escalamiento F02                                | `PROVISIONAL`        | reclamo, devolución o compensación         |
+
+##### 9.5. Finanzas, activos, instalaciones y mercadeo
+
+| Subcapacidad                            | Campo     | Actor                                              | Estado               | Evidencia o frontera                              |
+| --------------------------------------- | --------- | -------------------------------------------------- | -------------------- | ------------------------------------------------- |
+| `CAP-07.03` a `CAP-07.06`               | `CUS/EJE` | F15 o usuario del activo                           | `PROVISIONAL`        | custodia no implica propiedad                     |
+| `CAP-07.07` a `CAP-07.09`               | `INI`     | usuario, custodio, F03 o F04                       | `CONFIRMADA_PARCIAL` | necesidad por falla o mantenimiento               |
+| `CAP-07.10`                             | `APR`     | F02 o F01 según valor y efecto                     | `PROVISIONAL`        | baja, venta, descarte o reemplazo                 |
+| `CAP-12.02`                             | `EJE`     | F07 o F09                                          | `CONFIRMADA`         | apertura, operación y cierre de caja              |
+| `CAP-12.02`                             | `CUS`     | F07 durante turno; F02 recibe o custodia excedente | `CONFIRMADA`         | conteo y cierre físico                            |
+| `CAP-12.03`                             | `EJE/APR` | usuario bancario autorizado                        | `CONFIRMADA`         | ejecución bancaria                                |
+| `CAP-12.01` y `CAP-12.04` a `CAP-12.15` | `EJE`     | F05                                                | `CONFIRMADA_PARCIAL` | Contabilidad y administración                     |
+| `CAP-12.07` y `CAP-12.08`               | `SUP/AUD` | F05 y F02 según materia                            | `PROVISIONAL`        | conciliación posterior                            |
+| `CAP-13.03`                             | `INI/APR` | F02 para contratar técnico                         | `CONFIRMADA`         | contacto directo                                  |
+| `CAP-13.03`                             | `EJE`     | F17                                                | `CONFIRMADA`         | técnico externo                                   |
+| `CAP-13.03`                             | `REV`     | F02 o usuario del recurso                          | `CONFIRMADA_PARCIAL` | aceptación visual no formalizada                  |
+| `CAP-13.04`                             | `EJE`     | F14 y cada área sobre su estación                  | `CONFIRMADA`         | servicios generales no sustituye cuidado del área |
+| `CAP-14.03` a `CAP-14.05`               | `INI`     | F01, F02, F06 o F16                                | `CONFIRMADA`         | solicitud de contenido                            |
+| `CAP-14.03` a `CAP-14.05`               | `EJE`     | F06                                                | `CONFIRMADA`         | creación y publicación                            |
+| `CAP-14.03`                             | `APR`     | F01, F02 o F16 para publicación permanente         | `CONFIRMADA_PARCIAL` | historias pueden publicarse sin aprobación previa |
+| `CAP-14.08` y `CAP-14.09`               | `EJE/SUP` | F06; F16 cuando aplique a Vaila Vainilla           | `CONFIRMADA`         | comercial, catering y eventos                     |
+
+##### 9.6. Tecnología, información, análisis y continuidad
+
+| Subcapacidad              | Campo         | Actor                                                     | Estado                   | Evidencia o frontera                                        |
+| ------------------------- | ------------- | --------------------------------------------------------- | ------------------------ | ----------------------------------------------------------- |
+| `CAP-15.01`               | `INI/APR`     | F02 solicita y autoriza alta                              | `CONFIRMADA_PARCIAL`     | baja obligatoria todavía ausente                            |
+| `CAP-15.01`               | `EJE`         | F04 crea o desactiva cuentas actualmente                  | `CONFIRMADA_PARCIAL`     | ejecución manual                                            |
+| `CAP-15.02` a `CAP-15.04` | `CUS`         | usuario, sede o F15                                       | `PROVISIONAL`            | ubicación y custodia requieren inventario                   |
+| `CAP-15.06` y `CAP-15.07` | `INI`         | cualquier usuario afectado                                | `CONFIRMADA`             | reporte por WhatsApp o verbal                               |
+| `CAP-15.06` a `CAP-15.09` | `EJE/SUP/APR` | F04 concentra actualmente priorización, cambio y prueba   | `DEPENDIENTE_DE_PERSONA` | no se presenta como modelo objetivo                         |
+| `CAP-15.10`               | `APR`         | F02                                                       | `PROVISIONAL`            | licencias, contratos y costos                               |
+| `CAP-16.01` a `CAP-16.11` | actores       | se heredan del proceso cuyo hecho se documenta            | `COMPARTIDA`             | no existe un único actor documental para todos los dominios |
+| `CAP-17.01` a `CAP-17.12` | `INI/SUP`     | F01, F02 o responsable del área                           | `PROVISIONAL`            | análisis se activa por necesidad de decisión                |
+| `CAP-17.01` a `CAP-17.12` | `EJE`         | F05 o responsable funcional que prepara el análisis       | `PROVISIONAL`            | distribución exacta pendiente por tipo de medida            |
+| `CAP-18.03`               | `INI`         | usuario, tercero o sistema que detecta la falla           | `CONFIRMADA`             | no necesita aprobación para reportar                        |
+| `CAP-18.04` a `CAP-18.06` | `EJE/SUP`     | F04 y responsable del área afectada                       | `PROVISIONAL`            | priorización por impacto                                    |
+| `CAP-18.05`               | `APR`         | F02 para alternativa empresarial sensible                 | `PROVISIONAL`            | operación mínima                                            |
+| `CAP-18.07` a `CAP-18.09` | `EJE/REV`     | actor que trabajó durante la falla y responsable del área | `PROVISIONAL`            | registro y reconciliación posterior                         |
+
+---
+
+#### 10. Concentraciones y vacíos que deben conservarse
+
+| Hallazgo                                                                            | Estado AS-IS               |
+| ----------------------------------------------------------------------------------- | -------------------------- |
+| F04 cubre parcialmente Bodega además de operaciones y soporte                       | `TEMPORAL/CONCENTRADA`     |
+| Bodega tiene responsabilidad real sin titular habitual                              | `VACANTE`                  |
+| la demanda y planificación productiva no tienen un dueño integral                   | `COMPARTIDA/IMPLÍCITA`     |
+| correcciones de pago, horarios y asistencia carecen de aprobador confirmado         | `POR_IDENTIFICAR`          |
+| caja puede ejecutar, aprobar y corregir algunas acciones dentro de la misma función | `CONCENTRADA/PARCIAL`      |
+| F02 concentra necesidad, aprobación y negociación de varias compras                 | `CONCENTRADA`              |
+| soporte tecnológico concentra priorización, ejecución, prueba y aprobación en F04   | `DEPENDIENTE_DE_PERSONA`   |
+| recepción de remisiones en sedes depende del trabajador disponible                  | `ROTATIVA`                 |
+| retiro de Bodega no tiene aprobación o custodia suficiente                          | `AUSENTE/POR_IDENTIFICAR`  |
+| varias operaciones usan cuentas compartidas y no identifican al ejecutor real       | `SIN_IDENTIDAD_INDIVIDUAL` |
+
+Registrar estos hallazgos no significa aprobarlos como diseño futuro.
+
+---
+
+#### 11. Cuándo se necesita realmente aprobación
+
+No se exigirá aprobación separada para cada acción ordinaria.
+
+Se evaluará aprobación específica cuando la acción:
+
+- comprometa dinero;
+- cambie una obligación;
+- modifique una venta ya confirmada;
+- altere inventario sin movimiento ordinario;
+- descarte o transfiera un activo;
+- cambie un horario o una marcación registrada;
+- cree o retire un acceso;
+- publique contenido permanente o sensible;
+- compense a un cliente;
+- acepte una diferencia;
+- elimine o comparta información protegida;
+- active una alternativa durante una falla importante.
+
+La definición de permisos y condiciones técnicas corresponde a `CAP-MAP-010`.
+
+---
+
+#### 12. Registro mínimo por subcapacidad
+
+| Campo                       | Contenido                                             |
+| --------------------------- | ----------------------------------------------------- |
+| Código                      | subcapacidad canónica                                 |
+| `INI`                       | función, tercero, sistema o evento iniciador          |
+| `EJE`                       | función ejecutora                                     |
+| `SUP`                       | función supervisora o estado sin supervisión separada |
+| `APR`                       | función aprobadora o `NO_REQUIERE_APROBACIÓN`         |
+| Participaciones adicionales | revisor, custodio, receptor, corrector u otra         |
+| Sede o área                 | vínculo de `CAP-MAP-003`                              |
+| Estado por actor            | valor del apartado 4                                  |
+| Evidencia                   | auditoría, documento, pantalla u observación          |
+| Concentración               | funciones incompatibles reunidas en el mismo actor    |
+| Sustitución                 | actor habitual y actor temporal, si aplica            |
+| Duda                        | una pregunta única no resuelta                        |
+| Destino                     | auditoría o tarea posterior                           |
+
+---
+
+#### 13. Preguntas pendientes de validación operativa
+
+Estas preguntas provienen de vacíos expresamente registrados en la auditoría; no repiten hechos confirmados.
+
+| Código         | Pregunta de una sola respuesta                                                  | Quién puede responder                      | Formato esperado            |
+| -------------- | ------------------------------------------------------------------------------- | ------------------------------------------ | --------------------------- |
+| `D-CAP006-001` | ¿Qué función autoriza actualmente cambiar una solicitud de remisión ya enviada? | responsable de sede o área solicitante     | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-002` | ¿Qué función autoriza actualmente rechazar mercancía con diferencias?           | persona que recibe proveedores             | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-003` | ¿Qué función autoriza actualmente ajustar una diferencia de inventario?         | responsable de inventario o sede           | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-004` | ¿Qué función autoriza actualmente corregir un medio de pago registrado?         | cajero o responsable de sede               | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-005` | ¿Qué función autoriza actualmente cambiar un horario publicado?                 | persona que administra horarios            | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-006` | ¿Qué función autoriza actualmente corregir una marcación de asistencia?         | trabajador o persona que revisa asistencia | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-007` | ¿Qué función autoriza actualmente una devolución al cliente?                    | cajero o responsable de sede               | un cargo, `NADIE` o `NO SÉ` |
+| `D-CAP006-008` | ¿Qué función autoriza actualmente una compensación al cliente?                  | cajero o responsable de sede               | un cargo, `NADIE` o `NO SÉ` |
+
+Las respuestas se incorporarán a los campos correspondientes y conservarán fecha y evidencia.
+
+---
+
+#### 14. Autocuestionario breve para cualquier acción
+
+Antes de enviarlo se reemplazará `[ACCIÓN]` por una acción concreta, por ejemplo: “cambiar un medio de pago” o “rechazar mercancía”.
+
+```text
+CAP006-ACTOR — [ACCIÓN]
+
+Responde únicamente sobre lo que ocurre actualmente.
+
+¿Quién realiza [ACCIÓN]?
+
+Marca UNA:
+[ ] Yo
+[ ] Cajero
+[ ] Mesero
+[ ] Responsable de sede
+[ ] Gerencia General
+[ ] Administración
+[ ] Contabilidad
+[ ] Coordinación de Operaciones
+[ ] Responsable de Bodega
+[ ] Responsable de Producción
+[ ] Conductor
+[ ] Proveedor o técnico
+[ ] El sistema lo hace automáticamente
+[ ] Otra función
+[ ] NADIE
+[ ] NO SÉ
+
+Si marcaste “otra función”, escribe el cargo o trabajo, no el nombre:
+________________________________
+```
+
+Se enviarán mensajes separados para:
+
+```text
+¿Quién pide que comience [ACCIÓN]?
+¿Quién realiza [ACCIÓN]?
+¿Quién revisa el resultado de [ACCIÓN]?
+¿Quién autoriza [ACCIÓN] antes de que produzca efecto?
+```
+
+Cada mensaje admite una sola respuesta. No se agruparán las cuatro preguntas en una sola respuesta.
+
+---
+
+#### 15. Preguntas reservadas para el usuario
+
+Después de revisar respuestas anteriores, auditorías, controles documentados y decisiones canónicas:
+
+```text
+CAP-MAP-006
+→ 0 preguntas RESPONDE_USUARIO
+```
+
+Los vacíos restantes son hechos operativos observables y deben responderlos las personas que ejecutan o supervisan actualmente las acciones.
+
+---
+
+#### 16. Puerta de deduplicación
+
+Antes de crear una nueva pregunta se verificará:
+
+1. respuesta previa del usuario;
+2. auditoría de actores;
+3. inventario de controles sensibles;
+4. matrices de roles y permisos ya aprobadas;
+5. proceso ordinario y excepciones documentadas;
+6. código o configuración cuando el comportamiento sea comprobable;
+7. posibilidad de respuesta por observación directa.
+
+Una pregunta resuelta se convertirá en evidencia; no permanecerá como pendiente.
+
+---
+
+#### 17. Lo que queda decidido
+
+1. Las 217 subcapacidades tienen actores consultables mediante familia más excepción.
+2. Iniciador, ejecutor, supervisor y aprobador permanecen separados.
+3. No todas las acciones necesitan aprobación.
+4. Las familias de actores AS-IS se reutilizan sin convertirlas automáticamente en cargos futuros.
+5. Las coberturas temporales, rotativas, compartidas y vacantes permanecen visibles.
+6. Los sistemas y terceros pueden participar, pero no asumir responsabilidad empresarial humana.
+7. Las acciones sensibles conservan sus controles y vacíos reales.
+8. Los nombres personales existentes en la auditoría no se convierten en estructura permanente.
+9. Los vacíos operativos se consultan con quien observa el trabajo.
+10. `CAP-MAP-006` no genera preguntas para el usuario.
+11. Los permisos se definirán en `CAP-MAP-010`.
+12. Esta tarea no cambia asignaciones, accesos, cargos ni procesos.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-006` podrá aprobarse cuando:
+
+- todas las subcapacidades tengan los cuatro campos de participación;
+- una ausencia de aprobación esté expresada y no ocultada;
+- se conserven estados confirmado, provisional, temporal, rotativo, compartido, vacante y por identificar;
+- los actores ya confirmados por la auditoría no vuelvan a preguntarse;
+- los controles sensibles de compras, inventario, producción, caja, pagos, personal, marketing y tecnología estén incluidos;
+- las concentraciones AS-IS no se presenten como diseño objetivo;
+- cada duda pendiente tenga una sola respuesta y un observador capaz de responderla;
+- no se confundan actor, cargo, persona, aplicación o permiso;
+- `CAP-MAP-007` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Con la aprobación quedará identificado quién activa, realiza, revisa y autoriza cada capacidad según la evidencia actual, sin inventar una estructura futura ni repetir auditorías ya resueltas.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-007
+— Identificar información de entrada y resultado producido
+```
+
+`CAP-MAP-007` definirá qué información necesita cada capacidad para comenzar y qué resultado informativo produce, sin decidir todavía su fuente de verdad definitiva.
+
+
+### ✅ CAP-MAP-007 — Identificar información de entrada y resultado producido
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** definición documental de información
+**Dependencia anterior:** `CAP-MAP-006`
+**Continuidad reservada:** `CAP-MAP-008`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea define, para las **217 subcapacidades**:
+
+- qué hecho o necesidad permite comenzar;
+- qué información mínima debe conocerse;
+- qué regla o referencia se consulta;
+- qué resultado informativo debe quedar al terminar;
+- qué estado debe mostrar ese resultado;
+- qué debe quedar registrado cuando el trabajo no termina normalmente.
+
+La cobertura se construye mediante:
+
+```text
+información base de la familia
++ excepción de la subcapacidad
+= entrada y resultado de la subcapacidad
+```
+
+Esto evita repetir 217 veces la misma información sin dejar subcapacidades sin definición.
+
+Esta tarea **no decide todavía**:
+
+- dónde se guarda la información: `CAP-MAP-008`;
+- cómo se comunica entre aplicaciones o áreas: `CAP-MAP-009`;
+- quién puede verla, cambiarla o aprobarla: `CAP-MAP-010`;
+- qué pantalla, aparato, formato o documento la presenta: `CAP-MAP-011`.
+
+---
+
+#### 2. Diferencias que deben conservarse
+
+| Concepto               | Pregunta que responde                           | Ejemplo                                     |
+| ---------------------- | ----------------------------------------------- | ------------------------------------------- |
+| Hecho que inicia       | ¿Qué ocurrió para que el trabajo deba comenzar? | llegó mercancía                             |
+| Información de entrada | ¿Qué se necesita saber para actuar?             | proveedor, productos y cantidades esperadas |
+| Objeto físico          | ¿Qué cosa se recibe, mueve o transforma?        | cajas de producto                           |
+| Regla o referencia     | ¿Contra qué se revisa o calcula?                | orden de compra aprobada                    |
+| Resultado empresarial  | ¿Para qué le sirve esto al negocio?             | inventario confiable                        |
+| Resultado informativo  | ¿Qué dato, registro o estado queda producido?   | recepción aceptada con cantidades recibidas |
+| Evidencia              | ¿Qué permite comprobar que ocurrió?             | firma, foto, factura o marcación            |
+
+El **resultado empresarial** ya definido en `CAP-MAP-002` no se reemplaza.
+`CAP-MAP-007` identifica el resultado informativo concreto que permite observarlo, controlarlo o continuarlo.
+
+---
+
+#### 3. Reglas obligatorias
+
+1. Una persona, producto, dinero, equipo o mercancía no se tratará como información.
+2. Cuando exista un objeto físico, se describirá por separado su información identificadora.
+3. Una entrada deberá ser necesaria para comenzar, decidir, ejecutar o comprobar.
+4. Un resultado deberá poder ser entendido por la siguiente persona o capacidad que lo use.
+5. “Proceso realizado” no será un resultado suficiente.
+6. No se exigirá información que no sea necesaria para la operación o el control.
+7. No se copiarán contraseñas, secretos, números completos de identificación, datos bancarios ni datos personales innecesarios.
+8. Cuando la práctica actual no produzca un registro, se declarará `NO EXISTE`; no se inventará uno.
+9. Cuando el resultado pueda quedar incompleto, rechazado, cancelado o corregido, esa condición deberá conservarse.
+10. Una corrección no borrará la existencia del resultado anterior; deberá poder distinguirse el valor corregido.
+11. La información base se hereda desde la familia, salvo excepción expresa.
+12. La fuente actual y la fuente objetivo se definirán únicamente en `CAP-MAP-008`.
+
+---
+
+#### 4. Estados mínimos del resultado
+
+| Estado      | Significado sencillo                                 |
+| ----------- | ---------------------------------------------------- |
+| `PENDIENTE` | todavía falta trabajo o una decisión                 |
+| `COMPLETO`  | produjo el resultado esperado                        |
+| `PARCIAL`   | produjo solo una parte y falta identificar cuál      |
+| `RECHAZADO` | se decidió no aceptar o no continuar                 |
+| `CANCELADO` | se detuvo después de haber comenzado                 |
+| `CORREGIDO` | reemplaza un dato anterior conservando la corrección |
+| `NO_APLICA` | se confirmó que el resultado no corresponde al caso  |
+
+Cada subcapacidad usará solo los estados que realmente necesite.
+
+---
+
+#### 5. Registro mínimo por subcapacidad
+
+| Campo                     | Contenido                                                              |
+| ------------------------- | ---------------------------------------------------------------------- |
+| Código                    | código de la subcapacidad                                              |
+| Hecho que inicia          | situación observable que activa el trabajo                             |
+| Entradas obligatorias     | información sin la cual no puede comenzar correctamente                |
+| Entradas opcionales       | información útil que puede no existir                                  |
+| Regla o referencia        | política, cálculo, pedido, programación o documento usado para decidir |
+| Objeto físico relacionado | producto, dinero, equipo o documento físico, cuando aplique            |
+| Resultado producido       | dato, registro, decisión, estado o aviso que queda                     |
+| Estado del resultado      | estado normal y estados alternos aplicables                            |
+| Resultado ante excepción  | qué queda si se rechaza, cancela, corrige o termina parcialmente       |
+| Evidencia disponible      | comprobación observada, sin decidir aún su diseño futuro               |
+| Duda pendiente            | código del registro vivo, si falta confirmación                        |
+
+---
+
+#### 6. Mapa base por familia
+
+| Familia                           | Hecho o información principal de entrada                              | Resultado informativo base                                                                                         |
+| --------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `CAP-01` Dirección y gobierno     | situación actual, riesgo, obligación, propuesta o resultado anterior  | objetivo, decisión, política, riesgo aceptado, responsable o acción                                                |
+| `CAP-02` Personas y trabajo       | necesidad de personal, trabajador, disponibilidad, turno o novedad    | candidato, vinculación, asignación, horario, asistencia, novedad, pago o retiro                                    |
+| `CAP-03` Seguridad y salud        | obligación, peligro, incidente, inspección o condición insegura       | riesgo, control, incidente registrado, acción correctiva o comprobación                                            |
+| `CAP-04` Productos y oferta       | necesidad del cliente, producto, componente, receta o presentación    | producto, clasificación, receta, rendimiento, menú, especificación o versión                                       |
+| `CAP-05` Compras y proveedores    | necesidad, existencias, proveedor, oferta o solicitud aprobada        | solicitud, comparación, aprobación, orden, recepción, diferencia, devolución o evaluación                          |
+| `CAP-06` Inventario y movimientos | producto, ubicación, cantidad, lote, necesidad o movimiento           | entrada, ubicación, reserva, consumo, traslado, remisión, conteo, ajuste, merma o condición                        |
+| `CAP-07` Activos                  | activo, identificación, ubicación, custodia, estado o necesidad       | activo registrado, custodia, préstamo, conteo, condición, mantenimiento, reparación o baja                         |
+| `CAP-08` Producción               | demanda, receta, disponibilidad, capacidad u orden                    | plan, orden, lote, cantidad producida, consumo, rendimiento, control, liberación o cierre                          |
+| `CAP-09` Venta y servicio         | oferta, solicitud del cliente, disponibilidad, mesa, pedido o pago    | pedido, cambio, estado de preparación, venta, pago, factura, atención o cierre                                     |
+| `CAP-10` Clientes                 | cliente, solicitud, autorización, pedido anterior o caso              | perfil, preferencia, caso, solución, devolución, satisfacción, reserva o aviso                                     |
+| `CAP-11` Despacho y entrega       | origen, destino, carga, pedido, vehículo o necesidad                  | ruta, asignación, carga, custodia, novedad, entrega, retorno o cierre                                              |
+| `CAP-12` Finanzas                 | hecho económico, soporte, periodo, cuenta o saldo anterior            | registro contable, caja, banco, cuenta por cobrar o pagar, conciliación, costo, presupuesto, impuesto o informe    |
+| `CAP-13` Instalaciones            | espacio, activo, problema, solicitud, frecuencia o condición          | inventario, solicitud de trabajo, limpieza, control, inspección, calibración, acceso o cierre                      |
+| `CAP-14` Mercadeo                 | objetivo, público, oferta, presupuesto, contenido o respuesta         | mensaje, publicación, campaña, cupón, contacto comercial, evento, resultado o reputación                           |
+| `CAP-15` Tecnología               | usuario, dispositivo, aplicación, falla, solicitud o cambio           | cuenta, configuración, conexión, caso de soporte, incidente, cambio, prueba, licencia o constancia de capacitación |
+| `CAP-16` Información y documentos | información, documento, política, solicitud o periodo de conservación | clasificación, documento, versión, acceso, registro de actividad, archivo, firma o investigación                   |
+| `CAP-17` Datos y análisis         | definición, datos disponibles, periodo, comparación o problema        | indicador, datos validados, informe, análisis, causa, acción o resultado medido                                    |
+| `CAP-18` Continuidad              | dependencia, incidente, estado actual, impacto o recurso disponible   | incidente, impacto, alternativa, operación mínima, recuperación, trabajo manual, conciliación, lección o aviso     |
+
+---
+
+#### 7. Excepciones específicas: personas, seguridad y productos
+
+| Caso                      | Entrada adicional indispensable                               | Resultado específico                               |
+| ------------------------- | ------------------------------------------------------------- | -------------------------------------------------- |
+| Vinculación o retiro      | identidad mínima, relación, fecha y decisión autorizada       | estado de vinculación o retiro y fecha efectiva    |
+| Horario y asignación      | trabajador, lugar, función, fecha y disponibilidad            | turno publicado o cambio identificado              |
+| Asistencia                | trabajador, lugar, fecha y hora observada                     | entrada, salida, ausencia o novedad                |
+| Pago laboral              | periodo, conceptos, novedades y base aprobada                 | valor calculado, descuentos, pago y estado         |
+| Incidente de seguridad    | lugar, momento, personas afectadas y descripción observable   | incidente clasificado, atención y acción pendiente |
+| Inspección de seguridad   | lugar, elemento revisado y criterio                           | hallazgo, cumplimiento y acción correctiva         |
+| Receta o fórmula          | producto final, componentes, cantidades, unidad y rendimiento | versión de receta y rendimiento esperado           |
+| Cambio de producto o menú | producto, motivo, vigencia y lugares afectados                | nueva versión, fecha de inicio y versión anterior  |
+
+---
+
+#### 8. Excepciones específicas: compras, inventario y activos
+
+| Caso                       | Entrada adicional indispensable                            | Resultado específico                                     |
+| -------------------------- | ---------------------------------------------------------- | -------------------------------------------------------- |
+| Solicitud de compra        | producto o servicio, cantidad, necesidad y fecha requerida | solicitud con estado                                     |
+| Comparación de proveedores | ofertas comparables, condiciones y criterio                | comparación y alternativa elegida o rechazada            |
+| Recepción de proveedor     | orden esperada, proveedor y cantidades entregadas          | cantidades aceptadas, diferencias y rechazo              |
+| Remisión entre lugares     | origen, destino, productos y cantidades                    | remisión enviada, recibida, parcial o rechazada          |
+| Conteo de inventario       | lugar, momento, producto y cantidad contada                | diferencia frente al saldo esperado                      |
+| Ajuste de inventario       | diferencia, causa conocida y autorización aplicable        | cantidad ajustada, motivo y referencia al valor anterior |
+| Merma                      | producto, cantidad, motivo, lugar y momento                | merma registrada y afectación de existencias             |
+| Custodia de activo         | activo, custodio, lugar, fecha y condición                 | custodia vigente y estado de entrega                     |
+| Mantenimiento o baja       | activo, falla, diagnóstico o condición                     | trabajo realizado, condición final o baja                |
+
+---
+
+#### 9. Excepciones específicas: producción, venta, clientes y entrega
+
+| Caso                                   | Entrada adicional indispensable                                         | Resultado específico                                           |
+| -------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Plan de producción                     | demanda esperada, existencias, receta y capacidad                       | cantidades y fechas por producir                               |
+| Ejecución de lote                      | orden, receta vigente, insumos y cantidades usadas                      | lote, cantidad producida, consumo y rendimiento                |
+| Liberación de producto                 | lote, controles y resultado de calidad                                  | liberado, retenido o rechazado                                 |
+| Pedido presencial                      | lugar, productos, cantidades, cambios y mesa o cliente cuando aplique   | pedido aceptado y estado de preparación                        |
+| Pedido de Rappi, ManyChat u otro medio | solicitud recibida, productos, cantidades, cobro y lugar de preparación | pedido trasladado a operación con referencia al origen         |
+| Venta y pago                           | pedido cerrado, valores, descuentos, propina y medios de pago           | venta, pagos aplicados, saldo y comprobante                    |
+| Anulación                              | venta o pedido, motivo y autorización aplicable                         | anulación, valores afectados y referencia al registro anterior |
+| Devolución o compensación              | pedido o venta, producto, motivo y solución acordada                    | devolución, reposición, descuento u otra solución              |
+| Reserva                                | cliente, lugar, fecha, hora, cantidad de personas y condiciones         | reserva confirmada, modificada, rechazada o cancelada          |
+| Despacho Vaila Vainilla                | pedido, cliente, destino, contenido y mensajería                        | paquete entregado a mensajería y estado del envío              |
+| Entrega al cliente                     | pedido, destino, responsable y novedad                                  | entrega confirmada, fallida, parcial o devuelta                |
+
+---
+
+#### 10. Excepciones específicas: finanzas, instalaciones y mercadeo
+
+| Caso                         | Entrada adicional indispensable                               | Resultado específico                                     |
+| ---------------------------- | ------------------------------------------------------------- | -------------------------------------------------------- |
+| Cierre de caja               | ventas, medios de pago, efectivo contado, novedades y periodo | diferencia, cierre y entrega de valores                  |
+| Distribución de propinas     | propina recibida, periodo, reglas y personas aplicables       | valores distribuidos y saldo pendiente                   |
+| Cuenta por cobrar o pagar    | tercero, concepto, valor, vencimiento y soporte               | saldo, vencimiento y estado de pago                      |
+| Conciliación bancaria        | movimientos bancarios, registros internos y periodo           | coincidencias, diferencias y partidas pendientes         |
+| Costo o rentabilidad         | cantidades, valores, periodo y regla de cálculo               | costo, margen o resultado con su periodo                 |
+| Mantenimiento de instalación | lugar, problema, prioridad y recurso                          | trabajo cerrado, pendiente o rechazado y condición final |
+| Campaña o publicación        | objetivo, público, mensaje, medio, fechas y presupuesto       | publicación o campaña y resultado observado              |
+| Cupón o promoción            | regla, vigencia, productos, lugares y límites                 | promoción activa, usada, vencida o cancelada             |
+
+---
+
+#### 11. Excepciones específicas: tecnología, información, análisis y continuidad
+
+| Caso                     | Entrada adicional indispensable                            | Resultado específico                                              |
+| ------------------------ | ---------------------------------------------------------- | ----------------------------------------------------------------- |
+| Cuenta o acceso          | persona, función, aplicación y vigencia                    | acceso creado, cambiado, suspendido o retirado                    |
+| Falla tecnológica        | aplicación o equipo, momento, lugar, síntoma e impacto     | caso recibido, diagnóstico, solución o pendiente                  |
+| Cambio de sistema        | necesidad, alcance, riesgo y comprobación esperada         | cambio probado, aprobado, rechazado o revertido                   |
+| Documento controlado     | tipo, contenido, responsable, versión y vigencia           | documento vigente, reemplazado, archivado o eliminado según regla |
+| Solicitud de información | solicitante, propósito, alcance y autorización aplicable   | información entregada, negada o entregada parcialmente            |
+| Indicador                | definición, periodo, datos y regla de cálculo              | valor, comparación y advertencia de calidad                       |
+| Análisis                 | pregunta, periodo, datos, supuestos y límites              | hallazgo, incertidumbre y acción propuesta                        |
+| Caída de una dependencia | servicio afectado, momento, impacto y recursos disponibles | operación mínima, alternativa usada y pendientes por conciliar    |
+| Recuperación             | incidente, respaldo o registro manual y punto de retorno   | servicio recuperado, datos conciliados y pérdida conocida         |
+
+---
+
+#### 12. Tratamiento de resultados incompletos o corregidos
+
+Para cada subcapacidad deberá poder contestarse:
+
+1. ¿Qué parte sí quedó terminada?
+2. ¿Qué parte falta?
+3. ¿Por qué se rechazó o canceló?
+4. ¿Qué dato anterior fue corregido?
+5. ¿Qué trabajo posterior queda pendiente?
+
+No se aceptarán resultados ambiguos como:
+
+```text
+listo
+hecho
+resuelto
+procesado
+```
+
+sin el dato, decisión o estado que realmente quedó producido.
+
+---
+
+#### 13. Evidencia AS-IS ya aprovechada
+
+Esta tarea parte de hechos ya documentados y no vuelve a preguntarlos:
+
+- Makos participa en pedidos, ventas, comandas y caja presencial.
+- Los pedidos de Rappi y ManyChat se trasladan manualmente a la operación observada.
+- Shopify participa en la operación comercial observada de Vaila Vainilla.
+- Las remisiones usan actualmente combinaciones de Excel, capturas y WhatsApp.
+- Producción usa capturas, tablas, llamadas, fotos y mensajes según el caso.
+- Existen facturas y recibos físicos dentro de la operación observada.
+- ANIMA registra marcaciones y VISO participa en horarios e informes de asistencia.
+- El pago laboral usa el sistema contable y el medio bancario ya auditado.
+- Las fallas tecnológicas suelen informarse por WhatsApp o verbalmente y no existe un historial consolidado confirmado.
+- No existe un historial consolidado confirmado de mantenimiento.
+
+Estos hechos describen el estado actual; no se convierten automáticamente en diseño objetivo.
+
+---
+
+#### 14. Dudas nuevas registradas aparte
+
+Las preguntas completas se incorporaron al archivo independiente:
+
+`docs/plan-canonico/REGISTRO_VIVO_DE_PREGUNTAS_PENDIENTES.md`
+
+| Códigos             | Tema                                                              |
+| ------------------- | ----------------------------------------------------------------- |
+| `DAT-20` y `DAT-21` | documento de despacho y confirmación de entrega de Vaila Vainilla |
+| `DAT-22`            | registro de distribución de propinas                              |
+| `DAT-23` a `DAT-25` | registro de anulación, devolución y compensación                  |
+| `DAT-26` y `DAT-27` | registro de ajuste de inventario y merma                          |
+
+Estas dudas:
+
+- no bloquean la aprobación documental de `CAP-MAP-007`;
+- tienen una sola respuesta esperada;
+- pueden ser respondidas por quien observa o realiza el trabajo;
+- no se duplican dentro de esta tarea.
+
+---
+
+#### 15. Autocuestionario para cualquier trabajador
+
+Para describir una actividad sin conocimientos técnicos:
+
+1. ¿Qué tuvo que pasar para que empezaras?
+2. ¿Qué datos miraste antes de actuar?
+3. ¿Qué cosa física recibiste, moviste o cambiaste?
+4. ¿Contra qué pedido, lista, regla o instrucción revisaste?
+5. ¿Qué dato, decisión o estado dejaste al terminar?
+6. Si no pudiste terminar, ¿qué quedó anotado?
+
+Cada respuesta deberá referirse a **un caso real reciente** y no a cómo debería funcionar en el futuro.
+
+---
+
+#### 16. Puerta de deduplicación
+
+Antes de crear una nueva pregunta se deberá revisar, en este orden:
+
+1. respuestas previas del usuario;
+2. auditorías y documentación existente;
+3. código, configuración y datos autorizados;
+4. registro vivo de preguntas;
+5. observación del trabajador que realiza la actividad.
+
+Solo se incorporará una pregunta nueva cuando la respuesta no pueda obtenerse de esas fuentes.
+Cada duda nueva se añadirá al registro vivo y la tarea canónica conservará únicamente su código.
+
+Toda pregunta dirigida a un trabajador deberá:
+
+- poder copiarse y enviarse por WhatsApp sin explicación adicional;
+- describir una situación concreta que la persona pueda reconocer;
+- decir exactamente qué debe escribir como respuesta;
+- usar palabras cotidianas como “quién”, “dónde”, “qué nombre” o “a quién pides permiso”;
+- evitar expresiones de diseño como “función que autoriza”, “actor”, “fuente de verdad” o “resultado informativo”.
+
+---
+
+#### 17. Lo que queda decidido
+
+1. Las 217 subcapacidades heredan entrada y resultado desde su familia.
+2. Los casos particulares reciben las excepciones definidas en esta tarea.
+3. Se separan hecho iniciador, información, objeto físico, regla, resultado y evidencia.
+4. Cada resultado puede expresar su condición normal o excepcional.
+5. Un resultado corregido conserva referencia al estado anterior.
+6. Una ausencia de registro se declara; no se completa por intuición.
+7. Se recopila únicamente información necesaria.
+8. Las dudas operativas viven en el registro independiente.
+9. `CAP-MAP-007` no crea formularios, bases de datos, integraciones, permisos ni pantallas.
+10. La fuente actual y la fuente objetivo quedan reservadas para `CAP-MAP-008`.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-007` podrá aprobarse cuando:
+
+- las 18 familias tengan entrada y resultado base;
+- las 217 subcapacidades queden cubiertas por herencia más excepción;
+- los casos con objetos físicos separen el objeto de su información;
+- los resultados incompletos, rechazados, cancelados y corregidos no se oculten;
+- ninguna fuente de verdad futura se decida anticipadamente;
+- no se soliciten datos personales o secretos innecesarios;
+- toda duda nueva esté deduplicada y registrada aparte;
+- cada pregunta pendiente pueda responderse con observación y una única respuesta;
+- `CAP-MAP-008` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definido:
+
+```text
+qué necesita conocer cada subcapacidad
+        ↓
+qué resultado informativo deja
+        ↓
+qué ocurre si queda parcial, rechazada, cancelada o corregida
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-008
+— Identificar fuente de verdad actual y fuente de verdad objetivo
+```
+
+`CAP-MAP-008` determinará dónde se origina, conserva y corrige hoy cada información y cuál deberá ser su fuente futura, sin confundir copias operativas con el registro principal.
+
+
+### ✅ CAP-MAP-008 — Identificar fuente de verdad actual y fuente de verdad objetivo
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** definición documental de propiedad de información
+**Dependencia anterior:** `CAP-MAP-007`
+**Continuidad reservada:** `CAP-MAP-009`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea define, para las **217 subcapacidades**:
+
+- dónde se origina actualmente la información;
+- dónde se conserva hoy el registro que se usa para operar;
+- dónde se corrige cuando contiene un error;
+- qué copias, mensajes, archivos o informes existen;
+- qué aplicación deberá gobernar el registro principal en el modelo objetivo;
+- qué sistemas podrán consultarlo sin crear otra versión independiente.
+
+La cobertura se construye mediante:
+
+```text
+fuente base de la familia
++ excepción de la subcapacidad
+= fuente actual y fuente objetivo de la subcapacidad
+```
+
+Esta tarea define propiedad informativa. No crea tablas, migraciones, integraciones, permisos ni pantallas.
+
+---
+
+#### 2. Definiciones en lenguaje directo
+
+| Concepto                  | Significado                                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| Lugar donde nace          | primer lugar donde se registra un hecho real                                                  |
+| Registro principal actual | registro que hoy se consulta o corrige para continuar el trabajo                              |
+| Copia operativa           | Excel, PDF, captura, papel, mensaje o informe usado sin gobernar el hecho original            |
+| Fuente externa            | sistema de un tercero que origina o certifica información, como banco, Makos, Rappi o Shopify |
+| Fuente objetivo           | aplicación VENTO que deberá aceptar, conservar, corregir y explicar el registro principal     |
+| Consumidora               | aplicación que consulta o utiliza información gobernada por otra                              |
+| Dato derivado             | cálculo, indicador o resumen que puede reconstruirse desde hechos de origen                   |
+
+Una fuente de verdad no es simplemente “donde aparece el dato”. Debe poder responder:
+
+1. ¿Dónde se registró primero?
+2. ¿Dónde se corrige?
+3. ¿Cuál versión se considera válida?
+4. ¿Qué ocurrió con la versión anterior?
+5. ¿Quién necesita consultarla sin volverla a crear?
+
+---
+
+#### 3. Estados de la fuente actual
+
+| Estado          | Significado                                                           |
+| --------------- | --------------------------------------------------------------------- |
+| `CONFIRMADA`    | código, datos, documentos o auditoría permiten identificarla          |
+| `DISTRIBUIDA`   | la operación depende de varios registros sin uno principal confirmado |
+| `MANUAL`        | papel, Excel, captura, llamada o chat sostiene el registro            |
+| `EXTERNA`       | el registro principal pertenece a un proveedor o autoridad            |
+| `NO_EXISTE`     | no se confirmó que el resultado quede registrado                      |
+| `POR_CONFIRMAR` | existe una pregunta sencilla pendiente en el registro vivo            |
+
+`POR_CONFIRMAR` no bloquea esta propuesta cuando la fuente objetivo puede definirse sin inventar la práctica actual.
+
+---
+
+#### 4. Estados de la fuente objetivo
+
+| Estado                  | Significado                                                              |
+| ----------------------- | ------------------------------------------------------------------------ |
+| `OBJETIVO_FUERTE`       | la aplicación coincide claramente con el resultado que debe gobernar     |
+| `OBJETIVO_CON_FRONTERA` | la aplicación gobierna una parte y debe respetar la propiedad de otra    |
+| `OBJETIVO_DIVIDIDO`     | la subcapacidad contiene resultados con fuentes principales diferentes   |
+| `OBJETIVO_DIFERIDO`     | la dirección está definida, pero no habilita implementación en esta fase |
+| `SIN_FUENTE_ADECUADA`   | ninguna aplicación actual puede gobernar limpiamente el resultado        |
+
+La aplicación objetivo expresa responsabilidad empresarial. La tabla, esquema, API o almacenamiento físico se diseñará en los bloques técnicos posteriores.
+
+---
+
+#### 5. Reglas obligatorias
+
+1. Cada hecho empresarial tendrá una sola fuente principal objetivo.
+2. Una copia no podrá corregirse independientemente del registro principal.
+3. Supabase será infraestructura, no propietario empresarial de la información.
+4. `vento-shell` será repositorio técnico canónico para migraciones, no fuente empresarial universal.
+5. SHELL coordinará acceso y navegación; no absorberá los datos de todas las aplicaciones.
+6. Un informe no reemplazará los hechos utilizados para calcularlo.
+7. NUMERA consolidará y analizará; no recreará ventas, compras, inventario o producción.
+8. Un sistema externo podrá seguir siendo fuente del hecho externo, pero VENTO conservará su referencia y estado interno cuando deba operar con él.
+9. WhatsApp, Excel, PDF, capturas y papel podrán conservarse como evidencia o contingencia, no como fuente objetivo duplicada.
+10. Toda corrección conservará el valor anterior, motivo, momento y responsable cuando el riesgo lo justifique.
+11. Si actualmente no existe registro, se declarará `NO_EXISTE`.
+12. AURA seguirá como `OBJETIVO_DIFERIDO`; esta tarea no supone que ya exista.
+13. No se almacenarán secretos, credenciales ni datos personales innecesarios para justificar la fuente.
+14. Las preguntas dirigidas a trabajadores usarán “dónde lo escribes o corriges”, nunca “fuente de verdad”.
+
+---
+
+#### 6. Registro mínimo por subcapacidad
+
+| Campo                      | Contenido                                                        |
+| -------------------------- | ---------------------------------------------------------------- |
+| Código                     | código de la subcapacidad                                        |
+| Información producida      | resultado definido en `CAP-MAP-007`                              |
+| Lugar donde nace hoy       | aplicación, proveedor, archivo, papel, chat o `NO EXISTE`        |
+| Registro principal actual  | lugar que hoy se considera válido                                |
+| Lugar de corrección actual | dónde se modifica o quién genera una nueva versión               |
+| Copias conocidas           | archivos, mensajes, informes, capturas o documentos              |
+| Estado AS-IS               | estado de la fuente actual                                       |
+| Fuente objetivo            | aplicación que deberá gobernar el resultado                      |
+| Estado objetivo            | fuerza, frontera, división o diferimiento                        |
+| Consumidoras               | aplicaciones o áreas que necesitarán consultarlo                 |
+| Regla de transición        | qué copia deja de ser principal cuando exista la fuente objetivo |
+| Duda pendiente             | código del registro vivo, cuando aplique                         |
+
+---
+
+#### 7. Mapa AS-IS por familia
+
+| Familia                           | Fuentes actuales confirmadas o utilizadas                                                               | Estado AS-IS  |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------- |
+| `CAP-01` Dirección y gobierno     | documentos, archivos, mensajes y registros administrativos parciales                                    | `DISTRIBUIDA` |
+| `CAP-02` Personas y trabajo       | VISO, ANIMA, sistema contable, medio bancario, documentos y archivos laborales                          | `DISTRIBUIDA` |
+| `CAP-03` Seguridad y salud        | documentos, formatos, mensajes y registros administrativos sin cobertura integral confirmada            | `MANUAL`      |
+| `CAP-04` Productos y oferta       | NEXO, FOGO, PULSO, Makos y archivos operativos según el resultado                                       | `DISTRIBUIDA` |
+| `CAP-05` Compras y proveedores    | ORIGO, tablas de compras, Excel, documentos, WhatsApp y registros de recepción                          | `DISTRIBUIDA` |
+| `CAP-06` Inventario y movimientos | NEXO y tablas de inventario, complementadas por Excel, capturas, papel y WhatsApp                       | `DISTRIBUIDA` |
+| `CAP-07` Activos                  | NEXO para parte del inventario de activos; archivos y comunicación manual para custodia y mantenimiento | `DISTRIBUIDA` |
+| `CAP-08` Producción               | FOGO y tablas productivas, complementadas por tablas, capturas, llamadas, fotos y mensajes              | `DISTRIBUIDA` |
+| `CAP-09` Venta y servicio         | Makos, PULSO, esquemas `pos` y `payments`, pedidos internos y plataformas externas                      | `DISTRIBUIDA` |
+| `CAP-10` Clientes                 | PULSO, PASS, pedidos, conversaciones y plataformas o chats externos                                     | `DISTRIBUIDA` |
+| `CAP-11` Despacho y entrega       | NEXO, PULSO, Shopify, mensajería, remisiones, capturas y WhatsApp                                       | `DISTRIBUIDA` |
+| `CAP-12` Finanzas                 | Makos, PULSO, pagos, bancos, sistema contable, documentos y NUMERA                                      | `DISTRIBUIDA` |
+| `CAP-13` Instalaciones            | activos parciales en NEXO, comunicación verbal y WhatsApp; no existe historial consolidado confirmado   | `DISTRIBUIDA` |
+| `CAP-14` Mercadeo                 | redes, plataformas externas, archivos y WhatsApp; AURA no existe todavía                                | `DISTRIBUIDA` |
+| `CAP-15` Tecnología               | VISO, configuración de cada aplicación y Supabase para accesos; soporte por WhatsApp o verbal           | `DISTRIBUIDA` |
+| `CAP-16` Información y documentos | aplicaciones de origen, documentos físicos, archivos, chats y carpetas                                  | `DISTRIBUIDA` |
+| `CAP-17` Datos y análisis         | consultas e informes por aplicación y análisis inicial en NUMERA                                        | `DISTRIBUIDA` |
+| `CAP-18` Continuidad              | estado de cada aplicación, WhatsApp, llamadas y trabajo manual sin registro transversal confirmado      | `DISTRIBUIDA` |
+
+Este mapa describe la evidencia disponible. No afirma que toda función visible en código sea utilizada correctamente por la operación real.
+
+---
+
+#### 8. Mapa objetivo por familia
+
+| Familia                           | Fuente principal objetivo                                                                     | Estado                  | Frontera obligatoria                                                                            |
+| --------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------- |
+| `CAP-01` Dirección y gobierno     | VISO para estructura, políticas, riesgos, decisiones y seguimiento administrativo             | `OBJETIVO_CON_FRONTERA` | la decisión continúa siendo humana y los documentos legales conservan su validez propia         |
+| `CAP-02` Personas y trabajo       | VISO para administración laboral; ANIMA para registros personales y asistencia                | `OBJETIVO_DIVIDIDO`     | nómina, banco y documentos externos no se convierten automáticamente en datos propios de NUMERA |
+| `CAP-03` Seguridad y salud        | VISO                                                                                          | `OBJETIVO_CON_FRONTERA` | autoridades, aseguradoras y proveedores conservan sus documentos oficiales                      |
+| `CAP-04` Productos y oferta       | NEXO para catálogo; FOGO para recetas; PULSO para oferta vendible                             | `OBJETIVO_DIVIDIDO`     | cada aplicación gobierna un resultado distinto y comparte referencias, no copias maestras       |
+| `CAP-05` Compras y proveedores    | ORIGO                                                                                         | `OBJETIVO_FUERTE`       | NEXO recibe únicamente el efecto de inventario de la recepción aceptada                         |
+| `CAP-06` Inventario y movimientos | NEXO                                                                                          | `OBJETIVO_FUERTE`       | compras, producción y ventas originan hechos; NEXO gobierna su efecto en existencias            |
+| `CAP-07` Activos                  | NEXO                                                                                          | `OBJETIVO_CON_FRONTERA` | la ejecución técnica externa se relaciona con el activo sin reemplazar su registro              |
+| `CAP-08` Producción               | FOGO                                                                                          | `OBJETIVO_FUERTE`       | NEXO conserva movimientos de insumo y producto aceptados, no la orden productiva                |
+| `CAP-09` Venta y servicio         | PULSO                                                                                         | `OBJETIVO_FUERTE`       | Makos y plataformas externas serán orígenes externos mientras sigan vigentes                    |
+| `CAP-10` Clientes                 | PULSO para relación operativa; PASS para identidad y acciones directas del cliente            | `OBJETIVO_DIVIDIDO`     | no se copiará información personal innecesaria entre ambas aplicaciones                         |
+| `CAP-11` Despacho y entrega       | NEXO para traslado interno; PULSO para entrega asociada a un pedido                           | `OBJETIVO_DIVIDIDO`     | la mensajería externa aporta eventos sin gobernar el pedido interno                             |
+| `CAP-12` Finanzas                 | PULSO para caja y pago de venta; NUMERA para hechos económicos, costos y análisis             | `OBJETIVO_DIVIDIDO`     | bancos, sistema contable y autoridades conservan los registros externos que les correspondan    |
+| `CAP-13` Instalaciones            | NEXO para espacio, activo, novedad y estado                                                   | `OBJETIVO_CON_FRONTERA` | el proveedor técnico puede ejecutar el trabajo, pero no gobernar el estado interno              |
+| `CAP-14` Mercadeo                 | AURA para comunicación y campaña; PULSO para promociones aplicadas a ventas                   | `OBJETIVO_DIFERIDO`     | AURA es solo una idea y no se implementa por esta definición                                    |
+| `CAP-15` Tecnología               | VISO para identidad y acceso; NEXO para activo; cada aplicación para su configuración         | `OBJETIVO_DIVIDIDO`     | el soporte transversal continúa `SIN_FUENTE_ADECUADA` hasta definir su propietaria              |
+| `CAP-16` Información y documentos | aplicación propietaria del hecho respaldado                                                   | `OBJETIVO_DIVIDIDO`     | el archivo documental conserva versiones y evidencia sin apropiarse del hecho                   |
+| `CAP-17` Datos y análisis         | aplicación de origen para hechos; NUMERA para indicadores, comparaciones y análisis derivados | `OBJETIVO_CON_FRONTERA` | NUMERA no permitirá corregir hechos gobernados por otra aplicación                              |
+| `CAP-18` Continuidad              | aplicación afectada para el incidente local; registro transversal todavía sin fuente adecuada | `OBJETIVO_DIVIDIDO`     | SHELL coordina acceso y navegación, no se vuelve propietaria de todos los incidentes            |
+
+---
+
+#### 9. Registros maestros compartidos
+
+| Información maestra                                | Fuente objetivo | Regla para las demás aplicaciones                                   |
+| -------------------------------------------------- | --------------- | ------------------------------------------------------------------- |
+| personas trabajadoras, roles, sedes y áreas        | VISO            | consumir identificadores y atributos autorizados                    |
+| asistencia individual                              | ANIMA           | VISO consulta y administra excepciones según permisos posteriores   |
+| identidad del cliente                              | PASS            | PULSO conserva solo lo necesario para operar la venta y la relación |
+| producto y presentación                            | NEXO            | FOGO, ORIGO, PULSO y NUMERA consumen la misma identidad             |
+| receta y versión productiva                        | FOGO            | NEXO y NUMERA consultan efectos o costos sin editar la receta       |
+| proveedor y ciclo de compra                        | ORIGO           | NEXO y NUMERA consumen recepción y efecto económico                 |
+| existencia y movimiento                            | NEXO            | otras aplicaciones originan solicitudes o consumen saldos           |
+| orden, lote y resultado de producción              | FOGO            | NEXO recibe movimientos aceptados; NUMERA analiza                   |
+| pedido, venta, caja y pago aplicado                | PULSO           | NUMERA recibe hechos económicos sin recrear la venta                |
+| centro de costo, presupuesto e indicador económico | NUMERA          | aplicaciones operativas aportan hechos y consultan resultados       |
+
+Los tipos TypeScript repetidos encontrados en NEXO, FOGO, ORIGO, PULSO y NUMERA no crean fuentes maestras distintas. `TEC-18` confirma que deberán derivarse de contratos comunes o generados durante la remodelación técnica.
+
+---
+
+#### 10. Excepciones que no pueden simplificarse
+
+##### 10.1. Pago laboral
+
+- El sistema contable donde se calcula y conserva el pago actual sigue `POR_CONFIRMAR` mediante `DAT-14` y `DAT-15`.
+- VISO gobernará personas, periodos y novedades laborales.
+- ANIMA aportará asistencia y novedades personales autorizadas.
+- El proveedor contable o bancario podrá conservar el cálculo o comprobante externo.
+- NUMERA podrá analizar el efecto económico, pero no se declara sistema de nómina.
+
+##### 10.2. Venta presencial y plataformas externas
+
+- Makos continúa como fuente externa de la venta presencial mientras la operación dependa de él.
+- Rappi, ManyChat y Shopify podrán originar solicitudes o pedidos externos.
+- PULSO deberá conservar la referencia externa y gobernar el estado interno del pedido, la venta y el cobro.
+- Copiar un pedido manualmente no convierte a la copia en integración ni elimina el origen.
+
+##### 10.3. Bancos, impuestos y documentos oficiales
+
+- El banco es fuente del movimiento bancario.
+- El sistema contable puede ser fuente del asiento o cálculo fiscal.
+- La autoridad es fuente del documento o estado oficial que emite.
+- NUMERA conservará la referencia, conciliación, clasificación y análisis internos que le correspondan.
+
+##### 10.4. Traslado interno y entrega al cliente
+
+- NEXO gobernará origen, destino interno, carga, remisión y recepción entre lugares.
+- PULSO gobernará el resultado de entrega cuando cierre o afecta un pedido del cliente.
+- La guía o comprobación del transportador será evidencia externa vinculada, no una segunda venta.
+
+##### 10.5. Documentos y análisis
+
+- El documento controlado seguirá a la aplicación que gobierna el hecho respaldado.
+- NUMERA podrá producir indicadores y reportes, pero la corrección del hecho se realizará en su aplicación de origen.
+- Un PDF o Excel exportado será una fotografía de un momento, no un registro corregible independiente.
+
+---
+
+#### 11. Regla de corrección y trazabilidad
+
+Cuando un dato esté equivocado:
+
+```text
+la corrección ocurre en la fuente principal
+        ↓
+se conserva referencia al valor anterior
+        ↓
+las consumidoras reciben o consultan la versión vigente
+        ↓
+las copias antiguas quedan identificadas como desactualizadas
+```
+
+No se aceptará como solución:
+
+- cambiar únicamente un Excel exportado;
+- editar una captura o PDF;
+- corregir el dato en dos aplicaciones por separado;
+- borrar el registro anterior sin rastro;
+- crear un registro nuevo sin relacionarlo con el equivocado.
+
+Las reglas exactas de autorización corresponden a `CAP-MAP-010`.
+
+---
+
+#### 12. Tratamiento de copias y operación manual
+
+| Medio actual                 | Uso permitido en el objetivo                   | Condición                                                        |
+| ---------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
+| WhatsApp                     | aviso, coordinación o evidencia complementaria | el estado principal debe quedar en la aplicación propietaria     |
+| Excel                        | carga controlada, análisis o contingencia      | debe indicar origen, fecha y versión; no se corrige aisladamente |
+| PDF                          | comprobante o versión cerrada                  | debe poder relacionarse con el registro que lo produjo           |
+| captura o foto               | evidencia observable                           | no reemplaza cantidades, estados o aprobaciones estructuradas    |
+| papel                        | contingencia o requisito físico                | debe existir regla posterior de registro y conciliación          |
+| llamada o instrucción verbal | coordinación inmediata                         | las decisiones relevantes deberán quedar registradas             |
+
+Esta tarea no elimina ningún medio actual. Define cuál dejará de considerarse principal cuando exista una fuente objetivo operativa y validada.
+
+---
+
+#### 13. Dudas pendientes reutilizadas
+
+No se crean preguntas nuevas. Las incertidumbres actuales ya están cubiertas en:
+
+`docs/plan-canonico/REGISTRO_VIVO_DE_PREGUNTAS_PENDIENTES.md`
+
+| Códigos             | Información que permiten confirmar                              |
+| ------------------- | --------------------------------------------------------------- |
+| `DAT-01` a `DAT-03` | disponibilidad y detalle histórico de ventas en Makos           |
+| `DAT-04` y `DAT-05` | lugar real donde se consultan existencias                       |
+| `DAT-06` y `DAT-07` | historial real de compras y recepciones                         |
+| `DAT-08` a `DAT-13` | remisiones, conteos, producción y hojas manuales                |
+| `DAT-14` y `DAT-15` | cálculo y conservación del pago laboral                         |
+| `DAT-16` y `DAT-17` | inspecciones y acciones de seguridad                            |
+| `DAT-18` y `DAT-19` | instrucciones de Gerencia y correcciones                        |
+| `DAT-20` a `DAT-27` | entregas, propinas, anulaciones, devoluciones, ajustes y mermas |
+
+Sus respuestas completarán el detalle AS-IS sin reabrir la decisión objetivo de esta tarea.
+
+---
+
+#### 14. Autocuestionario sencillo
+
+Para identificar el registro principal de una actividad, la persona que la realiza responderá sobre un caso reciente:
+
+1. ¿Dónde escribiste por primera vez lo que ocurrió?
+2. Si quedó equivocado, ¿en qué lugar lo corregiste?
+3. ¿Qué lugar miraste después para saber cuál era el dato correcto?
+4. ¿Enviaste una copia por WhatsApp, Excel, papel, foto o PDF?
+5. Si las copias muestran datos diferentes, ¿cuál usas para continuar trabajando?
+
+La respuesta deberá incluir un solo nombre concreto por pregunta: aplicación, archivo, papel, chat, proveedor o `NO EXISTE`.
+
+---
+
+#### 15. Evidencia técnica incorporada
+
+Esta propuesta aprovecha y no vuelve a auditar:
+
+- esquema y migraciones canónicas de Supabase en `vento-shell`;
+- tablas y funciones remotas autorizadas de `vento-os-dev`;
+- repositorios NEXO, FOGO, ORIGO, PULSO, NUMERA, VISO, ANIMA y PASS;
+- auditoría de Makos, Shopify, Rappi y ManyChat;
+- `TEC-05` a `TEC-09`, que ubican ventas, inventario, compras, producción y finanzas;
+- `TEC-14` a `TEC-16`, que identifican correcciones disponibles o ausentes;
+- `TEC-17`, que identifica exportaciones utilizables para auditoría;
+- `TEC-18`, que confirma contratos duplicados y deriva entre aplicaciones;
+- `TEC-19`, que documenta y cierra la función temporal retirada.
+
+La incorporación de `vento-numera` confirma que NUMERA consulta información central para análisis y también repite contratos de sedes, empleados, sesión y navegación.
+
+---
+
+#### 16. Lo que queda decidido
+
+1. Las 217 subcapacidades quedan cubiertas por fuente familiar más excepción.
+2. Se separan origen, registro principal, lugar de corrección, copia y consumidora.
+3. Las aplicaciones objetivo siguen la propiedad candidata de `CAP-MAP-004`.
+4. Las consumidoras de `CAP-MAP-005` no adquieren derecho a recrear el dato.
+5. Los resultados de `CAP-MAP-007` tendrán una única fuente principal objetivo.
+6. VISO gobernará maestros organizacionales y laborales administrativos.
+7. ANIMA gobernará asistencia y registros personales definidos.
+8. NEXO gobernará catálogo, existencias, movimientos, activos y traslado interno.
+9. ORIGO gobernará proveedores y compras.
+10. FOGO gobernará recetas, órdenes, lotes y resultados productivos.
+11. PULSO gobernará pedidos, ventas, caja, pagos aplicados y entrega al cliente.
+12. PASS gobernará identidad y acciones directas del cliente.
+13. NUMERA gobernará centros de costo, hechos económicos internos y análisis derivados, sin reemplazar hechos operativos.
+14. AURA continúa como fuente objetivo diferida y sin existencia actual.
+15. Los documentos siguen al hecho que respaldan.
+16. Los sistemas externos conservan la propiedad del hecho externo y VENTO conserva su referencia operativa.
+17. WhatsApp, Excel, PDF, capturas y papel no serán fuentes objetivo paralelas.
+18. La duplicación técnica confirmada no se corrige en esta fase documental.
+
+---
+
+#### 17. Lo que esta tarea no autoriza
+
+- crear o modificar tablas;
+- ejecutar migraciones;
+- cambiar Supabase;
+- desarrollar AURA;
+- retirar Makos, Shopify, Rappi, ManyChat, bancos o el sistema contable;
+- eliminar archivos, chats, papeles o evidencias actuales;
+- crear integraciones;
+- definir permisos;
+- reemplazar contratos TypeScript;
+- iniciar remodelación de código.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-008` podrá aprobarse cuando:
+
+- las 18 familias tengan fuente actual y objetivo documentados;
+- las 217 subcapacidades queden cubiertas mediante herencia y excepciones;
+- cada resultado tenga una sola fuente principal objetivo o una división explícita;
+- las fuentes externas se distingan de los registros internos;
+- NUMERA no reemplace los hechos operativos que analiza;
+- AURA permanezca diferida;
+- las copias manuales no se confundan con registros principales;
+- las correcciones ocurran en la fuente propietaria y conserven trazabilidad;
+- las dudas AS-IS reutilicen el registro vivo sin duplicarse;
+- no se anticipen tablas, integraciones, permisos ni pantallas;
+- `CAP-MAP-009` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+dónde nace hoy la información
+        ↓
+qué registro se considera válido
+        ↓
+dónde se corrige
+        ↓
+qué aplicación deberá gobernarla
+        ↓
+qué aplicaciones solo podrán consumirla
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-009
+— Identificar eventos e integraciones requeridos
+```
+
+`CAP-MAP-009` definirá qué hechos deben comunicarse entre fuentes propietarias, qué aplicación los emite, cuál los recibe y cómo evitar copias manuales o integraciones ambiguas.
+
+### ✅ CAP-MAP-009 — Identificar eventos e integraciones requeridos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** definición documental de comunicaciones empresariales
+**Dependencia anterior:** `CAP-MAP-008`
+**Continuidad reservada:** `CAP-MAP-010`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea define, para las **217 subcapacidades**:
+
+- qué hecho debe conocer otra aplicación o área;
+- cuál fuente propietaria confirma que el hecho ocurrió;
+- quién necesita recibirlo o consultarlo;
+- qué información mínima debe acompañarlo;
+- qué comunicación existe actualmente;
+- qué comunicación objetivo será necesaria;
+- qué debe quedar registrado cuando la entrega falla, se repite o llega tarde.
+
+La cobertura se construye mediante:
+
+```text
+comunicación base de la familia
++ excepción de la subcapacidad
+= evento o integración requerida
+```
+
+Esta tarea define contratos funcionales. No selecciona todavía API, webhook, cola, función, tabla, proveedor ni lenguaje de programación.
+
+---
+
+#### 2. Definiciones en lenguaje directo
+
+| Concepto         | Significado                                                                         |
+| ---------------- | ----------------------------------------------------------------------------------- |
+| Evento           | hecho que ya ocurrió y no es una orden, por ejemplo “recepción aceptada”            |
+| Solicitud        | petición para que otra capacidad evalúe o realice un trabajo                        |
+| Consulta         | lectura de información sin crear otra copia principal                               |
+| Integración      | mecanismo controlado para trasladar una solicitud, evento o consulta                |
+| Emisora          | fuente propietaria que confirma el hecho                                            |
+| Receptora        | aplicación que necesita actuar o actualizar una vista derivada                      |
+| Referencia común | identificador que permite reconocer el mismo pedido, producto, persona o movimiento |
+| Entrega manual   | traslado por persona mediante chat, papel, captura, llamada o archivo               |
+| Confirmación     | constancia de que la receptora aceptó, rechazó o dejó pendiente la comunicación     |
+
+Un evento se redactará en pasado:
+
+```text
+pedido aceptado
+recepción confirmada
+lote terminado
+pago aplicado
+entrega fallida
+```
+
+No se usarán nombres ambiguos como `actualizarTodo`, `sincronizarDatos` o `procesar`.
+
+---
+
+#### 3. Tipos funcionales de comunicación
+
+| Tipo           | Cuándo se usa                                         | Ejemplo                        |
+| -------------- | ----------------------------------------------------- | ------------------------------ |
+| `EVENTO`       | otra aplicación debe reaccionar a un hecho confirmado | lote liberado                  |
+| `SOLICITUD`    | todavía falta que otra capacidad acepte o ejecute     | solicitud de abastecimiento    |
+| `CONSULTA`     | solo se necesita leer el estado vigente               | disponibilidad de producto     |
+| `IMPORTACIÓN`  | la fuente entrega un archivo estructurado             | Excel de ventas Makos          |
+| `EXPORTACIÓN`  | se genera una copia para auditoría o tercero          | PDF de orden                   |
+| `NOTIFICACIÓN` | se informa a una persona sin cambiar la fuente        | turno publicado                |
+| `CONFIRMACIÓN` | se devuelve aceptación, rechazo o resultado           | remisión recibida parcialmente |
+
+Una notificación no sustituye el evento ni demuestra por sí sola que la receptora procesó la información.
+
+---
+
+#### 4. Estados de una comunicación
+
+| Estado                 | Significado                                           |
+| ---------------------- | ----------------------------------------------------- |
+| `CREADA`               | la fuente registró el hecho o solicitud               |
+| `PENDIENTE_DE_ENTREGA` | todavía no ha llegado al destino                      |
+| `ENTREGADA`            | el destino la recibió                                 |
+| `ACEPTADA`             | el destino pudo aplicarla o continuar                 |
+| `RECHAZADA`            | el destino no la aceptó y dejó motivo                 |
+| `DUPLICADA`            | ya había sido recibida y no debe aplicarse otra vez   |
+| `FALLIDA`              | ocurrió un error de comunicación o procesamiento      |
+| `POR_CONCILIAR`        | existe diferencia entre origen y destino              |
+| `CANCELADA`            | la solicitud se retiró antes de producir el resultado |
+
+El estado técnico exacto se diseñará después, pero la operación deberá poder distinguir estas condiciones.
+
+---
+
+#### 5. Reglas obligatorias
+
+1. Solo la fuente propietaria definida en `CAP-MAP-008` podrá emitir la versión oficial de un hecho.
+2. La receptora no cambiará el hecho original; generará su propio resultado relacionado.
+3. Cada comunicación tendrá una referencia estable al registro de origen.
+4. Recibir dos veces la misma comunicación no deberá duplicar ventas, pagos, movimientos, lotes o gastos.
+5. Un fallo en la receptora no borrará ni alterará silenciosamente el registro de origen.
+6. Toda entrega manual crítica deberá poder conciliarse después.
+7. La comunicación enviará únicamente la información necesaria.
+8. Los secretos, tokens y credenciales nunca formarán parte del contenido empresarial.
+9. Los datos personales se limitarán según finalidad y aplicación receptora.
+10. NUMERA consumirá hechos confirmados; no corregirá ventas, compras, inventario o producción mediante una integración inversa.
+11. SHELL podrá coordinar acceso o navegación, pero no retransmitirá todos los datos empresariales por defecto.
+12. AURA no tendrá integraciones ejecutables mientras siga siendo una idea.
+13. Una integración externa se validará separadamente por proveedor y contrato.
+14. Que dos aplicaciones consulten la misma base de datos no elimina la necesidad de definir propiedad y responsabilidades.
+15. Reintentos, idempotencia física, colas y tiempos técnicos permanecen reservados para diseño de integración.
+
+---
+
+#### 6. Registro mínimo por comunicación
+
+| Campo                | Contenido                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| Código               | identificador documental de la comunicación                                        |
+| Hecho o solicitud    | nombre concreto en pasado o petición clara                                         |
+| Tipo                 | evento, solicitud, consulta, importación, exportación, notificación o confirmación |
+| Emisora              | fuente propietaria                                                                 |
+| Receptora            | aplicación, sistema externo o función humana                                       |
+| Referencia de origen | identificador del registro principal                                               |
+| Momento              | cuándo ocurrió el hecho                                                            |
+| Contexto             | sede, área, pedido, periodo u otro alcance necesario                               |
+| Contenido mínimo     | datos indispensables para actuar                                                   |
+| Resultado esperado   | qué debe producir la receptora                                                     |
+| Confirmación         | aceptación, rechazo, duplicado, fallo o conciliación                               |
+| Situación actual     | automática, manual, inexistente o por confirmar                                    |
+| Duda pendiente       | código del registro vivo, si aplica                                                |
+
+---
+
+#### 7. Comunicaciones AS-IS confirmadas
+
+| Comunicación actual                    | Forma observada                                                                | Clasificación                    |
+| -------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------- |
+| ventas de Makos hacia PULSO            | carga manual de Excel y mapeo de productos                                     | `IMPORTACIÓN_MANUAL`             |
+| pedidos de Rappi hacia la operación    | traslado manual observado                                                      | `ENTREGA_MANUAL`                 |
+| pedidos de ManyChat hacia la operación | traslado manual observado                                                      | `ENTREGA_MANUAL`                 |
+| pedidos de Shopify para Vaila Vainilla | plataforma externa y operación posterior sin integración automática comprobada | `EXTERNA_MANUAL_O_NO_CONFIRMADA` |
+| solicitudes y remisiones               | Excel, capturas, WhatsApp, papel y funciones parciales de NEXO                 | `DISTRIBUIDA`                    |
+| instrucciones de producción            | tablas, capturas, llamadas, fotos y mensajes                                   | `DISTRIBUIDA`                    |
+| pago digital                           | intención, webhook, eventos y conciliación en el dominio de pagos              | `AUTOMÁTICA_CONFIRMADA`          |
+| horarios y asistencia                  | VISO y ANIMA comparten registros laborales y de asistencia                     | `INTERNA_CONFIRMADA`             |
+| consultas empresariales                | varias aplicaciones leen directamente tablas centrales                         | `CONSULTA_COMPARTIDA`            |
+| soporte tecnológico                    | WhatsApp o comunicación verbal                                                 | `ENTREGA_MANUAL`                 |
+
+No se encontró integración automática con Shopify, Rappi o ManyChat. La referencia visual “tipo Rappi” no es una conexión con Rappi.
+
+---
+
+#### 8. Catálogo objetivo de eventos internos
+
+| Código         | Evento o solicitud                                     | Emisora                           | Receptora principal                                   | Resultado esperado                                       |
+| -------------- | ------------------------------------------------------ | --------------------------------- | ----------------------------------------------------- | -------------------------------------------------------- |
+| `EVT-ORG-001`  | sede, área o estructura organizacional cambiada        | VISO                              | aplicaciones autorizadas                              | contexto organizacional vigente                          |
+| `EVT-IAM-001`  | acceso laboral creado, cambiado, suspendido o retirado | VISO                              | SHELL y aplicación afectada                           | acceso alineado con la decisión                          |
+| `EVT-WRK-001`  | turno publicado o corregido                            | VISO                              | ANIMA y trabajador                                    | turno visible con versión vigente                        |
+| `EVT-ATT-001`  | marcación registrada                                   | ANIMA                             | VISO                                                  | asistencia disponible para revisión                      |
+| `EVT-ATT-002`  | novedad de asistencia identificada                     | ANIMA o VISO según origen         | VISO y responsable autorizado                         | novedad revisada sin cambiar la marcación original       |
+| `EVT-CAT-001`  | producto o presentación publicada                      | NEXO                              | ORIGO, FOGO, PULSO y NUMERA                           | misma identidad de producto disponible                   |
+| `EVT-REC-001`  | receta o versión productiva publicada                  | FOGO                              | NEXO y NUMERA                                         | receta referenciable para consumo y costo                |
+| `EVT-PUR-001`  | solicitud de compra aprobada                           | ORIGO                             | responsable de compra                                 | orden o rechazo relacionado                              |
+| `EVT-PUR-002`  | orden de compra emitida o cambiada                     | ORIGO                             | recepción, NEXO y NUMERA                              | expectativa de recepción y obligación identificadas      |
+| `EVT-PUR-003`  | recepción de proveedor aceptada, parcial o rechazada   | ORIGO                             | NEXO y NUMERA                                         | movimiento de inventario y efecto económico relacionados |
+| `EVT-INV-001`  | existencia modificada por movimiento confirmado        | NEXO                              | FOGO, ORIGO, PULSO y NUMERA                           | disponibilidad y valoración derivada actualizadas        |
+| `EVT-INV-002`  | conteo produjo una diferencia                          | NEXO                              | responsable autorizado y NUMERA cuando afecte costo   | diferencia revisable sin ajuste automático               |
+| `EVT-TRF-001`  | traslado interno despachado                            | NEXO                              | lugar receptor                                        | carga pendiente de recepción                             |
+| `EVT-TRF-002`  | traslado recibido, parcial o rechazado                 | NEXO                              | origen y NUMERA cuando aplique                        | remisión conciliada                                      |
+| `EVT-PRD-001`  | necesidad de producción confirmada                     | aplicación que origina la demanda | FOGO                                                  | solicitud productiva trazable                            |
+| `EVT-PRD-002`  | orden o lote productivo iniciado                       | FOGO                              | NEXO y responsables autorizados                       | insumos y ejecución relacionados                         |
+| `EVT-PRD-003`  | lote terminado, retenido, liberado o rechazado         | FOGO                              | NEXO y NUMERA                                         | producto aceptado o excepción registrada                 |
+| `EVT-SAL-001`  | pedido aceptado o modificado                           | PULSO                             | preparación, NEXO y tercero de entrega cuando aplique | pedido operativo vigente                                 |
+| `EVT-SAL-002`  | venta cerrada, anulada o corregida                     | PULSO                             | NEXO y NUMERA                                         | efecto de existencias y económico relacionado            |
+| `EVT-PAY-001`  | pago confirmado, rechazado o reversado                 | PULSO o dominio de pagos          | pedido, caja, PASS y NUMERA según finalidad           | estado financiero del pedido conciliado                  |
+| `EVT-CASH-001` | cierre de caja realizado con diferencia                | PULSO                             | NUMERA y responsable autorizado                       | cierre económico disponible para conciliación            |
+| `EVT-CUS-001`  | identidad o preferencia autorizada cambió              | PASS                              | PULSO                                                 | atención actualizada con datos mínimos                   |
+| `EVT-DEL-001`  | pedido entregado a mensajería                          | PULSO                             | cliente, responsable y NUMERA cuando aplique          | custodia externa identificada                            |
+| `EVT-DEL-002`  | entrega confirmada, fallida, parcial o devuelta        | PULSO                             | pedido, cliente, PASS y NUMERA según finalidad        | pedido cerrado o acción pendiente                        |
+| `EVT-ECO-001`  | hecho económico operativo confirmado                   | aplicación propietaria del hecho  | NUMERA                                                | clasificación y análisis sin recrear el origen           |
+| `EVT-ANA-001`  | indicador o análisis publicado                         | NUMERA                            | Gerencia y aplicaciones consumidoras                  | decisión informada sin alterar hechos                    |
+| `EVT-DOC-001`  | documento vigente, reemplazado o archivado             | aplicación propietaria del hecho  | consumidoras autorizadas                              | versión documental correcta                              |
+| `EVT-INC-001`  | incidente operativo o tecnológico declarado            | aplicación o área afectada        | responsable de continuidad o soporte                  | impacto, alternativa y seguimiento                       |
+| `EVT-INC-002`  | servicio recuperado y conciliado                       | aplicación afectada               | responsables y consumidoras impactadas                | operación normal y pendientes conocidos                  |
+
+Estos códigos identifican necesidades funcionales. No son nombres definitivos de tablas, topics, endpoints o funciones.
+
+---
+
+#### 9. Flujo objetivo de compras, inventario y producción
+
+```text
+necesidad de abastecimiento
+        ↓
+ORIGO aprueba y emite compra
+        ↓
+ORIGO confirma recepción real
+        ↓
+NEXO registra el efecto en existencias
+        ↓
+FOGO consulta disponibilidad y ejecuta producción
+        ↓
+FOGO confirma lote y resultado
+        ↓
+NEXO registra producto aceptado
+        ↓
+NUMERA consume efectos económicos confirmados
+```
+
+Reglas:
+
+- una orden de compra no aumenta existencias;
+- una recepción rechazada no crea entrada aceptada;
+- una orden de producción no equivale a producto terminado;
+- un lote retenido no queda disponible para venta;
+- NUMERA no crea movimientos para cuadrar un informe.
+
+---
+
+#### 10. Flujo objetivo de pedido, venta, pago y entrega
+
+```text
+solicitud interna o externa
+        ↓
+PULSO acepta el pedido
+        ↓
+preparación y disponibilidad reciben la versión vigente
+        ↓
+pago se confirma o rechaza
+        ↓
+PULSO cierra la venta
+        ↓
+NEXO recibe el efecto de inventario
+        ↓
+entrega confirma resultado
+        ↓
+NUMERA consume el hecho económico
+```
+
+Reglas:
+
+- una solicitud externa no es venta hasta ser aceptada internamente;
+- un pago recibido dos veces no se aplica dos veces;
+- una modificación del pedido conserva versión y referencia;
+- la entrega fallida no se registra como entregada;
+- anulación, devolución y compensación son resultados diferentes;
+- el estado externo y el interno deberán poder conciliarse.
+
+---
+
+#### 11. Integraciones externas requeridas o candidatas
+
+| Sistema externo    | Dirección funcional                | Situación actual                                | Necesidad objetivo                                                              |
+| ------------------ | ---------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| Makos              | Makos → PULSO/NUMERA               | Excel manual                                    | conservar transición controlada, detalle y conciliación mientras siga vigente   |
+| Rappi              | Rappi ↔ PULSO                      | traslado manual; sin API comprobada             | recibir pedido con referencia externa y devolver solo estados permitidos        |
+| ManyChat           | ManyChat ↔ PULSO                   | traslado manual; sin integración comprobada     | convertir solicitud autorizada en pedido trazable y comunicar resultado mínimo  |
+| Shopify            | Shopify ↔ PULSO                    | operación externa sin automatización comprobada | recibir pedido de Vaila Vainilla y conciliar pago, despacho y estado            |
+| mensajería         | PULSO ↔ proveedor de entrega       | mensajes o comprobantes según operación         | asignar custodia y recibir entrega, fallo o devolución                          |
+| banco              | banco → NUMERA                     | medio externo actual                            | importar o consultar movimientos para conciliación sin alterar el banco         |
+| sistema contable   | sistema contable ↔ NUMERA/VISO     | alcance exacto por confirmar                    | intercambiar efectos económicos o laborales aprobados sin duplicar contabilidad |
+| proveedor de pagos | proveedor ↔ dominio de pagos/PULSO | integración confirmada                          | conservar intención, webhook, conciliación, reversión y trazabilidad            |
+
+Cada integración externa requerirá posteriormente confirmar contrato, titularidad, alcance, costo, ambiente de pruebas, límites y tratamiento de datos.
+
+---
+
+#### 12. Contenido mínimo común
+
+Toda comunicación estructurada deberá poder relacionar:
+
+| Dato                          | Regla                                         |
+| ----------------------------- | --------------------------------------------- |
+| identificador de comunicación | único para reconocer duplicados               |
+| tipo y versión                | permite interpretar el contenido correcto     |
+| aplicación de origen          | fuente propietaria                            |
+| registro de origen            | identificador estable del hecho               |
+| momento del hecho             | diferente del momento de entrega              |
+| contexto empresarial          | sede, área, periodo o pedido cuando aplique   |
+| versión del registro          | identifica correcciones y cambios             |
+| relación anterior             | evento, solicitud o versión que la originó    |
+| contenido mínimo              | únicamente datos necesarios para la receptora |
+| clasificación de sensibilidad | indica restricciones posteriores de acceso    |
+
+El correo, teléfono, dirección, documento personal o información bancaria solo se incluirán cuando la receptora los necesite para la finalidad autorizada.
+
+---
+
+#### 13. Fallos, duplicados y conciliación
+
+Cuando una comunicación no termine correctamente:
+
+```text
+el origen conserva el hecho confirmado
+        ↓
+la entrega queda pendiente, fallida o rechazada
+        ↓
+no se aplica otra vez si ya fue aceptada
+        ↓
+se reintenta o revisa según diseño posterior
+        ↓
+origen y destino se concilian
+```
+
+Debe poder distinguirse:
+
+1. la fuente nunca creó el hecho;
+2. el hecho existe, pero no se envió;
+3. se envió, pero el destino no lo recibió;
+4. el destino lo recibió y lo rechazó;
+5. el destino lo aceptó, pero no confirmó;
+6. llegó repetido;
+7. origen y destino muestran resultados diferentes.
+
+`DIF-06` conserva para diseño técnico la selección de reintentos e idempotencia. Esta tarea fija el comportamiento empresarial esperado, no su implementación.
+
+---
+
+#### 14. Operación manual y contingencia
+
+Una entrega manual podrá permanecer temporalmente cuando:
+
+- la integración automática no exista;
+- el proveedor externo no ofrezca acceso adecuado;
+- se esté ejecutando una transición controlada;
+- exista una contingencia documentada.
+
+Cada entrega manual crítica deberá indicar:
+
+- quién la preparó;
+- de qué registro salió;
+- fecha y periodo;
+- qué archivo, papel o mensaje se entregó;
+- quién lo recibió;
+- qué resultado produjo;
+- cómo se detectan filas faltantes o repetidas.
+
+WhatsApp, llamadas y capturas seguirán siendo medios de coordinación, pero el estado final deberá quedar en la fuente propietaria.
+
+---
+
+#### 15. Dudas y comprobaciones
+
+No se crean preguntas nuevas para trabajadores ni para el usuario.
+
+La evidencia suficiente ya está distribuida en:
+
+- `TEC-10` a `TEC-13`: estado real de Makos, Shopify, Rappi y ManyChat;
+- `DAT-01` a `DAT-03`: capacidad de exportación e historia disponible en Makos;
+- `DAT-08` a `DAT-13`: remisiones, producción y registros manuales;
+- `DAT-20` y `DAT-21`: despacho y entrega de Vaila Vainilla;
+- `DAT-23` a `DAT-27`: anulaciones, devoluciones, compensaciones, ajustes y mermas;
+- `DIF-06`: mecanismo técnico de reintentos e idempotencia;
+- `DIF-11`: separación entre traslado interno y entrega al cliente;
+- `DIF-13`: separación entre hechos operativos y análisis consolidado.
+
+Las preguntas pendientes completarán el detalle AS-IS. No impiden definir qué comunicación será necesaria entre las fuentes objetivo.
+
+---
+
+#### 16. Lo que queda decidido
+
+1. Las 217 subcapacidades quedan cubiertas por comunicación familiar más excepción.
+2. Se separan eventos, solicitudes, consultas, archivos, notificaciones y confirmaciones.
+3. La fuente propietaria es la única emisora oficial del hecho.
+4. Las receptoras producen resultados relacionados sin modificar el origen.
+5. Toda comunicación conserva referencia estable, momento, versión y contexto.
+6. Los duplicados no pueden duplicar efectos empresariales.
+7. Compras, recepción e inventario son hechos diferentes.
+8. Orden, lote y producto liberado son hechos diferentes.
+9. Solicitud externa, pedido interno, venta, pago y entrega son hechos diferentes.
+10. Traslado interno pertenece a NEXO y entrega al cliente pertenece a PULSO.
+11. Los hechos operativos permanecen en sus aplicaciones; NUMERA recibe eventos para análisis.
+12. Makos continúa mediante importación controlada durante la transición.
+13. Shopify, Rappi y ManyChat no se declaran integrados automáticamente en el AS-IS.
+14. Las integraciones externas futuras conservarán la referencia del proveedor.
+15. AURA no recibe integraciones mientras siga sin diseño e implementación.
+16. La operación manual deberá ser conciliable.
+17. Los fallos no se ocultarán ni corregirán alterando otra fuente.
+18. El mecanismo técnico se diseñará después de aprobar contratos funcionales.
+
+---
+
+#### 17. Lo que esta tarea no autoriza
+
+- crear APIs, webhooks, colas, Edge Functions o trabajos programados;
+- modificar tablas, migraciones o Supabase;
+- desplegar integraciones con proveedores;
+- solicitar credenciales, tokens o secretos;
+- retirar Makos o cambiar plataformas externas;
+- desarrollar AURA;
+- definir permisos;
+- elegir tiempos de reintento;
+- implementar sincronización;
+- modificar contratos TypeScript.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-009` podrá aprobarse cuando:
+
+- las 18 familias y 217 subcapacidades queden cubiertas;
+- cada comunicación tenga emisora, receptora y resultado esperado;
+- se distingan evento, solicitud, consulta, archivo, notificación y confirmación;
+- compras, inventario, producción, ventas, pagos y entregas no compartan hechos ambiguos;
+- las integraciones externas reflejen su estado real actual;
+- Makos, Shopify, Rappi y ManyChat no se presenten como automatizados sin evidencia;
+- los duplicados no puedan producir efectos repetidos;
+- los fallos queden visibles y conciliables;
+- NUMERA no se convierta en fuente de hechos operativos;
+- no se anticipen mecanismos técnicos ni permisos;
+- no se creen preguntas duplicadas;
+- `CAP-MAP-010` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+hecho confirmado por su fuente
+        ↓
+evento o solicitud con referencia estable
+        ↓
+receptora produce su propio resultado
+        ↓
+aceptación, rechazo, duplicado o fallo visible
+        ↓
+conciliación entre origen y destino
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-010
+— Identificar permisos y controles de autorización requeridos
+```
+
+`CAP-MAP-010` definirá quién puede consultar, crear, cambiar, aprobar, rechazar o corregir cada resultado y cada comunicación, sin convertir cargos humanos en permisos técnicos ambiguos.
+
+
+### ✅ CAP-MAP-010 — Identificar permisos y controles de autorización requeridos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** definición documental de controles empresariales
+**Dependencia anterior:** `CAP-MAP-009`
+**Continuidad reservada:** `CAP-MAP-011`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea define, para las **217 subcapacidades**:
+
+- qué acciones necesitan autorización diferente;
+- qué alcance territorial, organizacional o personal limita cada acción;
+- cuándo basta con ejecutar el trabajo asignado;
+- cuándo otra persona debe aprobar, rechazar o revisar;
+- qué acciones sensibles exigen trazabilidad reforzada;
+- qué ocurre cuando el equipo disponible no permite separar funciones;
+- cómo se relacionan las capacidades empresariales con el modelo de autorización ya aprobado.
+
+La cobertura se construye mediante:
+
+```text
+control base de la familia
++ riesgo de la acción
++ excepción de la subcapacidad
+= autorización requerida
+```
+
+Esta tarea no crea un segundo catálogo de permisos. Reutiliza el catálogo canónico, las matrices `AUTH-RBAC-001` a `AUTH-RBAC-028`, los contratos de recurso y el ADR de autorización ya aprobados.
+
+---
+
+#### 2. Diferencias que deben conservarse
+
+| Concepto           | Pregunta que responde                                              |
+| ------------------ | ------------------------------------------------------------------ |
+| Función humana     | ¿Qué trabajo realiza la persona?                                   |
+| Rol base           | ¿Qué responsabilidades administrativas tiene normalmente?          |
+| Rol operativo      | ¿Qué función está desempeñando durante una operación concreta?     |
+| Permiso            | ¿Qué acción exacta puede solicitar?                                |
+| Alcance            | ¿Sobre qué sedes, áreas, personas o registros puede hacerlo?       |
+| Contexto           | ¿Está trabajando en el turno, lugar y dispositivo adecuados?       |
+| Aprobación         | ¿Otra persona debe aceptar antes de que el resultado tenga efecto? |
+| Revisión posterior | ¿Otra persona debe comprobar después lo realizado?                 |
+| Propiedad del dato | ¿Qué aplicación gobierna el resultado?                             |
+
+No equivalen:
+
+```text
+ser gerente = poder hacer cualquier cosa
+tener check-in = recibir todos los permisos
+usar una caja = convertirse en cajero autorizado
+crear un registro = poder aprobarlo
+ver un dato = poder cambiarlo
+ser custodio = poder dar de baja un activo
+```
+
+---
+
+#### 3. Acciones empresariales separadas
+
+Cada subcapacidad utilizará únicamente las acciones que necesite:
+
+| Acción             | Significado sencillo                               |
+| ------------------ | -------------------------------------------------- |
+| `CONSULTAR`        | ver el estado permitido                            |
+| `CREAR`            | registrar un elemento nuevo                        |
+| `SOLICITAR`        | pedir que otra persona o capacidad actúe           |
+| `EJECUTAR`         | realizar el trabajo autorizado                     |
+| `CAMBIAR_BORRADOR` | modificar antes de publicar, aprobar o cerrar      |
+| `PUBLICAR`         | convertir un borrador en versión operativa         |
+| `APROBAR`          | aceptar que una solicitud produzca efecto          |
+| `RECHAZAR`         | impedir el efecto dejando motivo                   |
+| `CORREGIR`         | reemplazar un dato vigente conservando el anterior |
+| `CANCELAR`         | detener un trabajo o solicitud todavía reversible  |
+| `ANULAR`           | dejar sin efecto un resultado ya confirmado        |
+| `RECIBIR`          | aceptar custodia, mercancía o responsabilidad      |
+| `CONCILIAR`        | comparar fuentes y registrar diferencias           |
+| `EXPORTAR`         | producir una copia controlada                      |
+| `ADMINISTRAR`      | cambiar reglas, catálogos, accesos o configuración |
+
+Si el catálogo canónico ya contiene el permiso exacto, se reutilizará. Si falta una acción empresarial necesaria, se registrará como brecha para `CAP-MAP-014` y una futura versión del catálogo; no se inventará un código aislado dentro de esta tarea.
+
+---
+
+#### 4. Decisión de autorización canónica
+
+Una acción solo podrá autorizarse cuando se cumpla:
+
+```text
+persona activa
++ permiso canónico exacto
++ carril base u operativo compatible
++ alcance válido
++ recurso real resuelto
++ contexto requerido
++ dispositivo permitido cuando aplique
++ ausencia de denegación
+= acción autorizable
+```
+
+La autorización será denegada por defecto cuando:
+
+- falte el permiso;
+- el recurso no pueda ubicarse en un alcance válido;
+- la sede o área no corresponda;
+- el rol operativo no esté vigente;
+- el turno o check-in sean obligatorios y no existan;
+- el dispositivo no esté habilitado;
+- exista una denegación individual o estructural;
+- la acción necesite aprobación y todavía no la tenga;
+- el estado del registro ya no permita esa acción.
+
+---
+
+#### 5. Modalidades ya aprobadas
+
+| Modalidad              | Uso en esta tarea                                                       |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `BASE_ONLY`            | administración que no depende de estar operando un turno                |
+| `OPERATIONAL_ONLY`     | ejecución dentro de función, lugar y contexto operativo válidos         |
+| `BASE_OR_OPERATIONAL`  | cualquiera de los dos carriles puede autorizar según sus propias reglas |
+| `BASE_AND_OPERATIONAL` | necesita simultáneamente componente administrativo y contexto operativo |
+
+Reglas:
+
+1. El carril base no otorga autoridad operativa automática.
+2. El carril operativo no crea alcance global.
+3. El check-in demuestra presencia o contexto; no concede permisos por sí mismo.
+4. El dispositivo compartido limita acciones, pero nunca reemplaza a la persona.
+5. APP-REVIEW, pruebas y territorios aislados permanecen excluidos salvo autorización específica.
+6. Ninguna tarea de este mapa modifica las matrices ya aprobadas.
+
+---
+
+#### 6. Niveles de control
+
+| Nivel                       | Control requerido                                                      |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `EJECUCIÓN_DIRECTA`         | la persona autorizada realiza y queda identificada                     |
+| `APROBACIÓN_PREVIA`         | otra autoridad acepta antes de producir efecto                         |
+| `DOBLE_CONTROL`             | quien ejecuta no puede ser quien aprueba                               |
+| `REVISIÓN_POSTERIOR`        | otra persona revisa después dentro de un plazo definido posteriormente |
+| `REAUTENTICACIÓN`           | se vuelve a comprobar identidad para una acción sensible               |
+| `JUSTIFICACIÓN_OBLIGATORIA` | debe registrarse motivo y soporte                                      |
+| `BLOQUEO`                   | la acción no está disponible hasta resolver una condición              |
+
+Una misma acción puede combinar controles.
+
+---
+
+#### 7. Regla para equipos pequeños
+
+Vento no siempre tendrá dos personas disponibles con la misma competencia. La falta de personal no eliminará el control.
+
+Cuando una separación normal no pueda cumplirse:
+
+```text
+misma persona ejecuta excepcionalmente
+        ↓
+declara motivo de la excepción
+        ↓
+se conserva evidencia antes y después
+        ↓
+otra autoridad realiza revisión posterior
+        ↓
+la excepción queda visible en auditoría
+```
+
+No se permitirá excepción silenciosa para:
+
+- creación o ampliación de accesos propios;
+- eliminación de evidencia de auditoría;
+- modificación oculta de ventas, pagos o inventario;
+- pago a sí mismo;
+- aprobación de una baja de activo bajo custodia propia;
+- cambio directo de datos bancarios sin comprobación;
+- acceso indiscriminado a documentos sensibles.
+
+---
+
+#### 8. Mapa base de control por familia
+
+| Familia                           | Ejecución ordinaria                                    | Acciones de control reforzado                                                     |
+| --------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| `CAP-01` Dirección y gobierno     | consulta, creación de borradores y seguimiento         | publicar política, aprobar decisión, aceptar riesgo y cambiar estructura          |
+| `CAP-02` Personas y trabajo       | administrar información asignada y registrar novedades | contratar, retirar, cambiar pago, publicar horario y corregir información laboral |
+| `CAP-03` Seguridad y salud        | registrar inspección, incidente o acción               | cerrar hallazgo crítico, aceptar riesgo o declarar cumplimiento                   |
+| `CAP-04` Productos y oferta       | consultar y preparar catálogo o receta                 | publicar producto, receta, precio, promoción o cambio de vigencia                 |
+| `CAP-05` Compras y proveedores    | solicitar, cotizar, ordenar y recibir según función    | aprobar compra, cambiar proveedor, aceptar diferencia y devolver                  |
+| `CAP-06` Inventario y movimientos | recibir, mover, contar y despachar según contexto      | ajustar saldo, corregir movimiento, aprobar remisión y registrar merma            |
+| `CAP-07` Activos                  | registrar, custodiar, contar y mantener                | transferir custodia, cambiar condición, aprobar reparación o dar de baja          |
+| `CAP-08` Producción               | planear y ejecutar orden o lote                        | publicar receta, liberar lote, aceptar desviación y corregir rendimiento          |
+| `CAP-09` Venta y servicio         | crear pedido, preparar, cobrar y cerrar según función  | descuentos, anulaciones, devoluciones, compensaciones y corrección de pago        |
+| `CAP-10` Clientes                 | atender solicitud y consultar datos mínimos            | cambiar identidad, consentimiento, saldo, beneficio o información sensible        |
+| `CAP-11` Despacho y entrega       | preparar, custodiar, transportar y confirmar           | cambiar destino, aceptar pérdida, cerrar entrega fallida o devolución             |
+| `CAP-12` Finanzas                 | registrar, clasificar, consultar y conciliar           | aprobar pago, cambiar cuenta, cerrar periodo y modificar información económica    |
+| `CAP-13` Instalaciones            | reportar, inspeccionar y ejecutar mantenimiento        | aprobar gasto, cerrar riesgo o cambiar condición crítica                          |
+| `CAP-14` Mercadeo                 | preparar contenido o propuesta                         | publicar, activar promoción, comprometer presupuesto o usar datos personales      |
+| `CAP-15` Tecnología               | reportar, diagnosticar y ejecutar soporte asignado     | conceder acceso, cambiar configuración crítica, desplegar o borrar información    |
+| `CAP-16` Información y documentos | crear, consultar y archivar según responsabilidad      | publicar versión, entregar información sensible o eliminar según retención        |
+| `CAP-17` Datos y análisis         | consultar, calcular y documentar                       | cambiar definición, publicar indicador o certificar calidad                       |
+| `CAP-18` Continuidad              | reportar incidente y ejecutar alternativa asignada     | activar contingencia, aceptar pérdida, restaurar y cerrar conciliación            |
+
+---
+
+#### 9. Separaciones obligatorias o preferidas
+
+| Caso                                       | Quien inicia o ejecuta   | Quien controla                                     | Nivel                |
+| ------------------------------------------ | ------------------------ | -------------------------------------------------- | -------------------- |
+| alta o cambio de proveedor                 | Compras                  | responsable autorizado distinto                    | `DOBLE_CONTROL`      |
+| solicitud y aprobación de compra           | solicitante              | aprobador según alcance                            | `DOBLE_CONTROL`      |
+| recepción con diferencia                   | receptor                 | responsable de compra o sede                       | `APROBACIÓN_PREVIA`  |
+| conteo y ajuste de inventario              | contador                 | aprobador del ajuste                               | `DOBLE_CONTROL`      |
+| remisión despachada y recibida             | origen                   | receptor del destino                               | `DOBLE_CONTROL`      |
+| ejecución y liberación de lote             | producción               | responsable de calidad o supervisor cuando aplique | `DOBLE_CONTROL`      |
+| venta y anulación                          | cajero                   | responsable autorizado                             | `DOBLE_CONTROL`      |
+| devolución o compensación                  | persona que atiende      | responsable autorizado                             | `APROBACIÓN_PREVIA`  |
+| corrección de medio de pago                | caja                     | Contabilidad o responsable autorizado              | `DOBLE_CONTROL`      |
+| preparación y aprobación de pago           | Contabilidad             | Gerencia o titular autorizado                      | `DOBLE_CONTROL`      |
+| registro y conciliación bancaria           | registrador              | revisor autorizado                                 | `REVISIÓN_POSTERIOR` |
+| cálculo y aprobación de pago laboral       | Contabilidad o proveedor | Gerencia autorizada                                | `DOBLE_CONTROL`      |
+| solicitud y concesión de acceso            | solicitante o jefe       | administrador autorizado diferente                 | `DOBLE_CONTROL`      |
+| cambio de permisos propios                 | persona afectada         | autoridad distinta                                 | `BLOQUEO`            |
+| custodia y baja de activo                  | custodio                 | aprobador de baja distinto                         | `DOBLE_CONTROL`      |
+| autoría y publicación de documento crítico | autor                    | aprobador documental                               | `DOBLE_CONTROL`      |
+| cambio técnico y paso a producción         | ejecutor técnico         | aprobador del cambio                               | `DOBLE_CONTROL`      |
+
+Cuando el control figure como preferido y no haya dos personas disponibles, aplicará la excepción documentada del apartado 7. Los bloqueos expresos no admiten autocontrol.
+
+---
+
+#### 10. Controles específicos: personas y seguridad
+
+1. Cada trabajador podrá consultar únicamente su información propia cuando el contrato `OWN` lo permita.
+2. Consultar documentos o información de otra persona requerirá permiso y finalidad laboral.
+3. Crear, cambiar o retirar una relación laboral será una acción diferente.
+4. Publicar o corregir un horario conservará versión y responsable.
+5. La hora original de una marcación no se reemplazará silenciosamente.
+6. Una corrección de asistencia, si se diseña, distinguirá marcación observada, explicación y decisión administrativa.
+7. El cálculo, aprobación y pago laboral serán controles separados.
+8. Los incidentes de seguridad y salud tendrán visibilidad limitada por sensibilidad.
+9. Cerrar una acción correctiva requerirá evidencia, no solo cambiar su estado.
+10. Declarar cumplimiento no será una acción operativa ordinaria.
+
+`TEC-14` y `TEC-15` se conservan como evidencia: horarios pueden editarse en VISO y ANIMA; la hora de asistencia no tiene corrección comprobada.
+
+---
+
+#### 11. Controles específicos: compras, inventario, activos y producción
+
+1. Solicitar, aprobar, ordenar, recibir y devolver una compra serán acciones separadas.
+2. Quien recibe podrá rechazar o registrar diferencia dentro de su alcance, pero no ampliar la orden por su cuenta.
+3. Un ajuste de inventario requerirá motivo, referencia al conteo o hecho y autorización independiente.
+4. La merma conservará producto, cantidad, lugar, momento, causa y responsable.
+5. Despachar una remisión no permitirá confirmarla como recibida desde el mismo lado.
+6. Cambiar origen o destino exigirá volver a evaluar ambos alcances.
+7. El custodio de un activo no podrá aprobar su propia baja.
+8. La reparación externa no autorizará a cambiar el maestro del activo.
+9. Crear un lote y liberarlo serán acciones distintas cuando exista control de calidad.
+10. Una desviación de receta o rendimiento requerirá justificación y revisión.
+
+Las respuestas `OPE-04` a `OPE-06` completarán quién realiza hoy estas autorizaciones sin alterar el control objetivo.
+
+---
+
+#### 12. Controles específicos: ventas, clientes y entregas
+
+1. Crear, modificar, cobrar, cerrar y anular un pedido o venta serán acciones diferentes.
+2. Un descuento fuera de la regla ordinaria requerirá autorización identificable.
+3. Devolución, reposición, descuento y entrega de dinero conservarán motivo y relación con la venta.
+4. La corrección del medio de pago no existirá como edición silenciosa; deberá ser una operación auditable.
+5. El cajero no aprobará su propia anulación o compensación cuando exista otra autoridad disponible.
+6. Los datos del cliente se limitarán a la finalidad de atención, entrega o beneficio.
+7. Cambiar identidad o consentimiento requerirá comprobación reforzada.
+8. El domiciliario o mensajero recibirá solo información necesaria para entregar.
+9. Confirmar entrega no permitirá modificar el pago.
+10. Una entrega fallida conservará causa, evidencia y siguiente acción.
+
+`TEC-16` confirma que no existe corrección manual auditable de medio de pago en PULSO. `OPE-07`, `OPE-10` y `OPE-11` permanecen como comprobaciones AS-IS.
+
+---
+
+#### 13. Controles específicos: finanzas, tecnología y documentos
+
+1. Registrar un hecho económico, aprobar un pago y ejecutar el pago serán acciones distintas.
+2. Cambiar datos bancarios requerirá comprobación fuera del mismo cambio y trazabilidad reforzada.
+3. Cerrar un periodo bloqueará cambios ordinarios; las correcciones posteriores serán ajustes identificados.
+4. NUMERA podrá clasificar y analizar, pero no cambiar los hechos operativos de origen.
+5. Crear, ampliar, suspender y retirar accesos serán permisos diferentes cuando el catálogo lo requiera.
+6. Nadie podrá concederse a sí mismo una ampliación de autoridad.
+7. Una cuenta técnica no actuará como persona ni recibirá funciones empresariales.
+8. Los dispositivos compartidos permitirán únicamente paquetes explícitos y contexto válido.
+9. Publicar un cambio técnico requerirá evidencia de prueba y aprobación separada.
+10. Eliminar un documento dependerá de retención, sensibilidad y autoridad, no solo de poder verlo.
+11. Las exportaciones sensibles deberán registrar quién, qué alcance y cuándo.
+12. Los informes no podrán mostrar sedes, personas o importes fuera del alcance autorizado.
+
+---
+
+#### 14. Sensibilidad y comprobación reforzada
+
+| Nivel       | Ejemplos                                                | Control mínimo                                     |
+| ----------- | ------------------------------------------------------- | -------------------------------------------------- |
+| `ORDINARIO` | catálogo público, estado operativo permitido            | permiso y alcance                                  |
+| `INTERNO`   | pedidos, existencias, producción y compras              | permiso, alcance y auditoría                       |
+| `SENSIBLE`  | documentos laborales, costos, clientes y conciliaciones | permiso explícito, finalidad y auditoría reforzada |
+| `CRÍTICO`   | accesos, datos bancarios, pagos, cierres y eliminación  | separación, reautenticación y evidencia            |
+
+La clasificación exacta de campos ya definida en el modelo de autorización prevalecerá sobre cualquier ejemplo general de esta tarea.
+
+---
+
+#### 15. Dudas pendientes reutilizadas
+
+No se crean preguntas nuevas.
+
+Las prácticas actuales que todavía necesitan confirmación ya están expresadas de forma sencilla en el registro independiente:
+
+| Códigos  | Qué permiten confirmar                         |
+| -------- | ---------------------------------------------- |
+| `OPE-04` | quién autoriza cambiar una remisión enviada    |
+| `OPE-05` | quién decide rechazar mercancía diferente      |
+| `OPE-06` | quién autoriza un ajuste después del conteo    |
+| `OPE-07` | quién autoriza corregir un medio de pago       |
+| `OPE-08` | quién autoriza cambiar un horario publicado    |
+| `OPE-09` | quién autoriza tratar una marcación equivocada |
+| `OPE-10` | quién decide una devolución                    |
+| `OPE-11` | quién aprueba una compensación                 |
+
+Estas respuestas describirán el AS-IS. No crearán permisos técnicos por nombre de persona o cargo.
+
+---
+
+#### 16. Lo que queda decidido
+
+1. Las 217 subcapacidades quedan cubiertas por control familiar más excepción.
+2. Consultar, crear, ejecutar, aprobar, corregir, cancelar y anular son acciones diferentes.
+3. Se reutilizan los 112 permisos y matrices ya aprobados.
+4. El acceso a una aplicación no concede sus acciones internas.
+5. La autorización requiere permiso, alcance, recurso, contexto y ausencia de denegación.
+6. El check-in y el dispositivo no crean autoridad.
+7. El propietario y la Gerencia no reciben operación universal por su cargo.
+8. El creador de un registro no obtiene automáticamente derecho a aprobarlo.
+9. Las acciones financieras, de acceso y de corrección crítica requieren doble control.
+10. Los equipos pequeños usarán excepción documentada y revisión posterior, nunca bypass silencioso.
+11. Las fuentes propietarias de `CAP-MAP-008` conservan el control de sus datos.
+12. Las integraciones de `CAP-MAP-009` no amplían los permisos de la receptora.
+13. NUMERA no corrige hechos de otras aplicaciones.
+14. AURA no recibe permisos funcionales ejecutables mientras no exista.
+15. Toda corrección sensible conserva valor anterior, motivo y responsable.
+16. Las preguntas AS-IS permanecen en el registro independiente.
+
+---
+
+#### 17. Lo que esta tarea no autoriza
+
+- cambiar los 112 permisos aprobados;
+- modificar matrices RBAC;
+- insertar concesiones o denegaciones;
+- crear usuarios, roles o accesos;
+- modificar Supabase, RLS, RPC o migraciones;
+- implementar pantallas o guards;
+- asignar permisos a personas concretas;
+- crear bypasses por cargo;
+- inventar umbrales monetarios;
+- desarrollar AURA;
+- iniciar remodelación de código.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-010` podrá aprobarse cuando:
+
+- las 18 familias y 217 subcapacidades queden cubiertas;
+- las acciones empresariales estén separadas;
+- se reutilice el modelo de autorización aprobado;
+- ninguna persona, cargo, dispositivo o check-in equivalga a autoridad universal;
+- las acciones sensibles tengan control reforzado;
+- las separaciones críticas estén identificadas;
+- exista tratamiento realista para equipos pequeños;
+- los alcances territoriales y de recurso permanezcan obligatorios;
+- las correcciones conserven trazabilidad;
+- las integraciones no amplíen permisos;
+- no se creen preguntas duplicadas;
+- no se modifiquen permisos ni matrices en esta fase;
+- `CAP-MAP-011` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+acción empresarial exacta
+        ↓
+permiso canónico aplicable
+        ↓
+alcance, recurso y contexto
+        ↓
+aprobación o separación cuando corresponda
+        ↓
+autorización, denegación y trazabilidad
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-011
+— Identificar pantallas, dispositivos, documentos y evidencia requeridos
+```
+
+`CAP-MAP-011` definirá qué superficie permite realizar cada acción, qué dispositivo puede utilizarse y qué evidencia debe quedar, sin confundir una pantalla visible con autoridad suficiente.
+
+### ✅ CAP-MAP-011 — Identificar pantallas, dispositivos, documentos y evidencia requeridos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** definición documental de superficies y evidencia
+**Dependencia anterior:** `CAP-MAP-010`
+**Continuidad reservada:** `CAP-MAP-012`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea define, para las **217 subcapacidades**:
+
+- qué tipo de pantalla o medio permite realizar el trabajo;
+- qué dispositivo resulta adecuado para el lugar y la función;
+- qué documento debe generarse, recibirse o conservarse;
+- qué evidencia demuestra que ocurrió el resultado;
+- qué información debe verse antes de decidir;
+- qué debe quedar visible cuando existe un error, diferencia o pendiente;
+- qué medios actuales son operación principal, evidencia, copia o contingencia.
+
+La cobertura se construye mediante:
+
+```text
+superficie base de la familia
++ necesidad del lugar y actor
++ documento o evidencia crítica
+= interfaz y evidencia requerida
+```
+
+Esta tarea define necesidades funcionales. No diseña todavía rutas definitivas, componentes visuales, hardware, formatos finales ni almacenamiento físico.
+
+---
+
+#### 2. Diferencias que deben conservarse
+
+| Concepto     | Significado sencillo                                                |
+| ------------ | ------------------------------------------------------------------- |
+| Pantalla     | lugar visual donde una persona consulta o realiza una acción        |
+| Dispositivo  | aparato desde el cual se usa una aplicación                         |
+| Documento    | contenido con identidad, propósito, versión y conservación          |
+| Comprobante  | documento que confirma un resultado concreto                        |
+| Evidencia    | información que permite demostrar qué ocurrió                       |
+| Adjunto      | foto, archivo, firma o soporte relacionado                          |
+| Copia        | reproducción que no reemplaza el registro principal                 |
+| Impresión    | copia física generada desde un registro                             |
+| Contingencia | medio temporal usado cuando la superficie normal no está disponible |
+
+No equivalen:
+
+```text
+ver un botón = tener permiso
+tener una pantalla = proceso terminado
+tomar una foto = registrar cantidades
+imprimir un PDF = crear una segunda fuente de verdad
+usar un dispositivo compartido = perder la identidad del trabajador
+tener una firma = demostrar que todo el contenido es correcto
+```
+
+---
+
+#### 3. Tipos de superficie requeridos
+
+| Superficie         | Uso principal                                                             |
+| ------------------ | ------------------------------------------------------------------------- |
+| `BANDEJA`          | ver trabajo pendiente, prioridad, responsable y estado                    |
+| `LISTA`            | buscar, filtrar y comparar varios registros                               |
+| `DETALLE`          | consultar un registro completo, relaciones e historial                    |
+| `FORMULARIO`       | crear o cambiar información permitida                                     |
+| `ASISTENTE`        | guiar una actividad con pasos y validaciones                              |
+| `APROBACIÓN`       | revisar diferencias, soportes y aceptar o rechazar                        |
+| `OPERACIÓN_RÁPIDA` | registrar acciones frecuentes con pocos pasos                             |
+| `CONTEO`           | capturar cantidades y diferencias sin revelar el saldo cuando corresponda |
+| `RECEPCIÓN`        | comparar esperado, recibido, rechazado y pendiente                        |
+| `DESPACHO`         | preparar, verificar, entregar custodia y confirmar salida                 |
+| `SEGUIMIENTO`      | mostrar etapas, responsables, tiempos y novedades                         |
+| `TABLERO`          | resumir indicadores sin permitir corregir hechos de origen                |
+| `DOCUMENTO`        | visualizar, generar, firmar o descargar una versión                       |
+| `AUDITORÍA`        | mostrar quién hizo qué, cuándo, antes y después                           |
+| `CONTINGENCIA`     | capturar lo mínimo cuando la operación normal falla                       |
+
+Una subcapacidad puede necesitar varias superficies, pero cada una deberá tener un propósito distinto.
+
+---
+
+#### 4. Principios de diseño funcional
+
+1. La pantalla mostrará primero la decisión o trabajo principal.
+2. Las acciones irreversibles o sensibles estarán separadas de la operación ordinaria.
+3. Un cambio mostrará el valor actual y el valor propuesto.
+4. Rechazos, diferencias y faltantes no se esconderán dentro de notas libres.
+5. Los estados usarán palabras comprensibles para la persona que opera.
+6. Las pantallas de dispositivo compartido evitarán información administrativa innecesaria.
+7. Una persona no verá datos de otras sedes, áreas o personas fuera de su autorización.
+8. La interfaz no confiará en ocultar botones como único control de seguridad.
+9. Una acción exitosa dejará confirmación visible y referencia consultable.
+10. Una acción fallida explicará qué quedó guardado y qué debe repetirse.
+11. Los documentos generados indicarán origen, fecha, versión y estado.
+12. Las copias exportadas advertirán que pueden quedar desactualizadas.
+13. Las fotos y firmas se pedirán solo cuando aporten evidencia necesaria.
+14. La operación deberá poder continuar sin conocimientos técnicos.
+
+---
+
+#### 5. Clases de dispositivo
+
+| Clase                     | Uso                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------- |
+| `PERSONAL_ADMINISTRATIVO` | computador personal autenticado para Gerencia, Contabilidad, Compras, VISO y configuración  |
+| `PERSONAL_MÓVIL`          | teléfono de trabajador o cliente para ANIMA, PASS, notificaciones y acciones propias        |
+| `COMPARTIDO_OPERATIVO`    | terminal de caja, barra, cocina, producción, bodega o recepción                             |
+| `MÓVIL_DE_CAMPO`          | entrega, inspección, mantenimiento, conteo o traslado                                       |
+| `PANTALLA_DE_SEGUIMIENTO` | visualización operativa sin autoridad por sí misma                                          |
+| `IMPRESORA_PERIFÉRICO`    | comanda, etiqueta, recibo o documento; nunca representa una persona                         |
+| `EXTERNO`                 | dispositivo o portal de banco, Makos, Shopify, Rappi, ManyChat, mensajería u otro proveedor |
+
+Se reutilizan las 14 plantillas objetivo y reglas de `AUTH-RBAC-023`. Esta tarea no crea nuevas concesiones por dispositivo.
+
+---
+
+#### 6. Reglas para dispositivos compartidos
+
+1. Solo habrá un actor humano efectivo por sesión.
+2. La plantilla y la instancia podrán restringir, nunca ampliar permisos.
+3. La sede y área del dispositivo deberán coincidir con la operación.
+4. Cambiar de persona exigirá terminar o transferir claramente la sesión anterior.
+5. Un PIN o código rápido identificará a la persona únicamente dentro del mecanismo aprobado; no será permiso.
+6. La pantalla se bloqueará al abandonar la operación o vencer el contexto.
+7. Caja, barra, cocina, producción, bodega y recepción conservarán funciones distintas.
+8. El dispositivo no almacenará credenciales personales visibles.
+9. Las acciones sensibles usarán reautenticación cuando el modelo aprobado lo exija.
+10. Una impresora, escáner o cámara será periférico del actor efectivo, no actor independiente.
+
+---
+
+#### 7. Jerarquía de evidencia
+
+| Nivel | Evidencia                                                           | Fuerza                             |
+| ----- | ------------------------------------------------------------------- | ---------------------------------- |
+| `E1`  | registro estructurado en la fuente propietaria                      | principal                          |
+| `E2`  | evento de auditoría con actor, momento, alcance y cambio            | principal de trazabilidad          |
+| `E3`  | confirmación independiente de otra persona o sistema                | reforzada                          |
+| `E4`  | documento generado y relacionado con el registro                    | comprobante                        |
+| `E5`  | documento externo, factura, extracto, guía o respuesta de proveedor | soporte externo                    |
+| `E6`  | foto, firma, archivo o nota adjunta                                 | complemento                        |
+| `E7`  | chat, llamada, captura, papel o relato                              | evidencia manual o de contingencia |
+
+Un nivel inferior podrá complementar, pero no reemplazar silenciosamente un registro principal cuando este deba existir.
+
+---
+
+#### 8. Registro mínimo de evidencia
+
+| Campo            | Contenido                                                |
+| ---------------- | -------------------------------------------------------- |
+| hecho respaldado | resultado de `CAP-MAP-007`                               |
+| fuente           | aplicación propietaria de `CAP-MAP-008`                  |
+| actor            | persona o sistema identificado                           |
+| momento          | fecha y hora del hecho                                   |
+| lugar            | sede, área o ubicación aplicable                         |
+| versión          | estado o versión antes y después                         |
+| referencia       | pedido, compra, remisión, lote, pago, activo o documento |
+| resultado        | completo, parcial, rechazado, cancelado o corregido      |
+| motivo           | obligatorio en excepciones o cambios sensibles           |
+| soporte          | documento, foto, firma o archivo cuando corresponda      |
+| revisión         | aprobación o comprobación independiente cuando aplique   |
+| conservación     | regla posterior de retención y acceso                    |
+
+---
+
+#### 9. Mapa de superficies, dispositivos y evidencia por familia
+
+| Familia                           | Superficie principal                                      | Dispositivo habitual objetivo                  | Evidencia principal                                     |
+| --------------------------------- | --------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- |
+| `CAP-01` Dirección y gobierno     | bandeja, detalle, aprobación y documento                  | personal administrativo                        | decisión, versión, aprobación y seguimiento             |
+| `CAP-02` Personas y trabajo       | administración VISO y experiencia personal ANIMA          | computador administrativo y móvil personal     | relación laboral, turno, marcación, novedad y documento |
+| `CAP-03` Seguridad y salud        | inspección, incidente, acción y seguimiento               | computador o móvil de campo                    | hallazgo, foto necesaria, acción y cierre comprobado    |
+| `CAP-04` Productos y oferta       | catálogo, receta, publicación y consulta operativa        | computador administrativo y terminal operativa | versión de producto, receta, precio y vigencia          |
+| `CAP-05` Compras y proveedores    | solicitud, comparación, orden, recepción y aprobación     | computador y terminal de recepción             | oferta, orden, factura, cantidades y diferencias        |
+| `CAP-06` Inventario y movimientos | operación rápida, conteo, remisión, recepción y auditoría | kiosco de bodega o móvil de campo              | movimiento, conteo, ajuste, custodia y confirmación     |
+| `CAP-07` Activos                  | ficha, custodia, conteo, mantenimiento y baja             | computador o móvil de campo                    | identificación, ubicación, condición, foto y entrega    |
+| `CAP-08` Producción               | plan, orden, lote, consumo, control y liberación          | terminal de producción                         | receta usada, cantidades, rendimiento, control y lote   |
+| `CAP-09` Venta y servicio         | punto de venta, preparación, pago y cierre                | terminal de caja, barra, cocina o mostrador    | pedido, comanda, venta, pago y comprobante              |
+| `CAP-10` Clientes                 | atención PULSO y experiencia PASS                         | terminal autorizado y móvil personal           | consentimiento, solicitud, solución y comunicación      |
+| `CAP-11` Despacho y entrega       | despacho, seguimiento y confirmación                      | kiosco, móvil de campo o portal externo        | carga, custodia, guía, entrega, fallo o devolución      |
+| `CAP-12` Finanzas                 | registro, conciliación, aprobación y tablero              | computador personal administrativo             | soporte, movimiento, conciliación, cierre e informe     |
+| `CAP-13` Instalaciones            | solicitud, inspección, orden de trabajo y cierre          | computador o móvil de campo                    | condición inicial, trabajo, gasto y condición final     |
+| `CAP-14` Mercadeo                 | borrador, aprobación, publicación y medición              | computador administrativo                      | versión aprobada, publicación, presupuesto y resultado  |
+| `CAP-15` Tecnología               | caso, diagnóstico, cambio, prueba y recuperación          | computador administrativo o móvil técnico      | ticket, cambio, prueba, aprobación y cierre             |
+| `CAP-16` Información y documentos | documento, versión, búsqueda, entrega y auditoría         | dispositivo autorizado según sensibilidad      | versión, acceso, firma, entrega y conservación          |
+| `CAP-17` Datos y análisis         | definición, tablero, informe y calidad                    | computador administrativo                      | definición, periodo, fuentes, cálculo y publicación     |
+| `CAP-18` Continuidad              | incidente, operación mínima, recuperación y conciliación  | dispositivo disponible autorizado              | impacto, alternativa, recuperación y pendientes         |
+
+---
+
+#### 10. Superficies críticas por flujo
+
+##### 10.1. Compra y recepción
+
+Se requieren superficies separadas para:
+
+1. solicitar;
+2. comparar ofertas;
+3. aprobar;
+4. emitir orden;
+5. recibir;
+6. registrar diferencias;
+7. aceptar, rechazar o devolver;
+8. consultar evidencia y auditoría.
+
+La pantalla de recepción mostrará esperado, recibido, aceptado, rechazado y pendiente sin convertir automáticamente la orden en inventario.
+
+##### 10.2. Inventario y traslado
+
+Se requieren:
+
+- consulta de disponibilidad;
+- conteo sin sesgo cuando aplique;
+- explicación de diferencia;
+- aprobación de ajuste;
+- preparación de remisión;
+- confirmación de despacho;
+- recepción independiente;
+- conciliación entre ambos extremos.
+
+##### 10.3. Producción
+
+Se requieren:
+
+- necesidad y plan;
+- orden priorizada;
+- receta publicada;
+- captura de consumo y resultado;
+- control de calidad;
+- liberación, retención o rechazo;
+- cierre con rendimiento y diferencias.
+
+##### 10.4. Venta, pago y entrega
+
+Se requieren:
+
+- pedido vigente;
+- preparación por área;
+- cobro y estado de pago;
+- cierre o anulación separada;
+- despacho y custodia;
+- entrega, fallo o devolución;
+- comprobante para cliente;
+- auditoría de descuentos, compensaciones y correcciones.
+
+---
+
+#### 11. Documentos mínimos por dominio
+
+| Dominio       | Documentos o comprobantes necesarios                                   |
+| ------------- | ---------------------------------------------------------------------- |
+| gobierno      | decisión, política, acta, riesgo aceptado y seguimiento                |
+| personas      | vinculación, turno publicado, novedad, pago laboral y retiro           |
+| seguridad     | inspección, incidente, acción correctiva y evidencia de cierre         |
+| catálogo      | ficha de producto, versión de receta, especificación y publicación     |
+| compras       | solicitud, comparación, orden, factura, recepción y devolución         |
+| inventario    | remisión, conteo, ajuste, merma y constancia de recepción              |
+| activos       | ficha, custodia, préstamo, mantenimiento, reparación y baja            |
+| producción    | orden, hoja o registro de lote, control y liberación                   |
+| ventas        | pedido, comanda, factura o documento equivalente, recibo y anulación   |
+| clientes      | consentimiento, reserva, caso, devolución y solución                   |
+| entrega       | manifiesto o guía, custodia, entrega, fallo y devolución               |
+| finanzas      | soporte, cierre de caja, cuenta, conciliación, presupuesto e informe   |
+| instalaciones | orden de trabajo, inspección, gasto y cierre                           |
+| mercadeo      | aprobación, pieza, publicación, promoción y resultado                  |
+| tecnología    | solicitud, incidente, cambio, prueba, acceso y cierre                  |
+| información   | documento controlado, versión, firma, entrega y eliminación autorizada |
+| análisis      | definición, fuente, periodo, cálculo, informe y limitaciones           |
+| continuidad   | incidente, operación mínima, recuperación y conciliación               |
+
+No todo documento necesita ser PDF o papel. Puede ser un registro estructurado con una vista o exportación verificable.
+
+---
+
+#### 12. Regla de facturación y titular documental
+
+Las respuestas incorporadas en `GOV-05` y `GOV-08` a `GOV-12` confirman que marca, titular documental y emisor de factura no siempre coinciden.
+
+Por tanto:
+
+1. ningún documento asumirá el emisor únicamente por la marca mostrada;
+2. la operación deberá seleccionar o derivar el emisor permitido para el caso;
+3. la factura conservará el titular realmente utilizado;
+4. Vaila Vainilla admite actualmente más de una alternativa según el caso;
+5. catering se tratará según el titular confirmado en el registro;
+6. el historial conservará cambios de emisor y soporte aplicable;
+7. ninguna pantalla inventará RUT, Cámara de Comercio o relación jurídica inexistente;
+8. la validación tributaria y jurídica continuará con los responsables profesionales.
+
+La respuesta `ADM-02` confirma que la dirección registral usada por Vento Group corresponde al Centro de Producción. Los documentos deberán tomar la dirección desde la fuente administrativa vigente, sin copiarla manualmente en cada aplicación.
+
+##### 12.1. Venta a consumidor final y factura solicitada
+
+PULSO deberá separar dos decisiones:
+
+```text
+registrar íntegramente la venta y sus impuestos
+        ≠
+identificar al comprador para expedir el documento a su nombre
+```
+
+Reglas funcionales:
+
+1. Toda venta se registrará con productos, valores, impuestos, medio de pago, emisor y documento fiscal aplicable.
+2. Si el comprador no solicita que la factura electrónica o el documento equivalente electrónico POS sea expedido a su nombre, PULSO no obligará a registrar un cliente.
+3. En ese caso se utilizará la identificación reglamentaria de `CONSUMIDOR FINAL`.
+4. Si el comprador solicita el documento a su nombre, se pedirán únicamente los datos permitidos y necesarios.
+5. El correo no será obligatorio cuando el comprador elija una representación gráfica impresa y la norma vigente lo permita.
+6. La elección entre consumidor final y comprador identificado no modificará por sí sola impuestos, ingresos ni valores de la venta.
+7. El medio de pago no decidirá si la venta se registra o si causa impuestos.
+8. El flujo rápido de caja no exigirá crear perfiles de clientes ficticios.
+9. La factura electrónica de venta y el documento equivalente electrónico POS serán tipos documentales distintos, relacionados con la misma venta.
+10. PULSO deberá permitir cambiar al flujo identificado antes de cerrar el documento, sin rehacer el pedido.
+11. Notas crédito, anulaciones o sustituciones posteriores seguirán la norma vigente y conservarán la relación con el documento original.
+12. Las reglas tributarias se validarán nuevamente con Contabilidad antes de implementar o desplegar el POS.
+
+Base normativa revisada para esta decisión:
+
+- Resolución DIAN 000202 de 2025: cuando el adquirente no solicita que el documento sea expedido a su nombre, no se le piden datos y se expide a consumidor final;
+- Resolución DIAN 000165 de 2023 y su compilación vigente: regula factura electrónica y documento equivalente electrónico POS.
+
+---
+
+#### 13. Evidencia ante correcciones y excepciones
+
+| Acción                      | Evidencia mínima                                        |
+| --------------------------- | ------------------------------------------------------- |
+| corregir horario            | versión anterior, nueva versión, motivo y responsable   |
+| tratar marcación equivocada | hora observada intacta, explicación y decisión          |
+| ajustar inventario          | conteo o hecho origen, diferencia, motivo y aprobación  |
+| cambiar remisión            | versión anterior, cambio y autorización                 |
+| anular venta                | venta original, motivo, valores afectados y aprobador   |
+| corregir pago               | pago original, operación correctiva y conciliación      |
+| devolver o compensar        | pedido, producto o valor, motivo, solución y aprobación |
+| cambiar receta o producto   | versión anterior, nueva versión, vigencia y publicación |
+| liberar lote                | controles, resultado y responsable                      |
+| aprobar pago                | soporte, beneficiario, valor y doble control            |
+| cambiar acceso              | solicitud, decisión, alcance anterior y nuevo           |
+| eliminar documento          | regla de retención, motivo, autoridad y constancia      |
+| cerrar incidente            | impacto, recuperación, comprobación y pendientes        |
+
+No se exigirá fotografía cuando el registro estructurado y la confirmación independiente sean suficientes.
+
+---
+
+#### 14. Exportaciones y evidencia de auditoría
+
+La evidencia AS-IS confirma:
+
+- NEXO exporta CSV o Excel en algunos flujos;
+- VISO y ANIMA exportan Excel;
+- ORIGO y FOGO generan PDF;
+- PULSO importa Excel Makos, pero no tiene exportación comprobada;
+- NUMERA no tiene exportación encontrada.
+
+El objetivo exige:
+
+1. exportar únicamente dentro del alcance autorizado;
+2. identificar fecha, filtros, periodo y persona que exporta;
+3. evitar que una exportación se considere editable como fuente;
+4. proteger información personal, financiera o sensible;
+5. permitir auditoría de resultados críticos aunque no exista descarga;
+6. registrar las brechas de exportación durante `CODE-AUD-002`, `CODE-AUD-010` y diseño posterior.
+
+---
+
+#### 15. Fallos, impresión y contingencia
+
+Cuando una pantalla, red, impresora o dispositivo falle:
+
+- el sistema indicará si la operación quedó guardada;
+- repetir una acción no duplicará el resultado;
+- la impresión podrá repetirse identificándola como copia;
+- el papel de contingencia tendrá referencia, fecha, persona y posterior conciliación;
+- una foto o captura no sustituirá indefinidamente el registro pendiente;
+- el cierre de contingencia confirmará qué fue registrado y qué sigue faltando;
+- los datos sensibles no quedarán expuestos en pantallas o papeles abandonados.
+
+El funcionamiento exacto sin internet permanece en `DIF-05` y se diseñará con continuidad y piloto.
+
+---
+
+#### 16. Dudas y auditorías reutilizadas
+
+No se crean preguntas nuevas.
+
+Esta tarea reutiliza:
+
+- las respuestas `ADM-02`, `GOV-05` y `GOV-08` a `GOV-12`;
+- `DAT-08` a `DAT-13` para remisiones, producción y registros manuales;
+- `DAT-16` a `DAT-27` para inspecciones, decisiones, entregas, propinas, anulaciones, devoluciones, ajustes y mermas;
+- `TEC-17` para exportaciones existentes;
+- `AUTH-RBAC-023` para dispositivos compartidos;
+- `OPS-PLAN-003` para autocuestionarios operativos;
+- `CODE-AUD-002` para inventario de rutas, pantallas, componentes y formularios;
+- `CODE-AUD-010` para detectar interfaces sin lógica completa;
+- `CAP-SCOPE-015` para dispositivos, redes, impresión y soporte;
+- `CAP-SCOPE-016` para privacidad, conservación y auditoría.
+
+Las respuestas pendientes describirán el AS-IS, pero no bloquean esta definición funcional.
+
+---
+
+#### 17. Lo que queda decidido
+
+1. Las 217 subcapacidades quedan cubiertas por superficie familiar más excepción.
+2. Pantalla, dispositivo, documento, evidencia, copia y contingencia son conceptos distintos.
+3. Una pantalla visible no concede permiso.
+4. Los dispositivos compartidos conservan actor humano, sede, área y plantilla.
+5. Las 14 plantillas aprobadas se reutilizan y no amplían autoridad.
+6. El registro estructurado y la auditoría son evidencia principal.
+7. Fotos, firmas, chats y papeles son complementos o contingencia según el caso.
+8. Compras, recepción, inventario, producción, ventas, pagos y entregas tendrán superficies separadas por resultado.
+9. Las correcciones mostrarán antes, después, motivo y responsable.
+10. Los documentos generados conservarán origen, versión y estado.
+11. Las impresiones serán copias identificables.
+12. Marca, titular y emisor de factura no se asumirán equivalentes.
+13. Vaila Vainilla conservará la alternativa de facturación realmente utilizada en cada caso.
+14. La dirección administrativa se tomará desde una fuente vigente, no se repetirá manualmente.
+15. Las exportaciones respetarán alcance y sensibilidad.
+16. No se crean preguntas nuevas ni se repiten las respondidas.
+
+---
+
+#### 18. Lo que esta tarea no autoriza
+
+- diseñar UI de alta fidelidad;
+- crear rutas, componentes o formularios;
+- comprar o instalar dispositivos;
+- cambiar plantillas de dispositivos;
+- crear documentos productivos;
+- modificar facturación;
+- cambiar titulares o datos legales;
+- crear exportaciones;
+- modificar Supabase o migraciones;
+- implementar modo sin conexión;
+- desarrollar AURA;
+- eliminar papeles, archivos o medios actuales.
+
+---
+
+#### 19. Criterios de aceptación
+
+`CAP-MAP-011` podrá aprobarse cuando:
+
+- las 18 familias y 217 subcapacidades queden cubiertas;
+- cada resultado crítico tenga superficie y evidencia identificadas;
+- pantalla, dispositivo, documento y evidencia no se confundan;
+- los dispositivos compartidos no creen autoridad;
+- las correcciones conserven antes, después, motivo y responsable;
+- las diferencias y pendientes sean visibles;
+- los documentos indiquen fuente, versión y estado;
+- la facturación no asuma titular por marca;
+- las exportaciones actuales y sus brechas estén reconocidas;
+- las respuestas nuevas del registro se incorporen sin perder detalle;
+- no se creen preguntas duplicadas;
+- no se implemente interfaz, hardware o almacenamiento;
+- `CAP-MAP-012` permanezca como única continuidad inmediata.
+
+---
+
+#### 20. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+acción autorizada
+        ↓
+superficie adecuada al trabajo
+        ↓
+dispositivo compatible con actor y lugar
+        ↓
+documento o registro producido
+        ↓
+evidencia y auditoría conservadas
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-012
+— Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance
+```
+
+`CAP-MAP-012` clasificará cada capacidad según su importancia y relación con el alcance, sin confundir prioridad empresarial con existencia actual de una pantalla o aplicación.
+
+
+### ✅ CAP-MAP-012 — Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** clasificación documental de capacidades
+**Dependencia anterior:** `CAP-MAP-011`
+**Continuidad reservada:** `CAP-MAP-013`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea asigna una clasificación principal a las **217 subcapacidades**:
+
+- `NÚCLEO`;
+- `SOPORTE`;
+- `TRANSVERSAL`;
+- `FUTURA`;
+- `FUERA_DE_ALCANCE`.
+
+La clasificación responde:
+
+```text
+¿qué relación tiene esta capacidad con el funcionamiento empresarial de Vento?
+```
+
+No responde todavía:
+
+- en qué orden se implementa;
+- cuánto cuesta;
+- qué aplicación está más avanzada;
+- qué pantalla debe construirse primero;
+- qué brecha es más urgente.
+
+---
+
+#### 2. Definiciones
+
+| Clasificación      | Significado                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `NÚCLEO`           | produce o protege directamente la oferta, abastecimiento, producción, venta, atención o entrega                                      |
+| `SOPORTE`          | permite que el núcleo funcione con personas, activos, instalaciones o desarrollo comercial                                           |
+| `TRANSVERSAL`      | gobierna, controla, informa o protege varias familias a la vez                                                                       |
+| `FUTURA`           | resultado empresarial deliberadamente reservado para una etapa posterior y todavía no necesario para la operación objetivo inmediata |
+| `FUERA_DE_ALCANCE` | actividad que no corresponde ejecutar a Vento, aunque deba relacionarse con quien la realiza                                         |
+
+Cada subcapacidad tendrá una sola clasificación principal. Sus relaciones con otras familias se conservan sin duplicarla.
+
+---
+
+#### 3. Reglas obligatorias
+
+1. La clasificación describe la capacidad empresarial, no la aplicación.
+2. Una capacidad manual puede ser `NÚCLEO`.
+3. Una capacidad implementada puede seguir siendo `SOPORTE` o `TRANSVERSAL`.
+4. Que AURA no exista no vuelve futuras todas las capacidades de mercadeo.
+5. Usar un proveedor externo no deja la responsabilidad empresarial fuera de alcance.
+6. Una obligación legal puede ser transversal aunque no produzca una venta.
+7. `NÚCLEO` no significa implementar primero sin análisis adicional.
+8. `SOPORTE` no significa opcional.
+9. `TRANSVERSAL` no significa que SHELL o NUMERA sean propietarias de todo.
+10. `FUTURA` no se usará para ocultar una brecha actual.
+11. `FUERA_DE_ALCANCE` no se usará para excluir tareas incómodas, manuales o sin sistema.
+12. La ausencia de código no determina la clasificación.
+
+---
+
+#### 4. Regla de cobertura
+
+```text
+clasificación de la subcapacidad
+=
+clasificación base de la familia
++ excepción específica
+```
+
+Las excepciones de esta tarea son únicamente seis:
+
+- `CAP-12.02`;
+- `CAP-12.06`;
+- `CAP-12.07`;
+- `CAP-14.07`;
+- `CAP-14.08`;
+- `CAP-14.09`.
+
+Las demás subcapacidades heredan la clasificación de su familia.
+
+---
+
+#### 5. Clasificación base por familia
+
+| Familia                                  | Cantidad | Clasificación base | Razón                                                          |
+| ---------------------------------------- | -------: | ------------------ | -------------------------------------------------------------- |
+| `CAP-01` Dirección y gobierno            |       10 | `TRANSVERSAL`      | orienta y controla toda la organización                        |
+| `CAP-02` Personas y trabajo              |       13 | `SOPORTE`          | permite disponer de personas preparadas y vinculadas           |
+| `CAP-03` Seguridad y salud               |       10 | `TRANSVERSAL`      | protege personas y cumplimiento en toda la operación           |
+| `CAP-04` Productos y oferta              |       10 | `NÚCLEO`           | define lo que Vento produce, ofrece y vende                    |
+| `CAP-05` Compras y proveedores           |       12 | `NÚCLEO`           | asegura los insumos y servicios necesarios para operar         |
+| `CAP-06` Inventario y movimientos        |       15 | `NÚCLEO`           | protege disponibilidad, custodia y flujo físico                |
+| `CAP-07` Activos                         |       13 | `SOPORTE`          | provee equipos y reutilizables para ejecutar el núcleo         |
+| `CAP-08` Producción                      |       14 | `NÚCLEO`           | transforma insumos en resultados vendibles                     |
+| `CAP-09` Venta y servicio                |       15 | `NÚCLEO`           | recibe, cobra y cierra la promesa al cliente                   |
+| `CAP-10` Clientes                        |       10 | `NÚCLEO`           | atiende y protege la relación con el cliente                   |
+| `CAP-11` Despacho y entrega              |       12 | `NÚCLEO`           | completa traslados y entregas comprometidas                    |
+| `CAP-12` Finanzas                        |       15 | `TRANSVERSAL`      | registra y controla efectos económicos de todas las familias   |
+| `CAP-13` Instalaciones                   |       11 | `SOPORTE`          | mantiene condiciones físicas para operar                       |
+| `CAP-14` Mercadeo y desarrollo comercial |       11 | `SOPORTE`          | genera demanda y comunica la oferta                            |
+| `CAP-15` Tecnología                      |       11 | `TRANSVERSAL`      | habilita y protege herramientas utilizadas por todas las áreas |
+| `CAP-16` Información y documentos        |       11 | `TRANSVERSAL`      | protege evidencia y conocimiento de toda la organización       |
+| `CAP-17` Datos y análisis                |       12 | `TRANSVERSAL`      | mide y mejora resultados de todas las familias                 |
+| `CAP-18` Continuidad                     |       12 | `TRANSVERSAL`      | sostiene y recupera la operación completa                      |
+
+---
+
+#### 6. Excepciones específicas
+
+| Subcapacidad                                         | Clasificación | Razón                                                                      |
+| ---------------------------------------------------- | ------------- | -------------------------------------------------------------------------- |
+| `CAP-12.02` Gestionar caja                           | `NÚCLEO`      | forma parte directa del cierre de la venta presencial                      |
+| `CAP-12.06` Facturar y controlar documentos          | `NÚCLEO`      | completa el soporte fiscal y comercial de la operación de venta            |
+| `CAP-12.07` Conciliar ventas, pagos y entregas       | `NÚCLEO`      | confirma que la promesa comercial quedó económica y operativamente cerrada |
+| `CAP-14.07` Captar oportunidades de venta            | `NÚCLEO`      | inicia una oportunidad comercial concreta                                  |
+| `CAP-14.08` Gestionar ventas a empresas              | `NÚCLEO`      | produce ventas B2B, no solo comunicación                                   |
+| `CAP-14.09` Gestionar catering y eventos comerciales | `NÚCLEO`      | produce una venta y una entrega empresarial completa                       |
+
+Estas excepciones cambian la clasificación de la subcapacidad, no la propiedad definida en `CAP-MAP-004` ni su fuente de verdad.
+
+---
+
+#### 7. Resultado cuantitativo
+
+| Clasificación      | Subcapacidades |
+| ------------------ | -------------: |
+| `NÚCLEO`           |         **94** |
+| `SOPORTE`          |         **45** |
+| `TRANSVERSAL`      |         **78** |
+| `FUTURA`           |          **0** |
+| `FUERA_DE_ALCANCE` |          **0** |
+| **Total**          |        **217** |
+
+El resultado `0` en `FUTURA` y `FUERA_DE_ALCANCE` es deliberado:
+
+- las 217 subcapacidades describen necesidades empresariales reales o necesarias;
+- no se excluye una capacidad porque hoy sea manual, externa o incompleta;
+- las capacidades futuras que todavía no estén en la taxonomía se detectarán en `CAP-MAP-014`;
+- los límites externos se documentan sin retirar la responsabilidad interna de Vento.
+
+---
+
+#### 8. Cadena de capacidades núcleo
+
+```text
+definir producto y oferta
+        ↓
+comprar y recibir
+        ↓
+controlar inventario
+        ↓
+producir
+        ↓
+recibir pedido y vender
+        ↓
+cobrar y documentar
+        ↓
+atender y entregar
+        ↓
+conciliar el resultado
+```
+
+Una ruptura de compras, inventario, producción, venta, pago o entrega afecta directamente la promesa al cliente.
+
+---
+
+#### 9. Capacidades de soporte
+
+Las capacidades de soporte no son decorativas ni prescindibles.
+
+```text
+personas preparadas
++ activos disponibles
++ instalaciones aptas
++ comunicación comercial
+= núcleo capaz de operar de forma repetible
+```
+
+La falta de mantenimiento, personal, capacitación o condiciones físicas puede detener una capacidad núcleo aunque no produzca directamente una venta.
+
+---
+
+#### 10. Capacidades transversales
+
+Las capacidades transversales:
+
+- definen dirección y límites;
+- protegen personas y cumplimiento;
+- controlan dinero y obligaciones;
+- gestionan tecnología;
+- conservan documentos y evidencia;
+- miden resultados;
+- mantienen continuidad.
+
+No se implementarán como un único “sistema transversal” universal. Cada resultado permanecerá en la aplicación propietaria definida en `CAP-MAP-008`.
+
+---
+
+#### 11. Regla especial para PULSO y el POS
+
+Las siguientes capacidades permanecen `NÚCLEO`:
+
+- `CAP-09.04` Registrar pedidos;
+- `CAP-09.08` Registrar ventas;
+- `CAP-09.09` Cobrar y confirmar pagos;
+- `CAP-09.10` Emitir factura o soporte;
+- `CAP-09.15` Cerrar y revisar la jornada;
+- `CAP-12.02` Gestionar caja;
+- `CAP-12.06` Facturar y controlar documentos;
+- `CAP-12.07` Conciliar ventas, pagos y entregas.
+
+PULSO deberá soportar dos recorridos legales y operativamente distintos:
+
+| Recorrido                        | Identificación del comprador                                          | Resultado                                                        |
+| -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| consumidor final                 | no se obliga a crear cliente cuando no solicita documento a su nombre | venta completa con documento fiscal aplicable a consumidor final |
+| documento a nombre del comprador | se solicitan únicamente los datos permitidos y necesarios             | factura electrónica o documento aplicable identificado           |
+
+Reglas:
+
+1. El recorrido de consumidor final es una función normal del núcleo, no una excepción sospechosa.
+2. No registrar un perfil de cliente no significa dejar de registrar la venta.
+3. Toda venta conserva productos, valores, impuestos, pago, emisor y documento.
+4. La identificación del comprador no determina por sí sola los impuestos.
+5. El medio de pago no determina si la venta se registra.
+6. PULSO no obligará a identificar a todos los clientes para cerrar una venta ordinaria.
+7. PULSO tampoco permitirá usar consumidor final para ocultar ventas, cambiar impuestos o evitar trazabilidad.
+8. El tipo documental deberá cumplir la regla DIAN vigente al momento de implementación.
+
+---
+
+#### 12. AURA y la categoría futura
+
+AURA continúa siendo una idea sin diseño ni funciones, pero:
+
+- comunicar;
+- crear contenido;
+- administrar medios;
+- gestionar campañas;
+- captar oportunidades;
+- medir promoción;
+- atender reputación
+
+son capacidades empresariales actuales o necesarias.
+
+Por eso:
+
+```text
+AURA = aplicación futura
+CAP-14 = capacidades actuales clasificadas como SOPORTE o NÚCLEO
+```
+
+No se clasificará una capacidad como `FUTURA` solo porque su aplicación candidata todavía no exista.
+
+---
+
+#### 13. Límites externos
+
+Las siguientes actividades son externas y no se incorporan como capacidades ejecutadas por Vento:
+
+| Actividad externa                                         | Responsabilidad que sí conserva Vento                    |
+| --------------------------------------------------------- | -------------------------------------------------------- |
+| decidir o validar obligaciones de la DIAN                 | facturar, documentar y cumplir la regla aplicable        |
+| procesar internamente operaciones del banco               | autorizar, registrar y conciliar movimientos propios     |
+| operar la infraestructura de Rappi, Shopify o ManyChat    | recibir, controlar y conciliar pedidos propios           |
+| operar la empresa de mensajería                           | asignar custodia y confirmar entrega                     |
+| emitir conceptos jurídicos o tributarios profesionales    | entregar evidencia y ejecutar decisiones aplicables      |
+| administrar sistemas internos de proveedores tecnológicos | controlar accesos, contratos, datos e incidentes propios |
+
+La actividad del tercero queda fuera de alcance; gestionar la relación y el efecto sobre Vento permanece dentro.
+
+---
+
+#### 14. Relación con implementación y prioridad
+
+La clasificación no determina por sí sola el orden.
+
+El orden posterior deberá considerar:
+
+```text
+clasificación
++ riesgo
++ dependencia
++ brecha actual
++ valor empresarial
++ esfuerzo
++ capacidad de adopción
+= prioridad de implementación
+```
+
+Una capacidad transversal de seguridad o una capacidad de soporte que bloquea producción puede implementarse antes que una mejora de núcleo.
+
+---
+
+#### 15. Dudas y decisiones incorporadas
+
+No se crean preguntas nuevas.
+
+Esta tarea incorpora:
+
+- `DEC-POS-001`, sobre consumidor final y facturación solicitada;
+- las respuestas de titulares y facturación `GOV-05`, `GOV-08` a `GOV-12`;
+- la inexistencia actual de AURA confirmada en `TEC-01` a `TEC-03`;
+- las fuentes y propietarios definidos en `CAP-MAP-004` a `CAP-MAP-011`.
+
+Las validaciones tributarias concretas deberán refrescarse con Contabilidad y fuentes oficiales antes de implementar el POS.
+
+---
+
+#### 16. Lo que queda decidido
+
+1. Las 217 subcapacidades tienen una clasificación principal.
+2. Existen 94 subcapacidades núcleo, 45 de soporte y 78 transversales.
+3. Ninguna de las 217 queda actualmente como futura o fuera de alcance.
+4. Manual, incompleta o externa no significa fuera de alcance.
+5. La aplicación candidata no determina la clasificación.
+6. AURA es futura como aplicación, no como conjunto de necesidades empresariales.
+7. Compras, inventario y producción forman parte del núcleo.
+8. Venta, caja, facturación y conciliación forman parte del núcleo.
+9. Ventas empresariales, catering y oportunidades concretas forman parte del núcleo.
+10. Personas, activos, instalaciones y comunicación general son soporte.
+11. Gobierno, cumplimiento, finanzas generales, tecnología, documentos, análisis y continuidad son transversales.
+12. El POS a consumidor final es un recorrido núcleo legítimo.
+13. Consumidor final no elimina registro, impuestos ni documento fiscal.
+14. La clasificación no fija todavía prioridad de implementación.
+
+---
+
+#### 17. Lo que esta tarea no autoriza
+
+- ocultar ventas o modificar impuestos;
+- definir asesoría tributaria definitiva;
+- implementar el POS;
+- cambiar facturación actual;
+- desarrollar AURA;
+- retirar capacidades de la taxonomía;
+- agregar capacidades sin análisis;
+- cambiar propietarios, permisos o integraciones aprobados;
+- modificar Supabase, código o migraciones;
+- priorizar automáticamente todo lo clasificado como núcleo.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-MAP-012` podrá aprobarse cuando:
+
+- las 217 subcapacidades sumen exactamente el total clasificado;
+- cada subcapacidad tenga una sola clasificación principal;
+- núcleo, soporte y transversal se distingan claramente;
+- ninguna capacidad se declare futura por falta de aplicación;
+- ninguna capacidad se excluya por ser manual o externa;
+- los límites con terceros conserven responsabilidad interna;
+- PULSO contemple consumidor final sin registro obligatorio de cliente;
+- toda venta conserve documento, impuestos y trazabilidad;
+- la clasificación no se confunda con prioridad;
+- no se creen preguntas duplicadas;
+- no se autorice implementación;
+- `CAP-MAP-013` permanezca como única continuidad inmediata.
+
+---
+
+#### 19. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definido:
+
+```text
+qué capacidades producen directamente valor
+        ↓
+cuáles habilitan la operación
+        ↓
+cuáles gobiernan varias familias
+        ↓
+qué límites corresponden a terceros
+        ↓
+qué candidatas futuras deberán detectarse después
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-013
+— Detectar capacidades duplicadas o con propiedad competidora
+```
+
+`CAP-MAP-013` revisará dónde dos aplicaciones, áreas o prácticas intentan gobernar el mismo resultado y distinguirá cooperación válida de duplicación empresarial.
+
+### ✅ CAP-MAP-013 — Detectar capacidades duplicadas o con propiedad competidora
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** análisis documental de solapamientos y fronteras de propiedad
+**Dependencia anterior:** `CAP-MAP-012`
+**Continuidad reservada:** `CAP-MAP-014`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea revisa las **217 subcapacidades** para detectar:
+
+- dos capacidades que parecen producir el mismo resultado;
+- dos aplicaciones que podrían intentar gobernar el mismo hecho;
+- dos áreas que podrían corregir o aprobar el mismo resultado sin una frontera clara;
+- copias manuales o técnicas que podrían convertirse en registros paralelos;
+- colaboraciones legítimas que no deben eliminarse.
+
+El propósito no es escoger la aplicación más visible. Es asegurar que cada resultado empresarial tenga:
+
+1. una definición reconocible;
+2. una sola fuente principal objetivo;
+3. una frontera clara con los resultados relacionados;
+4. consumidoras que no puedan corregir el original;
+5. un tratamiento explícito cuando hoy exista duplicación.
+
+---
+
+#### 2. Definiciones en lenguaje directo
+
+| Término                    | Significado                                                                                                     |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `DUPLICACIÓN_DE_CAPACIDAD` | dos nombres describen realmente el mismo resultado empresarial                                                  |
+| `PROPIEDAD_COMPETIDORA`    | dos aplicaciones o áreas pueden crear, corregir o cerrar versiones independientes del mismo hecho               |
+| `COLABORACIÓN_VÁLIDA`      | varias aplicaciones o personas intervienen, pero cada una produce un resultado diferente y enlazado             |
+| `COPIA_CONTROLADA`         | una aplicación conserva una referencia o lectura derivada sin poder alterar el original                         |
+| `FUENTE_SOMBRA`            | Excel, chat, papel, archivo o sistema secundario termina gobernando un estado que debería tener una sola fuente |
+| `DUPLICACIÓN_TÉCNICA`      | código, tipos o componentes repetidos; puede causar deriva, pero no crea por sí sola otra capacidad empresarial |
+
+Dos pantallas parecidas no prueban duplicación. Dos lugares capaces de cambiar de manera independiente el mismo estado sí crean propiedad competidora.
+
+---
+
+#### 3. Prueba obligatoria para comparar dos candidatos
+
+Cada posible cruce se evaluará con estas preguntas:
+
+1. ¿Producen el mismo resultado para el mismo objeto?
+2. ¿El resultado tiene el mismo momento de inicio y cierre?
+3. ¿Ambos lugares pueden crearlo o corregirlo?
+4. ¿Una modificación puede dejar versiones contradictorias?
+5. ¿Uno de los registros podría ser solo una lectura o efecto derivado?
+6. ¿La separación cambia por etapa, propósito, objeto o tipo de incidente?
+7. ¿Puede señalarse una única fuente que explique el estado vigente?
+
+Interpretación:
+
+```text
+mismo resultado + dos controles independientes
+= duplicación o propiedad competidora
+
+resultados distintos + enlace explícito
+= colaboración válida
+```
+
+---
+
+#### 4. Estados permitidos
+
+| Estado                           | Uso                                                                                |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| `SIN_DUPLICACIÓN`                | el resultado y su propietaria están suficientemente separados                      |
+| `FRONTERA_DEFINIDA`              | existía solapamiento aparente y queda resuelto mediante una división explícita     |
+| `DUPLICACIÓN_AS_IS_CONFIRMADA`   | hoy dos superficies o prácticas controlan el mismo resultado                       |
+| `DUPLICACIÓN_TÉCNICA_CONFIRMADA` | existen contratos o estructuras de código repetidos que deberán converger          |
+| `RIESGO_DE_FUENTE_SOMBRA`        | existe una copia manual que debe auditarse antes de tratarla como duplicación real |
+| `PENDIENTE_DE_EVIDENCIA`         | no existe evidencia suficiente para decidir sin observación adicional              |
+
+`PENDIENTE_DE_EVIDENCIA` solo se utilizará cuando las tareas y auditorías anteriores no permitan tomar una decisión. No se abrirán preguntas por precaución genérica.
+
+---
+
+#### 5. Regla de cobertura de las 217 subcapacidades
+
+Las 217 subcapacidades quedan cubiertas así:
+
+```text
+resultado definido en CAP-MAP-001 y CAP-MAP-002
++ propietaria y consumidoras de CAP-MAP-004 y CAP-MAP-005
++ actores de CAP-MAP-006
++ información, fuente, eventos, permisos y evidencia de CAP-MAP-007 a CAP-MAP-011
++ frontera específica de esta tarea cuando exista solapamiento
+= decisión de duplicación para cada subcapacidad
+```
+
+Si una subcapacidad no aparece en los apartados 7 a 11, conserva el resultado, la propietaria y la fuente ya aprobados y queda `SIN_DUPLICACIÓN`.
+
+---
+
+#### 6. Resultado general por familia
+
+| Familia                | Cruce principal revisado                           | Decisión                                                                                                   |
+| ---------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `CAP-01` Dirección     | Gerencia frente a VISO                             | la decisión sigue siendo humana; VISO registra estructura, reglas y evidencia                              |
+| `CAP-02` Personas      | VISO frente a ANIMA                                | administración laboral y experiencia personal se separan; existe una duplicación AS-IS puntual en horarios |
+| `CAP-03` Cumplimiento  | VISO, responsables y asesores                      | VISO conserva seguimiento; responsables y asesores ejecutan o validan sin crear otra fuente                |
+| `CAP-04` Producto      | NEXO, FOGO y PULSO                                 | identidad de producto, receta y oferta vendible son resultados distintos y enlazados                       |
+| `CAP-05` Compras       | ORIGO frente a NEXO                                | ORIGO gobierna compra y aceptación; NEXO registra el efecto en existencias                                 |
+| `CAP-06` Inventario    | NEXO frente a aplicaciones originadoras            | NEXO gobierna existencia; las demás originan hechos que producen movimientos                               |
+| `CAP-07` Activos       | NEXO, mantenimiento e instalaciones                | activo móvil y condición de instalación se separan por objeto                                              |
+| `CAP-08` Producción    | FOGO frente a NEXO                                 | FOGO gobierna orden, lote y rendimiento; NEXO gobierna el movimiento aceptado                              |
+| `CAP-09` Ventas        | PULSO, plataformas externas y NEXO                 | PULSO gobierna pedido y venta; externos originan solicitudes y NEXO informa disponibilidad                 |
+| `CAP-10` Clientes      | PULSO frente a PASS                                | PASS gobierna identidad y autorización del cliente; PULSO usa los datos mínimos para atender y vender      |
+| `CAP-11` Entregas      | NEXO frente a PULSO                                | traslado entre lugares pertenece a NEXO; entrega de pedido al cliente pertenece a PULSO                    |
+| `CAP-12` Finanzas      | PULSO, NUMERA y sistema contable                   | PULSO gobierna operación de venta y caja; NUMERA gobierna efecto económico interno y análisis              |
+| `CAP-13` Instalaciones | NEXO, responsables y proveedores                   | NEXO registra activo, condición y novedad; la ejecución especializada puede ser externa                    |
+| `CAP-14` Mercadeo      | AURA, PULSO, PASS y NUMERA                         | campaña, oportunidad, venta, identidad y medición son resultados distintos                                 |
+| `CAP-15` Tecnología    | VISO, SHELL, NEXO y aplicación afectada            | acceso laboral, entrada al ecosistema, activo tecnológico y permiso funcional se separan                   |
+| `CAP-16` Documentos    | gobierno transversal frente a aplicación del hecho | las reglas documentales son transversales; el documento permanece con el hecho respaldado                  |
+| `CAP-17` Análisis      | NUMERA frente a fuentes operativas                 | NUMERA analiza; no recrea ventas, existencias, producción ni asistencia                                    |
+| `CAP-18` Continuidad   | SHELL frente a aplicación afectada                 | cada aplicación recupera su resultado; SHELL coordina acceso y comunicación cuando corresponda             |
+
+No se asigna una familia completa a SHELL, NUMERA o VISO únicamente porque sea transversal.
+
+---
+
+#### 7. Solapamientos de la propia taxonomía
+
+##### 7.1. Riesgo, inspección y continuidad
+
+| Capacidades relacionadas                             | Frontera aprobable                                                                                         | Estado              |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------- |
+| `CAP-01.07`, `CAP-03.01` y `CAP-18.01`               | riesgo empresarial, peligro laboral y dependencia de continuidad son objetos diferentes                    | `FRONTERA_DEFINIDA` |
+| `CAP-03.07` y `CAP-13.07`                            | la primera comprueba una obligación o control; la segunda comprueba la condición física de una instalación | `FRONTERA_DEFINIDA` |
+| `CAP-03.04`, `CAP-15.07` y `CAP-18.03` a `CAP-18.10` | incidente laboral, falla tecnológica y coordinación de continuidad conservan ciclos separados              | `FRONTERA_DEFINIDA` |
+| `CAP-03.10` y `CAP-17.11`                            | acción correctiva de cumplimiento frente a acción general de mejora                                        | `FRONTERA_DEFINIDA` |
+
+Una falla tecnológica que interrumpe la operación puede originar simultáneamente un caso `CAP-15.07` y una respuesta `CAP-18`, pero ambos deben enlazarse y no convertirse en un único registro ambiguo.
+
+##### 7.2. Activos, instalaciones y mantenimiento
+
+| Capacidades relacionadas  | Frontera aprobable                                                                          | Estado              |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ------------------- |
+| `CAP-07.07` y `CAP-13.02` | mantenimiento de activo o equipo móvil frente a mantenimiento de espacio o instalación fija | `FRONTERA_DEFINIDA` |
+| `CAP-07.08` y `CAP-13.03` | reparación del activo identificado frente a reparación de la instalación                    | `FRONTERA_DEFINIDA` |
+| `CAP-07.06` y `CAP-13.11` | condición del activo frente a novedad de la instalación                                     | `FRONTERA_DEFINIDA` |
+
+Si una instalación contiene un equipo identificable, la solicitud debe indicar cuál es el objeto principal. No se crearán dos reparaciones independientes para el mismo daño.
+
+##### 7.3. Venta empresarial, catering, reservas y eventos
+
+| Capacidades relacionadas  | Frontera aprobable                                                                                | Estado              |
+| ------------------------- | ------------------------------------------------------------------------------------------------- | ------------------- |
+| `CAP-14.07`               | captura una oportunidad antes de que exista compromiso comercial                                  | `FRONTERA_DEFINIDA` |
+| `CAP-14.08` y `CAP-14.09` | gestionan contacto, propuesta, negociación y aceptación comercial B2B o de evento                 | `FRONTERA_DEFINIDA` |
+| `CAP-10.08`               | conserva la reserva, asistentes, fecha y compromisos de atención del cliente                      | `FRONTERA_DEFINIDA` |
+| `CAP-09.14`               | ejecuta en PULSO el pedido especial ya aceptado: productos, cantidades, cobro, documento y estado | `FRONTERA_DEFINIDA` |
+
+Por tanto:
+
+```text
+oportunidad
+→ propuesta y negociación
+→ reserva o compromiso
+→ pedido aceptado
+→ venta, preparación y entrega
+```
+
+No se eliminan estas subcapacidades. Se separan por etapa y resultado para evitar que AURA, PASS y PULSO creen tres ventas independientes.
+
+##### 7.4. Venta, facturación y finanzas
+
+| Capacidades relacionadas  | Frontera aprobable                                                                        | Estado              |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ------------------- |
+| `CAP-09.09` y `CAP-12.02` | pago aplicado al pedido frente a sesión, arqueo y cierre de caja                          | `FRONTERA_DEFINIDA` |
+| `CAP-09.10` y `CAP-12.06` | emisión del documento de la venta frente a gobierno, vigencia y control fiscal-documental | `FRONTERA_DEFINIDA` |
+| `CAP-09.15` y `CAP-12.07` | cierre operativo de jornada frente a conciliación entre ventas, pagos y entregas          | `FRONTERA_DEFINIDA` |
+| `CAP-12.01` y `CAP-17.09` | registro del efecto económico frente a análisis de costo y rentabilidad                   | `FRONTERA_DEFINIDA` |
+
+PULSO conservará la venta, el pago aplicado, el documento emitido y la caja operativa. NUMERA recibirá efectos confirmados y no podrá corregir la venta original.
+
+##### 7.5. Servicio al cliente y corrección de ventas
+
+| Capacidades relacionadas  | Frontera aprobable                                                        | Estado              |
+| ------------------------- | ------------------------------------------------------------------------- | ------------------- |
+| `CAP-09.05` y `CAP-10.03` | cambiar el pedido vigente frente a atender una solicitud del cliente      | `FRONTERA_DEFINIDA` |
+| `CAP-10.04` y `CAP-10.05` | investigar reclamo frente a ejecutar devolución o compensación autorizada | `FRONTERA_DEFINIDA` |
+| `CAP-10.05` y `CAP-12.01` | decisión operativa de devolución frente a efecto económico confirmado     | `FRONTERA_DEFINIDA` |
+
+La atención puede iniciar el caso, pero no modifica por sí sola la venta, el inventario o el hecho económico.
+
+##### 7.6. Documentos, evidencia y análisis
+
+| Capacidades relacionadas                                      | Frontera aprobable                                                                                                                      | Estado              |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| `CAP-16.02` a `CAP-16.09` frente a documentos de cada familia | CAP-16 define clasificación, aprobación, vigencia, acceso y conservación; la aplicación del hecho crea y custodia el documento concreto | `FRONTERA_DEFINIDA` |
+| `CAP-17.02` frente a registros operativos                     | recopilar para análisis no permite recrear o corregir el hecho fuente                                                                   | `FRONTERA_DEFINIDA` |
+| `CAP-17.03` frente a controles de cada dominio                | NUMERA puede señalar un problema de calidad; la propietaria corrige el origen con trazabilidad                                          | `FRONTERA_DEFINIDA` |
+
+---
+
+#### 8. Fronteras entre aplicaciones que quedan confirmadas
+
+##### 8.1. VISO y ANIMA
+
+| Resultado                                                 | Propietaria objetivo | Participación de la otra aplicación                      |
+| --------------------------------------------------------- | -------------------- | -------------------------------------------------------- |
+| persona, relación laboral, sede, función y turno aprobado | VISO                 | ANIMA presenta al trabajador lo necesario                |
+| marcación original de entrada o salida                    | ANIMA                | VISO revisa asistencia y gestiona novedades              |
+| novedad laboral y decisión administrativa                 | VISO                 | ANIMA permite al trabajador informar o consultar         |
+| documento personal aportado por el trabajador             | ANIMA                | VISO consume lo autorizado para administración           |
+| cierre de relación y retiro de acceso laboral             | VISO                 | cada aplicación ejecuta el cierre de su sesión o permiso |
+
+`TEC-14` confirma una propiedad competidora actual: **VISO y ANIMA pueden editar `employee_shifts`**. El objetivo será:
+
+```text
+VISO publica o corrige el turno
+→ ANIMA lo consulta
+→ ANIMA no mantiene una segunda edición independiente
+```
+
+Esta es una `DUPLICACIÓN_AS_IS_CONFIRMADA`. No se corrige todavía en código; se convierte en hallazgo obligatorio de remodelación.
+
+`TEC-15` confirma que ninguna de las dos aplicaciones corrige actualmente la hora original de asistencia. La posibilidad de agregar una nota en ANIMA no constituye duplicación de la marcación.
+
+##### 8.2. NEXO, ORIGO y FOGO
+
+| Resultado                                             | Propietaria | Regla para las demás                                                        |
+| ----------------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
+| proveedor, solicitud, orden y aceptación de compra    | ORIGO       | NEXO recibe únicamente el efecto aceptado                                   |
+| producto, unidad, ubicación, existencia y movimiento  | NEXO        | ORIGO y FOGO referencian el mismo producto                                  |
+| receta, orden, lote, consumo productivo y rendimiento | FOGO        | NEXO recibe movimientos confirmados                                         |
+| recepción de proveedor                                | ORIGO       | NEXO no vuelve a aceptar o rechazar la compra; registra la entrada derivada |
+| salida o liberación de producción                     | FOGO        | NEXO no vuelve a cerrar el lote; registra el producto aceptado              |
+
+Las pantallas de recepción o despacho pueden requerir acciones coordinadas, pero no deben producir dos recepciones, dos lotes o dos movimientos.
+
+##### 8.3. NEXO, PULSO y entrega
+
+| Resultado                                   | Propietaria                                |
+| ------------------------------------------- | ------------------------------------------ |
+| disponibilidad física por lugar             | NEXO                                       |
+| disponibilidad comercial mostrada al vender | PULSO, derivada de reglas y datos vigentes |
+| pedido, venta y promesa al cliente          | PULSO                                      |
+| traslado y recepción entre lugares Vento    | NEXO                                       |
+| entrega que cierra un pedido del cliente    | PULSO                                      |
+
+El destino determina la frontera:
+
+- si la custodia pasa entre lugares internos, gobierna NEXO;
+- si la custodia termina en el cliente por un pedido, gobierna PULSO;
+- si interviene mensajería, PULSO conserva la entrega y la referencia externa.
+
+##### 8.4. PULSO, PASS y NUMERA
+
+| Resultado                                               | Propietaria |
+| ------------------------------------------------------- | ----------- |
+| identidad, consentimiento y acción directa del cliente  | PASS        |
+| datos mínimos usados en un pedido o venta               | PULSO       |
+| pedido, venta, pago aplicado, caja y documento de venta | PULSO       |
+| hecho económico interno, costo, obligación y análisis   | NUMERA      |
+
+PASS no crea ventas y NUMERA no corrige pedidos. PULSO tampoco se convierte en maestro universal de identidad por registrar un comprador identificado.
+
+##### 8.5. AURA, PULSO y NUMERA
+
+AURA continúa sin existir como producto implementado. Su propiedad futura se limita a:
+
+- intención y calendario de comunicación;
+- contenido y publicación;
+- campaña;
+- origen de oportunidad;
+- intención de promoción.
+
+PULSO gobernará cupón aplicado, pedido y venta. NUMERA gobernará el análisis económico derivado. Mientras AURA no exista, sus capacidades podrán ejecutarse manualmente, pero no se inventará una integración ni una segunda base de ventas.
+
+##### 8.6. SHELL y las aplicaciones
+
+SHELL podrá gobernar:
+
+- entrada y navegación del ecosistema;
+- catálogo visible de aplicaciones;
+- selección de contexto autorizado;
+- estado básico de disponibilidad para orientar al usuario.
+
+SHELL no gobernará:
+
+- datos laborales de VISO o ANIMA;
+- productos o existencias de NEXO;
+- compras de ORIGO;
+- producción de FOGO;
+- ventas de PULSO;
+- identidad de cliente de PASS;
+- hechos económicos de NUMERA;
+- documentos propios de cada hecho.
+
+Mostrar, enlazar o iniciar sesión no convierte a SHELL en propietaria.
+
+---
+
+#### 9. Áreas y personas que intervienen sin competir por la propiedad
+
+Los actores de `CAP-MAP-006` conservan funciones distintas:
+
+| Participación            | Qué puede hacer                             | Qué no significa                          |
+| ------------------------ | ------------------------------------------- | ----------------------------------------- |
+| iniciador                | solicitar o reportar una necesidad          | aprobarla automáticamente                 |
+| ejecutor                 | realizar el trabajo autorizado              | gobernar todos los datos relacionados     |
+| supervisor               | revisar avance, diferencia o cumplimiento   | cambiar el registro original sin permiso  |
+| aprobador                | aceptar, rechazar o autorizar una excepción | ejecutar todos los pasos                  |
+| propietario de la fuente | conservar estado y trazabilidad             | tomar por sí solo la decisión empresarial |
+
+Gerencia, Contabilidad, responsables de sede y trabajadores pueden intervenir en la misma capacidad sin crear propiedad competidora cuando la decisión y el registro quedan enlazados.
+
+Los pendientes `OPE-04` a `OPE-11` definirán cargos concretos para aprobar excepciones. No cambian la propiedad de ORIGO, NEXO, VISO, PULSO o la aplicación correspondiente.
+
+---
+
+#### 10. Sistemas externos, archivos y medios manuales
+
+| Medio o sistema            | Puede conservar                                             | No puede convertirse automáticamente en           |
+| -------------------------- | ----------------------------------------------------------- | ------------------------------------------------- |
+| Rappi, Shopify o ManyChat  | solicitud, pedido o referencia externa                      | fuente interna paralela del pedido Vento          |
+| banco o proveedor de pagos | confirmación externa de movimiento                          | venta, caja o conciliación interna completa       |
+| sistema contable           | asiento o documento oficial que le corresponda              | fuente de pedidos, inventario o producción        |
+| WhatsApp                   | solicitud, aviso o evidencia complementaria                 | estado final de compra, remisión, venta o novedad |
+| Excel                      | importación, exportación o control transitorio identificado | maestro independiente sin conciliación            |
+| PDF, captura o papel       | representación o evidencia                                  | sustituto silencioso del registro estructurado    |
+
+Cuando una operación actual solo exista en estos medios se marca `RIESGO_DE_FUENTE_SOMBRA`, no `DUPLICACIÓN_AS_IS_CONFIRMADA`, hasta comprobar que dos versiones se controlan de manera independiente.
+
+Las auditorías operativas pendientes ya registradas servirán para observar esos casos. No se crea un segundo cuestionario.
+
+---
+
+#### 11. Duplicación técnica confirmada
+
+`TEC-18` confirma contratos y estructuras repetidos entre repositorios:
+
+- tipos de sedes, personas y productos;
+- compras repetidas entre FOGO y ORIGO;
+- salidas de producción repetidas entre NEXO y FOGO;
+- tipos de pedidos repetidos en PULSO;
+- `SiteRow`, `SiteOption`, `EmployeeRow`, sesión operativa y componentes estándar repetidos en NUMERA;
+- copias que ya presentan diferencias entre NUMERA y ORIGO.
+
+La decisión es:
+
+| Hallazgo                                 | Clasificación                     | Tratamiento posterior                        |
+| ---------------------------------------- | --------------------------------- | -------------------------------------------- |
+| contratos o tipos repetidos              | `DUPLICACIÓN_TÉCNICA_CONFIRMADA`  | derivar de contratos comunes o generados     |
+| nombres iguales con significado distinto | no consolidar automáticamente     | separar nombre y contrato por dominio        |
+| copias que ya divergen                   | riesgo de incompatibilidad        | comparar campo por campo antes de reemplazar |
+| tablas de dominio distintas              | no fusionar por similitud técnica | conservar la fuente empresarial definida     |
+
+Esta duplicación no modifica la taxonomía ni autoriza crear un paquete compartido en esta tarea. Queda como requisito verificable para el análisis y la remodelación técnica.
+
+---
+
+#### 12. Hallazgos consolidados
+
+| Tipo de hallazgo                                       | Resultado |
+| ------------------------------------------------------ | --------: |
+| familias revisadas                                     |    **18** |
+| subcapacidades cubiertas                               |   **217** |
+| propiedad competidora funcional confirmada             |     **1** |
+| conjunto de duplicaciones técnicas confirmado          |     **1** |
+| solapamientos de taxonomía resueltos mediante frontera |    **21** |
+| preguntas nuevas creadas                               |     **0** |
+
+La propiedad competidora funcional confirmada es la edición de horarios en VISO y ANIMA.
+
+El conjunto técnico confirmado corresponde a los contratos y estructuras repetidos documentados en `TEC-18`; contiene varios casos, pero se conserva como un solo frente de remodelación transversal.
+
+Los riesgos de fuente sombra no se cuentan como duplicaciones confirmadas hasta que la observación operativa demuestre control paralelo del mismo estado.
+
+---
+
+#### 13. Decisiones para la remodelación posterior
+
+1. Cada hecho tendrá una única fuente con autoridad para crear y corregir.
+2. Las consumidoras recibirán identificador, versión y estado sin poder reescribir el original.
+3. Un evento derivado no duplicará el efecto empresarial al reintentarse.
+4. Toda corrección se realizará en la propietaria y se propagará con trazabilidad.
+5. Las referencias externas conservarán el identificador del proveedor y el identificador interno.
+6. Los contratos compartidos describirán intercambios; no convertirán una base compartida en propiedad universal.
+7. La consolidación técnica no fusionará resultados empresariales diferentes.
+8. Los controles manuales seguirán visibles hasta demostrar que su reemplazo funciona.
+9. La edición de horarios deberá quedar en VISO; ANIMA será consumidora para el trabajador.
+10. Los cruces comerciales conservarán la secuencia oportunidad, propuesta, reserva, pedido y venta.
+
+---
+
+#### 14. Dudas y comprobaciones
+
+No se crean preguntas nuevas.
+
+Esta tarea reutiliza:
+
+- `OPE-04` a `OPE-11` para conocer aprobadores concretos de excepciones;
+- `TEC-14` para la edición duplicada de horarios;
+- `TEC-15` para la ausencia de corrección de marcaciones;
+- `TEC-18` para contratos y estructuras repetidos;
+- las auditorías operativas ya pendientes para comprobar fuentes sombra.
+
+Las respuestas futuras se incorporarán al registro vivo y afinarán el estado AS-IS, sin reabrir las fronteras objetivo ya definidas.
+
+---
+
+#### 15. Lo que queda decidido
+
+1. Las 217 subcapacidades fueron revisadas mediante herencia y excepciones.
+2. Colaborar, consultar o analizar no concede propiedad.
+3. VISO y ANIMA compiten actualmente por la edición de horarios.
+4. La marcación original pertenece a ANIMA y la administración de novedades a VISO.
+5. ORIGO acepta la compra y NEXO registra su efecto en existencias.
+6. FOGO cierra producción y NEXO registra movimientos aceptados.
+7. NEXO gobierna traslados internos y PULSO entregas de pedidos al cliente.
+8. PASS gobierna identidad del cliente; PULSO gobierna la venta.
+9. PULSO gobierna venta y caja; NUMERA recibe el efecto económico.
+10. AURA no recreará pedidos, ventas ni costos.
+11. SHELL no hereda propiedad de los dominios que enlaza.
+12. Los documentos siguen perteneciendo al hecho que respaldan.
+13. Las capacidades comerciales solapadas se separan por etapa.
+14. Mantenimiento de activos e instalaciones se separa por el objeto afectado.
+15. Los incidentes se separan por naturaleza y por la coordinación de continuidad.
+16. Los contratos repetidos son duplicación técnica confirmada, no otra capacidad empresarial.
+17. WhatsApp, Excel y papel conservan riesgo de fuente sombra hasta terminar la auditoría.
+18. No se requieren preguntas nuevas para aprobar esta propuesta.
+
+---
+
+#### 16. Lo que esta tarea no autoriza
+
+- eliminar pantallas o funciones;
+- retirar la edición de horarios de ANIMA;
+- fusionar tablas o bases de datos;
+- crear contratos compartidos;
+- modificar Supabase;
+- implementar eventos o integraciones;
+- reemplazar Excel, WhatsApp, papel o sistemas externos;
+- desarrollar AURA;
+- cambiar permisos;
+- renombrar o eliminar subcapacidades aprobadas;
+- iniciar la remodelación técnica.
+
+---
+
+#### 17. Criterios de aceptación
+
+`CAP-MAP-013` podrá aprobarse cuando:
+
+- las 217 subcapacidades queden cubiertas;
+- los solapamientos de taxonomía tengan frontera verificable;
+- consultar o analizar no se confunda con gobernar;
+- VISO y ANIMA conserven la duplicación AS-IS visible y el objetivo sin doble edición;
+- ORIGO/NEXO, NEXO/FOGO y NEXO/PULSO tengan resultados separados;
+- PULSO/PASS, PULSO/NUMERA y AURA/PULSO tengan fronteras explícitas;
+- SHELL no se convierta en propietaria universal;
+- los actores humanos no se confundan con la fuente;
+- las copias manuales se traten como riesgo y no como duplicación inventada;
+- `TEC-18` quede incorporada como duplicación técnica;
+- no se creen preguntas repetidas;
+- no se autorice implementación;
+- `CAP-MAP-014` permanezca como única continuidad inmediata.
+
+---
+
+#### 18. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+capacidad y resultado
+        ↓
+fuente propietaria
+        ↓
+colaboradoras y consumidoras
+        ↓
+frontera ante resultados parecidos
+        ↓
+duplicaciones reales que deberá resolver la remodelación
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-014
+— Detectar capacidades necesarias que no aparecen en código ni datos actuales
+```
+
+`CAP-MAP-014` comparará la taxonomía empresarial con la evidencia técnica y operativa para localizar necesidades reales que todavía no tengan representación comprobada.
+
+### ✅ CAP-MAP-014 — Detectar capacidades necesarias que no aparecen en código ni datos actuales
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** contraste documental entre capacidad empresarial y representación técnica actual
+**Dependencia anterior:** `CAP-MAP-013`
+**Continuidad reservada:** `CAP-MAP-015`
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea compara las **217 subcapacidades** con:
+
+- aplicaciones y rutas disponibles en los repositorios;
+- tablas y datos del proyecto remoto `vento-os-dev`;
+- migraciones canónicas de `vento-shell`;
+- auditoría técnica `TEC-01` a `TEC-19`;
+- formularios y auditorías operativas ya preparados;
+- decisiones aprobadas en `CAP-MAP-001` a `CAP-MAP-013`.
+
+El objetivo es distinguir:
+
+1. capacidad comprobada y utilizada;
+2. capacidad con código o tablas, pero sin uso comprobado;
+3. capacidad cubierta solo parcialmente;
+4. capacidad realizada manualmente o mediante un tercero;
+5. capacidad necesaria sin representación canónica comprobada;
+6. producto o repositorio que no pertenece a la línea base operativa de Vento Group.
+
+No se declarará implementada una capacidad solo porque exista una tabla, una pantalla o un documento de diseño.
+
+---
+
+#### 2. Estados de cobertura
+
+| Estado                             | Significado                                                                                               |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `COMPROBADA_EN_USO`                | existen superficie, estructura y datos o evidencia operativa suficiente                                   |
+| `ESTRUCTURA_SIN_USO`               | existen código o tablas, pero no hay registros ni operación comprobada                                    |
+| `PARCIAL`                          | una parte del resultado existe, pero faltan etapas, controles o evidencia                                 |
+| `MANUAL_O_EXTERNA`                 | la necesidad se atiende mediante personas, archivos, mensajes o terceros                                  |
+| `SIN_REPRESENTACIÓN_COMPROBADA`    | no se encontró una forma canónica de ejecutar y conservar el resultado                                    |
+| `PROYECTO_FUTURO_CON_BASE_TÉCNICA` | existen código o estructuras preliminares, pero el producto todavía debe diseñarse, planearse y adoptarse |
+| `FUERA_DE_LA_LÍNEA_BASE`           | existe técnicamente, pero no representa una capacidad operativa de Vento Group dentro de este mapa        |
+
+Estos estados describen evidencia AS-IS. No equivalen a prioridad de implementación.
+
+---
+
+#### 3. Prueba obligatoria de representación
+
+Una subcapacidad solo se considerará `COMPROBADA_EN_USO` cuando pueda responderse:
+
+1. ¿Dónde inicia una persona el trabajo?
+2. ¿Qué estructura conserva el resultado?
+3. ¿Existe al menos un registro o evidencia real?
+4. ¿Puede distinguirse borrador, aprobado, completado, rechazado o corregido?
+5. ¿Existe una forma visible de consultar lo ocurrido?
+6. ¿La aplicación coincide con la propietaria aprobada?
+
+La evidencia se interpretará así:
+
+```text
+pantalla + estructura + datos + ciclo observable
+= capacidad comprobada en uso
+
+pantalla o tabla sin datos
+= estructura sin uso comprobado
+
+archivo, chat o proveedor externo
+= capacidad manual o externa
+
+ninguna evidencia localizada
+= sin representación comprobada
+```
+
+---
+
+#### 4. Regla de cobertura de las 217 subcapacidades
+
+Cada subcapacidad hereda el estado general de su familia, salvo que aparezca en los apartados 6 a 12.
+
+```text
+COBERTURA DE SUBCAPACIDAD
+=
+EVIDENCIA BASE DE LA FAMILIA
++
+EXCEPCIÓN ESPECÍFICA
++
+LIMITACIÓN DE AUDITORÍA, SI EXISTE
+```
+
+Cuando una familia se marque `PARCIAL`, no se supone que todas sus subcapacidades estén implementadas. El apartado de brechas identifica cuáles requieren atención explícita.
+
+---
+
+#### 5. Cobertura general por familia
+
+| Familia                                      | Evidencia actual principal                                                          | Estado general      |
+| -------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------- |
+| `CAP-01` Dirección y gobierno                | empresas, sedes, áreas, roles, permisos y mapa operativo en VISO                    | `PARCIAL`           |
+| `CAP-02` Personas y trabajo                  | VISO, ANIMA, esquema `talento`, turnos, asistencia, vacantes y documentos           | `PARCIAL`           |
+| `CAP-03` Seguridad, salud y cumplimiento     | documentos, reglas, auditoría operativa y controles dispersos                       | `PARCIAL`           |
+| `CAP-04` Productos y conocimiento            | NEXO, FOGO, VISO, 959 productos, 276 recetas y configuraciones comerciales          | `COMPROBADA_EN_USO` |
+| `CAP-05` Abastecimiento                      | ORIGO, proveedores, órdenes y estructuras de recepción                              | `PARCIAL`           |
+| `CAP-06` Inventario                          | NEXO, saldos, ubicaciones, movimientos, conteos, solicitudes y traslados con datos  | `COMPROBADA_EN_USO` |
+| `CAP-07` Activos                             | activos, grupos, movimientos y superficies de NEXO; mantenimiento y conteos sin uso | `PARCIAL`           |
+| `CAP-08` Producción                          | recetas y rutas con datos; solicitudes y lotes sin registros                        | `PARCIAL`           |
+| `CAP-09` Venta y pedidos                     | pedidos digitales con pocos datos, PULSO, salón y esquema POS vacío                 | `PARCIAL`           |
+| `CAP-10` Clientes                            | usuarios, PASS, mensajes, facturación solicitada y lealtad parcial                  | `PARCIAL`           |
+| `CAP-11` Transporte y entrega                | traslados existentes; remisiones nuevas y sesiones de entrega sin registros         | `PARCIAL`           |
+| `CAP-12` Dinero y obligaciones               | pagos digitales, costos y NUMERA; contabilidad, bancos y cartera incompletos        | `PARCIAL`           |
+| `CAP-13` Instalaciones                       | sedes, ubicaciones y activos; sin ciclo dedicado de instalaciones                   | `PARCIAL`           |
+| `CAP-14` Comunicación y desarrollo comercial | CMS de VISO, sitio público y contenido; AURA inexistente                            | `PARCIAL`           |
+| `CAP-15` Tecnología y soporte                | permisos, dispositivos, navegación, actualizaciones y tickets básicos               | `PARCIAL`           |
+| `CAP-16` Información y evidencia             | documentos, tipos, reglas y algunas solicitudes de datos                            | `PARCIAL`           |
+| `CAP-17` Medición y mejora                   | exportaciones puntuales, NUMERA y páginas de rentabilidad                           | `PARCIAL`           |
+| `CAP-18` Continuidad e incidentes            | tickets, eventos y configuraciones aisladas; sin ciclo integral de continuidad      | `PARCIAL`           |
+
+`COMPROBADA_EN_USO` a nivel de familia no significa que sus quince o diez subcapacidades estén completas. Significa que el ciclo principal tiene evidencia real y que las brechas son excepciones localizables.
+
+---
+
+#### 6. Evidencia que corrige o amplía el mapa anterior
+
+##### 6.1. TALENTO es un proyecto futuro anterior a ANIMA
+
+El usuario confirma que TALENTO se concibe como una **plataforma de empleo propia** y como el portal anterior a ANIMA.
+
+Su propósito objetivo será:
+
+1. publicar puestos de trabajo de Vento Group;
+2. permitir que una persona consulte y seleccione una vacante;
+3. registrar su postulación;
+4. solicitar progresivamente los datos y documentos necesarios para evaluarla;
+5. conservar entrevistas, evaluaciones, decisiones y oferta;
+6. crear un pre-registro de persona candidata;
+7. transferir a ANIMA únicamente a quien complete la selección y vinculación autorizada;
+8. permitir operación con el estado laboral y los accesos correspondientes durante el período de prueba;
+9. confirmar después la continuidad definitiva o ejecutar el cierre correspondiente.
+
+La revisión técnica actual confirma:
+
+- repositorio `vento-talento`;
+- aplicación móvil Expo con vacantes, postulaciones, proceso, documentos y perfil;
+- administración de vacantes en VISO;
+- migraciones canónicas en `vento-shell`;
+- esquema remoto `talento`;
+- tablas de candidatos, vacantes, postulaciones, etapas, documentos, entrevistas, evaluaciones, ofertas y preingreso;
+- cero registros actuales en las tablas del esquema `talento`.
+
+La base técnica existente no convierte el producto en actual. TALENTO queda:
+
+```text
+PROYECTO_FUTURO_CON_BASE_TÉCNICA
+```
+
+Flujo objetivo:
+
+```text
+VISO o el responsable autorizado crea y publica la vacante
+        ↓
+TALENTO permite consultar y presentar la postulación
+        ↓
+TALENTO solicita los datos y documentos requeridos para esa etapa
+        ↓
+el equipo autorizado evalúa, entrevista, rechaza o selecciona
+        ↓
+TALENTO conserva el pre-registro y la trazabilidad de selección
+        ↓
+la vinculación autorizada crea o enlaza el trabajador en ANIMA/VISO
+        ↓
+el trabajador opera con estado EN_PERIODO_DE_PRUEBA y permisos provisionales acordes con su función
+        ↓
+se confirma continuidad definitiva o se cierra la vinculación y sus accesos
+```
+
+Reglas:
+
+1. Una persona postulada es `CANDIDATO`, no trabajador.
+2. El pre-registro no crea por sí solo relación laboral, turno, asistencia ni acceso operativo.
+3. Solo una selección y vinculación autorizadas podrán crear o enlazar `employee_id`.
+4. El período de prueba será un estado del trabajador ya vinculado, no una forma de mantenerlo como candidato informal.
+5. Los permisos provisionales se asignarán por sede, función, fechas y aplicación, únicamente en la medida necesaria para operar.
+6. La continuidad definitiva no requerirá crear otra persona; actualizará el estado del mismo vínculo.
+7. Un rechazo, retiro o vencimiento cerrará la postulación sin borrar la trazabilidad obligatoria.
+8. Los documentos se pedirán por etapa y finalidad; no se solicitará desde el inicio información que todavía no sea necesaria.
+9. El candidato deberá conocer qué datos se solicitan, para qué se usan y cuánto tiempo se conservarán.
+10. Una persona podrá postularse a varias vacantes sin duplicar su identidad.
+11. ANIMA recibirá únicamente la información laboral necesaria después de la vinculación autorizada.
+12. VISO conservará la administración empresarial de vacantes, selección, estado laboral y permisos; TALENTO conservará la experiencia de la persona candidata.
+
+TALENTO es una aplicación candidata real que faltaba en el catálogo inicial de `CAP-MAP-004`, pero se incorporará como **aplicación futura**, no como operación actual.
+
+Su diseño detallado, reglas documentales, estados, consentimiento, retención y traspaso a ANIMA deberán planearse antes de implementar o activar la base técnica existente.
+
+##### 6.2. La comunicación digital no está totalmente ausente
+
+Aunque AURA no tiene repositorio, pantallas ni funciones, existen:
+
+- CMS de sitio web en VISO;
+- administración de bloques y contenidos;
+- repositorio `vento-group-web`;
+- páginas de restaurantes, servicios, empleos, eventos y ecosistema;
+- `website_items` con 9 registros;
+- `website_blocks` con 7 registros;
+- `app_content_blocks` con 9 registros.
+
+Esto representa parcialmente:
+
+- `CAP-14.01`;
+- `CAP-14.03`;
+- `CAP-14.04`;
+- una parte de `CAP-14.11`.
+
+No demuestra gestión de campañas, oportunidades, reputación multicanal ni medición promocional.
+
+VISO y el sitio público son superficies actuales. AURA conserva la candidatura futura para coordinación de mercadeo, pero no podrá apropiarse retroactivamente de los hechos ya gobernados por otras fuentes.
+
+##### 6.3. VITAL es un proyecto personal separado
+
+El repositorio y esquema `vital` contienen programas personales de actividad física, deporte, nutrición, preparación y bienestar.
+
+El usuario confirma que:
+
+- VITAL es un proyecto aparte de salud y entrenamiento;
+- su relación con Vento Group es nominal o secundaria;
+- en la práctica es principalmente un proyecto personal;
+- actualmente está parcialmente abandonado;
+- no forma parte de la operación que este mapa debe remodelar.
+
+No constituyen evidencia de:
+
+- identificación de peligros laborales;
+- investigación de accidentes;
+- entrega de elementos de protección;
+- inspecciones obligatorias;
+- higiene e inocuidad empresarial;
+- emergencias laborales.
+
+Por tanto, VITAL queda `FUERA_DE_LA_LÍNEA_BASE` de estas 217 subcapacidades. Su código y datos se conservan como producto separado; no se eliminan ni se incluyen en la remodelación de Vento OS.
+
+No se utilizará VITAL para declarar cubierta `CAP-03`.
+
+---
+
+#### 7. Estructuras existentes sin uso operativo comprobado
+
+| Frente                                  | Evidencia técnica                                                                                                      | Estado                             |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| reclutamiento y selección               | TALENTO tiene aplicación y esquema con 0 registros, pero todavía debe diseñarse y planearse como portal previo a ANIMA | `PROYECTO_FUTURO_CON_BASE_TÉCNICA` |
+| recepción de compras                    | `procurement_receptions` e ítems con 0 registros                                                                       | `ESTRUCTURA_SIN_USO`               |
+| ejecución productiva                    | solicitudes, lotes, consumos, salidas y paquetes con 0 registros                                                       | `ESTRUCTURA_SIN_USO`               |
+| operación POS propia                    | sesiones, pedidos de sesión, turnos, movimientos y pagos POS con 0 registros                                           | `ESTRUCTURA_SIN_USO`               |
+| importación de ventas Makos             | lotes, filas, mapeos y consumos con 0 registros                                                                        | `ESTRUCTURA_SIN_USO`               |
+| mantenimiento de activos                | registros nuevos de mantenimiento con 0 filas                                                                          | `ESTRUCTURA_SIN_USO`               |
+| conteos patrimoniales                   | sesiones y líneas de conteo de activos con 0 filas                                                                     | `ESTRUCTURA_SIN_USO`               |
+| documentos internos valorizados         | comprobantes POS internos y secuencias con 0 filas                                                                     | `ESTRUCTURA_SIN_USO`               |
+| gastos y presupuestos NUMERA            | tablas disponibles con 0 gastos y 0 presupuestos                                                                       | `ESTRUCTURA_SIN_USO`               |
+| solicitudes de facturación identificada | perfiles y solicitudes disponibles con 0 registros                                                                     | `ESTRUCTURA_SIN_USO`               |
+| sesiones de entrega de pedidos          | estructura disponible con 0 registros                                                                                  | `ESTRUCTURA_SIN_USO`               |
+| billetera y movimientos de lealtad      | estructura disponible con 0 movimientos                                                                                | `ESTRUCTURA_SIN_USO`               |
+
+Estos frentes no se tratarán como capacidades inexistentes. Requieren:
+
+1. prueba de flujo;
+2. verificación de permisos;
+3. adopción real;
+4. datos controlados;
+5. confirmación de que sustituyen el método manual.
+
+---
+
+#### 8. Capacidades con ausencia funcional específica confirmada
+
+##### 8.1. Personas y asistencia
+
+| Capacidad                 | Ausencia confirmada                                                               | Evidencia                  |
+| ------------------------- | --------------------------------------------------------------------------------- | -------------------------- |
+| `CAP-02.07` y `CAP-02.08` | no existe una corrección auditable de hora o tipo de marcación                    | `TEC-15`                   |
+| `CAP-02.12`               | no existe nómina, liquidación ni gestión completa de pagos y beneficios laborales | esquema financiero parcial |
+
+La nota de incidencia de ANIMA no equivale a corregir una marcación. La exportación de asistencia tampoco constituye nómina.
+
+##### 8.2. Venta, pago y control de jornada
+
+| Capacidad                     | Ausencia confirmada                                                                | Evidencia                         |
+| ----------------------------- | ---------------------------------------------------------------------------------- | --------------------------------- |
+| `CAP-09.09` y `CAP-12.07`     | no existe corrección manual auditable de medio de pago                             | `TEC-16`                          |
+| `CAP-09.15`                   | no existe jornada POS propia comprobada con sesiones y cierres usados              | tablas POS con 0 registros        |
+| `CAP-09.08` a `CAP-09.10`     | el flujo digital existe, pero el POS presencial objetivo todavía no está operativo | PULSO parcial y tablas POS vacías |
+| `CAP-17.04` aplicado a ventas | PULSO no tiene exportación de auditoría comprobada                                 | `TEC-17`                          |
+
+Makos puede seguir registrando ventas actuales. Su importación manual no demuestra que el POS futuro de PULSO esté listo.
+
+##### 8.3. Finanzas y cartera
+
+| Capacidad                                      | Ausencia confirmada                                                                         |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `CAP-12.03` Gestionar bancos y pagos           | no existe módulo bancario completo                                                          |
+| `CAP-12.04` Gestionar cuentas por cobrar       | no existe cartera completa con documentos, aplicaciones de pago, vencimiento y saldo        |
+| `CAP-12.05` Gestionar cuentas por pagar        | compras y condiciones de proveedor existen, pero no una cartera completa de obligaciones    |
+| `CAP-12.12` Gestionar tesorería                | no existe ciclo canónico completo                                                           |
+| `CAP-12.13` Gestionar impuestos y obligaciones | no existe sistema tributario interno completo; intervienen herramientas y asesores externos |
+| `CAP-12.14` Cerrar períodos y emitir reportes  | NUMERA tiene una base parcial, no cierre contable completo                                  |
+
+Los documentos POS internos de NEXO no son facturas fiscales y no constituyen por sí solos una cartera completa.
+
+La arquitectura preliminar ya analizada se conserva como referencia, no como implementación:
+
+- cuentas por cobrar internas apoyadas en documentos y pagos aplicados;
+- cuentas por pagar apoyadas en órdenes, recepciones y condiciones de proveedores;
+- migraciones y contratos de datos siempre desde `vento-shell`.
+
+##### 8.4. Clientes y servicio
+
+No se encontró ciclo canónico completo para:
+
+- `CAP-10.04` recibir, investigar y resolver reclamos;
+- `CAP-10.05` autorizar y ejecutar devoluciones o compensaciones;
+- `CAP-10.06` medir satisfacción;
+- `CAP-10.08` gestionar reservas y eventos de atención.
+
+Mensajes asociados a pedidos y `user_feedback` vacío representan una base parcial, no los ciclos completos.
+
+##### 8.5. Instalaciones
+
+`CAP-13` carece de una aplicación o ciclo dedicado comprobado para:
+
+- planear mantenimiento de instalaciones;
+- solicitar y cerrar reparaciones;
+- controlar limpieza y saneamiento;
+- controlar plagas;
+- controlar servicios;
+- inspeccionar condiciones;
+- calibrar equipos;
+- gestionar llaves y acceso físico;
+- controlar obras y adecuaciones;
+- cerrar novedades de instalaciones.
+
+Las sedes, ubicaciones y activos permiten identificar el lugar u objeto. No sustituyen la ejecución y evidencia de mantenimiento.
+
+##### 8.6. Comunicación y desarrollo comercial
+
+Sin representación canónica comprobada:
+
+- `CAP-14.05` gestionar campañas completas;
+- `CAP-14.07` administrar oportunidades comerciales;
+- la parte de propuesta y negociación de `CAP-14.08` y `CAP-14.09`;
+- `CAP-14.10` medir de extremo a extremo una promoción;
+- `CAP-14.11` gestionar reputación y respuestas multicanal.
+
+El CMS publica contenido; no es CRM, gestor de campaña ni sistema de reputación.
+
+##### 8.7. Continuidad
+
+No se encontró ciclo empresarial integral para:
+
+- inventariar dependencias críticas;
+- definir alternativas por capacidad;
+- declarar y priorizar incidentes empresariales;
+- operar temporalmente fuera de línea;
+- incorporar lo ocurrido durante la falla;
+- confirmar pendientes después de recuperar;
+- probar respaldos y recuperación por dominio;
+- aprender y actualizar el plan.
+
+Tickets, eventos técnicos y respaldos de infraestructura pueden participar, pero no cubren por sí solos `CAP-18.01` a `CAP-18.12`.
+
+---
+
+#### 9. Coberturas parciales que no deben declararse cerradas
+
+| Frente     | Parte existente                             | Parte faltante                                                               |
+| ---------- | ------------------------------------------- | ---------------------------------------------------------------------------- |
+| compras    | proveedor, orden y algunos costos           | adopción de recepción nueva, comparación, devoluciones y evaluación completa |
+| activos    | inventario, grupos y movimientos            | mantenimiento, garantías, documentos, conteos y baja operativa comprobada    |
+| producción | recetas, pasos y rutas                      | solicitud, ejecución, consumo, rendimiento y cierre con datos reales         |
+| ventas     | pedido digital y pago digital limitado      | POS presencial, caja, consumidor final, correcciones y cierres               |
+| entregas   | traslados internos                          | despacho sellado, recepción nueva y entrega de pedido con adopción           |
+| finanzas   | centros, periodos, categorías y costos      | gastos reales, presupuestos, bancos, cartera, tesorería y cierre             |
+| tecnología | accesos, navegación, dispositivos y tickets | gobierno de cambios, pruebas, licencias, costos y capacitación completa      |
+| documentos | documentos, tipos y reglas                  | retención, eliminación, firmas, versiones y auditoría integral               |
+| análisis   | exportaciones y páginas puntuales           | indicadores comunes, calidad, servicio, acciones y seguimiento               |
+
+`PARCIAL` no significa fallido. Significa que la remodelación deberá preservar lo útil y completar el resultado sin declarar terminada la capacidad antes de tiempo.
+
+---
+
+#### 10. Operaciones manuales o externas que sí representan capacidad
+
+| Operación                                | Representación actual                   | Decisión                                                             |
+| ---------------------------------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| ventas Makos                             | sistema externo y Excel                 | capacidad existente, integración interna manual                      |
+| pedidos Shopify                          | plataforma externa y traslado operativo | capacidad existente, automatización no comprobada                    |
+| pedidos Rappi                            | plataforma externa y traslado operativo | capacidad existente, API no comprobada                               |
+| solicitudes ManyChat o WhatsApp          | mensajes y copia humana                 | capacidad existente, fuente interna por confirmar                    |
+| facturación electrónica actual           | Dataico u otro emisor según titular     | capacidad externa con control interno necesario                      |
+| asesoría jurídica, contable o tributaria | profesional externo y documentos        | capacidad interna de gestionar la relación, no de emitir el concepto |
+| transporte tercerizado                   | mensajería y comprobantes               | capacidad interna de asignar y confirmar entrega                     |
+
+La ausencia de una integración automática no significa ausencia de la capacidad empresarial.
+
+---
+
+#### 11. Capacidades nuevas fuera de las 217
+
+No se propone crear una familia ni una subcapacidad nueva.
+
+Los elementos encontrados se absorben así:
+
+| Elemento observado                        | Cobertura existente                                                                          |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------- |
+| experiencia del candidato en TALENTO      | `CAP-02.02`, `CAP-02.03`, `CAP-02.11`, `CAP-15`, `CAP-16` y traspaso autorizado a ANIMA/VISO |
+| sitio web y CMS                           | `CAP-14.01` a `CAP-14.04` y `CAP-14.11`                                                      |
+| POS a consumidor final                    | `CAP-09.08` a `CAP-09.10`, `CAP-12.02`, `CAP-12.06` y `CAP-12.07`                            |
+| cartera                                   | `CAP-12.04`, `CAP-12.05`, conciliación y documentos                                          |
+| soporte por tickets                       | `CAP-15.06`, `CAP-15.07` y `CAP-18` cuando afecte continuidad                                |
+| dispositivos compartidos y firma de actor | `CAP-15`, `CAP-16` y controles de autorización ya definidos                                  |
+
+VITAL no obliga a ampliar la línea base porque es un proyecto personal separado de salud y entrenamiento, actualmente sin continuidad operativa dentro de Vento OS.
+
+La taxonomía de 217 subcapacidades continúa siendo suficiente para aprobar una línea base, siempre que `CAP-MAP-015` incorpore TALENTO como proyecto futuro previo a ANIMA y conserve sus estados de cobertura.
+
+---
+
+#### 12. Frentes de brecha que deberá conservar la remodelación
+
+| ID               | Frente                                                                                            | Capacidades principales                                                | Tipo                             |
+| ---------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------- |
+| `BRECHA-CAP-001` | corrección auditable de asistencia                                                                | `CAP-02.07`, `CAP-02.08`                                               | ausencia funcional               |
+| `BRECHA-CAP-002` | nómina, pagos y beneficios laborales                                                              | `CAP-02.12`                                                            | sin representación comprobada    |
+| `BRECHA-CAP-003` | seguridad, salud y cumplimiento integral                                                          | `CAP-03`                                                               | cobertura dispersa               |
+| `BRECHA-CAP-004` | adopción real de compras, activos y producción nuevos                                             | `CAP-05`, `CAP-07`, `CAP-08`                                           | estructura sin uso               |
+| `BRECHA-CAP-005` | POS presencial, caja, correcciones y auditoría de ventas                                          | `CAP-09`, `CAP-12.02`, `CAP-12.06`, `CAP-12.07`                        | cobertura parcial                |
+| `BRECHA-CAP-006` | reclamos, devoluciones, satisfacción y reservas                                                   | `CAP-10.04` a `CAP-10.06`, `CAP-10.08`                                 | sin ciclo completo               |
+| `BRECHA-CAP-007` | despacho nuevo y entrega trazable al cliente                                                      | `CAP-11`                                                               | estructura sin uso o parcial     |
+| `BRECHA-CAP-008` | bancos, cartera, tesorería, impuestos y cierre                                                    | `CAP-12.03` a `CAP-12.05`, `CAP-12.12` a `CAP-12.14`                   | ausencia o cobertura parcial     |
+| `BRECHA-CAP-009` | mantenimiento integral de instalaciones                                                           | `CAP-13`                                                               | sin representación comprobada    |
+| `BRECHA-CAP-010` | campañas, oportunidades y reputación                                                              | `CAP-14.05`, `CAP-14.07` a `CAP-14.11`                                 | cobertura parcial                |
+| `BRECHA-CAP-011` | gobierno tecnológico y documental completo                                                        | `CAP-15`, `CAP-16`                                                     | cobertura parcial                |
+| `BRECHA-CAP-012` | indicadores, mejora y continuidad empresarial                                                     | `CAP-17`, `CAP-18`                                                     | cobertura parcial o ausente      |
+| `BRECHA-CAP-013` | diseñar y validar TALENTO → ANIMA desde postulación hasta período de prueba, continuidad o cierre | `CAP-02.02`, `CAP-02.03`, `CAP-02.11`, `CAP-02.13`, `CAP-15`, `CAP-16` | proyecto futuro con base técnica |
+
+Estas brechas se incorporan al plan como insumo obligatorio. No se dejan únicamente en el registro histórico de esta tarea.
+
+---
+
+#### 13. Dudas y comprobaciones
+
+No se crean preguntas nuevas.
+
+Esta tarea:
+
+- utiliza las preguntas `OPE`, `DAT`, `ACT`, `EXT` y `GOV` ya registradas;
+- utiliza `TEC-01` a `TEC-19`;
+- incorpora la consulta actual de repositorios, rutas y tablas remotas;
+- no convierte falta de respuesta operativa en ausencia técnica;
+- no pide al usuario información que puede obtenerse de código o datos.
+
+Las preguntas operativas pendientes servirán para determinar **cómo se ejecuta hoy** una capacidad manual, no para negar la brecha técnica ya observada.
+
+---
+
+#### 14. Decisiones para CAP-MAP-015
+
+`CAP-MAP-015` deberá:
+
+1. incorporar TALENTO al catálogo como proyecto futuro con base técnica;
+2. definirlo como portal de vacantes, postulación, evaluación y pre-registro anterior a ANIMA;
+3. conservar VISO como administración de vacantes, decisiones laborales y permisos;
+4. conservar TALENTO como experiencia y expediente de la persona candidata;
+5. registrar el traspaso autorizado hacia ANIMA/VISO sin duplicar identidad;
+6. separar candidato, seleccionado pendiente de vinculación, trabajador en período de prueba, trabajador activo y vínculo cerrado;
+7. reconocer VISO CMS y `vento-group-web` como cobertura actual de publicación;
+8. mantener AURA como candidata futura de coordinación comercial;
+9. excluir VITAL de la línea base operativa sin eliminar su producto personal;
+10. conservar las trece brechas `BRECHA-CAP-001` a `BRECHA-CAP-013`;
+11. impedir que tablas vacías se presenten como operación validada;
+12. aprobar una línea base que pueda pasar después a análisis y remodelación.
+
+---
+
+#### 15. Lo que queda decidido
+
+1. Las 217 subcapacidades quedan cubiertas mediante familia y excepciones.
+2. La taxonomía no necesita una capacidad adicional.
+3. TALENTO es un proyecto futuro con base técnica, no una aplicación operativa actual.
+4. TALENTO será el portal de empleo previo a ANIMA y faltaba en el catálogo inicial.
+5. La persona empieza como candidata y solo se convierte en trabajadora después de una vinculación autorizada.
+6. El período de prueba será un estado laboral controlado con permisos provisionales acordes con la función, no una identidad paralela.
+7. El traspaso TALENTO → ANIMA/VISO reutilizará la identidad y conservará trazabilidad.
+8. VISO CMS y el sitio web representan parte real de comunicación y publicación.
+9. AURA sigue sin existir y no puede considerarse implementación.
+10. VITAL es un proyecto personal separado y no cubre seguridad y salud laboral.
+11. Productos e inventario tienen los ciclos más claramente comprobados.
+12. Producción, POS, recepción nueva y activos avanzados tienen estructura sin uso.
+13. Finanzas carece de contabilidad, bancos, cartera y tesorería completas.
+14. No existe corrección auditable de marcación ni de medio de pago.
+15. Instalaciones y continuidad no tienen ciclo canónico completo.
+16. Las operaciones externas o manuales siguen siendo capacidades existentes.
+17. Se conservan trece frentes de brecha para la remodelación.
+18. No se requieren preguntas nuevas.
+
+---
+
+#### 16. Lo que esta tarea no autoriza
+
+- crear o modificar tablas;
+- ejecutar migraciones;
+- desplegar o retirar funciones;
+- poblar tablas vacías;
+- crear datos de prueba productivos;
+- integrar Shopify, Rappi, ManyChat o Makos;
+- implementar TALENTO, AURA, POS, cartera o continuidad;
+- mover migraciones fuera de `vento-shell`;
+- eliminar VITAL;
+- declarar fallida una capacidad únicamente por falta de código;
+- iniciar análisis técnico detallado o remodelación antes de aprobar la línea base.
+
+---
+
+#### 17. Criterios de aceptación
+
+`CAP-MAP-014` podrá aprobarse cuando:
+
+- las 217 subcapacidades queden cubiertas;
+- uso, estructura vacía, cobertura parcial, trabajo manual y ausencia se distingan;
+- una tabla vacía no se presente como operación;
+- TALENTO se reconozca como proyecto futuro anterior a ANIMA, sin declararlo adoptado;
+- candidato, pre-registro, vinculación, período de prueba y trabajador activo queden separados;
+- el traspaso a ANIMA/VISO no duplique identidad ni conceda acceso antes de la vinculación;
+- el CMS y el sitio web se reconozcan sin fingir que AURA existe;
+- VITAL se conserve como proyecto personal separado y no se confunda con salud laboral;
+- las ausencias funcionales confirmadas queden explícitas;
+- las operaciones manuales y externas no se borren;
+- las trece brechas queden dentro del plan;
+- no se creen preguntas duplicadas;
+- no se autorice implementación;
+- `CAP-MAP-015` permanezca como única continuidad inmediata.
+
+---
+
+#### 18. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cadena:
+
+```text
+capacidad necesaria
+        ↓
+evidencia de código y datos
+        ↓
+uso, estructura vacía, parcial, manual o ausente
+        ↓
+brecha que debe conservar la remodelación
+        ↓
+línea base lista para aprobación
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-MAP-015
+— Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group
+```
+
+`CAP-MAP-015` consolidará las decisiones de `CAP-MAP-001` a `CAP-MAP-014` sin volver a abrir preguntas ya resueltas.
+
+---
+
+#### 19. Adición posterior incorporada: destino ejecutable de las brechas
+
+Las brechas de esta tarea no quedan solamente como hallazgos. Cada una conserva
+un destino canónico con marcador de tarea:
+
+| Brecha           | Tareas canónicas de destino                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------- |
+| `BRECHA-CAP-001` | `CAP-SCOPE-002`, `INT-WORK-003` y tareas posteriores de corrección auditable que deriven del diseño |
+| `BRECHA-CAP-002` | `CAP-SCOPE-002` y alcance financiero/laboral que apruebe `CAP-MAP-015`                              |
+| `BRECHA-CAP-003` | `CAP-SCOPE-003`                                                                                     |
+| `BRECHA-CAP-004` | `CAP-SCOPE-005`, `CAP-SCOPE-007`, `CAP-SCOPE-008` y tareas ORIGO, NEXO y FOGO ya existentes         |
+| `BRECHA-CAP-005` | `CAP-SCOPE-009`, tareas PULSO e `INT-POS-001` a `INT-POS-019` según alcance                         |
+| `BRECHA-CAP-006` | `CAP-SCOPE-010`, `PULSO-UX-009`, `INT-POS-008` e `INT-POS-019`                                      |
+| `BRECHA-CAP-007` | `CAP-SCOPE-011` y tareas NEXO/PULSO de despacho, recepción y entrega                                |
+| `BRECHA-CAP-008` | `CAP-SCOPE-012`, `NUMERA-DOM-010`, `NUMERA-UX-020` y tareas financieras que se deriven              |
+| `BRECHA-CAP-009` | `CAP-SCOPE-013`, `NEXO-DOM-012`, `NEXO-DOM-026` y tareas de instalaciones que se deriven            |
+| `BRECHA-CAP-010` | `CAP-SCOPE-014`, `AURA-AUD-010` e `INT-MKT-001`                                                     |
+| `BRECHA-CAP-011` | `CAP-SCOPE-015` y `CAP-SCOPE-016`                                                                   |
+| `BRECHA-CAP-012` | `CAP-SCOPE-017` y `CAP-SCOPE-018`                                                                   |
+| `BRECHA-CAP-013` | `CAP-TAL-001` a `CAP-TAL-006`                                                                       |
+
+Reglas:
+
+1. una referencia a una tarea amplia no sustituye sus subtareas derivadas;
+2. las subtareas nuevas deberán añadirse al documento correspondiente cuando se detecten;
+3. no se cerrará una brecha solo porque exista una tarea con nombre relacionado;
+4. una brecha se cierra únicamente con resultado, evidencia y aceptación;
+5. `CAP-MAP-015` deberá comprobar que los destinos continúan visibles antes de aprobar la línea base.
+
+### ✅ CAP-MAP-015 — Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** cierre documental y control de línea base
+**Dependencia anterior:** `CAP-MAP-014`
+**Continuidad reservada:** `CODE-AUD-001`
+
+---
+
+#### 1. Resultado propuesto
+
+Esta tarea consolida `CAP-MAP-001` a `CAP-MAP-014` en la línea base:
+
+| Campo                        | Valor                       |
+| ---------------------------- | --------------------------- |
+| Identificador                | `LB-CAP-VENTO-001`          |
+| Versión                      | `1.0`                       |
+| Fecha de corte               | 2026-07-23                  |
+| Estado                       | `PROPUESTA PARA APROBACIÓN` |
+| Familias de capacidad        | **18**                      |
+| Subcapacidades               | **217**                     |
+| Brechas confirmadas          | **13**                      |
+| Destinos canónicos de brecha | **13 de 13**                |
+
+La línea base define qué necesita hacer Vento Group, qué cobertura se ha
+comprobado, qué aplicaciones son candidatas a gobernar cada resultado y qué
+trabajo debe permanecer visible. No declara terminada una función porque exista
+código, una tabla o una pantalla.
+
+---
+
+#### 2. Qué se aprueba y qué no
+
+La aprobación de `LB-CAP-VENTO-001` significa:
+
+1. aceptar las 18 familias y 217 subcapacidades como estructura de referencia;
+2. aceptar las fronteras candidatas entre aplicaciones para orientar la
+   auditoría y la remodelación;
+3. conservar los estados actual, parcial, manual, externo, futuro y ausente;
+4. conservar las trece brechas y sus tareas de destino;
+5. permitir que `CODE-AUD-001` contraste esta línea base con la implementación.
+
+La aprobación **no** significa:
+
+- afirmar que todas las capacidades funcionan actualmente;
+- cerrar preguntas operativas todavía pendientes;
+- aprobar diseños, código, migraciones, despliegues o cambios de datos;
+- autorizar creación o eliminación de aplicaciones;
+- aprobar una conclusión contable, tributaria, laboral o jurídica;
+- convertir una aplicación candidata en propietaria definitiva sin evidencia.
+
+---
+
+#### 3. Estructura empresarial congelada en esta versión
+
+| Familia                                    | Resultado general esperado                              |
+| ------------------------------------------ | ------------------------------------------------------- |
+| `CAP-01` Gobierno y dirección              | decisiones, políticas y responsabilidades vigentes      |
+| `CAP-02` Personas y trabajo                | vinculación, operación laboral y desarrollo trazables   |
+| `CAP-03` Seguridad, salud y cumplimiento   | riesgos, obligaciones y acciones controladas            |
+| `CAP-04` Producto, oferta y abastecimiento | oferta definida y abastecimiento coordinado             |
+| `CAP-05` Compras y proveedores             | necesidad comprada, recibida y evaluada                 |
+| `CAP-06` Inventario                        | existencias identificadas, disponibles y conciliadas    |
+| `CAP-07` Logística interna y activos       | bienes trasladados, custodiados y mantenidos            |
+| `CAP-08` Producción y transformación       | producción planeada, ejecutada y verificada             |
+| `CAP-09` Venta y atención                  | solicitud convertida en venta y atendida correctamente  |
+| `CAP-10` Clientes y experiencia            | identidad, relación, novedad y satisfacción conservadas |
+| `CAP-11` Entregas y cumplimiento           | compromiso preparado, entregado y demostrado            |
+| `CAP-12` Finanzas y contabilidad           | dinero, obligaciones y documentos conciliados           |
+| `CAP-13` Instalaciones                     | espacios disponibles, seguros y mantenidos              |
+| `CAP-14` Mercadeo y crecimiento            | oferta comunicada y oportunidad medida                  |
+| `CAP-15` Tecnología y administración       | acceso, soporte, configuración y continuidad gobernados |
+| `CAP-16` Información y documentos          | información íntegra, localizable y conservada           |
+| `CAP-17` Analítica y mejora                | desempeño medido y decisiones sustentadas               |
+| `CAP-18` Continuidad y control             | incidentes, excepciones y recuperación trazables        |
+
+El detalle de las 217 subcapacidades permanece en `CAP-MAP-001` y
+`CAP-MAP-002`. Esta tarea no crea una taxonomía paralela.
+
+---
+
+#### 4. Clasificación aprobable
+
+| Clasificación      | Cantidad |
+| ------------------ | -------: |
+| `NÚCLEO`           |   **94** |
+| `SOPORTE`          |   **45** |
+| `TRANSVERSAL`      |   **78** |
+| `FUTURA`           |    **0** |
+| `FUERA_DE_ALCANCE` |    **0** |
+| **Total**          |  **217** |
+
+Una capacidad necesaria no se vuelve futura porque la aplicación destinada a
+soportarla todavía no exista. Por eso TALENTO, AURA y el POS futuro se describen
+como aplicaciones o coberturas futuras, mientras las necesidades empresariales
+que deberán atender permanecen clasificadas como núcleo, soporte o transversal.
+
+VITAL no se usa para retirar capacidades de salud laboral: esas capacidades
+continúan en `CAP-03`, aunque VITAL sea un proyecto personal separado.
+
+---
+
+#### 5. Regla de lectura de la cobertura
+
+La línea base usará estas categorías sin mezclarlas:
+
+| Estado                          | Significado                                                                 |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| `EN USO COMPROBADO`             | existe evidencia de operación real                                          |
+| `PARCIAL`                       | una parte existe o se usa, pero el resultado no está completo               |
+| `ESTRUCTURA SIN USO COMPROBADO` | existe código o dato, pero no prueba de adopción                            |
+| `MANUAL`                        | la organización obtiene el resultado fuera de una automatización controlada |
+| `EXTERNO`                       | interviene un tercero; Vento conserva responsabilidad sobre el resultado    |
+| `FUTURO CON BASE TÉCNICA`       | existe base reutilizable, pero no producto operativo aprobado               |
+| `IDEA FUTURA`                   | existe intención, sin diseño ni funciones aprobadas                         |
+| `AUSENTE`                       | no se encontró representación suficiente del resultado                      |
+| `POR COMPROBAR`                 | falta observación operativa y no debe inventarse el estado                  |
+
+Productos e inventario presentan la cobertura en uso más sólida encontrada.
+Compras, activos, producción, venta, entrega, finanzas y otras familias conservan
+estados parciales, estructuras sin uso comprobado, trabajo manual, operación
+externa o ausencia según `CAP-MAP-014`.
+
+---
+
+#### 6. Línea base de aplicaciones y proyectos
+
+| Aplicación o proyecto | Posición en la línea base                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| SHELL                 | entrada, navegación y contexto común actuales; no es propietaria universal                   |
+| VISO                  | organización, administración laboral, roles, permisos y CMS actuales                         |
+| ANIMA                 | experiencia personal del trabajador y asistencia actual                                      |
+| TALENTO               | proyecto futuro con base técnica, anterior a ANIMA                                           |
+| NEXO                  | inventario, logística interna y activos; cobertura actual más comprobada                     |
+| FOGO                  | conocimiento de recetas actual; ejecución productiva parcial o sin uso comprobado            |
+| ORIGO                 | proveedores y órdenes de compra actuales; recepción con cobertura parcial                    |
+| PULSO                 | pedidos digitales parciales; POS y control completo de venta todavía futuros                 |
+| PASS                  | identidad y experiencia de cliente con cobertura parcial                                     |
+| NUMERA                | análisis económico y financiero parcial; no es contabilidad completa                         |
+| AURA                  | idea futura; no existen diseño inicial ni funciones aprobadas                                |
+| vento-group-web       | superficie pública actual; no gobierna capacidades empresariales                             |
+| VITAL                 | proyecto personal separado de salud y entrenamiento, fuera de la línea operativa de Vento OS |
+
+Makos, Rappi, Shopify, ManyChat, Dataico, bancos, proveedores contables y otros
+terceros se conservan como medios o fuentes externas. Su participación no
+transfiere automáticamente la responsabilidad empresarial de Vento.
+
+---
+
+#### 7. Propiedad candidata por familia
+
+| Familia  | Aplicación candidata y frontera principal                                          |
+| -------- | ---------------------------------------------------------------------------------- |
+| `CAP-01` | VISO administra estructura; Gerencia conserva decisión y aprobación                |
+| `CAP-02` | VISO administra; ANIMA sirve al trabajador; TALENTO servirá al candidato           |
+| `CAP-03` | VISO y administración coordinan; especialistas externos pueden ejecutar            |
+| `CAP-04` | NEXO gobierna producto físico; FOGO transformación; PULSO oferta vendible          |
+| `CAP-05` | ORIGO gobierna proveedor, solicitud y orden de compra                              |
+| `CAP-06` | NEXO gobierna inventario y movimientos internos                                    |
+| `CAP-07` | NEXO gobierna traslados, custodia y activos                                        |
+| `CAP-08` | FOGO gobierna receta, planeación y ejecución productiva                            |
+| `CAP-09` | PULSO gobierna pedido, venta, caja y correcciones operativas                       |
+| `CAP-10` | PASS gobierna identidad y relación; PULSO consume el contexto de venta             |
+| `CAP-11` | NEXO gobierna movimiento interno; PULSO entrega al cliente                         |
+| `CAP-12` | NUMERA gobierna consolidación; PULSO conserva hechos de venta y caja               |
+| `CAP-13` | NEXO es candidato interno; ejecución puede apoyarse en terceros                    |
+| `CAP-14` | VISO CMS y web cubren publicación actual; AURA es futura; PULSO aplica promociones |
+| `CAP-15` | VISO, SHELL, NEXO o la aplicación afectada según el resultado administrado         |
+| `CAP-16` | la aplicación que origina el hecho conserva su registro de autoridad               |
+| `CAP-17` | NUMERA consolida; las aplicaciones fuente conservan los hechos                     |
+| `CAP-18` | la aplicación afectada registra; SHELL coordina identidad y acceso común           |
+
+Estas asignaciones son candidaturas de remodelación. La auditoría podrá
+ratificarlas o proponer una versión nueva, pero no cambiarlas silenciosamente.
+
+---
+
+#### 8. Fronteras que no deben perderse
+
+1. SHELL no absorberá la propiedad funcional de todas las aplicaciones.
+2. VISO administra la relación laboral; ANIMA no crea ni aprueba trabajadores.
+3. TALENTO administra la experiencia de la persona candidata; no concede acceso
+   de trabajador.
+4. NEXO conserva inventario y logística interna; PULSO conserva venta y entrega
+   al cliente.
+5. ORIGO origina compras; NEXO recibe y afecta inventario.
+6. FOGO define y ejecuta transformación; NEXO registra los efectos de inventario.
+7. PASS conserva identidad y relación del cliente; PULSO conserva la transacción.
+8. NUMERA consolida y analiza; no reemplaza el hecho operativo de origen.
+9. AURA no puede presentarse como sistema existente.
+10. VITAL no representa seguridad y salud en el trabajo de Vento Group.
+
+---
+
+#### 9. TALENTO anterior a ANIMA
+
+La línea base incorpora esta secuencia:
+
+```text
+vacante publicada
+        ↓
+persona candidata y postulación
+        ↓
+datos, documentos, consentimiento y evaluación
+        ↓
+selección pendiente de vinculación
+        ↓
+vinculación laboral autorizada y reutilización de identidad
+        ↓
+trabajador en período de prueba con permisos provisionales
+        ↓
+continuidad definitiva o cierre del vínculo
+```
+
+La persona candidata no será trabajadora ni recibirá permisos operativos antes
+de la vinculación autorizada. El traspaso hacia VISO y ANIMA deberá ser trazable,
+repetible sin duplicar registros y conservar el expediente permitido.
+
+El trabajo quedó incorporado como tareas canónicas reales:
+
+- `CAP-TAL-001` a `CAP-TAL-006`;
+- las seis tareas forman parte de la secuencia activa;
+- su existencia no significa que TALENTO ya esté diseñado o implementado.
+
+---
+
+#### 10. PULSO y venta a consumidor final
+
+El POS futuro deberá separar:
+
+1. venta a consumidor final cuando no se solicite documento identificado;
+2. venta con identificación del comprador cuando se solicite o sea obligatoria;
+3. emisión, corrección, anulación y conservación del documento correspondiente;
+4. registro trazable de toda venta, pago, caja, impuesto y excepción.
+
+El flujo de consumidor final no exigirá registrar individualmente a cada cliente
+cuando la regla aplicable permita ese tratamiento. Esto no autoriza ventas por
+fuera del sistema ni omisión de obligaciones. Las reglas jurídicas y tributarias
+deberán volver a validarse al diseñar e implementar el POS.
+
+---
+
+#### 11. Duplicaciones y propiedad competidora
+
+La única competencia funcional confirmada en esta fase es la edición de horarios
+entre VISO y ANIMA. La remodelación deberá conservar una fuente gobernante y una
+experiencia coherente para el trabajador.
+
+También se conserva:
+
+- el inventario técnico `TEC-18` de duplicaciones de implementación;
+- copias manuales o archivos paralelos como riesgo de fuente sombra;
+- integraciones válidas entre aplicaciones como cooperación, no duplicación;
+- la obligación de comprobar una segunda propiedad antes de declararla.
+
+---
+
+#### 12. Brechas conservadas y ejecutables
+
+| Brecha           | Resultado todavía insuficiente                   | Destino mínimo                                 |
+| ---------------- | ------------------------------------------------ | ---------------------------------------------- |
+| `BRECHA-CAP-001` | corrección auditable de asistencia               | `CAP-SCOPE-002`, `INT-WORK-003`                |
+| `BRECHA-CAP-002` | nómina, prestaciones y obligaciones laborales    | `CAP-SCOPE-002` y derivadas                    |
+| `BRECHA-CAP-003` | seguridad, salud y cumplimiento                  | `CAP-SCOPE-003`                                |
+| `BRECHA-CAP-004` | adopción de compras, activos y producción        | `CAP-SCOPE-005`, `007`, `008`                  |
+| `BRECHA-CAP-005` | POS, caja, correcciones y auditoría              | `CAP-SCOPE-009`, `INT-POS-001..019`            |
+| `BRECHA-CAP-006` | novedades, devoluciones, satisfacción y reservas | `CAP-SCOPE-010` y derivadas                    |
+| `BRECHA-CAP-007` | entrega al cliente                               | `CAP-SCOPE-011` y derivadas                    |
+| `BRECHA-CAP-008` | bancos, cartera, tesorería, impuestos y cierre   | `CAP-SCOPE-012` y tareas NUMERA                |
+| `BRECHA-CAP-009` | instalaciones                                    | `CAP-SCOPE-013` y tareas NEXO                  |
+| `BRECHA-CAP-010` | campañas, oportunidades y reputación             | `CAP-SCOPE-014`, `AURA-AUD-010`, `INT-MKT-001` |
+| `BRECHA-CAP-011` | gobierno tecnológico y documental                | `CAP-SCOPE-015`, `016` y derivadas             |
+| `BRECHA-CAP-012` | analítica, mejora y continuidad                  | `CAP-SCOPE-017`, `018` y derivadas             |
+| `BRECHA-CAP-013` | recorrido TALENTO hacia ANIMA                    | `CAP-TAL-001..006`                             |
+
+Las trece tienen destino documental. Ninguna se considera cerrada hasta que su
+tarea produzca resultado, evidencia y aceptación.
+
+---
+
+#### 13. Preguntas e información todavía pendientes
+
+Las preguntas operativas acumuladas permanecen en la lista separada acordada.
+No se copian ni se vuelven a preguntar aquí.
+
+Reglas:
+
+1. una respuesta anterior conserva vigencia mientras no exista evidencia
+   contradictoria;
+2. lo comprobable en código, datos o repositorios corresponde al asistente;
+3. lo observable en el trabajo se entrega como autocuestionario directo al
+   trabajador adecuado;
+4. cada pregunta solicita una sola respuesta concreta;
+5. una respuesta pendiente ajustará el estado AS-IS, pero no bloquea la
+   aprobación de la estructura empresarial;
+6. ninguna ausencia de respuesta se convierte en una afirmación inventada.
+
+Por tanto, `D-CAP004-008` y `D-CAP005-006` continúan como observaciones
+operativas pendientes y no impiden iniciar la auditoría técnica.
+
+---
+
+#### 14. Control de cambios de la línea base
+
+Después de aprobarse:
+
+1. `LB-CAP-VENTO-001 v1.0` quedará congelada como referencia;
+2. un hallazgo nuevo se registrará primero como evidencia o brecha;
+3. cualquier cambio de capacidad, clasificación, frontera o propiedad indicará
+   impacto, razón y tareas afectadas;
+4. los ajustes menores usarán una adición trazable;
+5. los cambios estructurales producirán una nueva versión;
+6. `CODE-AUD-001` podrá proponer cambios, pero no reescribir esta versión de
+   forma silenciosa;
+7. una nueva tarea detectada se añadirá al documento canónico correspondiente,
+   no solo al registro histórico.
+
+---
+
+#### 15. Uso de la línea base durante la auditoría
+
+Cada superficie encontrada por `CODE-AUD-001` deberá poder relacionarse con:
+
+```text
+repositorio o servicio
+        ↓
+aplicación y superficie desplegada
+        ↓
+capacidad y resultado empresarial
+        ↓
+fuente, actor, permiso, evidencia y estado de uso
+        ↓
+coincidencia, duplicación, brecha o deuda
+```
+
+El código sin capacidad asociada quedará como candidato a deuda, utilidad
+técnica o alcance no explicado. Una capacidad sin implementación suficiente
+conservará su brecha. Ninguna de las dos conclusiones se asumirá sin evidencia.
+
+---
+
+#### 16. Decisiones propuestas
+
+1. Se adopta `LB-CAP-VENTO-001 v1.0` como línea base documental.
+2. Se conservan 18 familias y 217 subcapacidades.
+3. Se conservan 94 capacidades núcleo, 45 de soporte y 78 transversales.
+4. Se distinguen capacidad necesaria, aplicación actual y proyecto futuro.
+5. Se aprueban las candidaturas y fronteras de aplicación como guía auditable.
+6. Se conservan las trece brechas y todos sus destinos canónicos.
+7. TALENTO queda como proyecto futuro anterior a ANIMA mediante `CAP-TAL-001..006`.
+8. AURA permanece como idea futura sin funciones atribuidas.
+9. VITAL permanece separado y no cubre salud laboral.
+10. Las preguntas operativas pendientes no se duplican ni bloquean `CODE-AUD-001`.
+11. Toda tarea adicional futura deberá incorporarse al plan ejecutable.
+12. La siguiente continuidad única será `CODE-AUD-001`.
+
+---
+
+#### 17. Criterios de aceptación
+
+`CAP-MAP-015` podrá aprobarse cuando:
+
+- la línea base tenga identificador, versión y fecha;
+- las 18 familias y 217 subcapacidades permanezcan visibles;
+- clasificación y cobertura no se confundan;
+- las aplicaciones actuales, futuras y separadas estén diferenciadas;
+- las fronteras candidatas por familia estén registradas;
+- TALENTO, ANIMA y VISO tengan un recorrido sin duplicar identidad;
+- el POS futuro conserve consumidor final, trazabilidad y validación normativa;
+- las duplicaciones confirmadas permanezcan visibles;
+- las trece brechas tengan tareas de destino;
+- las preguntas pendientes permanezcan aparte, simples y sin repetición;
+- la aprobación no autorice implementación;
+- el control de cambios impida reescrituras silenciosas;
+- `CODE-AUD-001` sea la única continuidad inmediata.
+
+---
+
+#### 18. Resultado y continuidad
+
+Al aprobarse esta tarea quedará cerrada la cadena:
+
+```text
+necesidad empresarial
+        ↓
+capacidad y resultado
+        ↓
+actor, información, fuente, integración, permiso y evidencia
+        ↓
+clasificación, propiedad, duplicación y brecha
+        ↓
+LB-CAP-VENTO-001 v1.0 aprobada
+```
+
+La continuidad será exclusivamente:
+
+```text
+CODE-AUD-001
+— Inventariar todos los repositorios y superficies desplegadas
+```
+
+`CODE-AUD-001` iniciará el contraste técnico sin reabrir decisiones ya
+respondidas y sin tratar una estructura técnica como prueba automática de uso.
 ### AUDITORÍA DE IMPLEMENTACIÓN ACTUAL
 
-### [ ] CODE-AUD-001 — Inventariar todos los repositorios y superficies desplegadas
-### [ ] CODE-AUD-002 — Inventariar rutas, layouts, pantallas, componentes y formularios
-### [ ] CODE-AUD-003 — Inventariar acciones de usuario y comportamiento efectivo
-### [ ] CODE-AUD-004 — Inventariar hooks, servicios, adaptadores, consultas y estado local
-### [ ] CODE-AUD-005 — Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
-### [ ] CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
+### ✅ CODE-AUD-001 — Inventariar todos los repositorios y superficies desplegadas
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** inventario técnico transversal de repositorios y superficies publicadas
+**Dependencia anterior:** `CAP-MAP-015`
+**Continuidad reservada:** `CODE-AUD-002`
+**Fecha de corte:** 2026-07-23
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea establece el inventario inicial verificable de repositorios locales,
+repositorios remotos, aplicaciones web, aplicaciones móviles, superficies web
+auxiliares, Vercel, Expo/EAS y la infraestructura compartida de Supabase.
+
+El inventario distingue **repositorio**, **aplicación**, **superficie auxiliar**,
+**configuración**, **build terminado**, **publicación en tienda** y **despliegue
+operativo**. Ninguno de esos estados sustituye a otro.
+
+---
+
+#### 2. Correcciones de interpretación obligatorias
+
+1. **ANIMA es una aplicación móvil Expo.** Sus superficies auxiliares de
+   invitación, autenticación y carné no constituyen una aplicación web ANIMA.
+2. **PASS es una aplicación móvil Expo.** Su superficie auxiliar de enlaces,
+   documentos legales, retorno de pagos y Wallet no constituye una aplicación
+   web PASS.
+3. **AURA no tiene repositorio, aplicación, dominio operativo ni despliegue.**
+   Es una idea diferida para una planeación futura y no seguirá tratándose como
+   superficie actual durante esta auditoría.
+4. **TALENTO tiene base técnica local**, pero no está desplegado ni adoptado.
+5. **VITAL es un proyecto personal separado** y no forma parte de la cobertura
+   operativa actual de Vento OS.
+6. Un dominio escrito en código no prueba que exista; una respuesta HTTP o un
+   despliegue exitoso tampoco prueba adopción por trabajadores.
+
+---
+
+#### 3. Fuentes revisadas
+
+| Fuente                                  | Evidencia obtenida                                    |
+| --------------------------------------- | ----------------------------------------------------- |
+| workspace `C:\Users\User\devVentoGroup` | directorios, Git, paquetes y configuración local      |
+| GitHub `devVentoGroup`                  | existencia, rama principal, visibilidad y despliegues |
+| `package.json`, Expo y EAS              | tecnología y forma de distribución                    |
+| GitHub/Vercel                           | superficies publicadas y ambientes                    |
+| comprobación HTTP                       | respuesta actual de dominios canónicos                |
+| Expo/EAS                                | proyectos y builds móviles                            |
+| Google Play y App Store                 | publicaciones móviles localizables                    |
+| Supabase VENTO                          | proyecto activo y Edge Functions desplegadas          |
+| `TEC-01` a `TEC-19`                     | decisiones técnicas ya comprobadas                    |
+
+No se modificó código, despliegues, DNS, bases de datos, funciones ni
+configuración externa.
+
+---
+
+#### 4. Inventario maestro de repositorios
+
+| Repositorio local | GitHub                        | Visibilidad | Tipo principal      | Estado de superficie        |
+| ----------------- | ----------------------------- | ----------- | ------------------- | --------------------------- |
+| `vento-shell`     | `devVentoGroup/vento-shell`   | pública     | Next.js             | web de producción           |
+| `vento-viso`      | `devVentoGroup/vento-viso`    | pública     | Next.js             | web de producción           |
+| `vento-nexo`      | `devVentoGroup/vento-nexo`    | pública     | Next.js             | web de producción           |
+| `vento-fogo`      | `devVentoGroup/vento-fogo`    | pública     | Next.js             | web de producción           |
+| `vento-origo`     | `devVentoGroup/vento-origo`   | pública     | Next.js             | web de producción           |
+| `vento-pulso`     | `devVentoGroup/vento-pulso`   | pública     | Next.js             | web de producción           |
+| `vento-numera`    | `devVentoGroup/vento-numera`  | pública     | Next.js             | web de producción           |
+| `vento-group-web` | `devVentoGroup/Vento-Group`   | pública     | Next.js             | web pública de producción   |
+| `vento-anima`     | `devVentoGroup/vento-anima`   | pública     | Expo móvil          | tiendas + web auxiliar      |
+| `vento-pass`      | `devVentoGroup/vento-pass`    | privada     | Expo móvil          | tiendas + web auxiliar      |
+| `vento-talento`   | `devVentoGroup/vento-talento` | privada     | Expo móvil          | base técnica sin despliegue |
+| `vento-vital`     | `devVentoGroup/vento-vital`   | pública     | monorepo API + Expo | build interno separado      |
+
+Resultado:
+
+- **12** repositorios locales y **12** remotos correspondientes;
+- **10** repositorios públicos y **2** privados;
+- rama remota principal `main` en los doce;
+- `vento-nexo` estaba abierto localmente en
+  `feat/inventory-count-workbook` durante el corte.
+
+La conveniencia de la visibilidad pública se evaluará en `CODE-AUD-017`; esta
+tarea solo registra el hecho.
+
+---
+
+#### 5. Aplicaciones web de producción
+
+| Aplicación  | Repositorio       | Dominio canónico               | Evidencia actual                                |
+| ----------- | ----------------- | ------------------------------ | ----------------------------------------------- |
+| SHELL       | `vento-shell`     | `https://os.ventogroup.co`     | Vercel producción; `307` hacia inicio de sesión |
+| VISO        | `vento-viso`      | `https://viso.ventogroup.co`   | Vercel producción; `307` hacia inicio de sesión |
+| NEXO        | `vento-nexo`      | `https://nexo.ventogroup.co`   | Vercel producción; `307` hacia inicio de sesión |
+| FOGO        | `vento-fogo`      | `https://fogo.ventogroup.co`   | Vercel producción; `307` hacia inicio de sesión |
+| ORIGO       | `vento-origo`     | `https://origo.ventogroup.co`  | Vercel producción; `307` hacia inicio de sesión |
+| PULSO       | `vento-pulso`     | `https://pulso.ventogroup.co`  | Vercel producción; respuesta `200`              |
+| NUMERA      | `vento-numera`    | `https://numera.ventogroup.co` | Vercel producción; `307` hacia inicio de sesión |
+| web pública | `vento-group-web` | `https://www.ventogroup.co`    | Vercel producción; respuesta `200`              |
+
+`https://ventogroup.co` redirige hacia `https://www.ventogroup.co`. Los
+despliegues de vista previa no se cuentan como aplicaciones adicionales.
+
+---
+
+#### 6. Aplicaciones móviles actuales
+
+##### 6.1. ANIMA
+
+| Campo                          | Evidencia                                                            |
+| ------------------------------ | -------------------------------------------------------------------- |
+| producto                       | aplicación móvil para trabajadores                                   |
+| tecnología                     | Expo / React Native                                                  |
+| proyecto EAS                   | `@vento-group-sas/anima`                                             |
+| ID EAS                         | `2e1ba93a-039d-49e7-962d-a33ea7eaf9b3`                               |
+| identificadores iOS y Android  | `com.vento.anima`                                                    |
+| builds comprobados             | producción `STORE` terminada para iOS y Android                      |
+| publicación pública comprobada | Google Play                                                          |
+| App Store                      | build de producción comprobado; ficha no localizada en esta revisión |
+
+La aplicación publicada en Google Play aparece como **Anima | Vento Group**.
+
+##### 6.2. PASS
+
+| Campo                          | Evidencia                                       |
+| ------------------------------ | ----------------------------------------------- |
+| producto                       | aplicación móvil de cliente y fidelización      |
+| tecnología                     | Expo / React Native                             |
+| proyecto EAS                   | `@vento-group-sas/vento-pass`                   |
+| ID EAS                         | `d790b644-2ec4-45b0-8f3b-4bb778575496`          |
+| identificador iOS              | `co.ventogroup.pass`                            |
+| identificador Android          | `com.ventogroup.ventopass`                      |
+| builds comprobados             | producción `STORE` terminada para iOS y Android |
+| publicación pública comprobada | Google Play y App Store                         |
+
+PASS y ANIMA son las dos aplicaciones móviles operativas comprobadas. Un build
+EAS terminado y una ficha de tienda se conservan como evidencias diferentes.
+
+---
+
+#### 7. Superficies web auxiliares de aplicaciones móviles
+
+| Repositorio   | Superficie auxiliar                | Uso                                      | Clasificación               |
+| ------------- | ---------------------------------- | ---------------------------------------- | --------------------------- |
+| `vento-anima` | autenticación e invitación         | solicitar enlace y establecer contraseña | auxiliar, no aplicación web |
+| `vento-anima` | Wallet/carné laboral               | generación y entrega del pase            | auxiliar, no aplicación web |
+| `vento-pass`  | enlaces universales                | abrir la aplicación desde enlaces        | auxiliar, no aplicación web |
+| `vento-pass`  | privacidad, términos y eliminación | obligaciones y autoservicio              | auxiliar, no aplicación web |
+| `vento-pass`  | retorno de pago y Wallet           | completar flujos iniciados en móvil      | auxiliar, no aplicación web |
+
+GitHub registra despliegues Vercel exitosos para estas superficies. Las raíces
+`https://anima.ventogroup.co` y `https://pass.ventogroup.co` responden `404`; no
+se interpreta como caída de una aplicación web porque ese producto no existe.
+`CODE-AUD-002` inventariará las rutas auxiliares concretas.
+
+---
+
+#### 8. Proyectos sin superficie productiva actual
+
+##### 8.1. TALENTO
+
+- existe el repositorio `vento-talento`;
+- contiene una base Expo móvil;
+- no contiene ID EAS vinculado;
+- GitHub no registra despliegues;
+- no existe publicación en tienda comprobada;
+- permanece como proyecto futuro anterior a ANIMA.
+
+##### 8.2. VITAL
+
+- existe como monorepo separado con `apps/api`, `apps/mobile` y contratos;
+- posee el proyecto EAS `@vento-group-sas/vento-vital`;
+- se comprobó un build iOS interno de desarrollo;
+- no se comprobó build de producción, tienda ni despliegue GitHub;
+- permanece fuera de la línea operativa de Vento OS.
+
+##### 8.3. AURA
+
+AURA no se incorpora como repositorio ni superficie:
+
+- no existe repositorio ni aplicación;
+- no existe proyecto Expo/EAS;
+- no existe despliegue GitHub/Vercel;
+- `aura.ventogroup.co` no resuelve;
+- su diseño queda diferido a una planeación futura.
+
+Esta ausencia ya estaba decidida y no genera una pregunta nueva.
+
+---
+
+#### 9. Infraestructura remota compartida
+
+Supabase se conserva como infraestructura y no como aplicación empresarial.
+
+| Campo                               | Estado comprobado      |
+| ----------------------------------- | ---------------------- |
+| proyecto VENTO                      | `vento-os-dev`         |
+| referencia                          | `clzdpinthhtknkmefsxx` |
+| región                              | `us-east-2`            |
+| estado                              | `ACTIVE_HEALTHY`       |
+| motor                               | PostgreSQL 17          |
+| Edge Functions activas              | **24**                 |
+| repositorio canónico de migraciones | `vento-shell`          |
+
+Las Edge Functions activas se agrupan así:
+
+- trabajo y administración: `wallet-pass`, `attendance-report`,
+  `staff-invitations-create`, `staff-invitations-accept`,
+  `staff-invitations-resend`, `staff-invitations-cancel`, `document-alerts`,
+  `register-push-token`, `announcement-notify`, `employee-delete`,
+  `shift-publish-notify` y `shift-runtime-processor`;
+- PASS, pagos y entrega: `request-account-deletion`, `account-deletion`,
+  `process-account-deletions`, `payments-create-intent`, `payments-webhook`,
+  `payments-return`, `pass-delivery-quote`, `pass-address-search`,
+  `pass-register-push-token`, `support-message-notify`,
+  `order-message-notify` y `delivery-portal`.
+
+Doce exigen JWT en la configuración de plataforma y doce no. Esto no concluye
+por sí solo que exista una vulnerabilidad: `CODE-AUD-005` inventariará contratos
+y `CODE-AUD-017` comprobará la autorización efectiva.
+
+El proyecto `petapetit` aparece en la misma cuenta, pero queda fuera del
+inventario VENTO y no fue inspeccionado.
+
+---
+
+#### 10. Automatizaciones visibles
+
+Se encontraron workflows de GitHub Actions en:
+
+| Repositorio   | Superficie visible                                |
+| ------------- | ------------------------------------------------- |
+| `vento-nexo`  | aplicación temporal de solicitud privilegiada     |
+| `vento-pass`  | facturación electrónica y eliminación de cuentas  |
+| `vento-pulso` | aplicación de interfaz de facturación electrónica |
+| `vento-viso`  | aplicación guiada de formulario de producto       |
+
+Su existencia no prueba ejecución correcta ni vigencia. Jobs, funciones,
+disparadores y credenciales se auditarán en `CODE-AUD-005`.
+
+---
+
+#### 11. Hallazgos que continúan a tareas existentes
+
+| ID               | Hallazgo                                                                  | Destino                        |
+| ---------------- | ------------------------------------------------------------------------- | ------------------------------ |
+| `H-CODE-001-001` | diez repositorios son públicos y dos privados                             | `CODE-AUD-017`                 |
+| `H-CODE-001-002` | ANIMA y PASS mezclan móvil y web auxiliar en el mismo repositorio         | `CODE-AUD-002`, `CODE-AUD-005` |
+| `H-CODE-001-003` | ANIMA tiene build iOS de producción, pero no se localizó su ficha pública | comprobación técnica posterior |
+| `H-CODE-001-004` | TALENTO tiene código sin proyecto EAS ni despliegue                       | `CAP-TAL-001..006`             |
+| `H-CODE-001-005` | VITAL solo presenta build interno y está fuera de Vento OS                | conservar separado             |
+| `H-CODE-001-006` | doce Edge Functions no exigen JWT en plataforma                           | `CODE-AUD-005`, `CODE-AUD-017` |
+| `H-CODE-001-007` | NEXO está abierto en una rama distinta de `main`                          | conservar procedencia          |
+| `H-CODE-001-008` | AURA no tiene ninguna superficie actual                                   | planeación futura              |
+
+Todos los destinos ya existen. Esta tarea no añade preguntas ni tareas
+redundantes.
+
+---
+
+#### 12. Qué no puede concluirse todavía
+
+Este inventario no demuestra:
+
+- qué rutas y pantallas están completas;
+- qué acciones funcionan de extremo a extremo;
+- qué código consume cada tabla o función;
+- qué despliegue coincide exactamente con el checkout local;
+- qué usuarios utilizan cada superficie;
+- qué flujos toleran errores, concurrencia o trabajo sin conexión;
+- qué repositorios públicos deberían cambiar de visibilidad;
+- que una función sin JWT de plataforma carezca de autenticación propia.
+
+Esas conclusiones pertenecen a `CODE-AUD-002` a `CODE-AUD-019`.
+
+---
+
+#### 13. Decisiones propuestas
+
+1. El universo técnico VENTO parte de doce repositorios.
+2. Ocho repositorios producen aplicaciones web de producción.
+3. ANIMA y PASS son aplicaciones móviles Expo, no aplicaciones web.
+4. Sus superficies web se clasifican únicamente como auxiliares.
+5. TALENTO conserva base técnica sin considerarse desplegado.
+6. VITAL se registra separado y no se incorpora a Vento OS.
+7. AURA no se seguirá auditando como superficie actual.
+8. Supabase se registra como infraestructura compartida gobernada desde
+   `vento-shell`.
+9. Vista previa, build, tienda y producción conservarán estados diferentes.
+10. Los ocho hallazgos continuarán en tareas ya existentes.
+11. No se crean preguntas nuevas para hechos técnicamente comprobables.
+12. `CODE-AUD-002` será la única continuidad inmediata.
+
+---
+
+#### 14. Criterios de aceptación
+
+`CODE-AUD-001` podrá aprobarse cuando:
+
+- estén enumerados los repositorios locales y remotos;
+- repositorio, aplicación y superficie auxiliar no se confundan;
+- web, móvil, API e infraestructura queden diferenciadas;
+- ANIMA y PASS permanezcan clasificados como móviles;
+- TALENTO no se declare desplegado;
+- AURA quede reconocida como inexistente y diferida;
+- VITAL permanezca separado;
+- dominios declarados y dominios que responden se distingan;
+- builds y publicaciones en tienda se documenten por separado;
+- Supabase se inventarie sin modificarlo;
+- los hallazgos tengan destino;
+- no se creen preguntas repetidas;
+- `CODE-AUD-002` permanezca como única continuidad.
+
+---
+
+#### 15. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+repositorio
+        ↓
+producto o componente auxiliar
+        ↓
+tecnología y ambiente
+        ↓
+despliegue o ausencia comprobada
+        ↓
+rutas, pantallas y formularios por inventariar
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-002
+— Inventariar rutas, layouts, pantallas, componentes y formularios
+```
+### ✅ CODE-AUD-002 — Inventariar rutas, layouts, pantallas, componentes y formularios
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** inventario estático transversal de superficies de interfaz
+**Dependencia anterior:** `CODE-AUD-001`
+**Continuidad reservada:** `CODE-AUD-003`
+**Fecha de corte:** 2026-07-23
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea inventaría la estructura visible del código antes de evaluar si cada
+acción funciona:
+
+| Elemento                                                | Cantidad comprobada |
+| ------------------------------------------------------- | ------------------: |
+| rutas web Next.js con `page.*`                          |             **168** |
+| layouts Next.js activos                                 |               **9** |
+| pantallas ANIMA por Expo Router                         |              **14** |
+| layouts ANIMA                                           |               **3** |
+| pantallas TALENTO por Expo Router                       |              **12** |
+| layouts TALENTO                                         |               **3** |
+| pantallas registradas en el Stack de PASS               |              **15** |
+| estados previos de PASS: autenticación y perfil         |               **2** |
+| pantallas de VITAL separado                             |               **5** |
+| módulos en directorios de componentes activos           |             **290** |
+| plantilla de componentes de SHELL, no aplicación activa |               **6** |
+| módulos candidatos a captura de datos                   |             **256** |
+
+Los 256 candidatos se detectaron por estructuras como `form`, `input`,
+`select`, `textarea`, `TextInput`, `useForm` o `FormField`. No equivalen a 256
+formularios terminados: indican dónde debe revisarse captura, validación,
+persistencia y respuesta durante `CODE-AUD-003` y `CODE-AUD-004`.
+
+---
+
+#### 2. Definiciones usadas
+
+| Término              | Significado en este inventario                                                  |
+| -------------------- | ------------------------------------------------------------------------------- |
+| ruta web             | directorio que contiene un `page.*` activo de Next.js                           |
+| pantalla móvil       | destino de Expo Router o pantalla registrada en navegación                      |
+| layout               | envoltura compartida que controla navegación, contexto o presentación           |
+| componente           | módulo reutilizable ubicado bajo un directorio `component` o `components`       |
+| formulario           | estructura que reúne datos para ejecutar una acción                             |
+| candidato de captura | archivo con controles o librerías de captura todavía sin validar funcionalmente |
+| superficie auxiliar  | página o endpoint web que apoya una aplicación móvil                            |
+| estado especial      | carga, error, acceso denegado, autenticación o ausencia                         |
+
+Una ruta no prueba que la pantalla sea completa. Un archivo llamado `Screen`,
+`Form` o `V2` tampoco prueba que esté conectado a la navegación actual.
+
+---
+
+#### 3. Reglas y exclusiones
+
+El conteo:
+
+- excluye `node_modules`, `.next`, `.git`, `.expo`, `dist`, builds, cobertura,
+  documentación y cachés;
+- separa la plantilla `templates/app-shell-standard` del SHELL activo;
+- conserva rutas dinámicas como `[id]`, `[slug]` y `[code]`;
+- elimina grupos de organización como `(app)` o `(auth)` de la URL visible;
+- no cuenta API routes como pantallas;
+- no convierte archivos HTML auxiliares en aplicaciones web;
+- no incorpora AURA porque no existe código que inventariar;
+- registra VITAL aparte, sin incorporarlo a Vento OS.
+
+---
+
+#### 4. Matriz por repositorio
+
+| Repositorio       |      Rutas o pantallas | Layouts o navegación | Componentes activos | Candidatos de captura |
+| ----------------- | ---------------------: | -------------------: | ------------------: | --------------------: |
+| `vento-shell`     |                      2 |                    1 |                   5 |                     3 |
+| `vento-viso`      |                     60 |                    1 |                  46 |                    63 |
+| `vento-nexo`      |                     64 |                    1 |                  32 |                   112 |
+| `vento-fogo`      |                      9 |                    1 |                  10 |                    15 |
+| `vento-origo`     |                     13 |                    1 |                  11 |                    10 |
+| `vento-pulso`     |                      6 |                    2 |                  11 |                     8 |
+| `vento-numera`    |                      7 |                    1 |                   7 |                     4 |
+| `vento-group-web` |                      7 |                    1 |                  16 |                     1 |
+| `vento-anima`     |                     14 |                    3 |                  66 |                    20 |
+| `vento-pass`      | 17 estados principales |              1 Stack |                  74 |                    15 |
+| `vento-talento`   |                     12 |                    3 |                   4 |                     4 |
+| `vento-vital`     |                      5 | 1 shell con pestañas |                   8 |                     1 |
+
+`vento-shell` contiene además **6** módulos en la plantilla estándar. No se
+sumaron como componentes activos para evitar contar una copia de referencia como
+interfaz desplegada.
+
+---
+
+#### 5. Rutas web por aplicación
+
+##### 5.1. SHELL — 2
+
+```text
+/
+/login
+```
+
+SHELL es una entrada y selector de contexto compacto; el bajo número de rutas es
+coherente con su frontera y no significa que deba absorber pantallas de otras
+aplicaciones.
+
+##### 5.2. VISO — 60
+
+| Grupo principal          | Rutas |
+| ------------------------ | ----: |
+| `staff`                  |    10 |
+| `website-cms`            |     7 |
+| `operations`             |     5 |
+| `menu`                   |     4 |
+| `businesses`             |     3 |
+| `pass-users`             |     3 |
+| `products`               |     3 |
+| `sites`                  |     3 |
+| `vacancies`              |     3 |
+| `commercial-audit`       |     2 |
+| `commercial-collections` |     2 |
+| `content-blocks`         |     2 |
+| restantes                |    13 |
+
+```text
+/
+/accounting
+/app-navigation
+/app-updates
+/businesses
+/businesses/[id]
+/businesses/new
+/commercial-audit
+/commercial-audit/structure
+/commercial-availability
+/commercial-categories
+/commercial-collections
+/commercial-collections/overview
+/commercial-menu
+/content-blocks
+/content-blocks/[id]
+/delivery-rates
+/login
+/menu
+/menu/[id]
+/menu/[id]/personalizations/manage
+/menu/new
+/no-access
+/operations
+/operations-map
+/operations/checkin-points
+/operations/employee-profiles
+/operations/preview
+/operations/site-roles
+/ops/audit
+/pass-users
+/pass-users/[id]
+/pass-users/new
+/products
+/products/[id]
+/products/new
+/roles-permissions
+/sites
+/sites/[id]
+/sites/[id]/documentos
+/staff
+/staff/[id]
+/staff/attendance
+/staff/calendar
+/staff/new
+/staff/schedule
+/staff/schedule/global
+/staff/schedule/metrics
+/staff/schedule/settings
+/staff/shared-devices/new
+/vacancies
+/vacancies/[id]
+/vacancies/new
+/website-cms
+/website-cms/blocks/[id]
+/website-cms/blocks/new
+/website-cms/items/[id]
+/website-cms/items/new
+/website-cms/venues
+/website-cms/venues/[slug]
+```
+
+##### 5.3. NEXO — 64
+
+| Grupo principal           | Rutas |
+| ------------------------- | ----: |
+| `inventory`               |    55 |
+| `printing`                |     3 |
+| raíz, acceso y utilidades |     6 |
+
+```text
+/
+/inventory/adjust
+/inventory/assets
+/inventory/assets/counts
+/inventory/assets/counts/[id]
+/inventory/assets/groups/[id]
+/inventory/assets/items/[id]
+/inventory/assets/new
+/inventory/assets/quick
+/inventory/catalog
+/inventory/catalog/[id]
+/inventory/catalog/[id]/ficha
+/inventory/catalog/[id]/presentations
+/inventory/catalog/new
+/inventory/catalog/presentations
+/inventory/cost-center
+/inventory/count-initial
+/inventory/count-initial/session/[id]
+/inventory/entries
+/inventory/locations
+/inventory/locations/[id]
+/inventory/locations/[id]/board
+/inventory/locations/[id]/kiosk-withdraw
+/inventory/locations/[id]/positions
+/inventory/locations/open
+/inventory/locations/zone
+/inventory/locations/zones
+/inventory/lpns
+/inventory/movements
+/inventory/production-batches
+/inventory/remissions
+/inventory/remissions/[id]
+/inventory/remissions/[id]/edit
+/inventory/remissions/conductor
+/inventory/remissions/fulfillment
+/inventory/remissions/prepare
+/inventory/remissions/receive
+/inventory/remissions/transit
+/inventory/settings
+/inventory/settings/categories
+/inventory/settings/fulfillment-routes
+/inventory/settings/internal-prices
+/inventory/settings/locations/[id]/catalog
+/inventory/settings/products
+/inventory/settings/remissions
+/inventory/settings/remissions/products
+/inventory/settings/request-policies
+/inventory/settings/sites
+/inventory/settings/sites/[id]/operations
+/inventory/settings/supply-routes
+/inventory/settings/units
+/inventory/stock
+/inventory/stock/assign-location
+/inventory/transfers
+/inventory/warehouse
+/inventory/withdraw
+/kiosk/[slug]
+/l/[code]
+/login
+/no-access
+/printing/designer
+/printing/jobs
+/printing/setup
+/scanner
+```
+
+##### 5.4. FOGO — 9
+
+```text
+/
+/login
+/no-access
+/production-batches
+/production-batches/new
+/recipe-book
+/recipes
+/recipes/[id]/edit
+/recipes/new
+```
+
+##### 5.5. ORIGO — 13
+
+```text
+/
+/login
+/no-access
+/product-master-review
+/purchase-orders
+/purchase-orders/[id]
+/purchase-orders/[id]/edit
+/purchase-orders/new
+/receipts
+/receipts/new
+/suppliers
+/suppliers/[id]/edit
+/suppliers/new
+```
+
+##### 5.6. PULSO — 6
+
+```text
+/
+/no-access
+/orders
+/sales-imports
+/salon
+/scanner
+```
+
+##### 5.7. NUMERA — 7
+
+```text
+/
+/break-even
+/cost-centers
+/expenses
+/login
+/no-access
+/profitability
+```
+
+##### 5.8. Web pública — 7
+
+```text
+/
+/ecosistema
+/empleos
+/eventos
+/restaurantes
+/restaurantes/[slug]
+/servicios
+```
+
+NEXO y VISO concentran **124 de las 168 rutas web**, aproximadamente el 74 %.
+Esto orienta el orden de auditoría; no autoriza reducir las otras aplicaciones.
+
+---
+
+#### 6. Layouts y envolturas compartidas
+
+| Repositorio | Layouts activos | Alcance                              |
+| ----------- | --------------: | ------------------------------------ |
+| SHELL       |               1 | raíz                                 |
+| VISO        |               1 | raíz                                 |
+| NEXO        |               1 | raíz                                 |
+| FOGO        |               1 | raíz                                 |
+| ORIGO       |               1 | raíz                                 |
+| PULSO       |               2 | raíz y `/orders`                     |
+| NUMERA      |               1 | raíz                                 |
+| web pública |               1 | raíz                                 |
+| ANIMA       |               3 | raíz, autenticación y aplicación     |
+| TALENTO     |               3 | raíz, autenticación y aplicación     |
+| PASS        |               1 | `NavigationContainer` + Stack nativo |
+| VITAL       |               1 | shell principal + pestañas           |
+
+La copia visual del shell estándar presente en varios repositorios continúa como
+duplicación técnica `TEC-18` y se evaluará en `CODE-AUD-014`.
+
+---
+
+#### 7. Pantallas móviles
+
+##### 7.1. ANIMA — 14 pantallas
+
+```text
+/
+/anima-diagnostics
+/account-settings
+/splash
+/login
+/team
+/support
+/shifts
+/operativo
+/home
+/history
+/documents
+/carnet
+/announcements
+```
+
+Los grupos `(auth)` y `(app)` organizan el código, pero no forman parte de la
+ruta visible.
+
+##### 7.2. PASS — 15 pantallas de Stack y 2 estados previos
+
+Pantallas registradas:
+
+```text
+Home
+Club
+MyOrders
+ChooseSatellite
+DeliveryAddresses
+AccountSettings
+VentoCafe
+Saudo
+SatelliteExperience
+SatellitePass
+OrderHome
+OrderMenu
+OrderCheckout
+OrderPlaced
+OrderChat
+```
+
+El Stack contiene **15 registros**. `SatelliteExperience` y `SatellitePass` son
+destinos separados aunque compartan implementación. Antes del Stack existen los
+estados `Auth` y `CompleteProfile`.
+
+Los enlaces externos configurados exponen:
+
+```text
+/
+/orders
+/payment-return
+```
+
+##### 7.3. TALENTO — 12 pantallas sin despliegue
+
+```text
+/auth/callback
+/process
+/
+/documents
+/vacancies
+/profile
+/register
+/login
+/forgot-password
+/vacancy/[id]
+/jobs/[id]
+/jobs
+```
+
+Estas pantallas prueban base técnica, no producto adoptado ni aplicación
+publicada.
+
+##### 7.4. VITAL — 5 pantallas separadas
+
+```text
+LoginScreen
+OnboardingScreen
+HoyScreen
+SummaryScreen
+ProfileScreen
+```
+
+`Hoy`, `Resumen` y `Perfil` se muestran mediante pestañas internas. VITAL
+permanece separado de Vento OS.
+
+---
+
+#### 8. Superficies auxiliares de ANIMA y PASS
+
+##### 8.1. ANIMA
+
+```text
+/
+/privacy-policy
+/delete-account
+/eliminar-cuenta
+/api/request-password
+/api/set-password
+/api/employee-apple-pass
+```
+
+Las dos primeras API de autenticación producen páginas de captura, pero siguen
+siendo utilidades de la aplicación móvil.
+
+##### 8.2. PASS
+
+Superficie estática principal:
+
+```text
+/privacy-policy
+/loyalty-terms
+/delete-account
+/eliminar-cuenta
+/payment-return
+/.well-known/apple-app-site-association
+/.well-known/assetlinks.json
+```
+
+Superficie Wallet:
+
+```text
+/api/apple-pass
+/api/employee-apple-pass
+/api/request-account-deletion
+/api/wallet/[...slug]
+/api/wallet/notify
+```
+
+`privacy-policy`, `loyalty-terms`, `delete-account` y `eliminar-cuenta` también
+aparecen dentro de `wallet-pass-api`. La duplicación se conserva como hallazgo;
+no se eliminó ningún archivo.
+
+---
+
+#### 9. Componentes reutilizables
+
+Los **290** módulos bajo directorios de componentes se distribuyen así:
+
+| Repositorio    | Módulos |
+| -------------- | ------: |
+| PASS           |      74 |
+| ANIMA          |      66 |
+| VISO           |      46 |
+| NEXO           |      32 |
+| web pública    |      16 |
+| ORIGO          |      11 |
+| PULSO          |      11 |
+| FOGO           |      10 |
+| VITAL separado |       8 |
+| NUMERA         |       7 |
+| SHELL activo   |       5 |
+| TALENTO        |       4 |
+
+La cantidad no indica reutilización efectiva. PASS conserva, entre otros:
+
+- `MyOrdersScreen` y `MyOrdersScreenV2`;
+- tres variantes de `DeliveryAddressesScreen`;
+- varias variantes de entrada y checkout de pedidos;
+- `OrderPlacedScreen` y `OrderPlacedScreenLive`;
+- `Home` y `HomeOptimized`;
+- selectores de horario en más de una versión.
+
+`CODE-AUD-003` comprobará cuál se usa; `CODE-AUD-013`, `CODE-AUD-014` y
+`CODE-AUD-015` decidirán después qué es legacy, duplicado o no consumido.
+
+---
+
+#### 10. Formularios y captura de datos
+
+La búsqueda estática identificó **256 módulos candidatos**:
+
+| Repositorio    | Candidatos |
+| -------------- | ---------: |
+| NEXO           |        112 |
+| VISO           |         63 |
+| ANIMA          |         20 |
+| FOGO           |         15 |
+| PASS           |         15 |
+| ORIGO          |         10 |
+| PULSO          |          8 |
+| NUMERA         |          4 |
+| TALENTO        |          4 |
+| SHELL activo   |          3 |
+| web pública    |          1 |
+| VITAL separado |          1 |
+
+En páginas web, los controles aparecen directamente en:
+
+| Aplicación  | Páginas con captura directa |
+| ----------- | --------------------------: |
+| NEXO        |                          38 |
+| VISO        |                          31 |
+| ORIGO       |                           5 |
+| FOGO        |                           4 |
+| NUMERA      |                           2 |
+| SHELL       |                           1 |
+| PULSO       |                           1 |
+| web pública |                           0 |
+
+Reglas:
+
+1. un buscador y un formulario transaccional pueden contener el mismo elemento
+   HTML, pero no producen el mismo resultado;
+2. un control dentro de un componente importado puede no aparecer en el archivo
+   `page.*`;
+3. una pantalla puede cambiar datos sin usar `<form>`;
+4. esta tarea localiza captura; `CODE-AUD-003` comprobará la acción y
+   `CODE-AUD-004` su implementación.
+
+---
+
+#### 11. Estados especiales de interfaz
+
+Solo se encontraron archivos explícitos especiales en:
+
+| Repositorio | Archivos                                 |
+| ----------- | ---------------------------------------- |
+| NEXO        | dos `loading.tsx` en alcances diferentes |
+| VISO        | `error.tsx` y `global-error.tsx`         |
+
+Las demás aplicaciones pueden manejar carga o error dentro de sus páginas y
+componentes, pero no presentan fronteras de archivo equivalentes. Esto se
+revisará en `CODE-AUD-010` y `CODE-AUD-018`; no se declara todavía como falla.
+
+---
+
+#### 12. Hallazgos y destinos
+
+| ID               | Hallazgo                                                          | Destino                                      |
+| ---------------- | ----------------------------------------------------------------- | -------------------------------------------- |
+| `H-CODE-002-001` | NEXO y VISO concentran 124 de 168 rutas web                       | priorización de `CODE-AUD-003..019`          |
+| `H-CODE-002-002` | PASS conserva múltiples variantes nominales de pantallas          | `CODE-AUD-003`, `013`, `014`, `015`          |
+| `H-CODE-002-003` | páginas legales de PASS aparecen en dos superficies auxiliares    | `CODE-AUD-014`, `CODE-AUD-015`               |
+| `H-CODE-002-004` | shell visual y navegación están copiados entre repositorios       | `CODE-AUD-014`, `TEC-18`                     |
+| `H-CODE-002-005` | VISO expone producto, menú, comercio y CMS junto a administración | `CODE-AUD-019`                               |
+| `H-CODE-002-006` | TALENTO tiene doce pantallas sin despliegue                       | `CAP-TAL-001..006`                           |
+| `H-CODE-002-007` | fronteras explícitas de carga y error son desiguales              | `CODE-AUD-010`, `CODE-AUD-018`               |
+| `H-CODE-002-008` | 256 candidatos de captura no equivalen a formularios validados    | `CODE-AUD-003`, `CODE-AUD-004`               |
+| `H-CODE-002-009` | rutas dinámicas dependen de datos y estados todavía no probados   | `CODE-AUD-003`, `CODE-AUD-007`               |
+| `H-CODE-002-010` | AURA no tiene rutas, pantallas ni componentes                     | planeación futura, fuera de auditoría actual |
+
+Todos los destinos ya existen. No se crean preguntas ni tareas redundantes.
+
+---
+
+#### 13. Qué no se concluye todavía
+
+Este inventario no afirma:
+
+- que toda ruta sea accesible para un usuario real;
+- que una pantalla guarde correctamente;
+- que cada formulario valide y muestre errores;
+- que un componente con nombre nuevo sea el activo;
+- que dos pantallas parecidas sean duplicadas;
+- que una pantalla sin `error.tsx` no maneje errores;
+- que una ruta desplegada tenga datos productivos;
+- que un componente encontrado tenga consumidor.
+
+Estas comprobaciones pertenecen a las tareas posteriores de auditoría.
+
+---
+
+#### 14. Decisiones propuestas
+
+1. Se adopta el inventario de 168 rutas web como corte inicial.
+2. ANIMA se conserva con 14 pantallas Expo Router.
+3. PASS se conserva con 15 pantallas de Stack y dos estados previos.
+4. TALENTO conserva doce pantallas como base futura no desplegada.
+5. VITAL permanece separado con cinco pantallas.
+6. Las superficies auxiliares de ANIMA y PASS no se convierten en aplicaciones.
+7. AURA permanece fuera del inventario actual.
+8. Los 290 módulos de componentes son inventario, no prueba de uso.
+9. Los 256 candidatos de captura son puntos de revisión, no formularios
+   declarados como completos.
+10. Los diez hallazgos continúan en tareas existentes.
+11. No se crean preguntas para hechos obtenibles del código.
+12. `CODE-AUD-003` será la única continuidad inmediata.
+
+---
+
+#### 15. Criterios de aceptación
+
+`CODE-AUD-002` podrá aprobarse cuando:
+
+- las ocho aplicaciones web tengan rutas enumeradas;
+- rutas y grupos internos no se confundan;
+- layouts y navegación móvil queden separados;
+- ANIMA y PASS permanezcan como móviles;
+- TALENTO no se presente como desplegado;
+- VITAL permanezca separado;
+- AURA no reciba pantallas ficticias;
+- superficies auxiliares no se cuenten como aplicaciones;
+- componentes y pantallas no se confundan;
+- candidatos de captura no se presenten como flujos validados;
+- variantes y posibles duplicados conserven destino;
+- no se creen preguntas repetidas;
+- `CODE-AUD-003` permanezca como única continuidad inmediata.
+
+---
+
+#### 16. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+repositorio y despliegue
+        ↓
+ruta, layout o pantalla
+        ↓
+componente y punto de captura
+        ↓
+acción real por comprobar
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-003
+— Inventariar acciones de usuario y comportamiento efectivo
+```
+### ✅ CODE-AUD-003 — Inventariar acciones de usuario y comportamiento efectivo
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** trazado estático de interacción, efecto y evidencia
+**Dependencia anterior:** `CODE-AUD-002`
+**Continuidad reservada:** `CODE-AUD-004`
+**Fecha de corte:** 2026-07-23
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea conecta cada familia visible de interacción con el efecto que el
+código intenta producir:
+
+```text
+persona pulsa, escribe, selecciona, escanea o envía
+        ↓
+manejador de interfaz
+        ↓
+validación y autorización encontradas
+        ↓
+cambio local, navegación, servidor, Supabase, dispositivo o tercero
+        ↓
+respuesta visible y evidencia persistente
+```
+
+La revisión confirma que el ecosistema no usa un único patrón:
+
+- las aplicaciones web administrativas usan principalmente Server Actions,
+  RPC y escrituras de servidor;
+- ANIMA y PASS combinan operaciones directas desde el móvil, RPC, Edge
+  Functions y capacidades del dispositivo;
+- TALENTO contiene acciones conectadas en código, pero no está desplegado;
+- la web pública es principalmente de lectura y navegación;
+- VITAL depende de una API HTTP separada sin producción comprobada;
+- existen acciones solamente visuales y al menos una interfaz sin efecto
+  conectado.
+
+No se ejecutaron altas, ediciones, anulaciones, pagos, movimientos, asistencia,
+pedidos ni pruebas con datos reales.
+
+---
+
+#### 2. Estados de comportamiento
+
+| Estado                       | Significado                                                       |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `LOCAL`                      | cambia la pantalla sin guardar                                    |
+| `NAVEGACIÓN`                 | abre otra ruta, aplicación o destino                              |
+| `REMOTO_DIRECTO`             | la interfaz llama directamente a Supabase                         |
+| `SERVIDOR`                   | pasa por Server Action, API, RPC o Edge Function                  |
+| `DISPOSITIVO`                | usa ubicación, cámara, escáner, archivo, impresión o notificación |
+| `EXTERNO`                    | abre mapas, correo, tienda, pago u otro proveedor                 |
+| `SIN_EFECTO`                 | se muestra un control sin acción conectada                        |
+| `IMPLEMENTADO_NO_DESPLEGADO` | existe código, pero no superficie productiva                      |
+| `POR_PROBAR`                 | existe conexión estática, pero no fue ejecutada operativamente    |
+
+`POR_PROBAR` no significa roto. Significa que el análisis de código no sustituye
+una prueba segura con actor, permiso, dato y resultado controlados.
+
+---
+
+#### 3. Señales técnicas encontradas
+
+Los conteos siguientes son **archivos que contienen la señal**, no número de
+acciones. Un mismo archivo puede aparecer en varias columnas.
+
+| Repositorio    | interacción | navegación | autenticación | base/RPC | Edge o HTTP | dispositivo |
+| -------------- | ----------: | ---------: | ------------: | -------: | ----------: | ----------: |
+| ANIMA          |          67 |         11 |             4 |       21 |           8 |          24 |
+| FOGO           |          17 |         14 |             1 |       10 |           0 |           8 |
+| web pública    |           6 |         11 |             0 |        0 |           0 |           0 |
+| NEXO           |          74 |         76 |             3 |       69 |          11 |          63 |
+| NUMERA         |           4 |          5 |             1 |        8 |           0 |           2 |
+| ORIGO          |           8 |         18 |             1 |       15 |           0 |           4 |
+| PASS           |          63 |         18 |             5 |       25 |           9 |           4 |
+| PULSO          |          16 |          5 |             1 |       19 |           2 |          10 |
+| SHELL          |           3 |          1 |             2 |        1 |           0 |           1 |
+| TALENTO        |          14 |         10 |             1 |        3 |           1 |           1 |
+| VISO           |          33 |         57 |             1 |       58 |          12 |          11 |
+| VITAL separado |          10 |          0 |             0 |        0 |          14 |           2 |
+
+“base/RPC” incluye lectura o escritura mediante RPC; la autorización y el tipo
+exacto de cada contrato se detallarán en `CODE-AUD-005` a `CODE-AUD-007`.
+
+---
+
+#### 4. Acciones comunes del ecosistema web
+
+Las aplicaciones web comparten estas familias:
+
+| Acción del usuario        | Comportamiento encontrado                            | Estado                  |
+| ------------------------- | ---------------------------------------------------- | ----------------------- |
+| iniciar sesión            | Supabase Auth, mensaje de error y redirección        | `REMOTO_DIRECTO`        |
+| cerrar sesión             | acción de servidor o cliente y retorno a login       | `SERVIDOR`              |
+| cambiar sede              | actualiza contexto y vuelve a cargar datos           | `LOCAL` + `NAVEGACIÓN`  |
+| cambiar rol de revisión   | altera contexto de prueba autorizado                 | `LOCAL` + consultas     |
+| abrir aplicación          | comprueba acceso y navega al dominio correspondiente | `NAVEGACIÓN`            |
+| abrir AURA                | se muestra como `Próximamente` y queda deshabilitada | `LOCAL`, sin navegación |
+| buscar, filtrar u ordenar | modifica resultados visibles                         | `LOCAL`                 |
+| guardar formulario        | Server Action, RPC o escritura según módulo          | `SERVIDOR`              |
+| descargar o imprimir      | genera archivo, diálogo o trabajo de impresión       | `DISPOSITIVO`           |
+| actualizar versión        | recarga la superficie cuando existe actualización    | `NAVEGACIÓN`            |
+
+AURA continúa sin tratarse como producto. Su presencia visual deshabilitada no
+equivale a ruta, aplicación ni despliegue.
+
+---
+
+#### 5. SHELL
+
+| Acción                 | Efecto observado                        | Resultado visible        |
+| ---------------------- | --------------------------------------- | ------------------------ |
+| iniciar sesión         | `signInWithPassword`                    | error o entrada al hub   |
+| solicitar recuperación | correo de recuperación de Supabase Auth | mensaje de envío o error |
+| mostrar contraseña     | cambia visibilidad local                | campo visible u oculto   |
+| abrir aplicación       | consulta permisos y usa enlace externo  | aplicación permitida     |
+| cerrar sesión          | Server Action `signOut`                 | regreso al login         |
+
+SHELL no crea datos empresariales desde su pantalla principal. Su única frontera
+operativa comprobada es autenticación, autorización de acceso y navegación.
+
+---
+
+#### 6. VISO
+
+| Grupo de acciones  | Ejemplos                                             | Efecto encontrado                              |
+| ------------------ | ---------------------------------------------------- | ---------------------------------------------- |
+| organización       | crear o editar empresa, sede, área y rol             | Server Actions y Supabase                      |
+| trabajadores       | crear, editar, invitar, retirar y asignar            | tablas laborales + Edge Function de invitación |
+| horarios           | crear, mover, publicar, borrar y medir turnos        | Server Actions, RPC y tablas de horario        |
+| asistencia         | revisar registros, puntos y políticas                | consultas, acciones y RPC                      |
+| permisos           | asignar rol, permiso y límite de concurrencia        | tablas y RPC                                   |
+| productos y menú   | crear producto, grupo, opción y regla                | tablas comerciales y de catálogo               |
+| CMS                | crear, editar, ordenar, publicar y retirar contenido | `website_blocks` y `website_items`             |
+| vacantes           | crear, editar y consultar vacantes                   | tabla `vacancies`                              |
+| documentos         | cargar y asociar documentos                          | Storage + tablas                               |
+| entrega y comercio | tarifas, colecciones y disponibilidad                | Server Actions                                 |
+
+Comportamiento efectivo encontrado:
+
+1. la mayoría de mutaciones sensibles están declaradas como Server Actions;
+2. varios flujos usan RPC para operaciones con reglas múltiples;
+3. la invitación laboral invoca `staff-invitations-create`;
+4. existen cargas hacia Storage;
+5. publicación de horarios y CMS producen estado persistente;
+6. la prueba operativa de cada permiso sigue pendiente.
+
+---
+
+#### 7. NEXO
+
+| Grupo de acciones      | Ejemplos                                            | Efecto encontrado                |
+| ---------------------- | --------------------------------------------------- | -------------------------------- |
+| catálogo               | crear, editar, configurar presentación e imagen     | Server Actions, tablas y Storage |
+| existencias            | consultar, ajustar, ubicar y conciliar              | tablas de stock y RPC            |
+| conteos                | abrir sesión, capturar cantidades, cerrar y aplicar | RPC transaccionales              |
+| solicitudes            | crear, dividir, valorar, surtir y revertir          | tablas de reposición + RPC       |
+| remisiones             | preparar, despachar, recibir, confirmar y corregir  | tablas + RPC                     |
+| traslados              | mover inventario y registrar diferencias            | tablas de transferencia          |
+| ubicaciones            | crear áreas, posiciones, catálogos y rutas          | tablas de ubicación              |
+| activos                | crear, contar, mantener, mover y documentar         | tablas de activos                |
+| producción             | consultar lotes y efectos de inventario             | tablas de producción             |
+| impresión              | diseñar etiqueta, crear trabajo e imprimir          | navegador/dispositivo            |
+| escaneo                | leer QR, código o LPN                               | cámara/escáner + consulta        |
+| dispositivo compartido | firmar acción e identificar actor                   | RPC de firma                     |
+
+NEXO presenta la mayor variedad de acciones y contratos. La existencia de
+confirmaciones, firmas y RPC no demuestra todavía idempotencia ni protección
+ante doble envío; eso continúa a `CODE-AUD-018`.
+
+---
+
+#### 8. FOGO
+
+| Acción                   | Efecto observado                              |
+| ------------------------ | --------------------------------------------- |
+| crear o editar receta    | guarda receta, ingredientes, salidas y pasos  |
+| cargar foto de paso      | sube archivo a Storage                        |
+| copiar estructura        | modifica el formulario local antes de guardar |
+| crear lote               | inserta lote de producción                    |
+| registrar cantidades     | actualiza consumos, salidas o paquetes        |
+| seleccionar área o sede  | cambia contexto operativo                     |
+| firmar acción compartida | RPC de firma de actor                         |
+
+Las recetas tienen comportamiento persistente localizado. La adopción real del
+módulo de lotes continúa sin quedar demostrada por esta inspección.
+
+---
+
+#### 9. ORIGO
+
+| Acción                               | Efecto observado                                     |
+| ------------------------------------ | ---------------------------------------------------- |
+| crear o editar proveedor             | Server Action sobre proveedores                      |
+| eliminar proveedor                   | eliminación persistente con validaciones de servidor |
+| crear o editar orden                 | orden y líneas de compra                             |
+| eliminar orden                       | cambio persistente sobre compra                      |
+| aprobar o rechazar solicitud maestra | actualiza revisión de producto                       |
+| crear recepción                      | entrada, costos y efectos de inventario              |
+| corregir o reversar recepción        | RPC específicos de corrección                        |
+| abrir recepción desde orden          | navegación con contexto de orden                     |
+
+La recepción combina compras e inventario. `CODE-AUD-018` deberá comprobar que
+reintentos o dobles pulsaciones no dupliquen entradas ni costos.
+
+---
+
+#### 10. PULSO
+
+| Acción                          | Efecto observado                        |
+| ------------------------------- | --------------------------------------- |
+| importar ventas                 | carga archivo, valida filas y crea lote |
+| mapear producto externo         | guarda correspondencia con catálogo     |
+| contabilizar importación diaria | RPC de publicación/consumo              |
+| consultar pedidos               | carga órdenes y estados                 |
+| cambiar estado operativo        | RPC de transición                       |
+| confirmar excepción de entrega  | RPC de autorización especial            |
+| abrir chat                      | crea o consulta conversación            |
+| enviar mensaje                  | inserta mensaje e invoca notificación   |
+| solicitar atención de mesa      | crea o actualiza llamada                |
+| identificar cliente             | captura o escanea QR                    |
+| otorgar puntos externos         | RPC de fidelización                     |
+
+La superficie contiene operación de pedidos, importación y salón, pero todavía
+no constituye el POS completo definido en la línea base.
+
+---
+
+#### 11. NUMERA
+
+| Acción                      | Efecto observado                                  |
+| --------------------------- | ------------------------------------------------- |
+| registrar gasto             | Server Action con permiso, validación e inserción |
+| administrar centro de costo | actualiza configuración económica                 |
+| administrar presupuesto     | escribe presupuesto por centro                    |
+| consultar equilibrio        | calcula o consulta datos sin mutar                |
+| consultar rentabilidad      | presenta agregados                                |
+| cambiar período o filtro    | navegación o estado de consulta                   |
+
+NUMERA combina lectura analítica con mutaciones económicas puntuales. No se
+encontró evidencia de que cierre contabilidad, tesorería o cartera completa.
+
+---
+
+#### 12. Web pública
+
+| Acción                                 | Comportamiento                             |
+| -------------------------------------- | ------------------------------------------ |
+| navegar por secciones                  | rutas internas Next.js                     |
+| abrir restaurante                      | ruta dinámica por `slug`                   |
+| consultar empleos                      | lectura de elementos CMS tipo `job`        |
+| abrir contacto                         | enlace de correo                           |
+| abrir redes                            | enlace externo                             |
+| mover carrusel                         | estado y gestos locales                    |
+| escribir correo y pulsar `Suscribirse` | **no existe envío ni manejador conectado** |
+
+El campo de correo y el botón `Suscribirse` son el único caso confirmado en esta
+tarea donde la interfaz ofrece una acción sin comportamiento efectivo.
+
+La página de empleos publica contenido CMS; no reemplaza el portal futuro
+TALENTO ni procesa una postulación.
+
+---
+
+#### 13. ANIMA
+
+| Grupo de acciones | Efecto encontrado                                      |
+| ----------------- | ------------------------------------------------------ |
+| autenticación     | login, recuperación y cierre de sesión                 |
+| asistencia        | ubicación, entrada, salida, descansos y sincronización |
+| turnos            | consultar, confirmar, cancelar y registrar salida      |
+| documentos        | seleccionar, cargar, consultar y eliminar              |
+| invitaciones      | crear, reenviar y cancelar mediante Edge Functions     |
+| equipo            | consultar trabajador, sede y estado                    |
+| anuncios          | consultar, marcar y recibir notificación               |
+| soporte           | crear ticket, enviar mensaje y marcar lectura          |
+| carné             | comprobar elegibilidad y generar pase                  |
+| configuración     | actualizar preferencias y notificaciones               |
+| eliminación       | solicitar y confirmar eliminación de cuenta            |
+
+Comportamiento:
+
+- asistencia usa ubicación y RPC;
+- documentos usan Storage y tablas;
+- notificaciones registran token mediante Edge Function;
+- invitaciones y eliminación usan funciones remotas;
+- varias acciones conservan caché o estado local para tolerar interrupciones.
+
+La ejecución real en dispositivo, segundo plano, permisos de ubicación y
+reintentos continúa a `CODE-AUD-016` y `CODE-AUD-018`.
+
+---
+
+#### 14. PASS
+
+| Grupo de acciones   | Efecto encontrado                                   |
+| ------------------- | --------------------------------------------------- |
+| registro y acceso   | OTP, verificación y sesión                          |
+| perfil              | completar o editar datos                            |
+| membresía           | consultar nivel, puntos, movimientos y QR           |
+| fidelización        | redimir, cancelar y mostrar resultado               |
+| favoritos y opinión | guardar favorito, calificación o comentario         |
+| sedes               | escoger restaurante y abrir mapa                    |
+| direcciones         | buscar, guardar, editar, borrar y cotizar           |
+| pedido              | elegir productos, opciones, regalo, fecha y entrega |
+| facturación         | guardar datos del comprador y solicitud             |
+| pago                | crear intención, abrir proveedor y procesar retorno |
+| seguimiento         | consultar estado y PIN de entrega                   |
+| chat                | abrir conversación, enviar mensaje y marcar lectura |
+| Wallet              | descargar pase                                      |
+| notificaciones      | registrar dispositivo y responder a pulsación       |
+| cuenta              | limpiar datos o solicitar eliminación               |
+
+PASS combina:
+
+- Supabase directo para perfil, fidelización, pedido y conversación;
+- RPC para membresía, checkout, disponibilidad y chat;
+- Edge Functions para pago, dirección, entrega, notificaciones y eliminación;
+- salidas externas hacia mapas, configuración, tienda y proveedor de pago.
+
+Las variantes `V2`, `Managed`, `Cached`, `Live` y `Optimized` todavía requieren
+confirmación de consumo en `CODE-AUD-013` y `CODE-AUD-015`.
+
+---
+
+#### 15. TALENTO no desplegado
+
+| Acción implementada        | Efecto de código              |
+| -------------------------- | ----------------------------- |
+| registrar o iniciar sesión | Supabase Auth                 |
+| abrir vacante              | navegación a detalle          |
+| postularse                 | RPC `submit_application`      |
+| completar perfil           | actualización de candidato    |
+| cargar documento           | Storage + registro            |
+| confirmar entrevista       | RPC `confirm_interview`       |
+| aceptar o rechazar oferta  | RPC `respond_to_offer`        |
+| consultar proceso          | aplicaciones, etapas y tareas |
+| cerrar sesión              | Supabase Auth                 |
+
+Estado: `IMPLEMENTADO_NO_DESPLEGADO`.
+
+Estas acciones no se presentan como operación actual. Su diseño y remodelación
+permanecen en `CAP-TAL-001` a `CAP-TAL-006`.
+
+---
+
+#### 16. VITAL separado
+
+VITAL contiene acciones para:
+
+- iniciar sesión y completar onboarding;
+- cargar el plan del día;
+- completar, aplazar o reprogramar una tarea;
+- guardar perfil nutricional y deportivo;
+- activar módulos, objetivos y deportes;
+- consultar resumen;
+- previsualizar o aplicar un plan generado;
+- sincronizar notificaciones.
+
+El móvil llama una API HTTP propia. Solo existe build interno y no se comprobó
+API productiva, por lo que el estado es `IMPLEMENTADO_NO_DESPLEGADO`. No se
+incorpora al backlog operativo de Vento OS.
+
+---
+
+#### 17. Superficies auxiliares móviles
+
+##### 17.1. ANIMA
+
+| Acción                | Efecto                                                 |
+| --------------------- | ------------------------------------------------------ |
+| solicitar enlace      | API genera solicitud de recuperación                   |
+| establecer contraseña | procesa token y actualiza credencial                   |
+| eliminar cuenta       | muestra información o entrada al flujo correspondiente |
+| descargar carné       | API genera Apple Wallet pass                           |
+
+##### 17.2. PASS
+
+| Acción                 | Efecto                       |
+| ---------------------- | ---------------------------- |
+| abrir enlace universal | intenta abrir la aplicación  |
+| regresar de pago       | redirige hacia `OrderPlaced` |
+| descargar Wallet       | genera pase                  |
+| eliminar cuenta        | inicia o explica solicitud   |
+| consultar términos     | página estática              |
+
+Son utilidades de las aplicaciones móviles, no productos web.
+
+---
+
+#### 18. Comportamientos incompletos o no demostrados
+
+| ID                 | Situación                                                   | Estado                       |
+| ------------------ | ----------------------------------------------------------- | ---------------------------- |
+| `ACT-CODE-003-001` | suscripción de la web pública no tiene manejador            | `SIN_EFECTO` confirmado      |
+| `ACT-CODE-003-002` | TALENTO contiene acciones, pero no despliegue               | `IMPLEMENTADO_NO_DESPLEGADO` |
+| `ACT-CODE-003-003` | VITAL depende de API sin producción comprobada              | `IMPLEMENTADO_NO_DESPLEGADO` |
+| `ACT-CODE-003-004` | acciones de dispositivo no se ejecutaron en hardware real   | `POR_PROBAR`                 |
+| `ACT-CODE-003-005` | operaciones de pago no se ejecutaron                        | `POR_PROBAR`                 |
+| `ACT-CODE-003-006` | cambios de inventario, compra y producción no se ejecutaron | `POR_PROBAR`                 |
+| `ACT-CODE-003-007` | asistencia no se ejecutó con ubicación real                 | `POR_PROBAR`                 |
+| `ACT-CODE-003-008` | variantes de PASS pueden no estar consumidas                | `POR_PROBAR`                 |
+
+No se necesita una respuesta del usuario para comprobar estos puntos. Son
+comprobaciones técnicas u operativas dirigidas a tareas posteriores.
+
+---
+
+#### 19. Hallazgos y destinos
+
+| ID               | Hallazgo                                                           | Destino                        |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------ |
+| `H-CODE-003-001` | la web pública ofrece suscripción sin efecto                       | `CODE-AUD-010`, `CODE-AUD-020` |
+| `H-CODE-003-002` | conviven escrituras directas, Server Actions, RPC y Edge Functions | `CODE-AUD-004`, `005`, `017`   |
+| `H-CODE-003-003` | NEXO concentra acciones con movimientos y confirmaciones sensibles | `CODE-AUD-018`, `019`          |
+| `H-CODE-003-004` | ORIGO combina recepción, costos e inventario                       | `CODE-AUD-006`, `018`, `019`   |
+| `H-CODE-003-005` | PULSO mezcla importación, pedidos, salón, chat y fidelización      | `CODE-AUD-012`, `019`          |
+| `H-CODE-003-006` | ANIMA depende de ubicación, segundo plano y notificaciones         | `CODE-AUD-016`, `018`          |
+| `H-CODE-003-007` | PASS depende de pago, enlaces, Wallet, mapas y notificaciones      | `CODE-AUD-005`, `016`, `018`   |
+| `H-CODE-003-008` | TALENTO implementa acciones antes de tener producto aprobado       | `CAP-TAL-001..006`             |
+| `H-CODE-003-009` | VITAL tiene comportamiento local sin superficie productiva         | conservar fuera de Vento OS    |
+| `H-CODE-003-010` | variantes de PASS requieren confirmar consumidor activo            | `CODE-AUD-013`, `015`          |
+| `H-CODE-003-011` | permisos encontrados no prueban autorización de servidor completa  | `CODE-AUD-017`                 |
+| `H-CODE-003-012` | feedback e idempotencia no son uniformes                           | `CODE-AUD-010`, `018`          |
+
+Todos los destinos ya existen. No se crean preguntas ni tareas redundantes.
+
+---
+
+#### 20. Regla de seguridad para las siguientes pruebas
+
+Las comprobaciones posteriores:
+
+1. no crearán productos, compras, movimientos, remisiones, asistencia, pedidos
+   o pagos productivos sin autorización expresa;
+2. usarán lectura, fixtures, entornos controlados o datos expresamente
+   autorizados;
+3. distinguirán autenticación de autorización por fila y por acción;
+4. comprobarán que una operación de actualización tenga lectura y validación
+   adecuadas;
+5. revisarán funciones privilegiadas sin asumir seguridad por su nombre;
+6. se ejecutarán desde `vento-shell` cuando involucren Supabase VENTO.
+
+La revisión del changelog vigente advierte además que la exposición automática
+de tablas nuevas al Data API está cambiando. Por eso una llamada encontrada en
+código no debe asumirse accesible en todos los ambientes.
+
+---
+
+#### 21. Decisiones propuestas
+
+1. Se adopta la taxonomía de nueve estados de comportamiento.
+2. Los conteos técnicos se interpretan como archivos con señales, no acciones.
+3. Las acciones web administrativas se consideran conectadas estáticamente,
+   pero `POR_PROBAR` operativamente.
+4. ANIMA y PASS se conservan como móviles con dependencias de dispositivo.
+5. TALENTO y VITAL se clasifican `IMPLEMENTADO_NO_DESPLEGADO`.
+6. La suscripción pública queda como `SIN_EFECTO` confirmado.
+7. AURA permanece deshabilitada como `Próximamente` y no se trata como producto.
+8. No se ejecutan mutaciones productivas durante documentación.
+9. Los doce hallazgos continúan en tareas existentes.
+10. No se crean preguntas para comprobaciones técnicas.
+11. `CODE-AUD-004` será la única continuidad inmediata.
+
+---
+
+#### 22. Criterios de aceptación
+
+`CODE-AUD-003` podrá aprobarse cuando:
+
+- interacción y efecto estén diferenciados;
+- navegación, cambio local, servidor, dispositivo y tercero no se confundan;
+- cada aplicación tenga familias de acciones inventariadas;
+- ANIMA y PASS permanezcan como móviles;
+- TALENTO no se declare operativo;
+- VITAL permanezca separado;
+- AURA no reciba comportamiento ficticio;
+- la suscripción sin efecto permanezca visible;
+- los flujos sensibles queden sin ejecución productiva;
+- las acciones no probadas se marquen `POR_PROBAR`;
+- los hallazgos tengan destino;
+- no se creen preguntas repetidas;
+- `CODE-AUD-004` permanezca como única continuidad.
+
+---
+
+#### 23. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+ruta y pantalla
+        ↓
+acción que intenta la persona
+        ↓
+comportamiento localizado en código
+        ↓
+servicio, consulta y estado local por inventariar
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-004
+— Inventariar hooks, servicios, adaptadores, consultas y estado local
+```
+### ✅ CODE-AUD-004 — Inventariar hooks, servicios, adaptadores, consultas y estado local
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** inventario estático transversal de organización interna, acceso a datos y memoria de interfaz
+**Dependencia anterior:** `CODE-AUD-003`
+**Continuidad reservada:** `CODE-AUD-005`
+**Fecha de corte:** 2026-07-23
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea localiza cómo está distribuida la lógica que sostiene las acciones
+inventariadas en `CODE-AUD-003`:
+
+```text
+pantalla o componente
+        ↓
+hook, contexto o estado local
+        ↓
+servicio, adaptador o consulta embebida
+        ↓
+cliente Supabase, HTTP o capacidad del dispositivo
+        ↓
+resultado remoto y copia temporal en la aplicación
+```
+
+El resultado principal es que **no existe una única arquitectura interna** para
+todo el ecosistema:
+
+- ANIMA y PASS concentran hooks, contextos y persistencia móvil;
+- TALENTO y VITAL separan servicios por dominio;
+- NEXO y VISO concentran gran parte de las consultas dentro de rutas,
+  componentes y Server Actions;
+- FOGO, NUMERA y ORIGO usan una mezcla más pequeña de páginas, componentes y
+  utilidades Supabase;
+- PULSO conserva dos constructores distintos del cliente web de Supabase;
+- SHELL contiene `@vento/os-context`, pero no se localizaron consumidores fuera
+  del propio paquete;
+- la web pública solo contiene una consulta de contenido;
+- VITAL permanece separado de Vento OS.
+
+No se ejecutaron consultas contra producción, llamadas HTTP, RPC, cargas,
+escrituras, pagos, movimientos, asistencia ni pruebas de dispositivo.
+
+---
+
+#### 2. Qué significa cada elemento
+
+| Elemento           | Significado usado en esta auditoría                                            |
+| ------------------ | ------------------------------------------------------------------------------ |
+| hook               | función React reutilizable cuyo nombre empieza por `use`                       |
+| contexto           | estado compartido por un árbol de componentes                                  |
+| servicio           | módulo que agrupa operaciones de un proceso o fuente externa                   |
+| adaptador          | transforma una forma de datos en otra forma esperada                           |
+| consulta           | lectura o escritura expresada con Supabase, RPC, Storage, Edge Function o HTTP |
+| estado local       | dato temporal mantenido en memoria por una pantalla o componente               |
+| persistencia local | dato guardado en el dispositivo o navegador                                    |
+| caché              | copia temporal con regla de reutilización o vencimiento                        |
+| cliente            | configuración de acceso a Supabase o a una API                                 |
+
+Un archivo puede cumplir varias funciones. Por ejemplo, un hook puede consultar
+Supabase, transformar filas, guardar caché y exponer estado de carga. Por eso los
+conteos siguientes **no deben sumarse como módulos únicos**.
+
+---
+
+#### 3. Alcance y método
+
+La inspección incluyó archivos `ts`, `tsx`, `js` y `jsx` de los doce
+repositorios y excluyó:
+
+- `node_modules`, `.next`, `.expo`, `dist`, builds, cobertura y cachés;
+- documentación, plantillas y archivos públicos estáticos;
+- migraciones y Edge Functions, que pertenecen principalmente a
+  `CODE-AUD-005` y `CODE-AUD-006`;
+- nombres de archivo sin evidencia en el contenido;
+- AURA, porque no existe código que inventariar.
+
+Las señales usadas fueron:
+
+1. definiciones de hooks con nombres `use...`;
+2. `useState`, `useReducer`, contextos y almacenamiento local;
+3. `.from(...)`, `.rpc(...)`, Storage, invocación de Edge Functions y
+   `fetch(...)`;
+4. transformaciones, normalizaciones, serialización y mapeos;
+5. clientes Supabase y módulos nombrados como servicios;
+6. ubicación del acceso remoto dentro de páginas, componentes, hooks,
+   `features`, `lib`, contextos o servicios.
+
+---
+
+#### 4. Señales encontradas
+
+Los valores son **archivos con la señal**, no cantidad de hooks, consultas ni
+operaciones. Un archivo puede aparecer en varias columnas.
+
+| Repositorio          | hooks definidos | acceso remoto | estado local | transformación |
+| -------------------- | --------------: | ------------: | -----------: | -------------: |
+| ANIMA                |              39 |            44 |           53 |             76 |
+| FOGO                 |               0 |            17 |           13 |             29 |
+| web pública          |               0 |             1 |            6 |             13 |
+| NEXO                 |               8 |           128 |           62 |            190 |
+| NUMERA               |               0 |            12 |            3 |             18 |
+| ORIGO                |               0 |            23 |            7 |             29 |
+| PASS                 |              37 |            59 |           72 |             79 |
+| PULSO                |               0 |            23 |           15 |             20 |
+| SHELL                |               0 |             2 |            2 |              2 |
+| TALENTO              |               1 |             5 |           14 |             10 |
+| VISO                 |               0 |            97 |           30 |            106 |
+| VITAL separado       |               1 |            19 |            8 |             34 |
+| **Total de señales** |          **86** |       **430** |      **285** |        **606** |
+
+“Transformación” es una señal amplia: incluye mapeos de listas y ayudantes de
+formato. No significa que existan 606 adaptadores formales.
+
+Se encontraron además **38 archivos** con `AsyncStorage`, `SecureStore`,
+`localStorage` o `sessionStorage`.
+
+---
+
+#### 5. Dónde están ubicados los accesos remotos
+
+| Repositorio    |   total | rutas o páginas | componentes |  hooks | `features` | contextos | `lib` o utilidades | API o servicios |  otros |
+| -------------- | ------: | --------------: | ----------: | -----: | ---------: | --------: | -----------------: | --------------: | -----: |
+| ANIMA          |      44 |               3 |          21 |     13 |          0 |         1 |                  1 |               1 |      4 |
+| FOGO           |      17 |               7 |           4 |      0 |          0 |         0 |                  6 |               0 |      0 |
+| web pública    |       1 |               0 |           0 |      0 |          0 |         0 |                  1 |               0 |      0 |
+| NEXO           |     128 |              93 |           5 |      0 |          8 |         0 |                 10 |              11 |      1 |
+| NUMERA         |      12 |               5 |           3 |      0 |          0 |         0 |                  4 |               0 |      0 |
+| ORIGO          |      23 |              12 |           3 |      0 |          0 |         0 |                  8 |               0 |      0 |
+| PASS           |      59 |               0 |          25 |     22 |          0 |         0 |                  7 |               2 |      3 |
+| PULSO          |      23 |              10 |           4 |      0 |          0 |         0 |                  5 |               3 |      1 |
+| SHELL          |       2 |               1 |           0 |      0 |          0 |         0 |                  0 |               0 |      1 |
+| TALENTO        |       5 |               0 |           0 |      0 |          5 |         0 |                  0 |               0 |      0 |
+| VISO           |      97 |              60 |          24 |      0 |          0 |         0 |                  5 |               8 |      0 |
+| VITAL separado |      19 |               0 |           0 |      0 |          0 |         0 |                  0 |              19 |      0 |
+| **Total**      | **430** |         **191** |      **89** | **35** |     **13** |     **1** |             **47** |          **44** | **10** |
+
+La tabla confirma tres modelos diferentes:
+
+1. **embebido en la superficie:** NEXO, VISO y las aplicaciones web menores;
+2. **hook o componente móvil:** ANIMA y PASS;
+3. **servicio explícito:** TALENTO y VITAL.
+
+Esto no decide todavía cuál modelo deberá quedar. La remodelación se diseñará
+después de vincular contratos, datos, seguridad y consumidores.
+
+---
+
+#### 6. Librerías y estrategia transversal de estado
+
+No se localizaron dependencias declaradas de:
+
+- TanStack Query o React Query;
+- SWR;
+- Redux;
+- Zustand;
+- Jotai;
+- MobX.
+
+El estado se resuelve principalmente con:
+
+- `useState` y estado dentro de componentes;
+- hooks propios;
+- contextos React puntuales;
+- estado derivado durante render;
+- parámetros de URL en aplicaciones Next.js;
+- almacenamiento local del navegador;
+- `AsyncStorage` o `SecureStore` en móviles;
+- variables de módulo y cachés manuales en casos específicos.
+
+La ausencia de una librería de consultas no se registra como falla automática.
+Sí obliga a comprobar por flujo:
+
+- quién refresca los datos;
+- cuándo una copia queda vencida;
+- cómo se invalida después de guardar;
+- qué ocurre al cambiar usuario, sede o rol;
+- qué ocurre sin conexión o durante un reintento.
+
+Estas comprobaciones continúan a `CODE-AUD-018`.
+
+---
+
+#### 7. Clientes de datos encontrados
+
+| Repositorio    | Clientes localizados                                                                   |
+| -------------- | -------------------------------------------------------------------------------------- |
+| ANIMA          | `src/lib/supabase.ts`                                                                  |
+| FOGO           | `src/lib/supabase/client.ts`, `server.ts`                                              |
+| web pública    | `src/lib/supabase.ts`                                                                  |
+| NEXO           | `src/lib/supabase/client.ts`, `server.ts`, `proxy.ts`                                  |
+| NUMERA         | `src/lib/supabase/client.ts`, `server.ts`                                              |
+| ORIGO          | `src/lib/supabase/client.ts`, `server.ts`                                              |
+| PASS           | `src/lib/supabase.ts`                                                                  |
+| PULSO          | `src/lib/supabase/client.ts`, `server.ts`, `proxy.ts` y `src/utils/supabase/client.ts` |
+| SHELL          | `src/lib/supabase/client.ts`, `server.ts`                                              |
+| TALENTO        | `src/lib/supabase.ts`                                                                  |
+| VISO           | `src/lib/supabase/client.ts`, `server.ts`, `proxy.ts`, `admin.ts`                      |
+| VITAL separado | `supabaseTableClient.js`, `supabaseRpcClient.js` dentro de su API                      |
+
+Los pares `client` y `server` de Next.js son fronteras distintas y no se
+consideran duplicación por sí mismos. El caso PULSO sí queda señalado porque
+existen dos constructores de navegador con variables admitidas y mensajes de
+configuración diferentes.
+
+El cliente `admin` de VISO no se clasifica como exposición, pero queda reservado
+para revisar consumidores y límites en `CODE-AUD-017`.
+
+---
+
+#### 8. ANIMA
+
+ANIMA tiene la capa de hooks más desarrollada del ecosistema actual.
+
+##### 8.1. Contextos
+
+| Contexto             | Responsabilidad encontrada                   |
+| -------------------- | -------------------------------------------- |
+| `auth-context`       | sesión, trabajador y ciclo de autenticación  |
+| `attendance-context` | asistencia y estado operativo relacionado    |
+| `app-config-context` | configuración y disponibilidad de aplicación |
+
+##### 8.2. Familias de hooks
+
+- autenticación y protección de navegación;
+- permisos, rol, sede y capacidades;
+- política de versión y configuración;
+- asistencia, descansos, geocerca y salida de turno;
+- anuncios e historial;
+- turnos y equipo;
+- documentos y notificaciones;
+- soporte;
+- carné laboral;
+- registro de token de notificaciones.
+
+##### 8.3. Persistencia y adaptadores
+
+El subsistema de asistencia separa:
+
+- construcción de payload;
+- validación y objetivo de geocerca;
+- estado y latch de geocerca;
+- RPC de descansos;
+- cola de eventos pendientes;
+- normalización del evento;
+- lectura, escritura y eliminación en `SecureStore`;
+- sincronización posterior.
+
+Esto es evidencia de intención de tolerancia a interrupciones. No demuestra por
+sí solo que la cola sea idempotente, que conserve todo evento o que funcione en
+segundo plano; esas pruebas permanecen en `CODE-AUD-018`.
+
+La caché de autenticación y las notificaciones de documentos también usan
+persistencia local. Debe comprobarse limpieza al cerrar sesión o cambiar de
+usuario.
+
+---
+
+#### 9. PASS
+
+PASS combina 37 archivos con hooks definidos, 59 con acceso remoto y 72 con
+estado local.
+
+##### 9.1. Hooks principales
+
+- membresía, nivel, puntos, recompensas y redenciones;
+- favoritos, recomendaciones y gamificación;
+- catálogo, disponibilidad y sede;
+- perfil laboral y sitios del trabajador;
+- notificaciones, actualizaciones y avisos de asequibilidad;
+- animaciones y movimiento reducido;
+- eliminación de cuenta;
+- contenido de aplicación y experiencias satélite.
+
+##### 9.2. Contextos y estado compartido
+
+Se localizaron contextos React para:
+
+- marca;
+- modal QR;
+- sustitución controlada de rol.
+
+También existen módulos de estado compartido para:
+
+- regalo del pedido;
+- destinatario del regalo;
+- entrega;
+- programación del pedido.
+
+No todos esos módulos usan React Context; algunos conservan variables y
+suscriptores propios. Su ciclo de vida deberá verificarse al cambiar pedido,
+usuario o sesión.
+
+##### 9.3. Cachés manuales
+
+La entrada de pedido conserva una caché de dirección y cotización que combina:
+
+- memoria de módulo;
+- `AsyncStorage`;
+- vencimiento de cinco minutos;
+- solicitud en curso compartida;
+- contador de invalidación;
+- suscriptores;
+- consulta de dirección;
+- llamadas paralelas a cotización de entrega.
+
+Es una implementación explícita y útil como evidencia, pero reúne consulta,
+normalización, caché e invocación remota en un mismo módulo. Su comportamiento
+con concurrencia, cierre de sesión, errores parciales y cambios de dirección
+continúa a `CODE-AUD-018`.
+
+PASS tiene diez archivos con almacenamiento persistente local. La auditoría no
+asume que todos limpien datos de identidad, pedido o rol de la misma manera.
+
+---
+
+#### 10. NEXO
+
+NEXO concentra **128 archivos** con acceso remoto:
+
+- 93 dentro de rutas o páginas;
+- 11 dentro de API o servicios locales;
+- 10 en `lib`;
+- 8 en `features`;
+- 5 en componentes;
+- 1 en otra ubicación.
+
+Se localizaron 19 archivos de consulta marcados `use client` y 18 marcados
+`use server`; los demás incluyen componentes de servidor, utilidades o módulos
+sin directiva propia.
+
+Los hooks explícitos se concentran principalmente en impresión:
+
+- dispositivos disponibles;
+- configuración almacenada;
+- previsualización ZPL.
+
+El resto de inventario, remisiones, conteos, catálogo, activos, ubicaciones y
+configuración suele resolver consultas y transformaciones cerca de la ruta o
+acción que las consume.
+
+No existe una capa única nombrada `repository` o `service` para todo inventario.
+Esto no invalida el funcionamiento, pero aumenta el trabajo necesario para:
+
+- localizar todos los consumidores de una tabla o RPC;
+- comparar validaciones repetidas;
+- confirmar invalidación después de una mutación;
+- distinguir lógica compartida de lógica específica de una pantalla.
+
+Los ocho archivos con almacenamiento local se relacionan principalmente con
+preferencias del shell, formularios, impresión y capturas operativas. No deben
+confundirse con la fuente de verdad de inventario.
+
+---
+
+#### 11. VISO
+
+VISO concentra **97 archivos** con acceso remoto:
+
+- 60 dentro de rutas o páginas;
+- 24 en componentes;
+- 8 en API internas;
+- 5 en `lib`.
+
+Se localizaron 16 archivos de consulta marcados `use client`, uno marcado
+`use server` y 80 sin directiva propia.
+
+No se encontró una familia formal de hooks de dominio. Organización,
+trabajadores, horarios, permisos, catálogo, menú, CMS y vacantes combinan:
+
+- consultas en componentes de servidor;
+- consultas dentro de componentes cliente;
+- Server Actions puntuales;
+- rutas API;
+- utilidades Supabase;
+- transformación local para tablas y formularios.
+
+Existe un cliente Supabase `admin`. Su mera presencia no demuestra uso inseguro:
+`CODE-AUD-017` deberá confirmar que solo se construya y consuma en servidor.
+
+Los cuatro archivos con persistencia de navegador corresponden a preferencias
+del shell y horario. No se consideran fuente de verdad laboral.
+
+---
+
+#### 12. FOGO, NUMERA, ORIGO y PULSO
+
+##### 12.1. FOGO
+
+FOGO tiene 17 archivos con acceso remoto. Las consultas viven principalmente en
+páginas, componentes y utilidades Supabase. Los selectores de contexto de receta
+transforman la información para la captura, pero no constituyen un estado global
+de aplicación.
+
+La configuración local encontrada pertenece principalmente al shell visual.
+Las recetas y lotes permanecen respaldados por datos remotos.
+
+##### 12.2. NUMERA
+
+NUMERA tiene 12 archivos con acceso remoto y poco estado local. Gastos,
+presupuestos y lecturas analíticas se resuelven cerca de páginas y componentes.
+No se localizó un servicio financiero único ni una caché global.
+
+##### 12.3. ORIGO
+
+ORIGO tiene 23 archivos con acceso remoto. Proveedores y órdenes usan Server
+Actions explícitas; recepciones y consultas complementarias se distribuyen entre
+páginas, componentes y utilidades.
+
+El formulario de recepción usa almacenamiento local. Esa copia sirve al proceso
+de captura y no se considera evidencia contable ni entrada de inventario hasta
+que el servidor confirme la operación.
+
+##### 12.4. PULSO
+
+PULSO tiene 23 archivos con acceso remoto repartidos entre páginas, componentes,
+acciones del módulo POS, API y utilidades.
+
+Se localizaron dos constructores de cliente de navegador:
+
+1. `src/lib/supabase/client.ts`;
+2. `src/utils/supabase/client.ts`.
+
+Ambos construyen `createBrowserClient`, pero aceptan combinaciones distintas de
+variables de entorno. El cliente de `src/lib` tiene once importaciones
+localizadas; no se encontró una importación del cliente de `src/utils`.
+`CODE-AUD-014` y `CODE-AUD-015` deberán confirmar si el segundo es legado o
+código sin consumidor antes de eliminar o consolidar algo.
+
+La persistencia local localizada corresponde principalmente al shell visual; el
+estado de pedidos, importaciones, chat y fidelización continúa siendo remoto.
+
+---
+
+#### 13. SHELL y paquete compartido de contexto
+
+La aplicación SHELL tiene poco estado local y solo dos archivos con señales de
+acceso remoto dentro del alcance de esta tarea.
+
+El paquete `packages/os-context` sí expone ayudantes para:
+
+- obtener el contexto efectivo;
+- comprobar un permiso efectivo;
+- iniciar una simulación de contexto;
+- detener una simulación.
+
+Estos ayudantes reciben un cliente Supabase y llaman RPC canónicos. Sin embargo,
+la búsqueda transversal no encontró importaciones de `@vento/os-context` en las
+aplicaciones actuales.
+
+Estado: **infraestructura implementada con consumidor no localizado**.
+
+No se elimina ni se declara inútil. `CODE-AUD-011` y `CODE-AUD-015` deberán
+confirmar si:
+
+- falta integrar el paquete;
+- su contrato fue copiado localmente;
+- solo funciona como referencia futura;
+- existen consumidores fuera de los checkouts revisados.
+
+---
+
+#### 14. Web pública
+
+La web pública tiene:
+
+- un cliente Supabase;
+- un archivo con lectura remota de contenido;
+- estado local únicamente para interacción visual;
+- ninguna capa de servicios empresariales;
+- ninguna persistencia local encontrada.
+
+La consulta de CMS y sus transformaciones son suficientes para la publicación
+actual. La suscripción sin efecto documentada en `CODE-AUD-003` tampoco tiene
+servicio, adaptador ni persistencia asociados.
+
+---
+
+#### 15. TALENTO no desplegado
+
+TALENTO presenta la separación más explícita por servicios:
+
+| Servicio               | Responsabilidad de código                               |
+| ---------------------- | ------------------------------------------------------- |
+| `vacancies-service`    | vacantes disponibles y detalle                          |
+| `profile-service`      | perfil de candidato                                     |
+| `applications-service` | postulaciones, etapas, entrevistas, oferta y preingreso |
+| `documents-service`    | documentos requeridos                                   |
+| `dashboard-service`    | resumen del proceso                                     |
+
+`applications-service` agrupa consultas paralelas, construye mapas por
+postulación, transforma filas a una línea de tiempo y llama RPC para postularse,
+responder una oferta y confirmar una entrevista.
+
+El `session-context` mantiene autenticación y candidato en la aplicación.
+
+Esta organización es evidencia técnica, no aprobación del producto ni prueba de
+despliegue. Continúa como `IMPLEMENTADO_NO_DESPLEGADO` y su diseño futuro
+permanece en `CAP-TAL-001` a `CAP-TAL-006`.
+
+---
+
+#### 16. VITAL separado
+
+VITAL tiene una organización propia de aplicación y API:
+
+- el móvil usa `sessionStore`, `onboardingStore`, un hook del flujo diario y
+  notificaciones locales;
+- la API contiene servicios de onboarding, perfil, nutrición, planificación,
+  deporte, resumen, módulos, seguridad, IA, telemetría y notificaciones;
+- la API separa un cliente para tablas y otro para RPC.
+
+Esta estructura no se adopta como arquitectura Vento OS. Se conserva únicamente
+como inventario del repositorio separado y sin producción comprobada.
+
+---
+
+#### 17. Adaptadores y transformaciones
+
+Se encontraron transformaciones frecuentes para:
+
+- convertir filas de Supabase en modelos de pantalla;
+- agrupar registros por entidad;
+- normalizar estados y valores opcionales;
+- construir payloads de RPC o Edge Functions;
+- convertir formularios a datos persistibles;
+- dar formato a fechas, cantidades, dinero y unidades;
+- serializar y recuperar cachés;
+- construir mapas, listas y árboles para navegación;
+- traducir estados técnicos a etiquetas visibles.
+
+La mayoría no vive en archivos llamados `adapter`. Está embebida en:
+
+- páginas;
+- Server Actions;
+- hooks;
+- componentes;
+- utilidades;
+- servicios de TALENTO y VITAL.
+
+Por eso esta tarea no declara una capa de adaptadores existente. Declara
+**responsabilidades de adaptación dispersas** que `CODE-AUD-014` comparará antes
+de una remodelación.
+
+---
+
+#### 18. Límites de esta tarea
+
+Este inventario no demuestra:
+
+- que toda consulta se ejecute;
+- que una consulta encontrada tenga permisos reales;
+- que una tabla esté expuesta al Data API;
+- que RLS autorice correctamente cada fila;
+- que un cliente marcado para servidor nunca llegue al navegador;
+- que una caché se invalide en todos los caminos;
+- que un hook tenga un consumidor;
+- que dos funciones parecidas sean duplicadas;
+- que una transformación preserve todos los datos;
+- que el checkout local coincida con producción.
+
+La configuración vigente de Supabase puede exigir exposición y permisos
+explícitos para tablas y funciones. Por eso el código cliente no prueba acceso
+real; `CODE-AUD-006` y `CODE-AUD-017` revisarán contrato, grants y RLS.
+
+---
+
+#### 19. Hallazgos y destinos
+
+| ID               | Hallazgo                                                                   | Destino                      |
+| ---------------- | -------------------------------------------------------------------------- | ---------------------------- |
+| `H-CODE-004-001` | 430 archivos contienen señales de acceso remoto                            | `CODE-AUD-005`, `006`, `020` |
+| `H-CODE-004-002` | NEXO y VISO concentran 225 de esos 430 archivos                            | `CODE-AUD-005`, `006`, `019` |
+| `H-CODE-004-003` | no existe una estrategia transversal de consultas o estado                 | `CODE-AUD-018`, `020`        |
+| `H-CODE-004-004` | ANIMA conserva colas de asistencia en `SecureStore`                        | `CODE-AUD-018`               |
+| `H-CODE-004-005` | PASS combina contextos, variables de módulo y cachés manuales              | `CODE-AUD-014`, `018`        |
+| `H-CODE-004-006` | PULSO tiene dos constructores web y uno no tiene importaciones localizadas | `CODE-AUD-014`, `015`        |
+| `H-CODE-004-007` | `@vento/os-context` no tiene consumidores localizados                      | `CODE-AUD-011`, `015`        |
+| `H-CODE-004-008` | TALENTO tiene servicios de dominio sin producto desplegado                 | `CAP-TAL-001..006`           |
+| `H-CODE-004-009` | VITAL tiene servicios propios, pero permanece fuera de Vento OS            | conservar separado           |
+| `H-CODE-004-010` | ANIMA y PASS consultan directamente desde código móvil                     | `CODE-AUD-005`, `017`        |
+| `H-CODE-004-011` | adaptaciones y normalizaciones están dispersas                             | `CODE-AUD-014`, `020`        |
+| `H-CODE-004-012` | NEXO y VISO mezclan acceso remoto en servidor y cliente                    | `CODE-AUD-005`, `017`        |
+| `H-CODE-004-013` | el cliente `admin` de VISO requiere verificar límites de servidor          | `CODE-AUD-017`               |
+| `H-CODE-004-014` | almacenamiento local mezcla preferencias, borradores, caché y colas        | `CODE-AUD-014`, `018`        |
+
+Todos los destinos ya existen. No se crean preguntas ni tareas redundantes.
+
+---
+
+#### 20. Comprobaciones técnicas posteriores
+
+Estas comprobaciones quedan asignadas al asistente:
+
+1. identificar cada Server Action, API route, RPC, Edge Function y job;
+2. vincular cada consulta con tabla, vista, Storage o función;
+3. confirmar consumidores de hooks, servicios y paquete compartido;
+4. comparar los dos clientes web de PULSO;
+5. comprobar que el cliente `admin` de VISO sea solo de servidor;
+6. revisar limpieza de caché y almacenamiento al cerrar sesión;
+7. comprobar invalidación después de guardar;
+8. probar colas, reintentos y concurrencia en entornos autorizados;
+9. comparar transformaciones repetidas antes de proponer consolidación;
+10. revisar exposición, grants y RLS desde `vento-shell`.
+
+No requieren una respuesta del usuario en esta fase.
+
+---
+
+#### 21. Regla de seguridad
+
+Las siguientes tareas:
+
+1. no crearán datos productivos sin autorización expresa;
+2. no ejecutarán pagos, asistencia, pedidos ni movimientos reales;
+3. mantendrán las comprobaciones Supabase VENTO en `vento-shell`;
+4. distinguirán lectura estática de prueba operativa;
+5. no moverán lógica entre repositorios durante descubrimiento;
+6. no adoptarán TALENTO o VITAL por el solo hecho de que exista código;
+7. no crearán AURA ni le atribuirán servicios inexistentes.
+
+---
+
+#### 22. Decisiones propuestas
+
+1. Se adopta el inventario de 86 archivos con hooks definidos.
+2. Los 430 archivos de acceso remoto son señales, no contratos validados.
+3. Los 285 archivos de estado local no constituyen una única fuente de verdad.
+4. Las 606 señales de transformación no se presentan como adaptadores formales.
+5. ANIMA y PASS conservan su arquitectura móvil actual durante la auditoría.
+6. TALENTO conserva sus servicios como base futura no desplegada.
+7. VITAL permanece separado.
+8. Los clientes web y servidor de Next.js no se tratan como duplicados
+   automáticamente.
+9. Los dos clientes web de PULSO sí quedan como candidato de duplicación.
+10. `@vento/os-context` queda como infraestructura sin consumidor localizado.
+11. No se prescribe todavía una librería global de estado o consultas.
+12. Las adaptaciones dispersas se compararán antes de consolidarlas.
+13. Las comprobaciones técnicas no se convierten en preguntas al usuario.
+14. Los catorce hallazgos continúan en tareas existentes.
+15. `CODE-AUD-005` será la única continuidad inmediata.
+
+---
+
+#### 23. Criterios de aceptación
+
+`CODE-AUD-004` podrá aprobarse cuando:
+
+- hooks, servicios, adaptadores, consultas y estado local estén diferenciados;
+- los conteos se interpreten como archivos con señales;
+- la ubicación del acceso remoto quede visible por repositorio;
+- ANIMA y PASS permanezcan como aplicaciones móviles;
+- NEXO y VISO conserven su concentración documentada;
+- PULSO conserve el candidato de doble cliente;
+- `@vento/os-context` no se declare consumido sin evidencia;
+- TALENTO no se presente como producto desplegado;
+- VITAL permanezca separado;
+- AURA no reciba arquitectura ficticia;
+- caché local y fuente de verdad remota no se confundan;
+- no se declare seguridad por la existencia de un cliente o consulta;
+- los hallazgos tengan destino;
+- no se creen preguntas técnicas innecesarias;
+- `CODE-AUD-005` permanezca como única continuidad.
+
+---
+
+#### 24. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+acción de usuario
+        ↓
+hook, estado, servicio o consulta
+        ↓
+cliente y transformación
+        ↓
+contrato de servidor todavía por inventariar
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-005
+— Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
+```
+### ✅ CODE-AUD-005 — Inventariar Server Actions, API routes, RPC, Edge Functions y jobs
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** inventario contrastado de contratos de servidor, automatización y despliegue
+**Dependencia anterior:** `CODE-AUD-004`
+**Continuidad reservada:** `CODE-AUD-006`
+**Fecha de corte:** 2026-07-23
+**Proyecto Supabase comprobado:** `vento-os-dev` (`clzdpinthhtknkmefsxx`)
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea conecta la lógica localizada en `CODE-AUD-004` con las fronteras que
+pueden ejecutar comportamiento fuera de la pantalla:
+
+```text
+pantalla, hook o componente
+        ↓
+Server Action o API
+        ↓
+RPC, Edge Function o servicio externo
+        ↓
+job, cron o disparador
+        ↓
+datos y efectos que CODE-AUD-006 vinculará
+```
+
+El inventario confirmó:
+
+| Elemento                                       |    Resultado |
+| ---------------------------------------------- | -----------: |
+| archivos con Server Actions                    |      **101** |
+| API routes Next.js                             |       **20** |
+| métodos HTTP declarados en esas rutas          |       **24** |
+| endpoints auxiliares de ANIMA y PASS           |        **8** |
+| archivos consumidores de RPC                   |      **105** |
+| nombres RPC literales únicos consumidos        |       **93** |
+| nombres RPC consumidos que existen remotamente | **93 de 93** |
+| Edge Functions activas remotas                 |       **24** |
+| Edge Functions locales únicas                  |       **29** |
+| jobs `pg_cron` activos remotos                 |        **7** |
+| workflows GitHub localizados                   |        **5** |
+
+VITAL se conserva separado: su API propia contiene 15 módulos de rutas, 37
+condiciones de endpoint y un `health`, pero no se incorpora a los totales de API
+de Vento OS.
+
+No se invocó ninguna Server Action, API, RPC, Edge Function, webhook, cron ni
+workflow.
+
+---
+
+#### 2. Estados usados
+
+| Estado           | Significado                                              |
+| ---------------- | -------------------------------------------------------- |
+| `LOCAL`          | el contrato existe en un checkout revisado               |
+| `CONSUMIDO`      | existe una referencia desde otra parte del código        |
+| `REMOTO_ACTIVO`  | Supabase informa despliegue activo                       |
+| `LOCAL_Y_REMOTO` | existe en código local y como despliegue remoto          |
+| `SOLO_LOCAL`     | existe código, pero no aparece desplegado                |
+| `SOLO_REMOTO`    | aparece desplegado, pero no existe fuente local canónica |
+| `PROGRAMADO`     | existe job activo con calendario                         |
+| `DESHABILITADO`  | existe definición, pero declara no ejecutar trabajo      |
+| `POR_PROBAR`     | contrato localizado sin ejecución operativa              |
+
+`REMOTO_ACTIVO` significa que la plataforma reporta una función activa. No
+demuestra que su lógica termine correctamente ni que tenga autorización
+suficiente.
+
+---
+
+#### 3. Fuentes y regla de contraste
+
+Se usaron:
+
+1. código fuente de los doce repositorios;
+2. directivas `use server`;
+3. rutas `app/api/**/route.*`;
+4. endpoints auxiliares bajo directorios `api`;
+5. llamadas `.rpc(...)` con nombre literal;
+6. llamadas `functions.invoke(...)` y URLs de Edge Functions;
+7. `vento-shell/supabase/functions`;
+8. `vento-pass/supabase/functions`;
+9. `vento-shell/supabase/config.toml`;
+10. `vento-shell/schema_public_current.sql`;
+11. migraciones canónicas de `vento-shell`;
+12. metadatos remotos de `vento-os-dev` obtenidos mediante consultas de solo
+    lectura;
+13. workflows bajo `.github/workflows`.
+
+Se excluyeron builds, documentación, cachés, `node_modules`, artefactos
+generados y el proyecto Supabase `petapetit`.
+
+Los nombres dinámicos de RPC o funciones no pueden extraerse con la misma
+certeza que los literales. Los conteos son un mínimo reproducible.
+
+---
+
+#### 4. Server Actions
+
+Se encontraron 101 archivos que contienen una directiva `use server`, ya sea a
+nivel de módulo o dentro de una acción.
+
+| Aplicación                                | Archivos | Familias principales                                                            |
+| ----------------------------------------- | -------: | ------------------------------------------------------------------------------- |
+| FOGO                                      |        3 | recetas y lotes de producción                                                   |
+| NEXO                                      |       42 | inventario, catálogo, remisiones, conteos, activos, ubicaciones y configuración |
+| NUMERA                                    |        2 | gastos y centros de costo                                                       |
+| ORIGO                                     |        5 | proveedores, órdenes, recepciones y revisión de producto                        |
+| PULSO                                     |        7 | importaciones, pedidos, identificación y fidelización                           |
+| SHELL                                     |        1 | cierre de sesión                                                                |
+| VISO                                      |       41 | organización, personal, horarios, permisos, productos, comercio, CMS y vacantes |
+| ANIMA, PASS, TALENTO, web pública y VITAL |        0 | no usan Server Actions de Next.js                                               |
+| **Total**                                 |  **101** |                                                                                 |
+
+NEXO y VISO reúnen **83 de los 101 archivos**.
+
+##### 4.1. NEXO
+
+Los 42 archivos se distribuyen así:
+
+- 11 de configuración general de inventario;
+- 8 de remisiones y su configuración;
+- 6 de activos;
+- 5 de catálogo y presentaciones;
+- 5 de ubicaciones;
+- 2 de existencias;
+- 1 de conteo inicial;
+- 1 de entradas;
+- 1 de traslados;
+- 1 de retiro;
+- 1 de centro de costo.
+
+Hay acciones tanto en archivos `actions.ts` como dentro de páginas. El nombre
+del archivo no determina por sí solo autorización, transacción o idempotencia.
+
+##### 4.2. VISO
+
+Los 41 archivos cubren:
+
+- empresas, sedes, horarios comerciales y excepciones;
+- trabajadores, perfiles, dispositivos y horarios;
+- permisos y navegación;
+- productos, menú, disponibilidad y colecciones;
+- tarifas de entrega;
+- CMS de sedes, bloques y elementos;
+- vacantes;
+- reprogramación y resolución de pedidos.
+
+VISO también mezcla acciones dentro de páginas y componentes. `CODE-AUD-017`
+revisará que toda operación privilegiada valide en servidor y no confíe en
+estado del cliente.
+
+##### 4.3. Aplicaciones menores
+
+- FOGO guarda recetas y lotes;
+- NUMERA registra gastos y administra centros de costo;
+- ORIGO administra proveedores, órdenes y recepciones;
+- PULSO procesa importaciones, estados de pedido y acciones POS;
+- SHELL solo contiene la acción de cierre de sesión.
+
+---
+
+#### 5. API routes Next.js
+
+##### 5.1. NEXO
+
+| Ruta                                      | Métodos                 |
+| ----------------------------------------- | ----------------------- |
+| `/api/printing/layouts`                   | `GET`, `POST`, `DELETE` |
+| `/api/labelary`                           | `POST`                  |
+| `/api/inventory/stock/export-by-loc`      | `GET`                   |
+| `/api/inventory/count-initial`            | `POST`                  |
+| `/api/inventory/count-initial/approve`    | `POST`                  |
+| `/api/inventory/movements/export`         | `GET`                   |
+| `/api/inventory/lpns`                     | `GET`                   |
+| `/api/inventory/adjust`                   | `POST`                  |
+| `/api/inventory/locations`                | `GET`                   |
+| `/api/inventory/catalog/export-suppliers` | `GET`                   |
+| `/api/inventory/catalog/upload-image`     | `POST`                  |
+
+Total: 11 rutas y 13 métodos declarados.
+
+##### 5.2. VISO
+
+| Ruta                                        | Métodos          |
+| ------------------------------------------- | ---------------- |
+| `/api/health`                               | `GET`            |
+| `/api/viso/staff-schedule-shifts`           | `POST`, `DELETE` |
+| `/api/viso/staff-schedule-hidden-employees` | `POST`, `DELETE` |
+| `/api/viso/upload-website-media`            | `POST`           |
+| `/api/viso/upload-logo`                     | `POST`           |
+| `/api/viso/upload-product-image`            | `POST`           |
+| `/api/viso/upload-commercial-menu-image`    | `POST`           |
+| `/api/viso/attendance-report`               | `GET`            |
+| `/api/viso/menu/reorder`                    | `POST`           |
+
+Total: 9 rutas y 11 métodos declarados.
+
+Las rutas de carga, ajuste, aprobación, exportación y reordenamiento quedan
+marcadas `POR_PROBAR`. Su autorización y validación pertenecen a
+`CODE-AUD-017`.
+
+---
+
+#### 6. Endpoints auxiliares de aplicaciones móviles
+
+##### 6.1. ANIMA
+
+| Superficie            | Endpoint                 | Propósito              |
+| --------------------- | ------------------------ | ---------------------- |
+| `web-auth`            | `request-password.js`    | solicitar recuperación |
+| `web-auth`            | `set-password.js`        | establecer contraseña  |
+| `employee-wallet-api` | `employee-apple-pass.js` | generar pase laboral   |
+
+##### 6.2. PASS
+
+| Superficie        | Endpoint                      | Propósito             |
+| ----------------- | ----------------------------- | --------------------- |
+| `wallet-pass-api` | `apple-pass.js`               | generar pase          |
+| `wallet-pass-api` | `employee-apple-pass.js`      | generar pase laboral  |
+| `wallet-pass-api` | `request-account-deletion.js` | solicitar eliminación |
+| `wallet-pass-api` | `wallet/[...slug].js`         | rutas Wallet          |
+| `wallet-pass-api` | `wallet/notify.js`            | actualización Wallet  |
+
+Son ocho endpoints auxiliares. No convierten ANIMA ni PASS en aplicaciones web.
+
+La coexistencia de endpoints Wallet y Edge Functions Wallet queda como posible
+duplicación para `CODE-AUD-014`; esta tarea no decide aún cuál es el contrato
+vigente.
+
+---
+
+#### 7. API separada de VITAL
+
+VITAL contiene:
+
+- 15 módulos `*Routes.js`;
+- 37 condiciones explícitas de endpoint;
+- un endpoint `/health`;
+- controladores y servicios propios;
+- acceso a Supabase mediante clientes HTTP para tablas y RPC.
+
+| Módulo           | Condiciones de endpoint |
+| ---------------- | ----------------------: |
+| IA               |                       3 |
+| hoy              |                       5 |
+| módulos          |                       3 |
+| notificaciones   |                       3 |
+| nutrición        |                       4 |
+| onboarding       |                       1 |
+| planificación    |                       2 |
+| perfil           |                       2 |
+| seguridad        |                       2 |
+| perfil deportivo |                       2 |
+| staff            |                       3 |
+| inicio           |                       2 |
+| resumen          |                       1 |
+| telemetría       |                       3 |
+| wear             |                       1 |
+| **Total**        |                  **37** |
+
+Permanece `IMPLEMENTADO_NO_DESPLEGADO` y fuera de Vento OS.
+
+---
+
+#### 8. Consumidores RPC
+
+Se encontraron 105 archivos que llaman `.rpc(...)` y 93 nombres literales
+únicos. La consulta remota confirmó que **los 93 nombres existen actualmente**
+en alguno de los esquemas empresariales revisados.
+
+| Repositorio                      | Archivos consumidores | RPC únicos |
+| -------------------------------- | --------------------: | ---------: |
+| ANIMA                            |                     8 |         10 |
+| FOGO                             |                     8 |          8 |
+| NEXO                             |                    25 |         39 |
+| NUMERA                           |                     5 |          4 |
+| ORIGO                            |                    10 |          8 |
+| PASS                             |                    12 |         12 |
+| PULSO                            |                    16 |         15 |
+| SHELL                            |                     2 |          5 |
+| TALENTO                          |                     2 |          4 |
+| VISO                             |                    17 |         14 |
+| web pública                      |                     0 |          0 |
+| **Total de archivos**            |               **105** |            |
+| **Nombres únicos transversales** |                       |     **93** |
+
+##### 8.1. ANIMA
+
+`anima_diagnostic_employee_push_tokens`,
+`anima_diagnostic_push_token_coverage`, `employee_wallet_eligibility`,
+`end_attendance_break`, `has_permission`, `reconcile_staff_invitations`,
+`register_shift_departure_event`,
+`register_shift_departure_event_autoclose`, `start_attendance_break` y
+`sync_attendance_events`.
+
+##### 8.2. FOGO
+
+`attach_shared_device_action_signature_target`, `current_employee_area_id`,
+`current_employee_site_id`, `current_shared_operational_device_v1`,
+`fogo_recipe_area_options`, `has_operational_role_permission`,
+`has_permission` y `sign_shared_device_action`.
+
+##### 8.3. NEXO
+
+NEXO usa 39 RPC para:
+
+- sesiones y ajustes de conteo;
+- aplicación masiva de configuración maestra;
+- recibo, despacho, valoración y reversión de reposición;
+- asignación y consumo de existencias;
+- remisiones;
+- posiciones y ubicaciones;
+- contexto y permisos operativos;
+- firma en dispositivo compartido;
+- documentos POS internos;
+- resumen y sincronización de solicitudes.
+
+Los nombres completos quedan conservados por la búsqueda reproducible del corte;
+los de mayor sensibilidad incluyen
+`apply_inventory_count_adjustments`,
+`apply_restock_receipt`,
+`confirm_remission_shipment_receipt`,
+`consume_inventory_stock_from_positions`,
+`generate_manual_daily_internal_pos_documents`,
+`reverse_restock_request` y
+`upsert_inventory_stock_by_location`.
+
+##### 8.4. NUMERA y ORIGO
+
+NUMERA usa `current_shared_operational_device_v1`,
+`has_operational_role_permission`, `has_permission` y
+`numera_current_period_summary`.
+
+ORIGO usa `attach_shared_device_action_signature_target`,
+`current_shared_operational_device_v1`,
+`has_operational_role_permission`, `has_permission`,
+`origo_mark_inventory_entry_corrected`,
+`origo_reverse_inventory_entry`, `sign_shared_device_action` y
+`upsert_inventory_stock_by_location`.
+
+##### 8.5. PASS
+
+`can_access_beta`, `create_gift_aware_scheduled_order_checkout_draft`,
+`ensure_order_conversation`, `get_client_order_chat_unread_counts`,
+`get_my_membership`, `get_my_total_earned_points`, `get_my_wallet`,
+`get_order_delivery_pin`, `get_order_delivery_slots`,
+`get_site_order_status`, `list_my_wallet_ledger` y
+`mark_order_conversation_read`.
+
+##### 8.6. PULSO
+
+`archive_finished_order_conversations`,
+`attach_shared_device_action_signature_target`,
+`award_loyalty_points_external`, `create_order_delivery_courier_link`,
+`current_shared_operational_device_v1`,
+`get_staff_order_chat_unread_counts`,
+`has_operational_role_permission`, `has_permission`,
+`mark_order_conversation_read`,
+`override_order_delivery_confirmation`,
+`pulso_post_daily_sales_import`, `set_order_conversation_archived`,
+`sign_shared_device_action`, `update_order_gift_operational_state` y
+`update_order_operational_state`.
+
+##### 8.7. SHELL, TALENTO y VISO
+
+SHELL usa `get_effective_context_v1`, `has_effective_permission_v1`,
+`has_permission`, `start_context_simulation_v1` y
+`stop_context_simulation_v1`.
+
+TALENTO usa `bootstrap_my_candidate`, `confirm_interview`,
+`respond_to_offer` y `submit_application`.
+
+VISO usa 14 RPC de permisos, dispositivos compartidos, Wallet laboral,
+reprogramación de pedidos, navegación, PIN, perfil operativo, puntos de
+asistencia, roles de sede y tablero contable.
+
+Que los 93 nombres existan no demuestra:
+
+- permiso `EXECUTE`;
+- exposición al Data API;
+- autorización por actor;
+- parámetros correctos;
+- resultado correcto;
+- idempotencia.
+
+---
+
+#### 9. Funciones PostgreSQL remotas
+
+La consulta de metadatos remotos encontró:
+
+| Esquema                         | Funciones | `SECURITY DEFINER` | funciones de trigger |
+| ------------------------------- | --------: | -----------------: | -------------------: |
+| `public`                        |       246 |                164 |                   60 |
+| `pass`                          |        30 |                 27 |                   11 |
+| `talento`                       |        16 |                 11 |                    1 |
+| `vital`                         |        47 |                  5 |                    1 |
+| `club`                          |         7 |                  2 |                    0 |
+| `app_private`                   |         1 |                  1 |                    0 |
+| **Total en esquemas revisados** |   **347** |            **210** |               **73** |
+
+Estas 347 funciones no equivalen a 347 RPC públicas. Incluyen ayudantes,
+funciones de trigger y contratos internos.
+
+La cantidad de `SECURITY DEFINER` se registra como superficie que exige
+auditoría, no como vulnerabilidad confirmada. `CODE-AUD-017` revisará:
+
+- propietario;
+- `search_path`;
+- permisos `EXECUTE`;
+- autenticación interna;
+- autorización por empresa, sede, rol y fila;
+- exposición real.
+
+---
+
+#### 10. Deriva del snapshot SQL local
+
+`schema_public_current.sql` contiene 157 declaraciones de función pública y su
+último commit localizado es del 25 de junio de 2026.
+
+El remoto contiene actualmente 246 funciones en `public`.
+
+```text
+snapshot local: 157
+remoto actual:  246
+diferencia:      89
+```
+
+Esto no significa que falten 89 migraciones: algunas pueden existir en
+migraciones posteriores sin haberse regenerado el snapshot. Sí significa que
+el archivo llamado `schema_public_current.sql` **no puede tratarse como snapshot
+actual completo** hasta reconciliarlo en `CODE-AUD-006`.
+
+---
+
+#### 11. Edge Functions remotas
+
+Supabase reporta 24 funciones `ACTIVE`.
+
+| Edge Function               | `verify_jwt` | Fuente localizada | Consumidor o activador localizado |
+| --------------------------- | ------------ | ----------------- | --------------------------------- |
+| `wallet-pass`               | sí           | SHELL             | PASS y APIs Wallet                |
+| `attendance-report`         | sí           | SHELL             | ANIMA y VISO                      |
+| `staff-invitations-create`  | sí           | SHELL             | ANIMA y VISO                      |
+| `staff-invitations-accept`  | no           | SHELL             | enlace de invitación              |
+| `document-alerts`           | no           | SHELL             | cron y documentos ANIMA           |
+| `request-account-deletion`  | sí           | SHELL             | PASS auxiliar                     |
+| `account-deletion`          | sí           | SHELL             | ANIMA y PASS                      |
+| `process-account-deletions` | no           | SHELL             | GitHub Actions                    |
+| `register-push-token`       | no           | SHELL             | ANIMA y PASS                      |
+| `announcement-notify`       | no           | SHELL             | ANIMA                             |
+| `employee-delete`           | no           | SHELL             | ANIMA                             |
+| `payments-create-intent`    | sí           | SHELL             | PASS                              |
+| `payments-webhook`          | no           | SHELL             | proveedor de pagos                |
+| `staff-invitations-resend`  | no           | SHELL             | ANIMA                             |
+| `staff-invitations-cancel`  | no           | SHELL             | ANIMA                             |
+| `shift-publish-notify`      | sí           | SHELL             | ANIMA y función de base           |
+| `shift-runtime-processor`   | no           | SHELL             | cron                              |
+| `pass-delivery-quote`       | sí           | SHELL             | PASS                              |
+| `pass-address-search`       | sí           | SHELL             | PASS                              |
+| `support-message-notify`    | sí           | SHELL             | trigger de soporte                |
+| `payments-return`           | no           | SHELL             | retorno del proveedor             |
+| `pass-register-push-token`  | sí           | PASS              | PASS                              |
+| `order-message-notify`      | sí           | PASS              | PULSO                             |
+| `delivery-portal`           | no           | **solo remoto**   | enlace de domiciliario            |
+
+Resultado:
+
+- 12 exigen JWT de plataforma;
+- 12 no lo exigen;
+- las 24 están activas;
+- la versión activa más reciente no se asume igual al checkout local.
+
+Una función con `verify_jwt = false` puede necesitar esa configuración para
+webhook, cron o enlace firmado. Su seguridad depende entonces de controles
+propios que se comprobarán en `CODE-AUD-017`.
+
+---
+
+#### 12. Comparación local contra remoto de Edge Functions
+
+Se localizaron 27 directorios en `vento-shell` y 2 en `vento-pass`: 29 nombres
+locales únicos.
+
+```text
+local y remoto: 23
+solo local:       6
+solo remoto:      1
+```
+
+##### 12.1. Solo local
+
+- `club-revenuecat-webhook`;
+- `club-settle-booster`;
+- `club-sync-earn-events`;
+- `employee-apple-pass`;
+- `employee-wallet-pass`;
+- `employee-wallet-sync-eligibility`.
+
+No se declaran fallidas. Se clasifican `SOLO_LOCAL` hasta confirmar si son
+desarrollo futuro, reemplazo, función retirada o despliegue faltante.
+
+##### 12.2. Solo remoto
+
+`delivery-portal` está activa en versión 1 y no tiene directorio local canónico.
+Su código remoto:
+
+- sirve una página HTML para el domiciliario;
+- consulta el pedido mediante token;
+- cambia recogida, tránsito, entrega o novedad;
+- usa un cliente con `service_role`;
+- llama `get_delivery_portal_data_by_token` y
+  `update_delivery_portal_state`;
+- tiene `verify_jwt = false`.
+
+No se copia automáticamente desde remoto ni se elimina. Primero debe quedar
+versionada en `vento-shell` y auditarse el contrato de token en
+`CODE-AUD-017`.
+
+##### 12.3. Configuración no representada localmente
+
+El remoto marca `verify_jwt = false` para `payments-return` y
+`delivery-portal`, pero `vento-shell/supabase/config.toml` no contiene bloques
+para esas dos funciones.
+
+El mismo archivo sí contiene un bloque sin JWT para
+`club-revenuecat-webhook`, que actualmente es `SOLO_LOCAL`.
+
+La configuración local no representa por completo el estado remoto.
+
+---
+
+#### 13. Jobs `pg_cron` activos
+
+La consulta remota encontró siete jobs activos. No se leyeron sus comandos para
+evitar exponer secretos.
+
+| Job                                                  | Calendario    | Propósito inferido por nombre   |
+| ---------------------------------------------------- | ------------- | ------------------------------- |
+| `document-alerts-daily`                              | `0 14 * * *`  | alertas documentales            |
+| `auto-close-attendance`                              | `59 4 * * *`  | cierre de asistencia            |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *` | procesador de turnos            |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`  | limpiar cotizaciones            |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`   | cierre diario                   |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`  | cerrar turnos abiertos antiguos |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *` | reconciliar pagos vencidos      |
+
+Cinco nombres aparecen en migraciones canónicas:
+
+- `anima_shift_runtime_processor_every_5m`;
+- `pass_delivery_quotes_cleanup_hourly`;
+- `anima_attendance_day_end_close_0005`;
+- `attendance_stale_open_shift_autoclose_daily_bogota`;
+- `pass_payment_checkout_expiry_reconciliation`.
+
+Dos jobs activos no tienen definición localizada por nombre en las migraciones:
+
+- `document-alerts-daily`;
+- `auto-close-attendance`.
+
+La migración local define además
+`purge_inventory_form_drafts_daily`, pero ese job no aparece activo en remoto.
+
+Los tres casos continúan a reconciliación; no se crean ni eliminan jobs durante
+esta auditoría.
+
+---
+
+#### 14. GitHub Actions
+
+| Repositorio | Workflow                                | Activación            | Estado observado             |
+| ----------- | --------------------------------------- | --------------------- | ---------------------------- |
+| NEXO        | `tmp-apply-privileged-request-area.yml` | manual y pull request | temporal por nombre          |
+| PASS        | `apply-electronic-billing-ui.yml`       | manual                | declarado `disabled`         |
+| PASS        | `process-account-deletions.yml`         | diario y manual       | worker programado            |
+| PULSO       | `apply-electronic-billing-ui.yml`       | manual                | declarado `disabled`         |
+| VISO        | `apply-guided-product-form.yml`         | push                  | aplica transformación guiada |
+
+La existencia del workflow no prueba que tenga secretos vigentes, ejecuciones
+exitosas o que deba conservarse. `CODE-AUD-007`, `CODE-AUD-009`,
+`CODE-AUD-013` y `CODE-AUD-015` revisarán su propósito, historial y consumidor.
+
+---
+
+#### 15. Disparadores que llaman servicios
+
+La base remota contiene funciones con `net.http_post` para:
+
+- `notify_shift_published`;
+- `notify_support_message_inserted`;
+- `run_shift_runtime_processor`.
+
+Entre los triggers activos se confirmó:
+
+| Tabla                     | Trigger                                | Función                           |
+| ------------------------- | -------------------------------------- | --------------------------------- |
+| `public.support_messages` | `trg_support_messages_notify_inserted` | `notify_support_message_inserted` |
+
+No se encontró un trigger activo asociado a `notify_shift_published` en el
+metadato consultado. ANIMA sí contiene referencias directas a
+`shift-publish-notify`, por lo que el flujo puede haber cambiado de activador.
+`CODE-AUD-006` deberá reconstruir el evento efectivo antes de declarar código
+huérfano.
+
+`run_shift_runtime_processor` corresponde al frente programado por cron, no a
+un trigger de tabla.
+
+---
+
+#### 16. Fronteras de autorización
+
+Esta tarea separa:
+
+| Control              | Qué puede demostrar                       |
+| -------------------- | ----------------------------------------- |
+| `use server`         | ejecución en servidor                     |
+| API route            | existencia de endpoint HTTP               |
+| RPC existente        | función PostgreSQL localizada             |
+| `verify_jwt = true`  | validación de JWT en la puerta de Edge    |
+| `verify_jwt = false` | ausencia de esa validación automática     |
+| `SECURITY DEFINER`   | ejecución con privilegios del propietario |
+| job activo           | programación registrada                   |
+
+Ninguno demuestra por sí solo autorización empresarial completa.
+
+Las revisiones siguientes deberán comprobar:
+
+- identidad del actor;
+- empresa, sede, rol y alcance;
+- validación de parámetros;
+- RLS y permisos `EXECUTE`;
+- uso de `service_role`;
+- firma de webhook, secreto de cron o token de enlace;
+- protección contra reintentos;
+- trazabilidad del resultado.
+
+---
+
+#### 17. Lo que no se concluye todavía
+
+Este inventario no afirma:
+
+- que los 101 archivos de Server Actions funcionen;
+- que las 20 API routes estén desplegadas;
+- que los 93 RPC sean ejecutables por cualquier actor;
+- que las 210 funciones `SECURITY DEFINER` sean vulnerables;
+- que toda Edge Function sin JWT sea pública sin control;
+- que una Edge Function activa tenga tráfico;
+- que los siete cron hayan terminado correctamente;
+- que un workflow haya corrido;
+- que una función solo local deba desplegarse;
+- que una función solo remota deba eliminarse;
+- que VITAL esté en producción;
+- que AURA tenga backend.
+
+---
+
+#### 18. Hallazgos y destinos
+
+| ID               | Hallazgo                                                                 | Destino                      |
+| ---------------- | ------------------------------------------------------------------------ | ---------------------------- |
+| `H-CODE-005-001` | existen 101 archivos con Server Actions                                  | `CODE-AUD-017`, `019`        |
+| `H-CODE-005-002` | NEXO y VISO concentran 83 de 101                                         | `CODE-AUD-017`, `019`, `020` |
+| `H-CODE-005-003` | existen 20 API routes Next y 8 endpoints auxiliares                      | `CODE-AUD-006`, `017`        |
+| `H-CODE-005-004` | los 93 nombres RPC consumidos existen remotamente                        | `CODE-AUD-006`, `017`        |
+| `H-CODE-005-005` | existen 347 funciones en los esquemas revisados y 210 `SECURITY DEFINER` | `CODE-AUD-017`               |
+| `H-CODE-005-006` | el snapshot local tiene 157 funciones públicas frente a 246 remotas      | `CODE-AUD-006`, `020`        |
+| `H-CODE-005-007` | hay 24 Edge Functions activas: 12 con JWT y 12 sin JWT                   | `CODE-AUD-017`               |
+| `H-CODE-005-008` | seis Edge Functions existen solo localmente                              | `CODE-AUD-011`, `015`, `020` |
+| `H-CODE-005-009` | `delivery-portal` existe solo en remoto y usa `service_role` con token   | `CODE-AUD-006`, `017`, `020` |
+| `H-CODE-005-010` | dos configuraciones remotas sin JWT no aparecen en `config.toml`         | `CODE-AUD-006`, `017`        |
+| `H-CODE-005-011` | dos cron activos no tienen definición localizada en migraciones          | `CODE-AUD-006`, `011`        |
+| `H-CODE-005-012` | un cron definido localmente no aparece activo en remoto                  | `CODE-AUD-006`, `011`        |
+| `H-CODE-005-013` | cinco workflows incluyen uno temporal y dos deshabilitados               | `CODE-AUD-009`, `013`, `015` |
+| `H-CODE-005-014` | eliminación de cuentas depende de Edge Function y GitHub Actions         | `CODE-AUD-018`, `019`        |
+| `H-CODE-005-015` | soporte dispara notificación desde trigger de base                       | `CODE-AUD-006`, `018`        |
+| `H-CODE-005-016` | el activador efectivo de `shift-publish-notify` debe reconstruirse       | `CODE-AUD-006`, `015`        |
+| `H-CODE-005-017` | Wallet y eliminación tienen contratos en más de una superficie           | `CODE-AUD-014`, `019`        |
+| `H-CODE-005-018` | VITAL conserva 37 endpoints separados y sin producción comprobada        | conservar separado           |
+
+Todos los destinos ya existen. No se crean preguntas ni tareas redundantes.
+
+---
+
+#### 19. Comprobaciones técnicas posteriores
+
+Quedan asignadas al asistente:
+
+1. vincular Server Actions y API routes con tablas, Storage y RPC;
+2. obtener firmas, esquemas y permisos de los 93 RPC consumidos;
+3. reconciliar `schema_public_current.sql` con el remoto;
+4. revisar las 210 funciones `SECURITY DEFINER`;
+5. comparar hash y fuente local/remota de las 23 Edge Functions compartidas;
+6. versionar o explicar `delivery-portal`;
+7. clasificar las seis Edge Functions solo locales;
+8. revisar autenticación interna de las doce funciones sin JWT;
+9. reconciliar los tres jobs con deriva;
+10. revisar historial y propósito de los cinco workflows;
+11. reconstruir activadores de notificaciones y turnos;
+12. identificar contratos duplicados de Wallet y eliminación;
+13. comprobar reintentos e idempotencia sin usar producción;
+14. mantener todo cambio Supabase VENTO en `vento-shell`.
+
+No requieren respuesta del usuario en esta fase.
+
+---
+
+#### 20. Regla de seguridad
+
+Las tareas posteriores:
+
+1. no invocarán funciones productivas sin autorización expresa;
+2. no dispararán cron o workflows;
+3. no probarán webhooks de pagos con transacciones reales;
+4. no crearán asistencia, inventario, compras, pedidos o pagos;
+5. no copiarán secretos desde comandos de cron;
+6. no desplegarán funciones solo locales automáticamente;
+7. no eliminarán funciones solo remotas;
+8. usarán `vento-shell` para cualquier acción Supabase VENTO;
+9. distinguirán metadato remoto de validación operativa.
+
+---
+
+#### 21. Decisiones propuestas
+
+1. Se adopta el inventario de 101 archivos con Server Actions.
+2. Se adoptan 20 API routes Next.js y 8 endpoints auxiliares.
+3. ANIMA y PASS continúan siendo aplicaciones móviles.
+4. Los 93 RPC literales quedan confirmados como existentes, no autorizados.
+5. Las 347 funciones de los esquemas revisados son inventario remoto, no API
+   pública.
+6. Las 210 funciones `SECURITY DEFINER` pasan a auditoría de seguridad.
+7. `schema_public_current.sql` queda marcado como snapshot desactualizado.
+8. Las 24 Edge Functions se clasifican por estado local/remoto.
+9. Las doce funciones sin JWT no se declaran vulnerables sin revisar su control
+   propio.
+10. `delivery-portal` debe recuperar fuente canónica antes de remodelar.
+11. Las seis funciones solo locales no se despliegan por inferencia.
+12. Los tres casos de deriva cron se reconcilian sin mutaciones durante
+    descubrimiento.
+13. Los workflows deshabilitados o temporales permanecen visibles.
+14. VITAL conserva su API fuera de Vento OS.
+15. AURA permanece sin backend.
+16. Los dieciocho hallazgos continúan en tareas existentes.
+17. No se crean preguntas para comprobaciones técnicas.
+18. `CODE-AUD-006` será la única continuidad inmediata.
+
+---
+
+#### 22. Criterios de aceptación
+
+`CODE-AUD-005` podrá aprobarse cuando:
+
+- Server Actions estén diferenciadas de API routes;
+- endpoints auxiliares no conviertan móviles en web;
+- VITAL permanezca separado;
+- los RPC consumidos estén contrastados con remoto;
+- existencia no se confunda con permiso;
+- funciones PostgreSQL internas no se presenten como RPC públicas;
+- Edge Functions locales y remotas estén reconciliadas por estado;
+- JWT de plataforma no se confunda con autorización completa;
+- jobs de cron queden inventariados sin leer secretos;
+- workflows deshabilitados permanezcan visibles;
+- deriva local/remota tenga destino;
+- no se ejecuten contratos productivos;
+- no se creen preguntas repetidas;
+- `CODE-AUD-006` permanezca como única continuidad.
+
+---
+
+#### 23. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+acción y lógica interna
+        ↓
+Server Action, API, RPC, Edge Function o job
+        ↓
+contrato existente y estado de despliegue
+        ↓
+tabla, vista, Storage, Realtime y evento por vincular
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-006
+— Vincular código con tablas, vistas, Storage, Realtime y eventos
+```
+### ✅ CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación
+**Tipo:** mapa técnico contrastado de persistencia, archivos, sincronización y eventos
+**Dependencia anterior:** `CODE-AUD-005`
+**Continuidad reservada:** `CODE-AUD-007`
+**Fecha de corte:** 2026-07-23
+**Proyecto Supabase comprobado:** `vento-os-dev` (`clzdpinthhtknkmefsxx`)
+**Cambios en código o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea conecta el código localizado en las aplicaciones con los objetos que
+realmente existen en Supabase. El mapa cubre:
+
+```text
+código de aplicación
+        ↓
+tabla o vista consultada
+        ↓
+archivo guardado en Storage
+        ↓
+suscripción Realtime o disparador PostgreSQL
+        ↓
+efecto operativo esperado
+```
+
+El resultado no supone que una consulta funcione por el solo hecho de apuntar a
+un objeto existente. Existencia, permisos, políticas RLS, publicación Realtime,
+contenido real y uso operativo se conservan como comprobaciones diferentes.
+
+---
+
+#### 2. Alcance y método
+
+Se revisaron los doce repositorios conocidos, excluyendo dependencias, builds,
+cachés, documentación y artefactos generados. La extracción estática buscó:
+
+- relaciones literales consumidas mediante `.from(...)`;
+- cambios explícitos de esquema mediante `.schema(...)`;
+- operaciones de Storage y nombres de bucket;
+- canales con `.on("postgres_changes", ...)`;
+- disparadores y funciones de evento declarados en migraciones;
+- estado remoto de esquemas, tablas, vistas, buckets, publicación Realtime y
+  triggers habilitados.
+
+El contraste remoto fue de solo lectura y se ejecutó contra `vento-os-dev`
+desde el contexto canónico de `vento-shell`. No se invocaron RPC, Edge
+Functions, jobs, cargas de archivos ni escrituras productivas.
+
+---
+
+#### 3. Relaciones consumidas por código
+
+La extracción local encontró **206 nombres de relación distintos**. El conteo
+por repositorio expresa archivos con al menos una relación literal y nombres
+distintos dentro de cada repositorio; un mismo nombre puede aparecer en más de
+una aplicación.
+
+| Repositorio | Archivos | Relaciones distintas | Lectura principal                            |
+| ----------- | -------: | -------------------: | -------------------------------------------- |
+| ANIMA       |       36 |                   24 | asistencia, soporte y trabajador             |
+| FOGO        |       14 |                   25 | recetas, producción y catálogo               |
+| web pública |        1 |                    2 | catálogo comercial                           |
+| NEXO        |      110 |                   90 | inventario, compras, activos y configuración |
+| NUMERA      |        9 |                   17 | costos, cierres y resúmenes                  |
+| ORIGO       |       20 |                   28 | proveedores, compras y recepción             |
+| PASS        |       51 |                   27 | pedidos, fidelización y direcciones          |
+| PULSO       |       17 |                   30 | venta, salón, conversación y sesión          |
+| TALENTO     |        5 |                   12 | postulación futura y documentos              |
+| VISO        |       86 |                   97 | personal, turnos, catálogo y administración  |
+| VITAL       |        2 |                    0 | clientes HTTP dinámicos separados            |
+| SHELL       |        0 |                    0 | infraestructura, no consumidor UI            |
+
+NEXO y VISO concentran el mayor número de relaciones, pero esto no significa
+que sean propietarios únicos de los datos. La propiedad funcional se resolverá
+con el mapa de capacidades y la fuente de verdad aprobada.
+
+---
+
+#### 4. Contraste con la base remota
+
+Al incorporar los esquemas `public`, `pass`, `club`, `talento`, `vital`,
+`app_private` y `viso`, **204 de los 206 nombres consumidos existen
+remotamente**.
+
+| Esquema       | Tablas | Vistas | Tablas con RLS | Tratamiento                                       |
+| ------------- | -----: | -----: | -------------: | ------------------------------------------------- |
+| `public`      |    185 |     61 |            185 | núcleo compartido actual                          |
+| `pass`        |     26 |      1 |             26 | dominio de cliente y fidelización                 |
+| `club`        |     11 |      0 |             11 | dominio club                                      |
+| `talento`     |     13 |      0 |             13 | base futura, no producto desplegado               |
+| `viso`        |     12 |      0 |              1 | planificación interna vía servidor administrativo |
+| `app_private` |      1 |      0 |              0 | infraestructura privada                           |
+| `vital`       |     54 |      0 |             54 | proyecto separado                                 |
+
+Las tablas `viso.*` no están expuestas directamente a clientes ordinarios.
+Las superficies revisadas de VISO las consumen con `createAdminClient()` en el
+servidor y después de `requireStaffScheduleAccess(...)`. Por eso la ausencia de
+grants para `authenticated` no se clasifica como fallo de ejecución en esta
+tarea. `CODE-AUD-017` deberá comprobar que todas las entradas administrativas
+mantengan ese límite y que ninguna acepte alcance enviado por el navegador sin
+validarlo.
+
+---
+
+#### 5. Dos contratos de relación ausentes
+
+| Relación usada por código     | Consumidor                      | Estado remoto                          | Consecuencia estática                         |
+| ----------------------------- | ------------------------------- | -------------------------------------- | --------------------------------------------- |
+| `locations_validation`        | NEXO, validación de ubicaciones | no existe en ningún esquema consultado | la inserción fallará si se ejecuta            |
+| `restock_operational_summary` | NEXO, página de remisiones      | no existe en ningún esquema consultado | el error se omite y se usa un cálculo alterno |
+
+`locations_validation` tiene una migración local
+`20260415000000_nexo_locations_validation.sql` y la versión figura en el
+historial remoto, pero el objeto ya no está. No se encontró una migración
+posterior que documente su eliminación o cambio de nombre.
+
+`restock_operational_summary` no aparece en migraciones. Sí existe el RPC
+`get_restock_request_operational_summary`, lo que indica un posible cruce entre
+nombre de relación y contrato RPC. La página actual oculta el fallo porque
+continúa con datos de `restock_request_items`.
+
+Ninguno de los dos casos se corregirá durante descubrimiento. Su reconciliación
+queda en `CODE-AUD-012`, `CODE-AUD-014` y `CODE-AUD-020`; cualquier cambio de
+base deberá crearse y ejecutarse desde `vento-shell`.
+
+---
+
+#### 6. Vistas remotas
+
+Se localizaron **62 vistas**: 61 en `public` y una en `pass`. El código consume
+vistas de catálogo, pedidos, asistencia, fidelización, costos, POS, políticas
+de solicitud, activos, diagnóstico de sedes y autorización.
+
+**58 vistas** declaran `security_invoker=true`. Cuatro no lo declaran:
+
+- `public.permission_catalog_human_v1`;
+- `public.shared_operational_device_actor_policies_admin_v1`;
+- `public.shared_operational_device_templates_admin_v1`;
+- `public.shared_operational_devices_admin_v1`.
+
+La ausencia de esa opción no prueba por sí sola una exposición. Grants,
+propietario, filtros y consumidores deberán comprobarse conjuntamente en
+`CODE-AUD-017`.
+
+El snapshot `schema_public_current.sql` continúa sin representar por completo
+el estado remoto. Se conserva como evidencia histórica, no como fuente actual,
+hasta su reconciliación en `CODE-AUD-020`.
+
+---
+
+#### 7. Storage: inventario y consumidores
+
+El proyecto remoto contiene **14 buckets**. El código actual referencia once y
+los once existen.
+
+| Bucket                   | Visibilidad remota | Consumidor localizado | Operación observada                       |
+| ------------------------ | ------------------ | --------------------- | ----------------------------------------- |
+| `documents`              | público            | ANIMA y VISO          | cargar, eliminar, firmar                  |
+| `recipe-step-photos`     | público            | FOGO                  | cargar, actualizar, URL pública           |
+| `nexo-catalog-images`    | público            | NEXO                  | cargar, descargar, URL pública            |
+| `talento-cv`             | privado            | TALENTO               | cargar, URL firmada                       |
+| `talento-documents`      | privado            | TALENTO               | cargar, URL firmada                       |
+| `talento-medical`        | privado            | TALENTO               | cargar, URL firmada                       |
+| `website-media`          | privado            | VISO                  | cargar, actualizar, eliminar, URL pública |
+| `pass-satellite-logos`   | público            | VISO                  | carga y URL pública                       |
+| `product-images`         | público            | VISO                  | carga y URL pública                       |
+| `commercial-menu-images` | público            | VISO                  | carga y URL pública                       |
+| `employee-photos`        | público            | VISO                  | carga y URL pública                       |
+
+Tres buckets remotos no tienen consumidor localizado:
+
+| Bucket              | Estado documental                                                       |
+| ------------------- | ----------------------------------------------------------------------- |
+| `nexo-ai-documents` | tiene antecedente de migración, pero la pila de IA fue retirada después |
+| `public-documents`  | no se localizó definición en migraciones                                |
+| `recipe-media`      | no se localizó definición en migraciones                                |
+
+No se inspeccionaron ni descargaron objetos. Por tanto, “sin consumidor” no
+significa vacío y “público” no significa que se haya probado una filtración.
+
+---
+
+#### 8. Dos incompatibilidades de Storage por resolver
+
+1. **`documents` es público.** ANIMA y VISO lo usan para documentos asociados a
+   trabajadores o sedes. Antes de remodelar debe inventariarse qué rutas y tipos
+   de documento existen, mover lo sensible a un contrato privado y evitar URLs
+   permanentes cuando corresponda. Destino: `CODE-AUD-017`, `018` y `020`.
+2. **`website-media` es privado, pero el endpoint de VISO devuelve
+   `getPublicUrl()`.** El sitio público necesita acceso anónimo a los recursos
+   publicados; una URL pública calculada no vuelve público un bucket privado.
+   Debe decidirse entre bucket público para medios aprobados o entrega mediante
+   URL firmada/proxy. Destino: `CODE-AUD-010`, `012`, `017` y `020`.
+
+Los tres buckets privados de TALENTO usan URLs firmadas y son coherentes a
+nivel estático con su propósito futuro. Esto no autoriza su puesta en
+producción ni el tratamiento de datos de aspirantes.
+
+---
+
+#### 9. Realtime declarado en aplicaciones
+
+Se encontraron **30 suscripciones PostgreSQL** distribuidas en 16 archivos y
+trece nombres de tabla o vista:
+
+| Aplicación | Suscripciones | Objetos observados                                                                                                                 |
+| ---------- | ------------: | ---------------------------------------------------------------------------------------------------------------------------------- |
+| ANIMA      |             6 | `employee_sites`, `support_messages`, `support_ticket_reads`, `support_tickets`                                                    |
+| PASS       |            11 | `pass.loyalty_redemptions`, `order_billing_requests`, `order_conversations`, `order_delivery_sessions`, `order_messages`, `orders` |
+| PULSO      |            13 | `order_conversations`, `order_messages`, `order_status_events`, `orders`, `pos_sessions`, `pos_table_service_calls`                |
+
+La publicación remota `supabase_realtime` contiene solamente:
+
+- `public.order_conversations`;
+- `public.order_delivery_sessions`;
+- `public.order_messages`;
+- `public.order_status_events`;
+- `public.orders`;
+- `public.users`.
+
+---
+
+#### 10. Cobertura Realtime efectiva
+
+De las 30 suscripciones declaradas, **20 apuntan a tablas publicadas** y
+**10 no están servidas por la publicación actual**.
+
+| Objeto suscrito no servido | Ocurrencias | Causa comprobada                                       |
+| -------------------------- | ----------: | ------------------------------------------------------ |
+| `employee_sites`           |           1 | tabla fuera de la publicación                          |
+| `support_messages`         |           2 | tabla fuera de la publicación                          |
+| `support_ticket_reads`     |           1 | tabla fuera de la publicación                          |
+| `support_tickets`          |           2 | tabla fuera de la publicación                          |
+| `pass.loyalty_redemptions` |           1 | tabla fuera de la publicación                          |
+| `order_billing_requests`   |           1 | tabla fuera de la publicación                          |
+| `pos_sessions`             |           1 | es una vista, no tabla publicable por Postgres Changes |
+| `pos_table_service_calls`  |           1 | es una vista, no tabla publicable por Postgres Changes |
+
+Además, `public.users` está publicado pero no se localizó una suscripción
+estática actual.
+
+Esto confirma deriva entre código y configuración. No se añadirán tablas a la
+publicación por inferencia: primero se debe decidir cuáles flujos requieren
+tiempo real, reemplazar las dos suscripciones a vistas y comprobar volumen,
+RLS y filtrado. Destino: `CODE-AUD-010`, `012`, `016`, `018` y `020`.
+
+---
+
+#### 11. Eventos y disparadores PostgreSQL
+
+Se inventariaron disparadores habilitados en los esquemas de dominio:
+
+| Cobertura           | Disparadores habilitados | Lectura                                     |
+| ------------------- | -----------------------: | ------------------------------------------- |
+| Vento OS, sin VITAL |                      172 | reglas y automatizaciones compartidas       |
+| VITAL separado      |                       24 | no se incorporan a la remodelación Vento OS |
+
+Los 172 disparadores Vento incluyen familias para:
+
+- validación y sincronización del catálogo PASS;
+- saldo de fidelización y dirección de entrega;
+- geocerca, turno y secuencia de asistencia;
+- sincronización de sedes y roles del trabajador;
+- alcance de ubicaciones y costos de compras;
+- estados de pedido, facturación y entrega;
+- asignación, versión y validación de políticas de solicitud;
+- consistencia de producción, catálogo y remisiones;
+- validación de dispositivos operativos compartidos;
+- notificación al insertar mensajes de soporte.
+
+Los conteos por evento se superponen cuando un mismo trigger atiende más de una
+operación. Por eso no se suman como si fueran procesos distintos.
+
+---
+
+#### 12. Cadenas de evento reconstruidas
+
+##### 12.1 Soporte
+
+```text
+mensaje insertado en soporte
+        ↓
+trigger remoto habilitado
+        ↓
+notify_support_message_inserted
+        ↓
+Edge Function de notificación
+        ↓
+aviso al destinatario
+```
+
+La cadena existe en metadatos. La entrega final no se ejecutó ni se declara
+probada.
+
+##### 12.2 Publicación de turnos
+
+No existe actualmente un trigger remoto asociado a
+`notify_shift_published`. ANIMA contiene una invocación directa a
+`shift-publish-notify`, por lo que el activador cambió de base de datos a
+aplicación o quedó parcialmente migrado. No se clasifica todavía como código
+huérfano. Destino: `CODE-AUD-013`, `015` y `018`.
+
+##### 12.3 Procesamiento programado
+
+`run_shift_runtime_processor` pertenece al flujo cron inventariado en
+`CODE-AUD-005`. Se conserva la conexión entre job, función y datos, pero la
+reconciliación de definiciones locales/remotas sigue en `CODE-AUD-011` y
+`CODE-AUD-020`.
+
+##### 12.4 Pedidos y remisiones
+
+Los cambios de pedidos se propagan mediante triggers de estado y Realtime. Las
+remisiones combinan políticas, estados y cálculos derivados; el contrato
+ausente `restock_operational_summary` impide considerar esa cadena
+completamente reconciliada.
+
+---
+
+#### 13. Mapa resumido por aplicación
+
+| Aplicación | Datos principales                           | Storage                    | Realtime/eventos                                     | Estado                                             |
+| ---------- | ------------------------------------------- | -------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| ANIMA      | trabajadores, turnos, asistencia, soporte   | documentos                 | asistencia y soporte; seis suscripciones no servidas | parcial                                            |
+| FOGO       | recetas, producción, catálogo               | fotos de pasos             | triggers de consistencia                             | vinculado estáticamente                            |
+| NEXO       | inventario, compras, activos, configuración | imágenes de catálogo       | políticas, costos y remisiones                       | dos contratos de relación requieren reconciliación |
+| NUMERA     | costos, cierres, resúmenes                  | ninguno localizado         | cálculos y vistas                                    | vinculado estáticamente                            |
+| ORIGO      | proveedores, órdenes, recepción             | ninguno localizado         | costos e inventario                                  | vinculado estáticamente                            |
+| PASS       | pedidos, fidelización, direcciones          | ninguno directo localizado | once suscripciones; dos no servidas                  | parcial                                            |
+| PULSO      | pedidos, salón, conversación, POS           | ninguno localizado         | trece suscripciones; dos apuntan a vistas            | parcial                                            |
+| VISO       | personal, turnos, catálogo, gobierno        | seis buckets               | acceso administrativo y eventos de personal          | requiere auditoría de límite privilegiado          |
+| TALENTO    | postulaciones futuras                       | tres buckets privados      | triggers de actualización                            | base futura, no desplegada                         |
+| VITAL      | dominio propio                              | infraestructura separada   | 24 triggers separados                                | fuera de Vento OS                                  |
+| AURA       | ninguno                                     | ninguno                    | ninguno                                              | idea futura sin diseño                             |
+
+---
+
+#### 14. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                             | Destino                                    |
+| ---------------- | ------------------------------------------------------------------------------------ | ------------------------------------------ |
+| `H-CODE-006-001` | 204 de 206 relaciones consumidas existen remotamente                                 | `CODE-AUD-017`, `020`                      |
+| `H-CODE-006-002` | NEXO y VISO concentran el mapa relacional                                            | `CODE-AUD-014`, `019`                      |
+| `H-CODE-006-003` | `locations_validation` falta pese a su antecedente de migración                      | `CODE-AUD-012`, `020`                      |
+| `H-CODE-006-004` | `restock_operational_summary` falta y el fallo queda oculto por un cálculo alterno   | `CODE-AUD-012`, `014`, `020`               |
+| `H-CODE-006-005` | el snapshot público continúa incompleto frente a remoto                              | `CODE-AUD-020`                             |
+| `H-CODE-006-006` | cuatro vistas administrativas no declaran `security_invoker`                         | `CODE-AUD-017`                             |
+| `H-CODE-006-007` | los once buckets referenciados existen                                               | `CODE-AUD-017`, `020`                      |
+| `H-CODE-006-008` | tres buckets remotos no tienen consumidor actual localizado                          | `CODE-AUD-015`, `020`                      |
+| `H-CODE-006-009` | `documents` es público y aloja documentos asociados a personal o sedes               | `CODE-AUD-017`, `018`, `020`               |
+| `H-CODE-006-010` | `website-media` es privado pero su endpoint devuelve URL pública                     | `CODE-AUD-010`, `012`, `017`, `020`        |
+| `H-CODE-006-011` | diez de treinta suscripciones no están servidas por la publicación                   | `CODE-AUD-010`, `012`, `016`, `018`, `020` |
+| `H-CODE-006-012` | PULSO intenta Postgres Changes sobre dos vistas                                      | `CODE-AUD-012`, `016`, `018`               |
+| `H-CODE-006-013` | `users` está publicado sin consumidor Realtime localizado                            | `CODE-AUD-015`, `020`                      |
+| `H-CODE-006-014` | existen 172 triggers habilitados de Vento OS                                         | `CODE-AUD-017`, `019`, `020`               |
+| `H-CODE-006-015` | soporte tiene una cadena trigger-función-notificación identificable                  | `CODE-AUD-018`                             |
+| `H-CODE-006-016` | el activador efectivo de publicación de turnos cambió o quedó incompleto             | `CODE-AUD-013`, `015`, `018`               |
+| `H-CODE-006-017` | las tablas `viso.*` dependen de controles de aplicación antes de usar `service_role` | `CODE-AUD-017`, `019`                      |
+| `H-CODE-006-018` | VITAL conserva datos y eventos propios separados                                     | conservar fuera de Vento OS                |
+
+Todos los hallazgos tienen una tarea canónica de continuación. No se crea una
+pregunta para asuntos que pueden resolverse inspeccionando código, metadatos,
+logs o configuración.
+
+---
+
+#### 15. Comprobaciones técnicas asignadas al asistente
+
+| Comprobación                                              | Cómo se resolverá                                               | Tarea                        |
+| --------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------- |
+| identificar el destino correcto de `locations_validation` | historial remoto, migraciones y consumidores                    | `CODE-AUD-020`               |
+| decidir si el resumen de remisiones es vista o RPC        | contrato, tipos, consultas y pruebas                            | `CODE-AUD-012`, `014`        |
+| verificar grants y filtros de las cuatro vistas           | propietario, grants, RLS subyacente y consumidores              | `CODE-AUD-017`               |
+| clasificar objetos de los tres buckets sin consumidor     | metadatos y rutas, sin descargar contenido sensible innecesario | `CODE-AUD-015`, `020`        |
+| corregir estrategia de `documents` y `website-media`      | clasificación de datos, consumidor y prueba controlada          | `CODE-AUD-017`, `018`, `020` |
+| reconciliar diez suscripciones no servidas                | código, publicación, RLS, logs y prueba segura                  | `CODE-AUD-016`, `018`, `020` |
+| reconstruir publicación de turnos                         | invocadores, logs y configuración                               | `CODE-AUD-013`, `015`, `018` |
+| auditar límites de `createAdminClient()` en VISO          | guardas, validación de alcance y Server Actions                 | `CODE-AUD-017`, `019`        |
+
+Estas comprobaciones no requieren respuesta del usuario y no se incorporan al
+cuestionario operativo.
+
+---
+
+#### 16. Límites de certeza
+
+Esta propuesta confirma estructura y configuración visibles al corte. No
+confirma:
+
+- que cada pantalla haya ejecutado su consulta recientemente;
+- que existan objetos dentro de cada bucket;
+- que un objeto público contenga información sensible;
+- que las notificaciones lleguen al dispositivo;
+- que todas las políticas RLS representen el modelo objetivo;
+- que un trigger habilitado produzca siempre el resultado empresarial esperado;
+- que una relación existente tenga datos completos o correctos;
+- que TALENTO esté autorizado para tratar postulaciones reales;
+- que VITAL sea parte de Vento OS.
+
+Pruebas, fixtures, mocks y demostraciones se inventariarán en `CODE-AUD-007`.
+
+---
+
+#### 17. Reglas de seguridad para continuaciones
+
+1. No descargar documentos de trabajadores solo para confirmar que existen.
+2. No volver público un bucket para “probar” una URL.
+3. No publicar tablas en Realtime sin revisar volumen, RLS y necesidad.
+4. No crear relaciones ausentes antes de definir su contrato.
+5. No ejecutar triggers, jobs o Edge Functions con datos productivos.
+6. No usar `service_role` desde navegador o aplicación móvil.
+7. No tratar URLs firmadas como permisos permanentes.
+8. No desplegar la base futura de TALENTO.
+9. Toda migración VENTO deberá crearse y ejecutarse desde `vento-shell`.
+10. La auditoría documental no autoriza remodelación todavía.
+
+---
+
+#### 18. Decisiones propuestas
+
+1. Se adopta el vínculo de 206 nombres de relación consumidos por código.
+2. Se reconocen 204 relaciones existentes y dos contratos ausentes.
+3. `locations_validation` y `restock_operational_summary` se reconcilian antes
+   de remodelar NEXO.
+4. Las 62 vistas quedan inventariadas sin presumir autorización.
+5. Las cuatro vistas sin `security_invoker` pasan a auditoría conjunta.
+6. Se adopta el inventario remoto de catorce buckets.
+7. Los once buckets consumidos existen; tres quedan pendientes de clasificar.
+8. `documents` no conservará automáticamente su visibilidad pública.
+9. `website-media` deberá alinear privacidad y forma de entrega.
+10. Se adoptan treinta suscripciones Realtime declaradas.
+11. Las diez suscripciones no servidas se consideran deriva confirmada.
+12. Las dos suscripciones a vistas requieren reemplazo de contrato.
+13. Los 172 triggers Vento se conservan como inventario, no como diseño
+    objetivo.
+14. El límite administrativo de VISO se revisará en seguridad.
+15. TALENTO permanece futuro y sin despliegue.
+16. VITAL permanece separado y AURA sin backend.
+17. Los dieciocho hallazgos continúan en tareas ya existentes.
+18. `CODE-AUD-007` será la única continuidad inmediata.
+
+---
+
+#### 19. Criterios de aceptación
+
+`CODE-AUD-006` podrá aprobarse cuando:
+
+- tablas y vistas estén diferenciadas;
+- los esquemas no públicos estén incluidos;
+- las relaciones consumidas estén contrastadas con remoto;
+- las dos relaciones ausentes tengan destino;
+- Storage distinga bucket existente, visibilidad y consumidor;
+- no se confunda URL pública con acceso efectivo;
+- Realtime distinga suscripción declarada y tabla publicada;
+- las suscripciones a vistas queden señaladas;
+- triggers y cadenas de evento estén vinculados;
+- VISO conserve explícito su límite administrativo;
+- TALENTO, VITAL y AURA mantengan su clasificación;
+- ninguna comprobación técnica se traslade al usuario;
+- no se realicen mutaciones productivas;
+- `CODE-AUD-007` permanezca como única continuidad.
+
+---
+
+#### 20. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+superficie y acción
+        ↓
+consulta, servicio o contrato de servidor
+        ↓
+tabla, vista, archivo o evento real
+        ↓
+brecha técnica con destino canónico
+        ↓
+pruebas y datos de demostración por inventariar
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-007
+— Inventariar pruebas, fixtures, mocks y datos de demostración
+```
+
 ### [ ] CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
 ### [ ] CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
 ### [ ] CODE-AUD-009 — Detectar valores hardcodeados y decisiones técnicas temporales
@@ -157274,6 +170424,12 @@ RETIRE
 
 ### [ ] CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
 ### [ ] CAP-SCOPE-002 — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro
+### [ ] CAP-TAL-001 — Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA
+### [ ] CAP-TAL-002 — Diseñar publicación de vacantes, consulta y postulación en TALENTO
+### [ ] CAP-TAL-003 — Diseñar expediente progresivo de datos, documentos, consentimiento y conservación
+### [ ] CAP-TAL-004 — Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato
+### [ ] CAP-TAL-005 — Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO
+### [ ] CAP-TAL-006 — Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre
 ### [ ] CAP-SCOPE-003 — Evaluar seguridad y salud en el trabajo
 ### [ ] CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas
 ### [ ] CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
@@ -157291,6 +170447,19 @@ RETIRE
 ### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
 ### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+
+Las tareas `CAP-TAL-001` a `CAP-TAL-006` son destinos futuros derivados de
+`BRECHA-CAP-013`. No adelantan la continuidad vigente ni autorizan
+implementación. Deberán preservar estas reglas:
+
+1. la persona postulada continúa siendo candidata hasta la vinculación autorizada;
+2. TALENTO conserva postulación y expediente de selección;
+3. VISO conserva vacantes, decisiones laborales y permisos administrativos;
+4. ANIMA recibe al trabajador vinculado y su experiencia operativa;
+5. candidato y trabajador comparten identidad enlazada, sin duplicación;
+6. el período de prueba es un estado del vínculo laboral;
+7. el rechazo, retiro o cierre conserva trazabilidad y retira accesos cuando corresponda;
+8. cualquier migración o cambio de Supabase se creará y ejecutará desde `vento-shell`.
 ### MATRIZ DE COBERTURA
 
 Cada capacidad deberá recibir exactamente un estado principal:

@@ -12,36 +12,36 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión | 2026-07-22 |
-| Revisión documental | **40** |
+| Versión | 2026-07-23 |
+| Revisión documental | **56** |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **115** |
-| Tareas canónicas con marcador | **1367** |
+| Tareas canónicas con marcador | **1374** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **138** |
-| Tareas en propuesta | **1** |
-| Tareas no iniciadas | **1228** |
+| Tareas aprobadas | **166** |
+| Tareas en propuesta | **0** |
+| Tareas no iniciadas | **1208** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **GENERADO Y VALIDADO ESTRUCTURALMENTE**                                                        |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso** |
-| Tarea actual | **OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares** |
+| Última tarea aprobada | **CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos** |
+| Tarea actual | **CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 15 de 96 aprobadas; OPS-ADM-001 en propuesta** |
+| Progreso del bloque | **BLOQUE E1: 43 de 102 aprobadas; CODE-AUD-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso |
-| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares |
+| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos |
+| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración — **NO INICIADA** |
+| Siguiente tarea | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **15 DE 96 APROBADAS — ACTUAL OPS-ADM-001** |
+| BLOQUE E1 | **43 DE 102 APROBADAS — ACTUAL CODE-AUD-007** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-OPS-AUD-015 — Validar hallazgos con trabajadores, supervisores y responsables del proceso
+CODE-AUD-006 — Vincular código con tablas, vistas, Storage, Realtime y eventos
         ↓
 TAREA ACTUAL
-OPS-ADM-001 — Documentar brecha registral y plan de regularización de la sede administrativa
+CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
         ↓
 SIGUIENTE TAREA RESERVADA
-OPS-GOV-001 — Documentar gobernanza AS-IS del ecosistema de marcas y titulares
+CODE-AUD-008 — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 15 de 96 tareas aprobadas
+BLOQUE E1 — 43 de 102 tareas aprobadas
 ```

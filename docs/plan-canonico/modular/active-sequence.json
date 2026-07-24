@@ -54,6 +54,11 @@
       "prefix": "GAP-CTRL",
       "from": 1,
       "to": 8
+    },
+    {
+      "prefix": "CAP-TAL",
+      "from": 1,
+      "to": 6
     }
   ]
 }

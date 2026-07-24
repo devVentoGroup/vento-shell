@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1367** |
+| Tareas con marcador | **1374** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **138** |
-| En propuesta | **1** |
-| No iniciadas | **1228** |
+| Aprobadas | **166** |
+| En propuesta | **0** |
+| No iniciadas | **1208** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `OPS-AUD-015` — Validar hallazgos con trabajadores, supervisores y responsables del proceso | ✅ APROBADA |
-| Tarea actual | `OPS-ADM-001` — Documentar brecha registral y plan de regularización de la sede administrativa | 🟡 PROPUESTA PARA APROBACIÓN |
-| Siguiente | `OPS-GOV-001` — Documentar gobernanza AS-IS del ecosistema de marcas y titulares | ⬜ NO INICIADA |
+| Última aprobada | `CODE-AUD-006` — Vincular código con tablas, vistas, Storage, Realtime y eventos | ✅ APROBADA |
+| Tarea actual | `CODE-AUD-007` — Inventariar pruebas, fixtures, mocks y datos de demostración | ⬜ NO INICIADA |
+| Siguiente | `CODE-AUD-008` — Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -165,34 +165,35 @@
 | ✅ APROBADA | `OPS-AUD-013` | Identificar pérdidas de trazabilidad, información y responsabilidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-014` | Identificar contingencias por caída de red, energía, dispositivo o proveedor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
 | ✅ APROBADA | `OPS-AUD-015` | Validar hallazgos con trabajadores, supervisores y responsables del proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md` |
-| 🟡 PROPUESTA PARA APROBACIÓN | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-GOV-001` | Documentar gobernanza AS-IS del ecosistema de marcas y titulares | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-ACT-001` | Inventariar activos y puntos externos de custodia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-PLAN-001` | Definir el programa de auditoría de demanda y requisitos de planificación productiva | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-PLAN-002` | Consolidar fuentes internas para la auditoría de demanda | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-PLAN-003` | Levantar demanda, faltantes y variaciones por canal | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-PLAN-004` | Iniciar registro prospectivo de solicitud, entrega y diferencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `CAP-MAP-001` | Crear taxonomía jerárquica de capacidades de Vento Group | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-002` | Definir capacidad, subcapacidad y resultado empresarial esperado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-003` | Vincular cada capacidad con empresa, sede, área y canal aplicables | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-004` | Definir dominio y aplicación propietaria candidata | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-005` | Definir aplicaciones y sistemas consumidores | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-006` | Identificar actor iniciador, ejecutor, supervisor y aprobador | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-007` | Identificar información de entrada y resultado producido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-008` | Identificar fuente de verdad actual y fuente de verdad objetivo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-009` | Identificar eventos e integraciones requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-010` | Identificar permisos y controles de autorización requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-011` | Identificar pantallas, dispositivos, documentos y evidencia requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-012` | Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-013` | Detectar capacidades duplicadas o con propiedad competidora | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-014` | Detectar capacidades necesarias que no aparecen en código ni datos actuales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CAP-MAP-015` | Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
-| ⬜ NO INICIADA | `CODE-AUD-001` | Inventariar todos los repositorios y superficies desplegadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-002` | Inventariar rutas, layouts, pantallas, componentes y formularios | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-003` | Inventariar acciones de usuario y comportamiento efectivo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-004` | Inventariar hooks, servicios, adaptadores, consultas y estado local | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-005` | Inventariar Server Actions, API routes, RPC, Edge Functions y jobs | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-006` | Vincular código con tablas, vistas, Storage, Realtime y eventos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `OPS-ADM-001` | Documentar brecha registral y plan de regularización de la sede administrativa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-GOV-001` | Documentar gobernanza AS-IS del ecosistema de marcas y titulares | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `EXT-GOV-001` | Verificar soporte documental de titulares, marcas y cuentas externas del ecosistema | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-ACT-001` | Inventariar activos y puntos externos de custodia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-PLAN-001` | Definir el programa de auditoría de demanda y requisitos de planificación productiva | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-PLAN-002` | Consolidar fuentes internas para la auditoría de demanda | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-PLAN-003` | Levantar demanda, faltantes y variaciones por canal | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `OPS-PLAN-004` | Iniciar registro prospectivo de solicitud, entrega y diferencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/02A_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ✅ APROBADA | `CAP-MAP-001` | Crear taxonomía jerárquica de capacidades de Vento Group | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-002` | Definir capacidad, subcapacidad y resultado empresarial esperado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-003` | Vincular cada capacidad con empresa, sede, área y canal aplicables | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-004` | Definir dominio y aplicación propietaria candidata | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-005` | Definir aplicaciones y sistemas consumidores | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-006` | Identificar actor iniciador, ejecutor, supervisor y aprobador | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-007` | Identificar información de entrada y resultado producido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-008` | Identificar fuente de verdad actual y fuente de verdad objetivo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-009` | Identificar eventos e integraciones requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-010` | Identificar permisos y controles de autorización requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-011` | Identificar pantallas, dispositivos, documentos y evidencia requeridos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-012` | Clasificar capacidad núcleo, soporte, transversal, futura o fuera de alcance | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-013` | Detectar capacidades duplicadas o con propiedad competidora | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-014` | Detectar capacidades necesarias que no aparecen en código ni datos actuales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CAP-MAP-015` | Aprobar la línea base de capacidades actuales, necesarias y candidatas de Vento Group | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/03_MAPA_CANONICO_DE_CAPACIDADES_EMPRESARIALES.md` |
+| ✅ APROBADA | `CODE-AUD-001` | Inventariar todos los repositorios y superficies desplegadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-002` | Inventariar rutas, layouts, pantallas, componentes y formularios | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-003` | Inventariar acciones de usuario y comportamiento efectivo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-004` | Inventariar hooks, servicios, adaptadores, consultas y estado local | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-005` | Inventariar Server Actions, API routes, RPC, Edge Functions y jobs | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-006` | Vincular código con tablas, vistas, Storage, Realtime y eventos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-007` | Inventariar pruebas, fixtures, mocks y datos de demostración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
@@ -209,6 +210,12 @@
 | ⬜ NO INICIADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-004` | Evaluar catálogo, productos, presentaciones, unidades, menús y recetas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-005` | Evaluar compras, proveedores, contratos, precios y abastecimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
