@@ -7550,8 +7550,6 @@ La continuidad será:
 CODE-AUD-011
 — Detectar infraestructura sin proceso funcional utilizable
 ```
-**PROPUESTA PARA APROBACIÓN**
-
 ### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
 
 **Estado:** APROBADA  
@@ -8252,88 +8250,28 @@ Todos los hallazgos quedan cerrados o vinculados a tareas existentes.
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-##### 12.1. Requisitos nuevos completos
+Requisitos nuevos derivados:
 
-| ID               | Regla protegida                                                                                                                                                                                                                                               | Origen                                               | Riesgo                                                                                                 | Tipo / modalidad                                                                                | Prioridad | Tarea responsable inmediata                                                                 | Estado         |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------- | -------------- |
-| `TREQ-SHELL-001` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001`                    | catálogo engañoso, permisos sin capacidad y activación prematura                                       | contractual + estática + integración / automatizada                                             | media     | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`                                    | `IDENTIFICADO` |
-| `TREQ-NEXO-004`  | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización.                       | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa                 | contractual + integración + base de datos + E2E / automatizada con validación operativa         | alta      | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | `IDENTIFICADO` |
-| `TREQ-PULSO-001` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo.                          | `CODE-AUD-011` / `H-CODE-011-006`                    | ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | crítica   | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                | `IDENTIFICADO` |
+- `TREQ-SHELL-001`;
+- `TREQ-NEXO-004`;
+- `TREQ-PULSO-001`.
 
-##### 12.2. Requisitos reutilizados
+Requisitos reutilizados:
 
-| ID              | Uso                                                                          |
-| --------------- | ---------------------------------------------------------------------------- |
-| `TREQ-NEXO-003` | mantiene la regla de fidelidad y validación física de impresión              |
-| `TREQ-AUTH-001` | protege que infraestructura sensible no dependa únicamente de nombres de rol |
-| `TREQ-AUTH-002` | protege que permisos de la infraestructura existan en el catálogo canónico   |
+- `TREQ-NEXO-003`;
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-002`.
 
-No se cambia su estado.
-
-##### 12.3. Filas completas nuevas para el Registro Canónico
-
-Al aprobar `CODE-AUD-011`, agregar:
-
-```md
-| `TREQ-SHELL-001` | `SHELL` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001` | Catálogo engañoso, permisos sin capacidad y activación prematura / media | contractual + estática + integración / automatizada | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro` | Pendiente de asignación en E5 si AURA continúa | `vento-shell` y futura aplicación propietaria / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-NEXO-004` | `NEXO` | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización. | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | Existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa / alta | contractual + integración + base de datos + E2E / automatizada con validación operativa | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | Pendiente de asignación en E5 | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-PULSO-001` | `PULSO` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo. | `CODE-AUD-011` / `H-CODE-011-006` | Ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos / crítica | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón` | Pendiente de asignación en E5 | `vento-pulso`, `vento-shell`, `vento-nexo`, `vento-numera` y `vento-pass` / CI, staging y terminal POS pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
----
-
-#### 13. Corrección documental obligatoria de 04A
-
-La revisión remota de:
+Las definiciones completas, estados, responsables, ambientes y evidencias de estos requisitos existen únicamente en:
 
 ```text
-04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
 ```
 
-detectó:
-
-1. `TREQ-AUTH-001` concatenado al final de la fila `TREQ-NEXO-001`;
-2. ausencia de:
-   - `TREQ-ANIMA-001`;
-   - `TREQ-ANIMA-002`;
-   - `TREQ-NEXO-003`;
-   - `TREQ-INTEGRATION-002`.
-
-Estas cuatro filas fueron creadas por `CODE-AUD-010`, ya aprobada.
-
-##### 13.1. Corregir la fila concatenada
-
-Reemplazar la fila que actualmente contiene `TREQ-NEXO-001` y `TREQ-AUTH-001` en una sola línea por estas dos filas:
-
-```md
-| `TREQ-NEXO-001` | `NEXO` | La selección privilegiada de área solicitante deberá funcionar desde el código canónico y superar build y validación sin depender de workflows o scripts temporales que reescriban automáticamente una rama. | `CODE-AUD-008` / `H-CODE-008-008` y `H-CODE-008-009` | Deriva de código, mutación insegura de ramas, implementación parcial y reejecución accidental de un parche / alta | integración + seguridad + regresión / automatizada | `CODE-AUD-016 — Revisar estado de build, lint, typecheck y pruebas` | Pendiente de asignación en E5 | `vento-nexo` / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-AUTH-001` | `AUTH` | Toda capacidad protegida deberá resolverse mediante permisos, contexto y alcance canónicos; una lista local de nombres de rol no podrá conceder por sí sola autorización final. | `CODE-AUD-009` / `H-CODE-009-001` | Acceso indebido, denegación incorrecta y divergencia entre aplicaciones / crítica | seguridad + autorización + regresión / automatizada | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad` | Pendiente de asignación en E5 | transversal / CI, staging y ambientes pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
-##### 13.2. Agregar los requisitos aprobados de CODE-AUD-010
-
-Agregar:
-
-```md
-| `TREQ-ANIMA-001` | `ANIMA` | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer. | `CODE-AUD-010` / `H-CODE-010-001` | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta | contractual + autorización + integración + E2E / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-ANIMA-002` | `ANIMA` | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente. | `CODE-AUD-010` / `H-CODE-010-002` | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta | interfaz + regresión / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-NEXO-003` | `NEXO` | Toda vista previa usada para aprobar una impresión deberá identificar si es simulación y demostrar correspondencia suficiente entre plantilla, ZPL, DPI, dimensiones, códigos y muestra física antes de considerarse validación de salida. | `CODE-AUD-010` / `H-CODE-010-003` | Etiquetas recortadas, códigos ilegibles y diferencia entre vista previa e impresión física / alta | contractual + interfaz + hardware + regresión / híbrida | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-nexo` / local, CI, staging e impresora física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-| `TREQ-INTEGRATION-002` | `INTEGRATION` | Toda interfaz pública de newsletter deberá registrar una suscripción y consentimiento reales mediante el contrato aprobado, comunicar el resultado verdadero y permitir el tratamiento definido; de lo contrario no deberá publicarse. | `CODE-AUD-010` / `H-CODE-010-004` | Falsa confirmación, pérdida de contactos y tratamiento de datos sin contrato verificable / alta | integración + privacidad + E2E / automatizada | `WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz` | Pendiente de asignación en el plan web y E5 cuando corresponda | `Vento-Group` y `vento-viso` / CI, preview y producción pública pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
-```
-
-Después agregar las tres filas nuevas de `CODE-AUD-011`.
-
-Esta corrección:
-
-- no crea tareas;
-- no cambia estados;
-- restaura requisitos ya aprobados;
-- debe realizarse antes de continuar después de aprobar `CODE-AUD-011`.
-
+No se duplican filas completas del Registro Canónico dentro de esta tarea.
 
 ---
-
-#### 14. Decisiones propuestas
+#### 13. Decisiones aprobadas
 
 1. La infraestructura no se considerará proceso.
 2. Una aplicación registrada no se considerará producto disponible.
@@ -8353,17 +8291,16 @@ Esta corrección:
 16. Impresión NEXO se excluye como falso positivo porque sí envía ZPL.
 17. Dispositivos compartidos se excluyen como falso positivo puro porque ya tienen acciones funcionales.
 18. Tablas vacías no bastan para declarar ausencia de proceso.
-19. Se crea `TREQ-SHELL-001`.
-20. Se crea `TREQ-NEXO-004`.
-21. Se crea `TREQ-PULSO-001`.
+19. Se deriva `TREQ-SHELL-001`.
+20. Se deriva `TREQ-NEXO-004`.
+21. Se deriva `TREQ-PULSO-001`.
 22. Los tres requisitos quedan en estado `IDENTIFICADO`.
-23. Se corrige el registro 04A antes de avanzar.
-24. No se crea una tarea nueva del roadmap.
-25. `CODE-AUD-012` será la única continuidad inmediata.
+23. No se crea una tarea nueva del roadmap.
+24. `CODE-AUD-012` será la única continuidad inmediata.
 
 ---
 
-#### 15. Límites de certeza
+#### 14. Límites de certeza
 
 Esta tarea no confirma:
 
@@ -8385,7 +8322,7 @@ Esta tarea no confirma:
 
 ---
 
-#### 16. Criterios de aceptación
+#### 15. Criterios de aceptación
 
 `CODE-AUD-011` podrá aprobarse cuando:
 
@@ -8401,9 +8338,6 @@ Esta tarea no confirma:
 - impresión NEXO sea excluida como falso positivo;
 - dispositivos compartidos sean excluidos como falso positivo puro;
 - cada hallazgo tenga destino exacto;
-- se creen las tres filas nuevas `TREQ-*`;
-- se corrija la fila concatenada en 04A;
-- se materialicen los cuatro requisitos aprobados de `CODE-AUD-010`;
 - no se cree ninguna tarea nueva;
 - no se modifique código;
 - no se modifique Supabase;
@@ -8411,7 +8345,7 @@ Esta tarea no confirma:
 
 ---
 
-#### 17. Resultado y continuidad
+#### 16. Resultado y continuidad
 
 Al aprobarse quedará definida la cadena:
 
@@ -8435,7 +8369,6 @@ La continuidad será:
 CODE-AUD-012
 — Detectar procesos implementados solo parcialmente
 ```
-
 
 ### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente
 ### [ ] CODE-AUD-013 — Detectar código legacy todavía activo
