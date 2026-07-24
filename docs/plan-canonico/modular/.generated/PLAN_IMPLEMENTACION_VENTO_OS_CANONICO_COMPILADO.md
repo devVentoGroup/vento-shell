@@ -17,12 +17,12 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **115** |
-| Tareas canónicas con marcador | **1375** |
+| Fragmentos canónicos | **116** |
+| Tareas canónicas con marcador | **1379** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **167** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1208** |
+| Tareas no iniciadas | **1212** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
@@ -170496,7 +170496,6 @@ La continuidad será:
 CODE-AUD-007
 — Inventariar pruebas, fixtures, mocks y datos de demostración
 ```
-
 ### ✅ CODE-AUD-007 — Inventariar pruebas, fixtures, mocks y datos de demostración
 
 **Estado:** APROBADA  
@@ -171022,6 +171021,98 @@ QA-GOV-001
 ### [ ] CODE-AUD-018 — Auditar operación offline, reintentos, concurrencia e idempotencia
 ### [ ] CODE-AUD-019 — Vincular cada capacidad con su implementación actual verificable
 ### [ ] CODE-AUD-020 — Crear backlog técnico y funcional trazable por repositorio
+## REGISTRO CANÓNICO DE REQUISITOS DE PRUEBA
+
+### Propósito
+
+Este registro conserva todos los comportamientos que deberán quedar protegidos
+mediante pruebas automatizadas o validaciones manuales controladas.
+
+Un requisito de prueba no equivale por sí mismo a una tarea del roadmap.
+
+Cada requisito deberá vincularse con:
+
+- la tarea que lo originó;
+- la regla o comportamiento protegido;
+- el riesgo que evita;
+- el tipo de prueba;
+- la tarea o paquete que deberá implementarlo;
+- la etapa en la que deberá implementarse;
+- la evidencia de su ejecución.
+
+### Convención de identificadores
+
+Los requisitos utilizarán:
+
+`TREQ-<DOMINIO>-<NNN>`
+
+Dominios iniciales:
+
+- `AUTH`;
+- `SHELL`;
+- `SUPABASE`;
+- `ANIMA`;
+- `VISO`;
+- `NEXO`;
+- `FOGO`;
+- `ORIGO`;
+- `PULSO`;
+- `NUMERA`;
+- `PASS`;
+- `TALENTO`;
+- `INTEGRATION`;
+- `UX`.
+
+### Estados permitidos
+
+| Estado         | Significado                                              |
+| -------------- | -------------------------------------------------------- |
+| `IDENTIFICADO` | necesidad detectada, todavía sin especificación completa |
+| `ESPECIFICADO` | escenario, entradas y resultado esperado definidos       |
+| `PLANIFICADO`  | vinculado con una tarea o paquete aprobado               |
+| `IMPLEMENTADO` | prueba escrita y disponible                              |
+| `VERIFICADO`   | ejecutada correctamente con evidencia                    |
+| `DIFERIDO`     | aplazada con tarea y momento de resolución explícitos    |
+| `DESCARTADO`   | no aplica, con justificación aprobada                    |
+
+### Tipos permitidos
+
+- unitaria;
+- contractual;
+- integración;
+- base de datos;
+- migración;
+- RLS;
+- RPC;
+- seguridad;
+- concurrencia;
+- idempotencia;
+- E2E;
+- regresión;
+- interfaz;
+- manual operativa;
+- experiencia;
+- hardware.
+
+### Registro
+
+| ID  | Regla protegida | Origen | Riesgo | Tipo | Prioridad | Repositorio | Tarea o paquete destino | Etapa | Estado | Evidencia |
+| --- | --------------- | ------ | ------ | ---- | --------- | ----------- | ----------------------- | ----- | ------ | --------- |
+
+### Reglas obligatorias
+
+1. Un requisito no podrá eliminarse para ocultar que dejó de cumplirse.
+2. Los requisitos cerrados permanecerán como historial.
+3. El estado `VERIFICADO` exige evidencia reproducible.
+4. El estado `DIFERIDO` exige tarea exacta y momento de resolución.
+5. Todo paquete E5 deberá enumerar los requisitos que implementa.
+6. Todo defecto corregido deberá vincular una prueba de regresión.
+7. Una prueba podrá ser manual cuando el comportamiento no sea automatizable,
+   pero deberá declararse expresamente.
+8. Ningún requisito crítico podrá permanecer únicamente en estado
+   `IDENTIFICADO` al aprobar un paquete de implementación.
+9. Cada tarea deberá indicar si genera o no requisitos de prueba.
+10. Toda nueva fila deberá utilizar un identificador único.
 ### COBERTURA EMPRESARIAL OBLIGATORIA
 
 E1 deberá evaluar como mínimo los siguientes dominios. Evaluar un dominio
@@ -171987,6 +172078,21 @@ Una capacidad no podrá pasar a implementación cuando:
 - no tenga pruebas, rollout y rollback definidos;
 - no tenga criterio de aceptación operativo;
 - conserve una brecha crítica sin responsable.
+
+### Requisitos de prueba por paquete
+
+Todo paquete de implementación deberá:
+
+- enumerar los requisitos `TREQ-*` que implementa;
+- indicar cuáles pruebas serán automatizadas;
+- indicar cuáles validaciones deberán ser manuales;
+- definir los archivos de prueba que se crearán o modificarán;
+- definir los comandos de ejecución;
+- definir los datos iniciales y el resultado esperado;
+- identificar las pruebas de regresión existentes que deberán seguir pasando;
+- impedir el cierre con requisitos críticos sin implementar;
+- justificar cualquier requisito diferido mediante una tarea exacta;
+- actualizar el Registro Canónico de Requisitos de Prueba.
 ### PAQUETES DE IMPLEMENTACIÓN
 
 ### [ ] DELIV-PKG-001 — Crear identificador estable para cada paquete de implementación
@@ -172004,7 +172110,7 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] DELIV-PKG-013 — Definir requisitos no funcionales aplicables
 ### [ ] DELIV-PKG-014 — Enumerar archivos exactos que se crearán, modificarán o retirarán
 ### [ ] DELIV-PKG-015 — Definir dependencias, bloqueos y orden de aplicación
-### [ ] DELIV-PKG-016 — Definir pruebas unitarias, contractuales, integración, seguridad y E2E
+### [ ] DELIV-PKG-016 — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E
 ### [ ] DELIV-PKG-017 — Definir observabilidad, métricas, logs, alertas y auditoría
 ### [ ] DELIV-PKG-018 — Definir feature flags, configuración y activación progresiva
 ### [ ] DELIV-PKG-019 — Definir estrategia de despliegue y rollout
@@ -172063,7 +172169,7 @@ Una capacidad no podrá pasar a implementación cuando:
 ### [ ] E5-GATE-004 — Confirmar que rollout, rollback y contingencia son ejecutables
 ### [ ] E5-GATE-005 — Confirmar que el piloto tiene criterios medibles
 ### [ ] E5-GATE-006 — Confirmar que capacitación y soporte están planificados
-### [ ] E5-GATE-007 — Confirmar trazabilidad hasta pruebas y evidencia de cierre
+### [ ] E5-GATE-007 — Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre
 ### [ ] E5-GATE-008 — Aprobar entrada a implementación física por paquetes
 ### Salida obligatoria
 
@@ -173212,10 +173318,40 @@ Ningún objeto legacy se retirará únicamente porque exista su reemplazo.
 ### [ ] SHELL-CI-013 — Probar ANIMA antes de actualizar
 ### [ ] SHELL-CI-014 — Permitir rollback por repositorio
 ### [ ] SHELL-CI-015 — Evitar despliegue simultáneo obligatorio
+### [ ] SHELL-CI-016 — Estandarizar un comando de pruebas automatizadas por repositorio
+### [ ] SHELL-CI-017 — Crear verificador automático del Registro Canónico de Requisitos de Prueba
+### [ ] SHELL-CI-018 — Bloquear merge o despliegue cuando fallen pruebas obligatorias
+### [ ] SHELL-CI-019 — Publicar evidencia de pruebas por paquete y repositorio
 
 ## BLOQUE U
 
 **Pruebas integrales**
+
+### Regla de entrada
+
+El BLOQUE U no es el momento inicial para escribir todas las pruebas.
+
+Antes de entrar a U deberán existir:
+
+- pruebas unitarias implementadas con cada paquete;
+- pruebas contractuales implementadas con cada paquete;
+- pruebas de integración de datos y servicios;
+- pruebas negativas de autorización;
+- pruebas de migraciones;
+- pruebas de idempotencia y concurrencia aplicables;
+- evidencia de ejecución por repositorio;
+- Registro Canónico de Requisitos de Prueba actualizado.
+
+El BLOQUE U ejecutará:
+
+- regresión automatizada transversal;
+- pruebas E2E entre aplicaciones;
+- pruebas de seguridad;
+- pruebas funcionales;
+- pruebas operativas;
+- pruebas de experiencia;
+- pilotos con usuarios reales;
+- validación final de requisitos `TREQ-*`.
 
 ### [ ] AUTH-QA-001 — Propietario sin check-in entra a administración
 ### [ ] AUTH-QA-002 — Gerente general sin check-in entra a administración
@@ -173570,7 +173706,9 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    → `OPS-ACT-001`
    → `OPS-PLAN-001` a `OPS-PLAN-004`
    → `CAP-MAP-001` a `CAP-MAP-015`
-   → `CODE-AUD-001` a `CODE-AUD-020`
+   → `CODE-AUD-001` a `CODE-AUD-007`
+   → `QA-GOV-001`
+   → `CODE-AUD-008` a `CODE-AUD-020`
    → `CAP-SCOPE-001` a `CAP-SCOPE-019`
    → `CAP-COVER-001` a `CAP-COVER-012`
    → `GAP-CTRL-001` a `GAP-CTRL-008`.
@@ -173610,15 +173748,51 @@ En esta fase se define:
 Todavía no se implementan interfaces definitivas ni se reorganiza
 físicamente Supabase.
 
+### Ciclo obligatorio de los requisitos de prueba
+
+```text
+E1 — DESCUBRIMIENTO
+identificar la regla y crear `TREQ-*`
+        ↓
+E2 / E3 / E4 — DISEÑO
+definir escenario, datos, resultado esperado y riesgo
+        ↓
+E5 — PLANIFICACIÓN
+vincular el requisito con un paquete mediante `DELIV-PKG-016`
+        ↓
+T / R0 — INFRAESTRUCTURA
+crear runner, harness, entorno reproducible y CI
+        ↓
+IMPLEMENTACIÓN POR PAQUETE
+escribir y ejecutar la prueba junto con el código
+        ↓
+PILOTO E HYPERCARE
+convertir cada defecto encontrado en una prueba de regresión
+        ↓
+U — CIERRE INTEGRAL
+ejecutar regresión completa, E2E, seguridad, UX y pruebas operativas
+```
+
+Reglas:
+
+- E1 identifica el requisito, pero no necesariamente implementa la prueba.
+- E2, E3 y E4 completan su especificación.
+- E5 asigna cada requisito a un paquete concreto.
+- T y R0 crean la infraestructura necesaria.
+- La prueba se implementa junto con el código del paquete.
+- Los defectos encontrados durante piloto o hypercare generan pruebas de regresión.
+- U ejecuta la certificación integral y no sustituye las pruebas de cada paquete.
+
+
 FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 
-19. BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
-20. Crear contratos, eventos, normalización compartida, helpers puros y estructura inicial de @vento/supabase
-21. Ejecutar AUTH-UI-030 a AUTH-UI-039
-22. BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
-23. BLOQUE J — Inventariar y proteger acciones de servidor
-24. BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
-25. BLOQUE S — Mensajes y experiencia de bloqueo
+1.  BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
+2.  Crear contratos, eventos, normalización compartida, helpers puros y estructura inicial de @vento/supabase
+3.  Ejecutar AUTH-UI-030 a AUTH-UI-039
+4.  BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
+5.  BLOQUE J — Inventariar y proteger acciones de servidor
+6.  BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
+7.  BLOQUE S — Mensajes y experiencia de bloqueo
 
 AUTH-UI-030 a AUTH-UI-039 define:
 

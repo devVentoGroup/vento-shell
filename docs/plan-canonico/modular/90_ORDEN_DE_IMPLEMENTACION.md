@@ -88,16 +88,28 @@ convertir cada defecto encontrado en una prueba de regresión
         ↓
 U — CIERRE INTEGRAL
 ejecutar regresión completa, E2E, seguridad, UX y pruebas operativas
+```
+
+Reglas:
+
+- E1 identifica el requisito, pero no necesariamente implementa la prueba.
+- E2, E3 y E4 completan su especificación.
+- E5 asigna cada requisito a un paquete concreto.
+- T y R0 crean la infraestructura necesaria.
+- La prueba se implementa junto con el código del paquete.
+- Los defectos encontrados durante piloto o hypercare generan pruebas de regresión.
+- U ejecuta la certificación integral y no sustituye las pruebas de cada paquete.
+
 
 FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 
-19. BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
-20. Crear contratos, eventos, normalización compartida, helpers puros y estructura inicial de @vento/supabase
-21. Ejecutar AUTH-UI-030 a AUTH-UI-039
-22. BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
-23. BLOQUE J — Inventariar y proteger acciones de servidor
-24. BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
-25. BLOQUE S — Mensajes y experiencia de bloqueo
+1.  BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
+2.  Crear contratos, eventos, normalización compartida, helpers puros y estructura inicial de @vento/supabase
+3.  Ejecutar AUTH-UI-030 a AUTH-UI-039
+4.  BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
+5.  BLOQUE J — Inventariar y proteger acciones de servidor
+6.  BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
+7.  BLOQUE S — Mensajes y experiencia de bloqueo
 
 AUTH-UI-030 a AUTH-UI-039 define:
 
