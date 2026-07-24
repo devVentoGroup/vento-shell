@@ -17,7 +17,7 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **116** |
+| Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1397** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **171** |
@@ -88,13 +88,10 @@
 ```text
 ÚLTIMA TAREA APROBADA
 CODE-AUD-010 — Detectar pantallas con interfaz pero sin lógica completa
-        ↓
+
 TAREA ACTUAL
 CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
-        ↓
-SIGUIENTE TAREA RESERVADA
+
+SIGUIENTE TAREA
 CODE-AUD-012 — Detectar procesos implementados solo parcialmente
-        ↓
-CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 47 de 96 tareas aprobadas
 ```
