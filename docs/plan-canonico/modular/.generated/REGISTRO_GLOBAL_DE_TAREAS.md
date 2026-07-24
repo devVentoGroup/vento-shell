@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1397** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **171** |
+| Aprobadas | **172** |
 | En propuesta | **0** |
-| No iniciadas | **1226** |
+| No iniciadas | **1225** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CODE-AUD-010` — Detectar pantallas con interfaz pero sin lógica completa | ✅ APROBADA |
-| Tarea actual | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable | ⬜ NO INICIADA |
-| Siguiente | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente | ⬜ NO INICIADA |
+| Última aprobada | `CODE-AUD-011` — Detectar infraestructura sin proceso funcional utilizable | ✅ APROBADA |
+| Tarea actual | `CODE-AUD-012` — Detectar procesos implementados solo parcialmente | ⬜ NO INICIADA |
+| Siguiente | `CODE-AUD-013` — Detectar código legacy todavía activo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -199,7 +199,7 @@
 | ✅ APROBADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `CODE-AUD-011` | Detectar infraestructura sin proceso funcional utilizable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ✅ APROBADA | `CODE-AUD-011` | Detectar infraestructura sin proceso funcional utilizable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-012` | Detectar procesos implementados solo parcialmente | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-013` | Detectar código legacy todavía activo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ⬜ NO INICIADA | `CODE-AUD-014` | Detectar código duplicado y fuentes de verdad competidoras | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
@@ -249,127 +249,127 @@
 | ⬜ NO INICIADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-005` | Definir aplicación propietaria de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-006` | Definir aplicaciones consumidoras de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-007` | Definir actor que inicia cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-008` | Definir actores que continúan cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-009` | Definir estado inicial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-010` | Definir estados intermedios | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-011` | Definir estado final | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-012` | Definir transiciones permitidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-013` | Definir acciones excepcionales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-014` | Definir cancelación, reversión y corrección | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-015` | Definir información de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-016` | Definir información producida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-017` | Definir eventos empresariales emitidos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-004` | Definir procesos personales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-005` | Definir procesos administrativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-006` | Definir procesos operativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-005` | Diseñar la superficie operativa contextual por estación, zona y proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-006` | Definir periféricos, montaje, alimentación, conectividad y mantenimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-007` | Clasificar pantalla de supervisión | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-008` | Clasificar pantalla de configuración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-009` | Clasificar pantalla de auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-010` | Clasificar pantalla personal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-011` | Clasificar pantalla de cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-012` | Definir actores objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-013` | Definir dispositivos soportados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-014` | Definir acción principal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-015` | Definir acciones secundarias | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-016` | Definir condiciones de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-017` | Definir condiciones de salida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-023` | Definir permiso de lectura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-024` | Definir permisos de cada acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-026` | Identificar pantalla reemplazada o legacy | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-001` | Vincular cada proceso con una capacidad aprobada en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-004` | Clasificar proceso completo, parcial, manual, ausente o diferido | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-004` | Definir comportamiento offline y sincronización | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-005` | Definir privacidad y sensibilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-006` | Definir trazabilidad y retención | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-007` | Definir accesibilidad y ergonomía | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-008` | Definir hardware, red y periféricos requeridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-009` | Definir observabilidad, soporte y alertas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-004` | Ocultar funciones irrelevantes para el actor | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-005` | Mantener visible sede, área, turno y rol activos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-006` | Explicar bloqueos con lenguaje humano | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-007` | Evitar registrar dos veces la misma información | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-008` | Reducir pasos para tareas frecuentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-009` | Mantener acciones excepcionales fuera del flujo ordinario | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-010` | Aplicar divulgación progresiva a opciones avanzadas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-011` | Diseñar interfaces táctiles para tablets y kioscos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-012` | Diseñar interfaces densas solo para administración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E2_PROCESOS_Y_EXPERIENCIA/00_BLOQUE_E2.md` |
-| ⬜ NO INICIADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_TAREAS_DERIVADAS_OPS_AUD_001.md` |
+| ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-005` | Definir aplicación propietaria de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-006` | Definir aplicaciones consumidoras de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-007` | Definir actor que inicia cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-008` | Definir actores que continúan cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-009` | Definir estado inicial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-010` | Definir estados intermedios | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-011` | Definir estado final | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-012` | Definir transiciones permitidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-013` | Definir acciones excepcionales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-014` | Definir cancelación, reversión y corrección | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-015` | Definir información de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-016` | Definir información producida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-017` | Definir eventos empresariales emitidos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-004` | Definir procesos personales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-005` | Definir procesos administrativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-006` | Definir procesos operativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ⬜ NO INICIADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-005` | Diseñar la superficie operativa contextual por estación, zona y proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-006` | Definir periféricos, montaje, alimentación, conectividad y mantenimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ⬜ NO INICIADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-007` | Clasificar pantalla de supervisión | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-008` | Clasificar pantalla de configuración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-009` | Clasificar pantalla de auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-010` | Clasificar pantalla personal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-011` | Clasificar pantalla de cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-012` | Definir actores objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-013` | Definir dispositivos soportados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-014` | Definir acción principal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-015` | Definir acciones secundarias | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-016` | Definir condiciones de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-017` | Definir condiciones de salida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-023` | Definir permiso de lectura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-024` | Definir permisos de cada acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-026` | Identificar pantalla reemplazada o legacy | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-001` | Vincular cada proceso con una capacidad aprobada en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-004` | Clasificar proceso completo, parcial, manual, ausente o diferido | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ⬜ NO INICIADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-004` | Definir comportamiento offline y sincronización | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-005` | Definir privacidad y sensibilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-006` | Definir trazabilidad y retención | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-007` | Definir accesibilidad y ergonomía | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-008` | Definir hardware, red y periféricos requeridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-009` | Definir observabilidad, soporte y alertas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ⬜ NO INICIADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-004` | Ocultar funciones irrelevantes para el actor | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-005` | Mantener visible sede, área, turno y rol activos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-006` | Explicar bloqueos con lenguaje humano | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-007` | Evitar registrar dos veces la misma información | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-008` | Reducir pasos para tareas frecuentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-009` | Mantener acciones excepcionales fuera del flujo ordinario | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-010` | Aplicar divulgación progresiva a opciones avanzadas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-011` | Diseñar interfaces táctiles para tablets y kioscos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-012` | Diseñar interfaces densas solo para administración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ⬜ NO INICIADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
+| ⬜ NO INICIADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
+| ⬜ NO INICIADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

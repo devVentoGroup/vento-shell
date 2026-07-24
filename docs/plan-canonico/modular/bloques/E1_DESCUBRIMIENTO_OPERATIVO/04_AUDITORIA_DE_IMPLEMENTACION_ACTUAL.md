@@ -7550,7 +7550,893 @@ La continuidad será:
 CODE-AUD-011
 — Detectar infraestructura sin proceso funcional utilizable
 ```
-### [ ] CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
+**PROPUESTA PARA APROBACIÓN**
+
+### ✅ CODE-AUD-011 — Detectar infraestructura sin proceso funcional utilizable
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Tipo:** auditoría transversal de infraestructura técnica sin recorrido empresarial utilizable de extremo a extremo  
+**Dependencia anterior:** `CODE-AUD-010`  
+**Continuidad reservada:** `CODE-AUD-012`  
+**Fecha de corte:** 2026-07-24  
+**Cambios en código, CI o Supabase:** no autorizados ni realizados durante esta tarea  
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea contrasta la existencia de infraestructura con la existencia de un proceso funcional utilizable.
+
+Se considera infraestructura:
+
+- tablas;
+- vistas;
+- funciones SQL;
+- RPC;
+- políticas RLS;
+- rutas API;
+- componentes;
+- formularios aislados;
+- registros de aplicación;
+- permisos;
+- plantillas;
+- modelos de datos;
+- servicios locales;
+- código no desplegado.
+
+Se considera proceso funcional utilizable cuando existe una cadena comprobable:
+
+```text
+necesidad empresarial
+        ↓
+actor y contexto
+        ↓
+entrada alcanzable
+        ↓
+acciones y estados
+        ↓
+validación y autorización
+        ↓
+persistencia o efecto real
+        ↓
+resultado visible
+        ↓
+excepciones, corrección y auditoría
+```
+
+Resultado general:
+
+- AURA conserva una reserva de catálogo y permiso, pero no una aplicación o proceso;
+- NEXO conserva infraestructura de LPN, pero no un ciclo de vida operativo alcanzable;
+- PULSO conserva una base técnica amplia de POS interno, pero no un proceso integrado de apertura, venta, cobro, caja y cierre;
+- TALENTO contiene pantallas y servicios conectados, pero no constituye todavía un proceso productivo desplegado;
+- existen datos de asistencia y pagos sin procesos funcionales comprobados de corrección;
+- impresión NEXO no se clasifica como infraestructura sin proceso porque sí puede enviar ZPL mediante BrowserPrint;
+- dispositivos compartidos no se clasifican como infraestructura pura porque ya existe creación, resolución de sesión y firma de actor en acciones concretas;
+- la existencia de tablas vacías no basta por sí sola para declarar infraestructura inútil;
+- no se crea ninguna tarea nueva del roadmap;
+- se crean tres requisitos de prueba;
+- no se modifica código ni Supabase.
+
+---
+
+#### 2. Diferencia entre infraestructura y proceso
+
+##### 2.1. Infraestructura disponible
+
+Existe una o más piezas técnicas que podrían soportar un proceso.
+
+Ejemplos:
+
+- tabla y RLS;
+- endpoint de lectura;
+- formulario sin ruta;
+- función SQL sin consumidor;
+- aplicación registrada sin repositorio;
+- pantalla no desplegada;
+- esquema de dominio sin flujo de usuario.
+
+##### 2.2. Proceso ausente
+
+No existe una cadena alcanzable que permita al actor:
+
+1. iniciar;
+2. continuar;
+3. completar;
+4. corregir;
+5. consultar el resultado;
+6. demostrar quién actuó.
+
+##### 2.3. Proceso parcial
+
+Existe un recorrido utilizable, pero omite etapas o casos.
+
+Este caso pertenece principalmente a:
+
+```text
+CODE-AUD-012
+— Detectar procesos implementados solo parcialmente
+```
+
+##### 2.4. Artefacto sin consumidor
+
+Existe una pieza técnica cuya utilización no está confirmada.
+
+Este caso deberá profundizarse en:
+
+```text
+CODE-AUD-015
+— Detectar rutas, componentes, funciones y tablas sin consumidores
+```
+
+Una misma evidencia puede alimentar varias tareas sin duplicar el hallazgo.
+
+---
+
+#### 3. Criterios de clasificación
+
+Una infraestructura se clasifica como **sin proceso funcional utilizable** cuando se confirma una o más de estas condiciones:
+
+- no existe ruta alcanzable;
+- la ruta redirige fuera del dominio;
+- existe solo lectura, pero el dominio exige mutaciones;
+- existe componente, pero no consumidor;
+- existe función de servidor, pero no invocación;
+- existe registro de aplicación, pero no repositorio ni pantallas;
+- existe modelo de datos, pero no estados ni transiciones ejecutables;
+- existe proceso en código, pero no despliegue accesible;
+- existe infraestructura de persistencia, pero no corrección auditable;
+- existe un fragmento técnico que no permite completar el objetivo empresarial.
+
+No se clasifica automáticamente como brecha cuando:
+
+- la infraestructura es deliberadamente compartida;
+- la pieza es una reserva futura explícita y no se presenta como operativa;
+- existe un proceso funcional aunque todavía necesite mejoras;
+- la tabla está vacía porque aún no hubo operación real;
+- el componente está detrás de una feature flag aprobada;
+- el servicio es interno y no necesita una pantalla propia.
+
+---
+
+#### 4. AURA — reserva técnica sin producto ni proceso
+
+La auditoría técnica confirmó:
+
+- no existe repositorio AURA;
+- no existen rutas ni pantallas;
+- no existen elementos de navegación;
+- no existe proceso de marketing implementado;
+- existe una aplicación `aura` activa en catálogo;
+- existe un permiso base de acceso.
+
+Por tanto:
+
+```text
+registro de aplicación
++
+permiso reservado
+≠
+aplicación funcional
+```
+
+**Clasificación:** reserva técnica explícita sin proceso funcional.
+
+No se exige implementar AURA.
+
+La decisión correcta es conservarla como:
+
+```text
+APLICACIÓN DIFERIDA
+```
+
+hasta ejecutar:
+
+- `AURA-AUD-001 — Confirmar repositorio propietario`;
+- `AURA-AUD-002 — Confirmar estado real del producto`;
+- `AURA-AUD-005 — Inventariar procesos de marketing`;
+- `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`;
+- `AURA-AUD-012 — Mantener roadmap de implementación bloqueado hasta decisión`.
+
+Riesgo:
+
+- confundir catálogo técnico con disponibilidad empresarial;
+- asignar permisos a una capacidad inexistente;
+- presentar una aplicación como activa sin proceso, propietario o despliegue;
+- iniciar implementación antes de una decisión de alcance.
+
+No se crea una tarea nueva.
+
+---
+
+#### 5. NEXO — infraestructura LPN sin ciclo de vida operativo alcanzable
+
+Infraestructura confirmada:
+
+```text
+inventory_lpns
+inventory_lpn_items
+/api/inventory/lpns
+LpnCreateForm
+/inventory/lpns
+```
+
+##### 5.1. API
+
+La ruta:
+
+```text
+src/app/api/inventory/lpns/route.ts
+```
+
+implementa únicamente:
+
+```text
+GET
+```
+
+y devuelve:
+
+```text
+id
+code
+site_id
+created_at
+```
+
+No implementa:
+
+- creación;
+- activación;
+- cierre;
+- anulación;
+- reetiquetado;
+- empaque;
+- desempaque;
+- traslado;
+- cambio de custodia;
+- consulta de contenido;
+- división;
+- unión;
+- anidamiento.
+
+##### 5.2. Ruta visible
+
+La página:
+
+```text
+src/app/inventory/lpns/page.tsx
+```
+
+no presenta gestión de LPN.
+
+Redirige directamente a:
+
+```text
+/inventory/stock
+```
+
+##### 5.3. Formulario aislado
+
+Existe:
+
+```text
+src/features/inventory/lpns/lpn-create-form.tsx
+```
+
+El formulario contiene:
+
+- selector local de sedes;
+- códigos de sede escritos en código;
+- captura manual de `site_id` cuando no existe valor predeterminado;
+- vista previa de código;
+- una acción recibida por propiedad.
+
+No se localizó otro archivo que importe `LpnCreateForm`.
+
+Por tanto, la existencia del componente no demuestra una pantalla utilizable.
+
+##### 5.4. Contenido del LPN
+
+No se localizaron consumidores de aplicación para:
+
+```text
+inventory_lpn_items
+```
+
+La tabla puede existir, pero no existe un proceso alcanzable de:
+
+```text
+LPN
+→ contenido
+→ cantidad
+→ ubicación
+→ movimiento
+→ custodia
+→ cierre
+```
+
+##### 5.5. Conclusión LPN
+
+La extensión canónica de NEXO ya declara expresamente que el subdominio no se considera resuelto por la sola existencia de:
+
+- tablas;
+- permisos;
+- rutas legacy.
+
+**Clasificación:** infraestructura de dominio sin proceso funcional utilizable.
+
+Destinos exactos:
+
+- `NEXO-DOM-002 — Definir propósito y tipos canónicos de LPN`;
+- `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar`;
+- `NEXO-DOM-004 — Definir contenido, empaque y desempaque de LPN`;
+- `NEXO-DOM-007 — Definir relación sede → LOC → LPN → contenido`;
+- `NEXO-DOM-019 — Separar identidad permanente del contenedor físico e identidad temporal o persistente del LPN`;
+- `NEXO-DOM-021 — Prohibir doble contabilización entre existencia suelta en LOC y existencia contenida en LPN`;
+- `NEXO-DOM-022 — Definir que mover un LPN mueve atómicamente todo su contenido`;
+- `NEXO-UX-026 — Diseñar ciclo de vida completo de LPN`;
+- `NEXO-UX-027 — Diseñar empaque, desempaque y consulta de contenido`;
+- `NEXO-UX-036 — Diseñar búsqueda por LOC, LPN, código, responsable y contenido`;
+- `NEXO-UX-037 — Diseñar impresión de LOC, LPN, activo y documento`;
+- `NEXO-UX-040 — Validar el prototipo del subdominio con decoración, vajilla, herramientas y repuestos`;
+- `CODE-AUD-015`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se autoriza completar el componente existente antes de definir el dominio.
+
+
+---
+
+#### 6. PULSO — base técnica de POS sin proceso interno completo de venta y caja
+
+Infraestructura confirmada en el esquema `pos`:
+
+```text
+pos_sessions
+pos_session_orders
+pos_payments
+pos_cash_shifts
+pos_cash_movements
+pos_tables
+pos_zones
+pos_modifiers
+pos_modifier_options
+pos_product_modifiers
+pos_order_item_modifiers
+```
+
+También existe:
+
+```text
+process_order_payment(...)
+```
+
+La función:
+
+- consulta una orden;
+- marca la orden como pagada y completada;
+- inserta un registro de pago;
+- calcula puntos;
+- actualiza lealtad.
+
+##### 6.1. Consumidores confirmados
+
+La superficie de salón de PULSO:
+
+- consulta zonas;
+- consulta mesas;
+- consulta sesiones abiertas;
+- consulta llamados;
+- permite crear y resolver llamados;
+- escucha cambios Realtime.
+
+Por tanto, el proceso de llamados de salón sí tiene comportamiento real.
+
+##### 6.2. Proceso POS no localizado
+
+No se localizó en PULSO una cadena completa para:
+
+1. abrir turno de caja;
+2. abrir sesión de mesa o mostrador;
+3. crear venta interna;
+4. agregar líneas y modificadores;
+5. asociar venta con sesión;
+6. cobrar mediante un medio aprobado;
+7. registrar pago;
+8. corregir o anular el medio de pago;
+9. registrar entrada o salida de caja;
+10. cerrar sesión;
+11. cuadrar y cerrar caja;
+12. emitir hechos de inventario;
+13. emitir hechos económicos a NUMERA;
+14. acumular o redimir puntos mediante el contrato final.
+
+Búsquedas sobre:
+
+```text
+pos_cash_shifts
+pos_cash_movements
+process_order_payment
+```
+
+no localizaron consumidores de aplicación que permitan ejecutar ese ciclo completo.
+
+La auditoría remota también confirmó que las tablas POS internas estaban vacías al corte.
+
+Una tabla vacía no demuestra por sí sola que no exista proceso. En este caso se combina con:
+
+- ausencia de consumidores encontrados;
+- lectura de sesiones sin creación encontrada;
+- falta de apertura y cierre de caja;
+- falta de flujo integrado de cobro;
+- falta de corrección auditable de pago.
+
+##### 6.3. Conclusión PULSO
+
+La infraestructura de salón y llamados no equivale a un POS interno completo.
+
+**Clasificación:** fundación técnica de POS con proceso empresarial principal todavía no utilizable de extremo a extremo.
+
+Destinos exactos:
+
+- `PULSO-AUTH-001 — Inventariar vistas POS`;
+- `PULSO-AUTH-002 — Inventariar órdenes`;
+- `PULSO-AUTH-008 — Definir permisos de cierre y anulación`;
+- `PULSO-AUTH-012 — Integrar dispositivos POS compartidos`;
+- `PULSO-AUTH-013 — Registrar trabajador que ejecuta la operación`;
+- `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`;
+- `PULSO-UX-007 — Simplificar creación de venta`;
+- `PULSO-UX-008 — Simplificar cobro y medios de pago`;
+- `PULSO-UX-009 — Separar anulación, devolución y reembolso`;
+- `PULSO-UX-010 — Diseñar apertura y cierre de caja`;
+- `PULSO-UX-016 — Conectar venta con inventario`;
+- `PULSO-UX-017 — Conectar venta con NUMERA`;
+- `PULSO-UX-018 — Conectar venta con PASS`;
+- `CODE-AUD-012`;
+- `CODE-AUD-015`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se deberá declarar PULSO POS completo por la sola existencia del esquema y las vistas.
+
+---
+
+#### 7. TALENTO — implementación conectada, pero sin proceso productivo desplegado
+
+`CODE-AUD-003` y `CODE-AUD-010` confirmaron que TALENTO contiene superficies conectadas para:
+
+- inicio;
+- perfil;
+- documentos;
+- postulación.
+
+No obstante, TALENTO se mantiene como producto futuro y no tiene una superficie productiva comprobada.
+
+Por tanto:
+
+```text
+código conectado
++
+servicios
++
+pantallas
+≠
+proceso operativo disponible
+```
+
+**Clasificación:** implementación no desplegada, no infraestructura vacía.
+
+Destinos exactos:
+
+- `CAP-TAL-001 — Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA`;
+- `CAP-TAL-002 — Diseñar publicación de vacantes, consulta y postulación en TALENTO`;
+- `CAP-TAL-003 — Diseñar expediente progresivo de datos, documentos, consentimiento y conservación`;
+- `CAP-TAL-004 — Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato`;
+- `CAP-TAL-005 — Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO`;
+- `CAP-TAL-006 — Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se crea requisito de prueba nuevo durante esta tarea porque el proceso objetivo todavía debe ser aprobado en E2.
+
+---
+
+#### 8. Datos sin proceso de corrección comprobado
+
+##### 8.1. Marcaciones de asistencia
+
+Existen:
+
+- `attendance_logs`;
+- consultas de ANIMA;
+- informes de VISO;
+- notas de incidencia.
+
+No se encontró una acción interna que permita corregir:
+
+- hora;
+- tipo de marcación;
+- entrada o salida equivocada;
+- duplicado;
+- marcación atribuida al evento incorrecto.
+
+Esto no significa que toda marcación deba ser editable.
+
+Primero debe definirse:
+
+- quién solicita;
+- quién aprueba;
+- qué campos pueden corregirse;
+- cómo se conserva el valor anterior;
+- qué evidencia es obligatoria;
+- cómo afecta nómina, turno y contexto.
+
+**Clasificación:** datos disponibles sin proceso de corrección aprobado y utilizable.
+
+Destinos:
+
+- `PROC-CAT-002 — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes`;
+- `CODE-AUD-012`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`;
+- bloques funcionales de ANIMA y VISO cuando E2 asigne propiedad.
+
+No se crea `TREQ-*` todavía porque la regla de corrección no está aprobada.
+
+##### 8.2. Medios de pago
+
+Existen:
+
+- `pos.pos_payments`;
+- `payments.transactions`;
+- intención de pago;
+- webhook;
+- conciliación técnica.
+
+No se encontró una acción interna de corrección manual y auditable del medio de pago.
+
+**Clasificación:** infraestructura de pagos sin proceso aprobado de corrección.
+
+Destinos:
+
+- `PULSO-UX-008`;
+- `PULSO-UX-009`;
+- `PULSO-AUTH-008`;
+- `PROC-CAT-002`;
+- `CODE-AUD-012`;
+- `CODE-AUD-017`;
+- `CODE-AUD-019`;
+- `CODE-AUD-020`.
+
+No se crea un requisito separado hasta definir si la corrección será:
+
+- edición;
+- reversión;
+- anulación;
+- devolución;
+- asiento compensatorio.
+
+---
+
+#### 9. Falsos positivos excluidos
+
+##### 9.1. Impresión NEXO
+
+NEXO no conserva únicamente plantillas.
+
+La pantalla de trabajos de impresión:
+
+- detecta impresoras mediante BrowserPrint;
+- conecta una impresora;
+- genera ZPL;
+- envía el ZPL mediante `device.send`;
+- comunica éxito o error.
+
+Por tanto, existe un proceso local de impresión.
+
+Las brechas de:
+
+- fidelidad de preview;
+- persistencia de cola;
+- confirmación física;
+- reintentos;
+- idempotencia;
+- monitoreo;
+- fallback;
+
+pertenecen a `CODE-AUD-012`, `018`, E4 y `TREQ-NEXO-003`.
+
+**No se clasifica como infraestructura sin proceso.**
+
+##### 9.2. Dispositivos compartidos
+
+Se confirmó:
+
+- creación administrativa desde VISO;
+- usuario técnico;
+- plantilla;
+- sede;
+- área;
+- aplicaciones permitidas;
+- políticas de actor;
+- resolución de sesión en aplicaciones;
+- firma de actor por PIN para acciones concretas de NEXO.
+
+Por tanto, existe un recorrido funcional parcial.
+
+Las brechas restantes de:
+
+- provisión física;
+- cambio de trabajador;
+- revocación;
+- sesión expirada;
+- superficie contextual;
+- ergonomía;
+- contingencia;
+
+pertenecen a:
+
+- `UX-STATION-*`;
+- `AUTH-DEV-*`;
+- `CODE-AUD-012`;
+- `CODE-AUD-017`;
+- `CODE-AUD-018`.
+
+**No se clasifica como infraestructura pura sin proceso.**
+
+##### 9.3. NUMERA, FOGO y ORIGO
+
+NUMERA tiene consultas reales de resumen y rentabilidad.
+
+FOGO tiene superficies de recetas y lotes.
+
+ORIGO administra órdenes y recepciones.
+
+El hecho de que ciertas tablas tengan cero registros no permite declarar que el proceso sea inexistente.
+
+Su cobertura y completitud deberán evaluarse en `CODE-AUD-012`.
+
+---
+
+#### 10. Matriz por repositorio
+
+| Repositorio     | Resultado de CODE-AUD-011                                                                               | Clasificación                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `vento-shell`   | contiene fundamentos de AURA, LPN, POS, pagos y dispositivos; la existencia física no demuestra proceso | infraestructura central                             |
+| `vento-viso`    | administra dispositivos compartidos; no es infraestructura pura                                         | proceso parcial confirmado                          |
+| `vento-nexo`    | LPN sin ciclo alcanzable; impresión sí envía a impresora                                                | un hallazgo confirmado y un falso positivo excluido |
+| `vento-fogo`    | recetas y lotes tienen superficies conectadas                                                           | revisar completitud en `CODE-AUD-012`               |
+| `vento-origo`   | órdenes y recepciones tienen superficies conectadas                                                     | revisar completitud en `CODE-AUD-012`               |
+| `vento-pulso`   | salón y llamados funcionan; POS interno completo no está localizado                                     | infraestructura principal sin proceso E2E           |
+| `vento-numera`  | dashboard y rentabilidad están conectados                                                               | revisar completitud en `CODE-AUD-012`               |
+| `Vento-Group`   | newsletter es interfaz sin backend final, no infraestructura sin proceso                                | mantiene `WEB-FRM-011`                              |
+| `vento-anima`   | asistencia funciona; no existe corrección comprobada de marcación                                       | dato sin proceso de corrección                      |
+| `vento-pass`    | pedidos, lealtad y Club tienen lógica; stubs se revisan como consumidores                               | no se confirma infraestructura pura nueva           |
+| `vento-talento` | código conectado, pero producto futuro sin despliegue comprobado                                        | implementación no productiva                        |
+| `vento-vital`   | proyecto separado                                                                                       | fuera de Vento OS                                   |
+| AURA            | catálogo y permiso sin repositorio ni proceso                                                           | reserva diferida                                    |
+
+
+---
+
+#### 11. Hallazgos y destino obligatorio
+
+| ID               | Hallazgo                                                                                            | Clasificación                                 | Destino                                                                                                  |
+| ---------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `H-CODE-011-001` | AURA existe como aplicación y permiso reservados, sin repositorio, rutas, pantallas o procesos      | reserva técnica                               | `AURA-AUD-001` a `AURA-AUD-012`                                                                          |
+| `H-CODE-011-002` | NEXO tiene tablas LPN y endpoint de lectura, pero no ciclo de vida alcanzable                       | infraestructura sin proceso                   | `NEXO-DOM-002` a `008`, `019` a `024`, `NEXO-UX-026` a `040`, `CODE-AUD-015`, `019`, `020`               |
+| `H-CODE-011-003` | `/inventory/lpns` redirige a stock                                                                  | ruta sin proceso LPN                          | mismo destino de `H-CODE-011-002`                                                                        |
+| `H-CODE-011-004` | `LpnCreateForm` no tiene consumidor localizado                                                      | componente aislado                            | `CODE-AUD-015`, `019`, `020`                                                                             |
+| `H-CODE-011-005` | no se localizaron consumidores de `inventory_lpn_items`                                             | modelo sin operación de contenido             | `NEXO-DOM-004`, `007`, `021`, `022`, `NEXO-UX-027`, `036`, `CODE-AUD-015`                                |
+| `H-CODE-011-006` | PULSO conserva esquema POS, vistas y función de pago sin ciclo integrado de venta y caja localizado | fundación sin proceso E2E                     | `PULSO-AUTH-*`, `PULSO-UX-001`, `007` a `010`, `016` a `018`, `CODE-AUD-012`, `015`, `017`, `019`, `020` |
+| `H-CODE-011-007` | salón PULSO sí consulta sesiones y gestiona llamados                                                | proceso real                                  | cerrado como falso positivo                                                                              |
+| `H-CODE-011-008` | TALENTO tiene código conectado, pero no superficie productiva comprobada                            | implementación no desplegada                  | `CAP-TAL-001` a `006`, `CODE-AUD-019`, `020`                                                             |
+| `H-CODE-011-009` | asistencia conserva datos sin corrección funcional comprobada                                       | infraestructura de datos sin proceso aprobado | `PROC-CAT-002`, `CODE-AUD-012`, `019`, `020`                                                             |
+| `H-CODE-011-010` | pagos conservan estructuras sin corrección manual auditable                                         | infraestructura de datos sin proceso aprobado | `PULSO-UX-008`, `009`, `PULSO-AUTH-008`, `PROC-CAT-002`, `CODE-AUD-012`, `017`, `019`, `020`             |
+| `H-CODE-011-011` | impresión NEXO sí envía ZPL con BrowserPrint                                                        | proceso local existente                       | `CODE-AUD-012`, `018`, mantiene `TREQ-NEXO-003`                                                          |
+| `H-CODE-011-012` | dispositivos compartidos ya tienen creación, sesión y firma en acciones concretas                   | proceso parcial existente                     | `UX-STATION-*`, `AUTH-DEV-*`, `CODE-AUD-012`, `017`, `018`                                               |
+| `H-CODE-011-013` | una tabla vacía no demuestra ausencia de proceso                                                    | regla de clasificación                        | cerrado                                                                                                  |
+| `H-CODE-011-014` | el Registro Canónico de Requisitos de Prueba está desalineado con tareas aprobadas                  | brecha documental                             | corregir durante consolidación de `CODE-AUD-011`; `QA-REG-001` verifica retrospectivamente               |
+
+Todos los hallazgos quedan cerrados o vinculados a tareas existentes.
+
+**No se crea ninguna tarea nueva del roadmap.**
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+##### 12.1. Requisitos nuevos completos
+
+| ID               | Regla protegida                                                                                                                                                                                                                                               | Origen                                               | Riesgo                                                                                                 | Tipo / modalidad                                                                                | Prioridad | Tarea responsable inmediata                                                                 | Estado         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------- | -------------- |
+| `TREQ-SHELL-001` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001`                    | catálogo engañoso, permisos sin capacidad y activación prematura                                       | contractual + estática + integración / automatizada                                             | media     | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro`                                    | `IDENTIFICADO` |
+| `TREQ-NEXO-004`  | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización.                       | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa                 | contractual + integración + base de datos + E2E / automatizada con validación operativa         | alta      | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | `IDENTIFICADO` |
+| `TREQ-PULSO-001` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo.                          | `CODE-AUD-011` / `H-CODE-011-006`                    | ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | crítica   | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón`                                | `IDENTIFICADO` |
+
+##### 12.2. Requisitos reutilizados
+
+| ID              | Uso                                                                          |
+| --------------- | ---------------------------------------------------------------------------- |
+| `TREQ-NEXO-003` | mantiene la regla de fidelidad y validación física de impresión              |
+| `TREQ-AUTH-001` | protege que infraestructura sensible no dependa únicamente de nombres de rol |
+| `TREQ-AUTH-002` | protege que permisos de la infraestructura existan en el catálogo canónico   |
+
+No se cambia su estado.
+
+##### 12.3. Filas completas nuevas para el Registro Canónico
+
+Al aprobar `CODE-AUD-011`, agregar:
+
+```md
+| `TREQ-SHELL-001` | `SHELL` | Ninguna aplicación podrá considerarse disponible u operativa por la sola existencia de un registro o permiso; deberá tener propietario, alcance, proceso aprobado, superficie alcanzable y despliegue verificado, o quedar marcada como reserva no navegable. | `CODE-AUD-011` / `H-CODE-011-001` | Catálogo engañoso, permisos sin capacidad y activación prematura / media | contractual + estática + integración / automatizada | `AURA-AUD-010 — Decidir continuidad, reemplazo o retiro` | Pendiente de asignación en E5 si AURA continúa | `vento-shell` y futura aplicación propietaria / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-NEXO-004` | `NEXO` | Un LPN no podrá considerarse implementado hasta que un actor autorizado pueda ejecutar y auditar su ciclo aprobado de creación, contenido, ubicación, movimiento, custodia, cierre, anulación y reetiquetado sin doble contabilización. | `CODE-AUD-011` / `H-CODE-011-002` a `H-CODE-011-005` | Existencia duplicada, contenido huérfano, movimientos incompletos y trazabilidad falsa / alta | contractual + integración + base de datos + E2E / automatizada con validación operativa | `NEXO-DOM-003 — Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar` | Pendiente de asignación en E5 | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-PULSO-001` | `PULSO` | El POS interno deberá demostrar de extremo a extremo apertura de caja, creación de venta, líneas, sesión, cobro, pago, inventario, lealtad, hecho económico, anulación o reversión y cierre auditable antes de declararse operativo. | `CODE-AUD-011` / `H-CODE-011-006` | Ventas o pagos inconsistentes, caja sin cuadrar, inventario divergente y hechos económicos incompletos / crítica | contractual + integración + seguridad + E2E + regresión / automatizada con validación operativa | `PULSO-UX-001 — Inventariar procesos de venta, caja y salón` | Pendiente de asignación en E5 | `vento-pulso`, `vento-shell`, `vento-nexo`, `vento-numera` y `vento-pass` / CI, staging y terminal POS pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+```
+
+---
+
+#### 13. Corrección documental obligatoria de 04A
+
+La revisión remota de:
+
+```text
+04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
+```
+
+detectó:
+
+1. `TREQ-AUTH-001` concatenado al final de la fila `TREQ-NEXO-001`;
+2. ausencia de:
+   - `TREQ-ANIMA-001`;
+   - `TREQ-ANIMA-002`;
+   - `TREQ-NEXO-003`;
+   - `TREQ-INTEGRATION-002`.
+
+Estas cuatro filas fueron creadas por `CODE-AUD-010`, ya aprobada.
+
+##### 13.1. Corregir la fila concatenada
+
+Reemplazar la fila que actualmente contiene `TREQ-NEXO-001` y `TREQ-AUTH-001` en una sola línea por estas dos filas:
+
+```md
+| `TREQ-NEXO-001` | `NEXO` | La selección privilegiada de área solicitante deberá funcionar desde el código canónico y superar build y validación sin depender de workflows o scripts temporales que reescriban automáticamente una rama. | `CODE-AUD-008` / `H-CODE-008-008` y `H-CODE-008-009` | Deriva de código, mutación insegura de ramas, implementación parcial y reejecución accidental de un parche / alta | integración + seguridad + regresión / automatizada | `CODE-AUD-016 — Revisar estado de build, lint, typecheck y pruebas` | Pendiente de asignación en E5 | `vento-nexo` / CI y ambiente pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-AUTH-001` | `AUTH` | Toda capacidad protegida deberá resolverse mediante permisos, contexto y alcance canónicos; una lista local de nombres de rol no podrá conceder por sí sola autorización final. | `CODE-AUD-009` / `H-CODE-009-001` | Acceso indebido, denegación incorrecta y divergencia entre aplicaciones / crítica | seguridad + autorización + regresión / automatizada | `CODE-AUD-017 — Revisar autorización, permisos, RLS y seguridad` | Pendiente de asignación en E5 | transversal / CI, staging y ambientes pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+```
+
+##### 13.2. Agregar los requisitos aprobados de CODE-AUD-010
+
+Agregar:
+
+```md
+| `TREQ-ANIMA-001` | `ANIMA` | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer. | `CODE-AUD-010` / `H-CODE-010-001` | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta | contractual + autorización + integración + E2E / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-ANIMA-002` | `ANIMA` | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente. | `CODE-AUD-010` / `H-CODE-010-002` | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta | interfaz + regresión / automatizada | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-NEXO-003` | `NEXO` | Toda vista previa usada para aprobar una impresión deberá identificar si es simulación y demostrar correspondencia suficiente entre plantilla, ZPL, DPI, dimensiones, códigos y muestra física antes de considerarse validación de salida. | `CODE-AUD-010` / `H-CODE-010-003` | Etiquetas recortadas, códigos ilegibles y diferencia entre vista previa e impresión física / alta | contractual + interfaz + hardware + regresión / híbrida | `CODE-AUD-012 — Detectar procesos implementados solo parcialmente` | Pendiente de asignación en E5 | `vento-nexo` / local, CI, staging e impresora física pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+| `TREQ-INTEGRATION-002` | `INTEGRATION` | Toda interfaz pública de newsletter deberá registrar una suscripción y consentimiento reales mediante el contrato aprobado, comunicar el resultado verdadero y permitir el tratamiento definido; de lo contrario no deberá publicarse. | `CODE-AUD-010` / `H-CODE-010-004` | Falsa confirmación, pérdida de contactos y tratamiento de datos sin contrato verificable / alta | integración + privacidad + E2E / automatizada | `WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz` | Pendiente de asignación en el plan web y E5 cuando corresponda | `Vento-Group` y `vento-viso` / CI, preview y producción pública pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | — |
+```
+
+Después agregar las tres filas nuevas de `CODE-AUD-011`.
+
+Esta corrección:
+
+- no crea tareas;
+- no cambia estados;
+- restaura requisitos ya aprobados;
+- debe realizarse antes de continuar después de aprobar `CODE-AUD-011`.
+
+
+---
+
+#### 14. Decisiones propuestas
+
+1. La infraestructura no se considerará proceso.
+2. Una aplicación registrada no se considerará producto disponible.
+3. Una tabla, permiso o endpoint no demostrará cobertura funcional.
+4. AURA permanecerá diferida y no navegable hasta decisión.
+5. No se exigirá implementar AURA.
+6. LPN se declara infraestructura sin ciclo operativo alcanzable.
+7. El formulario LPN aislado no se tomará como implementación.
+8. La ruta redirigida no se tomará como pantalla LPN.
+9. El diseño LPN deberá preceder cualquier reutilización del componente.
+10. PULSO salón se reconoce como proceso conectado.
+11. PULSO POS completo no se considera implementado.
+12. La función `process_order_payment` no prueba por sí sola un proceso de caja.
+13. TALENTO se clasifica como implementación no productiva, no como infraestructura vacía.
+14. Corrección de asistencia deberá diseñarse antes de implementarse.
+15. Corrección de pagos deberá distinguir edición, reversión, anulación, devolución y compensación.
+16. Impresión NEXO se excluye como falso positivo porque sí envía ZPL.
+17. Dispositivos compartidos se excluyen como falso positivo puro porque ya tienen acciones funcionales.
+18. Tablas vacías no bastan para declarar ausencia de proceso.
+19. Se crea `TREQ-SHELL-001`.
+20. Se crea `TREQ-NEXO-004`.
+21. Se crea `TREQ-PULSO-001`.
+22. Los tres requisitos quedan en estado `IDENTIFICADO`.
+23. Se corrige el registro 04A antes de avanzar.
+24. No se crea una tarea nueva del roadmap.
+25. `CODE-AUD-012` será la única continuidad inmediata.
+
+---
+
+#### 15. Límites de certeza
+
+Esta tarea no confirma:
+
+- que nunca haya existido un consumidor LPN en otra rama;
+- que las tablas LPN estén vacías;
+- que la función de pago POS no sea invocada externamente;
+- que ningún sistema externo escriba sesiones POS;
+- que AURA deba eliminarse;
+- que TALENTO no pueda desplegarse con la infraestructura actual;
+- que toda corrección de asistencia deba permitirse;
+- que todo pago pueda editarse;
+- que una tabla con registros implique proceso correcto;
+- que una tabla sin registros implique proceso roto;
+- que impresión NEXO tenga confirmación física;
+- que el ciclo de dispositivos compartidos esté completo;
+- que todos los procesos parciales hayan sido detectados.
+
+`CODE-AUD-012` continuará con los procesos que sí tienen un recorrido, pero no lo completan correctamente.
+
+---
+
+#### 16. Criterios de aceptación
+
+`CODE-AUD-011` podrá aprobarse cuando:
+
+- infraestructura y proceso estén diferenciados;
+- AURA quede clasificada como reserva;
+- LPN quede contrastado entre tabla, API, ruta y componente;
+- se documente que la ruta LPN redirige;
+- se documente que el formulario LPN no tiene consumidor localizado;
+- el POS interno se diferencie del proceso de llamados de salón;
+- el esquema POS no se confunda con un POS completo;
+- TALENTO quede clasificado como no productivo;
+- asistencia y pagos tengan destinos sin inventar reglas;
+- impresión NEXO sea excluida como falso positivo;
+- dispositivos compartidos sean excluidos como falso positivo puro;
+- cada hallazgo tenga destino exacto;
+- se creen las tres filas nuevas `TREQ-*`;
+- se corrija la fila concatenada en 04A;
+- se materialicen los cuatro requisitos aprobados de `CODE-AUD-010`;
+- no se cree ninguna tarea nueva;
+- no se modifique código;
+- no se modifique Supabase;
+- `CODE-AUD-012` permanezca como continuidad inmediata.
+
+---
+
+#### 17. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+tabla, función, API, componente o registro
+        ↓
+actor y entrada alcanzable
+        ↓
+estados y acciones
+        ↓
+resultado empresarial
+        ↓
+proceso utilizable o infraestructura aislada
+        ↓
+diseño, retiro, integración o paquete
+```
+
+La continuidad será:
+
+```text
+CODE-AUD-012
+— Detectar procesos implementados solo parcialmente
+```
+
+
 ### [ ] CODE-AUD-012 — Detectar procesos implementados solo parcialmente
 ### [ ] CODE-AUD-013 — Detectar código legacy todavía activo
 ### [ ] CODE-AUD-014 — Detectar código duplicado y fuentes de verdad competidoras
