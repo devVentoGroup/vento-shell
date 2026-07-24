@@ -1,1 +1,2 @@
 Trigger temporal definitivo para normalizar CODE-AUD-011.
+Workflow YAML corregido.
