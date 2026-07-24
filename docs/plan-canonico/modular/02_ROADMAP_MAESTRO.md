@@ -2,7 +2,7 @@
 
 **Autorización, capacidades, operación, datos, procesos, pantallas, integraciones y experiencia Vento**
 
-Este roadmap cubre las diez aplicaciones canónicas del ecosistema:
+Este roadmap contempla once aplicaciones canónicas actuales, futuras o diferidas del ecosistema:
 
 shell
 anima
@@ -12,6 +12,7 @@ fogo
 origo
 pulso
 numera
+talento
 aura
 pass
 
@@ -27,7 +28,8 @@ origo
 pulso
 numera
 
-APLICACIÓN LABORAL DIFERIDA
+APLICACIONES LABORALES FUTURAS O DIFERIDAS
+talento
 aura
 
 APLICACIÓN ADYACENTE DEL DOMINIO CLIENTE
@@ -43,10 +45,14 @@ vento-fogo
 vento-origo
 vento-pulso
 vento-numera
+vento-talento
 vento-pass
 
-AURA deberá auditarse antes de confirmar su repositorio propietario,
-su continuidad o su implementación futura.
+TALENTO conserva un repositorio técnico y una base remota parcial, pero su
+alcance funcional objetivo se diseñará en E2 antes de autorizar implementación.
+
+AURA no tiene repositorio ni implementación funcional confirmada. Deberá
+mantenerse diferida hasta decidir formalmente su continuidad, reemplazo o retiro.
 
 Separación obligatoria:
 
@@ -71,6 +77,11 @@ VISO
 ANIMA
 → consulta turnos, registra asistencia e inicia o termina
   el contexto operativo cuando corresponda
+
+TALENTO
+→ administra la experiencia previa a la vinculación laboral: vacantes,
+  postulaciones, expediente progresivo, evaluación, decisión y traspaso
+  autorizado hacia VISO y ANIMA
 
 Supabase
 → conserva y ejecuta las fuentes de verdad de identidad, contexto,
@@ -240,3 +251,4 @@ dependencias contractuales, técnicas y operativas.
 | V | PASS |
 | W | AURA |
 | X | Integraciones internas y externas |
+| Y | TALENTO — candidatos, selección y vinculación previa a ANIMA |

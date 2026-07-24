@@ -1,5 +1,11 @@
 ## Estado inicial conocido
 
+> Esta sección conserva la fotografía histórica previa al desarrollo de BLOQUE E1.
+> No representa el progreso documental vigente.
+>
+> El estado vigente debe consultarse exclusivamente en `Estado canónico`,
+> `Continuidad inmediata` y `Registro global de tareas`.
+
 BASE EXISTENTE
 
 - [x] operational_roles

@@ -24,20 +24,21 @@
 3. No implementar código, migraciones ni cambios en Supabase,
    salvo que la tarea lo ordene expresamente.
 
-4. Cada tarea `AUTH-*` deberá entregarse como un archivo Markdown
-   descargable e independiente que contenga exclusivamente el bloque
-   completo de la tarea desarrollada.
+4. Cada tarea documental desarrollada, independientemente de su prefijo
+   (`AUTH-*`, `OPS-*`, `CAP-*`, `CODE-*`, `GAP-*` u otro identificador
+   canónico), deberá entregarse como un archivo Markdown descargable e
+   independiente que contenga exclusivamente el bloque completo de la tarea.
 
    El archivo deberá estar listo para reemplazar el marcador o bloque
    correspondiente dentro del documento canónico.
 
    Convención obligatoria de nombre:
 
-   `AUTH-<BLOQUE>-<NÚMERO>_PROPUESTA_PARA_REEMPLAZAR.md`
+   `<ID-DE-TAREA>_PROPUESTA_PARA_REEMPLAZAR.md`
 
    Ejemplo:
 
-   `AUTH-CAT-018_PROPUESTA_PARA_REEMPLAZAR.md`
+   `CODE-AUD-007_PROPUESTA_PARA_REEMPLAZAR.md`
 
    En el mensaje del chat deberá incluirse únicamente:
 
@@ -63,13 +64,18 @@
    El archivo deberá ser Markdown plano codificado en UTF-8 y utilizar
    la extensión `.md`.
 
+   El archivo entregado es un artefacto transitorio de revisión y reemplazo.
+   No convierte la tarea en un fragmento canónico individual. Durante la
+   consolidación, el contenido aprobado deberá insertarse dentro del archivo
+   lógico propietario definido por la arquitectura modular.
+
 5. Toda tarea nueva inicia con:
 
    **PROPUESTA PARA APROBACIÓN**
 
    Mientras permanezca en propuesta deberá utilizar dentro del archivo:
 
-   `### 🟡 AUTH-...`
+   `### 🟡 <ID-DE-TAREA> — <TÍTULO>`
 
    El archivo deberá contener toda la definición sustantiva necesaria
    para evaluar y aprobar la tarea, sin depender de explicaciones
@@ -101,7 +107,7 @@
    - cuando una aprobación requiera corregir el contenido sustantivo
      del archivo, deberá entregarse un nuevo archivo llamado:
 
-     `AUTH-<BLOQUE>-<NÚMERO>_APROBADA_PARA_REEMPLAZAR.md`
+     `<ID-DE-TAREA>_APROBADA_PARA_REEMPLAZAR.md`
 
    La versión aprobada deberá conservar íntegramente las decisiones
    aceptadas y no incluir tareas adicionales.
