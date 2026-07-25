@@ -1,0 +1,41 @@
+name: Consolidar cierre documental de E1
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  consolidar:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Reconstruir migrador y contenidos aprobados
+        run: |
+          mkdir -p scripts/docs .agent/payload
+          cat .agent/payload/script.part* | base64 --decode > scripts/docs/agent-close-e1.mjs
+          cat .agent/payload/gap8.part* > .agent/payload/gap8.b64
+          cat .agent/payload/gate.part* > .agent/payload/gate.b64
+      - name: Aplicar consolidación documental
+        run: node scripts/docs/agent-close-e1.mjs
+      - name: Regenerar y validar plan canónico
+        run: |
+          node scripts/docs/build-plan-canonico.mjs
+          node scripts/docs/build-plan-canonico.mjs --check
+      - name: Confirmar cambios regenerados
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Consolidar cierre documental de E1"
+          git push origin HEAD:main
