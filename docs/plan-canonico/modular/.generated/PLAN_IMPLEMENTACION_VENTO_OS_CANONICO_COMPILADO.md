@@ -17,7 +17,7 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **131** |
+| Fragmentos canónicos | **132** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **221** |
@@ -183537,7 +183537,7 @@ Distribución vigente:
 
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `TREQ-GAP-001` | `GAP` | La puerta de fase deberá producir únicamente `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE`, `BLOCKED_EXCEPTION`, `PASS_WITH_CARRYOVER` o `PASS`; nunca aprobará una fase con una brecha crítica sin propietario válido, y bloqueará por falta de tarea, paquete, criterio, evidencia o arrastre controlado. Los conteos deberán reconciliar contra la misma versión del registro canónico y generar evidencia reproducible mediante `E1-GATE-MANIFEST-001`. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad o aprobación con registros incongruentes / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `E1-GATE-MANIFEST-001` |
+| `TREQ-GAP-001` | `GAP` | La puerta de fase deberá producir únicamente `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE`, `BLOCKED_EXCEPTION`, `PASS_WITH_CARRYOVER` o `PASS`; nunca aprobará una fase con una brecha crítica sin propietario válido, y bloqueará por falta de tarea, paquete, criterio, evidencia o arrastre controlado. Los conteos deberán reconciliar contra la misma versión del registro canónico y generar evidencia reproducible mediante `E1-GATE-MANIFEST-001`. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad o aprobación con registros incongruentes / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `VERIFICADO` | `E1-GATE-MANIFEST-001` | `BLOCKED_ROUTING` correcto | `10_E1_GATE_MANIFEST_001.md` | `E1-GATE-MANIFEST-001` |
 
 #### SHELL
 
@@ -220569,6 +220569,12 @@ NO INICIADA
 
 No se inicia BLOQUE E2 ni `PROC-CAT-001` hasta la ejecución y aprobación expresa de esta puerta.
 
+#### 11. Primera ejecución registrada
+
+La primera ejecución queda registrada en `E1-GATE-MANIFEST-001` con resultado `BLOCKED_ROUTING`. La ejecución reconcilió 138 brechas críticas únicas: todas tienen propietario, fecha, tarea, paquete y perfil de cierre, pero ninguna contiene aún fase destino, razón de arrastre, control compensatorio, aprobación ni fecha del siguiente gate.
+
+El bloqueo no aprueba `E1-GATE-001`, no cierra BLOQUE E1 y no autoriza iniciar `PROC-CAT-001` ni BLOQUE E2.
+
 ### Salida obligatoria
 
 BLOQUE E1 deberá entregar:
@@ -220586,6 +220592,71 @@ BLOQUE E1 deberá entregar:
 - lista de servicios transversales requeridos;
 - prioridades y dependencias.
 - `E1-GATE-MANIFEST-001` emitido y aprobado mediante `E1-GATE-001` antes de declarar el cierre documental de E1.
+# E1-GATE-MANIFEST-001 — Primera ejecución de puerta de cierre de BLOQUE E1
+
+## Identidad y evidencia
+
+| Campo | Valor |
+| --- | --- |
+| `gate_id` | `E1-GATE-MANIFEST-001` |
+| `phase_id` | `E1` |
+| `phase_version` | `2026-07-25` |
+| `source_commit_or_revision` | `6032783aaeb82797b3207aa604548ab5a0b6b7b6` |
+| `evaluated_at` | `2026-07-25` |
+| `evaluated_by` | revisión documental reproducible sobre las fuentes canónicas compiladas |
+| `approved_by` | `PENDIENTE — OWN-GG` |
+| `evidence_location` | `07_REGISTRO_CANONICO_DE_BRECHAS.md`, Anexo A; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`; `E1-GATE-001` |
+
+## Conjunto crítico reconciliado
+
+| Control | Resultado |
+| --- | ---: |
+| `critical_gap_count` | **138** |
+| Identificadores únicos | **138** |
+| Con propietario válido | **138** |
+| Con fecha de decisión | **138** |
+| Con tarea primaria | **138** |
+| Con paquete | **138** |
+| Con perfil de cierre | **138** |
+| Estado fuente | `OWNER_ASSIGNED_GATE_PENDING` para las 138 |
+
+`critical_gap_ids[]` corresponde exactamente a las 138 filas del Anexo A de `07_REGISTRO_CANONICO_DE_BRECHAS.md`: `EQG-053`, `EQG-055`, 3 identificadores `H-CAP-COVER-*` y 133 identificadores `H-CAP-SCOPE-*`. La serialización UTF-8 de esas 138 filas tiene SHA-256 `6315e22660d9058d6e9ff0120c6d90a60d58d00951a64dc5c5c5d5c18ca60754`; cualquier nueva ejecución deberá reproducir ese conjunto o documentar una versión aprobada distinta.
+
+## Resultado de TREQ-GAP-001
+
+| Arreglo de control | Resultado |
+| --- | ---: |
+| `critical_without_owner[]` | 0 |
+| `critical_without_due_date[]` | 0 |
+| `critical_without_task[]` | 0 |
+| `critical_without_package[]` | 0 |
+| `critical_without_closure_profile[]` | 0 |
+| `critical_without_target_phase[]` | 138 |
+| `critical_without_carryover_reason[]` | 138 |
+| `critical_without_compensating_control[]` | 138 |
+| `critical_without_approval[]` | 138 |
+| `critical_with_expired_carryover[]` | 0 — no existe arrastre aprobado que evaluar |
+| `critical_closed_with_valid_evidence[]` | 0 |
+| `critical_open_with_approved_carryover[]` | 0 |
+
+```text
+gate_status = BLOCKED_ROUTING
+blocking_reasons[] = [
+  "Las 138 brechas críticas abiertas no declaran target_phase.",
+  "Las 138 brechas críticas abiertas no declaran carryover_reason ni compensating_control.",
+  "Las 138 brechas críticas abiertas no tienen carryover_approved_by, carryover_approved_at ni next_gate_date.",
+  "No existe approved_by = OWN-GG para autorizar el cierre de E1."
+]
+next_gate_date = PENDIENTE_DE_DEFINIR_POR_OWN_GG
+```
+
+## Decisión de la puerta
+
+La puerta produce un estado permitido por `TREQ-GAP-001`: `BLOCKED_ROUTING`. No existe brecha crítica sin propietario válido, pero el contrato de arrastre está incompleto para todas las brechas abiertas. Por tanto, no se aprueba el cierre de E1, no se habilita `PROC-CAT-001` y no se inicia BLOQUE E2.
+
+## Condición de reejecución
+
+La siguiente ejecución deberá conservar esta evidencia y completar, por cada brecha crítica abierta, `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at` y `next_gate_date`. `OWN-GG` deberá aprobar explícitamente el manifiesto resultante. Solo `PASS` o `PASS_WITH_CARRYOVER` habilitan la transición.
 ### Regla de evolución del catálogo
 
 Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
