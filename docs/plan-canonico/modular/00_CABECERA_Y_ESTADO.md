@@ -17,31 +17,31 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1433** |
+| Fragmentos canónicos | **129** |
+| Tareas canónicas con marcador | **1518** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **197** |
+| Tareas aprobadas | **199** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1236** |
+| Tareas no iniciadas | **1319** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
-| Tarea actual | **CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría** |
+| Última tarea aprobada | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
+| Tarea actual | **CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
+| Siguiente tarea | **CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 72 de 96 aprobadas; CAP-SCOPE-016 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 74 de 96 aprobadas; CAP-SCOPE-018 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
-| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, respaldo y recuperación — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **72 DE 96 APROBADAS — ACTUAL CAP-SCOPE-016** |
+| BLOQUE E1 | **74 DE 96 APROBADAS — ACTUAL CAP-SCOPE-018** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
-        ↓
-TAREA ACTUAL
-CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
-        ↓
-SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
         ↓
+TAREA ACTUAL
+CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
+        ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 72 de 96 tareas aprobadas
+BLOQUE E1 — 74 de 96 tareas aprobadas
 ```

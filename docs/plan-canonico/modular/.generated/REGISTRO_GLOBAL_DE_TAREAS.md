@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1433** |
+| Tareas con marcador | **1518** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **197** |
+| Aprobadas | **199** |
 | En propuesta | **0** |
-| No iniciadas | **1236** |
+| No iniciadas | **1319** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros | ⬜ NO INICIADA |
+| Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, respaldo y recuperación | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -225,8 +225,8 @@
 | ✅ APROBADA | `CAP-SCOPE-013` | Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-014` | Evaluar marketing, campañas y contenido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-015` | Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-016` | Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-017` | Evaluar analítica, indicadores y datos maestros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-016` | Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-017` | Evaluar analítica, indicadores y datos maestros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-018` | Evaluar continuidad operativa, respaldo y recuperación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-019` | Aprobar clasificación y propietario de cada dominio evaluado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-COVER-001` | Definir criterios verificables de cada estado de cobertura | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
@@ -1460,3 +1460,88 @@
 | ⬜ NO INICIADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `TI-DOM-001` | Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-002` | Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-003` | Definir ciclo de vida de computadores, celulares, tabletas y endpoints | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-004` | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-006` | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-007` | Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-009` | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-010` | Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-DOM-013` | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-AUTH-003` | Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-AUTH-004` | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-001` | Diseñar portal simple de soporte para trabajadores dentro de ANIMA | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-002` | Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-003` | Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-004` | Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-005` | Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-UX-006` | Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-INT-001` | Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-INT-002` | Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `TI-INT-003` | Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md` |
+| ⬜ NO INICIADA | `INFO-DOM-001` | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-002` | Definir clasificación, sensibilidad, minimización y manejo por categoría de información | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-003` | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-004` | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-005` | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-006` | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-007` | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-008` | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-009` | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-010` | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-011` | Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-012` | Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-DOM-013` | Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-AUTH-001` | Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-AUTH-002` | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-AUTH-003` | Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-AUTH-004` | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-001` | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-002` | Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-003` | Diseñar creación, revisión, aprobación, publicación y firma de documentos | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-004` | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-005` | Diseñar retención, legal hold, archivo y disposición controlada | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-UX-006` | Diseñar explorador de auditoría e investigación con divulgación progresiva | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-INT-001` | Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-INT-002` | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `INFO-INT-003` | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos | `bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md` |
+| ⬜ NO INICIADA | `DATA-DOM-001` | Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-002` | Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-003` | Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-004` | Definir capa semántica y registro canónico de métricas e indicadores | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-005` | Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-006` | Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-007` | Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-008` | Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-009` | Definir analítica de ventas, demanda, precios, promociones y canales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-010` | Definir analítica de inventario, abastecimiento, proveedores y logística | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-011` | Definir analítica de producción, rendimiento, capacidad, merma y calidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-012` | Definir analítica de servicio, clientes, fidelización, reputación y experiencia | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-013` | Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-014` | Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-015` | Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-016` | Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-DOM-017` | Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-AUTH-001` | Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-AUTH-002` | Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-AUTH-003` | Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-AUTH-004` | Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-001` | Diseñar inicio ejecutivo simple y accionable por rol | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-002` | Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-003` | Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-004` | Diseñar centro de calidad, frescura, conciliaciones y certificación | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-005` | Diseñar espacio de investigación de variaciones, anomalías y causas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-006` | Diseñar objetivos, metas, drivers, guardrails y acciones de mejora | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-007` | Diseñar reportes, exportaciones, suscripciones y snapshots versionados | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-UX-008` | Validar comprensión, tiempos y decisiones con usuarios reales | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-INT-001` | Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |

@@ -202,13 +202,13 @@ BLOQUE E5
 
 ### Distribución canónica de tareas derivadas de OPS-AUD-001
 
-| Responsabilidad | Tareas | Bloque |
-| --- | --- | --- |
-| Evidencia y línea base AS-IS | `OPS-ADM-001`, `OPS-GOV-001`, `OPS-ACT-001`, `OPS-PLAN-001` a `OPS-PLAN-004` | E1 |
-| Procesos transversales TO-BE | `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` | E2 |
-| Diseño productivo | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001` | FOGO, con salidas a NEXO, E4 y NUMERA |
-| Configuración comercial por sede | `OPS-POS-001` | PULSO |
-| Caso financiero de producción | `OPS-CST-001` | NUMERA |
+| Responsabilidad                  | Tareas                                                                       | Bloque                                |
+| -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------- |
+| Evidencia y línea base AS-IS     | `OPS-ADM-001`, `OPS-GOV-001`, `OPS-ACT-001`, `OPS-PLAN-001` a `OPS-PLAN-004` | E1                                    |
+| Procesos transversales TO-BE     | `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001`                                  | E2                                    |
+| Diseño productivo                | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001`                                  | FOGO, con salidas a NEXO, E4 y NUMERA |
+| Configuración comercial por sede | `OPS-POS-001`                                                                | PULSO                                 |
+| Caso financiero de producción    | `OPS-CST-001`                                                                | NUMERA                                |
 
 Una tarea derivada conserva su identificador transversal `OPS-*`, pero se
 materializa en el bloque que posee su resultado. El prefijo no determina por sí
@@ -219,36 +219,39 @@ dependencias contractuales, técnicas y operativas.
 
 ### Estructura de bloques del roadmap maestro
 
-| Bloque | Responsabilidad |
-| --- | --- |
-| A | Auditoría integral inicial de autorización |
-| B | Modelo definitivo de identidad y autorización |
-| C | Catálogo canónico de permisos |
-| D | Matrices, revisión contractual y datasets |
-| E | Contexto efectivo y decisión unificada |
-| E1 | Descubrimiento de operación, capacidades y cobertura |
-| E2 | Procesos, actores, pantallas y experiencia |
-| E3 | Arquitectura y gobierno integral de Supabase |
-| E4 | Colas, impresión, notificaciones y evidencia |
-| E5 | Paquetes de implementación, readiness, cutover e hypercare |
-| F | ANIMA |
-| G | VISO |
-| H | VENTO-SHELL como núcleo compartido |
-| H2 | SHELL como aplicación y hub |
-| I | Navegación, pantallas y autorización de vistas |
-| J | Acciones de servidor y seguridad real |
-| K | NEXO |
-| L | FOGO |
-| M | ORIGO |
-| N | PULSO |
-| O | NUMERA |
-| P | Dispositivos compartidos |
-| Q | Simulación estricta |
-| R | Implementación física y migraciones de Supabase |
-| S | Mensajes y experiencia de bloqueo |
-| T | Calidad, CI y despliegue |
-| U | Pruebas integrales |
-| V | PASS |
-| W | AURA |
-| X | Integraciones internas y externas |
-| Y | TALENTO — candidatos, selección y vinculación previa a ANIMA |
+| Bloque | Responsabilidad                                                           |
+| ------ | ------------------------------------------------------------------------- |
+| A      | Auditoría integral inicial de autorización                                |
+| B      | Modelo definitivo de identidad y autorización                             |
+| C      | Catálogo canónico de permisos                                             |
+| D      | Matrices, revisión contractual y datasets                                 |
+| E      | Contexto efectivo y decisión unificada                                    |
+| E1     | Descubrimiento de operación, capacidades y cobertura                      |
+| E2     | Procesos, actores, pantallas y experiencia                                |
+| E3     | Arquitectura y gobierno integral de Supabase                              |
+| E4     | Colas, impresión, notificaciones y evidencia                              |
+| E5     | Paquetes de implementación, readiness, cutover e hypercare                |
+| F      | ANIMA                                                                     |
+| G      | VISO                                                                      |
+| H      | VENTO-SHELL como núcleo compartido                                        |
+| H2     | SHELL como aplicación y hub                                               |
+| I      | Navegación, pantallas y autorización de vistas                            |
+| J      | Acciones de servidor y seguridad real                                     |
+| K      | NEXO                                                                      |
+| L      | FOGO                                                                      |
+| M      | ORIGO                                                                     |
+| N      | PULSO                                                                     |
+| O      | NUMERA                                                                    |
+| P      | Dispositivos compartidos                                                  |
+| Q      | Simulación estricta                                                       |
+| R      | Implementación física y migraciones de Supabase                           |
+| S      | Mensajes y experiencia de bloqueo                                         |
+| T      | Calidad, CI y despliegue                                                  |
+| U      | Pruebas integrales                                                        |
+| V      | PASS                                                                      |
+| W      | AURA                                                                      |
+| X      | Integraciones internas y externas                                         |
+| Y      | TALENTO — candidatos, selección y vinculación previa a ANIMA              |
+| Z      | Tecnología, dispositivos, redes, impresión, soporte y seguridad técnica   |
+| AA     | Gobierno de información, privacidad, documentos, conservación y auditoría |
+| AB     | Analítica, indicadores, calidad de datos y datos maestros                 |

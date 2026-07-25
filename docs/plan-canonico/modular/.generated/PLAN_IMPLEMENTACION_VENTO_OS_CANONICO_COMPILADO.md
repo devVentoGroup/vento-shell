@@ -17,31 +17,31 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1433** |
+| Fragmentos canónicos | **129** |
+| Tareas canónicas con marcador | **1518** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **197** |
+| Tareas aprobadas | **199** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1236** |
+| Tareas no iniciadas | **1319** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
-| Tarea actual | **CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría** |
+| Última tarea aprobada | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
+| Tarea actual | **CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
+| Siguiente tarea | **CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 72 de 96 aprobadas; CAP-SCOPE-016 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 74 de 96 aprobadas; CAP-SCOPE-018 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
-| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, respaldo y recuperación — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **72 DE 96 APROBADAS — ACTUAL CAP-SCOPE-016** |
+| BLOQUE E1 | **74 DE 96 APROBADAS — ACTUAL CAP-SCOPE-018** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
-        ↓
-TAREA ACTUAL
-CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
-        ↓
-SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
         ↓
+TAREA ACTUAL
+CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
+        ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 72 de 96 tareas aprobadas
+BLOQUE E1 — 74 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -903,13 +903,13 @@ BLOQUE E5
 
 ### Distribución canónica de tareas derivadas de OPS-AUD-001
 
-| Responsabilidad | Tareas | Bloque |
-| --- | --- | --- |
-| Evidencia y línea base AS-IS | `OPS-ADM-001`, `OPS-GOV-001`, `OPS-ACT-001`, `OPS-PLAN-001` a `OPS-PLAN-004` | E1 |
-| Procesos transversales TO-BE | `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` | E2 |
-| Diseño productivo | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001` | FOGO, con salidas a NEXO, E4 y NUMERA |
-| Configuración comercial por sede | `OPS-POS-001` | PULSO |
-| Caso financiero de producción | `OPS-CST-001` | NUMERA |
+| Responsabilidad                  | Tareas                                                                       | Bloque                                |
+| -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------- |
+| Evidencia y línea base AS-IS     | `OPS-ADM-001`, `OPS-GOV-001`, `OPS-ACT-001`, `OPS-PLAN-001` a `OPS-PLAN-004` | E1                                    |
+| Procesos transversales TO-BE     | `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001`                                  | E2                                    |
+| Diseño productivo                | `OPS-REC-001`, `OPS-PRD-001`, `OPS-TRZ-001`                                  | FOGO, con salidas a NEXO, E4 y NUMERA |
+| Configuración comercial por sede | `OPS-POS-001`                                                                | PULSO                                 |
+| Caso financiero de producción    | `OPS-CST-001`                                                                | NUMERA                                |
 
 Una tarea derivada conserva su identificador transversal `OPS-*`, pero se
 materializa en el bloque que posee su resultado. El prefijo no determina por sí
@@ -920,39 +920,42 @@ dependencias contractuales, técnicas y operativas.
 
 ### Estructura de bloques del roadmap maestro
 
-| Bloque | Responsabilidad |
-| --- | --- |
-| A | Auditoría integral inicial de autorización |
-| B | Modelo definitivo de identidad y autorización |
-| C | Catálogo canónico de permisos |
-| D | Matrices, revisión contractual y datasets |
-| E | Contexto efectivo y decisión unificada |
-| E1 | Descubrimiento de operación, capacidades y cobertura |
-| E2 | Procesos, actores, pantallas y experiencia |
-| E3 | Arquitectura y gobierno integral de Supabase |
-| E4 | Colas, impresión, notificaciones y evidencia |
-| E5 | Paquetes de implementación, readiness, cutover e hypercare |
-| F | ANIMA |
-| G | VISO |
-| H | VENTO-SHELL como núcleo compartido |
-| H2 | SHELL como aplicación y hub |
-| I | Navegación, pantallas y autorización de vistas |
-| J | Acciones de servidor y seguridad real |
-| K | NEXO |
-| L | FOGO |
-| M | ORIGO |
-| N | PULSO |
-| O | NUMERA |
-| P | Dispositivos compartidos |
-| Q | Simulación estricta |
-| R | Implementación física y migraciones de Supabase |
-| S | Mensajes y experiencia de bloqueo |
-| T | Calidad, CI y despliegue |
-| U | Pruebas integrales |
-| V | PASS |
-| W | AURA |
-| X | Integraciones internas y externas |
-| Y | TALENTO — candidatos, selección y vinculación previa a ANIMA |
+| Bloque | Responsabilidad                                                           |
+| ------ | ------------------------------------------------------------------------- |
+| A      | Auditoría integral inicial de autorización                                |
+| B      | Modelo definitivo de identidad y autorización                             |
+| C      | Catálogo canónico de permisos                                             |
+| D      | Matrices, revisión contractual y datasets                                 |
+| E      | Contexto efectivo y decisión unificada                                    |
+| E1     | Descubrimiento de operación, capacidades y cobertura                      |
+| E2     | Procesos, actores, pantallas y experiencia                                |
+| E3     | Arquitectura y gobierno integral de Supabase                              |
+| E4     | Colas, impresión, notificaciones y evidencia                              |
+| E5     | Paquetes de implementación, readiness, cutover e hypercare                |
+| F      | ANIMA                                                                     |
+| G      | VISO                                                                      |
+| H      | VENTO-SHELL como núcleo compartido                                        |
+| H2     | SHELL como aplicación y hub                                               |
+| I      | Navegación, pantallas y autorización de vistas                            |
+| J      | Acciones de servidor y seguridad real                                     |
+| K      | NEXO                                                                      |
+| L      | FOGO                                                                      |
+| M      | ORIGO                                                                     |
+| N      | PULSO                                                                     |
+| O      | NUMERA                                                                    |
+| P      | Dispositivos compartidos                                                  |
+| Q      | Simulación estricta                                                       |
+| R      | Implementación física y migraciones de Supabase                           |
+| S      | Mensajes y experiencia de bloqueo                                         |
+| T      | Calidad, CI y despliegue                                                  |
+| U      | Pruebas integrales                                                        |
+| V      | PASS                                                                      |
+| W      | AURA                                                                      |
+| X      | Integraciones internas y externas                                         |
+| Y      | TALENTO — candidatos, selección y vinculación previa a ANIMA              |
+| Z      | Tecnología, dispositivos, redes, impresión, soporte y seguridad técnica   |
+| AA     | Gobierno de información, privacidad, documentos, conservación y auditoría |
+| AB     | Analítica, indicadores, calidad de datos y datos maestros                 |
 ## BLOQUE A
 
 **Auditoría integral del ecosistema**
@@ -183421,6 +183424,7 @@ Dominios iniciales:
 - `ORIGO`;
 - `PULSO`;
 - `NUMERA`;
+- `DATA`;
 - `PASS`;
 - `TALENTO`;
 - `INTEGRATION`;
@@ -183462,32 +183466,33 @@ Dominios iniciales:
 
 | Métrica                           |       Resultado |
 | --------------------------------- | --------------: |
-| Requisitos vigentes               |         **127** |
-| Dominios con requisitos           |          **15** |
-| Filas con catorce columnas        |  **127 de 127** |
+| Requisitos vigentes               |         **139** |
+| Dominios con requisitos           |          **16** |
+| Filas con catorce columnas        |  **139 de 139** |
 | Identificadores duplicados        |           **0** |
 | Relaciones `TREQ-*` no resolubles |           **0** |
-| Última tarea incorporada          | `CAP-SCOPE-015` |
-| Fecha de normalización            |    `2026-07-24` |
+| Última tarea incorporada          | `CAP-SCOPE-017` |
+| Fecha de normalización            |    `2026-07-25` |
 
 Distribución vigente:
 
 | Dominio       | Rango                                           | Cantidad |
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-010`             |       10 |
-| `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-012`       |       12 |
-| `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-004`             |        4 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-011`             |       11 |
+| `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-013`       |       13 |
+| `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-005`             |        5 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-003`               |        3 |
-| `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-002`               |        2 |
+| `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-003`               |        3 |
 | `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-019`               |       19 |
 | `FOGO`        | `TREQ-FOGO-001` a `TREQ-FOGO-004`               |        4 |
 | `ORIGO`       | `TREQ-ORIGO-001` a `TREQ-ORIGO-005`             |        5 |
 | `PULSO`       | `TREQ-PULSO-001` a `TREQ-PULSO-007`             |        7 |
 | `NUMERA`      | `TREQ-NUMERA-001` a `TREQ-NUMERA-004`           |        4 |
-| `PASS`        | `TREQ-PASS-001` a `TREQ-PASS-011`               |       11 |
+| `DATA`        | `TREQ-DATA-001` a `TREQ-DATA-005`               |        5 |
+| `PASS`        | `TREQ-PASS-001` a `TREQ-PASS-012`               |       12 |
 | `TALENTO`     | `TREQ-TALENTO-001`                              |        1 |
-| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-020` |       20 |
+| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-022` |       22 |
 | `UX`          | `TREQ-UX-001` a `TREQ-UX-007`                   |        7 |
 
 ### Procedimiento obligatorio de actualización
@@ -183541,32 +183546,35 @@ Distribución vigente:
 | `TREQ-SHELL-009` | `SHELL` | Cada ambiente deberá identificar de forma verificable repositorio, rama o commit, superficie desplegada, configuración, migraciones, funciones y datos de prueba activos. Proyectos sin despliegue, ramas alternativas, demos, sandboxes, scripts de limpieza y objetos solo locales o remotos no podrán presentarse como capacidad productiva ni afectar datos reales sin clasificación y aislamiento explícitos. | `CODE-AUD-001` / `H-CODE-001-003` a `H-CODE-001-008`; `CODE-AUD-005` / `H-CODE-005-006` a `H-CODE-005-013`; `CODE-AUD-007` / `H-CODE-007-008` a `H-CODE-007-013` | Despliegues no reproducibles, ejecución accidental de scripts, datos demo en producción y conclusiones falsas sobre disponibilidad / alta                                    | contractual + configuración + integración + seguridad + regresión / automatizada con revisión controlada | `SUPA-ARC-024`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-TRANS-013`; `AUTH-DB-028`; `SHELL-CI-018`                        | BLOQUE E3, BLOQUE T y readiness de cada paquete E5                    | Todos los repositorios y ambientes local, CI, staging y producción                                                                      | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | `TREQ-SHELL-001`; `TREQ-SHELL-004`; `TREQ-SUPABASE-010`                             |
 
 | `TREQ-SHELL-010` | `SHELL` | La administración tecnológica de cuentas, aplicaciones, endpoints y dispositivos deberá ejecutar exclusivamente decisiones de identidad y autorización válidas. Cuenta, permiso, credencial, secreto, asiento de licencia, endpoint, dispositivo compartido y sesión serán objetos separados. Alta, cambio, recuperación, acceso privilegiado, soporte remoto, proveedor, suspensión y baja conservarán solicitud, autoridad, alcance, vigencia, MFA cuando aplique, actor, evidencia y cierre. Un técnico no podrá concederse a sí mismo acceso ni ampliar al trabajador las capacidades máximas del dispositivo. La postura del endpoint, versión, cifrado, bloqueo, aplicaciones, parches, última comprobación y revocación serán visibles sin exponer secretos. | `CAP-SCOPE-015`; `CAP-15.01`; `CAP-15.02`; `CAP-15.05`; `H-CAP-SCOPE-015-005` a `H-CAP-SCOPE-015-011`; `H-CAP-SCOPE-015-019` a `H-CAP-SCOPE-015-023`; `H-CAP-SCOPE-015-031`; `H-CAP-SCOPE-015-032` | acceso no autorizado, cuenta huérfana, privilegio permanente, licencia sin dueño, dispositivo comprometido, soporte remoto opaco y fuga de secretos / crítica | contractual + autorización + identidad + endpoint + seguridad + sesión + auditoría + E2E + regresión / automatizada con validación administrativa | `TI-DOM-001` a `TI-DOM-003`; `TI-DOM-006`; `TI-DOM-009`; `TI-AUTH-001` a `TI-AUTH-004`; `TI-UX-003`; `TI-UX-005`; `TI-INT-002`; `TI-INT-003`; `AUTH-DEV-001` a `AUTH-DEV-016`; bloques AUTH/SHELL | diseño E2; contratos E3; controles E4; paquetes E5 de identidad y endpoints; certificación U | `vento-shell`, ANIMA, VISO y endpoints controlados / local, CI, staging y laboratorio de dispositivos | `IDENTIFICADO` | Pendiente | Pendiente | identidad y permisos canónicos existentes; dispositivo compartido parcial; ciclo tecnológico integral no comprobado | `TREQ-AUTH-001`; `TREQ-AUTH-002`; `TREQ-AUTH-004`; `TREQ-AUTH-007`; `TREQ-AUTH-009`; `TREQ-SHELL-002`; `TREQ-SHELL-004`; `TREQ-NEXO-019`; `TREQ-VISO-002`; `TREQ-INTEGRATION-020` |
+| `TREQ-SHELL-011` | `SHELL` | Toda consulta, búsqueda, descarga, impresión, exportación, compartición o administración de información deberá resolver identidad, actor efectivo, finalidad, clasificación, recurso, relación, territorio, estado, destinatario y acción exacta. La mera existencia de una URL firmada, archivo conocido, índice de búsqueda, rol genérico o acceso a una aplicación no concederá derecho a conocer ni divulgar. Los resultados de búsqueda y mensajes de error no revelarán títulos, nombres, fragmentos o metadatos sensibles de recursos no autorizados. Accesos extraordinarios serán mínimos, temporales, justificados y auditados. | `CAP-SCOPE-016`; `CAP-16.01`; `CAP-16.03` a `CAP-16.06`; `CAP-16.11`; `H-CAP-SCOPE-016-001` a `H-CAP-SCOPE-016-006`; `H-CAP-SCOPE-016-010`; `H-CAP-SCOPE-016-023` a `H-CAP-SCOPE-016-027` | exposición por búsqueda, URL, exportación o rol; divulgación sin finalidad; acceso territorial o relacional indebido; enumeración de metadatos / crítica | autorización + privacidad + contractual + búsqueda + exportación + seguridad + regresión / automatizada adversarial | `INFO-DOM-001` a `INFO-DOM-005`; `INFO-DOM-008`; `INFO-DOM-010`; `INFO-DOM-013`; `INFO-AUTH-001` a `INFO-AUTH-004`; `INFO-UX-002`; `INFO-UX-006`; bloques AUTH/SHELL | diseño E2; contratos y RLS E3; evidencia E4; paquetes E5; certificación U | `vento-shell`, aplicaciones Vento OS, Supabase y Storage / CI, staging y ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | autorización canónica y masking parciales; gobierno transversal de información no implementado | `TREQ-AUTH-001`; `TREQ-AUTH-006`; `TREQ-AUTH-013`; `TREQ-AUTH-015`; `TREQ-SUPABASE-013`; `TREQ-INTEGRATION-021` |
 
 #### SUPABASE
 
-| ID                  | Dominio    | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Origen                                                                                                                                                                                                                   | Riesgo / prioridad                                                                                                                                                                                         | Tipo / modalidad                                                                                                                                           | Tarea responsable                                                                                                                                                                                                                                                                                                                            | Paquete                                                                                                                                            | Repositorio / ambiente                                                                                                                                                                   | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                | Relación                                                                                                               |
-| ------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-SUPABASE-001` | `SUPABASE` | Todo wrapper, alias, columna, vista o fallback legacy todavía activo deberá tener propietario, consumidores, condición de activación, evidencia de uso, prueba de paridad, estrategia de rollback y puerta explícita de retiro antes de modificar o eliminar el contrato heredado.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-013` / `H-CODE-013-003`, `H-CODE-013-005`, `H-CODE-013-007`, `H-CODE-013-011` y `H-CODE-013-013`                                                                                                               | Eliminación prematura de compatibilidad, pérdida o interpretación incorrecta de datos, consumidores rotos, transiciones irreversibles y permanencia indefinida de fuentes competidoras / crítica           | contractual + base de datos + migración + integración + regresión / híbrida                                                                                | `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`                                                                                                                                                                                                                                                           | Pendiente de asignación en el roadmap ejecutable de migraciones y en E5                                                                            | `vento-shell` y todos los repositorios consumidores / local, CI, staging y Supabase remoto pendientes                                                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | Relacionado con `TREQ-AUTH-002`, `TREQ-NEXO-007` y `TREQ-PASS-005`                                                     |
-| `TREQ-SUPABASE-002` | `SUPABASE` | Toda operación de inventario que afecte ledger, stock por sede, stock por LOC, stock por posición, costos o eventos derivados deberá ejecutarse atómicamente o mediante un mecanismo idempotente y reconciliable; un fallo intermedio no podrá dejar representaciones mutuamente inconsistentes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-014` / `H-CODE-014-009`                                                                                                                                                                                        | Movimientos sin stock equivalente, proyecciones divergentes, reintentos duplicados, costos inconsistentes y pérdida de capacidad para reconstruir la existencia real / crítica                             | base de datos + RPC + concurrencia + idempotencia + integración + regresión / automatizada                                                                 | `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`                                                                                                                                                                                                                                                     | Pendiente de asignación en E3, roadmap ejecutable de migraciones y E5                                                                              | `vento-shell` y `vento-nexo` / Supabase local, CI, staging y remoto pendientes                                                                                                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `SUPA-AUD-022`; `SUPA-AUD-023`; `CODE-AUD-018`; relacionado con `TREQ-SUPABASE-001`                                    |
-| `TREQ-SUPABASE-003` | `SUPABASE` | Ninguna tabla, vista, función, RPC, trigger, política, publicación o bucket podrá eliminarse o declararse operativo sin un mapa verificable de propietario, consumidores actuales, consumidores históricos, dependencias SQL, consumidores externos, datos existentes, reemplazo, estrategia de rollback y puerta de retiro.                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-015` / `H-CODE-015-005`, `H-CODE-015-011`, `H-CODE-015-012`, `H-CODE-015-016` y `H-CODE-015-017`                                                                                                               | Eliminación de objetos todavía utilizados, conservación indefinida de infraestructura sin proceso, datos huérfanos, consumidores rotos y drift entre repositorio, prototipos históricos y remoto / crítica | contractual + base de datos + migración + integración + regresión / híbrida                                                                                | `SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales`                                                                                                                                                                                                                           | Pendiente de asignación en E3, roadmap ejecutable de transición y E5                                                                               | `vento-shell`, `vento-platform` y repositorios consumidores / Supabase local, CI, staging, remoto e integraciones externas pendientes                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `SUPA-AUD-023`; relacionado con `TREQ-SUPABASE-001`, `TREQ-SUPABASE-002`, `TREQ-PULSO-001` y `TREQ-NEXO-004`           |
-| `TREQ-SUPABASE-004` | `SUPABASE` | Todo archivo o metadato documental sensible deberá residir en almacenamiento privado y solo podrá consultarse mediante permiso explícito, relación con el actor o recurso y acceso temporal auditable; pertenecer a la misma sede o conocer una ruta no deberá conceder acceso.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `CODE-AUD-017` / `H-CODE-017-007`, `H-CODE-017-008`                                                                                                                                                                      | Exposición de documentos laborales, descarga anónima, acceso lateral entre trabajadores y ausencia de trazabilidad / crítica                                                                               | seguridad + privacidad + Storage + RLS + integración + regresión / automatizada con revisión manual                                                        | `EVID-ARC-003 — Definir clasificación de sensibilidad`; `EVID-ARC-007 — Definir acceso temporal y URLs firmadas`; `EVID-ARC-008 — Definir auditoría de consulta y modificación`; `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`                                                                              | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-anima`, `vento-viso`, `vento-shell`, Storage VENTO / CI, staging y producción no mutante                                                                                          | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de `public.documents` y bucket `documents`                                                                                                                                     | `TREQ-AUTH-006`, `TREQ-SUPABASE-003`                                                                                   |
-| `TREQ-SUPABASE-005` | `SUPABASE` | Toda vista, función o RPC expuesta al Data API deberá aplicar mínimo privilegio: `security_invoker` cuando corresponda, `search_path` fijo, grants mínimos y autorización interna por actor, permiso y alcance; precios internos, configuración administrativa y elegibilidad de actores no podrán quedar disponibles para `anon` sin contrato público aprobado.                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-017` / `H-CODE-017-009`, `H-CODE-017-010`                                                                                                                                                                      | Exposición de configuración, identidad de dispositivos, precios internos y metadatos empresariales; bypass de RLS por propietario / crítica                                                                | seguridad + RLS + RPC + contractual + regresión / automatizada                                                                                             | `SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API`; `SUPA-AUD-007 — Inventariar funciones SECURITY DEFINER y SECURITY INVOKER`; `SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon` | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-shell` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                     | `IDENTIFICADO` | Pendiente | Pendiente        | Vistas administrativas y RPC ejecutables por `anon`                                                                                                                                      | `TREQ-SUPABASE-003`, `TREQ-AUTH-003`                                                                                   |
-| `TREQ-SUPABASE-006` | `SUPABASE` | Toda Edge Function con `verify_jwt=false` deberá declarar una razón aprobada y aplicar un control propio obligatorio y fail-closed; la ausencia de secreto, firma, token o identidad deberá bloquear la ejecución antes de crear un cliente `service_role` o leer y mutar datos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-017` / `H-CODE-017-015`, `H-CODE-017-016`, revisión de las doce funciones sin JWT                                                                                                                              | Ejecución anónima de jobs privilegiados, envío masivo, lectura transversal y mutaciones con service role / crítica                                                                                         | seguridad + Edge Function + contractual + integración + regresión / automatizada                                                                           | `SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones`; `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon`                                               | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-shell`, Edge Functions VENTO / CI, staging y producción no mutante                                                                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | `document-alerts`, `shift-runtime-processor` y matriz de funciones sin JWT                                                                                                               | `TREQ-INTEGRATION-001`, `TREQ-SUPABASE-003`                                                                            |
-| `TREQ-SUPABASE-007` | `SUPABASE` | Para el mismo actor, contexto, permiso, recurso y territorio, el evaluador canónico, las RPC sensibles y las políticas RLS deberán producir decisiones equivalentes. Las pruebas incluirán casos permitidos y denegados, acceso directo, manipulación de parámetros y diferencias de propietario, `security_invoker` o `security_definer`.                                                                                                                                                                                                                                                                                                                                                                                                                                       | `AUTH-CTX-025`; `AUTH-CTX-026`; `AUTH-CTX-030`                                                                                                                                                                           | Una capa permite lo que otra deniega, bypass de RLS o RPC y acceso directo con resultados distintos / crítica                                                                                              | RLS + RPC + seguridad + contractual + integración + regresión / automatizada                                                                               | `AUTH-DB-027`; `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-021`; `AUTH-QA-020` a `AUTH-QA-024`                                                                                                                                                                                                                                                    | BLOQUE R, paquetes E5 consumidores y certificación del BLOQUE U                                                                                    | `vento-shell`, Supabase local, CI y staging                                                                                                                                              | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-AUTH-004`; `TREQ-AUTH-013`; `TREQ-SUPABASE-005`                                                                  |
-| `TREQ-SUPABASE-008` | `SUPABASE` | Toda migración deberá superar reconstrucción limpia, upgrade desde la versión soportada, validación de datos, constraints, RLS, RPC, tipos, rendimiento, backup, restauración y rollback. El drift entre local, staging y producción deberá ser nulo o aprobado y ningún objeto manual podrá omitirse de la evidencia.                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `AUTH-CTX-030`; `CODE-AUD-005` / `H-CODE-005-006`, `H-CODE-005-010` a `H-CODE-005-012`; `CODE-AUD-006` / `H-CODE-006-005`; `CODE-AUD-007` / `H-CODE-007-008`, `H-CODE-007-009`                                           | Entornos irreproducibles, pérdida de datos, rollback inválido, drift y producción distinta del repositorio / crítica                                                                                       | migración + base de datos + RLS + RPC + rollback + regresión / automatizada con restauración controlada                                                    | `AUTH-DB-015`; `AUTH-DB-027` a `AUTH-DB-031`; `SUPA-TRANS-009`; `SUPA-TRANS-011`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                         | BLOQUE E3, BLOQUE R y puerta previa a cada paquete de migración                                                                                    | `vento-shell` / Supabase local, CI, staging, producción no mutante y backups                                                                                                             | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-SHELL-007`; `TREQ-SHELL-009`; `TREQ-SUPABASE-001`; `TREQ-SUPABASE-003`                                           |
-| `TREQ-SUPABASE-009` | `SUPABASE` | Toda suscripción Realtime deberá demostrar que la tabla o canal está publicado, que el consumidor recibe eventos autorizados, que no expone filas fuera de alcance y que dispone de recuperación o refresco cuando pierde eventos. No se podrá depender de Postgres Changes sobre vistas o relaciones no servidas por la publicación.                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-006` / `H-CODE-006-011` a `H-CODE-006-013`                                                                                                                                                                     | Pantallas estancadas, eventos perdidos, exposición transversal y falsa percepción de tiempo real / alta                                                                                                    | Realtime + RLS + integración + resiliencia + E2E + regresión / automatizada                                                                                | `SUPA-AUD-013`; `SUPA-ARC-019`; `AUTH-DB-023`; `INT-APP-008`; `INT-APP-009`                                                                                                                                                                                                                                                                  | BLOQUE E3, infraestructura transversal y paquetes E5 consumidores de Realtime                                                                      | `vento-shell`, aplicaciones consumidoras, Supabase local, CI y staging                                                                                                                   | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-INTEGRATION-003`; `TREQ-SUPABASE-007`; `TREQ-UX-006`                                                             |
-| `TREQ-SUPABASE-010` | `SUPABASE` | Toda Edge Function, webhook, cron, trigger o automatización activa deberá tener definición versionada en `vento-shell`, configuración de autenticación, disparador, propietario, secreto o principal técnico, observabilidad, política de reintento y evidencia de paridad con el remoto. Los objetos solo locales o solo remotos deberán clasificarse y no podrán quedar activos indefinidamente.                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-005` / `H-CODE-005-006` a `H-CODE-005-016`; `CODE-AUD-006` / `H-CODE-006-014` a `H-CODE-006-017`                                                                                                               | Jobs privilegiados no gobernados, ejecuciones perdidas o duplicadas, configuración divergente y automatizaciones sin propietario / crítica                                                                 | Edge Function + webhook + cron + base de datos + seguridad + integración + regresión / automatizada                                                        | `SUPA-AUD-014` a `SUPA-AUD-017`; `SUPA-ARC-020`; `AUTH-DB-024`; `AUTH-DB-031`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                            | BLOQUE E3, BLOQUE R y servicios transversales antes de producción                                                                                  | `vento-shell`, Edge Functions, `pg_cron`, triggers, CI y staging                                                                                                                         | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-SUPABASE-006`; `TREQ-SHELL-009`; `TREQ-INTEGRATION-004`                                                          |
-| `TREQ-SUPABASE-011` | `SUPABASE` | La estructura organizacional deberá distinguir de forma verificable organización, titular jurídico, marca, establecimiento, línea de negocio, instalación, sede operativa, área, zona, estación, canal y punto externo. Cada elemento tendrá identificador y código estables, tipo, estado, vigencia, propietario y relaciones tipadas válidas. Ningún nombre, dirección compartida, `site_type`, área agregada o metadato de aplicación podrá fusionar conceptos, conceder capacidades o crear una fuente competidora. Los elementos referenciados no podrán eliminarse destructivamente y los cambios de titularidad, ubicación, cierre o reemplazo conservarán historia y auditoría.                                                                                          | `CAP-SCOPE-001`; `OPS-AUD-001`; `OPS-ADM-001`; `OPS-GOV-001`; `CAP-MAP-003`; `CAP-MAP-008`; `CODE-AUD-006`; `CODE-AUD-019`; `CODE-AUD-020`                                                                               | atribución jurídica incorrecta, acceso territorial indebido, inventario o costos imputados a la unidad equivocada, duplicación de sedes o áreas y pérdida histórica / crítica                              | contractual + base de datos + migración + integridad referencial + RLS + integración + E2E + regresión / automatizada con validación documental controlada | `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `VISO-CORE-004` a `VISO-CORE-006`; `VISO-AUTH-013` a `VISO-AUTH-020`; `VISO-UX-013` a `VISO-UX-020`; `AUTH-QA-029`; `UX-QA-023`                                                                                                                         | arquitectura y transición E3 del maestro organizacional; paquete administrativo VISO en E5; certificación del BLOQUE U                             | `vento-shell`, `vento-viso` y todos los consumidores / Supabase local, CI, staging y migración controlada de datos reales                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-001`; tablas actuales `sites` y `areas`; metadatos comerciales distribuidos; configuraciones de capacidades; validaciones físicas y hallazgos de implementación | `TREQ-AUTH-009`; `TREQ-VISO-001`; `TREQ-INTEGRATION-006`; `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-SUPABASE-003`        |
-| `TREQ-SUPABASE-012` | `SUPABASE` | El modelo canónico deberá mantener separados producto maestro, variante, rol, presentación, unidad, perfil de medición, clasificación, ingrediente, receta, versión, especificación, ítem de menú y oferta mediante identificadores estables, relaciones tipadas, constraints y vigencias verificables. Ninguna aplicación podrá fusionar estos conceptos por nombre, categoría, proveedor, sede o código externo. El retiro será no destructivo y toda venta, compra, movimiento, lote, costo, documento o mapeo histórico conservará la identidad y versión originalmente utilizadas. Las migraciones deberán detectar duplicados semánticos, referencias huérfanas, conversiones incompatibles y ciclos de composición antes de imponer constraints o retirar objetos legacy. | `CAP-SCOPE-004`; `CAP-04.01` a `CAP-04.04`; `CAP-04.09`; `CAP-04.10`; `H-CAP-SCOPE-004-001` a `H-CAP-SCOPE-004-003`; `H-CAP-SCOPE-004-011`; `H-CAP-SCOPE-004-012`; `H-CAP-SCOPE-004-015`; `BKL-FUNC-004`; `BKL-NEXO-006` | productos o recetas duplicados, referencias históricas rotas, conversiones incompatibles, menús vinculados al elemento incorrecto, pérdida de trazabilidad y migraciones destructivas / crítica            | contractual + base de datos + migración + integridad referencial + versionado + regresión / automatizada con validación controlada de datos                | `SUPA-AUD-019`; `DATA-NORM-AUD-004`; `SUPA-TRANS-005`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SHELL-CON-001`; `SHELL-CON-016`; `READY-GATE-005`                                                                                                                                                                                                | arquitectura y transición E3 del maestro de producto y conocimiento; contratos compartidos; paquetes E5 de NEXO, FOGO y PULSO; puerta de readiness | `vento-shell`, `vento-nexo`, `vento-fogo`, `vento-pulso`, `vento-pass`, `vento-origo`, `vento-numera`, `vento-viso` / Supabase local, CI, staging y migración controlada de datos reales | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-004`; catálogo y recetas actuales; hallazgos de perfiles, unidades y fuentes competidoras; matrices `MAP-IMPL-CAP-001` y `BKL-REPO-001`                         | `TREQ-NEXO-008`; `TREQ-NEXO-010`; `TREQ-SUPABASE-003`; `TREQ-INTEGRATION-006`; `TREQ-FOGO-002`; `TREQ-INTEGRATION-009` |
+| ID                  | Dominio    | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Origen                                                                                                                                                                                                                   | Riesgo / prioridad                                                                                                                                                                                         | Tipo / modalidad                                                                                                                                           | Tarea responsable                                                                                                                                                                                                                                                                                                                            | Paquete                                                                                                                                            | Repositorio / ambiente                                                                                                                                                                   | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                | Relación                                                                                                                               |
+| ------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-SUPABASE-001` | `SUPABASE` | Todo wrapper, alias, columna, vista o fallback legacy todavía activo deberá tener propietario, consumidores, condición de activación, evidencia de uso, prueba de paridad, estrategia de rollback y puerta explícita de retiro antes de modificar o eliminar el contrato heredado.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-013` / `H-CODE-013-003`, `H-CODE-013-005`, `H-CODE-013-007`, `H-CODE-013-011` y `H-CODE-013-013`                                                                                                               | Eliminación prematura de compatibilidad, pérdida o interpretación incorrecta de datos, consumidores rotos, transiciones irreversibles y permanencia indefinida de fuentes competidoras / crítica           | contractual + base de datos + migración + integración + regresión / híbrida                                                                                | `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`                                                                                                                                                                                                                                                           | Pendiente de asignación en el roadmap ejecutable de migraciones y en E5                                                                            | `vento-shell` y todos los repositorios consumidores / local, CI, staging y Supabase remoto pendientes                                                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | Relacionado con `TREQ-AUTH-002`, `TREQ-NEXO-007` y `TREQ-PASS-005`                                                                     |
+| `TREQ-SUPABASE-002` | `SUPABASE` | Toda operación de inventario que afecte ledger, stock por sede, stock por LOC, stock por posición, costos o eventos derivados deberá ejecutarse atómicamente o mediante un mecanismo idempotente y reconciliable; un fallo intermedio no podrá dejar representaciones mutuamente inconsistentes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-014` / `H-CODE-014-009`                                                                                                                                                                                        | Movimientos sin stock equivalente, proyecciones divergentes, reintentos duplicados, costos inconsistentes y pérdida de capacidad para reconstruir la existencia real / crítica                             | base de datos + RPC + concurrencia + idempotencia + integración + regresión / automatizada                                                                 | `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`                                                                                                                                                                                                                                                     | Pendiente de asignación en E3, roadmap ejecutable de migraciones y E5                                                                              | `vento-shell` y `vento-nexo` / Supabase local, CI, staging y remoto pendientes                                                                                                           | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `SUPA-AUD-022`; `SUPA-AUD-023`; `CODE-AUD-018`; relacionado con `TREQ-SUPABASE-001`                                                    |
+| `TREQ-SUPABASE-003` | `SUPABASE` | Ninguna tabla, vista, función, RPC, trigger, política, publicación o bucket podrá eliminarse o declararse operativo sin un mapa verificable de propietario, consumidores actuales, consumidores históricos, dependencias SQL, consumidores externos, datos existentes, reemplazo, estrategia de rollback y puerta de retiro.                                                                                                                                                                                                                                                                                                                                                                                                                                                     | `CODE-AUD-015` / `H-CODE-015-005`, `H-CODE-015-011`, `H-CODE-015-012`, `H-CODE-015-016` y `H-CODE-015-017`                                                                                                               | Eliminación de objetos todavía utilizados, conservación indefinida de infraestructura sin proceso, datos huérfanos, consumidores rotos y drift entre repositorio, prototipos históricos y remoto / crítica | contractual + base de datos + migración + integración + regresión / híbrida                                                                                | `SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales`                                                                                                                                                                                                                           | Pendiente de asignación en E3, roadmap ejecutable de transición y E5                                                                               | `vento-shell`, `vento-platform` y repositorios consumidores / Supabase local, CI, staging, remoto e integraciones externas pendientes                                                    | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `SUPA-AUD-023`; relacionado con `TREQ-SUPABASE-001`, `TREQ-SUPABASE-002`, `TREQ-PULSO-001` y `TREQ-NEXO-004`                           |
+| `TREQ-SUPABASE-004` | `SUPABASE` | Todo archivo o metadato documental sensible deberá residir en almacenamiento privado y solo podrá consultarse mediante permiso explícito, relación con el actor o recurso y acceso temporal auditable; pertenecer a la misma sede o conocer una ruta no deberá conceder acceso.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | `CODE-AUD-017` / `H-CODE-017-007`, `H-CODE-017-008`                                                                                                                                                                      | Exposición de documentos laborales, descarga anónima, acceso lateral entre trabajadores y ausencia de trazabilidad / crítica                                                                               | seguridad + privacidad + Storage + RLS + integración + regresión / automatizada con revisión manual                                                        | `EVID-ARC-003 — Definir clasificación de sensibilidad`; `EVID-ARC-007 — Definir acceso temporal y URLs firmadas`; `EVID-ARC-008 — Definir auditoría de consulta y modificación`; `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`                                                                              | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-anima`, `vento-viso`, `vento-shell`, Storage VENTO / CI, staging y producción no mutante                                                                                          | `IDENTIFICADO` | Pendiente | Pendiente        | Políticas de `public.documents` y bucket `documents`                                                                                                                                     | `TREQ-AUTH-006`, `TREQ-SUPABASE-003`                                                                                                   |
+| `TREQ-SUPABASE-005` | `SUPABASE` | Toda vista, función o RPC expuesta al Data API deberá aplicar mínimo privilegio: `security_invoker` cuando corresponda, `search_path` fijo, grants mínimos y autorización interna por actor, permiso y alcance; precios internos, configuración administrativa y elegibilidad de actores no podrán quedar disponibles para `anon` sin contrato público aprobado.                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-017` / `H-CODE-017-009`, `H-CODE-017-010`                                                                                                                                                                      | Exposición de configuración, identidad de dispositivos, precios internos y metadatos empresariales; bypass de RLS por propietario / crítica                                                                | seguridad + RLS + RPC + contractual + regresión / automatizada                                                                                             | `SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API`; `SUPA-AUD-007 — Inventariar funciones SECURITY DEFINER y SECURITY INVOKER`; `SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon` | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-shell` y Supabase VENTO / CI, staging y producción no mutante                                                                                                                     | `IDENTIFICADO` | Pendiente | Pendiente        | Vistas administrativas y RPC ejecutables por `anon`                                                                                                                                      | `TREQ-SUPABASE-003`, `TREQ-AUTH-003`                                                                                                   |
+| `TREQ-SUPABASE-006` | `SUPABASE` | Toda Edge Function con `verify_jwt=false` deberá declarar una razón aprobada y aplicar un control propio obligatorio y fail-closed; la ausencia de secreto, firma, token o identidad deberá bloquear la ejecución antes de crear un cliente `service_role` o leer y mutar datos.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `CODE-AUD-017` / `H-CODE-017-015`, `H-CODE-017-016`, revisión de las doce funciones sin JWT                                                                                                                              | Ejecución anónima de jobs privilegiados, envío masivo, lectura transversal y mutaciones con service role / crítica                                                                                         | seguridad + Edge Function + contractual + integración + regresión / automatizada                                                                           | `SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones`; `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`; `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`; `AUTH-DB-005 — Revocar grants innecesarios de anon`                                               | Pendiente de asignación prioritaria en E5                                                                                                          | `vento-shell`, Edge Functions VENTO / CI, staging y producción no mutante                                                                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | `document-alerts`, `shift-runtime-processor` y matriz de funciones sin JWT                                                                                                               | `TREQ-INTEGRATION-001`, `TREQ-SUPABASE-003`                                                                                            |
+| `TREQ-SUPABASE-007` | `SUPABASE` | Para el mismo actor, contexto, permiso, recurso y territorio, el evaluador canónico, las RPC sensibles y las políticas RLS deberán producir decisiones equivalentes. Las pruebas incluirán casos permitidos y denegados, acceso directo, manipulación de parámetros y diferencias de propietario, `security_invoker` o `security_definer`.                                                                                                                                                                                                                                                                                                                                                                                                                                       | `AUTH-CTX-025`; `AUTH-CTX-026`; `AUTH-CTX-030`                                                                                                                                                                           | Una capa permite lo que otra deniega, bypass de RLS o RPC y acceso directo con resultados distintos / crítica                                                                                              | RLS + RPC + seguridad + contractual + integración + regresión / automatizada                                                                               | `AUTH-DB-027`; `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-021`; `AUTH-QA-020` a `AUTH-QA-024`                                                                                                                                                                                                                                                    | BLOQUE R, paquetes E5 consumidores y certificación del BLOQUE U                                                                                    | `vento-shell`, Supabase local, CI y staging                                                                                                                                              | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-AUTH-004`; `TREQ-AUTH-013`; `TREQ-SUPABASE-005`                                                                                  |
+| `TREQ-SUPABASE-008` | `SUPABASE` | Toda migración deberá superar reconstrucción limpia, upgrade desde la versión soportada, validación de datos, constraints, RLS, RPC, tipos, rendimiento, backup, restauración y rollback. El drift entre local, staging y producción deberá ser nulo o aprobado y ningún objeto manual podrá omitirse de la evidencia.                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `AUTH-CTX-030`; `CODE-AUD-005` / `H-CODE-005-006`, `H-CODE-005-010` a `H-CODE-005-012`; `CODE-AUD-006` / `H-CODE-006-005`; `CODE-AUD-007` / `H-CODE-007-008`, `H-CODE-007-009`                                           | Entornos irreproducibles, pérdida de datos, rollback inválido, drift y producción distinta del repositorio / crítica                                                                                       | migración + base de datos + RLS + RPC + rollback + regresión / automatizada con restauración controlada                                                    | `AUTH-DB-015`; `AUTH-DB-027` a `AUTH-DB-031`; `SUPA-TRANS-009`; `SUPA-TRANS-011`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                         | BLOQUE E3, BLOQUE R y puerta previa a cada paquete de migración                                                                                    | `vento-shell` / Supabase local, CI, staging, producción no mutante y backups                                                                                                             | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-SHELL-007`; `TREQ-SHELL-009`; `TREQ-SUPABASE-001`; `TREQ-SUPABASE-003`                                                           |
+| `TREQ-SUPABASE-009` | `SUPABASE` | Toda suscripción Realtime deberá demostrar que la tabla o canal está publicado, que el consumidor recibe eventos autorizados, que no expone filas fuera de alcance y que dispone de recuperación o refresco cuando pierde eventos. No se podrá depender de Postgres Changes sobre vistas o relaciones no servidas por la publicación.                                                                                                                                                                                                                                                                                                                                                                                                                                            | `CODE-AUD-006` / `H-CODE-006-011` a `H-CODE-006-013`                                                                                                                                                                     | Pantallas estancadas, eventos perdidos, exposición transversal y falsa percepción de tiempo real / alta                                                                                                    | Realtime + RLS + integración + resiliencia + E2E + regresión / automatizada                                                                                | `SUPA-AUD-013`; `SUPA-ARC-019`; `AUTH-DB-023`; `INT-APP-008`; `INT-APP-009`                                                                                                                                                                                                                                                                  | BLOQUE E3, infraestructura transversal y paquetes E5 consumidores de Realtime                                                                      | `vento-shell`, aplicaciones consumidoras, Supabase local, CI y staging                                                                                                                   | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-INTEGRATION-003`; `TREQ-SUPABASE-007`; `TREQ-UX-006`                                                                             |
+| `TREQ-SUPABASE-010` | `SUPABASE` | Toda Edge Function, webhook, cron, trigger o automatización activa deberá tener definición versionada en `vento-shell`, configuración de autenticación, disparador, propietario, secreto o principal técnico, observabilidad, política de reintento y evidencia de paridad con el remoto. Los objetos solo locales o solo remotos deberán clasificarse y no podrán quedar activos indefinidamente.                                                                                                                                                                                                                                                                                                                                                                               | `CODE-AUD-005` / `H-CODE-005-006` a `H-CODE-005-016`; `CODE-AUD-006` / `H-CODE-006-014` a `H-CODE-006-017`                                                                                                               | Jobs privilegiados no gobernados, ejecuciones perdidas o duplicadas, configuración divergente y automatizaciones sin propietario / crítica                                                                 | Edge Function + webhook + cron + base de datos + seguridad + integración + regresión / automatizada                                                        | `SUPA-AUD-014` a `SUPA-AUD-017`; `SUPA-ARC-020`; `AUTH-DB-024`; `AUTH-DB-031`; `SUPA-TRANS-013`; `SUPA-TRANS-015`                                                                                                                                                                                                                            | BLOQUE E3, BLOQUE R y servicios transversales antes de producción                                                                                  | `vento-shell`, Edge Functions, `pg_cron`, triggers, CI y staging                                                                                                                         | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                | `TREQ-SUPABASE-006`; `TREQ-SHELL-009`; `TREQ-INTEGRATION-004`                                                                          |
+| `TREQ-SUPABASE-011` | `SUPABASE` | La estructura organizacional deberá distinguir de forma verificable organización, titular jurídico, marca, establecimiento, línea de negocio, instalación, sede operativa, área, zona, estación, canal y punto externo. Cada elemento tendrá identificador y código estables, tipo, estado, vigencia, propietario y relaciones tipadas válidas. Ningún nombre, dirección compartida, `site_type`, área agregada o metadato de aplicación podrá fusionar conceptos, conceder capacidades o crear una fuente competidora. Los elementos referenciados no podrán eliminarse destructivamente y los cambios de titularidad, ubicación, cierre o reemplazo conservarán historia y auditoría.                                                                                          | `CAP-SCOPE-001`; `OPS-AUD-001`; `OPS-ADM-001`; `OPS-GOV-001`; `CAP-MAP-003`; `CAP-MAP-008`; `CODE-AUD-006`; `CODE-AUD-019`; `CODE-AUD-020`                                                                               | atribución jurídica incorrecta, acceso territorial indebido, inventario o costos imputados a la unidad equivocada, duplicación de sedes o áreas y pérdida histórica / crítica                              | contractual + base de datos + migración + integridad referencial + RLS + integración + E2E + regresión / automatizada con validación documental controlada | `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `VISO-CORE-004` a `VISO-CORE-006`; `VISO-AUTH-013` a `VISO-AUTH-020`; `VISO-UX-013` a `VISO-UX-020`; `AUTH-QA-029`; `UX-QA-023`                                                                                                                         | arquitectura y transición E3 del maestro organizacional; paquete administrativo VISO en E5; certificación del BLOQUE U                             | `vento-shell`, `vento-viso` y todos los consumidores / Supabase local, CI, staging y migración controlada de datos reales                                                                | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-001`; tablas actuales `sites` y `areas`; metadatos comerciales distribuidos; configuraciones de capacidades; validaciones físicas y hallazgos de implementación | `TREQ-AUTH-009`; `TREQ-VISO-001`; `TREQ-INTEGRATION-006`; `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-SUPABASE-003`                        |
+| `TREQ-SUPABASE-012` | `SUPABASE` | El modelo canónico deberá mantener separados producto maestro, variante, rol, presentación, unidad, perfil de medición, clasificación, ingrediente, receta, versión, especificación, ítem de menú y oferta mediante identificadores estables, relaciones tipadas, constraints y vigencias verificables. Ninguna aplicación podrá fusionar estos conceptos por nombre, categoría, proveedor, sede o código externo. El retiro será no destructivo y toda venta, compra, movimiento, lote, costo, documento o mapeo histórico conservará la identidad y versión originalmente utilizadas. Las migraciones deberán detectar duplicados semánticos, referencias huérfanas, conversiones incompatibles y ciclos de composición antes de imponer constraints o retirar objetos legacy. | `CAP-SCOPE-004`; `CAP-04.01` a `CAP-04.04`; `CAP-04.09`; `CAP-04.10`; `H-CAP-SCOPE-004-001` a `H-CAP-SCOPE-004-003`; `H-CAP-SCOPE-004-011`; `H-CAP-SCOPE-004-012`; `H-CAP-SCOPE-004-015`; `BKL-FUNC-004`; `BKL-NEXO-006` | productos o recetas duplicados, referencias históricas rotas, conversiones incompatibles, menús vinculados al elemento incorrecto, pérdida de trazabilidad y migraciones destructivas / crítica            | contractual + base de datos + migración + integridad referencial + versionado + regresión / automatizada con validación controlada de datos                | `SUPA-AUD-019`; `DATA-NORM-AUD-004`; `SUPA-TRANS-005`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SHELL-CON-001`; `SHELL-CON-016`; `READY-GATE-005`                                                                                                                                                                                                | arquitectura y transición E3 del maestro de producto y conocimiento; contratos compartidos; paquetes E5 de NEXO, FOGO y PULSO; puerta de readiness | `vento-shell`, `vento-nexo`, `vento-fogo`, `vento-pulso`, `vento-pass`, `vento-origo`, `vento-numera`, `vento-viso` / Supabase local, CI, staging y migración controlada de datos reales | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-004`; catálogo y recetas actuales; hallazgos de perfiles, unidades y fuentes competidoras; matrices `MAP-IMPL-CAP-001` y `BKL-REPO-001`                         | `TREQ-NEXO-008`; `TREQ-NEXO-010`; `TREQ-SUPABASE-003`; `TREQ-INTEGRATION-006`; `TREQ-FOGO-002`; `TREQ-INTEGRATION-009`                 |
+| `TREQ-SUPABASE-013` | `SUPABASE` | Todo documento, registro o evidencia persistido deberá conservar recurso propietario, entidad legal, tipo, clasificación, versión, estado, vigencia, archivo o representación, hash, procedencia, actor, timestamps, retención, evento inicial, legal hold y disposición. Una versión aprobada o evidencia preservada no podrá sobrescribirse ni borrarse mediante eliminación directa de fila o Storage. La disposición deberá validar obligaciones y holds, reconciliar derivados y copias controladas, ejecutar una operación idempotente y dejar certificado auditable. Logs de acceso y cambio sensibles serán inmutables o protegidos contra alteración ordinaria, con minimización de contenido.                                                                          | `CAP-SCOPE-016`; `CAP-16.02` a `CAP-16.09`; `CAP-16.11`; `H-CAP-SCOPE-016-005` a `H-CAP-SCOPE-016-010`; `H-CAP-SCOPE-016-016` a `H-CAP-SCOPE-016-021`; `H-CAP-SCOPE-016-025` a `H-CAP-SCOPE-016-034`                     | evidencia sobrescrita o destruida, retención incumplida, eliminación parcial, archivo huérfano, log alterable, duplicación offline y pérdida de fuerza probatoria / crítica                                | base de datos + Storage + integridad + retención + migración + idempotencia + seguridad + auditoría + regresión / automatizada con restauración controlada | `INFO-DOM-003` a `INFO-DOM-007`; `INFO-DOM-011`; `INFO-DOM-013`; `INFO-AUTH-003`; `INFO-AUTH-004`; `INFO-INT-001`; `INFO-INT-002`; `EVID-ARC-001` a `EVID-ARC-010`; bloques E3/R                                                                                                                                                             | arquitectura E3; servicios E4; paquetes E5; pruebas T/U                                                                                            | Supabase VENTO, Storage, colas y copias controladas / local, CI, staging y sandbox de proveedores                                                                                        | `IDENTIFICADO` | Pendiente | Pendiente        | Storage y documentos existentes; retención, legal hold, integridad y disposición transversal no comprobados                                                                              | `TREQ-SHELL-011`; `TREQ-AUTH-015`; `TREQ-SUPABASE-004`; `TREQ-SUPABASE-009`; `TREQ-ANIMA-005`; `TREQ-PASS-012`; `TREQ-INTEGRATION-021` |
 
 #### ANIMA
 
-| ID               | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Origen                                               | Riesgo / prioridad                                                                                                                                                  | Tipo / modalidad                                                                                                                    | Tarea responsable                                                                                                  | Paquete                                                                                                                                                                                                 | Repositorio / ambiente                                                                                                                                                            | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                                        | Relación                                                      |
-| ---------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `TREQ-ANIMA-001` | `ANIMA` | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-010` / `H-CODE-010-001`                    | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta                                                              | contractual + autorización + integración + E2E / automatizada                                                                       | `ANIMA-UX-017`; `ANIMA-AUTH-019`; `UX-QA-022`                                                                      | Paquete E5 ANIMA y certificación funcional del BLOQUE U                                                                                                                                                 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                        | —                                                             |
-| `TREQ-ANIMA-002` | `ANIMA` | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `CODE-AUD-010` / `H-CODE-010-002`                    | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta                                                                                   | interfaz + regresión / automatizada                                                                                                 | `ANIMA-UX-017`; `ANIMA-AUTH-019`; `UX-QA-022`                                                                      | Paquete E5 ANIMA y certificación funcional del BLOQUE U                                                                                                                                                 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                        | —                                                             |
-| `TREQ-ANIMA-003` | `ANIMA` | Una marcación offline solo podrá presentarse como encolada después de confirmar su persistencia durable en el dispositivo. La intención deberá obtener un `client_event_id` estable antes del primer envío, conservar actor, sede, turno, instante, geolocalización y contexto, sobrevivir al cierre y reinicio de la aplicación y sincronizarse sin producir más de un efecto. El replay del mismo evento y contenido deberá devolver el resultado ya aplicado; el mismo identificador con contenido distinto deberá producir conflicto. La ausencia o incompatibilidad del contrato canónico de sincronización no podrá degradarse silenciosamente a una escritura alternativa sin paridad demostrada. | `CODE-AUD-018` / `H-CODE-018-001` y `H-CODE-018-003` | Pérdida silenciosa de marcaciones, confirmación falsa al trabajador, duplicación al reintentar, divergencia entre ambientes y asistencia no reconstruible / crítica | integración + base de datos + idempotencia + recuperación + E2E + regresión / automatizada con validación en dispositivo móvil      | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `SUPA-TRANS-006`; `NFR-REQ-004` | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de sincronización offline de ANIMA; cualquier migración o contrato de Supabase deberá quedar documentado y creado en `vento-shell` | `vento-anima` y `vento-shell` / CI, Supabase local, staging, Android e iOS físicos; escenarios de cierre forzado, reinicio, pérdida de red, respuesta perdida y replay pendientes | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `queue-storage.ts`, `queue-sync.ts`, `use-attendance.ts`, `sync_attendance_events` e índice único por `client_event_id`                                                                    | `TREQ-ANIMA-004`; `TREQ-SUPABASE-001`; `TREQ-INTEGRATION-003` |
-| `TREQ-ANIMA-004` | `ANIMA` | El inicio y cierre de descanso deberán utilizar un identificador idempotente persistido y procesarse mediante una transición de servidor atómica sobre el estado de asistencia correspondiente. Dos dispositivos, replays, respuestas perdidas o eventos fuera de orden no podrán crear dos descansos, cerrar un descanso distinto ni dejar el estado local y remoto divergentes. La operación deberá devolver un resultado estable `applied`, `duplicate` o `conflict`, conservar el evento original y permitir reconciliación auditable.                                                                                                                                                               | `CODE-AUD-018` / `H-CODE-018-002`                    | Descansos duplicados, cierres incorrectos, secuencias imposibles, tiempos laborales erróneos y divergencia entre dispositivos / alta                                | RPC + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con ejecución concurrente y replay | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de asistencia y descansos de ANIMA; toda migración o función deberá quedar en `vento-shell`                                        | `vento-anima` y `vento-shell` / CI, Supabase local, staging y dos dispositivos o sesiones concurrentes pendientes                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `break-rpc.ts`, `queue-decisions.ts`, `queue-sync.ts`, `start_attendance_break` y `end_attendance_break`; el `clientEventId` se conserva en notas sin deduplicación contractual demostrada | `TREQ-ANIMA-003`; `TREQ-INTEGRATION-003`                      |
+| ID               | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Origen                                                                                                                                                                                                        | Riesgo / prioridad                                                                                                                                                                  | Tipo / modalidad                                                                                                                    | Tarea responsable                                                                                                                                                              | Paquete                                                                                                                                                                                                 | Repositorio / ambiente                                                                                                                                                            | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                                        | Relación                                                                                                         |
+| ---------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `TREQ-ANIMA-001` | `ANIMA` | Cuando la interfaz de novedades permita seleccionar audiencia, deberá distinguir si controla notificaciones o visibilidad persistente; el modelo aprobado deberá conservarse, editarse, auditarse y aplicarse al leer.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `CODE-AUD-010` / `H-CODE-010-001`                                                                                                                                                                             | Exposición fuera de alcance, usuarios objetivo no informados y falsa percepción de segmentación / alta                                                                              | contractual + autorización + integración + E2E / automatizada                                                                       | `ANIMA-UX-017`; `ANIMA-AUTH-019`; `UX-QA-022`                                                                                                                                  | Paquete E5 ANIMA y certificación funcional del BLOQUE U                                                                                                                                                 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                        | —                                                                                                                |
+| `TREQ-ANIMA-002` | `ANIMA` | Cuando novedades opere con datos fallback o en modo solo lectura, no deberá mostrar controles de crear, editar o eliminar que no puedan completarse; el modo deberá ser explícito y coherente.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `CODE-AUD-010` / `H-CODE-010-002`                                                                                                                                                                             | Trabajo perdido, errores previsibles y experiencia administrativa engañosa / alta                                                                                                   | interfaz + regresión / automatizada                                                                                                 | `ANIMA-UX-017`; `ANIMA-AUTH-019`; `UX-QA-022`                                                                                                                                  | Paquete E5 ANIMA y certificación funcional del BLOQUE U                                                                                                                                                 | `vento-anima` / local, CI, staging y dispositivo móvil pendientes                                                                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente                                                                                                                                                                                                        | —                                                                                                                |
+| `TREQ-ANIMA-003` | `ANIMA` | Una marcación offline solo podrá presentarse como encolada después de confirmar su persistencia durable en el dispositivo. La intención deberá obtener un `client_event_id` estable antes del primer envío, conservar actor, sede, turno, instante, geolocalización y contexto, sobrevivir al cierre y reinicio de la aplicación y sincronizarse sin producir más de un efecto. El replay del mismo evento y contenido deberá devolver el resultado ya aplicado; el mismo identificador con contenido distinto deberá producir conflicto. La ausencia o incompatibilidad del contrato canónico de sincronización no podrá degradarse silenciosamente a una escritura alternativa sin paridad demostrada. | `CODE-AUD-018` / `H-CODE-018-001` y `H-CODE-018-003`                                                                                                                                                          | Pérdida silenciosa de marcaciones, confirmación falsa al trabajador, duplicación al reintentar, divergencia entre ambientes y asistencia no reconstruible / crítica                 | integración + base de datos + idempotencia + recuperación + E2E + regresión / automatizada con validación en dispositivo móvil      | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `SUPA-TRANS-006`; `NFR-REQ-004`                                                             | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de sincronización offline de ANIMA; cualquier migración o contrato de Supabase deberá quedar documentado y creado en `vento-shell` | `vento-anima` y `vento-shell` / CI, Supabase local, staging, Android e iOS físicos; escenarios de cierre forzado, reinicio, pérdida de red, respuesta perdida y replay pendientes | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `queue-storage.ts`, `queue-sync.ts`, `use-attendance.ts`, `sync_attendance_events` e índice único por `client_event_id`                                                                    | `TREQ-ANIMA-004`; `TREQ-SUPABASE-001`; `TREQ-INTEGRATION-003`                                                    |
+| `TREQ-ANIMA-004` | `ANIMA` | El inicio y cierre de descanso deberán utilizar un identificador idempotente persistido y procesarse mediante una transición de servidor atómica sobre el estado de asistencia correspondiente. Dos dispositivos, replays, respuestas perdidas o eventos fuera de orden no podrán crear dos descansos, cerrar un descanso distinto ni dejar el estado local y remoto divergentes. La operación deberá devolver un resultado estable `applied`, `duplicate` o `conflict`, conservar el evento original y permitir reconciliación auditable.                                                                                                                                                               | `CODE-AUD-018` / `H-CODE-018-002`                                                                                                                                                                             | Descansos duplicados, cierres incorrectos, secuencias imposibles, tiempos laborales erróneos y divergencia entre dispositivos / alta                                                | RPC + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con ejecución concurrente y replay | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                                                                            | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de asistencia y descansos de ANIMA; toda migración o función deberá quedar en `vento-shell`                                        | `vento-anima` y `vento-shell` / CI, Supabase local, staging y dos dispositivos o sesiones concurrentes pendientes                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `break-rpc.ts`, `queue-decisions.ts`, `queue-sync.ts`, `start_attendance_break` y `end_attendance_break`; el `clientEventId` se conserva en notas sin deduplicación contractual demostrada | `TREQ-ANIMA-003`; `TREQ-INTEGRATION-003`                                                                         |
+| `TREQ-ANIMA-005` | `ANIMA` | Los documentos y datos laborales deberán presentarse al trabajador y administrarse según identidad, vínculo, finalidad, tipo documental, sensibilidad, vigencia, propietario y retención. El trabajador podrá consultar sus datos permitidos y presentar solicitudes comprensibles sin obtener acceso a expedientes de terceros. Retiro o eliminación de cuenta revocará acceso, pero no borrará automáticamente historias laborales, asistencia, contratos, SST, pagos, auditoría ni documentos sujetos a obligación. Carga, sustitución o eliminación de archivos deberá usar el ciclo documental y no borrar directamente evidencia o Storage sin autorización de disposición.                        | `CAP-SCOPE-016`; `CAP-16.02` a `CAP-16.10`; `H-CAP-SCOPE-016-005` a `H-CAP-SCOPE-016-009`; `H-CAP-SCOPE-016-011` a `H-CAP-SCOPE-016-021`; `H-CAP-SCOPE-016-024`; `H-CAP-SCOPE-016-033`; `H-CAP-SCOPE-016-034` | exposición entre trabajadores, eliminación indebida de expediente, documento vencido usado, solicitud sin respuesta, archivo huérfano y discrepancia entre fila y Storage / crítica | privacidad + laboral + documentos + Storage + autorización + experiencia + E2E + regresión / híbrida                                | `INFO-DOM-002` a `INFO-DOM-009`; `INFO-AUTH-001` a `INFO-AUTH-003`; `INFO-UX-002` a `INFO-UX-005`; `INFO-INT-002`; tareas documentales ANIMA; `CAP-SCOPE-002`; `CAP-SCOPE-003` | diseño E2; datos E3; evidencia E4; paquete E5 ANIMA/VISO; certificación U                                                                                                                               | `vento-anima`, VISO, Supabase y Storage / CI, staging y dispositivos personales                                                                                                   | `IDENTIFICADO` | Pendiente | Pendiente        | módulo de documentos, tipos, vencimientos y políticas existentes; ciclo y retención integral ausentes                                                                                                            | `TREQ-AUTH-016`; `TREQ-AUTH-017`; `TREQ-SHELL-011`; `TREQ-SUPABASE-013`; `TREQ-VISO-003`; `TREQ-INTEGRATION-021` |
 
 #### AURA
 
@@ -183583,6 +183591,7 @@ Distribución vigente:
 | `TREQ-VISO-001` | `VISO`  | La administración de roles, permisos, sedes, áreas, perfiles y excepciones deberá mostrar antes de guardar el efecto resultante sobre cada trabajador, detectar conflictos, indicar el origen de cada permiso, respetar alcance territorial y conservar auditoría. La configuración de VISO deberá producir el mismo resultado consumido por las aplicaciones operativas. | `AUTH-RBAC-001` a `AUTH-RBAC-028`; `AUTH-CTX-027`; `AUTH-QA-003`; `AUTH-QA-007` a `AUTH-QA-009`; `AUTH-QA-029`; `UX-QA-023` | Configuración incoherente, permisos inesperados, conflictos invisibles y diferencias entre vista administrativa y operación / crítica | contractual + autorización + integración + interfaz + E2E + regresión / automatizada con validación administrativa | `VISO-AUTH-013` a `VISO-AUTH-020`; `VISO-CORE-004` a `VISO-CORE-006`; `VISO-UX-013` a `VISO-UX-020`; `UX-QA-023` | VISO Core, paquete E5 administrativo y certificación del BLOQUE U | `vento-viso`, `vento-shell`, Supabase local, CI, staging y usuarios administrativos reales | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | `TREQ-AUTH-007`; `TREQ-AUTH-009`; `TREQ-AUTH-015`; `TREQ-UX-007` |
 
 | `TREQ-VISO-002` | `VISO` | VISO deberá proporcionar una mesa de servicio tecnológica simple y trazable que distinga solicitud, incidente, problema, error conocido y cambio. Cada caso conservará servicio y elemento afectados, sede, solicitante, impacto, urgencia, prioridad, SLA, asignación, comunicaciones, diagnóstico, trabajo, workaround, resolución, restauración, validación, cierre y reapertura. Un estado `resolved` no equivaldrá a causa eliminada ni a cierre aceptado. Incidentes críticos tendrán línea de tiempo, comunicaciones, cambio de emergencia y revisión posterior. ANIMA permitirá reportar y consultar sin exigir conocimientos técnicos; VISO ocultará logs, IP y detalles sensibles hasta abrir el diagnóstico autorizado. | `CAP-SCOPE-015`; `CAP-15.06` a `CAP-15.09`; `CAP-15.11`; `H-CAP-SCOPE-015-001` a `H-CAP-SCOPE-015-004`; `H-CAP-SCOPE-015-015`; `H-CAP-SCOPE-015-022` a `H-CAP-SCOPE-015-028`; `H-CAP-SCOPE-015-030` a `H-CAP-SCOPE-015-034` | interrupción prolongada, prioridad incorrecta, SLA invisible, ticket cerrado sin restauración, recurrencia no investigada, cambio no controlado y soporte incomprensible / crítica | contractual + service desk + incidentes + problemas + cambios + SLA + experiencia + notificaciones + concurrencia + E2E + regresión / híbrida | `TI-DOM-001`; `TI-DOM-007` a `TI-DOM-013`; `TI-AUTH-001`; `TI-AUTH-004`; `TI-UX-001` a `TI-UX-006`; `TI-INT-002`; `CAP-SCOPE-018`; bloques E5/T/U | diseño E2; modelo E3; notificaciones y evidencia E4; piloto E5; certificación U | VISO, ANIMA, `vento-shell` y Supabase / local, CI, staging y piloto controlado | `IDENTIFICADO` | Pendiente | Pendiente | support_tickets, support_messages y notificación push existentes; ciclo ITSM completo ausente | `TREQ-SHELL-010`; `TREQ-NEXO-019`; `TREQ-INTEGRATION-020`; `TREQ-ANIMA-004`; `TREQ-UX-001`; `TREQ-UX-007` |
+| `TREQ-VISO-003` | `VISO` | VISO deberá administrar de forma segregada el gobierno de información, obligaciones, solicitudes de titulares, aprobaciones, firmas, retención, legal holds, auditorías e investigaciones. Cada caso conservará identidad o representación, alcance, sistemas implicados, clasificación, plazos, decisiones, excepciones, ejecución por sistema, respuesta, evidencias y cierre. Una investigación preservará fuentes antes de permitir correcciones; quien esté implicado no podrá aprobar su propio cierre. La interfaz mostrará prioridades y acciones sin exponer por defecto contenido sensible, logs completos ni datos innecesarios. | `CAP-SCOPE-016`; `CAP-16.01` a `CAP-16.11`; `H-CAP-SCOPE-016-001`; `H-CAP-SCOPE-016-009`; `H-CAP-SCOPE-016-012` a `H-CAP-SCOPE-016-015`; `H-CAP-SCOPE-016-018` a `H-CAP-SCOPE-016-020`; `H-CAP-SCOPE-016-025` a `H-CAP-SCOPE-016-032`; `H-CAP-SCOPE-016-035` | solicitud vencida o incompleta, firma o aprobación inválida, conflicto de interés, investigación contaminada, obligación sin control y exposición desde consola / crítica | cumplimiento + privacidad + workflow + segregación + auditoría + experiencia + E2E + regresión / híbrida | `INFO-DOM-001` a `INFO-DOM-013`; `INFO-AUTH-001` a `INFO-AUTH-004`; `INFO-UX-001` a `INFO-UX-006`; `INFO-INT-002`; VISO y EVID-ARC | diseño E2; arquitectura E3/E4; paquete E5 VISO; certificación U | `vento-viso`, ANIMA, PASS, aplicaciones Vento OS y Supabase / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | auditoría y administración parcial existentes; caso transversal de privacidad y cumplimiento ausente | `TREQ-AUTH-015`; `TREQ-SHELL-011`; `TREQ-SUPABASE-013`; `TREQ-ANIMA-005`; `TREQ-PASS-012`; `TREQ-INTEGRATION-021` |
 
 #### NEXO
 
@@ -183654,6 +183663,16 @@ Distribución vigente:
 | `TREQ-NUMERA-003` | `NUMERA` | NUMERA deberá gestionar obligatoriamente cartera y cuentas por cobrar, además de cuentas por pagar, bancos, caja consolidada y tesorería. Cliente, deudor y cuenta PASS serán distintos. Cuenta, cuota, vencimiento, saldo, pago recibido y aplicación serán objetos independientes. Se soportarán pagos parciales, anticipos, saldos a favor, acuerdos, promesas, disputas, aging, exposición, cobranza y castigo autorizado. Las obligaciones conservarán origen, aceptación, vencimiento, aprobación, programación, pago y disputa. Extractos y movimientos bancarios serán inmutables; el matching será sugerido, aprobado y reversible. Registrar, aprobar, pagar, conciliar, cerrar, reabrir, castigar y exportar requerirán permisos separados.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `CAP-SCOPE-012`; `CAP-12.02` a `CAP-12.05`; `CAP-12.07`; `CAP-12.08`; `CAP-12.12`; `H-CAP-SCOPE-012-006` a `H-CAP-SCOPE-012-018`; `H-CAP-SCOPE-012-024`; `H-CAP-SCOPE-012-025`; `H-CAP-SCOPE-012-032`       | cartera perdida o falsa, cobro aplicado al documento incorrecto, obligación duplicada, pago no autorizado, banco irreconciliable, fraude y tesorería sin liquidez visible / crítica                                     | contractual + cartera + obligaciones + caja + bancos + tesorería + autorización + seguridad + conciliación + E2E + regresión / automatizada con validación financiera                                      | `NUMERA-DOM-002`; `NUMERA-DOM-003`; `NUMERA-DOM-005`; `NUMERA-DOM-009`; `NUMERA-DOM-010`; `NUMERA-DOM-014`; `NUMERA-DOM-016`; `NUMERA-AUTH-003` a `NUMERA-AUTH-009`; `NUMERA-AUTH-014`; `NUMERA-UX-009`; `NUMERA-UX-010`; `NUMERA-UX-017`; `NUMERA-UX-018`; `NUMERA-UX-020`; `NUMERA-UX-021`; `NUMERA-UX-026`; `CAP-SCOPE-005`; `CAP-SCOPE-009` | diseño E2 de cartera, obligaciones y tesorería; arquitectura E3 de cuentas, extractos, pagos y conciliación; paquetes E5 NUMERA/PULSO/ORIGO; piloto y certificación                             | `vento-numera`, `vento-pulso`, `vento-origo`, `vento-shell`, bancos y proveedores de pago / local, CI, staging y datos financieros controlados | `IDENTIFICADO` | Pendiente | Pendiente        | decisión explícita del usuario de implementar cartera; fuentes actuales parciales de ventas, caja, compras y pagos                                                                                            | `TREQ-NUMERA-001`; `TREQ-NUMERA-002`; `TREQ-PULSO-006`; `TREQ-ORIGO-004`; `TREQ-ORIGO-005`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-017`; `TREQ-AUTH-018` |
 | `TREQ-NUMERA-004` | `NUMERA` | Todo costo, distribución, presupuesto, forecast, punto de equilibrio y rentabilidad deberá declarar método, entradas, versión, vigencia, entidad, centro, periodo y fuente. Costo de adquisición, landed, estándar, promedio, último, real, productivo, logístico, merma e interno se mantendrán separados. Las distribuciones compartidas conservarán pool, driver, base, origen, destinos, aprobación y reversión. Una transferencia interna podrá medir gestión, pero no se tratará automáticamente como ingreso o gasto legal. Presupuesto aprobado, revisión, forecast y escenario serán objetos diferentes. Rentabilidad utilizará ingreso realizado y costo trazable, no solo ingreso esperado y gasto agregado. NUMERA deberá ofrecer un visor económico dinámico principalmente de una sola pantalla para comparar precio, costo, margen, equilibrio, presupuesto y escenarios. La vista distinguirá de forma inequívoca datos reales, presupuestados, simulados, propuestos y publicados; cambiar supuestos nunca alterará datos reales. La información técnica y las explicaciones extensas se mostrarán solo bajo demanda mediante divulgación progresiva, y cada indicador permitirá navegar hasta su fórmula, entradas y fuente. | `CAP-SCOPE-012`; `CAP-12.09` a `CAP-12.11`; `CAP-12.15`; `H-CAP-SCOPE-012-019` a `H-CAP-SCOPE-012-023`; `H-CAP-SCOPE-012-028`; `H-CAP-SCOPE-012-029`; `H-CAP-SCOPE-012-035`                                 | margen falso, doble costo, precio interno tratado como fiscal, presupuesto sobrescrito, distribución inexplicable, simulación confundida con realidad, visor incomprensible y decisiones gerenciales erróneas / crítica | contractual + costos + presupuestos + analítica + escenarios + interfaz + usabilidad + base de datos + conciliación + regresión + E2E / automatizada con validación financiera, operativa y de comprensión | `NUMERA-AUD-008`; `NUMERA-DOM-006` a `NUMERA-DOM-008`; `NUMERA-UX-008`; `NUMERA-UX-013`; `NUMERA-UX-019`; `NUMERA-UX-022`; `OPS-CST-001`; `CAP-SCOPE-004`; `CAP-SCOPE-005`; `CAP-SCOPE-006`; `CAP-SCOPE-007`; `CAP-SCOPE-008`; `CAP-SCOPE-011`; `CAP-SCOPE-017`; `NUMERA-DOM-018`; `NUMERA-AUTH-015`; `NUMERA-UX-028`; `UX-QA-028`              | diseño E2 de métodos, drivers, escenarios y visor; arquitectura E3 de modelos, vigencias y publicación; paquete E5 NUMERA y consumidores; certificación financiera y de usabilidad del BLOQUE U | `vento-numera`, `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-pulso`, `vento-shell` / local, CI, staging y datasets reconciliados          | `IDENTIFICADO` | Pendiente | Pendiente        | centros, presupuestos, gastos, punto de equilibrio y rentabilidad inicial existentes; la pantalla actual contiene bloques explicativos permanentes; métodos, escenarios y visor económico objetivo pendientes | `TREQ-NUMERA-001`; `TREQ-NUMERA-002`; `TREQ-NEXO-011`; `TREQ-FOGO-004`; `TREQ-INTEGRATION-013`; `TREQ-INTEGRATION-016`; `TREQ-INTEGRATION-017`                                      |
 
+#### DATA
+
+| ID              | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | Origen                                                                                                 | Riesgo / prioridad                                                                                                                                           | Tipo / modalidad                                                                                                   | Tarea responsable                                                                                                                                                           | Paquete                                                                                              | Repositorio / ambiente                                                                  | Estado         | Artefacto | Último resultado | Evidencia                                                                                                              | Relación                                                                                                                   |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-DATA-001` | `DATA`  | Todo dato maestro o de referencia compartido deberá tener identificador estable, propietario funcional, steward, fuente de verdad, claves empresariales y externas, jerarquías, atributos por dominio, estados, vigencia y reglas de alta, corrección, fusión, separación, desactivación y retiro. Una coincidencia de nombre, correo, código o valor normalizado no autorizará una fusión automática. Los cambios conservarán historia efectiva y crosswalks sin alterar hechos pasados.                                                                           | `CAP-SCOPE-017`; `CAP-17.01` a `CAP-17.03`; `H-CAP-SCOPE-017-001` a `H-CAP-SCOPE-017-010`              | registros maestros duplicados o fusionados incorrectamente, jerarquías divergentes, análisis incomparables, relaciones rotas y pérdida de historia / crítica | contractual + datos maestros + calidad + integridad + migración + regresión / automatizada con revisión de steward | `DATA-DOM-001` a `DATA-DOM-003`; `DATA-DOM-006`; `DATA-DOM-007`; `DATA-DOM-017`; `DATA-AUTH-001`; `DATA-AUTH-003`; `DATA-UX-002`; `DATA-INT-003`; tareas E3 aplicables      | diseño E2/E3 de gobierno y arquitectura; paquete E5 transversal de datos; certificación del BLOQUE U | Vento OS y Supabase / local, CI, staging y datos maestros controlados                   | `IDENTIFICADO` | Pendiente | Pendiente        | catálogos y configuradores parciales por dominio; gobierno maestro federado y crosswalks todavía no consolidados       | `TREQ-SUPABASE-002`; `TREQ-SUPABASE-010`; `TREQ-NEXO-001`; `TREQ-PASS-010`; `TREQ-INTEGRATION-006`                         |
+| `TREQ-DATA-002` | `DATA`  | Toda métrica o indicador deberá existir en un registro canónico versionado con nombre empresarial, propósito de decisión, propietario, fórmula, numerador, denominador, granularidad, dimensiones permitidas, filtros, inclusiones, exclusiones, unidad, moneda, zona horaria, calendario, fuente, frescura, calidad, versión, estado de certificación, ruta de drill-down y reglas de comparación. Una misma versión y contexto deberá producir el mismo resultado en cualquier aplicación; ninguna pantalla podrá redefinir localmente la fórmula.                | `CAP-SCOPE-017`; `CAP-17.01`; `CAP-17.04` a `CAP-17.09`; `H-CAP-SCOPE-017-011` a `H-CAP-SCOPE-017-019` | indicadores contradictorios, decisiones basadas en fórmulas locales, unidades o periodos incompatibles y pérdida de confianza / crítica                      | contractual + capa semántica + cálculo + integración + regresión / automatizada                                    | `DATA-DOM-004`; `DATA-DOM-005`; `DATA-DOM-008` a `DATA-DOM-013`; `DATA-DOM-017`; `DATA-AUTH-003`; `DATA-UX-001` a `DATA-UX-003`; `DATA-UX-007`; `DATA-INT-002`              | diseño E2/E3 de capa semántica; paquetes E5 por dominio; certificación del BLOQUE U                  | Vento OS, modelos analíticos y aplicaciones consumidoras / CI y staging                 | `IDENTIFICADO` | Pendiente | Pendiente        | métricas locales en ANIMA, NEXO y NUMERA; registro empresarial único inexistente                                       | `TREQ-NUMERA-001`; `TREQ-ANIMA-001`; `TREQ-NEXO-001`; `TREQ-UX-005`; `TREQ-DATA-001`                                       |
+| `TREQ-DATA-003` | `DATA`  | La recopilación y transformación analítica deberá conservar contratos de origen, tiempo del hecho, tiempo de carga, granularidad, claves, versión de esquema, cobertura, duplicados, integridad referencial, datos tardíos, backfills, correcciones, cuarentena, reconciliación y linaje. Cero, nulo, no aplica, desconocido, no recibido y dato pendiente serán estados distintos. Ningún reporte oficial podrá presentarse como certificado si la fuente está vencida, incompleta, degradada o sin reconciliar.                                                   | `CAP-SCOPE-017`; `CAP-17.02`; `CAP-17.03`; `H-CAP-SCOPE-017-020` a `H-CAP-SCOPE-017-027`               | tableros obsoletos, totales inflados, joins rotos, ausencia interpretada como cero, historia reescrita y decisiones no reproducibles / crítica               | calidad + base de datos + integración + frescura + reconciliación + migración + regresión / automatizada           | `DATA-DOM-005` a `DATA-DOM-007`; `DATA-DOM-017`; `DATA-UX-004`; `DATA-INT-001` a `DATA-INT-003`; `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007`; `SUPA-ARC-001` a `SUPA-ARC-025` | arquitectura E3; observabilidad E4; paquete E5 de datos; certificación del BLOQUE U                  | Supabase, fuentes externas y modelos analíticos / CI, staging y particiones controladas | `IDENTIFICADO` | Pendiente | Pendiente        | auditoría de normalización y fuentes de verdad reservada; certificación analítica y reglas de datos tardíos pendientes | `TREQ-SUPABASE-002`; `TREQ-SUPABASE-009`; `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-006`; `TREQ-DATA-001`; `TREQ-DATA-002` |
+| `TREQ-DATA-004` | `DATA`  | Todo tablero, reporte, alerta, exportación o suscripción deberá declarar versión de métricas, periodo, zona horaria, filtros, dimensiones, moneda o unidad, fecha de corte, frescura, cobertura y estado de calidad. La vista principal será simple y accionable, con divulgación progresiva y drill-down autorizado hasta los hechos fuente. Vista en vivo, snapshot publicado, reporte oficial, simulación y exportación serán artefactos distintos. Los agregados no serán editables como fuente y toda corrección o restatement conservará la versión anterior. | `CAP-SCOPE-017`; `CAP-17.04` a `CAP-17.09`; `H-CAP-SCOPE-017-028` a `H-CAP-SCOPE-017-032`              | reportes irreproducibles, exportaciones desactualizadas, tableros saturados, cifras sin origen y correcciones silenciosas / alta                             | interfaz + experiencia + contractual + autorización + exportación + snapshot + regresión / híbrida                 | `DATA-DOM-008` a `DATA-DOM-013`; `DATA-DOM-017`; `DATA-AUTH-001` a `DATA-AUTH-004`; `DATA-UX-001` a `DATA-UX-008`; `DATA-INT-002`; tareas UX y de dominio aplicables        | diseño E2; arquitectura E3/E4; paquetes E5 por aplicación; pilotos y certificación U                 | VISO, NUMERA y aplicaciones propietarias / prototipos, CI, staging y usuarios reales    | `IDENTIFICADO` | Pendiente | Pendiente        | reportes y KPI parciales; contrato común de snapshot, certificación y simplicidad no consolidado                       | `TREQ-UX-001`; `TREQ-UX-003`; `TREQ-UX-005`; `TREQ-NUMERA-004`; `TREQ-DATA-002`; `TREQ-DATA-003`                           |
+| `TREQ-DATA-005` | `DATA`  | Toda iniciativa de mejora basada en datos deberá separar señal, diagnóstico, hipótesis, acción, experimento, responsable, línea base, meta, indicador principal, drivers, guardrails, ventana de medición, segmentos, resultado, confianza, aprendizaje y decisión de cierre o iteración. Una correlación no se presentará como causa demostrada; una recomendación no ejecutará cambios empresariales por sí sola. El resultado deberá compararse contra línea base y guardrails, y conservar efectos no deseados, datos faltantes y cambios de definición.        | `CAP-SCOPE-017`; `CAP-17.10` a `CAP-17.12`; `H-CAP-SCOPE-017-033` a `H-CAP-SCOPE-017-035`              | acciones sin efecto, optimización de métricas de vanidad, daño a calidad o margen, causalidad falsa y aprendizajes perdidos / alta                           | analítica + experimento + workflow + experiencia + auditoría + regresión / híbrida                                 | `DATA-DOM-014` a `DATA-DOM-016`; `DATA-AUTH-003`; `DATA-AUTH-004`; `DATA-UX-005`; `DATA-UX-006`; `DATA-UX-008`; `DATA-INT-004`; propietarios funcionales de cada dominio    | diseño E2; paquetes E5 de analítica y mejora; piloto e hypercare; certificación U                    | VISO, NUMERA, AURA futura y aplicaciones propietarias / staging y operación controlada  | `IDENTIFICADO` | Pendiente | Pendiente        | acciones e indicadores existen de forma aislada; ciclo cerrado de mejora y comprobación no consolidado                 | `TREQ-DATA-002`; `TREQ-DATA-003`; `TREQ-DATA-004`; `TREQ-AURA-003`; `TREQ-UX-007`                                          |
+
 #### PASS
 
 | ID              | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Origen                                                                 | Riesgo / prioridad                                                                                                                                                                          | Tipo / modalidad                                                                                                                                 | Tarea responsable                                                                                                                                                                                                                | Paquete                                                                                                                                            | Repositorio / ambiente                                                                                                                             | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                                                                    | Relación                                                                                       |
@@ -183670,6 +183689,7 @@ Distribución vigente:
 
 | `TREQ-PASS-010` | `PASS` | La identidad de cliente deberá separar persona, cuenta autenticada, contactos, verificaciones, relación de marca, perfil, preferencias y consentimientos. Una persona podrá ser cliente ocasional sin cuenta y vincular posteriormente su historia sin duplicar ventas. Correo, teléfono o nombre coincidentes no fusionarán automáticamente registros; toda fusión será revisada, trazable y reversible. Los consentimientos conservarán finalidad, canal, versión, fuente, vigencia y retiro. La fidelización se basará en un ledger inmutable y reconciliable; acumulación, redención, expiración, ajuste, reversión y compensación conservarán evento origen, regla y versión. El saldo será una proyección y los reintentos no duplicarán puntos ni beneficios. | `CAP-SCOPE-010`; `CAP-10.01`; `CAP-10.02`; `CAP-10.07`; `H-CAP-SCOPE-010-001` a `H-CAP-SCOPE-010-005`; `H-CAP-SCOPE-010-011` a `H-CAP-SCOPE-010-013`; `H-CAP-SCOPE-010-025` | perfiles duplicados, consentimientos inválidos, contacto indebido, pérdida de historia, saldo incorrecto, fraude de puntos y fusión irreversible / crítica | contractual + identidad + base de datos + privacidad + fidelización + concurrencia + idempotencia + migración + E2E + regresión / automatizada con conciliación controlada | `PASS-UX-002` a `PASS-UX-009`; `PASS-INT-001` a `PASS-INT-005`; `PASS-QA-001`; `PASS-QA-002`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `AUTH-QA-026`; `UX-QA-029`; `CAP-SCOPE-016` | diseño E2 de identidad y fidelización; arquitectura y migración E3/E4; paquete E5 PASS/PULSO; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-shell` y Supabase / local, CI, staging, dispositivos móviles y terminales POS | `IDENTIFICADO` | Pendiente | Pendiente | perfiles, puntos, recompensas, redenciones y consentimientos actuales; decisiones de `CAP-SCOPE-010` | `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-PASS-008`; `TREQ-PASS-009`; `TREQ-PULSO-004`; `TREQ-AUTH-006`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014` |
 | `TREQ-PASS-011` | `PASS` | Preguntas, solicitudes, reclamos, feedback, devoluciones, compensaciones, reservas y comunicaciones deberán usar expedientes y estados separados. Todo caso conservará canal, declaración original, cliente u ocasional, marca, sede, pedido o venta relacionados, categoría, prioridad, responsable, SLA, mensajes, adjuntos, investigación, decisión, comunicación y cierre. Una calificación negativa no será reclamo automático. Devolución, reembolso, producto de reemplazo, descuento, cortesía, cupón y puntos serán resultados distintos con autoridad y efectos explícitos. Las reservas conservarán capacidad, hold, condiciones, depósito, cambios, cancelación y no-show. Las comunicaciones operativas conservarán plantilla, versión, finalidad, canal, entrega, error y fallback sin confundirse con Marketing. | `CAP-SCOPE-010`; `CAP-10.03` a `CAP-10.06`; `CAP-10.08`; `CAP-10.09`; `H-CAP-SCOPE-010-006` a `H-CAP-SCOPE-010-010`; `H-CAP-SCOPE-010-014` a `H-CAP-SCOPE-010-019`; `H-CAP-SCOPE-010-024`; `H-CAP-SCOPE-010-026` | reclamos perdidos, cierre sin respuesta, compensación duplicada, reservas sobrevendidas, métricas engañosas, comunicación no entregada y evidencia dispersa / crítica | contractual + workflow + servicio + reservas + comunicaciones + autorización + concurrencia + idempotencia + E2E + experiencia + regresión / automatizada con validación operativa | `PROC-CAT-009` a `PROC-CAT-019`; `PROC-ACTOR-001` a `PROC-ACTOR-010`; `PASS-UX-001`; `PASS-UX-006`; `PASS-UX-010`; `PULSO-UX-009`; `PULSO-UX-018`; `VISO-UX-013` a `VISO-UX-020`; `UX-ADMIN-001` a `UX-ADMIN-005`; `CAP-SCOPE-012`; `CAP-SCOPE-014`; `CAP-SCOPE-017`; `UX-QA-027`; `UX-QA-029` | diseño E2 de atención, reclamos y reservas; arquitectura E3/E4; paquetes E5 PASS/PULSO/VISO; piloto y certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-shell`, proveedores de mensajería y pago / local, CI, staging y canales controlados | `IDENTIFICADO` | Pendiente | Pendiente | feedback, chat, pedidos, devoluciones y notificaciones parciales actuales; preguntas `OPE-02`, `OPE-10`, `OPE-11`, `DAT-24`, `DAT-25`, `COM-03` a `COM-05` | `TREQ-PASS-010`; `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014`; `TREQ-UX-005` |
+| `TREQ-PASS-012` | `PASS` | PASS deberá conservar por finalidad y versión la información presentada al cliente, autorizaciones, preferencias de comunicaciones, revocaciones y prueba de aceptación. El cliente podrá ejercer acceso, actualización, rectificación, información de uso y solicitudes de supresión mediante un caso trazable. Eliminar una cuenta deberá revocar acceso y procesar datos por categoría, conservando o anonimizando transacciones, facturación, fraude, seguridad, puntos y auditoría cuando exista obligación válida. Marketing no podrá continuar tras una revocación aplicable y ninguna solicitud se declarará completada hasta reconciliar dominios y copias controladas. | `CAP-SCOPE-016`; `CAP-16.05`; `CAP-16.06`; `CAP-16.08`; `CAP-16.10`; `H-CAP-SCOPE-016-011` a `H-CAP-SCOPE-016-017`; `H-CAP-SCOPE-016-021` a `H-CAP-SCOPE-016-024` | consentimiento no demostrable, marketing no autorizado, borrado incompleto, pérdida de transacción o auditoría y respuesta engañosa al cliente / crítica | privacidad + consentimiento + identidad cliente + eliminación + integración + experiencia + E2E + regresión / automatizada con revisión de cumplimiento | `INFO-DOM-006`; `INFO-DOM-008` a `INFO-DOM-010`; `INFO-AUTH-001` a `INFO-AUTH-003`; `INFO-UX-004`; `INFO-INT-002`; tareas PASS de identidad y cuenta; AURA cuando corresponda | diseño E2; contratos E3; evidencia E4; paquete E5 PASS/AURA; certificación U | `vento-pass`, PULSO, AURA futura y Supabase / CI, staging y cliente de prueba | `IDENTIFICADO` | Pendiente | Pendiente | políticas y flujo de eliminación existentes; consentimiento versionado y reconciliación transversal no demostrados | `TREQ-AUTH-006`; `TREQ-SHELL-011`; `TREQ-SUPABASE-013`; `TREQ-INTEGRATION-019`; `TREQ-INTEGRATION-021` |
 
 #### TALENTO
 
@@ -183708,6 +183728,9 @@ Distribución vigente:
 | `TREQ-INTEGRATION-019` | `INTEGRATION` | AURA deberá consumir y correlacionar datos de NEXO, PULSO, PASS, NUMERA, VISO y FOGO mediante contratos de solo lectura o eventos autorizados, y conectarse a redes, mensajería, correo, reseñas, analítica y proveedores de IA mediante adaptadores versionados. Ningún canal externo se convertirá en maestro de producto, cliente, consentimiento, venta, precio, costo o campaña. Publicaciones, mensajes, leads, comentarios, conversiones, cupones y métricas conservarán identificadores internos y externos, payload, respuesta, versión, estado y clave idempotente. Webhooks, reintentos, límites, eventos tardíos y atribución parcial no producirán doble publicación, contacto, lead, redención o conversión. La conciliación detectará publicación sin confirmación, campaña sin piezas, promoción sin regla, lead sin consentimiento, venta sin campaña correlacionable, métrica sin fuente, reseña sin respuesta y proveedor con credenciales o datos excesivos. | `CAP-SCOPE-014`; `CAP-14.01` a `CAP-14.11`; `H-CAP-SCOPE-014-005`; `H-CAP-SCOPE-014-010` a `H-CAP-SCOPE-014-029` | exposición de datos, canal comprometido, publicación o mensaje duplicado, descuentos divergentes, atribución irreconciliable, dependencia de proveedor y métricas engañosas / crítica | contractual + integración + API + webhook + OAuth + colas + IA + idempotencia + compensación + conciliación + seguridad + E2E + regresión / automatizada con validación comercial y de privacidad | `AURA-AUD-001` a `AURA-AUD-012`; `AURA-DOM-001` a `AURA-DOM-010`; `AURA-AUTH-001` a `AURA-AUTH-004`; `AURA-UX-001` a `AURA-UX-008`; `AURA-INT-001`; `AURA-INT-002`; `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `CAP-SCOPE-015`; `CAP-SCOPE-016`; `CAP-SCOPE-017` | decisión E1; contratos E2/E3; seguridad e integraciones E4; paquete E5 si AURA continúa; sandboxes externos y certificación U | futura AURA, Vento OS, Meta, Google, TikTok, WhatsApp, correo, analítica e IA / local, CI, staging y sandboxes | `IDENTIFICADO` | Pendiente | Pendiente | AURA diferida; fuentes internas parciales; canales y proveedores sin auditoría canónica | `TREQ-AURA-001`; `TREQ-AURA-002`; `TREQ-AURA-003`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-015`; `TREQ-INTEGRATION-017`; `TREQ-SUPABASE-006`; `TREQ-SUPABASE-009`; `TREQ-AUTH-018` |
 
 | `TREQ-INTEGRATION-020` | `INTEGRATION` | La operación tecnológica deberá correlacionar servicios, cuentas, aplicaciones, endpoints, dispositivos compartidos, activos, redes, impresoras, tickets, incidentes, problemas, cambios, proveedores, licencias, contratos, costos, monitoreo, respaldos y conocimiento mediante identificadores y eventos versionados. Telemetría, alertas, webhooks, push, print jobs, herramientas de soporte remoto, MDM, ISP, fabricantes y licenciamiento deberán usar autenticación mínima, idempotencia, reloj coherente, límites, reintentos y reconciliación. Ningún adaptador externo almacenará secretos en tickets ni se convertirá en maestro de identidad, activo, contrato o costo. La conciliación detectará cuenta sin trabajador o contrato, endpoint sin activo, dispositivo sin postura, IP o reserva divergente, impresora sin heartbeat, incidente sin servicio, cambio sin prueba, licencia sin usuario, respaldo sin restauración y proveedor sin propietario. | `CAP-SCOPE-015`; `CAP-15.01` a `CAP-15.11`; `H-CAP-SCOPE-015-001` a `H-CAP-SCOPE-015-034` | dependencia oculta, alerta duplicada, soporte remoto no autorizado, secreto expuesto, red o impresión irreconciliable, licencia desperdiciada, cambio sin rollback y recuperación falsa / crítica | contractual + integración + API + webhook + telemetría + hardware + colas + seguridad + idempotencia + conciliación + E2E + regresión / automatizada con laboratorio y proveedores sandbox | `TI-DOM-001` a `TI-DOM-013`; `TI-AUTH-001` a `TI-AUTH-004`; `TI-UX-001` a `TI-UX-006`; `TI-INT-001` a `TI-INT-003`; `PRINT-ARC-001` a `PRINT-ARC-020`; `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`; `SHELL-CI-001` a `SHELL-CI-019`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | contratos E2/E3; servicios transversales E4; paquetes y pilotos E5; certificación U | Vento OS, Supabase, redes, endpoints, impresoras y proveedores sandbox / CI, staging, laboratorio y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | componentes parciales existentes; monitoreo, CMDB y service management transversales ausentes | `TREQ-SHELL-010`; `TREQ-VISO-002`; `TREQ-NEXO-019`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-011`; `TREQ-SUPABASE-006`; `TREQ-SUPABASE-009`; `TREQ-AUTH-009` |
+| `TREQ-INTEGRATION-021` | `INTEGRATION` | El ciclo de información, documentos y evidencia deberá conservar identificadores y contratos versionados entre aplicación propietaria, SHELL, Supabase, Storage, ANIMA, VISO, PASS y terceros. Crear, reemplazar, compartir, firmar, exportar, archivar, bloquear, anonimizar o eliminar deberá propagarse de forma idempotente, reconciliable y observable sin convertir eventos, índices, copias, cachés o proveedores en fuentes competidoras. La conciliación detectará archivo sin registro, registro sin archivo, versión divergente, consentimiento sin evidencia, dato usado fuera de finalidad, solicitud incompleta, copia externa vigente después de revocación, retención sin disparador, hold ignorado y disposición parcial. | `CAP-SCOPE-016`; `CAP-16.01` a `CAP-16.11`; `H-CAP-SCOPE-016-001` a `H-CAP-SCOPE-016-035` | duplicación o pérdida documental, eliminación parcial, exposición por tercero, firma no verificable, solicitud falsa completada, divergencia entre sistemas y evidencia irreproducible / crítica | contractual + integración + Storage + colas + idempotencia + reconciliación + privacidad + seguridad + E2E + regresión / automatizada con proveedores sandbox | `INFO-DOM-001` a `INFO-DOM-013`; `INFO-AUTH-001` a `INFO-AUTH-004`; `INFO-UX-001` a `INFO-UX-006`; `INFO-INT-001` a `INFO-INT-003`; `EVID-ARC-001` a `EVID-ARC-010`; bloques X/E3/E4/E5 | contratos E2/E3; servicios E4; paquetes E5; certificación U | Vento OS, Supabase, Storage y proveedores controlados / CI, staging y sandbox | `IDENTIFICADO` | Pendiente | Pendiente | piezas documentales, políticas y flujos parciales; ciclo transversal e inventario de terceros ausentes | `TREQ-SHELL-011`; `TREQ-SUPABASE-013`; `TREQ-ANIMA-005`; `TREQ-VISO-003`; `TREQ-PASS-012`; `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-020` |
+
+| `TREQ-INTEGRATION-022` | `INTEGRATION` | La analítica transversal y los datos maestros deberán integrarse mediante contratos versionados, eventos o lecturas autorizadas, claves canónicas y crosswalks. Cada dominio conservará sus hechos y maestros propietarios; la capa analítica solo materializará proyecciones, snapshots y agregados reproducibles. Ingestiones, reintentos, backfills, correcciones y cambios de esquema serán idempotentes, observables y reconciliables. Hojas de cálculo, herramientas BI, modelos predictivos, proveedores de IA y cachés no se convertirán en fuentes de verdad ni podrán escribir efectos empresariales sin una acción autorizada del dominio propietario. | `CAP-SCOPE-017`; `CAP-17.01` a `CAP-17.12`; `H-CAP-SCOPE-017-001` a `H-CAP-SCOPE-017-035` | duplicación de maestros, agregados competidores, ingestiones dobles, historia divergente, proveedor externo con autoridad implícita y recomendaciones ejecutadas sin control / crítica | contractual + integración + eventos + idempotencia + reconciliación + linaje + seguridad + E2E + regresión / automatizada con proveedores controlados | `DATA-INT-001` a `DATA-INT-004`; `DATA-DOM-001` a `DATA-DOM-017`; `DATA-AUTH-001` a `DATA-AUTH-004`; bloques E3, E4, X y E5; tareas propietarias por aplicación | contratos E2/E3; infraestructura E4; paquetes E5; certificación U | Vento OS, Supabase, fuentes externas, BI e IA controlada / CI, staging y sandbox | `IDENTIFICADO` | Pendiente | Pendiente | integraciones y datos parciales por dominio; capa analítica transversal y MDM federado pendientes | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-006`; `TREQ-INTEGRATION-019`; `TREQ-INTEGRATION-021`; `TREQ-DATA-001` a `TREQ-DATA-005` |
 
 #### UX
 
@@ -200314,8 +200337,1843 @@ PROPUESTA PARA APROBACIÓN — NO APROBADA
 No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
 
 
-### [ ] CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
-### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+### ✅ CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-015` aprobada  
+**Tarea anterior:** `CAP-SCOPE-015`  
+**Siguiente tarea reservada:** `CAP-SCOPE-017`  
+**Familia evaluada:** `CAP-16 — Proteger información, documentos y evidencia`  
+**Superficies objetivo:** todas las aplicaciones Vento OS, Supabase, Storage, archivos físicos, proveedores y canales externos  
+**Implementación técnica o jurídica:** no autorizada  
+**Eliminaciones, retenciones, firmas o investigaciones reales:** no autorizadas  
+**Requisitos generados:** `TREQ-SHELL-011`, `TREQ-SUPABASE-013`, `TREQ-ANIMA-005`, `TREQ-VISO-003`, `TREQ-PASS-012`, `TREQ-INTEGRATION-021`  
+**Tareas nuevas derivadas:** `INFO-DOM-001` a `013`, `INFO-AUTH-001` a `004`, `INFO-UX-001` a `006`, `INFO-INT-001` a `003`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo para gobernar información, datos personales, documentos, archivos y evidencia durante todo su ciclo de vida, desde la creación o recepción hasta su disposición final.
+
+La tarea debe permitir responder de forma inequívoca:
+
+```text
+qué información existe
+qué proceso y entidad legal la producen
+quién es su propietario funcional
+qué finalidad autoriza su uso
+qué nivel de sensibilidad tiene
+quién puede verla, cambiarla, aprobarla, compartirla o eliminarla
+qué versión está vigente
+cuánto tiempo debe conservarse
+qué obligación impide eliminarla
+qué evidencia demuestra autenticidad e integridad
+cómo se atiende al titular
+cómo se investiga un acceso o cambio indebido
+```
+
+No se busca crear una carpeta documental genérica ni convertir cada aplicación en un repositorio de archivos. Cada documento y evidencia continuará asociado al proceso y recurso empresarial que respalda.
+
+---
+
+#### 2. Decisión principal y propiedad
+
+```text
+CADA APLICACIÓN DE DOMINIO
+→ conserva el hecho empresarial y su expediente funcional
+
+SHELL / AUTH
+→ decide quién puede acceder, compartir, exportar o administrar
+
+SUPABASE / STORAGE
+→ conserva datos, metadatos, archivos, versiones y controles físicos
+
+ANIMA
+→ presenta documentos laborales propios y solicitudes del trabajador
+
+PASS
+→ presenta privacidad, consentimiento y derechos del cliente
+
+VISO
+→ administra gobierno, solicitudes, cumplimiento, investigaciones y auditoría
+
+EVID-ARC
+→ define arquitectura transversal de archivos, documentos y evidencia
+
+BLOQUE AA — GOBIERNO DE INFORMACIÓN
+→ define clasificación, finalidad, retención, firma, custodia,
+  derechos de titulares y reglas transversales
+```
+
+Ningún repositorio central podrá sustituir el expediente funcional ni permitir que un archivo sin recurso propietario se convierta en fuente de verdad.
+
+---
+
+#### 3. Marco normativo y de cumplimiento
+
+Esta tarea adopta un modelo de cumplimiento configurable y verificable, no una interpretación jurídica automática.
+
+Como línea base colombiana se reconocen:
+
+- Ley 1581 de 2012 para tratamiento de datos personales, finalidad, autorización, calidad, acceso restringido, seguridad, confidencialidad y derechos de los titulares;
+- Decreto 1074 de 2015 y reglas aplicables al tratamiento y atención de consultas o reclamos;
+- Ley 527 de 1999 para mensajes de datos, integridad, conservación, firma electrónica y firma digital;
+- obligaciones laborales, comerciales, tributarias, sanitarias, contractuales y probatorias que determinen conservación por tipo documental;
+- principios archivísticos como referencia técnica, sin asumir que toda regla propia de entidades públicas aplica automáticamente a Vento Group.
+
+Regla obligatoria:
+
+```text
+NORMA O CONTRATO
+→ OBLIGACIÓN DE CUMPLIMIENTO
+→ CONTROL
+→ EVIDENCIA
+→ RESPONSABLE
+→ FRECUENCIA
+→ RESULTADO
+```
+
+Los términos concretos de retención, obligaciones regulatorias, necesidad de registro, firma certificada o comunicación a autoridades deberán validarse por tipo documental y entidad legal mediante `INFO-DOM-012`; no se fijarán periodos universales inventados.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-16.01` — Clasificar información y documentos;
+- `CAP-16.02` — Crear y aprobar documentos;
+- `CAP-16.03` — Guardar y localizar documentos;
+- `CAP-16.04` — Controlar versiones y vigencia;
+- `CAP-16.05` — Compartir información de forma autorizada;
+- `CAP-16.06` — Proteger datos personales y sensibles;
+- `CAP-16.07` — Conservar registros y evidencia;
+- `CAP-16.08` — Archivar y eliminar de forma controlada;
+- `CAP-16.09` — Gestionar firmas y aprobaciones;
+- `CAP-16.10` — Atender solicitudes sobre información;
+- `CAP-16.11` — Investigar accesos o cambios indebidos.
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                    | Tratamiento       | Propietaria objetivo                         | Decisión                                                                                                                                                                               |
+| ------------ | ----------------------------------------- | ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-16.01    | Clasificar información y documentos       | REUSE_OR_REFACTOR | BLOQUE AA + propietarios funcionales         | Reutilizar clasificación de sensibilidad, contratos de recurso y EVID-ARC; consolidar categorías, finalidades, propietarios, sujetos, territorios y controles en un registro canónico. |
+| CAP-16.02    | Crear y aprobar documentos                | BUILD             | aplicación propietaria + VISO + BLOQUE AA    | Construir ciclo común de borrador, revisión, aprobación, publicación, sustitución, anulación y retiro sin convertir la aprobación en edición destructiva.                              |
+| CAP-16.03    | Guardar y localizar documentos            | REUSE_OR_REFACTOR | aplicación propietaria + Supabase/Storage    | Reutilizar Storage y módulos documentales existentes; exigir metadatos, recurso, entidad legal, búsqueda, integridad, versión y ubicación física o digital.                            |
+| CAP-16.04    | Controlar versiones y vigencia            | REUSE_OR_REFACTOR | aplicación propietaria + BLOQUE AA           | Reutilizar versiones parciales y vencimientos; separar versión, vigencia, estado, reemplazo y documento aplicable a una fecha.                                                         |
+| CAP-16.05    | Compartir información de forma autorizada | REUSE_OR_REFACTOR | SHELL + aplicación propietaria               | Reutilizar autorización, URLs firmadas y exportaciones, añadiendo destinatario, finalidad, campos, caducidad, revocación, marca de agua y evidencia de entrega cuando corresponda.     |
+| CAP-16.06    | Proteger datos personales y sensibles     | REUSE_OR_REFACTOR | BLOQUE AA + SHELL + ANIMA + PASS             | Consolidar políticas existentes, minimización, finalidad, consentimiento o base aplicable, datos sensibles, responsables, encargados, derechos y privacidad por diseño.                |
+| CAP-16.07    | Conservar registros y evidencia           | REUSE_OR_REFACTOR | aplicación propietaria + EVID-ARC + Supabase | Reutilizar auditoría y evidencia parcial, añadiendo integridad, procedencia, cadena de custodia, retención, preservación y posibilidad de reproducción.                                |
+| CAP-16.08    | Archivar y eliminar de forma controlada   | BUILD             | BLOQUE AA + propietarios + Supabase          | Construir tablas de retención, disparadores, archivo, revisión, legal hold, anonimización, eliminación verificable, certificado y conciliación de copias.                              |
+| CAP-16.09    | Gestionar firmas y aprobaciones           | BUILD             | BLOQUE AA + aplicación propietaria           | Definir niveles distintos para aprobación interna, aceptación, firma electrónica y firma digital; integrar proveedor certificado solo cuando el riesgo o la norma lo exijan.           |
+| CAP-16.10    | Atender solicitudes sobre información     | BUILD             | VISO + ANIMA + PASS + BLOQUE AA              | Construir caso trazable para acceso, actualización, rectificación, prueba de autorización, revocación, supresión, copia y otras solicitudes aplicables.                                |
+| CAP-16.11    | Investigar accesos o cambios indebidos    | BUILD             | VISO + SHELL + BLOQUE AA                     | Construir investigación con preservación, alcance, línea de tiempo, actores, evidencia, causa, acciones y cierre; coordinar incidentes de seguridad y continuidad sin mezclarlos.      |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento       | Cantidad |
+| ----------------- | -------: |
+| REUSE_OR_REFACTOR |        6 |
+| BUILD             |        5 |
+| TOTAL             |       11 |
+
+---
+
+#### 7. Modelo canónico de gobierno de información
+
+```text
+ACTIVO DE INFORMACIÓN
+→ contiene DATOS o CONOCIMIENTO
+→ puede materializarse como DOCUMENTO, REGISTRO o EVIDENCIA
+→ puede tener uno o varios ARCHIVOS o representaciones
+→ pertenece a un PROCESO y ENTIDAD LEGAL
+→ tiene PROPIETARIO FUNCIONAL y CUSTODIO
+→ se usa para FINALIDADES autorizadas
+→ aplica CLASIFICACIÓN, ACCESO, RETENCIÓN y DISPOSICIÓN
+```
+
+Cada activo de información conservará como mínimo:
+
+- identificador estable;
+- entidad legal y proceso;
+- propietario funcional y custodio;
+- recurso empresarial relacionado;
+- tipo, serie o categoría documental;
+- sujetos o colectivos afectados;
+- finalidad y fundamento aplicable;
+- sensibilidad y restricciones;
+- ubicación física o digital;
+- versión, estado, vigencia y reemplazo;
+- plazo, evento inicial de retención y disposición;
+- obligación, contrato o política que lo sustenta;
+- evidencia de creación, aprobación, acceso y disposición.
+
+---
+
+#### 8. Fronteras conceptuales obligatorias
+
+```text
+información ≠ dato personal ≠ documento ≠ registro ≠ evidencia ≠ archivo/blob
+```
+
+```text
+tipo documental ≠ serie documental ≠ expediente ≠ carpeta ≠ ubicación de Storage
+```
+
+```text
+borrador ≠ aprobado ≠ publicado ≠ vigente ≠ vencido ≠ retirado ≠ anulado
+```
+
+```text
+versión nueva ≠ edición silenciosa ≠ corrección de metadatos
+```
+
+```text
+usuario ≠ titular del dato ≠ trabajador ≠ cliente ≠ representante
+```
+
+```text
+consentimiento ≠ aviso de privacidad ≠ finalidad ≠ obligación legal o contractual
+```
+
+```text
+anonimización ≠ seudonimización ≠ bloqueo ≠ archivo ≠ eliminación
+```
+
+```text
+solicitud de eliminación ≠ borrado inmediato de todo registro
+```
+
+```text
+aprobación interna ≠ aceptación ≠ firma electrónica ≠ firma digital certificada
+```
+
+```text
+URL firmada ≠ autorización empresarial para compartir
+```
+
+```text
+historial operativo ≠ log técnico ≠ auditoría ≠ evidencia probatoria
+```
+
+```text
+retención vencida ≠ eliminación automática sin revisión
+```
+
+---
+
+#### 9. Inventario y clasificación
+
+`INFO-DOM-001` y `INFO-DOM-002` deberán inventariar:
+
+- bases y conjuntos de datos;
+- documentos empresariales y laborales;
+- contratos, facturas y soportes;
+- archivos físicos originales;
+- fotografías, videos, audios y grabaciones;
+- datos de clientes, trabajadores, candidatos y proveedores;
+- datos financieros, médicos, biométricos, geográficos y de seguridad;
+- logs, exportaciones, copias locales y hojas de cálculo;
+- canales y terceros que reciben información;
+- responsables y encargados del tratamiento cuando aplique.
+
+Clasificación mínima propuesta:
+
+```text
+PÚBLICA
+INTERNA
+CONFIDENCIAL
+RESTRINGIDA
+ESPECIALMENTE SENSIBLE
+```
+
+La clasificación no dependerá únicamente de la carpeta, el nombre del archivo o la aplicación. Será un atributo versionado del tipo de información y podrá elevarse para un documento concreto.
+
+---
+
+#### 10. Ciclo documental
+
+El ciclo común será:
+
+```text
+plantilla o recepción
+→ borrador
+→ revisión
+→ aprobación o rechazo
+→ publicación o entrada en vigencia
+→ uso y consulta
+→ nueva versión o sustitución
+→ vencimiento o retiro
+→ archivo
+→ disposición autorizada
+```
+
+Reglas:
+
+1. una versión aprobada no se sobrescribe;
+2. una corrección material genera versión o acto de corrección relacionado;
+3. la versión aplicable a una fecha debe poder reconstruirse;
+4. el archivo binario y sus metadatos deben mantenerse consistentes;
+5. anular no significa borrar;
+6. un documento retirado deja de usarse, pero conserva trazabilidad;
+7. plantillas, documentos emitidos y registros recibidos son objetos diferentes.
+
+---
+
+#### 11. Almacenamiento, búsqueda y localización
+
+Guardar un archivo requerirá vincularlo con:
+
+- entidad legal;
+- proceso y aplicación propietaria;
+- recurso o expediente;
+- tipo documental;
+- actor que lo aporta;
+- fecha del hecho y fecha de carga;
+- versión y vigencia;
+- clasificación;
+- hash, tamaño, formato y validaciones;
+- retención y legal hold;
+- original físico, copia o representación digital.
+
+La búsqueda deberá respetar autorización antes de indexar o devolver resultados. No se permitirá una búsqueda global que revele títulos, fragmentos, nombres o metadatos sensibles de recursos no autorizados.
+
+---
+
+#### 12. Datos personales y sensibles
+
+El modelo deberá registrar por finalidad:
+
+- titular o colectivo;
+- categorías de datos;
+- fuente;
+- responsable y encargado;
+- finalidad informada;
+- autorización, obligación o fundamento aplicable;
+- destinatarios;
+- periodo o criterio de conservación;
+- medidas y restricciones;
+- canal para ejercer derechos;
+- versión del aviso o política presentada.
+
+Datos médicos, biométricos, geolocalización precisa, documentos de identidad, datos financieros, expedientes laborales, declaraciones SST y otros datos sensibles no podrán circular en eventos, logs o exportaciones generales.
+
+La cuenta del usuario puede eliminarse o desactivarse sin que ello autorice borrar expedientes laborales, contables, transaccionales, de seguridad o auditoría sujetos a conservación. Cuando sea posible se desvinculará, anonimizará o limitará el dato sin destruir el hecho empresarial.
+
+---
+
+#### 13. Consentimiento, avisos y finalidad
+
+Las políticas estáticas de ANIMA y PASS se reutilizarán como evidencia inicial, pero no serán la única fuente de verdad.
+
+Deberá conservarse:
+
+- versión del aviso o política;
+- idioma y canal;
+- finalidades aceptadas o rechazadas;
+- carácter obligatorio o facultativo;
+- fecha, actor y evidencia;
+- cambios posteriores;
+- revocaciones y restricciones;
+- relación con comunicaciones comerciales.
+
+```text
+aceptar términos de servicio
+≠ autorizar marketing
+≠ autorizar datos sensibles
+≠ autorizar una finalidad futura no informada
+```
+
+---
+
+#### 14. Solicitudes de titulares y personas autorizadas
+
+El caso de privacidad deberá permitir:
+
+```text
+recepción
+→ validación de identidad o representación
+→ clasificación de la solicitud
+→ localización de sistemas y responsables
+→ bloqueo o marca de reclamo cuando aplique
+→ decisión y ejecución por cada sistema
+→ revisión de excepciones de conservación
+→ respuesta comprensible
+→ evidencia y cierre
+```
+
+Tipos mínimos:
+
+- consulta o acceso;
+- copia;
+- actualización;
+- rectificación;
+- prueba de autorización;
+- información sobre uso;
+- revocación;
+- supresión;
+- oposición o restricción cuando corresponda;
+- reclamación por uso o acceso indebido.
+
+La respuesta deberá ser legible y no exigir al titular comprender tablas, IDs internos o arquitectura técnica.
+
+---
+
+#### 15. Retención, archivo, legal hold y eliminación
+
+Cada regla de retención tendrá:
+
+- tipo o serie documental;
+- entidad legal;
+- evento que inicia el cómputo;
+- duración y fuente de la obligación;
+- archivo activo, semiactivo o histórico interno;
+- disposición final;
+- responsable de revisar;
+- excepciones;
+- periodicidad de ejecución;
+- evidencia de disposición.
+
+```text
+solicitud de eliminación
+→ búsqueda de obligaciones y legal holds
+→ decisión por categoría de datos
+→ eliminación, anonimización, bloqueo o conservación justificada
+→ conciliación de copias y derivados
+→ evidencia de ejecución
+```
+
+Un legal hold suspenderá la disposición sin modificar retroactivamente la regla de retención. Su creación y liberación exigirán autoridad, alcance, motivo y auditoría.
+
+---
+
+#### 16. Firmas y aprobaciones
+
+Se definen cuatro niveles:
+
+| Nivel                     | Uso                                                     | Evidencia mínima                                                        |
+| ------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| aprobación interna        | decisiones operativas o administrativas                 | actor autenticado, permiso, versión, fecha, decisión y motivo           |
+| aceptación                | constancia de lectura o conformidad                     | identidad, contenido presentado, acción y timestamp                     |
+| firma electrónica         | vinculación confiable entre firmante y documento        | método apropiado, identidad, intención, integridad y trazabilidad       |
+| firma digital certificada | casos que exijan mayor fuerza o proveedor especializado | certificado, validación, integridad, vigencia y evidencia del proveedor |
+
+No se dibujará una firma manuscrita ni se almacenará una imagen de firma como sustituto automático de identidad, intención e integridad.
+
+---
+
+#### 17. Compartición, exportación y terceros
+
+Compartir deberá registrar:
+
+- quién autoriza;
+- quién entrega;
+- destinatario;
+- finalidad;
+- campos y documentos incluidos;
+- clasificación;
+- canal;
+- vigencia;
+- descarga o entrega cuando sea verificable;
+- revocación;
+- obligación de confidencialidad o contrato.
+
+Las URLs firmadas serán cortas, revocables y vinculadas al recurso autorizado. La capacidad de generar una URL no concederá por sí sola derecho a compartir.
+
+Los proveedores que procesen información deberán tener propietario, finalidad, categorías de datos, ubicación o región, medidas, subencargados, eliminación o devolución, incidentes, terminación y evidencia contractual.
+
+---
+
+#### 18. Auditoría e investigación
+
+La auditoría transversal deberá distinguir:
+
+- decisión de autorización;
+- acceso o consulta sensible;
+- descarga, impresión o exportación;
+- creación, edición y cambio de metadatos;
+- aprobación y firma;
+- compartición;
+- cambio de clasificación;
+- retención, legal hold y disposición;
+- acceso de emergencia;
+- acciones de proveedor o cuenta técnica.
+
+Una investigación de acceso o cambio indebido conservará:
+
+```text
+caso
+→ alcance
+→ preservación
+→ línea de tiempo
+→ actores y recursos
+→ evidencia y fuentes
+→ hipótesis y comprobaciones
+→ hallazgo
+→ acciones de contención y corrección
+→ notificaciones aplicables
+→ cierre y seguimiento
+```
+
+Los logs no deberán incluir secretos ni el contenido completo de datos sensibles cuando basten identificadores, hashes, categorías y resultados.
+
+---
+
+#### 19. Integridad, procedencia y cadena de custodia
+
+La evidencia deberá poder demostrar:
+
+- quién la creó, recibió o capturó;
+- sobre qué recurso y proceso;
+- fecha y fuente;
+- archivo y hash;
+- transformaciones o derivados;
+- accesos y transferencias relevantes;
+- versión del software o plantilla cuando aplique;
+- conservación y disponibilidad;
+- relación entre original físico y copia digital.
+
+Capturas de pantalla, fotos, chats y archivos adjuntos no serán considerados evidencia suficiente por sí solos si no conservan contexto, procedencia e integridad.
+
+---
+
+#### 20. Obligaciones y controles de cumplimiento
+
+`INFO-DOM-012` mantendrá un registro de obligaciones con:
+
+- entidad legal y actividad aplicable;
+- fuente normativa, contractual o interna;
+- obligación;
+- propietario;
+- control;
+- evidencia;
+- frecuencia;
+- fecha límite;
+- estado;
+- excepción o incumplimiento;
+- acción correctiva.
+
+El sistema no determinará por sí solo que Vento cumple una norma. Mostrará la obligación, la evidencia disponible, las brechas y la validación responsable.
+
+---
+
+#### 21. Experiencia simple
+
+La experiencia principal deberá evitar formularios jurídicos o técnicos extensos.
+
+Pantallas objetivo:
+
+```text
+Gobierno de información
+Documentos
+Solicitudes de privacidad
+Retención y disposición
+Aprobaciones y firmas
+Auditoría e investigaciones
+```
+
+Reglas de UX:
+
+- lenguaje humano antes que nombres de tablas o políticas;
+- acciones principales visibles y detalles bajo demanda;
+- clasificación sugerida, pero confirmada por regla y propietario;
+- advertencias concretas al compartir, exportar o eliminar;
+- vista clara de versión vigente;
+- respuesta al titular en formato comprensible;
+- ocultamiento de datos sensibles hasta abrir el detalle autorizado;
+- ninguna explicación larga permanente en la pantalla cotidiana.
+
+---
+
+#### 22. Privacidad, seguridad y cumplimiento por diseño
+
+Toda capacidad nueva deberá especificar antes de implementarse:
+
+- finalidad y minimización;
+- campos necesarios;
+- autorización y alcance;
+- exposición en interfaz, API, eventos, logs y exportaciones;
+- retención y disposición;
+- evidencia de consentimiento o fundamento;
+- riesgos de terceros;
+- comportamiento offline;
+- restauración y copias;
+- pruebas de acceso negativo;
+- respuesta ante incidentes.
+
+Las decisiones de privacidad no se dejarán exclusivamente a textos legales publicados; deberán materializarse en contratos de datos, permisos, RLS, Storage, eventos y pruebas.
+
+---
+
+#### 23. Evidencia de implementación actual
+
+Se reconoce como base reutilizable:
+
+- `EVID-ARC-001` a `EVID-ARC-010`, que ya reservan inventario, propiedad, sensibilidad, metadatos, versiones, retención, validación, URLs firmadas, auditoría y eliminación;
+- ANIMA, que ya presenta y permite cargar documentos laborales, tipos, vencimientos y filtros;
+- políticas de privacidad y páginas de eliminación de cuenta en ANIMA y PASS;
+- flujo auditado de solicitud de eliminación en PASS;
+- decisiones y logs de autorización previstos por `AUTH-CTX`, `AUTH-DB` y `TREQ-AUTH-015`;
+- documentos, exportaciones y evidencias distribuidos en las aplicaciones de dominio.
+
+Estas piezas no demuestran todavía:
+
+- inventario corporativo completo;
+- finalidad y responsable por tratamiento;
+- retención por tipo documental;
+- legal hold;
+- versión canónica de consentimiento;
+- atención transversal de titulares;
+- firma por nivel de riesgo;
+- investigación integral de acceso o modificación;
+- eliminación reconciliada entre sistemas, copias y derivados.
+
+---
+
+#### 24. Preguntas y decisiones pendientes
+
+No se crean preguntas nuevas.
+
+Se reutilizan:
+
+- `ADM-13` — confirma que existen documentos empresariales originales en Oficina 1;
+- `ACT-14` — custodio habitual de documentos originales, todavía pendiente;
+- `DAT-18` y `DAT-19` — ubicación de instrucciones importantes y mecanismo de corrección;
+- `EXT-06` a `EXT-09` — documentos vigentes sobre uso de marcas;
+- `TEC-17` — exportaciones existentes por aplicación;
+- `DIF-12` — propiedad documental por hecho respaldado, ya resuelta funcionalmente.
+
+Las respuestas se consolidarán posteriormente en lote dentro del registro vivo. Ninguna pregunta queda sin tarea propietaria: `INFO-DOM-001`, `INFO-DOM-003`, `INFO-DOM-006`, `INFO-DOM-012` e `INFO-INT-002` resolverán su efecto documental.
+
+---
+
+#### 25. Hallazgos
+
+| ID                  | Hallazgo                                                                                                                                            | Severidad | Tarea propietaria                             | Puerta |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------------------- | ------ |
+| H-CAP-SCOPE-016-001 | No existe un modelo corporativo único de gobierno de información que conecte datos, documentos, evidencia, privacidad y cumplimiento.               | crítica   | INFO-DOM-001; INFO-INT-002                    | E1/E2  |
+| H-CAP-SCOPE-016-002 | No existe inventario completo de activos de información, bases, finalidades, propietarios, responsables, encargados y destinatarios.                | crítica   | INFO-DOM-001; INFO-DOM-008; INFO-DOM-010      | E1/E2  |
+| H-CAP-SCOPE-016-003 | La sensibilidad puede depender de permisos o carpetas sin una clasificación canónica versionada.                                                    | crítica   | INFO-DOM-002; INFO-AUTH-001                   | E2/E3  |
+| H-CAP-SCOPE-016-004 | Información, documento, registro, evidencia, archivo y expediente pueden confundirse.                                                               | alta      | INFO-DOM-003; INFO-INT-002                    | E2     |
+| H-CAP-SCOPE-016-005 | Los archivos están distribuidos entre aplicaciones y Storage sin metadatos y vínculos uniformes.                                                    | crítica   | INFO-DOM-005; EVID-ARC-004                    | E2/E3  |
+| H-CAP-SCOPE-016-006 | Un archivo puede existir sin entidad legal, proceso, recurso, propietario o tipo documental claramente resuelto.                                    | crítica   | INFO-DOM-003; INFO-DOM-005                    | E2/E3  |
+| H-CAP-SCOPE-016-007 | El borrado directo de archivo o fila puede eludir retención, legal hold, evidencia y conciliación de copias.                                        | crítica   | INFO-DOM-006; INFO-AUTH-003; INFO-UX-005      | E2/E3  |
+| H-CAP-SCOPE-016-008 | Versiones, vigencia, sustitución, anulación y retiro no tienen contrato transversal.                                                                | crítica   | INFO-DOM-004; INFO-UX-002                     | E2/E3  |
+| H-CAP-SCOPE-016-009 | La aprobación documental no está estandarizada entre aplicaciones.                                                                                  | alta      | INFO-DOM-004; INFO-DOM-011; INFO-UX-003       | E2     |
+| H-CAP-SCOPE-016-010 | Una URL firmada puede confundirse con autorización empresarial para compartir.                                                                      | crítica   | INFO-DOM-010; INFO-AUTH-002; EVID-ARC-007     | E2/E4  |
+| H-CAP-SCOPE-016-011 | Las políticas de privacidad existen de forma estática y separada en ANIMA y PASS.                                                                   | alta      | INFO-DOM-008; INFO-INT-002                    | E1/E2  |
+| H-CAP-SCOPE-016-012 | No existe registro transversal comprobado de versión de aviso, finalidades y prueba de autorización.                                                | crítica   | INFO-DOM-008; INFO-AUTH-001                   | E2/E3  |
+| H-CAP-SCOPE-016-013 | Consentimiento general, marketing, datos sensibles y aceptación contractual pueden mezclarse.                                                       | crítica   | INFO-DOM-008; INFO-DOM-010                    | E2/E3  |
+| H-CAP-SCOPE-016-014 | Las solicitudes de acceso, corrección, revocación o supresión no tienen un caso transversal y reconciliable.                                        | crítica   | INFO-DOM-009; INFO-UX-004                     | E2/E3  |
+| H-CAP-SCOPE-016-015 | Cuenta, identidad, titular y expediente pueden confundirse al eliminar o desactivar.                                                                | crítica   | INFO-DOM-009; INFO-DOM-006; INFO-AUTH-003     | E2/E3  |
+| H-CAP-SCOPE-016-016 | La eliminación de cuenta de cliente es una base parcial, pero no demuestra disposición en todos los dominios y copias.                              | crítica   | INFO-DOM-006; INFO-DOM-009; INFO-INT-002      | E2/E3  |
+| H-CAP-SCOPE-016-017 | Un retiro laboral podría interpretarse erróneamente como permiso para borrar documentos y auditoría sujetos a conservación.                         | crítica   | INFO-DOM-006; CAP-SCOPE-002; INFO-AUTH-003    | E2     |
+| H-CAP-SCOPE-016-018 | No existen tablas de retención corporativas versionadas por entidad y tipo documental.                                                              | crítica   | INFO-DOM-006; INFO-DOM-012                    | E1/E2  |
+| H-CAP-SCOPE-016-019 | El evento que inicia el término de retención puede no estar definido.                                                                               | alta      | INFO-DOM-006                                  | E2     |
+| H-CAP-SCOPE-016-020 | No existe legal hold canónico para suspender disposición por investigación, litigio o requerimiento.                                                | crítica   | INFO-DOM-006; INFO-AUTH-003; INFO-UX-005      | E2/E3  |
+| H-CAP-SCOPE-016-021 | Anonimización, seudonimización, bloqueo, archivo y eliminación pueden tratarse como equivalentes.                                                   | crítica   | INFO-DOM-006; INFO-DOM-009                    | E2/E3  |
+| H-CAP-SCOPE-016-022 | Proveedores que reciben datos o documentos no tienen inventario transversal de finalidad, ubicación, subencargados y terminación.                   | crítica   | INFO-DOM-010; INFO-INT-003                    | E1/E2  |
+| H-CAP-SCOPE-016-023 | Las exportaciones pueden producir copias fuera de control sin destinatario, finalidad, expiración ni revocación.                                    | crítica   | INFO-DOM-010; INFO-AUTH-002; INFO-UX-006      | E2/E3  |
+| H-CAP-SCOPE-016-024 | Datos médicos, biométricos, geográficos, financieros y documentos de identidad requieren controles más estrictos que los datos internos ordinarios. | crítica   | INFO-DOM-002; INFO-AUTH-001; INFO-AUTH-002    | E2/E3  |
+| H-CAP-SCOPE-016-025 | Los logs y auditorías están distribuidos y no comparten un modelo común de actor, recurso, motivo, decisión y correlación.                          | crítica   | INFO-DOM-013; INFO-INT-002                    | E2/E3  |
+| H-CAP-SCOPE-016-026 | Consultas, descargas, impresiones y exportaciones sensibles pueden no quedar auditadas uniformemente.                                               | crítica   | INFO-DOM-013; INFO-AUTH-004                   | E2/E3  |
+| H-CAP-SCOPE-016-027 | Logs, tickets, capturas y eventos pueden exponer secretos o contenido personal innecesario.                                                         | crítica   | INFO-AUTH-004; TI-AUTH-004                    | E2/E4  |
+| H-CAP-SCOPE-016-028 | Un log mutable o sin protección de integridad puede no servir para investigación confiable.                                                         | crítica   | INFO-DOM-007; INFO-DOM-013; TREQ-SUPABASE-013 | E3     |
+| H-CAP-SCOPE-016-029 | Aprobación, aceptación, firma electrónica e imagen de firma pueden confundirse.                                                                     | crítica   | INFO-DOM-011; INFO-UX-003                     | E2     |
+| H-CAP-SCOPE-016-030 | No existe estándar transversal de hash, timestamp, procedencia y transformación para evidencia.                                                     | crítica   | INFO-DOM-007; EVID-ARC-006                    | E2/E3  |
+| H-CAP-SCOPE-016-031 | Los accesos o cambios indebidos no tienen expediente de investigación común y preservación coordinada.                                              | crítica   | INFO-DOM-013; INFO-UX-006; INFO-AUTH-004      | E2/E3  |
+| H-CAP-SCOPE-016-032 | Requerimientos de autoridades o entregas regulatorias pueden ejecutarse sin alcance, aprobación y evidencia uniforme.                               | crítica   | INFO-DOM-010; INFO-DOM-012; INFO-INT-003      | E2/E3  |
+| H-CAP-SCOPE-016-033 | Los originales físicos y sus copias digitales no tienen cadena de custodia y correspondencia transversal comprobada.                                | alta      | INFO-DOM-003; INFO-DOM-007                    | E1/E2  |
+| H-CAP-SCOPE-016-034 | Captura offline, reintento o reemplazo puede duplicar archivos, versiones, firmas o disposiciones.                                                  | crítica   | INFO-DOM-004; INFO-DOM-007; INFO-INT-001      | E3/E4  |
+| H-CAP-SCOPE-016-035 | Las obligaciones de cumplimiento no tienen registro común de propietario, control, evidencia, frecuencia y brecha.                                  | crítica   | INFO-DOM-012; INFO-UX-001                     | E1/E2  |
+
+---
+
+#### 26. Tareas nuevas derivadas
+
+| ID            | Tarea                                                                                                                         | Bloque                                             | Momento                                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| INFO-DOM-001  | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios     | BLOQUE AA — Gobierno de información / dominio      | Primera tarea del bloque, antes de clasificación o diseño de pantallas |
+| INFO-DOM-002  | Definir clasificación, sensibilidad, minimización y manejo por categoría de información                                       | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-001                                                |
+| INFO-DOM-003  | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias                               | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-001 y coordinada con EVID-ARC                      |
+| INFO-DOM-004  | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro                                       | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-003                                                |
+| INFO-DOM-005  | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales                                | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-002 a INFO-DOM-004                                 |
+| INFO-DOM-006  | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | BLOQUE AA — Gobierno de información / dominio      | Después del inventario y antes de ejecutar eliminación real            |
+| INFO-DOM-007  | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia                             | BLOQUE AA — Gobierno de información / dominio      | Coordinada con EVID-ARC y arquitectura de Supabase                     |
+| INFO-DOM-008  | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles                        | BLOQUE AA — Gobierno de información / dominio      | Antes de ampliar captura o uso de datos personales                     |
+| INFO-DOM-009  | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión                            | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-008                                                |
+| INFO-DOM-010  | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad            | BLOQUE AA — Gobierno de información / dominio      | Antes de nuevas exportaciones o integraciones externas                 |
+| INFO-DOM-011  | Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia                                       | BLOQUE AA — Gobierno de información / dominio      | Antes de implementar firmas o aceptar documentos vinculantes           |
+| INFO-DOM-012  | Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento                    | BLOQUE AA — Gobierno de información / dominio      | Después del inventario y con validación responsable                    |
+| INFO-DOM-013  | Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre                                        | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-002 y INFO-DOM-007                                 |
+| INFO-AUTH-001 | Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado                          | BLOQUE AA — Gobierno de información / autorización | Antes de exponer bibliotecas, búsqueda o solicitudes                   |
+| INFO-AUTH-002 | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas                                 | BLOQUE AA — Gobierno de información / autorización | Antes de habilitar acciones masivas o externas                         |
+| INFO-AUTH-003 | Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación                              | BLOQUE AA — Gobierno de información / autorización | Antes de mutaciones documentales sensibles                             |
+| INFO-AUTH-004 | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada                                       | BLOQUE AA — Gobierno de información / autorización | Antes de habilitar consola de auditoría                                |
+| INFO-UX-001   | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas                                              | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-001 y INFO-DOM-012                                 |
+| INFO-UX-002   | Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia                                         | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-003 a INFO-DOM-005                                 |
+| INFO-UX-003   | Diseñar creación, revisión, aprobación, publicación y firma de documentos                                                     | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-004 y INFO-DOM-011                                 |
+| INFO-UX-004   | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes                                               | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-008 y INFO-DOM-009                                 |
+| INFO-UX-005   | Diseñar retención, legal hold, archivo y disposición controlada                                                               | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-006 y INFO-AUTH-003                                |
+| INFO-UX-006   | Diseñar explorador de auditoría e investigación con divulgación progresiva                                                    | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-013 y INFO-AUTH-004                                |
+| INFO-INT-001  | Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo                            | BLOQUE AA — Gobierno de información / integración  | Antes de conectar servicios externos                                   |
+| INFO-INT-002  | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio                                  | BLOQUE AA — Gobierno de información / integración  | Antes de implementar modelo transversal                                |
+| INFO-INT-003  | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos                                 | BLOQUE AA — Gobierno de información / integración  | Antes de compartir datos o documentos con terceros                     |
+
+---
+
+#### 27. Ubicación exacta de tareas nuevas
+
+Crear el archivo:
+
+```text
+docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md
+```
+
+Agregar su ruta en `docs/plan-canonico/modular/manifest.json` después de:
+
+```text
+bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md
+```
+
+El nuevo bloque contendrá, en este orden:
+
+1. `INFO-DOM-001` a `INFO-DOM-013`;
+2. `INFO-AUTH-001` a `INFO-AUTH-004`;
+3. `INFO-UX-001` a `INFO-UX-006`;
+4. `INFO-INT-001` a `INFO-INT-003`.
+
+No se trasladarán ni duplicarán `EVID-ARC-*`, `AUTH-*`, tareas documentales de ANIMA/PASS o auditorías de cada aplicación. BLOQUE AA las coordinará mediante contratos y dependencias.
+
+---
+
+#### 28. Requisitos de prueba generados
+
+El registro `04A` completo incorpora:
+
+```text
+TREQ-SHELL-011
+TREQ-SUPABASE-013
+TREQ-ANIMA-005
+TREQ-VISO-003
+TREQ-PASS-012
+TREQ-INTEGRATION-021
+```
+
+- `TREQ-SHELL-011` protege clasificación, finalidad, acceso, búsqueda, compartición y exportación autorizada.
+- `TREQ-SUPABASE-013` protege documentos, versiones, integridad, retención, legal hold, disposición y auditoría física.
+- `TREQ-ANIMA-005` protege privacidad, documentos laborales, solicitudes y conservación del trabajador.
+- `TREQ-VISO-003` protege cumplimiento, solicitudes, aprobaciones, auditoría e investigaciones.
+- `TREQ-PASS-012` protege consentimiento, derechos, eliminación y comunicaciones del cliente.
+- `TREQ-INTEGRATION-021` protege el ciclo transversal entre aplicaciones, Storage, proveedores y copias externas.
+
+---
+
+#### 29. Dependencias principales
+
+- `CAP-SCOPE-002`: identidad laboral, retiro y conservación de expedientes;
+- `CAP-SCOPE-003`: SST, salud y datos especialmente sensibles;
+- `CAP-SCOPE-009`: pedidos, clientes, pagos y documentos comerciales;
+- `CAP-SCOPE-012`: documentos financieros, contables, tributarios y cartera;
+- `CAP-SCOPE-014`: consentimiento y comunicaciones comerciales;
+- `CAP-SCOPE-015`: logs, soporte, secretos e incidentes técnicos;
+- `CAP-SCOPE-018`: incidentes de seguridad, continuidad, respaldo y recuperación;
+- `EVID-ARC-001` a `EVID-ARC-010`: archivos, documentos y evidencia;
+- bloques `AUTH`, `E3`, `E4`, `E5`, `T` y `U`;
+- propietarios funcionales de todas las aplicaciones.
+
+---
+
+#### 30. Criterios de aceptación
+
+`CAP-SCOPE-016` podrá aprobarse cuando:
+
+- las once subcapacidades estén clasificadas;
+- la propiedad del hecho, del documento, del archivo y de la política transversal esté separada;
+- información, dato, documento, registro, evidencia y archivo estén diferenciados;
+- exista modelo para finalidad, sensibilidad, consentimiento y derechos;
+- retención, legal hold, anonimización y eliminación no se confundan;
+- aprobación, firma electrónica y firma digital estén separadas;
+- las URLs firmadas no se interpreten como autorización suficiente;
+- auditoría e investigación tengan integridad y preservación;
+- cada hallazgo tenga tarea y puerta de resolución;
+- los seis `TREQ` estén incorporados en el `04A` completo;
+- no se fijen plazos legales universales sin validación por tipo documental;
+- no se autorice eliminación, acceso, firma o investigación real;
+- `CAP-SCOPE-017` permanezca como continuidad inmediata.
+
+---
+
+#### 31. Lo que esta tarea no autoriza
+
+- crear o cambiar políticas legales vigentes;
+- declarar cumplimiento normativo;
+- eliminar, anonimizar, bloquear o archivar datos reales;
+- destruir documentos físicos;
+- crear legal holds reales;
+- responder solicitudes reales de titulares;
+- firmar o aprobar documentos vinculantes;
+- contratar proveedores de firma, OCR, archivo o privacidad;
+- abrir investigaciones sobre personas;
+- exportar datos o entregar información a terceros;
+- modificar Storage, RLS, tablas, triggers o logs;
+- iniciar `CAP-SCOPE-017`.
+
+---
+
+#### 32. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+información y finalidad identificadas
+→ clasificación y propietario
+→ documento, registro o evidencia vinculados
+→ acceso y uso autorizados
+→ versión, aprobación y vigencia
+→ conservación y solicitudes
+→ archivo o disposición controlada
+→ auditoría e investigación
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-017
+— Evaluar analítica, indicadores y datos maestros
+```
+
+---
+
+#### 33. Estado de aprobación
+
+```text
+PROPUESTA PARA APROBACIÓN — APROBADA
+```
+
+No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
+
+
+### ✅ CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-016` aprobada  
+**Tarea anterior:** `CAP-SCOPE-016`  
+**Siguiente tarea reservada:** `CAP-SCOPE-018`  
+**Familia evaluada:** `CAP-17 — Medir, analizar y mejorar`  
+**Superficies objetivo:** todas las aplicaciones Vento OS, Supabase, fuentes externas, reportes, tableros, exportaciones y modelos analíticos  
+**Implementación técnica:** no autorizada  
+**Modificación de métricas, metas o datos reales:** no autorizada  
+**Requisitos generados:** `TREQ-DATA-001` a `TREQ-DATA-005` y `TREQ-INTEGRATION-022`  
+**Tareas nuevas derivadas:** `DATA-DOM-001` a `017`, `DATA-AUTH-001` a `004`, `DATA-UX-001` a `008`, `DATA-INT-001` a `004`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo para que Vento Group pueda medir, explicar y mejorar su operación utilizando datos confiables, definiciones comunes y decisiones trazables.
+
+La tarea deberá permitir responder de forma inequívoca:
+
+```text
+qué ocurrió
+cuándo ocurrió
+qué entidad, marca, sede, área, canal, producto o actor estuvo involucrado
+qué fuente conserva el hecho original
+qué definición y versión utiliza cada indicador
+qué calidad y frescura tiene la información
+por qué cambió un resultado
+qué decisión debe tomarse
+qué acción se ejecutó
+si la acción produjo la mejora esperada
+```
+
+No se busca crear un tablero lleno de cifras ni una base paralela que copie todos los datos. La analítica deberá reducir ambigüedad, orientar una decisión concreta y permitir llegar desde el resultado agregado hasta los hechos que lo explican.
+
+---
+
+#### 2. Decisión principal y propiedad
+
+```text
+APLICACIONES DE DOMINIO
+→ conservan sus datos maestros propietarios
+→ conservan los hechos y estados operativos
+→ exponen contratos de lectura o eventos
+
+SUPABASE / E3
+→ gobierna arquitectura, fuentes de verdad, calidad física,
+  historial, rendimiento y contratos de datos
+
+BLOQUE AB — ANALÍTICA Y DATOS MAESTROS
+→ gobierna datos maestros federados, capa semántica,
+  métricas, calidad analítica, reportes, diagnóstico y mejora
+
+VISO
+→ presenta visión ejecutiva transversal,
+  seguimiento de objetivos y acciones de mejora
+
+NUMERA
+→ presenta analítica económica, financiera,
+  de costos, rentabilidad, presupuesto y escenarios
+
+CADA APLICACIÓN
+→ presenta la analítica operativa necesaria para su proceso
+```
+
+No se crea una aplicación analítica monolítica ni un nuevo dueño de todos los datos.
+
+La propiedad será federada:
+
+```text
+DATO MAESTRO O HECHO
+→ conserva un propietario de dominio
+
+DEFINICIÓN ANALÍTICA
+→ conserva un propietario empresarial
+
+IMPLEMENTACIÓN DE CÁLCULO
+→ conserva un propietario técnico
+
+CERTIFICACIÓN DE CALIDAD
+→ conserva un responsable independiente o autorizado
+```
+
+---
+
+#### 3. Evidencia y estado actual
+
+La implementación actual contiene piezas útiles pero dispersas:
+
+- ANIMA ya calcula turnos programados y atendidos, tardanzas, ausencias, incidencias, minutos y tasas de asistencia y puntualidad;
+- NUMERA ya reserva tareas para costos, rentabilidad, reportes, indicadores, exportaciones, escenarios y un visor económico;
+- NEXO contiene catálogo maestro de productos, presentaciones, proveedores relacionados, políticas, rutas, sedes y configuraciones;
+- varias pantallas calculan KPI locales para apoyar una operación específica;
+- E3 ya exige propiedad de fuentes de verdad, arquitectura de vistas y RPC, auditoría, rendimiento y contratos entre dominios;
+- E3 también reserva una auditoría específica de normalización, duplicados semánticos, valores mostrados, valores de búsqueda y valores externos originales.
+
+La existencia de estas piezas no demuestra todavía:
+
+- que dos aplicaciones calculen igual el mismo indicador;
+- que los nombres de las métricas tengan significado común;
+- que cada dato maestro tenga propietario, steward y ciclo de vida;
+- que se pueda reproducir un reporte histórico;
+- que la calidad y frescura sean visibles;
+- que una señal termine en una acción y una comprobación de resultado.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-17.01` — Definir medidas e indicadores;
+- `CAP-17.02` — Recopilar información;
+- `CAP-17.03` — Verificar calidad de información;
+- `CAP-17.04` — Preparar reportes;
+- `CAP-17.05` — Analizar ventas y demanda;
+- `CAP-17.06` — Analizar inventario y abastecimiento;
+- `CAP-17.07` — Analizar producción y rendimiento;
+- `CAP-17.08` — Analizar servicio y clientes;
+- `CAP-17.09` — Analizar costos y rentabilidad;
+- `CAP-17.10` — Identificar problemas y oportunidades;
+- `CAP-17.11` — Definir y seguir acciones de mejora;
+- `CAP-17.12` — Comprobar resultados.
+
+El título de esta tarea también exige evaluar datos maestros porque toda comparación transversal depende de identidades, jerarquías y dimensiones comunes.
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                | Tratamiento       | Propietaria objetivo                       | Decisión                                                                                                                                                                                    |
+| ------------ | ------------------------------------- | ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-17.01    | Definir medidas e indicadores         | BUILD             | BLOQUE AB + propietarios empresariales     | Construir registro canónico versionado de métricas, KPI, drivers, guardrails, fórmulas, granularidad, dimensiones, periodos, fuentes, calidad, responsables y decisiones asociadas.         |
+| CAP-17.02    | Recopilar información                 | REUSE_OR_REFACTOR | aplicaciones propietarias + E3 + BLOQUE AB | Reutilizar tablas, eventos, importaciones y vistas existentes; formalizar contratos de ingestión, tiempos, claves, versiones, backfills, reconciliación y linaje.                           |
+| CAP-17.03    | Verificar calidad de información      | REUSE_OR_REFACTOR | E3 + BLOQUE AB + stewards                  | Reutilizar auditorías de normalización y calidad; añadir certificación por uso, frescura, cobertura, integridad, cuarentena, degradación y remediación.                                     |
+| CAP-17.04    | Preparar reportes                     | REUSE_OR_REFACTOR | VISO, NUMERA y aplicaciones propietarias   | Consolidar reportes parciales bajo un contrato común de versión, corte, filtros, fuente, calidad, snapshot, exportación y reproducción.                                                     |
+| CAP-17.05    | Analizar ventas y demanda             | REUSE_OR_REFACTOR | PULSO + AURA + NUMERA                      | Reutilizar ventas, pedidos, precios, promociones y canales; diseñar análisis de demanda, mezcla, conversión, frecuencia, estacionalidad y rentabilidad sin confundir correlación con causa. |
+| CAP-17.06    | Analizar inventario y abastecimiento  | REUSE_OR_REFACTOR | NEXO + ORIGO + NUMERA                      | Reutilizar existencias, movimientos, compras, proveedores y remisiones; consolidar disponibilidad, cobertura, rotación, faltantes, vencimientos, cumplimiento y costo.                      |
+| CAP-17.07    | Analizar producción y rendimiento     | REUSE_OR_REFACTOR | FOGO + NEXO + NUMERA                       | Reutilizar recetas, lotes, consumos, salidas y mermas; consolidar capacidad, adherencia, rendimiento, variación, calidad y costo.                                                           |
+| CAP-17.08    | Analizar servicio y clientes          | REUSE_OR_REFACTOR | PASS + PULSO + AURA + VISO                 | Reutilizar pedidos, feedback, reclamos, fidelización, reputación y reservas; consolidar servicio, recurrencia, satisfacción, resolución y valor del cliente con privacidad.                 |
+| CAP-17.09    | Analizar costos y rentabilidad        | REUSE_OR_REFACTOR | NUMERA                                     | Reutilizar el alcance financiero y el visor económico; asegurar trazabilidad, escenarios separados, moneda, periodos, centros de costo y conciliación.                                      |
+| CAP-17.10    | Identificar problemas y oportunidades | BUILD             | BLOQUE AB + VISO + propietarios            | Construir diagnóstico transversal, detección de variaciones y anomalías, oportunidades explicables, impacto, confianza, restricciones y ruta de investigación.                              |
+| CAP-17.11    | Definir y seguir acciones de mejora   | BUILD             | VISO + propietarios funcionales            | Construir ciclo de acción con hipótesis, responsable, línea base, meta, drivers, guardrails, plazo, estado, evidencia y efectos no deseados.                                                |
+| CAP-17.12    | Comprobar resultados                  | BUILD             | BLOQUE AB + propietarios + VISO            | Construir evaluación posterior que compare línea base, meta, ventana, segmentos, calidad, guardrails, confianza y aprendizaje; permitir cerrar, iterar, revertir o escalar.                 |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento       | Cantidad |
+| ----------------- | -------: |
+| REUSE_OR_REFACTOR |        8 |
+| BUILD             |        4 |
+| TOTAL             |       12 |
+
+---
+
+#### 7. Modelo canónico de datos y analítica
+
+```text
+DATO MAESTRO
+→ identifica entidades relativamente estables
+
+DATO DE REFERENCIA
+→ define códigos, listas y clasificaciones controladas
+
+HECHO O EVENTO
+→ registra algo que ocurrió
+
+SNAPSHOT
+→ conserva el estado observado en un momento
+
+MÉTRICA
+→ aplica una definición a hechos y dimensiones
+
+KPI
+→ métrica priorizada para una decisión y objetivo
+
+DRIVER
+→ explica o anticipa movimiento del KPI
+
+GUARDRAIL
+→ evita mejorar el KPI dañando otra dimensión
+
+REPORTE O TABLERO
+→ presenta métricas para una decisión
+
+ACCIÓN DE MEJORA
+→ modifica el proceso y luego comprueba el resultado
+```
+
+La capa analítica no podrá corregir un hecho operativo. Toda corrección deberá regresar al dominio propietario o registrarse como restatement analítico explícito.
+
+---
+
+#### 8. Fronteras conceptuales obligatorias
+
+```text
+dato maestro ≠ dato de referencia ≠ transacción ≠ evento ≠ snapshot
+```
+
+```text
+métrica ≠ KPI ≠ meta ≠ umbral ≠ alerta
+```
+
+```text
+numerador ≠ denominador ≠ porcentaje ≠ puntos porcentuales
+```
+
+```text
+fecha del hecho ≠ fecha empresarial ≠ fecha de carga ≠ fecha de actualización
+```
+
+```text
+cero ≠ nulo ≠ no aplica ≠ desconocido ≠ no recibido ≠ pendiente
+```
+
+```text
+vista en vivo ≠ snapshot publicado ≠ reporte oficial ≠ exportación
+```
+
+```text
+real ≠ presupuestado ≠ pronosticado ≠ simulado ≠ propuesto
+```
+
+```text
+correlación ≠ causalidad ≠ hipótesis validada
+```
+
+```text
+alerta ≠ diagnóstico ≠ acción ≠ resultado
+```
+
+```text
+dashboard ≠ fuente de verdad
+```
+
+---
+
+#### 9. Gobierno federado de datos maestros
+
+No se construirá una tabla maestra universal que sustituya todos los dominios.
+
+Cada objeto compartido tendrá:
+
+- identificador canónico estable;
+- propietario funcional;
+- steward o responsable de calidad;
+- sistema fuente;
+- claves empresariales y técnicas;
+- códigos externos y aliases;
+- jerarquías y relaciones;
+- estado y vigencia;
+- atributos que cada dominio puede administrar;
+- reglas de alta, corrección, fusión, separación y retiro;
+- historial efectivo;
+- consumidores y contratos;
+- controles de calidad;
+- crosswalks con sistemas externos.
+
+Distribución objetivo inicial:
+
+| Familia de datos                                                 | Propietaria objetivo                        | Observación                                                                        |
+| ---------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| entidades legales, marcas, sedes y áreas                         | dominio organizacional administrado en VISO | NUMERA y otras aplicaciones consumen la identidad; no crean copias independientes. |
+| trabajadores, roles y asignaciones                               | VISO                                        | ANIMA conserva hechos laborales y de asistencia, no redefine la identidad maestra. |
+| clientes, cuentas, contactos y consentimientos                   | PASS                                        | PULSO y AURA consumen proyecciones mínimas autorizadas.                            |
+| productos, categorías, unidades, presentaciones, LOC y activos   | NEXO                                        | FOGO, ORIGO, PULSO y NUMERA referencian la identidad canónica.                     |
+| proveedores y condiciones comerciales                            | ORIGO                                       | El producto relacionado conserva identidad NEXO.                                   |
+| recetas, procesos, rutas y recursos productivos                  | FOGO                                        | Las salidas e insumos se relacionan con productos NEXO.                            |
+| oferta, canales, precios de venta, pedidos y ventas              | PULSO                                       | Costos y rentabilidad se calculan en NUMERA.                                       |
+| centros de costo, monedas, periodos y clasificaciones económicas | NUMERA                                      | No sustituyen empresa, sede, marca ni canal.                                       |
+| campañas, audiencias y activos de marca                          | AURA, si continúa                           | Clientes y consentimientos continúan en PASS.                                      |
+| servicios tecnológicos y endpoints                               | BLOQUE Z con SHELL y NEXO                   | Se separa activo físico, endpoint, dispositivo compartido y servicio.              |
+
+La propiedad podrá dividirse por atributos cuando se documente explícitamente. La división no permitirá que dos dominios editen el mismo atributo sin contrato de precedencia.
+
+---
+
+#### 10. Identidad, fusión y ciclo de vida maestro
+
+Estados mínimos:
+
+```text
+PROPUESTO
+→ ACTIVO
+→ DEPRECADO
+→ RETIRADO
+```
+
+Estados especiales:
+
+```text
+DUPLICADO CONFIRMADO
+FUSIONADO
+SEPARADO
+SUSTITUIDO
+BLOQUEADO
+```
+
+Reglas:
+
+- una coincidencia textual no autoriza fusión;
+- toda fusión revisará relaciones, movimientos, documentos, integraciones e historia;
+- la fusión conservará los identificadores anteriores como aliases;
+- la separación deberá reconstruir relaciones cuando sea técnicamente posible;
+- retirar un maestro impedirá usos nuevos, pero no borrará hechos históricos;
+- un cambio de nombre no cambiará la identidad;
+- los códigos externos tendrán fuente, vigencia y unicidad contextual;
+- las jerarquías conservarán vigencia para reproducir reportes históricos.
+
+---
+
+#### 11. Registro canónico de métricas
+
+Cada métrica deberá conservar como mínimo:
+
+- identificador y nombre empresarial;
+- descripción en lenguaje no técnico;
+- decisión que apoya;
+- propietario empresarial y técnico;
+- fórmula;
+- numerador y denominador;
+- granularidad o grain;
+- dimensiones permitidas;
+- inclusiones y exclusiones;
+- unidad, moneda y precisión;
+- calendario, zona horaria y fecha empresarial;
+- fuente de verdad y tablas o eventos derivados;
+- tratamiento de anulaciones, devoluciones y correcciones;
+- tratamiento de datos tardíos y periodos abiertos;
+- frecuencia de actualización;
+- calidad mínima y estado de certificación;
+- versión y vigencia;
+- ruta de drill-down;
+- restricciones de privacidad;
+- meta, drivers y guardrails cuando sea KPI.
+
+Regla obligatoria:
+
+```text
+MISMA MÉTRICA + MISMA VERSIÓN + MISMO CONTEXTO + MISMO CORTE
+→ MISMO RESULTADO
+```
+
+La implementación SQL, vista, RPC o modelo podrá cambiar sin alterar el significado. Un cambio de significado exigirá una versión nueva.
+
+---
+
+#### 12. Jerarquía de indicadores
+
+Cada tablero de decisión deberá priorizar:
+
+```text
+1 a 3 KPI PRINCIPALES
+→ resultado que cambia la decisión
+
+1 a 2 DRIVERS por KPI
+→ variables accionables que explican el movimiento
+
+1 a 2 GUARDRAILS
+→ límites que evitan daño a calidad, servicio, seguridad, margen o personas
+```
+
+No se aprobará un KPI porque sea fácil de mostrar.
+
+Un indicador deberá:
+
+- representar el resultado buscado o declarar que es proxy;
+- cambiar una decisión real;
+- producir señal con la cadencia de revisión;
+- tener palancas controlables o drivers relacionados;
+- ser medible sin trabajo manual recurrente;
+- ser difícil de mejorar de forma engañosa.
+
+No se fijarán metas definitivas sin línea base, histórico, capacidad de influencia y método de medición.
+
+---
+
+#### 13. Tiempo, granularidad y comparabilidad
+
+Cada hecho analítico distinguirá:
+
+- tiempo de ocurrencia;
+- fecha empresarial;
+- tiempo de recepción;
+- tiempo de procesamiento;
+- tiempo de última corrección;
+- zona horaria;
+- periodo operativo, económico, contable o fiscal aplicable.
+
+Cada métrica declarará su granularidad:
+
+```text
+una fila por venta
+una fila por línea de pedido
+una fila por producto × sede × día
+una fila por lote
+una fila por trabajador × turno
+```
+
+No se unirán granos distintos sin una agregación declarada.
+
+Las comparaciones conservarán:
+
+- periodo actual y comparable;
+- días completos o parciales;
+- cambios de horario o calendario;
+- sedes abiertas o cerradas;
+- cambios de catálogo y jerarquía;
+- inflación o moneda cuando corresponda;
+- cambios de definición;
+- datos tardíos y restatements.
+
+---
+
+#### 14. Recopilación, transformación y linaje
+
+Flujo objetivo:
+
+```text
+FUENTE PROPIETARIA
+→ CONTRATO VERSIONADO
+→ VALIDACIÓN DE INGESTIÓN
+→ ZONA DE CUARENTENA CUANDO APLIQUE
+→ MODELO ANALÍTICO
+→ MÉTRICA VERSIONADA
+→ REPORTE O TABLERO
+→ DRILL-DOWN A LA FUENTE
+```
+
+Cada transformación deberá conservar:
+
+- fuente y versión;
+- consulta, regla o código;
+- fecha de ejecución;
+- ventana procesada;
+- número de registros de entrada y salida;
+- rechazos y duplicados;
+- dependencias;
+- actor o proceso ejecutor;
+- hash o versión de artefacto cuando corresponda;
+- posibilidad de reconstrucción.
+
+Una hoja de cálculo podrá servir como captura temporal controlada, pero no será fuente de verdad permanente sin contrato, propietario, validación y reconciliación.
+
+---
+
+#### 15. Calidad y certificación de datos
+
+Dimensiones mínimas:
+
+- completitud;
+- unicidad;
+- validez;
+- consistencia;
+- integridad referencial;
+- frescura;
+- cobertura;
+- volumen y forma;
+- reconciliación;
+- estabilidad histórica.
+
+Estados propuestos:
+
+```text
+NO EVALUADO
+EN OBSERVACIÓN
+CERTIFICADO
+DEGRADADO
+BLOQUEADO
+```
+
+Reglas:
+
+- `CERTIFICADO` se otorga para un uso, periodo y versión concretos;
+- una fuente degradada podrá mostrarse con advertencia si la decisión lo permite;
+- un reporte oficial no podrá publicarse con una dependencia bloqueada;
+- toda degradación tendrá propietario, impacto, inicio, causa conocida y plan;
+- los controles estables se automatizarán;
+- los umbrales variables no se endurecerán sin histórico suficiente;
+- los datos recientes se tratarán considerando retrasos normales de llegada.
+
+---
+
+#### 16. Reportes, tableros y snapshots
+
+Todo artefacto analítico deberá mostrar:
+
+- qué pregunta responde;
+- periodo y fecha de corte;
+- filtros activos;
+- versión de métricas;
+- frescura;
+- cobertura;
+- calidad o certificación;
+- moneda y unidad;
+- última actualización;
+- fuente y ruta de detalle;
+- responsable;
+- si es vivo, snapshot, oficial, provisional o simulado.
+
+La vista principal será simple:
+
+```text
+QUÉ CAMBIÓ
+POR QUÉ IMPORTA
+DÓNDE OCURRIÓ
+QUÉ REQUIERE ATENCIÓN
+QUÉ ACCIÓN SIGUE
+```
+
+No se llenará la pantalla con explicaciones permanentes. Las fórmulas, linaje, notas y excepciones estarán disponibles mediante divulgación progresiva.
+
+Los snapshots publicados serán inmutables. Una corrección generará un restatement relacionado, no reemplazo silencioso.
+
+---
+
+#### 17. Analítica de ventas y demanda
+
+Familias candidatas, sujetas a definición en `DATA-DOM-009`:
+
+- ventas netas y brutas;
+- pedidos y conversión;
+- ticket y unidades;
+- mezcla por producto, categoría, canal y sede;
+- demanda por franja, día y temporada;
+- disponibilidad perdida;
+- cancelaciones, devoluciones y descuentos;
+- promociones y efecto incremental;
+- recurrencia y frecuencia;
+- margen relacionado;
+- capacidad comercial no utilizada.
+
+Las ventas no se interpretarán sin considerar devoluciones, impuestos, descuentos, canales, cierres parciales, disponibilidad y cambios de catálogo.
+
+---
+
+#### 18. Analítica de inventario y abastecimiento
+
+Familias candidatas:
+
+- existencia disponible y comprometida;
+- cobertura y días de inventario;
+- rotación y permanencia;
+- faltantes y quiebres;
+- vencimiento, daño y pérdida;
+- diferencias de conteo;
+- cumplimiento de remisiones;
+- lead time y cumplimiento de proveedores;
+- compras urgentes;
+- consumo versus plan;
+- costo de inventario;
+- capacidad de almacenamiento.
+
+Una existencia negativa, nula o no actualizada se tratará según causa; no se ocultará mediante agregación.
+
+---
+
+#### 19. Analítica de producción y rendimiento
+
+Familias candidatas:
+
+- demanda planificada versus producción;
+- capacidad disponible y utilizada;
+- adherencia al programa;
+- rendimiento teórico y real;
+- consumo estándar y real;
+- merma, reproceso y aprovechamiento;
+- calidad, retención y rechazo;
+- tiempo de ciclo;
+- cumplimiento de liberación;
+- costo y variación por lote, producto y sede.
+
+Las recetas, versiones, lotes y unidades aplicables deberán conservarse para reproducir el cálculo histórico.
+
+---
+
+#### 20. Analítica de servicio y clientes
+
+Familias candidatas:
+
+- cumplimiento de promesa;
+- tiempos de preparación, despacho y entrega;
+- pedidos completos;
+- reclamos y tiempo de resolución;
+- compensaciones;
+- satisfacción y feedback;
+- recurrencia, frecuencia y abandono;
+- adquisición y activación;
+- fidelización, puntos y redenciones;
+- reputación y temas recurrentes;
+- reservas, no-show y utilización;
+- valor y rentabilidad del cliente cuando esté autorizado.
+
+Los análisis de clientes aplicarán minimización, finalidad, consentimiento, segregación y umbrales para evitar exposición de personas o grupos pequeños.
+
+---
+
+#### 21. Analítica económica y de rentabilidad
+
+NUMERA conservará la propiedad de:
+
+- costos estándar y reales;
+- variaciones;
+- margen y contribución;
+- gastos;
+- centros de costo;
+- presupuesto y forecast;
+- caja, bancos y tesorería cuando aplique;
+- cartera y obligaciones;
+- rentabilidad por empresa, sede, canal, producto y periodo;
+- escenarios y simulaciones.
+
+Las métricas económicas deberán llegar al hecho fuente y separar:
+
+```text
+REAL
+PRESUPUESTADO
+PRONOSTICADO
+SIMULADO
+PROPUESTO
+PUBLICADO
+```
+
+El visor económico de `NUMERA-UX-028` consumirá las definiciones del registro canónico y no mantendrá fórmulas locales competidoras.
+
+---
+
+#### 22. Diagnóstico, anomalías y oportunidades
+
+Una señal automática deberá mostrar:
+
+- métrica y versión;
+- variación absoluta y relativa;
+- periodo comparable;
+- segmentos afectados;
+- calidad y frescura;
+- posibles factores relacionados;
+- impacto estimado;
+- nivel de confianza;
+- restricciones y datos faltantes;
+- enlace a investigación;
+- acción sugerida, nunca ejecutada automáticamente.
+
+Tipos de análisis:
+
+```text
+DESCRIPTIVO
+→ qué ocurrió
+
+DIAGNÓSTICO
+→ qué factores lo explican
+
+PRONÓSTICO
+→ qué podría ocurrir
+
+RECOMENDACIÓN
+→ qué alternativa conviene evaluar
+
+DECISIÓN
+→ la toma un actor autorizado
+```
+
+La IA o un modelo analítico no podrá presentar una inferencia como hecho confirmado ni modificar precios, inventario, producción, campañas o personal por sí solo.
+
+---
+
+#### 23. Ciclo de mejora
+
+```text
+SEÑAL
+→ INVESTIGACIÓN
+→ HIPÓTESIS
+→ ACCIÓN O EXPERIMENTO
+→ RESPONSABLE
+→ LÍNEA BASE
+→ META
+→ DRIVERS
+→ GUARDRAILS
+→ VENTANA DE MEDICIÓN
+→ RESULTADO
+→ APRENDIZAJE
+→ CIERRE, ITERACIÓN, REVERSIÓN O ESCALAMIENTO
+```
+
+Cada acción conservará:
+
+- problema u oportunidad;
+- evidencia inicial;
+- proceso y alcance;
+- propietario;
+- decisión autorizante;
+- cambio ejecutado;
+- fecha de inicio y finalización;
+- indicadores principales;
+- segmentos;
+- efectos no deseados;
+- resultado y confianza;
+- aprendizaje reutilizable;
+- tareas derivadas.
+
+Una acción terminada no se marcará exitosa por haberse ejecutado. Debe demostrar resultado.
+
+---
+
+#### 24. Autorización, privacidad y seguridad
+
+Se separarán permisos para:
+
+- consultar datos maestros;
+- administrar un maestro;
+- consultar indicadores;
+- acceder a detalle;
+- comparar trabajadores, clientes, sedes o proveedores;
+- definir una métrica;
+- certificarla;
+- fijar una meta;
+- publicar un snapshot;
+- crear una suscripción;
+- exportar;
+- usar datos en modelos o proveedores externos;
+- administrar acciones de mejora.
+
+Reglas:
+
+- la vista agregada no autoriza el detalle;
+- los grupos pequeños podrán ocultarse, agruparse o enmascararse;
+- una exportación no ampliará el alcance del actor;
+- las métricas sensibles aplicarán territorio y finalidad;
+- consultas, exportaciones, publicaciones y uso por modelos quedarán auditados;
+- los proveedores externos recibirán el mínimo necesario y no conservarán autoridad empresarial.
+
+---
+
+#### 25. Rendimiento y costo analítico
+
+La arquitectura deberá evitar:
+
+- recalcular métricas costosas en cada render;
+- consultar tablas operativas completas desde el frontend;
+- crear vistas sin índices o filtros territoriales;
+- mantener cachés sin versión o fecha de corte;
+- bloquear procesos operativos por cargas analíticas;
+- multiplicar modelos por aplicación;
+- generar exportaciones masivas sin control.
+
+Se definirán:
+
+- modelos de lectura;
+- materializaciones o snapshots cuando convenga;
+- frecuencia;
+- límites y paginación;
+- caché versionado;
+- observabilidad;
+- costo de consulta;
+- degradación controlada;
+- estrategia de reconstrucción.
+
+---
+
+#### 26. Experiencia simple y accionable
+
+La analítica no deberá reproducir el problema de pantallas técnicas o saturadas.
+
+Principios:
+
+1. una pantalla responde una decisión principal;
+2. pocos indicadores prioritarios antes del detalle;
+3. lenguaje empresarial;
+4. comparación visible y consistente;
+5. fuente, frescura y calidad disponibles sin dominar la pantalla;
+6. filtros relevantes y persistentes;
+7. drill-down progresivo;
+8. alertas con acción clara;
+9. estados vacíos que expliquen si no hay actividad o faltan datos;
+10. accesibilidad y uso en escritorio, tablet o móvil según actor.
+
+---
+
+#### 27. Preguntas y decisiones pendientes
+
+No se dejan preguntas narrativas sin dueño.
+
+| Decisión pendiente                               | Tarea propietaria                                | Momento                                             |
+| ------------------------------------------------ | ------------------------------------------------ | --------------------------------------------------- |
+| Propietario y steward de cada maestro compartido | `DATA-DOM-001` y `DATA-DOM-002`                  | antes de diseñar crosswalks o migraciones           |
+| Definición y certificador de cada KPI            | `DATA-DOM-004` y `DATA-AUTH-003`                 | antes de publicar dashboards oficiales              |
+| Arquitectura interna o herramienta BI externa    | `DATA-INT-002` y `DATA-INT-004`                  | durante diseño E3/E5, antes de contratar o integrar |
+| Líneas base, metas y cadencias de revisión       | `DATA-DOM-015`                                   | antes de activar seguimiento de objetivos           |
+| Umbrales de calidad y frescura                   | `DATA-DOM-007`                                   | antes de certificar datos o reportes                |
+| Uso de modelos predictivos o IA                  | `DATA-DOM-014`, `DATA-AUTH-004` y `DATA-INT-004` | antes de enviar datos o mostrar recomendaciones     |
+
+---
+
+#### 28. Hallazgos
+
+| ID                  | Hallazgo                                                               | Propietaria                     | Momento de resolución                |
+| ------------------- | ---------------------------------------------------------------------- | ------------------------------- | ------------------------------------ |
+| H-CAP-SCOPE-017-001 | No existe registro canónico de datos maestros compartidos.             | `DATA-DOM-001`, `DATA-DOM-002`  | diseño de gobierno federado          |
+| H-CAP-SCOPE-017-002 | No están declarados propietario y steward de cada maestro.             | `DATA-DOM-001`                  | antes de cambios maestros            |
+| H-CAP-SCOPE-017-003 | Dato maestro, referencia y transacción pueden confundirse.             | `DATA-DOM-002`                  | diseño de taxonomía                  |
+| H-CAP-SCOPE-017-004 | No existe contrato común de claves, aliases y códigos externos.        | `DATA-DOM-003`, `DATA-INT-003`  | antes de integraciones y migraciones |
+| H-CAP-SCOPE-017-005 | Una fusión de duplicados podría perder historia o relaciones.          | `DATA-DOM-003`, `DATA-DOM-017`  | antes de deduplicación               |
+| H-CAP-SCOPE-017-006 | La desactivación de maestros podría romper reportes históricos.        | `DATA-DOM-003`, `DATA-DOM-005`  | diseño de vigencias                  |
+| H-CAP-SCOPE-017-007 | Las jerarquías no tienen historial efectivo común.                     | `DATA-DOM-003`, `DATA-DOM-005`  | diseño de dimensiones                |
+| H-CAP-SCOPE-017-008 | Los atributos pueden tener más de un editor sin precedencia.           | `DATA-DOM-001`, `DATA-AUTH-003` | gobierno por atributo                |
+| H-CAP-SCOPE-017-009 | Los crosswalks externos están dispersos por proceso.                   | `DATA-INT-003`                  | contratos de integración             |
+| H-CAP-SCOPE-017-010 | La normalización textual podría confundirse con identidad.             | `DATA-DOM-003`, `DATA-DOM-007`  | diseño de calidad                    |
+| H-CAP-SCOPE-017-011 | No existe registro versionado de métricas.                             | `DATA-DOM-004`                  | antes de dashboards oficiales        |
+| H-CAP-SCOPE-017-012 | Una misma métrica puede tener fórmulas locales diferentes.             | `DATA-DOM-004`, `DATA-INT-002`  | capa semántica                       |
+| H-CAP-SCOPE-017-013 | La granularidad no se declara sistemáticamente.                        | `DATA-DOM-005`                  | modelado analítico                   |
+| H-CAP-SCOPE-017-014 | Moneda, unidad, precisión y zona horaria pueden quedar implícitas.     | `DATA-DOM-004`, `DATA-DOM-005`  | definición de métricas               |
+| H-CAP-SCOPE-017-015 | Empresa, marca, sede, área, canal y centro de costo pueden mezclarse.  | `DATA-DOM-002`, `DATA-DOM-005`  | diseño dimensional                   |
+| H-CAP-SCOPE-017-016 | Cambios de definición podrían reescribir historia silenciosamente.     | `DATA-DOM-017`                  | versionado y restatement             |
+| H-CAP-SCOPE-017-017 | Vista viva y snapshot oficial no están diferenciados globalmente.      | `DATA-DOM-008`, `DATA-UX-007`   | diseño de reportes                   |
+| H-CAP-SCOPE-017-018 | Reportes exportados pueden quedar sin versión ni fecha de corte.       | `DATA-DOM-008`, `DATA-AUTH-002` | exportaciones                        |
+| H-CAP-SCOPE-017-019 | KPI locales pueden mostrar cifras sin fuente o calidad visible.        | `DATA-DOM-004`, `DATA-UX-003`   | rediseño de dashboards               |
+| H-CAP-SCOPE-017-020 | Cero y ausencia de dato pueden interpretarse igual.                    | `DATA-DOM-006`, `DATA-DOM-007`  | contratos y calidad                  |
+| H-CAP-SCOPE-017-021 | Datos tardíos y backfills pueden cambiar periodos sin advertencia.     | `DATA-DOM-006`, `DATA-DOM-017`  | ingestión y restatement              |
+| H-CAP-SCOPE-017-022 | No existe estado común de certificación de datos.                      | `DATA-DOM-007`, `DATA-UX-004`   | gobierno de calidad                  |
+| H-CAP-SCOPE-017-023 | La auditoría de calidad puede quedar desconectada del uso empresarial. | `DATA-DOM-007`                  | certificación por uso                |
+| H-CAP-SCOPE-017-024 | Los agregados pueden no reconciliarse con hechos fuente.               | `DATA-DOM-006`, `DATA-INT-001`  | modelos y pruebas                    |
+| H-CAP-SCOPE-017-025 | Las hojas de cálculo pueden convertirse en fuentes paralelas.          | `DATA-DOM-006`, `DATA-INT-004`  | gobierno de importaciones            |
+| H-CAP-SCOPE-017-026 | No existe linaje reproducible extremo a extremo.                       | `DATA-DOM-006`, `DATA-INT-002`  | arquitectura analítica               |
+| H-CAP-SCOPE-017-027 | La frescura no se muestra sistemáticamente.                            | `DATA-DOM-007`, `DATA-UX-003`   | experiencia y calidad                |
+| H-CAP-SCOPE-017-028 | Los dashboards pueden saturarse con cifras sin prioridad.              | `DATA-DOM-015`, `DATA-UX-001`   | diseño de KPI y UX                   |
+| H-CAP-SCOPE-017-029 | El detalle puede exponer personas o grupos pequeños.                   | `DATA-AUTH-002`                 | autorización y privacidad            |
+| H-CAP-SCOPE-017-030 | Los objetivos pueden fijarse sin línea base ni guardrails.             | `DATA-DOM-015`                  | diseño de medición                   |
+| H-CAP-SCOPE-017-031 | Métricas de vanidad pueden sustituir resultados empresariales.         | `DATA-DOM-015`, `DATA-UX-001`   | selección de KPI                     |
+| H-CAP-SCOPE-017-032 | Los reportes no tienen contrato común de suscripción y restatement.    | `DATA-DOM-008`, `DATA-UX-007`   | diseño de reportes                   |
+| H-CAP-SCOPE-017-033 | Una correlación podría presentarse como causa confirmada.              | `DATA-DOM-014`, `DATA-UX-005`   | diagnóstico                          |
+| H-CAP-SCOPE-017-034 | Las acciones de mejora no tienen ciclo medible común.                  | `DATA-DOM-016`, `DATA-UX-006`   | seguimiento de mejoras               |
+| H-CAP-SCOPE-017-035 | BI, IA o modelos externos podrían adquirir autoridad implícita.        | `DATA-AUTH-004`, `DATA-INT-004` | antes de integración externa         |
+
+Todos los hallazgos tienen tarea y momento de resolución. No queda pendiente narrativo sin propietario.
+
+---
+
+#### 29. Tareas nuevas derivadas
+
+##### Dominio
+
+- `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad;
+- `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas;
+- `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros;
+- `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores;
+- `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica;
+- `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación;
+- `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad;
+- `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales;
+- `DATA-DOM-009` — Definir analítica de ventas, demanda, precios, promociones y canales;
+- `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística;
+- `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad;
+- `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia;
+- `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios;
+- `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza;
+- `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición;
+- `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados;
+- `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad.
+
+##### Autorización
+
+- `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad;
+- `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down;
+- `DATA-AUTH-003` — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración;
+- `DATA-AUTH-004` — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones.
+
+##### Experiencia
+
+- `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol;
+- `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje;
+- `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad;
+- `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación;
+- `DATA-UX-005` — Diseñar espacio de investigación de variaciones, anomalías y causas;
+- `DATA-UX-006` — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora;
+- `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados;
+- `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales.
+
+##### Integraciones
+
+- `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas;
+- `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento;
+- `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros;
+- `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial.
+
+---
+
+#### 30. Ubicación exacta de tareas nuevas
+
+Al aprobarse esta propuesta se creará:
+
+```text
+docs/plan-canonico/modular/bloques/
+AB_ANALITICA_Y_DATOS_MAESTROS/
+00_BLOQUE_AB.md
+```
+
+El bloque deberá ubicarse después de:
+
+```text
+AA_GOBIERNO_DE_INFORMACION
+```
+
+No deberá incorporarse todavía antes de la aprobación explícita.
+
+Orden interno:
+
+```text
+DATA-DOM-001 a DATA-DOM-017
+→ DATA-AUTH-001 a DATA-AUTH-004
+→ DATA-UX-001 a DATA-UX-008
+→ DATA-INT-001 a DATA-INT-004
+```
+
+Las tareas quedarán `NO INICIADAS`. La secuencia activa continuará en `CAP-SCOPE-018`.
+
+---
+
+#### 31. Requisitos de prueba generados
+
+Se crean:
+
+- `TREQ-DATA-001` — datos maestros y de referencia;
+- `TREQ-DATA-002` — registro canónico de métricas;
+- `TREQ-DATA-003` — recopilación, calidad, frescura, linaje y certificación;
+- `TREQ-DATA-004` — tableros, reportes, snapshots, drill-down y simplicidad;
+- `TREQ-DATA-005` — diagnóstico, acciones y comprobación de mejora;
+- `TREQ-INTEGRATION-022` — integración analítica y maestra transversal.
+
+El detalle completo se encuentra en el archivo `04A` regenerado.
+
+---
+
+#### 32. Dependencias principales
+
+- `CAP-SCOPE-001` — empresas, sedes y organización;
+- `CAP-SCOPE-002` — personas y estructura laboral;
+- `CAP-SCOPE-004` — catálogo y productos;
+- `CAP-SCOPE-005` a `CAP-SCOPE-014` — hechos operativos por dominio;
+- `CAP-SCOPE-016` — privacidad, documentos y auditoría;
+- E2 — procesos, actores, pantallas y experiencia;
+- E3 — arquitectura Supabase, normalización, calidad y fuentes de verdad;
+- E4 — eventos, notificaciones, archivos y evidencia;
+- E5 — paquetes, readiness, piloto e hypercare;
+- BLOQUE X — integraciones;
+- BLOQUE T — CI, pruebas, versiones y despliegue;
+- BLOQUE U — certificación integral.
+
+---
+
+#### 33. Criterios de aceptación
+
+`CAP-SCOPE-017` podrá aprobarse cuando:
+
+1. las doce subcapacidades estén evaluadas;
+2. se apruebe la propiedad federada y no una base maestra monolítica;
+3. se separen maestro, referencia, hecho, snapshot, métrica y KPI;
+4. se exija registro versionado de métricas;
+5. se definan granularidad, tiempo, dimensiones, unidades y fuentes;
+6. se defina ciclo de calidad, certificación y degradación;
+7. se distingan vista viva, snapshot y reporte oficial;
+8. se defina analítica por dominio sin duplicar sus hechos;
+9. se defina ciclo cerrado de mejora;
+10. se protejan poblaciones pequeñas, exportaciones y detalle;
+11. los 35 hallazgos tengan propietario y momento;
+12. las 33 tareas nuevas estén explícitas;
+13. los seis requisitos estén incorporados en el `04A` completo;
+14. no se haya modificado código, datos, métricas ni metas reales.
+
+---
+
+#### 34. Lo que esta tarea no autoriza
+
+Esta tarea no autoriza:
+
+- crear tablas, vistas, pipelines o dashboards;
+- modificar fórmulas actuales;
+- publicar indicadores oficiales;
+- fijar metas empresariales;
+- fusionar datos maestros;
+- corregir datos de producción;
+- conectar herramientas BI o IA;
+- enviar información a terceros;
+- ejecutar recomendaciones automáticas;
+- modificar permisos;
+- implementar migraciones;
+- declarar datos certificados sin pruebas.
+
+---
+
+#### 35. Resultado y continuidad
+
+Al aprobarse:
+
+- `CAP-SCOPE-017` quedará cerrada;
+- el modelo de analítica y datos maestros quedará incorporado al alcance objetivo;
+- las tareas `DATA-*` se crearán en el BLOQUE AB;
+- el `04A` completo actualizado será la única fuente de los nuevos requisitos;
+- la siguiente tarea será:
+
+```text
+CAP-SCOPE-018 — Evaluar continuidad, contingencia, incidentes y recuperación
+```
+
+---
+
+#### 36. Estado de aprobación
+
+**Estado actual:** APROBADA
+
+No marcar como aprobada hasta recibir confirmación explícita del usuario.
+
+
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
 ### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
 
@@ -202983,6 +204841,242 @@ AURA ↔ PASS / PULSO
 ### [ ] INT-MKT-002 — Definir beneficios publicados en PASS
 ### [ ] INT-MKT-003 — Definir validación comercial desde PULSO
 
+## BLOQUE Z
+
+**Tecnología, dispositivos, redes, impresión, soporte y seguridad técnica**
+
+Este bloque define el modelo transversal de gestión tecnológica de Vento Group.
+
+No crea una aplicación monolítica de TI ni sustituye las fuentes de verdad
+de SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, el servicio transversal de
+impresión o los bloques de calidad y continuidad.
+
+Propiedad funcional:
+
+```text
+SHELL
+→ identidad, aplicaciones, cuentas y política de acceso
+
+NEXO
+→ activos tecnológicos, ubicación, custodia, mantenimiento y retiro físico
+
+ANIMA
+→ portal del trabajador, solicitudes propias y capacitación
+
+VISO
+→ mesa de servicio, incidentes, problemas, cambios, SLA y supervisión
+
+PRINT-ARC
+→ colas, routing, adaptadores y resultados de impresión
+
+ORIGO
+→ compras, proveedores, contratos y renovaciones
+
+NUMERA
+→ compromisos, gastos y costos tecnológicos
+
+BLOQUE T
+→ pruebas, releases, despliegue y rollback
+
+BLOQUE Z
+→ modelo operativo transversal, configuración tecnológica,
+  redes, soporte, observabilidad y coordinación
+```
+
+DOMINIO
+
+### [ ] TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención
+### [ ] TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio
+### [ ] TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
+### [ ] TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
+### [ ] TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
+### [ ] TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
+### [ ] TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
+### [ ] TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
+### [ ] TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior
+### [ ] TI-DOM-010 — Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios
+### [ ] TI-DOM-011 — Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial
+### [ ] TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos
+### [ ] TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
+
+AUTORIZACIÓN
+
+### [ ] TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos
+### [ ] TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
+### [ ] TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+### [ ] TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
+
+EXPERIENCIA Y PANTALLAS
+
+### [ ] TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA
+### [ ] TI-UX-002 — Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación
+### [ ] TI-UX-003 — Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica
+### [ ] TI-UX-004 — Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación
+### [ ] TI-UX-005 — Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos
+### [ ] TI-UX-006 — Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
+
+INTEGRACIONES
+
+### [ ] TI-INT-001 — Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos
+### [ ] TI-INT-002 — Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad
+### [ ] TI-INT-003 — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos
+## BLOQUE AA
+
+**Gobierno de información, privacidad, documentos, conservación y auditoría**
+
+Este bloque define el gobierno transversal de información de Vento Group.
+
+No sustituye los expedientes funcionales de las aplicaciones ni crea una
+biblioteca central paralela.
+
+Propiedad funcional:
+
+```text
+APLICACIONES DE DOMINIO
+→ conservan los hechos, registros y expedientes de sus procesos
+
+SHELL
+→ decide acceso, contexto y autorización
+
+SUPABASE Y STORAGE
+→ conservan datos, metadatos, archivos y políticas técnicas
+
+ANIMA
+→ presenta documentos y solicitudes del trabajador
+
+PASS
+→ presenta privacidad y solicitudes del cliente
+
+VISO
+→ administra cumplimiento, solicitudes, investigaciones y supervisión
+
+EVID-ARC
+→ define la arquitectura transversal de archivos y evidencia
+
+BLOQUE AA
+→ gobierna clasificación, finalidad, versiones, retención,
+  firma, compartición, privacidad, custodia y auditoría
+
+```
+
+DOMINIO
+
+### [ ] INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios
+### [ ] INFO-DOM-002 — Definir clasificación, sensibilidad, minimización y manejo por categoría de información
+### [ ] INFO-DOM-003 — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias
+### [ ] INFO-DOM-004 — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro
+### [ ] INFO-DOM-005 — Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales
+### [ ] INFO-DOM-006 — Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición
+### [ ] INFO-DOM-007 — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia
+### [ ] INFO-DOM-008 — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles
+### [ ] INFO-DOM-009 — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión
+### [ ] INFO-DOM-010 — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad
+### [ ] INFO-DOM-011 — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia
+### [ ] INFO-DOM-012 — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento
+### [ ] INFO-DOM-013 — Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre
+
+AUTORIZACIÓN
+
+### [ ] INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado
+### [ ] INFO-AUTH-002 — Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas
+### [ ] INFO-AUTH-003 — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación
+### [ ] INFO-AUTH-004 — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada
+
+EXPERIENCIA Y PANTALLAS
+
+### [ ] INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas
+### [ ] INFO-UX-002 — Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia
+### [ ] INFO-UX-003 — Diseñar creación, revisión, aprobación, publicación y firma de documentos
+### [ ] INFO-UX-004 — Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes
+### [ ] INFO-UX-005 — Diseñar retención, legal hold, archivo y disposición controlada
+### [ ] INFO-UX-006 — Diseñar explorador de auditoría e investigación con divulgación progresiva
+
+INTEGRACIONES
+
+### [ ] INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo
+### [ ] INFO-INT-002 — Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio
+### [ ] INFO-INT-003 — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
+## BLOQUE AB
+
+**Analítica, indicadores, calidad de datos y datos maestros**
+
+Este bloque define el gobierno transversal de datos maestros, métricas,
+indicadores, reportes, análisis y mejora continua de Vento Group.
+
+No crea una aplicación monolítica de analítica ni sustituye las fuentes de
+verdad de las aplicaciones propietarias.
+
+Propiedad funcional:
+
+```text
+APLICACIONES DE DOMINIO
+→ conservan sus datos maestros propietarios
+→ conservan sus hechos y transacciones
+→ presentan la analítica operativa de su proceso
+
+SUPABASE Y BLOQUE E3
+→ gobiernan arquitectura física, fuentes de verdad,
+  integridad, exposición y rendimiento
+
+VISO
+→ presenta la visión administrativa y ejecutiva transversal
+
+NUMERA
+→ presenta costos, rentabilidad, liquidez,
+  presupuestos y análisis económico
+
+BLOQUE AB
+→ gobierna datos maestros federados
+→ define métricas e indicadores
+→ gobierna calidad y certificación
+→ define reportes y snapshots
+→ coordina diagnóstico y mejora continua
+```
+
+DOMINIO
+
+### [ ] DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad
+### [ ] DATA-DOM-002 — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas
+### [ ] DATA-DOM-003 — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros
+### [ ] DATA-DOM-004 — Definir capa semántica y registro canónico de métricas e indicadores
+### [ ] DATA-DOM-005 — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica
+### [ ] DATA-DOM-006 — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación
+### [ ] DATA-DOM-007 — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad
+### [ ] DATA-DOM-008 — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales
+### [ ] DATA-DOM-009 — Definir analítica de ventas, demanda, precios, promociones y canales
+### [ ] DATA-DOM-010 — Definir analítica de inventario, abastecimiento, proveedores y logística
+### [ ] DATA-DOM-011 — Definir analítica de producción, rendimiento, capacidad, merma y calidad
+### [ ] DATA-DOM-012 — Definir analítica de servicio, clientes, fidelización, reputación y experiencia
+### [ ] DATA-DOM-013 — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios
+### [ ] DATA-DOM-014 — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza
+### [ ] DATA-DOM-015 — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición
+### [ ] DATA-DOM-016 — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados
+### [ ] DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad
+
+AUTORIZACIÓN
+
+### [ ] DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad
+### [ ] DATA-AUTH-002 — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down
+### [ ] DATA-AUTH-003 — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración
+### [ ] DATA-AUTH-004 — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
+
+EXPERIENCIA Y PANTALLAS
+
+### [ ] DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol
+### [ ] DATA-UX-002 — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje
+### [ ] DATA-UX-003 — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad
+### [ ] DATA-UX-004 — Diseñar centro de calidad, frescura, conciliaciones y certificación
+### [ ] DATA-UX-005 — Diseñar espacio de investigación de variaciones, anomalías y causas
+### [ ] DATA-UX-006 — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora
+### [ ] DATA-UX-007 — Diseñar reportes, exportaciones, suscripciones y snapshots versionados
+### [ ] DATA-UX-008 — Validar comprensión, tiempos y decisiones con usuarios reales
+
+INTEGRACIONES
+
+### [ ] DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas
+### [ ] DATA-INT-002 — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento
+### [ ] DATA-INT-003 — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros
+### [ ] DATA-INT-004 — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
 ## Orden de implementación recomendado
 
 FASE 1 — DEFINICIÓN CANÓNICA
@@ -203199,6 +205293,22 @@ FASE 4 — HABILITADORES TRANSVERSALES
 30. Ejecutar AUTH-UI-040 a AUTH-UI-051
 31. BLOQUE P — Dispositivos compartidos
 32. BLOQUE Q — Simulación estricta
+32A. BLOQUE Z — Tecnología y soporte como habilitador transversal
+32B. BLOQUE AA — Gobierno de información como habilitador transversal
+32C. BLOQUE AB — Analítica, indicadores y datos maestros como habilitador transversal
+
+Secuencia interna recomendada:
+
+```text
+DATA-DOM-001 a DATA-DOM-003
+→ DATA-DOM-004 a DATA-DOM-008
+→ DATA-DOM-009 a DATA-DOM-013
+→ DATA-DOM-014 a DATA-DOM-017
+→ DATA-AUTH-001 a DATA-AUTH-004
+→ DATA-UX-001 a DATA-UX-008
+→ DATA-INT-001 a DATA-INT-004
+```
+
 
 AUTH-UI-040 a AUTH-UI-051 implementa:
 
@@ -203263,7 +205373,6 @@ completo cuando se hayan aprobado y ejecutado:
 
 Orden:
 
-```text
 1. Obtener documentación y credencial de pruebas.
 2. Importar ventas sin efectos.
 3. Validar payloads e idempotencia.
@@ -203274,7 +205383,7 @@ Orden:
 8. Habilitar PASS únicamente cuando corresponda.
 9. Mantener conciliación periódica.
 10. Sustituir posteriormente la fuente externa por PULSO.
-```
+
 
 Este habilitador:
 

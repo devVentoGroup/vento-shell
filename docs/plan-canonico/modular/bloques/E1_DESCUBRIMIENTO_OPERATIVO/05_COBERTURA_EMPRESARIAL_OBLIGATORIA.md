@@ -16314,8 +16314,1843 @@ PROPUESTA PARA APROBACIÓN — NO APROBADA
 No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
 
 
-### [ ] CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
-### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+### ✅ CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-015` aprobada  
+**Tarea anterior:** `CAP-SCOPE-015`  
+**Siguiente tarea reservada:** `CAP-SCOPE-017`  
+**Familia evaluada:** `CAP-16 — Proteger información, documentos y evidencia`  
+**Superficies objetivo:** todas las aplicaciones Vento OS, Supabase, Storage, archivos físicos, proveedores y canales externos  
+**Implementación técnica o jurídica:** no autorizada  
+**Eliminaciones, retenciones, firmas o investigaciones reales:** no autorizadas  
+**Requisitos generados:** `TREQ-SHELL-011`, `TREQ-SUPABASE-013`, `TREQ-ANIMA-005`, `TREQ-VISO-003`, `TREQ-PASS-012`, `TREQ-INTEGRATION-021`  
+**Tareas nuevas derivadas:** `INFO-DOM-001` a `013`, `INFO-AUTH-001` a `004`, `INFO-UX-001` a `006`, `INFO-INT-001` a `003`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo para gobernar información, datos personales, documentos, archivos y evidencia durante todo su ciclo de vida, desde la creación o recepción hasta su disposición final.
+
+La tarea debe permitir responder de forma inequívoca:
+
+```text
+qué información existe
+qué proceso y entidad legal la producen
+quién es su propietario funcional
+qué finalidad autoriza su uso
+qué nivel de sensibilidad tiene
+quién puede verla, cambiarla, aprobarla, compartirla o eliminarla
+qué versión está vigente
+cuánto tiempo debe conservarse
+qué obligación impide eliminarla
+qué evidencia demuestra autenticidad e integridad
+cómo se atiende al titular
+cómo se investiga un acceso o cambio indebido
+```
+
+No se busca crear una carpeta documental genérica ni convertir cada aplicación en un repositorio de archivos. Cada documento y evidencia continuará asociado al proceso y recurso empresarial que respalda.
+
+---
+
+#### 2. Decisión principal y propiedad
+
+```text
+CADA APLICACIÓN DE DOMINIO
+→ conserva el hecho empresarial y su expediente funcional
+
+SHELL / AUTH
+→ decide quién puede acceder, compartir, exportar o administrar
+
+SUPABASE / STORAGE
+→ conserva datos, metadatos, archivos, versiones y controles físicos
+
+ANIMA
+→ presenta documentos laborales propios y solicitudes del trabajador
+
+PASS
+→ presenta privacidad, consentimiento y derechos del cliente
+
+VISO
+→ administra gobierno, solicitudes, cumplimiento, investigaciones y auditoría
+
+EVID-ARC
+→ define arquitectura transversal de archivos, documentos y evidencia
+
+BLOQUE AA — GOBIERNO DE INFORMACIÓN
+→ define clasificación, finalidad, retención, firma, custodia,
+  derechos de titulares y reglas transversales
+```
+
+Ningún repositorio central podrá sustituir el expediente funcional ni permitir que un archivo sin recurso propietario se convierta en fuente de verdad.
+
+---
+
+#### 3. Marco normativo y de cumplimiento
+
+Esta tarea adopta un modelo de cumplimiento configurable y verificable, no una interpretación jurídica automática.
+
+Como línea base colombiana se reconocen:
+
+- Ley 1581 de 2012 para tratamiento de datos personales, finalidad, autorización, calidad, acceso restringido, seguridad, confidencialidad y derechos de los titulares;
+- Decreto 1074 de 2015 y reglas aplicables al tratamiento y atención de consultas o reclamos;
+- Ley 527 de 1999 para mensajes de datos, integridad, conservación, firma electrónica y firma digital;
+- obligaciones laborales, comerciales, tributarias, sanitarias, contractuales y probatorias que determinen conservación por tipo documental;
+- principios archivísticos como referencia técnica, sin asumir que toda regla propia de entidades públicas aplica automáticamente a Vento Group.
+
+Regla obligatoria:
+
+```text
+NORMA O CONTRATO
+→ OBLIGACIÓN DE CUMPLIMIENTO
+→ CONTROL
+→ EVIDENCIA
+→ RESPONSABLE
+→ FRECUENCIA
+→ RESULTADO
+```
+
+Los términos concretos de retención, obligaciones regulatorias, necesidad de registro, firma certificada o comunicación a autoridades deberán validarse por tipo documental y entidad legal mediante `INFO-DOM-012`; no se fijarán periodos universales inventados.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-16.01` — Clasificar información y documentos;
+- `CAP-16.02` — Crear y aprobar documentos;
+- `CAP-16.03` — Guardar y localizar documentos;
+- `CAP-16.04` — Controlar versiones y vigencia;
+- `CAP-16.05` — Compartir información de forma autorizada;
+- `CAP-16.06` — Proteger datos personales y sensibles;
+- `CAP-16.07` — Conservar registros y evidencia;
+- `CAP-16.08` — Archivar y eliminar de forma controlada;
+- `CAP-16.09` — Gestionar firmas y aprobaciones;
+- `CAP-16.10` — Atender solicitudes sobre información;
+- `CAP-16.11` — Investigar accesos o cambios indebidos.
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                    | Tratamiento       | Propietaria objetivo                         | Decisión                                                                                                                                                                               |
+| ------------ | ----------------------------------------- | ----------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-16.01    | Clasificar información y documentos       | REUSE_OR_REFACTOR | BLOQUE AA + propietarios funcionales         | Reutilizar clasificación de sensibilidad, contratos de recurso y EVID-ARC; consolidar categorías, finalidades, propietarios, sujetos, territorios y controles en un registro canónico. |
+| CAP-16.02    | Crear y aprobar documentos                | BUILD             | aplicación propietaria + VISO + BLOQUE AA    | Construir ciclo común de borrador, revisión, aprobación, publicación, sustitución, anulación y retiro sin convertir la aprobación en edición destructiva.                              |
+| CAP-16.03    | Guardar y localizar documentos            | REUSE_OR_REFACTOR | aplicación propietaria + Supabase/Storage    | Reutilizar Storage y módulos documentales existentes; exigir metadatos, recurso, entidad legal, búsqueda, integridad, versión y ubicación física o digital.                            |
+| CAP-16.04    | Controlar versiones y vigencia            | REUSE_OR_REFACTOR | aplicación propietaria + BLOQUE AA           | Reutilizar versiones parciales y vencimientos; separar versión, vigencia, estado, reemplazo y documento aplicable a una fecha.                                                         |
+| CAP-16.05    | Compartir información de forma autorizada | REUSE_OR_REFACTOR | SHELL + aplicación propietaria               | Reutilizar autorización, URLs firmadas y exportaciones, añadiendo destinatario, finalidad, campos, caducidad, revocación, marca de agua y evidencia de entrega cuando corresponda.     |
+| CAP-16.06    | Proteger datos personales y sensibles     | REUSE_OR_REFACTOR | BLOQUE AA + SHELL + ANIMA + PASS             | Consolidar políticas existentes, minimización, finalidad, consentimiento o base aplicable, datos sensibles, responsables, encargados, derechos y privacidad por diseño.                |
+| CAP-16.07    | Conservar registros y evidencia           | REUSE_OR_REFACTOR | aplicación propietaria + EVID-ARC + Supabase | Reutilizar auditoría y evidencia parcial, añadiendo integridad, procedencia, cadena de custodia, retención, preservación y posibilidad de reproducción.                                |
+| CAP-16.08    | Archivar y eliminar de forma controlada   | BUILD             | BLOQUE AA + propietarios + Supabase          | Construir tablas de retención, disparadores, archivo, revisión, legal hold, anonimización, eliminación verificable, certificado y conciliación de copias.                              |
+| CAP-16.09    | Gestionar firmas y aprobaciones           | BUILD             | BLOQUE AA + aplicación propietaria           | Definir niveles distintos para aprobación interna, aceptación, firma electrónica y firma digital; integrar proveedor certificado solo cuando el riesgo o la norma lo exijan.           |
+| CAP-16.10    | Atender solicitudes sobre información     | BUILD             | VISO + ANIMA + PASS + BLOQUE AA              | Construir caso trazable para acceso, actualización, rectificación, prueba de autorización, revocación, supresión, copia y otras solicitudes aplicables.                                |
+| CAP-16.11    | Investigar accesos o cambios indebidos    | BUILD             | VISO + SHELL + BLOQUE AA                     | Construir investigación con preservación, alcance, línea de tiempo, actores, evidencia, causa, acciones y cierre; coordinar incidentes de seguridad y continuidad sin mezclarlos.      |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento       | Cantidad |
+| ----------------- | -------: |
+| REUSE_OR_REFACTOR |        6 |
+| BUILD             |        5 |
+| TOTAL             |       11 |
+
+---
+
+#### 7. Modelo canónico de gobierno de información
+
+```text
+ACTIVO DE INFORMACIÓN
+→ contiene DATOS o CONOCIMIENTO
+→ puede materializarse como DOCUMENTO, REGISTRO o EVIDENCIA
+→ puede tener uno o varios ARCHIVOS o representaciones
+→ pertenece a un PROCESO y ENTIDAD LEGAL
+→ tiene PROPIETARIO FUNCIONAL y CUSTODIO
+→ se usa para FINALIDADES autorizadas
+→ aplica CLASIFICACIÓN, ACCESO, RETENCIÓN y DISPOSICIÓN
+```
+
+Cada activo de información conservará como mínimo:
+
+- identificador estable;
+- entidad legal y proceso;
+- propietario funcional y custodio;
+- recurso empresarial relacionado;
+- tipo, serie o categoría documental;
+- sujetos o colectivos afectados;
+- finalidad y fundamento aplicable;
+- sensibilidad y restricciones;
+- ubicación física o digital;
+- versión, estado, vigencia y reemplazo;
+- plazo, evento inicial de retención y disposición;
+- obligación, contrato o política que lo sustenta;
+- evidencia de creación, aprobación, acceso y disposición.
+
+---
+
+#### 8. Fronteras conceptuales obligatorias
+
+```text
+información ≠ dato personal ≠ documento ≠ registro ≠ evidencia ≠ archivo/blob
+```
+
+```text
+tipo documental ≠ serie documental ≠ expediente ≠ carpeta ≠ ubicación de Storage
+```
+
+```text
+borrador ≠ aprobado ≠ publicado ≠ vigente ≠ vencido ≠ retirado ≠ anulado
+```
+
+```text
+versión nueva ≠ edición silenciosa ≠ corrección de metadatos
+```
+
+```text
+usuario ≠ titular del dato ≠ trabajador ≠ cliente ≠ representante
+```
+
+```text
+consentimiento ≠ aviso de privacidad ≠ finalidad ≠ obligación legal o contractual
+```
+
+```text
+anonimización ≠ seudonimización ≠ bloqueo ≠ archivo ≠ eliminación
+```
+
+```text
+solicitud de eliminación ≠ borrado inmediato de todo registro
+```
+
+```text
+aprobación interna ≠ aceptación ≠ firma electrónica ≠ firma digital certificada
+```
+
+```text
+URL firmada ≠ autorización empresarial para compartir
+```
+
+```text
+historial operativo ≠ log técnico ≠ auditoría ≠ evidencia probatoria
+```
+
+```text
+retención vencida ≠ eliminación automática sin revisión
+```
+
+---
+
+#### 9. Inventario y clasificación
+
+`INFO-DOM-001` y `INFO-DOM-002` deberán inventariar:
+
+- bases y conjuntos de datos;
+- documentos empresariales y laborales;
+- contratos, facturas y soportes;
+- archivos físicos originales;
+- fotografías, videos, audios y grabaciones;
+- datos de clientes, trabajadores, candidatos y proveedores;
+- datos financieros, médicos, biométricos, geográficos y de seguridad;
+- logs, exportaciones, copias locales y hojas de cálculo;
+- canales y terceros que reciben información;
+- responsables y encargados del tratamiento cuando aplique.
+
+Clasificación mínima propuesta:
+
+```text
+PÚBLICA
+INTERNA
+CONFIDENCIAL
+RESTRINGIDA
+ESPECIALMENTE SENSIBLE
+```
+
+La clasificación no dependerá únicamente de la carpeta, el nombre del archivo o la aplicación. Será un atributo versionado del tipo de información y podrá elevarse para un documento concreto.
+
+---
+
+#### 10. Ciclo documental
+
+El ciclo común será:
+
+```text
+plantilla o recepción
+→ borrador
+→ revisión
+→ aprobación o rechazo
+→ publicación o entrada en vigencia
+→ uso y consulta
+→ nueva versión o sustitución
+→ vencimiento o retiro
+→ archivo
+→ disposición autorizada
+```
+
+Reglas:
+
+1. una versión aprobada no se sobrescribe;
+2. una corrección material genera versión o acto de corrección relacionado;
+3. la versión aplicable a una fecha debe poder reconstruirse;
+4. el archivo binario y sus metadatos deben mantenerse consistentes;
+5. anular no significa borrar;
+6. un documento retirado deja de usarse, pero conserva trazabilidad;
+7. plantillas, documentos emitidos y registros recibidos son objetos diferentes.
+
+---
+
+#### 11. Almacenamiento, búsqueda y localización
+
+Guardar un archivo requerirá vincularlo con:
+
+- entidad legal;
+- proceso y aplicación propietaria;
+- recurso o expediente;
+- tipo documental;
+- actor que lo aporta;
+- fecha del hecho y fecha de carga;
+- versión y vigencia;
+- clasificación;
+- hash, tamaño, formato y validaciones;
+- retención y legal hold;
+- original físico, copia o representación digital.
+
+La búsqueda deberá respetar autorización antes de indexar o devolver resultados. No se permitirá una búsqueda global que revele títulos, fragmentos, nombres o metadatos sensibles de recursos no autorizados.
+
+---
+
+#### 12. Datos personales y sensibles
+
+El modelo deberá registrar por finalidad:
+
+- titular o colectivo;
+- categorías de datos;
+- fuente;
+- responsable y encargado;
+- finalidad informada;
+- autorización, obligación o fundamento aplicable;
+- destinatarios;
+- periodo o criterio de conservación;
+- medidas y restricciones;
+- canal para ejercer derechos;
+- versión del aviso o política presentada.
+
+Datos médicos, biométricos, geolocalización precisa, documentos de identidad, datos financieros, expedientes laborales, declaraciones SST y otros datos sensibles no podrán circular en eventos, logs o exportaciones generales.
+
+La cuenta del usuario puede eliminarse o desactivarse sin que ello autorice borrar expedientes laborales, contables, transaccionales, de seguridad o auditoría sujetos a conservación. Cuando sea posible se desvinculará, anonimizará o limitará el dato sin destruir el hecho empresarial.
+
+---
+
+#### 13. Consentimiento, avisos y finalidad
+
+Las políticas estáticas de ANIMA y PASS se reutilizarán como evidencia inicial, pero no serán la única fuente de verdad.
+
+Deberá conservarse:
+
+- versión del aviso o política;
+- idioma y canal;
+- finalidades aceptadas o rechazadas;
+- carácter obligatorio o facultativo;
+- fecha, actor y evidencia;
+- cambios posteriores;
+- revocaciones y restricciones;
+- relación con comunicaciones comerciales.
+
+```text
+aceptar términos de servicio
+≠ autorizar marketing
+≠ autorizar datos sensibles
+≠ autorizar una finalidad futura no informada
+```
+
+---
+
+#### 14. Solicitudes de titulares y personas autorizadas
+
+El caso de privacidad deberá permitir:
+
+```text
+recepción
+→ validación de identidad o representación
+→ clasificación de la solicitud
+→ localización de sistemas y responsables
+→ bloqueo o marca de reclamo cuando aplique
+→ decisión y ejecución por cada sistema
+→ revisión de excepciones de conservación
+→ respuesta comprensible
+→ evidencia y cierre
+```
+
+Tipos mínimos:
+
+- consulta o acceso;
+- copia;
+- actualización;
+- rectificación;
+- prueba de autorización;
+- información sobre uso;
+- revocación;
+- supresión;
+- oposición o restricción cuando corresponda;
+- reclamación por uso o acceso indebido.
+
+La respuesta deberá ser legible y no exigir al titular comprender tablas, IDs internos o arquitectura técnica.
+
+---
+
+#### 15. Retención, archivo, legal hold y eliminación
+
+Cada regla de retención tendrá:
+
+- tipo o serie documental;
+- entidad legal;
+- evento que inicia el cómputo;
+- duración y fuente de la obligación;
+- archivo activo, semiactivo o histórico interno;
+- disposición final;
+- responsable de revisar;
+- excepciones;
+- periodicidad de ejecución;
+- evidencia de disposición.
+
+```text
+solicitud de eliminación
+→ búsqueda de obligaciones y legal holds
+→ decisión por categoría de datos
+→ eliminación, anonimización, bloqueo o conservación justificada
+→ conciliación de copias y derivados
+→ evidencia de ejecución
+```
+
+Un legal hold suspenderá la disposición sin modificar retroactivamente la regla de retención. Su creación y liberación exigirán autoridad, alcance, motivo y auditoría.
+
+---
+
+#### 16. Firmas y aprobaciones
+
+Se definen cuatro niveles:
+
+| Nivel                     | Uso                                                     | Evidencia mínima                                                        |
+| ------------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |
+| aprobación interna        | decisiones operativas o administrativas                 | actor autenticado, permiso, versión, fecha, decisión y motivo           |
+| aceptación                | constancia de lectura o conformidad                     | identidad, contenido presentado, acción y timestamp                     |
+| firma electrónica         | vinculación confiable entre firmante y documento        | método apropiado, identidad, intención, integridad y trazabilidad       |
+| firma digital certificada | casos que exijan mayor fuerza o proveedor especializado | certificado, validación, integridad, vigencia y evidencia del proveedor |
+
+No se dibujará una firma manuscrita ni se almacenará una imagen de firma como sustituto automático de identidad, intención e integridad.
+
+---
+
+#### 17. Compartición, exportación y terceros
+
+Compartir deberá registrar:
+
+- quién autoriza;
+- quién entrega;
+- destinatario;
+- finalidad;
+- campos y documentos incluidos;
+- clasificación;
+- canal;
+- vigencia;
+- descarga o entrega cuando sea verificable;
+- revocación;
+- obligación de confidencialidad o contrato.
+
+Las URLs firmadas serán cortas, revocables y vinculadas al recurso autorizado. La capacidad de generar una URL no concederá por sí sola derecho a compartir.
+
+Los proveedores que procesen información deberán tener propietario, finalidad, categorías de datos, ubicación o región, medidas, subencargados, eliminación o devolución, incidentes, terminación y evidencia contractual.
+
+---
+
+#### 18. Auditoría e investigación
+
+La auditoría transversal deberá distinguir:
+
+- decisión de autorización;
+- acceso o consulta sensible;
+- descarga, impresión o exportación;
+- creación, edición y cambio de metadatos;
+- aprobación y firma;
+- compartición;
+- cambio de clasificación;
+- retención, legal hold y disposición;
+- acceso de emergencia;
+- acciones de proveedor o cuenta técnica.
+
+Una investigación de acceso o cambio indebido conservará:
+
+```text
+caso
+→ alcance
+→ preservación
+→ línea de tiempo
+→ actores y recursos
+→ evidencia y fuentes
+→ hipótesis y comprobaciones
+→ hallazgo
+→ acciones de contención y corrección
+→ notificaciones aplicables
+→ cierre y seguimiento
+```
+
+Los logs no deberán incluir secretos ni el contenido completo de datos sensibles cuando basten identificadores, hashes, categorías y resultados.
+
+---
+
+#### 19. Integridad, procedencia y cadena de custodia
+
+La evidencia deberá poder demostrar:
+
+- quién la creó, recibió o capturó;
+- sobre qué recurso y proceso;
+- fecha y fuente;
+- archivo y hash;
+- transformaciones o derivados;
+- accesos y transferencias relevantes;
+- versión del software o plantilla cuando aplique;
+- conservación y disponibilidad;
+- relación entre original físico y copia digital.
+
+Capturas de pantalla, fotos, chats y archivos adjuntos no serán considerados evidencia suficiente por sí solos si no conservan contexto, procedencia e integridad.
+
+---
+
+#### 20. Obligaciones y controles de cumplimiento
+
+`INFO-DOM-012` mantendrá un registro de obligaciones con:
+
+- entidad legal y actividad aplicable;
+- fuente normativa, contractual o interna;
+- obligación;
+- propietario;
+- control;
+- evidencia;
+- frecuencia;
+- fecha límite;
+- estado;
+- excepción o incumplimiento;
+- acción correctiva.
+
+El sistema no determinará por sí solo que Vento cumple una norma. Mostrará la obligación, la evidencia disponible, las brechas y la validación responsable.
+
+---
+
+#### 21. Experiencia simple
+
+La experiencia principal deberá evitar formularios jurídicos o técnicos extensos.
+
+Pantallas objetivo:
+
+```text
+Gobierno de información
+Documentos
+Solicitudes de privacidad
+Retención y disposición
+Aprobaciones y firmas
+Auditoría e investigaciones
+```
+
+Reglas de UX:
+
+- lenguaje humano antes que nombres de tablas o políticas;
+- acciones principales visibles y detalles bajo demanda;
+- clasificación sugerida, pero confirmada por regla y propietario;
+- advertencias concretas al compartir, exportar o eliminar;
+- vista clara de versión vigente;
+- respuesta al titular en formato comprensible;
+- ocultamiento de datos sensibles hasta abrir el detalle autorizado;
+- ninguna explicación larga permanente en la pantalla cotidiana.
+
+---
+
+#### 22. Privacidad, seguridad y cumplimiento por diseño
+
+Toda capacidad nueva deberá especificar antes de implementarse:
+
+- finalidad y minimización;
+- campos necesarios;
+- autorización y alcance;
+- exposición en interfaz, API, eventos, logs y exportaciones;
+- retención y disposición;
+- evidencia de consentimiento o fundamento;
+- riesgos de terceros;
+- comportamiento offline;
+- restauración y copias;
+- pruebas de acceso negativo;
+- respuesta ante incidentes.
+
+Las decisiones de privacidad no se dejarán exclusivamente a textos legales publicados; deberán materializarse en contratos de datos, permisos, RLS, Storage, eventos y pruebas.
+
+---
+
+#### 23. Evidencia de implementación actual
+
+Se reconoce como base reutilizable:
+
+- `EVID-ARC-001` a `EVID-ARC-010`, que ya reservan inventario, propiedad, sensibilidad, metadatos, versiones, retención, validación, URLs firmadas, auditoría y eliminación;
+- ANIMA, que ya presenta y permite cargar documentos laborales, tipos, vencimientos y filtros;
+- políticas de privacidad y páginas de eliminación de cuenta en ANIMA y PASS;
+- flujo auditado de solicitud de eliminación en PASS;
+- decisiones y logs de autorización previstos por `AUTH-CTX`, `AUTH-DB` y `TREQ-AUTH-015`;
+- documentos, exportaciones y evidencias distribuidos en las aplicaciones de dominio.
+
+Estas piezas no demuestran todavía:
+
+- inventario corporativo completo;
+- finalidad y responsable por tratamiento;
+- retención por tipo documental;
+- legal hold;
+- versión canónica de consentimiento;
+- atención transversal de titulares;
+- firma por nivel de riesgo;
+- investigación integral de acceso o modificación;
+- eliminación reconciliada entre sistemas, copias y derivados.
+
+---
+
+#### 24. Preguntas y decisiones pendientes
+
+No se crean preguntas nuevas.
+
+Se reutilizan:
+
+- `ADM-13` — confirma que existen documentos empresariales originales en Oficina 1;
+- `ACT-14` — custodio habitual de documentos originales, todavía pendiente;
+- `DAT-18` y `DAT-19` — ubicación de instrucciones importantes y mecanismo de corrección;
+- `EXT-06` a `EXT-09` — documentos vigentes sobre uso de marcas;
+- `TEC-17` — exportaciones existentes por aplicación;
+- `DIF-12` — propiedad documental por hecho respaldado, ya resuelta funcionalmente.
+
+Las respuestas se consolidarán posteriormente en lote dentro del registro vivo. Ninguna pregunta queda sin tarea propietaria: `INFO-DOM-001`, `INFO-DOM-003`, `INFO-DOM-006`, `INFO-DOM-012` e `INFO-INT-002` resolverán su efecto documental.
+
+---
+
+#### 25. Hallazgos
+
+| ID                  | Hallazgo                                                                                                                                            | Severidad | Tarea propietaria                             | Puerta |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------------------------------- | ------ |
+| H-CAP-SCOPE-016-001 | No existe un modelo corporativo único de gobierno de información que conecte datos, documentos, evidencia, privacidad y cumplimiento.               | crítica   | INFO-DOM-001; INFO-INT-002                    | E1/E2  |
+| H-CAP-SCOPE-016-002 | No existe inventario completo de activos de información, bases, finalidades, propietarios, responsables, encargados y destinatarios.                | crítica   | INFO-DOM-001; INFO-DOM-008; INFO-DOM-010      | E1/E2  |
+| H-CAP-SCOPE-016-003 | La sensibilidad puede depender de permisos o carpetas sin una clasificación canónica versionada.                                                    | crítica   | INFO-DOM-002; INFO-AUTH-001                   | E2/E3  |
+| H-CAP-SCOPE-016-004 | Información, documento, registro, evidencia, archivo y expediente pueden confundirse.                                                               | alta      | INFO-DOM-003; INFO-INT-002                    | E2     |
+| H-CAP-SCOPE-016-005 | Los archivos están distribuidos entre aplicaciones y Storage sin metadatos y vínculos uniformes.                                                    | crítica   | INFO-DOM-005; EVID-ARC-004                    | E2/E3  |
+| H-CAP-SCOPE-016-006 | Un archivo puede existir sin entidad legal, proceso, recurso, propietario o tipo documental claramente resuelto.                                    | crítica   | INFO-DOM-003; INFO-DOM-005                    | E2/E3  |
+| H-CAP-SCOPE-016-007 | El borrado directo de archivo o fila puede eludir retención, legal hold, evidencia y conciliación de copias.                                        | crítica   | INFO-DOM-006; INFO-AUTH-003; INFO-UX-005      | E2/E3  |
+| H-CAP-SCOPE-016-008 | Versiones, vigencia, sustitución, anulación y retiro no tienen contrato transversal.                                                                | crítica   | INFO-DOM-004; INFO-UX-002                     | E2/E3  |
+| H-CAP-SCOPE-016-009 | La aprobación documental no está estandarizada entre aplicaciones.                                                                                  | alta      | INFO-DOM-004; INFO-DOM-011; INFO-UX-003       | E2     |
+| H-CAP-SCOPE-016-010 | Una URL firmada puede confundirse con autorización empresarial para compartir.                                                                      | crítica   | INFO-DOM-010; INFO-AUTH-002; EVID-ARC-007     | E2/E4  |
+| H-CAP-SCOPE-016-011 | Las políticas de privacidad existen de forma estática y separada en ANIMA y PASS.                                                                   | alta      | INFO-DOM-008; INFO-INT-002                    | E1/E2  |
+| H-CAP-SCOPE-016-012 | No existe registro transversal comprobado de versión de aviso, finalidades y prueba de autorización.                                                | crítica   | INFO-DOM-008; INFO-AUTH-001                   | E2/E3  |
+| H-CAP-SCOPE-016-013 | Consentimiento general, marketing, datos sensibles y aceptación contractual pueden mezclarse.                                                       | crítica   | INFO-DOM-008; INFO-DOM-010                    | E2/E3  |
+| H-CAP-SCOPE-016-014 | Las solicitudes de acceso, corrección, revocación o supresión no tienen un caso transversal y reconciliable.                                        | crítica   | INFO-DOM-009; INFO-UX-004                     | E2/E3  |
+| H-CAP-SCOPE-016-015 | Cuenta, identidad, titular y expediente pueden confundirse al eliminar o desactivar.                                                                | crítica   | INFO-DOM-009; INFO-DOM-006; INFO-AUTH-003     | E2/E3  |
+| H-CAP-SCOPE-016-016 | La eliminación de cuenta de cliente es una base parcial, pero no demuestra disposición en todos los dominios y copias.                              | crítica   | INFO-DOM-006; INFO-DOM-009; INFO-INT-002      | E2/E3  |
+| H-CAP-SCOPE-016-017 | Un retiro laboral podría interpretarse erróneamente como permiso para borrar documentos y auditoría sujetos a conservación.                         | crítica   | INFO-DOM-006; CAP-SCOPE-002; INFO-AUTH-003    | E2     |
+| H-CAP-SCOPE-016-018 | No existen tablas de retención corporativas versionadas por entidad y tipo documental.                                                              | crítica   | INFO-DOM-006; INFO-DOM-012                    | E1/E2  |
+| H-CAP-SCOPE-016-019 | El evento que inicia el término de retención puede no estar definido.                                                                               | alta      | INFO-DOM-006                                  | E2     |
+| H-CAP-SCOPE-016-020 | No existe legal hold canónico para suspender disposición por investigación, litigio o requerimiento.                                                | crítica   | INFO-DOM-006; INFO-AUTH-003; INFO-UX-005      | E2/E3  |
+| H-CAP-SCOPE-016-021 | Anonimización, seudonimización, bloqueo, archivo y eliminación pueden tratarse como equivalentes.                                                   | crítica   | INFO-DOM-006; INFO-DOM-009                    | E2/E3  |
+| H-CAP-SCOPE-016-022 | Proveedores que reciben datos o documentos no tienen inventario transversal de finalidad, ubicación, subencargados y terminación.                   | crítica   | INFO-DOM-010; INFO-INT-003                    | E1/E2  |
+| H-CAP-SCOPE-016-023 | Las exportaciones pueden producir copias fuera de control sin destinatario, finalidad, expiración ni revocación.                                    | crítica   | INFO-DOM-010; INFO-AUTH-002; INFO-UX-006      | E2/E3  |
+| H-CAP-SCOPE-016-024 | Datos médicos, biométricos, geográficos, financieros y documentos de identidad requieren controles más estrictos que los datos internos ordinarios. | crítica   | INFO-DOM-002; INFO-AUTH-001; INFO-AUTH-002    | E2/E3  |
+| H-CAP-SCOPE-016-025 | Los logs y auditorías están distribuidos y no comparten un modelo común de actor, recurso, motivo, decisión y correlación.                          | crítica   | INFO-DOM-013; INFO-INT-002                    | E2/E3  |
+| H-CAP-SCOPE-016-026 | Consultas, descargas, impresiones y exportaciones sensibles pueden no quedar auditadas uniformemente.                                               | crítica   | INFO-DOM-013; INFO-AUTH-004                   | E2/E3  |
+| H-CAP-SCOPE-016-027 | Logs, tickets, capturas y eventos pueden exponer secretos o contenido personal innecesario.                                                         | crítica   | INFO-AUTH-004; TI-AUTH-004                    | E2/E4  |
+| H-CAP-SCOPE-016-028 | Un log mutable o sin protección de integridad puede no servir para investigación confiable.                                                         | crítica   | INFO-DOM-007; INFO-DOM-013; TREQ-SUPABASE-013 | E3     |
+| H-CAP-SCOPE-016-029 | Aprobación, aceptación, firma electrónica e imagen de firma pueden confundirse.                                                                     | crítica   | INFO-DOM-011; INFO-UX-003                     | E2     |
+| H-CAP-SCOPE-016-030 | No existe estándar transversal de hash, timestamp, procedencia y transformación para evidencia.                                                     | crítica   | INFO-DOM-007; EVID-ARC-006                    | E2/E3  |
+| H-CAP-SCOPE-016-031 | Los accesos o cambios indebidos no tienen expediente de investigación común y preservación coordinada.                                              | crítica   | INFO-DOM-013; INFO-UX-006; INFO-AUTH-004      | E2/E3  |
+| H-CAP-SCOPE-016-032 | Requerimientos de autoridades o entregas regulatorias pueden ejecutarse sin alcance, aprobación y evidencia uniforme.                               | crítica   | INFO-DOM-010; INFO-DOM-012; INFO-INT-003      | E2/E3  |
+| H-CAP-SCOPE-016-033 | Los originales físicos y sus copias digitales no tienen cadena de custodia y correspondencia transversal comprobada.                                | alta      | INFO-DOM-003; INFO-DOM-007                    | E1/E2  |
+| H-CAP-SCOPE-016-034 | Captura offline, reintento o reemplazo puede duplicar archivos, versiones, firmas o disposiciones.                                                  | crítica   | INFO-DOM-004; INFO-DOM-007; INFO-INT-001      | E3/E4  |
+| H-CAP-SCOPE-016-035 | Las obligaciones de cumplimiento no tienen registro común de propietario, control, evidencia, frecuencia y brecha.                                  | crítica   | INFO-DOM-012; INFO-UX-001                     | E1/E2  |
+
+---
+
+#### 26. Tareas nuevas derivadas
+
+| ID            | Tarea                                                                                                                         | Bloque                                             | Momento                                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| INFO-DOM-001  | Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios     | BLOQUE AA — Gobierno de información / dominio      | Primera tarea del bloque, antes de clasificación o diseño de pantallas |
+| INFO-DOM-002  | Definir clasificación, sensibilidad, minimización y manejo por categoría de información                                       | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-001                                                |
+| INFO-DOM-003  | Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y copias                               | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-001 y coordinada con EVID-ARC                      |
+| INFO-DOM-004  | Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro                                       | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-003                                                |
+| INFO-DOM-005  | Definir metadatos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales                                | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-002 a INFO-DOM-004                                 |
+| INFO-DOM-006  | Definir tablas de retención, eventos de cómputo, archivo, legal hold, anonimización, eliminación y certificado de disposición | BLOQUE AA — Gobierno de información / dominio      | Después del inventario y antes de ejecutar eliminación real            |
+| INFO-DOM-007  | Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia                             | BLOQUE AA — Gobierno de información / dominio      | Coordinada con EVID-ARC y arquitectura de Supabase                     |
+| INFO-DOM-008  | Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y datos sensibles                        | BLOQUE AA — Gobierno de información / dominio      | Antes de ampliar captura o uso de datos personales                     |
+| INFO-DOM-009  | Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y supresión                            | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-008                                                |
+| INFO-DOM-010  | Definir compartición, exportación, divulgación, terceros, encargados, transferencias y requerimientos de autoridad            | BLOQUE AA — Gobierno de información / dominio      | Antes de nuevas exportaciones o integraciones externas                 |
+| INFO-DOM-011  | Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia                                       | BLOQUE AA — Gobierno de información / dominio      | Antes de implementar firmas o aceptar documentos vinculantes           |
+| INFO-DOM-012  | Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento                    | BLOQUE AA — Gobierno de información / dominio      | Después del inventario y con validación responsable                    |
+| INFO-DOM-013  | Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre                                        | BLOQUE AA — Gobierno de información / dominio      | Después de INFO-DOM-002 y INFO-DOM-007                                 |
+| INFO-AUTH-001 | Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado                          | BLOQUE AA — Gobierno de información / autorización | Antes de exponer bibliotecas, búsqueda o solicitudes                   |
+| INFO-AUTH-002 | Proteger datos sensibles, descargas, impresiones, exportaciones, compartición y URLs firmadas                                 | BLOQUE AA — Gobierno de información / autorización | Antes de habilitar acciones masivas o externas                         |
+| INFO-AUTH-003 | Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y eliminación                              | BLOQUE AA — Gobierno de información / autorización | Antes de mutaciones documentales sensibles                             |
+| INFO-AUTH-004 | Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada                                       | BLOQUE AA — Gobierno de información / autorización | Antes de habilitar consola de auditoría                                |
+| INFO-UX-001   | Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas                                              | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-001 y INFO-DOM-012                                 |
+| INFO-UX-002   | Diseñar biblioteca documental con búsqueda autorizada, expediente, versión y vigencia                                         | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-003 a INFO-DOM-005                                 |
+| INFO-UX-003   | Diseñar creación, revisión, aprobación, publicación y firma de documentos                                                     | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-004 y INFO-DOM-011                                 |
+| INFO-UX-004   | Diseñar portal y caso de solicitudes de privacidad para trabajadores y clientes                                               | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-008 y INFO-DOM-009                                 |
+| INFO-UX-005   | Diseñar retención, legal hold, archivo y disposición controlada                                                               | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-006 y INFO-AUTH-003                                |
+| INFO-UX-006   | Diseñar explorador de auditoría e investigación con divulgación progresiva                                                    | BLOQUE AA — Gobierno de información / experiencia  | Después de INFO-DOM-013 y INFO-AUTH-004                                |
+| INFO-INT-001  | Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo                            | BLOQUE AA — Gobierno de información / integración  | Antes de conectar servicios externos                                   |
+| INFO-INT-002  | Definir contratos con SHELL, Supabase, EVID-ARC, ANIMA, VISO, PASS y aplicaciones de dominio                                  | BLOQUE AA — Gobierno de información / integración  | Antes de implementar modelo transversal                                |
+| INFO-INT-003  | Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos                                 | BLOQUE AA — Gobierno de información / integración  | Antes de compartir datos o documentos con terceros                     |
+
+---
+
+#### 27. Ubicación exacta de tareas nuevas
+
+Crear el archivo:
+
+```text
+docs/plan-canonico/modular/bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md
+```
+
+Agregar su ruta en `docs/plan-canonico/modular/manifest.json` después de:
+
+```text
+bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md
+```
+
+El nuevo bloque contendrá, en este orden:
+
+1. `INFO-DOM-001` a `INFO-DOM-013`;
+2. `INFO-AUTH-001` a `INFO-AUTH-004`;
+3. `INFO-UX-001` a `INFO-UX-006`;
+4. `INFO-INT-001` a `INFO-INT-003`.
+
+No se trasladarán ni duplicarán `EVID-ARC-*`, `AUTH-*`, tareas documentales de ANIMA/PASS o auditorías de cada aplicación. BLOQUE AA las coordinará mediante contratos y dependencias.
+
+---
+
+#### 28. Requisitos de prueba generados
+
+El registro `04A` completo incorpora:
+
+```text
+TREQ-SHELL-011
+TREQ-SUPABASE-013
+TREQ-ANIMA-005
+TREQ-VISO-003
+TREQ-PASS-012
+TREQ-INTEGRATION-021
+```
+
+- `TREQ-SHELL-011` protege clasificación, finalidad, acceso, búsqueda, compartición y exportación autorizada.
+- `TREQ-SUPABASE-013` protege documentos, versiones, integridad, retención, legal hold, disposición y auditoría física.
+- `TREQ-ANIMA-005` protege privacidad, documentos laborales, solicitudes y conservación del trabajador.
+- `TREQ-VISO-003` protege cumplimiento, solicitudes, aprobaciones, auditoría e investigaciones.
+- `TREQ-PASS-012` protege consentimiento, derechos, eliminación y comunicaciones del cliente.
+- `TREQ-INTEGRATION-021` protege el ciclo transversal entre aplicaciones, Storage, proveedores y copias externas.
+
+---
+
+#### 29. Dependencias principales
+
+- `CAP-SCOPE-002`: identidad laboral, retiro y conservación de expedientes;
+- `CAP-SCOPE-003`: SST, salud y datos especialmente sensibles;
+- `CAP-SCOPE-009`: pedidos, clientes, pagos y documentos comerciales;
+- `CAP-SCOPE-012`: documentos financieros, contables, tributarios y cartera;
+- `CAP-SCOPE-014`: consentimiento y comunicaciones comerciales;
+- `CAP-SCOPE-015`: logs, soporte, secretos e incidentes técnicos;
+- `CAP-SCOPE-018`: incidentes de seguridad, continuidad, respaldo y recuperación;
+- `EVID-ARC-001` a `EVID-ARC-010`: archivos, documentos y evidencia;
+- bloques `AUTH`, `E3`, `E4`, `E5`, `T` y `U`;
+- propietarios funcionales de todas las aplicaciones.
+
+---
+
+#### 30. Criterios de aceptación
+
+`CAP-SCOPE-016` podrá aprobarse cuando:
+
+- las once subcapacidades estén clasificadas;
+- la propiedad del hecho, del documento, del archivo y de la política transversal esté separada;
+- información, dato, documento, registro, evidencia y archivo estén diferenciados;
+- exista modelo para finalidad, sensibilidad, consentimiento y derechos;
+- retención, legal hold, anonimización y eliminación no se confundan;
+- aprobación, firma electrónica y firma digital estén separadas;
+- las URLs firmadas no se interpreten como autorización suficiente;
+- auditoría e investigación tengan integridad y preservación;
+- cada hallazgo tenga tarea y puerta de resolución;
+- los seis `TREQ` estén incorporados en el `04A` completo;
+- no se fijen plazos legales universales sin validación por tipo documental;
+- no se autorice eliminación, acceso, firma o investigación real;
+- `CAP-SCOPE-017` permanezca como continuidad inmediata.
+
+---
+
+#### 31. Lo que esta tarea no autoriza
+
+- crear o cambiar políticas legales vigentes;
+- declarar cumplimiento normativo;
+- eliminar, anonimizar, bloquear o archivar datos reales;
+- destruir documentos físicos;
+- crear legal holds reales;
+- responder solicitudes reales de titulares;
+- firmar o aprobar documentos vinculantes;
+- contratar proveedores de firma, OCR, archivo o privacidad;
+- abrir investigaciones sobre personas;
+- exportar datos o entregar información a terceros;
+- modificar Storage, RLS, tablas, triggers o logs;
+- iniciar `CAP-SCOPE-017`.
+
+---
+
+#### 32. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+información y finalidad identificadas
+→ clasificación y propietario
+→ documento, registro o evidencia vinculados
+→ acceso y uso autorizados
+→ versión, aprobación y vigencia
+→ conservación y solicitudes
+→ archivo o disposición controlada
+→ auditoría e investigación
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-017
+— Evaluar analítica, indicadores y datos maestros
+```
+
+---
+
+#### 33. Estado de aprobación
+
+```text
+PROPUESTA PARA APROBACIÓN — APROBADA
+```
+
+No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
+
+
+### ✅ CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-016` aprobada  
+**Tarea anterior:** `CAP-SCOPE-016`  
+**Siguiente tarea reservada:** `CAP-SCOPE-018`  
+**Familia evaluada:** `CAP-17 — Medir, analizar y mejorar`  
+**Superficies objetivo:** todas las aplicaciones Vento OS, Supabase, fuentes externas, reportes, tableros, exportaciones y modelos analíticos  
+**Implementación técnica:** no autorizada  
+**Modificación de métricas, metas o datos reales:** no autorizada  
+**Requisitos generados:** `TREQ-DATA-001` a `TREQ-DATA-005` y `TREQ-INTEGRATION-022`  
+**Tareas nuevas derivadas:** `DATA-DOM-001` a `017`, `DATA-AUTH-001` a `004`, `DATA-UX-001` a `008`, `DATA-INT-001` a `004`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo para que Vento Group pueda medir, explicar y mejorar su operación utilizando datos confiables, definiciones comunes y decisiones trazables.
+
+La tarea deberá permitir responder de forma inequívoca:
+
+```text
+qué ocurrió
+cuándo ocurrió
+qué entidad, marca, sede, área, canal, producto o actor estuvo involucrado
+qué fuente conserva el hecho original
+qué definición y versión utiliza cada indicador
+qué calidad y frescura tiene la información
+por qué cambió un resultado
+qué decisión debe tomarse
+qué acción se ejecutó
+si la acción produjo la mejora esperada
+```
+
+No se busca crear un tablero lleno de cifras ni una base paralela que copie todos los datos. La analítica deberá reducir ambigüedad, orientar una decisión concreta y permitir llegar desde el resultado agregado hasta los hechos que lo explican.
+
+---
+
+#### 2. Decisión principal y propiedad
+
+```text
+APLICACIONES DE DOMINIO
+→ conservan sus datos maestros propietarios
+→ conservan los hechos y estados operativos
+→ exponen contratos de lectura o eventos
+
+SUPABASE / E3
+→ gobierna arquitectura, fuentes de verdad, calidad física,
+  historial, rendimiento y contratos de datos
+
+BLOQUE AB — ANALÍTICA Y DATOS MAESTROS
+→ gobierna datos maestros federados, capa semántica,
+  métricas, calidad analítica, reportes, diagnóstico y mejora
+
+VISO
+→ presenta visión ejecutiva transversal,
+  seguimiento de objetivos y acciones de mejora
+
+NUMERA
+→ presenta analítica económica, financiera,
+  de costos, rentabilidad, presupuesto y escenarios
+
+CADA APLICACIÓN
+→ presenta la analítica operativa necesaria para su proceso
+```
+
+No se crea una aplicación analítica monolítica ni un nuevo dueño de todos los datos.
+
+La propiedad será federada:
+
+```text
+DATO MAESTRO O HECHO
+→ conserva un propietario de dominio
+
+DEFINICIÓN ANALÍTICA
+→ conserva un propietario empresarial
+
+IMPLEMENTACIÓN DE CÁLCULO
+→ conserva un propietario técnico
+
+CERTIFICACIÓN DE CALIDAD
+→ conserva un responsable independiente o autorizado
+```
+
+---
+
+#### 3. Evidencia y estado actual
+
+La implementación actual contiene piezas útiles pero dispersas:
+
+- ANIMA ya calcula turnos programados y atendidos, tardanzas, ausencias, incidencias, minutos y tasas de asistencia y puntualidad;
+- NUMERA ya reserva tareas para costos, rentabilidad, reportes, indicadores, exportaciones, escenarios y un visor económico;
+- NEXO contiene catálogo maestro de productos, presentaciones, proveedores relacionados, políticas, rutas, sedes y configuraciones;
+- varias pantallas calculan KPI locales para apoyar una operación específica;
+- E3 ya exige propiedad de fuentes de verdad, arquitectura de vistas y RPC, auditoría, rendimiento y contratos entre dominios;
+- E3 también reserva una auditoría específica de normalización, duplicados semánticos, valores mostrados, valores de búsqueda y valores externos originales.
+
+La existencia de estas piezas no demuestra todavía:
+
+- que dos aplicaciones calculen igual el mismo indicador;
+- que los nombres de las métricas tengan significado común;
+- que cada dato maestro tenga propietario, steward y ciclo de vida;
+- que se pueda reproducir un reporte histórico;
+- que la calidad y frescura sean visibles;
+- que una señal termine en una acción y una comprobación de resultado.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-17.01` — Definir medidas e indicadores;
+- `CAP-17.02` — Recopilar información;
+- `CAP-17.03` — Verificar calidad de información;
+- `CAP-17.04` — Preparar reportes;
+- `CAP-17.05` — Analizar ventas y demanda;
+- `CAP-17.06` — Analizar inventario y abastecimiento;
+- `CAP-17.07` — Analizar producción y rendimiento;
+- `CAP-17.08` — Analizar servicio y clientes;
+- `CAP-17.09` — Analizar costos y rentabilidad;
+- `CAP-17.10` — Identificar problemas y oportunidades;
+- `CAP-17.11` — Definir y seguir acciones de mejora;
+- `CAP-17.12` — Comprobar resultados.
+
+El título de esta tarea también exige evaluar datos maestros porque toda comparación transversal depende de identidades, jerarquías y dimensiones comunes.
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                | Tratamiento       | Propietaria objetivo                       | Decisión                                                                                                                                                                                    |
+| ------------ | ------------------------------------- | ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-17.01    | Definir medidas e indicadores         | BUILD             | BLOQUE AB + propietarios empresariales     | Construir registro canónico versionado de métricas, KPI, drivers, guardrails, fórmulas, granularidad, dimensiones, periodos, fuentes, calidad, responsables y decisiones asociadas.         |
+| CAP-17.02    | Recopilar información                 | REUSE_OR_REFACTOR | aplicaciones propietarias + E3 + BLOQUE AB | Reutilizar tablas, eventos, importaciones y vistas existentes; formalizar contratos de ingestión, tiempos, claves, versiones, backfills, reconciliación y linaje.                           |
+| CAP-17.03    | Verificar calidad de información      | REUSE_OR_REFACTOR | E3 + BLOQUE AB + stewards                  | Reutilizar auditorías de normalización y calidad; añadir certificación por uso, frescura, cobertura, integridad, cuarentena, degradación y remediación.                                     |
+| CAP-17.04    | Preparar reportes                     | REUSE_OR_REFACTOR | VISO, NUMERA y aplicaciones propietarias   | Consolidar reportes parciales bajo un contrato común de versión, corte, filtros, fuente, calidad, snapshot, exportación y reproducción.                                                     |
+| CAP-17.05    | Analizar ventas y demanda             | REUSE_OR_REFACTOR | PULSO + AURA + NUMERA                      | Reutilizar ventas, pedidos, precios, promociones y canales; diseñar análisis de demanda, mezcla, conversión, frecuencia, estacionalidad y rentabilidad sin confundir correlación con causa. |
+| CAP-17.06    | Analizar inventario y abastecimiento  | REUSE_OR_REFACTOR | NEXO + ORIGO + NUMERA                      | Reutilizar existencias, movimientos, compras, proveedores y remisiones; consolidar disponibilidad, cobertura, rotación, faltantes, vencimientos, cumplimiento y costo.                      |
+| CAP-17.07    | Analizar producción y rendimiento     | REUSE_OR_REFACTOR | FOGO + NEXO + NUMERA                       | Reutilizar recetas, lotes, consumos, salidas y mermas; consolidar capacidad, adherencia, rendimiento, variación, calidad y costo.                                                           |
+| CAP-17.08    | Analizar servicio y clientes          | REUSE_OR_REFACTOR | PASS + PULSO + AURA + VISO                 | Reutilizar pedidos, feedback, reclamos, fidelización, reputación y reservas; consolidar servicio, recurrencia, satisfacción, resolución y valor del cliente con privacidad.                 |
+| CAP-17.09    | Analizar costos y rentabilidad        | REUSE_OR_REFACTOR | NUMERA                                     | Reutilizar el alcance financiero y el visor económico; asegurar trazabilidad, escenarios separados, moneda, periodos, centros de costo y conciliación.                                      |
+| CAP-17.10    | Identificar problemas y oportunidades | BUILD             | BLOQUE AB + VISO + propietarios            | Construir diagnóstico transversal, detección de variaciones y anomalías, oportunidades explicables, impacto, confianza, restricciones y ruta de investigación.                              |
+| CAP-17.11    | Definir y seguir acciones de mejora   | BUILD             | VISO + propietarios funcionales            | Construir ciclo de acción con hipótesis, responsable, línea base, meta, drivers, guardrails, plazo, estado, evidencia y efectos no deseados.                                                |
+| CAP-17.12    | Comprobar resultados                  | BUILD             | BLOQUE AB + propietarios + VISO            | Construir evaluación posterior que compare línea base, meta, ventana, segmentos, calidad, guardrails, confianza y aprendizaje; permitir cerrar, iterar, revertir o escalar.                 |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento       | Cantidad |
+| ----------------- | -------: |
+| REUSE_OR_REFACTOR |        8 |
+| BUILD             |        4 |
+| TOTAL             |       12 |
+
+---
+
+#### 7. Modelo canónico de datos y analítica
+
+```text
+DATO MAESTRO
+→ identifica entidades relativamente estables
+
+DATO DE REFERENCIA
+→ define códigos, listas y clasificaciones controladas
+
+HECHO O EVENTO
+→ registra algo que ocurrió
+
+SNAPSHOT
+→ conserva el estado observado en un momento
+
+MÉTRICA
+→ aplica una definición a hechos y dimensiones
+
+KPI
+→ métrica priorizada para una decisión y objetivo
+
+DRIVER
+→ explica o anticipa movimiento del KPI
+
+GUARDRAIL
+→ evita mejorar el KPI dañando otra dimensión
+
+REPORTE O TABLERO
+→ presenta métricas para una decisión
+
+ACCIÓN DE MEJORA
+→ modifica el proceso y luego comprueba el resultado
+```
+
+La capa analítica no podrá corregir un hecho operativo. Toda corrección deberá regresar al dominio propietario o registrarse como restatement analítico explícito.
+
+---
+
+#### 8. Fronteras conceptuales obligatorias
+
+```text
+dato maestro ≠ dato de referencia ≠ transacción ≠ evento ≠ snapshot
+```
+
+```text
+métrica ≠ KPI ≠ meta ≠ umbral ≠ alerta
+```
+
+```text
+numerador ≠ denominador ≠ porcentaje ≠ puntos porcentuales
+```
+
+```text
+fecha del hecho ≠ fecha empresarial ≠ fecha de carga ≠ fecha de actualización
+```
+
+```text
+cero ≠ nulo ≠ no aplica ≠ desconocido ≠ no recibido ≠ pendiente
+```
+
+```text
+vista en vivo ≠ snapshot publicado ≠ reporte oficial ≠ exportación
+```
+
+```text
+real ≠ presupuestado ≠ pronosticado ≠ simulado ≠ propuesto
+```
+
+```text
+correlación ≠ causalidad ≠ hipótesis validada
+```
+
+```text
+alerta ≠ diagnóstico ≠ acción ≠ resultado
+```
+
+```text
+dashboard ≠ fuente de verdad
+```
+
+---
+
+#### 9. Gobierno federado de datos maestros
+
+No se construirá una tabla maestra universal que sustituya todos los dominios.
+
+Cada objeto compartido tendrá:
+
+- identificador canónico estable;
+- propietario funcional;
+- steward o responsable de calidad;
+- sistema fuente;
+- claves empresariales y técnicas;
+- códigos externos y aliases;
+- jerarquías y relaciones;
+- estado y vigencia;
+- atributos que cada dominio puede administrar;
+- reglas de alta, corrección, fusión, separación y retiro;
+- historial efectivo;
+- consumidores y contratos;
+- controles de calidad;
+- crosswalks con sistemas externos.
+
+Distribución objetivo inicial:
+
+| Familia de datos                                                 | Propietaria objetivo                        | Observación                                                                        |
+| ---------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| entidades legales, marcas, sedes y áreas                         | dominio organizacional administrado en VISO | NUMERA y otras aplicaciones consumen la identidad; no crean copias independientes. |
+| trabajadores, roles y asignaciones                               | VISO                                        | ANIMA conserva hechos laborales y de asistencia, no redefine la identidad maestra. |
+| clientes, cuentas, contactos y consentimientos                   | PASS                                        | PULSO y AURA consumen proyecciones mínimas autorizadas.                            |
+| productos, categorías, unidades, presentaciones, LOC y activos   | NEXO                                        | FOGO, ORIGO, PULSO y NUMERA referencian la identidad canónica.                     |
+| proveedores y condiciones comerciales                            | ORIGO                                       | El producto relacionado conserva identidad NEXO.                                   |
+| recetas, procesos, rutas y recursos productivos                  | FOGO                                        | Las salidas e insumos se relacionan con productos NEXO.                            |
+| oferta, canales, precios de venta, pedidos y ventas              | PULSO                                       | Costos y rentabilidad se calculan en NUMERA.                                       |
+| centros de costo, monedas, periodos y clasificaciones económicas | NUMERA                                      | No sustituyen empresa, sede, marca ni canal.                                       |
+| campañas, audiencias y activos de marca                          | AURA, si continúa                           | Clientes y consentimientos continúan en PASS.                                      |
+| servicios tecnológicos y endpoints                               | BLOQUE Z con SHELL y NEXO                   | Se separa activo físico, endpoint, dispositivo compartido y servicio.              |
+
+La propiedad podrá dividirse por atributos cuando se documente explícitamente. La división no permitirá que dos dominios editen el mismo atributo sin contrato de precedencia.
+
+---
+
+#### 10. Identidad, fusión y ciclo de vida maestro
+
+Estados mínimos:
+
+```text
+PROPUESTO
+→ ACTIVO
+→ DEPRECADO
+→ RETIRADO
+```
+
+Estados especiales:
+
+```text
+DUPLICADO CONFIRMADO
+FUSIONADO
+SEPARADO
+SUSTITUIDO
+BLOQUEADO
+```
+
+Reglas:
+
+- una coincidencia textual no autoriza fusión;
+- toda fusión revisará relaciones, movimientos, documentos, integraciones e historia;
+- la fusión conservará los identificadores anteriores como aliases;
+- la separación deberá reconstruir relaciones cuando sea técnicamente posible;
+- retirar un maestro impedirá usos nuevos, pero no borrará hechos históricos;
+- un cambio de nombre no cambiará la identidad;
+- los códigos externos tendrán fuente, vigencia y unicidad contextual;
+- las jerarquías conservarán vigencia para reproducir reportes históricos.
+
+---
+
+#### 11. Registro canónico de métricas
+
+Cada métrica deberá conservar como mínimo:
+
+- identificador y nombre empresarial;
+- descripción en lenguaje no técnico;
+- decisión que apoya;
+- propietario empresarial y técnico;
+- fórmula;
+- numerador y denominador;
+- granularidad o grain;
+- dimensiones permitidas;
+- inclusiones y exclusiones;
+- unidad, moneda y precisión;
+- calendario, zona horaria y fecha empresarial;
+- fuente de verdad y tablas o eventos derivados;
+- tratamiento de anulaciones, devoluciones y correcciones;
+- tratamiento de datos tardíos y periodos abiertos;
+- frecuencia de actualización;
+- calidad mínima y estado de certificación;
+- versión y vigencia;
+- ruta de drill-down;
+- restricciones de privacidad;
+- meta, drivers y guardrails cuando sea KPI.
+
+Regla obligatoria:
+
+```text
+MISMA MÉTRICA + MISMA VERSIÓN + MISMO CONTEXTO + MISMO CORTE
+→ MISMO RESULTADO
+```
+
+La implementación SQL, vista, RPC o modelo podrá cambiar sin alterar el significado. Un cambio de significado exigirá una versión nueva.
+
+---
+
+#### 12. Jerarquía de indicadores
+
+Cada tablero de decisión deberá priorizar:
+
+```text
+1 a 3 KPI PRINCIPALES
+→ resultado que cambia la decisión
+
+1 a 2 DRIVERS por KPI
+→ variables accionables que explican el movimiento
+
+1 a 2 GUARDRAILS
+→ límites que evitan daño a calidad, servicio, seguridad, margen o personas
+```
+
+No se aprobará un KPI porque sea fácil de mostrar.
+
+Un indicador deberá:
+
+- representar el resultado buscado o declarar que es proxy;
+- cambiar una decisión real;
+- producir señal con la cadencia de revisión;
+- tener palancas controlables o drivers relacionados;
+- ser medible sin trabajo manual recurrente;
+- ser difícil de mejorar de forma engañosa.
+
+No se fijarán metas definitivas sin línea base, histórico, capacidad de influencia y método de medición.
+
+---
+
+#### 13. Tiempo, granularidad y comparabilidad
+
+Cada hecho analítico distinguirá:
+
+- tiempo de ocurrencia;
+- fecha empresarial;
+- tiempo de recepción;
+- tiempo de procesamiento;
+- tiempo de última corrección;
+- zona horaria;
+- periodo operativo, económico, contable o fiscal aplicable.
+
+Cada métrica declarará su granularidad:
+
+```text
+una fila por venta
+una fila por línea de pedido
+una fila por producto × sede × día
+una fila por lote
+una fila por trabajador × turno
+```
+
+No se unirán granos distintos sin una agregación declarada.
+
+Las comparaciones conservarán:
+
+- periodo actual y comparable;
+- días completos o parciales;
+- cambios de horario o calendario;
+- sedes abiertas o cerradas;
+- cambios de catálogo y jerarquía;
+- inflación o moneda cuando corresponda;
+- cambios de definición;
+- datos tardíos y restatements.
+
+---
+
+#### 14. Recopilación, transformación y linaje
+
+Flujo objetivo:
+
+```text
+FUENTE PROPIETARIA
+→ CONTRATO VERSIONADO
+→ VALIDACIÓN DE INGESTIÓN
+→ ZONA DE CUARENTENA CUANDO APLIQUE
+→ MODELO ANALÍTICO
+→ MÉTRICA VERSIONADA
+→ REPORTE O TABLERO
+→ DRILL-DOWN A LA FUENTE
+```
+
+Cada transformación deberá conservar:
+
+- fuente y versión;
+- consulta, regla o código;
+- fecha de ejecución;
+- ventana procesada;
+- número de registros de entrada y salida;
+- rechazos y duplicados;
+- dependencias;
+- actor o proceso ejecutor;
+- hash o versión de artefacto cuando corresponda;
+- posibilidad de reconstrucción.
+
+Una hoja de cálculo podrá servir como captura temporal controlada, pero no será fuente de verdad permanente sin contrato, propietario, validación y reconciliación.
+
+---
+
+#### 15. Calidad y certificación de datos
+
+Dimensiones mínimas:
+
+- completitud;
+- unicidad;
+- validez;
+- consistencia;
+- integridad referencial;
+- frescura;
+- cobertura;
+- volumen y forma;
+- reconciliación;
+- estabilidad histórica.
+
+Estados propuestos:
+
+```text
+NO EVALUADO
+EN OBSERVACIÓN
+CERTIFICADO
+DEGRADADO
+BLOQUEADO
+```
+
+Reglas:
+
+- `CERTIFICADO` se otorga para un uso, periodo y versión concretos;
+- una fuente degradada podrá mostrarse con advertencia si la decisión lo permite;
+- un reporte oficial no podrá publicarse con una dependencia bloqueada;
+- toda degradación tendrá propietario, impacto, inicio, causa conocida y plan;
+- los controles estables se automatizarán;
+- los umbrales variables no se endurecerán sin histórico suficiente;
+- los datos recientes se tratarán considerando retrasos normales de llegada.
+
+---
+
+#### 16. Reportes, tableros y snapshots
+
+Todo artefacto analítico deberá mostrar:
+
+- qué pregunta responde;
+- periodo y fecha de corte;
+- filtros activos;
+- versión de métricas;
+- frescura;
+- cobertura;
+- calidad o certificación;
+- moneda y unidad;
+- última actualización;
+- fuente y ruta de detalle;
+- responsable;
+- si es vivo, snapshot, oficial, provisional o simulado.
+
+La vista principal será simple:
+
+```text
+QUÉ CAMBIÓ
+POR QUÉ IMPORTA
+DÓNDE OCURRIÓ
+QUÉ REQUIERE ATENCIÓN
+QUÉ ACCIÓN SIGUE
+```
+
+No se llenará la pantalla con explicaciones permanentes. Las fórmulas, linaje, notas y excepciones estarán disponibles mediante divulgación progresiva.
+
+Los snapshots publicados serán inmutables. Una corrección generará un restatement relacionado, no reemplazo silencioso.
+
+---
+
+#### 17. Analítica de ventas y demanda
+
+Familias candidatas, sujetas a definición en `DATA-DOM-009`:
+
+- ventas netas y brutas;
+- pedidos y conversión;
+- ticket y unidades;
+- mezcla por producto, categoría, canal y sede;
+- demanda por franja, día y temporada;
+- disponibilidad perdida;
+- cancelaciones, devoluciones y descuentos;
+- promociones y efecto incremental;
+- recurrencia y frecuencia;
+- margen relacionado;
+- capacidad comercial no utilizada.
+
+Las ventas no se interpretarán sin considerar devoluciones, impuestos, descuentos, canales, cierres parciales, disponibilidad y cambios de catálogo.
+
+---
+
+#### 18. Analítica de inventario y abastecimiento
+
+Familias candidatas:
+
+- existencia disponible y comprometida;
+- cobertura y días de inventario;
+- rotación y permanencia;
+- faltantes y quiebres;
+- vencimiento, daño y pérdida;
+- diferencias de conteo;
+- cumplimiento de remisiones;
+- lead time y cumplimiento de proveedores;
+- compras urgentes;
+- consumo versus plan;
+- costo de inventario;
+- capacidad de almacenamiento.
+
+Una existencia negativa, nula o no actualizada se tratará según causa; no se ocultará mediante agregación.
+
+---
+
+#### 19. Analítica de producción y rendimiento
+
+Familias candidatas:
+
+- demanda planificada versus producción;
+- capacidad disponible y utilizada;
+- adherencia al programa;
+- rendimiento teórico y real;
+- consumo estándar y real;
+- merma, reproceso y aprovechamiento;
+- calidad, retención y rechazo;
+- tiempo de ciclo;
+- cumplimiento de liberación;
+- costo y variación por lote, producto y sede.
+
+Las recetas, versiones, lotes y unidades aplicables deberán conservarse para reproducir el cálculo histórico.
+
+---
+
+#### 20. Analítica de servicio y clientes
+
+Familias candidatas:
+
+- cumplimiento de promesa;
+- tiempos de preparación, despacho y entrega;
+- pedidos completos;
+- reclamos y tiempo de resolución;
+- compensaciones;
+- satisfacción y feedback;
+- recurrencia, frecuencia y abandono;
+- adquisición y activación;
+- fidelización, puntos y redenciones;
+- reputación y temas recurrentes;
+- reservas, no-show y utilización;
+- valor y rentabilidad del cliente cuando esté autorizado.
+
+Los análisis de clientes aplicarán minimización, finalidad, consentimiento, segregación y umbrales para evitar exposición de personas o grupos pequeños.
+
+---
+
+#### 21. Analítica económica y de rentabilidad
+
+NUMERA conservará la propiedad de:
+
+- costos estándar y reales;
+- variaciones;
+- margen y contribución;
+- gastos;
+- centros de costo;
+- presupuesto y forecast;
+- caja, bancos y tesorería cuando aplique;
+- cartera y obligaciones;
+- rentabilidad por empresa, sede, canal, producto y periodo;
+- escenarios y simulaciones.
+
+Las métricas económicas deberán llegar al hecho fuente y separar:
+
+```text
+REAL
+PRESUPUESTADO
+PRONOSTICADO
+SIMULADO
+PROPUESTO
+PUBLICADO
+```
+
+El visor económico de `NUMERA-UX-028` consumirá las definiciones del registro canónico y no mantendrá fórmulas locales competidoras.
+
+---
+
+#### 22. Diagnóstico, anomalías y oportunidades
+
+Una señal automática deberá mostrar:
+
+- métrica y versión;
+- variación absoluta y relativa;
+- periodo comparable;
+- segmentos afectados;
+- calidad y frescura;
+- posibles factores relacionados;
+- impacto estimado;
+- nivel de confianza;
+- restricciones y datos faltantes;
+- enlace a investigación;
+- acción sugerida, nunca ejecutada automáticamente.
+
+Tipos de análisis:
+
+```text
+DESCRIPTIVO
+→ qué ocurrió
+
+DIAGNÓSTICO
+→ qué factores lo explican
+
+PRONÓSTICO
+→ qué podría ocurrir
+
+RECOMENDACIÓN
+→ qué alternativa conviene evaluar
+
+DECISIÓN
+→ la toma un actor autorizado
+```
+
+La IA o un modelo analítico no podrá presentar una inferencia como hecho confirmado ni modificar precios, inventario, producción, campañas o personal por sí solo.
+
+---
+
+#### 23. Ciclo de mejora
+
+```text
+SEÑAL
+→ INVESTIGACIÓN
+→ HIPÓTESIS
+→ ACCIÓN O EXPERIMENTO
+→ RESPONSABLE
+→ LÍNEA BASE
+→ META
+→ DRIVERS
+→ GUARDRAILS
+→ VENTANA DE MEDICIÓN
+→ RESULTADO
+→ APRENDIZAJE
+→ CIERRE, ITERACIÓN, REVERSIÓN O ESCALAMIENTO
+```
+
+Cada acción conservará:
+
+- problema u oportunidad;
+- evidencia inicial;
+- proceso y alcance;
+- propietario;
+- decisión autorizante;
+- cambio ejecutado;
+- fecha de inicio y finalización;
+- indicadores principales;
+- segmentos;
+- efectos no deseados;
+- resultado y confianza;
+- aprendizaje reutilizable;
+- tareas derivadas.
+
+Una acción terminada no se marcará exitosa por haberse ejecutado. Debe demostrar resultado.
+
+---
+
+#### 24. Autorización, privacidad y seguridad
+
+Se separarán permisos para:
+
+- consultar datos maestros;
+- administrar un maestro;
+- consultar indicadores;
+- acceder a detalle;
+- comparar trabajadores, clientes, sedes o proveedores;
+- definir una métrica;
+- certificarla;
+- fijar una meta;
+- publicar un snapshot;
+- crear una suscripción;
+- exportar;
+- usar datos en modelos o proveedores externos;
+- administrar acciones de mejora.
+
+Reglas:
+
+- la vista agregada no autoriza el detalle;
+- los grupos pequeños podrán ocultarse, agruparse o enmascararse;
+- una exportación no ampliará el alcance del actor;
+- las métricas sensibles aplicarán territorio y finalidad;
+- consultas, exportaciones, publicaciones y uso por modelos quedarán auditados;
+- los proveedores externos recibirán el mínimo necesario y no conservarán autoridad empresarial.
+
+---
+
+#### 25. Rendimiento y costo analítico
+
+La arquitectura deberá evitar:
+
+- recalcular métricas costosas en cada render;
+- consultar tablas operativas completas desde el frontend;
+- crear vistas sin índices o filtros territoriales;
+- mantener cachés sin versión o fecha de corte;
+- bloquear procesos operativos por cargas analíticas;
+- multiplicar modelos por aplicación;
+- generar exportaciones masivas sin control.
+
+Se definirán:
+
+- modelos de lectura;
+- materializaciones o snapshots cuando convenga;
+- frecuencia;
+- límites y paginación;
+- caché versionado;
+- observabilidad;
+- costo de consulta;
+- degradación controlada;
+- estrategia de reconstrucción.
+
+---
+
+#### 26. Experiencia simple y accionable
+
+La analítica no deberá reproducir el problema de pantallas técnicas o saturadas.
+
+Principios:
+
+1. una pantalla responde una decisión principal;
+2. pocos indicadores prioritarios antes del detalle;
+3. lenguaje empresarial;
+4. comparación visible y consistente;
+5. fuente, frescura y calidad disponibles sin dominar la pantalla;
+6. filtros relevantes y persistentes;
+7. drill-down progresivo;
+8. alertas con acción clara;
+9. estados vacíos que expliquen si no hay actividad o faltan datos;
+10. accesibilidad y uso en escritorio, tablet o móvil según actor.
+
+---
+
+#### 27. Preguntas y decisiones pendientes
+
+No se dejan preguntas narrativas sin dueño.
+
+| Decisión pendiente                               | Tarea propietaria                                | Momento                                             |
+| ------------------------------------------------ | ------------------------------------------------ | --------------------------------------------------- |
+| Propietario y steward de cada maestro compartido | `DATA-DOM-001` y `DATA-DOM-002`                  | antes de diseñar crosswalks o migraciones           |
+| Definición y certificador de cada KPI            | `DATA-DOM-004` y `DATA-AUTH-003`                 | antes de publicar dashboards oficiales              |
+| Arquitectura interna o herramienta BI externa    | `DATA-INT-002` y `DATA-INT-004`                  | durante diseño E3/E5, antes de contratar o integrar |
+| Líneas base, metas y cadencias de revisión       | `DATA-DOM-015`                                   | antes de activar seguimiento de objetivos           |
+| Umbrales de calidad y frescura                   | `DATA-DOM-007`                                   | antes de certificar datos o reportes                |
+| Uso de modelos predictivos o IA                  | `DATA-DOM-014`, `DATA-AUTH-004` y `DATA-INT-004` | antes de enviar datos o mostrar recomendaciones     |
+
+---
+
+#### 28. Hallazgos
+
+| ID                  | Hallazgo                                                               | Propietaria                     | Momento de resolución                |
+| ------------------- | ---------------------------------------------------------------------- | ------------------------------- | ------------------------------------ |
+| H-CAP-SCOPE-017-001 | No existe registro canónico de datos maestros compartidos.             | `DATA-DOM-001`, `DATA-DOM-002`  | diseño de gobierno federado          |
+| H-CAP-SCOPE-017-002 | No están declarados propietario y steward de cada maestro.             | `DATA-DOM-001`                  | antes de cambios maestros            |
+| H-CAP-SCOPE-017-003 | Dato maestro, referencia y transacción pueden confundirse.             | `DATA-DOM-002`                  | diseño de taxonomía                  |
+| H-CAP-SCOPE-017-004 | No existe contrato común de claves, aliases y códigos externos.        | `DATA-DOM-003`, `DATA-INT-003`  | antes de integraciones y migraciones |
+| H-CAP-SCOPE-017-005 | Una fusión de duplicados podría perder historia o relaciones.          | `DATA-DOM-003`, `DATA-DOM-017`  | antes de deduplicación               |
+| H-CAP-SCOPE-017-006 | La desactivación de maestros podría romper reportes históricos.        | `DATA-DOM-003`, `DATA-DOM-005`  | diseño de vigencias                  |
+| H-CAP-SCOPE-017-007 | Las jerarquías no tienen historial efectivo común.                     | `DATA-DOM-003`, `DATA-DOM-005`  | diseño de dimensiones                |
+| H-CAP-SCOPE-017-008 | Los atributos pueden tener más de un editor sin precedencia.           | `DATA-DOM-001`, `DATA-AUTH-003` | gobierno por atributo                |
+| H-CAP-SCOPE-017-009 | Los crosswalks externos están dispersos por proceso.                   | `DATA-INT-003`                  | contratos de integración             |
+| H-CAP-SCOPE-017-010 | La normalización textual podría confundirse con identidad.             | `DATA-DOM-003`, `DATA-DOM-007`  | diseño de calidad                    |
+| H-CAP-SCOPE-017-011 | No existe registro versionado de métricas.                             | `DATA-DOM-004`                  | antes de dashboards oficiales        |
+| H-CAP-SCOPE-017-012 | Una misma métrica puede tener fórmulas locales diferentes.             | `DATA-DOM-004`, `DATA-INT-002`  | capa semántica                       |
+| H-CAP-SCOPE-017-013 | La granularidad no se declara sistemáticamente.                        | `DATA-DOM-005`                  | modelado analítico                   |
+| H-CAP-SCOPE-017-014 | Moneda, unidad, precisión y zona horaria pueden quedar implícitas.     | `DATA-DOM-004`, `DATA-DOM-005`  | definición de métricas               |
+| H-CAP-SCOPE-017-015 | Empresa, marca, sede, área, canal y centro de costo pueden mezclarse.  | `DATA-DOM-002`, `DATA-DOM-005`  | diseño dimensional                   |
+| H-CAP-SCOPE-017-016 | Cambios de definición podrían reescribir historia silenciosamente.     | `DATA-DOM-017`                  | versionado y restatement             |
+| H-CAP-SCOPE-017-017 | Vista viva y snapshot oficial no están diferenciados globalmente.      | `DATA-DOM-008`, `DATA-UX-007`   | diseño de reportes                   |
+| H-CAP-SCOPE-017-018 | Reportes exportados pueden quedar sin versión ni fecha de corte.       | `DATA-DOM-008`, `DATA-AUTH-002` | exportaciones                        |
+| H-CAP-SCOPE-017-019 | KPI locales pueden mostrar cifras sin fuente o calidad visible.        | `DATA-DOM-004`, `DATA-UX-003`   | rediseño de dashboards               |
+| H-CAP-SCOPE-017-020 | Cero y ausencia de dato pueden interpretarse igual.                    | `DATA-DOM-006`, `DATA-DOM-007`  | contratos y calidad                  |
+| H-CAP-SCOPE-017-021 | Datos tardíos y backfills pueden cambiar periodos sin advertencia.     | `DATA-DOM-006`, `DATA-DOM-017`  | ingestión y restatement              |
+| H-CAP-SCOPE-017-022 | No existe estado común de certificación de datos.                      | `DATA-DOM-007`, `DATA-UX-004`   | gobierno de calidad                  |
+| H-CAP-SCOPE-017-023 | La auditoría de calidad puede quedar desconectada del uso empresarial. | `DATA-DOM-007`                  | certificación por uso                |
+| H-CAP-SCOPE-017-024 | Los agregados pueden no reconciliarse con hechos fuente.               | `DATA-DOM-006`, `DATA-INT-001`  | modelos y pruebas                    |
+| H-CAP-SCOPE-017-025 | Las hojas de cálculo pueden convertirse en fuentes paralelas.          | `DATA-DOM-006`, `DATA-INT-004`  | gobierno de importaciones            |
+| H-CAP-SCOPE-017-026 | No existe linaje reproducible extremo a extremo.                       | `DATA-DOM-006`, `DATA-INT-002`  | arquitectura analítica               |
+| H-CAP-SCOPE-017-027 | La frescura no se muestra sistemáticamente.                            | `DATA-DOM-007`, `DATA-UX-003`   | experiencia y calidad                |
+| H-CAP-SCOPE-017-028 | Los dashboards pueden saturarse con cifras sin prioridad.              | `DATA-DOM-015`, `DATA-UX-001`   | diseño de KPI y UX                   |
+| H-CAP-SCOPE-017-029 | El detalle puede exponer personas o grupos pequeños.                   | `DATA-AUTH-002`                 | autorización y privacidad            |
+| H-CAP-SCOPE-017-030 | Los objetivos pueden fijarse sin línea base ni guardrails.             | `DATA-DOM-015`                  | diseño de medición                   |
+| H-CAP-SCOPE-017-031 | Métricas de vanidad pueden sustituir resultados empresariales.         | `DATA-DOM-015`, `DATA-UX-001`   | selección de KPI                     |
+| H-CAP-SCOPE-017-032 | Los reportes no tienen contrato común de suscripción y restatement.    | `DATA-DOM-008`, `DATA-UX-007`   | diseño de reportes                   |
+| H-CAP-SCOPE-017-033 | Una correlación podría presentarse como causa confirmada.              | `DATA-DOM-014`, `DATA-UX-005`   | diagnóstico                          |
+| H-CAP-SCOPE-017-034 | Las acciones de mejora no tienen ciclo medible común.                  | `DATA-DOM-016`, `DATA-UX-006`   | seguimiento de mejoras               |
+| H-CAP-SCOPE-017-035 | BI, IA o modelos externos podrían adquirir autoridad implícita.        | `DATA-AUTH-004`, `DATA-INT-004` | antes de integración externa         |
+
+Todos los hallazgos tienen tarea y momento de resolución. No queda pendiente narrativo sin propietario.
+
+---
+
+#### 29. Tareas nuevas derivadas
+
+##### Dominio
+
+- `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad;
+- `DATA-DOM-002` — Definir catálogo de datos maestros, datos de referencia y dimensiones compartidas;
+- `DATA-DOM-003` — Definir identidad, claves, códigos, jerarquías, ciclo de vida, fusión y separación de datos maestros;
+- `DATA-DOM-004` — Definir capa semántica y registro canónico de métricas e indicadores;
+- `DATA-DOM-005` — Definir hechos, eventos, granularidad, dimensiones, calendarios, snapshots y comparabilidad histórica;
+- `DATA-DOM-006` — Definir contratos de recopilación, ingestión, transformación, backfill y reconciliación;
+- `DATA-DOM-007` — Definir calidad, certificación, frescura, completitud, unicidad, validez e integridad;
+- `DATA-DOM-008` — Definir reportes, tableros, exportaciones, suscripciones, alertas y snapshots oficiales;
+- `DATA-DOM-009` — Definir analítica de ventas, demanda, precios, promociones y canales;
+- `DATA-DOM-010` — Definir analítica de inventario, abastecimiento, proveedores y logística;
+- `DATA-DOM-011` — Definir analítica de producción, rendimiento, capacidad, merma y calidad;
+- `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia;
+- `DATA-DOM-013` — Definir analítica de costos, rentabilidad, liquidez, presupuesto y escenarios;
+- `DATA-DOM-014` — Definir diagnóstico transversal, anomalías, causas, oportunidades y nivel de confianza;
+- `DATA-DOM-015` — Definir objetivos, líneas base, metas, drivers, guardrails y planes de medición;
+- `DATA-DOM-016` — Definir acciones de mejora, experimentos, responsables, seguimiento y comprobación de resultados;
+- `DATA-DOM-017` — Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad.
+
+##### Autorización
+
+- `DATA-AUTH-001` — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad;
+- `DATA-AUTH-002` — Proteger información sensible, poblaciones pequeñas, comparaciones, exportaciones y drill-down;
+- `DATA-AUTH-003` — Separar definición, certificación, publicación, fijación de metas, anotación, exportación y administración;
+- `DATA-AUTH-004` — Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones.
+
+##### Experiencia
+
+- `DATA-UX-001` — Diseñar inicio ejecutivo simple y accionable por rol;
+- `DATA-UX-002` — Diseñar catálogo de métricas y datos maestros con definición, dueño, fuente, calidad y linaje;
+- `DATA-UX-003` — Diseñar tableros por dominio con filtros, comparación, drill-down y trazabilidad;
+- `DATA-UX-004` — Diseñar centro de calidad, frescura, conciliaciones y certificación;
+- `DATA-UX-005` — Diseñar espacio de investigación de variaciones, anomalías y causas;
+- `DATA-UX-006` — Diseñar objetivos, metas, drivers, guardrails y acciones de mejora;
+- `DATA-UX-007` — Diseñar reportes, exportaciones, suscripciones y snapshots versionados;
+- `DATA-UX-008` — Validar comprensión, tiempos y decisiones con usuarios reales.
+
+##### Integraciones
+
+- `DATA-INT-001` — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas;
+- `DATA-INT-002` — Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento;
+- `DATA-INT-003` — Definir crosswalks, claves externas, identidad y reconciliación de datos maestros;
+- `DATA-INT-004` — Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial.
+
+---
+
+#### 30. Ubicación exacta de tareas nuevas
+
+Al aprobarse esta propuesta se creará:
+
+```text
+docs/plan-canonico/modular/bloques/
+AB_ANALITICA_Y_DATOS_MAESTROS/
+00_BLOQUE_AB.md
+```
+
+El bloque deberá ubicarse después de:
+
+```text
+AA_GOBIERNO_DE_INFORMACION
+```
+
+No deberá incorporarse todavía antes de la aprobación explícita.
+
+Orden interno:
+
+```text
+DATA-DOM-001 a DATA-DOM-017
+→ DATA-AUTH-001 a DATA-AUTH-004
+→ DATA-UX-001 a DATA-UX-008
+→ DATA-INT-001 a DATA-INT-004
+```
+
+Las tareas quedarán `NO INICIADAS`. La secuencia activa continuará en `CAP-SCOPE-018`.
+
+---
+
+#### 31. Requisitos de prueba generados
+
+Se crean:
+
+- `TREQ-DATA-001` — datos maestros y de referencia;
+- `TREQ-DATA-002` — registro canónico de métricas;
+- `TREQ-DATA-003` — recopilación, calidad, frescura, linaje y certificación;
+- `TREQ-DATA-004` — tableros, reportes, snapshots, drill-down y simplicidad;
+- `TREQ-DATA-005` — diagnóstico, acciones y comprobación de mejora;
+- `TREQ-INTEGRATION-022` — integración analítica y maestra transversal.
+
+El detalle completo se encuentra en el archivo `04A` regenerado.
+
+---
+
+#### 32. Dependencias principales
+
+- `CAP-SCOPE-001` — empresas, sedes y organización;
+- `CAP-SCOPE-002` — personas y estructura laboral;
+- `CAP-SCOPE-004` — catálogo y productos;
+- `CAP-SCOPE-005` a `CAP-SCOPE-014` — hechos operativos por dominio;
+- `CAP-SCOPE-016` — privacidad, documentos y auditoría;
+- E2 — procesos, actores, pantallas y experiencia;
+- E3 — arquitectura Supabase, normalización, calidad y fuentes de verdad;
+- E4 — eventos, notificaciones, archivos y evidencia;
+- E5 — paquetes, readiness, piloto e hypercare;
+- BLOQUE X — integraciones;
+- BLOQUE T — CI, pruebas, versiones y despliegue;
+- BLOQUE U — certificación integral.
+
+---
+
+#### 33. Criterios de aceptación
+
+`CAP-SCOPE-017` podrá aprobarse cuando:
+
+1. las doce subcapacidades estén evaluadas;
+2. se apruebe la propiedad federada y no una base maestra monolítica;
+3. se separen maestro, referencia, hecho, snapshot, métrica y KPI;
+4. se exija registro versionado de métricas;
+5. se definan granularidad, tiempo, dimensiones, unidades y fuentes;
+6. se defina ciclo de calidad, certificación y degradación;
+7. se distingan vista viva, snapshot y reporte oficial;
+8. se defina analítica por dominio sin duplicar sus hechos;
+9. se defina ciclo cerrado de mejora;
+10. se protejan poblaciones pequeñas, exportaciones y detalle;
+11. los 35 hallazgos tengan propietario y momento;
+12. las 33 tareas nuevas estén explícitas;
+13. los seis requisitos estén incorporados en el `04A` completo;
+14. no se haya modificado código, datos, métricas ni metas reales.
+
+---
+
+#### 34. Lo que esta tarea no autoriza
+
+Esta tarea no autoriza:
+
+- crear tablas, vistas, pipelines o dashboards;
+- modificar fórmulas actuales;
+- publicar indicadores oficiales;
+- fijar metas empresariales;
+- fusionar datos maestros;
+- corregir datos de producción;
+- conectar herramientas BI o IA;
+- enviar información a terceros;
+- ejecutar recomendaciones automáticas;
+- modificar permisos;
+- implementar migraciones;
+- declarar datos certificados sin pruebas.
+
+---
+
+#### 35. Resultado y continuidad
+
+Al aprobarse:
+
+- `CAP-SCOPE-017` quedará cerrada;
+- el modelo de analítica y datos maestros quedará incorporado al alcance objetivo;
+- las tareas `DATA-*` se crearán en el BLOQUE AB;
+- el `04A` completo actualizado será la única fuente de los nuevos requisitos;
+- la siguiente tarea será:
+
+```text
+CAP-SCOPE-018 — Evaluar continuidad, contingencia, incidentes y recuperación
+```
+
+---
+
+#### 36. Estado de aprobación
+
+**Estado actual:** APROBADA
+
+No marcar como aprobada hasta recibir confirmación explícita del usuario.
+
+
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
 ### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
 

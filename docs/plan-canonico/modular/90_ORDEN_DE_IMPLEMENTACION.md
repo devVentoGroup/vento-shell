@@ -214,6 +214,22 @@ FASE 4 — HABILITADORES TRANSVERSALES
 30. Ejecutar AUTH-UI-040 a AUTH-UI-051
 31. BLOQUE P — Dispositivos compartidos
 32. BLOQUE Q — Simulación estricta
+32A. BLOQUE Z — Tecnología y soporte como habilitador transversal
+32B. BLOQUE AA — Gobierno de información como habilitador transversal
+32C. BLOQUE AB — Analítica, indicadores y datos maestros como habilitador transversal
+
+Secuencia interna recomendada:
+
+```text
+DATA-DOM-001 a DATA-DOM-003
+→ DATA-DOM-004 a DATA-DOM-008
+→ DATA-DOM-009 a DATA-DOM-013
+→ DATA-DOM-014 a DATA-DOM-017
+→ DATA-AUTH-001 a DATA-AUTH-004
+→ DATA-UX-001 a DATA-UX-008
+→ DATA-INT-001 a DATA-INT-004
+```
+
 
 AUTH-UI-040 a AUTH-UI-051 implementa:
 
@@ -278,7 +294,6 @@ completo cuando se hayan aprobado y ejecutado:
 
 Orden:
 
-```text
 1. Obtener documentación y credencial de pruebas.
 2. Importar ventas sin efectos.
 3. Validar payloads e idempotencia.
@@ -289,7 +304,7 @@ Orden:
 8. Habilitar PASS únicamente cuando corresponda.
 9. Mantener conciliación periódica.
 10. Sustituir posteriormente la fuente externa por PULSO.
-```
+
 
 Este habilitador:
 
