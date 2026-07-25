@@ -10563,7 +10563,887 @@ CAP-SCOPE-009
 `CAP-SCOPE-009` consumirá las fronteras de demanda y disponibilidad aquí aprobadas, pero no reabrirá la propiedad del plan productivo ni del lote.
 
 
-### [ ] CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+### ✅ CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-008` aprobada  
+**Tarea anterior:** `CAP-SCOPE-008`  
+**Siguiente tarea reservada:** `CAP-SCOPE-010`  
+**Familia evaluada:** `CAP-09 — Vender, cobrar y atender pedidos`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Ventas, pedidos, pagos, cierres, anulaciones, importaciones o efectos reales:** no autorizados  
+**Requisitos de prueba generados:** `TREQ-PULSO-005`, `TREQ-PULSO-006`, `TREQ-INTEGRATION-014`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- gobernar la oferta y los precios visibles por sede, canal y modalidad;
+- recibir solicitudes desde salón, mostrador, recogida, domicilio, aplicaciones, mensajes y ventas especiales;
+- confirmar disponibilidad, tiempo, condiciones, sede y modalidad antes de comprometer el pedido;
+- registrar pedidos con identidad estable, líneas, precios, impuestos, descuentos, canal y revisiones;
+- modificar, sustituir o cancelar sin destruir la solicitud ni los efectos ya producidos;
+- convertir líneas confirmadas en comandas dirigidas a la estación correcta;
+- coordinar preparación, empaque, servicio, recogida y entrega sin usar un único estado ambiguo;
+- registrar ventas desde PULSO o desde el POS externo temporal mediante el mismo contrato canónico;
+- cobrar y confirmar pagos, incluyendo efectivo, pagos parciales y medios combinados;
+- mantener referencia verificable al documento fiscal emitido por el proveedor autorizado;
+- administrar zonas, mesas, sesiones, meseros, comensales, llamados, cuentas y liberación;
+- controlar pedidos para llevar, aplicaciones, mensajes, catering y ventas B2B;
+- abrir, operar, arquear, cerrar y revisar la jornada de caja;
+- emitir efectos de inventario, fidelización y finanzas exactamente una vez;
+- retirar progresivamente la dependencia del POS externo sin romper consumidores internos.
+
+La existencia de pantallas de pedidos, salón, escáner, importación Makos, checkout y estados de pedido no permite declarar resuelta la familia `CAP-09`. La cobertura exige un ciclo comercial completo, conciliable y auditable.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-009` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP RECIBIR, CONFIRMAR, PREPARAR, VENDER,
+COBRAR, FACTURAR, ENTREGAR Y CONCILIAR PEDIDOS DE TODOS SUS CANALES,
+SIN CONFUNDIR PEDIDO, COMANDA, VENTA, PAGO, CAJA, DOCUMENTO FISCAL,
+INVENTARIO, FIDELIZACIÓN, DEVOLUCIÓN NI HECHO ECONÓMICO?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+SOLICITUD = PEDIDO CONFIRMADO = VENTA
+```
+
+```text
+PEDIDO = COMANDA = CUENTA = PAGO
+```
+
+```text
+ESTADO DEL PEDIDO = ESTADO DEL PAGO = ESTADO DE PREPARACIÓN
+```
+
+```text
+MESA = SESIÓN DE MESA = ORDEN
+```
+
+```text
+PAGO APROBADO = DINERO CONCILIADO
+```
+
+```text
+VENTA ANULADA = PEDIDO CANCELADO = DEVOLUCIÓN = REEMBOLSO
+```
+
+```text
+POS EXTERNO = INVENTARIO = CONTABILIDAD = FIDELIZACIÓN
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `OPS-PLAN-001` a `OPS-PLAN-004`;
+- `OPS-CAN-001` y `OPS-B2B-001` cuando se activen;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-008`;
+- decisiones de autorización ya aprobadas;
+- `PULSO-AUTH-001` a `PULSO-AUTH-016`;
+- `PULSO-UX-001` a `PULSO-UX-021`;
+- `INT-POS-001` a `INT-POS-024`;
+- `INT-SALES-001` a `INT-SALES-011`;
+- `PASS-INT-001` y `PASS-INT-002`;
+- implementación actual de PULSO para salón, pedidos, escáner y loyalty;
+- implementación actual de PASS para catálogo, carrito, checkout y consulta de pedidos;
+- importación manual de ventas Makos mediante Excel y mapeo de productos;
+- registro vivo de preguntas, incluidas `DAT-01` a `DAT-03`, `DAT-22` a `DAT-25`, `OPE-07`, `OPE-10`, `OPE-11`, `COM-04` y `COM-05`;
+- decisión `DEC-POS-001`: una venta a consumidor final puede realizarse sin registrar cliente, conservando el soporte fiscal, impuestos y trazabilidad aplicables.
+
+Las respuestas existentes no se vuelven a solicitar.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-09.01` — Definir oferta y precios de venta;
+- `CAP-09.02` — Recibir solicitudes y pedidos;
+- `CAP-09.03` — Confirmar disponibilidad y condiciones;
+- `CAP-09.04` — Registrar pedidos;
+- `CAP-09.05` — Modificar, sustituir o cancelar pedidos;
+- `CAP-09.06` — Enviar pedidos a preparación;
+- `CAP-09.07` — Coordinar preparación y entrega;
+- `CAP-09.08` — Registrar ventas;
+- `CAP-09.09` — Cobrar y confirmar pagos;
+- `CAP-09.10` — Emitir factura o soporte;
+- `CAP-09.11` — Gestionar mesas y servicio presencial;
+- `CAP-09.12` — Gestionar pedidos para llevar;
+- `CAP-09.13` — Gestionar pedidos recibidos por aplicaciones o mensajes;
+- `CAP-09.14` — Gestionar pedidos especiales, catering y ventas a empresas;
+- `CAP-09.15` — Cerrar y revisar la jornada de venta.
+
+También fija fronteras con cliente, fidelización, inventario, producción, logística, costos, tesorería, impuestos, privacidad, impresión, continuidad y analítica.
+
+---
+
+#### 5. Fuera de alcance
+
+- ejecutar ventas, cobros, cierres, anulaciones o devoluciones reales;
+- reemplazar o apagar Makos/POS externo;
+- emitir facturas o soportes fiscales desde una implementación no autorizada;
+- modificar cuentas bancarias, proveedores de pago, llaves o secretos;
+- decidir políticas de reclamos, compensaciones o satisfacción, que continúan en `CAP-SCOPE-010`;
+- diseñar rutas y entrega logística completa, que continúa en `CAP-SCOPE-011`;
+- definir contabilidad, tesorería e impuestos completos, que continúan en `CAP-SCOPE-012`;
+- crear campañas y promociones completas, que continúan en `CAP-SCOPE-014`;
+- crear migraciones, RPC, triggers, políticas RLS, jobs o funciones;
+- habilitar salidas de inventario, acumulación de puntos o eventos económicos;
+- importar historia Makos sin comprobar período, granularidad y calidad;
+- declarar PULSO operativo como POS integral antes de E5 y de la certificación transversal.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. PULSO será propietario de la operación comercial interna
+
+PULSO administrará pedido, mesa, comanda, venta, cobro, caja y cierre. PASS no se convertirá en caja; NUMERA no se convertirá en POS; NEXO no administrará pedidos de cliente.
+
+##### 6.2. PASS será un canal y experiencia del cliente
+
+PASS podrá crear pedidos, iniciar checkout, mostrar estados y operar fidelización mediante contratos compartidos. No editará directamente estados operativos, caja, inventario o conciliación.
+
+##### 6.3. El POS externo será fuente temporal, no arquitectura objetivo
+
+Mientras Makos/POS externo siga vigente, sus ventas entrarán por adaptador, staging, mapeo e idempotencia. No escribirá directamente en NEXO, PASS o NUMERA.
+
+##### 6.4. No habrá doble fuente activa para la misma venta
+
+La transición exigirá corte por sede, terminal y fecha efectiva. Una venta solo podrá originarse en PULSO o en el POS externo, nunca en ambos.
+
+##### 6.5. Cliente identificado será opcional cuando la operación lo permita
+
+La venta a consumidor final no requerirá crear un cliente artificial. Cuando exista identificación, se conservarán consentimiento, documento aplicable y vínculo con PASS sin condicionar indebidamente el cobro.
+
+##### 6.6. Los estados serán ortogonales
+
+Pedido, preparación, cumplimiento, pago, fiscal, inventario, fidelización y hecho económico tendrán estados independientes y reglas de conciliación.
+
+##### 6.7. Toda acción sensible será nombrada
+
+Descuento, cambio de precio, anulación, devolución, reembolso, reapertura, corrección de pago y cierre usarán acciones de servidor con permiso, contexto, motivo y evidencia.
+
+##### 6.8. Una venta confirmada emitirá efectos, no escrituras directas
+
+PULSO o el adaptador emitirán un contrato canónico. NEXO, PASS y NUMERA aplicarán sus efectos exactamente una vez.
+
+##### 6.9. El documento fiscal permanecerá en el proveedor autorizado
+
+Vento OS conservará tipo, número, estado, proveedor, fecha, referencia, errores y vínculo con la venta. No simulará numeración ni cumplimiento fiscal.
+
+##### 6.10. Las correcciones no borrarán historia
+
+Toda corrección utilizará revisión, compensación, anulación o reversión vinculada al hecho original.
+
+---
+
+#### 7. Línea base verificable
+
+##### 7.1. PULSO
+
+La implementación actual contiene:
+
+- autenticación y SSO con Vento Shell;
+- módulo visual de salón;
+- tablero de pedidos y componentes en tiempo real;
+- escáner QR/cámara;
+- identificación de cliente, acumulación y validación de redenciones;
+- importación manual de Excel Makos, métricas, mapeo de ítems y lotes de importación;
+- tipos y componentes separados para POS y salón.
+
+Continúan pendientes el cierre formal de caja, pagos, sesiones POS, integración única con PASS, estados compartidos con preparación, integración con inventario y reporting operacional.
+
+##### 7.2. PASS
+
+PASS ya contiene flujo de catálogo, carrito, checkout, confirmación y consulta de pedidos. La experiencia del cliente no reemplaza la operación interna de PULSO.
+
+##### 7.3. Makos/POS externo
+
+La integración comprobada es manual mediante Excel. Se parsean productos, cantidades, subtotal, impuestos, descuentos y devoluciones, y se mapean ítems externos con catálogo interno. No existe conexión automática confirmada.
+
+##### 7.4. Datos compartidos
+
+Existen pedidos, pagos, esquema POS e importaciones externas, pero su existencia no demuestra propiedad funcional única, cierre de caja, integración exactamente una vez ni conciliación fiscal y financiera.
+
+---
+
+#### 8. Clasificación de cobertura
+
+| Capacidad   | Nombre                                                     | Tratamiento          | Propietario objetivo                                                            | Decisión                                                                                                                                              |
+| ----------- | ---------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-09.01` | Definir oferta y precios de venta                          | `REUSE_OR_REFACTOR`  | PULSO como propietario operativo; catálogo y oferta desde contratos compartidos | Conservar catálogo, precios y disponibilidad existentes, separando precio base, precio publicado, promoción, descuento y snapshot aplicado.           |
+| `CAP-09.02` | Recibir solicitudes y pedidos                              | `REUSE_OR_REFACTOR`  | PULSO + PASS + adaptadores de canal                                             | Normalizar solicitudes de salón, mostrador, recogida, domicilio, aplicaciones, mensajes y canales futuros sin doble digitación ni pedidos duplicados. |
+| `CAP-09.03` | Confirmar disponibilidad y condiciones                     | `BUILD`              | PULSO coordinando NEXO, FOGO y reglas comerciales                               | Crear una decisión trazable de disponibilidad, tiempo, modalidad, sede, área productora, sustituciones y restricciones antes de confirmar.            |
+| `CAP-09.04` | Registrar pedidos                                          | `REUSE_OR_REFACTOR`  | PULSO                                                                           | Conservar el agregado de pedido compartido, identidad estable, líneas, precios, impuestos, canal, modalidad, cliente opcional y revisiones.           |
+| `CAP-09.05` | Modificar, sustituir o cancelar pedidos                    | `REUSE_OR_REFACTOR`  | PULSO                                                                           | Modelar revisiones, motivos, autorizaciones, diferencias económicas, notificaciones y compensaciones sin sobrescribir la solicitud original.          |
+| `CAP-09.06` | Enviar pedidos a preparación                               | `BUILD`              | PULSO                                                                           | Crear comandas y enrutamiento por sede, área, estación, impresora o pantalla, con acuse, reintento, prioridad y contingencia.                         |
+| `CAP-09.07` | Coordinar preparación y entrega                            | `REUSE_OR_REFACTOR`  | PULSO                                                                           | Conservar tablero operativo y estados en tiempo real, separando preparación, empaque, despacho, recogida y servicio en mesa.                          |
+| `CAP-09.08` | Registrar ventas                                           | `REUSE_OR_REFACTOR`  | PULSO objetivo; POS externo temporal                                            | Emitir un contrato canónico de venta y línea, con convivencia controlada y corte explícito entre Makos/POS externo y PULSO.                           |
+| `CAP-09.09` | Cobrar y confirmar pagos                                   | `REUSE_OR_REFACTOR`  | PULSO + proveedor de pagos                                                      | Completar intentos, autorizaciones, confirmaciones, pagos parciales, medios combinados, efectivo, referencias, reversión y conciliación.              |
+| `CAP-09.10` | Emitir factura o soporte                                   | `INTEGRATE_EXTERNAL` | Proveedor fiscal/POS autorizado + Contabilidad                                  | Mantener la responsabilidad fiscal en el sistema o proveedor autorizado, conservando referencia y estado en Vento OS sin inventar facturación propia. |
+| `CAP-09.11` | Gestionar mesas y servicio presencial                      | `REUSE_OR_REFACTOR`  | PULSO                                                                           | Conservar zonas, mesas, sesiones, mesero, comensales y llamados; completar apertura, traslado, unión, división, cuenta y liberación.                  |
+| `CAP-09.12` | Gestionar pedidos para llevar                              | `REUSE_OR_REFACTOR`  | PULSO + PASS                                                                    | Formalizar recogida, promesa, identificación, empaque, espera, entrega y no recogido.                                                                 |
+| `CAP-09.13` | Gestionar pedidos recibidos por aplicaciones o mensajes    | `REUSE_OR_REFACTOR`  | PULSO + adaptadores externos                                                    | Normalizar Rappi, WhatsApp, ManyChat, Shopify y otros canales con identidad externa, payload, mapeo, estados y conciliación.                          |
+| `CAP-09.14` | Gestionar pedidos especiales, catering y ventas a empresas | `BUILD`              | PULSO / Comercial con aprobación de Gerencia                                    | Crear cotización, alcance, capacidad, aprobación, anticipo, condiciones, cambios, producción, entrega, facturación y cierre B2B.                      |
+| `CAP-09.15` | Cerrar y revisar la jornada de venta                       | `BUILD`              | PULSO + NUMERA + responsable de sede                                            | Crear apertura y cierre de caja, fondos, movimientos, arqueo, diferencias, ventas, pagos, propinas, documentos, pendientes y aprobación.              |
+
+---
+
+#### 9. Resumen de tratamientos
+
+| Tratamiento          | Cantidad |
+| -------------------- | -------: |
+| `REUSE_OR_REFACTOR`  |       10 |
+| `BUILD`              |        4 |
+| `INTEGRATE_EXTERNAL` |        1 |
+| **Total**            |   **15** |
+
+La clasificación no declara completadas las capacidades existentes. `REUSE_OR_REFACTOR` significa que existe infraestructura aprovechable, pero debe someterse a los contratos, estados, permisos, integración y pruebas definidos aquí.
+
+---
+
+#### 10. Propiedad funcional
+
+| Sistema o dominio               | Propiedad                                                                                                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PULSO                           | operación comercial interna: pedido, mesa, comanda, venta, cobro, caja, reversión operativa y cierre                                                           |
+| PASS                            | experiencia del cliente, carrito, checkout, consulta de pedidos, identidad y fidelización; no administra caja ni comanda                                       |
+| POS externo / Makos             | fuente temporal del hecho de venta y documento fiscal durante la transición; no es propietario de inventario, recetas, costos, lealtad ni autorización laboral |
+| NEXO                            | disponibilidad e impacto físico de inventario exactamente una vez                                                                                              |
+| FOGO                            | producción por lotes y capacidades productivas; no sustituye comandas de preparación al momento                                                                |
+| NUMERA                          | hecho económico, conciliación y resultados financieros; no cambia pedidos, pagos ni caja operativa                                                             |
+| Proveedor de pagos              | autorización, captura, reversión y liquidación externa según contrato; secretos fuera del cliente                                                              |
+| Proveedor fiscal / Contabilidad | factura o soporte fiscal, numeración, impuestos y obligaciones externas                                                                                        |
+| SHELL / Supabase                | contratos compartidos, integridad, autorización, eventos, colas, auditoría y migraciones                                                                       |
+
+---
+
+#### 11. Fuentes de verdad objetivo
+
+| Objeto o hecho                  | Fuente objetivo                                                              | Regla                                                                |
+| ------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Oferta y catálogo               | contrato compartido de catálogo/oferta aprobado en `CAP-SCOPE-004`           | PULSO consume y publica por sede/canal; no crea un catálogo paralelo |
+| Pedido                          | agregado canónico compartido con propietario funcional PULSO                 | PASS y canales crean o consultan mediante contratos autorizados      |
+| Venta interna futura            | PULSO                                                                        | solo después del corte aprobado por sede, terminal y fecha           |
+| Venta actual durante transición | POS externo/Makos mediante adaptador                                         | staging, payload, mapeo, idempotencia y conciliación                 |
+| Pago                            | ledger y transacción de pagos compartidos + proveedor externo cuando aplique | PULSO registra la relación operativa; no guarda secretos en cliente  |
+| Caja                            | PULSO                                                                        | sesión por sede, terminal, turno y actor                             |
+| Documento fiscal                | proveedor fiscal o POS autorizado                                            | Vento OS conserva referencia, estado y vínculo                       |
+| Inventario                      | NEXO                                                                         | PULSO emite evento; NEXO aplica movimiento exactamente una vez       |
+| Fidelización                    | PASS                                                                         | PULSO solicita acumulación o redención mediante contrato idempotente |
+| Hecho económico                 | NUMERA                                                                       | consume evento canónico; no reinterpreta la venta                    |
+
+---
+
+#### 12. Ejes de estado independientes
+
+| Eje                    | Estados ilustrativos                                                                  | Qué representa                                      |
+| ---------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Estado del pedido      | `draft`, `submitted`, `confirmed`, `cancelled`, `completed` o contrato equivalente    | existencia y compromiso comercial                   |
+| Estado de preparación  | `not_sent`, `queued`, `accepted`, `preparing`, `ready`, `failed`                      | trabajo de cocina, barra, mostrador u otra estación |
+| Estado de cumplimiento | `dine_in`, `pickup`, `delivery`, `external`; pendiente, entregado o no entregado      | modalidad y entrega                                 |
+| Estado de pago         | `unpaid`, `pending`, `authorized`, `paid`, `partially_refunded`, `refunded`, `failed` | cobro y reversión                                   |
+| Estado fiscal          | `not_required`, `pending`, `issued`, `failed`, `cancelled`                            | factura o soporte                                   |
+| Estado de inventario   | `pending`, `applied`, `compensated`, `failed`                                         | efecto físico en NEXO                               |
+| Estado de fidelización | `not_applicable`, `pending`, `applied`, `reversed`, `failed`                          | efecto en PASS                                      |
+| Estado económico       | `pending`, `posted`, `reversed`, `failed`                                             | efecto en NUMERA                                    |
+
+Los nombres finales se aprobarán en E2. La obligación vigente es conservar la separación semántica y prohibir transiciones implícitas entre ejes.
+
+---
+
+#### 13. Oferta, precios, promociones y descuentos
+
+La oferta deberá distinguir:
+
+```text
+PRODUCTO / ÍTEM DE MENÚ
+→ OFERTA POR SEDE Y CANAL
+→ PRECIO BASE
+→ PRECIO PUBLICADO
+→ PROMOCIÓN O CONVENIO
+→ DESCUENTO AUTORIZADO
+→ SNAPSHOT APLICADO A LA LÍNEA
+```
+
+Reglas:
+
+1. cambiar el precio vigente no modificará pedidos históricos;
+2. impuestos, servicio, propina, recargo y descuento serán conceptos separados;
+3. el precio manual requerirá permiso y motivo;
+4. promociones y beneficios no podrán duplicarse por reintento;
+5. una oferta inactiva o no disponible no podrá añadirse mediante URL o payload manipulado;
+6. PASS y canales externos consumirán la oferta publicada, no una copia editable;
+7. el pedido conservará la versión o snapshot necesario para reconstruir el total.
+
+---
+
+#### 14. Recepción de solicitudes y pedidos
+
+Cada entrada conservará:
+
+- sistema y canal de origen;
+- identificador externo cuando exista;
+- sede y modalidad solicitadas;
+- fecha y hora de creación y recepción;
+- cliente identificado o venta a consumidor final;
+- líneas, cantidades, observaciones y modificadores;
+- dirección o punto de entrega cuando aplique;
+- promesa solicitada;
+- estado de pago inicial;
+- payload o evidencia de origen;
+- clave de idempotencia.
+
+Un mensaje, conversación, carrito o intento de checkout no será automáticamente un pedido confirmado.
+
+---
+
+#### 15. Disponibilidad y condiciones
+
+La confirmación comercial deberá evaluar:
+
+- oferta publicada por sede y canal;
+- disponibilidad física o capacidad de preparación;
+- horario y ventana operativa;
+- modalidad permitida;
+- tiempo estimado;
+- área o estación responsable;
+- restricciones y modificadores;
+- dirección y cobertura logística cuando aplique;
+- precio, impuestos, cargos y forma de pago;
+- sustituciones permitidas;
+- condición bajo pedido.
+
+El stock mayor que cero no garantiza disponibilidad, y el stock cero no bloquea automáticamente productos preparados al momento o bajo pedido.
+
+---
+
+#### 16. Identidad y revisiones del pedido
+
+El pedido tendrá identificador estable. Cada revisión conservará:
+
+- versión;
+- actor;
+- motivo;
+- fecha;
+- líneas añadidas, retiradas o sustituidas;
+- diferencias de precio, impuesto, descuento y pago;
+- impacto sobre comandas y preparación;
+- notificación al cliente;
+- aprobación cuando corresponda.
+
+No se sobrescribirá una línea ya enviada a preparación sin crear la acción correctiva aplicable.
+
+---
+
+#### 17. Modificación, sustitución y cancelación
+
+Quedan separados:
+
+```text
+EDITAR BORRADOR
+≠ MODIFICAR PEDIDO CONFIRMADO
+≠ SUSTITUIR LÍNEA
+≠ CANCELAR LÍNEA
+≠ CANCELAR PEDIDO
+≠ ANULAR VENTA
+≠ DEVOLVER PRODUCTO
+≠ REEMBOLSAR PAGO
+```
+
+La autorización dependerá del estado y de los efectos ya producidos. Una cancelación posterior a preparación, pago o documento fiscal exigirá compensaciones coordinadas.
+
+---
+
+#### 18. Comandas y enrutamiento a preparación
+
+Una comanda será una instrucción operativa derivada de líneas confirmadas. Deberá conservar:
+
+- pedido y revisión de origen;
+- líneas y modificadores;
+- sede, área y estación destino;
+- prioridad y tiempo esperado;
+- actor emisor;
+- impresora, pantalla o dispositivo;
+- estado de encolado, entrega, aceptación y resolución;
+- reintentos y contingencia;
+- cancelación o corrección posterior.
+
+FOGO no será propietario de la comanda de un pedido preparado al momento. FOGO seguirá siendo propietario de producción planificada por lotes.
+
+---
+
+#### 19. Preparación, empaque y entrega operativa
+
+PULSO coordinará estados de preparación y cumplimiento sin modificar directamente inventario. Cada transición deberá identificar actor, estación, tiempo, motivo y evidencia mínima.
+
+La preparación parcial, faltante, sustitución, rechazo, reimpresión y entrega parcial deberán quedar visibles. Marcar `ready` no equivaldrá a entregar, cobrar o cerrar.
+
+---
+
+#### 20. Mesas y servicio presencial
+
+Se distinguirán:
+
+```text
+ZONA
+≠ MESA
+≠ SESIÓN DE MESA
+≠ PEDIDO
+≠ CUENTA
+≠ PAGO
+```
+
+La sesión podrá registrar mesero, comensales, hora, pedidos vinculados y llamados. Traslado, unión, división, cambio de responsable y liberación requerirán reglas explícitas.
+
+Una mesa no quedará libre mientras existan pedidos, cuentas, pagos o llamados bloqueantes según la política aprobada.
+
+---
+
+#### 21. Pedidos para llevar
+
+El flujo deberá conservar:
+
+- modalidad `pickup` o equivalente;
+- sede de recogida;
+- promesa y hora real;
+- identificación o código de entrega;
+- estado de empaque;
+- aviso al cliente;
+- actor que entrega;
+- tratamiento de espera, cancelación y no recogido.
+
+---
+
+#### 22. Aplicaciones y mensajes externos
+
+Cada adaptador deberá normalizar identidad, líneas, importes, estados y timestamps. Los pedidos externos no se copiarán manualmente a otra fuente sin relación ni control de duplicado.
+
+Una línea sin mapeo quedará en cuarentena y no generará automáticamente inventario, puntos ni resultado financiero.
+
+---
+
+#### 23. Catering, pedidos especiales y ventas B2B
+
+La capacidad deberá incluir:
+
+- solicitud y oportunidad;
+- alcance, cantidades, fechas y sedes;
+- cotización y revisiones;
+- capacidad y disponibilidad;
+- aprobación comercial;
+- anticipo y condiciones de pago;
+- contrato o aceptación;
+- producción y logística vinculadas;
+- cambios, cancelación y penalidades;
+- factura, entrega, aceptación y cierre.
+
+`COM-04` y `COM-05` deberán resolverse antes del diseño final. La existencia de catering como línea comercial no autoriza comprometer capacidad sin aprobación.
+
+---
+
+#### 24. Venta, pago, caja y documento fiscal
+
+##### 24.1. Venta
+
+La venta será el hecho comercial confirmado con líneas, totales, impuestos, descuentos, sede, terminal, actor, canal y referencias. No dependerá de que el cliente esté identificado cuando la normativa y el proceso permitan consumidor final.
+
+##### 24.2. Pago
+
+Se distinguirán:
+
+```text
+INTENTO DE PAGO
+≠ AUTORIZACIÓN
+≠ CAPTURA O CONFIRMACIÓN
+≠ MEDIO DE PAGO REGISTRADO
+≠ LIQUIDACIÓN DEL PROVEEDOR
+≠ MOVIMIENTO DE CAJA
+```
+
+El total pagado podrá componerse de varios medios. Cada parte conservará monto, moneda, proveedor, referencia, estado, actor y momento.
+
+##### 24.3. Caja
+
+La sesión de caja conservará:
+
+- sede y terminal;
+- actor que abre;
+- turno o contexto;
+- fondo inicial;
+- ingresos, retiros, gastos y movimientos no venta;
+- ventas y pagos asociados;
+- efectivo esperado y contado;
+- diferencia y explicación;
+- actor que cierra y quien aprueba;
+- reapertura o corrección posterior.
+
+##### 24.4. Documento fiscal
+
+El proveedor autorizado conservará la emisión. PULSO vinculará tipo, número, fecha, estado, total, impuestos, tercero o consumidor final, proveedor y errores.
+
+---
+
+#### 25. Propinas, servicio y cargos
+
+Propina voluntaria, servicio sugerido, recargo, domicilio, empaque, descuento y compensación serán conceptos distintos.
+
+La propina deberá conservar monto, forma de recaudo, relación con venta/pago, reversión y destino posterior. El reparto laboral pertenece a `CAP-SCOPE-002` y el tratamiento económico a `CAP-SCOPE-012`.
+
+---
+
+#### 26. Anulación, devolución, reembolso y compensación
+
+```text
+CANCELACIÓN DE PEDIDO
+→ evita o detiene compromiso futuro
+
+ANULACIÓN DE VENTA
+→ revierte el hecho comercial según estado y autorización
+
+DEVOLUCIÓN
+→ registra retorno o no aceptación de producto/servicio
+
+REEMBOLSO
+→ devuelve dinero mediante el medio aplicable
+
+COMPENSACIÓN
+→ beneficio o reparación comercial bajo política de cliente
+```
+
+Cada acción conservará motivo, actor, aprobación, líneas, importes, documento fiscal, inventario, puntos, pago y hecho económico afectados.
+
+La política de reclamos y compensaciones se aprobará en `CAP-SCOPE-010`; PULSO ejecutará el efecto transaccional autorizado.
+
+---
+
+#### 27. Cierre y revisión de jornada
+
+El cierre deberá conciliar como mínimo:
+
+- sesiones de caja y terminal;
+- ventas por estado y canal;
+- líneas, impuestos, descuentos y cargos;
+- pagos por medio y proveedor;
+- efectivo esperado y contado;
+- propinas y servicio;
+- documentos fiscales emitidos o fallidos;
+- anulaciones, devoluciones y reembolsos;
+- pedidos abiertos y comandas pendientes;
+- efectos pendientes en NEXO, PASS y NUMERA;
+- importaciones externas pendientes o en cuarentena;
+- diferencias y responsable de resolución.
+
+Cerrar la caja no borrará pendientes ni forzará conciliación artificial.
+
+---
+
+#### 28. Inventario, fidelización y hecho económico
+
+##### 28.1. NEXO
+
+Una venta validada emitirá líneas normalizadas. NEXO decidirá el movimiento según producto, receta, presentación, sede y política. La anulación o devolución emitirá compensación, no borrado.
+
+##### 28.2. PASS
+
+Acumulación y redención utilizarán contratos autorizados, atómicos e idempotentes. Un reintento de venta o escaneo no podrá duplicar puntos.
+
+##### 28.3. NUMERA
+
+NUMERA consumirá venta, pago, devolución, comisiones y cierre. No recalculará ni modificará el hecho operativo original.
+
+---
+
+#### 29. Impresión y dispositivos
+
+Ticket, factura, comanda, cuenta, recibo y etiqueta son documentos distintos. La impresión se activará desde eventos y plantillas versionadas.
+
+Una respuesta perdida de impresora no autorizará recrear pedido, venta o pago. La reimpresión conservará documento original, motivo, actor y número de copia.
+
+Terminales compartidas exigirán actor real para acciones sensibles y deberán cerrar o cambiar actor sin mantener autoridad residual.
+
+---
+
+#### 30. Operación offline, reintentos y concurrencia
+
+- crear pedido, enviar comanda, cobrar, cerrar o aplicar efectos utilizará claves de idempotencia;
+- un pago pendiente no se asumirá fallido por timeout;
+- una reconexión no duplicará líneas, pagos o impresiones;
+- conflictos de revisión se detectarán antes de sobrescribir;
+- eventos fuera de orden quedarán pendientes de conciliación;
+- la autorización se reevaluará al sincronizar;
+- ninguna cola offline podrá conservar secretos de pago innecesarios.
+
+---
+
+#### 31. Privacidad y evidencia
+
+Solo se capturarán datos del cliente necesarios para el canal y la modalidad. Dirección, teléfono, documento y referencias de pago tendrán acceso limitado y retención aprobada.
+
+Las capturas, payloads y exportaciones para auditoría deberán anonimizar o restringir datos personales cuando no sean necesarios.
+
+---
+
+#### 32. Transición Makos/POS externo → PULSO
+
+La transición seguirá:
+
+```text
+POS EXTERNO
+→ ADAPTADOR
+→ STAGING Y PAYLOAD ORIGINAL
+→ VALIDACIÓN Y MAPEO
+→ CONTRATO CANÓNICO DE VENTA
+→ NEXO / NUMERA / PASS
+```
+
+Posteriormente:
+
+```text
+PULSO
+→ MISMO CONTRATO CANÓNICO DE VENTA
+→ NEXO / NUMERA / PASS
+```
+
+Puertas obligatorias:
+
+1. confirmar datos y límites del POS;
+2. importar en modo observación;
+3. conciliar sin efectos;
+4. ejecutar piloto controlado;
+5. definir corte por sede y terminal;
+6. impedir doble emisión;
+7. retirar adaptador sin cambiar consumidores;
+8. revocar o reducir credenciales externas.
+
+---
+
+#### 33. Preguntas pendientes reutilizadas
+
+| ID       | Uso en esta tarea                                                  | Puerta                                                                                     |
+| -------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| `DAT-01` | Confirmar si Makos permite exportar ventas.                        | Bloquea diseño definitivo del adaptador y recuperación histórica; no bloquea la cobertura. |
+| `DAT-02` | Confirmar fecha más antigua disponible en Makos.                   | Bloquea alcance del backfill y comparación histórica.                                      |
+| `DAT-03` | Confirmar si la exportación de Makos contiene líneas por producto. | Bloquea efectos detallados de inventario y costeo histórico.                               |
+| `DAT-22` | Confirmar dónde se registra el reparto de propinas.                | Bloquea migración y conciliación histórica de propinas.                                    |
+| `DAT-23` | Confirmar dónde se registran ventas anuladas.                      | Bloquea backfill y prueba de reversión histórica.                                          |
+| `DAT-24` | Confirmar dónde se registran devoluciones de cliente.              | Bloquea backfill y conciliación histórica de devolución/reembolso.                         |
+| `DAT-25` | Confirmar dónde se registran compensaciones entregadas a clientes. | Alimenta `CAP-SCOPE-010`; no autoriza política de compensaciones.                          |
+| `OPE-07` | Identificar quién aprueba corregir un medio de pago.               | Bloquea matriz definitiva de autorización de correcciones.                                 |
+| `OPE-10` | Identificar quién decide aceptar o negar una devolución.           | Alimenta frontera PULSO/CAP-10 y segregación de funciones.                                 |
+| `OPE-11` | Identificar quién aprueba una compensación.                        | Alimenta `CAP-SCOPE-010`; no bloquea el modelo transaccional.                              |
+| `COM-04` | Identificar quién aprueba una venta de catering.                   | Bloquea aprobación final de ventas especiales/B2B.                                         |
+| `COM-05` | Confirmar si existe contrato o cotización estándar de catering.    | Bloquea plantillas y migración documental B2B.                                             |
+
+No se crean preguntas nuevas. Las preguntas pendientes no bloquean la aprobación de cobertura, pero sí las migraciones, el backfill, la matriz final de aprobaciones y la automatización de cierres o ventas B2B.
+
+---
+
+#### 34. Hallazgos y destinos
+
+| Hallazgo            | Brecha                                                                                                                      | Prioridad | Destino obligatorio                                                                    | Momento  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-009-001 | PULSO implementa salón, pedidos, escáner y loyalty, pero no demuestra un POS integral cerrado con caja, pagos y cierre.     | crítica   | `PULSO-UX-001` a `PULSO-UX-021`; `PULSO-AUTH-001` a `PULSO-AUTH-016`                   | E2/E5    |
+| H-CAP-SCOPE-009-002 | Makos/POS externo continúa siendo fuente temporal del hecho de venta y la transición todavía depende de importación manual. | crítica   | `INT-POS-001` a `INT-POS-024`; `INT-SALES-008` a `INT-SALES-011`                       | E2/E3/E5 |
+| H-CAP-SCOPE-009-003 | PULSO y PASS comparten estructuras de pedido, pero la propiedad y el contrato único deben congelarse.                       | crítica   | `PULSO-UX-018`; `PASS-INT-001`; `PASS-INT-002`; `INT-SALES-001` a `INT-SALES-011`      | E2/E3    |
+| H-CAP-SCOPE-009-004 | pedido, preparación, cumplimiento, pago, estado fiscal, inventario y fidelización pueden confundirse en un único status.    | crítica   | `PROC-CAT-009` a `PROC-CAT-018`; `PULSO-UX-007` a `PULSO-UX-010`                       | E2       |
+| H-CAP-SCOPE-009-005 | oferta, precio, promoción, descuento y precio aplicado no tienen todavía un gobierno comercial integral comprobado.         | alta      | `CAP-SCOPE-004`; `PULSO-UX-007`; `PULSO-AUTH-006` a `PULSO-AUTH-008`                   | E2/E3    |
+| H-CAP-SCOPE-009-006 | la disponibilidad comercial no está cerrada contra NEXO, FOGO, horario, canal y modalidad.                                  | crítica   | `CAP-SCOPE-004`; `CAP-SCOPE-006`; `CAP-SCOPE-008`; `PULSO-UX-016`                      | E2/E3    |
+| H-CAP-SCOPE-009-007 | no está formalizado el instante en que una solicitud se vuelve pedido confirmado y compromiso de preparación.               | alta      | `PULSO-UX-001`; `PROC-CAT-009` a `PROC-CAT-012`                                        | E2       |
+| H-CAP-SCOPE-009-008 | modificaciones, sustituciones y cancelaciones requieren revisiones inmutables y diferencias económicas.                     | crítica   | `PULSO-UX-009`; `PULSO-UX-013`; `PROC-CAT-013`; `PROC-CAT-014`                         | E2/E3    |
+| H-CAP-SCOPE-009-009 | no existe evidencia de un enrutamiento canónico de comandas por producto, área, estación y dispositivo.                     | crítica   | `PULSO-UX-001`; `UX-STATION-001` a `UX-STATION-012`; `PRINT-ARC-001` a `PRINT-ARC-020` | E2/E4    |
+| H-CAP-SCOPE-009-010 | la entrega de una comanda no demuestra aceptación ni ejecución por la estación destinataria.                                | crítica   | `PULSO-UX-019`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `PROC-CAT-017`; `PROC-CAT-018`      | E2/E4    |
+| H-CAP-SCOPE-009-011 | zonas, mesas, sesiones, llamados y órdenes tienen infraestructura parcial pero no un ciclo integral de servicio.            | alta      | `PULSO-UX-003`; `PULSO-UX-019`; `PULSO-AUTH-003`; `PULSO-AUTH-016`                     | E2/E5    |
+| H-CAP-SCOPE-009-012 | unir, trasladar, dividir cuenta, dividir pago y liberar mesa no están demostrados de extremo a extremo.                     | alta      | `PULSO-UX-003`; `PULSO-UX-007`; `PULSO-UX-008`; `PULSO-UX-010`                         | E2/E5    |
+| H-CAP-SCOPE-009-013 | los pedidos para llevar requieren promesa, identificación, entrega y tratamiento de no recogido.                            | alta      | `PULSO-UX-004`; `PULSO-UX-007`; `PULSO-UX-019`                                         | E2       |
+| H-CAP-SCOPE-009-014 | aplicaciones y mensajes externos pueden producir doble digitación, duplicados y estados divergentes.                        | crítica   | `INT-POS-001` a `INT-POS-020`; `OPS-CAN-001`; `PULSO-UX-001`                           | E2/E3    |
+| H-CAP-SCOPE-009-015 | catering y ventas B2B no tienen proceso objetivo, aprobación, cotización y condiciones completas.                           | alta      | `COM-04`; `COM-05`; `OPS-CAN-001`; `OPS-B2B-001`                                       | E1/E2    |
+| H-CAP-SCOPE-009-016 | el documento fiscal sigue siendo responsabilidad externa, pero falta congelar referencia, estado y conciliación.            | crítica   | `INT-POS-005` a `INT-POS-010`; `CAP-SCOPE-012`; `CAP-SCOPE-016`                        | E2/E3    |
+| H-CAP-SCOPE-009-017 | pagos y secretos deben permanecer en servidor/proveedor; la frontera de responsabilidades todavía debe cerrarse.            | crítica   | `PULSO-UX-008`; `PULSO-AUTH-006` a `PULSO-AUTH-008`; `AUTH-SRV-004` a `AUTH-SRV-018`   | E2/E3    |
+| H-CAP-SCOPE-009-018 | no existe ciclo integral comprobado de apertura, fondo, ingresos, retiros, gastos, arqueo y cierre de caja.                 | crítica   | `PULSO-UX-010`; `PULSO-AUTH-008`; `PULSO-AUTH-013`; `UX-QA-027`                        | E2/E5    |
+| H-CAP-SCOPE-009-019 | pagos parciales, medios combinados, cambio, referencias y diferencias requieren contrato canónico.                          | crítica   | `PULSO-UX-008`; `PULSO-UX-013`; `INT-POS-007`                                          | E2/E3    |
+| H-CAP-SCOPE-009-020 | propinas, servicio y reparto no tienen fuente histórica confirmada.                                                         | alta      | `DAT-22`; `PULSO-UX-008`; `CAP-SCOPE-002`; `CAP-SCOPE-012`                             | E1/E2    |
+| H-CAP-SCOPE-009-021 | la corrección de medio de pago no tiene flujo manual auditable comprobado.                                                  | crítica   | `OPE-07`; `PULSO-UX-009`; `PULSO-AUTH-008`; `AUTH-QA-021`                              | E1/E2    |
+| H-CAP-SCOPE-009-022 | anulación, cancelación, devolución, reembolso y compensación siguen requiriendo semánticas y permisos independientes.       | crítica   | `DAT-23` a `DAT-25`; `OPE-10`; `OPE-11`; `PULSO-UX-009`; `CAP-SCOPE-010`               | E1/E2    |
+| H-CAP-SCOPE-009-023 | no existe cierre diario reconciliado entre ventas, pagos, caja, propinas, documentos y pendientes.                          | crítica   | `PULSO-UX-010`; `PULSO-UX-017`; `INT-POS-020`; `CAP-SCOPE-012`                         | E2/E5    |
+| H-CAP-SCOPE-009-024 | la salida o compensación de inventario por venta no está habilitada de extremo a extremo exactamente una vez.               | crítica   | `PULSO-UX-016`; `INT-POS-016`; `INT-SALES-003`; `TREQ-INTEGRATION-011`                 | E3/E5    |
+| H-CAP-SCOPE-009-025 | acumulación y redención de fidelización deben evitar duplicación entre PASS, PULSO y POS externo.                           | crítica   | `PULSO-UX-011`; `PULSO-UX-012`; `PULSO-UX-018`; `PASS-INT-001`; `PASS-INT-002`         | E2/E5    |
+| H-CAP-SCOPE-009-026 | el evento económico de venta, pago, devolución y cierre todavía no está conciliado integralmente con NUMERA.                | crítica   | `PULSO-UX-017`; `INT-POS-017`; `INT-SALES-004`; `CAP-SCOPE-012`                        | E3/E5    |
+| H-CAP-SCOPE-009-027 | la importación Makos necesita mapeo, cuarentena, payload original, hash e idempotencia antes de producir efectos.           | crítica   | `INT-POS-006` a `INT-POS-014`; `PULSO-AUTH-005`; `CODE-AUD-018`                        | E3/E5    |
+| H-CAP-SCOPE-009-028 | operación offline, reintentos, concurrencia y eventos fuera de orden pueden duplicar pedidos, pagos o comandas.             | crítica   | `CODE-AUD-018`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `INT-SALES-007`                     | E3/E5    |
+| H-CAP-SCOPE-009-029 | terminales compartidas requieren actor real, sesión operativa, cierre y firma de acciones sensibles.                        | crítica   | `PULSO-AUTH-011` a `PULSO-AUTH-014`; `PULSO-UX-014`; `AUTH-DEV-001` a `AUTH-DEV-013`   | E2/E5    |
+| H-CAP-SCOPE-009-030 | PULSO importa Excel pero no demuestra exportación, reporte y evidencia suficiente para auditoría de jornada.                | alta      | `PULSO-UX-006`; `PULSO-UX-010`; `CAP-SCOPE-017`; `UX-QA-027`                           | E2/E5    |
+
+---
+
+#### 35. Riesgos y controles mínimos
+
+| Riesgo                                 | Prioridad | Control mínimo                                          |
+| -------------------------------------- | --------- | ------------------------------------------------------- |
+| pedido duplicado                       | crítica   | identidad de canal, idempotencia y deduplicación        |
+| precio incorrecto                      | crítica   | snapshot de precio, impuestos, descuento y autorización |
+| producto confirmado sin disponibilidad | crítica   | decisión trazable contra NEXO/FOGO                      |
+| comanda perdida o repetida             | crítica   | cola, acuse, reintento e identidad estable              |
+| mesa liberada con cuenta abierta       | crítica   | estado derivado y validación de pendientes              |
+| pago duplicado                         | crítica   | idempotencia de intento, confirmación y referencia      |
+| efectivo no conciliado                 | crítica   | sesión de caja y arqueo                                 |
+| corrección destructiva                 | crítica   | evento compensatorio y aprobación                       |
+| venta sin documento fiscal             | crítica   | integración, estado y contingencia                      |
+| inventario duplicado o ausente         | crítica   | evento canónico exactamente una vez                     |
+| puntos duplicados                      | crítica   | contrato PASS idempotente                               |
+| doble fuente durante transición        | crítica   | corte por sede, terminal y fecha efectiva               |
+| pedido externo sin trazabilidad        | alta      | payload, mapeo y estados normalizados                   |
+| cierre incompleto                      | crítica   | conciliación diaria y pendientes visibles               |
+| actor desconocido                      | crítica   | firma de terminal compartida y turno                    |
+
+---
+
+#### 36. Decisiones aprobables
+
+1. PULSO será propietario de la operación comercial interna objetivo.
+2. PASS será canal del cliente y propietario de fidelización, no caja ni inventario.
+3. Makos/POS externo será fuente temporal durante una transición controlada.
+4. El mismo contrato canónico de venta será emitido por el adaptador temporal y posteriormente por PULSO.
+5. No habrá doble fuente activa para una misma venta.
+6. La venta a consumidor final podrá ejecutarse sin crear cliente artificial, conservando soporte fiscal e impuestos aplicables.
+7. Pedido, preparación, cumplimiento, pago, fiscal, inventario, fidelización y economía tendrán estados separados.
+8. PULSO construirá disponibilidad comercial antes de confirmar el pedido.
+9. Comandas serán instrucciones versionadas y encoladas por estación.
+10. FOGO no administrará comandas de preparación al momento.
+11. Venta, pago, caja y documento fiscal serán hechos distintos.
+12. Pagos parciales y medios combinados serán soportados por contrato.
+13. Anulación, devolución, reembolso y compensación no serán sinónimos.
+14. El documento fiscal permanecerá con el proveedor autorizado.
+15. Cerrar caja exigirá conciliación y no ocultará pendientes.
+16. NEXO, PASS y NUMERA recibirán efectos exactamente una vez.
+17. Catering/B2B se construirá con aprobación, cotización y capacidad verificadas.
+18. Toda corrección conservará historia y actor.
+19. Terminales compartidas identificarán al actor real.
+20. No se autoriza implementación, migración ni operación real desde esta tarea.
+
+---
+
+#### 37. Decisiones diferidas con dueño
+
+| Decisión                                  | Tratamiento provisional                             | Tarea o responsable                                | Puerta máxima                     |
+| ----------------------------------------- | --------------------------------------------------- | -------------------------------------------------- | --------------------------------- |
+| proveedor fiscal y alcance por sede       | conservar proveedor vigente                         | Contabilidad + `CAP-SCOPE-012`                     | antes del diseño de emisión       |
+| datos y período recuperables de Makos     | no asumir cobertura histórica                       | `DAT-01` a `DAT-03`; `INT-POS-001` a `INT-POS-009` | antes del backfill                |
+| aprobación de corrección de pago          | solo supervisor autorizado provisional              | `OPE-07`; `PULSO-AUTH-008`                         | antes del prototipo E2            |
+| fuente y reparto de propinas              | registrar recaudación sin inventar reparto          | `DAT-22`; `CAP-SCOPE-002`; `CAP-SCOPE-012`         | antes de migración/automatización |
+| política de devoluciones y compensaciones | registrar solicitud y bloquear efecto no autorizado | `CAP-SCOPE-010`; `OPE-10`; `OPE-11`                | antes del piloto                  |
+| modelo catering/B2B                       | `BUILD`, no habilitado                              | `COM-04`; `COM-05`; `OPS-B2B-001`                  | antes del diseño E2               |
+| corte POS externo → PULSO                 | convivencia conciliada sin doble emisión            | `INT-SALES-008` a `INT-SALES-011`                  | antes del piloto con efectos      |
+
+---
+
+#### 38. Requisitos de prueba generados
+
+```text
+TREQ-PULSO-005
+TREQ-PULSO-006
+TREQ-INTEGRATION-014
+```
+
+##### 38.1. `TREQ-PULSO-005`
+
+Protege el ciclo solicitud → pedido → revisión → comanda → preparación → cumplimiento, incluyendo disponibilidad, precios, mesas, estaciones y estados independientes.
+
+##### 38.2. `TREQ-PULSO-006`
+
+Protege venta, pagos, caja, documento fiscal, propinas, descuentos, anulaciones, devoluciones, reembolsos y cierre diario.
+
+##### 38.3. `TREQ-INTEGRATION-014`
+
+Protege la convivencia y transición entre PASS, PULSO y POS externo, y los efectos exactamente una vez hacia NEXO, NUMERA, PASS y servicios de impresión.
+
+Los detalles viven exclusivamente en el `04A` completo regenerado.
+
+---
+
+#### 39. Puertas de implementación
+
+##### Puerta 1 — Contratos E2
+
+- estados y transiciones aprobados;
+- pedido, comanda, venta, pago, caja y documento fiscal separados;
+- actores y permisos definidos;
+- preguntas críticas con tratamiento provisional.
+
+##### Puerta 2 — Arquitectura E3/E4
+
+- contrato canónico de pedido y venta;
+- integración POS externo;
+- colas, printing, idempotencia y conciliación;
+- modelo de caja, pagos y reversión;
+- seguridad y privacidad.
+
+##### Puerta 3 — Implementación E5
+
+- PULSO, PASS, NEXO y NUMERA implementados contra los contratos;
+- POS externo en piloto sin efectos y luego con efectos controlados;
+- pruebas automatizadas y evidencia operativa.
+
+##### Puerta 4 — Corte
+
+- conciliación aprobada;
+- corte por sede y terminal;
+- doble emisión bloqueada;
+- contingencia y rollback;
+- credenciales externas reducidas o revocadas.
+
+---
+
+#### 40. Criterios de aceptación
+
+`CAP-SCOPE-009` podrá aprobarse cuando:
+
+- las 15 subcapacidades tengan tratamiento explícito;
+- PULSO, PASS, POS externo, NEXO, NUMERA y proveedores tengan fronteras claras;
+- se distingan pedido, comanda, venta, pago, caja y documento fiscal;
+- se definan los ejes de estado independientes;
+- oferta, disponibilidad, revisiones y comandas tengan reglas mínimas;
+- mesas, recogida, aplicaciones y B2B tengan tratamiento;
+- pagos, propinas, reversión y cierre tengan semántica auditable;
+- la transición Makos/POS externo → PULSO tenga puertas y prohibición de doble emisión;
+- las preguntas existentes tengan uso y puerta;
+- los 30 hallazgos tengan propietario y momento;
+- los tres requisitos nuevos estén incorporados en un `04A` completo válido;
+- no se haya autorizado implementación ni operación real.
+
+---
+
+#### 41. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cobertura objetivo de ventas, pedidos, caja y pagos, sin ejecutar todavía el diseño detallado ni la implementación.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-010
+— Evaluar clientes, fidelización, reclamos y servicio
+```
+
+`CAP-SCOPE-010` consumirá las fronteras de cliente, devolución y compensación aquí aprobadas, pero no reabrirá la propiedad transaccional de PULSO ni el contrato canónico de venta.
+
+
 ### [ ] CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
 ### [ ] CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
 ### [ ] CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos

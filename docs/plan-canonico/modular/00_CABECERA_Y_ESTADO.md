@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **190** |
+| Tareas aprobadas | **191** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1211** |
+| Tareas no iniciadas | **1210** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad** |
-| Tarea actual | **CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos** |
+| Última tarea aprobada | **CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos** |
+| Tarea actual | **CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio** |
+| Siguiente tarea | **CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 65 de 96 aprobadas; CAP-SCOPE-009 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 66 de 96 aprobadas; CAP-SCOPE-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad |
-| Tarea actual | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-010` — Evaluar clientes, fidelización, reclamos y servicio |
+| Última aprobada | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos |
+| Tarea actual | `CAP-SCOPE-010` — Evaluar clientes, fidelización, reclamos y servicio — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-011` — Evaluar logística, rutas, vehículos, combustible y entregas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **65 DE 96 APROBADAS — ACTUAL CAP-SCOPE-009** |
+| BLOQUE E1 | **66 DE 96 APROBADAS — ACTUAL CAP-SCOPE-010** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
-        ↓
-TAREA ACTUAL
 CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
         ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 65 de 96 tareas aprobadas
+BLOQUE E1 — 66 de 96 tareas aprobadas
 ```
