@@ -11444,7 +11444,983 @@ CAP-SCOPE-010
 `CAP-SCOPE-010` consumirá las fronteras de cliente, devolución y compensación aquí aprobadas, pero no reabrirá la propiedad transaccional de PULSO ni el contrato canónico de venta.
 
 
-### [ ] CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
+### ✅ CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-009` aprobada  
+**Tarea anterior:** `CAP-SCOPE-009`  
+**Siguiente tarea reservada:** `CAP-SCOPE-011`  
+**Familia evaluada:** `CAP-10 — Atender clientes y fortalecer relaciones`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Contactos, campañas, compensaciones, puntos, reservas, mensajes o cambios reales sobre clientes:** no autorizados  
+**Requisitos de prueba generados:** `TREQ-AUTH-018`, `TREQ-PASS-010`, `TREQ-PASS-011`, `TREQ-INTEGRATION-015`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- reconocer a una persona cliente sin exigir siempre una cuenta digital;
+- distinguir persona, cuenta, perfil, contacto, relación comercial, consentimiento y preferencia;
+- mantener una identidad estable sin fusionar automáticamente registros por nombre, teléfono o correo;
+- permitir atención a clientes ocasionales, identificados y autenticados;
+- registrar preguntas, solicitudes, reclamos, felicitaciones y novedades por cualquier canal;
+- investigar y resolver reclamos mediante expedientes trazables;
+- vincular devoluciones, reembolsos, compensaciones y cortesías con la transacción y decisión correspondientes;
+- medir satisfacción sin convertir toda respuesta negativa en reclamo ni incentivar respuestas sesgadas;
+- administrar puntos, beneficios, recompensas, redenciones y ajustes mediante reglas versionadas;
+- gestionar reservas y eventos con capacidad, condiciones, depósito, cambios, cancelación y no-show;
+- comunicar cambios operativos y comerciales por canales autorizados;
+- proteger información personal, historial, preferencias, comunicaciones y expedientes;
+- atender derechos del titular sin borrar evidencia que deba conservarse;
+- coordinar PASS, PULSO, VISO, NUMERA, NEXO y proveedores externos sin duplicar casos ni efectos.
+
+La existencia de perfiles, QR, puntos, redenciones, feedback, chats, pedidos y notificaciones no permite declarar resuelta la familia `CAP-10`. La cobertura exige una relación de cliente coherente, multicanal, protegida y auditable.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-010` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP IDENTIFICAR, ATENDER, ESCUCHAR Y FIDELIZAR
+A SUS CLIENTES A TRAVÉS DE TODAS LAS MARCAS, SEDES Y CANALES,
+SIN CONFUNDIR PERSONA, CUENTA, PERFIL, CONSENTIMIENTO, PREFERENCIA,
+PEDIDO, RECLAMO, FEEDBACK, DEVOLUCIÓN, COMPENSACIÓN, RESERVA NI PUNTOS?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+PERSONA CLIENTE = CUENTA PASS = REGISTRO DE AUTH
+```
+
+```text
+TELÉFONO COINCIDENTE = MISMA PERSONA
+```
+
+```text
+PREFERENCIA = CONSENTIMIENTO
+```
+
+```text
+PREGUNTA = RECLAMO = FEEDBACK
+```
+
+```text
+DEVOLUCIÓN = REEMBOLSO = COMPENSACIÓN = CORTESÍA
+```
+
+```text
+SALDO DE PUNTOS = LEDGER DE FIDELIZACIÓN
+```
+
+```text
+CHAT DE PEDIDO = EXPEDIENTE DE SERVICIO
+```
+
+```text
+RESERVA = MESA = PEDIDO = EVENTO
+```
+
+```text
+VISTA CLIENTE 360 = NUEVA FUENTE DE VERDAD
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `OPS-PLAN-001` a `OPS-PLAN-004`;
+- `OPS-CAN-001` y `OPS-B2B-001` cuando se activen;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-009`;
+- decisiones de identidad, autorización, auditoría e invalidación ya aprobadas;
+- `PASS-UX-001` a `PASS-UX-010`;
+- `PASS-INT-001` a `PASS-INT-005`;
+- `PASS-QA-001` y `PASS-QA-002`;
+- `PULSO-AUTH-001` a `PULSO-AUTH-016`;
+- `PULSO-UX-001` a `PULSO-UX-021`;
+- tareas administrativas y de privacidad de VISO, SHELL y Supabase;
+- perfil y consentimiento básico en `public.users`;
+- puntos, transacciones, recompensas, redenciones e historial actuales;
+- `user_feedback` y flujo actual de calificación;
+- pedidos, conversación vinculada al pedido, push notifications y tracking en PASS;
+- identificación de cliente y operaciones de fidelización desde PULSO;
+- registro vivo de preguntas pendientes;
+- decisiones aprobadas de `CAP-SCOPE-009` sobre devolución, reembolso, compensación y cliente opcional.
+
+Las respuestas existentes no se vuelven a solicitar.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-10.01` — Identificar y conocer clientes;
+- `CAP-10.02` — Registrar preferencias y autorizaciones;
+- `CAP-10.03` — Atender preguntas y solicitudes;
+- `CAP-10.04` — Recibir y resolver reclamos;
+- `CAP-10.05` — Gestionar devoluciones y compensaciones;
+- `CAP-10.06` — Medir satisfacción;
+- `CAP-10.07` — Gestionar fidelización y beneficios;
+- `CAP-10.08` — Gestionar reservas y eventos;
+- `CAP-10.09` — Comunicar cambios que afecten al cliente;
+- `CAP-10.10` — Proteger información del cliente.
+
+También fija fronteras con venta, pagos, inventario, logística, Marketing, privacidad, documentos, analítica y continuidad.
+
+---
+
+#### 5. Fuera de alcance
+
+- contactar clientes reales, enviar campañas o modificar preferencias;
+- otorgar, descontar, transferir o corregir puntos;
+- aprobar devoluciones, reembolsos, compensaciones o cortesías;
+- crear reservas, eventos o depósitos reales;
+- resolver reclamos reales desde esta tarea;
+- fusionar, eliminar o migrar perfiles;
+- decidir textos jurídicos definitivos de privacidad o condiciones;
+- definir campañas y segmentación de Marketing, reservadas para `CAP-SCOPE-014`;
+- ejecutar derechos del titular o políticas de retención, reservados para `CAP-SCOPE-016`;
+- crear indicadores definitivos, reservados para `CAP-SCOPE-017`;
+- crear tablas, políticas, RPC, Edge Functions, webhooks o jobs;
+- autorizar acceso masivo a información de clientes;
+- declarar PASS como CRM integral antes del diseño e implementación correspondientes.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. Una persona cliente no depende de tener cuenta
+
+La organización podrá atender una venta o solicitud ocasional sin crear una cuenta ficticia. La cuenta autenticada será un mecanismo de acceso, no la definición de la persona.
+
+##### 6.2. Persona, cuenta, contacto, perfil y relación serán conceptos distintos
+
+Una persona podrá tener contactos verificados, una o más relaciones de marca permitidas, pedidos, casos y consentimientos. Los identificadores técnicos no sustituirán la identidad empresarial.
+
+##### 6.3. PASS será la superficie personal del cliente
+
+PASS administrará autoservicio, perfil visible, QR, puntos, beneficios, redenciones, pedidos, comunicaciones, presentación de casos y reservas cuando se implementen. No será la superficie administrativa de investigación o aprobación.
+
+##### 6.4. VISO será la superficie administrativa de servicio
+
+VISO administrará colas, asignaciones, investigación, decisiones, SLA, compensaciones propuestas, reservas complejas y reportes. La fuente persistente será el dominio canónico compartido en Supabase gobernado desde SHELL.
+
+##### 6.5. PULSO registrará hechos de servicio vinculados a la operación
+
+PULSO identificará al cliente cuando sea necesario, registrará incidencias de la venta, recibirá solicitudes presenciales y ejecutará devoluciones o compensaciones autorizadas. No mantendrá un perfil o saldo alternativo.
+
+##### 6.6. Preferencia y autorización no serán equivalentes
+
+Preferir WhatsApp no implica autorizar Marketing por WhatsApp. Cada consentimiento conservará finalidad, texto o versión, canal, fuente, actor, timestamp, vigencia y retiro.
+
+##### 6.7. Fidelización usará ledger, no solo saldo
+
+El saldo será una proyección reconciliable de movimientos. Acumulación, redención, expiración, ajuste, reversión y compensación conservarán evento origen y regla aplicada.
+
+##### 6.8. Reclamo, feedback y conversación conservarán semánticas diferentes
+
+Una calificación baja puede originar un reclamo, pero no lo será automáticamente. Un chat de pedido puede aportar evidencia a un caso, pero no reemplazará su ciclo.
+
+##### 6.9. Toda compensación tendrá una decisión y efectos explícitos
+
+Producto, descuento, devolución de dinero, puntos, cupón o cortesía se modelarán como resultados distintos. Cada uno requerirá autoridad, motivo, valor, vigencia y correlación.
+
+##### 6.10. La información del cliente se entregará por proyecciones mínimas
+
+Caja, salón, soporte, Marketing, logística y gerencia no recibirán automáticamente los mismos datos. Cada proceso obtendrá únicamente los campos necesarios.
+
+##### 6.11. La vista cliente 360 será una proyección
+
+La vista consolidada no escribirá directamente en todas las fuentes. Mostrará identidad, relaciones, pedidos, casos, puntos, reservas y comunicaciones mediante contratos trazables.
+
+##### 6.12. Las comunicaciones críticas serán auditables
+
+Cambio, cancelación, retiro, retraso, cierre de sede, afectación de reserva o modificación de beneficio conservarán plantilla, versión, destinatario, canal, estado de entrega y fallback.
+
+---
+
+#### 7. Línea base verificable
+
+##### 7.1. PASS
+
+La implementación actual contiene:
+
+- autenticación OTP y sesión persistente;
+- perfil de cliente con nombre, documento, teléfono y fecha de nacimiento;
+- aceptación de política de privacidad y timestamp;
+- QR personal;
+- saldo y movimientos de puntos;
+- catálogo de recompensas;
+- redenciones con estados;
+- historial de fidelización;
+- pedidos, detalle, chat y seguimiento;
+- `user_feedback` y flujo de calificación;
+- registro de tokens y recepción de notificaciones push;
+- eliminación de cuenta en la experiencia móvil.
+
+##### 7.2. PULSO
+
+La implementación actual permite identificar cliente, acreditar puntos y validar redenciones mediante acciones de servidor y actor real en terminal compartida. También posee pedido, venta y reversión parcial que deberán relacionarse con servicio.
+
+##### 7.3. Limitaciones comprobables
+
+No se ha demostrado un ciclo integral para:
+
+- persona cliente independiente de la cuenta;
+- deduplicación, fusión y separación;
+- consentimientos por finalidad y versión;
+- preguntas y solicitudes omnicanal;
+- reclamos con investigación y SLA;
+- compensación coordinada;
+- reservas y eventos;
+- acceso administrativo mínimo;
+- comunicaciones multicanal reconciliadas;
+- métricas de servicio y satisfacción canónicas.
+
+---
+
+#### 8. Clasificación de cobertura
+
+| Capacidad   | Nombre                                   | Tratamiento         | Justificación                                                                                                                                   |
+| ----------- | ---------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-10.01` | Identificar y conocer clientes           | `REUSE_OR_REFACTOR` | PASS conserva identidad, perfil y relación con pedidos; se refactoriza para separar persona, cuenta, contacto, relación y proyecciones.         |
+| `CAP-10.02` | Registrar preferencias y autorizaciones  | `REUSE_OR_REFACTOR` | Se conserva el perfil y la aceptación de privacidad; se exige ledger versionado por finalidad, canal, fuente, vigencia y retiro.                |
+| `CAP-10.03` | Atender preguntas y solicitudes          | `BUILD`             | No existe un expediente omnicanal verificable de servicio con clasificación, responsable, SLA, mensajes, adjuntos, escalamiento y cierre.       |
+| `CAP-10.04` | Recibir y resolver reclamos              | `BUILD`             | Feedback y chat de pedido no equivalen a reclamo; se requiere caso formal, investigación, decisión, comunicación y evidencia.                   |
+| `CAP-10.05` | Gestionar devoluciones y compensaciones  | `REUSE_OR_REFACTOR` | Se reutilizan las acciones transaccionales de PULSO y los vínculos con pedido, pago e inventario; se añade gobierno del caso y aprobación.      |
+| `CAP-10.06` | Medir satisfacción                       | `REUSE_OR_REFACTOR` | Existe user_feedback y flujo de calificación; se refactoriza para separar medición, incentivo, queja, muestra, canal y sesgo.                   |
+| `CAP-10.07` | Gestionar fidelización y beneficios      | `REUSE_OR_REFACTOR` | Se conservan puntos, recompensas, redenciones, QR e historial; se exige ledger, reglas versionadas, ajustes controlados y conciliación.         |
+| `CAP-10.08` | Gestionar reservas y eventos             | `BUILD`             | No existe ciclo integral confirmado de disponibilidad, reserva, depósito, cambios, no-show, evento, capacidad y cierre.                         |
+| `CAP-10.09` | Comunicar cambios que afecten al cliente | `REUSE_OR_REFACTOR` | Se conservan push, chat y estados de pedido; se exige preferencia de canal, consentimiento aplicable, plantilla versionada, entrega y fallback. |
+| `CAP-10.10` | Proteger información del cliente         | `REUSE_OR_REFACTOR` | Se reutilizan RLS, identidad y privacidad existentes; se endurecen proyecciones mínimas, acceso laboral, exportación, retención y derechos.     |
+
+---
+
+#### 9. Resumen de tratamientos
+
+| Tratamiento         | Cantidad |
+| ------------------- | -------: |
+| `REUSE_OR_REFACTOR` |        7 |
+| `BUILD`             |        3 |
+| **Total**           |   **10** |
+
+No se clasifica ninguna capacidad como resuelta. `REUSE_OR_REFACTOR` significa conservar componentes, datos o flujos útiles y someterlos al contrato objetivo.
+
+---
+
+#### 10. Propiedad funcional
+
+```text
+PASS
+→ autoservicio personal
+→ perfil y contactos propios
+→ visualización y retiro de autorizaciones permitidas
+→ QR, puntos, beneficios y redenciones
+→ presentación y seguimiento de solicitudes
+→ reservas y comunicaciones del cliente
+
+PULSO
+→ identificación durante la operación
+→ captura presencial de solicitudes
+→ vínculo con pedido, venta y mesa
+→ ejecución autorizada de devolución o compensación
+
+VISO
+→ administración de casos
+→ asignación, SLA y escalamiento
+→ investigación y aprobación
+→ reservas y eventos administrativos
+→ supervisión de satisfacción y servicio
+
+NUMERA
+→ efecto económico de reembolso, cortesía o compensación
+
+NEXO
+→ devolución física y efecto de inventario
+
+MARKETING / CAP-SCOPE-014
+→ campañas, segmentación y contenido bajo autorizaciones válidas
+
+SHELL / SUPABASE
+→ identidad, contratos, integridad, autorización, auditoría y persistencia
+```
+
+Ninguna aplicación podrá mantener un saldo, consentimiento, reclamo o perfil administrativo competidor.
+
+---
+
+#### 11. Fuentes de verdad objetivo
+
+| Concepto                  | Fuente objetivo                      | Consumidores                          |
+| ------------------------- | ------------------------------------ | ------------------------------------- |
+| persona cliente           | registro canónico de cliente         | PASS, PULSO, VISO, NUMERA             |
+| cuenta autenticada        | Supabase Auth y vínculo de identidad | PASS, SHELL                           |
+| contacto y verificación   | contacto canónico versionado         | PASS, servicio, comunicaciones        |
+| consentimiento            | ledger de autorizaciones             | PASS, Marketing, servicio, privacidad |
+| preferencia               | perfil de preferencias               | PASS, PULSO, comunicaciones           |
+| fidelización              | ledger de movimientos y reglas       | PASS, PULSO, NUMERA                   |
+| caso de servicio          | expediente canónico                  | PASS, PULSO, VISO                     |
+| devolución o compensación | decisión y efectos vinculados        | PULSO, VISO, NEXO, NUMERA, PASS       |
+| satisfacción              | respuesta y contexto de medición     | VISO, analítica                       |
+| reserva o evento          | expediente de reserva                | PASS, PULSO, VISO, NUMERA             |
+| comunicación              | evento y entrega por canal           | PASS, VISO, proveedores               |
+
+---
+
+#### 12. Modelo conceptual de cliente
+
+Se distinguirán como mínimo:
+
+```text
+CUSTOMER_PERSON
+AUTH_ACCOUNT
+CUSTOMER_CONTACT
+CONTACT_VERIFICATION
+CUSTOMER_RELATIONSHIP
+CUSTOMER_PROFILE
+CUSTOMER_PREFERENCE
+CONSENT_RECORD
+LOYALTY_ACCOUNT
+LOYALTY_LEDGER_ENTRY
+SERVICE_CASE
+SERVICE_INTERACTION
+COMPLAINT_INVESTIGATION
+SATISFACTION_RESPONSE
+RESERVATION_CASE
+COMPENSATION_DECISION
+CUSTOMER_COMMUNICATION
+```
+
+Una misma persona podrá relacionarse con más de una marca o sede sin duplicarse, siempre que la base jurídica, finalidad y alcance permitan esa relación.
+
+---
+
+#### 13. Identificación, deduplicación y fusión
+
+- ningún único atributo humano será prueba absoluta de identidad;
+- correo, teléfono y documento tendrán estado de verificación y fuente;
+- una coincidencia sugerirá revisión, no fusión automática;
+- la fusión conservará identificadores anteriores, actor, razón, evidencia y rollback;
+- una separación posterior será posible si la fusión fue incorrecta;
+- pedidos, puntos, reclamos y consentimientos no se moverán silenciosamente;
+- una cuenta cerrada no borrará automáticamente hechos sujetos a conservación;
+- un cliente ocasional podrá vincularse posteriormente sin duplicar la venta original.
+
+---
+
+#### 14. Perfil, contactos, preferencias y autorizaciones
+
+##### 14.1. Campos autoadministrables
+
+El cliente podrá corregir datos permitidos mediante validaciones y auditoría. Campos protegidos, saldo, segmentos internos, decisiones de riesgo y notas administrativas no serán autoadministrables.
+
+##### 14.2. Contactos
+
+Cada correo o teléfono conservará:
+
+- tipo;
+- valor normalizado;
+- estado de verificación;
+- fuente;
+- vigencia;
+- uso permitido;
+- fecha de baja.
+
+##### 14.3. Consentimientos
+
+Cada autorización conservará:
+
+- finalidad específica;
+- canal;
+- texto o versión;
+- fuente de captura;
+- timestamp;
+- estado;
+- retiro;
+- evidencia;
+- restricciones de marca o titular cuando apliquen.
+
+##### 14.4. Preferencias
+
+Se separarán preferencias de producto, servicio, canal, sede, horario, idioma y accesibilidad. No se inferirán datos sensibles a partir de compras o reclamos sin decisión explícita y tratamiento permitido.
+
+---
+
+#### 15. Identificación durante venta y servicio
+
+PULSO podrá:
+
+- escanear QR;
+- buscar por contacto autorizado;
+- vincular pedido existente;
+- continuar como consumidor final no identificado;
+- mostrar una proyección mínima;
+- solicitar verificación adicional para acciones sensibles.
+
+El personal no verá documento, fecha de nacimiento, historial completo o contactos si la tarea no los necesita.
+
+---
+
+#### 16. Preguntas y solicitudes
+
+Todo contacto que requiera seguimiento podrá crear un `SERVICE_CASE` con:
+
+- identificador estable;
+- cliente identificado u ocasional;
+- canal y punto de origen;
+- categoría y subcategoría;
+- marca, sede, pedido o servicio relacionado;
+- descripción original inmutable;
+- mensajes y adjuntos;
+- responsable y cola;
+- prioridad y SLA;
+- estado y siguiente acción;
+- comunicaciones enviadas;
+- resolución y confirmación de cierre.
+
+Una respuesta simple podrá cerrarse en el primer contacto, sin omitir evidencia mínima.
+
+---
+
+#### 17. Reclamos
+
+El reclamo tendrá un ciclo distinto:
+
+```text
+RECIBIDO
+→ CLASIFICADO
+→ ASIGNADO
+→ EN INVESTIGACIÓN
+→ DECISIÓN PROPUESTA
+→ APROBADO O RECHAZADO
+→ COMUNICADO
+→ RESUELTO
+→ CERRADO
+```
+
+Según criticidad, podrá incluir:
+
+- declaración del cliente;
+- pedido, venta, pago o entrega;
+- evidencia operativa;
+- respuesta de sede o área;
+- causa;
+- acción correctiva;
+- compensación;
+- comunicación final;
+- apelación o reapertura.
+
+La declaración original no se sobrescribirá.
+
+---
+
+#### 18. Devoluciones, reembolsos y compensaciones
+
+Se conservarán como conceptos separados:
+
+```text
+RETURN_REQUEST
+PHYSICAL_RETURN
+REFUND
+DISCOUNT
+REPLACEMENT
+COURTESY_PRODUCT
+LOYALTY_CREDIT
+COUPON
+SERVICE_RECOVERY
+```
+
+La decisión deberá indicar:
+
+- autoridad;
+- motivo;
+- política o excepción;
+- valor;
+- beneficiario;
+- vigencia;
+- efectos de inventario, pago, fiscalidad, puntos y costo;
+- evento original;
+- evidencia de ejecución.
+
+Una compensación no podrá ejecutarse dos veces desde PASS, PULSO, VISO o un proveedor externo.
+
+---
+
+#### 19. Satisfacción y feedback
+
+La medición distinguirá:
+
+- calificación transaccional;
+- satisfacción general;
+- feedback abierto;
+- reclamo;
+- recomendación;
+- evaluación de resolución;
+- reseña pública externa.
+
+Toda métrica documentará población, canal, momento, tasa de respuesta y sesgos. Un incentivo por responder no dependerá de una calificación positiva.
+
+Una respuesta crítica podrá ofrecer crear un reclamo con autorización del cliente, pero no lo hará silenciosamente.
+
+---
+
+#### 20. Fidelización y beneficios
+
+##### 20.1. Ledger
+
+Cada movimiento conservará:
+
+- tipo;
+- cantidad;
+- regla y versión;
+- pedido o venta origen;
+- actor o sistema;
+- timestamp;
+- vigencia o expiración;
+- reversión o compensación;
+- idempotency key.
+
+##### 20.2. Beneficios
+
+Se distinguirán:
+
+- puntos;
+- recompensa;
+- cupón;
+- nivel;
+- membresía;
+- promoción;
+- cortesía;
+- beneficio por campaña.
+
+##### 20.3. Ajustes
+
+Los ajustes manuales serán acciones nombradas, con permiso, razón, evidencia y límites. Los ajustes de alto impacto requerirán aprobación adicional.
+
+##### 20.4. Redenciones
+
+La redención conservará reserva de puntos, estado, expiración, uso, cancelación, sede, recompensa y relación con venta o entrega. Una respuesta perdida no generará dos redenciones.
+
+---
+
+#### 21. Reservas y eventos
+
+El expediente deberá distinguir:
+
+```text
+SOLICITUD
+COTIZACIÓN O CONDICIONES
+DISPONIBILIDAD
+HOLD TEMPORAL
+RESERVA CONFIRMADA
+DEPÓSITO
+CAMBIO
+CANCELACIÓN
+NO-SHOW
+LLEGADA
+MESA O SERVICIO ASIGNADO
+CIERRE
+```
+
+La reserva conservará:
+
+- cliente y contacto;
+- sede, zona, fecha y franja;
+- número de personas;
+- tipo de ocasión o evento;
+- requisitos especiales;
+- capacidad comprometida;
+- depósito y condiciones;
+- responsable;
+- comunicaciones;
+- vínculos con pedido, mesa, contrato o factura cuando apliquen.
+
+Una solicitud no bloqueará capacidad indefinidamente.
+
+---
+
+#### 22. Comunicaciones que afectan al cliente
+
+Se registrarán como eventos separados:
+
+- confirmación;
+- cambio de horario o sede;
+- retraso;
+- sustitución;
+- cancelación;
+- pedido listo;
+- afectación de reserva;
+- cambio de beneficio;
+- vencimiento;
+- resolución de reclamo;
+- retiro de producto o alerta aplicable.
+
+Cada comunicación tendrá plantilla y versión, finalidad, canal, destinatario, estado, proveedor, intentos, entrega, lectura cuando exista, error y fallback.
+
+Las comunicaciones operativas necesarias no se confundirán con Marketing.
+
+---
+
+#### 23. Atención omnicanal
+
+PASS, PULSO, teléfono, correo, WhatsApp, redes, formulario y atención presencial deberán converger en el mismo caso cuando correspondan.
+
+El adaptador externo conservará:
+
+- identificador del canal;
+- identidad o contacto declarado;
+- payload original;
+- timestamps;
+- adjuntos;
+- mensajes entrantes y salientes;
+- estado de entrega;
+- relación con el caso canónico.
+
+No se copiará una conversación completa a notas sin estructura ni control de privacidad.
+
+---
+
+#### 24. Protección de información
+
+La autorización deberá considerar:
+
+- identidad real del trabajador;
+- capacidad exacta;
+- marca, sede y caso;
+- participación en el expediente;
+- sensibilidad del dato;
+- estado del caso;
+- finalidad de consulta;
+- dispositivo compartido;
+- exportación o descarga.
+
+Se prohibirá:
+
+- buscar clientes sin motivo operativo;
+- consultar masivamente perfiles desde caja;
+- mostrar datos completos en notificaciones;
+- exponer notas internas al cliente;
+- usar simulación para ampliar acceso;
+- exportar sin permiso y evidencia;
+- copiar información personal a logs, chats internos o archivos no gobernados.
+
+---
+
+#### 25. Derechos, corrección y eliminación
+
+Las solicitudes de consulta, corrección, revocación o eliminación tendrán expediente, verificación de identidad, responsable, plazo, decisión, alcance y evidencia.
+
+La eliminación de cuenta no equivaldrá automáticamente a eliminar:
+
+- ventas;
+- facturas;
+- pagos;
+- auditoría;
+- reclamos;
+- consentimientos históricos;
+- movimientos de fidelización;
+- documentos sujetos a conservación.
+
+Cuando corresponda, se aplicará anonimización, desvinculación o restricción documentada.
+
+---
+
+#### 26. Auditoría, exportación y acceso administrativo
+
+Toda consulta sensible o cambio conservará cuando corresponda:
+
+- principal;
+- actor efectivo;
+- permiso;
+- propósito;
+- cliente;
+- caso;
+- campos consultados o modificados;
+- exportación;
+- dispositivo;
+- timestamp;
+- resultado.
+
+Las exportaciones tendrán filtros, límite, clasificación, propietario, expiración y trazabilidad de descarga.
+
+---
+
+#### 27. Métricas y niveles de servicio
+
+Se reservarán definiciones canónicas para:
+
+- volumen de contactos;
+- resolución en primer contacto;
+- tiempo de primera respuesta;
+- tiempo de resolución;
+- reapertura;
+- cumplimiento de SLA;
+- reclamos por pedido o venta;
+- tasa y valor de compensación;
+- satisfacción y recomendación;
+- recurrencia;
+- acumulación y redención;
+- expiración y pasivo de puntos;
+- no-show y cancelación de reservas.
+
+Los indicadores no se calcularán mezclando clientes, contactos, pedidos o casos como denominadores equivalentes.
+
+---
+
+#### 28. Operación offline, reintentos y concurrencia
+
+- crear caso, mensaje, reserva, redención o compensación exigirá idempotency key;
+- el mismo identificador con contenido diferente producirá conflicto;
+- una respuesta perdida se consultará antes de repetir el efecto;
+- los mensajes conservarán orden y deduplicación;
+- una reserva temporal tendrá expiración atómica;
+- dos agentes no aprobarán la misma compensación;
+- los movimientos de puntos no se aplicarán dos veces;
+- la sincronización offline reautorizará al actor y el estado actual.
+
+---
+
+#### 29. Migración y convivencia
+
+La transición deberá inventariar:
+
+- perfiles actuales;
+- contactos y verificaciones;
+- consentimientos;
+- movimientos y saldos de puntos;
+- recompensas y redenciones;
+- feedback;
+- pedidos y chats;
+- tokens de notificación;
+- posibles duplicados;
+- datos incompletos o no recuperables.
+
+Ningún saldo o consentimiento se dará por correcto únicamente porque exista una columna. La migración tendrá reconciliación, muestra, conflictos, rollback y registro de exclusiones.
+
+---
+
+#### 30. Preguntas pendientes reutilizadas
+
+No se crean preguntas nuevas.
+
+Se reutilizan:
+
+| ID       | Uso en esta tarea                             | Tratamiento provisional                                      | Puerta máxima                      |
+| -------- | --------------------------------------------- | ------------------------------------------------------------ | ---------------------------------- |
+| `OPE-02` | confirmar sedes que aceptan reservas          | reservas permanecen `BUILD` y deshabilitadas                 | antes de diseño de reservas E2     |
+| `OPE-10` | autoridad para aceptar devolución             | solo supervisor autorizado provisional                       | antes del piloto de devoluciones   |
+| `OPE-11` | autoridad para compensar                      | ningún efecto sin autorización explícita                     | antes del piloto de compensaciones |
+| `DAT-24` | fuente actual de devoluciones                 | no migrar historia no comprobada                             | antes del backfill                 |
+| `DAT-25` | fuente actual de compensaciones               | no asumir que descuento, producto y dinero están conciliados | antes de automatización            |
+| `COM-03` | responsable de devoluciones de Vaila Vainilla | caso se enruta a responsable manual confirmado               | antes de integrar el canal         |
+| `COM-04` | aprobación de catering                        | reserva o evento especial no se confirma sin aprobación      | antes del piloto                   |
+| `COM-05` | existencia de contrato o cotización estándar  | mantener control manual                                      | antes de construir evento B2B      |
+
+Las respuestas faltantes no bloquean la clasificación de cobertura. Sí bloquean migración, automatización y piloto con efectos.
+
+---
+
+#### 31. Hallazgos y destinos
+
+| Hallazgo              | Brecha                                                                                                                                  | Tarea propietaria                                                             | Momento de resolución                          |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------- |
+| `H-CAP-SCOPE-010-001` | La implementación puede tratar cuenta PASS, persona cliente y registro de public.users como equivalentes.                               | `PASS-INT-005; SUPA-AUD-019; CAP-SCOPE-016`                                   | Antes del diseño lógico E3.                    |
+| `H-CAP-SCOPE-010-002` | No existe contrato empresarial completo para clientes ocasionales sin cuenta.                                                           | `PULSO-UX-007; PASS-INT-004; PROC-CAT-009 a PROC-CAT-018`                     | Antes del prototipo de venta y servicio E2.    |
+| `H-CAP-SCOPE-010-003` | La deduplicación y fusión de clientes no tiene reglas canónicas reversibles verificadas.                                                | `SUPA-AUD-019; SUPA-AUD-022; CAP-SCOPE-016`                                   | Antes de migrar o consolidar perfiles.         |
+| `H-CAP-SCOPE-010-004` | La aceptación de privacidad existente no demuestra versión de texto, finalidad, canal, fuente ni retiro por cada autorización.          | `PASS-UX-008; CAP-SCOPE-016; EVID-ARC-001 a EVID-ARC-010`                     | Antes de ampliar tratamiento o comunicaciones. |
+| `H-CAP-SCOPE-010-005` | Preferencia comercial, preferencia operativa y consentimiento pueden quedar mezclados.                                                  | `PASS-UX-008; CAP-SCOPE-014; CAP-SCOPE-016`                                   | Durante diseño E2 de perfil y comunicaciones.  |
+| `H-CAP-SCOPE-010-006` | No existe expediente omnicanal único para preguntas y solicitudes.                                                                      | `PROC-CAT-009 a PROC-CAT-018; VISO-UX-013 a VISO-UX-020; PASS-UX-010`         | Antes del paquete E5 de servicio.              |
+| `H-CAP-SCOPE-010-007` | No se han definido categorías, severidad, propietario, SLA, escalamiento y cierre de casos de servicio.                                 | `PROC-CAT-009 a PROC-CAT-019; PROC-ACTOR-001 a PROC-ACTOR-010; CAP-SCOPE-017` | Durante diseño de procesos E2.                 |
+| `H-CAP-SCOPE-010-008` | Feedback, conversación de pedido, solicitud, reclamo y denuncia podrían confundirse.                                                    | `PASS-UX-006; PULSO-UX-009; PROC-CAT-020`                                     | Antes de definir pantallas y métricas.         |
+| `H-CAP-SCOPE-010-009` | Devolución, reembolso, compensación, cortesía y ajuste de puntos no tienen un expediente común de decisión.                             | `PULSO-UX-009; PULSO-AUTH-008; CAP-SCOPE-012; PASS-INT-002`                   | Antes del piloto con efectos reales.           |
+| `H-CAP-SCOPE-010-010` | El efecto de una devolución sobre inventario, pago, documento fiscal, puntos y costo todavía requiere coordinación exactamente una vez. | `TREQ-INTEGRATION-014; NEXO-UX-014 a NEXO-UX-022; CAP-SCOPE-012`              | Antes de habilitar devoluciones integradas.    |
+| `H-CAP-SCOPE-010-011` | El saldo de puntos puede interpretarse como fuente primaria sin reconciliación contra un ledger inmutable.                              | `PASS-INT-001; PASS-INT-002; PASS-QA-001; PASS-QA-002; SUPA-AUD-022`          | Antes de migrar o ampliar fidelización.        |
+| `H-CAP-SCOPE-010-012` | Regla de puntos, beneficio, recompensa, cupón, membresía y promoción no están completamente separados.                                  | `PASS-UX-002 a PASS-UX-009; CAP-SCOPE-014`                                    | Durante diseño E2 de fidelización y campañas.  |
+| `H-CAP-SCOPE-010-013` | Los ajustes manuales de puntos y beneficios requieren permisos, motivo, doble control y compensación.                                   | `PASS-INT-004; PULSO-AUTH-009; PULSO-AUTH-010; AUTH-SRV-004 a AUTH-SRV-018`   | Antes de habilitar administración.             |
+| `H-CAP-SCOPE-010-014` | La medición de satisfacción puede estar sesgada si se condicionan puntos o si solo se invita a ciertos clientes.                        | `PASS-UX-006; CAP-SCOPE-017; UX-QA-029`                                       | Antes de usar el indicador para decisiones.    |
+| `H-CAP-SCOPE-010-015` | Reservas y eventos no tienen ciclo integral confirmado ni propietario único.                                                            | `OPS-CAN-001; OPS-B2B-001; PULSO-UX-001; PROC-CAT-009 a PROC-CAT-018`         | Antes del diseño E2 y cualquier piloto.        |
+| `H-CAP-SCOPE-010-016` | No están cerradas las reglas de capacidad, depósito, cancelación, no-show y conversión de reserva a mesa o pedido.                      | `CAP-SCOPE-009; CAP-SCOPE-012; PROC-CAT-009 a PROC-CAT-018`                   | Antes de construir reservas.                   |
+| `H-CAP-SCOPE-010-017` | Las comunicaciones pueden usar push, chat, correo o mensajería sin una preferencia y finalidad única.                                   | `CAP-SCOPE-014; CAP-SCOPE-016; INT-EXT-001 a INT-EXT-020`                     | Antes de ampliar comunicaciones.               |
+| `H-CAP-SCOPE-010-018` | El ciclo de vida de tokens, dispositivos, rebotes, baja y opt-out de comunicaciones no está certificado.                                | `INT-EXT-001 a INT-EXT-020; CAP-SCOPE-015; AUTH-QA-025`                       | Antes del paquete E5 de notificaciones.        |
+| `H-CAP-SCOPE-010-019` | El chat de pedido existente no reemplaza un canal general de servicio ni garantiza continuidad después del cierre del pedido.           | `PASS-UX-010; PULSO-UX-018; PROC-CAT-009 a PROC-CAT-018`                      | Durante diseño E2 de atención.                 |
+| `H-CAP-SCOPE-010-020` | La relación del mismo cliente con varias marcas, sedes y titulares jurídicos necesita alcance y finalidad explícitos.                   | `CAP-SCOPE-001; PASS-INT-004; CAP-SCOPE-016`                                  | Antes de crear vista cliente 360.              |
+| `H-CAP-SCOPE-010-021` | Documento, teléfono, correo, fecha de nacimiento y comportamiento pueden exponerse más allá de la necesidad operativa.                  | `TREQ-AUTH-006; VISO-AUTH-013 a VISO-AUTH-020; CAP-SCOPE-016`                 | Antes de habilitar consultas administrativas.  |
+| `H-CAP-SCOPE-010-022` | Los derechos de consulta, corrección, revocación y eliminación no están conectados a retención, auditoría y obligaciones aplicables.    | `PASS-UX-008; CAP-SCOPE-016; EVID-ARC-001 a EVID-ARC-010`                     | Antes de certificar privacidad.                |
+| `H-CAP-SCOPE-010-023` | No se ha certificado que exportaciones, URL directa, dispositivos compartidos y simulación respeten el alcance de cliente.              | `AUTH-QA-018; AUTH-QA-020 a AUTH-QA-024; AUTH-QA-029; AUTH-QA-030`            | Antes de certificación del BLOQUE U.           |
+| `H-CAP-SCOPE-010-024` | Reintentos offline o eventos duplicados podrían crear casos, mensajes, puntos, reservas o compensaciones repetidas.                     | `QUEUE-ARC-001 a QUEUE-ARC-010; INT-DB-005 a INT-DB-008; AUTH-QA-026`         | Antes de implementación E5.                    |
+| `H-CAP-SCOPE-010-025` | La migración de perfiles, consentimientos, puntos y feedback actuales no tiene aún plan de calidad, conflicto y rollback.               | `SUPA-TRANS-005 a SUPA-TRANS-007; SUPA-AUD-019; SUPA-AUD-022`                 | Antes de migraciones E3/E5.                    |
+| `H-CAP-SCOPE-010-026` | Los indicadores de satisfacción, recurrencia, resolución, compensación y fidelización no tienen definición canónica aprobada.           | `CAP-SCOPE-017; PROC-CAT-019; CAP-COVER-001 a CAP-COVER-013`                  | Antes de tableros y decisiones gerenciales.    |
+
+No queda ningún hallazgo narrativo sin propietario documental y puerta de resolución.
+
+---
+
+#### 32. Riesgos y controles mínimos
+
+| Riesgo                          | Control mínimo                                    |
+| ------------------------------- | ------------------------------------------------- |
+| perfil duplicado                | identidad estable, revisión y fusión reversible   |
+| contacto no autorizado          | consentimiento por finalidad y canal              |
+| exposición de datos             | proyección mínima y autorización contextual       |
+| reclamo perdido                 | caso estable, cola, responsable y SLA             |
+| compensación duplicada          | decisión única e idempotencia transversal         |
+| puntos incorrectos              | ledger y conciliación contra evento origen        |
+| feedback sesgado                | metodología, población e incentivo neutral        |
+| reserva sobrevendida            | hold temporal, capacidad y expiración atómica     |
+| comunicación no entregada       | estado, reintento y fallback                      |
+| eliminación destructiva         | retención, anonimización y auditoría              |
+| integración omnicanal duplicada | inbox, deduplicación y correlación                |
+| vista 360 competidora           | proyección de solo lectura con fuentes declaradas |
+
+---
+
+#### 33. Decisiones aprobables
+
+1. Persona cliente, cuenta, contacto, perfil, relación y consentimiento serán conceptos distintos.
+2. Se podrá atender a un cliente ocasional sin crear cuenta ficticia.
+3. PASS será la superficie personal; VISO la administrativa; PULSO la operativa vinculada a venta.
+4. La vista cliente 360 será una proyección, no una nueva fuente.
+5. Preferencias y autorizaciones conservarán finalidades separadas.
+6. Preguntas, solicitudes, reclamos y feedback tendrán semánticas distintas.
+7. Reclamos usarán expediente, investigación, decisión, comunicación y cierre.
+8. Devolución, reembolso, compensación, cortesía y puntos serán resultados distintos.
+9. Fidelización usará ledger versionado y saldo reconciliable.
+10. Los ajustes manuales requerirán permiso, motivo y evidencia.
+11. Satisfacción documentará muestra, canal y sesgo.
+12. Reservas y eventos se construirán como expediente independiente.
+13. Comunicaciones operativas y de Marketing se separarán.
+14. El acceso laboral utilizará proyecciones mínimas y contexto.
+15. Los derechos del titular se coordinarán con retención y auditoría.
+16. PASS, PULSO, VISO y proveedores no duplicarán casos ni efectos.
+17. Toda operación sensible será idempotente y conciliable.
+18. No se autoriza implementación ni actuación real desde esta tarea.
+
+---
+
+#### 34. Decisiones diferidas con dueño
+
+| Decisión                                                 | Tratamiento provisional                              | Tarea o responsable                 | Puerta máxima                   |
+| -------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------- | ------------------------------- |
+| identidad legal y datos mínimos obligatorios del cliente | conservar campos actuales sin ampliar obligatoriedad | `CAP-SCOPE-016`; asesoría aplicable | antes de rediseñar onboarding   |
+| política de fusión de clientes                           | no fusionar automáticamente                          | `SUPA-AUD-019`; `SUPA-AUD-022`      | antes de migración              |
+| reglas definitivas de expiración de puntos               | conservar reglas vigentes y versionarlas             | Gerencia; PASS; `CAP-SCOPE-012`     | antes de publicar nueva versión |
+| autoridad y límites de compensación                      | sin efecto automático                                | `OPE-11`; PULSO; VISO; NUMERA       | antes del piloto                |
+| reservas aceptadas por sede                              | capacidad deshabilitada donde no esté confirmada     | `OPE-02`; responsables de sede      | antes del prototipo             |
+| canales y frecuencia de Marketing                        | solo comunicaciones operativas necesarias            | `CAP-SCOPE-014`; `CAP-SCOPE-016`    | antes de campañas               |
+| política de retención y eliminación                      | conservar historia con acceso restringido            | `CAP-SCOPE-016`                     | antes de automatizar derechos   |
+| definiciones KPI                                         | no usar métricas como canónicas                      | `CAP-SCOPE-017`                     | antes de tableros               |
+
+---
+
+#### 35. Requisitos de prueba generados
+
+```text
+TREQ-AUTH-018
+TREQ-PASS-010
+TREQ-PASS-011
+TREQ-INTEGRATION-015
+```
+
+##### 35.1. `TREQ-AUTH-018`
+
+Protege datos, consentimientos, preferencias, casos, reclamos, reservas, comunicaciones, fidelización y exportaciones mediante acceso mínimo, finalidad, territorio, relación y auditoría.
+
+##### 35.2. `TREQ-PASS-010`
+
+Protege identidad de cliente, cuenta, contactos, consentimientos, preferencias y ledger de fidelización, incluyendo deduplicación, fusión reversible y cliente ocasional.
+
+##### 35.3. `TREQ-PASS-011`
+
+Protege atención, reclamos, devoluciones, compensaciones, satisfacción, reservas y comunicaciones con ciclos y estados independientes.
+
+##### 35.4. `TREQ-INTEGRATION-015`
+
+Protege la convergencia omnicanal entre PASS, PULSO, VISO y proveedores, y los efectos exactamente una vez hacia venta, pago, inventario, puntos y finanzas.
+
+Los detalles viven exclusivamente en el `04A` completo regenerado.
+
+---
+
+#### 36. Puertas de implementación
+
+##### Puerta 1 — Procesos E2
+
+- conceptos y estados aprobados;
+- actores, colas, SLA y aprobaciones definidos;
+- reservas y compensaciones con reglas provisionales;
+- preguntas críticas con tratamiento.
+
+##### Puerta 2 — Datos y arquitectura E3/E4
+
+- modelo de identidad y consentimiento;
+- ledger de fidelización;
+- caso e interacción omnicanal;
+- autorización y privacidad;
+- colas, notificaciones e idempotencia;
+- migración y rollback.
+
+##### Puerta 3 — Implementación E5
+
+- PASS, PULSO y VISO contra contratos compartidos;
+- adaptadores externos controlados;
+- conciliación con NEXO y NUMERA;
+- pruebas automatizadas y manuales.
+
+##### Puerta 4 — Piloto y certificación
+
+- datos de prueba anonimizados;
+- límites de compensación;
+- medición de SLA;
+- privacidad y exportación certificadas;
+- contingencia y recuperación;
+- aprobación del BLOQUE U.
+
+---
+
+#### 37. Criterios de aceptación
+
+`CAP-SCOPE-010` podrá aprobarse cuando:
+
+- las 10 subcapacidades tengan tratamiento explícito;
+- persona, cuenta, perfil, contacto, consentimiento y relación estén separados;
+- PASS, PULSO, VISO, NEXO, NUMERA y proveedores tengan fronteras claras;
+- cliente ocasional y cliente autenticado estén soportados conceptualmente;
+- preguntas, reclamos, feedback y chat tengan semánticas distintas;
+- devoluciones y compensaciones tengan decisión y efectos separados;
+- fidelización se base en ledger reconciliable;
+- reservas y eventos tengan tratamiento y límites;
+- comunicaciones y privacidad tengan reglas mínimas;
+- las preguntas existentes tengan uso y puerta;
+- los 26 hallazgos tengan propietario y momento;
+- los cuatro requisitos nuevos estén incorporados en un `04A` completo válido;
+- no se haya autorizado implementación ni actuación real.
+
+---
+
+#### 38. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cobertura objetivo de clientes, fidelización, reclamos y servicio, sin ejecutar todavía el diseño detallado ni la implementación.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-011
+— Evaluar logística, rutas, vehículos, combustible y entregas
+```
+
+`CAP-SCOPE-011` consumirá los contratos de comunicación, caso de entrega y cliente aquí aprobados, pero no reabrirá la propiedad de PASS, PULSO o VISO ni la semántica de compensación.
+
+
 ### [ ] CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
 ### [ ] CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
 ### [ ] CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
