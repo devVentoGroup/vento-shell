@@ -8000,14 +8000,15 @@ La implementación física de esta consulta o de un verificador equivalente qued
 
 ---
 
-### [ ] E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+### [x] E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
 
-**Estado:** NO INICIADA
+**Estado:** APROBADA
 **Bloque:** BLOQUE E1 — Cierre documental y puerta de transición
 **Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS
 **Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5
 **Implementación física:** no incluida
 **Siguiente tarea reservada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
+**Aprobación de puerta:** `OWN-GG`, `2026-07-25`, mediante `E1-GATE-MANIFEST-003` con resultado `PASS_WITH_CARRYOVER`
 
 ---
 
@@ -8083,26 +8084,28 @@ La aprobación deberá declarar la versión de la línea base, resultado de la p
 
 #### 9. Criterios de aceptación
 
-- [ ] se usa una sola versión conciliada de todos los insumos;
-- [ ] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
-- [ ] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
-- [ ] toda brecha crítica abierta tiene fase destino, razón, control, aprobación y siguiente fecha;
-- [ ] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
-- [ ] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
-- [ ] se emite un estado permitido, se archiva evidencia reproducible y se declara si `PROC-CAT-001` queda habilitada;
-- [ ] no se implementa código, migraciones ni cambios en Supabase.
+- [x] se usa una sola versión conciliada de todos los insumos;
+- [x] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
+- [x] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
+- [x] toda brecha crítica abierta tiene fase destino, razón, control, aprobación y siguiente fecha;
+- [x] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
+- [x] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
+- [x] se emite un estado permitido, se archiva evidencia reproducible y se declara si `PROC-CAT-001` queda habilitada;
+- [x] no se implementa código, migraciones ni cambios en Supabase.
 
 #### 10. Estado
 
 ```text
-NO INICIADA
+APROBADA
 ```
 
-No se inicia BLOQUE E2 ni `PROC-CAT-001` hasta la ejecución y aprobación expresa de esta puerta.
+`PROC-CAT-001` queda autorizado como siguiente tarea documental. No se autoriza implementación física, código, migraciones ni cambios en Supabase.
 
-#### 11. Primera ejecución registrada
+#### 11. Ejecuciones registradas
 
 La primera ejecución queda registrada en `E1-GATE-MANIFEST-001` con resultado `BLOCKED_ROUTING`. La ejecución reconcilió 138 brechas críticas únicas: todas tienen propietario, fecha, tarea, paquete y perfil de cierre, pero ninguna contiene aún fase destino, razón de arrastre, control compensatorio, aprobación ni fecha del siguiente gate.
 
-El bloqueo no aprueba `E1-GATE-001`, no cierra BLOQUE E1 y no autoriza iniciar `PROC-CAT-001` ni BLOQUE E2.
+La segunda ejecución, `E1-GATE-MANIFEST-002`, aprobó 135 arrastres y aisló tres correcciones internas de E1.
+
+La tercera ejecución, `E1-GATE-MANIFEST-003`, cerró documentalmente las tres correcciones, reconcilió 3 brechas cerradas y 135 arrastres aprobados, y produjo `PASS_WITH_CARRYOVER`. `OWN-GG` la aprobó el `2026-07-25`; E1 queda cerrado documentalmente y `PROC-CAT-001` queda habilitada.
 

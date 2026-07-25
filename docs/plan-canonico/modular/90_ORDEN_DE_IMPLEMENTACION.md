@@ -38,7 +38,7 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
-7. Ejecutar y aprobar `E1-GATE-001`; BLOQUE E1 permanece en **PUERTA DE CIERRE PENDIENTE** hasta que exista `E1-GATE-MANIFEST-001` aprobado. No se inicia `PROC-CAT-001` ni BLOQUE E2 antes de esa aprobación.
+7. `E1-GATE-001` fue aprobado mediante `E1-GATE-MANIFEST-003` con resultado `PASS_WITH_CARRYOVER`. BLOQUE E1 queda cerrado documentalmente y `PROC-CAT-001` queda habilitada; no se autoriza implementación física antes de las puertas posteriores aplicables.
 8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas

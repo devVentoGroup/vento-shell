@@ -17,31 +17,31 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **132** |
+| Fragmentos canónicos | **135** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **221** |
+| Tareas aprobadas | **222** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1349** |
+| Tareas no iniciadas | **1348** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
-| Tarea actual | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
+| Última tarea aprobada | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
+| Tarea actual | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
+| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 96 de 98 aprobadas; E1-GATE-001 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 97 de 98 aprobadas; PROC-CAT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario |
-| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 — **NO INICIADA** |
-| Siguiente tarea | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
+| Última aprobada | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 |
+| Tarea actual | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 — **NO INICIADA** |
+| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **96 DE 98 APROBADAS — ACTUAL E1-GATE-001** |
+| BLOQUE E1 | **97 DE 98 APROBADAS — ACTUAL PROC-CAT-001** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,14 +87,11 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
-        ↓
-TAREA ACTUAL
 E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 96 de 98 tareas aprobadas
+BLOQUE E1 — 97 de 98 tareas aprobadas
 ```
