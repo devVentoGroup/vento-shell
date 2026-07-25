@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1409** |
+| Tareas con marcador | **1433** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **195** |
+| Aprobadas | **197** |
 | En propuesta | **0** |
-| No iniciadas | **1214** |
+| No iniciadas | **1236** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | ⬜ NO INICIADA |
+| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -223,8 +223,8 @@
 | ✅ APROBADA | `CAP-SCOPE-011` | Evaluar logística, rutas, vehículos, combustible y entregas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-012` | Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-013` | Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-014` | Evaluar marketing, campañas y contenido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-015` | Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-014` | Evaluar marketing, campañas y contenido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-015` | Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-016` | Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-017` | Evaluar analítica, indicadores y datos maestros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-018` | Evaluar continuidad operativa, respaldo y recuperación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
@@ -1353,6 +1353,30 @@
 | ⬜ NO INICIADA | `AURA-AUD-010` | Decidir continuidad, reemplazo o retiro | `bloques/W_AURA/00_BLOQUE_W.md` |
 | ⬜ NO INICIADA | `AURA-AUD-011` | Documentar decisión mediante ADR si corresponde | `bloques/W_AURA/00_BLOQUE_W.md` |
 | ⬜ NO INICIADA | `AURA-AUD-012` | Mantener roadmap de implementación bloqueado hasta decisión | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-001` | Definir arquitectura de marcas, identidad, tono, mensajes, claims, restricciones y vigencia | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-002` | Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de campaña | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-003` | Definir biblioteca de activos, derechos, versiones, reutilización y ciclo de aprobación de contenido | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-004` | Definir copiloto creativo, grounding, memoria, restricciones, proveedores de IA y revisión humana | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-005` | Definir cuentas, medios, publicación, programación, reintentos, retiro y reconciliación por canal | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-006` | Definir campañas, experimentos, promociones, cupones y guardas económicas y operativas | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-007` | Definir oportunidades, leads, pipeline B2B, catering, eventos y transferencia a operación | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-008` | Definir métricas, atribución, confianza, incrementalidad, aprendizaje y cierre de campaña | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-009` | Definir reputación, comentarios públicos, clasificación, respuesta y escalamiento a servicio | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-DOM-010` | Definir radar de oportunidades y recomendaciones comerciales explicables | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUTH-001` | Proteger marcas, campañas, activos, audiencias, canales y resultados por empresa, marca y función | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUTH-002` | Separar creación, revisión, aprobación, programación, publicación, retiro y respuesta pública | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUTH-003` | Proteger promociones, segmentos, leads, datos de clientes, exportaciones y acciones masivas | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-AUTH-004` | Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a terceros | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-001` | Diseñar inicio diario simple con prioridades, calendario, pendientes y oportunidades | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-002` | Diseñar sistema de marca, brief guiado y calendario visual | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-003` | Diseñar estudio creativo asistido y fábrica de variantes reutilizables | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-004` | Diseñar aprobación y publicación multicanal con estado y recuperación claros | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-005` | Diseñar campañas, promociones, cupones, experimentos y guardas | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-006` | Diseñar bandeja de oportunidades, B2B, catering y eventos | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-007` | Diseñar reputación, comentarios, respuestas y escalamiento | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-UX-008` | Diseñar tablero de resultados, atribución y copiloto de recomendaciones | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-INT-001` | Definir adaptadores de canales, webhooks, límites, credenciales y reconciliación externa | `bloques/W_AURA/00_BLOQUE_W.md` |
+| ⬜ NO INICIADA | `AURA-INT-002` | Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO | `bloques/W_AURA/00_BLOQUE_W.md` |
 | ⬜ NO INICIADA | `INT-APP-001` | Crear catálogo de eventos empresariales | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-APP-002` | Definir aplicación emisora de cada evento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-APP-003` | Definir aplicaciones consumidoras | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |

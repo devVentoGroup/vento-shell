@@ -12,50 +12,50 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión | 2026-07-24 |
-| Revisión documental | **57** |
+| Versión                       | 2026-07-24                                                                                      |
+| Revisión documental           | **57**                                                                                          |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1409** |
+| Tareas canónicas con marcador | **1433** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **195** |
+| Tareas aprobadas | **197** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1214** |
+| Tareas no iniciadas | **1236** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
-| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
+| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración** |
-| Tarea actual | **CAP-SCOPE-014 — Evaluar marketing, campañas y contenido** |
+| Última tarea aprobada | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
+| Tarea actual | **CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
+| Siguiente tarea | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 70 de 96 aprobadas; CAP-SCOPE-014 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 72 de 96 aprobadas; CAP-SCOPE-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                                                       |
-| --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración |
-| Tarea actual | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
+| Estado          | Valor                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
+| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas                   | Estado                                     |
-| --------------------------------- | ------------------------------------------ |
-| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                              |
-| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                              |
-| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                |
-| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
+| Grupo de tareas                   | Estado                                        |
+| --------------------------------- | --------------------------------------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                 |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                 |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                   |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **70 DE 96 APROBADAS — ACTUAL CAP-SCOPE-014** |
-| Implementación física             | **NO INICIADA**                            |
+| BLOQUE E1 | **72 DE 96 APROBADAS — ACTUAL CAP-SCOPE-016** |
+| Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
 
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
-        ↓
-TAREA ACTUAL
-CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
-        ↓
-SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
         ↓
+TAREA ACTUAL
+CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
+        ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 70 de 96 tareas aprobadas
+BLOQUE E1 — 72 de 96 tareas aprobadas
 ```

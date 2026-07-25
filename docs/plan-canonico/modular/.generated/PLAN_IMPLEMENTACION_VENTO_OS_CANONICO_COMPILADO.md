@@ -12,50 +12,50 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión | 2026-07-24 |
-| Revisión documental | **57** |
+| Versión                       | 2026-07-24                                                                                      |
+| Revisión documental           | **57**                                                                                          |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **126** |
-| Tareas canónicas con marcador | **1409** |
+| Tareas canónicas con marcador | **1433** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **195** |
+| Tareas aprobadas | **197** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1214** |
+| Tareas no iniciadas | **1236** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
-| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
+| Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración** |
-| Tarea actual | **CAP-SCOPE-014 — Evaluar marketing, campañas y contenido** |
+| Última tarea aprobada | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
+| Tarea actual | **CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
+| Siguiente tarea | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 70 de 96 aprobadas; CAP-SCOPE-014 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 72 de 96 aprobadas; CAP-SCOPE-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                                                       |
-| --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración |
-| Tarea actual | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
+| Estado          | Valor                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| Última aprobada | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
+| Tarea actual | `CAP-SCOPE-016` — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas                   | Estado                                     |
-| --------------------------------- | ------------------------------------------ |
-| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                              |
-| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                              |
-| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                |
-| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
+| Grupo de tareas                   | Estado                                        |
+| --------------------------------- | --------------------------------------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                 |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                 |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                   |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **70 DE 96 APROBADAS — ACTUAL CAP-SCOPE-014** |
-| Implementación física             | **NO INICIADA**                            |
+| BLOQUE E1 | **72 DE 96 APROBADAS — ACTUAL CAP-SCOPE-016** |
+| Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
 
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
-        ↓
-TAREA ACTUAL
-CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
-        ↓
-SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
         ↓
+TAREA ACTUAL
+CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
+        ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 70 de 96 tareas aprobadas
+BLOQUE E1 — 72 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183462,12 +183462,12 @@ Dominios iniciales:
 
 | Métrica                           |       Resultado |
 | --------------------------------- | --------------: |
-| Requisitos vigentes               |         **119** |
-| Dominios con requisitos           |          **14** |
-| Filas con catorce columnas        |  **119 de 119** |
+| Requisitos vigentes               |         **127** |
+| Dominios con requisitos           |          **15** |
+| Filas con catorce columnas        |  **127 de 127** |
 | Identificadores duplicados        |           **0** |
 | Relaciones `TREQ-*` no resolubles |           **0** |
-| Última tarea incorporada          | `CAP-SCOPE-013` |
+| Última tarea incorporada          | `CAP-SCOPE-015` |
 | Fecha de normalización            |    `2026-07-24` |
 
 Distribución vigente:
@@ -183475,18 +183475,19 @@ Distribución vigente:
 | Dominio       | Rango                                           | Cantidad |
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-009`             |        9 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-010`             |       10 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-012`       |       12 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-004`             |        4 |
-| `VISO`        | `TREQ-VISO-001`                                 |        1 |
-| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-018`               |       18 |
+| `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-003`               |        3 |
+| `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-002`               |        2 |
+| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-019`               |       19 |
 | `FOGO`        | `TREQ-FOGO-001` a `TREQ-FOGO-004`               |        4 |
 | `ORIGO`       | `TREQ-ORIGO-001` a `TREQ-ORIGO-005`             |        5 |
 | `PULSO`       | `TREQ-PULSO-001` a `TREQ-PULSO-007`             |        7 |
 | `NUMERA`      | `TREQ-NUMERA-001` a `TREQ-NUMERA-004`           |        4 |
 | `PASS`        | `TREQ-PASS-001` a `TREQ-PASS-011`               |       11 |
 | `TALENTO`     | `TREQ-TALENTO-001`                              |        1 |
-| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-018` |       18 |
+| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-020` |       20 |
 | `UX`          | `TREQ-UX-001` a `TREQ-UX-007`                   |        7 |
 
 ### Procedimiento obligatorio de actualización
@@ -183539,6 +183540,8 @@ Distribución vigente:
 | `TREQ-SHELL-008` | `SHELL` | El Registro Canónico de Requisitos de Prueba deberá ser validado automáticamente: identificadores únicos, catorce columnas, estados permitidos, relaciones resolubles, responsables existentes, evidencia obligatoria para `VERIFICADO`, reanudación para `DIFERIDO` y ausencia de eliminación silenciosa. Cada paquete y PR deberá declarar los `TREQ-*` afectados y publicar resultados reproducibles.           | `CODE-AUD-007` / `H-CODE-007-001`, `H-CODE-007-015`; `CODE-AUD-011` / `H-CODE-011-014`; `CODE-AUD-016` / `H-CODE-016-006`                                        | Requisitos huérfanos, pruebas no ejecutadas, evidencia falsa, duplicados y regresiones sin propietario / alta                                                                | contractual + documentación ejecutable + CI + regresión / automatizada                                   | `SHELL-CI-017`; `SHELL-CI-018`; `SHELL-CI-019`; `AUTH-QA-030`                                                          | BLOQUE T y puerta de entrada de todos los paquetes E5                 | `vento-shell` / CI y artefactos de evidencia por repositorio                                                                            | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | `TREQ-SHELL-005`; `TREQ-SHELL-006`; todos los requisitos registrados                |
 | `TREQ-SHELL-009` | `SHELL` | Cada ambiente deberá identificar de forma verificable repositorio, rama o commit, superficie desplegada, configuración, migraciones, funciones y datos de prueba activos. Proyectos sin despliegue, ramas alternativas, demos, sandboxes, scripts de limpieza y objetos solo locales o remotos no podrán presentarse como capacidad productiva ni afectar datos reales sin clasificación y aislamiento explícitos. | `CODE-AUD-001` / `H-CODE-001-003` a `H-CODE-001-008`; `CODE-AUD-005` / `H-CODE-005-006` a `H-CODE-005-013`; `CODE-AUD-007` / `H-CODE-007-008` a `H-CODE-007-013` | Despliegues no reproducibles, ejecución accidental de scripts, datos demo en producción y conclusiones falsas sobre disponibilidad / alta                                    | contractual + configuración + integración + seguridad + regresión / automatizada con revisión controlada | `SUPA-ARC-024`; `SUPA-AUD-016`; `SUPA-AUD-017`; `SUPA-TRANS-013`; `AUTH-DB-028`; `SHELL-CI-018`                        | BLOQUE E3, BLOQUE T y readiness de cada paquete E5                    | Todos los repositorios y ambientes local, CI, staging y producción                                                                      | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | `TREQ-SHELL-001`; `TREQ-SHELL-004`; `TREQ-SUPABASE-010`                             |
 
+| `TREQ-SHELL-010` | `SHELL` | La administración tecnológica de cuentas, aplicaciones, endpoints y dispositivos deberá ejecutar exclusivamente decisiones de identidad y autorización válidas. Cuenta, permiso, credencial, secreto, asiento de licencia, endpoint, dispositivo compartido y sesión serán objetos separados. Alta, cambio, recuperación, acceso privilegiado, soporte remoto, proveedor, suspensión y baja conservarán solicitud, autoridad, alcance, vigencia, MFA cuando aplique, actor, evidencia y cierre. Un técnico no podrá concederse a sí mismo acceso ni ampliar al trabajador las capacidades máximas del dispositivo. La postura del endpoint, versión, cifrado, bloqueo, aplicaciones, parches, última comprobación y revocación serán visibles sin exponer secretos. | `CAP-SCOPE-015`; `CAP-15.01`; `CAP-15.02`; `CAP-15.05`; `H-CAP-SCOPE-015-005` a `H-CAP-SCOPE-015-011`; `H-CAP-SCOPE-015-019` a `H-CAP-SCOPE-015-023`; `H-CAP-SCOPE-015-031`; `H-CAP-SCOPE-015-032` | acceso no autorizado, cuenta huérfana, privilegio permanente, licencia sin dueño, dispositivo comprometido, soporte remoto opaco y fuga de secretos / crítica | contractual + autorización + identidad + endpoint + seguridad + sesión + auditoría + E2E + regresión / automatizada con validación administrativa | `TI-DOM-001` a `TI-DOM-003`; `TI-DOM-006`; `TI-DOM-009`; `TI-AUTH-001` a `TI-AUTH-004`; `TI-UX-003`; `TI-UX-005`; `TI-INT-002`; `TI-INT-003`; `AUTH-DEV-001` a `AUTH-DEV-016`; bloques AUTH/SHELL | diseño E2; contratos E3; controles E4; paquetes E5 de identidad y endpoints; certificación U | `vento-shell`, ANIMA, VISO y endpoints controlados / local, CI, staging y laboratorio de dispositivos | `IDENTIFICADO` | Pendiente | Pendiente | identidad y permisos canónicos existentes; dispositivo compartido parcial; ciclo tecnológico integral no comprobado | `TREQ-AUTH-001`; `TREQ-AUTH-002`; `TREQ-AUTH-004`; `TREQ-AUTH-007`; `TREQ-AUTH-009`; `TREQ-SHELL-002`; `TREQ-SHELL-004`; `TREQ-NEXO-019`; `TREQ-VISO-002`; `TREQ-INTEGRATION-020` |
+
 #### SUPABASE
 
 | ID                  | Dominio    | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Origen                                                                                                                                                                                                                   | Riesgo / prioridad                                                                                                                                                                                         | Tipo / modalidad                                                                                                                                           | Tarea responsable                                                                                                                                                                                                                                                                                                                            | Paquete                                                                                                                                            | Repositorio / ambiente                                                                                                                                                                   | Estado         | Artefacto | Último resultado | Evidencia                                                                                                                                                                                | Relación                                                                                                               |
@@ -183565,11 +183568,21 @@ Distribución vigente:
 | `TREQ-ANIMA-003` | `ANIMA` | Una marcación offline solo podrá presentarse como encolada después de confirmar su persistencia durable en el dispositivo. La intención deberá obtener un `client_event_id` estable antes del primer envío, conservar actor, sede, turno, instante, geolocalización y contexto, sobrevivir al cierre y reinicio de la aplicación y sincronizarse sin producir más de un efecto. El replay del mismo evento y contenido deberá devolver el resultado ya aplicado; el mismo identificador con contenido distinto deberá producir conflicto. La ausencia o incompatibilidad del contrato canónico de sincronización no podrá degradarse silenciosamente a una escritura alternativa sin paridad demostrada. | `CODE-AUD-018` / `H-CODE-018-001` y `H-CODE-018-003` | Pérdida silenciosa de marcaciones, confirmación falsa al trabajador, duplicación al reintentar, divergencia entre ambientes y asistencia no reconstruible / crítica | integración + base de datos + idempotencia + recuperación + E2E + regresión / automatizada con validación en dispositivo móvil      | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `ANIMA-UX-011`; `ANIMA-UX-012`; `AUTH-QA-026`; `SUPA-TRANS-006`; `NFR-REQ-004` | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de sincronización offline de ANIMA; cualquier migración o contrato de Supabase deberá quedar documentado y creado en `vento-shell` | `vento-anima` y `vento-shell` / CI, Supabase local, staging, Android e iOS físicos; escenarios de cierre forzado, reinicio, pérdida de red, respuesta perdida y replay pendientes | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `queue-storage.ts`, `queue-sync.ts`, `use-attendance.ts`, `sync_attendance_events` e índice único por `client_event_id`                                                                    | `TREQ-ANIMA-004`; `TREQ-SUPABASE-001`; `TREQ-INTEGRATION-003` |
 | `TREQ-ANIMA-004` | `ANIMA` | El inicio y cierre de descanso deberán utilizar un identificador idempotente persistido y procesarse mediante una transición de servidor atómica sobre el estado de asistencia correspondiente. Dos dispositivos, replays, respuestas perdidas o eventos fuera de orden no podrán crear dos descansos, cerrar un descanso distinto ni dejar el estado local y remoto divergentes. La operación deberá devolver un resultado estable `applied`, `duplicate` o `conflict`, conservar el evento original y permitir reconciliación auditable.                                                                                                                                                               | `CODE-AUD-018` / `H-CODE-018-002`                    | Descansos duplicados, cierres incorrectos, secuencias imposibles, tiempos laborales erróneos y divergencia entre dispositivos / alta                                | RPC + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con ejecución concurrente y replay | `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `QUEUE-ARC-003`; `QUEUE-ARC-009`; `AUTH-QA-026`                                | Pendiente de asignación prioritaria en E5 y en el paquete ejecutable de asistencia y descansos de ANIMA; toda migración o función deberá quedar en `vento-shell`                                        | `vento-anima` y `vento-shell` / CI, Supabase local, staging y dos dispositivos o sesiones concurrentes pendientes                                                                 | `IDENTIFICADO` | Pendiente | Pendiente        | Evidencia estática en `break-rpc.ts`, `queue-decisions.ts`, `queue-sync.ts`, `start_attendance_break` y `end_attendance_break`; el `clientEventId` se conserva en notas sin deduplicación contractual demostrada | `TREQ-ANIMA-003`; `TREQ-INTEGRATION-003`                      |
 
+#### AURA
+
+| ID              | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | Origen                                                                                                                                                          | Riesgo / prioridad                                                                                                                                                               | Tipo / modalidad                                                                                                                                   | Tarea responsable                                                                                                                                                                                 | Paquete                                                                                                                   | Repositorio / ambiente                                                                               | Estado         | Artefacto | Último resultado | Evidencia                                                                                            | Relación                                                                                                                                          |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------- | --------- | ---------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-AURA-001` | `AURA`  | AURA deberá gobernar marcas, mensajes, audiencias, briefs, calendarios, campañas, contenidos, activos y publicaciones mediante identidades estables, versiones, vigencias, propietarios y estados diferenciados. Producto, precio, disponibilidad, cliente y venta se consumirán desde sus fuentes autorizadas y no se copiarán como maestros competidores. Idea, campaña, pieza, publicación y promoción serán objetos distintos. Los activos conservarán derechos, autorización, original, derivados y usos permitidos. Borrador, revisión, aprobación, programación, publicación, retiro y archivo serán transiciones auditables; una aprobación no equivaldrá a publicación.                                                                                                | `CAP-SCOPE-014`; `CAP-14.01` a `CAP-14.05`; `H-CAP-SCOPE-014-001` a `H-CAP-SCOPE-014-009`; `H-CAP-SCOPE-014-012` a `H-CAP-SCOPE-014-015`; `H-CAP-SCOPE-014-030` | identidad o mensaje divergente, pieza sin derechos, oferta vencida, publicación no autorizada, duplicada o irreconciliable y pérdida de historial / crítica                      | contractual + marca + campañas + contenido + autorización + versionado + idempotencia + E2E + regresión / automatizada con validación de marketing | `AURA-AUD-001` a `AURA-AUD-012`; `AURA-DOM-001` a `AURA-DOM-005`; `AURA-AUTH-001`; `AURA-AUTH-002`; `AURA-UX-001` a `AURA-UX-004`; `AURA-INT-001`; `CAP-SCOPE-004`; `CAP-SCOPE-016`               | decisión AURA en E1; diseño E2; arquitectura E3/E4; paquete E5 si continúa; certificación BLOQUE U                        | futura aplicación propietaria AURA, `vento-shell` y canales sandbox / local, CI y staging controlado | `IDENTIFICADO` | Pendiente | Pendiente        | AURA diferida; permiso de acceso reservado; guías y activos dispersos; canales externos no auditados | `TREQ-AURA-002`; `TREQ-AURA-003`; `TREQ-INTEGRATION-019`; `TREQ-SUPABASE-012`; `TREQ-UX-001`; `TREQ-UX-006`                                       |
+| `TREQ-AURA-002` | `AURA`  | Toda asistencia de IA en AURA deberá usar contexto versionado y fuentes autorizadas, distinguir hecho, inferencia y propuesta, mostrar referencias y frescura, y bloquear afirmaciones materiales no comprobadas. Modelo, proveedor, instrucción relevante, datos enviados, resultado, versión, actor y aprobación serán trazables. La IA no publicará, promocionará, contactará clientes, responderá crisis ni aceptará propuestas sin autoridad explícita. Los datos personales, secretos, archivos y propiedad intelectual se minimizarán antes de salir a terceros. La experiencia principal será simple y progresiva: prioridades, calendario, crear, campañas, oportunidades, reputación y resultados, sin llenar la pantalla con configuración o explicaciones técnicas. | `CAP-SCOPE-014`; `CAP-14.01` a `CAP-14.11`; `H-CAP-SCOPE-014-010` a `H-CAP-SCOPE-014-012`; `H-CAP-SCOPE-014-028` a `H-CAP-SCOPE-014-030`                        | alucinación comercial, exposición de datos, publicación autónoma, recomendación dañina, dependencia opaca de proveedor y rechazo de usuarios / crítica                           | IA + grounding + privacidad + seguridad + autorización + experiencia + auditoría + regresión / híbrida                                             | `AURA-DOM-004`; `AURA-DOM-010`; `AURA-AUTH-002` a `AURA-AUTH-004`; `AURA-UX-001`; `AURA-UX-003`; `AURA-UX-008`; `AURA-INT-001`; `AURA-INT-002`; `CAP-SCOPE-010`; `CAP-SCOPE-016`; `CAP-SCOPE-017` | diseño E2 de copiloto y UX; arquitectura E3/E4 de IA y privacidad; pruebas con proveedores sandbox; certificación E5/U    | futura AURA, proveedores de IA y Vento OS / CI, staging, datos sintéticos y evaluación humana        | `IDENTIFICADO` | Pendiente | Pendiente        | no existe contrato canónico de IA para marketing ni producto AURA comprobado                         | `TREQ-AURA-001`; `TREQ-AURA-003`; `TREQ-INTEGRATION-019`; `TREQ-AUTH-018`; `TREQ-UX-001`; `TREQ-UX-007`                                           |
+| `TREQ-AURA-003` | `AURA`  | Campañas, promociones, oportunidades, B2B, catering, reputación y resultados deberán conservar origen, objetivo, audiencia o contraparte, responsable, etapa, fechas, presupuesto, oferta, guardas, acciones, resultado y cierre. AURA gobernará intención promocional y atribución, pero PULSO/PASS ejecutarán reglas y redenciones y NUMERA conservará verdad económica. Lead, cliente, oportunidad, propuesta y pedido no serán equivalentes. Una respuesta pública no cerrará un reclamo formal. Métricas de interacción no se declararán impacto empresarial sin conversiones, venta, margen o evidencia; toda atribución mostrará método y confianza. Recomendaciones declararán fuentes, frescura, restricciones y razón.                                                | `CAP-SCOPE-014`; `CAP-14.05` a `CAP-14.11`; `H-CAP-SCOPE-014-016` a `H-CAP-SCOPE-014-030`                                                                       | descuento inconsistente, contacto sin consentimiento, oportunidad perdida, pedido duplicado, reclamo oculto, atribución falsa, gasto sin retorno y optimización dañina / crítica | contractual + promociones + CRM + reputación + analítica + consentimiento + conciliación + E2E + regresión / automatizada con validación comercial | `AURA-DOM-006` a `AURA-DOM-010`; `AURA-AUTH-003`; `AURA-UX-005` a `AURA-UX-008`; `AURA-INT-001`; `AURA-INT-002`; `CAP-SCOPE-009`; `CAP-SCOPE-010`; `CAP-SCOPE-012`; `CAP-SCOPE-017`               | diseño E2 comercial y analítico; contratos E3; integraciones E4; paquetes E5 AURA/PULSO/PASS/NUMERA/VISO; certificación U | futura AURA, PULSO, PASS, NUMERA, VISO y canales externos / CI, staging y sandboxes                  | `IDENTIFICADO` | Pendiente | Pendiente        | promociones, loyalty y pedidos parciales existentes; pipeline, reputación y atribución AURA ausentes | `TREQ-AURA-001`; `TREQ-AURA-002`; `TREQ-INTEGRATION-019`; `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-PASS-010`; `TREQ-PASS-011`; `TREQ-NUMERA-004` |
+
 #### VISO
 
 | ID              | Dominio | Regla protegida                                                                                                                                                                                                                                                                                                                                                           | Origen                                                                                                                      | Riesgo / prioridad                                                                                                                    | Tipo / modalidad                                                                                                   | Tarea responsable                                                                                                | Paquete                                                           | Repositorio / ambiente                                                                     | Estado         | Artefacto | Último resultado | Evidencia | Relación                                                         |
 | --------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------- | --------- | ---------------- | --------- | ---------------------------------------------------------------- |
 | `TREQ-VISO-001` | `VISO`  | La administración de roles, permisos, sedes, áreas, perfiles y excepciones deberá mostrar antes de guardar el efecto resultante sobre cada trabajador, detectar conflictos, indicar el origen de cada permiso, respetar alcance territorial y conservar auditoría. La configuración de VISO deberá producir el mismo resultado consumido por las aplicaciones operativas. | `AUTH-RBAC-001` a `AUTH-RBAC-028`; `AUTH-CTX-027`; `AUTH-QA-003`; `AUTH-QA-007` a `AUTH-QA-009`; `AUTH-QA-029`; `UX-QA-023` | Configuración incoherente, permisos inesperados, conflictos invisibles y diferencias entre vista administrativa y operación / crítica | contractual + autorización + integración + interfaz + E2E + regresión / automatizada con validación administrativa | `VISO-AUTH-013` a `VISO-AUTH-020`; `VISO-CORE-004` a `VISO-CORE-006`; `VISO-UX-013` a `VISO-UX-020`; `UX-QA-023` | VISO Core, paquete E5 administrativo y certificación del BLOQUE U | `vento-viso`, `vento-shell`, Supabase local, CI, staging y usuarios administrativos reales | `IDENTIFICADO` | Pendiente | Pendiente        | Pendiente | `TREQ-AUTH-007`; `TREQ-AUTH-009`; `TREQ-AUTH-015`; `TREQ-UX-007` |
+
+| `TREQ-VISO-002` | `VISO` | VISO deberá proporcionar una mesa de servicio tecnológica simple y trazable que distinga solicitud, incidente, problema, error conocido y cambio. Cada caso conservará servicio y elemento afectados, sede, solicitante, impacto, urgencia, prioridad, SLA, asignación, comunicaciones, diagnóstico, trabajo, workaround, resolución, restauración, validación, cierre y reapertura. Un estado `resolved` no equivaldrá a causa eliminada ni a cierre aceptado. Incidentes críticos tendrán línea de tiempo, comunicaciones, cambio de emergencia y revisión posterior. ANIMA permitirá reportar y consultar sin exigir conocimientos técnicos; VISO ocultará logs, IP y detalles sensibles hasta abrir el diagnóstico autorizado. | `CAP-SCOPE-015`; `CAP-15.06` a `CAP-15.09`; `CAP-15.11`; `H-CAP-SCOPE-015-001` a `H-CAP-SCOPE-015-004`; `H-CAP-SCOPE-015-015`; `H-CAP-SCOPE-015-022` a `H-CAP-SCOPE-015-028`; `H-CAP-SCOPE-015-030` a `H-CAP-SCOPE-015-034` | interrupción prolongada, prioridad incorrecta, SLA invisible, ticket cerrado sin restauración, recurrencia no investigada, cambio no controlado y soporte incomprensible / crítica | contractual + service desk + incidentes + problemas + cambios + SLA + experiencia + notificaciones + concurrencia + E2E + regresión / híbrida | `TI-DOM-001`; `TI-DOM-007` a `TI-DOM-013`; `TI-AUTH-001`; `TI-AUTH-004`; `TI-UX-001` a `TI-UX-006`; `TI-INT-002`; `CAP-SCOPE-018`; bloques E5/T/U | diseño E2; modelo E3; notificaciones y evidencia E4; piloto E5; certificación U | VISO, ANIMA, `vento-shell` y Supabase / local, CI, staging y piloto controlado | `IDENTIFICADO` | Pendiente | Pendiente | support_tickets, support_messages y notificación push existentes; ciclo ITSM completo ausente | `TREQ-SHELL-010`; `TREQ-NEXO-019`; `TREQ-INTEGRATION-020`; `TREQ-ANIMA-004`; `TREQ-UX-001`; `TREQ-UX-007` |
 
 #### NEXO
 
@@ -183595,6 +183608,8 @@ Distribución vigente:
 
 | `TREQ-NEXO-017` | `NEXO` | Toda instalación, espacio, componente fijo y punto de servicio deberá tener identidad estable, jerarquía, sede, área, relación con LOC y activos, criticidad, condición, disponibilidad, responsable e historial. Plan, solicitud, orden de trabajo, ejecución, prueba, liberación, cierre y reapertura serán estados u objetos diferenciados. El objeto principal determinará si la intervención pertenece a instalación o activo; no se crearán reparaciones competidoras. Los planes declararán versión, frecuencia, disparador, ventana, procedimiento, recursos y evidencia. Un trabajo no quedará cerrado por factura, fotografía o comentario sin verificación y autoridad. | `CAP-SCOPE-013`; `CAP-13.01` a `CAP-13.03`; `CAP-13.11`; `H-CAP-SCOPE-013-001` a `H-CAP-SCOPE-013-007`; `H-CAP-SCOPE-013-015`; `H-CAP-SCOPE-013-016`; `H-CAP-SCOPE-013-024`; `H-CAP-SCOPE-013-030` | instalación duplicada, reparación sin objeto, mantenimiento vencido, área liberada sin prueba, orden cerrada ficticiamente y pérdida de historial / crítica | contractual + instalaciones + mantenimiento + órdenes + autorización + base de datos + idempotencia + E2E + regresión / automatizada con validación operativa | `NEXO-DOM-012`; `NEXO-DOM-017`; `NEXO-DOM-019`; `NEXO-DOM-026`; `NEXO-DOM-029`; `NEXO-DOM-030`; `NEXO-DOM-034`; `NEXO-DOM-038`; `NEXO-AUTH-031`; `NEXO-AUTH-032`; `NEXO-UX-043`; `NEXO-UX-044`; `NEXO-UX-046`; `NEXO-UX-047`; `CAP-SCOPE-001`; `CAP-SCOPE-007` | diseño E2 del dominio locativo; arquitectura E3 de contratos, estados y evidencia; paquete E5 NEXO; piloto y certificación del BLOQUE U | `vento-nexo`, `vento-shell` y Supabase VENTO / local, CI, staging, tablets y sedes controladas | `IDENTIFICADO` | Pendiente | Pendiente | sedes, áreas, LOC, validaciones físicas y mantenimiento de activos parciales; ciclo locativo integral ausente | `TREQ-NEXO-013`; `TREQ-NEXO-014`; `TREQ-NEXO-018`; `TREQ-INTEGRATION-018`; `TREQ-AUTH-001`; `TREQ-SUPABASE-002` |
 | `TREQ-NEXO-018` | `NEXO` | Limpieza, saneamiento, plagas, servicios, inspecciones físicas, calibración, llaves, acceso físico, obras y novedades deberán conservar programa o plan, objeto y lugar, responsable, ejecución, evidencia, resultado, desviación, contención, verificación, disponibilidad y cierre. Limpio, verificado y liberado serán estados distintos. El control metrológico conservará magnitud, rango, tolerancia, patrón, método, certificado, vencimiento y evaluación de impacto fuera de tolerancia. Los medios de acceso físico tendrán custodia, vigencia, devolución y revocación independientes de SHELL. Obras y cierres temporales conservarán permisos, afectación y recepción. La captura offline será idempotente y no duplicará ejecuciones, lecturas, fotos, firmas o cierres. | `CAP-SCOPE-013`; `CAP-13.04` a `CAP-13.11`; `H-CAP-SCOPE-013-008` a `H-CAP-SCOPE-013-026`; `H-CAP-SCOPE-013-029`; `H-CAP-SCOPE-013-030` | contaminación, plaga no atendida, fuga o corte sin control, medición inválida, acceso físico vigente tras retiro, obra sin recepción, evidencia duplicada y área liberada indebidamente / crítica | contractual + saneamiento + servicios + inspección + calibración + seguridad física + offline + autorización + evidencia + E2E + regresión / híbrida | `NEXO-DOM-026`; `NEXO-DOM-031` a `NEXO-DOM-038`; `NEXO-AUTH-031`; `NEXO-AUTH-032`; `NEXO-UX-045` a `NEXO-UX-048`; `CAP-SCOPE-003`; `CAP-SCOPE-008`; `CAP-SCOPE-016`; `CAP-SCOPE-018`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `EVID-ARC-001` a `EVID-ARC-010` | diseño E2 de programas, estados y permisos; arquitectura E3/E4 de evidencia, offline y seguridad; paquetes E5; validación en sede y certificación | `vento-nexo`, `vento-viso`, `vento-shell`, dispositivos móviles y proveedores especializados / local, CI, staging y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | validación LOC y mantenimiento de activos existentes; saneamiento, servicios, acceso, obras y control metrológico integrales pendientes | `TREQ-NEXO-014`; `TREQ-NEXO-017`; `TREQ-INTEGRATION-018`; `TREQ-AUTH-018`; `TREQ-UX-007` |
+
+| `TREQ-NEXO-019` | `NEXO` | Todo elemento tecnológico físico deberá conservar identidad estable, clase, modelo, serie cuando aplique, ubicación, custodia, criticidad, estado, garantía, mantenimiento y retiro, y relacionarse sin conflación con su endpoint lógico, dispositivo compartido, configuración, servicio, aplicación, red, impresora, cola y proveedor. Redes deberán conservar enlaces, routers, switches, puntos de acceso, segmentos, SSID, direccionamiento y reservas versionadas. Impresoras conservarán interfaz, dirección estable, capacidades, consumibles, heartbeat, cola, adaptador, ruta y fallback relacionados. Cambios de IP, driver, firmware, red o configuración conservarán autorización, estado anterior, prueba y resultado. | `CAP-SCOPE-015`; `CAP-15.02` a `CAP-15.05`; `H-CAP-SCOPE-015-005`; `H-CAP-SCOPE-015-006`; `H-CAP-SCOPE-015-010` a `H-CAP-SCOPE-015-020`; `H-CAP-SCOPE-015-023`; `H-CAP-SCOPE-015-024`; `H-CAP-SCOPE-015-029` a `H-CAP-SCOPE-015-033` | activo o endpoint perdido, red opaca, conflicto DHCP, impresora inaccesible, configuración divergente, mantenimiento sin contexto y falla sin dependencia identificable / crítica | contractual + activos + hardware + red + impresión + configuración + mantenimiento + migración + E2E + regresión / automatizada con pruebas de laboratorio y sede | `TI-DOM-002` a `TI-DOM-006`; `TI-DOM-009` a `TI-DOM-012`; `TI-AUTH-003`; `TI-UX-003` a `TI-UX-005`; `TI-INT-001` a `TI-INT-003`; `NEXO-DOM-001` a `NEXO-DOM-028`; `PRINT-ARC-001` a `PRINT-ARC-020`; `AUTH-DEV-001` a `AUTH-DEV-016` | inventario E1; diseño E2; modelo E3; adaptadores E4; piloto E5; certificación hardware U | NEXO, redes, endpoints, impresoras y laboratorio / staging y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | activos, BrowserPrint, impresión y dispositivos compartidos parciales; red y relaciones técnicas sin fuente unificada | `TREQ-SHELL-010`; `TREQ-VISO-002`; `TREQ-INTEGRATION-020`; `TREQ-NEXO-005`; `TREQ-NEXO-010`; `TREQ-NEXO-017`; `TREQ-INTEGRATION-011` |
 
 #### FOGO
 
@@ -183689,6 +183704,10 @@ Distribución vigente:
 | `TREQ-INTEGRATION-017` | `INTEGRATION` | Los hechos de venta, pago, caja, compra, recepción, devolución, inventario, producción, merma, nómina, activo, logística y servicio deberán llegar a NUMERA mediante contratos versionados, correlacionados e idempotentes, sin escritura cruzada ni doble digitación. NUMERA emitirá o exportará hechos, conciliaciones y asientos candidatos hacia bancos, proveedores de pago, facturación o sistema contable; conservará payload, identificadores externos, estado y respuesta. Reintentos, eventos tardíos, parcialidad, reversos y periodos cerrados no duplicarán cartera, obligación, pago, costo, impuesto ni asiento. La conciliación detectará origen sin efecto, efecto sin origen, monto o moneda divergente, pago sin aplicación, documento sin obligación, saldo sin soporte y asiento externo rechazado. El sistema externo conservará autoridad oficial mientras no se apruebe contabilidad interna. | `CAP-SCOPE-012`; `CAP-12.01` a `CAP-12.15`; `H-CAP-SCOPE-012-002` a `H-CAP-SCOPE-012-034` | doble efecto financiero, cartera o obligación divergente, costos inconsistentes, impuestos incorrectos, integración contable irreconciliable y dependencia de proveedor / crítica | contractual + integración + eventos + API + webhook + archivos + idempotencia + compensación + conciliación + periodos + E2E + regresión / automatizada con validación financiera | `INT-APP-001` a `INT-APP-010`; `INT-DB-001` a `INT-DB-008`; `INT-EXT-001` a `INT-EXT-020`; `INT-POS-001` a `INT-POS-024`; `NUMERA-UX-014` a `NUMERA-UX-024`; `NUMERA-UX-027`; `SHELL-CON-016`; `SHELL-CON-023`; `CUTOVER-OPS-005`; `HYPERCARE-OPS-005`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | diseño E2 transversal; contratos BLOQUE X; arquitectura E3/E4 de eventos, adaptadores, evidencia y seguridad; paquetes E5; certificación del BLOQUE U | `vento-numera`, `vento-pulso`, `vento-origo`, `vento-nexo`, `vento-fogo`, `vento-anima`, `vento-pass`, `vento-shell`, bancos, pagos, fiscal y contable / local, CI, staging y sandboxes externos | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-012`; fuentes operativas y fundación NUMERA existentes; integraciones oficiales pendientes | `TREQ-NUMERA-001`; `TREQ-NUMERA-002`; `TREQ-NUMERA-003`; `TREQ-NUMERA-004`; `TREQ-PULSO-006`; `TREQ-ORIGO-004`; `TREQ-NEXO-011`; `TREQ-FOGO-004`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-013`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-016` |
 
 | `TREQ-INTEGRATION-018` | `INTEGRATION` | Los eventos y documentos de instalaciones deberán coordinar NEXO con ORIGO, NUMERA, VISO/SST, FOGO, continuidad y proveedores externos mediante contratos versionados, correlacionados e idempotentes. ORIGO conservará contratación y recepción empresarial; NEXO la aceptación técnica, condición y disponibilidad; NUMERA compromiso, gasto y costo; VISO/SST riesgos y cumplimiento; el proveedor solo la ejecución autorizada. Solicitud, orden, visita, servicio, certificado, factura, pago, hallazgo, acción y cierre no se asumirán equivalentes. Reintentos, archivos, webhooks y operación offline no crearán doble orden, doble evidencia, doble costo ni doble cierre. La conciliación detectará servicio sin orden, factura sin aceptación, calibración sin certificado, hallazgo sin acción, gasto sin origen, proveedor sin cierre y área liberada con restricción vigente. | `CAP-SCOPE-013`; `CAP-13.01` a `CAP-13.11`; `H-CAP-SCOPE-013-010` a `H-CAP-SCOPE-013-030` | doble contratación o costo, cierre técnico sin evidencia, cumplimiento divergente, calibración irreconciliable, proveedor con acceso excesivo y continuidad afectada / crítica | contractual + integración + proveedores + eventos + documentos + idempotencia + compensación + conciliación + seguridad + E2E + regresión / automatizada con validación operativa, documental y financiera | `NEXO-DOM-029` a `NEXO-DOM-038`; `NEXO-AUTH-031`; `NEXO-AUTH-032`; `NEXO-UX-043` a `NEXO-UX-048`; `ORIGO-UX-014`; `NUMERA-DOM-002`; `NUMERA-DOM-005`; `NUMERA-UX-014`; `INT-APP-001` a `INT-APP-010`; `INT-DB-001` a `INT-DB-008`; `INT-EXT-001` a `INT-EXT-020`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `EVID-ARC-001` a `EVID-ARC-010`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | diseño E2 transversal; contratos y seguridad E3/E4; paquetes E5 NEXO/ORIGO/NUMERA/VISO; sandboxes externos; certificación BLOQUE U | `vento-nexo`, `vento-origo`, `vento-numera`, `vento-viso`, `vento-fogo`, `vento-shell`, Supabase y proveedores externos / local, CI, staging y sedes controladas | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-013`; proveedores y fuentes manuales actuales; integraciones canónicas pendientes | `TREQ-NEXO-017`; `TREQ-NEXO-018`; `TREQ-ORIGO-004`; `TREQ-NUMERA-002`; `TREQ-NUMERA-004`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-017`; `TREQ-AUTH-018` |
+
+| `TREQ-INTEGRATION-019` | `INTEGRATION` | AURA deberá consumir y correlacionar datos de NEXO, PULSO, PASS, NUMERA, VISO y FOGO mediante contratos de solo lectura o eventos autorizados, y conectarse a redes, mensajería, correo, reseñas, analítica y proveedores de IA mediante adaptadores versionados. Ningún canal externo se convertirá en maestro de producto, cliente, consentimiento, venta, precio, costo o campaña. Publicaciones, mensajes, leads, comentarios, conversiones, cupones y métricas conservarán identificadores internos y externos, payload, respuesta, versión, estado y clave idempotente. Webhooks, reintentos, límites, eventos tardíos y atribución parcial no producirán doble publicación, contacto, lead, redención o conversión. La conciliación detectará publicación sin confirmación, campaña sin piezas, promoción sin regla, lead sin consentimiento, venta sin campaña correlacionable, métrica sin fuente, reseña sin respuesta y proveedor con credenciales o datos excesivos. | `CAP-SCOPE-014`; `CAP-14.01` a `CAP-14.11`; `H-CAP-SCOPE-014-005`; `H-CAP-SCOPE-014-010` a `H-CAP-SCOPE-014-029` | exposición de datos, canal comprometido, publicación o mensaje duplicado, descuentos divergentes, atribución irreconciliable, dependencia de proveedor y métricas engañosas / crítica | contractual + integración + API + webhook + OAuth + colas + IA + idempotencia + compensación + conciliación + seguridad + E2E + regresión / automatizada con validación comercial y de privacidad | `AURA-AUD-001` a `AURA-AUD-012`; `AURA-DOM-001` a `AURA-DOM-010`; `AURA-AUTH-001` a `AURA-AUTH-004`; `AURA-UX-001` a `AURA-UX-008`; `AURA-INT-001`; `AURA-INT-002`; `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `CAP-SCOPE-015`; `CAP-SCOPE-016`; `CAP-SCOPE-017` | decisión E1; contratos E2/E3; seguridad e integraciones E4; paquete E5 si AURA continúa; sandboxes externos y certificación U | futura AURA, Vento OS, Meta, Google, TikTok, WhatsApp, correo, analítica e IA / local, CI, staging y sandboxes | `IDENTIFICADO` | Pendiente | Pendiente | AURA diferida; fuentes internas parciales; canales y proveedores sin auditoría canónica | `TREQ-AURA-001`; `TREQ-AURA-002`; `TREQ-AURA-003`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-015`; `TREQ-INTEGRATION-017`; `TREQ-SUPABASE-006`; `TREQ-SUPABASE-009`; `TREQ-AUTH-018` |
+
+| `TREQ-INTEGRATION-020` | `INTEGRATION` | La operación tecnológica deberá correlacionar servicios, cuentas, aplicaciones, endpoints, dispositivos compartidos, activos, redes, impresoras, tickets, incidentes, problemas, cambios, proveedores, licencias, contratos, costos, monitoreo, respaldos y conocimiento mediante identificadores y eventos versionados. Telemetría, alertas, webhooks, push, print jobs, herramientas de soporte remoto, MDM, ISP, fabricantes y licenciamiento deberán usar autenticación mínima, idempotencia, reloj coherente, límites, reintentos y reconciliación. Ningún adaptador externo almacenará secretos en tickets ni se convertirá en maestro de identidad, activo, contrato o costo. La conciliación detectará cuenta sin trabajador o contrato, endpoint sin activo, dispositivo sin postura, IP o reserva divergente, impresora sin heartbeat, incidente sin servicio, cambio sin prueba, licencia sin usuario, respaldo sin restauración y proveedor sin propietario. | `CAP-SCOPE-015`; `CAP-15.01` a `CAP-15.11`; `H-CAP-SCOPE-015-001` a `H-CAP-SCOPE-015-034` | dependencia oculta, alerta duplicada, soporte remoto no autorizado, secreto expuesto, red o impresión irreconciliable, licencia desperdiciada, cambio sin rollback y recuperación falsa / crítica | contractual + integración + API + webhook + telemetría + hardware + colas + seguridad + idempotencia + conciliación + E2E + regresión / automatizada con laboratorio y proveedores sandbox | `TI-DOM-001` a `TI-DOM-013`; `TI-AUTH-001` a `TI-AUTH-004`; `TI-UX-001` a `TI-UX-006`; `TI-INT-001` a `TI-INT-003`; `PRINT-ARC-001` a `PRINT-ARC-020`; `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`; `SHELL-CI-001` a `SHELL-CI-019`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | contratos E2/E3; servicios transversales E4; paquetes y pilotos E5; certificación U | Vento OS, Supabase, redes, endpoints, impresoras y proveedores sandbox / CI, staging, laboratorio y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | componentes parciales existentes; monitoreo, CMDB y service management transversales ausentes | `TREQ-SHELL-010`; `TREQ-VISO-002`; `TREQ-NEXO-019`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-011`; `TREQ-SUPABASE-006`; `TREQ-SUPABASE-009`; `TREQ-AUTH-009` |
 
 #### UX
 
@@ -198899,8 +198918,1402 @@ PROPUESTA PARA APROBACIÓN — NO APROBADA
 No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
 
 
-### [ ] CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
-### [ ] CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
+### ✅ CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-013` aprobada  
+**Tarea anterior:** `CAP-SCOPE-013`  
+**Siguiente tarea reservada:** `CAP-SCOPE-015`  
+**Familia evaluada:** `CAP-14 — Comunicar, promocionar y desarrollar ventas`  
+**Aplicación objetivo:** `AURA`, sujeta a la puerta previa `AURA-AUD-001` a `AURA-AUD-012`  
+**Implementación técnica:** no autorizada  
+**Publicaciones, campañas, promociones, mensajes o respuestas reales:** no autorizadas  
+**Requisitos generados:** `TREQ-AURA-001`, `TREQ-AURA-002`, `TREQ-AURA-003`, `TREQ-INTEGRATION-019`  
+**Tareas nuevas derivadas:** `AURA-DOM-001` a `010`, `AURA-AUTH-001` a `004`, `AURA-UX-001` a `008`, `AURA-INT-001` y `002`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir qué valor empresarial deberá aportar AURA y cómo se integrará al ecosistema Vento OS sin convertirse en una simple agenda de publicaciones, un generador de textos sin contexto o una nueva fuente competidora de productos, precios, clientes y ventas.
+
+AURA se define como el **sistema operativo de marketing y desarrollo comercial**: organiza marca, planificación, creatividad, campañas, medios, oportunidades, reputación y aprendizaje. También actúa como copiloto creativo y analítico, pero no reemplaza el criterio humano, no publica de forma autónoma por defecto y no inventa hechos empresariales.
+
+---
+
+#### 2. Decisión principal
+
+```text
+AURA
+= SISTEMA OPERATIVO DE MARKETING
++ MEMORIA DE MARCA
++ CALENDARIO Y CAMPAÑAS
++ ESTUDIO CREATIVO ASISTIDO
++ ORQUESTACIÓN MULTICANAL
++ OPORTUNIDADES COMERCIALES
++ REPUTACIÓN
++ MEDICIÓN Y APRENDIZAJE
+```
+
+AURA no será:
+
+```text
+solo calendario de posts
+solo generador de captions
+solo tablero de likes
+solo CRM
+solo administrador de cupones
+solo bandeja de redes
+```
+
+La IA propondrá, adaptará, resumirá, comparará y alertará. Las decisiones sensibles seguirán siendo humanas y auditables.
+
+---
+
+#### 3. Puerta obligatoria de continuidad
+
+El bloque canónico vigente mantiene AURA diferida y exige confirmar repositorio, estado real, usuarios, rutas, procesos, datos, permisos y relaciones antes de decidir continuidad, reemplazo o retiro.
+
+Por tanto:
+
+```text
+CAP-SCOPE-014
+→ define el producto objetivo y sus fronteras
+
+AURA-AUD-001 a AURA-AUD-012
+→ comprueban qué existe realmente
+
+AURA-AUD-010
+→ autoriza continuar, reemplazar o retirar
+
+AURA-DOM / AUTH / UX / INT
+→ permanecen bloqueadas hasta esa decisión
+```
+
+La presente tarea no presupone que el producto actual de AURA sea reutilizable.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-14.01` — Definir identidad y mensajes;
+- `CAP-14.02` — Planear comunicación y promociones;
+- `CAP-14.03` — Crear y aprobar contenido;
+- `CAP-14.04` — Publicar y administrar medios;
+- `CAP-14.05` — Gestionar campañas;
+- `CAP-14.06` — Gestionar promociones y cupones;
+- `CAP-14.07` — Captar oportunidades de venta;
+- `CAP-14.08` — Gestionar ventas a empresas;
+- `CAP-14.09` — Gestionar catering y eventos comerciales;
+- `CAP-14.10` — Medir resultados de comunicación y promoción;
+- `CAP-14.11` — Gestionar reputación y comentarios públicos;
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                       | Tratamiento        | Propietaria objetivo         | Decisión                                                                                                                                                              |
+| ------------ | -------------------------------------------- | ------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-14.01    | Definir identidad y mensajes                 | REUSE_OR_REFACTOR  | AURA                         | Consolidar guías, identidades, tono, mensajes, claims, restricciones y memoria de marca existentes en un sistema versionado por marca, sede, canal y audiencia.       |
+| CAP-14.02    | Planear comunicación y promociones           | BUILD              | AURA + NUMERA                | Construir objetivos, audiencias, calendario, brief, presupuesto, capacidad, dependencias, responsables y aprobación para cada iniciativa.                             |
+| CAP-14.03    | Crear y aprobar contenido                    | BUILD              | AURA                         | Construir estudio creativo asistido, biblioteca de activos, derechos, variantes, revisión, aprobación, versionado y trazabilidad desde el brief hasta la pieza final. |
+| CAP-14.04    | Publicar y administrar medios                | INTEGRATE_EXTERNAL | AURA + canales externos      | Integrar cuentas y APIs de Meta, Instagram, TikTok, Google, WhatsApp, correo y otros medios; AURA orquesta, pero cada canal conserva su autoridad externa.            |
+| CAP-14.05    | Gestionar campañas                           | BUILD              | AURA                         | Construir campañas con objetivo, hipótesis, audiencia, oferta, piezas, canales, presupuesto, calendario, experimento, resultados y cierre aprendido.                  |
+| CAP-14.06    | Gestionar promociones y cupones              | REUSE_OR_REFACTOR  | AURA + PULSO + PASS + NUMERA | AURA gobierna intención y comunicación; PULSO/PASS ejecutan elegibilidad y redención; NUMERA valida guardas económicas y resultado.                                   |
+| CAP-14.07    | Captar oportunidades de venta                | INTEGRATE_EXTERNAL | AURA + canales + PASS/VISO   | Unificar formularios, mensajes, WhatsApp, Instagram, ManyChat y referidos en una bandeja de oportunidades con consentimiento, origen y seguimiento.                   |
+| CAP-14.08    | Gestionar ventas a empresas                  | BUILD              | AURA + PULSO + NUMERA        | Construir prospección, calificación, propuesta, seguimiento y pipeline B2B; el pedido aceptado pasa a PULSO y la cartera a NUMERA.                                    |
+| CAP-14.09    | Gestionar catering y eventos comerciales     | BUILD              | AURA + PULSO + FOGO + NEXO   | Construir oportunidad, brief, propuesta, disponibilidad, capacidad, aprobación y seguimiento; la ejecución operacional permanece fuera de AURA.                       |
+| CAP-14.10    | Medir resultados de comunicación y promoción | BUILD              | AURA + NUMERA                | Construir atribución con confianza, conversiones, redenciones, venta incremental, margen, aprendizaje, experimentos y comparación contra objetivo.                    |
+| CAP-14.11    | Gestionar reputación y comentarios públicos  | INTEGRATE_EXTERNAL | AURA + VISO/PASS             | Integrar reseñas, comentarios y menciones; AURA clasifica y propone respuesta, pero reclamos formales se escalan al expediente de servicio.                           |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento        | Cantidad |
+| ------------------ | -------- |
+| REUSE_OR_REFACTOR  | 2        |
+| BUILD              | 6        |
+| INTEGRATE_EXTERNAL | 3        |
+| TOTAL              | 11       |
+
+---
+
+#### 7. Arquitectura propietaria
+
+```text
+AURA
+→ marca, mensajes y memoria creativa
+→ briefs, calendario, campañas y piezas
+→ aprobación y publicación
+→ oportunidades y pipeline comercial
+→ reputación pública
+→ atribución y aprendizaje de marketing
+
+NEXO
+→ productos, presentaciones y atributos maestros aprobados
+→ no entrega costos, stock o datos técnicos salvo contrato autorizado
+
+PULSO
+→ pedido, venta, cobro y ejecución transaccional de promociones
+
+PASS
+→ identidad del cliente, consentimiento, comunicación personal,
+  fidelización y superficie de beneficios
+
+NUMERA
+→ margen, presupuesto, costo, rentabilidad y efecto económico
+
+VISO / SERVICIO
+→ casos, reclamos, escalamiento y resolución administrativa
+
+FOGO / NEXO
+→ capacidad productiva y disponibilidad operacional
+
+CANALES EXTERNOS
+→ publicación, mensajería, reseñas y métricas nativas
+→ nunca son la única fuente del expediente de AURA
+```
+
+---
+
+#### 8. Fronteras conceptuales obligatorias
+
+```text
+marca ≠ empresa ≠ sede ≠ canal
+```
+
+```text
+objetivo ≠ campaña ≠ contenido ≠ publicación ≠ promoción
+```
+
+```text
+borrador de IA ≠ pieza aprobada ≠ publicación efectiva
+```
+
+```text
+intención promocional ≠ regla transaccional ≠ redención
+```
+
+```text
+lead ≠ cliente ≠ oportunidad ≠ propuesta ≠ pedido
+```
+
+```text
+comentario público ≠ reclamo formal ≠ caso resuelto
+```
+
+```text
+interacción ≠ conversión ≠ venta incremental ≠ rentabilidad
+```
+
+---
+
+#### 9. AURA como memoria de marca
+
+AURA mantendrá perfiles versionados por marca con:
+
+- propósito, personalidad, tono y palabras permitidas o prohibidas;
+- audiencias, necesidades, objeciones y contextos de uso;
+- claims aprobados y evidencia que los respalda;
+- identidad visual, plantillas, tipografía y reglas de composición;
+- productos, categorías y mensajes autorizados desde sus fuentes;
+- campañas, piezas y aprendizajes históricos;
+- restricciones legales, reputacionales y de canal;
+- vigencia y responsable de cada regla.
+
+La memoria de marca no será un prompt libre ni una carpeta sin versionado.
+
+---
+
+#### 10. Inicio diario simple
+
+La pantalla principal de AURA deberá responder sin entrenamiento técnico:
+
+```text
+¿QUÉ DEBEMOS HACER HOY?
+¿QUÉ ESTÁ PENDIENTE DE APROBACIÓN?
+¿QUÉ SE PUBLICA PRÓXIMAMENTE?
+¿QUÉ OPORTUNIDAD MERECE ATENCIÓN?
+¿QUÉ CAMPAÑA NECESITA CORRECCIÓN?
+```
+
+La vista diaria tendrá, como máximo:
+
+- prioridades;
+- calendario inmediato;
+- aprobaciones;
+- alertas de canal;
+- oportunidades comerciales;
+- resultados que requieren acción.
+
+Configuraciones, fórmulas, prompts, metadatos y explicaciones extensas estarán bajo demanda, no ocupando la pantalla cotidiana.
+
+---
+
+#### 11. Planificador de comunicación y campañas
+
+Cada iniciativa partirá de un brief guiado con pocas preguntas:
+
+1. qué resultado empresarial busca;
+2. a quién se dirige;
+3. qué oferta o mensaje propone;
+4. qué restricciones existen;
+5. dónde y cuándo se comunicará.
+
+AURA completará el borrador con datos autorizados, sugerirá dependencias y advertirá si falta precio, disponibilidad, margen, capacidad, consentimiento, aprobación o material. Ninguna campaña quedará definida solo por un título y fechas.
+
+---
+
+#### 12. Estudio creativo asistido
+
+AURA podrá:
+
+- proponer conceptos, nombres, hooks, copies, guiones y llamadas a la acción;
+- crear variantes por canal, formato, audiencia y longitud;
+- transformar una sesión de fotos o video en un kit de lanzamiento;
+- reutilizar material aprobado sin duplicar archivos;
+- generar shot lists, briefs para diseño y planes de grabación;
+- comparar variantes contra las reglas de marca;
+- detectar datos no comprobados o promesas riesgosas;
+- preparar versiones para post, historia, reel, WhatsApp, correo y PASS.
+
+Cada salida conservará fuentes utilizadas, modelo o proveedor, prompt o instrucción relevante, versión, autor, revisores y aprobación.
+
+---
+
+#### 13. Grounding y límites de inteligencia artificial
+
+La IA no podrá inventar:
+
+- ingredientes, propiedades o beneficios;
+- precios, descuentos o fechas;
+- disponibilidad o capacidad;
+- resultados de campaña;
+- testimonios, reseñas o cifras;
+- condiciones legales o promociones.
+
+Toda afirmación empresarial deberá derivarse de una fuente autorizada o marcarse como propuesta pendiente. Los datos enviados a proveedores externos se minimizarán y se regirán por contrato, finalidad, retención y consentimiento.
+
+---
+
+#### 14. Biblioteca de activos y fábrica de contenido
+
+Fotografías, videos, diseños, audios, logos, plantillas y documentos conservarán:
+
+- propietario y marca;
+- derechos, licencia, autorización de personas y vigencia;
+- campaña, producto y sede relacionados;
+- original y derivados;
+- estado de revisión;
+- canales y usos permitidos;
+- historial de edición;
+- fecha de retiro o reemplazo.
+
+AURA podrá redimensionar, subtitular, recortar y adaptar automáticamente una pieza aprobada. Estas transformaciones no podrán alterar una oferta ni una afirmación material sin nueva revisión.
+
+---
+
+#### 15. Publicación multicanal
+
+AURA administrará una cola visible por canal:
+
+```text
+borrador
+→ revisión
+→ aprobado
+→ programado
+→ enviado al canal
+→ publicado
+→ fallido o rechazado
+→ retirado o archivado
+```
+
+La aprobación no equivaldrá a publicación. Cada canal tendrá identificador externo, cuenta, payload, respuesta, fecha, versión y enlace. Reintentos serán idempotentes. Un fallo parcial no recreará publicaciones ya confirmadas.
+
+---
+
+#### 16. Campañas y experimentos
+
+Una campaña conservará:
+
+- objetivo e hipótesis;
+- audiencia y exclusiones;
+- oferta, piezas y canales;
+- presupuesto y responsable;
+- periodo y calendario;
+- guardas de margen, stock y capacidad;
+- códigos y parámetros de atribución;
+- variantes y grupo de control cuando aplique;
+- criterios de inicio, pausa y cierre;
+- resultado y aprendizaje.
+
+Las pruebas podrán detenerse por daño económico, operacional o reputacional.
+
+---
+
+#### 17. Promociones y cupones
+
+La arquitectura será:
+
+```text
+AURA
+→ propone y gobierna la intención promocional
+
+NUMERA
+→ valida margen, presupuesto y resultado económico
+
+PULSO / PASS
+→ materializan reglas, elegibilidad, redención y reversión
+```
+
+AURA no descontará una venta ni cambiará un precio por escribir una campaña. La promoción deberá tener versión, público, condiciones, vigencia, límites, exclusiones, autoridad y código correlacionable.
+
+---
+
+#### 18. Radar de oportunidades
+
+AURA podrá sugerir acciones como:
+
+- producto rentable con baja visibilidad;
+- inventario o capacidad disponible que requiere demanda;
+- fecha comercial próxima sin campaña;
+- clientes con consentimiento que llevan tiempo inactivos;
+- contenido exitoso reutilizable;
+- campaña con gasto y baja conversión;
+- reputación negativa concentrada en un tema;
+- oportunidad B2B sin siguiente acción.
+
+Cada recomendación mostrará **por qué aparece**, fuentes, frescura, nivel de confianza, restricciones y acción propuesta. Nunca optimizará solo interacción si deteriora margen, servicio o consentimiento.
+
+---
+
+#### 19. Oportunidades, ventas B2B y catering
+
+AURA unificará oportunidades con:
+
+- origen y campaña;
+- persona o empresa y consentimiento;
+- necesidad, fecha y valor estimado;
+- etapa, probabilidad, responsable y siguiente acción;
+- comunicaciones y documentos;
+- propuesta y versiones;
+- motivo de ganancia o pérdida.
+
+Al aceptar una propuesta:
+
+```text
+AURA conserva oportunidad y atribución
+PULSO crea el pedido operativo
+FOGO/NEXO reciben necesidades de capacidad y abastecimiento
+NUMERA gestiona anticipo, pago o cartera
+PASS/VISO conservan relación y servicio cuando corresponda
+```
+
+---
+
+#### 20. Reputación y comentarios públicos
+
+AURA reunirá reseñas, comentarios y menciones con:
+
+- canal, publicación y autor externo;
+- sentimiento y tema sugeridos;
+- severidad y riesgo;
+- respuesta propuesta;
+- aprobación y respuesta publicada;
+- vínculo con sede, producto, pedido o campaña cuando exista;
+- escalamiento a caso de servicio.
+
+Una respuesta pública no cerrará un reclamo. La resolución pertenece al expediente de servicio y solo su resultado podrá informar una respuesta posterior.
+
+---
+
+#### 21. Medición y aprendizaje
+
+El tablero priorizará impacto empresarial:
+
+- conversiones y ventas relacionadas;
+- redenciones;
+- clientes nuevos y recurrentes;
+- costo de adquisición cuando sea medible;
+- ingreso y margen atribuible o asociado;
+- respuesta por segmento, canal y pieza;
+- avance B2B y catering;
+- reputación y resolución;
+- aprendizaje confirmado, probable o no concluyente.
+
+Alcance, impresiones y likes serán señales, no resultados finales. La atribución mostrará método y nivel de confianza; no presentará correlación como causalidad exacta.
+
+---
+
+#### 22. Privacidad, consentimiento y comunicación
+
+AURA consumirá únicamente audiencias autorizadas y atributos mínimos. Cada contacto conservará finalidad, canal permitido, consentimiento, exclusión y fecha de actualización.
+
+Queda prohibido:
+
+- exportar bases completas por comodidad;
+- contactar personas sin finalidad o consentimiento;
+- usar datos sensibles para segmentación no aprobada;
+- subir listas de clientes a plataformas externas sin control;
+- conservar audiencias externas sin reconciliación;
+- usar conversaciones operativas como marketing sin base autorizada.
+
+---
+
+#### 23. Autonomía permitida y prohibida
+
+AURA podrá automatizar después de una aprobación válida:
+
+- adaptación de formatos;
+- subtítulos y redimensionamiento;
+- programación;
+- etiquetado UTM;
+- recolección de métricas;
+- recordatorios y alertas;
+- clasificación preliminar.
+
+Requerirá intervención humana para:
+
+- aprobar identidad, claims y oferta;
+- publicar por primera vez o en cuentas sensibles;
+- crear descuentos o promociones;
+- enviar campañas a clientes;
+- responder crisis, acusaciones o reclamos;
+- usar datos nuevos o un proveedor de IA nuevo;
+- aceptar propuestas B2B o catering.
+
+---
+
+#### 24. Experiencia no técnica
+
+AURA usará lenguaje de marketing y negocio, no términos de API, payload, embeddings o modelos.
+
+La información técnica estará disponible para auditoría, pero la experiencia principal utilizará:
+
+```text
+Hoy
+Calendario
+Crear
+Campañas
+Oportunidades
+Reputación
+Resultados
+```
+
+No se llenarán las pantallas con explicaciones permanentes. Ayuda, fuentes, fórmulas y trazabilidad se mostrarán mediante divulgación progresiva.
+
+---
+
+#### 25. Operación externa, reintentos e idempotencia
+
+Cada publicación, mensaje, audiencia, lead, comentario, métrica y conversión tendrá identificador interno, identificador externo, correlación, versión y clave idempotente. AURA distinguirá:
+
+- solicitud enviada;
+- aceptación del proveedor;
+- publicación o entrega real;
+- error recuperable;
+- rechazo definitivo;
+- estado desconocido pendiente de reconciliación.
+
+No se asumirán éxitos por una respuesta incompleta del canal.
+
+---
+
+#### 26. Preguntas pendientes
+
+No se crean preguntas nuevas.
+
+Las incertidumbres sobre repositorio, producto, usuarios, rutas, procesos, datos, permisos y continuidad ya tienen dueño explícito en `AURA-AUD-001` a `AURA-AUD-012`.
+
+Las respuestas operativas ya recopiladas en el registro vivo se consolidarán en lote y solo modificarán esta propuesta si contradicen una decisión material.
+
+---
+
+#### 27. Hallazgos
+
+| ID                  | Hallazgo                                                                                                                              | Severidad | Tarea propietaria                                                       | Puerta   |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-014-001 | AURA permanece diferida y su roadmap exige confirmar repositorio, estado, usuarios, rutas y continuidad antes de implementarla.       | crítica   | AURA-AUD-001 a AURA-AUD-012                                             | E1       |
+| H-CAP-SCOPE-014-002 | El único permiso canónico actual de AURA es acceso reservado; no existe catálogo funcional suficiente para campañas o publicación.    | crítica   | AURA-AUD-006; AURA-AUTH-001 a AURA-AUTH-004                             | E1/E2    |
+| H-CAP-SCOPE-014-003 | La identidad de marca, tono, claims y restricciones pueden estar dispersos entre archivos, personas y canales.                        | alta      | AURA-DOM-001; AURA-UX-002                                               | E2       |
+| H-CAP-SCOPE-014-004 | No existe memoria versionada que distinga marca, empresa, sede, campaña, canal y audiencia.                                           | alta      | AURA-DOM-001; CAP-SCOPE-001                                             | E2/E3    |
+| H-CAP-SCOPE-014-005 | Marketing puede copiar nombres, precios o atributos de producto y divergir del catálogo aprobado.                                     | crítica   | AURA-INT-002; CAP-SCOPE-004; NEXO-DOM-001 a NEXO-DOM-011                | E2/E3    |
+| H-CAP-SCOPE-014-006 | No existe un ciclo canónico de objetivo, audiencia, brief, presupuesto, capacidad, aprobación y calendario.                           | crítica   | AURA-DOM-002; AURA-UX-001; AURA-UX-002                                  | E2       |
+| H-CAP-SCOPE-014-007 | Una idea, campaña, pieza, publicación y promoción pueden confundirse y perder trazabilidad.                                           | crítica   | AURA-DOM-002; AURA-DOM-003; AURA-DOM-006                                | E2/E3    |
+| H-CAP-SCOPE-014-008 | No existe biblioteca empresarial de fotografías, videos, diseños, plantillas, licencias y derechos de uso.                            | alta      | AURA-DOM-003; CAP-SCOPE-016                                             | E2/E4    |
+| H-CAP-SCOPE-014-009 | Contenido generado o adaptado puede publicarse con una versión de marca, producto u oferta vencida.                                   | crítica   | AURA-DOM-001; AURA-DOM-003; AURA-DOM-005                                | E2/E3    |
+| H-CAP-SCOPE-014-010 | La IA puede inventar ingredientes, beneficios, precios, disponibilidad, fechas o resultados si no usa fuentes controladas.            | crítica   | AURA-DOM-004; AURA-INT-002; TREQ-SUPABASE-012                           | E2/E3    |
+| H-CAP-SCOPE-014-011 | Prompts, archivos o datos de clientes enviados a proveedores de IA pueden exceder finalidad, consentimiento o contrato.               | crítica   | AURA-AUTH-003; AURA-AUTH-004; CAP-SCOPE-010; CAP-SCOPE-016              | E2/E4    |
+| H-CAP-SCOPE-014-012 | No existe separación certificada entre borrador asistido, contenido aprobado y publicación efectiva.                                  | crítica   | AURA-AUTH-002; AURA-UX-003; AURA-UX-004                                 | E2/E3    |
+| H-CAP-SCOPE-014-013 | Las cuentas de redes, propietarios, tokens, roles y recuperación pueden depender de credenciales personales.                          | crítica   | AURA-DOM-005; AURA-AUTH-004; AURA-INT-001                               | E1/E3    |
+| H-CAP-SCOPE-014-014 | APIs externas, límites, permisos, revisiones y cambios de plataforma pueden dejar publicaciones en estado ambiguo.                    | alta      | AURA-DOM-005; AURA-INT-001; CAP-SCOPE-015                               | E3/E5    |
+| H-CAP-SCOPE-014-015 | Reintentos o webhooks duplicados pueden publicar, retirar, responder o registrar métricas más de una vez.                             | crítica   | AURA-DOM-005; AURA-INT-001; QUEUE-ARC-001 a QUEUE-ARC-010               | E3/E5    |
+| H-CAP-SCOPE-014-016 | AURA podría intentar ejecutar descuentos directamente y competir con PULSO o PASS.                                                    | crítica   | AURA-DOM-006; CAP-SCOPE-009; CAP-SCOPE-010                              | E2       |
+| H-CAP-SCOPE-014-017 | Una promoción puede ser atractiva comercialmente pero inviable por margen, stock, capacidad o condiciones operativas.                 | crítica   | AURA-DOM-006; AURA-INT-002; CAP-SCOPE-006; CAP-SCOPE-008; CAP-SCOPE-012 | E2/E3    |
+| H-CAP-SCOPE-014-018 | No existe una bandeja unificada de oportunidades provenientes de formularios, mensajes, redes, WhatsApp y referidos.                  | alta      | AURA-DOM-007; AURA-UX-006; AURA-INT-001                                 | E2/E3    |
+| H-CAP-SCOPE-014-019 | Un contacto comercial puede convertirse indebidamente en cliente, campaña o mensaje sin consentimiento y finalidad.                   | crítica   | AURA-DOM-007; AURA-AUTH-003; CAP-SCOPE-010                              | E2/E4    |
+| H-CAP-SCOPE-014-020 | B2B y catering se superponen con el pedido operativo si no existe una transferencia explícita a PULSO.                                | crítica   | AURA-DOM-007; AURA-INT-002; CAP-SCOPE-009                               | E2/E3    |
+| H-CAP-SCOPE-014-021 | No existe pipeline con etapa, valor, probabilidad, siguiente acción, responsable, vencimiento y pérdida explicada.                    | alta      | AURA-DOM-007; AURA-UX-006                                               | E2       |
+| H-CAP-SCOPE-014-022 | Likes, alcance e impresiones pueden presentarse como éxito sin vincularse a venta, margen, redención o aprendizaje.                   | crítica   | AURA-DOM-008; AURA-UX-008; NUMERA-DOM-008                               | E2/E3    |
+| H-CAP-SCOPE-014-023 | La atribución multicanal es incierta y no puede representarse como causalidad exacta sin nivel de confianza.                          | alta      | AURA-DOM-008; AURA-INT-001; AURA-INT-002                                | E2/E3    |
+| H-CAP-SCOPE-014-024 | No existe contrato común para UTM, códigos, cupones, campañas, conversiones y eventos de venta.                                       | crítica   | AURA-DOM-008; AURA-INT-002; INT-APP-001 a INT-APP-010                   | E2/E3    |
+| H-CAP-SCOPE-014-025 | No existe inbox canónico para reseñas, comentarios, menciones y respuestas públicas.                                                  | alta      | AURA-DOM-009; AURA-UX-007; AURA-INT-001                                 | E2/E3    |
+| H-CAP-SCOPE-014-026 | Una respuesta pública puede cerrar visualmente un reclamo sin resolver el caso de servicio.                                           | crítica   | AURA-DOM-009; CAP-SCOPE-010; TREQ-PASS-011                              | E2/E3    |
+| H-CAP-SCOPE-014-027 | No se gobiernan pruebas A/B, grupos de control, periodos comparables ni detención por daño.                                           | alta      | AURA-DOM-006; AURA-DOM-008                                              | E2/E3    |
+| H-CAP-SCOPE-014-028 | Las recomendaciones automáticas pueden optimizar volumen o interacción sacrificando margen, capacidad, reputación o consentimiento.   | crítica   | AURA-DOM-010; AURA-DOM-004; AURA-AUTH-003                               | E2/E3    |
+| H-CAP-SCOPE-014-029 | No existe evidencia de calidad, frescura y cobertura de las fuentes que alimentarían recomendaciones de AURA.                         | crítica   | AURA-INT-002; CAP-SCOPE-017; TREQ-SUPABASE-007                          | E2/E3/E5 |
+| H-CAP-SCOPE-014-030 | Una aplicación saturada de explicaciones, tablas y configuración técnica impediría que Marketing adopte AURA como herramienta diaria. | alta      | AURA-UX-001 a AURA-UX-008; UX-QA-001 a UX-QA-029                        | E2/E5    |
+
+---
+
+#### 28. Tareas nuevas derivadas
+
+| ID            | Tarea                                                                                                | Bloque                         | Momento                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| AURA-DOM-001  | Definir arquitectura de marcas, identidad, tono, mensajes, claims, restricciones y vigencia          | BLOQUE W — AURA / dominio      | Después de AURA-AUD-010, antes de cualquier diseño o migración       |
+| AURA-DOM-002  | Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de campaña     | BLOQUE W — AURA / dominio      | Después de AURA-AUD-005 y AURA-AUD-010                               |
+| AURA-DOM-003  | Definir biblioteca de activos, derechos, versiones, reutilización y ciclo de aprobación de contenido | BLOQUE W — AURA / dominio      | Antes de conectar canales o generación asistida                      |
+| AURA-DOM-004  | Definir copiloto creativo, grounding, memoria, restricciones, proveedores de IA y revisión humana    | BLOQUE W — AURA / dominio      | Antes de usar IA con datos o marcas reales                           |
+| AURA-DOM-005  | Definir cuentas, medios, publicación, programación, reintentos, retiro y reconciliación por canal    | BLOQUE W — AURA / dominio      | Antes de cualquier integración externa productiva                    |
+| AURA-DOM-006  | Definir campañas, experimentos, promociones, cupones y guardas económicas y operativas               | BLOQUE W — AURA / dominio      | Coordinada con PULSO, PASS y NUMERA                                  |
+| AURA-DOM-007  | Definir oportunidades, leads, pipeline B2B, catering, eventos y transferencia a operación            | BLOQUE W — AURA / dominio      | Antes de captar contactos reales                                     |
+| AURA-DOM-008  | Definir métricas, atribución, confianza, incrementalidad, aprendizaje y cierre de campaña            | BLOQUE W — AURA / dominio      | Antes del tablero de resultados                                      |
+| AURA-DOM-009  | Definir reputación, comentarios públicos, clasificación, respuesta y escalamiento a servicio         | BLOQUE W — AURA / dominio      | Antes de responder desde cuentas reales                              |
+| AURA-DOM-010  | Definir radar de oportunidades y recomendaciones comerciales explicables                             | BLOQUE W — AURA / dominio      | Después de contratos de datos y métricas                             |
+| AURA-AUTH-001 | Proteger marcas, campañas, activos, audiencias, canales y resultados por empresa, marca y función    | BLOQUE W — AURA / autorización | Antes de implementar cualquier módulo                                |
+| AURA-AUTH-002 | Separar creación, revisión, aprobación, programación, publicación, retiro y respuesta pública        | BLOQUE W — AURA / autorización | Antes de conectar medios externos                                    |
+| AURA-AUTH-003 | Proteger promociones, segmentos, leads, datos de clientes, exportaciones y acciones masivas          | BLOQUE W — AURA / autorización | Antes de campañas segmentadas o promociones                          |
+| AURA-AUTH-004 | Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a terceros      | BLOQUE W — AURA / autorización | Antes de integrar IA o canales externos                              |
+| AURA-UX-001   | Diseñar inicio diario simple con prioridades, calendario, pendientes y oportunidades                 | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-001 y 002                                        |
+| AURA-UX-002   | Diseñar sistema de marca, brief guiado y calendario visual                                           | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-001 a 003                                        |
+| AURA-UX-003   | Diseñar estudio creativo asistido y fábrica de variantes reutilizables                               | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-003 y 004                                        |
+| AURA-UX-004   | Diseñar aprobación y publicación multicanal con estado y recuperación claros                         | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-005 y AURA-AUTH-002                              |
+| AURA-UX-005   | Diseñar campañas, promociones, cupones, experimentos y guardas                                       | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-006                                              |
+| AURA-UX-006   | Diseñar bandeja de oportunidades, B2B, catering y eventos                                            | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-007                                              |
+| AURA-UX-007   | Diseñar reputación, comentarios, respuestas y escalamiento                                           | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-009                                              |
+| AURA-UX-008   | Diseñar tablero de resultados, atribución y copiloto de recomendaciones                              | BLOQUE W — AURA / experiencia  | Después de AURA-DOM-008 y 010                                        |
+| AURA-INT-001  | Definir adaptadores de canales, webhooks, límites, credenciales y reconciliación externa             | BLOQUE W — AURA / integración  | Antes de conectar Meta, Google, TikTok, WhatsApp, correo o similares |
+| AURA-INT-002  | Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO                    | BLOQUE W — AURA / integración  | Antes de consumir datos empresariales reales                         |
+
+---
+
+#### 29. Ubicación exacta de tareas nuevas
+
+En:
+
+```text
+docs/plan-canonico/modular/bloques/W_AURA/00_BLOQUE_W.md
+```
+
+Después de `AURA-AUD-012`, agregar en este orden:
+
+1. `AURA-DOM-001` a `AURA-DOM-010`;
+2. `AURA-AUTH-001` a `AURA-AUTH-004`;
+3. `AURA-UX-001` a `AURA-UX-008`;
+4. `AURA-INT-001` y `AURA-INT-002`.
+
+Antes del primer bloque nuevo agregar la regla:
+
+```text
+Todas las tareas AURA-DOM, AURA-AUTH, AURA-UX y AURA-INT
+permanecen BLOQUEADAS hasta que AURA-AUD-010 apruebe
+continuidad o reemplazo y AURA-AUD-011 registre la decisión.
+```
+
+Si AURA se retira, las capacidades se reasignarán mediante ADR sin perder estos identificadores ni los hallazgos.
+
+---
+
+#### 30. Requisitos de prueba generados
+
+El registro `04A` completo incorpora:
+
+```text
+TREQ-AURA-001
+TREQ-AURA-002
+TREQ-AURA-003
+TREQ-INTEGRATION-019
+```
+
+- `TREQ-AURA-001` protege marca, planificación, campañas, contenido, activos, versiones y aprobación.
+- `TREQ-AURA-002` protege el copiloto creativo, grounding, privacidad, simplicidad y límites de autonomía.
+- `TREQ-AURA-003` protege promociones, oportunidades, B2B, catering, reputación, medición y atribución.
+- `TREQ-INTEGRATION-019` protege canales externos y contratos con el resto de Vento OS.
+
+---
+
+#### 31. Dependencias principales
+
+- `AURA-AUD-001` a `AURA-AUD-012`: puerta de continuidad;
+- `CAP-SCOPE-001`: empresas, marcas, sedes y canales;
+- `CAP-SCOPE-004`: productos, atributos y conocimiento;
+- `CAP-SCOPE-006`: inventario y disponibilidad;
+- `CAP-SCOPE-008`: capacidad productiva;
+- `CAP-SCOPE-009`: pedido, venta, promoción y ejecución comercial;
+- `CAP-SCOPE-010`: clientes, consentimientos, servicio y fidelización;
+- `CAP-SCOPE-012`: margen, presupuesto, cartera y rentabilidad;
+- `CAP-SCOPE-016`: documentos, privacidad y evidencia;
+- `CAP-SCOPE-017`: calidad de datos, métricas y aprendizaje.
+
+---
+
+#### 32. Criterios de aceptación
+
+`CAP-SCOPE-014` podrá aprobarse cuando:
+
+- las once subcapacidades estén clasificadas;
+- AURA quede definida como sistema operativo de marketing y copiloto, no como generador aislado;
+- la puerta `AURA-AUD` permanezca obligatoria;
+- marca, campaña, contenido, publicación, promoción y resultado estén separados;
+- PULSO, PASS, NUMERA, NEXO, VISO y FOGO conserven sus fuentes de verdad;
+- la IA tenga grounding, privacidad, trazabilidad y aprobación humana;
+- promociones, leads, B2B, catering, reputación y medición tengan fronteras explícitas;
+- la experiencia diaria sea simple y no técnica;
+- cada brecha tenga tarea propietaria;
+- los cuatro `TREQ` queden dentro del `04A` completo;
+- no se autorice implementación ni conexión de canales reales;
+- `CAP-SCOPE-015` permanezca como continuidad inmediata.
+
+---
+
+#### 33. Lo que esta tarea no autoriza
+
+- crear o continuar un repositorio AURA;
+- conectar cuentas de Meta, TikTok, Google, WhatsApp, correo o IA;
+- publicar, programar, responder o retirar contenido real;
+- crear promociones o contactar clientes;
+- importar audiencias, leads, reseñas o métricas;
+- generar campañas con datos reales fuera de entornos controlados;
+- aprobar gastos publicitarios;
+- modificar producto, precio, stock, pedido, puntos, cartera o contabilidad;
+- iniciar `CAP-SCOPE-015`.
+
+---
+
+#### 34. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+señales y objetivos
+→ brief y campaña
+→ contenido y aprobación
+→ publicación o activación
+→ oportunidad, conversión o reputación
+→ medición, aprendizaje y siguiente acción
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-015
+— Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
+```
+
+---
+
+#### 35. Estado de aprobación
+
+```text
+PROPUESTA PARA APROBACIÓN — NO APROBADA
+```
+
+No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
+
+
+### ✅ CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-014` aprobada  
+**Tarea anterior:** `CAP-SCOPE-014`  
+**Siguiente tarea reservada:** `CAP-SCOPE-016`  
+**Familia evaluada:** `CAP-15 — Gestionar tecnología y soporte`  
+**Superficies objetivo:** `SHELL`, `NEXO`, `ANIMA`, `VISO`, servicio transversal de impresión y proveedores tecnológicos  
+**Implementación técnica:** no autorizada  
+**Cambios de cuentas, red, impresoras, dispositivos o proveedores reales:** no autorizados  
+**Requisitos generados:** `TREQ-SHELL-010`, `TREQ-VISO-002`, `TREQ-NEXO-019`, `TREQ-INTEGRATION-020`  
+**Tareas nuevas derivadas:** `TI-DOM-001` a `013`, `TI-AUTH-001` a `004`, `TI-UX-001` a `006`, `TI-INT-001` a `003`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo para operar tecnología en Vento Group: cuentas, dispositivos, endpoints, redes, impresoras, aplicaciones, soporte, incidentes, cambios, pruebas, proveedores, licencias, costos, seguridad técnica, conocimiento y recuperación.
+
+La tarea consolida capacidades existentes sin crear una aplicación monolítica ni una fuente paralela. El objetivo es que cualquier falla o cambio pueda responder de manera trazable:
+
+```text
+qué servicio está afectado
+qué elemento técnico participa
+quién lo usa y dónde
+qué cambió
+qué impacto produce
+quién responde
+cómo se recupera
+cómo se comprueba el cierre
+```
+
+---
+
+#### 2. Decisión principal
+
+```text
+SHELL
+→ identidad, catálogo de aplicaciones y política de acceso
+
+NEXO
+→ activo físico, ubicación, custodia, mantenimiento y garantía
+
+ANIMA
+→ portal del trabajador, capacitación y seguimiento personal
+
+VISO
+→ mesa de servicio, incidentes, problemas, cambios y supervisión
+
+PRINT-ARC
+→ documentos, colas, routing, adaptadores y trabajos de impresión
+
+BLOQUE T / E5 / U
+→ calidad, despliegue, piloto, rollback y certificación
+
+ORIGO / NUMERA
+→ compra, contrato, renovación, compromiso, gasto y costo
+
+BLOQUE Y — TECNOLOGÍA Y SOPORTE
+→ modelo transversal, relaciones, reglas y experiencia integrada
+```
+
+TI no concederá permisos por criterio propio, no reemplazará el maestro de activos, no ejecutará operaciones empresariales por medio de la cola de impresión y no declarará restaurado un servicio sin verificación.
+
+---
+
+#### 3. Alcance evaluado
+
+- `CAP-15.01` — Gestionar cuentas y accesos;
+- `CAP-15.02` — Gestionar computadores, celulares y tabletas;
+- `CAP-15.03` — Gestionar redes y conectividad;
+- `CAP-15.04` — Gestionar impresoras y periféricos;
+- `CAP-15.05` — Gestionar aplicaciones y proveedores tecnológicos;
+- `CAP-15.06` — Atender solicitudes de soporte;
+- `CAP-15.07` — Gestionar fallas e incidentes tecnológicos;
+- `CAP-15.08` — Gestionar cambios y versiones;
+- `CAP-15.09` — Probar soluciones antes de usarlas;
+- `CAP-15.10` — Gestionar licencias, contratos y costos tecnológicos;
+- `CAP-15.11` — Capacitar en el uso de herramientas;
+
+---
+
+#### 4. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                               | Tratamiento       | Propietaria objetivo                         | Decisión                                                                                                                                                                                |
+| ------------ | ---------------------------------------------------- | ----------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-15.01    | Gestionar cuentas y accesos                          | REUSE_OR_REFACTOR | SHELL + TI                                   | Reutilizar identidad, roles, permisos, catálogos de aplicaciones y cierres laborales; TI ejecutará aprovisionamiento y revocación sin convertirse en autoridad para conceder acceso.    |
+| CAP-15.02    | Gestionar computadores, celulares y tabletas         | REUSE_OR_REFACTOR | NEXO + SHELL + TI                            | Reutilizar activos y dispositivos compartidos, añadiendo identidad lógica, configuración estándar, postura, parches, cifrado, aplicaciones, salud, soporte y retiro seguro.             |
+| CAP-15.03    | Gestionar redes y conectividad                       | BUILD             | TI + NEXO                                    | Construir inventario y gobierno de enlaces, routers, switches, puntos de acceso, segmentos, SSID, direccionamiento, reservas, monitoreo, capacidad, fallas y contingencia.              |
+| CAP-15.04    | Gestionar impresoras y periféricos                   | REUSE_OR_REFACTOR | TI + NEXO + PRINT-ARC                        | Reutilizar activos, BrowserPrint, colas y arquitectura transversal de impresión; separar impresora física, cola, ruta, adaptador, plantilla, trabajo y resultado.                       |
+| CAP-15.05    | Gestionar aplicaciones y proveedores tecnológicos    | REUSE_OR_REFACTOR | SHELL + TI + ORIGO                           | Reutilizar catálogo de aplicaciones e integraciones y construir su dimensión de servicio, propietario, ambiente, dependencia, proveedor, contrato, licencia, datos, SLA y recuperación. |
+| CAP-15.06    | Atender solicitudes de soporte                       | REUSE_OR_REFACTOR | ANIMA + VISO + TI                            | Refactorizar support_tickets y support_messages como portal del trabajador y mesa de servicio, con catálogo, prioridad, recurso afectado, SLA, comunicación, validación y reapertura.   |
+| CAP-15.07    | Gestionar fallas e incidentes tecnológicos           | BUILD             | VISO + TI                                    | Construir incidentes, impacto, urgencia, severidad, escalamiento, comunicación, workaround, problema, causa raíz, error conocido, recuperación y revisión posterior.                    |
+| CAP-15.08    | Gestionar cambios y versiones                        | REUSE_OR_REFACTOR | TI + BLOQUE T + propietarios de aplicaciones | Extender CI, releases y rollback al gobierno operativo de cambios de configuración, red, dispositivo, impresora, proveedor y aplicación con ventana, aprobación y revisión.             |
+| CAP-15.09    | Probar soluciones antes de usarlas                   | REUSE_OR_REFACTOR | TI + BLOQUES E5/T/U                          | Reutilizar pruebas y pilotos, añadiendo aceptación técnica y operativa para hardware, red, impresión, configuración, recuperación, seguridad y compatibilidad.                          |
+| CAP-15.10    | Gestionar licencias, contratos y costos tecnológicos | BUILD             | TI + ORIGO + NUMERA                          | Construir catálogo de licencias, asientos, renovaciones, propietarios, consumo, garantías, contratos, compromisos, costos, alertas y conciliación con compra y gasto.                   |
+| CAP-15.11    | Capacitar en el uso de herramientas                  | BUILD             | TI + ANIMA + propietarios funcionales        | Construir conocimiento, guías cortas, entrenamiento por rol, comprobación, novedades de versión, soporte guiado y evidencia de adopción sin saturar las pantallas.                      |
+
+---
+
+#### 5. Resumen de clasificación
+
+| Tratamiento       | Cantidad |
+| ----------------- | -------- |
+| REUSE_OR_REFACTOR | 7        |
+| BUILD             | 4        |
+| TOTAL             | 11       |
+
+---
+
+#### 6. Modelo de objetos tecnológicos
+
+La administración utilizará una configuración relacionada de elementos técnicos, no una tabla genérica sin semántica:
+
+```text
+SERVICIO TECNOLÓGICO
+→ depende de APLICACIONES y PROVEEDORES
+→ se ejecuta en ENDPOINTS o INFRAESTRUCTURA
+→ usa REDES, CREDENCIALES y LICENCIAS
+→ puede producir IMPRESIÓN o NOTIFICACIONES
+→ recibe SOLICITUDES, INCIDENTES, PROBLEMAS y CAMBIOS
+```
+
+Cada elemento conservará identidad estable, propietario, criticidad, sede o alcance, estado, relaciones, versión, evidencia y ciclo de vida.
+
+---
+
+#### 7. Fronteras conceptuales obligatorias
+
+```text
+activo físico ≠ endpoint lógico ≠ dispositivo compartido ≠ sesión ≠ actor
+```
+
+```text
+cuenta ≠ permiso ≠ credencial ≠ secreto ≠ asiento de licencia
+```
+
+```text
+solicitud ≠ incidente ≠ problema ≠ error conocido ≠ cambio
+```
+
+```text
+incidente resuelto ≠ causa eliminada ≠ ticket cerrado
+```
+
+```text
+impresora ≠ cola ≠ ruta ≠ adaptador ≠ plantilla ≠ trabajo
+```
+
+```text
+router ≠ enlace ≠ segmento ≠ SSID ≠ reserva DHCP ≠ dirección IP
+```
+
+```text
+despliegue ≠ cambio aprobado ≠ release ≠ rollback
+```
+
+```text
+respaldo configurado ≠ restauración comprobada
+```
+
+---
+
+#### 8. Cuentas y accesos
+
+SHELL y el modelo de autorización continuarán siendo la fuente de decisión. TI podrá ejecutar altas, bajas, recuperación y configuración únicamente a partir de una relación laboral, contractual o empresarial autorizada.
+
+El ciclo deberá cubrir:
+
+- solicitud y aprobación;
+- aprovisionamiento;
+- MFA y recuperación;
+- asignación de licencia;
+- cambio de función o sede;
+- acceso privilegiado temporal;
+- proveedor o soporte remoto;
+- suspensión, revocación y cierre;
+- evidencia de ejecución.
+
+Una cuenta técnica o de proveedor tendrá propietario humano, finalidad, alcance, vigencia y revisión periódica.
+
+---
+
+#### 9. Computadores, celulares, tabletas y endpoints
+
+NEXO conservará el activo físico. TI añadirá la vista lógica del endpoint:
+
+- nombre estable y clase;
+- activo relacionado;
+- número de serie y huellas técnicas permitidas;
+- sede, área, custodia y uso compartido o personal;
+- sistema operativo y versión;
+- configuración estándar aplicada;
+- cifrado, bloqueo y postura de seguridad;
+- aplicaciones instaladas;
+- última comprobación y salud;
+- parches pendientes;
+- soporte remoto autorizado;
+- retiro, borrado y disposición.
+
+Un endpoint podrá cambiar de custodio sin perder historial y un activo podrá existir temporalmente sin estar habilitado como endpoint productivo.
+
+---
+
+#### 10. Dispositivos compartidos
+
+El bloque `AUTH-DEV` continuará limitando la operación por sede, área, aplicación y capacidad máxima. CAP-SCOPE-015 añadirá:
+
+- inventario técnico y salud;
+- configuración estándar;
+- versión de navegador o aplicación;
+- periféricos relacionados;
+- conectividad esperada;
+- procedimiento de recuperación;
+- cambio seguro de trabajador;
+- revocación técnica y borrado local.
+
+El dispositivo nunca prestará permisos administrativos al trabajador activo.
+
+---
+
+#### 11. Redes y conectividad
+
+La red deberá representarse mediante:
+
+- proveedor y enlace de internet;
+- router, switch, punto de acceso y UPS relacionados;
+- segmento o VLAN;
+- SSID y finalidad;
+- rango y política de direccionamiento;
+- reservas DHCP y nombres estables;
+- dispositivos esperados;
+- dependencia de impresoras, cámaras, POS y tablets;
+- métricas de disponibilidad, latencia y pérdida;
+- cambios, respaldos de configuración y recuperación.
+
+Las redes de invitados, administración, operación, IoT, cámaras e impresión deberán separarse o justificar expresamente su convivencia.
+
+---
+
+#### 12. Impresoras y periféricos
+
+El servicio transversal `PRINT-ARC` ya define inventario, routing, heartbeat, idempotencia, reintentos, fallback y adaptadores. CAP-SCOPE-015 no duplicará esas tareas.
+
+TI administrará la dimensión física y de soporte:
+
+- impresora, modelo, serie, interfaz y dirección estable;
+- ubicación y responsable;
+- papel, lenguaje y capacidades;
+- cola y adaptador relacionados;
+- consumibles y mantenimiento;
+- estado, heartbeat y último diagnóstico;
+- red, reserva y ruta esperadas;
+- fallback autorizado;
+- evidencia de prueba.
+
+Cambiar IP, USB, Bluetooth, puente local o driver será un cambio tecnológico versionado, no una corrección informal.
+
+---
+
+#### 13. Aplicaciones y proveedores tecnológicos
+
+Cada aplicación o servicio deberá declarar:
+
+- propietario empresarial y técnico;
+- ambientes y URL autorizadas;
+- repositorio y versión cuando aplique;
+- proveedor y contrato;
+- autenticación y cuentas técnicas;
+- datos tratados y clasificación;
+- dependencias y servicios críticos;
+- licencia, asientos y renovación;
+- SLA y soporte;
+- respaldo, recuperación y salida del proveedor.
+
+El catálogo de aplicaciones de SHELL seguirá gobernando identidad y acceso; el catálogo de TI añadirá la operación del servicio.
+
+---
+
+#### 14. Mesa de servicio
+
+El flujo mínimo será:
+
+```text
+reporte o solicitud
+→ clasificación
+→ impacto + urgencia
+→ prioridad y SLA
+→ asignación
+→ diagnóstico
+→ acción o workaround
+→ restauración
+→ validación del solicitante o responsable
+→ cierre
+```
+
+ANIMA ofrecerá un formulario corto y contextual. VISO mostrará la cola administrativa. El usuario no deberá escoger términos técnicos que desconoce; sede, dispositivo, aplicación y contexto se propondrán automáticamente cuando sea posible.
+
+---
+
+#### 15. Incidentes, problemas y errores conocidos
+
+Un incidente restablece servicio. Un problema investiga recurrencia. Un error conocido conserva causa identificada y workaround.
+
+Los incidentes críticos incluirán:
+
+- impacto y servicios afectados;
+- línea de tiempo;
+- comunicación a usuarios;
+- decisiones y cambios de emergencia;
+- restauración y validación;
+- causa preliminar y definitiva;
+- acciones preventivas;
+- revisión posterior.
+
+Cerrar una conversación de soporte no cerrará automáticamente el incidente o problema relacionado.
+
+---
+
+#### 16. Cambios y versiones
+
+Todo cambio productivo relevante conservará:
+
+- razón y alcance;
+- elementos afectados;
+- riesgo e impacto;
+- dependencias;
+- aprobación;
+- ventana;
+- plan de prueba;
+- respaldo o estado anterior;
+- rollback;
+- ejecutor;
+- resultado y revisión posterior.
+
+Los releases de código seguirán el BLOQUE T. Red, impresoras, dispositivos, cuentas, proveedores y configuraciones utilizarán el mismo principio de control, aunque no exista un commit de software.
+
+---
+
+#### 17. Prueba antes de uso
+
+La aceptación deberá cubrir, según el cambio:
+
+- funcionalidad;
+- permisos y RLS;
+- dispositivo real;
+- red real o simulada;
+- impresión y periféricos;
+- operación offline;
+- reintentos e idempotencia;
+- recuperación y rollback;
+- rendimiento y capacidad;
+- seguridad y privacidad;
+- comprensión del usuario.
+
+Una prueba técnica exitosa no bastará cuando el flujo completo de la sede no haya sido validado.
+
+---
+
+#### 18. Monitoreo y observabilidad
+
+La salud técnica deberá poder correlacionar:
+
+```text
+servicio
+→ aplicación
+→ endpoint o infraestructura
+→ red
+→ proveedor
+→ incidente
+```
+
+Alertas repetidas se agruparán y no generarán cientos de tickets. La ausencia de telemetría se distinguirá de un servicio saludable. Logs y métricas conservarán retención, acceso, minimización y reloj coherente.
+
+---
+
+#### 19. Respaldo y recuperación
+
+Cada servicio crítico declarará:
+
+- qué se respalda;
+- propietario;
+- frecuencia y retención;
+- cifrado y ubicación;
+- objetivo de pérdida aceptable;
+- objetivo de recuperación;
+- procedimiento de restauración;
+- última prueba y resultado;
+- dependencias externas.
+
+CAP-SCOPE-018 gobernará continuidad empresarial. TI será responsable de demostrar la recuperación técnica que esa continuidad requiera.
+
+---
+
+#### 20. Licencias, contratos y costos
+
+TI administrará uso y asignación. ORIGO conservará compra y contrato. NUMERA conservará compromiso, gasto y costo.
+
+Se controlarán:
+
+- producto, plan y proveedor;
+- propietario y usuarios asignados;
+- cantidad comprada, utilizada y disponible;
+- fecha de inicio, renovación y cancelación;
+- costo y centro responsable;
+- garantía y soporte;
+- condición de salida y exportación de datos;
+- alertas de vencimiento y sobredimensionamiento.
+
+Una cuenta activa sin necesidad no justificará conservar una licencia.
+
+---
+
+#### 21. Capacitación y conocimiento
+
+La ayuda deberá ser breve, contextual y accionable:
+
+- guías de una tarea;
+- diagnóstico guiado;
+- procedimientos de contingencia;
+- cambios relevantes de versión;
+- entrenamiento por rol;
+- evidencia de comprensión cuando sea crítica;
+- artículos vinculados a incidentes y problemas.
+
+Las pantallas no se llenarán de explicaciones permanentes. La ayuda extensa estará bajo demanda y la operación cotidiana mostrará únicamente estado, acción y resultado.
+
+---
+
+#### 22. Seguridad técnica
+
+La seguridad abarcará:
+
+- MFA y recuperación;
+- mínimos privilegios;
+- acceso privilegiado temporal;
+- soporte remoto autorizado;
+- segmentación de red;
+- configuración y parches;
+- secretos fuera de tickets y capturas;
+- cifrado y bloqueo;
+- revocación de proveedor;
+- logs protegidos;
+- respuesta coordinada a incidentes de seguridad.
+
+SHELL/AUTH decidirá autorización. CAP-SCOPE-016 gobernará información y evidencia. CAP-SCOPE-018 gobernará continuidad. TI ejecutará y comprobará controles técnicos.
+
+---
+
+#### 23. Experiencia simple
+
+El trabajador verá:
+
+```text
+Reportar un problema
+Mis solicitudes
+Avisos de servicio
+Ayuda rápida
+```
+
+La mesa de servicio verá:
+
+```text
+Nuevos
+En riesgo de SLA
+Incidentes activos
+Cambios de hoy
+Dispositivos o servicios con alerta
+Pendientes de validación
+```
+
+No se expondrán IP, payloads, logs o códigos de error en la vista principal salvo que el usuario abra el diagnóstico técnico autorizado.
+
+---
+
+#### 24. Preguntas y decisiones pendientes
+
+No se crean preguntas nuevas.
+
+Se reutilizan:
+
+- `DIF-05` — funcionamiento sin internet;
+- `DIF-07` — recuperación por caída de energía, red o dispositivo;
+- `DIF-10` — propietario objetivo del soporte tecnológico.
+
+Esta tarea resuelve funcionalmente `DIF-10` mediante propiedad distribuida y mesa de servicio en VISO. La actualización formal del registro vivo se consolidará posteriormente en lote. `DIF-05` y `DIF-07` continúan hasta diseño, piloto y CAP-SCOPE-018.
+
+---
+
+#### 25. Hallazgos
+
+| ID                  | Hallazgo                                                                                                                                                          | Severidad | Tarea propietaria                                     | Puerta  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------------------------------------------------- | ------- |
+| H-CAP-SCOPE-015-001 | Las capacidades tecnológicas están distribuidas entre SHELL, NEXO, ANIMA, VISO, impresión y CI sin un modelo operativo único.                                     | crítica   | TI-DOM-001; TI-INT-002                                | E1/E2   |
+| H-CAP-SCOPE-015-002 | No existe un catálogo canónico de servicios tecnológicos, propietarios, criticidad y niveles de atención.                                                         | alta      | TI-DOM-001; TI-UX-002                                 | E2      |
+| H-CAP-SCOPE-015-003 | support_tickets solo conserva categoría, título, descripción, estado básico y asignación; no modela impacto, urgencia, SLA ni recurso afectado.                   | crítica   | TI-DOM-007; TI-UX-001; TI-UX-002                      | E2/E3   |
+| H-CAP-SCOPE-015-004 | Los mensajes y notificaciones de soporte existen, pero no prueban un ciclo completo de diagnóstico, validación y reapertura.                                      | alta      | TI-DOM-007; TI-UX-002                                 | E2/E3   |
+| H-CAP-SCOPE-015-005 | Activo físico, endpoint lógico, dispositivo compartido, sesión y actor pueden confundirse.                                                                        | crítica   | TI-DOM-002; TI-DOM-003; AUTH-DEV-001 a AUTH-DEV-016   | E2/E3   |
+| H-CAP-SCOPE-015-006 | No existe una CMDB o grafo de relaciones que permita evaluar qué servicio depende de qué dispositivo, red, aplicación o proveedor.                                | crítica   | TI-DOM-002; TI-DOM-006; TI-INT-002                    | E2/E3   |
+| H-CAP-SCOPE-015-007 | El alta, cambio y baja de cuentas puede no estar reconciliado integralmente con vinculación, cambio de función, retiro y contratos externos.                      | crítica   | TI-DOM-001; TI-AUTH-001; TI-AUTH-002; CAP-SCOPE-002   | E2/E3   |
+| H-CAP-SCOPE-015-008 | Una cuenta, permiso, credencial, secreto y asiento de licencia pueden tratarse como si fueran el mismo objeto.                                                    | crítica   | TI-DOM-006; TI-DOM-012; TI-AUTH-002                   | E2/E3   |
+| H-CAP-SCOPE-015-009 | Accesos privilegiados, de proveedor o de soporte remoto no tienen un ciclo tecnológico explícito de solicitud, tiempo limitado, supervisión y cierre.             | crítica   | TI-AUTH-002; TI-DOM-009                               | E2/E3   |
+| H-CAP-SCOPE-015-010 | No existe una configuración estándar y versionada por clase de computador, celular o tableta.                                                                     | alta      | TI-DOM-003; TI-UX-003                                 | E2/E3   |
+| H-CAP-SCOPE-015-011 | Parches, versión de sistema, cifrado, bloqueo, salud, aplicaciones y fecha de última comprobación no están gobernados integralmente.                              | crítica   | TI-DOM-003; TI-DOM-010; TI-AUTH-003                   | E2/E3   |
+| H-CAP-SCOPE-015-012 | La topología real de enlaces, routers, switches, puntos de acceso, segmentos y dependencias no está consolidada.                                                  | crítica   | TI-DOM-004; TI-UX-003                                 | E1/E2   |
+| H-CAP-SCOPE-015-013 | SSID, red de invitados, operación, administración, IoT, cámaras e impresoras pueden compartir límites no certificados.                                            | crítica   | TI-DOM-004; TI-AUTH-003                               | E2/E3   |
+| H-CAP-SCOPE-015-014 | El direccionamiento, DHCP, reservas, nombres y configuración de impresoras pueden divergir y causar cambios de IP o rutas rotas.                                  | crítica   | TI-DOM-004; TI-DOM-005; PRINT-ARC-007 a PRINT-ARC-009 | E2/E3   |
+| H-CAP-SCOPE-015-015 | No existe monitoreo transversal comprobado de internet, red local, endpoint, impresora, aplicación y proveedor.                                                   | crítica   | TI-DOM-010; TI-INT-001                                | E3/E4   |
+| H-CAP-SCOPE-015-016 | La arquitectura PRINT-ARC define el objetivo, pero todavía debe reconciliar inventario físico, heartbeat, routing, adaptadores y fallos reales.                   | alta      | TI-DOM-005; PRINT-ARC-001 a PRINT-ARC-020             | E2/E4   |
+| H-CAP-SCOPE-015-017 | BrowserPrint, puentes locales, LAN, USB, Bluetooth y aplicaciones de terceros pueden producir rutas de impresión no equivalentes.                                 | alta      | TI-DOM-005; TI-INT-001; PRINT-ARC-018                 | E3/E4   |
+| H-CAP-SCOPE-015-018 | Impresora, cola, plantilla, documento, ruta y trabajo pueden confundirse al diagnosticar o reimprimir.                                                            | crítica   | TI-DOM-005; PRINT-ARC-003 a PRINT-ARC-014             | E2/E3   |
+| H-CAP-SCOPE-015-019 | El catálogo de aplicaciones no incorpora de forma completa ambientes, propietario de servicio, dependencias, datos, autenticación, SLA, proveedor y recuperación. | crítica   | TI-DOM-006; TI-UX-005                                 | E2/E3   |
+| H-CAP-SCOPE-015-020 | Licencias, asientos, renovaciones, usuarios asignados, garantías y costos pueden estar dispersos entre correos, cuentas personales y facturas.                    | alta      | TI-DOM-012; TI-UX-005; ORIGO; NUMERA                  | E1/E2   |
+| H-CAP-SCOPE-015-021 | Credenciales, tokens, códigos de recuperación o diagnósticos sensibles pueden terminar en tickets, capturas o mensajería.                                         | crítica   | TI-AUTH-002; TI-AUTH-004; CAP-SCOPE-016               | E2/E4   |
+| H-CAP-SCOPE-015-022 | El bloque de CI y despliegue cubre software, pero no gobierna por sí solo cambios de router, impresora, endpoint, cuenta o proveedor.                             | alta      | TI-DOM-009; SHELL-CI-001 a SHELL-CI-019               | E2/E5   |
+| H-CAP-SCOPE-015-023 | Un cambio tecnológico puede ejecutarse sin ventana, dependencias, aprobación, prueba de reversión ni revisión posterior.                                          | crítica   | TI-DOM-009; TI-UX-004                                 | E2/E5   |
+| H-CAP-SCOPE-015-024 | Probar una aplicación no equivale a probar dispositivo, red, impresora, contingencia y operación real en la sede.                                                 | crítica   | TI-DOM-009; CAP-SCOPE-005; BLOQUES E5/T/U             | E5/U    |
+| H-CAP-SCOPE-015-025 | Solicitud, incidente, problema, error conocido y cambio pueden registrarse como un único ticket genérico.                                                         | crítica   | TI-DOM-007 a TI-DOM-009                               | E2/E3   |
+| H-CAP-SCOPE-015-026 | Marcar un ticket como resuelto no demuestra restauración del servicio, validación del usuario ni eliminación de la causa.                                         | crítica   | TI-DOM-007; TI-DOM-008; TI-UX-002                     | E2/E3   |
+| H-CAP-SCOPE-015-027 | Workarounds, procedimientos y conocimiento técnico pueden depender de memoria personal y no de una base versionada.                                               | alta      | TI-DOM-008; TI-DOM-013; TI-UX-006                     | E2/E4   |
+| H-CAP-SCOPE-015-028 | Capacitación y adopción no están vinculadas sistemáticamente a cambio, versión, rol, herramienta y evidencia de comprensión.                                      | alta      | TI-DOM-013; TI-UX-006; ANIMA                          | E2/E5   |
+| H-CAP-SCOPE-015-029 | Tener respaldo configurado puede confundirse con haber probado restauración, integridad y tiempo de recuperación.                                                 | crítica   | TI-DOM-011; CAP-SCOPE-018                             | E3/E5/U |
+| H-CAP-SCOPE-015-030 | La recuperación ante caída de energía, red o dispositivo continúa diferida y debe enlazarse con continuidad y piloto.                                             | crítica   | TI-DOM-011; DIF-05; DIF-07; CAP-SCOPE-018             | E2/E5   |
+| H-CAP-SCOPE-015-031 | Diagnóstico remoto, modo offline y reintentos pueden duplicar acciones o perder evidencia del actor y del dispositivo.                                            | alta      | TI-DOM-007; TI-AUTH-002; TI-INT-003                   | E3/E4   |
+| H-CAP-SCOPE-015-032 | Logs, capturas y exportaciones de soporte pueden exponer datos personales, secretos, direcciones o información financiera.                                        | crítica   | TI-AUTH-004; CAP-SCOPE-016                            | E2/E4   |
+| H-CAP-SCOPE-015-033 | Proveedores tecnológicos, ISP, garantías, contratos, compras y gastos no tienen conciliación transversal de ciclo de vida.                                        | alta      | TI-DOM-006; TI-DOM-012; TI-INT-003; ORIGO; NUMERA     | E2/E4   |
+| H-CAP-SCOPE-015-034 | Un incidente de servicio, un incidente de seguridad y un incidente de continuidad requieren clasificación y propietarios diferentes.                              | crítica   | TI-DOM-007; TI-AUTH-004; CAP-SCOPE-016; CAP-SCOPE-018 | E2      |
+
+---
+
+#### 26. Tareas nuevas derivadas
+
+| ID          | Tarea                                                                                                                                                       | Bloque                                         | Momento                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| TI-DOM-001  | Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención                                                           | BLOQUE Y — Tecnología y soporte / dominio      | Primera tarea del bloque, antes de diseñar soporte o herramientas    |
+| TI-DOM-002  | Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | BLOQUE Y — Tecnología y soporte / dominio      | Después de TI-DOM-001 y coordinada con NEXO y SHELL                  |
+| TI-DOM-003  | Definir ciclo de vida de computadores, celulares, tabletas y endpoints                                                                                      | BLOQUE Y — Tecnología y soporte / dominio      | Antes de inventario técnico, estandarización o administración remota |
+| TI-DOM-004  | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes                                                         | BLOQUE Y — Tecnología y soporte / dominio      | Antes de cambios de router, Wi-Fi, VLAN, DHCP o reservas productivas |
+| TI-DOM-005  | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión                                                            | BLOQUE Y — Tecnología y soporte / dominio      | Coordinada con PRINT-ARC-001 a PRINT-ARC-020                         |
+| TI-DOM-006  | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad                                                              | BLOQUE Y — Tecnología y soporte / dominio      | Antes de administrar contratos, accesos o continuidad por aplicación |
+| TI-DOM-007  | Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre                                            | BLOQUE Y — Tecnología y soporte / dominio      | Antes de refactorizar support_tickets                                |
+| TI-DOM-008  | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia                                                                        | BLOQUE Y — Tecnología y soporte / dominio      | Después de TI-DOM-007                                                |
+| TI-DOM-009  | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior                                                          | BLOQUE Y — Tecnología y soporte / dominio      | Coordinada con BLOQUE T, E5 y propietarios funcionales               |
+| TI-DOM-010  | Definir monitoreo, eventos técnicos, alertas, logs, salud y observabilidad de servicios                                                                     | BLOQUE Y — Tecnología y soporte / dominio      | Antes de integrar herramientas de monitoreo                          |
+| TI-DOM-011  | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial                                                                 | BLOQUE Y — Tecnología y soporte / dominio      | Coordinada con CAP-SCOPE-018 y pruebas de restauración               |
+| TI-DOM-012  | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos                                                                  | BLOQUE Y — Tecnología y soporte / dominio      | Coordinada con ORIGO y NUMERA                                        |
+| TI-DOM-013  | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos                                                                 | BLOQUE Y — Tecnología y soporte / dominio      | Después de catálogo de servicios y aplicaciones                      |
+| TI-AUTH-001 | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos                                     | BLOQUE Y — Tecnología y soporte / autorización | Antes de implementar mesa de servicio                                |
+| TI-AUTH-002 | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal                                                            | BLOQUE Y — Tecnología y soporte / autorización | Antes de acceso remoto o administración productiva                   |
+| TI-AUTH-003 | Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo                                                                 | BLOQUE Y — Tecnología y soporte / autorización | Antes de exponer controles administrativos                           |
+| TI-AUTH-004 | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte                                                                | BLOQUE Y — Tecnología y soporte / autorización | Antes de recopilar telemetría o evidencia real                       |
+| TI-UX-001   | Diseñar portal simple de soporte para trabajadores dentro de ANIMA                                                                                          | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-001 y TI-DOM-007                                   |
+| TI-UX-002   | Diseñar mesa de servicio de VISO con colas, prioridad, SLA, asignación, comunicación y validación                                                           | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-007 y TI-AUTH-001                                  |
+| TI-UX-003   | Diseñar mapa de dispositivos, redes, impresoras, aplicaciones y salud técnica                                                                               | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-002 a TI-DOM-006 y TI-DOM-010                      |
+| TI-UX-004   | Diseñar flujos de incidente, problema, cambio, mantenimiento y recuperación                                                                                 | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-007 a TI-DOM-011                                   |
+| TI-UX-005   | Diseñar gestión de aplicaciones, proveedores, licencias, contratos, renovaciones y costos                                                                   | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-006 y TI-DOM-012                                   |
+| TI-UX-006   | Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica                                                           | BLOQUE Y — Tecnología y soporte / experiencia  | Después de TI-DOM-013                                                |
+| TI-INT-001  | Definir adaptadores de telemetría para endpoints, redes, impresoras, aplicaciones y servicios externos                                                      | BLOQUE Y — Tecnología y soporte / integración  | Antes de monitoreo productivo                                        |
+| TI-INT-002  | Definir contratos con SHELL, NEXO, ANIMA, VISO, ORIGO, NUMERA, PRINT-ARC, BLOQUE T y continuidad                                                            | BLOQUE Y — Tecnología y soporte / integración  | Antes de implementar el modelo transversal                           |
+| TI-INT-003  | Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedores tecnológicos                                                  | BLOQUE Y — Tecnología y soporte / integración  | Antes de conectar proveedores o consolas externas                    |
+
+---
+
+#### 27. Ubicación exacta de tareas nuevas
+
+Crear el archivo:
+
+```text
+docs/plan-canonico/modular/bloques/Y_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Y.md
+```
+
+Agregar su ruta en `docs/plan-canonico/modular/manifest.json` inmediatamente después de:
+
+```text
+bloques/X_INTEGRACIONES/00_BLOQUE_X.md
+```
+
+El nuevo bloque contendrá, en este orden:
+
+1. `TI-DOM-001` a `TI-DOM-013`;
+2. `TI-AUTH-001` a `TI-AUTH-004`;
+3. `TI-UX-001` a `TI-UX-006`;
+4. `TI-INT-001` a `TI-INT-003`.
+
+No se trasladarán ni duplicarán `AUTH-DEV-*`, `PRINT-ARC-*` o `SHELL-CI-*`; el BLOQUE Y los referenciará como dependencias.
+
+---
+
+#### 28. Requisitos de prueba generados
+
+El registro `04A` completo incorpora:
+
+```text
+TREQ-SHELL-010
+TREQ-VISO-002
+TREQ-NEXO-019
+TREQ-INTEGRATION-020
+```
+
+- `TREQ-SHELL-010` protege cuentas, aplicaciones, endpoints, acceso privilegiado y ejecución autorizada del ciclo de acceso.
+- `TREQ-VISO-002` protege mesa de servicio, incidentes, problemas, cambios, SLA, comunicación, validación y experiencia simple.
+- `TREQ-NEXO-019` protege inventario y relaciones físicas de tecnología, red, impresoras y endpoints.
+- `TREQ-INTEGRATION-020` protege telemetría, impresión, soporte, proveedores, licencias y coordinación transversal.
+
+---
+
+#### 29. Dependencias principales
+
+- `CAP-SCOPE-002`: personas, altas, cambios y retiros;
+- `CAP-SCOPE-007`: activos, mantenimiento y garantías;
+- `CAP-SCOPE-012`: contratos, obligaciones, gasto y costos;
+- `CAP-SCOPE-013`: instalaciones, energía y condiciones físicas;
+- `CAP-SCOPE-016`: información, documentos, secretos, logs y evidencia;
+- `CAP-SCOPE-018`: continuidad e incidentes empresariales;
+- `AUTH-DEV-001` a `AUTH-DEV-016`: dispositivo compartido;
+- `PRINT-ARC-001` a `PRINT-ARC-020`: impresión transversal;
+- `SHELL-CI-001` a `SHELL-CI-019`: versionado y despliegue;
+- BLOQUES `E5` y `U`: piloto, aceptación y certificación.
+
+---
+
+#### 30. Criterios de aceptación
+
+`CAP-SCOPE-015` podrá aprobarse cuando:
+
+- las once subcapacidades estén clasificadas;
+- la propiedad distribuida entre SHELL, NEXO, ANIMA, VISO, PRINT-ARC, ORIGO y NUMERA sea explícita;
+- activo, endpoint, dispositivo compartido, cuenta, licencia y sesión estén separados;
+- solicitud, incidente, problema y cambio estén separados;
+- red, impresora y aplicación tengan identidades y relaciones estables;
+- el soporte tenga impacto, urgencia, SLA, validación y reapertura;
+- cambios y pruebas cubran hardware y configuración además de código;
+- seguridad, acceso remoto, logs y secretos tengan controles explícitos;
+- respaldo y restauración no se confundan;
+- cada brecha tenga tarea propietaria;
+- los cuatro `TREQ` estén incorporados en el `04A` completo;
+- no se autorice ninguna intervención técnica real;
+- `CAP-SCOPE-016` permanezca como continuidad inmediata.
+
+---
+
+#### 31. Lo que esta tarea no autoriza
+
+- crear cuentas, permisos o licencias;
+- conectarse remotamente a equipos;
+- cambiar routers, DHCP, SSID, VLAN, IP o reservas;
+- instalar, actualizar, bloquear o borrar dispositivos;
+- modificar impresoras, drivers, colas o adaptadores;
+- conectar herramientas de monitoreo, MDM o proveedores;
+- abrir, cerrar o alterar tickets reales;
+- desplegar código o configuración;
+- probar restauraciones en producción;
+- iniciar `CAP-SCOPE-016`.
+
+---
+
+#### 32. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+servicio y elemento tecnológico identificados
+→ solicitud, incidente o cambio
+→ autorización y diagnóstico
+→ ejecución controlada
+→ restauración o despliegue
+→ validación
+→ conocimiento y prevención
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-016
+— Evaluar información, documentos, archivos, evidencia y privacidad
+```
+
+---
+
+#### 33. Estado de aprobación
+
+```text
+PROPUESTA PARA APROBACIÓN — NO APROBADA
+```
+
+No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
+
+
 ### [ ] CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
 ### [ ] CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
 ### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
@@ -201292,6 +202705,75 @@ AURA no se implementará ni ampliará antes de completar esta auditoría.
 ### [ ] AURA-AUD-011 — Documentar decisión mediante ADR si corresponde
 ### [ ] AURA-AUD-012 — Mantener roadmap de implementación bloqueado hasta decisión
 
+---
+
+## ROADMAP OBJETIVO DE AURA
+
+> Todas las tareas `AURA-DOM`, `AURA-AUTH`, `AURA-UX` y `AURA-INT`
+> permanecen **BLOQUEADAS** hasta que:
+>
+> 1. `AURA-AUD-010` apruebe formalmente la continuidad o el reemplazo de AURA; y
+> 2. `AURA-AUD-011` registre la decisión mediante ADR cuando corresponda.
+>
+> La existencia de estas tareas no autoriza implementación, conexión de canales,
+> uso de datos reales, publicación, contacto con clientes ni contratación de
+> proveedores de inteligencia artificial.
+
+## DOMINIO FUNCIONAL
+
+### [ ] AURA-DOM-001 — Definir arquitectura de marcas, identidad, tono, mensajes, claims, restricciones y vigencia
+
+### [ ] AURA-DOM-002 — Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de campaña
+
+### [ ] AURA-DOM-003 — Definir biblioteca de activos, derechos, versiones, reutilización y ciclo de aprobación de contenido
+
+### [ ] AURA-DOM-004 — Definir copiloto creativo, grounding, memoria, restricciones, proveedores de IA y revisión humana
+
+### [ ] AURA-DOM-005 — Definir cuentas, medios, publicación, programación, reintentos, retiro y reconciliación por canal
+
+### [ ] AURA-DOM-006 — Definir campañas, experimentos, promociones, cupones y guardas económicas y operativas
+
+### [ ] AURA-DOM-007 — Definir oportunidades, leads, pipeline B2B, catering, eventos y transferencia a operación
+
+### [ ] AURA-DOM-008 — Definir métricas, atribución, confianza, incrementalidad, aprendizaje y cierre de campaña
+
+### [ ] AURA-DOM-009 — Definir reputación, comentarios públicos, clasificación, respuesta y escalamiento a servicio
+
+### [ ] AURA-DOM-010 — Definir radar de oportunidades y recomendaciones comerciales explicables
+
+## AUTORIZACIÓN
+
+### [ ] AURA-AUTH-001 — Proteger marcas, campañas, activos, audiencias, canales y resultados por empresa, marca y función
+
+### [ ] AURA-AUTH-002 — Separar creación, revisión, aprobación, programación, publicación, retiro y respuesta pública
+
+### [ ] AURA-AUTH-003 — Proteger promociones, segmentos, leads, datos de clientes, exportaciones y acciones masivas
+
+### [ ] AURA-AUTH-004 — Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a terceros
+
+## EXPERIENCIA Y PANTALLAS
+
+### [ ] AURA-UX-001 — Diseñar inicio diario simple con prioridades, calendario, pendientes y oportunidades
+
+### [ ] AURA-UX-002 — Diseñar sistema de marca, brief guiado y calendario visual
+
+### [ ] AURA-UX-003 — Diseñar estudio creativo asistido y fábrica de variantes reutilizables
+
+### [ ] AURA-UX-004 — Diseñar aprobación y publicación multicanal con estado y recuperación claros
+
+### [ ] AURA-UX-005 — Diseñar campañas, promociones, cupones, experimentos y guardas
+
+### [ ] AURA-UX-006 — Diseñar bandeja de oportunidades, B2B, catering y eventos
+
+### [ ] AURA-UX-007 — Diseñar reputación, comentarios, respuestas y escalamiento
+
+### [ ] AURA-UX-008 — Diseñar tablero de resultados, atribución y copiloto de recomendaciones
+
+## INTEGRACIONES
+
+### [ ] AURA-INT-001 — Definir adaptadores de canales, webhooks, límites, credenciales y reconciliación externa
+
+### [ ] AURA-INT-002 — Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO
 ## BLOQUE X
 
 **Integraciones empresariales internas y externas**
