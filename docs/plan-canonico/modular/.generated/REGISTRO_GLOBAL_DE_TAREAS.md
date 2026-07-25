@@ -10,18 +10,17 @@
 | --- | ---: |
 | Tareas con marcador | **1569** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **214** |
+| Aprobadas | **220** |
 | En propuesta | **0** |
-| No iniciadas | **1355** |
+| No iniciadas | **1349** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | ✅ APROBADA |
-| Tarea actual | `GAP-CTRL-002` — Deduplicar brechas equivalentes | ⬜ NO INICIADA |
-| Siguiente | `GAP-CTRL-003` — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | ⬜ NO INICIADA |
+| Última aprobada | `GAP-CTRL-007` — Definir criterio y evidencia de cierre | ✅ APROBADA |
+| Tarea actual | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -242,12 +241,12 @@
 | ✅ APROBADA | `CAP-COVER-011` | Priorizar por criticidad, frecuencia, riesgo y valor operativo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
 | ✅ APROBADA | `CAP-COVER-012` | Aprobar matriz capacidad × proceso × aplicación × implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
 | ✅ APROBADA | `GAP-CTRL-001` | Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-002` | Deduplicar brechas equivalentes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-003` | Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-004` | Asignar propietario y fecha de decisión | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-005` | Vincular cada brecha con capacidad y proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-002` | Deduplicar brechas equivalentes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-003` | Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-004` | Asignar propietario y fecha de decisión | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-005` | Vincular cada brecha con capacidad y proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |

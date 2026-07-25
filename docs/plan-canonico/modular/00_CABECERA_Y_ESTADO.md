@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **131** |
 | Tareas canónicas con marcador | **1569** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **214** |
+| Tareas aprobadas | **220** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1355** |
+| Tareas no iniciadas | **1349** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código** |
-| Tarea actual | **GAP-CTRL-002 — Deduplicar brechas equivalentes** |
+| Última tarea aprobada | **GAP-CTRL-007 — Definir criterio y evidencia de cierre** |
+| Tarea actual | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación** |
+| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 89 de 96 aprobadas; GAP-CTRL-002 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 95 de 96 aprobadas; GAP-CTRL-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código |
-| Tarea actual | `GAP-CTRL-002` — Deduplicar brechas equivalentes — **NO INICIADA** |
-| Siguiente tarea | `GAP-CTRL-003` — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación |
+| Última aprobada | `GAP-CTRL-007` — Definir criterio y evidencia de cierre |
+| Tarea actual | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario — **NO INICIADA** |
+| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **89 DE 96 APROBADAS — ACTUAL GAP-CTRL-002** |
+| BLOQUE E1 | **95 DE 96 APROBADAS — ACTUAL GAP-CTRL-008** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,14 +87,11 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código
+GAP-CTRL-007 — Definir criterio y evidencia de cierre
         ↓
 TAREA ACTUAL
-GAP-CTRL-002 — Deduplicar brechas equivalentes
-        ↓
-SIGUIENTE TAREA RESERVADA
-GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación
+GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 89 de 96 tareas aprobadas
+BLOQUE E1 — 95 de 96 tareas aprobadas
 ```
