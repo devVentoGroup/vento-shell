@@ -1,10 +1,12 @@
-# E1-GATE-MANIFEST-002 — Propuesta corregida de puerta de cierre de E1
+# E1-GATE-MANIFEST-002 — Puerta corregida y aprobada de cierre de E1
 
-**Estado:** `PROPUESTA PARA APROBACIÓN`
-**Sustituye como resultado vigente propuesto:** la interpretación de arrastre individual aplicada después de `E1-GATE-MANIFEST-001`
-**No sustituye:** el manifiesto `001` como evidencia histórica de la primera ejecución
+**Estado:** `APROBADO`  
+**Sustituye como resultado vigente:** la interpretación de arrastre individual aplicada después de `E1-GATE-MANIFEST-001`  
+**No sustituye:** el manifiesto `001` como evidencia histórica de la primera ejecución  
+**Aprobado por:** `OWN-GG`  
+**Fecha de aprobación:** `2026-07-25`
 
-## Regla corregida
+## Regla aprobada
 
 E1 es una fase de descubrimiento. Su puerta comprueba que las brechas críticas fueron identificadas y encaminadas; no exige decisiones propias de diseño, implementación, piloto o producción.
 
@@ -17,13 +19,15 @@ Para cerrar E1, cada brecha crítica debe tener:
 5. perfil de cierre;
 6. estado abierto, salvo que exista evidencia válida de cierre.
 
-La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La fase destino no se replica manualmente en 138 filas. La razón común de continuidad es:
+La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La fase destino no se replica manualmente en 138 filas.
+
+La razón común de continuidad es:
 
 > La brecha permanece abierta porque su resolución material corresponde a la fase propietaria, la tarea primaria y el paquete ya asignados.
 
-La aprobación se realiza sobre la línea base completa de E1. Los controles compensatorios solo son obligatorios cuando una brecha pueda quedar expuesta durante implementación, piloto, cutover o producción antes de resolverse.
+La aprobación se realiza sobre la línea base completa de E1. Los controles compensatorios individualizados solo son obligatorios cuando una brecha pueda quedar expuesta durante implementación, piloto, cutover o producción antes de resolverse.
 
-## Resultado reproducible
+## Resultado reproducible aprobado
 
 | Control | Resultado |
 | --- | ---: |
@@ -41,7 +45,8 @@ La aprobación se realiza sobre la línea base completa de E1. Los controles com
 ```text
 gate_status = PASS_WITH_CARRYOVER
 blocking_reasons[] = []
-baseline_approval = PENDIENTE — OWN-GG
+baseline_approval = APROBADA — OWN-GG
+approved_at = 2026-07-25
 next_review_date = 2026-08-21
 ```
 
@@ -54,10 +59,19 @@ next_review_date = 2026-08-21
 - E1 cumplió su propósito de descubrimiento;
 - las brechas continúan abiertas;
 - ninguna se considera resuelta por cerrar la fase;
-- cada una conserva propietario, fecha, tarea, paquete y criterio;
+- cada una conserva propietario, fecha, tarea, paquete y perfil;
 - las puertas posteriores deberán exigir controles proporcionales al riesgo real de su fase;
-- `PROC-CAT-001` solo queda habilitada después del `APROBADO` explícito de `OWN-GG` sobre esta propuesta.
+- BLOQUE E1 queda cerrado documentalmente;
+- `PROC-CAT-001` queda habilitada.
 
 ## Historial preservado
 
-`E1-GATE-MANIFEST-001` continúa demostrando que la primera ejecución aplicó una regla más estricta y obtuvo `BLOCKED_ROUTING`. Ese resultado fue coherente con aquella regla, pero la regla se considera sobredimensionada para descubrimiento y queda reemplazada por esta propuesta cuando reciba aprobación.
+`E1-GATE-MANIFEST-001` continúa demostrando que la primera ejecución aplicó una regla más estricta y obtuvo `BLOCKED_ROUTING`. Ese resultado fue coherente con aquella regla, pero la regla queda sustituida por este manifiesto aprobado.
+
+## Decisión
+
+```text
+E1 = CLOSED_WITH_CARRYOVER
+E1-GATE-001 = APPROVED
+PROC-CAT-001 = ENABLED
+```

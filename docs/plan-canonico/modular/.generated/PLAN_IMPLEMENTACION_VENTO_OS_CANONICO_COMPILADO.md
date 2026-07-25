@@ -17,45 +17,45 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **133** |
+| Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **221** |
-| Tareas en propuesta | **1** |
-| Tareas no iniciadas | **1348** |
+| Tareas aprobadas | **223** |
+| Tareas en propuesta | **0** |
+| Tareas no iniciadas | **1347** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
-| Tarea actual | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
-| Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 96 de 98 aprobadas; E1-GATE-001 en propuesta** |
+| Última tarea aprobada | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
+| Tarea actual | **PROC-CAT-002 — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **PROC-CAT-003 — Crear identificador estable para cada proceso** |
+| Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
+| Progreso del bloque | **BLOQUE E2: 1 de 20 aprobadas; PROC-CAT-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
-| Estado          | Valor                                                                                        |
-| --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario |
-| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
-| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
+| Estado          | Valor                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------ |
+| Última aprobada | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
+| Tarea actual | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes — **NO INICIADA** |
+| Siguiente tarea | `PROC-CAT-003` — Crear identificador estable para cada proceso |
+| Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
 
-| Grupo de tareas                   | Estado                                        |
-| --------------------------------- | --------------------------------------------- |
-| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                 |
-| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                 |
-| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                   |
-| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
+| Grupo de tareas                   | Estado                                       |
+| --------------------------------- | -------------------------------------------- |
+| `AUTH-CAT-001` a `AUTH-CAT-024`   | **APROBADAS**                                |
+| `AUTH-RBAC-001` a `AUTH-RBAC-028` | **APROBADAS**                                |
+| BLOQUE D                          | **CERRADO DOCUMENTALMENTE**                  |
+| `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **96 DE 98 APROBADAS — ACTUAL E1-GATE-001** |
-| Implementación física             | **NO INICIADA**                               |
+| BLOQUE E2 | **1 DE 20 APROBADAS — ACTUAL PROC-CAT-002** |
+| Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
 
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
-        ↓
-TAREA ACTUAL
-E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
-        ↓
-SIGUIENTE TAREA RESERVADA
 PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
         ↓
+TAREA ACTUAL
+PROC-CAT-002 — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-CAT-003 — Crear identificador estable para cada proceso
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 96 de 98 tareas aprobadas
+BLOQUE E2 — 1 de 20 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183537,7 +183537,7 @@ Distribución vigente:
 
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `TREQ-GAP-001` | `GAP` | La puerta deberá aplicar controles proporcionales a la fase. En descubrimiento comprobará propietario; fecha o momento de resolución; tarea primaria; paquete de resolución trazable; perfil de cierre; ausencia de cierres falsos; y conciliación de conteos. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La línea base puede recibir una aprobación conjunta. Los controles compensatorios individualizados solo serán obligatorios cuando exista exposición real durante implementación, piloto, cutover o producción antes de la resolución. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad, burocracia sin reducción de riesgo o avance operativo con riesgo crítico no controlado / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `LISTO_PARA_VALIDAR` | `E1-GATE-MANIFEST-002` | `PASS_WITH_CARRYOVER` candidato; aprobación de línea base pendiente | `11_E1_GATE_MANIFEST_002.md` | `E1-GATE-MANIFEST-002` |
+| `TREQ-GAP-001` | `GAP` | La puerta deberá aplicar controles proporcionales a la fase. En descubrimiento comprobará propietario; fecha o momento de resolución; tarea primaria; paquete de resolución trazable; perfil de cierre; ausencia de cierres falsos; y conciliación de conteos. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La línea base puede recibir una aprobación conjunta. Los controles compensatorios individualizados solo serán obligatorios cuando exista exposición real durante implementación, piloto, cutover o producción antes de la resolución. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad, burocracia sin reducción de riesgo o avance operativo con riesgo crítico no controlado / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `VERIFICADO` | `E1-GATE-MANIFEST-002` | `PASS_WITH_CARRYOVER` | `11_E1_GATE_MANIFEST_002.md` | `E1-GATE-MANIFEST-002` |
 
 #### SHELL
 
@@ -220488,129 +220488,125 @@ La implementación física de esta consulta o de un verificador equivalente qued
 
 ---
 
-### 🟡 E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+### ✅ E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
 
-**Estado:** PROPUESTA PARA APROBACIÓN
-**Bloque:** BLOQUE E1 — Cierre documental y puerta de transición
-**Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS
-**Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5
-**Implementación física:** no incluida
-**Siguiente tarea reservada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
-**Propuesta vigente:** `E1-GATE-MANIFEST-002`
-**Último resultado:** `PASS_WITH_CARRYOVER`
-**Aprobación de línea base:** `PENDIENTE — OWN-GG`
-**Primera revisión del conjunto crítico:** `2026-08-21` — no constituye promesa ni fecha de cierre de las 138 brechas
+**Estado:** APROBADA  
+**Bloque:** BLOQUE E1 — Cierre documental y puerta de transición  
+**Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS  
+**Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5  
+**Resultado de puerta aprobado:** `PASS_WITH_CARRYOVER`  
+**Evidencia vigente:** `E1-GATE-MANIFEST-002`  
+**Aprobación de línea base:** `OWN-GG — APROBADA`  
+**Fecha de aprobación:** `2026-07-25`  
+**Implementación física:** no incluida  
+**Siguiente tarea autorizada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
 
 ---
 
 #### 1. Propósito
 
-Ejecutar la puerta definida por `GAP-CTRL-008`, producir el manifiesto versionado de cierre de BLOQUE E1 y aprobar o bloquear formalmente la transición hacia BLOQUE E2.
+Ejecutar la puerta definida por `GAP-CTRL-008`, reconciliar la línea base de BLOQUE E1 y decidir formalmente si existe evidencia suficiente para iniciar BLOQUE E2.
 
-Esta tarea no redefine brechas, propietarios, fechas, capacidades, procesos, tareas, paquetes ni criterios de cierre. Su función es comprobar que la versión integrada del registro cumple las condiciones de salida de una fase de descubrimiento y que toda brecha crítica abierta queda encaminada hacia una tarea y un paquete futuros verificables.
+La puerta comprueba la suficiencia del descubrimiento. No exige resolver dentro de E1 las brechas cuya solución material pertenece a diseño, arquitectura, implementación, piloto o producción.
 
-#### 1.1. Enmienda de proporcionalidad
+---
 
-E1 no es una puerta de implementación, piloto ni producción. Para cerrar esta fase basta con demostrar que cada brecha crítica tiene propietario, fecha o momento de resolución, tarea primaria, paquete de resolución trazable, perfil de cierre y que no se presenta falsamente como cerrada.
+#### 2. Regla proporcional aprobada
 
-La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La razón de continuidad puede aprobarse una vez para la línea base completa. El control compensatorio solo se exige cuando exista exposición operativa antes de la resolución; no se exige por defecto durante descubrimiento.
+Para cerrar E1, cada brecha crítica debe conservar:
 
-Esta enmienda prevalece sobre cualquier texto anterior que exija `target_phase`, `carryover_reason`, `compensating_control`, aprobación y siguiente fecha como campos materializados individualmente para las 138 brechas durante E1.
+1. propietario vigente;
+2. fecha o momento de resolución;
+3. tarea primaria concreta;
+4. paquete de resolución trazable;
+5. perfil de cierre;
+6. estado abierto, salvo evidencia válida de cierre.
 
-#### 2. Insumos canónicos obligatorios
+El bloque destino puede derivarse de la tarea y del paquete. No se exigen 138 aprobaciones o controles compensatorios individualizados durante descubrimiento. Esos controles se exigirán cuando exista exposición real durante implementación, piloto, cutover o producción.
 
-La evaluación deberá utilizar una única versión conciliada de la línea base `LB-CAP-VENTO-001`, la matriz `CAP-COVER-012`, el registro deduplicado de 836 registros equivalentes, la matriz de 814 brechas y 22 referencias auxiliares, el catálogo de propietarios y fechas de `GAP-CTRL-004`, vínculos de capacidad y proceso de `GAP-CTRL-005`, tareas y 201 paquetes de `GAP-CTRL-006`, perfiles y evidencia de cierre de `GAP-CTRL-007`, las 138 brechas críticas de `GAP-CTRL-008` y el Registro Canónico de Requisitos de Prueba con `TREQ-GAP-001`.
+---
 
-No se permitirá mezclar versiones, anexos o conteos provenientes de cortes diferentes.
+#### 3. Resultado reconciliado
 
-#### 3. Manifiesto obligatorio
-
-La tarea deberá producir un manifiesto versionado con, como mínimo:
-
-```text
-gate_id
-phase_id = E1
-phase_version
-source_commit_or_revision
-evaluated_at
-evaluated_by
-approved_by
-critical_gap_ids[]
-critical_gap_count
-critical_without_owner[]
-critical_without_due_date[]
-critical_without_task[]
-critical_without_package[]
-critical_without_closure_profile[]
-critical_closed_with_valid_evidence[]
-critical_open_with_routing[]
-critical_with_current_operational_exposure[]
-gate_status
-blocking_reasons[]
-next_gate_date
-evidence_location
-```
-
-Los conteos deberán reconciliar exactamente con el registro canónico de brechas de la misma versión.
-
-#### 4. Enrutamiento obligatorio de las brechas críticas abiertas
-
-Antes de evaluar la puerta, cada brecha crítica abierta deberá conservar propietario vigente, fecha o momento de resolución, tarea primaria, paquete de resolución trazable y perfil de cierre. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico; no necesita duplicarse por fila. La línea base recibe una única aprobación de continuidad.
-
-Si una brecha puede impactar implementación, piloto, cutover o producción antes de resolverse, la puerta de esa fase deberá exigir control compensatorio, aprobación específica y fecha de revisión.
-
-#### 5. Regla de evaluación
-
-La puerta se evaluará en este orden: integridad y versión de fuentes; existencia y unicidad de las 138 brechas críticas; propietario válido o interino; fecha o momento de resolución; tarea primaria; paquete de resolución trazable; perfil de cierre; ausencia de cierres falsos; bloque destino derivable del roadmap cuando corresponda; exposición operativa actual; conciliación de conteos; y ejecución de `TREQ-GAP-001`.
-
-Resultado permitido: `PASS`, `PASS_WITH_CARRYOVER`, `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE` o `BLOCKED_EXCEPTION`. No se podrá declarar un resultado verbal ni omitir el manifiesto.
-
-#### 6. Condición para `PASS_WITH_CARRYOVER`
-
-E1 podrá cerrar con brechas críticas abiertas cuando todas tengan propietario vigente, fecha o momento de resolución, tarea primaria, paquete de resolución trazable, perfil de cierre, bloque destino derivable del roadmap cuando corresponda y no se presenten como cerradas. La línea base completa deberá recibir aprobación explícita de `OWN-GG`.
-
-Los controles compensatorios quedan reservados para brechas con exposición operativa antes de su resolución y para las puertas de implementación, piloto, cutover o producción.
-
-#### 7. Aprobación de la línea base de E1
-
-La aprobación deberá declarar la versión de la línea base, resultado de la puerta, cantidad de brechas críticas cerradas y trasladadas, bloqueos, ubicación de evidencia, siguiente fecha de revisión y autorización o prohibición de iniciar `PROC-CAT-001`. `GAP-CTRL-008` aprobado sin manifiesto no basta para cerrar E1.
-
-#### 8. Requisitos de prueba derivados
-
-**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
-
-**Justificación:** esta tarea ejecuta y conserva evidencia de `TREQ-GAP-001`, creado por `GAP-CTRL-008`. Si la ejecución descubre una regla de bloqueo no cubierta, deberá crear un nuevo `TREQ-GAP-*` antes de aprobar la puerta.
-
-#### 9. Criterios de aceptación
-
-- [x] se usa una sola versión conciliada de todos los insumos;
-- [x] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
-- [x] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
-- [x] toda brecha crítica abierta tiene propietario, fecha o momento, tarea primaria, paquete de resolución trazable y perfil;
-- [x] el destino de las 138 brechas es derivable sin duplicación manual;
-- [x] ninguna brecha abierta se presenta falsamente como cerrada;
-- [x] no existe exposición actual a implementación, piloto o producción;
-- [x] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
-- [x] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
-- [ ] `OWN-GG` aprueba `E1-GATE-MANIFEST-002` y declara si `PROC-CAT-001` queda habilitada;
-- [x] no se implementa código, migraciones ni cambios en Supabase.
-
-#### 10. Estado
+| Control | Resultado |
+| --- | ---: |
+| Brechas críticas reconciliadas | **138** |
+| Identificadores únicos | **138** |
+| Con propietario válido | **138** |
+| Con fecha o momento de resolución | **138** |
+| Con tarea primaria | **138** |
+| Con paquete de resolución trazable | **138** |
+| Con perfil de cierre | **138** |
+| Presentadas falsamente como cerradas | **0** |
+| Expuestas actualmente a implementación, piloto o producción | **0** |
+| Bloque destino derivable del roadmap | **138** |
 
 ```text
-PROPUESTA PARA APROBACIÓN
+gate_status = PASS_WITH_CARRYOVER
+blocking_reasons[] = []
+baseline_approval = APROBADA — OWN-GG
+approved_at = 2026-07-25
+next_review_date = 2026-08-21
 ```
 
-`PROC-CAT-001` permanece reservado y no iniciado hasta el `APROBADO` explícito de esta propuesta. No se autoriza implementación física, código, migraciones ni cambios en Supabase.
+La fecha `2026-08-21` es una primera revisión, no una fecha de cierre de las 138 brechas.
 
-#### 11. Ejecuciones registradas
+---
 
-La primera ejecución queda registrada en `E1-GATE-MANIFEST-001` con resultado `BLOCKED_ROUTING`. La ejecución reconcilió 138 brechas críticas únicas: todas tienen propietario, fecha, tarea, paquete y perfil de cierre, pero ninguna contiene aún fase destino, razón de arrastre, control compensatorio, aprobación ni fecha del siguiente gate.
+#### 4. Interpretación
 
-La interpretación posterior que exigió 138 contratos individuales de arrastre fue revisada por falta de proporcionalidad para una fase de descubrimiento. Los manifiestos que materializaban esa interpretación se retiran como resultado vigente.
+- E1 cumplió su propósito de descubrimiento.
+- Las brechas continúan abiertas.
+- Ninguna se considera resuelta por cerrar la fase.
+- Las puertas posteriores aplicarán controles proporcionales.
+- `PROC-CAT-001` queda autorizada.
 
-`E1-GATE-MANIFEST-002` contiene la única propuesta corregida: 138 brechas encaminadas, cero cierres falsos y cero exposición operativa actual. Su resultado candidato es `PASS_WITH_CARRYOVER` y permanece pendiente de `APROBADO`.
+---
 
+#### 5. Historial preservado
+
+`E1-GATE-MANIFEST-001` permanece como evidencia histórica del primer resultado `BLOCKED_ROUTING`.
+
+`E1-GATE-MANIFEST-002` es el resultado vigente aprobado.
+
+---
+
+#### 6. Resultado de prueba
+
+`TREQ-GAP-001` queda **VERIFICADO** contra `E1-GATE-MANIFEST-002` con resultado `PASS_WITH_CARRYOVER`.
+
+---
+
+#### 7. Criterios cumplidos
+
+- [x] Se usó una única versión conciliada.
+- [x] Se reconciliaron 138 brechas críticas únicas.
+- [x] Todas conservan propietario, fecha, tarea, paquete y perfil.
+- [x] No existen cierres falsos.
+- [x] Se emitió un estado permitido.
+- [x] `OWN-GG` aprobó la línea base.
+- [x] No se implementó código, migraciones ni cambios en Supabase.
+
+---
+
+#### 8. Decisión de cierre
+
+```text
+E1-GATE-001 = APROBADA
+BLOQUE E1 = CERRADO DOCUMENTALMENTE
+GATE_STATUS = PASS_WITH_CARRYOVER
+PROC-CAT-001 = AUTORIZADA
+```
+
+El cierre de E1 no cierra ninguna brecha.
+
+---
+
+#### 9. Estado final
+
+```text
+APROBADA
+```
 ### Salida obligatoria
 
 BLOQUE E1 deberá entregar:
@@ -220627,7 +220623,8 @@ BLOQUE E1 deberá entregar:
 - lista de nuevas necesidades de autorización;
 - lista de servicios transversales requeridos;
 - prioridades y dependencias.
-- `E1-GATE-MANIFEST-001` emitido y aprobado mediante `E1-GATE-001` antes de declarar el cierre documental de E1.
+- `E1-GATE-MANIFEST-001` conservado como evidencia histórica de la primera ejecución de la puerta, cuyo resultado fue `BLOCKED_ROUTING`;
+- `E1-GATE-MANIFEST-002` emitido y aprobado mediante `E1-GATE-001` como resultado vigente `PASS_WITH_CARRYOVER` para el cierre documental de E1.
 # E1-GATE-MANIFEST-001 — Primera ejecución de puerta de cierre de BLOQUE E1
 
 > **Evidencia histórica.** Este manifiesto conserva la primera ejecución y su resultado `BLOCKED_ROUTING`. La interpretación que exigía materializar razón, control compensatorio y aprobación individual para las 138 brechas fue considerada desproporcionada para descubrimiento. La propuesta corregida está en `E1-GATE-MANIFEST-002`; el manifiesto `001` no se elimina ni se presenta como resultado vigente.
@@ -220695,13 +220692,15 @@ La puerta produce un estado permitido por `TREQ-GAP-001`: `BLOCKED_ROUTING`. No 
 ## Condición histórica de reejecución
 
 Esta ejecución concluyó originalmente que debían completarse campos individuales de arrastre. Esa condición queda conservada como historial, pero fue reemplazada por la regla proporcional de `E1-GATE-MANIFEST-002`: en descubrimiento el destino se deriva, la continuidad se aprueba sobre la línea base y los controles compensatorios solo se exigen si existe exposición operativa.
-# E1-GATE-MANIFEST-002 — Propuesta corregida de puerta de cierre de E1
+# E1-GATE-MANIFEST-002 — Puerta corregida y aprobada de cierre de E1
 
-**Estado:** `PROPUESTA PARA APROBACIÓN`
-**Sustituye como resultado vigente propuesto:** la interpretación de arrastre individual aplicada después de `E1-GATE-MANIFEST-001`
-**No sustituye:** el manifiesto `001` como evidencia histórica de la primera ejecución
+**Estado:** `APROBADO`  
+**Sustituye como resultado vigente:** la interpretación de arrastre individual aplicada después de `E1-GATE-MANIFEST-001`  
+**No sustituye:** el manifiesto `001` como evidencia histórica de la primera ejecución  
+**Aprobado por:** `OWN-GG`  
+**Fecha de aprobación:** `2026-07-25`
 
-## Regla corregida
+## Regla aprobada
 
 E1 es una fase de descubrimiento. Su puerta comprueba que las brechas críticas fueron identificadas y encaminadas; no exige decisiones propias de diseño, implementación, piloto o producción.
 
@@ -220714,13 +220713,15 @@ Para cerrar E1, cada brecha crítica debe tener:
 5. perfil de cierre;
 6. estado abierto, salvo que exista evidencia válida de cierre.
 
-La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La fase destino no se replica manualmente en 138 filas. La razón común de continuidad es:
+La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La fase destino no se replica manualmente en 138 filas.
+
+La razón común de continuidad es:
 
 > La brecha permanece abierta porque su resolución material corresponde a la fase propietaria, la tarea primaria y el paquete ya asignados.
 
-La aprobación se realiza sobre la línea base completa de E1. Los controles compensatorios solo son obligatorios cuando una brecha pueda quedar expuesta durante implementación, piloto, cutover o producción antes de resolverse.
+La aprobación se realiza sobre la línea base completa de E1. Los controles compensatorios individualizados solo son obligatorios cuando una brecha pueda quedar expuesta durante implementación, piloto, cutover o producción antes de resolverse.
 
-## Resultado reproducible
+## Resultado reproducible aprobado
 
 | Control | Resultado |
 | --- | ---: |
@@ -220738,7 +220739,8 @@ La aprobación se realiza sobre la línea base completa de E1. Los controles com
 ```text
 gate_status = PASS_WITH_CARRYOVER
 blocking_reasons[] = []
-baseline_approval = PENDIENTE — OWN-GG
+baseline_approval = APROBADA — OWN-GG
+approved_at = 2026-07-25
 next_review_date = 2026-08-21
 ```
 
@@ -220751,13 +220753,22 @@ next_review_date = 2026-08-21
 - E1 cumplió su propósito de descubrimiento;
 - las brechas continúan abiertas;
 - ninguna se considera resuelta por cerrar la fase;
-- cada una conserva propietario, fecha, tarea, paquete y criterio;
+- cada una conserva propietario, fecha, tarea, paquete y perfil;
 - las puertas posteriores deberán exigir controles proporcionales al riesgo real de su fase;
-- `PROC-CAT-001` solo queda habilitada después del `APROBADO` explícito de `OWN-GG` sobre esta propuesta.
+- BLOQUE E1 queda cerrado documentalmente;
+- `PROC-CAT-001` queda habilitada.
 
 ## Historial preservado
 
-`E1-GATE-MANIFEST-001` continúa demostrando que la primera ejecución aplicó una regla más estricta y obtuvo `BLOCKED_ROUTING`. Ese resultado fue coherente con aquella regla, pero la regla se considera sobredimensionada para descubrimiento y queda reemplazada por esta propuesta cuando reciba aprobación.
+`E1-GATE-MANIFEST-001` continúa demostrando que la primera ejecución aplicó una regla más estricta y obtuvo `BLOCKED_ROUTING`. Ese resultado fue coherente con aquella regla, pero la regla queda sustituida por este manifiesto aprobado.
+
+## Decisión
+
+```text
+E1 = CLOSED_WITH_CARRYOVER
+E1-GATE-001 = APPROVED
+PROC-CAT-001 = ENABLED
+```
 ### Regla de evolución del catálogo
 
 Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
@@ -220803,9 +220814,324 @@ Regla de realimentación:
 - una devolución deberá actualizar la trazabilidad y no crear inventarios
   paralelos.
 
-CATÁLOGO DE PROCESOS
+### CATÁLOGO DE PROCESOS
 
-### [ ] PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+### ✅ PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+
+**Estado:** APROBADA  
+**Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal  
+**Dependencia obligatoria:** `E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1` — APROBADA  
+**Línea base recibida:** operación real, mapa de 18 familias y 217 subcapacidades, actores observados, aplicaciones y medios actuales, matriz de cobertura, inventario técnico y registro canónico de brechas aprobados en E1  
+**Naturaleza:** consolidación documental del funcionamiento actual  
+**Artefacto producido:** `PROC-ASIS-CATALOG-001` en `01A_PROC_ASIS_CATALOG_001.md`  
+**Diseño TO-BE:** no incluido  
+**Implementación física:** no incluida  
+**Cambios en código, migraciones o Supabase:** no autorizados  
+**Siguiente tarea reservada:** `PROC-CAT-002 — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes`
+
+---
+
+#### 1. Propósito
+
+Consolidar en un único catálogo trazable los procesos que actualmente existen en Vento Group, independientemente de que se ejecuten verbalmente, en papel, Excel, WhatsApp, aplicaciones internas, plataformas externas o mediante combinaciones manuales y digitales.
+
+El catálogo describe cómo fluye actualmente el trabajo de principio a fin, sin asumir que esa forma es correcta ni convertirla automáticamente en el proceso objetivo.
+
+```text
+EVIDENCIA OPERATIVA DE E1
+        ↓
+FRAGMENTOS DE TRABAJO ACTUAL
+        ↓
+CANDIDATOS DE PROCESO AS-IS
+        ↓
+PROC-ASIS-CATALOG-001
+        ↓
+DISEÑO TO-BE EN PROC-CAT-002 Y TAREAS POSTERIORES
+```
+
+---
+
+#### 2. Resultado obligatorio
+
+La tarea produce:
+
+```text
+PROC-ASIS-CATALOG-001
+```
+
+El artefacto deberá:
+
+1. reunir los procesos observados en E1;
+2. conservar sus variantes reales;
+3. identificar su soporte actual;
+4. indicar su condición operativa;
+5. vincularlos con las capacidades correspondientes;
+6. conservar sus fuentes y brechas relacionadas;
+7. distinguir procesos de capacidades, actividades, pantallas y documentos;
+8. evitar decisiones TO-BE prematuras.
+
+---
+
+#### 3. Distinciones obligatorias
+
+##### 3.1. Capacidad
+
+Resultado estable que Vento Group necesita poder producir.
+
+##### 3.2. Proceso
+
+Secuencia de principio a fin que conecta capacidades, personas, información y decisiones para resolver un caso empresarial.
+
+##### 3.3. Actividad
+
+Paso puntual dentro de un proceso.
+
+##### 3.4. Herramienta o soporte
+
+Medio utilizado para ejecutar o registrar una parte del proceso.
+
+##### 3.5. Documento o evidencia
+
+Registro que demuestra una solicitud, decisión, ejecución, recepción, corrección o cierre.
+
+Una aplicación, pantalla, documento o actividad aislada no constituye por sí sola un proceso.
+
+---
+
+#### 4. Alcance
+
+Incluye procesos actuales de:
+
+1. gobierno y dirección;
+2. personas y trabajo;
+3. salud, seguridad y cumplimiento;
+4. productos, recetas y conocimiento;
+5. abastecimiento y proveedores;
+6. inventario y almacenamiento;
+7. activos y reutilizables;
+8. producción;
+9. pedidos, ventas y pagos;
+10. clientes y fidelización;
+11. transporte y entregas;
+12. dinero, costos y obligaciones;
+13. instalaciones;
+14. marketing y desarrollo comercial;
+15. tecnología y soporte;
+16. información, documentos y evidencia;
+17. análisis y mejora;
+18. continuidad operativa.
+
+También incluye procesos externos, compartidos entre sedes, parcialmente implementados, informales y manuales.
+
+---
+
+#### 5. Fuentes canónicas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `OPS-ADM-001`;
+- `OPS-GOV-001`;
+- `OPS-ACT-001`;
+- `OPS-PLAN-001` a `OPS-PLAN-004`;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-019`;
+- `CAP-COVER-001` a `CAP-COVER-012`;
+- `GAP-CTRL-001` a `GAP-CTRL-008`;
+- `E1-GATE-MANIFEST-001`;
+- `E1-GATE-MANIFEST-002`;
+- registro vivo incorporado a E1;
+- documentación técnica y operativa citada por E1.
+
+Una afirmación no podrá presentarse como proceso confirmado si no tiene una fuente identificable.
+
+---
+
+#### 6. Identificadores provisionales
+
+`PROC-CAT-003` definirá los identificadores estables.
+
+Esta tarea utiliza únicamente:
+
+```text
+ASIS-SRC-001
+ASIS-SRC-002
+ASIS-SRC-003
+```
+
+Estas claves:
+
+- sirven para revisión y reconciliación;
+- no son identificadores permanentes;
+- pueden fusionarse, dividirse o retirarse;
+- no deberán utilizarse en código, tablas, permisos, rutas o integraciones;
+- serán sustituidas en `PROC-CAT-003`.
+
+---
+
+#### 7. Contrato mínimo de cada candidato
+
+| Campo                      | Contenido                                          |
+| -------------------------- | -------------------------------------------------- |
+| `source_key`               | Clave provisional                                  |
+| `current_name`             | Nombre descriptivo                                 |
+| `trigger_observed`         | Hecho que actualmente inicia el trabajo            |
+| `current_end_condition`    | Resultado que actualmente se considera final       |
+| `capability_refs[]`        | Capacidades relacionadas                           |
+| `organizational_scope[]`   | Empresa, marca, sede, área o canal                 |
+| `current_participants[]`   | Funciones observadas                               |
+| `current_support[]`        | Aplicaciones, plataformas, papel, Excel o mensajes |
+| `execution_mode`           | Forma actual de ejecución                          |
+| `operational_condition`    | Condición AS-IS                                    |
+| `evidence_state`           | Nivel de certeza                                   |
+| `known_variants[]`         | Variantes actuales                                 |
+| `known_breaks[]`           | Cortes o falta de trazabilidad                     |
+| `gap_refs[]`               | Brechas relacionadas                               |
+| `source_refs[]`            | Fuentes canónicas                                  |
+| `later_definition_tasks[]` | Tareas `PROC-CAT-*` responsables                   |
+| `notes`                    | Restricciones o incertidumbres                     |
+
+---
+
+#### 8. Modalidades permitidas
+
+- `MANUAL`;
+- `MANUAL_CONTROLADO`;
+- `MANUAL_DISTRIBUIDO`;
+- `DIGITAL_PARCIAL`;
+- `HIBRIDO`;
+- `DIGITAL_INTERNO`;
+- `EXTERNO`;
+- `EXTERNO_CON_CONTINUIDAD_INTERNA`;
+- `AUTOMATICO_PARCIAL`;
+- `POR_CONFIRMAR`.
+
+---
+
+#### 9. Condiciones AS-IS permitidas
+
+- `OPERATIVO_ESTABLE`;
+- `OPERATIVO_CON_VARIANTES`;
+- `PARCIAL`;
+- `FRAGMENTADO`;
+- `INFORMAL`;
+- `CONCENTRADO`;
+- `EXTERNO_DEPENDIENTE`;
+- `TEMPORAL`;
+- `ROTO`;
+- `POR_CONFIRMAR`.
+
+Estas clasificaciones no establecen el proceso TO-BE.
+
+---
+
+#### 10. Tratamiento de variantes
+
+Una variante permanece en el mismo candidato cuando conserva el mismo inicio, resultado empresarial y contrato general, aunque cambie sede, canal, herramienta o distribución de actividades.
+
+Se mantiene separada cuando cambia materialmente:
+
+- titular jurídico o documental;
+- resultado empresarial;
+- transferencia de custodia;
+- controles;
+- estados o excepciones;
+- evidencia de cierre.
+
+---
+
+#### 11. Duplicidades y solapamientos
+
+Se registrarán sin resolverlos definitivamente:
+
+```text
+POSSIBLE_DUPLICATE
+POSSIBLE_SUBPROCESS
+POSSIBLE_VARIANT
+POSSIBLE_SHARED_STAGE
+```
+
+`PROC-CAT-020` decidirá las duplicidades.
+
+---
+
+#### 12. Decisiones reservadas
+
+| Decisión                | Tarea          |
+| ----------------------- | -------------- |
+| proceso TO-BE           | `PROC-CAT-002` |
+| identificador estable   | `PROC-CAT-003` |
+| propósito empresarial   | `PROC-CAT-004` |
+| aplicación propietaria  | `PROC-CAT-005` |
+| consumidoras            | `PROC-CAT-006` |
+| actor iniciador         | `PROC-CAT-007` |
+| actores continuadores   | `PROC-CAT-008` |
+| estado inicial          | `PROC-CAT-009` |
+| estados intermedios     | `PROC-CAT-010` |
+| estado final            | `PROC-CAT-011` |
+| transiciones            | `PROC-CAT-012` |
+| excepciones             | `PROC-CAT-013` |
+| cancelación y reversión | `PROC-CAT-014` |
+| entradas                | `PROC-CAT-015` |
+| salidas                 | `PROC-CAT-016` |
+| eventos                 | `PROC-CAT-017` |
+| auditoría               | `PROC-CAT-018` |
+| métricas                | `PROC-CAT-019` |
+| duplicidades            | `PROC-CAT-020` |
+
+---
+
+#### 13. Relación con brechas
+
+La consolidación no cierra brechas.
+
+```text
+PROCESO AS-IS
+→ EXPLICA DÓNDE OCURRE LA BRECHA
+
+BRECHA
+→ EXPLICA QUÉ PARTE DEL PROCESO REQUIERE CORRECCIÓN
+```
+
+Toda brecha nueva deberá vincularse de inmediato con una tarea existente o generar una tarea explícita.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS.
+
+**Justificación:** consolida evidencia AS-IS; no define comportamiento objetivo, estados contractuales, transiciones, cálculos, autorización o integración.
+
+---
+
+#### 15. Criterios de aceptación
+
+- [ ] `E1-GATE-001` figura aprobada.
+- [ ] BLOQUE E1 figura cerrado.
+- [ ] Existe un único `PROC-ASIS-CATALOG-001`.
+- [ ] Cada candidato tiene fuente verificable.
+- [ ] Capacidad, proceso, actividad, soporte y evidencia están diferenciados.
+- [ ] Se conservan procesos manuales, externos, informales y parciales.
+- [ ] Las variantes relevantes están identificadas.
+- [ ] Las posibles duplicidades están registradas.
+- [ ] Cada candidato está vinculado con capacidades y brechas aplicables.
+- [ ] No se crearon identificadores estables antes de `PROC-CAT-003`.
+- [ ] No se diseñó el TO-BE.
+- [ ] No se decidieron aplicaciones, actores, estados, transiciones, datos, eventos, auditoría o métricas fuera de sus tareas.
+- [ ] No se modificó código, Supabase, migraciones ni operación.
+- [ ] Toda duda material tiene tarea responsable.
+- [ ] El compilado y el registro global permanecen sincronizados.
+
+---
+
+#### 16. Estado
+
+```text
+APROBADO
+```
+
+No se inicia `PROC-CAT-002` hasta la aprobación expresa de `PROC-CAT-001`.
+
 ### [ ] PROC-CAT-002 — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes
 ### [ ] PROC-CAT-003 — Crear identificador estable para cada proceso
 ### [ ] PROC-CAT-004 — Definir propósito empresarial de cada proceso
@@ -220825,7 +221151,167 @@ CATÁLOGO DE PROCESOS
 ### [ ] PROC-CAT-018 — Definir auditoría necesaria
 ### [ ] PROC-CAT-019 — Definir métricas de operación
 ### [ ] PROC-CAT-020 — Identificar procesos duplicados entre aplicaciones
+# PROC-ASIS-CATALOG-001 — Catálogo consolidado de procesos AS-IS
 
+**Estado del artefacto:** `PROPUESTA PARA APROBACIÓN`  
+**Tarea propietaria:** `PROC-CAT-001`  
+**Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal  
+**Versión:** `2026-07-25.1`  
+**Naturaleza:** índice consolidado de candidatos AS-IS  
+**Identificadores:** provisionales  
+**Total de candidatos:** **62**
+
+## Reglas de lectura
+
+1. Cada fila representa una agrupación provisional de trabajo observado.
+2. Una fila puede dividirse o fusionarse durante las tareas posteriores.
+3. Las claves `ASIS-SRC-*` no se utilizarán en código, tablas, permisos, rutas o integraciones.
+4. La matriz describe AS-IS; no autoriza digitalizar prácticas defectuosas.
+5. Las brechas exactas se reconciliarán con el registro canónico antes de aprobar `PROC-CAT-001`.
+6. Los campos de actores, entradas, salidas, estados, transiciones, eventos, auditoría y métricas se completarán en sus tareas propietarias.
+
+
+## Gobierno y estructura
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-001` | Tomar y comunicar decisiones empresariales | CAP-01.01; CAP-01.02; CAP-01.10 | Dirección corporativa; empresas y marcas | Reuniones; mensajes; documentos | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-GOV-001; decisiones y seguimiento dispersos |
+| `ASIS-SRC-002` | Gestionar empresas, marcas, establecimientos, sedes y áreas | CAP-01.03; CAP-01.04 | Vento Group; marcas; sedes | Documentos registrales; conocimiento administrativo; sistemas parciales | `HIBRIDO` | `FRAGMENTADO` | OPS-AUD-001; OPS-ADM-001; titularidad, marca y operación no siempre coinciden |
+| `ASIS-SRC-003` | Definir responsabilidades, políticas y límites de decisión | CAP-01.05; CAP-01.06 | Transversal | Documentos; matrices; decisiones de dirección | `MANUAL_CONTROLADO` | `PARCIAL` | OPS-AUD-002; responsabilidades implícitas, temporales o vacantes |
+| `ASIS-SRC-004` | Coordinar operación entre negocios y sedes | CAP-01.08 | Todas las sedes y marcas | Reuniones; llamadas; WhatsApp; archivos | `MANUAL_DISTRIBUIDO` | `INFORMAL` | OPS-AUD-003; dependencia de conocimiento personal |
+
+## Personas y trabajo
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-005` | Planear necesidad, reclutar y seleccionar personal | CAP-02.01; CAP-02.02 | Todas las operaciones | Hojas de vida; entrevistas; pruebas; mensajes | `MANUAL_CONTROLADO` | `OPERATIVO_CON_VARIANTES` | OPS-AUD-005; criterios no uniformes |
+| `ASIS-SRC-006` | Vincular e incorporar trabajadores | CAP-02.03; CAP-02.04; CAP-02.09; CAP-02.11 | Todas las operaciones | Documentos; gestión administrativa; terceros | `HIBRIDO` | `PARCIAL` | OPS-AUD-005; alta documental y tecnológica separadas |
+| `ASIS-SRC-007` | Asignar sede, área, función y programación | CAP-02.05; CAP-02.06 | Sedes y áreas | VISO; mensajes; coordinación de gerencia | `DIGITAL_PARCIAL` | `OPERATIVO_CON_VARIANTES` | OPS-AUD-002; variaciones por sede y reemplazos |
+| `ASIS-SRC-008` | Registrar asistencia y tiempo trabajado | CAP-02.07 | Trabajadores y sedes | ANIMA; revisión en VISO | `DIGITAL_INTERNO` | `OPERATIVO_ESTABLE` | CAP-MAP-006; correcciones y excepciones pendientes |
+| `ASIS-SRC-009` | Gestionar novedades, ausencias y reemplazos | CAP-02.08 | Todas las sedes | Mensajes; coordinación verbal; registros parciales | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-002; flujo de corrección no uniforme |
+| `ASIS-SRC-010` | Preparar pagos y beneficios laborales | CAP-02.12 | Administración; trabajadores | Archivos; revisión; plataforma bancaria | `HIBRIDO` | `PARCIAL` | OPS-PLAN-001; fuentes y aprobaciones distribuidas |
+| `ASIS-SRC-011` | Retirar trabajador y cerrar accesos | CAP-02.13; CAP-15 | Aplicaciones y sedes | Comunicación informal; ejecución manual; sistemas separados | `MANUAL_DISTRIBUIDO` | `PARCIAL` | CAP-SCOPE-015; cierre integral no confirmado |
+
+## Seguridad, higiene y cumplimiento
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-012` | Identificar riesgos, inspeccionar y ejecutar acciones preventivas | CAP-03.01; CAP-03.02; CAP-03.07; CAP-03.10 | Sedes y áreas | Formatos; observación; evidencia dispersa | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-006; seguimiento no uniforme |
+| `ASIS-SRC-013` | Reportar y gestionar accidentes, incidentes o emergencias | CAP-03.04; CAP-03.05; CAP-03.09 | Todas las sedes | Comunicación inmediata; documentos; terceros | `MANUAL_CONTROLADO` | `PARCIAL` | OPS-AUD-006; evidencia y acciones separadas |
+| `ASIS-SRC-014` | Controlar higiene, inocuidad y cumplimiento obligatorio | CAP-03.06; CAP-03.08; CAP-03.10 | Producción y puntos de venta | Revisión operativa; papel; archivos | `MANUAL_CONTROLADO` | `OPERATIVO_CON_VARIANTES` | OPS-AUD-006; variación por área |
+
+## Productos, recetas y conocimiento
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-015` | Crear o modificar productos, presentaciones y unidades | CAP-04.01 a CAP-04.04 | Todas las marcas y aplicaciones | Aplicaciones; archivos; decisiones distribuidas | `DIGITAL_PARCIAL` | `FRAGMENTADO` | OPS-AUD-007; identidad y versiones no unificadas |
+| `ASIS-SRC-016` | Crear, probar, aprobar y versionar recetas | CAP-04.05; CAP-04.06; CAP-04.09; CAP-04.10 | Centro de Producción; sedes | Documentos; conocimiento; FOGO parcial | `HIBRIDO` | `PARCIAL` | CAP-SCOPE-006; recetas incompletas |
+| `ASIS-SRC-017` | Gestionar menús, oferta y disponibilidad | CAP-04.07; CAP-09.01 | Vento Café; Saudo; Molka; canales | Makos; menús digitales; ManyChat; Instagram | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-008; actualización duplicada |
+| `ASIS-SRC-018` | Gestionar especificaciones, alérgenos y calidad de producto | CAP-04.08; CAP-04.09 | Producción y venta | Conocimiento técnico; documentos; validación manual | `MANUAL_CONTROLADO` | `PARCIAL` | CAP-SCOPE-010; publicación incompleta |
+
+## Compras y proveedores
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-019` | Detectar necesidad y solicitar compra | CAP-05.01; CAP-05.02 | Áreas productivas; sedes; administración | Avisos; WhatsApp; archivos; ORIGO parcial | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-009; no existe entrada única |
+| `ASIS-SRC-020` | Buscar proveedor, comparar y negociar | CAP-05.03 a CAP-05.05 | Compras | Llamadas; mensajes; cotizaciones | `MANUAL_CONTROLADO` | `PARCIAL` | OPS-AUD-009; decisión no siempre trazable |
+| `ASIS-SRC-021` | Aprobar y emitir compra | CAP-05.06; CAP-05.07; CAP-05.12 | Gerencia; compras | Aprobación; mensajes; documentos; ORIGO parcial | `DIGITAL_PARCIAL` | `PARCIAL` | CODE-AUD-001; compra ordinaria y urgente mezcladas |
+| `ASIS-SRC-022` | Recibir, verificar y resolver diferencias con proveedor | CAP-05.08 a CAP-05.11 | Centro de Producción; sedes | Recepción física; factura; ORIGO/NEXO parciales | `HIBRIDO` | `FRAGMENTADO` | CAP-COVER-006; recepción, inventario y documentos no conciliados |
+
+## Inventario, almacenamiento y remisiones
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-023` | Definir e identificar lugares de almacenamiento | CAP-06.01; CAP-06.02 | Sedes; áreas; ubicaciones | Conocimiento local; etiquetas; NEXO parcial | `DIGITAL_PARCIAL` | `PARCIAL` | CAP-MAP-003; ubicaciones físicas y lógicas incompletas |
+| `ASIS-SRC-024` | Registrar entrada, ubicar y reubicar existencias | CAP-06.03; CAP-06.04; CAP-06.05 | Centro de Producción; satélites | Operación física; NEXO parcial | `DIGITAL_PARCIAL` | `PARCIAL` | CODE-AUD-001; efecto real por ubicación incompleto |
+| `ASIS-SRC-025` | Retirar, consumir o trasladar existencias | CAP-06.06 a CAP-06.08 | Áreas y ubicaciones | NEXO parcial; comunicación; registros manuales | `HIBRIDO` | `OPERATIVO_CON_VARIANTES` | CAP-SCOPE-006; conversiones y ubicaciones |
+| `ASIS-SRC-026` | Contar inventario y resolver diferencias | CAP-06.12; CAP-06.13 | Sedes; áreas; ubicaciones | NEXO; formatos; Excel; revisión manual | `DIGITAL_PARCIAL` | `PARCIAL` | CODE-AUD-010; ajuste y evidencia incompletos |
+| `ASIS-SRC-027` | Controlar vencimiento, daño, merma, pérdida y frío | CAP-06.14; CAP-06.15 | Inventarios y producción | Observación; avisos; registros incompletos | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-SCOPE-018; cuarentena y disposición incompletas |
+| `ASIS-SRC-028` | Solicitar, preparar, transportar y recibir remisiones internas | CAP-06.09 a CAP-06.11; CAP-11 | Centro de Producción; satélites | NEXO parcial; papel; Excel; capturas; WhatsApp | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-MAP-009; estados y cantidades no conciliados |
+
+## Activos, reutilizables y vehículos
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-029` | Identificar, asignar y transferir custodia de activos | CAP-07.01 a CAP-07.06 | Sedes; puntos externos; trabajadores | Inventarios parciales; conocimiento; documentos | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-ACT-001; custodia incompleta |
+| `ASIS-SRC-030` | Mantener, reparar, garantizar o dar de baja activos | CAP-07.07 a CAP-07.10 | Equipos e instalaciones | Comunicación; técnicos externos; soportes | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-SCOPE-015; historial no centralizado |
+| `ASIS-SRC-031` | Gestionar vehículos, combustible y disponibilidad | CAP-07.12; CAP-07.13 | Camioneta; conductor; gerencia | Recibos; control manual; conocimiento | `MANUAL_CONTROLADO` | `CONCENTRADO` | OPS-ACT-001; dependencia del conductor |
+| `ASIS-SRC-032` | Entregar, recuperar y controlar canastas, contenedores y reutilizables | CAP-07.03 a CAP-07.06; CAP-11 | Centro de Producción y satélites | Separación física; memoria; conductor | `MANUAL` | `INFORMAL` | OPS-AUD-001; ciclo de retorno incompleto |
+
+## Producción
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-033` | Recopilar necesidades y planear producción | CAP-08.01 a CAP-08.05 | Centro de Producción; satélites | Tablas; mensajes; capturas; llamadas | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-011; demanda, stock y capacidad separados |
+| `ASIS-SRC-034` | Preparar materiales y ejecutar producción | CAP-08.06 a CAP-08.09 | Áreas productivas | Operación física; recetas parciales; FOGO parcial | `HIBRIDO` | `OPERATIVO_CON_VARIANTES` | CAP-SCOPE-006; captura incompleta |
+| `ASIS-SRC-035` | Controlar calidad y liberar, retener o rechazar producto | CAP-08.10; CAP-08.12 | Áreas productivas; almacenamiento | Revisión del área; evidencia no uniforme | `MANUAL_CONTROLADO` | `PARCIAL` | CAP-SCOPE-018; criterios no uniformes |
+| `ASIS-SRC-036` | Empacar, etiquetar y almacenar producto terminado | CAP-08.11 | Áreas productivas; despacho | Actividad física; etiquetas; medios parciales | `HIBRIDO` | `OPERATIVO_CON_VARIANTES` | CAP-MAP-011; etiquetado central pendiente |
+| `ASIS-SRC-037` | Gestionar reproceso, aprovechamiento y cierre productivo | CAP-08.13; CAP-08.14 | Áreas productivas | Conocimiento productivo; registros parciales | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-COVER-008; rendimiento y merma no conciliados |
+
+## Pedidos, ventas, pagos y clientes
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-038` | Atender pedido y servicio presencial en mesa | CAP-09.02 a CAP-09.11 | Vento Café; Saudo; Molka | Makos; servicio; comandas; impresión | `DIGITAL_PARCIAL` | `OPERATIVO_CON_VARIANTES` | OPS-AUD-012; variantes por sede |
+| `ASIS-SRC-039` | Atender venta de mostrador o para llevar | CAP-09.02 a CAP-09.12 | Vento Café; Saudo; Molka | Makos; caja; mostrador; preparación | `DIGITAL_PARCIAL` | `OPERATIVO_CON_VARIANTES` | CAP-MAP-003; puntos integrados distintos |
+| `ASIS-SRC-040` | Procesar pedido de Rappi, ManyChat, Instagram, WhatsApp o Shopify | CAP-09.13; CAP-11.12 | Canales externos y sedes | Plataformas externas; continuidad manual | `EXTERNO_CON_CONTINUIDAD_INTERNA` | `FRAGMENTADO` | CAP-MAP-009; sin integración automática confirmada |
+| `ASIS-SRC-041` | Gestionar catering, pedido especial o venta B2B | CAP-09.14 | Catering; empresas compradoras | Mensajes; archivos; coordinación; producción | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-GOV-001; modelo objetivo pendiente |
+| `ASIS-SRC-042` | Modificar, sustituir, cancelar o anular pedido | CAP-09.05 | Puntos de venta y canales | Makos; comunicación interna; controles parciales | `DIGITAL_PARCIAL` | `PARCIAL` | GAP-CTRL-003; transiciones no diferenciadas |
+| `ASIS-SRC-043` | Cobrar, confirmar pago y emitir soporte o factura | CAP-09.08 a CAP-09.10; CAP-12.02; CAP-12.06 | Puntos de venta; titulares | Makos; medios de pago; facturación | `HIBRIDO` | `OPERATIVO_CON_VARIANTES` | OPS-GOV-001; marca, titular y emisor difieren |
+| `ASIS-SRC-044` | Cerrar caja y revisar jornada de venta | CAP-09.15; CAP-12.02; CAP-12.07 | Puntos de venta; administración | Makos; soportes; revisión administrativa | `HIBRIDO` | `PARCIAL` | CAP-SCOPE-012; conciliación pendiente |
+| `ASIS-SRC-045` | Identificar cliente y gestionar fidelización | CAP-10.01; CAP-10.02; CAP-10.07; CAP-10.10 | PASS; PULSO; puntos de venta | PASS; PULSO; caja | `DIGITAL_PARCIAL` | `PARCIAL` | CAP-SCOPE-010; privacidad y redención |
+| `ASIS-SRC-046` | Recibir reclamo, devolución o compensación | CAP-10.03 a CAP-10.05 | Canales de atención y sedes | Comunicación directa; canales digitales | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | OPS-AUD-013; decisión y efecto separados |
+| `ASIS-SRC-047` | Gestionar reservas, eventos y comunicaciones al cliente | CAP-10.08; CAP-10.09 | Vento Café; eventos; catering | Mensajes; llamadas; coordinación manual | `MANUAL_CONTROLADO` | `PARCIAL` | CAP-MAP-009; disponibilidad no centralizada |
+
+## Transporte y entrega
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-048` | Planear recorrido, asignar vehículo y preparar carga | CAP-11.01 a CAP-11.06 | Centro de Producción; sedes; vehículo | Coordinación manual; conductor; soportes | `MANUAL_CONTROLADO` | `CONCENTRADO` | OPS-AUD-014; rutas y custodia personales |
+| `ASIS-SRC-049` | Ejecutar recorrido y confirmar entrega o recepción | CAP-11.07 a CAP-11.11 | Rutas internas | Conductor; papel; mensajes; recepción | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-MAP-009; novedades no centralizadas |
+| `ASIS-SRC-050` | Gestionar entrega mediante tercero | CAP-11.12 | Domicilios y canales externos | Tercero externo; seguimiento parcial | `EXTERNO_DEPENDIENTE` | `PARCIAL` | CAP-SCOPE-017; custodia externa |
+
+## Finanzas y obligaciones
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-051` | Registrar hechos económicos y soportes | CAP-12.01; CAP-12.06 | Operaciones; Contabilidad | Archivos; sistemas origen; NUMERA parcial | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-SCOPE-012; fuentes no integradas |
+| `ASIS-SRC-052` | Gestionar cuentas por pagar y pagos | CAP-12.03; CAP-12.05; CAP-12.08 | Administración; proveedores | Soportes; revisión; plataforma bancaria | `HIBRIDO` | `PARCIAL` | CAP-MAP-006; aprobaciones distribuidas |
+| `ASIS-SRC-053` | Gestionar cuentas por cobrar e ingresos pendientes | CAP-12.04; CAP-12.07 | Administración; clientes; canales | Seguimiento administrativo; registros parciales | `MANUAL_CONTROLADO` | `PARCIAL` | CAP-SCOPE-012; fuente de verdad pendiente |
+| `ASIS-SRC-054` | Calcular costos, analizar rentabilidad y preparar cierres | CAP-12.09; CAP-17 | Administración; NUMERA | Excel; archivos; datos parciales | `MANUAL_DISTRIBUIDO` | `PARCIAL` | CODE-AUD-010; costeo y reglas incompletos |
+
+## Instalaciones, marketing, tecnología, información y continuidad
+
+| Clave | Proceso AS-IS | Capacidades relacionadas | Alcance observado | Soporte actual | Modalidad | Condición | Fuente y ruptura conocida |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `ASIS-SRC-055` | Limpiar, inspeccionar y mantener instalaciones | CAP-13 | Todas las sedes | Trabajo operativo; comunicación; externos | `MANUAL_CONTROLADO` | `OPERATIVO_CON_VARIANTES` | OPS-ACT-001; evidencia variable |
+| `ASIS-SRC-056` | Diseñar, aprobar y publicar contenido o promoción | CAP-14 | Marcas y canales | Marketing; redes; archivos; aprobaciones | `MANUAL_CONTROLADO` | `OPERATIVO_CON_VARIANTES` | CAP-MAP-006; medición no uniforme |
+| `ASIS-SRC-057` | Gestionar consultas y oportunidades de canales digitales | CAP-14; CAP-09; CAP-10 | Instagram; ManyChat; WhatsApp | Canales externos; continuidad humana | `EXTERNO_CON_CONTINUIDAD_INTERNA` | `FRAGMENTADO` | CAP-MAP-009; conversación y pedido separados |
+| `ASIS-SRC-058` | Solicitar, diagnosticar y resolver soporte tecnológico | CAP-15 | Aplicaciones y dispositivos | WhatsApp; comunicación verbal; ejecución directa | `MANUAL_DISTRIBUIDO` | `INFORMAL` | CAP-SCOPE-015; sin registro único |
+| `ASIS-SRC-059` | Crear, modificar o retirar accesos tecnológicos | CAP-15; CAP-02.13 | SHELL; aplicaciones; Supabase | Solicitudes informales; sistemas separados | `MANUAL_DISTRIBUIDO` | `CONCENTRADO` | AUTH-CTX-001 a AUTH-CTX-030; decisión y ejecución separadas |
+| `ASIS-SRC-060` | Crear, versionar, compartir, archivar y conservar documentos | CAP-16 | Todas las áreas | Papel; Drive; aplicaciones; archivos locales | `HIBRIDO` | `FRAGMENTADO` | CAP-SCOPE-016; fuentes y retención no uniformes |
+| `ASIS-SRC-061` | Preparar reportes, analizar resultados y definir mejoras | CAP-17 | Gerencia; administración; áreas | Excel; exportaciones; datos de aplicaciones | `MANUAL_DISTRIBUIDO` | `FRAGMENTADO` | CAP-COVER-012; métricas pendientes |
+| `ASIS-SRC-062` | Detectar incidente, mantener operación mínima, recuperar y conciliar | CAP-18 | Todas las operaciones | Papel; mensajes; soporte técnico | `MANUAL_DISTRIBUIDO` | `INFORMAL` | CAP-SCOPE-018; contingencia y conciliación no formalizadas |
+
+## Controles antes de aprobación
+
+- [ ] Cada fila conserva fuentes exactas de E1.
+- [ ] Cada fila se vincula con las brechas exactas aplicables.
+- [ ] Ninguna fila describe únicamente una pantalla, documento, cargo o actividad.
+- [ ] Las variantes por sede, canal, titular o custodia están visibles.
+- [ ] Las agrupaciones no crean identificadores definitivos.
+- [ ] Los posibles duplicados quedan reservados para `PROC-CAT-020`.
+- [ ] Las capacidades relacionadas existen en el mapa aprobado.
+- [ ] Ninguna práctica defectuosa se presenta como TO-BE.
+- [ ] No se modificó código, Supabase, migraciones ni operación.
+
+## Continuidad
+
+```text
+PROC-CAT-002 — Diseñar procesos TO-BE
+PROC-CAT-003 — Crear identificadores estables
+PROC-CAT-004 a PROC-CAT-020 — Completar el contrato de procesos
+```
 MAPA DE ACTORES
 
 ### [ ] PROC-ACTOR-001 — Vincular cada proceso con roles base aplicables

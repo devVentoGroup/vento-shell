@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **221** |
-| En propuesta | **1** |
-| No iniciadas | **1348** |
+| Aprobadas | **223** |
+| En propuesta | **0** |
+| No iniciadas | **1347** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario | ✅ APROBADA |
-| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | 🟡 PROPUESTA PARA APROBACIÓN |
-| Siguiente | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | ⬜ NO INICIADA |
+| Última aprobada | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | ✅ APROBADA |
+| Tarea actual | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | ⬜ NO INICIADA |
+| Siguiente | `PROC-CAT-003` — Crear identificador estable para cada proceso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -249,8 +249,8 @@
 | ✅ APROBADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| 🟡 PROPUESTA PARA APROBACIÓN | `E1-GATE-001` | Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `E1-GATE-001` | Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
