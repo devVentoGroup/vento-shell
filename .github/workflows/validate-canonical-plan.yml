@@ -1,0 +1,40 @@
+name: Validar plan canónico
+
+on:
+  pull_request:
+    paths:
+      - "docs/plan-canonico/modular/**"
+      - "scripts/docs/**"
+      - "package.json"
+      - ".github/workflows/validate-canonical-plan.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/plan-canonico/modular/**"
+      - "scripts/docs/**"
+      - "package.json"
+      - ".github/workflows/validate-canonical-plan.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Compilar y verificar fuentes canónicas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Compilar plan canónico
+        run: npm run docs:plan:build
+
+      - name: Verificar invariantes y compilado
+        run: npm run docs:plan:check

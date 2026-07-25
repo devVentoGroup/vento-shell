@@ -20,6 +20,27 @@ function maskFencedCode(source) {
   }).join('\n');
 }
 
+function findUnregisteredBlockDirectories(manifestFiles) {
+  const blocksDir = path.join(baseDir, 'bloques');
+  if (!fs.existsSync(blocksDir)) return [];
+
+  const registered = new Set(
+    manifestFiles
+      .filter((relativePath) => relativePath.startsWith('bloques/'))
+      .map((relativePath) => relativePath.split('/')[1])
+  );
+
+  return fs.readdirSync(blocksDir, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) => {
+      const directory = path.join(blocksDir, entry.name);
+      const hasMarkdown = fs.readdirSync(directory, { withFileTypes: true })
+        .some((child) => child.isFile() && child.name.endsWith('.md') && child.name !== 'README.md');
+      return hasMarkdown && !registered.has(entry.name);
+    })
+    .map((entry) => `bloques/${entry.name}`);
+}
+
 try {
   syncPlanContinuity({ root, checkOnly });
 } catch (error) {
@@ -32,6 +53,11 @@ if (!Array.isArray(manifest.files) || manifest.files.length === 0) fail('manifes
 
 const duplicatePaths = manifest.files.filter((file, index, all) => all.indexOf(file) !== index);
 if (duplicatePaths.length) fail(`rutas duplicadas en manifest.json: ${[...new Set(duplicatePaths)].join(', ')}`);
+
+const unregisteredBlocks = findUnregisteredBlockDirectories(manifest.files);
+if (unregisteredBlocks.length) {
+  fail(`bloques con fragmentos Markdown fuera de manifest.json: ${unregisteredBlocks.join(', ')}`);
+}
 
 let compiled = '';
 for (const relativePath of manifest.files) {

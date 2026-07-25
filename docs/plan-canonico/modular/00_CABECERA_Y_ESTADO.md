@@ -12,17 +12,17 @@
 
 | Campo                         | Valor                                                                                           |
 | ----------------------------- | ----------------------------------------------------------------------------------------------- |
-| Versión                       | 2026-07-24                                                                                      |
-| Revisión documental           | **57**                                                                                          |
+| Versión                       | 2026-07-25                                                                                      |
+| Revisión documental           | **58**                                                                                          |
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **130** |
-| Tareas canónicas con marcador | **1539** |
+| Fragmentos canónicos | **131** |
+| Tareas canónicas con marcador | **1569** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **213** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1326** |
+| Tareas no iniciadas | **1356** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
