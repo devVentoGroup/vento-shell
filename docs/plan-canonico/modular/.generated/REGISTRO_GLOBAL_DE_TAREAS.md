@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1401** |
+| Tareas con marcador | **1409** |
 | Tareas `AUTH` | **316** |
 | Aprobadas | **194** |
 | En propuesta | **0** |
-| No iniciadas | **1207** |
+| No iniciadas | **1215** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -1095,6 +1095,9 @@
 | ⬜ NO INICIADA | `NUMERA-DOM-013` | Definir fronteras frente al sistema contable o fiscal externo | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-DOM-014` | Definir conciliación y tratamiento de diferencias | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-DOM-015` | Aprobar alcance objetivo y capacidades diferidas | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-DOM-016` | Definir cartera, cuentas por cobrar, cobranza y exposición de crédito | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-DOM-017` | Definir arquitectura extensible hacia contabilidad formal, plan de cuentas y comprobantes | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-DOM-018` | Definir motor de escenarios, versiones de precios, costos, supuestos y publicación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-AUTH-001` | Vincular módulos y acciones con permisos y contratos aprobados | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-AUTH-002` | Clasificar información financiera sensible | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-AUTH-003` | Definir permisos de lectura | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
@@ -1108,6 +1111,8 @@
 | ⬜ NO INICIADA | `NUMERA-AUTH-011` | Exigir contexto operativo donde exista captura operacional | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-AUTH-012` | Migrar a paquetes de vento-shell | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-AUTH-013` | Ejecutar pruebas integrales | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-014` | Definir permisos de cartera, acuerdos, castigos, bancos y datos financieros sensibles | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-AUTH-015` | Definir permisos para crear, compartir, aprobar y publicar escenarios, precios y presupuestos | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-001` | Inventariar procesos financieros y analíticos | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-002` | Separar lectura ejecutiva y operación contable | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-003` | Diseñar inicio para propietario | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
@@ -1133,6 +1138,9 @@
 | ⬜ NO INICIADA | `NUMERA-UX-023` | Diseñar correcciones y reaperturas sin borrar historial | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-024` | Diseñar tablero de cobertura y conciliación de fuentes | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-025` | Aprobar alcance financiero antes de completar implementación | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-026` | Diseñar cartera, vencimientos, recaudos, aplicación, acuerdos y gestión de cobro | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-027` | Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
+| ⬜ NO INICIADA | `NUMERA-UX-028` | Diseñar visor económico dinámico de una sola pantalla, simple, comparativo y con divulgación progresiva | `bloques/O_NUMERA/02_MAPA_DE_ALCANCE_FINANCIERO.md` |
 | ⬜ NO INICIADA | `OPS-CST-001` | Definir el caso de centro de costo y transferencias internas de Producción y Distribución | `bloques/O_NUMERA/03_TAREA_DERIVADA_OPS_AUD_001.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/00_BLOQUE_P.md` |

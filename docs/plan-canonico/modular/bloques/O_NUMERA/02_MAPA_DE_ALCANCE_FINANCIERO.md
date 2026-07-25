@@ -15,6 +15,9 @@
 ### [ ] NUMERA-DOM-013 — Definir fronteras frente al sistema contable o fiscal externo
 ### [ ] NUMERA-DOM-014 — Definir conciliación y tratamiento de diferencias
 ### [ ] NUMERA-DOM-015 — Aprobar alcance objetivo y capacidades diferidas
+### [ ] NUMERA-DOM-016 — Definir cartera, cuentas por cobrar, cobranza y exposición de crédito
+### [ ] NUMERA-DOM-017 — Definir arquitectura extensible hacia contabilidad formal, plan de cuentas y comprobantes
+### [ ] NUMERA-DOM-018 — Definir motor de escenarios, versiones de precios, costos, supuestos y publicación
 
 ### [ ] NUMERA-AUTH-001 — Vincular módulos y acciones con permisos y contratos aprobados
 ### [ ] NUMERA-AUTH-002 — Clasificar información financiera sensible
@@ -29,6 +32,8 @@
 ### [ ] NUMERA-AUTH-011 — Exigir contexto operativo donde exista captura operacional
 ### [ ] NUMERA-AUTH-012 — Migrar a paquetes de vento-shell
 ### [ ] NUMERA-AUTH-013 — Ejecutar pruebas integrales
+### [ ] NUMERA-AUTH-014 — Definir permisos de cartera, acuerdos, castigos, bancos y datos financieros sensibles
+### [ ] NUMERA-AUTH-015 — Definir permisos para crear, compartir, aprobar y publicar escenarios, precios y presupuestos
 
 SUBBLOQUE O2 — Procesos y experiencia de NUMERA
 
@@ -58,3 +63,6 @@ SUBBLOQUE O2 — Procesos y experiencia de NUMERA
 ### [ ] NUMERA-UX-023 — Diseñar correcciones y reaperturas sin borrar historial
 ### [ ] NUMERA-UX-024 — Diseñar tablero de cobertura y conciliación de fuentes
 ### [ ] NUMERA-UX-025 — Aprobar alcance financiero antes de completar implementación
+### [ ] NUMERA-UX-026 — Diseñar cartera, vencimientos, recaudos, aplicación, acuerdos y gestión de cobro
+### [ ] NUMERA-UX-027 — Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos
+### [ ] NUMERA-UX-028 — Diseñar visor económico dinámico de una sola pantalla, simple, comparativo y con divulgación progresiva
