@@ -8,9 +8,9 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1569** |
+| Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **220** |
+| Aprobadas | **221** |
 | En propuesta | **0** |
 | No iniciadas | **1349** |
 | Rechazadas | **0** |
@@ -19,8 +19,9 @@
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `GAP-CTRL-007` — Definir criterio y evidencia de cierre | ✅ APROBADA |
-| Tarea actual | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario | ⬜ NO INICIADA |
+| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario | ✅ APROBADA |
+| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | ⬜ NO INICIADA |
+| Siguiente | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -247,7 +248,8 @@
 | ✅ APROBADA | `GAP-CTRL-005` | Vincular cada brecha con capacidad y proceso | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `GAP-CTRL-006` | Vincular cada brecha con tarea y paquete de implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `GAP-CTRL-007` | Definir criterio y evidencia de cierre | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ⬜ NO INICIADA | `E1-GATE-001` | Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |

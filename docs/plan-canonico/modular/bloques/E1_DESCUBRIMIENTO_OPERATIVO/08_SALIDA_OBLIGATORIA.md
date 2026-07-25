@@ -14,3 +14,4 @@ BLOQUE E1 deberá entregar:
 - lista de nuevas necesidades de autorización;
 - lista de servicios transversales requeridos;
 - prioridades y dependencias.
+- `E1-GATE-MANIFEST-001` emitido y aprobado mediante `E1-GATE-001` antes de declarar el cierre documental de E1.
