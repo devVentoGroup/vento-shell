@@ -1,5 +1,7 @@
 # E1-GATE-MANIFEST-001 — Primera ejecución de puerta de cierre de BLOQUE E1
 
+> **Evidencia histórica.** Este manifiesto conserva la primera ejecución y su resultado `BLOCKED_ROUTING`. La interpretación que exigía materializar razón, control compensatorio y aprobación individual para las 138 brechas fue considerada desproporcionada para descubrimiento. La propuesta corregida está en `E1-GATE-MANIFEST-002`; el manifiesto `001` no se elimina ni se presenta como resultado vigente.
+
 ## Identidad y evidencia
 
 | Campo                       | Valor                                                                                                            |
@@ -60,6 +62,6 @@ next_gate_date = PENDIENTE_DE_DEFINIR_POR_OWN_GG
 
 La puerta produce un estado permitido por `TREQ-GAP-001`: `BLOCKED_ROUTING`. No existe brecha crítica sin propietario válido, pero el contrato de arrastre está incompleto para todas las brechas abiertas. Por tanto, no se aprueba el cierre de E1, no se habilita `PROC-CAT-001` y no se inicia BLOQUE E2.
 
-## Condición de reejecución
+## Condición histórica de reejecución
 
-La siguiente ejecución deberá conservar esta evidencia y completar, por cada brecha crítica abierta, `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at` y `next_gate_date`. `OWN-GG` deberá aprobar explícitamente el manifiesto resultante. Solo `PASS` o `PASS_WITH_CARRYOVER` habilitan la transición.
+Esta ejecución concluyó originalmente que debían completarse campos individuales de arrastre. Esa condición queda conservada como historial, pero fue reemplazada por la regla proporcional de `E1-GATE-MANIFEST-002`: en descubrimiento el destino se deriva, la continuidad se aprueba sobre la línea base y los controles compensatorios solo se exigen si existe exposición operativa.

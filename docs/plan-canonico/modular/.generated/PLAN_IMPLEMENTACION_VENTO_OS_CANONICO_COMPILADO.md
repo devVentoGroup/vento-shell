@@ -17,31 +17,31 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **135** |
+| Fragmentos canónicos | **133** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **222** |
-| Tareas en propuesta | **0** |
+| Tareas aprobadas | **221** |
+| Tareas en propuesta | **1** |
 | Tareas no iniciadas | **1348** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
-| Tarea actual | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
-| Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Última tarea aprobada | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
+| Tarea actual | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
+| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
+| Siguiente tarea | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 97 de 98 aprobadas; PROC-CAT-001 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 96 de 98 aprobadas; E1-GATE-001 en propuesta** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 |
-| Tarea actual | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario |
+| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 — **PROPUESTA PARA APROBACIÓN** |
+| Siguiente tarea | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **97 DE 98 APROBADAS — ACTUAL PROC-CAT-001** |
+| BLOQUE E1 | **96 DE 98 APROBADAS — ACTUAL E1-GATE-001** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,13 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
         ↓
 TAREA ACTUAL
+E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+        ↓
+SIGUIENTE TAREA RESERVADA
 PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 97 de 98 tareas aprobadas
+BLOQUE E1 — 96 de 98 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183534,7 +183537,7 @@ Distribución vigente:
 
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `TREQ-GAP-001` | `GAP` | La puerta de fase deberá producir únicamente `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE`, `BLOCKED_EXCEPTION`, `PASS_WITH_CARRYOVER` o `PASS`; nunca aprobará una fase con una brecha crítica sin propietario válido, y bloqueará por falta de tarea, paquete, criterio, evidencia o arrastre controlado. Los conteos deberán reconciliar contra la misma versión del registro canónico y generar evidencia reproducible mediante `E1-GATE-MANIFEST-001`. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad o aprobación con registros incongruentes / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `VERIFICADO` | `E1-GATE-MANIFEST-001` | `BLOCKED_ROUTING` correcto | `10_E1_GATE_MANIFEST_001.md` | `E1-GATE-MANIFEST-001` |
+| `TREQ-GAP-001` | `GAP` | La puerta deberá aplicar controles proporcionales a la fase. En descubrimiento comprobará propietario; fecha o momento de resolución; tarea primaria; paquete de resolución trazable; perfil de cierre; ausencia de cierres falsos; y conciliación de conteos. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La línea base puede recibir una aprobación conjunta. Los controles compensatorios individualizados solo serán obligatorios cuando exista exposición real durante implementación, piloto, cutover o producción antes de la resolución. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad, burocracia sin reducción de riesgo o avance operativo con riesgo crítico no controlado / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `LISTO_PARA_VALIDAR` | `E1-GATE-MANIFEST-002` | `PASS_WITH_CARRYOVER` candidato; aprobación de línea base pendiente | `11_E1_GATE_MANIFEST_002.md` | `E1-GATE-MANIFEST-002` |
 
 #### SHELL
 
@@ -219990,7 +219993,7 @@ La confianza `ALTA`, `MEDIA` o `CONTROLADA` de `GAP-CTRL-006` describe la confia
 
 #### 5. Contrato mínimo de una brecha crítica abierta
 
-Toda brecha crítica que no esté `CERRADA` deberá contener, antes del cierre de fase:
+Toda brecha crítica que no esté `CERRADA` deberá contener siempre:
 
 ```text
 gap_id
@@ -220004,32 +220007,38 @@ implementation_package_id
 closure_profile_id
 validator
 co_validator
+status
+```
+
+En descubrimiento, `target_phase` se deriva de `resolution_task_id` e `implementation_package_id` y la continuidad recibe una aprobación conjunta.
+
+Cuando exista exposición durante implementación, piloto, cutover o producción se añaden:
+
+```text
 target_phase
 carryover_reason
 compensating_control
 carryover_approved_by
 carryover_approved_at
 next_gate_date
-status
 ```
 
-La ausencia de cualquiera de estos campos produce `BLOCKED_OWNER` o `BLOCKED_ROUTING` según corresponda.
+La ausencia de campos base produce `BLOCKED_OWNER` o `BLOCKED_ROUTING`. La ausencia de campos condicionales solo bloquea cuando la fase o la exposición vigente los hace obligatorios.
 
 ---
 
 #### 6. Regla de arrastre controlado entre fases
 
-Una brecha crítica abierta puede trasladarse a una fase posterior únicamente si:
+Una brecha crítica abierta puede continuar después de descubrimiento si:
 
 1. la fase actual no tiene como criterio de salida resolver materialmente esa brecha;
-2. el propietario permanece activo y acepta el arrastre;
+2. el propietario permanece activo;
 3. existe una tarea primaria y un paquete concreto;
-4. la fase destino es la fase donde realmente puede producirse la evidencia de cierre;
-5. existe control compensatorio suficiente mientras la brecha continúe abierta;
-6. `OWN-GG` aprueba el arrastre;
-7. seguridad, datos, SST, finanzas o tecnología coaprueban cuando el riesgo pertenece a su dominio;
-8. se establece una nueva revisión de puerta con fecha exacta;
-9. la fase de origen no presenta la brecha como resuelta.
+4. la fase destino puede derivarse de esa tarea y paquete;
+5. `OWN-GG` aprueba la línea base completa;
+6. la fase de origen no presenta la brecha como resuelta.
+
+Cuando exista exposición operativa antes del cierre, se añaden control compensatorio suficiente, aprobación del dominio de riesgo y fecha exacta de revisión.
 
 No son causas válidas de arrastre: “se verá después”, falta de tiempo, falta de presupuesto sin decisión, dependencia no identificada, responsable de vacaciones, dificultad técnica genérica o ausencia de evidencia.
 
@@ -220158,7 +220167,7 @@ else:
 | Paquetes que contienen al menos una brecha crítica | **65** |
 | Referencias de control o evidencia | **22** |
 
-La línea base cumple actualmente el requisito estructural de propiedad: ninguna de las 138 brechas críticas explícitas está huérfana. Sin embargo, la puerta de E1 permanece `NOT_EVALUATED`. La aprobación de esta tarea no produce por sí sola `PASS_WITH_CARRYOVER`: todavía deberá generarse el manifiesto de puerta de E1 y registrar para cada brecha crítica abierta la fase destino, razón de arrastre, control compensatorio, aprobaciones y siguiente fecha de revisión. Si esos datos no están completos, la puerta deberá resultar `BLOCKED_ROUTING`.
+La línea base cumple el requisito estructural de descubrimiento: ninguna de las 138 brechas críticas explícitas está huérfana y todas tienen fecha, tarea, paquete y perfil. La puerta corregida se documenta en `E1-GATE-MANIFEST-002` con resultado candidato `PASS_WITH_CARRYOVER`; permanece pendiente de aprobación conjunta de la línea base por `OWN-GG`.
 
 ##### 12.1. Brechas críticas por propietario
 
@@ -220292,11 +220301,24 @@ PROC-CAT-001 — CONSOLIDAR EL CATÁLOGO AS-IS DE PROCESOS
 
 `E1-GATE-001` deberá integrar y reconciliar el registro de brechas aprobado, ejecutar `TREQ-GAP-001`, producir el manifiesto versionado y declarar un resultado permitido de puerta antes de autorizar `PROC-CAT-001`.
 
+#### 20. Enmienda proporcional para puertas por fase
+
+La exigencia de control se adapta a la naturaleza de la fase:
+
+| Fase | Control mínimo de una brecha crítica abierta |
+| --- | --- |
+| Descubrimiento | Propietario, fecha o momento de resolución, tarea primaria, paquete de resolución trazable, perfil de cierre y estado abierto. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico; la línea base se aprueba en conjunto. |
+| Diseño | Decisión o contrato de la fase aprobado; implementación pendiente trazada. |
+| Implementación | Evidencia de cambio y prueba; cualquier riesgo expuesto requiere control compensatorio específico. |
+| Piloto o producción | Control compensatorio, aprobador, vencimiento, monitoreo y criterio de retiro obligatorios cuando la brecha permanezca abierta. |
+
+Por tanto, `GAP-CTRL-008` no exige 138 aprobaciones, razones ni controles compensatorios individualizados para cerrar E1. Sí conserva la prohibición absoluta de brechas críticas sin propietario y la prohibición de presentar como cerrada una brecha sin evidencia.
+
 ---
 
 ## ANEXO A — Línea base de brechas críticas explícitas
 
-La siguiente matriz contiene las 138 brechas cuya fuente aprobada declara criticidad o prioridad P0. Todas conservan propietario, fecha, tarea, paquete y perfil de cierre. La brecha puede permanecer abierta al cerrar E1 únicamente mediante el arrastre controlado definido en esta tarea.
+La siguiente matriz contiene las 138 brechas cuya fuente aprobada declara criticidad o prioridad P0. Todas conservan propietario, fecha, tarea, paquete y perfil de cierre. Durante E1 permanecen abiertas y encaminadas; las puertas posteriores aplicarán controles proporcionales a la exposición real.
 
 | Brecha | Referencia | Señal crítica | Clase | Propietario | Fecha | Tarea primaria | Paquete | Perfil de cierre | Validador | Estado de puerta E1 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -220466,15 +220488,18 @@ La implementación física de esta consulta o de un verificador equivalente qued
 
 ---
 
-### [x] E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+### 🟡 E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
 
-**Estado:** APROBADA
+**Estado:** PROPUESTA PARA APROBACIÓN
 **Bloque:** BLOQUE E1 — Cierre documental y puerta de transición
 **Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS
 **Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5
 **Implementación física:** no incluida
 **Siguiente tarea reservada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
-**Aprobación de puerta:** `OWN-GG`, `2026-07-25`, mediante `E1-GATE-MANIFEST-003` con resultado `PASS_WITH_CARRYOVER`
+**Propuesta vigente:** `E1-GATE-MANIFEST-002`
+**Último resultado:** `PASS_WITH_CARRYOVER`
+**Aprobación de línea base:** `PENDIENTE — OWN-GG`
+**Primera revisión del conjunto crítico:** `2026-08-21` — no constituye promesa ni fecha de cierre de las 138 brechas
 
 ---
 
@@ -220482,7 +220507,15 @@ La implementación física de esta consulta o de un verificador equivalente qued
 
 Ejecutar la puerta definida por `GAP-CTRL-008`, producir el manifiesto versionado de cierre de BLOQUE E1 y aprobar o bloquear formalmente la transición hacia BLOQUE E2.
 
-Esta tarea no redefine brechas, propietarios, fechas, capacidades, procesos, tareas, paquetes ni criterios de cierre. Su función es comprobar que la versión integrada del registro cumple las condiciones de salida de E1 y que toda brecha crítica abierta queda trasladada mediante un arrastre controlado, explícito y verificable.
+Esta tarea no redefine brechas, propietarios, fechas, capacidades, procesos, tareas, paquetes ni criterios de cierre. Su función es comprobar que la versión integrada del registro cumple las condiciones de salida de una fase de descubrimiento y que toda brecha crítica abierta queda encaminada hacia una tarea y un paquete futuros verificables.
+
+#### 1.1. Enmienda de proporcionalidad
+
+E1 no es una puerta de implementación, piloto ni producción. Para cerrar esta fase basta con demostrar que cada brecha crítica tiene propietario, fecha o momento de resolución, tarea primaria, paquete de resolución trazable, perfil de cierre y que no se presenta falsamente como cerrada.
+
+La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La razón de continuidad puede aprobarse una vez para la línea base completa. El control compensatorio solo se exige cuando exista exposición operativa antes de la resolución; no se exige por defecto durante descubrimiento.
+
+Esta enmienda prevalece sobre cualquier texto anterior que exija `target_phase`, `carryover_reason`, `compensating_control`, aprobación y siguiente fecha como campos materializados individualmente para las 138 brechas durante E1.
 
 #### 2. Insumos canónicos obligatorios
 
@@ -220492,7 +220525,7 @@ No se permitirá mezclar versiones, anexos o conteos provenientes de cortes dife
 
 #### 3. Manifiesto obligatorio
 
-La tarea deberá producir un artefacto denominado `E1-GATE-MANIFEST-001` con, como mínimo:
+La tarea deberá producir un manifiesto versionado con, como mínimo:
 
 ```text
 gate_id
@@ -220509,13 +220542,9 @@ critical_without_due_date[]
 critical_without_task[]
 critical_without_package[]
 critical_without_closure_profile[]
-critical_without_target_phase[]
-critical_without_carryover_reason[]
-critical_without_compensating_control[]
-critical_without_approval[]
-critical_with_expired_carryover[]
 critical_closed_with_valid_evidence[]
-critical_open_with_approved_carryover[]
+critical_open_with_routing[]
+critical_with_current_operational_exposure[]
 gate_status
 blocking_reasons[]
 next_gate_date
@@ -220524,19 +220553,23 @@ evidence_location
 
 Los conteos deberán reconciliar exactamente con el registro canónico de brechas de la misma versión.
 
-#### 4. Enriquecimiento obligatorio de las brechas críticas abiertas
+#### 4. Enrutamiento obligatorio de las brechas críticas abiertas
 
-Antes de evaluar la puerta, cada brecha crítica abierta deberá declarar `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at`, `next_gate_date`, y el estado vigente del propietario, tarea, paquete y perfil de cierre. La fase destino deberá derivarse de la tarea primaria y del paquete aprobado; no se admiten destinos genéricos.
+Antes de evaluar la puerta, cada brecha crítica abierta deberá conservar propietario vigente, fecha o momento de resolución, tarea primaria, paquete de resolución trazable y perfil de cierre. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico; no necesita duplicarse por fila. La línea base recibe una única aprobación de continuidad.
+
+Si una brecha puede impactar implementación, piloto, cutover o producción antes de resolverse, la puerta de esa fase deberá exigir control compensatorio, aprobación específica y fecha de revisión.
 
 #### 5. Regla de evaluación
 
-La puerta se evaluará en este orden: integridad y versión de fuentes; existencia y unicidad de las 138 brechas críticas; propietario válido o interino; fecha de decisión; tarea y paquete; perfil de cierre; destino y arrastre; evidencia de brechas declaradas cerradas; vencimientos; conciliación de conteos; y ejecución de `TREQ-GAP-001`.
+La puerta se evaluará en este orden: integridad y versión de fuentes; existencia y unicidad de las 138 brechas críticas; propietario válido o interino; fecha o momento de resolución; tarea primaria; paquete de resolución trazable; perfil de cierre; ausencia de cierres falsos; bloque destino derivable del roadmap cuando corresponda; exposición operativa actual; conciliación de conteos; y ejecución de `TREQ-GAP-001`.
 
 Resultado permitido: `PASS`, `PASS_WITH_CARRYOVER`, `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE` o `BLOCKED_EXCEPTION`. No se podrá declarar un resultado verbal ni omitir el manifiesto.
 
 #### 6. Condición para `PASS_WITH_CARRYOVER`
 
-E1 podrá cerrar con brechas críticas abiertas únicamente cuando todas tengan propietario vigente, fecha, tarea, paquete, criterio de cierre, fase destino exacta, justificación de arrastre, control compensatorio, aprobación de arrastre, fecha de siguiente gate y no se presenten como cerradas. Una sola brecha crítica que incumpla el contrato producirá bloqueo.
+E1 podrá cerrar con brechas críticas abiertas cuando todas tengan propietario vigente, fecha o momento de resolución, tarea primaria, paquete de resolución trazable, perfil de cierre, bloque destino derivable del roadmap cuando corresponda y no se presenten como cerradas. La línea base completa deberá recibir aprobación explícita de `OWN-GG`.
+
+Los controles compensatorios quedan reservados para brechas con exposición operativa antes de su resolución y para las puertas de implementación, piloto, cutover o producción.
 
 #### 7. Aprobación de la línea base de E1
 
@@ -220553,27 +220586,30 @@ La aprobación deberá declarar la versión de la línea base, resultado de la p
 - [x] se usa una sola versión conciliada de todos los insumos;
 - [x] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
 - [x] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
-- [x] toda brecha crítica abierta tiene fase destino, razón, control, aprobación y siguiente fecha;
+- [x] toda brecha crítica abierta tiene propietario, fecha o momento, tarea primaria, paquete de resolución trazable y perfil;
+- [x] el destino de las 138 brechas es derivable sin duplicación manual;
+- [x] ninguna brecha abierta se presenta falsamente como cerrada;
+- [x] no existe exposición actual a implementación, piloto o producción;
 - [x] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
 - [x] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
-- [x] se emite un estado permitido, se archiva evidencia reproducible y se declara si `PROC-CAT-001` queda habilitada;
+- [ ] `OWN-GG` aprueba `E1-GATE-MANIFEST-002` y declara si `PROC-CAT-001` queda habilitada;
 - [x] no se implementa código, migraciones ni cambios en Supabase.
 
 #### 10. Estado
 
 ```text
-APROBADA
+PROPUESTA PARA APROBACIÓN
 ```
 
-`PROC-CAT-001` queda autorizado como siguiente tarea documental. No se autoriza implementación física, código, migraciones ni cambios en Supabase.
+`PROC-CAT-001` permanece reservado y no iniciado hasta el `APROBADO` explícito de esta propuesta. No se autoriza implementación física, código, migraciones ni cambios en Supabase.
 
 #### 11. Ejecuciones registradas
 
 La primera ejecución queda registrada en `E1-GATE-MANIFEST-001` con resultado `BLOCKED_ROUTING`. La ejecución reconcilió 138 brechas críticas únicas: todas tienen propietario, fecha, tarea, paquete y perfil de cierre, pero ninguna contiene aún fase destino, razón de arrastre, control compensatorio, aprobación ni fecha del siguiente gate.
 
-La segunda ejecución, `E1-GATE-MANIFEST-002`, aprobó 135 arrastres y aisló tres correcciones internas de E1.
+La interpretación posterior que exigió 138 contratos individuales de arrastre fue revisada por falta de proporcionalidad para una fase de descubrimiento. Los manifiestos que materializaban esa interpretación se retiran como resultado vigente.
 
-La tercera ejecución, `E1-GATE-MANIFEST-003`, cerró documentalmente las tres correcciones, reconcilió 3 brechas cerradas y 135 arrastres aprobados, y produjo `PASS_WITH_CARRYOVER`. `OWN-GG` la aprobó el `2026-07-25`; E1 queda cerrado documentalmente y `PROC-CAT-001` queda habilitada.
+`E1-GATE-MANIFEST-002` contiene la única propuesta corregida: 138 brechas encaminadas, cero cierres falsos y cero exposición operativa actual. Su resultado candidato es `PASS_WITH_CARRYOVER` y permanece pendiente de `APROBADO`.
 
 ### Salida obligatoria
 
@@ -220593,6 +220629,8 @@ BLOQUE E1 deberá entregar:
 - prioridades y dependencias.
 - `E1-GATE-MANIFEST-001` emitido y aprobado mediante `E1-GATE-001` antes de declarar el cierre documental de E1.
 # E1-GATE-MANIFEST-001 — Primera ejecución de puerta de cierre de BLOQUE E1
+
+> **Evidencia histórica.** Este manifiesto conserva la primera ejecución y su resultado `BLOCKED_ROUTING`. La interpretación que exigía materializar razón, control compensatorio y aprobación individual para las 138 brechas fue considerada desproporcionada para descubrimiento. La propuesta corregida está en `E1-GATE-MANIFEST-002`; el manifiesto `001` no se elimina ni se presenta como resultado vigente.
 
 ## Identidad y evidencia
 
@@ -220654,271 +220692,72 @@ next_gate_date = PENDIENTE_DE_DEFINIR_POR_OWN_GG
 
 La puerta produce un estado permitido por `TREQ-GAP-001`: `BLOCKED_ROUTING`. No existe brecha crítica sin propietario válido, pero el contrato de arrastre está incompleto para todas las brechas abiertas. Por tanto, no se aprueba el cierre de E1, no se habilita `PROC-CAT-001` y no se inicia BLOQUE E2.
 
-## Condición de reejecución
+## Condición histórica de reejecución
 
-La siguiente ejecución deberá conservar esta evidencia y completar, por cada brecha crítica abierta, `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at` y `next_gate_date`. `OWN-GG` deberá aprobar explícitamente el manifiesto resultante. Solo `PASS` o `PASS_WITH_CARRYOVER` habilitan la transición.
-# E1-GATE-MANIFEST-002 — Reejecución posterior a aprobación de arrastres
+Esta ejecución concluyó originalmente que debían completarse campos individuales de arrastre. Esa condición queda conservada como historial, pero fue reemplazada por la regla proporcional de `E1-GATE-MANIFEST-002`: en descubrimiento el destino se deriva, la continuidad se aprueba sobre la línea base y los controles compensatorios solo se exigen si existe exposición operativa.
+# E1-GATE-MANIFEST-002 — Propuesta corregida de puerta de cierre de E1
 
-## Identidad y aprobación
+**Estado:** `PROPUESTA PARA APROBACIÓN`
+**Sustituye como resultado vigente propuesto:** la interpretación de arrastre individual aplicada después de `E1-GATE-MANIFEST-001`
+**No sustituye:** el manifiesto `001` como evidencia histórica de la primera ejecución
 
-| Campo | Valor |
-| --- | --- |
-| `gate_id` | `E1-GATE-MANIFEST-002` |
-| `phase_id` | `E1` |
-| `phase_version` | `2026-07-25` |
-| `evaluated_at` | `2026-07-25` |
-| `approved_by` | `OWN-GG` |
-| `approved_at` | `2026-07-25` |
-| `approval_scope` | Regla de arrastre y fecha de revisión `2026-08-21`, según `E1_GATE_ARRASTRE_PROPUESTA_001.md`. |
-| `evidence_location` | Anexo A de `07_REGISTRO_CANONICO_DE_BRECHAS.md`; `E1_GATE_ARRASTRE_PROPUESTA_001.md`; este manifiesto. |
+## Regla corregida
 
-La aprobación no declara cerrada ninguna brecha ni aprueba el cierre de E1. Autoriza únicamente los arrastres que cumplen el contrato y conserva las tres brechas cuyo cierre depende del propio control E1 como correcciones internas obligatorias.
+E1 es una fase de descubrimiento. Su puerta comprueba que las brechas críticas fueron identificadas y encaminadas; no exige decisiones propias de diseño, implementación, piloto o producción.
 
-## Contrato común de los 135 arrastres aprobados
+Para cerrar E1, cada brecha crítica debe tener:
 
-| Campo | Valor aprobado |
-| --- | --- |
-| `carryover_reason` | La evidencia material depende de la tarea primaria y del paquete ya asignados. E1 conserva la línea base, la trazabilidad y el control; no declara la brecha cerrada. |
-| `compensating_control` | Se mantienen inmutables el responsable, la fecha, la tarea primaria, el paquete, el perfil y la evidencia fuente. La tarea primaria debe conservar la referencia a la brecha; antes de aprobar su bloque, se reevalúa su estado. Ninguna brecha crítica pendiente habilita operación productiva, corte o cierre por sí sola. |
-| `carryover_approved_by` | `OWN-GG` |
-| `carryover_approved_at` | `2026-07-25` |
-| `next_gate_date` | `2026-08-21` |
+1. propietario vigente;
+2. fecha o momento de resolución;
+3. tarea primaria concreta;
+4. paquete de resolución trazable;
+5. perfil de cierre;
+6. estado abierto, salvo que exista evidencia válida de cierre.
 
-## Matriz exacta de arrastres aprobados
+La tarea primaria y el paquete de resolución deben ser trazables. Cuando el paquete todavía no represente una fase formal, el bloque destino podrá derivarse del roadmap canónico. La fase destino no se replica manualmente en 138 filas. La razón común de continuidad es:
 
-Cada identificador de esta matriz declara el bloque indicado como `target_phase` y hereda íntegramente el contrato común anterior. La tarea primaria de cada fila del Anexo A pertenece al bloque de destino señalado.
+> La brecha permanece abierta porque su resolución material corresponde a la fase propietaria, la tarea primaria y el paquete ya asignados.
 
-| `target_phase` | Brechas | Identificadores cubiertos |
-| --- | ---: | --- |
-| `E2_PROCESOS_Y_EXPERIENCIA` | 13 | `EQG-055`, `H-CAP-COVER-010-002`, `H-CAP-COVER-011-005`, `H-CAP-SCOPE-006-007`, `H-CAP-SCOPE-006-016`, `H-CAP-SCOPE-009-004`, `H-CAP-SCOPE-009-008`, `H-CAP-SCOPE-009-010`, `H-CAP-SCOPE-011-027`, `H-CAP-SCOPE-019-001`, `H-CAP-SCOPE-019-002`, `H-CAP-SCOPE-019-003`, `H-CAP-SCOPE-019-007` |
-| `E3_SUPABASE` | 2 | `H-CAP-SCOPE-004-002`, `H-CAP-SCOPE-006-008` |
-| `F_ANIMA` | 1 | `H-CAP-SCOPE-002-006` |
-| `J_ACCIONES_DE_SERVIDOR` | 1 | `H-CAP-SCOPE-011-016` |
-| `K_NEXO` | 34 | `H-CAP-SCOPE-006-004`, `H-CAP-SCOPE-006-005`, `H-CAP-SCOPE-007-003`, `H-CAP-SCOPE-007-004`, `H-CAP-SCOPE-007-005`, `H-CAP-SCOPE-007-009`, `H-CAP-SCOPE-008-006`, `H-CAP-SCOPE-011-002`, `H-CAP-SCOPE-011-003`, `H-CAP-SCOPE-011-004`, `H-CAP-SCOPE-011-005`, `H-CAP-SCOPE-011-006`, `H-CAP-SCOPE-011-009`, `H-CAP-SCOPE-011-010`, `H-CAP-SCOPE-011-011`, `H-CAP-SCOPE-011-012`, `H-CAP-SCOPE-011-014`, `H-CAP-SCOPE-011-017`, `H-CAP-SCOPE-011-018`, `H-CAP-SCOPE-011-019`, `H-CAP-SCOPE-013-002`, `H-CAP-SCOPE-013-004`, `H-CAP-SCOPE-013-005`, `H-CAP-SCOPE-013-006`, `H-CAP-SCOPE-013-009`, `H-CAP-SCOPE-013-011`, `H-CAP-SCOPE-013-012`, `H-CAP-SCOPE-013-014`, `H-CAP-SCOPE-013-017`, `H-CAP-SCOPE-013-018`, `H-CAP-SCOPE-013-019`, `H-CAP-SCOPE-013-021`, `H-CAP-SCOPE-013-023`, `H-CAP-SCOPE-013-025` |
-| `L_FOGO` | 9 | `H-CAP-SCOPE-008-002`, `H-CAP-SCOPE-008-004`, `H-CAP-SCOPE-008-007`, `H-CAP-SCOPE-008-009`, `H-CAP-SCOPE-008-013`, `H-CAP-SCOPE-008-017`, `H-CAP-SCOPE-008-019`, `H-CAP-SCOPE-008-021`, `H-CAP-SCOPE-008-023` |
-| `M_ORIGO` | 3 | `H-CAP-SCOPE-005-004`, `H-CAP-SCOPE-005-006`, `H-CAP-SCOPE-005-012` |
-| `N_PULSO` | 10 | `H-CAP-SCOPE-009-001`, `H-CAP-SCOPE-009-006`, `H-CAP-SCOPE-009-009`, `H-CAP-SCOPE-009-017`, `H-CAP-SCOPE-009-018`, `H-CAP-SCOPE-009-021`, `H-CAP-SCOPE-009-022`, `H-CAP-SCOPE-011-021`, `H-CAP-SCOPE-011-022`, `H-CAP-SCOPE-011-024` |
-| `O_NUMERA` | 12 | `H-CAP-SCOPE-012-003`, `H-CAP-SCOPE-012-004`, `H-CAP-SCOPE-012-007`, `H-CAP-SCOPE-012-008`, `H-CAP-SCOPE-012-010`, `H-CAP-SCOPE-012-011`, `H-CAP-SCOPE-012-013`, `H-CAP-SCOPE-012-014`, `H-CAP-SCOPE-012-015`, `H-CAP-SCOPE-012-020`, `H-CAP-SCOPE-012-021`, `H-CAP-SCOPE-012-030` |
-| `U_PRUEBAS_INTEGRALES` | 2 | `H-CAP-SCOPE-008-024`, `H-CAP-SCOPE-011-023` |
-| `V_PASS` | 2 | `H-CAP-SCOPE-009-025`, `H-CAP-SCOPE-014-026` |
-| `W_AURA` | 10 | `H-CAP-SCOPE-014-002`, `H-CAP-SCOPE-014-006`, `H-CAP-SCOPE-014-007`, `H-CAP-SCOPE-014-011`, `H-CAP-SCOPE-014-013`, `H-CAP-SCOPE-014-017`, `H-CAP-SCOPE-014-019`, `H-CAP-SCOPE-014-020`, `H-CAP-SCOPE-014-022`, `H-CAP-SCOPE-014-024` |
-| `X_INTEGRACIONES` | 8 | `H-CAP-SCOPE-004-013`, `H-CAP-SCOPE-006-010`, `H-CAP-SCOPE-006-011`, `H-CAP-SCOPE-009-019`, `H-CAP-SCOPE-009-026`, `H-CAP-SCOPE-009-027`, `H-CAP-SCOPE-012-017`, `H-CAP-SCOPE-019-005` |
-| `Z_TECNOLOGIA_Y_SOPORTE` | 13 | `EQG-053`, `H-CAP-SCOPE-015-003`, `H-CAP-SCOPE-015-007`, `H-CAP-SCOPE-015-008`, `H-CAP-SCOPE-015-009`, `H-CAP-SCOPE-015-012`, `H-CAP-SCOPE-015-013`, `H-CAP-SCOPE-015-014`, `H-CAP-SCOPE-015-018`, `H-CAP-SCOPE-015-021`, `H-CAP-SCOPE-015-025`, `H-CAP-SCOPE-015-026`, `H-CAP-SCOPE-019-008` |
-| `AA_GOBIERNO_DE_INFORMACION` | 13 | `H-CAP-SCOPE-016-002`, `H-CAP-SCOPE-016-003`, `H-CAP-SCOPE-016-007`, `H-CAP-SCOPE-016-008`, `H-CAP-SCOPE-016-013`, `H-CAP-SCOPE-016-014`, `H-CAP-SCOPE-016-022`, `H-CAP-SCOPE-016-026`, `H-CAP-SCOPE-016-028`, `H-CAP-SCOPE-016-029`, `H-CAP-SCOPE-016-030`, `H-CAP-SCOPE-016-031`, `H-CAP-SCOPE-019-011` |
-| `AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS` | 1 | `H-CAP-COVER-001-009` |
-| `AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION` | 1 | `H-CAP-SCOPE-019-012` |
-| **Total con arrastre aprobado** | **135** | — |
+La aprobación se realiza sobre la línea base completa de E1. Los controles compensatorios solo son obligatorios cuando una brecha pueda quedar expuesta durante implementación, piloto, cutover o producción antes de resolverse.
 
-## Correcciones que permanecen en E1
-
-Las siguientes brechas no pueden arrastrarse a E1: una fase no puede usarse como su propio destino para declarar su cierre. Deben producir evidencia de corrección mediante sus tareas primarias y luego someterse de nuevo a la puerta.
-
-| Brecha | Tarea primaria | Estado | Acción de cierre requerida |
-| --- | --- | --- | --- |
-| `H-CAP-SCOPE-019-006` | `GAP-CTRL-008` | `PENDING_E1_REMEDIATION` | Demostrar que `BUILD` no puede avanzar a implementación sin pasar por E2–E5. |
-| `H-CAP-SCOPE-019-014` | `GAP-CTRL-007` | `PENDING_E1_REMEDIATION` | Definir criterio y evidencia verificable de cierre. |
-| `H-CAP-SCOPE-019-015` | `GAP-CTRL-007` | `PENDING_E1_REMEDIATION` | Definir criterio y evidencia verificable de cierre. |
-
-## Resultado de TREQ-GAP-001
-
-| Arreglo de control | Resultado |
-| --- | ---: |
-| `critical_gap_count` | 138 |
-| `critical_with_approved_carryover[]` | 135 |
-| `critical_without_target_phase[]` | 3 |
-| `critical_without_carryover_reason[]` | 3 |
-| `critical_without_compensating_control[]` | 3 |
-| `critical_without_approval[]` | 3 |
-| `critical_pending_e1_remediation[]` | 3 |
-
-```text
-gate_status = BLOCKED_ROUTING
-blocking_reasons[] = [
-  "H-CAP-SCOPE-019-006 debe producir evidencia de GAP-CTRL-008 antes de cierre de E1.",
-  "H-CAP-SCOPE-019-014 y H-CAP-SCOPE-019-015 deben producir criterio y evidencia de cierre mediante GAP-CTRL-007.",
-  "Las tres brechas no pueden usar E1 como target_phase de su propio cierre."
-]
-next_gate_date = 2026-08-21
-```
-
-## Decisión de la puerta
-
-La aprobación de Gobierno General regulariza el arrastre de 135 brechas y reduce el bloqueo de 138 a 3 brechas concretas. E1 sigue sin aprobarse, `PROC-CAT-001` no queda habilitada y BLOQUE E2 no inicia hasta corregir esas tres brechas y ejecutar una nueva puerta con resultado `PASS` o `PASS_WITH_CARRYOVER`.
-# E1-CLOSE-001 — Evidencia candidata para las tres correcciones internas
-
-**Estado:** `CERRADA`
-**Alcance:** `H-CAP-SCOPE-019-006`, `H-CAP-SCOPE-019-014`, `H-CAP-SCOPE-019-015`
-**Aprobación documental:** `OWN-GG`, `2026-07-25`
-**No implica:** aprobación de E1, inicio de E2 ni autorización de implementación.
-
-## Regla común de validación
-
-Cada cierre usa el perfil `CLOSE-CON-CTR`. Será válido únicamente si el contrato queda versionado en la fuente canónica, se puede trazar desde la brecha a su tarea y paquete, y su cumplimiento se verifica mediante los casos definidos abajo. La aprobación de un documento aislado no basta.
-
-| Campo | Valor |
-| --- | --- |
-| `closure_profile_id` | `CLOSE-CON-CTR` |
-| `validator` | `OWN-OPS` |
-| `co_validator` | `OWN-TEC` |
-| Evidencia mínima | `EV-01`, `EV-02`, `EV-05`, `EV-11`, `EV-17` |
-| Rechazo | `RJ-CON-CTR` si falta versionado, adopción, trazabilidad, errores o prueba de compatibilidad. |
-
-## 1. H-CAP-SCOPE-019-006 — Ningún BUILD autoriza implementación
-
-### Contrato de fase
-
-`BUILD` describe una necesidad o una intención de evolución; nunca es una autorización para crear código, migraciones, paquetes de implementación, piloto, despliegue o cambio productivo.
-
-La única secuencia válida es:
-
-```text
-E1-GATE-001 = PASS o PASS_WITH_CARRYOVER
-        ↓
-PROC-CAT-001 y las tareas aprobadas de E2
-        ↓
-diseño y decisiones aprobadas de E3/E4 cuando correspondan
-        ↓
-paquete autorizado de E5
-        ↓
-implementación, pruebas, piloto y despliegue
-```
-
-Mientras E1 esté bloqueado, ningún marcador `BUILD` puede usarse como evidencia de autorización. Si aparece una tarea de implementación antes de esa secuencia, debe registrarse como violación de puerta y E1 permanece bloqueado.
-
-### Evidencia candidata
-
-| Evidencia | Ubicación o prueba |
-| --- | --- |
-| `EV-01` | El contrato anterior, junto con la condición de transición de `E1-GATE-001`. |
-| `EV-02` | `H-CAP-SCOPE-019-006` → `GAP-CTRL-008` → `GAP-PKG-049` → `E1-GATE-001`. |
-| `EV-05` | Revisar tres escenarios: E1 bloqueado no habilita E2; E1 aprobado habilita primero `PROC-CAT-001`; ningún paquete E5 se habilita solo por tener estado `BUILD`. |
-| `EV-11` | Cada ejecución de puerta conserva `gate_status`, razones de bloqueo y fecha del siguiente gate. |
-| `EV-17` | El orden de transición y el manifiesto deben declarar la misma secuencia. |
-
-## 2. H-CAP-SCOPE-019-014 — El cambio de propietario no reescribe historia
-
-### Contrato de propiedad versionada
-
-Todo cambio de propietario conserva el registro anterior y crea una transición nueva; no se permiten actualizaciones destructivas de historial. La transición debe contener:
-
-```text
-ownership_transition_id
-affected_gap_or_capability_id
-previous_owner
-next_owner
-effective_at
-decision_authority
-reason
-affected_consumers[]
-handover_evidence
-rollback_or_reversal_rule
-```
-
-Los consumidores históricos continúan resolviendo el propietario que estaba vigente en su fecha de decisión. La vista vigente puede mostrar el nuevo propietario, pero debe enlazar la transición y no sustituir la evidencia anterior. Sin esa transición, el cambio se rechaza y la brecha permanece abierta.
-
-### Evidencia candidata
-
-| Evidencia | Ubicación o prueba |
-| --- | --- |
-| `EV-01` | Contrato de propiedad versionada de esta sección. |
-| `EV-02` | `H-CAP-SCOPE-019-014` → `GAP-CTRL-007` → `GAP-PKG-031`; transición futura vinculada a `SUPA-TRANS-*` cuando haya soporte físico. |
-| `EV-05` | Probar un cambio de propietario: la consulta histórica conserva el anterior, la vista vigente muestra el nuevo y ambos exponen el mismo identificador de transición. |
-| `EV-11` | La transición debe generar auditoría con actor, fecha, decisión y consumidores afectados. |
-| `EV-17` | La transición no rompe referencias históricas ni contratos de consumidores. |
-
-## 3. H-CAP-SCOPE-019-015 — Un cierre local no oculta efectos externos
-
-### Contrato de cierre multidominio
-
-Una brecha con efectos en más de un dominio solo puede marcarse `CERRADA` cuando todos sus efectos dependientes estén explícitamente resueltos, arrastrados con aprobación vigente o retirados del alcance mediante decisión versionada. El manifiesto de cierre debe contener:
-
-```text
-closure_id
-source_gap_id
-affected_domains[]
-dependent_tasks[]
-dependency_status_by_domain[]
-evidence_by_domain[]
-open_effects[]
-approved_carryovers[]
-final_validator_decision
-```
-
-Si cualquiera de los dominios afectados tiene un efecto abierto sin arrastre aprobado, el cierre local se rechaza. La tarea `INT-POS-021` y los `TREQ-INTEGRATION-*` aplicables deberán aportar la evidencia de implementación cuando la brecha alcance E4/E5; esta regla no los declara ejecutados.
-
-### Evidencia candidata
-
-| Evidencia | Ubicación o prueba |
-| --- | --- |
-| `EV-01` | Contrato de cierre multidominio de esta sección. |
-| `EV-02` | `H-CAP-SCOPE-019-015` → `GAP-CTRL-007` → `GAP-PKG-037` → `INT-POS-021` y `TREQ-INTEGRATION-*` aplicables. |
-| `EV-05` | Probar un cierre con dos dominios: uno pendiente sin arrastre aprobado debe rechazar el cierre; con todos los dominios resueltos o arrastrados debe permitir validación. |
-| `EV-11` | El manifiesto de cierre registra la decisión por dominio y sus efectos abiertos. |
-| `EV-17` | Productores y consumidores mantienen compatibilidad hasta que cada efecto dependiente tenga resolución o transición explícita. |
-
-## Resultado de preparación
-
-| Brecha | Tarea primaria | Resultado | Siguiente acción |
-| --- | --- | --- | --- |
-| `H-CAP-SCOPE-019-006` | `GAP-CTRL-008` | `CERRADA` | Contrato de fase aprobado; los tres escenarios quedan como prueba obligatoria de cada ejecución de puerta. |
-| `H-CAP-SCOPE-019-014` | `GAP-CTRL-007` | `CERRADA` | Contrato de propiedad versionada aprobado; toda futura transición debe conservar historial y consumidores. |
-| `H-CAP-SCOPE-019-015` | `GAP-CTRL-007` | `CERRADA` | Contrato de cierre multidominio aprobado; todo efecto externo debe quedar resuelto o arrastrado explícitamente. |
-
-La aprobación explícita de `OWN-GG` del `2026-07-25` registra estas tres brechas como `CERRADA` con evidencia documental. Si durante una ejecución futura se detecta que alguno de los contratos no se adopta o no supera sus casos de prueba, la brecha deberá pasar a `REABIERTA` y E1 se reevaluará.
-# E1-GATE-MANIFEST-003 — Reejecución posterior a cierres internos
-
-## Identidad y evidencia
-
-| Campo | Valor |
-| --- | --- |
-| `gate_id` | `E1-GATE-MANIFEST-003` |
-| `phase_id` | `E1` |
-| `phase_version` | `2026-07-25` |
-| `evaluated_at` | `2026-07-25` |
-| `evaluated_by` | revisión documental reproducible sobre las fuentes canónicas locales |
-| `approved_by` | `OWN-GG` |
-| `approved_at` | `2026-07-25` |
-| `evidence_location` | Anexo A de `07_REGISTRO_CANONICO_DE_BRECHAS.md`; `11_E1_GATE_MANIFEST_002.md`; `12_E1_CIERRES_INTERNOS_001.md`. |
-
-## Conjunto crítico reconciliado
+## Resultado reproducible
 
 | Control | Resultado |
 | --- | ---: |
-| `critical_gap_count` | 138 |
+| Brechas críticas reconciliadas | 138 |
 | Identificadores únicos | 138 |
-| Brechas cerradas con evidencia documental aprobada | 3 |
-| Brechas abiertas con arrastre aprobado | 135 |
-| Brechas sin propietario válido | 0 |
-| Brechas sin fecha, tarea, paquete o perfil de cierre | 0 |
-| Brechas abiertas sin `target_phase` | 0 |
-| Brechas abiertas sin razón, control, aprobación o siguiente gate | 0 |
-
-## Resultado de TREQ-GAP-001
-
-| Arreglo de control | Resultado |
-| --- | ---: |
-| `critical_without_owner[]` | 0 |
-| `critical_without_due_date[]` | 0 |
-| `critical_without_task[]` | 0 |
-| `critical_without_package[]` | 0 |
-| `critical_without_closure_profile[]` | 0 |
-| `critical_without_target_phase[]` | 0 |
-| `critical_without_carryover_reason[]` | 0 |
-| `critical_without_compensating_control[]` | 0 |
-| `critical_without_approval[]` | 0 |
-| `critical_closed_with_valid_evidence[]` | 3 |
-| `critical_open_with_approved_carryover[]` | 135 |
-| `critical_with_expired_carryover[]` | 0 |
+| Con propietario válido | 138 |
+| Con fecha o momento de resolución | 138 |
+| Con tarea primaria | 138 |
+| Con paquete de resolución trazable | 138 |
+| Con perfil de cierre | 138 |
+| Presentadas falsamente como cerradas | 0 |
+| Expuestas actualmente a implementación, piloto o producción | 0 |
+| Bloque destino derivable del roadmap cuando el paquete aún no representa una fase formal | 138 |
 
 ```text
 gate_status = PASS_WITH_CARRYOVER
 blocking_reasons[] = []
-next_gate_date = 2026-08-21
+baseline_approval = PENDIENTE — OWN-GG
+next_review_date = 2026-08-21
 ```
 
-## Decisión de la puerta
+`next_review_date = 2026-08-21` corresponde a la primera fecha de revisión del conjunto crítico. No constituye una promesa ni una fecha de cierre para las 138 brechas.
 
-La ejecución es técnicamente apta para el resultado `PASS_WITH_CARRYOVER`: las 135 brechas abiertas poseen arrastre aprobado y las 3 brechas internas fueron cerradas con evidencia documental aprobada. `OWN-GG` aprobó este manifiesto el `2026-07-25`; E1 queda cerrado documentalmente y `PROC-CAT-001` queda autorizado como siguiente tarea. Esta decisión no autoriza código, migraciones, Supabase, piloto ni despliegue.
+## Interpretación
+
+`PASS_WITH_CARRYOVER` significa que:
+
+- E1 cumplió su propósito de descubrimiento;
+- las brechas continúan abiertas;
+- ninguna se considera resuelta por cerrar la fase;
+- cada una conserva propietario, fecha, tarea, paquete y criterio;
+- las puertas posteriores deberán exigir controles proporcionales al riesgo real de su fase;
+- `PROC-CAT-001` solo queda habilitada después del `APROBADO` explícito de `OWN-GG` sobre esta propuesta.
+
+## Historial preservado
+
+`E1-GATE-MANIFEST-001` continúa demostrando que la primera ejecución aplicó una regla más estricta y obtuvo `BLOCKED_ROUTING`. Ese resultado fue coherente con aquella regla, pero la regla se considera sobredimensionada para descubrimiento y queda reemplazada por esta propuesta cuando reciba aprobación.
 ### Regla de evolución del catálogo
 
 Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
@@ -220986,43 +220825,6 @@ CATÁLOGO DE PROCESOS
 ### [ ] PROC-CAT-018 — Definir auditoría necesaria
 ### [ ] PROC-CAT-019 — Definir métricas de operación
 ### [ ] PROC-CAT-020 — Identificar procesos duplicados entre aplicaciones
-
----
-
-## Consolidación candidata — PROC-CAT-001
-
-**Estado:** `LISTA_PARA_VALIDAR`
-**Fuente aprobada:** `E1_DESCUBRIMIENTO_OPERATIVO/02_AUDITORIA_DE_OPERACION_REAL.md`, inventario maestro de procesos ordinarios.
-**Alcance:** consolidar el AS-IS; no define todavía proceso TO-BE, aplicaciones propietarias, estados, transiciones, datos, eventos, auditoría ni implementación.
-
-### Catálogo AS-IS consolidado
-
-| Grupo | Procesos consolidados | Fuente y tratamiento |
-| --- | --- | --- |
-| Abastecimiento, producción y logística | `PROC-001` Solicitud de remisión interna; `PROC-002` Consolidación productiva; `PROC-003` Preparación matutina de remisión; `PROC-004` a `PROC-009` Producción; `PROC-010` Alistamiento y despacho; `PROC-011` Transporte y entrega; `PROC-012` Retorno y lavado; `PROC-013` Recepción de proveedor; `PROC-014` Retiro de insumos; `PROC-015` Compra; `PROC-016` Recepción de fruver | Inventario ordinario aprobado en E1. Papel, Excel, WhatsApp, conocimiento operativo y herramientas parciales se conservan como evidencia AS-IS, no como arquitectura objetivo. |
-| Venta, servicio y dinero | `PROC-017` Apertura de Vento Café; `PROC-018` Atención de mesa; `PROC-019` Cocina; `PROC-020` Bar y Barra; `PROC-021` Pago; `PROC-022` Pedido Rappi; `PROC-023` Pedido directo o domicilio; `PROC-024` Atención en Saudo; `PROC-025` Preparación en Saudo; `PROC-026` Atención en Molka; `PROC-027` Cierre y relevo de Caja; `PROC-028` Entrega de efectivo; `PROC-029` Registro contable de soporte | Makos, Rappi, ManyChat, papel y canales externos permanecen clasificados como soportes o canales actuales. Su permanencia futura no se infiere de este catálogo. |
-| Personas y acceso | `PROC-030` Programación de turnos; `PROC-031` Consulta y check-in; `PROC-032` Revisión de asistencia; `PROC-033` Liquidación de propinas; `PROC-034` Pago de nómina; `PROC-035` Reclutamiento y contratación; `PROC-036` Inducción; `PROC-037` Alta de acceso; `PROC-038` Baja de acceso | VISO, ANIMA y Bancolombia Nóminas son evidencia de operación actual; identidad, autorización y transiciones se mantienen para tareas posteriores. |
-| Comercial, soporte y continuidad | `PROC-039` Solicitud y publicación de Marketing; `PROC-040` Venta y despacho de Vaila Vainilla; `PROC-041` Soporte tecnológico; `PROC-042` Mantenimiento correctivo; `PROC-043` Disposición de merma; `PROC-044` Reasignación de producto a Molka; `PROC-045` Servicios Generales | Los procesos no se reinterpretan como pantallas, tablas o aplicaciones. Las dependencias y excepciones siguen en las fuentes de E1 hasta su tratamiento por tareas posteriores. |
-
-### Conciliación de alcance
-
-| Control | Resultado |
-| --- | ---: |
-| Procesos AS-IS consolidados | 45 |
-| Brechas vinculadas a uno o más procesos AS-IS | 436 |
-| Brechas cubiertas por proceso provisional de subcapacidad | 378 |
-| Procesos AS-IS con relaciones directas a brechas | 39 de 45 |
-| Familias de capacidad representadas | 18 de 18 |
-
-La ausencia de vínculo AS-IS directo no elimina un proceso ni crea uno nuevo: conserva la cobertura provisional por subcapacidad aprobada en E1. Esta tarea tampoco reclasifica brechas, propietarios, fechas, paquetes o evidencia de cierre.
-
-### Criterios para validación
-
-- [x] el catálogo contiene exactamente los 45 procesos ordinarios inventariados en E1;
-- [x] cada grupo conserva su referencia de evidencia AS-IS;
-- [x] se distingue evidencia actual de arquitectura objetivo;
-- [x] se preserva la cobertura de 814 brechas sin inventar vínculos nuevos;
-- [ ] `OWN-GG` aprueba la consolidación para habilitar `PROC-CAT-002`.
 
 MAPA DE ACTORES
 
@@ -223948,7 +223750,7 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
-7. `E1-GATE-001` fue aprobado mediante `E1-GATE-MANIFEST-003` con resultado `PASS_WITH_CARRYOVER`. BLOQUE E1 queda cerrado documentalmente y `PROC-CAT-001` queda habilitada; no se autoriza implementación física antes de las puertas posteriores aplicables.
+7. `E1-GATE-001` permanece en **PROPUESTA PARA APROBACIÓN** mediante `E1-GATE-MANIFEST-002`, con resultado candidato `PASS_WITH_CARRYOVER` bajo la regla proporcional de descubrimiento. `PROC-CAT-001` y BLOQUE E2 no se inician antes del `APROBADO` explícito de esta puerta.
 8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
