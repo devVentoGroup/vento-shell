@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1401** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **181** |
+| Aprobadas | **186** |
 | En propuesta | **0** |
-| No iniciadas | **1220** |
+| No iniciadas | **1215** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CODE-AUD-020` — Crear backlog técnico y funcional trazable por repositorio | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-001` — Evaluar gobierno, empresas, sedes y organización | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-002` — Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | ⬜ NO INICIADA |
+| Última aprobada | `CAP-SCOPE-004` — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-005` — Evaluar compras, proveedores, contratos, precios y abastecimiento | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-006` — Evaluar inventario, lotes, vencimientos, LOC y LPN | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -209,11 +209,11 @@
 | ✅ APROBADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ⬜ NO INICIADA | `QA-REG-001` | Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-004` | Evaluar catálogo, productos, presentaciones, unidades, menús y recetas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `QA-REG-001` | Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` |
+| ✅ APROBADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-004` | Evaluar catálogo, productos, presentaciones, unidades, menús y recetas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-005` | Evaluar compras, proveedores, contratos, precios y abastecimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-006` | Evaluar inventario, lotes, vencimientos, LOC y LPN | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-007` | Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
