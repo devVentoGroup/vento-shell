@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "canonical_source_model": "modular",
-  "generated_at": "2026-07-24T16:00:00.000Z",
+  "generated_at": "2026-07-25T00:00:00.000Z",
   "original_source": "docs/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO.md",
   "backup_source": "docs/plan-canonico/modular/respaldo/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_ORIGINAL.md",
   "original_sha256": "fd7c12626887d7a3bdff11e2d03dfba9061cbaaebcff72ac182824fdb4b24316",
@@ -135,6 +135,7 @@
     "bloques/Z_TECNOLOGIA_Y_SOPORTE/00_BLOQUE_Z.md",
     "bloques/AA_GOBIERNO_DE_INFORMACION/00_BLOQUE_AA.md",
     "bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md",
+    "bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md",
     "90_ORDEN_DE_IMPLEMENTACION.md",
     "99_ESTADO_INICIAL_CONOCIDO.md"
   ]
