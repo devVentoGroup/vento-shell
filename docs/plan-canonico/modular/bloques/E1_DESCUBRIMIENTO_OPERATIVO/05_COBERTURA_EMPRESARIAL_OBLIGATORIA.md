@@ -13376,7 +13376,7 @@ CAP-SCOPE-012
 
 ### ✅ CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
 
-**Estado:** APROBADA
+**Estado:** APROBADA  
 **Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
 **Dependencia cumplida:** `CAP-SCOPE-011` aprobada  
 **Tarea anterior:** `CAP-SCOPE-011`  
@@ -13387,8 +13387,9 @@ CAP-SCOPE-012
 **Migraciones o cambios en Supabase:** no autorizados  
 **Movimientos financieros, recaudos, pagos, cierres, impuestos o actuaciones reales:** no autorizados  
 **Decisión incorporada durante la elaboración:** la cartera y cuentas por cobrar serán capacidad obligatoria de NUMERA  
+**Decisión adicional incorporada tras la aprobación:** el visor económico dinámico será una capacidad central de NUMERA, operará principalmente en una sola pantalla y utilizará divulgación progresiva en lugar de explicaciones permanentes  
 **Requisitos de prueba generados:** `TREQ-NUMERA-002`, `TREQ-NUMERA-003`, `TREQ-NUMERA-004`, `TREQ-INTEGRATION-017`  
-**Tareas nuevas derivadas:** `NUMERA-DOM-016`, `NUMERA-DOM-017`, `NUMERA-AUTH-014`, `NUMERA-UX-026`, `NUMERA-UX-027`  
+**Tareas nuevas derivadas:** `NUMERA-DOM-016`, `NUMERA-DOM-017`, `NUMERA-DOM-018`, `NUMERA-AUTH-014`, `NUMERA-AUTH-015`, `NUMERA-UX-026`, `NUMERA-UX-027`, `NUMERA-UX-028`  
 **Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
 
 ---
@@ -13937,6 +13938,85 @@ NUMERA no inferirá la entidad legal desde el nombre visible de la marca ni desd
 
 ---
 
+#### 29A. Visor económico dinámico de una sola pantalla
+
+El visor económico será la superficie principal de NUMERA para consultar, comparar y simular precios, costos, márgenes, presupuestos, equilibrio y rentabilidad. No será una página de documentación ni una colección de tarjetas explicativas.
+
+La vista inicial deberá responder, sin navegación previa, cuatro preguntas:
+
+1. ¿cuánto cuesta realmente?;
+2. ¿a qué precio se vende o se propone vender?;
+3. ¿cuánto margen o contribución deja?;
+4. ¿qué cambia cuando se modifica un supuesto?
+
+##### 29A.1. Composición obligatoria
+
+La pantalla principal tendrá, como máximo, estas zonas visibles:
+
+1. **barra compacta de contexto:** entidad, sede, canal, producto o familia, periodo y escenario;
+2. **resumen de cuatro a seis indicadores:** precio, costo, margen, variación, equilibrio y resultado proyectado según el contexto;
+3. **área central de comparación:** tabla o matriz de precio, costo y margen con comparación entre real, presupuesto, escenario y periodo anterior;
+4. **una visualización principal:** tendencia, composición o sensibilidad, seleccionada según la pregunta activa;
+5. **simulador plegable:** panel lateral o inferior que se abre solo cuando el usuario desea modificar supuestos;
+6. **detalle bajo demanda:** desglose de costo, movimientos, fuentes y fórmula accesible mediante `Ver detalle`, sin ocupar permanentemente la pantalla.
+
+##### 29A.2. Modos separados
+
+```text
+REAL
+≠ PRESUPUESTADO
+≠ SIMULADO
+≠ PROPUESTO
+≠ PUBLICADO
+```
+
+- `REAL` mostrará hechos confirmados y conciliados;
+- `PRESUPUESTADO` mostrará la versión aprobada del periodo;
+- `SIMULADO` permitirá cambiar supuestos sin alterar datos reales;
+- `PROPUESTO` representará un escenario enviado a revisión;
+- `PUBLICADO` representará un precio, presupuesto o regla aprobada y vigente.
+
+Cambiar un control del simulador nunca modificará precios, presupuestos, costos maestros ni registros económicos reales. Publicar exigirá una acción separada, permiso, revisión y trazabilidad.
+
+##### 29A.3. Principios de simplicidad obligatorios
+
+- la pantalla principal no contendrá párrafos instructivos permanentes;
+- no se usarán tarjetas como `Qué editas`, `Qué calcula NUMERA` o `Cómo llenar esta pantalla` dentro del flujo cotidiano;
+- cada texto auxiliar visible tendrá como máximo una línea corta;
+- la ayuda extensa se moverá a tooltip, panel `Ayuda`, onboarding descartable o documentación separada;
+- términos técnicos de base de datos, eventos, tablas, RPC o contratos no serán visibles para usuarios de negocio;
+- los nombres se expresarán en lenguaje empresarial: `Precio`, `Costo`, `Margen`, `Variación`, `Cartera`, `Disponible`, `Vencido`;
+- el usuario podrá volver al estado inicial mediante `Restablecer` sin recargar la aplicación;
+- los filtros y escenarios activos permanecerán siempre visibles;
+- el color no será el único medio para distinguir estado o resultado;
+- la densidad se resolverá mediante agrupación, jerarquía y detalle progresivo, no mediante ocultar información esencial.
+
+##### 29A.4. Interacción mínima
+
+- seleccionar un producto o centro actualizará todos los indicadores de forma coordinada;
+- cambiar precio, costo, volumen, merma, comisión o descuento recalculará el escenario inmediatamente;
+- comparar dos escenarios requerirá como máximo tres acciones desde la pantalla principal;
+- cada indicador permitirá navegar hasta el detalle y la fuente que lo produjo;
+- las vistas podrán guardarse como presets por rol, sin crear copias de los datos;
+- propietario, gerente, contador y responsable de sede verán la misma verdad con diferente profundidad y ámbito autorizado.
+
+##### 29A.5. Criterios de aceptación UX
+
+El visor no se considerará aprobado si:
+
+- necesita leer instrucciones largas para utilizarse;
+- obliga a recorrer varias pantallas para comparar precio, costo y margen;
+- mezcla datos reales con supuestos sin señalización explícita;
+- muestra más de una visualización principal simultánea sin necesidad;
+- expone conceptos técnicos internos;
+- requiere desplazar la pantalla para encontrar los filtros o el escenario activo;
+- no permite explicar el origen de un valor bajo demanda;
+- usuarios de negocio no pueden completar una comparación básica sin asistencia.
+
+La validación incluirá pruebas de comprensión con usuarios no técnicos y medición de tiempo, errores y necesidad de ayuda.
+
+---
+
 #### 30. Reglas de autoridad y segregación
 
 - quien crea un gasto no aprobará necesariamente su propio gasto;
@@ -13969,13 +14049,16 @@ No se crean preguntas nuevas. Las respuestas ya suministradas se consolidarán p
 
 #### 32. Tareas nuevas derivadas
 
-| ID              | Tarea                                                                                     | Bloque propietario                         | Momento                                           |
-| --------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------- |
-| NUMERA-DOM-016  | Definir cartera, cuentas por cobrar, cobranza y exposición de crédito                     | BLOQUE O — NUMERA / dominio                | E2, antes de diseñar datos y pantallas de cartera |
-| NUMERA-DOM-017  | Definir arquitectura extensible hacia contabilidad formal, plan de cuentas y comprobantes | BLOQUE O — NUMERA / dominio                | E2-E3, antes de congelar contratos financieros    |
-| NUMERA-AUTH-014 | Definir permisos de cartera, acuerdos, castigos, bancos y datos financieros sensibles     | BLOQUE O — NUMERA / autorización           | E2-E3, antes de implementar cartera o tesorería   |
-| NUMERA-UX-026   | Diseñar cartera, vencimientos, recaudos, aplicación, acuerdos y gestión de cobro          | BLOQUE O — NUMERA / procesos y experiencia | E2, después de NUMERA-DOM-016                     |
-| NUMERA-UX-027   | Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos          | BLOQUE O — NUMERA / procesos y experiencia | E2-E3, después de NUMERA-DOM-017 y NUMERA-DOM-013 |
+| ID              | Tarea                                                                                                   | Bloque propietario                         | Momento                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| NUMERA-DOM-016  | Definir cartera, cuentas por cobrar, cobranza y exposición de crédito                                   | BLOQUE O — NUMERA / dominio                | E2, antes de diseñar datos y pantallas de cartera                                     |
+| NUMERA-DOM-017  | Definir arquitectura extensible hacia contabilidad formal, plan de cuentas y comprobantes               | BLOQUE O — NUMERA / dominio                | E2-E3, antes de congelar contratos financieros                                        |
+| NUMERA-DOM-018  | Definir motor de escenarios, versiones de precios, costos, supuestos y publicación                      | BLOQUE O — NUMERA / dominio                | E2, antes de diseñar el visor económico y los contratos de escenarios                 |
+| NUMERA-AUTH-014 | Definir permisos de cartera, acuerdos, castigos, bancos y datos financieros sensibles                   | BLOQUE O — NUMERA / autorización           | E2-E3, antes de implementar cartera o tesorería                                       |
+| NUMERA-AUTH-015 | Definir permisos para crear, compartir, aprobar y publicar escenarios, precios y presupuestos           | BLOQUE O — NUMERA / autorización           | E2-E3, antes de permitir escenarios compartidos o publicación                         |
+| NUMERA-UX-026   | Diseñar cartera, vencimientos, recaudos, aplicación, acuerdos y gestión de cobro                        | BLOQUE O — NUMERA / procesos y experiencia | E2, después de NUMERA-DOM-016                                                         |
+| NUMERA-UX-027   | Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos                        | BLOQUE O — NUMERA / procesos y experiencia | E2-E3, después de NUMERA-DOM-017 y NUMERA-DOM-013                                     |
+| NUMERA-UX-028   | Diseñar visor económico dinámico de una sola pantalla, simple, comparativo y con divulgación progresiva | BLOQUE O — NUMERA / procesos y experiencia | E2, después de NUMERA-DOM-018 y antes de completar la implementación visual de NUMERA |
 
 Integración futura en el roadmap:
 
@@ -13983,13 +14066,16 @@ Integración futura en el roadmap:
 Después de NUMERA-DOM-015:
 NUMERA-DOM-016
 NUMERA-DOM-017
+NUMERA-DOM-018
 
 Después de NUMERA-AUTH-013:
 NUMERA-AUTH-014
+NUMERA-AUTH-015
 
 Después de NUMERA-UX-025:
 NUMERA-UX-026
 NUMERA-UX-027
+NUMERA-UX-028
 ```
 
 Hasta la consolidación documental por lote, esta tarea será el artefacto propietario de esos identificadores.
@@ -13998,42 +14084,43 @@ Hasta la consolidación documental por lote, esta tarea será el artefacto propi
 
 #### 33. Hallazgos trazables
 
-| ID                  | Hallazgo                                                                                                                                         | Riesgo  | Tarea propietaria                                                                 | Momento  |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------- | -------- |
-| H-CAP-SCOPE-012-001 | La fundación NUMERA actual es económico-operativa y declara que no constituye contabilidad formal.                                               | crítica | NUMERA-DOM-001; NUMERA-DOM-013; NUMERA-DOM-015; NUMERA-DOM-017                    | E2       |
-| H-CAP-SCOPE-012-002 | El panel actual resume presupuesto, gasto y equilibrio, pero no prueba reconciliación integral con ventas, compras, inventario o producción.     | crítica | NUMERA-AUD-006; NUMERA-AUD-012; NUMERA-UX-014; NUMERA-UX-024                      | E1/E2    |
-| H-CAP-SCOPE-012-003 | Los gastos pueden capturarse manualmente sin soporte, aprobación, estado, anulación ni detección completa de duplicidad.                         | crítica | NUMERA-DOM-005; NUMERA-UX-009; NUMERA-UX-010; NUMERA-AUTH-004; NUMERA-AUTH-005    | E2/E3    |
-| H-CAP-SCOPE-012-004 | No existe un ledger canónico de hechos económicos con identidad estable, correlación, reversión y reconocimiento por periodo.                    | crítica | NUMERA-DOM-002 a NUMERA-DOM-005; NUMERA-DOM-011; NUMERA-DOM-014                   | E2/E3    |
-| H-CAP-SCOPE-012-005 | Empresa legal, marca, sede, centro de costo, emisor fiscal, titular de cuenta y canal pueden diferir y no deben colapsarse.                      | crítica | CAP-SCOPE-001; NUMERA-DOM-006; NUMERA-DOM-013; OPS-CST-001                        | E2/E3    |
-| H-CAP-SCOPE-012-006 | La cartera y las cuentas por cobrar no tienen tareas específicas suficientes en el roadmap, pese a ser obligatorias para el negocio.             | crítica | NUMERA-DOM-016; NUMERA-AUTH-014; NUMERA-UX-026                                    | E2/E3/E5 |
-| H-CAP-SCOPE-012-007 | No existe modelo canónico de deudor, documento, cuota, vencimiento, saldo, pago aplicado, acuerdo, disputa y castigo.                            | crítica | NUMERA-DOM-016; NUMERA-UX-026                                                     | E2/E3    |
-| H-CAP-SCOPE-012-008 | Un pago recibido puede existir sin aplicación a una cuenta por cobrar y no debe cerrar cartera por simple coincidencia de monto.                 | crítica | NUMERA-DOM-016; NUMERA-UX-017; NUMERA-UX-026                                      | E2/E3    |
-| H-CAP-SCOPE-012-009 | No existe aging de cartera, exposición, límite, promesa de pago, gestión de cobro ni trazabilidad de contacto.                                   | alta    | NUMERA-DOM-016; NUMERA-UX-026; CAP-SCOPE-017                                      | E2/E5    |
-| H-CAP-SCOPE-012-010 | Las cuentas por pagar y obligaciones están condicionadas en tareas existentes y deben pasar a alcance explícito.                                 | crítica | NUMERA-DOM-010; NUMERA-UX-020; NUMERA-DOM-015                                     | E2       |
-| H-CAP-SCOPE-012-011 | Orden, recepción, factura, nota, obligación y pago todavía no forman un expediente financiero conciliado.                                        | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005; TREQ-INTEGRATION-010                | E2/E3    |
-| H-CAP-SCOPE-012-012 | Los servicios y gastos no inventariables requieren aceptación y soporte sin crear recepciones físicas ficticias.                                 | alta    | CAP-SCOPE-005; NUMERA-DOM-003; NUMERA-DOM-005                                     | E2/E3    |
-| H-CAP-SCOPE-012-013 | Las sesiones y movimientos de caja existen en PULSO, pero NUMERA no demuestra cierre y conciliación de efectivo de extremo a extremo.            | crítica | NUMERA-DOM-009; NUMERA-UX-017; NUMERA-UX-021; CAP-SCOPE-009                       | E2/E3    |
-| H-CAP-SCOPE-012-014 | No existe maestro canónico de cuentas bancarias, titulares, monedas, saldos, permisos y vigencias.                                               | crítica | NUMERA-DOM-009; NUMERA-AUTH-002; NUMERA-AUTH-008; NUMERA-AUTH-014                 | E2/E3    |
-| H-CAP-SCOPE-012-015 | No existe importación o conciliación de extractos bancarios con reglas de matching, excepciones y aprobación.                                    | crítica | NUMERA-UX-021; INT-EXT-001 a INT-EXT-020; INT-DB-008                              | E3/E5    |
-| H-CAP-SCOPE-012-016 | Las cuentas receptoras por marca o entidad todavía tienen preguntas operativas pendientes y no deben inferirse.                                  | alta    | GOV-13 a GOV-19; NUMERA-DOM-009                                                   | E1/E2    |
-| H-CAP-SCOPE-012-017 | Venta, pago, depósito, factura, entrega, devolución y reembolso pueden divergir sin una conciliación diaria formal.                              | crítica | NUMERA-DOM-002; NUMERA-UX-017; INT-POS-017; INT-POS-020; CAP-SCOPE-009            | E2/E3/E5 |
-| H-CAP-SCOPE-012-018 | Compra, recepción, documento, devolución, obligación y pago pueden divergir sin conciliación formal.                                             | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005                                      | E2/E3/E5 |
-| H-CAP-SCOPE-012-019 | Consumo, producción, merma, stock y costo no tienen todavía una conciliación económica cerrada.                                                  | crítica | NUMERA-DOM-004; NUMERA-DOM-007; NUMERA-UX-019; CAP-SCOPE-006; CAP-SCOPE-008       | E2/E3/E5 |
-| H-CAP-SCOPE-012-020 | El costo estándar, último costo, promedio, real, landed e interno requieren definiciones y vigencias separadas.                                  | crítica | NUMERA-DOM-007; NUMERA-AUD-008; NUMERA-UX-022                                     | E2       |
-| H-CAP-SCOPE-012-021 | Las remisiones valorizadas pueden servir para gestión interna, pero no deben crear ingreso fiscal o gasto legal sin base jurídica.               | crítica | OPS-CST-001; NUMERA-DOM-007; NUMERA-DOM-013                                       | E2/E3    |
-| H-CAP-SCOPE-012-022 | Los costos compartidos no tienen drivers, versiones, aprobaciones, reversión ni explicación reproducible.                                        | alta    | OPS-CST-001; NUMERA-DOM-007; NUMERA-UX-022                                        | E2/E3    |
-| H-CAP-SCOPE-012-023 | Los presupuestos actuales carecen de workflow completo de versión, aprobación, modificación, forecast y escenarios.                              | alta    | NUMERA-DOM-006; NUMERA-DOM-011; NUMERA-UX-010; NUMERA-UX-023                      | E2/E3    |
-| H-CAP-SCOPE-012-024 | No existe una posición de tesorería consolidada con compromisos, vencimientos, liquidez y pagos programados.                                     | crítica | NUMERA-DOM-009; NUMERA-DOM-010; NUMERA-UX-020; NUMERA-UX-021                      | E2/E3    |
-| H-CAP-SCOPE-012-025 | No se ha definido segregación entre quien registra, aprueba, paga, concilia, cierra, reabre y exporta.                                           | crítica | NUMERA-AUTH-003 a NUMERA-AUTH-009; NUMERA-AUTH-014                                | E2/E3    |
-| H-CAP-SCOPE-012-026 | Los periodos admiten estados open, closed y locked, pero no existe workflow integral de checklist, aprobación y reapertura.                      | crítica | NUMERA-DOM-011; NUMERA-UX-011; NUMERA-UX-023                                      | E2/E3    |
-| H-CAP-SCOPE-012-027 | Un periodo cerrado puede recibir eventos tardíos y necesita reglas de periodo operativo, contable y de ajuste.                                   | crítica | NUMERA-DOM-011; NUMERA-DOM-014; NUMERA-DOM-017                                    | E2/E3    |
-| H-CAP-SCOPE-012-028 | La rentabilidad actual usa ingreso esperado y gasto, no ingreso realizado ni costo completo trazable.                                            | alta    | NUMERA-AUD-008; NUMERA-DOM-008; NUMERA-UX-022                                     | E1/E2    |
-| H-CAP-SCOPE-012-029 | No existe rentabilidad consolidada por entidad legal, marca, sede, canal, producto, pedido, cliente y periodo.                                   | alta    | NUMERA-DOM-008; CAP-SCOPE-017                                                     | E2/E5    |
-| H-CAP-SCOPE-012-030 | La facturación y los impuestos oficiales dependen de proveedores o contabilidad externos y requieren referencias y conciliación, no duplicación. | crítica | NUMERA-DOM-013; NUMERA-UX-027; INT-EXT-001 a INT-EXT-020                          | E2/E3    |
-| H-CAP-SCOPE-012-031 | La arquitectura actual no debe bloquear una futura contabilidad interna con plan de cuentas, comprobantes y partida doble.                       | alta    | NUMERA-DOM-017; NUMERA-UX-027                                                     | E2/E3    |
-| H-CAP-SCOPE-012-032 | Los datos financieros, bancarios, de cartera y fiscales requieren clasificación, minimización y exportación independiente.                       | crítica | NUMERA-AUTH-002; NUMERA-AUTH-007; NUMERA-AUTH-008; NUMERA-AUTH-014; CAP-SCOPE-016 | E2/E3    |
-| H-CAP-SCOPE-012-033 | Reintentos, importaciones y eventos fuera de orden pueden duplicar gastos, obligaciones, pagos, recaudos, costos o asientos candidatos.          | crítica | INT-APP-001 a INT-APP-010; INT-DB-001 a INT-DB-008; CAP-SCOPE-018                 | E3/E5    |
-| H-CAP-SCOPE-012-034 | La migración histórica no debe tratar hojas, saldos o reportes parciales como hechos completos sin reconciliación y evidencia.                   | alta    | DATA-NORM-DB-006; AUTH-DB-011; CUTOVER-OPS-005; HYPERCARE-OPS-005                 | E3/E5    |
+| ID                  | Hallazgo                                                                                                                                                                                              | Riesgo  | Tarea propietaria                                                                 | Momento  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-012-001 | La fundación NUMERA actual es económico-operativa y declara que no constituye contabilidad formal.                                                                                                    | crítica | NUMERA-DOM-001; NUMERA-DOM-013; NUMERA-DOM-015; NUMERA-DOM-017                    | E2       |
+| H-CAP-SCOPE-012-002 | El panel actual resume presupuesto, gasto y equilibrio, pero no prueba reconciliación integral con ventas, compras, inventario o producción.                                                          | crítica | NUMERA-AUD-006; NUMERA-AUD-012; NUMERA-UX-014; NUMERA-UX-024                      | E1/E2    |
+| H-CAP-SCOPE-012-003 | Los gastos pueden capturarse manualmente sin soporte, aprobación, estado, anulación ni detección completa de duplicidad.                                                                              | crítica | NUMERA-DOM-005; NUMERA-UX-009; NUMERA-UX-010; NUMERA-AUTH-004; NUMERA-AUTH-005    | E2/E3    |
+| H-CAP-SCOPE-012-004 | No existe un ledger canónico de hechos económicos con identidad estable, correlación, reversión y reconocimiento por periodo.                                                                         | crítica | NUMERA-DOM-002 a NUMERA-DOM-005; NUMERA-DOM-011; NUMERA-DOM-014                   | E2/E3    |
+| H-CAP-SCOPE-012-005 | Empresa legal, marca, sede, centro de costo, emisor fiscal, titular de cuenta y canal pueden diferir y no deben colapsarse.                                                                           | crítica | CAP-SCOPE-001; NUMERA-DOM-006; NUMERA-DOM-013; OPS-CST-001                        | E2/E3    |
+| H-CAP-SCOPE-012-006 | La cartera y las cuentas por cobrar no tienen tareas específicas suficientes en el roadmap, pese a ser obligatorias para el negocio.                                                                  | crítica | NUMERA-DOM-016; NUMERA-AUTH-014; NUMERA-UX-026                                    | E2/E3/E5 |
+| H-CAP-SCOPE-012-007 | No existe modelo canónico de deudor, documento, cuota, vencimiento, saldo, pago aplicado, acuerdo, disputa y castigo.                                                                                 | crítica | NUMERA-DOM-016; NUMERA-UX-026                                                     | E2/E3    |
+| H-CAP-SCOPE-012-008 | Un pago recibido puede existir sin aplicación a una cuenta por cobrar y no debe cerrar cartera por simple coincidencia de monto.                                                                      | crítica | NUMERA-DOM-016; NUMERA-UX-017; NUMERA-UX-026                                      | E2/E3    |
+| H-CAP-SCOPE-012-009 | No existe aging de cartera, exposición, límite, promesa de pago, gestión de cobro ni trazabilidad de contacto.                                                                                        | alta    | NUMERA-DOM-016; NUMERA-UX-026; CAP-SCOPE-017                                      | E2/E5    |
+| H-CAP-SCOPE-012-010 | Las cuentas por pagar y obligaciones están condicionadas en tareas existentes y deben pasar a alcance explícito.                                                                                      | crítica | NUMERA-DOM-010; NUMERA-UX-020; NUMERA-DOM-015                                     | E2       |
+| H-CAP-SCOPE-012-011 | Orden, recepción, factura, nota, obligación y pago todavía no forman un expediente financiero conciliado.                                                                                             | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005; TREQ-INTEGRATION-010                | E2/E3    |
+| H-CAP-SCOPE-012-012 | Los servicios y gastos no inventariables requieren aceptación y soporte sin crear recepciones físicas ficticias.                                                                                      | alta    | CAP-SCOPE-005; NUMERA-DOM-003; NUMERA-DOM-005                                     | E2/E3    |
+| H-CAP-SCOPE-012-013 | Las sesiones y movimientos de caja existen en PULSO, pero NUMERA no demuestra cierre y conciliación de efectivo de extremo a extremo.                                                                 | crítica | NUMERA-DOM-009; NUMERA-UX-017; NUMERA-UX-021; CAP-SCOPE-009                       | E2/E3    |
+| H-CAP-SCOPE-012-014 | No existe maestro canónico de cuentas bancarias, titulares, monedas, saldos, permisos y vigencias.                                                                                                    | crítica | NUMERA-DOM-009; NUMERA-AUTH-002; NUMERA-AUTH-008; NUMERA-AUTH-014                 | E2/E3    |
+| H-CAP-SCOPE-012-015 | No existe importación o conciliación de extractos bancarios con reglas de matching, excepciones y aprobación.                                                                                         | crítica | NUMERA-UX-021; INT-EXT-001 a INT-EXT-020; INT-DB-008                              | E3/E5    |
+| H-CAP-SCOPE-012-016 | Las cuentas receptoras por marca o entidad todavía tienen preguntas operativas pendientes y no deben inferirse.                                                                                       | alta    | GOV-13 a GOV-19; NUMERA-DOM-009                                                   | E1/E2    |
+| H-CAP-SCOPE-012-017 | Venta, pago, depósito, factura, entrega, devolución y reembolso pueden divergir sin una conciliación diaria formal.                                                                                   | crítica | NUMERA-DOM-002; NUMERA-UX-017; INT-POS-017; INT-POS-020; CAP-SCOPE-009            | E2/E3/E5 |
+| H-CAP-SCOPE-012-018 | Compra, recepción, documento, devolución, obligación y pago pueden divergir sin conciliación formal.                                                                                                  | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005                                      | E2/E3/E5 |
+| H-CAP-SCOPE-012-019 | Consumo, producción, merma, stock y costo no tienen todavía una conciliación económica cerrada.                                                                                                       | crítica | NUMERA-DOM-004; NUMERA-DOM-007; NUMERA-UX-019; CAP-SCOPE-006; CAP-SCOPE-008       | E2/E3/E5 |
+| H-CAP-SCOPE-012-020 | El costo estándar, último costo, promedio, real, landed e interno requieren definiciones y vigencias separadas.                                                                                       | crítica | NUMERA-DOM-007; NUMERA-AUD-008; NUMERA-UX-022                                     | E2       |
+| H-CAP-SCOPE-012-021 | Las remisiones valorizadas pueden servir para gestión interna, pero no deben crear ingreso fiscal o gasto legal sin base jurídica.                                                                    | crítica | OPS-CST-001; NUMERA-DOM-007; NUMERA-DOM-013                                       | E2/E3    |
+| H-CAP-SCOPE-012-022 | Los costos compartidos no tienen drivers, versiones, aprobaciones, reversión ni explicación reproducible.                                                                                             | alta    | OPS-CST-001; NUMERA-DOM-007; NUMERA-UX-022                                        | E2/E3    |
+| H-CAP-SCOPE-012-023 | Los presupuestos actuales carecen de workflow completo de versión, aprobación, modificación, forecast y escenarios.                                                                                   | alta    | NUMERA-DOM-006; NUMERA-DOM-011; NUMERA-UX-010; NUMERA-UX-023                      | E2/E3    |
+| H-CAP-SCOPE-012-024 | No existe una posición de tesorería consolidada con compromisos, vencimientos, liquidez y pagos programados.                                                                                          | crítica | NUMERA-DOM-009; NUMERA-DOM-010; NUMERA-UX-020; NUMERA-UX-021                      | E2/E3    |
+| H-CAP-SCOPE-012-025 | No se ha definido segregación entre quien registra, aprueba, paga, concilia, cierra, reabre y exporta.                                                                                                | crítica | NUMERA-AUTH-003 a NUMERA-AUTH-009; NUMERA-AUTH-014                                | E2/E3    |
+| H-CAP-SCOPE-012-026 | Los periodos admiten estados open, closed y locked, pero no existe workflow integral de checklist, aprobación y reapertura.                                                                           | crítica | NUMERA-DOM-011; NUMERA-UX-011; NUMERA-UX-023                                      | E2/E3    |
+| H-CAP-SCOPE-012-027 | Un periodo cerrado puede recibir eventos tardíos y necesita reglas de periodo operativo, contable y de ajuste.                                                                                        | crítica | NUMERA-DOM-011; NUMERA-DOM-014; NUMERA-DOM-017                                    | E2/E3    |
+| H-CAP-SCOPE-012-028 | La rentabilidad actual usa ingreso esperado y gasto, no ingreso realizado ni costo completo trazable.                                                                                                 | alta    | NUMERA-AUD-008; NUMERA-DOM-008; NUMERA-UX-022                                     | E1/E2    |
+| H-CAP-SCOPE-012-029 | No existe rentabilidad consolidada por entidad legal, marca, sede, canal, producto, pedido, cliente y periodo.                                                                                        | alta    | NUMERA-DOM-008; CAP-SCOPE-017                                                     | E2/E5    |
+| H-CAP-SCOPE-012-030 | La facturación y los impuestos oficiales dependen de proveedores o contabilidad externos y requieren referencias y conciliación, no duplicación.                                                      | crítica | NUMERA-DOM-013; NUMERA-UX-027; INT-EXT-001 a INT-EXT-020                          | E2/E3    |
+| H-CAP-SCOPE-012-031 | La arquitectura actual no debe bloquear una futura contabilidad interna con plan de cuentas, comprobantes y partida doble.                                                                            | alta    | NUMERA-DOM-017; NUMERA-UX-027                                                     | E2/E3    |
+| H-CAP-SCOPE-012-032 | Los datos financieros, bancarios, de cartera y fiscales requieren clasificación, minimización y exportación independiente.                                                                            | crítica | NUMERA-AUTH-002; NUMERA-AUTH-007; NUMERA-AUTH-008; NUMERA-AUTH-014; CAP-SCOPE-016 | E2/E3    |
+| H-CAP-SCOPE-012-033 | Reintentos, importaciones y eventos fuera de orden pueden duplicar gastos, obligaciones, pagos, recaudos, costos o asientos candidatos.                                                               | crítica | INT-APP-001 a INT-APP-010; INT-DB-001 a INT-DB-008; CAP-SCOPE-018                 | E3/E5    |
+| H-CAP-SCOPE-012-034 | La migración histórica no debe tratar hojas, saldos o reportes parciales como hechos completos sin reconciliación y evidencia.                                                                        | alta    | DATA-NORM-DB-006; AUTH-DB-011; CUTOVER-OPS-005; HYPERCARE-OPS-005                 | E3/E5    |
+| H-CAP-SCOPE-012-035 | La pantalla actual de NUMERA dedica espacio permanente a explicaciones de uso y no existe todavía un visor económico único, dinámico y comprensible para comparar precio, costo, margen y escenarios. | alta    | NUMERA-DOM-018; NUMERA-AUTH-015; NUMERA-UX-028; UX-QA-028                         | E2/E5    |
 
 No queda hallazgo narrativo sin identificador, dueño y momento de resolución.
 
@@ -14041,23 +14128,24 @@ No queda hallazgo narrativo sin identificador, dueño y momento de resolución.
 
 #### 34. Riesgos y controles mínimos
 
-| Riesgo                                    | Severidad | Control mínimo                                    |
-| ----------------------------------------- | --------- | ------------------------------------------------- |
-| doble registro de un mismo evento         | crítica   | identidad estable, idempotencia y conciliación    |
-| cartera cerrada por pago no aplicado      | crítica   | aplicación explícita y reversible                 |
-| entidad legal incorrecta                  | crítica   | dimensiones obligatorias y validación             |
-| pago a beneficiario alterado              | crítica   | aprobación, MFA y auditoría                       |
-| gasto sin soporte o aprobación            | alta      | workflow y evidencia                              |
-| obligación duplicada                      | crítica   | matching por proveedor, documento, monto y origen |
-| saldo bancario no conciliado              | crítica   | extracto inmutable y excepciones                  |
-| costo no reproducible                     | crítica   | método, versión, entradas y periodo               |
-| transferencia interna tratada como fiscal | crítica   | clasificación gerencial/legal separada            |
-| cierre con diferencias ocultas            | crítica   | checklist y pendientes visibles                   |
-| reapertura destructiva                    | crítica   | permiso, motivo y nueva versión                   |
-| exportación financiera excesiva           | crítica   | permiso independiente y minimización              |
-| evento tardío en periodo cerrado          | alta      | ajuste o reapertura gobernada                     |
-| dependencia irreversible de proveedor     | alta      | contrato canónico y adaptador                     |
-| migración de saldos incompletos           | crítica   | reconciliación, evidencia y cuarentena            |
+| Riesgo                                               | Severidad | Control mínimo                                                                                  |
+| ---------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------- |
+| doble registro de un mismo evento                    | crítica   | identidad estable, idempotencia y conciliación                                                  |
+| cartera cerrada por pago no aplicado                 | crítica   | aplicación explícita y reversible                                                               |
+| entidad legal incorrecta                             | crítica   | dimensiones obligatorias y validación                                                           |
+| pago a beneficiario alterado                         | crítica   | aprobación, MFA y auditoría                                                                     |
+| gasto sin soporte o aprobación                       | alta      | workflow y evidencia                                                                            |
+| obligación duplicada                                 | crítica   | matching por proveedor, documento, monto y origen                                               |
+| saldo bancario no conciliado                         | crítica   | extracto inmutable y excepciones                                                                |
+| costo no reproducible                                | crítica   | método, versión, entradas y periodo                                                             |
+| transferencia interna tratada como fiscal            | crítica   | clasificación gerencial/legal separada                                                          |
+| cierre con diferencias ocultas                       | crítica   | checklist y pendientes visibles                                                                 |
+| reapertura destructiva                               | crítica   | permiso, motivo y nueva versión                                                                 |
+| exportación financiera excesiva                      | crítica   | permiso independiente y minimización                                                            |
+| evento tardío en periodo cerrado                     | alta      | ajuste o reapertura gobernada                                                                   |
+| dependencia irreversible de proveedor                | alta      | contrato canónico y adaptador                                                                   |
+| migración de saldos incompletos                      | crítica   | reconciliación, evidencia y cuarentena                                                          |
+| visor saturado de explicaciones o conceptos técnicos | alta      | una pantalla principal, divulgación progresiva y prueba de comprensión con usuarios no técnicos |
 
 ---
 
@@ -14077,7 +14165,10 @@ No queda hallazgo narrativo sin identificador, dueño y momento de resolución.
 12. Los costos internos no se asumirán ingresos o gastos legales.
 13. Presupuestos, forecast y escenarios serán distintos y versionados.
 14. Cierres y reaperturas conservarán historia.
-15. Las cinco tareas derivadas quedarán creadas y vinculadas a esta propuesta.
+15. El visor económico será una capacidad central, dinámica y principalmente de una sola pantalla.
+16. Las explicaciones extensas no ocuparán permanentemente el espacio de trabajo; se usarán ayuda contextual y divulgación progresiva.
+17. Los escenarios nunca modificarán datos reales hasta una publicación separada, autorizada y auditada.
+18. Las ocho tareas derivadas quedarán creadas y vinculadas a esta tarea aprobada.
 
 ---
 
@@ -14118,7 +14209,7 @@ Protege cartera obligatoria, cuentas por pagar, bancos, caja, tesorería, pagos,
 
 ##### 37.3. `TREQ-NUMERA-004`
 
-Protege costos, distribuciones, presupuestos, forecast, punto de equilibrio y rentabilidad reproducible.
+Protege costos, distribuciones, presupuestos, forecast, punto de equilibrio, rentabilidad reproducible y el visor económico dinámico con separación entre datos reales, simulaciones, propuestas y publicaciones.
 
 ##### 37.4. `TREQ-INTEGRATION-017`
 
@@ -14131,21 +14222,24 @@ Protege la cadena de hechos financieros desde aplicaciones operativas, bancos, p
 ##### Puerta 1 — Procesos y dominio E2
 
 - ejecutar las tareas `NUMERA-DOM-*`;
-- incorporar `NUMERA-DOM-016` y `NUMERA-DOM-017`;
+- incorporar `NUMERA-DOM-016`, `NUMERA-DOM-017` y `NUMERA-DOM-018`;
 - aprobar estados, actores, segregación, excepciones y políticas de cartera;
-- aprobar fronteras contables y fiscales.
+- aprobar fronteras contables y fiscales;
+- aprobar modos `REAL`, `PRESUPUESTADO`, `SIMULADO`, `PROPUESTO` y `PUBLICADO`.
 
 ##### Puerta 2 — Datos y arquitectura E3
 
 - congelar contratos de hecho, cartera, obligación, pago, aplicación, cuenta, extracto, costo, presupuesto y periodo;
 - definir eventos, idempotencia, conciliación y compensación;
 - diseñar integración contable y bancaria;
-- definir migración y calidad.
+- definir migración y calidad;
+- definir contratos de escenario, supuestos, versiones y publicación.
 
 ##### Puerta 3 — Implementación E5
 
 - implementar primero ledger, cartera y conciliaciones prioritarias;
 - incorporar tesorería, cuentas por pagar, costos y presupuestos;
+- implementar `NUMERA-UX-028` como visor económico principal y retirar de la vista cotidiana los bloques explicativos permanentes;
 - conectar fuentes sin escritura cruzada;
 - validar permisos y exportaciones.
 
@@ -14156,7 +14250,8 @@ Protege la cadena de hechos financieros desde aplicaciones operativas, bancos, p
 - conciliar compras y recepciones;
 - probar extractos, pagos parciales, anticipos y diferencias;
 - cerrar y reabrir un periodo de prueba;
-- validar con Dirección y Contabilidad.
+- validar con Dirección y Contabilidad;
+- validar comprensión, densidad, tiempo de comparación y ausencia de asistencia con usuarios no técnicos.
 
 ---
 
@@ -14171,8 +14266,10 @@ Protege la cadena de hechos financieros desde aplicaciones operativas, bancos, p
 - hecho, documento, obligación, pago, aplicación y asiento sean distintos;
 - costos, presupuestos, tesorería y cierres tengan reglas mínimas;
 - la contabilidad formal futura siga siendo posible sin rehacer los dominios;
-- las cinco tareas derivadas tengan identificador, bloque y momento;
-- los 34 hallazgos tengan propietario y momento;
+- las ocho tareas derivadas tengan identificador, bloque y momento;
+- los 35 hallazgos tengan propietario y momento;
+- el visor económico cumpla los principios de una sola pantalla, lenguaje empresarial y divulgación progresiva;
+- datos reales, presupuestados, simulados, propuestos y publicados sean inequívocamente distintos;
 - los cuatro requisitos nuevos estén incorporados en un `04A` completo válido;
 - no se haya autorizado implementación ni actuación financiera real.
 
@@ -14180,7 +14277,7 @@ Protege la cadena de hechos financieros desde aplicaciones operativas, bancos, p
 
 #### 40. Resultado y continuidad
 
-Al aprobarse esta tarea quedará definida la cobertura objetivo financiera de Vento Group, incluida la decisión obligatoria de implementar cartera en NUMERA y la capacidad de evolucionar posteriormente hacia contabilidad formal.
+Esta tarea aprobada define la cobertura objetivo financiera de Vento Group, incluida la implementación obligatoria de cartera, la capacidad de evolucionar hacia contabilidad formal y la creación de un visor económico dinámico, simple y principalmente de una sola pantalla.
 
 La continuidad será exclusivamente:
 
