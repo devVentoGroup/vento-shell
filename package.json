@@ -10,7 +10,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate-favicon": "node scripts/generate-favicon.mjs"
+    "generate-favicon": "node scripts/generate-favicon.mjs",
+    "docs:plan:build": "node scripts/docs/build-plan-canonico.mjs",
+    "docs:plan:check": "node scripts/docs/build-plan-canonico.mjs --check",
+    "docs:plan:watch": "node scripts/docs/watch-plan-canonico.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
