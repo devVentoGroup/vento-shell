@@ -8100,3 +8100,9 @@ NO INICIADA
 
 No se inicia BLOQUE E2 ni `PROC-CAT-001` hasta la ejecución y aprobación expresa de esta puerta.
 
+#### 11. Primera ejecución registrada
+
+La primera ejecución queda registrada en `E1-GATE-MANIFEST-001` con resultado `BLOCKED_ROUTING`. La ejecución reconcilió 138 brechas críticas únicas: todas tienen propietario, fecha, tarea, paquete y perfil de cierre, pero ninguna contiene aún fase destino, razón de arrastre, control compensatorio, aprobación ni fecha del siguiente gate.
+
+El bloqueo no aprueba `E1-GATE-001`, no cierra BLOQUE E1 y no autoriza iniciar `PROC-CAT-001` ni BLOQUE E2.
+
