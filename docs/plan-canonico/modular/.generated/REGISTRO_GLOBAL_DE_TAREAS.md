@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1401** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **189** |
+| Aprobadas | **190** |
 | En propuesta | **0** |
-| No iniciadas | **1212** |
+| No iniciadas | **1211** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos | ⬜ NO INICIADA |
+| Última aprobada | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-010` — Evaluar clientes, fidelización, reclamos y servicio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -217,7 +217,7 @@
 | ✅ APROBADA | `CAP-SCOPE-005` | Evaluar compras, proveedores, contratos, precios y abastecimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-006` | Evaluar inventario, lotes, vencimientos, LOC y LPN | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-007` | Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-008` | Evaluar producción, planificación, rendimiento, calidad e inocuidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-008` | Evaluar producción, planificación, rendimiento, calidad e inocuidad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-009` | Evaluar ventas, pedidos, mesas, comandas, caja y pagos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-010` | Evaluar clientes, fidelización, reclamos y servicio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-011` | Evaluar logística, rutas, vehículos, combustible y entregas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |

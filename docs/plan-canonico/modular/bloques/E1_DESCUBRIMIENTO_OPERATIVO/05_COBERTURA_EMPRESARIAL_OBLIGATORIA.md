@@ -9570,7 +9570,999 @@ CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e in
 ```
 
 
-### [ ] CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
+### ✅ CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-007` aprobada  
+**Tarea anterior:** `CAP-SCOPE-007`  
+**Siguiente tarea reservada:** `CAP-SCOPE-009`  
+**Familia evaluada:** `CAP-08 — Planear y ejecutar producción`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Planes, órdenes, lotes, consumos, liberaciones, rechazos, reprocesos o movimientos reales:** no autorizados  
+**Requisitos de prueba generados:** `TREQ-FOGO-003`, `TREQ-FOGO-004`, `TREQ-INTEGRATION-013`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- convertir señales de demanda, solicitudes internas, compromisos comerciales y políticas de reposición en necesidades productivas trazables;
+- construir planes y programas versionados sin confundir demanda, pronóstico, orden, lote ni ejecución;
+- comprobar capacidad de personal, equipos, áreas, insumos, almacenamiento y logística antes de comprometer producción;
+- priorizar trabajo productivo mediante reglas visibles y excepciones autorizadas;
+- preparar ingredientes, materiales, kits y condiciones de arranque sin duplicar inventario;
+- ejecutar lotes o preparaciones desde recetas publicadas y versiones exactas;
+- registrar cantidades, consumos, devoluciones, rendimiento, merma, desperdicio y tiempos reales;
+- controlar calidad e inocuidad durante el proceso mediante planes y puntos de control versionados;
+- separar finalización productiva de liberación, retención, rechazo y disponibilidad de inventario;
+- empacar y etiquetar desde datos canónicos del lote, la presentación y la conservación;
+- gestionar reproceso, aprovechamiento, subproductos y descarte con genealogía completa;
+- cerrar y conciliar plan, materiales, salida, calidad, inventario y costo sin correcciones destructivas;
+- integrar FOGO con NEXO, ORIGO, PULSO, PASS, VISO, NUMERA y servicios compartidos sin fuentes competidoras;
+- conservar evidencia suficiente para reconstruir qué se esperaba, qué se hizo, con qué materiales, bajo qué controles, quién lo autorizó y qué resultado quedó disponible.
+
+La existencia de recetas, recetario operativo, formularios de lote y tablas parciales no permite considerar cerrada la familia `CAP-08`. La cobertura exige un ciclo productivo completo desde la necesidad hasta la conciliación y disposición final.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-008` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP RECOPILAR NECESIDADES, PLANEAR, PRIORIZAR,
+PROGRAMAR, PREPARAR, EJECUTAR, CONTROLAR, LIBERAR Y CONCILIAR
+LA PRODUCCIÓN, SIN CONFUNDIR DEMANDA, PLAN, ORDEN, RECETA, LOTE,
+INVENTARIO, CALIDAD, INOCUIDAD, DISPONIBILIDAD NI COSTO?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+PEDIDO = NECESIDAD PRODUCTIVA = ORDEN DE PRODUCCIÓN
+```
+
+```text
+PLAN = PROGRAMACIÓN = LOTE
+```
+
+```text
+RECETA ACTUAL = RECETA USADA HISTÓRICAMENTE
+```
+
+```text
+CANTIDAD PLANIFICADA = CANTIDAD PRODUCIDA
+```
+
+```text
+INSUMO RESERVADO = INSUMO CONSUMIDO
+```
+
+```text
+MERMA = DIFERENCIA OCULTA
+```
+
+```text
+LOTE FINALIZADO = PRODUCTO LIBERADO = STOCK DISPONIBLE
+```
+
+```text
+CONTROL DE CALIDAD = FOTO ADJUNTA
+```
+
+```text
+REPROCESO = NUEVO LOTE SIN ORIGEN
+```
+
+```text
+ETIQUETA IMPRESA = TRAZABILIDAD COMPLETA
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-PLAN-001` a `OPS-PLAN-004` — programa y fuentes para auditar demanda, faltantes, sobrantes y producción real;
+- `OPS-REC-001` — contrato canónico de recetas y acceso contextual;
+- `OPS-PRD-001` — Centro de Pesaje, Premezclas y Porcionamiento;
+- `OPS-TRZ-001` — lotes, etiquetas y trazabilidad productiva;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-007`;
+- `QA-REG-001` y el Registro Canónico de Requisitos de Prueba;
+- `REGISTRO_VIVO_DE_PREGUNTAS_PENDIENTES`, especialmente `DAT-12` y `DAT-27`;
+- implementación vigente de FOGO para recetas, ingredientes, pasos, recetario y creación de lotes desde recetas publicadas;
+- implementación vigente de NEXO para stock, LOC, presentaciones, remisiones, entradas, movimientos, lotes y printing;
+- tareas `FOGO-AUTH-001` a `FOGO-AUTH-016` y `FOGO-UX-001` a `FOGO-UX-015`;
+- tareas de integración productiva `INT-PROD-001` a `INT-PROD-005`;
+- decisiones aprobadas de catálogo, inventario, activos, SST, documentos, autorización, continuidad e integración.
+
+Las respuestas existentes no se vuelven a solicitar.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-08.01` — Recopilar necesidades de producción;
+- `CAP-08.02` — Planear cantidades y fechas;
+- `CAP-08.03` — Revisar capacidad, personal, equipos e insumos;
+- `CAP-08.04` — Priorizar trabajo productivo;
+- `CAP-08.05` — Programar producción;
+- `CAP-08.06` — Preparar ingredientes y materiales;
+- `CAP-08.07` — Ejecutar lotes o preparaciones;
+- `CAP-08.08` — Registrar cantidades producidas;
+- `CAP-08.09` — Registrar consumo, rendimiento y merma;
+- `CAP-08.10` — Controlar calidad durante producción;
+- `CAP-08.11` — Empacar y etiquetar;
+- `CAP-08.12` — Liberar, retener o rechazar producto;
+- `CAP-08.13` — Gestionar reproceso y aprovechamiento;
+- `CAP-08.14` — Cerrar y conciliar producción.
+
+También fija fronteras con ventas, pedidos, inventario, compras, personal, activos, calidad, SST, limpieza, calibración, impresión, documentos, costos, analítica y continuidad.
+
+---
+
+#### 5. Fuera de alcance
+
+- ejecutar planes o lotes reales;
+- cambiar recetas, rendimientos, formulaciones o tolerancias;
+- crear mínimos, pronósticos o producción automática;
+- reservar, retirar, consumir, devolver o ingresar inventario real;
+- declarar un producto inocuo, conforme, liberado, retenido o rechazado;
+- definir límites críticos regulatorios sin validación profesional;
+- sustituir BPM, HACCP, concepto sanitario, tecnólogo de alimentos, nutricionista, responsable de calidad o autoridad competente;
+- crear migraciones, tablas, RPC, triggers, políticas RLS, buckets o funciones;
+- modificar turnos, equipos, compras, órdenes o costos;
+- diseñar todavía ventas y pedidos completos, que continúan en `CAP-SCOPE-009`;
+- diseñar instalaciones, limpieza, mantenimiento y calibración completos, que continúan en `CAP-SCOPE-013`;
+- definir tratamiento contable final, que continúa en `CAP-SCOPE-012`;
+- cargar datos históricos cuya fuente o calidad no hayan sido confirmadas;
+- habilitar automatización de planificación antes de ejecutar `OPS-PLAN-002` a `OPS-PLAN-004`.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. FOGO será propietario del expediente productivo
+
+FOGO conservará necesidad aceptada, plan, revisión, programación, orden de producción, ejecución, lote productivo, controles de proceso, resultado, decisión de calidad y cierre.
+
+No duplicará stock, LOC, órdenes de compra, turnos laborales ni costos contables.
+
+##### 6.2. La demanda no crea producción automáticamente
+
+Una venta, pedido, remisión, faltante o señal de reposición será una entrada. Solo una política aprobada o una decisión autorizada podrá convertirla en necesidad, plan u orden.
+
+##### 6.3. Plan, programación, orden, lote y ejecución serán entidades distintas
+
+El plan expresa intención agregada. La programación asigna ventana y recursos. La orden autoriza trabajo. El lote identifica ejecución y genealogía. Los eventos de ejecución registran lo ocurrido.
+
+##### 6.4. Toda versión liberada será inmutable
+
+Un plan publicado, una orden liberada o una receta publicada no se editarán destructivamente. Los cambios crearán revisión, motivo, actor e impacto.
+
+##### 6.5. Capacidad y disponibilidad serán datos con fecha de corte
+
+Personal, equipos, materiales, almacenamiento y logística cambian. Toda evaluación conservará fuente, momento, supuestos y restricciones.
+
+##### 6.6. Esperado y real nunca se sobrescriben
+
+Cantidad, consumo, rendimiento, tiempo, merma y costo esperado permanecerán separados de los resultados observados.
+
+##### 6.7. Calidad y ejecución tendrán estados independientes
+
+Un lote puede estar terminado productivamente y continuar retenido. La disponibilidad de inventario dependerá de la decisión de calidad y del movimiento físico confirmado.
+
+##### 6.8. La inocuidad será verificable y profesionalmente gobernada
+
+FOGO registrará controles operativos; las políticas, límites y criterios que requieran validación profesional conservarán fuente, versión y responsable autorizado.
+
+##### 6.9. Toda corrección preservará historia
+
+Una corrección será un evento compensatorio o una revisión. No se reemplazarán silenciosamente cantidades, resultados, controles ni decisiones.
+
+##### 6.10. La automatización será progresiva y reversible
+
+Las recomendaciones podrán aparecer antes que la automatización. Ningún algoritmo generará producción, consumo, liberación o compra sin las puertas aprobadas.
+
+---
+
+#### 7. Propiedad funcional y fuentes de verdad
+
+| Sistema o dominio               | Propiedad objetivo                                                                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| FOGO                            | plan productivo, programación, orden de producción, ejecución, lote productivo, cantidades, rendimiento, merma, controles de proceso, decisión de calidad y cierre |
+| NEXO                            | stock, reservas, lotes físicos, LOC, entrega y devolución de insumos, producto terminado, cuarentena, disponibilidad y movimientos                                 |
+| ORIGO                           | compras, proveedores, órdenes, recepciones empresariales, lead times y faltantes que requieren abastecimiento                                                      |
+| PULSO / PASS / canales externos | ventas, pedidos, cancelaciones, compromisos y señales de demanda; no crean el plan productivo                                                                      |
+| VISO                            | turnos publicados, disponibilidad laboral y asignaciones administrativas; no administra lotes                                                                      |
+| NEXO — activos                  | condición y disponibilidad de equipos productivos; no decide prioridades de producción                                                                             |
+| NUMERA                          | costos y resultados económicos derivados; no altera consumos ni rendimientos físicos                                                                               |
+| SHELL / Supabase                | contratos compartidos, integridad, autorización, eventos, colas, evidencia técnica y migraciones                                                                   |
+
+---
+
+#### 8. Estado actual verificable
+
+##### 8.1. Capacidades existentes que se conservan
+
+- autenticación y permisos de aplicación;
+- rutas de recetas, recetario y lotes;
+- recetas con contexto, ingredientes y pasos;
+- separación entre administración de receta y recetario operacional;
+- creación de lotes desde recetas publicadas;
+- áreas alineadas con propósito productivo;
+- permisos separados para receta, recetario, creación y consulta de lotes;
+- base de NEXO para movimientos, LOC, presentaciones, lotes y etiquetas.
+
+##### 8.2. Capacidades que no están demostradas de extremo a extremo
+
+- consolidación y deduplicación de necesidades productivas;
+- plan y programación versionados;
+- capacidad productiva multidimensional;
+- priorización y override;
+- staging, pesaje, kits y devolución de materiales;
+- ejecución completa de planta;
+- conciliación de consumos y terminado con NEXO;
+- planes de control de calidad;
+- liberación, retención, rechazo y reproceso;
+- cierre productivo y económico;
+- operación offline y resolución de conflictos.
+
+##### 8.3. Conclusión
+
+FOGO contiene una base útil de conocimiento y lote, pero todavía no constituye un sistema integral de planificación y ejecución de producción.
+
+---
+
+#### 9. Clasificación de cobertura
+
+| Capacidad   | Nombre                                         | Tratamiento         | Propietario                                  | Decisión                                                                                                                      |
+| ----------- | ---------------------------------------------- | ------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-08.01` | Recopilar necesidades de producción            | `REUSE_OR_REFACTOR` | FOGO                                         | Consolidar señales de pedidos, ventas, remisiones, reposición, stock objetivo y compromisos manuales sin contarlas dos veces. |
+| `CAP-08.02` | Planear cantidades y fechas                    | `BUILD`             | FOGO                                         | Crear planes versionados por horizonte, sede, área, producto, receta, cantidad, fecha y prioridad.                            |
+| `CAP-08.03` | Revisar capacidad, personal, equipos e insumos | `BUILD`             | FOGO como coordinador                        | Consumir disponibilidad de VISO, NEXO y ORIGO; registrar restricciones y supuestos.                                           |
+| `CAP-08.04` | Priorizar trabajo productivo                   | `BUILD`             | FOGO                                         | Definir reglas, bloqueos, urgencias, override autorizado y explicación de prioridad.                                          |
+| `CAP-08.05` | Programar producción                           | `BUILD`             | FOGO                                         | Crear órdenes o trabajos programados por área, turno, ventana, recurso y dependencia.                                         |
+| `CAP-08.06` | Preparar ingredientes y materiales             | `BUILD`             | FOGO + NEXO                                  | Diseñar staging, pesaje, kits, reservas, entrega, devolución y control de alérgenos.                                          |
+| `CAP-08.07` | Ejecutar lotes o preparaciones                 | `REUSE_OR_REFACTOR` | FOGO                                         | Conservar lote desde receta publicada y completar inicio, pausa, parcialidad, finalización y corrección.                      |
+| `CAP-08.08` | Registrar cantidades producidas                | `REUSE_OR_REFACTOR` | FOGO                                         | Formalizar salida real, presentación, lote, cantidad aceptada y destino inventariable.                                        |
+| `CAP-08.09` | Registrar consumo, rendimiento y merma         | `REUSE_OR_REFACTOR` | FOGO + NEXO                                  | Separar esperado, reservado, entregado, consumido, devuelto, desperdiciado y producido.                                       |
+| `CAP-08.10` | Controlar calidad durante producción           | `BUILD`             | FOGO / responsable de calidad                | Crear planes de control versionados, puntos obligatorios, tolerancias, evidencia y desviaciones.                              |
+| `CAP-08.11` | Empacar y etiquetar                            | `REUSE_OR_REFACTOR` | FOGO + servicio de impresión + NEXO          | Conectar empaque, lote, vencimiento, conservación, cantidad y reimpresión sin crear identidades nuevas.                       |
+| `CAP-08.12` | Liberar, retener o rechazar producto           | `BUILD`             | Responsable autorizado de calidad/producción | Separar estado productivo, decisión de calidad y disponibilidad de inventario.                                                |
+| `CAP-08.13` | Gestionar reproceso y aprovechamiento          | `BUILD`             | FOGO                                         | Crear genealogía, elegibilidad, límites, consumo, nueva salida, merma y decisión de calidad.                                  |
+| `CAP-08.14` | Cerrar y conciliar producción                  | `REUSE_OR_REFACTOR` | FOGO + NEXO + NUMERA                         | Completar conciliación de plan, materiales, salidas, calidad, tiempos, diferencias y costos derivados.                        |
+
+Resumen:
+
+| Tratamiento         | Cantidad |
+| ------------------- | -------: |
+| `REUSE_OR_REFACTOR` |        6 |
+| `BUILD`             |        8 |
+| **Total**           |   **14** |
+
+---
+
+#### 10. CAP-08.01 — Recopilar necesidades de producción
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- recibir señales con identificador de fuente, documento, línea, producto, presentación, cantidad, fecha, sede, canal y prioridad declarada;
+- distinguir pedido confirmado, pronóstico, mínimo, reposición, remisión, compromiso B2B y necesidad manual;
+- deduplicar señales que representen el mismo compromiso entre PASS, PULSO, POS externo, chat o remisión;
+- permitir aceptación, rechazo, agrupación o división de la necesidad con trazabilidad;
+- conservar demanda cancelada o sustituida sin borrarla.
+
+---
+
+#### 11. CAP-08.02 — Planear cantidades y fechas
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- crear planes diarios, semanales u otro horizonte aprobado;
+- versionar alcance, período, sede, área, producto, receta, cantidad, fecha objetivo y stock objetivo;
+- separar cantidad requerida, propuesta, aprobada y comprometida;
+- mostrar cobertura, faltante, excedente y confianza de fuente;
+- crear revisión cuando cambie una condición después de publicar.
+
+---
+
+#### 12. CAP-08.03 — Revisar capacidad, personal, equipos e insumos
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- consultar turnos y disponibilidad laboral desde VISO;
+- consultar equipos, condición y mantenimiento desde NEXO;
+- consultar stock, reservas, lote, vencimiento y LOC desde NEXO;
+- consultar compras pendientes y fechas esperadas desde ORIGO;
+- considerar capacidad de área, almacenamiento, frío, empaque y despacho;
+- registrar restricción, severidad, fecha de corte, responsable y alternativa.
+
+---
+
+#### 13. CAP-08.04 — Priorizar trabajo productivo
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- definir criterios versionados como compromiso, vencimiento, criticidad, stock, secuencia, limpieza, alérgenos y eficiencia;
+- mostrar por qué una orden está antes que otra;
+- separar prioridad calculada de override manual;
+- exigir actor, motivo, vigencia e impacto para urgencias;
+- impedir que una urgencia oculte trabajo desplazado.
+
+---
+
+#### 14. CAP-08.05 — Programar producción
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- convertir plan aprobado en órdenes o trabajos programados;
+- asignar sede, área, ventana, turno, producto, receta y cantidad;
+- relacionar dependencias, premezclas, limpieza, cambio de formato y capacidad;
+- detectar solapamientos de equipo, área o material;
+- publicar y revisar sin editar destructivamente.
+
+---
+
+#### 15. CAP-08.06 — Preparar ingredientes y materiales
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- reservar materiales antes de separarlos físicamente;
+- crear listas de picking, pesaje, porcionamiento o kit por orden;
+- registrar lote, cantidad, unidad, LOC, responsable y hora de entrega;
+- distinguir preparado, entregado, consumido, devuelto y descartado;
+- controlar alérgenos, contaminación cruzada, sustituciones y condiciones de conservación;
+- mantener `OPS-PRD-001` como diseño especializado del Centro de Pesaje.
+
+---
+
+#### 16. CAP-08.07 — Ejecutar lotes o preparaciones
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- iniciar desde orden autorizada o excepción documentada;
+- conservar receta, versión, escala, área, actor y turno;
+- registrar inicio, pausa, reanudación, parcialidad, cancelación y finalización;
+- capturar pasos obligatorios y desviaciones sin convertir FOGO en lector de texto excesivo;
+- permitir operación por área y estación con mínima lectura.
+
+---
+
+#### 17. CAP-08.08 — Registrar cantidades producidas
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- registrar salida por producto, presentación, unidad y lote;
+- separar cantidad elaborada, aceptada, retenida, rechazada y disponible;
+- conservar tara, conteo, peso o método de medición;
+- relacionar destino y empaque;
+- producir entrada a NEXO exactamente una vez cuando corresponda.
+
+---
+
+#### 18. CAP-08.09 — Registrar consumo, rendimiento y merma
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- separar consumo teórico, reservado, entregado, real, devuelto y ajustado;
+- calcular rendimiento real sin alterar el esperado;
+- registrar merma técnica, desperdicio, derrame, daño, muestra, reproceso y diferencia;
+- conservar causa, unidad, lote, etapa, actor y destino;
+- bloquear métricas históricas hasta resolver fuente y formato de `DAT-27`.
+
+---
+
+#### 19. CAP-08.10 — Controlar calidad durante producción
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- asignar plan de control versionado por producto, receta, proceso, área o riesgo;
+- definir puntos, método, instrumento, muestra, tolerancia y responsable;
+- capturar resultado, unidad, hora, equipo, evidencia y desviación;
+- distinguir control informativo, obligatorio, crítico y liberatorio;
+- relacionar limpieza, alérgenos, temperatura, tiempo u otros controles sin fijar valores no validados profesionalmente;
+- abrir no conformidad cuando el resultado lo exija.
+
+---
+
+#### 20. CAP-08.11 — Empacar y etiquetar
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- seleccionar presentación y material autorizado;
+- registrar cantidad por empaque, peso, unidades y lote;
+- derivar fecha y conservación desde política aprobada;
+- generar evento de impresión con plantilla, impresora, actor y resultado;
+- permitir reimpresión con motivo sin crear lote o producto nuevo;
+- relacionar LPN o contenedor cuando corresponda.
+
+---
+
+#### 21. CAP-08.12 — Liberar, retener o rechazar producto
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- separar cierre productivo, revisión de calidad y publicación en inventario;
+- definir quién puede decidir según producto, riesgo y excepción;
+- conservar alcance de la decisión por lote, cantidad o empaque;
+- bloquear disponibilidad mientras exista retención;
+- registrar razón, controles revisados, evidencia, fecha y vigencia;
+- permitir liberación parcial o decisión revisada mediante evento posterior.
+
+---
+
+#### 22. CAP-08.13 — Gestionar reproceso y aprovechamiento
+
+**Tratamiento:** `BUILD`
+
+La capacidad deberá:
+
+- distinguir reproceso, retrabajo, reaprovechamiento, subproducto, devolución interna y descarte;
+- verificar elegibilidad, edad, condición, alérgenos, cantidad y límite de uso;
+- crear relación genealógica entre lote origen y lote destino;
+- registrar consumo, nueva salida, merma y efecto de calidad;
+- impedir ciclos genealógicos o reutilización ilimitada;
+- conservar costo y decisión de disposición para NUMERA.
+
+---
+
+#### 23. CAP-08.14 — Cerrar y conciliar producción
+
+**Tratamiento:** `REUSE_OR_REFACTOR`
+
+La capacidad deberá:
+
+- comparar plan, orden y resultado;
+- conciliar materiales reservados, entregados, consumidos, devueltos y desperdiciados;
+- conciliar salida producida, retenida, liberada, rechazada y reprocesada;
+- verificar controles obligatorios, etiquetas y movimientos pendientes;
+- registrar tiempos, causas y diferencias;
+- bloquear cierre definitivo cuando existan pendientes críticos;
+- permitir corrección posterior solo mediante revisión o compensación.
+
+---
+
+#### 24. Modelo conceptual objetivo
+
+| Entidad o concepto           | Función                                                               |
+| ---------------------------- | --------------------------------------------------------------------- |
+| `ProductionDemandSignal`     | Hecho de demanda o necesidad proveniente de una fuente identificada.  |
+| `ProductionRequirement`      | Necesidad aceptada y normalizada para planificación.                  |
+| `ProductionPlan`             | Intención agregada para un horizonte y alcance.                       |
+| `ProductionPlanRevision`     | Versión inmutable de un plan publicado.                               |
+| `ProductionWorkOrder`        | Trabajo autorizado y programado.                                      |
+| `ProductionBatch`            | Ejecución física identificada con genealogía.                         |
+| `MaterialReservation`        | Cantidad separada para una orden sin consumo físico todavía.          |
+| `MaterialIssue`              | Entrega física de materiales desde NEXO.                              |
+| `ProductionExecutionEvent`   | Inicio, pausa, paso, desviación, parcialidad o finalización.          |
+| `ProductionActual`           | Cantidad, consumo, tiempo, rendimiento o merma observados.            |
+| `QualityControlPlanVersion`  | Conjunto versionado de controles aplicables.                          |
+| `QualityControlResult`       | Resultado observado de un control.                                    |
+| `ProductDispositionDecision` | Liberar, retener, rechazar o enviar a reproceso.                      |
+| `PackagingRun`               | Empaque y etiquetado de una cantidad de lote.                         |
+| `ReworkLink`                 | Relación genealógica entre origen y nuevo resultado.                  |
+| `ProductionReconciliation`   | Cierre de materiales, resultados, calidad, movimientos y diferencias. |
+
+Ninguna entidad podrá sustituirse por un campo de texto libre cuando deba conservar identidad, ciclo de vida, autorización o relación histórica.
+
+---
+
+#### 25. Estados y dimensiones independientes
+
+##### 25.1. Necesidad
+
+```text
+RECEIVED → NORMALIZED → ACCEPTED | REJECTED | SUPERSEDED
+```
+
+##### 25.2. Plan
+
+```text
+DRAFT → REVIEWED → APPROVED → PUBLISHED → REVISED | CANCELLED | CLOSED
+```
+
+##### 25.3. Orden
+
+```text
+DRAFT → RELEASED → READY → IN_PROGRESS → PAUSED → COMPLETED → CLOSED
+                                  ↘ CANCELLED
+```
+
+##### 25.4. Lote — ejecución
+
+```text
+NOT_STARTED → IN_PROGRESS → PRODUCED → RECONCILED → CLOSED
+```
+
+##### 25.5. Lote — calidad
+
+```text
+NOT_REQUIRED | PENDING | HOLD | RELEASED | REJECTED | REWORK_REQUIRED
+```
+
+##### 25.6. Publicación de inventario
+
+```text
+NOT_POSTED | PENDING | POSTED | FAILED | COMPENSATED
+```
+
+Los estados de ejecución, calidad, inventario y conciliación no se fusionarán en una sola columna ambigua.
+
+---
+
+#### 26. Reglas de demanda y planificación
+
+1. Cada señal conservará `source_system`, `source_event_id`, documento, línea y versión.
+2. Una misma venta visible en PASS y PULSO no contará dos veces.
+3. Una remisión solicitada no equivale automáticamente a producción si puede atenderse con stock existente.
+4. El plan indicará demanda cubierta, stock usado, producción requerida, faltante y excedente proyectado.
+5. Los mínimos y pronósticos serán políticas versionadas, no números sueltos en formularios.
+6. Toda recomendación mostrará fuente, período, método y confianza.
+7. La publicación del plan congelará la versión; cualquier cambio creará revisión.
+8. Un override no eliminará la prioridad anterior ni el trabajo desplazado.
+9. La planificación automática permanecerá deshabilitada hasta validar `OPS-PLAN-002` a `OPS-PLAN-004`.
+
+---
+
+#### 27. Capacidad y restricciones
+
+La capacidad productiva deberá considerar, como mínimo:
+
+- sede, área, estación y ventana;
+- turno y personal habilitado;
+- equipo requerido, condición y mantenimiento;
+- capacidad nominal y efectiva;
+- receta, secuencia, cambio de formato y limpieza;
+- materiales disponibles, reservados y esperados;
+- vida útil y vencimiento de insumos;
+- almacenamiento de terminado;
+- empaque, etiquetas y consumibles;
+- transporte y fecha de entrega;
+- controles de calidad e inocuidad;
+- contingencias y dependencia de terceros.
+
+Una restricción podrá bloquear, advertir o exigir aprobación según política. Nunca se resolverá ocultándola.
+
+---
+
+#### 28. Calidad e inocuidad
+
+##### 28.1. Frontera de dominio
+
+FOGO conservará los hechos productivos de calidad e inocuidad. VISO conservará expedientes SST o de cumplimiento transversal cuando corresponda. NEXO conservará condición física y cuarentena de existencias. `CAP-SCOPE-013` gobernará limpieza, instalaciones y calibración.
+
+##### 28.2. Plan de control
+
+Cada plan deberá tener:
+
+- objeto y alcance;
+- versión y vigencia;
+- producto, receta, proceso o área aplicable;
+- punto de control;
+- método e instrumento;
+- muestra o frecuencia;
+- rango, tolerancia o criterio aprobado;
+- evidencia requerida;
+- responsable de captura y de decisión;
+- efecto ante incumplimiento.
+
+##### 28.3. Datos sensibles y profesionales
+
+Los límites regulatorios, médicos o profesionales no se inventarán en esta tarea. Se almacenarán con fuente, autoridad, versión y fecha de validación.
+
+##### 28.4. Decisión de disposición
+
+La decisión podrá aplicar a todo el lote o a una cantidad identificada. El producto retenido no será seleccionable como disponible, despachable o vendible.
+
+---
+
+#### 29. Rendimiento, merma y genealogía
+
+- el rendimiento esperado provendrá de la versión de receta;
+- el rendimiento real provendrá de medición de salida;
+- la desviación tendrá cantidad, porcentaje, causa y responsable;
+- la merma no será una diferencia residual sin explicación;
+- desperdicio, muestra, evaporación, daño, devolución, reproceso y subproducto tendrán códigos distintos;
+- los insumos conservarán lote de origen cuando la política lo requiera;
+- el terminado conservará lote productivo y vínculos con insumos relevantes;
+- el reproceso conservará origen, cantidad, condición, límite y nueva salida;
+- la genealogía no podrá contener ciclos;
+- NUMERA consumirá resultados físicos sin modificarlos.
+
+---
+
+#### 30. Empaque, etiquetado e impresión
+
+El hecho productivo generará una intención de empaque o impresión. El servicio de impresión no decidirá producto, lote, vencimiento, cantidad ni conservación.
+
+Cada impresión conservará:
+
+- lote y producto;
+- presentación y cantidad;
+- plantilla y versión;
+- datos variables;
+- impresora, estación y actor;
+- número de copias;
+- resultado y error;
+- motivo de reimpresión;
+- relación con empaque, LPN o documento.
+
+Una etiqueta fallida o dañada podrá reimprimirse sin crear un lote nuevo. La reetiquetación que cambie datos empresariales requerirá corrección autorizada del origen, no edición manual de la etiqueta.
+
+---
+
+#### 31. Eventos e integraciones requeridos
+
+Eventos mínimos:
+
+```text
+production_demand_signal_received
+production_requirement_accepted
+production_plan_published
+production_plan_revised
+production_work_order_released
+production_materials_reserved
+production_materials_issued
+production_batch_started
+production_batch_paused
+production_batch_resumed
+production_quantity_recorded
+production_material_consumed
+production_material_returned
+production_waste_recorded
+quality_control_recorded
+production_batch_completed
+production_batch_held
+production_batch_released
+production_batch_rejected
+production_rework_created
+production_packaged
+production_label_requested
+production_inventory_posted
+production_reconciled
+production_correction_posted
+```
+
+Cada evento tendrá identidad, versión, actor, fecha efectiva, fuente, recurso, cantidades, unidades, correlación y estado de aplicación. Los consumidores serán idempotentes.
+
+---
+
+#### 32. Autorización y segregación
+
+Deberán separarse, como mínimo:
+
+- consultar cola y plan;
+- crear o editar borrador de plan;
+- revisar y aprobar plan;
+- publicar o revisar programación;
+- liberar orden;
+- iniciar, pausar y reanudar lote;
+- registrar consumo, devolución, cantidad y merma;
+- registrar control de calidad;
+- decidir retención, liberación o rechazo;
+- crear reproceso;
+- finalizar y cerrar lote;
+- corregir o anular;
+- administrar recetas y controles;
+- consultar fórmulas sensibles;
+- imprimir y reimprimir etiqueta;
+- ejecutar acciones por sede y área productiva.
+
+Cuando la política exija independencia, el operador que ejecuta no podrá liberar su propio lote. La administración no dependerá del check-in salvo que el permiso y contexto aprobados lo exijan.
+
+---
+
+#### 33. Experiencia por actor
+
+##### Planeador o supervisor
+
+- tablero de necesidades, cobertura y restricciones;
+- plan por horizonte y área;
+- capacidad y materiales;
+- conflictos, urgencias y cambios;
+- aprobación, publicación y conciliación.
+
+##### Operador de producción
+
+- trabajo pendiente del turno;
+- siguiente acción clara;
+- receta resumida y versión;
+- cantidades simples y controles requeridos;
+- pausa, excepción y ayuda contextual;
+- mínima escritura y objetivos táctiles adecuados.
+
+##### Bodega o pesaje
+
+- reservas y lista de materiales;
+- lote, LOC, cantidad y unidad;
+- entrega, devolución y diferencia;
+- kits y alérgenos cuando apliquen.
+
+##### Calidad
+
+- lotes pendientes;
+- controles faltantes o fuera de criterio;
+- evidencia y tendencia;
+- decisión de disposición con alcance claro.
+
+##### Gerencia y NUMERA
+
+- cumplimiento del plan;
+- rendimiento y merma;
+- causas de diferencia;
+- costo derivado y capacidad;
+- sin permiso para alterar hechos físicos.
+
+---
+
+#### 34. Operación offline y contingencia
+
+- la captura offline conservará orden, lote, paso, actor y marca temporal;
+- la sincronización revalidará sesión, permiso, versión, lote y estado;
+- un reintento no duplicará consumo, salida, control ni etiqueta;
+- los conflictos de cantidad, receta, lote o decisión no se resolverán automáticamente;
+- una caída no permitirá liberar producto si la política exige validación central;
+- el trabajo pendiente distinguirá local, enviado, confirmado, rechazado y requiere intervención;
+- el procedimiento físico de inocuidad y emergencia no dependerá exclusivamente de FOGO;
+- los equipos de pesaje o medición indisponibles activarán contingencia aprobada, no valores inventados;
+- la recuperación conservará el trabajo capturado y su orden causal.
+
+---
+
+#### 35. Evidencia, conservación y auditoría
+
+Se conservarán:
+
+- necesidad y fuente original;
+- plan, revisiones y aprobaciones;
+- orden y programación;
+- receta y versión;
+- actor, turno, sede, área y dispositivo;
+- materiales reservados, entregados, consumidos y devueltos;
+- lote de insumo y lote productivo cuando aplique;
+- cantidades, unidades y métodos de medición;
+- rendimiento, merma y causas;
+- controles, instrumentos, resultados y evidencia;
+- decisión de liberación, retención, rechazo o reproceso;
+- empaque, etiqueta, reimpresión y error;
+- movimientos de inventario y estado de aplicación;
+- cierre, conciliación, pendientes y correcciones;
+- referencias financieras derivadas sin exponer información innecesaria al operador.
+
+La conservación y acceso final se definirán en `CAP-SCOPE-016`.
+
+---
+
+#### 36. Patrones legacy destinados a retiro
+
+- planificar desde chats o memoria sin identidad de demanda;
+- sumar ventas, pedidos y remisiones como demandas independientes sin conciliación;
+- usar una remisión como orden de producción universal;
+- editar un plan publicado o lote cerrado;
+- iniciar lote sin receta y versión identificables;
+- consumir insumos solo mediante texto o cantidad agregada;
+- cambiar rendimiento esperado para ocultar desviaciones;
+- registrar merma como ajuste genérico;
+- considerar foto como control de calidad completo;
+- finalizar lote y liberar stock en el mismo clic sin autorización;
+- usar un único estado para ejecución, calidad e inventario;
+- reimprimir etiqueta creando otro lote;
+- crear reproceso sin relación con lote de origen;
+- corregir cantidades sobrescribiendo historia;
+- depender de categorías o nombres para autorización;
+- mantener copias editables de plan, lote o resultado en varias aplicaciones.
+
+---
+
+#### 37. Preguntas pendientes y validaciones controladas
+
+No se crean preguntas nuevas.
+
+| Código   | Pregunta vigente                                                   | Responsable                              | Tratamiento provisional                                                         | Puerta máxima                                            |
+| -------- | ------------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `DAT-12` | ¿Se guarda un registro de lo que realmente se produjo cada día?    | Responsable de Producción                | asumir evidencia manual o parcial; no migrar ni calcular cumplimiento histórico | antes de backfill, métricas o piloto con historia        |
+| `DAT-27` | ¿Cómo se llama el formato donde se registra actualmente una merma? | Producción, Cocina o responsable de sede | diseñar captura prospectiva; no declarar histórico completo                     | antes de migración de mermas y línea base de rendimiento |
+
+También permanecen las validaciones de `OPS-PLAN-002` a `OPS-PLAN-004` sobre fuentes, períodos, calidad y trazabilidad.
+
+Estas preguntas no bloquean la clasificación de cobertura. Sí bloquean cualquier afirmación sobre calidad histórica, algoritmo de planificación, métricas base o migración completa.
+
+---
+
+#### 38. Riesgos principales
+
+| Riesgo                           | Severidad | Control mínimo                                           |
+| -------------------------------- | --------- | -------------------------------------------------------- |
+| demanda duplicada                | crítica   | identidad de señal, fuente, línea y deduplicación        |
+| plan imposible                   | crítica   | capacidad y materiales verificados con fecha de corte    |
+| prioridad opaca                  | alta      | regla visible, actor, motivo y vigencia                  |
+| receta equivocada                | crítica   | versión publicada y snapshot por lote                    |
+| consumo duplicado                | crítica   | evento correlacionado e idempotente hacia NEXO           |
+| rendimiento manipulado           | alta      | esperado y real separados; corrección no destructiva     |
+| merma omitida                    | alta      | causa, cantidad, unidad, lote y destino                  |
+| producto no conforme disponible  | crítica   | retención y liberación independientes del cierre         |
+| control crítico omitido          | crítica   | checklist versionado y bloqueo según política            |
+| etiqueta incoherente             | crítica   | datos derivados del lote liberado y reimpresión auditada |
+| reproceso sin genealogía         | crítica   | relación padre-hijo y elegibilidad explícita             |
+| cierre incompleto                | crítica   | conciliación obligatoria y pendientes visibles           |
+| corrección destructiva           | crítica   | evento compensatorio y aprobación                        |
+| operación offline duplicada      | crítica   | clave de idempotencia y reautorización                   |
+| fórmula o dato sensible expuesto | crítica   | mínimo necesario, RLS y permiso atómico                  |
+
+---
+
+#### 39. Hallazgos y destinos canónicos
+
+| ID                  | Hallazgo                                                                                                            | Riesgo  | Tarea propietaria                                                                     | Momento           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------- | ----------------- |
+| H-CAP-SCOPE-008-001 | las señales de demanda y necesidad productiva pueden llegar desde fuentes distintas sin deduplicación empresarial   | crítica | `OPS-PLAN-002` a `OPS-PLAN-004`; `FOGO-UX-001`; `INT-PROD-001`                        | E1/E2             |
+| H-CAP-SCOPE-008-002 | no existe una fuente única comprobada para plan y programación de producción                                        | crítica | `FOGO-UX-003`; `FOGO-UX-004`; `FOGO-UX-014`; `PROC-CAT-009` a `PROC-CAT-018`          | E2                |
+| H-CAP-SCOPE-008-003 | la evidencia histórica de producción real continúa pendiente en `DAT-12`                                            | alta    | `OPS-PLAN-002`; `OPS-PLAN-004`; puerta de migración de FOGO                           | antes de backfill |
+| H-CAP-SCOPE-008-004 | no existe un modelo integral de capacidad productiva por área, turno, equipo, persona e insumo                      | crítica | `FOGO-UX-001`; `FOGO-UX-014`; `CAP-SCOPE-002`; `CAP-SCOPE-007`                        | E2                |
+| H-CAP-SCOPE-008-005 | la disponibilidad laboral de VISO no está integrada con planificación productiva                                    | alta    | `FOGO-UX-004`; `CAP-SCOPE-002`; `INT-PROD-001` a `INT-PROD-005`                       | E2/E3             |
+| H-CAP-SCOPE-008-006 | la disponibilidad y condición de equipos de NEXO no bloquean de forma canónica un plan                              | crítica | `CAP-SCOPE-007`; `NEXO-DOM-012`; `NEXO-DOM-026`; `FOGO-UX-014`                        | E2/E3             |
+| H-CAP-SCOPE-008-007 | stock, reservas, lotes y fechas de disponibilidad no alimentan todavía una promesa productiva cerrada               | crítica | `CAP-SCOPE-006`; `FOGO-UX-012`; `INT-PROD-001` a `INT-PROD-005`                       | E2/E3             |
+| H-CAP-SCOPE-008-008 | faltantes y lead times de compra de ORIGO no están incorporados al plan productivo                                  | alta    | `CAP-SCOPE-005`; `ORIGO-UX-014`; `INT-PROD-001` a `INT-PROD-005`                      | E2/E3             |
+| H-CAP-SCOPE-008-009 | prioridades, urgencias y overrides carecen de reglas y evidencia uniformes                                          | crítica | `FOGO-UX-004`; `FOGO-UX-014`; `FOGO-AUTH-008`; `FOGO-AUTH-012`                        | E2                |
+| H-CAP-SCOPE-008-010 | plan, orden de producción, lote y preparación pueden confundirse como una sola entidad                              | crítica | `FOGO-UX-005` a `FOGO-UX-007`; `OPS-TRZ-001`; `SUPA-AUD-019`                          | E2/E3             |
+| H-CAP-SCOPE-008-011 | cada lote debe conservar la receta y versión realmente utilizadas                                                   | crítica | `OPS-REC-001`; `FOGO-AUTH-013`; `TREQ-FOGO-002`                                       | E2/E3             |
+| H-CAP-SCOPE-008-012 | pesaje, premezclas, porcionamiento, kits y staging permanecen como capacidad futura no cerrada                      | alta    | `OPS-PRD-001`; `FOGO-UX-012`; `CAP-SCOPE-006`                                         | E2/E5             |
+| H-CAP-SCOPE-008-013 | la UX actual no demuestra ejecución completa en planta con inicio, pausa, parcialidad, excepción y cierre           | crítica | `FOGO-UX-005` a `FOGO-UX-011`; `UX-QA-025`                                            | E2/E5             |
+| H-CAP-SCOPE-008-014 | consumo de insumos y entrada de terminado no están cerrados exactamente una vez con NEXO                            | crítica | `FOGO-UX-012`; `FOGO-UX-013`; `INT-PROD-001` a `INT-PROD-005`; `TREQ-INTEGRATION-011` | E3/E5             |
+| H-CAP-SCOPE-008-015 | rendimiento esperado, rendimiento real y causas de desviación requieren contrato integral                           | alta    | `FOGO-UX-010`; `OPS-REC-001`; `CAP-SCOPE-004`                                         | E2/E3             |
+| H-CAP-SCOPE-008-016 | la fuente y el formato operativo de merma siguen pendientes en `DAT-27`                                             | alta    | `OPS-PLAN-004`; `FOGO-UX-010`; puerta de migración de mermas                          | antes de backfill |
+| H-CAP-SCOPE-008-017 | no existe evidencia de planes de control de calidad versionados por producto y proceso                              | crítica | `FOGO-UX-001`; `FOGO-UX-014`; `CAP-SCOPE-003`; `CAP-SCOPE-013`                        | E2                |
+| H-CAP-SCOPE-008-018 | liberación, retención y rechazo no forman un ciclo separado del cierre productivo e inventario                      | crítica | `FOGO-UX-007`; `FOGO-UX-014`; `FOGO-AUTH-011`; `CAP-SCOPE-006`                        | E2/E3             |
+| H-CAP-SCOPE-008-019 | controles de alérgenos, higiene, saneamiento y contaminación cruzada atraviesan varios dominios                     | crítica | `CAP-SCOPE-003`; `CAP-SCOPE-004`; `CAP-SCOPE-013`; `OPS-PRD-001`                      | E1/E2             |
+| H-CAP-SCOPE-008-020 | empaque y etiquetas productivas tienen infraestructura parcial pero no una emisión cerrada desde el hecho operativo | alta    | `OPS-TRZ-001`; `FOGO-UX-013`; `PRINT-ARC-001` a `PRINT-ARC-020`                       | E2/E4             |
+| H-CAP-SCOPE-008-021 | reproceso, aprovechamiento, subproducto y descarte no tienen genealogía integral comprobada                         | crítica | `FOGO-UX-010`; `FOGO-UX-011`; `OPS-TRZ-001`; `CAP-SCOPE-006`                          | E2/E3             |
+| H-CAP-SCOPE-008-022 | el cierre de lote no concilia todavía materiales, salida, calidad, tiempo y diferencias                             | crítica | `FOGO-UX-007`; `FOGO-UX-010`; `FOGO-UX-014`; `CAP-SCOPE-012`                          | E2/E3             |
+| H-CAP-SCOPE-008-023 | correcciones posteriores al cierre podrían alterar historia si no se modelan como eventos compensatorios            | crítica | `FOGO-UX-011`; `FOGO-AUTH-012`; `PROC-CAT-013`; `PROC-CAT-014`                        | E2/E3             |
+| H-CAP-SCOPE-008-024 | permisos por área, turno, dispositivo compartido y autoridad de liberación aún deben validarse integralmente        | crítica | `FOGO-AUTH-001` a `FOGO-AUTH-016`; `AUTH-QA-029`; `UX-QA-025`                         | E2/E5             |
+| H-CAP-SCOPE-008-025 | operación offline, reintentos y conflictos productivos no tienen política demostrada                                | crítica | `CODE-AUD-018`; `FOGO-UX-005` a `FOGO-UX-011`; `QUEUE-ARC-001` a `QUEUE-ARC-010`      | E3/E5             |
+| H-CAP-SCOPE-008-026 | costeo de receta y lote no está conciliado con rendimiento y consumo reales                                         | alta    | `CAP-SCOPE-012`; `FOGO-UX-010`; `INT-PROD-001` a `INT-PROD-005`                       | E2/E4             |
+
+Todos los hallazgos tienen propietario y puerta. No queda pendiente narrativo sin destino.
+
+---
+
+#### 40. Decisiones canónicas resultantes
+
+1. FOGO será la fuente de plan, programación, orden, ejecución, lote productivo, calidad y conciliación.
+2. NEXO será la fuente de existencias, reservas, materiales, LOC, condición, cuarentena y terminado físico.
+3. Una señal de demanda no creará automáticamente una orden productiva.
+4. Plan, programación, orden y lote conservarán identidades y versiones distintas.
+5. Cada lote conservará receta y versión exactas.
+6. La capacidad se evaluará con fuentes y fecha de corte.
+7. Prioridad y override serán visibles y auditables.
+8. Preparación de materiales distinguirá reserva, entrega, consumo, devolución y descarte.
+9. Esperado y real permanecerán separados.
+10. Calidad y ejecución utilizarán estados independientes.
+11. Producto finalizado no estará disponible hasta cumplir la decisión de calidad aplicable y el movimiento de NEXO.
+12. Reproceso conservará genealogía.
+13. El cierre exigirá conciliación y pendientes explícitos.
+14. Las correcciones posteriores serán compensatorias o revisionadas.
+15. Automatización de planificación y mínimos queda bloqueada hasta validar las fuentes de `OPS-PLAN`.
+16. FOGO no duplicará compras, inventario, turnos, activos ni costos.
+17. La ausencia de red no autorizará liberación ni cambios destructivos.
+18. Todo requisito nuevo queda incorporado únicamente mediante el `04A` completo regenerado.
+
+---
+
+#### 41. Requisitos de prueba derivados
+
+Esta tarea genera:
+
+```text
+TREQ-FOGO-003
+TREQ-FOGO-004
+TREQ-INTEGRATION-013
+```
+
+##### 41.1. `TREQ-FOGO-003`
+
+Protege señales, plan, revisiones, capacidad, priorización, programación, órdenes y overrides.
+
+##### 41.2. `TREQ-FOGO-004`
+
+Protege ejecución, controles de calidad e inocuidad, disposición, empaque, reproceso y cierre no destructivo.
+
+##### 41.3. `TREQ-INTEGRATION-013`
+
+Protege la cadena demanda → plan → capacidad → materiales → ejecución → calidad → inventario → costo, con correlación e idempotencia.
+
+El detalle canónico se encuentra únicamente en el registro `04A` completo regenerado.
+
+---
+
+#### 42. Dependencias habilitadas y restricciones
+
+La aprobación habilitará como entradas de diseño:
+
+- `FOGO-AUTH-001` a `FOGO-AUTH-016`;
+- `FOGO-UX-001` a `FOGO-UX-015`;
+- `OPS-REC-001`, `OPS-PRD-001` y `OPS-TRZ-001`;
+- `INT-PROD-001` a `INT-PROD-005`;
+- diseño de procesos E2;
+- arquitectura E3 y servicios E4;
+- paquetes E5 de FOGO, NEXO y consumidores;
+- pruebas `UX-QA-025` y certificación del BLOQUE U.
+
+Continuarán bloqueados:
+
+- algoritmos de pronóstico o producción automática;
+- mínimos automáticos;
+- migración histórica sin fuente verificada;
+- liberación automática no aprobada;
+- consumo o entrada real de inventario;
+- cambios físicos, regulatorios o de operación;
+- implementación anticipada.
+
+---
+
+#### 43. Criterios de aceptación
+
+`CAP-SCOPE-008` podrá aprobarse cuando:
+
+- las catorce subcapacidades tengan tratamiento explícito;
+- FOGO, NEXO, ORIGO, PULSO/PASS, VISO y NUMERA tengan fronteras claras;
+- demanda, plan, programación, orden, lote y ejecución estén separados;
+- capacidad y priorización tengan reglas objetivo;
+- preparación, consumo, rendimiento y merma estén diferenciados;
+- calidad, inocuidad, liberación, retención y rechazo estén modelados sin equivalencias peligrosas;
+- empaque, etiqueta, reproceso y cierre tengan trazabilidad;
+- `DAT-12` y `DAT-27` tengan tratamiento provisional y puerta;
+- cada hallazgo tenga tarea y momento;
+- los tres requisitos nuevos estén incorporados en un `04A` completo válido;
+- no se haya autorizado implementación, migración ni operación real.
+
+---
+
+#### 44. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cobertura objetivo de producción y sus dependencias, sin ejecutar todavía el diseño detallado ni la implementación.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-009
+— Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+```
+
+`CAP-SCOPE-009` consumirá las fronteras de demanda y disponibilidad aquí aprobadas, pero no reabrirá la propiedad del plan productivo ni del lote.
+
+
 ### [ ] CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
 ### [ ] CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
 ### [ ] CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
