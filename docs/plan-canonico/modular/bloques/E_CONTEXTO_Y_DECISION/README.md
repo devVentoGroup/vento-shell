@@ -3,57 +3,19 @@
 > Este archivo es un índice de navegación. No forma parte del compilado canónico.
 > El orden canónico continúa definido exclusivamente por `../../manifest.json`.
 
+## Navegación por secciones lógicas
+
 - [Introducción del bloque](./00_INTRO.md)
-
-## 01_CONTRATOS_BASE
-
-- [AUTH-CTX-001](./01_CONTRATOS_BASE/AUTH_CTX_001.md)
-- [AUTH-CTX-002](./01_CONTRATOS_BASE/AUTH_CTX_002.md)
-- [AUTH-CTX-003](./01_CONTRATOS_BASE/AUTH_CTX_003.md)
-- [AUTH-CTX-004](./01_CONTRATOS_BASE/AUTH_CTX_004.md)
-
-## 02_IDENTIDAD_Y_ACTOR
-
-- [AUTH-CTX-005](./02_IDENTIDAD_Y_ACTOR/AUTH_CTX_005.md)
-- [AUTH-CTX-006](./02_IDENTIDAD_Y_ACTOR/AUTH_CTX_006.md)
-- [AUTH-CTX-007](./02_IDENTIDAD_Y_ACTOR/AUTH_CTX_007.md)
-- [AUTH-CTX-008](./02_IDENTIDAD_Y_ACTOR/AUTH_CTX_008.md)
-
-## 03_CONTEXTO_LABORAL_Y_DISPOSITIVO
-
-- [AUTH-CTX-009](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_009.md)
-- [AUTH-CTX-010](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_010.md)
-- [AUTH-CTX-011](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_011.md)
-- [AUTH-CTX-012](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_012.md)
-- [AUTH-CTX-013](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_013.md)
-- [AUTH-CTX-014](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_014.md)
-- [AUTH-CTX-015](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO/AUTH_CTX_015.md)
-
-## 04_DECISION_DE_AUTORIZACION
-
-- [AUTH-CTX-016](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_016.md)
-- [AUTH-CTX-017](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_017.md)
-- [AUTH-CTX-018](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_018.md)
-- [AUTH-CTX-019](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_019.md)
-- [AUTH-CTX-020](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_020.md)
-- [AUTH-CTX-021](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_021.md)
-- [AUTH-CTX-022](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_022.md)
-- [AUTH-CTX-023](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_023.md)
-- [AUTH-CTX-024](./04_DECISION_DE_AUTORIZACION/AUTH_CTX_024.md)
-
-## 05_IMPLEMENTACION_Y_TRANSICION
-
-- [AUTH-CTX-025](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_025.md)
-- [AUTH-CTX-026](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_026.md)
-- [AUTH-CTX-027](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_027.md)
-- [AUTH-CTX-028](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_028.md)
-- [AUTH-CTX-029](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_029.md)
-- [AUTH-CTX-030](./05_IMPLEMENTACION_Y_TRANSICION/AUTH_CTX_030.md)
+- [Contratos base](./01_CONTRATOS_BASE.md)
+- [Identidad y actor](./02_IDENTIDAD_Y_ACTOR.md)
+- [Contexto laboral y dispositivo](./03_CONTEXTO_LABORAL_Y_DISPOSITIVO.md)
+- [Decisión de autorización](./04_DECISION_DE_AUTORIZACION.md)
+- [Implementación y transición](./05_IMPLEMENTACION_Y_TRANSICION.md)
 
 ## Flujo de trabajo
 
-1. Editar únicamente el fragmento de la tarea correspondiente.
-2. No editar manualmente `.generated/`.
-3. Regenerar con `node scripts/docs/build-plan-canonico.mjs`.
-4. Validar con `node scripts/docs/build-plan-canonico.mjs --check`.
-
+1. Editar únicamente el fragmento lógico propietario de la tarea.
+2. No editar manualmente ningún archivo dentro de `.generated/`.
+3. Regenerar con `npm run docs:plan:build`.
+4. Validar con `npm run docs:plan:check`.
+5. Para vigilancia automática durante la edición, ejecutar `npm run docs:plan:watch`.
