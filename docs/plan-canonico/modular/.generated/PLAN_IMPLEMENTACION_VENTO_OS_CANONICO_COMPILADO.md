@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **131** |
-| Tareas canónicas con marcador | **1569** |
+| Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **220** |
+| Tareas aprobadas | **221** |
 | Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1349** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **GAP-CTRL-007 — Definir criterio y evidencia de cierre** |
-| Tarea actual | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
+| Última tarea aprobada | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
+| Tarea actual | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Siguiente tarea | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 95 de 96 aprobadas; GAP-CTRL-008 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 96 de 98 aprobadas; E1-GATE-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `GAP-CTRL-007` — Definir criterio y evidencia de cierre |
-| Tarea actual | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario |
+| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 — **NO INICIADA** |
+| Siguiente tarea | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **95 DE 96 APROBADAS — ACTUAL GAP-CTRL-008** |
+| BLOQUE E1 | **96 DE 98 APROBADAS — ACTUAL E1-GATE-001** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,13 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-GAP-CTRL-007 — Definir criterio y evidencia de cierre
-        ↓
-TAREA ACTUAL
 GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
         ↓
+TAREA ACTUAL
+E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 95 de 96 tareas aprobadas
+BLOQUE E1 — 96 de 98 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -558,9 +561,6 @@ BLOQUE E1 — 95 de 96 tareas aprobadas
 
     Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
     o cuando cite una tarea que no exista formalmente en el roadmap.
-
-Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
-o cuando cite una tarea que no exista formalmente en el roadmap.
 
 39. Toda tarea documental, funcional, técnica o de implementación deberá
     incluir, antes de sus criterios de aceptación, una sección denominada:
@@ -183413,6 +183413,7 @@ Los requisitos utilizarán:
 Dominios iniciales:
 
 - `AUTH`;
+- `GAP`;
 - `SHELL`;
 - `SUPABASE`;
 - `ANIMA`;
@@ -183465,12 +183466,12 @@ Dominios iniciales:
 
 | Métrica                           |       Resultado |
 | --------------------------------- | --------------: |
-| Requisitos vigentes               |         **146** |
-| Dominios con requisitos           |          **17** |
-| Filas con catorce columnas        |  **146 de 146** |
+| Requisitos vigentes               |         **147** |
+| Dominios con requisitos           |          **18** |
+| Filas con catorce columnas        |  **147 de 147** |
 | Identificadores duplicados        |           **0** |
 | Relaciones `TREQ-*` no resolubles |           **0** |
-| Última tarea incorporada          | `CAP-SCOPE-018` |
+| Última tarea incorporada          | `GAP-CTRL-008` |
 | Fecha de normalización            |    `2026-07-25` |
 
 Distribución vigente:
@@ -183478,6 +183479,7 @@ Distribución vigente:
 | Dominio       | Rango                                           | Cantidad |
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
+| `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-011`             |       11 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-013`       |       13 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-005`             |        5 |
@@ -183530,6 +183532,12 @@ Distribución vigente:
 | `TREQ-AUTH-017` | `AUTH`  | Los expedientes SST, reportes, investigaciones, declaraciones, evidencias y datos médicos deberán aplicar autorización por identidad real, vínculo vigente, participación, sede, área, tipo de expediente, sensibilidad y estado. El trabajador verá únicamente información propia permitida. Un responsable territorial no obtendrá acceso global. Las aplicaciones operativas y eventos generales no recibirán diagnósticos ni documentos médicos. Los accesos extraordinarios de emergencia serán mínimos, temporales y auditados. URL directa, formulario manipulado, RPC directa, simulación, dispositivo compartido, caché o exportación no podrán ampliar el alcance. El reporte original y la evidencia permanecerán protegidos e inmutables; toda ampliación, corrección, descarga y consulta sensible conservará actor y motivo cuando corresponda. | `CAP-SCOPE-003`; `CAP-03.04`; `CAP-03.08`; `CAP-03.09`; `H-CAP-SCOPE-003-007`; `H-CAP-SCOPE-003-012`; `BKL-FUNC-003`                                                                        | exposición de información médica o SST, acceso entre sedes, modificación de evidencia, descarga masiva y decisiones laborales basadas en datos no autorizados / crítica             | seguridad + autorización + privacidad + RLS + Storage + exportación + URL directa + auditoría + regresión / automatizada con revisión manual de privacidad | `AUTH-SRV-004` a `AUTH-SRV-018`; `VISO-AUTH-013` a `VISO-AUTH-019`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-003`; `AUTH-QA-007`; `AUTH-QA-008`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030`                                         | diseño E2 del proceso SST; arquitectura E3/E4; paquetes E5 VISO/ANIMA/SHELL; certificación del BLOQUE U               | `vento-viso`, `vento-anima`, `vento-shell` y Storage / Supabase local, CI, staging, dispositivos personales y compartidos, exportaciones y actores de distintas sedes | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-003`; ausencia de contrato específico de privacidad SST; controles de autorización ya aprobados; separación de VITAL | `TREQ-AUTH-003`; `TREQ-AUTH-008`; `TREQ-AUTH-009`; `TREQ-AUTH-010`; `TREQ-AUTH-011`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-SUPABASE-004`; `TREQ-VISO-001` |
 
 | `TREQ-AUTH-018` | `AUTH` | Los perfiles, contactos, preferencias, consentimientos, casos, reclamos, feedback, reservas, comunicaciones y movimientos de fidelización de clientes deberán aplicar autorización por identidad real, capacidad, finalidad, marca, sede, relación con el caso, sensibilidad y acción. El cliente accederá únicamente a sus datos y expedientes permitidos; no verá notas internas ni datos de terceros. El personal recibirá proyecciones mínimas y no podrá buscar, exportar, simular, descargar o modificar datos fuera de su necesidad operativa. La retirada de consentimiento deberá bloquear usos futuros aplicables sin borrar evidencia histórica. URL directa, RLS, RPC, dispositivo compartido, caché, exportación, notificación y logs deberán respetar el mismo alcance y conservar auditoría. | `CAP-SCOPE-010`; `CAP-10.01`; `CAP-10.02`; `CAP-10.10`; `H-CAP-SCOPE-010-004`; `H-CAP-SCOPE-010-017`; `H-CAP-SCOPE-010-020` a `H-CAP-SCOPE-010-023` | exposición de datos personales, contacto no autorizado, consulta entre marcas o sedes, abuso de exportación, notas internas visibles y tratamiento posterior a revocación / crítica | seguridad + privacidad + autorización + RLS + RPC + exportación + dispositivo compartido + auditoría + regresión / automatizada con revisión manual de privacidad | `PASS-INT-004`; `PASS-INT-005`; `VISO-AUTH-013` a `VISO-AUTH-020`; `AUTH-SRV-004` a `AUTH-SRV-018`; `AUTH-DB-002` a `AUTH-DB-010`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 de cliente y servicio; arquitectura E3/E4 de privacidad; paquetes E5 PASS/PULSO/VISO/SHELL; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-shell`, Supabase y proveedores de comunicación / local, CI, staging, dispositivos personales y compartidos, exportaciones y canales externos | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-010`; perfil y consentimiento actuales; controles previos de identidad y autorización | `TREQ-AUTH-006`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-PASS-008`; `TREQ-SUPABASE-004`; `TREQ-INTEGRATION-003` |
+
+#### GAP
+
+| ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `TREQ-GAP-001` | `GAP` | La puerta de fase deberá producir únicamente `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE`, `BLOCKED_EXCEPTION`, `PASS_WITH_CARRYOVER` o `PASS`; nunca aprobará una fase con una brecha crítica sin propietario válido, y bloqueará por falta de tarea, paquete, criterio, evidencia o arrastre controlado. Los conteos deberán reconciliar contra la misma versión del registro canónico y generar evidencia reproducible mediante `E1-GATE-MANIFEST-001`. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad o aprobación con registros incongruentes / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `E1-GATE-MANIFEST-001` |
 
 #### SHELL
 
@@ -213782,7 +213790,6 @@ La deduplicación no modifica comportamiento ejecutable. Los `TREQ-*` existentes
 - [ ] Los casos relacionados pero no equivalentes quedan documentados.
 - [ ] No se modificó código, Supabase, migraciones ni operación.
 - [ ] No se avanzó a `GAP-CTRL-003`.
-- [ ] La tarea permanece en propuesta hasta aprobación explícita.
 
 #### 13. Estado de la tarea
 
@@ -213793,7 +213800,7 @@ APROBADA
 
 ### ✅ GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación
 
-**Estado:** PROPUESTA PARA APROBACIÓN  
+**Estado:** APROBADA
 **Bloque:** BLOQUE E1 — Registro canónico de brechas  
 **Tareas anteriores:** `GAP-CTRL-001` y `GAP-CTRL-002` — APROBADAS  
 **Línea base recibida:** 836 registros equivalentes  
@@ -214015,7 +214022,6 @@ La tarea clasifica evidencia existente. Los requisitos `TREQ-*` se conservan vin
 - [ ] no se asignaron propietarios, fechas, prioridades, capacidades, procesos ni paquetes;
 - [ ] no se modificó código, Supabase, migraciones ni operación;
 - [ ] no se avanzó a `GAP-CTRL-004`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -215164,7 +215170,6 @@ La asignación es de gobierno documental. Los `TREQ-*` existentes permanecen vin
 - [ ] no se asignaron prioridades, capacidades, procesos o paquetes;
 - [ ] no se modificó código, migraciones, Supabase ni operación;
 - [ ] no se avanzó a `GAP-CTRL-005`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -216362,7 +216367,6 @@ Los `TREQ-*` existentes permanecen asociados a sus brechas. La vinculación con 
 - [ ] no se asignan tareas, paquetes ni evidencia de cierre;
 - [ ] no se modifica código, migraciones, Supabase ni operación;
 - [ ] no se avanza a `GAP-CTRL-006`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -218711,7 +218715,6 @@ Los requisitos `TREQ-*` ya existentes permanecen vinculados a las brechas y debe
 APROBADA
 ```
 
-`GAP-CTRL-006` no debe marcarse como aprobada ni integrarse como resultado canónico hasta recibir aprobación explícita.
 
 ---
 
@@ -219911,7 +219914,6 @@ No se admite sustituir un requisito faltante con una nota narrativa.
 APROBADA
 ```
 
-`GAP-CTRL-007` no debe marcarse como aprobada ni integrarse como resultado canónico hasta recibir aprobación explícita.
 
 ---
 
@@ -219924,7 +219926,649 @@ GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
 No se inicia `GAP-CTRL-008` dentro de esta propuesta.
 
 
-### [ ] GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
+### ✅ GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
+
+**Estado:** APROBADA
+**Bloque:** BLOQUE E1 — Registro canónico de brechas
+**Tareas anteriores:** `GAP-CTRL-001` a `GAP-CTRL-007` — APROBADAS
+**Línea base recibida:** 836 registros equivalentes; 814 brechas; 201 paquetes; 22 referencias de control o evidencia
+**Brechas críticas explícitas en el corte:** 138
+**Fecha de corte:** 2026-07-25
+**Implementación física:** no incluida
+**Continuidad posterior:** puerta de aprobación de la línea base de E1 y transición a BLOQUE E2
+
+---
+
+#### 1. Propósito
+
+Establecer una puerta de fase obligatoria que impida declarar cerrada, aprobada o habilitada cualquier fase del roadmap cuando exista al menos una brecha crítica sin propietario interno vigente. La puerta también verifica que las brechas críticas abiertas tengan fecha, tarea, paquete, criterio de cierre y destino de fase, para que “tener propietario” no se reduzca a una asignación nominal sin capacidad de resolución.
+
+Esta tarea no obliga a cerrar todas las brechas críticas antes de finalizar una fase de descubrimiento o diseño. Permite trasladarlas a una fase posterior únicamente mediante un arrastre controlado, trazable y aprobado. La ausencia de propietario nunca puede ser objeto de excepción.
+
+---
+
+#### 2. Principio de bloqueo absoluto
+
+Una fase queda automáticamente `BLOQUEADA` cuando cualquier brecha crítica aplicable presenta una de estas condiciones:
+
+1. `decision_owner_code` vacío, inválido, vacante o fuera del catálogo aprobado;
+2. propietario indicado como proveedor, equipo genérico, “por definir” o varias personas sin responsable único;
+3. propietario formalmente ausente y sin designación interina escrita;
+4. propietario que declara no tener autoridad y no registra escalamiento a `OWN-GG`;
+5. brecha crítica nueva incorporada sin asignación de propietario en el mismo cambio documental.
+
+No se admite waiver, aceptación de riesgo ni cierre condicional para una brecha crítica sin propietario. Antes de continuar deberá asignarse un propietario válido o un propietario interino conforme a `GAP-CTRL-004`.
+
+---
+
+#### 3. Alcance de “brecha crítica” en esta versión
+
+Para evitar una repriorización subjetiva dentro de esta tarea, la línea base crítica inicial se limita a registros cuya evidencia aprobada contiene un marcador explícito de criticidad:
+
+- la palabra `crítica` o equivalente en el hallazgo fuente;
+- una prioridad `P0` expresamente declarada;
+- un alias deduplicado cuyo registro representativo conserva alguno de esos marcadores.
+
+Resultado del corte: **138 brechas críticas explícitas**, distribuidas en **65 paquetes**. Esta selección no significa que las otras 676 brechas sean irrelevantes ni que no puedan elevarse después. Una brecha adicional solo ingresará al conjunto crítico mediante una decisión versionada que registre causa, aprobador y fecha.
+
+La confianza `ALTA`, `MEDIA` o `CONTROLADA` de `GAP-CTRL-006` describe la confianza de asignación de tarea; no representa severidad y no se utiliza para determinar criticidad.
+
+---
+
+#### 4. Estados de la puerta de fase
+
+| Estado | Significado | Efecto |
+| --- | --- | --- |
+| `PASS` | No existen brechas críticas sin propietario y todas las abiertas cumplen el contrato mínimo de arrastre o están cerradas con evidencia válida. | La fase puede someterse a aprobación. |
+| `PASS_WITH_CARRYOVER` | Existen brechas críticas abiertas, pero cada una tiene propietario, fecha, tarea, paquete, perfil de cierre, fase destino y arrastre aprobado. | La fase puede cerrarse sin declarar resueltas esas brechas. |
+| `BLOCKED_OWNER` | Existe al menos una brecha crítica sin propietario válido o sin reemplazo interino. | Prohibido cerrar, aprobar o habilitar la fase. |
+| `BLOCKED_ROUTING` | Todas tienen propietario, pero alguna carece de fecha, tarea, paquete, perfil de cierre o fase destino. | Prohibido cerrar hasta completar el enrutamiento. |
+| `BLOCKED_EVIDENCE` | Se declara cerrada una brecha crítica sin satisfacer `GAP-CTRL-007`. | La brecha vuelve a `ABIERTA` o `RECHAZADA_EN_VALIDACION`; la fase no cierra. |
+| `BLOCKED_EXCEPTION` | Un arrastre o excepción está vencido, no fue aprobado o no tiene control compensatorio. | Prohibido cerrar hasta corregirlo o cerrar la brecha. |
+| `REOPENED` | Una fase ya cerrada pierde su condición por regresión, deriva o evidencia contradictoria crítica. | Se reabre la puerta y se activa escalamiento. |
+
+`PASS` y `PASS_WITH_CARRYOVER` son los únicos estados compatibles con la aprobación de una fase.
+
+---
+
+#### 5. Contrato mínimo de una brecha crítica abierta
+
+Toda brecha crítica que no esté `CERRADA` deberá contener, antes del cierre de fase:
+
+```text
+gap_id
+criticality = CRITICAL
+criticality_basis
+decision_owner_code
+owner_status = ACTIVE | INTERIM
+decision_due_date
+resolution_task_id
+implementation_package_id
+closure_profile_id
+validator
+co_validator
+target_phase
+carryover_reason
+compensating_control
+carryover_approved_by
+carryover_approved_at
+next_gate_date
+status
+```
+
+La ausencia de cualquiera de estos campos produce `BLOCKED_OWNER` o `BLOCKED_ROUTING` según corresponda.
+
+---
+
+#### 6. Regla de arrastre controlado entre fases
+
+Una brecha crítica abierta puede trasladarse a una fase posterior únicamente si:
+
+1. la fase actual no tiene como criterio de salida resolver materialmente esa brecha;
+2. el propietario permanece activo y acepta el arrastre;
+3. existe una tarea primaria y un paquete concreto;
+4. la fase destino es la fase donde realmente puede producirse la evidencia de cierre;
+5. existe control compensatorio suficiente mientras la brecha continúe abierta;
+6. `OWN-GG` aprueba el arrastre;
+7. seguridad, datos, SST, finanzas o tecnología coaprueban cuando el riesgo pertenece a su dominio;
+8. se establece una nueva revisión de puerta con fecha exacta;
+9. la fase de origen no presenta la brecha como resuelta.
+
+No son causas válidas de arrastre: “se verá después”, falta de tiempo, falta de presupuesto sin decisión, dependencia no identificada, responsable de vacaciones, dificultad técnica genérica o ausencia de evidencia.
+
+---
+
+#### 7. Aplicación por tipo de fase
+
+| Tipo de fase | Condición mínima para cerrar con brechas críticas abiertas |
+| --- | --- |
+| Descubrimiento / auditoría | Cada brecha está identificada, deduplicada, clasificada, con propietario, fecha, capacidad, proceso, tarea, paquete y criterio de cierre. |
+| Diseño funcional o técnico | La decisión y el contrato exigidos por la fase están aprobados; la implementación pendiente queda en paquete posterior. |
+| Datos / migración | Existe baseline, destino, plan de transición, reconciliación y rollback definidos antes de trasladar ejecución. |
+| Implementación | El cambio está implementado y probado en el entorno exigido; no puede trasladarse una falla que era criterio de salida del paquete. |
+| Piloto | Existen controles compensatorios, responsables presentes y evidencia suficiente para operar el alcance autorizado. |
+| Producción / cutover | No se permite arrastrar una brecha crítica que comprometa autorización, integridad, dinero, seguridad, SST, continuidad o rollback del alcance desplegado. |
+| Hypercare / cierre integral | Toda brecha crítica del alcance debe estar `CERRADA` o retirada del alcance mediante decisión explícita; no se admite arrastre indefinido. |
+
+---
+
+#### 8. Ejecución de la puerta
+
+La puerta deberá ejecutarse:
+
+- antes de marcar la última tarea de una fase como aprobada;
+- antes de aprobar una línea base o ADR que habilite la fase siguiente;
+- antes de ratificar paquetes en E5;
+- antes de cada piloto, cutover y habilitación productiva;
+- al vencer una excepción o fecha de decisión;
+- cuando una brecha crítica se reabre;
+- cuando cambie el propietario, la clasificación, el paquete o el alcance de una brecha crítica.
+
+La evaluación deberá producir un manifiesto versionado, no una conclusión verbal.
+
+---
+
+#### 9. Manifiesto obligatorio de puerta
+
+```text
+gate_id
+phase_id
+phase_version
+evaluated_at
+evaluated_by
+approved_by
+critical_gap_ids[]
+critical_gap_count
+critical_without_owner[]
+critical_without_due_date[]
+critical_without_task[]
+critical_without_package[]
+critical_without_closure_profile[]
+critical_with_expired_carryover[]
+critical_closed_with_valid_evidence[]
+critical_open_with_approved_carryover[]
+gate_status
+blocking_reasons[]
+next_gate_date
+evidence_location
+```
+
+El manifiesto será inválido si los conteos no reconcilian con el registro canónico de brechas de la misma versión.
+
+---
+
+#### 10. Responsabilidades
+
+| Rol | Responsabilidad |
+| --- | --- |
+| Propietario de fase | preparar la solicitud de cierre, declarar alcance y garantizar que el registro usado corresponde a la versión evaluada |
+| `OWN-OPS` | custodiar la conciliación documental de la puerta de E1 y de fases operativas, sin sustituir a los propietarios de brecha |
+| `OWN-TEC` | validar consultas, automatización y evidencia técnica de la puerta cuando intervengan repositorios, CI, datos o despliegues |
+| Propietario de cada brecha | aceptar propiedad, mantener fecha, tarea, paquete, control compensatorio y evidencia de avance |
+| Validador de `GAP-CTRL-007` | confirmar que una brecha declarada cerrada cumple perfil y evidencia |
+| `OWN-GG` | aprobar el cierre de fase y todo arrastre de brecha crítica abierta |
+
+Si la fase no tiene propietario formal, `OWN-GG` deberá designarlo antes de evaluar la puerta. La propia ausencia de propietario de fase bloquea el cierre.
+
+---
+
+#### 11. Automatización y validaciones obligatorias
+
+Cuando el registro se materialice en una fuente estructurada, el verificador deberá fallar si:
+
+1. `criticality = CRITICAL` y `decision_owner_code` está vacío;
+2. el propietario no pertenece al catálogo de `GAP-CTRL-004`;
+3. `owner_status` no es `ACTIVE` o `INTERIM`;
+4. falta fecha, tarea, paquete, perfil, fase destino o aprobación de arrastre;
+5. la fecha de decisión o arrastre está vencida;
+6. una brecha crítica aparece duplicada, omitida o con conteos incongruentes;
+7. el manifiesto declara `PASS` mientras existe cualquier arreglo `critical_without_*` no vacío;
+8. una brecha cerrada carece de manifiesto de evidencia válido;
+9. una fase productiva intenta arrastrar un riesgo crítico no trasladable;
+10. se modifica o elimina una brecha crítica sin historial y aprobación.
+
+Pseudorregla mínima:
+
+```text
+if any(critical_gap.owner is null or owner not valid):
+    gate_status = BLOCKED_OWNER
+elif any(critical_gap.required_routing_field is null):
+    gate_status = BLOCKED_ROUTING
+elif any(critical_gap.closed and not closure_evidence_valid):
+    gate_status = BLOCKED_EVIDENCE
+elif any(critical_gap.open and not carryover_valid):
+    gate_status = BLOCKED_EXCEPTION
+elif any(critical_gap.open):
+    gate_status = PASS_WITH_CARRYOVER
+else:
+    gate_status = PASS
+```
+
+---
+
+#### 12. Resultado cuantitativo del corte
+
+| Control | Resultado |
+| --- | ---: |
+| Registros equivalentes conciliados | **836** |
+| Brechas canónicas | **814** |
+| Brechas críticas explícitas | **138** |
+| Brechas críticas con propietario válido | **138** |
+| Brechas críticas sin propietario | **0** |
+| Brechas críticas con fecha de decisión | **138** |
+| Brechas críticas con tarea y paquete | **138** |
+| Brechas críticas con perfil de cierre | **138** |
+| Paquetes que contienen al menos una brecha crítica | **65** |
+| Referencias de control o evidencia | **22** |
+
+La línea base cumple actualmente el requisito estructural de propiedad: ninguna de las 138 brechas críticas explícitas está huérfana. Sin embargo, la puerta de E1 permanece `NOT_EVALUATED`. La aprobación de esta tarea no produce por sí sola `PASS_WITH_CARRYOVER`: todavía deberá generarse el manifiesto de puerta de E1 y registrar para cada brecha crítica abierta la fase destino, razón de arrastre, control compensatorio, aprobaciones y siguiente fecha de revisión. Si esos datos no están completos, la puerta deberá resultar `BLOCKED_ROUTING`.
+
+##### 12.1. Brechas críticas por propietario
+
+| Propietario | Brechas críticas |
+| --- | ---: |
+| `OWN-OPS` — Jefe de Operaciones | **83** |
+| `OWN-SEG` — Responsable de seguridad y autorización | **18** |
+| `OWN-FIN` — Contabilidad / propietario funcional de NUMERA | **13** |
+| `OWN-TEC` — Responsable técnico de Vento OS | **10** |
+| `OWN-COM` — Marketing / propietario funcional comercial | **8** |
+| `OWN-DAT` — Responsable de gobierno de datos | **6** |
+
+##### 12.2. Brechas críticas por clasificación
+
+| Clasificación | Brechas críticas |
+| --- | ---: |
+| `FUNCIONAL` | **35** |
+| `CONTRACTUAL` | **29** |
+| `OPERACION` | **27** |
+| `DATOS` | **21** |
+| `SEGURIDAD` | **18** |
+| `TECNICA` | **8** |
+
+##### 12.3. Fechas máximas de decisión del conjunto crítico
+
+| Fecha | Brechas críticas |
+| --- | ---: |
+| `2026-08-21` | **63** |
+| `2026-09-11` | **59** |
+| `2026-10-02` | **4** |
+| `2026-10-23` | **10** |
+| `2026-11-20` | **2** |
+
+---
+
+#### 13. Tratamiento de vencimientos y vacancias
+
+Cuando llegue la fecha de decisión sin resultado válido:
+
+1. la brecha cambia a `ESCALADA`;
+2. el propietario original conserva responsabilidad hasta aceptación del reemplazo;
+3. `OWN-GG` debe decidir, reasignar o aprobar una nueva fecha exacta;
+4. la fase o puerta correspondiente cambia a `BLOCKED_OWNER` si no queda propietario activo;
+5. no se permite mover la fecha silenciosamente ni conservar “por definir”.
+
+Cuando el propietario deja el cargo, se ausenta de forma material o pierde autoridad:
+
+- deberá registrarse propietario interino antes del siguiente gate;
+- la asignación interina tendrá inicio, vencimiento y autoridad explícitos;
+- el proveedor o desarrollador que ejecuta la solución no se convierte automáticamente en propietario de la brecha.
+
+---
+
+#### 14. Reapertura de una fase
+
+Una fase cerrada deberá reabrir su puerta cuando:
+
+- se descubre que una brecha crítica fue omitida;
+- una brecha crítica pierde propietario;
+- vence el arrastre aprobado sin nueva decisión;
+- una brecha crítica cerrada se reabre por regresión o deriva;
+- cambia el alcance de la fase y una brecha antes externa pasa a ser criterio de salida;
+- la evidencia usada para el cierre deja de ser accesible o verificable.
+
+La reapertura no borra la aprobación histórica: registra una nueva versión de la puerta con estado `REOPENED` y acciones de contención.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+Esta tarea no crea automáticamente nuevos `TREQ-*`, porque define una regla de gobierno documental y de puerta. La automatización futura deberá cubrirse mediante las tareas de CI, verificación documental y readiness ya existentes.
+
+Si no existe una prueba automatizada que compruebe la ausencia de propietarios nulos, la puerta podrá ejecutarse manualmente durante E1, pero deberá quedar vinculada a una tarea de automatización antes del primer cutover. Una ejecución manual sin manifiesto versionado no es válida.
+
+---
+
+#### 16. Decisiones adoptadas
+
+1. Se establece una puerta obligatoria para todas las fases del roadmap.
+2. Ninguna brecha crítica puede quedar sin propietario interno único y vigente.
+3. La ausencia de propietario no admite excepción ni aceptación de riesgo.
+4. Una fase de descubrimiento o diseño puede cerrar con brechas críticas abiertas solo mediante arrastre controlado.
+5. Las fases de implementación, piloto y producción tienen restricciones progresivamente más estrictas.
+6. Se adopta una línea base inicial de 138 brechas críticas explícitas.
+7. Las 138 tienen propietario, fecha, tarea, paquete y perfil de cierre en el corte actual.
+8. El cierre de brecha continúa regido por `GAP-CTRL-007`; esta tarea no rebaja evidencia.
+9. La puerta puede reabrir una fase por pérdida de propiedad, vencimiento, regresión o evidencia contradictoria.
+10. Esta tarea no implementa código, no ejecuta migraciones y no modifica Supabase.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [ ] existe una definición reproducible de brecha crítica;
+- [ ] las 138 brechas críticas explícitas están identificadas;
+- [ ] las 138 tienen propietario válido;
+- [ ] ninguna brecha crítica sin propietario puede ser exceptuada;
+- [ ] se definen estados `PASS`, `PASS_WITH_CARRYOVER` y bloqueos;
+- [ ] se define el contrato mínimo de arrastre;
+- [ ] se define manifiesto versionado de puerta;
+- [ ] se definen responsables de evaluación y aprobación;
+- [ ] se definen validaciones automatizables;
+- [ ] se definen vencimiento, vacancia y reapertura;
+- [ ] los conteos reconcilian con 814 brechas y 22 referencias auxiliares;
+- [ ] no se cerraron brechas ni se autorizó implementación;
+
+---
+
+#### 18. Estado
+
+```text
+APROBADA
+```
+
+
+---
+
+#### 19. Continuidad después de aprobación
+
+`GAP-CTRL-008` cierra la secuencia de definición `GAP-CTRL-001` a `GAP-CTRL-008`, pero no cierra por sí sola BLOQUE E1.
+
+La continuidad obligatoria será:
+
+```text
+GAP-CTRL-008 — APROBADA
+        ↓
+E1-GATE-001 — EJECUTAR Y APROBAR LA PUERTA DE CIERRE DE BLOQUE E1
+        ↓
+PROC-CAT-001 — CONSOLIDAR EL CATÁLOGO AS-IS DE PROCESOS
+```
+
+`E1-GATE-001` deberá integrar y reconciliar el registro de brechas aprobado, ejecutar `TREQ-GAP-001`, producir el manifiesto versionado y declarar un resultado permitido de puerta antes de autorizar `PROC-CAT-001`.
+
+---
+
+## ANEXO A — Línea base de brechas críticas explícitas
+
+La siguiente matriz contiene las 138 brechas cuya fuente aprobada declara criticidad o prioridad P0. Todas conservan propietario, fecha, tarea, paquete y perfil de cierre. La brecha puede permanecer abierta al cerrar E1 únicamente mediante el arrastre controlado definido en esta tarea.
+
+| Brecha | Referencia | Señal crítica | Clase | Propietario | Fecha | Tarea primaria | Paquete | Perfil de cierre | Validador | Estado de puerta E1 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `EQG-053` | `H-CAP-SCOPE-018-001` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `TI-INT-003` — Definir integraciones con MDM, soporte remoto, ISP, fabricantes, licenciamiento y proveedore... | `GAP-PKG-125` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `EQG-055` | `H-CAP-SCOPE-018-013` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NFR-REQ-004` — Definir comportamiento offline y sincronización | `GAP-PKG-125` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-COVER-001-009` | `H-CAP-COVER-001-009` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-10-02` | `DATA-DOM-001` — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad | `GAP-PKG-142` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-COVER-010-002` | `H-CAP-COVER-010-002` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-019` — Definir métricas de operación | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-COVER-011-005` | `H-CAP-COVER-011-005` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `GAP-PKG-095` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-002-006` | `H-CAP-SCOPE-002-006` | `P0_EXPLICITO` | `TECNICA` | `OWN-TEC` | `2026-08-21` | `ANIMA-AUTH-014` — Manejar cola offline de check-in | `GAP-PKG-066` | `CLOSE-TEC-IMP` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-004-002` | `H-CAP-SCOPE-004-002` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `SUPA-AUD-019` — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras | `GAP-PKG-034` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-004-013` | `H-CAP-SCOPE-004-013` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `INT-POS-011` — Mapear producto externo, producto Vento, presentación y receta | `GAP-PKG-033` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-005-004` | `H-CAP-SCOPE-005-004` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `ORIGO-AUTH-010` — Proteger precios y datos sensibles | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-005-006` | `H-CAP-SCOPE-005-006` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `ORIGO-AUTH-010` — Proteger precios y datos sensibles | `GAP-PKG-036` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-005-012` | `H-CAP-SCOPE-005-012` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `ORIGO-UX-011` — Diseñar diferencias contra orden | `GAP-PKG-114` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-004` | `H-CAP-SCOPE-006-004` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `NEXO-DOM-002` — Definir propósito y tipos canónicos de LPN | `GAP-PKG-038` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-005` | `H-CAP-SCOPE-006-005` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `NEXO-DOM-019` — Separar identidad permanente del contenedor físico e identidad temporal o persistente del LPN | `GAP-PKG-038` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-007` | `H-CAP-SCOPE-006-007` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-009` — Definir estado inicial de cada proceso | `GAP-PKG-043` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-008` | `H-CAP-SCOPE-006-008` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `SUPA-AUD-019` — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras | `GAP-PKG-038` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-010` | `H-CAP-SCOPE-006-010` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `INT-PROD-001` — FOGO solicita o reserva insumos | `GAP-PKG-037` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-011` | `H-CAP-SCOPE-006-011` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `INT-POS-020` — Ejecutar conciliación diaria entre POS y efectos internos | `GAP-PKG-041` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-006-016` | `H-CAP-SCOPE-006-016` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `GAP-PKG-038` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-007-003` | `H-CAP-SCOPE-007-003` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-009` — Separar activo individual y reutilizable controlado por cantidad | `GAP-PKG-106` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-007-004` | `H-CAP-SCOPE-007-004` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-008` — Definir custodia y responsable actual | `GAP-PKG-107` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-007-005` | `H-CAP-SCOPE-007-005` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-008` — Definir custodia y responsable actual | `GAP-PKG-107` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-007-009` | `H-CAP-SCOPE-007-009` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-012` — Definir mantenimiento, reparación y disponibilidad | `GAP-PKG-107` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-002` | `H-CAP-SCOPE-008-002` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `FOGO-UX-004` — Mostrar producción pendiente del turno | `GAP-PKG-109` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-004` | `H-CAP-SCOPE-008-004` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-10-23` | `FOGO-UX-001` — Inventariar procesos reales de producción | `GAP-PKG-161` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-006` | `H-CAP-SCOPE-008-006` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-012` — Definir mantenimiento, reparación y disponibilidad | `GAP-PKG-104` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-007` | `H-CAP-SCOPE-008-007` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `FOGO-UX-012` — Conectar consumo de insumos con NEXO | `GAP-PKG-105` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-009` | `H-CAP-SCOPE-008-009` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `FOGO-AUTH-008` — Definir permisos de supervisor | `GAP-PKG-051` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-013` | `H-CAP-SCOPE-008-013` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `FOGO-UX-005` — Diseñar inicio de lote | `GAP-PKG-049` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-017` | `H-CAP-SCOPE-008-017` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `FOGO-UX-001` — Inventariar procesos reales de producción | `GAP-PKG-109` | `CLOSE-FUN-VAL` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-019` | `H-CAP-SCOPE-008-019` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `OPS-PRD-001` — Diseñar el Centro de Pesaje, Premezclas y Porcionamiento | `GAP-PKG-098` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-021` | `H-CAP-SCOPE-008-021` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `FOGO-UX-010` — Registrar cantidades, desperdicio y resultado | `GAP-PKG-109` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-023` | `H-CAP-SCOPE-008-023` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `FOGO-UX-011` — Diseñar correcciones sin alterar historial | `GAP-PKG-119` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-008-024` | `H-CAP-SCOPE-008-024` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `AUTH-QA-029` — Auditoría conserva actor, turno, sede y área | `GAP-PKG-119` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-001` | `H-CAP-SCOPE-009-001` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-021` — Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como con... | `GAP-PKG-110` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-004` | `H-CAP-SCOPE-009-004` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PROC-CAT-009` — Definir estado inicial de cada proceso | `GAP-PKG-110` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-006` | `H-CAP-SCOPE-009-006` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PULSO-UX-016` — Conectar venta con inventario | `GAP-PKG-033` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-008` | `H-CAP-SCOPE-009-008` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PROC-CAT-013` — Definir acciones excepcionales | `GAP-PKG-110` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-009` | `H-CAP-SCOPE-009-009` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-001` — Inventariar procesos de venta, caja y salón | `GAP-PKG-110` | `CLOSE-FUN-VAL` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-010` | `H-CAP-SCOPE-009-010` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-017` — Definir eventos empresariales emitidos | `GAP-PKG-041` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-017` | `H-CAP-SCOPE-009-017` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-008` — Simplificar cobro y medios de pago | `GAP-PKG-110` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-018` | `H-CAP-SCOPE-009-018` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PULSO-UX-010` — Diseñar apertura y cierre de caja | `GAP-PKG-041` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-019` | `H-CAP-SCOPE-009-019` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `INT-POS-007` — Importar descuentos, impuestos, propinas y medios de pago | `GAP-PKG-110` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-021` | `H-CAP-SCOPE-009-021` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-009` — Separar anulación, devolución y reembolso | `GAP-PKG-110` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-022` | `H-CAP-SCOPE-009-022` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-009` — Separar anulación, devolución y reembolso | `GAP-PKG-111` | `CLOSE-FUN-DES` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-025` | `H-CAP-SCOPE-009-025` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PASS-INT-001` — Definir integración PULSO → PASS para acumulación | `GAP-PKG-042` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-026` | `H-CAP-SCOPE-009-026` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `INT-POS-017` — Producir evento económico para NUMERA exactamente una vez | `GAP-PKG-110` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-009-027` | `H-CAP-SCOPE-009-027` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-OPS` | `2026-09-11` | `INT-POS-006` — Importar encabezados, líneas, estados y timestamps | `GAP-PKG-104` | `CLOSE-FUN-IMP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-002` | `H-CAP-SCOPE-011-002` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-003` | `H-CAP-SCOPE-011-003` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-005` — Diseñar inicio para conductor | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-004` | `H-CAP-SCOPE-011-004` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-024` — Definir capacidad, peso, volumen y compatibilidad de contenido | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-005` | `H-CAP-SCOPE-011-005` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-005` — Diseñar inicio para conductor | `GAP-PKG-097` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-006` | `H-CAP-SCOPE-011-006` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-026` — Definir inspecciones, mantenimiento preventivo, garantía y calibración | `GAP-PKG-105` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-009` | `H-CAP-SCOPE-011-009` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-010` — Diseñar flujo completo de preparación | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-010` | `H-CAP-SCOPE-011-010` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-017` — Definir auditoría, historial y evidencia | `GAP-PKG-105` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-011` | `H-CAP-SCOPE-011-011` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-008` — Definir custodia y responsable actual | `GAP-PKG-108` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-012` | `H-CAP-SCOPE-011-012` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-019` — Separar identidad permanente del contenedor físico e identidad temporal o persistente del LPN | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-014` | `H-CAP-SCOPE-011-014` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-011` — Diseñar flujo completo de despacho | `GAP-PKG-122` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-016` | `H-CAP-SCOPE-011-016` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `AUTH-SRV-004` — Eliminar confianza exclusiva en la interfaz | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-017` | `H-CAP-SCOPE-011-017` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `NEXO-UX-013` — Diseñar flujo completo de recepción | `GAP-PKG-044` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-018` | `H-CAP-SCOPE-011-018` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-UX-013` — Diseñar flujo completo de recepción | `GAP-PKG-095` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-019` | `H-CAP-SCOPE-011-019` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `NEXO-UX-022` — Diseñar manejo de diferencias y excepciones | `GAP-PKG-037` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-021` | `H-CAP-SCOPE-011-021` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `PULSO-UX-018` — Conectar venta con PASS | `GAP-PKG-113` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-022` | `H-CAP-SCOPE-011-022` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `PULSO-AUTH-001` — Inventariar vistas POS | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-023` | `H-CAP-SCOPE-011-023` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `AUTH-QA-020` — Acceso directo por URL queda bloqueado | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-024` | `H-CAP-SCOPE-011-024` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `PULSO-AUTH-011` — Limitar operación a sede del turno | `GAP-PKG-122` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-011-027` | `H-CAP-SCOPE-011-027` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `GAP-PKG-122` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-003` | `H-CAP-SCOPE-012-003` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-005` — Definir gastos, soportes, aprobación, corrección y anulación | `GAP-PKG-090` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-004` | `H-CAP-SCOPE-012-004` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-FIN` | `2026-08-21` | `NUMERA-DOM-002` — Definir hechos económicos recibidos desde ventas | `GAP-PKG-026` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-007` | `H-CAP-SCOPE-012-007` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-016` — Definir cartera, cuentas por cobrar, cobranza y exposición de crédito | `GAP-PKG-087` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-008` | `H-CAP-SCOPE-012-008` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-016` — Definir cartera, cuentas por cobrar, cobranza y exposición de crédito | `GAP-PKG-089` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-010` | `H-CAP-SCOPE-012-010` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-010` — Definir cuentas por pagar y obligaciones si pertenecen a NUMERA | `GAP-PKG-090` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-011` | `H-CAP-SCOPE-012-011` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-FIN` | `2026-08-21` | `NUMERA-DOM-003` — Definir hechos económicos recibidos desde compras y recepción | `GAP-PKG-024` | `CLOSE-CON-CTR` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-013` | `H-CAP-SCOPE-012-013` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-FIN` | `2026-08-21` | `NUMERA-DOM-009` — Definir caja, bancos y conciliaciones que pertenezcan al alcance aprobado | `GAP-PKG-024` | `CLOSE-CON-CTR` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-014` | `H-CAP-SCOPE-012-014` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-FIN` | `2026-10-23` | `NUMERA-DOM-009` — Definir caja, bancos y conciliaciones que pertenezcan al alcance aprobado | `GAP-PKG-156` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-015` | `H-CAP-SCOPE-012-015` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-FIN` | `2026-10-23` | `NUMERA-UX-021` — Diseñar caja y bancos cuando pertenezcan al alcance aprobado | `GAP-PKG-155` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-017` | `H-CAP-SCOPE-012-017` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `INT-POS-020` — Ejecutar conciliación diaria entre POS y efectos internos | `GAP-PKG-088` | `CLOSE-FUN-IMP` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-020` | `H-CAP-SCOPE-012-020` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-FIN` | `2026-10-23` | `NUMERA-DOM-007` — Definir costos, costo estándar, costo real y variaciones | `GAP-PKG-155` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-021` | `H-CAP-SCOPE-012-021` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-013` — Definir fronteras frente al sistema contable o fiscal externo | `GAP-PKG-085` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-012-030` | `H-CAP-SCOPE-012-030` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-FIN` | `2026-09-11` | `NUMERA-DOM-013` — Definir fronteras frente al sistema contable o fiscal externo | `GAP-PKG-089` | `CLOSE-FUN-DES` | `OWN-FIN` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-002` | `H-CAP-SCOPE-013-002` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-029` — Definir jerarquía canónica de instalaciones, espacios, componentes fijos, puntos de servic... | `GAP-PKG-115` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-004` | `H-CAP-SCOPE-013-004` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `NEXO-DOM-029` — Definir jerarquía canónica de instalaciones, espacios, componentes fijos, puntos de servic... | `GAP-PKG-046` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-005` | `H-CAP-SCOPE-013-005` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-030` — Definir planes de mantenimiento, solicitudes, órdenes de trabajo, reparación, prueba y lib... | `GAP-PKG-122` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-006` | `H-CAP-SCOPE-013-006` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-030` — Definir planes de mantenimiento, solicitudes, órdenes de trabajo, reparación, prueba y lib... | `GAP-PKG-108` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-009` | `H-CAP-SCOPE-013-009` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-031` — Definir limpieza, saneamiento, procedimientos, frecuencias, químicos, verificación y liber... | `GAP-PKG-115` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-011` | `H-CAP-SCOPE-013-011` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-032` — Definir control de plagas, mapa, dispositivos, visitas, hallazgos, acciones y certificados | `GAP-PKG-116` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-012` | `H-CAP-SCOPE-013-012` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-033` — Definir servicios, medidores, lecturas, consumos, interrupciones, alertas y contingencias | `GAP-PKG-101` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-014` | `H-CAP-SCOPE-013-014` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `NEXO-DOM-034` — Definir inspecciones físicas, plantillas versionadas, hallazgos y acciones correctivas | `GAP-PKG-046` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-017` | `H-CAP-SCOPE-013-017` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-035` — Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto | `GAP-PKG-108` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-018` | `H-CAP-SCOPE-013-018` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-035` — Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto | `GAP-PKG-116` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-019` | `H-CAP-SCOPE-013-019` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-035` — Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto | `GAP-PKG-105` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-021` | `H-CAP-SCOPE-013-021` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-036` — Definir llaves, credenciales físicas, zonas, custodia, entrega, devolución e incidencias | `GAP-PKG-120` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-023` | `H-CAP-SCOPE-013-023` | `CRITICA_EXPLICITA` | `OPERACION` | `OWN-OPS` | `2026-09-11` | `NEXO-DOM-037` — Definir obras, adecuaciones, contratistas, permisos, afectación operativa, recepción y gar... | `GAP-PKG-116` | `CLOSE-OPE-ADP` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-013-025` | `H-CAP-SCOPE-013-025` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `NEXO-AUTH-031` — Proteger instalaciones, mantenimiento, limpieza, inspecciones, calibración, acceso físico... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-002` | `H-CAP-SCOPE-014-002` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-11-20` | `AURA-AUTH-001` — Proteger marcas, campañas, activos, audiencias, canales y resultados por empresa, marca y... | `GAP-PKG-189` | `CLOSE-FUN-IMP` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-006` | `H-CAP-SCOPE-014-006` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-10-23` | `AURA-DOM-002` — Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de c... | `GAP-PKG-147` | `CLOSE-FUN-DES` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-007` | `H-CAP-SCOPE-014-007` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-10-23` | `AURA-DOM-002` — Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de c... | `GAP-PKG-147` | `CLOSE-FUN-DES` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-011` | `H-CAP-SCOPE-014-011` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `AURA-AUTH-004` — Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a te... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-013` | `H-CAP-SCOPE-014-013` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `AURA-AUTH-004` — Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a te... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-017` | `H-CAP-SCOPE-014-017` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-10-23` | `AURA-DOM-006` — Definir campañas, experimentos, promociones, cupones y guardas económicas y operativas | `GAP-PKG-147` | `CLOSE-FUN-DES` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-019` | `H-CAP-SCOPE-014-019` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `AURA-AUTH-003` — Proteger promociones, segmentos, leads, datos de clientes, exportaciones y acciones masivas | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-020` | `H-CAP-SCOPE-014-020` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-COM` | `2026-08-21` | `AURA-DOM-007` — Definir oportunidades, leads, pipeline B2B, catering, eventos y transferencia a operación | `GAP-PKG-006` | `CLOSE-CON-CTR` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-022` | `H-CAP-SCOPE-014-022` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-09-11` | `AURA-DOM-008` — Definir métricas, atribución, confianza, incrementalidad, aprendizaje y cierre de campaña | `GAP-PKG-079` | `CLOSE-FUN-DES` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-024` | `H-CAP-SCOPE-014-024` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-COM` | `2026-08-21` | `AURA-DOM-008` — Definir métricas, atribución, confianza, incrementalidad, aprendizaje y cierre de campaña | `GAP-PKG-008` | `CLOSE-CON-CTR` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-014-026` | `H-CAP-SCOPE-014-026` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-COM` | `2026-10-23` | `PASS-UX-001` — Inventariar pantallas actuales de cliente | `GAP-PKG-146` | `CLOSE-FUN-VAL` | `OWN-COM` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-003` | `H-CAP-SCOPE-015-003` | `CRITICA_EXPLICITA` | `FUNCIONAL` | `OWN-TEC` | `2026-10-23` | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, c... | `GAP-PKG-183` | `CLOSE-FUN-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-007` | `H-CAP-SCOPE-015-007` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación tem... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-008` | `H-CAP-SCOPE-015-008` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-TEC` | `2026-10-23` | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `GAP-PKG-182` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-009` | `H-CAP-SCOPE-015-009` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación tem... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-012` | `H-CAP-SCOPE-015-012` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-08-21` | `TI-DOM-004` — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia d... | `GAP-PKG-073` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-013` | `H-CAP-SCOPE-015-013` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-014` | `H-CAP-SCOPE-015-014` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-10-02` | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impre... | `GAP-PKG-140` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-018` | `H-CAP-SCOPE-015-018` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-10-02` | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impre... | `GAP-PKG-140` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-021` | `H-CAP-SCOPE-015-021` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-08-21` | `TI-AUTH-004` — Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `GAP-PKG-073` | `CLOSE-TEC-IMP` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-025` | `H-CAP-SCOPE-015-025` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-10-02` | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, c... | `GAP-PKG-140` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-015-026` | `H-CAP-SCOPE-015-026` | `CRITICA_EXPLICITA` | `TECNICA` | `OWN-TEC` | `2026-11-20` | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, c... | `GAP-PKG-200` | `CLOSE-TEC-DES` | `OWN-TEC` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-002` | `H-CAP-SCOPE-016-002` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-001` — Definir gobierno de información, inventario, propietarios, custodios, responsables, encarg... | `GAP-PKG-016` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-003` | `H-CAP-SCOPE-016-003` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-AUTH-001` — Proteger información por clasificación, finalidad, identidad, relación, recurso, territor... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-007` | `H-CAP-SCOPE-016-007` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-AUTH-003` — Segregar creación, revisión, aprobación, firma, retención, legal hold, disposición y elim... | `GAP-PKG-061` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-008` | `H-CAP-SCOPE-016-008` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-004` — Definir ciclo documental, estados, versiones, vigencia, sustitución, anulación y retiro | `GAP-PKG-012` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-013` | `H-CAP-SCOPE-016-013` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-DOM-008` — Definir avisos, finalidades, autorizaciones, fundamentos, consentimiento, revocación y dat... | `GAP-PKG-058` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-014` | `H-CAP-SCOPE-016-014` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-DOM-009` — Definir consultas, reclamos y solicitudes de acceso, rectificación, prueba, revocación y s... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-022` | `H-CAP-SCOPE-016-022` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-010` — Definir compartición, exportación, divulgación, terceros, encargados, transferencias y req... | `GAP-PKG-014` | `CLOSE-CON-CTR` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-026` | `H-CAP-SCOPE-016-026` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-028` | `H-CAP-SCOPE-016-028` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de c... | `GAP-PKG-021` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-029` | `H-CAP-SCOPE-016-029` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-011` — Definir aprobación, aceptación, firma electrónica, firma digital y niveles de evidencia | `GAP-PKG-021` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-030` | `H-CAP-SCOPE-016-030` | `CRITICA_EXPLICITA` | `DATOS` | `OWN-DAT` | `2026-08-21` | `INFO-DOM-007` — Definir autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de c... | `GAP-PKG-021` | `CLOSE-DAT-GOV` | `OWN-DAT` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-016-031` | `H-CAP-SCOPE-016-031` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `INFO-AUTH-004` — Proteger auditoría, investigaciones, accesos de emergencia, logs y evidencia preservada | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-001` | `H-CAP-SCOPE-019-001` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-017` — Definir eventos empresariales emitidos | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-002` | `H-CAP-SCOPE-019-002` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-004` — Definir propósito empresarial de cada proceso | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-003` | `H-CAP-SCOPE-019-003` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-005` — Definir aplicación propietaria de cada proceso | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-005` | `H-CAP-SCOPE-019-005` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `INT-PROD-001` — FOGO solicita o reserva insumos | `GAP-PKG-040` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-006` | `H-CAP-SCOPE-019-006` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario | `GAP-PKG-049` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-007` | `H-CAP-SCOPE-019-007` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-008` | `H-CAP-SCOPE-019-008` | `CRITICA_EXPLICITA` | `SEGURIDAD` | `OWN-SEG` | `2026-08-21` | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación tem... | `GAP-PKG-060` | `CLOSE-SEG-ENF` | `OWN-SEG` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-011` | `H-CAP-SCOPE-019-011` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `INFO-DOM-003` — Definir taxonomía de documentos, registros, evidencia, series, expedientes, originales y c... | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-012` | `H-CAP-SCOPE-019-012` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `GAP-PKG-053` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-014` | `H-CAP-SCOPE-019-014` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `GAP-CTRL-007` — Definir criterio y evidencia de cierre | `GAP-PKG-031` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+| `H-CAP-SCOPE-019-015` | `H-CAP-SCOPE-019-015` | `CRITICA_EXPLICITA` | `CONTRACTUAL` | `OWN-OPS` | `2026-08-21` | `GAP-CTRL-007` — Definir criterio y evidencia de cierre | `GAP-PKG-037` | `CLOSE-CON-CTR` | `OWN-OPS` | `OWNER_ASSIGNED_GATE_PENDING` |
+
+---
+
+## ANEXO B — Consulta lógica mínima de la puerta
+
+```sql
+-- Modelo lógico de validación; no es una migración para ejecutar.
+select
+  phase_id,
+  count(*) filter (where criticality = 'CRITICAL') as critical_total,
+  count(*) filter (
+    where criticality = 'CRITICAL'
+      and (decision_owner_code is null or owner_status not in ('ACTIVE', 'INTERIM'))
+  ) as critical_without_owner,
+  count(*) filter (
+    where criticality = 'CRITICAL'
+      and status <> 'CERRADA'
+      and carryover_approved_at is null
+  ) as critical_without_carryover
+from canonical_gap_register
+where phase_scope @> phase_id
+group by phase_id;
+```
+
+La implementación física de esta consulta o de un verificador equivalente queda fuera de `GAP-CTRL-008`.
+
+---
+
+### [ ] E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+
+**Estado:** NO INICIADA
+**Bloque:** BLOQUE E1 — Cierre documental y puerta de transición
+**Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS
+**Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5
+**Implementación física:** no incluida
+**Siguiente tarea reservada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
+
+---
+
+#### 1. Propósito
+
+Ejecutar la puerta definida por `GAP-CTRL-008`, producir el manifiesto versionado de cierre de BLOQUE E1 y aprobar o bloquear formalmente la transición hacia BLOQUE E2.
+
+Esta tarea no redefine brechas, propietarios, fechas, capacidades, procesos, tareas, paquetes ni criterios de cierre. Su función es comprobar que la versión integrada del registro cumple las condiciones de salida de E1 y que toda brecha crítica abierta queda trasladada mediante un arrastre controlado, explícito y verificable.
+
+#### 2. Insumos canónicos obligatorios
+
+La evaluación deberá utilizar una única versión conciliada de la línea base `LB-CAP-VENTO-001`, la matriz `CAP-COVER-012`, el registro deduplicado de 836 registros equivalentes, la matriz de 814 brechas y 22 referencias auxiliares, el catálogo de propietarios y fechas de `GAP-CTRL-004`, vínculos de capacidad y proceso de `GAP-CTRL-005`, tareas y 201 paquetes de `GAP-CTRL-006`, perfiles y evidencia de cierre de `GAP-CTRL-007`, las 138 brechas críticas de `GAP-CTRL-008` y el Registro Canónico de Requisitos de Prueba con `TREQ-GAP-001`.
+
+No se permitirá mezclar versiones, anexos o conteos provenientes de cortes diferentes.
+
+#### 3. Manifiesto obligatorio
+
+La tarea deberá producir un artefacto denominado `E1-GATE-MANIFEST-001` con, como mínimo:
+
+```text
+gate_id
+phase_id = E1
+phase_version
+source_commit_or_revision
+evaluated_at
+evaluated_by
+approved_by
+critical_gap_ids[]
+critical_gap_count
+critical_without_owner[]
+critical_without_due_date[]
+critical_without_task[]
+critical_without_package[]
+critical_without_closure_profile[]
+critical_without_target_phase[]
+critical_without_carryover_reason[]
+critical_without_compensating_control[]
+critical_without_approval[]
+critical_with_expired_carryover[]
+critical_closed_with_valid_evidence[]
+critical_open_with_approved_carryover[]
+gate_status
+blocking_reasons[]
+next_gate_date
+evidence_location
+```
+
+Los conteos deberán reconciliar exactamente con el registro canónico de brechas de la misma versión.
+
+#### 4. Enriquecimiento obligatorio de las brechas críticas abiertas
+
+Antes de evaluar la puerta, cada brecha crítica abierta deberá declarar `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at`, `next_gate_date`, y el estado vigente del propietario, tarea, paquete y perfil de cierre. La fase destino deberá derivarse de la tarea primaria y del paquete aprobado; no se admiten destinos genéricos.
+
+#### 5. Regla de evaluación
+
+La puerta se evaluará en este orden: integridad y versión de fuentes; existencia y unicidad de las 138 brechas críticas; propietario válido o interino; fecha de decisión; tarea y paquete; perfil de cierre; destino y arrastre; evidencia de brechas declaradas cerradas; vencimientos; conciliación de conteos; y ejecución de `TREQ-GAP-001`.
+
+Resultado permitido: `PASS`, `PASS_WITH_CARRYOVER`, `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE` o `BLOCKED_EXCEPTION`. No se podrá declarar un resultado verbal ni omitir el manifiesto.
+
+#### 6. Condición para `PASS_WITH_CARRYOVER`
+
+E1 podrá cerrar con brechas críticas abiertas únicamente cuando todas tengan propietario vigente, fecha, tarea, paquete, criterio de cierre, fase destino exacta, justificación de arrastre, control compensatorio, aprobación de arrastre, fecha de siguiente gate y no se presenten como cerradas. Una sola brecha crítica que incumpla el contrato producirá bloqueo.
+
+#### 7. Aprobación de la línea base de E1
+
+La aprobación deberá declarar la versión de la línea base, resultado de la puerta, cantidad de brechas críticas cerradas y trasladadas, bloqueos, ubicación de evidencia, siguiente fecha de revisión y autorización o prohibición de iniciar `PROC-CAT-001`. `GAP-CTRL-008` aprobado sin manifiesto no basta para cerrar E1.
+
+#### 8. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Justificación:** esta tarea ejecuta y conserva evidencia de `TREQ-GAP-001`, creado por `GAP-CTRL-008`. Si la ejecución descubre una regla de bloqueo no cubierta, deberá crear un nuevo `TREQ-GAP-*` antes de aprobar la puerta.
+
+#### 9. Criterios de aceptación
+
+- [ ] se usa una sola versión conciliada de todos los insumos;
+- [ ] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
+- [ ] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
+- [ ] toda brecha crítica abierta tiene fase destino, razón, control, aprobación y siguiente fecha;
+- [ ] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
+- [ ] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
+- [ ] se emite un estado permitido, se archiva evidencia reproducible y se declara si `PROC-CAT-001` queda habilitada;
+- [ ] no se implementa código, migraciones ni cambios en Supabase.
+
+#### 10. Estado
+
+```text
+NO INICIADA
+```
+
+No se inicia BLOQUE E2 ni `PROC-CAT-001` hasta la ejecución y aprobación expresa de esta puerta.
+
 ### Salida obligatoria
 
 BLOQUE E1 deberá entregar:
@@ -219941,6 +220585,7 @@ BLOQUE E1 deberá entregar:
 - lista de nuevas necesidades de autorización;
 - lista de servicios transversales requeridos;
 - prioridades y dependencias.
+- `E1-GATE-MANIFEST-001` emitido y aprobado mediante `E1-GATE-001` antes de declarar el cierre documental de E1.
 ### Regla de evolución del catálogo
 
 Cuando E1 identifique una capacidad no incluida en el catálogo vigente:
@@ -222924,14 +223569,16 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    → `QA-REG-001`
    → `CAP-SCOPE-001` a `CAP-SCOPE-019`
    → `CAP-COVER-001` a `CAP-COVER-012`
-   → `GAP-CTRL-001` a `GAP-CTRL-008`.
+   → `GAP-CTRL-001` a `GAP-CTRL-008`
+   → `E1-GATE-001`
+   → `PROC-CAT-001`.
 
    `EXT-GOV-001` podrá ejecutarse después de `OPS-GOV-001` cuando exista el
    expediente requerido. Su ejecución es paralela, condicional y no bloquea
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
-7. Aprobar línea base de capacidades, registro de brechas y matriz de cobertura por repositorio
+7. Ejecutar y aprobar `E1-GATE-001`; BLOQUE E1 permanece en **PUERTA DE CIERRE PENDIENTE** hasta que exista `E1-GATE-MANIFEST-001` aprobado. No se inicia `PROC-CAT-001` ni BLOQUE E2 antes de esa aprobación.
 8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas

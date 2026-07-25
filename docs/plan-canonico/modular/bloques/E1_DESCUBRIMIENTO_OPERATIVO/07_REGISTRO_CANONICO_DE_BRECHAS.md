@@ -1321,7 +1321,6 @@ La deduplicación no modifica comportamiento ejecutable. Los `TREQ-*` existentes
 - [ ] Los casos relacionados pero no equivalentes quedan documentados.
 - [ ] No se modificó código, Supabase, migraciones ni operación.
 - [ ] No se avanzó a `GAP-CTRL-003`.
-- [ ] La tarea permanece en propuesta hasta aprobación explícita.
 
 #### 13. Estado de la tarea
 
@@ -1332,7 +1331,7 @@ APROBADA
 
 ### ✅ GAP-CTRL-003 — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación
 
-**Estado:** PROPUESTA PARA APROBACIÓN  
+**Estado:** APROBADA
 **Bloque:** BLOQUE E1 — Registro canónico de brechas  
 **Tareas anteriores:** `GAP-CTRL-001` y `GAP-CTRL-002` — APROBADAS  
 **Línea base recibida:** 836 registros equivalentes  
@@ -1554,7 +1553,6 @@ La tarea clasifica evidencia existente. Los requisitos `TREQ-*` se conservan vin
 - [ ] no se asignaron propietarios, fechas, prioridades, capacidades, procesos ni paquetes;
 - [ ] no se modificó código, Supabase, migraciones ni operación;
 - [ ] no se avanzó a `GAP-CTRL-004`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -2703,7 +2701,6 @@ La asignación es de gobierno documental. Los `TREQ-*` existentes permanecen vin
 - [ ] no se asignaron prioridades, capacidades, procesos o paquetes;
 - [ ] no se modificó código, migraciones, Supabase ni operación;
 - [ ] no se avanzó a `GAP-CTRL-005`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -3901,7 +3898,6 @@ Los `TREQ-*` existentes permanecen asociados a sus brechas. La vinculación con 
 - [ ] no se asignan tareas, paquetes ni evidencia de cierre;
 - [ ] no se modifica código, migraciones, Supabase ni operación;
 - [ ] no se avanza a `GAP-CTRL-006`;
-- [ ] la tarea permanece en propuesta hasta aprobación explícita.
 
 ---
 
@@ -6250,7 +6246,6 @@ Los requisitos `TREQ-*` ya existentes permanecen vinculados a las brechas y debe
 APROBADA
 ```
 
-`GAP-CTRL-006` no debe marcarse como aprobada ni integrarse como resultado canónico hasta recibir aprobación explícita.
 
 ---
 
@@ -7450,7 +7445,6 @@ No se admite sustituir un requisito faltante con una nota narrativa.
 APROBADA
 ```
 
-`GAP-CTRL-007` no debe marcarse como aprobada ni integrarse como resultado canónico hasta recibir aprobación explícita.
 
 ---
 
@@ -7465,13 +7459,13 @@ No se inicia `GAP-CTRL-008` dentro de esta propuesta.
 
 ### ✅ GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
 
-**Estado:** APROBADA  
-**Bloque:** BLOQUE E1 — Registro canónico de brechas  
-**Tareas anteriores:** `GAP-CTRL-001` a `GAP-CTRL-007` — APROBADAS  
-**Línea base recibida:** 836 registros equivalentes; 814 brechas; 201 paquetes; 22 referencias de control o evidencia  
-**Brechas críticas explícitas en el corte:** 138  
-**Fecha de corte:** 2026-07-25  
-**Implementación física:** no incluida  
+**Estado:** APROBADA
+**Bloque:** BLOQUE E1 — Registro canónico de brechas
+**Tareas anteriores:** `GAP-CTRL-001` a `GAP-CTRL-007` — APROBADAS
+**Línea base recibida:** 836 registros equivalentes; 814 brechas; 201 paquetes; 22 referencias de control o evidencia
+**Brechas críticas explícitas en el corte:** 138
+**Fecha de corte:** 2026-07-25
+**Implementación física:** no incluida
 **Continuidad posterior:** puerta de aprobación de la línea base de E1 y transición a BLOQUE E2
 
 ---
@@ -7813,20 +7807,24 @@ Si no existe una prueba automatizada que compruebe la ausencia de propietarios n
 APROBADA
 ```
 
-`GAP-CTRL-008` no debe marcarse como aprobada ni integrarse como resultado canónico hasta recibir aprobación explícita.
 
 ---
 
 #### 19. Continuidad después de aprobación
 
-`GAP-CTRL-008` cierra la secuencia `GAP-CTRL-001` a `GAP-CTRL-008`. Después de su aprobación corresponde:
+`GAP-CTRL-008` cierra la secuencia de definición `GAP-CTRL-001` a `GAP-CTRL-008`, pero no cierra por sí sola BLOQUE E1.
 
-1. integrar los resultados aprobados al registro canónico de brechas;
-2. ejecutar y archivar el manifiesto de puerta de BLOQUE E1;
-3. aprobar la línea base de capacidades, brechas y cobertura por repositorio;
-4. habilitar el inicio de BLOQUE E2 conforme a `90_ORDEN_DE_IMPLEMENTACION.md`.
+La continuidad obligatoria será:
 
-Esta propuesta no inicia BLOQUE E2 ni modifica el estado global del plan.
+```text
+GAP-CTRL-008 — APROBADA
+        ↓
+E1-GATE-001 — EJECUTAR Y APROBAR LA PUERTA DE CIERRE DE BLOQUE E1
+        ↓
+PROC-CAT-001 — CONSOLIDAR EL CATÁLOGO AS-IS DE PROCESOS
+```
+
+`E1-GATE-001` deberá integrar y reconciliar el registro de brechas aprobado, ejecutar `TREQ-GAP-001`, producir el manifiesto versionado y declarar un resultado permitido de puerta antes de autorizar `PROC-CAT-001`.
 
 ---
 
@@ -7999,4 +7997,106 @@ group by phase_id;
 ```
 
 La implementación física de esta consulta o de un verificador equivalente queda fuera de `GAP-CTRL-008`.
+
+---
+
+### [ ] E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+
+**Estado:** NO INICIADA
+**Bloque:** BLOQUE E1 — Cierre documental y puerta de transición
+**Dependencias obligatorias:** `CAP-MAP-015`, `CAP-COVER-012`, `QA-REG-001` y `GAP-CTRL-001` a `GAP-CTRL-008` — APROBADAS
+**Línea base recibida:** 836 registros equivalentes; 814 brechas; 22 referencias de control o evidencia; 138 brechas críticas explícitas; 201 paquetes pre-E5
+**Implementación física:** no incluida
+**Siguiente tarea reservada:** `PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1`
+
+---
+
+#### 1. Propósito
+
+Ejecutar la puerta definida por `GAP-CTRL-008`, producir el manifiesto versionado de cierre de BLOQUE E1 y aprobar o bloquear formalmente la transición hacia BLOQUE E2.
+
+Esta tarea no redefine brechas, propietarios, fechas, capacidades, procesos, tareas, paquetes ni criterios de cierre. Su función es comprobar que la versión integrada del registro cumple las condiciones de salida de E1 y que toda brecha crítica abierta queda trasladada mediante un arrastre controlado, explícito y verificable.
+
+#### 2. Insumos canónicos obligatorios
+
+La evaluación deberá utilizar una única versión conciliada de la línea base `LB-CAP-VENTO-001`, la matriz `CAP-COVER-012`, el registro deduplicado de 836 registros equivalentes, la matriz de 814 brechas y 22 referencias auxiliares, el catálogo de propietarios y fechas de `GAP-CTRL-004`, vínculos de capacidad y proceso de `GAP-CTRL-005`, tareas y 201 paquetes de `GAP-CTRL-006`, perfiles y evidencia de cierre de `GAP-CTRL-007`, las 138 brechas críticas de `GAP-CTRL-008` y el Registro Canónico de Requisitos de Prueba con `TREQ-GAP-001`.
+
+No se permitirá mezclar versiones, anexos o conteos provenientes de cortes diferentes.
+
+#### 3. Manifiesto obligatorio
+
+La tarea deberá producir un artefacto denominado `E1-GATE-MANIFEST-001` con, como mínimo:
+
+```text
+gate_id
+phase_id = E1
+phase_version
+source_commit_or_revision
+evaluated_at
+evaluated_by
+approved_by
+critical_gap_ids[]
+critical_gap_count
+critical_without_owner[]
+critical_without_due_date[]
+critical_without_task[]
+critical_without_package[]
+critical_without_closure_profile[]
+critical_without_target_phase[]
+critical_without_carryover_reason[]
+critical_without_compensating_control[]
+critical_without_approval[]
+critical_with_expired_carryover[]
+critical_closed_with_valid_evidence[]
+critical_open_with_approved_carryover[]
+gate_status
+blocking_reasons[]
+next_gate_date
+evidence_location
+```
+
+Los conteos deberán reconciliar exactamente con el registro canónico de brechas de la misma versión.
+
+#### 4. Enriquecimiento obligatorio de las brechas críticas abiertas
+
+Antes de evaluar la puerta, cada brecha crítica abierta deberá declarar `target_phase`, `carryover_reason`, `compensating_control`, `carryover_approved_by`, `carryover_approved_at`, `next_gate_date`, y el estado vigente del propietario, tarea, paquete y perfil de cierre. La fase destino deberá derivarse de la tarea primaria y del paquete aprobado; no se admiten destinos genéricos.
+
+#### 5. Regla de evaluación
+
+La puerta se evaluará en este orden: integridad y versión de fuentes; existencia y unicidad de las 138 brechas críticas; propietario válido o interino; fecha de decisión; tarea y paquete; perfil de cierre; destino y arrastre; evidencia de brechas declaradas cerradas; vencimientos; conciliación de conteos; y ejecución de `TREQ-GAP-001`.
+
+Resultado permitido: `PASS`, `PASS_WITH_CARRYOVER`, `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE` o `BLOCKED_EXCEPTION`. No se podrá declarar un resultado verbal ni omitir el manifiesto.
+
+#### 6. Condición para `PASS_WITH_CARRYOVER`
+
+E1 podrá cerrar con brechas críticas abiertas únicamente cuando todas tengan propietario vigente, fecha, tarea, paquete, criterio de cierre, fase destino exacta, justificación de arrastre, control compensatorio, aprobación de arrastre, fecha de siguiente gate y no se presenten como cerradas. Una sola brecha crítica que incumpla el contrato producirá bloqueo.
+
+#### 7. Aprobación de la línea base de E1
+
+La aprobación deberá declarar la versión de la línea base, resultado de la puerta, cantidad de brechas críticas cerradas y trasladadas, bloqueos, ubicación de evidencia, siguiente fecha de revisión y autorización o prohibición de iniciar `PROC-CAT-001`. `GAP-CTRL-008` aprobado sin manifiesto no basta para cerrar E1.
+
+#### 8. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Justificación:** esta tarea ejecuta y conserva evidencia de `TREQ-GAP-001`, creado por `GAP-CTRL-008`. Si la ejecución descubre una regla de bloqueo no cubierta, deberá crear un nuevo `TREQ-GAP-*` antes de aprobar la puerta.
+
+#### 9. Criterios de aceptación
+
+- [ ] se usa una sola versión conciliada de todos los insumos;
+- [ ] existen exactamente 138 brechas críticas en el manifiesto o se documenta mediante versión aprobada cualquier cambio;
+- [ ] no existe brecha crítica sin propietario válido, fecha, tarea, paquete o perfil de cierre;
+- [ ] toda brecha crítica abierta tiene fase destino, razón, control, aprobación y siguiente fecha;
+- [ ] toda brecha declarada cerrada cumple `GAP-CTRL-007`;
+- [ ] se ejecuta `TREQ-GAP-001` y los conteos del manifiesto reconcilian con el registro;
+- [ ] se emite un estado permitido, se archiva evidencia reproducible y se declara si `PROC-CAT-001` queda habilitada;
+- [ ] no se implementa código, migraciones ni cambios en Supabase.
+
+#### 10. Estado
+
+```text
+NO INICIADA
+```
+
+No se inicia BLOQUE E2 ni `PROC-CAT-001` hasta la ejecución y aprobación expresa de esta puerta.
 

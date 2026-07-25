@@ -26,6 +26,7 @@ Los requisitos utilizarán:
 Dominios iniciales:
 
 - `AUTH`;
+- `GAP`;
 - `SHELL`;
 - `SUPABASE`;
 - `ANIMA`;
@@ -78,12 +79,12 @@ Dominios iniciales:
 
 | Métrica                           |       Resultado |
 | --------------------------------- | --------------: |
-| Requisitos vigentes               |         **146** |
-| Dominios con requisitos           |          **17** |
-| Filas con catorce columnas        |  **146 de 146** |
+| Requisitos vigentes               |         **147** |
+| Dominios con requisitos           |          **18** |
+| Filas con catorce columnas        |  **147 de 147** |
 | Identificadores duplicados        |           **0** |
 | Relaciones `TREQ-*` no resolubles |           **0** |
-| Última tarea incorporada          | `CAP-SCOPE-018` |
+| Última tarea incorporada          | `GAP-CTRL-008` |
 | Fecha de normalización            |    `2026-07-25` |
 
 Distribución vigente:
@@ -91,6 +92,7 @@ Distribución vigente:
 | Dominio       | Rango                                           | Cantidad |
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
+| `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-011`             |       11 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-013`       |       13 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-005`             |        5 |
@@ -143,6 +145,12 @@ Distribución vigente:
 | `TREQ-AUTH-017` | `AUTH`  | Los expedientes SST, reportes, investigaciones, declaraciones, evidencias y datos médicos deberán aplicar autorización por identidad real, vínculo vigente, participación, sede, área, tipo de expediente, sensibilidad y estado. El trabajador verá únicamente información propia permitida. Un responsable territorial no obtendrá acceso global. Las aplicaciones operativas y eventos generales no recibirán diagnósticos ni documentos médicos. Los accesos extraordinarios de emergencia serán mínimos, temporales y auditados. URL directa, formulario manipulado, RPC directa, simulación, dispositivo compartido, caché o exportación no podrán ampliar el alcance. El reporte original y la evidencia permanecerán protegidos e inmutables; toda ampliación, corrección, descarga y consulta sensible conservará actor y motivo cuando corresponda. | `CAP-SCOPE-003`; `CAP-03.04`; `CAP-03.08`; `CAP-03.09`; `H-CAP-SCOPE-003-007`; `H-CAP-SCOPE-003-012`; `BKL-FUNC-003`                                                                        | exposición de información médica o SST, acceso entre sedes, modificación de evidencia, descarga masiva y decisiones laborales basadas en datos no autorizados / crítica             | seguridad + autorización + privacidad + RLS + Storage + exportación + URL directa + auditoría + regresión / automatizada con revisión manual de privacidad | `AUTH-SRV-004` a `AUTH-SRV-018`; `VISO-AUTH-013` a `VISO-AUTH-019`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-003`; `AUTH-QA-007`; `AUTH-QA-008`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030`                                         | diseño E2 del proceso SST; arquitectura E3/E4; paquetes E5 VISO/ANIMA/SHELL; certificación del BLOQUE U               | `vento-viso`, `vento-anima`, `vento-shell` y Storage / Supabase local, CI, staging, dispositivos personales y compartidos, exportaciones y actores de distintas sedes | `IDENTIFICADO` | Pendiente | Pendiente        | decisiones de `CAP-SCOPE-003`; ausencia de contrato específico de privacidad SST; controles de autorización ya aprobados; separación de VITAL | `TREQ-AUTH-003`; `TREQ-AUTH-008`; `TREQ-AUTH-009`; `TREQ-AUTH-010`; `TREQ-AUTH-011`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-SUPABASE-004`; `TREQ-VISO-001` |
 
 | `TREQ-AUTH-018` | `AUTH` | Los perfiles, contactos, preferencias, consentimientos, casos, reclamos, feedback, reservas, comunicaciones y movimientos de fidelización de clientes deberán aplicar autorización por identidad real, capacidad, finalidad, marca, sede, relación con el caso, sensibilidad y acción. El cliente accederá únicamente a sus datos y expedientes permitidos; no verá notas internas ni datos de terceros. El personal recibirá proyecciones mínimas y no podrá buscar, exportar, simular, descargar o modificar datos fuera de su necesidad operativa. La retirada de consentimiento deberá bloquear usos futuros aplicables sin borrar evidencia histórica. URL directa, RLS, RPC, dispositivo compartido, caché, exportación, notificación y logs deberán respetar el mismo alcance y conservar auditoría. | `CAP-SCOPE-010`; `CAP-10.01`; `CAP-10.02`; `CAP-10.10`; `H-CAP-SCOPE-010-004`; `H-CAP-SCOPE-010-017`; `H-CAP-SCOPE-010-020` a `H-CAP-SCOPE-010-023` | exposición de datos personales, contacto no autorizado, consulta entre marcas o sedes, abuso de exportación, notas internas visibles y tratamiento posterior a revocación / crítica | seguridad + privacidad + autorización + RLS + RPC + exportación + dispositivo compartido + auditoría + regresión / automatizada con revisión manual de privacidad | `PASS-INT-004`; `PASS-INT-005`; `VISO-AUTH-013` a `VISO-AUTH-020`; `AUTH-SRV-004` a `AUTH-SRV-018`; `AUTH-DB-002` a `AUTH-DB-010`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 de cliente y servicio; arquitectura E3/E4 de privacidad; paquetes E5 PASS/PULSO/VISO/SHELL; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-shell`, Supabase y proveedores de comunicación / local, CI, staging, dispositivos personales y compartidos, exportaciones y canales externos | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-010`; perfil y consentimiento actuales; controles previos de identidad y autorización | `TREQ-AUTH-006`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-PASS-008`; `TREQ-SUPABASE-004`; `TREQ-INTEGRATION-003` |
+
+#### GAP
+
+| ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `TREQ-GAP-001` | `GAP` | La puerta de fase deberá producir únicamente `BLOCKED_OWNER`, `BLOCKED_ROUTING`, `BLOCKED_EVIDENCE`, `BLOCKED_EXCEPTION`, `PASS_WITH_CARRYOVER` o `PASS`; nunca aprobará una fase con una brecha crítica sin propietario válido, y bloqueará por falta de tarea, paquete, criterio, evidencia o arrastre controlado. Los conteos deberán reconciliar contra la misma versión del registro canónico y generar evidencia reproducible mediante `E1-GATE-MANIFEST-001`. | `GAP-CTRL-008` | Cierre falso de fase, omisión de brechas críticas, pérdida de trazabilidad o aprobación con registros incongruentes / crítica | contractual + integridad documental + regresión / manual operativa con automatización posterior | `E1-GATE-001`; `SHELL-CI-018` | `GAP-PKG-185` | `vento-shell` / ejecución manual de E1 y CI antes del primer cutover productivo | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `E1-GATE-MANIFEST-001` |
 
 #### SHELL
 

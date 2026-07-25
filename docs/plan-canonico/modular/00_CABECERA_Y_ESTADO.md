@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **131** |
-| Tareas canónicas con marcador | **1569** |
+| Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **220** |
+| Tareas aprobadas | **221** |
 | Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1349** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **GAP-CTRL-007 — Definir criterio y evidencia de cierre** |
-| Tarea actual | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
+| Última tarea aprobada | **GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario** |
+| Tarea actual | **E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Siguiente tarea | **PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 95 de 96 aprobadas; GAP-CTRL-008 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 96 de 98 aprobadas; E1-GATE-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `GAP-CTRL-007` — Definir criterio y evidencia de cierre |
-| Tarea actual | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `GAP-CTRL-008` — Impedir cerrar una fase con brechas críticas sin propietario |
+| Tarea actual | `E1-GATE-001` — Ejecutar y aprobar la puerta de cierre de BLOQUE E1 — **NO INICIADA** |
+| Siguiente tarea | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **95 DE 96 APROBADAS — ACTUAL GAP-CTRL-008** |
+| BLOQUE E1 | **96 DE 98 APROBADAS — ACTUAL E1-GATE-001** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,11 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-GAP-CTRL-007 — Definir criterio y evidencia de cierre
-        ↓
-TAREA ACTUAL
 GAP-CTRL-008 — Impedir cerrar una fase con brechas críticas sin propietario
         ↓
+TAREA ACTUAL
+E1-GATE-001 — Ejecutar y aprobar la puerta de cierre de BLOQUE E1
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 95 de 96 tareas aprobadas
+BLOQUE E1 — 96 de 98 tareas aprobadas
 ```

@@ -462,9 +462,6 @@
     Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
     o cuando cite una tarea que no exista formalmente en el roadmap.
 
-Una tarea no podrá aprobarse cuando contenga un pendiente sin destino
-o cuando cite una tarea que no exista formalmente en el roadmap.
-
 39. Toda tarea documental, funcional, técnica o de implementación deberá
     incluir, antes de sus criterios de aceptación, una sección denominada:
 
