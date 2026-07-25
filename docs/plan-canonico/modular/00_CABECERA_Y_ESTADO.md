@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **130** |
 | Tareas canónicas con marcador | **1539** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **199** |
+| Tareas aprobadas | **213** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1340** |
+| Tareas no iniciadas | **1326** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
-| Tarea actual | **CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación** |
+| Última tarea aprobada | **CAP-COVER-012 — Aprobar matriz capacidad × proceso × aplicación × implementación** |
+| Tarea actual | **GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado** |
+| Siguiente tarea | **GAP-CTRL-002 — Deduplicar brechas equivalentes** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 74 de 96 aprobadas; CAP-SCOPE-018 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 88 de 96 aprobadas; GAP-CTRL-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
-| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado |
+| Última aprobada | `CAP-COVER-012` — Aprobar matriz capacidad × proceso × aplicación × implementación |
+| Tarea actual | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código — **NO INICIADA** |
+| Siguiente tarea | `GAP-CTRL-002` — Deduplicar brechas equivalentes |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                 |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **74 DE 96 APROBADAS — ACTUAL CAP-SCOPE-018** |
+| BLOQUE E1 | **88 DE 96 APROBADAS — ACTUAL GAP-CTRL-001** |
 | Implementación física             | **NO INICIADA**                               |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
+CAP-COVER-012 — Aprobar matriz capacidad × proceso × aplicación × implementación
         ↓
 TAREA ACTUAL
-CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación
+GAP-CTRL-001 — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código
         ↓
 SIGUIENTE TAREA RESERVADA
-CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+GAP-CTRL-002 — Deduplicar brechas equivalentes
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 74 de 96 tareas aprobadas
+BLOQUE E1 — 88 de 96 tareas aprobadas
 ```

@@ -255,3 +255,4 @@ dependencias contractuales, técnicas y operativas.
 | Z      | Tecnología, dispositivos, redes, impresión, soporte y seguridad técnica   |
 | AA     | Gobierno de información, privacidad, documentos, conservación y auditoría |
 | AB     | Analítica, indicadores, calidad de datos y datos maestros                 |
+| AC     | Continuidad operativa, contingencia, incidentes, respaldo y recuperación  |

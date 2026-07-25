@@ -104,16 +104,16 @@ No existe ni se crea `CAP-COVER-013`.
 
 ---
 
-#### 5. Título canónico de la tarea actual
+#### 5. Título canónico de CAP-SCOPE-018
 
-El título único vigente es:
+El título único aprobado de la tarea es:
 
 ```text
 CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación
 ```
 
 Este título sustituye las variantes abreviadas conservadas en referencias
-anteriores.
+anteriores y permanece vigente aunque CAP-SCOPE-018 ya haya sido aprobada.
 
 ---
 

@@ -279,6 +279,42 @@ Reglas:
 - DATA-INT-004 precede el envío de datos a BI, hojas externas o inteligencia artificial;
 - la inteligencia artificial actúa como asistente y no como autoridad empresarial.
 
+32D. BLOQUE AC — Continuidad operativa y recuperación como habilitador transversal
+
+Secuencia interna recomendada:
+
+```text
+CONT-DOM-001 a CONT-DOM-004
+→ CONT-DOM-005 a CONT-DOM-010
+→ CONT-DOM-011 a CONT-DOM-015
+→ CONT-AUTH-001 a CONT-AUTH-004
+→ CONT-UX-001 a CONT-UX-007
+→ CONT-INT-001 a CONT-INT-004
+```
+
+Reglas:
+
+- CONT-DOM-001 deberá aprobar primero la política, el alcance, los responsables y el ciclo de mantenimiento.
+- CONT-DOM-002 y CONT-DOM-003 deberán completarse antes de priorizar procesos o soluciones de recuperación.
+- CONT-DOM-004 deberá definir MTPD, RTO, RPO y MBCO antes de contratar, diseñar o certificar mecanismos de recuperación.
+- No deberán inventarse objetivos de recuperación sin evidencia de impacto, capacidad, costo y aceptación del propietario empresarial.
+- CONT-DOM-005 y CONT-DOM-006 deberán aprobarse antes de habilitar un centro de mando o activar comunicaciones de crisis.
+- CONT-DOM-007 y CONT-DOM-008 deberán aprobarse por proceso antes de declarar que existe una contingencia operativa válida.
+- Un procedimiento manual deberá conservar folio, responsable, datos mínimos, evidencia, custodio y estado de reincorporación.
+- CONT-DOM-009 y CONT-DOM-010 deberán aprobarse antes de utilizar captura offline o papel como registro empresarial durante fallas.
+- Ningún incidente podrá cerrarse mientras existan registros pendientes de reincorporar, conflictos sin resolver o conciliaciones incompletas.
+- CONT-DOM-011 no podrá considerar protegido un recurso únicamente porque exista un job, una réplica o una copia no restaurada.
+- Todo respaldo crítico deberá tener una restauración probada y comparada contra su RPO y RTO.
+- CONT-DOM-012 deberá recuperar primero las dependencias necesarias y después validar el resultado empresarial completo.
+- CONT-DOM-013 deberá definir alternativas y compromisos antes de aceptar una dependencia externa como crítica.
+- CONT-DOM-014 deberá ejecutar ejercicios técnicos y operativos antes de declarar readiness.
+- CONT-DOM-015 deberá convertir toda lección en una acción con responsable, fecha y evidencia.
+- CONT-AUTH-* deberá aprobarse antes de habilitar break-glass, failover, accesos de emergencia o restauraciones sensibles.
+- Los accesos de emergencia deberán ser temporales, justificados, auditados y revocados después del incidente.
+- El BLOQUE AC no sustituye al BLOQUE Z, E4, E5, BLOQUE T, BLOQUE U, BLOQUE X ni los runbooks propietarios de cada dominio.
+- E5 gobernará la continuidad temporal durante implementaciones; el BLOQUE AC gobernará la continuidad permanente de la empresa.
+- Cada dominio conservará la responsabilidad de validar su recuperación, reincorporar sus hechos y conciliar sus resultados.
+- Una aplicación no será declarada offline de forma global; la modalidad de contingencia se definirá por capacidad.
 
 AUTH-UI-040 a AUTH-UI-051 implementa:
 

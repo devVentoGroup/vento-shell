@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1518** |
+| Tareas con marcador | **1539** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **199** |
+| Aprobadas | **213** |
 | En propuesta | **0** |
-| No iniciadas | **1319** |
+| No iniciadas | **1326** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, respaldo y recuperación | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado | ⬜ NO INICIADA |
+| Última aprobada | `CAP-COVER-012` — Aprobar matriz capacidad × proceso × aplicación × implementación | ✅ APROBADA |
+| Tarea actual | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | ⬜ NO INICIADA |
+| Siguiente | `GAP-CTRL-002` — Deduplicar brechas equivalentes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -227,20 +227,20 @@
 | ✅ APROBADA | `CAP-SCOPE-015` | Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-016` | Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-017` | Evaluar analítica, indicadores y datos maestros | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-018` | Evaluar continuidad operativa, respaldo y recuperación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-019` | Aprobar clasificación y propietario de cada dominio evaluado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-001` | Definir criterios verificables de cada estado de cobertura | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-002` | Clasificar cobertura funcional | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-003` | Clasificar cobertura de interfaz | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-004` | Clasificar cobertura de servidor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-005` | Clasificar cobertura de datos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-006` | Clasificar cobertura de autorización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-007` | Clasificar cobertura de auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-008` | Clasificar cobertura de pruebas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-009` | Clasificar cobertura de integración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-010` | Registrar dependencias y bloqueos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-011` | Priorizar por criticidad, frecuencia, riesgo y valor operativo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `CAP-COVER-012` | Aprobar matriz capacidad × proceso × aplicación × implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-SCOPE-018` | Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-019` | Aprobar clasificación y propietario de cada dominio evaluado | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-COVER-001` | Definir criterios verificables de cada estado de cobertura | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-002` | Clasificar cobertura funcional | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-003` | Clasificar cobertura de interfaz | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-004` | Clasificar cobertura de servidor | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-005` | Clasificar cobertura de datos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-006` | Clasificar cobertura de autorización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-007` | Clasificar cobertura de auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-008` | Clasificar cobertura de pruebas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-009` | Clasificar cobertura de integración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-010` | Registrar dependencias y bloqueos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-011` | Priorizar por criticidad, frecuencia, riesgo y valor operativo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
+| ✅ APROBADA | `CAP-COVER-012` | Aprobar matriz capacidad × proceso × aplicación × implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-001` | Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-002` | Deduplicar brechas equivalentes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-003` | Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
@@ -913,6 +913,16 @@
 | ⬜ NO INICIADA | `NEXO-DOM-026` | Definir inspecciones, mantenimiento preventivo, garantía y calibración | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-027` | Resolver propiedad de vehículos, checklist, kilometraje, combustible y mantenimiento de flota | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-028` | Emitir eventos financieros por adquisición, reparación, pérdida y baja cuando corresponda | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-029` | Definir jerarquía canónica de instalaciones, espacios, componentes fijos, puntos de servicio y condición | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-030` | Definir planes de mantenimiento, solicitudes, órdenes de trabajo, reparación, prueba y liberación | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-031` | Definir limpieza, saneamiento, procedimientos, frecuencias, químicos, verificación y liberación | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-032` | Definir control de plagas, mapa, dispositivos, visitas, hallazgos, acciones y certificados | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-033` | Definir servicios, medidores, lecturas, consumos, interrupciones, alertas y contingencias | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-034` | Definir inspecciones físicas, plantillas versionadas, hallazgos y acciones correctivas | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-035` | Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-036` | Definir llaves, credenciales físicas, zonas, custodia, entrega, devolución e incidencias | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-037` | Definir obras, adecuaciones, contratistas, permisos, afectación operativa, recepción y garantía | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-DOM-038` | Definir novedades locativas, severidad, contención, escalamiento, resolución y cierre | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-021` | Auditar permisos actuales de LPN, activos y contenedores | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-022` | Proteger creación, actualización, cierre, anulación y reetiquetado de LPN | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-023` | Proteger empaque, desempaque, división, unión y transferencia | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
@@ -923,6 +933,8 @@
 | ⬜ NO INICIADA | `NEXO-AUTH-028` | Proteger impresión y reimpresión mediante permisos atómicos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-029` | Eliminar dependencia de permisos amplios legacy | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-030` | Ejecutar pruebas integrales del subdominio | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-031` | Proteger instalaciones, mantenimiento, limpieza, inspecciones, calibración, acceso físico y obras | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-AUTH-032` | Separar reporte, solicitud, aprobación, ejecución, verificación, liberación, cierre y reapertura | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-UX-001` | Inventariar procesos reales de inventario y logística | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-UX-002` | Separar operación, supervisión y configuración | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-UX-003` | Diseñar inicio para solicitante | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
@@ -965,6 +977,12 @@
 | ⬜ NO INICIADA | `NEXO-UX-040` | Validar el prototipo del subdominio con decoración, vajilla, herramientas y repuestos | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-UX-041` | Definir línea base y métricas objetivo de pérdidas, búsqueda y diferencias | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `NEXO-UX-042` | Aprobar el diseño del subdominio y remitirlo a E5 antes de implementarlo físicamente | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-043` | Diseñar registro y mapa simple de instalaciones, espacios, condición y disponibilidad | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-044` | Diseñar solicitudes, órdenes de trabajo, mantenimiento y reparaciones | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-045` | Diseñar limpieza, saneamiento, plagas y evidencia operativa por área | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-046` | Diseñar inspecciones, calibración, servicios, medidores y alertas | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-047` | Diseñar llaves, acceso físico, obras, cierres temporales y novedades | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
+| ⬜ NO INICIADA | `NEXO-UX-048` | Validar el prototipo con Operaciones, Producción, Limpieza, Mantenimiento, SST y responsables de sede | `bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` |
 | ⬜ NO INICIADA | `FOGO-AUTH-001` | Inventariar vistas y acciones productivas | `bloques/L_FOGO/00_BLOQUE_L.md` |
 | ⬜ NO INICIADA | `FOGO-AUTH-002` | Definir permisos por área productiva | `bloques/L_FOGO/00_BLOQUE_L.md` |
 | ⬜ NO INICIADA | `FOGO-AUTH-003` | Filtrar cola por sede y área | `bloques/L_FOGO/00_BLOQUE_L.md` |
@@ -1334,6 +1352,9 @@
 | ⬜ NO INICIADA | `PASS-UX-008` | Diseñar perfil del cliente | `bloques/V_PASS/00_BLOQUE_V.md` |
 | ⬜ NO INICIADA | `PASS-UX-009` | Diferenciar estado pendiente, usado y cancelado | `bloques/V_PASS/00_BLOQUE_V.md` |
 | ⬜ NO INICIADA | `PASS-UX-010` | Definir mensajes de error comprensibles | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-011` | Consolidar navegación y rutas canónicas de la experiencia cliente | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-012` | Simplificar interfaz móvil, estados de carga, error, offline y recuperación | `bloques/V_PASS/00_BLOQUE_V.md` |
+| ⬜ NO INICIADA | `PASS-UX-013` | Ejecutar pruebas con clientes reales | `bloques/V_PASS/00_BLOQUE_V.md` |
 | ⬜ NO INICIADA | `PASS-INT-001` | Definir integración PULSO → PASS para acumulación | `bloques/V_PASS/00_BLOQUE_V.md` |
 | ⬜ NO INICIADA | `PASS-INT-002` | Definir integración PULSO → PASS para redención | `bloques/V_PASS/00_BLOQUE_V.md` |
 | ⬜ NO INICIADA | `PASS-INT-003` | Definir administración laboral de productos de fidelización | `bloques/V_PASS/00_BLOQUE_V.md` |

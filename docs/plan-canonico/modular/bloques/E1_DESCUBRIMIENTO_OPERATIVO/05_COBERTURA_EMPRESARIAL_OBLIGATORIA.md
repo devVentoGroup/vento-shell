@@ -18151,8 +18151,1936 @@ CAP-SCOPE-018 — Evaluar continuidad, contingencia, incidentes y recuperación
 No marcar como aprobada hasta recibir confirmación explícita del usuario.
 
 
-### [ ] CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
-### [ ] CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+PROPUESTA PARA APROBACIÓN
+
+### ✅ CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-017` aprobada  
+**Tarea anterior:** `CAP-SCOPE-017`  
+**Siguiente tarea reservada:** `CAP-SCOPE-019`  
+**Familia evaluada:** `CAP-18 — Mantener continuidad y responder a incidentes`  
+**Superficies objetivo:** todas las empresas, sedes, procesos, aplicaciones, datos, instalaciones, dispositivos, proveedores y canales críticos de Vento Group  
+**Implementación técnica u operativa:** no autorizada  
+**Pruebas de restauración, failover o interrupción real:** no autorizadas en esta tarea  
+**Requisitos generados:** `TREQ-CONT-001` a `TREQ-CONT-006` y `TREQ-INTEGRATION-023`  
+**Tareas nuevas derivadas:** `CONT-DOM-001` a `015`, `CONT-AUTH-001` a `004`, `CONT-UX-001` a `007`, `CONT-INT-001` a `004`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el modelo empresarial objetivo mediante el cual Vento Group pueda continuar, degradar de forma segura o recuperar sus operaciones cuando una dependencia crítica falle.
+
+La tarea deberá permitir responder:
+
+```text
+qué producto, servicio o proceso no puede detenerse
+qué dependencias necesita para funcionar
+cuánto tiempo puede permanecer interrumpido
+cuánta información puede perderse como máximo
+qué nivel mínimo debe conservarse
+qué alternativa se activa
+quién declara y dirige la respuesta
+cómo se registra el trabajo realizado durante la falla
+cómo se recupera la tecnología y la información
+cómo se reincorpora y concilia lo ocurrido
+cómo se confirma que no quedaron pendientes
+qué se aprende y qué debe cambiar
+```
+
+Continuidad no significa que todo deba funcionar sin internet ni que cada aplicación necesite un modo offline completo. Significa que cada capacidad crítica debe tener una decisión explícita y probada.
+
+---
+
+#### 2. Decisión principal y propiedad
+
+Se crea un gobierno transversal de continuidad sin convertirlo en propietario de todos los procesos.
+
+```text
+BLOQUE AC — CONTINUIDAD OPERATIVA Y RECUPERACIÓN
+→ política y gobierno de continuidad
+→ análisis de impacto empresarial
+→ dependencias críticas y objetivos de recuperación
+→ activación, comando y comunicación de crisis
+→ operación mínima y alternativas
+→ coordinación de recuperación y cierre
+→ ejercicios, aprendizaje y mantenimiento del plan
+
+CADA APLICACIÓN Y DOMINIO
+→ conserva su proceso y su fuente de verdad
+→ define el runbook específico de su capacidad
+→ valida el resultado recuperado
+→ reincorpora y concilia sus hechos
+
+BLOQUE Z / TI
+→ atiende incidentes tecnológicos
+→ recupera red, dispositivos, aplicaciones e infraestructura
+→ ejecuta respaldo, restauración y recuperación técnica
+
+BLOQUE AA
+→ protege documentos, evidencia, privacidad,
+  cadena de custodia, retención y legal holds
+
+BLOQUE AB
+→ define métricas, análisis del incidente,
+  acciones de mejora y comprobación de resultados
+
+E4
+→ colas, notificaciones, archivos y evidencia transversal
+
+BLOQUE T
+→ rollback de cambios y releases
+
+E5
+→ contingencia temporal de cutover, piloto e hypercare
+
+VISO
+→ superficie administrativa de mando y seguimiento
+
+ANIMA
+→ comunicación, instrucciones y checklists del trabajador
+```
+
+El BLOQUE AC coordina; no ejecuta ventas, movimientos, producción, pagos, asistencia ni correcciones de datos por cuenta propia.
+
+---
+
+#### 3. Evidencia y estado actual
+
+La línea base contiene piezas útiles, pero fragmentadas:
+
+- `support_tickets` y mensajes de soporte permiten registrar solicitudes y fallas básicas;
+- BLOQUE Z ya reserva gestión de incidentes tecnológicos, observabilidad, respaldo y recuperación técnica;
+- E4 ya reserva colas, reintentos, fallos, recuperación manual, notificaciones y contingencia de entrega;
+- E5 ya exige convivencia temporal, conciliación, pausa, reversión, hypercare y retiro controlado de contingencias durante implementaciones;
+- ANIMA contiene la única cola offline empresarial explícita y parcialmente robusta identificada;
+- ORIGO conserva borradores de recepción, pero el efecto empresarial continúa dependiendo del envío online;
+- NEXO posee colas y adaptadores locales de impresión, pero no un contrato general de continuidad;
+- los procesos físicos actuales ya utilizan papel, WhatsApp, llamadas, proveedores y registros paralelos como contingencia informal;
+- no se localizó un análisis de impacto empresarial consolidado, objetivos RTO/RPO aprobados, programa de restauraciones probadas ni mando empresarial integral de incidentes.
+
+Estas piezas no demuestran que Vento Group pueda recuperar un proceso completo extremo a extremo.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-18.01` — Identificar dependencias críticas;
+- `CAP-18.02` — Preparar respuestas alternativas;
+- `CAP-18.03` — Detectar y reportar incidentes;
+- `CAP-18.04` — Evaluar impacto y prioridad;
+- `CAP-18.05` — Mantener operación mínima;
+- `CAP-18.06` — Recuperar equipos, servicios e información;
+- `CAP-18.07` — Registrar trabajo realizado durante la falla;
+- `CAP-18.08` — Incorporar posteriormente lo ocurrido;
+- `CAP-18.09` — Confirmar que no quedaron pendientes;
+- `CAP-18.10` — Aprender del incidente y mejorar la respuesta;
+- `CAP-18.11` — Gestionar respaldos y recuperación;
+- `CAP-18.12` — Coordinar comunicación durante incidentes.
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                        | Tratamiento          | Propietaria objetivo                | Decisión                                                                                                                                            |
+| ------------ | --------------------------------------------- | -------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-18.01`  | Identificar dependencias críticas             | `BUILD`              | BLOQUE AC + propietarios de dominio | Construir BIA, catálogo de servicios críticos, dependencias, single points of failure y prioridades de recuperación.                                |
+| `CAP-18.02`  | Preparar respuestas alternativas              | `CONTROLLED_MANUAL`  | BLOQUE AC + cada dominio            | Diseñar procedimientos alternos, kits, contactos y recursos; Vento OS gobierna versión, activación y evidencia, pero la ejecución puede ser manual. |
+| `CAP-18.03`  | Detectar y reportar incidentes                | `REUSE_OR_REFACTOR`  | VISO + BLOQUE Z + aplicaciones      | Reutilizar tickets, eventos y alertas, separando incidente tecnológico, laboral, de información y de continuidad.                                   |
+| `CAP-18.04`  | Evaluar impacto y prioridad                   | `BUILD`              | BLOQUE AC + VISO                    | Construir clasificación empresarial por alcance, servicio, sede, duración, seguridad, dinero, datos, cliente y obligaciones.                        |
+| `CAP-18.05`  | Mantener operación mínima                     | `CONTROLLED_MANUAL`  | propietarios de proceso + BLOQUE AC | Definir mínimos viables, límites, autoridad y procedimientos por proceso; no todo proceso debe continuar.                                           |
+| `CAP-18.06`  | Recuperar equipos, servicios e información    | `REUSE_OR_REFACTOR`  | BLOQUE Z + aplicación propietaria   | Integrar recuperación técnica con validación funcional y orden empresarial de recuperación.                                                         |
+| `CAP-18.07`  | Registrar trabajo realizado durante la falla  | `BUILD`              | cada dominio + BLOQUE AA/AC         | Construir un ledger o referencia de contingencia que preserve actor, tiempo, evidencia, folio, origen y estado pendiente.                           |
+| `CAP-18.08`  | Incorporar posteriormente lo ocurrido         | `BUILD`              | cada dominio + BLOQUE AC            | Construir reincorporación idempotente, control de duplicados, conflictos, secuencia y reconciliación.                                               |
+| `CAP-18.09`  | Confirmar que no quedaron pendientes          | `BUILD`              | BLOQUE AC + VISO + propietarios     | Construir checklist de cierre y conciliación de personas, dinero, inventario, producción, pedidos, documentos y colas.                              |
+| `CAP-18.10`  | Aprender del incidente y mejorar la respuesta | `REUSE_OR_REFACTOR`  | BLOQUE AB + BLOQUE Z + BLOQUE AA    | Reutilizar problema, causa raíz, hallazgos, acciones y medición; mantener post-incidente separado de la restauración inmediata.                     |
+| `CAP-18.11`  | Gestionar respaldos y recuperación            | `REUSE_OR_REFACTOR`  | BLOQUE Z + E3 + BLOQUE AA           | Consolidar inventario de respaldo, retención, seguridad, restauración aislada, RPO/RTO y evidencia.                                                 |
+| `CAP-18.12`  | Coordinar comunicación durante incidentes     | `INTEGRATE_EXTERNAL` | BLOQUE AC + E4 + canales externos   | Integrar alertas internas, estado, contacto con trabajadores, clientes, proveedores y autoridades según responsabilidad y privacidad.               |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento          | Cantidad |
+| -------------------- | -------: |
+| `BUILD`              |        5 |
+| `REUSE_OR_REFACTOR`  |        4 |
+| `CONTROLLED_MANUAL`  |        2 |
+| `INTEGRATE_EXTERNAL` |        1 |
+| **TOTAL**            |   **12** |
+
+---
+
+#### 7. Fronteras conceptuales obligatorias
+
+```text
+incidente laboral
+≠ incidente tecnológico
+≠ incidente de seguridad de información
+≠ incidente de continuidad empresarial
+```
+
+Un mismo hecho puede originar expedientes relacionados. No se fusionarán en un registro ambiguo.
+
+```text
+alta disponibilidad
+≠ respaldo
+≠ réplica
+≠ restauración
+≠ recuperación
+≠ continuidad
+```
+
+```text
+rollback de release
+≠ recuperación de servicio
+≠ restauración de datos
+≠ reincorporación operativa
+```
+
+```text
+modo offline
+≠ borrador local
+≠ procedimiento manual
+≠ ubicación alternativa
+≠ operación mínima
+```
+
+```text
+servicio técnicamente disponible
+≠ proceso empresarial recuperado
+```
+
+```text
+incidente resuelto
+≠ causa eliminada
+≠ efectos conciliados
+≠ continuidad certificada
+```
+
+---
+
+#### 8. Análisis de impacto empresarial
+
+Cada servicio o resultado crítico deberá conservar:
+
+- producto o servicio entregado;
+- cliente interno o externo;
+- proceso y subcapacidad;
+- empresa, marca, sede, área, horario y temporada;
+- propietario y sustituto;
+- volumen normal y mínimo;
+- impacto por duración;
+- obligaciones legales, laborales, sanitarias, contractuales o financieras;
+- dependencias;
+- tolerancia de pérdida de datos;
+- nivel mínimo aceptable;
+- prioridad de recuperación;
+- procedimiento alterno;
+- último ejercicio y estado de readiness.
+
+El impacto deberá evaluarse por ventanas, por ejemplo:
+
+```text
+0 a 15 minutos
+15 a 60 minutos
+1 a 4 horas
+4 a 24 horas
+más de 24 horas
+```
+
+Las ventanas definitivas se definirán por proceso, no se adoptan como umbrales universales en esta tarea.
+
+---
+
+#### 9. Dependencias críticas
+
+El mapa relacionará, como mínimo:
+
+```text
+resultado empresarial
+→ proceso
+→ personas y roles
+→ datos y documentos
+→ aplicación y Supabase
+→ dispositivo, impresora y red
+→ energía e instalación
+→ inventario, insumos y equipos
+→ proveedor y canal externo
+→ contacto, contrato y alternativa
+```
+
+Deberán identificarse:
+
+- single points of failure;
+- dependencias compartidas entre sedes;
+- dependencias sin sustituto;
+- credenciales o conocimiento concentrados en una persona;
+- recursos con tiempo de reposición alto;
+- proveedores con horario o soporte limitado;
+- dependencias circulares;
+- dependencias cuya falla produce efectos diferidos.
+
+---
+
+#### 10. Objetivos de continuidad y recuperación
+
+Se distinguirán:
+
+| Concepto  | Pregunta                                                             |
+| --------- | -------------------------------------------------------------------- |
+| `MTPD`    | ¿cuál es la interrupción máxima tolerable antes de daño inaceptable? |
+| `RTO`     | ¿en cuánto tiempo debe recuperarse el servicio o proceso?            |
+| `RPO`     | ¿cuánta información puede perderse como máximo?                      |
+| `MBCO`    | ¿qué nivel mínimo de operación debe conservarse?                     |
+| prioridad | ¿en qué orden se recupera frente a otros servicios?                  |
+
+Reglas:
+
+1. los objetivos serán empresariales antes de convertirse en objetivos técnicos;
+2. el RTO de una base no equivale al RTO del proceso completo;
+3. no se prometerá RPO cero sin arquitectura y evidencia;
+4. la prioridad podrá variar por sede, horario, temporada o evento;
+5. todo objetivo deberá tener capacidad, costo, responsable y prueba compatibles;
+6. cuando el objetivo no sea alcanzable, se registrará brecha y aceptación de riesgo, no una cifra ficticia.
+
+---
+
+#### 11. Tipos y severidad de incidente
+
+Categorías mínimas:
+
+- personas y disponibilidad laboral;
+- salud, seguridad o emergencia física;
+- instalación, energía o servicios públicos;
+- red, dispositivo, impresora o aplicación;
+- datos, privacidad o ciberseguridad;
+- inventario, producción o calidad;
+- venta, pago o canal comercial;
+- proveedor, transporte o abastecimiento;
+- reputación y comunicación;
+- evento múltiple o regional.
+
+La severidad combinará:
+
+```text
+impacto actual
++ impacto potencial
++ urgencia
++ duración
++ alcance
++ reversibilidad
++ obligaciones
+= prioridad de continuidad
+```
+
+No se copiará automáticamente la prioridad de la mesa de soporte. Un ticket técnico menor puede afectar un proceso crítico y una falla técnica grande puede no impedir la operación mínima.
+
+---
+
+#### 12. Activación, mando y desactivación
+
+El ciclo será:
+
+```text
+señal o reporte
+→ validación inicial
+→ clasificación
+→ incidente de continuidad relacionado
+→ activación parcial o total
+→ mando y responsables
+→ operación mínima / contención
+→ recuperación
+→ reincorporación
+→ conciliación
+→ desactivación
+→ revisión posterior
+```
+
+Roles conceptuales:
+
+- director del incidente;
+- responsable operativo por proceso o sede;
+- responsable técnico;
+- responsable de datos y evidencia;
+- responsable de comunicación;
+- enlace con proveedores;
+- aprobador de decisiones excepcionales;
+- sustitutos y escalamiento.
+
+Un mismo actor podrá cumplir varios roles en un equipo pequeño, pero el sistema conservará la función ejercida y exigirá revisión posterior para decisiones sensibles.
+
+---
+
+#### 13. Operación mínima viable
+
+Cada proceso definirá:
+
+- qué resultado debe mantenerse;
+- qué puede suspenderse;
+- volumen máximo o mínimo;
+- productos o servicios priorizados;
+- sedes y canales habilitados;
+- personal mínimo;
+- recursos mínimos;
+- controles que no pueden omitirse;
+- duración máxima del modo degradado;
+- criterio de escalamiento o cierre;
+- comunicación requerida.
+
+Ejemplos que deberán diseñarse posteriormente:
+
+- venta con medio alterno cuando el POS no esté disponible;
+- remisiones físicas controladas cuando NEXO no pueda confirmar movimientos;
+- asistencia manual cuando ANIMA no pueda encolar de forma segura;
+- producción limitada según recetas impresas vigentes y capacidad disponible;
+- recepción retenida cuando no pueda confirmarse orden, calidad o inventario;
+- suspensión de redenciones si no puede validarse saldo e idempotencia;
+- impresión alternativa o documento manual cuando falle el adaptador.
+
+La tarea no aprueba todavía ninguno de esos procedimientos concretos.
+
+---
+
+#### 14. Modalidades de contingencia por capacidad
+
+Cada capacidad elegirá una modalidad explícita:
+
+| Modalidad            | Comportamiento                                                    |
+| -------------------- | ----------------------------------------------------------------- |
+| `STOP_AND_PROTECT`   | suspende la operación para evitar daño o pérdida de integridad    |
+| `READ_ONLY_SNAPSHOT` | permite consultar una copia fechada y claramente degradada        |
+| `LOCAL_DRAFT`        | conserva preparación local, pero no afirma efecto empresarial     |
+| `OFFLINE_QUEUED`     | conserva intención durable y sincroniza con idempotencia          |
+| `CONTROLLED_MANUAL`  | usa formulario, folio o checklist controlado                      |
+| `ALTERNATE_RESOURCE` | cambia a dispositivo, impresora, red, sede o proveedor autorizado |
+| `REDUCED_SERVICE`    | mantiene solo productos, canales o volúmenes prioritarios         |
+
+La modalidad pertenece a la capacidad, no a la aplicación completa.
+
+---
+
+#### 15. Registro durante la falla
+
+Todo medio de contingencia deberá conservar:
+
+- identificador o folio único;
+- incidente relacionado;
+- actor y función ejercida;
+- sede, área y dispositivo o formato;
+- hora ocurrida y hora registrada;
+- recurso afectado;
+- datos mínimos;
+- evidencia;
+- estado `PENDIENTE_DE_INCORPORACIÓN`;
+- custodio;
+- vencimiento o límite;
+- secuencia con otros registros;
+- firma o validación cuando corresponda;
+- estado de reincorporación y conciliación.
+
+Una hoja o mensaje sin folio, responsable y estado no será una contingencia controlada.
+
+---
+
+#### 16. Reincorporación y reconciliación
+
+Flujo objetivo:
+
+```text
+registro de contingencia
+→ validación de identidad, permiso y contexto
+→ verificación del recurso actual
+→ detección de duplicados
+→ resolución de conflicto
+→ aplicación idempotente
+→ efectos derivados
+→ conciliación
+→ vínculo con el registro original
+→ cierre o excepción propietaria
+```
+
+Reglas:
+
+1. no se reescribirá la hora real como si hubiera ocurrido al reincorporar;
+2. no se aplicará una operación vencida sin revisión;
+3. una corrección creará referencia, no borrará la contingencia original;
+4. el orden deberá respetar dependencias empresariales;
+5. si el estado actual hace inválida la operación, se registrará conflicto;
+6. ningún cierre global ocultará pendientes por dominio;
+7. dinero, inventario, producción, asistencia y documentos tendrán conciliaciones propias.
+
+---
+
+#### 17. Respaldo y restauración
+
+Inventario mínimo:
+
+- bases y esquemas;
+- Storage y archivos;
+- configuración de aplicaciones;
+- variables y secretos recuperables mediante custodia segura;
+- repositorios y artefactos de despliegue;
+- DNS, dominios y certificados;
+- routers, switches, impresoras y configuraciones relevantes;
+- colas, eventos pendientes y referencias externas;
+- documentación, contactos y runbooks;
+- datos de proveedores que deban poder reconstruirse.
+
+Cada cobertura definirá:
+
+- fuente;
+- propietario;
+- método;
+- frecuencia;
+- retención;
+- cifrado;
+- ubicación y dominio de falla;
+- inmutabilidad;
+- monitoreo;
+- prueba de restauración;
+- dependencias de versión;
+- RPO y RTO;
+- evidencia;
+- eliminación segura.
+
+```text
+backup job succeeded
+≠ backup complete
+≠ backup restorable
+≠ process recovered
+```
+
+---
+
+#### 18. Recuperación y failover
+
+La recuperación se ordenará por resultados empresariales, no solamente por servidores.
+
+Cada runbook deberá indicar:
+
+- prerrequisitos y autoridad;
+- estado inicial seguro;
+- fuente de respaldo o alternativa;
+- versión compatible;
+- pasos de restauración;
+- credenciales y custodios;
+- validación técnica;
+- validación funcional;
+- datos o trabajos pendientes;
+- decisión de failover o retorno;
+- rollback del procedimiento;
+- comunicación;
+- evidencia y tiempos.
+
+El failover no será automático para operaciones sensibles si no existe evidencia de consistencia y autoridad para cambiar la fuente activa.
+
+---
+
+#### 19. Proveedores y recursos alternativos
+
+Se evaluarán:
+
+- Supabase y servicios cloud;
+- Vercel, Expo/EAS y tiendas;
+- internet, telefonía y energía;
+- dominios, correo y mensajería;
+- plataformas de pago;
+- Makos u otros sistemas POS;
+- Rappi, ManyChat y canales comerciales;
+- mensajería y transporte;
+- mantenimiento, impresoras y equipos;
+- proveedores de alimentos, empaques o servicios críticos.
+
+Cada dependencia externa conservará:
+
+- servicio y alcance;
+- contacto normal y de emergencia;
+- horario y SLA;
+- estado y canal oficial;
+- alternativa;
+- procedimiento de escalamiento;
+- credenciales o contrato bajo custodia;
+- datos que pueden recuperarse o exportarse;
+- riesgo de concentración;
+- última prueba.
+
+---
+
+#### 20. Comunicación durante incidentes
+
+Se diferenciarán:
+
+```text
+alerta técnica
+≠ instrucción operativa
+≠ actualización ejecutiva
+≠ comunicación al trabajador
+≠ comunicación al cliente
+≠ comunicación al proveedor
+≠ notificación a autoridad
+```
+
+Cada mensaje deberá declarar:
+
+- evento y severidad;
+- audiencia;
+- emisor autorizado;
+- información mínima;
+- datos que no deben divulgarse;
+- canal principal y alterno;
+- frecuencia de actualización;
+- confirmación requerida;
+- hora del próximo parte;
+- cierre o corrección.
+
+La ausencia de información confirmada se comunicará como tal; no se inventarán causas ni tiempos de recuperación.
+
+---
+
+#### 21. Seguridad y acceso de emergencia
+
+El acceso de emergencia deberá:
+
+- existir solo para escenarios definidos;
+- requerir activación explícita;
+- limitar alcance y duración;
+- aplicar autenticación reforzada cuando sea posible;
+- registrar actor, motivo, recurso y acciones;
+- notificar a responsables;
+- expirar o revocarse automáticamente;
+- exigir revisión posterior;
+- no eliminar RLS, trazabilidad ni segregaciones permanentes.
+
+Los respaldos, listas de contacto, configuraciones, credenciales, reportes y comunicaciones del incidente tendrán clasificación y acceso restringido.
+
+---
+
+#### 22. Experiencia objetivo
+
+Superficies principales:
+
+```text
+VISO — CENTRO DE CONTINUIDAD
+→ estado general
+→ servicios y sedes afectadas
+→ impacto y prioridad
+→ responsables
+→ decisiones
+→ operación mínima
+→ recuperación
+→ comunicaciones
+→ pendientes de conciliación
+
+ANIMA — INSTRUCCIONES DEL TRABAJADOR
+→ qué ocurrió
+→ qué debe hacer
+→ qué no debe hacer
+→ checklist por función
+→ confirmación de lectura
+→ canal alterno
+
+APLICACIÓN DE DOMINIO
+→ estado degradado
+→ modalidad activa
+→ datos permitidos
+→ trabajos pendientes
+→ recuperación y conciliación
+```
+
+La interfaz no deberá saturar a los trabajadores con topología, logs, RTO o detalles técnicos que no necesiten para actuar.
+
+---
+
+#### 23. Ejercicios y pruebas
+
+Niveles:
+
+1. revisión documental;
+2. walkthrough con responsables;
+3. tabletop de decisiones;
+4. simulación técnica aislada;
+5. restauración de datos;
+6. ejercicio operativo parcial;
+7. ejercicio integral controlado.
+
+Cada prueba deberá definir antes:
+
+- objetivo;
+- escenario;
+- alcance;
+- límites de seguridad;
+- datos y ambiente;
+- observadores;
+- criterios de éxito;
+- stop conditions;
+- rollback;
+- evidencia;
+- acciones posteriores.
+
+No se realizarán pruebas destructivas en producción por esta tarea documental.
+
+---
+
+#### 24. Revisión posterior y mejora
+
+La revisión separará:
+
+```text
+hechos confirmados
+supuestos
+línea de tiempo
+impacto
+decisiones
+contención
+recuperación
+qué funcionó
+qué falló
+qué faltó
+causas
+acciones
+responsables
+verificación de eficacia
+```
+
+No se utilizará como mecanismo disciplinario automático. La investigación de conducta, seguridad, privacidad o cumplimiento seguirá sus procesos propios.
+
+Cada acción deberá vincularse con una tarea existente o crear una tarea explícita con identificador, bloque y momento de resolución.
+
+---
+
+#### 25. Preguntas y decisiones pendientes
+
+No se dejan preguntas narrativas sin propietario.
+
+Se reutilizan `DIF-05` y `DIF-07` y se asignan las decisiones restantes:
+
+| Decisión pendiente                            | Tarea propietaria               | Momento                                   |
+| --------------------------------------------- | ------------------------------- | ----------------------------------------- |
+| servicios y procesos críticos                 | `CONT-DOM-002`                  | antes de definir prioridades              |
+| dependencias y single points of failure       | `CONT-DOM-003`                  | antes de aprobar alternativas             |
+| MTPD, RTO, RPO y MBCO                         | `CONT-DOM-004`                  | antes de contratar o diseñar recuperación |
+| clasificación y autoridad de activación       | `CONT-DOM-005`, `CONT-AUTH-001` | antes de operar el centro de continuidad  |
+| responsables y sustitutos                     | `CONT-DOM-001`, `CONT-DOM-006`  | antes del primer ejercicio                |
+| mínimos y procedimientos por proceso          | `CONT-DOM-007`, `CONT-DOM-008`  | antes de pilotos y operación real         |
+| formularios, folios y datos de contingencia   | `CONT-DOM-009`, `CONT-AUTH-003` | antes de utilizar papel o captura offline |
+| orden de reincorporación y conciliación       | `CONT-DOM-010`, `CONT-INT-004`  | antes de aprobar cada runbook             |
+| cobertura, retención y ubicación de respaldos | `CONT-DOM-011`, `TI-DOM-011`    | antes de certificar protección            |
+| runbooks y prioridad de recuperación          | `CONT-DOM-012`                  | antes de simulaciones técnicas            |
+| alternativas de proveedores y recursos        | `CONT-DOM-013`, `CONT-INT-003`  | antes de aceptar dependencia crítica      |
+| calendario y alcance de ejercicios            | `CONT-DOM-014`                  | antes de declarar readiness               |
+
+---
+
+#### 26. Hallazgos
+
+| ID                    | Hallazgo                                                                            | Propietaria                      | Momento de resolución           |
+| --------------------- | ----------------------------------------------------------------------------------- | -------------------------------- | ------------------------------- |
+| `H-CAP-SCOPE-018-001` | No existe gobierno empresarial único de continuidad.                                | `CONT-DOM-001`                   | diseño del BLOQUE AC            |
+| `H-CAP-SCOPE-018-002` | No existe BIA consolidado por servicio, proceso y sede.                             | `CONT-DOM-002`                   | antes de priorizar recuperación |
+| `H-CAP-SCOPE-018-003` | Productos y servicios críticos no tienen nivel mínimo declarado.                    | `CONT-DOM-002`, `CONT-DOM-007`   | diseño de MBCO                  |
+| `H-CAP-SCOPE-018-004` | Dependencias técnicas y operativas no están vinculadas extremo a extremo.           | `CONT-DOM-003`, `CONT-INT-001`   | mapa de dependencias            |
+| `H-CAP-SCOPE-018-005` | Single points of failure no están consolidados.                                     | `CONT-DOM-003`                   | análisis de dependencias        |
+| `H-CAP-SCOPE-018-006` | No existen MTPD, RTO y RPO aprobados por proceso.                                   | `CONT-DOM-004`                   | objetivos de continuidad        |
+| `H-CAP-SCOPE-018-007` | Recuperar un componente puede no recuperar el resultado empresarial.                | `CONT-DOM-004`, `CONT-DOM-012`   | diseño de runbooks              |
+| `H-CAP-SCOPE-018-008` | Incidentes laborales, tecnológicos, de información y continuidad pueden mezclarse.  | `CONT-DOM-005`, `CONT-INT-001`   | taxonomía de incidentes         |
+| `H-CAP-SCOPE-018-009` | No existen criterios comunes de activación y desactivación.                         | `CONT-DOM-005`, `CONT-AUTH-001`  | diseño de mando                 |
+| `H-CAP-SCOPE-018-010` | No existe matriz común de impacto, urgencia y severidad empresarial.                | `CONT-DOM-005`                   | clasificación de incidentes     |
+| `H-CAP-SCOPE-018-011` | Roles de mando, comunicación y sustitución no están formalizados.                   | `CONT-DOM-006`, `CONT-AUTH-001`  | antes del primer ejercicio      |
+| `H-CAP-SCOPE-018-012` | Las decisiones de crisis pueden depender de una sola persona.                       | `CONT-DOM-006`, `CONT-AUTH-001`  | delegación y suplencia          |
+| `H-CAP-SCOPE-018-013` | No se define operación mínima por proceso y duración.                               | `CONT-DOM-007`                   | diseño por dominio              |
+| `H-CAP-SCOPE-018-014` | No se ha elegido modalidad de contingencia por capacidad.                           | `CONT-DOM-008`                   | diseño de alternativas          |
+| `H-CAP-SCOPE-018-015` | Un procedimiento manual podría convertirse en fuente paralela.                      | `CONT-DOM-008`, `CONT-DOM-009`   | contrato de contingencia        |
+| `H-CAP-SCOPE-018-016` | Formularios o mensajes durante fallas pueden carecer de folio y custodio.           | `CONT-DOM-009`, `INFO-DOM-007`   | diseño de evidencia             |
+| `H-CAP-SCOPE-018-017` | Trabajo realizado durante una falla puede perderse o no poder probarse.             | `CONT-DOM-009`, `CONT-UX-004`    | captura de contingencia         |
+| `H-CAP-SCOPE-018-018` | La reincorporación puede duplicar ventas, movimientos, pagos o asistencia.          | `CONT-DOM-010`, `CONT-INT-004`   | contratos idempotentes          |
+| `H-CAP-SCOPE-018-019` | El orden de reincorporación entre dominios no está definido.                        | `CONT-DOM-010`, `CONT-INT-004`   | diseño de reconciliación        |
+| `H-CAP-SCOPE-018-020` | Un incidente puede cerrarse con trabajos o conciliaciones pendientes.               | `CONT-DOM-010`, `CONT-AUTH-004`  | checklist de cierre             |
+| `H-CAP-SCOPE-018-021` | No existe inventario completo de información y configuración respaldada.            | `CONT-DOM-011`, `TI-DOM-011`     | arquitectura de respaldo        |
+| `H-CAP-SCOPE-018-022` | Job exitoso, réplica y sincronización pueden confundirse con respaldo.              | `CONT-DOM-011`                   | política de respaldo            |
+| `H-CAP-SCOPE-018-023` | No existe programa consolidado de restauraciones probadas.                          | `CONT-DOM-014`, `TI-DOM-011`     | calendario de pruebas           |
+| `H-CAP-SCOPE-018-024` | Los tiempos reales de restauración no se comparan con RTO.                          | `CONT-DOM-004`, `CONT-DOM-014`   | ejercicios de recuperación      |
+| `H-CAP-SCOPE-018-025` | Credenciales o conocimiento de recuperación pueden concentrarse en una persona.     | `CONT-AUTH-002`, `CONT-DOM-012`  | custodia y runbook              |
+| `H-CAP-SCOPE-018-026` | Copias y fuente podrían compartir el mismo dominio de falla.                        | `CONT-DOM-011`, `CONT-INT-003`   | arquitectura de copias          |
+| `H-CAP-SCOPE-018-027` | Compromisos de continuidad de proveedores no están consolidados.                    | `CONT-DOM-013`, `CONT-INT-003`   | evaluación de proveedores       |
+| `H-CAP-SCOPE-018-028` | Alternativas para energía, red, pago, comunicación y transporte no están aprobadas. | `CONT-DOM-008`, `CONT-DOM-013`   | diseño de alternativas          |
+| `H-CAP-SCOPE-018-029` | Dispositivos, impresoras, sedes o materiales alternos pueden no estar disponibles.  | `CONT-DOM-008`, `TI-DOM-002`     | readiness físico                |
+| `H-CAP-SCOPE-018-030` | No existe árbol de comunicaciones de crisis versionado.                             | `CONT-DOM-006`, `CONT-UX-006`    | diseño de comunicación          |
+| `H-CAP-SCOPE-018-031` | Mensajes no coordinados pueden prometer causas o tiempos no confirmados.            | `CONT-DOM-006`, `CONT-AUTH-001`  | plantillas y aprobación         |
+| `H-CAP-SCOPE-018-032` | Información sensible del incidente puede divulgarse indebidamente.                  | `CONT-AUTH-003`, `INFO-AUTH-004` | autorización y privacidad       |
+| `H-CAP-SCOPE-018-033` | Acceso de emergencia puede convertirse en bypass permanente.                        | `CONT-AUTH-002`, `AUTH-CTX-030`  | diseño break-glass              |
+| `H-CAP-SCOPE-018-034` | Los planes no tienen programa recurrente de ejercicios.                             | `CONT-DOM-014`                   | calendario de continuidad       |
+| `H-CAP-SCOPE-018-035` | Las pruebas pueden validar restauración técnica sin conciliación operativa.         | `CONT-DOM-014`, `CONT-INT-004`   | diseño de escenarios            |
+| `H-CAP-SCOPE-018-036` | Las lecciones pueden quedar desconectadas de acciones propietarias.                 | `CONT-DOM-015`, `DATA-DOM-016`   | revisión posterior              |
+| `H-CAP-SCOPE-018-037` | Contactos, dependencias y runbooks pueden quedar obsoletos tras cambios.            | `CONT-DOM-015`, `TI-DOM-009`     | mantenimiento del plan          |
+| `H-CAP-SCOPE-018-038` | No existe vista consolidada de estado, impacto, decisiones y pendientes.            | `CONT-UX-001`, `CONT-UX-002`     | diseño de experiencia           |
+
+Todos los hallazgos tienen propietario y momento de resolución.
+
+---
+
+#### 27. Tareas nuevas derivadas
+
+##### Dominio
+
+- `CONT-DOM-001` — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad;
+- `CONT-DOM-002` — Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos;
+- `CONT-DOM-003` — Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos;
+- `CONT-DOM-004` — Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo;
+- `CONT-DOM-005` — Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad;
+- `CONT-DOM-006` — Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa;
+- `CONT-DOM-007` — Definir operación mínima viable por proceso, sede, horario, temporada y duración;
+- `CONT-DOM-008` — Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor;
+- `CONT-DOM-009` — Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla;
+- `CONT-DOM-010` — Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes;
+- `CONT-DOM-011` — Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos;
+- `CONT-DOM-012` — Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional;
+- `CONT-DOM-013` — Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos;
+- `CONT-DOM-014` — Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos;
+- `CONT-DOM-015` — Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan.
+
+##### Autorización
+
+- `CONT-AUTH-001` — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación;
+- `CONT-AUTH-002` — Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación;
+- `CONT-AUTH-003` — Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia;
+- `CONT-AUTH-004` — Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior.
+
+##### Experiencia
+
+- `CONT-UX-001` — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones;
+- `CONT-UX-002` — Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación;
+- `CONT-UX-003` — Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad;
+- `CONT-UX-004` — Diseñar captura controlada durante la falla y reincorporación posterior;
+- `CONT-UX-005` — Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes;
+- `CONT-UX-006` — Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento;
+- `CONT-UX-007` — Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness.
+
+##### Integraciones
+
+- `CONT-INT-001` — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones;
+- `CONT-INT-002` — Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X;
+- `CONT-INT-003` — Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos;
+- `CONT-INT-004` — Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal.
+
+Total: **30 tareas nuevas**.
+
+---
+
+#### 28. Ubicación exacta de tareas nuevas
+
+Al aprobarse se creará:
+
+```text
+docs/plan-canonico/modular/bloques/
+AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/
+00_BLOQUE_AC.md
+```
+
+El bloque se ubicará después de:
+
+```text
+AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS
+```
+
+Orden interno:
+
+```text
+CONT-DOM-001 a CONT-DOM-015
+→ CONT-AUTH-001 a CONT-AUTH-004
+→ CONT-UX-001 a CONT-UX-007
+→ CONT-INT-001 a CONT-INT-004
+```
+
+Las tareas quedarán `NO INICIADAS`. La secuencia activa continuará en `CAP-SCOPE-019` después de la aprobación.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+Se crean:
+
+- `TREQ-CONT-001` — análisis de impacto, dependencias y objetivos;
+- `TREQ-CONT-002` — incidente, activación, mando y comunicación;
+- `TREQ-CONT-003` — operación mínima y contingencia controlada;
+- `TREQ-CONT-004` — respaldo, restauración y recuperación;
+- `TREQ-CONT-005` — reincorporación, idempotencia y conciliación;
+- `TREQ-CONT-006` — ejercicios, revisión y mejora;
+- `TREQ-INTEGRATION-023` — continuidad transversal e integración de recuperación.
+
+El detalle completo se encuentra en el archivo `04A` regenerado.
+
+---
+
+#### 30. Dependencias principales
+
+- `CAP-SCOPE-001` — empresas, sedes y estructura;
+- `CAP-SCOPE-002` — personas, funciones y disponibilidad;
+- `CAP-SCOPE-003` — SST, emergencias y seguridad de vida;
+- `CAP-SCOPE-004` a `CAP-SCOPE-014` — procesos y resultados por dominio;
+- `CAP-SCOPE-015` — tecnología, redes, dispositivos y soporte;
+- `CAP-SCOPE-016` — información, evidencia, privacidad y auditoría;
+- `CAP-SCOPE-017` — indicadores, calidad y mejora;
+- E2 — procesos, actores, estaciones y experiencia;
+- E3 — arquitectura, datos, migración y fuentes de verdad;
+- E4 — colas, notificaciones, archivos y evidencia;
+- E5 — cutover, piloto, hypercare y reversión;
+- BLOQUE T — releases, compatibilidad y rollback;
+- BLOQUE U — pruebas integrales;
+- BLOQUE X — integraciones;
+- BLOQUE Z — tecnología y recuperación técnica;
+- BLOQUE AA — gobierno de información;
+- BLOQUE AB — analítica y mejora.
+
+---
+
+#### 31. Criterios de aceptación
+
+`CAP-SCOPE-018` podrá aprobarse cuando:
+
+1. las doce subcapacidades estén evaluadas;
+2. se separe continuidad empresarial de incidentes técnicos, laborales y de información;
+3. se apruebe gobierno transversal sin quitar propiedad a los dominios;
+4. se exijan BIA, dependencias y single points of failure;
+5. se definan MTPD, RTO, RPO, MBCO y prioridades como decisiones posteriores con propietario;
+6. cada capacidad deba elegir una modalidad de contingencia;
+7. se proteja el registro realizado durante la falla;
+8. se defina reincorporación idempotente y conciliación;
+9. respaldo, réplica, restauración y recuperación queden separados;
+10. se exijan restauraciones y ejercicios probados;
+11. se definan mando, comunicación, suplencia y acceso de emergencia;
+12. los 38 hallazgos tengan propietario y momento;
+13. las 30 tareas nuevas estén explícitas;
+14. los siete requisitos estén incorporados en el `04A` completo;
+15. no se haya ejecutado una prueba destructiva ni modificado producción.
+
+---
+
+#### 32. Lo que esta tarea no autoriza
+
+Esta tarea no autoriza:
+
+- apagar servicios o probar fallas en producción;
+- restaurar bases o archivos reales;
+- modificar políticas de backup;
+- crear accesos de emergencia;
+- activar procedimientos manuales;
+- cambiar proveedores;
+- comprar redundancia o equipos;
+- definir RTO/RPO sin BIA;
+- crear tablas, colas, dashboards o integraciones;
+- modificar permisos;
+- cambiar procesos operativos actuales;
+- retirar papel, WhatsApp u otras contingencias existentes;
+- declarar un plan certificado;
+- iniciar código o migraciones.
+
+---
+
+#### 33. Resultado y continuidad
+
+Al aprobarse:
+
+- `CAP-SCOPE-018` quedará cerrada;
+- la continuidad operativa quedará incorporada al alcance objetivo;
+- las tareas `CONT-*` se crearán en el BLOQUE AC;
+- el `04A` completo actualizado será la única fuente de los nuevos requisitos;
+- `DIF-05` y `DIF-07` conservarán propietario y puerta de resolución;
+- la siguiente tarea será:
+
+```text
+CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+```
+
+---
+
+#### 34. Estado de aprobación
+
+**Estado actual:** PROPUESTA PARA APROBACIÓN — NO APROBADA
+
+
+### ✅ CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-018` aprobada  
+**Tarea anterior:** `CAP-SCOPE-018`  
+**Siguiente tarea reservada:** `CAP-COVER-001`  
+**Familias consolidadas:** `CAP-01` a `CAP-18`  
+**Subcapacidades reconciliadas:** **217**  
+**Naturaleza:** aprobación transversal de clasificación, propiedad funcional y fronteras entre dominios  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Cambios organizacionales, nombramientos o contrataciones:** no autorizados  
+**Requisitos de prueba derivados:** **NO GENERA REQUISITOS DE PRUEBA NUEVOS**  
+**Registro de consolidación:** `MAT-OWN-CAP-001 — Matriz canónica de clasificación y propiedad de dominios`
+
+---
+
+#### 1. Propósito
+
+Consolidar y someter a aprobación, sin reabrir las decisiones sustantivas ya
+adoptadas en `CAP-SCOPE-001` a `CAP-SCOPE-018`:
+
+- la clasificación aprobada de las **217 subcapacidades** del mapa empresarial;
+- la función empresarial responsable de cada dominio;
+- la aplicación, servicio o medio que conservará cada expediente o fuente de verdad;
+- las aplicaciones participantes y sus límites;
+- las autoridades externas que seguirán siendo fuente profesional, fiscal,
+  financiera, tecnológica o regulatoria;
+- las fronteras entre propietario empresarial, propietario del proceso,
+  propietario de datos, custodio técnico, operador y consumidor;
+- las responsabilidades que una misma persona podrá ejercer temporalmente en
+  una organización pequeña;
+- las segregaciones que deberán preservarse aunque varias funciones estén
+  concentradas en una sola persona;
+- la entrada verificable para `CAP-COVER-001` a `CAP-COVER-012`.
+
+La tarea crea una matriz de decisión, no una nueva capa de software ni una
+estructura organizacional artificial.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-019` responde:
+
+```text
+¿QUÉ TRATAMIENTO CONSERVA CADA UNA DE LAS 217 SUBCAPACIDADES,
+QUÉ FUNCIÓN EMPRESARIAL RESPONDE POR SU RESULTADO,
+QUÉ DOMINIO CONSERVA EL EXPEDIENTE O FUENTE DE VERDAD,
+QUÉ APLICACIONES SOLO PARTICIPAN O CONSUMEN,
+Y QUÉ FRONTERAS IMPIDEN QUE VISO, SHELL, SUPABASE
+O CUALQUIER OTRA APLICACIÓN SE CONVIERTAN
+EN PROPIETARIOS UNIVERSALES DE VENTO OS?
+```
+
+Quedan prohibidas simplificaciones como:
+
+```text
+APLICACIÓN QUE MUESTRA LA PANTALLA = PROPIETARIA DEL PROCESO
+```
+
+```text
+REPOSITORIO QUE CONTIENE EL CÓDIGO = PROPIETARIO EMPRESARIAL
+```
+
+```text
+SUPABASE = PROPIETARIO DE TODOS LOS DATOS
+```
+
+```text
+VISO = PROPIETARIO DE TODO LO ADMINISTRATIVO
+```
+
+```text
+SHELL = PROPIETARIO DE TODO LO COMPARTIDO
+```
+
+```text
+DOS APLICACIONES PARTICIPAN = DOS FUENTES DE VERDAD
+```
+
+```text
+REUSE_OR_REFACTOR = CAPACIDAD TERMINADA
+```
+
+```text
+BUILD = AUTORIZACIÓN PARA IMPLEMENTAR AHORA
+```
+
+```text
+UNA PERSONA EJERCE VARIAS FUNCIONES = LAS FUNCIONES SON EQUIVALENTES
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+Esta tarea consolida exclusivamente decisiones y artefactos ya existentes:
+
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `LB-CAP-VENTO-001 v1.0` y sus 217 subcapacidades;
+- `MAP-IMPL-CAP-001`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-018`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `QA-GOV-001`, `QA-REG-001` y el registro `04A` vigente;
+- `PROC-CAT-*`, `PROC-ACTOR-*` y las tareas de diseño E2;
+- E3, E4 y E5;
+- bloques funcionales de ANIMA, VISO, SHELL, NEXO, FOGO, ORIGO,
+  PULSO, NUMERA, PASS, TALENTO y AURA;
+- BLOQUES Z, AA, AB y AC;
+- BLOQUE X, BLOQUE T y BLOQUE U;
+- el registro vivo de preguntas y sus destinos ya aprobados.
+
+No se vuelve a evaluar el alcance de cada subcapacidad. Se verifica que las
+decisiones sean compatibles entre sí y se congela su propiedad objetivo para
+la medición de cobertura.
+
+---
+
+#### 4. Resultado de la reconciliación
+
+Se localizaron y reconciliaron exactamente:
+
+| Elemento                                     | Resultado |
+| -------------------------------------------- | --------: |
+| Familias empresariales                       |    **18** |
+| Subcapacidades                               |   **217** |
+| Subcapacidades con clasificación primaria    |   **217** |
+| Subcapacidades sin clasificación             |     **0** |
+| Dominios sin función empresarial responsable |     **0** |
+| Dominios con aplicación universal impuesta   |     **0** |
+| Tratamientos primarios permitidos utilizados |     **5** |
+| Requisitos de prueba nuevos                  |     **0** |
+| Tareas nuevas                                |     **0** |
+
+Distribución consolidada:
+
+| Tratamiento primario | Cantidad | Interpretación                                                                                           |
+| -------------------- | -------: | -------------------------------------------------------------------------------------------------------- |
+| `REUSE_OR_REFACTOR`  |  **113** | existe una base aprovechable, pero requiere convergencia, contratos, autorización, experiencia y pruebas |
+| `BUILD`              |   **86** | falta una capacidad empresarial o ciclo verificable y deberá diseñarse antes de implementarse            |
+| `INTEGRATE_EXTERNAL` |   **10** | la autoridad o ejecución permanece en un proveedor o sistema externo mediante contrato controlado        |
+| `CONTROLLED_MANUAL`  |    **7** | la operación seguirá siendo humana o física, pero con registro, responsable, evidencia y conciliación    |
+| `DEFERRED`           |    **1** | la capacidad permanece pospuesta con dueño, control y puerta definidos                                   |
+| `BUY`                |    **0** | no se ha aprobado comprar una capacidad completa como decisión definitiva                                |
+| `OUT_OF_SCOPE`       |    **0** | ninguna subcapacidad del mapa obligatorio se excluye completamente                                       |
+| `RETIRE`             |    **0** | no se retira una capacidad empresarial completa; sí podrán retirarse implementaciones o patrones legacy  |
+| **Total**            |  **217** | —                                                                                                        |
+
+La única subcapacidad `DEFERRED` es:
+
+```text
+CAP-02.10 — Acompañar desempeño y desarrollo
+```
+
+Su propiedad permanece en Gerencia y el responsable directo. La operación
+continúa como `CONTROLLED_MANUAL` hasta que `PROC-CAT-002`, `PROC-CAT-018`,
+`PROC-CAT-019`, `PROC-ACTOR-004`, `PROC-ACTOR-005` y `VISO-UX-002` definan un
+proceso, tratamiento de información y uso legítimo suficientemente precisos.
+
+---
+
+#### 5. Reglas canónicas de clasificación
+
+##### 5.1. Una subcapacidad conserva una clasificación primaria
+
+Cada `CAP-xx.yy` mantendrá exactamente la clasificación primaria aprobada en su
+`CAP-SCOPE-*`. Un tratamiento complementario podrá describir la transición,
+pero no creará dos decisiones primarias simultáneas.
+
+##### 5.2. Un dominio puede tener perfil mixto
+
+Las familias `CAP-01` a `CAP-18` contienen subcapacidades con tratamientos
+diferentes. Por tanto, el dominio no recibirá una etiqueta única que oculte la
+composición real.
+
+Ejemplo:
+
+```text
+CAP-09
+→ 10 REUSE_OR_REFACTOR
+→ 4 BUILD
+→ 1 INTEGRATE_EXTERNAL
+```
+
+No se resumirá como simplemente “REUSE” o “BUILD”.
+
+##### 5.3. Clasificación no equivale a cobertura técnica
+
+```text
+TRATAMIENTO OBJETIVO
+≠ ESTADO DE IMPLEMENTACIÓN
+≠ READINESS
+≠ ADOPCIÓN
+≠ CERTIFICACIÓN
+```
+
+`CAP-COVER-001` a `CAP-COVER-012` medirán posteriormente si cada capacidad se
+encuentra en producción, parcial, solo infraestructura, solo interfaz,
+prototipo, legacy, rota, ausente, bloqueada, diferida o fuera de alcance según
+los criterios aprobados.
+
+##### 5.4. Reutilizar no significa conservar sin cambios
+
+`REUSE_OR_REFACTOR` obliga a:
+
+- identificar la base existente;
+- decidir qué contrato se conserva;
+- eliminar fuentes competidoras;
+- adaptar autorización, contexto y datos;
+- migrar sin pérdida histórica;
+- probar paridad, regresión y operación real;
+- retirar la implementación anterior solo con evidencia.
+
+##### 5.5. Construir no autoriza implementación inmediata
+
+`BUILD` significa que la capacidad debe atravesar:
+
+```text
+E2 — proceso, actor y experiencia
+→ E3/E4 — arquitectura y contratos
+→ E5 — paquete, migración, readiness y piloto
+→ T/U — pruebas y certificación
+→ cutover controlado
+```
+
+##### 5.6. Integración externa no transfiere propiedad empresarial
+
+Un banco, proveedor fiscal, plataforma de pagos, canal, ARL, laboratorio,
+transportista, nube o proveedor tecnológico podrá ejecutar o certificar una
+función. Vento Group conservará:
+
+- el propietario empresarial;
+- el contrato y finalidad;
+- la referencia externa;
+- el estado interno;
+- la conciliación;
+- la evidencia;
+- la contingencia;
+- la decisión de continuidad o retiro.
+
+##### 5.7. Manual controlado no significa informal
+
+Toda capacidad `CONTROLLED_MANUAL` deberá tener:
+
+- procedimiento versionado;
+- función responsable;
+- evidencia mínima;
+- estado y resultado;
+- protección de información;
+- conciliación posterior cuando produzca efectos;
+- revisión periódica;
+- tarea y puerta para cualquier automatización futura.
+
+---
+
+#### 6. Modelo canónico de propiedad
+
+Se distinguen seis responsabilidades:
+
+| Responsabilidad                         | Definición                                                                                                        |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Propietario empresarial accountable** | responde por el resultado, reglas, riesgo, prioridad y aceptación del proceso                                     |
+| **Propietario funcional o de proceso**  | diseña y mantiene el ciclo, estados, excepciones, controles y criterios de cierre                                 |
+| **Propietario del dato o expediente**   | decide significado, calidad, vigencia y corrección del objeto empresarial                                         |
+| **Steward o custodio funcional**        | vigila calidad, completitud, clasificación y cumplimiento cotidiano                                               |
+| **Custodio técnico**                    | opera infraestructura, persistencia, despliegue, respaldo y seguridad técnica sin cambiar significado empresarial |
+| **Operador o ejecutor**                 | realiza una tarea autorizada sin convertirse por ello en propietario del dominio                                  |
+
+Regla obligatoria:
+
+```text
+UN MISMO OBJETO + UNA MISMA ETAPA + UN MISMO ATRIBUTO
+→ UN ÚNICO PROPIETARIO DE FUENTE
+```
+
+Cuando varias aplicaciones participen, la propiedad se dividirá por objeto,
+atributo o etapa. No se utilizará la expresión “propiedad compartida” para
+ocultar precedencia indefinida.
+
+Ejemplo aprobado:
+
+```text
+PRODUCTO Y PRESENTACIÓN
+→ NEXO
+
+RECETA, MÉTODO Y RENDIMIENTO
+→ FOGO
+
+MENÚ, OFERTA Y DISPONIBILIDAD COMERCIAL
+→ PULSO
+```
+
+##### 6.1. Aplicación propietaria no equivale a interfaz exclusiva
+
+Una aplicación podrá administrar o mostrar objetos de otro dominio mediante un
+contrato autorizado. Eso no le permite:
+
+- redefinir el objeto;
+- mantener una copia editable competidora;
+- ampliar permisos;
+- corregir historia por su cuenta;
+- asumir el cierre del proceso propietario.
+
+##### 6.2. Persistencia y plataforma no son propietarios empresariales
+
+Supabase, Storage, repositorios, servicios compartidos, SHELL y BLOQUE E4 son
+infraestructura, contratos o custodios técnicos. Solo serán propietarios de
+los objetos técnicos que les correspondan explícitamente.
+
+##### 6.3. VISO es superficie administrativa, no dueño universal
+
+VISO podrá presentar, supervisar, aprobar o administrar procesos según
+contrato. Cada dominio conservará su expediente y fuente.
+
+##### 6.4. Propiedad se asigna a funciones, no a nombres personales
+
+El documento canónico registra roles y funciones estables. La persona concreta,
+suplencia y vigencia se resolverán en asignaciones organizacionales y
+`PROC-ACTOR-*`, sin incrustar nombres personales en la arquitectura.
+
+---
+
+#### 7. `MAT-OWN-CAP-001` — Matriz canónica consolidada
+
+Los perfiles de tratamiento se expresan como conteos de subcapacidades y no
+como una clasificación única del dominio.
+
+| Familia  | Dominio                                              | Perfil aprobado                                                                 | Propietario empresarial accountable                                                      | Fuentes o aplicaciones propietarias                                                                                         | Participantes principales                                                        |
+| -------- | ---------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `CAP-01` | Dirigir y gobernar la organización                   | 3 `REUSE_OR_REFACTOR`; 4 `BUILD`; 3 `CONTROLLED_MANUAL`                         | Dirección / Gerencia General                                                             | VISO para estructura, decisiones y gobierno administrativo; dominios propietarios para sus políticas                        | SHELL, AA, AB, AC, NUMERA, asesores y autoridades                                |
+| `CAP-02` | Gestionar personas y trabajo                         | 7 `REUSE_OR_REFACTOR`; 4 `BUILD`; 1 `INTEGRATE_EXTERNAL`; 1 `DEFERRED`          | Gerencia General / administración laboral                                                | TALENTO para proceso previo; VISO para vínculo, asignaciones, turnos y decisiones; ANIMA para experiencia y asistencia      | SHELL, NUMERA, proveedor laboral o nómina, responsables directos                 |
+| `CAP-03` | Proteger salud, seguridad y cumplimiento             | 3 `REUSE_OR_REFACTOR`; 5 `BUILD`; 1 `INTEGRATE_EXTERNAL`; 1 `CONTROLLED_MANUAL` | Gerencia General                                                                         | VISO para sistema SST; Responsable SST habilitado para ejecución técnica                                                    | ANIMA, NEXO, FOGO, AA, AC, ARL, IPS, asesores y certificadores                   |
+| `CAP-04` | Gestionar productos, preparaciones y conocimiento    | 8 `REUSE_OR_REFACTOR`; 2 `BUILD`                                                | Jefatura de Operaciones y propietarios de cada conocimiento                              | NEXO: producto, presentación y unidad; FOGO: receta, método y rendimiento; PULSO: menú, oferta y disponibilidad             | ORIGO, PASS, NUMERA, VISO y proveedores externos                                 |
+| `CAP-05` | Abastecer la operación                               | 6 `REUSE_OR_REFACTOR`; 5 `BUILD`; 1 `CONTROLLED_MANUAL`                         | Jefatura de Operaciones / función de compras y abastecimiento                            | ORIGO para expediente de abastecimiento y proveedor                                                                         | NEXO para efecto físico; NUMERA para obligación y costo; VISO como supervisión   |
+| `CAP-06` | Controlar inventario y almacenamiento                | 12 `REUSE_OR_REFACTOR`; 3 `BUILD`                                               | Jefatura de Operaciones / logística y bodega                                             | NEXO                                                                                                                        | ORIGO, FOGO, PULSO, NUMERA, E4 y proveedores de hardware                         |
+| `CAP-07` | Gestionar activos, equipos y elementos reutilizables | 8 `REUSE_OR_REFACTOR`; 5 `BUILD`                                                | Jefatura de Operaciones / responsable de activos                                         | NEXO                                                                                                                        | ORIGO, NUMERA, BLOQUE Z, áreas custodias y proveedores especializados            |
+| `CAP-08` | Planear y ejecutar producción                        | 6 `REUSE_OR_REFACTOR`; 8 `BUILD`                                                | Responsable de Producción / Jefatura de Operaciones                                      | FOGO para plan, orden, lote, ejecución, calidad productiva y conciliación                                                   | NEXO para materiales y producto físico; ORIGO, VISO, NUMERA, impresión y calidad |
+| `CAP-09` | Vender, cobrar y atender pedidos                     | 10 `REUSE_OR_REFACTOR`; 4 `BUILD`; 1 `INTEGRATE_EXTERNAL`                       | Gerencia comercial-operativa / responsables de sede                                      | PULSO para pedido, mesa, comanda, venta, cobro, caja y cierre                                                               | PASS, NEXO, FOGO, NUMERA, POS externo, pagos y proveedor fiscal                  |
+| `CAP-10` | Atender clientes y fortalecer relaciones             | 7 `REUSE_OR_REFACTOR`; 3 `BUILD`                                                | Gerencia comercial / servicio al cliente                                                 | PASS para experiencia, identidad y fidelización; VISO para casos e investigación; PULSO para hechos vinculados a venta      | NUMERA, NEXO, AURA, AA, proveedores de comunicación                              |
+| `CAP-11` | Transportar, despachar y entregar                    | 8 `REUSE_OR_REFACTOR`; 4 `BUILD`                                                | Jefatura de Operaciones / logística                                                      | NEXO para logística interna, ruta, viaje, carga y custodia; PULSO para cumplimiento del pedido de cliente                   | PASS, FOGO, ORIGO, NUMERA, VISO/ANIMA y transportistas externos                  |
+| `CAP-12` | Gestionar dinero, costos y obligaciones              | 5 `REUSE_OR_REFACTOR`; 8 `BUILD`; 2 `INTEGRATE_EXTERNAL`                        | Gerencia General / función financiera y contable                                         | NUMERA para hechos económicos, cartera, obligaciones, tesorería, costos, presupuestos y conciliación                        | PULSO, ORIGO, NEXO, FOGO, ANIMA, bancos, pagos, proveedor fiscal y contabilidad  |
+| `CAP-13` | Mantener instalaciones y condiciones de operación    | 3 `REUSE_OR_REFACTOR`; 7 `BUILD`; 1 `INTEGRATE_EXTERNAL`                        | Jefatura de Operaciones / responsable de instalaciones                                   | NEXO                                                                                                                        | ORIGO, NUMERA, VISO/SST, áreas operativas, BLOQUE Z y proveedores especializados |
+| `CAP-14` | Comunicar, promocionar y desarrollar ventas          | 2 `REUSE_OR_REFACTOR`; 6 `BUILD`; 3 `INTEGRATE_EXTERNAL`                        | Gerencia comercial / función de marketing y comunicaciones                               | AURA como propietaria objetivo del expediente de marketing, cuando se implemente                                            | PULSO, PASS, NUMERA, VISO, FOGO, NEXO, AA, AB y canales externos                 |
+| `CAP-15` | Gestionar tecnología y soporte                       | 7 `REUSE_OR_REFACTOR`; 4 `BUILD`                                                | Gerencia General; Coordinación tecnológica como función responsable                      | Propiedad distribuida mediante BLOQUE Z: SHELL, NEXO, VISO, ANIMA, PRINT-ARC y propietarios de aplicaciones                 | ORIGO, NUMERA, BLOQUES T/U, ISP, nube, fabricantes y soporte externo             |
+| `CAP-16` | Proteger información, documentos y evidencia         | 6 `REUSE_OR_REFACTOR`; 5 `BUILD`                                                | Gerencia General / función de gobierno de información                                    | Cada dominio conserva su expediente; BLOQUE AA gobierna reglas transversales; VISO administra solicitudes e investigaciones | SHELL, Supabase, Storage, EVID-ARC, ANIMA, PASS, asesores y autoridades          |
+| `CAP-17` | Medir, analizar y mejorar                            | 8 `REUSE_OR_REFACTOR`; 4 `BUILD`                                                | Gerencia General para marco transversal; cada propietario de dominio para sus resultados | Cada dominio conserva maestros y hechos; BLOQUE AB gobierna métricas, calidad y mejora                                      | VISO para visión ejecutiva; NUMERA para análisis económico; BI e IA bajo control |
+| `CAP-18` | Mantener continuidad y responder a incidentes        | 4 `REUSE_OR_REFACTOR`; 5 `BUILD`; 1 `INTEGRATE_EXTERNAL`; 2 `CONTROLLED_MANUAL` | Gerencia General / Dirección del incidente y propietarios de proceso                     | Cada dominio conserva su runbook; BLOQUE AC coordina continuidad; BLOQUE Z recupera tecnología                              | VISO, ANIMA, AA, AB, E4, E5, T, U, X y proveedores críticos                      |
+
+---
+
+#### 8. Fronteras aprobadas por dominio
+
+##### 8.1. `CAP-01` — Gobierno
+
+- Dirección y Gerencia General responden por objetivos, decisiones, riesgos y
+  verificación.
+- VISO podrá administrar el catálogo organizacional y expedientes de decisión.
+- Contabilidad, asesores y autoridades conservan su autoridad externa.
+- Un dato registral no se declarará verificado por aparecer en una pantalla.
+- Un propietario de política no convierte a VISO en propietario del proceso que
+  la política regula.
+
+##### 8.2. `CAP-02` — Personas
+
+```text
+TALENTO
+→ candidatura, selección y pre-vinculación
+
+VISO
+→ vínculo laboral, asignaciones, programación y decisiones administrativas
+
+ANIMA
+→ experiencia personal, asistencia, consulta, reportes y evidencia del trabajador
+```
+
+SHELL conserva identidad y acceso; NUMERA consume hechos económicos; el
+proveedor laboral o de nómina conserva la autoridad externa aplicable.
+
+##### 8.3. `CAP-03` — SST
+
+Gerencia General queda como propietario empresarial accountable. La ejecución
+técnica pertenece al rol `Responsable SST habilitado`, interno o externo. La
+persona concreta deberá asignarse antes del diseño final, pero el dominio no
+queda sin propietario por no existir hoy un nombre confirmado.
+
+```text
+VISO
+→ riesgos, casos, inspecciones SST, acciones, requisitos y certificados
+
+NEXO
+→ EPP, activos y condición física
+
+FOGO
+→ higiene, inocuidad y hechos productivos
+
+ANIMA
+→ reporte, capacitación, alerta e información personal
+```
+
+##### 8.4. `CAP-04` — Catálogo, recetas y oferta
+
+No existe copropiedad del mismo objeto:
+
+```text
+NEXO
+→ identidad de producto, categoría, unidad y presentación
+
+FOGO
+→ receta, versión, método, rendimiento, porción y conocimiento productivo
+
+PULSO
+→ menú, oferta, precio publicado y disponibilidad comercial
+```
+
+PASS, ORIGO, NUMERA y VISO consumirán proyecciones o administrarán atributos
+explícitamente delegados; no crearán catálogos paralelos.
+
+##### 8.5. `CAP-05` — Abastecimiento
+
+ORIGO conserva necesidad, solicitud, comparación, negociación, orden, relación
+con proveedor, aceptación empresarial, diferencia, devolución y reclamación.
+
+NEXO conserva la recepción física y el efecto de inventario. NUMERA conserva la
+obligación, gasto, costo y pago. Los tres compartirán correlación, no un objeto
+editable por todos.
+
+##### 8.6. `CAP-06` — Inventario
+
+NEXO será la única fuente del estado físico, existencia, ubicación, lote,
+serial, LPN, reserva, tránsito, conteo y movimiento. Las aplicaciones de origen
+emitirán hechos idempotentes; no escribirán stock directamente.
+
+##### 8.7. `CAP-07` — Activos
+
+NEXO conserva identidad, ubicación, custodia, condición, disponibilidad,
+mantenimiento, repuesto, garantía, préstamo, pérdida y baja del activo.
+
+La propiedad se separa de:
+
+- compra en ORIGO;
+- costo y depreciación o efecto económico en NUMERA;
+- postura técnica del endpoint en BLOQUE Z;
+- uso operativo por el área custodia.
+
+##### 8.8. `CAP-08` — Producción
+
+FOGO conserva plan, revisión, programación, orden, lote, ejecución, controles de
+calidad, decisión productiva, reproceso y cierre. NEXO conserva material físico,
+reservas, consumo aplicado, producto terminado y disponibilidad de inventario.
+
+Una comanda de preparación inmediata de PULSO no se convertirá en orden de
+producción por lote de FOGO.
+
+##### 8.9. `CAP-09` — Venta y pedidos
+
+PULSO será propietario de pedido, mesa, comanda, venta, pago operativo, caja y
+cierre. PASS será canal y experiencia del cliente. NUMERA conserva el efecto
+económico. NEXO aplica inventario. El proveedor fiscal conserva emisión oficial.
+
+El POS externo será una fuente temporal mediante adaptador; no arquitectura
+objetivo ni propietario de los demás dominios.
+
+##### 8.10. `CAP-10` — Cliente y servicio
+
+```text
+PASS
+→ experiencia personal, perfil, consentimiento visible,
+  fidelización, beneficios y seguimiento
+
+VISO
+→ colas, caso, SLA, investigación, aprobación y cierre administrativo
+
+PULSO
+→ hechos de servicio relacionados con venta, pedido, mesa y devolución
+```
+
+La vista cliente 360 será una proyección y no una nueva fuente de verdad.
+
+##### 8.11. `CAP-11` — Logística
+
+NEXO conserva logística interna, necesidad, plan, ruta, viaje, vehículo
+referenciado, carga, custodia, remisión, novedad, recepción y cierre. PULSO
+conserva la promesa y el resultado de entrega del pedido. PASS presenta tracking
+y confirmación al cliente. Los terceros ejecutan solo el servicio contratado.
+
+##### 8.12. `CAP-12` — Dinero y costos
+
+NUMERA será la capa económico-operativa y conservará hechos económicos,
+cartera, obligaciones, bancos, tesorería, conciliaciones, costos, presupuestos,
+cierres y rentabilidad.
+
+Las aplicaciones operativas conservan sus hechos. Bancos, proveedores de pago,
+proveedor fiscal y contabilidad externa mantienen la autoridad externa aplicable.
+NUMERA no se declarará contabilidad formal completa hasta una decisión posterior
+expresa.
+
+##### 8.13. `CAP-13` — Instalaciones
+
+NEXO conserva instalación, espacio, componente fijo, condición, disponibilidad,
+plan y orden de mantenimiento, limpieza, saneamiento, plagas, servicios,
+medidores, inspección física, calibración, llaves, obras y novedades.
+
+Frontera con `CAP-07`:
+
+```text
+OBJETO MÓVIL, SERIALIZADO O TRASLADABLE
+→ activo de CAP-07
+
+ESPACIO O COMPONENTE INCORPORADO A LA INSTALACIÓN
+→ instalación de CAP-13
+```
+
+La misma infraestructura de mantenimiento podrá atender ambos, pero el tipo de
+objeto, plan, evidencia y liberación permanecerán explícitos.
+
+Para calibración:
+
+- NEXO conserva instrumento, programa, resultado y certificado;
+- FOGO o el propietario del proceso evalúa impacto sobre lotes y decisiones;
+- VISO/SST evalúa impacto regulatorio o laboral cuando corresponda.
+
+##### 8.14. `CAP-14` — Marketing y desarrollo comercial
+
+AURA será propietaria objetivo de identidad de marca, brief, campaña, contenido,
+publicación, oportunidad, pipeline, reputación y atribución de marketing.
+
+AURA permanece futura y su propiedad objetivo no equivale a cobertura actual.
+PULSO ejecutará pedidos y promociones transaccionales; PASS identidad,
+consentimiento y beneficios; NUMERA margen y presupuesto; VISO casos de servicio.
+
+##### 8.15. `CAP-15` — Tecnología
+
+No se crea obligatoriamente un área formal de TI para aprobar la propiedad.
+Se define una **función de Coordinación Tecnológica**, que puede ejercerse de
+forma interina dentro de Jefatura de Operaciones mientras el tamaño de la
+organización lo justifique.
+
+La propiedad continúa distribuida:
+
+```text
+SHELL
+→ identidad, aplicaciones, contratos y política de acceso
+
+NEXO
+→ activo físico, ubicación, custodia, mantenimiento y retiro
+
+VISO
+→ mesa de servicio, incidentes, problemas, cambios y SLA
+
+ANIMA
+→ portal del trabajador, solicitud propia y capacitación
+
+PRINT-ARC
+→ colas, rutas, adaptadores y resultados de impresión
+
+BLOQUE Z
+→ modelo operativo transversal, configuración, red,
+  observabilidad, soporte y coordinación
+```
+
+ORIGO conserva contratos y compras; NUMERA costos y obligaciones; propietarios
+de aplicación conservan aceptación funcional.
+
+##### 8.16. `CAP-16` — Información
+
+Cada dominio conserva su expediente funcional. BLOQUE AA gobierna clasificación,
+finalidad, versiones, retención, firma, compartición, derechos, custodia y
+auditoría. VISO administra solicitudes e investigaciones; SHELL decide acceso;
+Supabase y Storage son custodios técnicos.
+
+##### 8.17. `CAP-17` — Analítica
+
+Cada dominio conserva sus datos maestros y hechos. BLOQUE AB conserva el registro
+de métricas, capa semántica, calidad, certificación, reportes, diagnóstico y
+mejora. VISO presenta la visión ejecutiva; NUMERA la visión económica.
+
+El propietario de una métrica será la función empresarial que toma la decisión,
+no la persona que escribió la consulta.
+
+##### 8.18. `CAP-18` — Continuidad
+
+BLOQUE AC coordina análisis de impacto, prioridades, mando, operación mínima,
+recuperación, conciliación y ejercicios. Cada dominio conserva su runbook y
+valida su resultado. BLOQUE Z recupera tecnología. E4 recupera efectos
+asíncronos. E5 gobierna la contingencia temporal de implementaciones.
+
+---
+
+#### 9. Modelo operativo para una organización pequeña
+
+La ausencia actual de áreas formales de TI, datos, gobierno de información o
+continuidad no impide aprobar una arquitectura responsable.
+
+Se adopta el principio:
+
+```text
+FUNCIÓN OBLIGATORIA
+≠ ÁREA ORGANIZACIONAL OBLIGATORIA
+```
+
+Una misma persona podrá ejercer temporalmente varias funciones, por ejemplo:
+
+```text
+JEFATURA DE OPERACIONES
++ DESARROLLO
++ COORDINACIÓN TECNOLÓGICA INTERINA
++ SOPORTE DE PRIMER NIVEL
+```
+
+La acumulación no fusiona las funciones ni elimina controles.
+
+##### 9.1. Acciones que requieren revisión independiente
+
+Aunque una persona ejecute varias funciones, no deberá autoaprobar sin revisión
+posterior o segundo control, según riesgo:
+
+- concesión o elevación de acceso privilegiado;
+- cambio de permisos o RLS;
+- despliegue productivo y aprobación de rollback;
+- eliminación o disposición de información;
+- certificación de un dato corregido por la misma persona;
+- cierre financiero, castigo o reapertura;
+- cierre de investigación en la que sea parte implicada;
+- declaración de recuperación y cierre de un incidente crítico;
+- baja de activos o diferencias relevantes de inventario;
+- publicación de una política o decisión que requiera autoridad superior.
+
+##### 9.2. Asignaciones interinas
+
+Las asignaciones nominales y suplencias se resolverán mediante:
+
+- `PROC-ACTOR-003` para supervisión, aprobación y soporte;
+- `TI-DOM-001` y `TI-AUTH-001` para tecnología;
+- `INFO-DOM-001` para gobierno de información;
+- `DATA-DOM-001` y `DATA-AUTH-003` para datos y certificación;
+- `CONT-DOM-001` y `CONT-DOM-006` para continuidad;
+- los procesos de SST para responsable habilitado y sustitutos.
+
+No se crea una tarea nueva porque todas las asignaciones tienen ya un destino y
+momento de resolución.
+
+##### 9.3. Apoyo de inteligencia artificial
+
+La IA podrá asistir a las funciones responsables mediante:
+
+- consolidación de registros;
+- borradores de informes;
+- detección de vencimientos y anomalías;
+- preparación de minutas y acciones;
+- explicación de variaciones;
+- consulta de conocimiento aprobado;
+- comprobación de evidencia pendiente.
+
+La IA no adquirirá propiedad empresarial, autoridad de aprobación ni capacidad
+para modificar fuentes de verdad sin un contrato y aprobación humana.
+
+---
+
+#### 10. Reglas de precedencia entre dominios
+
+##### 10.1. Hecho operativo y efecto derivado
+
+```text
+DOMINIO DE ORIGEN
+→ conserva el hecho que ocurrió
+
+DOMINIO RECEPTOR
+→ aplica su efecto exactamente una vez
+```
+
+Ejemplos:
+
+- PULSO conserva venta; NEXO aplica salida; PASS aplica puntos; NUMERA registra
+  efecto económico.
+- ORIGO conserva compra y recepción empresarial; NEXO aplica entrada física;
+  NUMERA registra obligación.
+- FOGO conserva lote y resultado productivo; NEXO aplica consumos y salida;
+  NUMERA calcula costo.
+
+##### 10.2. Fuente maestra y proyección
+
+Una aplicación consumidora podrá mantener caché, índice o proyección, pero no
+editarla como fuente alternativa. Toda corrección regresará al propietario.
+
+##### 10.3. Propiedad por atributo
+
+Cuando un registro lógico combine atributos de varios dominios, cada atributo
+deberá declarar precedencia.
+
+Ejemplo:
+
+```text
+PRODUCTO.nombre
+→ NEXO
+
+PRODUCTO.costo_calculado
+→ NUMERA
+
+PRODUCTO.disponibilidad_comercial
+→ PULSO
+
+PRODUCTO.regla_de_producción
+→ FOGO
+```
+
+##### 10.4. Cierre por dominio
+
+Cerrar un proceso en una aplicación no cierra automáticamente los efectos en
+otras. El cierre integral exigirá estados correlacionados y conciliación.
+
+---
+
+#### 11. Conflictos de propiedad resueltos
+
+| Conflicto                                  | Resolución canónica                                                                        |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| VISO concentra pantallas administrativas   | VISO es superficie administrativa; la fuente permanece en el dominio propietario           |
+| SHELL contiene contratos y migraciones     | SHELL es custodio de identidad, autorización y contratos; no propietario universal         |
+| Supabase almacena múltiples dominios       | la ubicación física no transfiere propiedad empresarial                                    |
+| producto, receta y menú aparecen juntos    | NEXO, FOGO y PULSO conservan objetos distintos con contratos explícitos                    |
+| ORIGO y NEXO participan en recepción       | ORIGO conserva expediente de compra; NEXO conserva efecto físico                           |
+| PULSO, PASS y VISO atienden clientes       | PULSO conserva operación; PASS autoservicio/fidelización; VISO caso administrativo         |
+| NEXO y PULSO participan en entrega         | NEXO logística interna; PULSO cumplimiento del pedido; PASS visibilidad al cliente         |
+| activo e instalación reciben mantenimiento | propiedad por tipo de objeto; motor compartido no fusiona expedientes                      |
+| TI no tiene área formal                    | se aprueba función de Coordinación Tecnológica interina con propiedad distribuida          |
+| datos y KPI no tienen equipo dedicado      | cada dominio conserva stewardship; BLOQUE AB gobierna definiciones y certificación         |
+| continuidad parece responsabilidad técnica | Gerencia y propietarios de proceso responden por continuidad; BLOQUE Z recupera tecnología |
+| proveedor externo ejecuta una capacidad    | conserva autoridad externa; Vento Group mantiene expediente, contrato y conciliación       |
+
+---
+
+#### 12. Decisiones pendientes con propietario y momento
+
+No quedan pendientes narrativos sin destino.
+
+| Decisión                                                           | Propietario documental                          | Momento de resolución                                                         |
+| ------------------------------------------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| persona que ejercerá el rol SST y sus suplentes                    | `PROC-ACTOR-003` y proceso SST                  | antes de aprobar diseño E2 y paquetes SST                                     |
+| persona que ejercerá Coordinación Tecnológica interina             | `TI-DOM-001`, `TI-AUTH-001`, `PROC-ACTOR-003`   | antes de activar mesa de servicio, accesos privilegiados o piloto tecnológico |
+| stewards concretos por familia de información                      | `INFO-DOM-001`                                  | antes de configurar clasificación, retención o disposición                    |
+| propietarios y stewards de cada maestro                            | `DATA-DOM-001`, `DATA-DOM-002`                  | antes de crosswalks, fusiones o migraciones                                   |
+| propietario y certificador de cada KPI                             | `DATA-DOM-004`, `DATA-AUTH-003`                 | antes de publicar tableros oficiales                                          |
+| dirección de incidente y suplentes                                 | `CONT-DOM-001`, `CONT-DOM-006`                  | antes del primer ejercicio o activación real                                  |
+| decisión de construir o integrar contabilidad formal               | `NUMERA-DOM-017`, `NUMERA-UX-027`               | antes de libros, asientos o reportes oficiales internos                       |
+| fecha y alcance de implementación de TALENTO                       | `CAP-TAL-001` a `CAP-TAL-006`, E5               | antes de adoptar reclutamiento digital                                        |
+| fecha y alcance de implementación de AURA                          | `AURA-*`, CAP-COVER y E5                        | antes de conectar canales o publicar contenido                                |
+| proveedores concretos de BI, IA, firma, MDM, soporte o continuidad | tareas `*-INT-*` y `INT-EXT-*` correspondientes | antes de contratar, enviar datos o habilitar efectos                          |
+| readiness real de cada dominio                                     | `CAP-COVER-001` a `CAP-COVER-012`               | inmediatamente después de aprobar `CAP-SCOPE-019`                             |
+
+---
+
+#### 13. Hallazgos de consolidación
+
+| ID                    | Hallazgo                                                                                                | Severidad | Destino                                                                   | Momento                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------- | -------------------------------------------- |
+| `H-CAP-SCOPE-019-001` | confundir interfaz administrativa con propiedad puede convertir VISO en dueño universal                 | crítica   | `CAP-COVER-003`, `CAP-COVER-008`, `GAP-CTRL-003`                          | matriz de cobertura y arquitectura E2/E3     |
+| `H-CAP-SCOPE-019-002` | confundir persistencia con propiedad puede convertir Supabase o SHELL en fuente empresarial universal   | crítica   | `CAP-COVER-004`, `CAP-COVER-005`, `GAP-CTRL-003`                          | E3 antes del modelo físico objetivo          |
+| `H-CAP-SCOPE-019-003` | asignar varios propietarios al mismo objeto y etapa deja precedencia indefinida                         | crítica   | `CAP-COVER-008`, `CAP-COVER-012`, `GAP-CTRL-004`                          | matriz capacidad × proceso × aplicación      |
+| `H-CAP-SCOPE-019-004` | un perfil mixto de tratamientos puede resumirse incorrectamente como una sola clasificación             | alta      | `CAP-COVER-001`, `CAP-COVER-012`                                          | definición de criterios y matriz consolidada |
+| `H-CAP-SCOPE-019-005` | `REUSE_OR_REFACTOR` puede interpretarse como capacidad terminada                                        | crítica   | `CAP-COVER-001` a `CAP-COVER-005`, `GAP-CTRL-001`                         | medición técnica de cobertura                |
+| `H-CAP-SCOPE-019-006` | `BUILD` puede convertirse en implementación sin pasar por E2–E5                                         | crítica   | `CAP-COVER-010`, `GAP-CTRL-004`, `GAP-CTRL-008`                           | antes de crear paquetes o código             |
+| `H-CAP-SCOPE-019-007` | una autoridad externa puede confundirse con propietario interno o eliminar la necesidad de conciliación | crítica   | `CAP-COVER-006`, `GAP-CTRL-005`, BLOQUE X                                 | diseño de integraciones externas             |
+| `H-CAP-SCOPE-019-008` | la concentración de TI, desarrollo y operaciones en una persona puede eliminar segregación              | crítica   | `TI-AUTH-001`, `TI-AUTH-002`, `PROC-ACTOR-003`                            | antes de accesos privilegiados y producción  |
+| `H-CAP-SCOPE-019-009` | la ausencia de persona SST nominal puede confundirse con ausencia de propietario del dominio            | alta      | `PROC-ACTOR-003`, `CAP-COVER-002`                                         | antes del diseño y piloto SST                |
+| `H-CAP-SCOPE-019-010` | datos maestros y métricas pueden quedar sin steward aunque tengan aplicación fuente                     | alta      | `DATA-DOM-001`, `DATA-DOM-004`, `DATA-AUTH-003`                           | antes de certificación analítica             |
+| `H-CAP-SCOPE-019-011` | documentos pueden quedar sin custodio aunque el proceso tenga propietario                               | crítica   | `INFO-DOM-001`, `INFO-DOM-003`, `INFO-AUTH-003`                           | antes de retención y disposición             |
+| `H-CAP-SCOPE-019-012` | continuidad puede delegarse indebidamente a tecnología                                                  | crítica   | `CONT-DOM-001` a `CONT-DOM-004`, `CAP-COVER-012`                          | análisis de impacto y readiness              |
+| `H-CAP-SCOPE-019-013` | AURA y TALENTO pueden aparecer como propietarios objetivo aunque no estén operativos                    | alta      | `CAP-COVER-002`, `CAP-COVER-003`, `GAP-CTRL-006`                          | medición de cobertura actual                 |
+| `H-CAP-SCOPE-019-014` | un cambio de propietario puede reescribir historia o dejar consumidores antiguos                        | crítica   | `GAP-CTRL-003`, `GAP-CTRL-007`, `SUPA-TRANS-*`                            | migración y transición                       |
+| `H-CAP-SCOPE-019-015` | un cierre local puede ocultar efectos pendientes en otros dominios                                      | crítica   | `CAP-COVER-008`, `GAP-CTRL-007`, requisitos `TREQ-INTEGRATION-*` vigentes | arquitectura E4 y paquetes E5                |
+| `H-CAP-SCOPE-019-016` | la IA puede asumir autoridad implícita por preparar informes o recomendaciones                          | alta      | `DATA-AUTH-004`, `DATA-INT-004`, `INFO-AUTH-004`                          | antes de integrar modelos externos           |
+
+Todos los hallazgos tienen tarea y momento. No se crea backlog narrativo adicional.
+
+---
+
+#### 14. Efecto sobre `CAP-COVER-*`
+
+La aprobación de `MAT-OWN-CAP-001` habilitará la siguiente secuencia:
+
+```text
+CAP-COVER-001
+→ definir criterios verificables de cada estado de cobertura
+
+CAP-COVER-002
+→ comprobar cobertura funcional por capacidad
+
+CAP-COVER-003
+→ comprobar cobertura de experiencia e interfaz
+
+CAP-COVER-004
+→ comprobar cobertura de backend y servidor
+
+CAP-COVER-005
+→ comprobar cobertura de datos y Supabase
+
+CAP-COVER-006
+→ comprobar cobertura de integraciones y proveedores
+
+CAP-COVER-007
+→ comprobar cobertura de pruebas y validación
+
+CAP-COVER-008
+→ comprobar cobertura de autorización y contexto
+
+CAP-COVER-009
+→ comprobar cobertura operativa por sede, área y rol
+
+CAP-COVER-010
+→ comprobar cobertura de migración, transición y rollback
+
+CAP-COVER-011
+→ comprobar cobertura de observabilidad, soporte y continuidad
+
+CAP-COVER-012
+→ aprobar matriz capacidad × proceso × aplicación × implementación
+```
+
+Cada evaluación deberá comparar:
+
+```text
+PROPIETARIO OBJETIVO APROBADO
+vs
+IMPLEMENTACIÓN ACTUAL LOCALIZADA
+vs
+ESTADO DE COBERTURA VERIFICADO
+vs
+BRECHA Y DESTINO
+```
+
+`CAP-COVER-*` no podrá cambiar silenciosamente el propietario aprobado. Una
+evidencia material contradictoria deberá regresar mediante una decisión
+canónica explícita.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS.
+
+**Justificación:** `CAP-SCOPE-019` consolida clasificación, propiedad y
+precedencia documental de decisiones ya aprobadas. No introduce una nueva regla
+ejecutable, transición de estado, cálculo, permiso, contrato de integración ni
+comportamiento que requiera una fila adicional.
+
+Permanecen vigentes los **146 requisitos** del registro `04A` actualizado hasta
+`CAP-SCOPE-018`. Esta tarea no modifica su estado, texto, relación ni prioridad.
+
+La propiedad aprobada servirá para asignar correctamente la tarea responsable,
+paquete, repositorio y evidencia durante `CAP-COVER-*`, E2, E3, E4 y E5.
+
+---
+
+#### 16. Tareas nuevas derivadas
+
+**Resultado:** NO CREA TAREAS NUEVAS.
+
+Las responsabilidades que requieren definición nominal, stewardship,
+segregación, integración, transición o readiness ya están cubiertas por tareas
+materializadas, entre otras:
+
+- `PROC-ACTOR-*`;
+- `CAP-COVER-001` a `CAP-COVER-012`;
+- `GAP-CTRL-001` a `GAP-CTRL-008`;
+- `TI-*`, `INFO-*`, `DATA-*` y `CONT-*`;
+- tareas de dominio, autorización, experiencia e integración de cada aplicación;
+- E3, E4, E5, BLOQUE X, BLOQUE T y BLOQUE U.
+
+---
+
+#### 17. Decisiones canónicas propuestas
+
+1. Se adopta `MAT-OWN-CAP-001` como matriz canónica de clasificación y propiedad.
+2. Las 217 subcapacidades conservan exactamente su clasificación primaria aprobada.
+3. La distribución consolidada será 113 `REUSE_OR_REFACTOR`, 86 `BUILD`, 10 `INTEGRATE_EXTERNAL`, 7 `CONTROLLED_MANUAL` y 1 `DEFERRED`.
+4. No se asignan capacidades completas a `BUY`, `OUT_OF_SCOPE` ni `RETIRE`.
+5. Cada dominio puede tener un perfil mixto; no se le impondrá una clasificación única falsa.
+6. Clasificación objetivo y cobertura técnica permanecerán separadas.
+7. Cada objeto, atributo y etapa tendrá una única fuente con precedencia explícita.
+8. Propietario empresarial, propietario funcional, propietario de dato, steward, custodio técnico y operador serán responsabilidades distintas.
+9. VISO no será propietario universal de los procesos administrativos.
+10. SHELL no será propietario universal de los contratos ni datos compartidos.
+11. Supabase y Storage no adquirirán propiedad empresarial por almacenar información.
+12. Producto, receta y oferta permanecerán bajo NEXO, FOGO y PULSO respectivamente.
+13. ORIGO conservará abastecimiento; NEXO el efecto físico; NUMERA el efecto económico.
+14. PULSO conservará la operación comercial; PASS la experiencia del cliente; VISO los casos administrativos.
+15. NEXO conservará logística interna e instalaciones; PULSO el cumplimiento del pedido de cliente.
+16. NUMERA será la capa económico-operativa sin declararse todavía contabilidad formal completa.
+17. AURA y TALENTO conservarán propiedad objetivo aunque su cobertura actual deba medirse como futura, parcial o ausente.
+18. La propiedad tecnológica será distribuida bajo coordinación del BLOQUE Z.
+19. No será obligatorio crear inmediatamente un área formal de TI, datos, información o continuidad; sí será obligatorio asignar las funciones.
+20. Una persona podrá ejercer varias funciones temporalmente, pero no se fusionarán sus responsabilidades ni se eliminarán revisiones independientes.
+21. Cada dominio conservará su expediente; BLOQUE AA gobernará información; BLOQUE AB analítica; BLOQUE AC continuidad.
+22. Proveedores externos ejecutarán contratos limitados sin convertirse en fuentes internas universales.
+23. Toda transferencia de propiedad futura será versionada, migrable, auditable y con adaptación de consumidores.
+24. `CAP-COVER-001` será la única continuidad inmediata.
+25. No se crea ninguna tarea ni requisito de prueba nuevo.
+26. No se modifica código, Supabase, datos, permisos, proveedores ni organización real.
+
+---
+
+#### 18. Criterios de aceptación
+
+`CAP-SCOPE-019` podrá aprobarse cuando:
+
+1. las 18 familias estén presentes exactamente una vez;
+2. las 217 subcapacidades estén reconciliadas;
+3. la distribución de tratamientos sume exactamente 217;
+4. se conserve la clasificación primaria aprobada de cada `CAP-xx.yy`;
+5. ningún dominio quede sin propietario empresarial accountable;
+6. los dominios federados definan propiedad por objeto, atributo o etapa;
+7. VISO, SHELL y Supabase queden excluidos como propietarios universales;
+8. se ratifique la separación producto–receta–oferta;
+9. se ratifiquen las fronteras ORIGO–NEXO–NUMERA;
+10. se ratifiquen las fronteras PULSO–PASS–VISO;
+11. se ratifiquen las fronteras NEXO–PULSO en logística;
+12. se resuelva la frontera entre activo e instalación;
+13. se apruebe la propiedad funcional de SST aunque el nombramiento personal siga en `PROC-ACTOR-*`;
+14. se apruebe la función tecnológica interina sin exigir crear un área formal;
+15. las funciones de información, datos y continuidad tengan responsables documentales;
+16. las segregaciones mínimas permanezcan incluso cuando una persona acumule funciones;
+17. todos los hallazgos tengan tarea y momento de resolución;
+18. se declare que no genera tareas nuevas;
+19. se declare que no genera requisitos de prueba nuevos;
+20. `CAP-COVER-001` permanezca como única continuidad inmediata;
+21. no se modifique implementación, Supabase, datos ni estructura organizacional real.
+
+---
+
+#### 19. Lo que esta tarea no autoriza
+
+Esta tarea no autoriza:
+
+- crear o cerrar áreas organizacionales;
+- nombrar, contratar o despedir personas;
+- conceder cargos, permisos o accesos;
+- cambiar propietarios en datos productivos;
+- mover tablas o expedientes entre aplicaciones;
+- fusionar catálogos;
+- desplegar AURA, TALENTO, BLOQUE Z, AA, AB o AC;
+- implementar una mesa de servicio;
+- conectar BI o IA;
+- contratar proveedores;
+- crear flujos, pantallas, tablas, RPC, RLS, funciones o migraciones;
+- modificar `04A`;
+- declarar una capacidad implementada o lista para producción;
+- iniciar E2, E3, E4 o E5 fuera del orden canónico;
+- cerrar brechas de cobertura sin evidencia.
+
+---
+
+#### 20. Resultado y continuidad
+
+Al aprobarse:
+
+- quedará cerrada la evaluación de alcance `CAP-SCOPE-001` a `CAP-SCOPE-019`;
+- quedarán congeladas clasificación y propiedad objetivo de los 18 dominios;
+- `MAT-OWN-CAP-001` será la referencia para arquitectura, datos, interfaces,
+  autorización, integraciones, paquetes y pruebas;
+- las 217 subcapacidades estarán preparadas para medición verificable de cobertura;
+- el registro `04A` permanecerá sin cambios;
+- la siguiente tarea será exclusivamente:
+
+```text
+CAP-COVER-001
+— Definir criterios verificables de cada estado de cobertura
+```
+
+---
+
+#### 21. Estado de aprobación
+
+**Estado actual:** PROPUESTA PARA APROBACIÓN — NO APROBADA.
+
+No marcar como aprobada ni avanzar a `CAP-COVER-001` hasta recibir confirmación
+explícita del usuario.
+
 
 Las tareas `CAP-TAL-001` a `CAP-TAL-006` fueron reubicadas en BLOQUE E2 porque
 definen procesos, estados, actores y experiencia TO-BE. Conservan sus
