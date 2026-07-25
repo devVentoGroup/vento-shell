@@ -1,0 +1,52 @@
+name: Repair canonical plan
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/docs/repair-plan-coherence.py
+      - .github/workflows/repair-canonical-plan.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair-canonical-plan
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply coherence repairs
+        run: python3 scripts/docs/repair-plan-coherence.py
+
+      - name: Regenerate canonical plan
+        run: node scripts/docs/build-plan-canonico.mjs
+
+      - name: Validate canonical plan
+        run: node scripts/docs/build-plan-canonico.mjs --check
+
+      - name: Remove temporary repair automation
+        run: |
+          rm scripts/docs/repair-plan-coherence.py
+          rm .github/workflows/repair-canonical-plan.yml
+
+      - name: Commit repaired canonical plan
+        run: |
+          git config user.name "vento-plan-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Corregir coherencia del plan canónico"
+          git push origin HEAD:main
