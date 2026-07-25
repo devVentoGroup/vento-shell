@@ -32,6 +32,16 @@ resuelta por la sola existencia de tablas, permisos o rutas legacy.
 ### [ ] NEXO-DOM-026 — Definir inspecciones, mantenimiento preventivo, garantía y calibración
 ### [ ] NEXO-DOM-027 — Resolver propiedad de vehículos, checklist, kilometraje, combustible y mantenimiento de flota
 ### [ ] NEXO-DOM-028 — Emitir eventos financieros por adquisición, reparación, pérdida y baja cuando corresponda
+### [ ] NEXO-DOM-029 — Definir jerarquía canónica de instalaciones, espacios, componentes fijos, puntos de servicio y condición
+### [ ] NEXO-DOM-030 — Definir planes de mantenimiento, solicitudes, órdenes de trabajo, reparación, prueba y liberación
+### [ ] NEXO-DOM-031 — Definir limpieza, saneamiento, procedimientos, frecuencias, químicos, verificación y liberación
+### [ ] NEXO-DOM-032 — Definir control de plagas, mapa, dispositivos, visitas, hallazgos, acciones y certificados
+### [ ] NEXO-DOM-033 — Definir servicios, medidores, lecturas, consumos, interrupciones, alertas y contingencias
+### [ ] NEXO-DOM-034 — Definir inspecciones físicas, plantillas versionadas, hallazgos y acciones correctivas
+### [ ] NEXO-DOM-035 — Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto
+### [ ] NEXO-DOM-036 — Definir llaves, credenciales físicas, zonas, custodia, entrega, devolución e incidencias
+### [ ] NEXO-DOM-037 — Definir obras, adecuaciones, contratistas, permisos, afectación operativa, recepción y garantía
+### [ ] NEXO-DOM-038 — Definir novedades locativas, severidad, contención, escalamiento, resolución y cierre
 
 ### [ ] NEXO-AUTH-021 — Auditar permisos actuales de LPN, activos y contenedores
 ### [ ] NEXO-AUTH-022 — Proteger creación, actualización, cierre, anulación y reetiquetado de LPN
@@ -43,6 +53,8 @@ resuelta por la sola existencia de tablas, permisos o rutas legacy.
 ### [ ] NEXO-AUTH-028 — Proteger impresión y reimpresión mediante permisos atómicos
 ### [ ] NEXO-AUTH-029 — Eliminar dependencia de permisos amplios legacy
 ### [ ] NEXO-AUTH-030 — Ejecutar pruebas integrales del subdominio
+### [ ] NEXO-AUTH-031 — Proteger instalaciones, mantenimiento, limpieza, inspecciones, calibración, acceso físico y obras
+### [ ] NEXO-AUTH-032 — Separar reporte, solicitud, aprobación, ejecución, verificación, liberación, cierre y reapertura
 
 SUBBLOQUE K2 — Procesos y experiencia de NEXO
 
@@ -89,3 +101,9 @@ SUBBLOQUE K2 — Procesos y experiencia de NEXO
 ### [ ] NEXO-UX-040 — Validar el prototipo del subdominio con decoración, vajilla, herramientas y repuestos
 ### [ ] NEXO-UX-041 — Definir línea base y métricas objetivo de pérdidas, búsqueda y diferencias
 ### [ ] NEXO-UX-042 — Aprobar el diseño del subdominio y remitirlo a E5 antes de implementarlo físicamente
+### [ ] NEXO-UX-043 — Diseñar registro y mapa simple de instalaciones, espacios, condición y disponibilidad
+### [ ] NEXO-UX-044 — Diseñar solicitudes, órdenes de trabajo, mantenimiento y reparaciones
+### [ ] NEXO-UX-045 — Diseñar limpieza, saneamiento, plagas y evidencia operativa por área
+### [ ] NEXO-UX-046 — Diseñar inspecciones, calibración, servicios, medidores y alertas
+### [ ] NEXO-UX-047 — Diseñar llaves, acceso físico, obras, cierres temporales y novedades
+### [ ] NEXO-UX-048 — Validar el prototipo con Operaciones, Producción, Limpieza, Mantenimiento, SST y responsables de sede
