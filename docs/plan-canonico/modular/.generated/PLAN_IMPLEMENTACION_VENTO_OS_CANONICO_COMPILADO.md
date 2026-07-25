@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **186** |
+| Tareas aprobadas | **187** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1215** |
+| Tareas no iniciadas | **1214** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas** |
-| Tarea actual | **CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento** |
+| Última tarea aprobada | **CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento** |
+| Tarea actual | **CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN** |
+| Siguiente tarea | **CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 61 de 96 aprobadas; CAP-SCOPE-005 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 62 de 96 aprobadas; CAP-SCOPE-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-004` — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas |
-| Tarea actual | `CAP-SCOPE-005` — Evaluar compras, proveedores, contratos, precios y abastecimiento — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-006` — Evaluar inventario, lotes, vencimientos, LOC y LPN |
+| Última aprobada | `CAP-SCOPE-005` — Evaluar compras, proveedores, contratos, precios y abastecimiento |
+| Tarea actual | `CAP-SCOPE-006` — Evaluar inventario, lotes, vencimientos, LOC y LPN — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **61 DE 96 APROBADAS — ACTUAL CAP-SCOPE-005** |
+| BLOQUE E1 | **62 DE 96 APROBADAS — ACTUAL CAP-SCOPE-006** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-004 — Evaluar catálogo, productos, presentaciones, unidades, menús y recetas
-        ↓
-TAREA ACTUAL
 CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
         ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 61 de 96 tareas aprobadas
+BLOQUE E1 — 62 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183462,12 +183462,12 @@ Dominios iniciales:
 
 | Métrica | Resultado |
 | --- | ---: |
-| Requisitos vigentes | **86** |
+| Requisitos vigentes | **89** |
 | Dominios con requisitos | **14** |
-| Filas con catorce columnas | **86 de 86** |
+| Filas con catorce columnas | **89 de 89** |
 | Identificadores duplicados | **0** |
 | Relaciones `TREQ-*` no resolubles | **0** |
-| Última tarea incorporada | `CAP-SCOPE-003` |
+| Última tarea incorporada | `CAP-SCOPE-004` |
 | Fecha de normalización | `2026-07-24` |
 
 Distribución vigente:
@@ -183476,17 +183476,17 @@ Distribución vigente:
 | --- | --- | ---: |
 | `AUTH` | `TREQ-AUTH-001` a `TREQ-AUTH-017` | 17 |
 | `SHELL` | `TREQ-SHELL-001` a `TREQ-SHELL-009` | 9 |
-| `SUPABASE` | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-011` | 11 |
+| `SUPABASE` | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-012` | 12 |
 | `ANIMA` | `TREQ-ANIMA-001` a `TREQ-ANIMA-004` | 4 |
 | `VISO` | `TREQ-VISO-001` | 1 |
 | `NEXO` | `TREQ-NEXO-001` a `TREQ-NEXO-010` | 10 |
-| `FOGO` | `TREQ-FOGO-001` | 1 |
+| `FOGO` | `TREQ-FOGO-001` a `TREQ-FOGO-002` | 2 |
 | `ORIGO` | `TREQ-ORIGO-001` a `TREQ-ORIGO-003` | 3 |
 | `PULSO` | `TREQ-PULSO-001` a `TREQ-PULSO-004` | 4 |
 | `NUMERA` | `TREQ-NUMERA-001` | 1 |
 | `PASS` | `TREQ-PASS-001` a `TREQ-PASS-009` | 9 |
 | `TALENTO` | `TREQ-TALENTO-001` | 1 |
-| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-008` | 8 |
+| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-009` | 9 |
 | `UX` | `TREQ-UX-001` a `TREQ-UX-007` | 7 |
 
 ### Procedimiento obligatorio de actualización
@@ -183552,6 +183552,7 @@ Distribución vigente:
 | `TREQ-SUPABASE-009` | `SUPABASE` | Toda suscripción Realtime deberá demostrar que la tabla o canal está publicado, que el consumidor recibe eventos autorizados, que no expone filas fuera de alcance y que dispone de recuperación o refresco cuando pierde eventos. No se podrá depender de Postgres Changes sobre vistas o relaciones no servidas por la publicación. | `CODE-AUD-006` / `H-CODE-006-011` a `H-CODE-006-013` | Pantallas estancadas, eventos perdidos, exposición transversal y falsa percepción de tiempo real / alta | Realtime + RLS + integración + resiliencia + E2E + regresión / automatizada | `SUPA-AUD-013`; `SUPA-ARC-019`; `AUTH-DB-023`; `INT-APP-008`; `INT-APP-009` | BLOQUE E3, infraestructura transversal y paquetes E5 consumidores de Realtime | `vento-shell`, aplicaciones consumidoras, Supabase local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `TREQ-INTEGRATION-003`; `TREQ-SUPABASE-007`; `TREQ-UX-006` |
 | `TREQ-SUPABASE-010` | `SUPABASE` | Toda Edge Function, webhook, cron, trigger o automatización activa deberá tener definición versionada en `vento-shell`, configuración de autenticación, disparador, propietario, secreto o principal técnico, observabilidad, política de reintento y evidencia de paridad con el remoto. Los objetos solo locales o solo remotos deberán clasificarse y no podrán quedar activos indefinidamente. | `CODE-AUD-005` / `H-CODE-005-006` a `H-CODE-005-016`; `CODE-AUD-006` / `H-CODE-006-014` a `H-CODE-006-017` | Jobs privilegiados no gobernados, ejecuciones perdidas o duplicadas, configuración divergente y automatizaciones sin propietario / crítica | Edge Function + webhook + cron + base de datos + seguridad + integración + regresión / automatizada | `SUPA-AUD-014` a `SUPA-AUD-017`; `SUPA-ARC-020`; `AUTH-DB-024`; `AUTH-DB-031`; `SUPA-TRANS-013`; `SUPA-TRANS-015` | BLOQUE E3, BLOQUE R y servicios transversales antes de producción | `vento-shell`, Edge Functions, `pg_cron`, triggers, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `TREQ-SUPABASE-006`; `TREQ-SHELL-009`; `TREQ-INTEGRATION-004` |
 | `TREQ-SUPABASE-011` | `SUPABASE` | La estructura organizacional deberá distinguir de forma verificable organización, titular jurídico, marca, establecimiento, línea de negocio, instalación, sede operativa, área, zona, estación, canal y punto externo. Cada elemento tendrá identificador y código estables, tipo, estado, vigencia, propietario y relaciones tipadas válidas. Ningún nombre, dirección compartida, `site_type`, área agregada o metadato de aplicación podrá fusionar conceptos, conceder capacidades o crear una fuente competidora. Los elementos referenciados no podrán eliminarse destructivamente y los cambios de titularidad, ubicación, cierre o reemplazo conservarán historia y auditoría. | `CAP-SCOPE-001`; `OPS-AUD-001`; `OPS-ADM-001`; `OPS-GOV-001`; `CAP-MAP-003`; `CAP-MAP-008`; `CODE-AUD-006`; `CODE-AUD-019`; `CODE-AUD-020` | atribución jurídica incorrecta, acceso territorial indebido, inventario o costos imputados a la unidad equivocada, duplicación de sedes o áreas y pérdida histórica / crítica | contractual + base de datos + migración + integridad referencial + RLS + integración + E2E + regresión / automatizada con validación documental controlada | `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-AUD-023`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `VISO-CORE-004` a `VISO-CORE-006`; `VISO-AUTH-013` a `VISO-AUTH-020`; `VISO-UX-013` a `VISO-UX-020`; `AUTH-QA-029`; `UX-QA-023` | arquitectura y transición E3 del maestro organizacional; paquete administrativo VISO en E5; certificación del BLOQUE U | `vento-shell`, `vento-viso` y todos los consumidores / Supabase local, CI, staging y migración controlada de datos reales | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-001`; tablas actuales `sites` y `areas`; metadatos comerciales distribuidos; configuraciones de capacidades; validaciones físicas y hallazgos de implementación | `TREQ-AUTH-009`; `TREQ-VISO-001`; `TREQ-INTEGRATION-006`; `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-SUPABASE-003` |
+| `TREQ-SUPABASE-012` | `SUPABASE` | El modelo canónico deberá mantener separados producto maestro, variante, rol, presentación, unidad, perfil de medición, clasificación, ingrediente, receta, versión, especificación, ítem de menú y oferta mediante identificadores estables, relaciones tipadas, constraints y vigencias verificables. Ninguna aplicación podrá fusionar estos conceptos por nombre, categoría, proveedor, sede o código externo. El retiro será no destructivo y toda venta, compra, movimiento, lote, costo, documento o mapeo histórico conservará la identidad y versión originalmente utilizadas. Las migraciones deberán detectar duplicados semánticos, referencias huérfanas, conversiones incompatibles y ciclos de composición antes de imponer constraints o retirar objetos legacy. | `CAP-SCOPE-004`; `CAP-04.01` a `CAP-04.04`; `CAP-04.09`; `CAP-04.10`; `H-CAP-SCOPE-004-001` a `H-CAP-SCOPE-004-003`; `H-CAP-SCOPE-004-011`; `H-CAP-SCOPE-004-012`; `H-CAP-SCOPE-004-015`; `BKL-FUNC-004`; `BKL-NEXO-006` | productos o recetas duplicados, referencias históricas rotas, conversiones incompatibles, menús vinculados al elemento incorrecto, pérdida de trazabilidad y migraciones destructivas / crítica | contractual + base de datos + migración + integridad referencial + versionado + regresión / automatizada con validación controlada de datos | `SUPA-AUD-019`; `DATA-NORM-AUD-004`; `SUPA-TRANS-005`; `SUPA-TRANS-007`; `SUPA-TRANS-012`; `SHELL-CON-001`; `SHELL-CON-016`; `READY-GATE-005` | arquitectura y transición E3 del maestro de producto y conocimiento; contratos compartidos; paquetes E5 de NEXO, FOGO y PULSO; puerta de readiness | `vento-shell`, `vento-nexo`, `vento-fogo`, `vento-pulso`, `vento-pass`, `vento-origo`, `vento-numera`, `vento-viso` / Supabase local, CI, staging y migración controlada de datos reales | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-004`; catálogo y recetas actuales; hallazgos de perfiles, unidades y fuentes competidoras; matrices `MAP-IMPL-CAP-001` y `BKL-REPO-001` | `TREQ-NEXO-008`; `TREQ-NEXO-010`; `TREQ-SUPABASE-003`; `TREQ-INTEGRATION-006`; `TREQ-FOGO-002`; `TREQ-INTEGRATION-009` |
 
 #### ANIMA
 
@@ -183588,6 +183589,7 @@ Distribución vigente:
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `TREQ-FOGO-001` | `FOGO` | Todo lote productivo deberá demostrar el ciclo aprobado de inicio, producción parcial, consumo, desperdicio, resultado, finalización, cancelación o corrección, con actor, turno, cantidades y efectos de inventario auditables. | `CODE-AUD-012` / `H-CODE-012-013` y `H-CODE-012-014` | Producción incompleta, consumos y terminados divergentes, desperdicio no trazado, correcciones destructivas y lotes sin cierre confiable / crítica | contractual + integración + base de datos + concurrencia + idempotencia + E2E / automatizada con validación operativa | `FOGO-UX-005`; `FOGO-AUTH-016`; `UX-QA-025` | Paquete E5 FOGO y certificación funcional del BLOQUE U | `vento-fogo`, `vento-nexo` y `vento-shell` / local, CI, staging, tablet y operación productiva pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `FOGO-UX-006`; `FOGO-UX-007`; `FOGO-UX-010`; `FOGO-UX-011`; `FOGO-UX-012`; `FOGO-UX-013`; `FOGO-AUTH-009`; `FOGO-AUTH-010`; `FOGO-AUTH-011`; `FOGO-AUTH-012`; `FOGO-AUTH-014` |
+| `TREQ-FOGO-002` | `FOGO` | Toda receta publicada deberá ser inmutable y versionada. Cada lote o ejecución conservará la versión exacta y un snapshot suficiente de salida, escala, ingredientes, unidades, pasos, controles, rendimiento esperado, porciones, conservación, alérgenos y especificaciones aplicables. Los ingredientes y salidas deberán referenciar identidades canónicas y unidades compatibles; el escalamiento, redondeo y tolerancias serán deterministas. El rendimiento real, la merma, las sustituciones y las desviaciones se registrarán sin sobrescribir el conocimiento esperado. Una versión retirada no podrá originar nuevos lotes, pero permanecerá consultable para historia. El acceso a fórmulas sensibles, revisión, aprobación y publicación deberá validarse por acción, contexto y actor. | `CAP-SCOPE-004`; `CAP-04.04` a `CAP-04.06`; `CAP-04.08` a `CAP-04.10`; `OPS-REC-001`; `H-CAP-SCOPE-004-005` a `H-CAP-SCOPE-004-007`; `H-CAP-SCOPE-004-010` a `H-CAP-SCOPE-004-012`; `BKL-FUNC-004` | lotes vinculados a una formulación distinta, consumos o rendimientos incorrectos, alérgenos desactualizados, pérdida de fórmula histórica, exposición de receta sensible y costos no reproducibles / crítica | contractual + base de datos + versionado + autorización + integración + E2E + regresión / automatizada con validación productiva controlada | `OPS-REC-001`; `FOGO-UX-008`; `FOGO-UX-009`; `FOGO-UX-010`; `FOGO-AUTH-013`; `FOGO-AUTH-016`; `INT-PROD-001` a `INT-PROD-004`; `CAP-SCOPE-008`; `UX-QA-025` | diseño E2 del contrato de recetas; arquitectura E3; paquete E5 FOGO; integración productiva con NEXO; certificación del BLOQUE U | `vento-fogo`, `vento-nexo`, `vento-shell`, `vento-numera` / Supabase local, CI, staging, tablet y operación productiva controlada | `IDENTIFICADO` | Pendiente | Pendiente | recetas, ingredientes, pasos, rendimientos y recetario actuales; decisiones de `CAP-SCOPE-004`; contrato futuro `OPS-REC-001` | `TREQ-FOGO-001`; `TREQ-NEXO-010`; `TREQ-SUPABASE-012`; `TREQ-AUTH-015`; `TREQ-INTEGRATION-006` |
 
 #### ORIGO
 
@@ -183644,6 +183646,7 @@ Distribución vigente:
 | `TREQ-INTEGRATION-006` | `INTEGRATION` | Cada dato empresarial deberá capturarse una sola vez en la aplicación propietaria y propagarse por contratos o eventos aprobados. Toda fuente competidora, doble digitación, cálculo alterno o conciliación manual deberá identificarse, compararse y resolverse; las diferencias conservarán origen, responsable, resolución y evidencia sin sobrescribir historia. | `OPS-AUD-005`; `OPS-AUD-012`; `OPS-AUD-013`; `CAP-MAP-008`; `CAP-MAP-013`; `UX-QA-009`; `UX-QA-010`; `UX-QA-017` | Datos divergentes, trabajo duplicado, conciliaciones no reproducibles, pérdida de trazabilidad y decisiones basadas en fuentes distintas / crítica | contractual + integración + base de datos + conciliación + E2E + regresión / automatizada con validación operativa | `SHELL-CON-016`; `SUPA-AUD-019`; `SUPA-AUD-023`; `INT-APP-010`; `INT-DB-008`; `UX-QA-009`; `UX-QA-010`; `UX-QA-017` | BLOQUE E3/E4, paquetes E5 por proceso y certificación del BLOQUE U | Transversal / aplicaciones propietarias y consumidoras, Supabase local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `TREQ-NUMERA-001`; `TREQ-SUPABASE-002`; `TREQ-UX-005` |
 | `TREQ-INTEGRATION-007` | `INTEGRATION` | La programación y asistencia deberán compartir un contrato único entre VISO, ANIMA, SHELL y Supabase. VISO será la fuente de turnos; cada turno publicado tendrá revisión estable y todo cambio posterior conservará la versión anterior, motivo, actor y notificación. ANIMA presentará la revisión vigente y cada entrada, salida o descanso se vinculará de forma determinista con trabajador, vínculo, turno y revisión. Las correcciones no sobrescribirán eventos originales: conservarán solicitud, evidencia, antes, después, aprobador y efectos derivados. Reemplazos, ausencias, turnos cruzados de medianoche, eventos offline y reintentos deberán converger sin duplicar jornadas, contextos ni tiempo trabajado. | `CAP-SCOPE-002`; `CAP-02.06` a `CAP-02.08`; `CODE-AUD-019`; `BKL-FUNC-002`; `BKL-ANIMA-003`; `INT-WORK-001` a `INT-WORK-005` | horarios divergentes, trabajador informado con una versión distinta, marcaciones huérfanas, correcciones destructivas, horas o pagos erróneos y contexto operativo indebido / crítica | contractual + integración + base de datos + concurrencia + idempotencia + autorización + E2E + regresión / automatizada con validación operativa | `PROC-CAT-009` a `PROC-CAT-018`; `VISO-AUTH-010` a `VISO-AUTH-012`; `VISO-UX-003`; `ANIMA-AUTH-001` a `ANIMA-AUTH-018`; `ANIMA-UX-004` a `ANIMA-UX-012`; `INT-WORK-001` a `INT-WORK-005`; `AUTH-QA-006`; `AUTH-QA-009`; `AUTH-QA-025`; `AUTH-QA-026`; `AUTH-QA-029` | diseño E2 del proceso laboral; paquetes E5 VISO/ANIMA; contrato compartido e integración; certificación del BLOQUE U | `vento-viso`, `vento-anima`, `vento-shell` / Supabase local, CI, staging, Android e iOS físicos y usuarios administrativos y trabajadores reales | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-002`; implementación actual de turnos y asistencia; hallazgo de corrección incompleta; requisitos offline e idempotentes existentes | `TREQ-ANIMA-003`; `TREQ-ANIMA-004`; `TREQ-AUTH-008`; `TREQ-AUTH-009`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-INTEGRATION-003`; `TREQ-UX-005` |
 | `TREQ-INTEGRATION-008` | `INTEGRATION` | El ciclo SST deberá conservar propiedad única e integración trazable entre ANIMA, VISO, NEXO, FOGO, SHELL y fuentes externas. Un reporte creado desde cualquier canal producirá un solo expediente con identificador estable; el reporte original no se sobrescribirá. Las incidencias de asistencia no se convertirán ni contarán como incidentes SST sin relación explícita. Reintentos, cola offline y eventos repetidos no duplicarán casos, inspecciones, acciones, entregas de EPP, alertas ni evidencia. Toda investigación, hallazgo y acción conservará correlación con su origen. NEXO confirmará hechos físicos de EPP sin decidir la necesidad preventiva; FOGO emitirá hechos de higiene o inocuidad sin apropiarse del expediente SST. Las decisiones o certificados externos conservarán fuente y alcance. El cierre de una acción requerirá evidencia y verificación de eficacia, y los consumidores deberán converger al mismo estado sin copias editables competidoras. | `CAP-SCOPE-003`; `CAP-03.03` a `CAP-03.10`; `H-CAP-SCOPE-003-003`; `H-CAP-SCOPE-003-006`; `H-CAP-SCOPE-003-008`; `H-CAP-SCOPE-003-013`; `H-CAP-SCOPE-003-014`; `BKL-FUNC-003` | expedientes duplicados, incidentes mal clasificados, acciones huérfanas, EPP sin trazabilidad, evidencia divergente, sincronización offline repetida y cierre aparente / crítica | contractual + integración + idempotencia + offline + concurrencia + eventos + E2E + regresión / automatizada con validación operativa y documental | `PROC-CAT-009` a `PROC-CAT-018`; `PROC-ACTOR-003`; `UX-ADMIN-001` a `UX-ADMIN-005`; `NEXO-DOM-008` a `NEXO-DOM-011`; `NEXO-DOM-017`; `NEXO-DOM-026`; `CAP-SCOPE-008`; `CAP-SCOPE-013`; `CAP-SCOPE-018`; `INT-EXT-001` a `INT-EXT-019`; `AUTH-QA-026`; `AUTH-QA-027`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 del proceso SST; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 VISO/ANIMA/NEXO/FOGO/SHELL; certificación del BLOQUE U | `vento-viso`, `vento-anima`, `vento-nexo`, `vento-fogo`, `vento-shell` / Supabase local, CI, staging, red intermitente, dispositivo compartido y simulación de fuentes externas | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-003`; semántica actual de incidencias de asistencia; estructuras parciales de inventario y evidencia; requisitos offline existentes | `TREQ-ANIMA-003`; `TREQ-ANIMA-004`; `TREQ-AUTH-017`; `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-007`; `TREQ-SUPABASE-004`; `TREQ-UX-005`; `TREQ-VISO-001` |
+| `TREQ-INTEGRATION-009` | `INTEGRATION` | PULSO deberá ser la fuente interna de menú, oferta y disponibilidad comercial; PASS, VISO y canales externos consumirán una publicación versionada y no mantendrán catálogos editables competidores. Cada ítem conservará producto o variante canónicos, sede, canal, vigencia, configuración vendible, referencia de precio y causa de disponibilidad. Stock, capacidad productiva, horario, calidad y override manual se conservarán como señales diferenciadas. Todo override tendrá actor, motivo y expiración. Los cambios deberán invalidar caché, propagarse y conciliarse sin publicar versiones mezcladas. Cada identificador externo se mapeará de forma explícita a producto, presentación y receta cuando aplique; una línea sin mapeo quedará en cuarentena sin producir efectos automáticos de inventario, costo o fidelización. | `CAP-SCOPE-004`; `CAP-04.07`; `CAP-04.08`; `CAP-04.10`; `H-CAP-SCOPE-004-008` a `H-CAP-SCOPE-004-010`; `H-CAP-SCOPE-004-012` a `H-CAP-SCOPE-004-014`; `H-CAP-SCOPE-004-016`; `INT-POS-011`; `BKL-FUNC-004` | menús divergentes, venta de producto incorrecto o no disponible, advertencias desactualizadas, doble catálogo, mapeos externos erróneos y efectos automáticos sobre una línea no identificada / crítica | contractual + integración + caché + eventos + idempotencia + conciliación + E2E + regresión / automatizada con validación en POS, móvil y canales | `PULSO-UX-001`; `PULSO-UX-021`; `PASS-UX-001`; `INT-POS-011`; `INT-POS-012`; `INT-POS-020`; `SHELL-CON-016`; `INT-APP-010`; `INT-DB-008`; `UX-QA-027`; `UX-QA-029` | diseño E2 de menú y oferta; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 PULSO y PASS; integración del POS externo; certificación del BLOQUE U | `vento-pulso`, `vento-pass`, `vento-viso`, `vento-shell` y sistemas externos / CI, staging, terminal POS, Android, iOS y canales controlados | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-004`; superficies actuales de menú y oferta; mapeo futuro `INT-POS-011`; hallazgos de fuentes competidoras | `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-INTEGRATION-001`; `TREQ-INTEGRATION-006`; `TREQ-SUPABASE-012`; `TREQ-UX-005` |
 
 #### UX
 
@@ -189568,7 +189571,1231 @@ CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimie
 ```
 
 
-### [ ] CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
+### ✅ CAP-SCOPE-005 — Evaluar compras, proveedores, contratos, precios y abastecimiento
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-004` aprobada  
+**Tarea anterior:** `CAP-SCOPE-004`  
+**Siguiente tarea reservada:** `CAP-SCOPE-006`  
+**Familia evaluada:** `CAP-05 — Abastecer la operación`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Compras, aprobaciones, recepciones o devoluciones reales:** no autorizadas  
+**Requisitos de prueba generados:** `TREQ-ORIGO-004`, `TREQ-ORIGO-005`, `TREQ-INTEGRATION-010`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- convertir señales de demanda, faltantes, producción, ventas y mínimos en necesidades trazables de abastecimiento;
+- distinguir una necesidad de compra, una solicitud, un caso de abastecimiento, una cotización, una oferta, una condición acordada, un contrato, una orden de compra, una recepción y una obligación financiera;
+- conservar un maestro único de proveedores con identidad, estado, sedes, contactos, documentos y restricciones;
+- relacionar cada proveedor con productos, servicios, presentaciones de compra, cantidades mínimas, tiempos, precios y condiciones versionadas;
+- solicitar, recibir y comparar ofertas sin reducir la decisión al precio más bajo;
+- registrar negociaciones y acuerdos sin intentar automatizar la interacción humana;
+- aplicar políticas de aprobación por empresa, sede, centro de costo, categoría, monto, riesgo y urgencia;
+- emitir órdenes con revisión, vigencia, aceptación, cancelación y trazabilidad;
+- recibir bienes y servicios contra la orden aprobada, incluyendo recepciones parciales, diferencias, lotes, vencimientos, calidad y documentos;
+- vincular la recepción empresarial de ORIGO con la entrada física de NEXO y el hecho económico de NUMERA sin doble digitación ni doble efecto;
+- gestionar rechazos, devoluciones, reclamaciones, notas y regularizaciones sin borrar la operación original;
+- medir cumplimiento de proveedores mediante hechos verificables;
+- permitir compras urgentes por un carril abreviado controlado, nunca mediante bypass invisible;
+- preservar contratos, cotizaciones, precios, datos tributarios, datos bancarios y evidencia con acceso mínimo y auditoría.
+
+La existencia de proveedores, órdenes o recibos parciales en la implementación actual no permite considerar cubierta la familia `CAP-05`. La cobertura exige que la necesidad, decisión, orden, recepción, inventario, costo y evidencia formen una cadena única y reconciliable.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-005` responde:
+
+```text
+¿CÓMO SE CONVIERTE UNA NECESIDAD REAL DE LA OPERACIÓN
+EN UNA COMPRA AUTORIZADA, CON PROVEEDOR Y CONDICIONES VIGENTES,
+Y CÓMO SE CONFIRMA SU ENTREGA, INVENTARIO, COSTO Y CUMPLIMIENTO
+SIN DOBLE DIGITACIÓN, CAMBIOS DESTRUCTIVOS, APROBACIONES IMPLÍCITAS
+NI FUENTES COMPETIDORAS ENTRE ORIGO, NEXO Y NUMERA?
+```
+
+La tarea rechaza equivalencias incorrectas como:
+
+```text
+NECESIDAD = ORDEN DE COMPRA
+```
+
+```text
+SOLICITUD = APROBACIÓN
+```
+
+```text
+PROVEEDOR = CONTACTO
+```
+
+```text
+RELACIÓN PRODUCTO–PROVEEDOR = PRECIO VIGENTE
+```
+
+```text
+COTIZACIÓN = CONTRATO
+```
+
+```text
+CONTRATO = PRECIO ETERNO
+```
+
+```text
+ORDEN ENVIADA = ORDEN RECIBIDA
+```
+
+```text
+RECIBIR DOCUMENTO = INGRESAR INVENTARIO
+```
+
+```text
+RECIBIR SERVICIO = CREAR STOCK
+```
+
+```text
+PRECIO MÁS BAJO = MEJOR DECISIÓN
+```
+
+```text
+COMPRA URGENTE = COMPRA SIN CONTROL
+```
+
+```text
+CORREGIR = SOBRESCRIBIR HISTORIA
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-004`;
+- `QA-REG-001` y el Registro Canónico de Requisitos de Prueba;
+- `REGISTRO_VIVO_DE_PREGUNTAS_PENDIENTES`, especialmente `DAT-06`, `DAT-07`, `OPE-05`, `TEC-07` y `TEC-18`;
+- la implementación vigente de ORIGO: proveedores, órdenes, edición de borrador, PDF, estados base, rutas iniciales de recibo y enlace hacia NEXO;
+- la implementación vigente de NEXO: catálogo maestro, proveedores por producto, presentaciones físicas, mínimos, stock, LOC, entradas y recepción operativa;
+- las estructuras actuales `suppliers`, `product_suppliers`, `purchase_orders`, `purchase_order_items`, `purchase_receptions`, `procurement_*`, `inventory_entries` y relacionadas;
+- las tareas `ORIGO-AUTH-001` a `ORIGO-AUTH-015` y `ORIGO-UX-001` a `ORIGO-UX-016`;
+- los contratos `INT-PROC-001` a `INT-PROC-005`;
+- `NUMERA-DOM-003`, `NUMERA-DOM-010`, `NUMERA-DOM-014`, `NUMERA-UX-018` y fronteras contables futuras;
+- las decisiones de autorización, segregación, privacidad, Storage, idempotencia, evidencia, integración y transición ya aprobadas.
+
+Las respuestas y evidencias ya documentadas no se vuelven a solicitar.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-05.01` — Planear necesidades de abastecimiento;
+- `CAP-05.02` — Solicitar productos, materiales o servicios;
+- `CAP-05.03` — Buscar y evaluar proveedores;
+- `CAP-05.04` — Solicitar y comparar ofertas;
+- `CAP-05.05` — Negociar condiciones;
+- `CAP-05.06` — Aprobar compras;
+- `CAP-05.07` — Emitir y controlar órdenes;
+- `CAP-05.08` — Recibir productos y servicios;
+- `CAP-05.09` — Verificar cantidades, calidad y documentos;
+- `CAP-05.10` — Gestionar diferencias y devoluciones;
+- `CAP-05.11` — Evaluar cumplimiento de proveedores;
+- `CAP-05.12` — Gestionar compras urgentes;
+
+También fija fronteras para catálogo, inventario, producción, ventas, costos, cuentas por pagar, documentos, cumplimiento, analítica y continuidad.
+
+---
+
+#### 5. Fuera de alcance
+
+- crear, editar, aprobar, enviar, recibir, rechazar o cancelar operaciones reales;
+- seleccionar proveedores reales o negociar condiciones comerciales concretas;
+- definir montos, personas o umbrales finales de aprobación;
+- registrar cuentas bancarias o datos tributarios reales;
+- aprobar contratos jurídicos;
+- sustituir revisión legal, tributaria, contable, sanitaria o de calidad;
+- pagar proveedores;
+- implementar cuentas por pagar o contabilidad completa;
+- crear inventario por la sola existencia de una factura;
+- crear obligaciones financieras por una orden no recibida salvo política explícita;
+- crear tablas, vistas, RPC, buckets, políticas RLS, eventos o migraciones;
+- migrar historia de compras;
+- autorizar recepción física sin actor, sede, LOC o evidencia;
+- convertir NEXO en propietario de la compra;
+- convertir NUMERA en propietario de la orden o recepción;
+- convertir VISO en propietario implícito por exponer una pantalla administrativa.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. La necesidad precede a la compra
+
+Una señal de stock, producción, venta, mantenimiento, proyecto o solicitud humana podrá originar una necesidad.
+
+La necesidad no será todavía una autorización para comprometer dinero.
+
+Toda necesidad conservará origen, fecha, producto o servicio, cantidad, sede, área, centro de costo, prioridad y responsable.
+
+##### 6.2. Demanda, solicitud, abastecimiento, orden y recepción son expedientes distintos
+
+Cada concepto tendrá identidad y estado propios.
+
+La trazabilidad permitirá recorrer el ciclo completo sin duplicar la información.
+
+Una orden podrá consolidar varias solicitudes y una solicitud podrá dividirse entre varios proveedores cuando la decisión lo justifique.
+
+##### 6.3. El proveedor será una identidad empresarial, no un texto
+
+El proveedor tendrá identificador estable, razón social o identidad aplicable, estado, identificadores tributarios, contactos, sedes, documentos y relaciones.
+
+Un contacto, vendedor, sucursal o cuenta bancaria no será el proveedor mismo.
+
+Los cambios no crearán duplicados por diferencias ortográficas.
+
+##### 6.4. El maestro de proveedores tendrá una sola propiedad
+
+ORIGO será propietario del expediente de proveedor.
+
+NEXO podrá consumir relaciones producto–proveedor y presentaciones de compra.
+
+NUMERA podrá consumir datos mínimos para obligaciones y pagos.
+
+Ningún consumidor mantendrá una copia editable independiente.
+
+##### 6.5. Relación producto–proveedor, oferta y contrato son conceptos distintos
+
+La relación declara que un proveedor puede suministrar un producto o servicio.
+
+La oferta declara condiciones propuestas en un periodo.
+
+El contrato o acuerdo declara obligaciones y condiciones aprobadas.
+
+El precio aplicable será una versión con vigencia y fuente.
+
+##### 6.6. El precio tendrá contexto completo
+
+Todo precio deberá identificar proveedor, producto o servicio, presentación, unidad, cantidad mínima, escala, moneda, impuestos, descuentos, flete, plazo de pago, vigencia y fuente.
+
+Un precio nuevo no sobrescribirá el precio utilizado por órdenes históricas.
+
+La orden conservará un snapshot de las condiciones efectivamente aprobadas.
+
+##### 6.7. La comparación no se reducirá al menor precio
+
+La decisión podrá considerar calidad, disponibilidad, tiempo de entrega, presentación, cantidad mínima, confiabilidad, crédito, ubicación, riesgo y costo total.
+
+Los criterios y ponderaciones deberán ser visibles cuando se utilicen.
+
+Una selección manual conservará justificación.
+
+##### 6.8. La negociación seguirá siendo humana y controlada
+
+Vento OS no sustituirá conversaciones, llamadas o negociación jurídica.
+
+El sistema registrará versiones de ofertas, acuerdos alcanzados, responsables, vigencia y evidencia.
+
+La ausencia de automatización no autoriza conservar la decisión únicamente en chats personales.
+
+##### 6.9. La aprobación será una decisión explícita
+
+Crear, editar o enviar una orden no equivaldrá a aprobarla.
+
+Las políticas podrán depender de empresa, sede, centro de costo, categoría, importe, presupuesto, riesgo, contrato y urgencia.
+
+Toda aprobación o rechazo conservará actor, alcance, regla, comentario y timestamp.
+
+##### 6.10. La segregación de funciones será obligatoria
+
+Solicitante, comprador, aprobador y receptor serán funciones distintas aunque una persona pueda acumularlas solo mediante política aprobada.
+
+El receptor no aprobará la compra por el solo hecho de recibir.
+
+El comprador no podrá autoaprobar fuera de una excepción explícita y auditada.
+
+##### 6.11. Una orden enviada será versionada, no sobrescrita
+
+La edición libre terminará al aprobarse o enviarse la orden.
+
+Un cambio posterior producirá revisión, enmienda o cancelación vinculada.
+
+Proveedor y consumidores podrán identificar qué revisión es vigente.
+
+##### 6.12. ORIGO conservará el expediente empresarial de recepción
+
+La recepción declarará contra qué orden, revisión y líneas se ejecuta.
+
+Conservará cantidad aceptada, rechazada, pendiente, diferencia, documento, actor y resultado.
+
+La recepción podrá ser parcial y múltiples recepciones podrán cerrar una misma orden.
+
+##### 6.13. NEXO conservará el efecto físico sobre inventario
+
+La entrada a stock, lote, vencimiento, LOC, condición y movimiento pertenecen a NEXO.
+
+NEXO no creará una compra paralela.
+
+ORIGO no escribirá directamente proyecciones de stock mediante formularios propios.
+
+##### 6.14. Los servicios tendrán aceptación sin inventario artificial
+
+Una compra de servicio podrá requerir acta, periodo, entregable, evidencia y aceptación.
+
+No generará LOC, lote ni stock.
+
+El hecho económico se emitirá solo según la política aprobada de aceptación y documentos.
+
+##### 6.15. Recibir, inspeccionar y contabilizar no son el mismo evento
+
+La llegada física podrá quedar pendiente de inspección.
+
+La aceptación podrá diferir de la cantidad entregada.
+
+El ingreso de inventario y el evento económico conservarán la relación con el resultado de inspección.
+
+##### 6.16. Las diferencias no se corregirán borrando
+
+Faltante, sobrante, sustitución, daño, vencimiento, precio distinto, documento faltante y calidad no conforme serán diferencias tipadas.
+
+Toda resolución conservará evidencia y efectos.
+
+La operación original permanecerá disponible.
+
+##### 6.17. Devolución, reclamación y ajuste financiero serán relacionados pero distintos
+
+La devolución física será trazada por NEXO.
+
+La reclamación y decisión con proveedor serán trazadas por ORIGO.
+
+La nota, obligación o ajuste económico será trazado por NUMERA o sistema externo según alcance.
+
+##### 6.18. El desempeño del proveedor se calculará desde hechos
+
+Cumplimiento de fecha, cantidad, calidad, documentos, precio y respuesta a reclamaciones se derivarán de operaciones cerradas.
+
+Una calificación manual conservará autor y motivo.
+
+No se permitirá modificar resultados históricos para mejorar una evaluación.
+
+##### 6.19. La compra urgente será un carril abreviado, no un bypass
+
+Toda urgencia tendrá causa, actor, sede, riesgo, autorización y límite.
+
+Podrá permitir aprobación expedita y regularización posterior dentro de un plazo.
+
+Nunca omitirá identidad del proveedor, evidencia de recepción o conciliación financiera.
+
+##### 6.20. Los datos sensibles tendrán acceso mínimo
+
+Precios, contratos, datos tributarios, cuentas bancarias, documentos y condiciones no serán visibles por pertenecer a la misma sede.
+
+Las exportaciones y enlaces externos tendrán permisos y vigencia independientes.
+
+Los documentos se conservarán en almacenamiento privado y con auditoría.
+
+##### 6.21. Ninguna interfaz será fuente por sí sola
+
+VISO podrá enlazar o presentar administración, pero no se convertirá en propietario.
+
+Las decisiones se aplicarán mediante contratos de servidor y fuentes autoritativas.
+
+La navegación no concederá acceso ni completará transiciones.
+
+##### 6.22. Todo efecto será idempotente y reconciliable
+
+Un reintento no duplicará orden, recepción, entrada de inventario, costo, obligación ni devolución.
+
+Cada frontera conservará identificador estable y resultado recuperable.
+
+Los fallos parciales producirán estado pendiente y conciliación, no confirmación falsa.
+
+---
+
+#### 7. Modelo conceptual objetivo
+
+##### 7.1. Conceptos separados
+
+| Concepto                    | Definición mínima                                                         |
+| --------------------------- | ------------------------------------------------------------------------- |
+| Señal de demanda            | hecho que evidencia una necesidad posible sin autorizar compra            |
+| Necesidad de abastecimiento | necesidad consolidada y trazable pendiente de decisión                    |
+| Solicitud de compra         | petición formal con solicitante, alcance, justificación y centro de costo |
+| Caso de abastecimiento      | expediente que agrupa búsqueda, ofertas, evaluación y selección           |
+| Solicitud de cotización     | petición enviada a uno o varios proveedores                               |
+| Oferta o cotización         | condiciones propuestas por un proveedor con vigencia                      |
+| Proveedor                   | identidad empresarial o persona que suministra bienes o servicios         |
+| Contacto de proveedor       | persona o canal de relación; no identidad del proveedor                   |
+| Relación producto–proveedor | capacidad declarada de suministrar un producto o servicio                 |
+| Condición comercial         | precio, escala, entrega, pago, mínimo, descuento o flete versionados      |
+| Contrato o acuerdo          | instrumento que gobierna condiciones y obligaciones durante una vigencia  |
+| Decisión de aprobación      | resultado explícito de una política y un actor autorizado                 |
+| Orden de compra             | compromiso aprobado y enviado con líneas y condiciones congeladas         |
+| Revisión de orden           | versión posterior vinculada sin alterar la orden histórica                |
+| Recepción                   | confirmación empresarial de entrega o prestación contra una orden         |
+| Inspección de recepción     | verificación de cantidad, calidad, condición y documentos                 |
+| Entrada de inventario       | efecto físico y contable de existencias en NEXO                           |
+| Aceptación de servicio      | evidencia de cumplimiento de una compra no inventariable                  |
+| Diferencia                  | desviación tipada entre orden, entrega, documento y aceptación            |
+| Devolución o reclamación    | expediente de resolución con el proveedor                                 |
+| Evento económico            | hecho consumido por NUMERA o sistema contable                             |
+| Evaluación de proveedor     | resultado derivado de hechos y valoraciones controladas                   |
+| Compra urgente              | expediente abreviado sujeto a autorización y regularización               |
+
+##### 7.2. Relación general
+
+```text
+SEÑALES DE DEMANDA
+NEXO / FOGO / PULSO / PERSONA AUTORIZADA
+        ↓
+NECESIDAD DE ABASTECIMIENTO
+        ↓
+SOLICITUD DE COMPRA
+        ↓
+CASO DE ABASTECIMIENTO
+   ├── SOLICITUDES DE COTIZACIÓN
+   ├── OFERTAS VERSIONADAS
+   ├── COMPARACIÓN Y NEGOCIACIÓN
+   └── SELECCIÓN JUSTIFICADA
+        ↓
+APROBACIÓN
+        ↓
+ORDEN DE COMPRA + REVISIÓN VIGENTE
+        ↓
+RECEPCIÓN / INSPECCIÓN / ACEPTACIÓN
+   ├── NEXO: ENTRADA FÍSICA
+   ├── ORIGO: ESTADO Y DIFERENCIAS
+   └── NUMERA: HECHO ECONÓMICO
+        ↓
+EVALUACIÓN DEL PROVEEDOR / DEVOLUCIÓN / CIERRE
+```
+
+---
+
+#### 8. Estados canónicos mínimos
+
+##### 8.1. Proveedor
+
+```text
+prospectivo → pendiente_validacion → activo → suspendido → bloqueado → inactivo
+```
+
+##### 8.2. Solicitud de compra
+
+```text
+borrador → enviada → en_revision → aprobada → rechazada → en_abastecimiento → ordenada_parcial → ordenada → cerrada → cancelada
+```
+
+##### 8.3. Caso de abastecimiento
+
+```text
+borrador → abierto → solicitando_ofertas → evaluando → negociando → seleccionado → cerrado → cancelado
+```
+
+##### 8.4. Oferta
+
+```text
+solicitada → recibida → vigente → vencida → reemplazada → seleccionada → rechazada → retirada
+```
+
+##### 8.5. Contrato o acuerdo
+
+```text
+borrador → en_revision → activo → suspendido → vencido → terminado → reemplazado
+```
+
+##### 8.6. Orden de compra
+
+```text
+borrador → pendiente_aprobacion → aprobada → rechazada → enviada → confirmada_proveedor → recibida_parcial → recibida → cerrada → cancelada → en_disputa
+```
+
+##### 8.7. Recepción
+
+```text
+borrador → en_inspeccion → aceptada → aceptada_con_diferencias → rechazada → publicada_parcial → publicada → reversada
+```
+
+##### 8.8. Devolución o reclamación
+
+```text
+abierta → autorizada → despachada → recibida_proveedor → resuelta → cancelada
+```
+
+##### 8.9. Compra urgente
+
+```text
+abierta → autorizada_expedita → ejecutada → pendiente_regularizacion → regularizada → rechazada → cancelada
+```
+
+Los nombres físicos podrán normalizarse en E2/E3, pero no se reducirán a los tres estados actuales `draft`, `sent` y `received` cuando ello elimine aprobación, recepción parcial, disputa o cierre.
+
+---
+
+#### 9. Propiedad funcional y tecnológica
+
+| Resultado empresarial                             | Propietario funcional                     | Aplicación propietaria candidata               | Consumidores principales |
+| ------------------------------------------------- | ----------------------------------------- | ---------------------------------------------- | ------------------------ |
+| necesidad y solicitud de compra                   | Compras con origen operativo identificado | ORIGO                                          | NEXO, FOGO, PULSO, VISO  |
+| proveedor, oferta, contrato y condición comercial | Compras / Gerencia según sensibilidad     | ORIGO                                          | NEXO, NUMERA, VISO       |
+| política y decisión de aprobación                 | Gerencia / responsable presupuestal       | ORIGO + autorización SHELL                     | NUMERA, auditoría        |
+| orden de compra y sus revisiones                  | Compras                                   | ORIGO                                          | proveedor, NEXO, NUMERA  |
+| recepción empresarial y diferencias               | Recepción / Compras                       | ORIGO                                          | NEXO, NUMERA             |
+| entrada física, lote, vencimiento y LOC           | Inventario / Bodega                       | NEXO                                           | ORIGO, FOGO, NUMERA      |
+| aceptación de servicio                            | Solicitante o supervisor autorizado       | ORIGO                                          | NUMERA                   |
+| hecho económico y obligación                      | Contabilidad                              | NUMERA o sistema externo según `CAP-SCOPE-012` | Dirección, ORIGO         |
+| documentos y evidencia                            | Propietario del expediente                | Storage gobernado desde SHELL                  | ORIGO, NEXO, NUMERA      |
+| evaluación de proveedor                           | Compras con hechos operativos             | ORIGO                                          | Gerencia, solicitantes   |
+
+##### 9.1. Regla de administración
+
+VISO podrá presentar accesos, resúmenes o tareas administrativas, pero deberá enlazar al proceso propietario. No mantendrá proveedores, precios, órdenes o recepciones en una fuente paralela.
+
+---
+
+#### 10. Línea base de implementación verificable
+
+| Superficie o estructura                      | Estado comprobado                                     | Tratamiento                                                   |
+| -------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
+| ORIGO: autenticación y acceso                | SSO y permiso general `origo.access`                  | reutilizar y atomizar permisos                                |
+| ORIGO: proveedores                           | listado, alta y edición                               | reutilizar/refactorizar hacia maestro gobernado               |
+| ORIGO: órdenes                               | listado, creación, detalle, edición de borrador y PDF | reutilizar/refactorizar                                       |
+| ORIGO: estados de orden                      | `draft`, `sent`, `received`                           | ampliar; no cubren aprobación, parcialidad, disputa ni cierre |
+| ORIGO: PDF o token público                   | superficie existente                                  | endurecer alcance, expiración, secreto y datos visibles       |
+| ORIGO: recibos                               | rutas iniciales                                       | completar contra orden y revisión                             |
+| ORIGO → NEXO                                 | enlace operacional para recibir una OC                | convertir en contrato idempotente y bidireccional             |
+| NEXO: catálogo y presentaciones de proveedor | relaciones y configuración existentes                 | consumir el maestro ORIGO sin competir                        |
+| NEXO: entradas, stock, LOC y lotes           | capacidad operativa parcial existente                 | conservar propiedad física                                    |
+| NUMERA: hechos desde compras                 | alcance futuro reservado                              | construir integración y conciliación                          |
+| historia de precios acordados                | no formalizada integralmente                          | construir                                                     |
+| aprobaciones y auditoría de cambios          | pendiente crítico declarado                           | construir                                                     |
+| recepción parcial y diferencias              | pendiente crítico declarado                           | reutilizar/refactorizar y completar                           |
+| contratos, RFQ y comparación                 | sin flujo integral verificado                         | construir                                                     |
+| compras urgentes                             | sin carril canónico verificado                        | construir                                                     |
+
+La línea base confirma implementación útil, pero también una frontera incompleta: ORIGO administra la compra mientras la recepción inventariable todavía no está completamente sincronizada con NEXO.
+
+---
+
+#### 11. Matriz de decisión de cobertura
+
+| Capacidad                                            | Tratamiento         | Propietario candidato                    | Fundamentación                                                                           |
+| ---------------------------------------------------- | ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `CAP-05.01` Planear necesidades                      | `REUSE_OR_REFACTOR` | ORIGO con señales de NEXO/FOGO/PULSO     | existen mínimos, faltantes y datos operativos; falta consolidación y política            |
+| `CAP-05.02` Solicitar bienes o servicios             | `REUSE_OR_REFACTOR` | ORIGO                                    | existen estructuras `procurement_*` y órdenes, pero la solicitud debe separarse de la OC |
+| `CAP-05.03` Buscar y evaluar proveedores             | `REUSE_OR_REFACTOR` | ORIGO                                    | existe CRUD de proveedores; faltan gobierno, evaluación y deduplicación                  |
+| `CAP-05.04` Solicitar y comparar ofertas             | `BUILD`             | ORIGO                                    | no existe flujo integral verificado de RFQ, versiones y comparación                      |
+| `CAP-05.05` Negociar condiciones                     | `CONTROLLED_MANUAL` | Compras / Gerencia con registro en ORIGO | la negociación es humana; el resultado sí debe quedar gobernado                          |
+| `CAP-05.06` Aprobar compras                          | `BUILD`             | ORIGO + autorización SHELL               | la implementación actual no demuestra política ni aprobación completa                    |
+| `CAP-05.07` Emitir y controlar órdenes               | `REUSE_OR_REFACTOR` | ORIGO                                    | existe ciclo de órdenes y PDF; requiere revisiones, aceptación y estados completos       |
+| `CAP-05.08` Recibir bienes y servicios               | `REUSE_OR_REFACTOR` | ORIGO con ejecución física NEXO          | existen rutas y enlace; falta contrato completo y servicios                              |
+| `CAP-05.09` Verificar cantidad, calidad y documentos | `REUSE_OR_REFACTOR` | ORIGO/NEXO según hecho                   | existe base de recepción; faltan inspección y diferencias tipadas                        |
+| `CAP-05.10` Gestionar diferencias y devoluciones     | `BUILD`             | ORIGO + NEXO + NUMERA                    | no existe ciclo integral verificado                                                      |
+| `CAP-05.11` Evaluar cumplimiento                     | `BUILD`             | ORIGO                                    | debe derivarse de hechos de orden, recepción y reclamación                               |
+| `CAP-05.12` Gestionar compras urgentes               | `BUILD`             | ORIGO                                    | se requiere carril abreviado con autorización y regularización                           |
+
+##### 11.1. Resumen de clasificaciones
+
+| Tratamiento         | Cantidad |
+| ------------------- | -------: |
+| `REUSE_OR_REFACTOR` |        6 |
+| `BUILD`             |        5 |
+| `CONTROLLED_MANUAL` |        1 |
+| **Total**           |   **12** |
+
+---
+
+#### 12. CAP-05.01 — Planear necesidades de abastecimiento
+
+##### Reglas mínimas
+
+- Consolidará señales provenientes de mínimos, faltantes, reservas, planes de producción, ventas, mantenimiento, eventos, proyectos y solicitudes humanas.
+- Cada señal conservará fuente y no generará una orden aprobada automáticamente.
+- La planeación distinguirá necesidad bruta, existencia disponible, compromisos, tránsito, consumo esperado, cobertura y fecha requerida.
+- Las recomendaciones automáticas serán explicables y podrán rechazarse con motivo.
+
+##### Destinos canónicos
+
+- `NEXO-UX-001` y políticas de reposición;
+- `FOGO-UX-004` y planificación productiva;
+- `ORIGO-UX-001` a `ORIGO-UX-004`;
+- `CAP-SCOPE-006`, `CAP-SCOPE-008` y `CAP-SCOPE-017`;
+
+---
+
+#### 13. CAP-05.02 — Solicitar productos, materiales o servicios
+
+##### Reglas mínimas
+
+- La solicitud tendrá solicitante, empresa, sede, área, centro de costo, necesidad, fecha, prioridad, líneas, justificación y adjuntos.
+- Podrá contener productos maestros, servicios o conceptos todavía pendientes de alta mediante un flujo controlado.
+- No fijará por sí sola proveedor, precio final ni aprobación.
+- Una solicitud modificada después del envío conservará revisión y motivo.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-002`, `ORIGO-UX-003`, `ORIGO-AUTH-005`;
+- `PROC-CAT-009` a `PROC-CAT-018`;
+- `CAP-SCOPE-004` y `CAP-SCOPE-012`;
+
+---
+
+#### 14. CAP-05.03 — Buscar y evaluar proveedores
+
+##### Reglas mínimas
+
+- El maestro distinguirá proveedor, sucursal, contacto, condición fiscal, cuenta de pago, documento y estado.
+- La búsqueda podrá usar productos, cobertura, ubicación, tiempos, estado y experiencia previa.
+- La activación exigirá validaciones proporcionales al riesgo.
+- Un proveedor bloqueado no podrá seleccionarse en nuevas órdenes, pero conservará historia.
+
+##### Destinos canónicos
+
+- `ORIGO-AUTH-002`, `ORIGO-AUTH-010`, `ORIGO-UX-001`;
+- `SUPA-AUD-019`, `SUPA-TRANS-005`, `DATA-NORM-AUD-004`;
+- `CAP-SCOPE-016`;
+
+---
+
+#### 15. CAP-05.04 — Solicitar y comparar ofertas
+
+##### Reglas mínimas
+
+- La RFQ tendrá líneas, cantidades, presentaciones, especificaciones, destino, fecha requerida y fecha límite.
+- Cada respuesta conservará proveedor, versión, fecha, moneda, impuestos, flete, mínimos, disponibilidad y documentos.
+- La matriz de comparación mostrará diferencias normalizadas sin ocultar datos no comparables.
+- Una oferta vencida o reemplazada no será usada silenciosamente.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-001`, `ORIGO-UX-004`, `ORIGO-UX-007`;
+- `PROC-CAT-001` a `PROC-CAT-020`;
+- `EVID-ARC-001` a `EVID-ARC-010`;
+
+---
+
+#### 16. CAP-05.05 — Negociar condiciones
+
+##### Reglas mínimas
+
+- La interacción seguirá siendo humana.
+- ORIGO conservará propuestas, contrapropuestas, resultado, responsable, evidencia y vigencia cuando sea pertinente.
+- Los acuerdos informales que afecten precio, entrega o pago deberán regularizarse antes de aprobar la orden.
+- El sistema no presentará una conversación sin aceptación como condición vigente.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-001`, `ORIGO-UX-004`, `ORIGO-UX-007`;
+- `CAP-SCOPE-016`;
+- `EVID-ARC-001` a `EVID-ARC-010`;
+
+---
+
+#### 17. CAP-05.06 — Aprobar compras
+
+##### Reglas mínimas
+
+- La aprobación se aplicará a solicitud, selección, orden o excepción según la política.
+- La política tendrá versión y podrá exigir una o varias decisiones.
+- Los cambios materiales después de aprobar invalidarán o renovarán la aprobación.
+- Aprobación, rechazo, devolución a corrección y vencimiento serán resultados distintos.
+
+##### Destinos canónicos
+
+- `ORIGO-AUTH-005`, `ORIGO-AUTH-006`, `ORIGO-AUTH-009`, `ORIGO-AUTH-010`;
+- `ORIGO-UX-005`, `ORIGO-UX-008`;
+- `AUTH-QA-015`, `AUTH-QA-016`, `UX-QA-026`;
+
+---
+
+#### 18. CAP-05.07 — Emitir y controlar órdenes
+
+##### Reglas mínimas
+
+- La orden congelará proveedor, revisión, destino, moneda, impuestos, líneas, precios, presentaciones, fechas, pago y condiciones.
+- El envío conservará canal, destinatario, revisión y evidencia.
+- La confirmación del proveedor no se inferirá del envío.
+- Cancelación, enmienda y cierre conservarán efectos sobre solicitudes, recepción y obligaciones.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-007`, `ORIGO-UX-008`, `ORIGO-AUTH-004` a `ORIGO-AUTH-010`;
+- `INT-PROC-001`;
+- `CAP-SCOPE-016`;
+
+---
+
+#### 19. CAP-05.08 — Recibir productos y servicios
+
+##### Reglas mínimas
+
+- La recepción se vinculará con orden y revisión vigentes.
+- Permitirá entrega total, parcial, anticipada, tardía o no solicitada mediante reglas explícitas.
+- Los servicios usarán aceptación de entregable o periodo, no stock.
+- La operación deberá funcionar con pérdida de respuesta y reintento sin duplicar efectos.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-009`, `ORIGO-UX-010`, `ORIGO-UX-013`, `ORIGO-UX-014`;
+- `INT-PROC-002` a `INT-PROC-005`;
+- `CAP-SCOPE-006`, `CAP-SCOPE-018`;
+
+---
+
+#### 20. CAP-05.09 — Verificar cantidades, calidad y documentos
+
+##### Reglas mínimas
+
+- La cantidad ordenada, entregada, aceptada, rechazada y pendiente permanecerán separadas.
+- Calidad, temperatura, lote, vencimiento, empaque y especificación se capturarán cuando correspondan.
+- Factura, remisión, certificado u otro documento podrán quedar pendientes sin ocultarse.
+- La aceptación tendrá actor y evidencia.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-011`, `ORIGO-AUTH-007`, `ORIGO-AUTH-008`, `ORIGO-AUTH-011`;
+- `CAP-SCOPE-003`, `CAP-SCOPE-006`, `CAP-SCOPE-008`;
+- `EVID-ARC-001` a `EVID-ARC-010`;
+
+---
+
+#### 21. CAP-05.10 — Gestionar diferencias y devoluciones
+
+##### Reglas mínimas
+
+- Toda diferencia tendrá tipo, severidad, cantidad, valor, evidencia y responsable.
+- Las resoluciones podrán incluir aceptación con reserva, reposición, devolución, descuento, nota o disputa.
+- La devolución física no modificará silenciosamente la recepción.
+- Los efectos de inventario y económicos serán compensatorios y correlacionados.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-011`, `ORIGO-AUTH-008`;
+- `INT-PROC-002` a `INT-PROC-005`;
+- `NUMERA-DOM-003`, `NUMERA-DOM-014`, `NUMERA-UX-018`;
+- `CAP-SCOPE-006`, `CAP-SCOPE-012`;
+
+---
+
+#### 22. CAP-05.11 — Evaluar cumplimiento de proveedores
+
+##### Reglas mínimas
+
+- Los indicadores se derivarán de órdenes y recepciones cerradas.
+- Se medirán puntualidad, completitud, calidad, precio, documentos y resolución de diferencias.
+- La evaluación podrá segmentarse por producto, sede, periodo y contrato.
+- Suspensión o bloqueo tendrá decisión y vigencia.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-001`, `ORIGO-AUTH-002`;
+- `CAP-SCOPE-017`;
+- `PROC-CAT-018`, `PROC-CAT-019`;
+
+---
+
+#### 23. CAP-05.12 — Gestionar compras urgentes
+
+##### Reglas mínimas
+
+- La urgencia tendrá causa canónica y evidencia.
+- La política definirá quién puede iniciar, aprobar, ejecutar y regularizar.
+- La compra conservará proveedor, líneas, precio, recepción, documento y centro de costo.
+- La regularización vencida generará alerta y bloqueo de nuevas excepciones cuando la política lo exija.
+
+##### Destinos canónicos
+
+- `ORIGO-UX-001`, `ORIGO-UX-002`, `ORIGO-AUTH-005` a `ORIGO-AUTH-010`;
+- `CAP-SCOPE-012`, `CAP-SCOPE-016`, `CAP-SCOPE-018`;
+- `AUTH-QA-015`, `AUTH-QA-016`, `UX-QA-026`;
+
+---
+
+#### 24. Fronteras con otros dominios
+
+##### 24.1. Catálogo
+
+ORIGO referenciará producto, servicio y presentación canónicos; no creará identidades paralelas.
+
+##### 24.2. Inventario
+
+NEXO decidirá y registrará el efecto físico por sede, LOC, lote, vencimiento y condición.
+
+##### 24.3. Producción
+
+FOGO emitirá necesidades o reservas; no creará órdenes de compra por su cuenta.
+
+##### 24.4. Ventas
+
+PULSO podrá aportar demanda histórica o señales; no aprobará compras.
+
+##### 24.5. Finanzas
+
+NUMERA recibirá hechos económicos y conciliará obligaciones; no editará la orden ni la recepción.
+
+##### 24.6. Contratos y documentos
+
+Storage y evidencia se gobernarán mediante `CAP-SCOPE-016` y `EVID-ARC-*`.
+
+##### 24.7. Analítica
+
+Los indicadores se derivarán de estados y eventos canónicos, no de conteos de pantallas.
+
+##### 24.8. Continuidad
+
+La indisponibilidad de proveedor, red o aplicación tendrá procedimiento y regularización.
+
+---
+
+#### 25. Información conceptual requerida
+
+##### 25.1. Proveedor
+
+- identificador y código estables;
+- identidad legal o personal aplicable;
+- estado y vigencia;
+- sedes y cobertura;
+- contactos y canales;
+- documentos y validaciones;
+- datos sensibles referenciados;
+- historial de cambios;
+
+##### 25.2. Condición comercial
+
+- producto o servicio;
+- presentación y unidad;
+- cantidad o escala;
+- precio y moneda;
+- impuestos y descuentos;
+- flete y cargos;
+- mínimo de compra;
+- tiempo de entrega;
+- condición de pago;
+- vigencia;
+- fuente y versión;
+
+##### 25.3. Solicitud y caso de abastecimiento
+
+- origen;
+- solicitante;
+- empresa, sede, área y centro de costo;
+- fecha requerida;
+- prioridad;
+- líneas;
+- justificación;
+- presupuesto o referencia;
+- estado y revisión;
+
+##### 25.4. Orden
+
+- proveedor;
+- revisión;
+- líneas congeladas;
+- destino;
+- condiciones;
+- aprobaciones;
+- envío;
+- confirmación;
+- recepciones relacionadas;
+- saldo pendiente;
+- cierre;
+
+##### 25.5. Recepción
+
+- orden y revisión;
+- documento del proveedor;
+- actor y ubicación;
+- cantidades;
+- calidad y condición;
+- lote y vencimiento;
+- diferencias;
+- entrada NEXO;
+- evento NUMERA;
+- evidencia;
+
+##### 25.6. Evaluación
+
+- periodo;
+- universo de operaciones;
+- indicadores;
+- ponderaciones;
+- resultado calculado;
+- valoración manual;
+- decisión y vigencia;
+
+---
+
+#### 26. Eventos e integraciones requeridos
+
+- `procurement.need_identified`;
+- `procurement.request_submitted`;
+- `procurement.request_approved`;
+- `procurement.sourcing_opened`;
+- `procurement.quote_received`;
+- `procurement.offer_selected`;
+- `procurement.contract_activated`;
+- `procurement.purchase_order_approved`;
+- `procurement.purchase_order_sent`;
+- `procurement.purchase_order_revised`;
+- `procurement.receipt_registered`;
+- `procurement.receipt_inspected`;
+- `procurement.receipt_difference_detected`;
+- `procurement.inventory_entry_requested`;
+- `procurement.inventory_entry_confirmed`;
+- `procurement.economic_event_emitted`;
+- `procurement.return_opened`;
+- `procurement.return_resolved`;
+- `procurement.supplier_score_updated`;
+- `procurement.emergency_purchase_regularized`;
+
+##### 26.1. Integraciones obligatorias
+
+- NEXO/FOGO/PULSO → ORIGO para señales de demanda;
+- ORIGO → proveedor mediante documento o canal controlado;
+- ORIGO → NEXO para recepción física autorizada;
+- NEXO → ORIGO para confirmación de entrada, diferencias y devolución;
+- ORIGO/NEXO → NUMERA para hecho económico y conciliación;
+- ORIGO → Storage para contratos, ofertas, facturas y evidencia;
+- ORIGO → analítica para cumplimiento y tiempos;
+- SHELL → todas las aplicaciones para identidad, permisos, contratos e idempotencia.
+
+---
+
+#### 27. Autorización y segregación
+
+##### 27.1. Capacidades separadas
+
+- consultar proveedores;
+- administrar proveedores;
+- consultar precios;
+- administrar condiciones;
+- crear solicitud;
+- comprar;
+- comparar ofertas;
+- aprobar;
+- emitir orden;
+- cancelar o enmendar;
+- recibir;
+- inspeccionar;
+- corregir recepción;
+- gestionar devolución;
+- ver contratos;
+- exportar información sensible;
+- autorizar compra urgente;
+- regularizar compra urgente;
+
+##### 27.2. Reglas
+
+- el acceso administrativo ordinario no requerirá check-in cuando el contrato lo permita;
+- la recepción física podrá exigir contexto operativo;
+- el alcance se limitará por empresa, sede, centro de costo, categoría y responsabilidad;
+- los precios y contratos tendrán permisos independientes;
+- la simulación no ejecutará aprobaciones, envíos ni recepciones reales;
+- un dispositivo compartido identificará al receptor humano;
+- la URL directa, formulario manipulado o RPC directa no ampliarán autoridad;
+- toda decisión conservará actor real, actor operativo, política y territorio.
+
+---
+
+#### 28. Experiencia por actor
+
+##### 28.1. Solicitante
+
+- crear y seguir solicitudes;
+- ver estado y motivo;
+- corregir cuando sea devuelta;
+- no ver precios o contratos cuando no corresponda;
+
+##### 28.2. Comprador
+
+- bandeja de necesidades;
+- casos de abastecimiento;
+- proveedores y ofertas;
+- comparación;
+- orden y seguimiento;
+
+##### 28.3. Aprobador
+
+- contexto suficiente;
+- impacto y excepciones;
+- aprobar, rechazar o devolver;
+- historial de decisiones;
+
+##### 28.4. Receptor
+
+- orden esperada;
+- presentación y cantidad;
+- captura de diferencias;
+- evidencia y confirmación;
+
+##### 28.5. Inventario
+
+- LOC, lote, vencimiento y condición;
+- entrada o devolución;
+- sin editar precio o aprobación;
+
+##### 28.6. Contabilidad
+
+- hecho económico y documento;
+- conciliación;
+- diferencias;
+- sin modificar la recepción física;
+
+##### 28.7. Gerencia
+
+- excepciones, urgencias, desempeño, contratos y exposición;
+- sin contaminar la operación ordinaria;
+
+---
+
+#### 29. Operación offline y contingencia
+
+- una orden no se considerará enviada hasta confirmar el canal o registrar entrega controlada;
+- una recepción offline deberá persistir identificador y contenido antes de mostrarse como encolada;
+- la sincronización revalidará actor, orden, revisión, estado y permisos;
+- los reintentos no duplicarán recepción, inventario ni evento económico;
+- una respuesta perdida permitirá recuperar el resultado original;
+- una compra urgente durante indisponibilidad tendrá formato de contingencia y regularización obligatoria;
+- la caída de NUMERA no impedirá necesariamente la recepción física, pero dejará el hecho económico pendiente y visible;
+- la caída de NEXO no permitirá que ORIGO declare inventario confirmado sin evidencia.
+
+---
+
+#### 30. Evidencia, conservación y auditoría
+
+- solicitud original y revisiones;
+- ofertas y comparaciones;
+- justificación de selección;
+- aprobaciones y rechazos;
+- orden y revisiones enviadas;
+- confirmación del proveedor;
+- documentos de recepción;
+- inspección y diferencias;
+- entrada o devolución física;
+- hecho económico y conciliación;
+- contratos y vigencias;
+- compras urgentes y regularización;
+- evaluaciones y decisiones sobre proveedor;
+- consultas, descargas y exportaciones sensibles.
+
+La retención exacta se definirá en `CAP-SCOPE-016`; ningún cierre autoriza borrar evidencia referenciada.
+
+---
+
+#### 31. Patrones legacy destinados a retiro
+
+- crear una orden directamente desde una recomendación sin solicitud o política;;
+- proveedores duplicados por nombre;;
+- proveedores editables en NEXO y ORIGO como fuentes competidoras;;
+- precio actual sobrescrito sin vigencia;;
+- presentación del proveedor expresada como texto libre;;
+- comparaciones en hojas o chats sin referencia canónica;;
+- aprobación implícita por rol amplio;;
+- edición de orden ya enviada;;
+- estado único `received` sin parcialidad ni diferencia;;
+- recepción duplicada en ORIGO y NEXO;;
+- entrada de inventario creada desde una factura sin recepción física;;
+- servicio registrado como producto inventariable;;
+- devolución mediante ajuste destructivo;;
+- compra urgente sin regularización;;
+- contratos o datos bancarios en almacenamiento público;;
+- PDF público con secreto opcional o fallback;;
+- evaluación de proveedor basada solo en opinión sin universo de hechos.;
+
+`RETIRE` aplica a estos patrones, no a las capacidades empresariales.
+
+---
+
+#### 32. Preguntas pendientes reutilizadas
+
+No se crean preguntas nuevas.
+
+| Pregunta | Uso dentro de esta tarea                                           | Puerta de resolución                                              |
+| -------- | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `DAT-06` | confirmar dónde se consulta hoy la historia completa de compras    | `ORIGO-UX-001`, migración y readiness                             |
+| `DAT-07` | confirmar si se conserva la cantidad realmente recibida            | `ORIGO-UX-009` a `ORIGO-UX-014` y `INT-PROC-002` a `INT-PROC-005` |
+| `OPE-05` | confirmar quién puede rechazar mercancía distinta                  | diseño E2 de recepción y matriz de aprobación                     |
+| `TEC-07` | evidencia de tablas y servicios actuales de compra                 | `SUPA-AUD-019`, `SUPA-AUD-022`, `SUPA-AUD-023`                    |
+| `TEC-18` | evidencia de duplicación de compras y contratos entre aplicaciones | `SHELL-CON-016`, `SUPA-TRANS-007`, `INT-APP-010`                  |
+
+Las respuestas no bloquean esta decisión conceptual, pero serán obligatorias antes de migrar historia, fijar responsabilidades nominales o aprobar el piloto.
+
+---
+
+#### 33. Riesgos principales
+
+| Riesgo                                | Severidad | Control principal                  |
+| ------------------------------------- | --------- | ---------------------------------- |
+| orden sin necesidad o autorización    | crítica   | solicitud y aprobación explícitas  |
+| proveedor duplicado o no validado     | alta      | maestro único y estados            |
+| precio vencido o de otra presentación | crítica   | versión y contexto completos       |
+| selección no justificable             | alta      | comparación y criterio visible     |
+| conflicto de interés o autoaprobación | crítica   | segregación de funciones           |
+| orden enviada alterada                | crítica   | revisiones inmutables              |
+| recepción duplicada                   | crítica   | idempotencia y contrato ORIGO–NEXO |
+| inventario sin recepción válida       | crítica   | efecto físico gobernado por NEXO   |
+| recepción parcial tratada como total  | crítica   | cantidades y saldo por línea       |
+| servicio convertido en stock          | alta      | aceptación no inventariable        |
+| diferencia borrada                    | crítica   | eventos compensatorios             |
+| contrato o datos bancarios expuestos  | crítica   | Storage privado y permisos         |
+| compra urgente sin regularización     | crítica   | carril expedito con vencimiento    |
+| evento financiero duplicado           | crítica   | correlación e idempotencia         |
+| desempeño manipulado                  | alta      | métricas desde hechos              |
+
+---
+
+#### 34. Hallazgos y destinos canónicos
+
+| ID                    | Hallazgo                                                                                                   | Riesgo  | Tarea propietaria                                                | Momento                        |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------- | ------------------------------ |
+| `H-CAP-SCOPE-005-001` | las señales de demanda no convergen todavía en un expediente único de necesidad                            | alta    | `ORIGO-UX-001`; `CAP-SCOPE-006`; `CAP-SCOPE-008`                 | E2                             |
+| `H-CAP-SCOPE-005-002` | solicitud de compra y orden no tienen separación integral demostrada                                       | crítica | `ORIGO-UX-002`; `PROC-CAT-001` a `PROC-CAT-018`                  | E2                             |
+| `H-CAP-SCOPE-005-003` | el maestro de proveedores puede competir entre NEXO, ORIGO y estructuras compartidas                       | crítica | `SUPA-AUD-019`; `SUPA-TRANS-007`; `SHELL-CON-016`                | E3                             |
+| `H-CAP-SCOPE-005-004` | identidad, contactos, documentos y datos sensibles del proveedor no tienen gobierno completo verificado    | crítica | `ORIGO-AUTH-002`; `ORIGO-AUTH-010`; `CAP-SCOPE-016`              | E2/E3                          |
+| `H-CAP-SCOPE-005-005` | no existe flujo integral verificado de RFQ, ofertas versionadas y comparación                              | alta    | `ORIGO-UX-001`; `ORIGO-UX-004`; `PROC-CAT-001` a `PROC-CAT-020`  | E2                             |
+| `H-CAP-SCOPE-005-006` | precios acordados por proveedor y producto no tienen versionado integral                                   | crítica | `ORIGO-AUTH-010`; `SUPA-AUD-019`; `CAP-SCOPE-012`                | E2/E3                          |
+| `H-CAP-SCOPE-005-007` | contratos, condiciones y vigencias no tienen ciclo canónico comprobado                                     | alta    | `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `ORIGO-UX-001` | E2/E4                          |
+| `H-CAP-SCOPE-005-008` | la aprobación de compras y auditoría de cambios están declaradas como pendientes                           | crítica | `ORIGO-AUTH-005`; `ORIGO-AUTH-006`; `ORIGO-UX-008`               | E2 antes de piloto             |
+| `H-CAP-SCOPE-005-009` | los estados actuales de OC no representan revisión, aprobación, parcialidad, disputa y cierre              | crítica | `ORIGO-UX-007` a `ORIGO-UX-011`; `PROC-CAT-009` a `PROC-CAT-014` | E2                             |
+| `H-CAP-SCOPE-005-010` | el PDF o token externo requiere contrato fail-closed, expiración y minimización de datos                   | crítica | `ORIGO-AUTH-010`; `INT-EXT-001` a `INT-EXT-019`; `CAP-SCOPE-016` | E3/E4                          |
+| `H-CAP-SCOPE-005-011` | la recepción real contra OC no está completamente sincronizada con NEXO                                    | crítica | `ORIGO-UX-009` a `ORIGO-UX-015`; `INT-PROC-001` a `INT-PROC-005` | E2/E4                          |
+| `H-CAP-SCOPE-005-012` | recepciones parciales, diferencias, costos y presentaciones físicas no están cerrados de extremo a extremo | crítica | `ORIGO-UX-010`; `ORIGO-UX-011`; `CAP-SCOPE-006`; `NUMERA-UX-018` | E2/E3                          |
+| `H-CAP-SCOPE-005-013` | la compra y aceptación de servicios no tienen contrato específico verificado                               | alta    | `ORIGO-UX-001`; `CAP-SCOPE-012`; `PROC-CAT-001` a `PROC-CAT-018` | E2                             |
+| `H-CAP-SCOPE-005-014` | no existe ciclo integral comprobado de devolución, reclamación y compensación                              | crítica | `ORIGO-AUTH-008`; `ORIGO-UX-011`; `NUMERA-DOM-014`               | E2/E3                          |
+| `H-CAP-SCOPE-005-015` | no existe evaluación de proveedores derivada de hechos canónicos                                           | alta    | `ORIGO-UX-001`; `CAP-SCOPE-017`; `PROC-CAT-019`                  | E2                             |
+| `H-CAP-SCOPE-005-016` | no existe carril canónico de compra urgente con regularización                                             | crítica | `ORIGO-AUTH-005` a `ORIGO-AUTH-010`; `CAP-SCOPE-018`             | E2                             |
+| `H-CAP-SCOPE-005-017` | el hecho económico y la conciliación con NUMERA no están cerrados                                          | crítica | `INT-PROC-004`; `NUMERA-DOM-003`; `NUMERA-UX-018`                | E3/E4                          |
+| `H-CAP-SCOPE-005-018` | la historia operativa actual de compras y cantidades recibidas sigue pendiente de confirmación             | alta    | `DAT-06`; `DAT-07`; `ORIGO-UX-001`                               | antes de migración y readiness |
+
+Todos los hallazgos tienen propietario y puerta. No queda pendiente narrativo sin destino.
+
+---
+
+#### 35. Decisiones canónicas resultantes
+
+1. ORIGO será propietario del expediente de abastecimiento externo.
+2. NEXO conservará la propiedad del efecto físico sobre inventario.
+3. NUMERA o el sistema financiero aprobado conservará el hecho económico y la obligación.
+4. VISO será superficie de acceso o supervisión, no fuente competidora.
+5. La necesidad, solicitud, caso de abastecimiento, orden y recepción serán entidades distintas.
+6. El proveedor será una identidad estable separada de sus contactos y sedes.
+7. La relación producto–proveedor no equivaldrá a un precio vigente.
+8. Las ofertas, contratos y precios serán versionados y tendrán vigencia.
+9. La comparación considerará costo total y criterios operativos, no solo precio.
+10. La negociación será manual controlada con resultado registrado.
+11. Las aprobaciones serán explícitas y versionadas.
+12. Solicitante, comprador, aprobador y receptor tendrán capacidades separadas.
+13. Una orden aprobada o enviada no se editará destructivamente.
+14. La recepción podrá ser parcial y conservará diferencias por línea.
+15. Los servicios tendrán aceptación sin crear inventario artificial.
+16. ORIGO y NEXO compartirán un identificador de recepción, no dos procesos paralelos.
+17. Las diferencias y devoluciones producirán efectos correlacionados y compensatorios.
+18. La evaluación de proveedor se derivará de hechos.
+19. La compra urgente será expedita pero controlada y regularizable.
+20. Los datos sensibles se protegerán con permisos y Storage privado.
+21. Cada frontera será idempotente y reconciliable.
+22. La familia `CAP-05` se considera parcialmente existente y reutilizable, pero no cerrada.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+Esta tarea genera tres requisitos distintos y no duplicados:
+
+```text
+TREQ-ORIGO-004
+TREQ-ORIGO-005
+TREQ-INTEGRATION-010
+```
+
+Los detalles completos se incorporan exclusivamente en el archivo canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado.
+
+No se entregan filas independientes.
+
+##### 36.1. `TREQ-ORIGO-004`
+
+Protege el ciclo solicitud → abastecimiento → aprobación → orden → revisión → urgencia, incluyendo segregación, estados, auditoría y ausencia de cambios destructivos.
+
+##### 36.2. `TREQ-ORIGO-005`
+
+Protege proveedor, ofertas, contratos, condiciones y precios versionados, datos sensibles, vigencias, presentaciones y evaluación histórica.
+
+##### 36.3. `TREQ-INTEGRATION-010`
+
+Protege la cadena ORIGO → NEXO → NUMERA, recepciones parciales, servicios, diferencias, devoluciones, idempotencia y conciliación.
+
+---
+
+#### 37. Dependencias habilitadas y restricciones
+
+`CAP-SCOPE-005` habilita conceptualmente:
+
+- `CAP-SCOPE-006`;
+- `CAP-SCOPE-012`;
+- `CAP-SCOPE-016`;
+- `CAP-SCOPE-017`;
+- `CAP-SCOPE-018`;
+- `ORIGO-UX-001` a `ORIGO-UX-016`;
+- `ORIGO-AUTH-001` a `ORIGO-AUTH-015`;
+- `INT-PROC-001` a `INT-PROC-005`;
+- `NUMERA-DOM-003` y `NUMERA-UX-018`;
+- diseño TO-BE de abastecimiento;
+- arquitectura de proveedor, precios y contratos;
+- paquetes E5 de ORIGO, NEXO y NUMERA;
+
+No autoriza compras, aprobaciones, recepción, pago, migración, cambios en proveedores ni publicación de documentos.
+
+---
+
+#### 38. Criterios de aceptación
+
+1. las doce subcapacidades tengan tratamiento explícito;
+2. necesidad, solicitud, abastecimiento, orden y recepción estén separados;
+3. proveedor, contacto, oferta, contrato y precio estén separados;
+4. ORIGO, NEXO, NUMERA y VISO tengan fronteras explícitas;
+5. los precios tengan contexto, fuente, versión y vigencia;
+6. la negociación quede clasificada como manual controlada;
+7. las aprobaciones y segregación sean explícitas;
+8. una orden enviada utilice revisiones y no sobrescritura;
+9. la recepción admita parcialidad, inspección y diferencias;
+10. los servicios no creen inventario artificial;
+11. devoluciones y compensaciones conserven la historia;
+12. la compra urgente tenga autorización y regularización;
+13. los datos sensibles tengan tratamiento de privacidad;
+14. los dieciocho hallazgos tengan destino;
+15. no se creen preguntas narrativas sin dueño;
+16. se generen los tres requisitos de prueba;
+17. el registro `04A` completo tenga 92 requisitos válidos;
+18. ninguna fila del registro tenga más o menos de catorce columnas;
+19. no se autorice implementación;
+20. la continuidad quede en `CAP-SCOPE-006`.
+
+---
+
+#### 39. Resultado y continuidad
+
+**Estado:** PROPUESTA PARA APROBACIÓN
+
+Al aprobarse:
+
+- `CAP-SCOPE-005` será la decisión canónica de cobertura para compras, proveedores, contratos, precios y abastecimiento;
+- `TREQ-ORIGO-004`, `TREQ-ORIGO-005` y `TREQ-INTEGRATION-010` quedarán incorporados al registro canónico;
+- ORIGO, NEXO y NUMERA conservarán propiedades diferenciadas;
+- ninguna implementación física ni operación real quedará autorizada;
+- la continuidad será:
+
+```text
+CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
+```
+
+
 ### [ ] CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
 ### [ ] CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
 ### [ ] CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
