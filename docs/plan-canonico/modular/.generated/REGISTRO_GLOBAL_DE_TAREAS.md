@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1539** |
+| Tareas con marcador | **1569** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **213** |
+| Aprobadas | **214** |
 | En propuesta | **0** |
-| No iniciadas | **1326** |
+| No iniciadas | **1355** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-COVER-012` — Aprobar matriz capacidad × proceso × aplicación × implementación | ✅ APROBADA |
-| Tarea actual | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | ⬜ NO INICIADA |
-| Siguiente | `GAP-CTRL-002` — Deduplicar brechas equivalentes | ⬜ NO INICIADA |
+| Última aprobada | `GAP-CTRL-001` — Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | ✅ APROBADA |
+| Tarea actual | `GAP-CTRL-002` — Deduplicar brechas equivalentes | ⬜ NO INICIADA |
+| Siguiente | `GAP-CTRL-003` — Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -241,7 +241,7 @@
 | ✅ APROBADA | `CAP-COVER-010` | Registrar dependencias y bloqueos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
 | ✅ APROBADA | `CAP-COVER-011` | Priorizar por criticidad, frecuencia, riesgo y valor operativo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
 | ✅ APROBADA | `CAP-COVER-012` | Aprobar matriz capacidad × proceso × aplicación × implementación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/06_MATRIZ_DE_COBERTURA.md` |
-| ⬜ NO INICIADA | `GAP-CTRL-001` | Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
+| ✅ APROBADA | `GAP-CTRL-001` | Consolidar brechas de auditoría, AUTH-CAT-021, operación y código | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-002` | Deduplicar brechas equivalentes | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-003` | Clasificar brecha funcional, contractual, técnica, de datos, seguridad u operación | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ⬜ NO INICIADA | `GAP-CTRL-004` | Asignar propietario y fecha de decisión | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
@@ -1566,3 +1566,33 @@
 | ⬜ NO INICIADA | `DATA-INT-002` | Definir capa semántica, modelos analíticos, snapshots, caché, consultas y rendimiento | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
 | ⬜ NO INICIADA | `DATA-INT-003` | Definir crosswalks, claves externas, identidad y reconciliación de datos maestros | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
 | ⬜ NO INICIADA | `DATA-INT-004` | Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial | `bloques/AB_ANALITICA_INDICADORES_Y_DATOS_MAESTROS/00_BLOQUE_AB.md` |
+| ⬜ NO INICIADA | `CONT-DOM-001` | Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-002` | Definir análisis de impacto empresarial, servicios críticos, procesos, sedes y niveles mínimos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-003` | Definir mapa de dependencias, recursos críticos, single points of failure y sustitutos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-004` | Definir MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-005` | Definir taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre de incidentes de continuidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-006` | Definir mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-007` | Definir operación mínima viable por proceso, sede, horario, temporada y duración | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-008` | Definir estrategias de contingencia, alternativas manuales, offline, físicas y de proveedor | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-009` | Definir registro, folios, evidencia, custodia y trabajo ejecutado durante la falla | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-010` | Definir reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-011` | Definir inventario, política, frecuencia, retención, seguridad y cobertura de respaldos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-012` | Definir runbooks, orden de recuperación, restauración, failover, retorno y validación funcional | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-013` | Definir continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-014` | Definir programa de walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-DOM-015` | Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-AUTH-001` | Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-AUTH-002` | Proteger acceso de emergencia, credenciales de recuperación, break-glass, failover y revocación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-AUTH-003` | Proteger respaldos, runbooks, contactos, evidencia, formularios y datos de contingencia | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-AUTH-004` | Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-001` | Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-002` | Diseñar centro de mando del incidente con línea de tiempo, servicios afectados y recuperación | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-003` | Diseñar runbooks y checklists simples por rol, proceso, sede y modalidad | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-004` | Diseñar captura controlada durante la falla y reincorporación posterior | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-005` | Diseñar seguimiento de respaldos, restauración, failover, validación y pendientes | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-006` | Diseñar comunicaciones internas y externas con plantillas, canales, confirmación y escalamiento | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-UX-007` | Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-INT-001` | Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-INT-002` | Definir contratos con SHELL, VISO, ANIMA, BLOQUE Z, AA, AB, E4, E5, T, U y X | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-INT-003` | Definir contratos con Supabase, nube, energía, ISP, pagos, mensajería, transporte y proveedores críticos | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
+| ⬜ NO INICIADA | `CONT-INT-004` | Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal | `bloques/AC_CONTINUIDAD_OPERATIVA_Y_RECUPERACION/00_BLOQUE_AC.md` |
