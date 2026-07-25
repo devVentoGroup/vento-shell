@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **192** |
+| Tareas aprobadas | **194** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1209** |
+| Tareas no iniciadas | **1207** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio** |
-| Tarea actual | **CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas** |
+| Última tarea aprobada | **CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos** |
+| Tarea actual | **CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos** |
+| Siguiente tarea | **CAP-SCOPE-014 — Evaluar marketing, campañas y contenido** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 67 de 96 aprobadas; CAP-SCOPE-011 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 69 de 96 aprobadas; CAP-SCOPE-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-010` — Evaluar clientes, fidelización, reclamos y servicio |
-| Tarea actual | `CAP-SCOPE-011` — Evaluar logística, rutas, vehículos, combustible y entregas — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-012` — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos |
+| Última aprobada | `CAP-SCOPE-012` — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos |
+| Tarea actual | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **67 DE 96 APROBADAS — ACTUAL CAP-SCOPE-011** |
+| BLOQUE E1 | **69 DE 96 APROBADAS — ACTUAL CAP-SCOPE-013** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
-        ↓
-TAREA ACTUAL
-CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
-        ↓
-SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
         ↓
+TAREA ACTUAL
+CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
+        ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 67 de 96 tareas aprobadas
+BLOQUE E1 — 69 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183462,31 +183462,31 @@ Dominios iniciales:
 
 | Métrica | Resultado |
 | --- | ---: |
-| Requisitos vigentes | **105** |
+| Requisitos vigentes | **112** |
 | Dominios con requisitos | **14** |
-| Filas con catorce columnas | **105 de 105** |
+| Filas con catorce columnas | **112 de 112** |
 | Identificadores duplicados | **0** |
 | Relaciones `TREQ-*` no resolubles | **0** |
-| Última tarea incorporada | `CAP-SCOPE-009` |
+| Última tarea incorporada | `CAP-SCOPE-011` |
 | Fecha de normalización | `2026-07-24` |
 
 Distribución vigente:
 
 | Dominio | Rango | Cantidad |
 | --- | --- | ---: |
-| `AUTH` | `TREQ-AUTH-001` a `TREQ-AUTH-017` | 17 |
+| `AUTH` | `TREQ-AUTH-001` a `TREQ-AUTH-018` | 18 |
 | `SHELL` | `TREQ-SHELL-001` a `TREQ-SHELL-009` | 9 |
 | `SUPABASE` | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-012` | 12 |
 | `ANIMA` | `TREQ-ANIMA-001` a `TREQ-ANIMA-004` | 4 |
 | `VISO` | `TREQ-VISO-001` | 1 |
-| `NEXO` | `TREQ-NEXO-001` a `TREQ-NEXO-015` | 15 |
+| `NEXO` | `TREQ-NEXO-001` a `TREQ-NEXO-016` | 16 |
 | `FOGO` | `TREQ-FOGO-001` a `TREQ-FOGO-004` | 4 |
 | `ORIGO` | `TREQ-ORIGO-001` a `TREQ-ORIGO-005` | 5 |
-| `PULSO` | `TREQ-PULSO-001` a `TREQ-PULSO-006` | 6 |
+| `PULSO` | `TREQ-PULSO-001` a `TREQ-PULSO-007` | 7 |
 | `NUMERA` | `TREQ-NUMERA-001` | 1 |
-| `PASS` | `TREQ-PASS-001` a `TREQ-PASS-009` | 9 |
+| `PASS` | `TREQ-PASS-001` a `TREQ-PASS-011` | 11 |
 | `TALENTO` | `TREQ-TALENTO-001` | 1 |
-| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-014` | 14 |
+| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-016` | 16 |
 | `UX` | `TREQ-UX-001` a `TREQ-UX-007` | 7 |
 
 ### Procedimiento obligatorio de actualización
@@ -183522,6 +183522,8 @@ Distribución vigente:
 | `TREQ-AUTH-015` | `AUTH` | Toda decisión y acción protegida deberá conservar evidencia correlacionable de principal, actor efectivo, simulación, rol base y operativo, turno, check-in, sede, área, dispositivo, permiso, recurso, decisión, razones, versión contractual y timestamp. La auditoría no podrá omitirse en denegaciones, reintentos, rollback ni operaciones administrativas. | `AUTH-CTX-024`; `AUTH-CTX-030`; `AUTH-QA-029` | Imposibilidad de investigar acciones, atribución incorrecta, decisiones no reproducibles y cumplimiento insuficiente / crítica | contractual + auditoría + seguridad + integración + base de datos + regresión / automatizada con revisión controlada | `AUTH-DB-012` a `AUTH-DB-014`; `AUTH-DB-032`; `AUTH-SRV-014`; `AUTH-SRV-015`; `AUTH-QA-029` | Fundación transversal de auditoría, paquetes E5 y certificación del BLOQUE U | Transversal / aplicaciones, Supabase local, CI, staging y repositorio de evidencia | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `TREQ-AUTH-004`; `TREQ-AUTH-011`; `TREQ-AUTH-012`; `TREQ-INTEGRATION-003` |
 | `TREQ-AUTH-016` | `AUTH` | El retiro, cancelación antes de inicio, suspensión con bloqueo o finalización de un vínculo deberá revocar de forma coordinada y comprobable las invitaciones, asignaciones activas, roles, excepciones, contextos, sesiones, tokens derivados, dispositivos y credenciales externas personales aplicables. Ninguna cola offline ni consumidor con caché podrá ejecutar después con autoridad anterior. La revocación no borrará persona, vínculo, turnos, asistencia, documentos sujetos a retención ni auditoría. Un reingreso deberá crear un vínculo y aprovisionamiento nuevos, sin restaurar automáticamente permisos, dispositivos o excepciones del vínculo terminado. | `CAP-SCOPE-002`; `CAP-02.13`; `CAP-TAL-006`; `CODE-AUD-019`; `BKL-FUNC-002`; `H-CAP-SCOPE-002-013`; `H-CAP-SCOPE-002-014` | acceso residual después del retiro, acciones offline posteriores, exposición de documentos, uso de dispositivo o credencial antigua y reingreso con privilegios heredados / crítica | seguridad + autorización + integración + revocación + caché + dispositivo + E2E + regresión / automatizada con checklist manual controlado | `CAP-TAL-006`; `AUTH-DB-019`; `AUTH-DB-035`; `AUTH-DEV-011` a `AUTH-DEV-013`; `VISO-AUTH-007` a `VISO-AUTH-009`; `VISO-AUTH-018`; `VISO-AUTH-019`; `ANIMA-AUTH-009`; `ANIMA-AUTH-015`; `ANIMA-AUTH-019`; `INT-EXT-008`; `INT-EXT-019`; `AUTH-QA-025`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 de offboarding; fundación de identidad y contexto; paquetes E5 VISO/ANIMA/SHELL; certificación del BLOQUE U | `vento-viso`, `vento-anima`, `vento-shell` y consumidores / Supabase local, CI, staging, dispositivos, colas offline e integraciones externas controladas | `IDENTIFICADO` | Pendiente | Pendiente | cierre transversal incompleto identificado por auditorías; contratos de invalidación y dispositivos; decisiones de `CAP-SCOPE-002` | `TREQ-AUTH-003`; `TREQ-AUTH-005`; `TREQ-AUTH-007`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-TALENTO-001`; `TREQ-SUPABASE-004`; `TREQ-INTEGRATION-003` |
 | `TREQ-AUTH-017` | `AUTH` | Los expedientes SST, reportes, investigaciones, declaraciones, evidencias y datos médicos deberán aplicar autorización por identidad real, vínculo vigente, participación, sede, área, tipo de expediente, sensibilidad y estado. El trabajador verá únicamente información propia permitida. Un responsable territorial no obtendrá acceso global. Las aplicaciones operativas y eventos generales no recibirán diagnósticos ni documentos médicos. Los accesos extraordinarios de emergencia serán mínimos, temporales y auditados. URL directa, formulario manipulado, RPC directa, simulación, dispositivo compartido, caché o exportación no podrán ampliar el alcance. El reporte original y la evidencia permanecerán protegidos e inmutables; toda ampliación, corrección, descarga y consulta sensible conservará actor y motivo cuando corresponda. | `CAP-SCOPE-003`; `CAP-03.04`; `CAP-03.08`; `CAP-03.09`; `H-CAP-SCOPE-003-007`; `H-CAP-SCOPE-003-012`; `BKL-FUNC-003` | exposición de información médica o SST, acceso entre sedes, modificación de evidencia, descarga masiva y decisiones laborales basadas en datos no autorizados / crítica | seguridad + autorización + privacidad + RLS + Storage + exportación + URL directa + auditoría + regresión / automatizada con revisión manual de privacidad | `AUTH-SRV-004` a `AUTH-SRV-018`; `VISO-AUTH-013` a `VISO-AUTH-019`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-003`; `AUTH-QA-007`; `AUTH-QA-008`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 del proceso SST; arquitectura E3/E4; paquetes E5 VISO/ANIMA/SHELL; certificación del BLOQUE U | `vento-viso`, `vento-anima`, `vento-shell` y Storage / Supabase local, CI, staging, dispositivos personales y compartidos, exportaciones y actores de distintas sedes | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-003`; ausencia de contrato específico de privacidad SST; controles de autorización ya aprobados; separación de VITAL | `TREQ-AUTH-003`; `TREQ-AUTH-008`; `TREQ-AUTH-009`; `TREQ-AUTH-010`; `TREQ-AUTH-011`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-SUPABASE-004`; `TREQ-VISO-001` |
+
+| `TREQ-AUTH-018` | `AUTH` | Los perfiles, contactos, preferencias, consentimientos, casos, reclamos, feedback, reservas, comunicaciones y movimientos de fidelización de clientes deberán aplicar autorización por identidad real, capacidad, finalidad, marca, sede, relación con el caso, sensibilidad y acción. El cliente accederá únicamente a sus datos y expedientes permitidos; no verá notas internas ni datos de terceros. El personal recibirá proyecciones mínimas y no podrá buscar, exportar, simular, descargar o modificar datos fuera de su necesidad operativa. La retirada de consentimiento deberá bloquear usos futuros aplicables sin borrar evidencia histórica. URL directa, RLS, RPC, dispositivo compartido, caché, exportación, notificación y logs deberán respetar el mismo alcance y conservar auditoría. | `CAP-SCOPE-010`; `CAP-10.01`; `CAP-10.02`; `CAP-10.10`; `H-CAP-SCOPE-010-004`; `H-CAP-SCOPE-010-017`; `H-CAP-SCOPE-010-020` a `H-CAP-SCOPE-010-023` | exposición de datos personales, contacto no autorizado, consulta entre marcas o sedes, abuso de exportación, notas internas visibles y tratamiento posterior a revocación / crítica | seguridad + privacidad + autorización + RLS + RPC + exportación + dispositivo compartido + auditoría + regresión / automatizada con revisión manual de privacidad | `PASS-INT-004`; `PASS-INT-005`; `VISO-AUTH-013` a `VISO-AUTH-020`; `AUTH-SRV-004` a `AUTH-SRV-018`; `AUTH-DB-002` a `AUTH-DB-010`; `CAP-SCOPE-016`; `EVID-ARC-001` a `EVID-ARC-010`; `AUTH-QA-018`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 de cliente y servicio; arquitectura E3/E4 de privacidad; paquetes E5 PASS/PULSO/VISO/SHELL; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-shell`, Supabase y proveedores de comunicación / local, CI, staging, dispositivos personales y compartidos, exportaciones y canales externos | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-010`; perfil y consentimiento actuales; controles previos de identidad y autorización | `TREQ-AUTH-006`; `TREQ-AUTH-013`; `TREQ-AUTH-014`; `TREQ-AUTH-015`; `TREQ-PASS-008`; `TREQ-SUPABASE-004`; `TREQ-INTEGRATION-003` |
 
 #### SHELL
 
@@ -183589,6 +183591,8 @@ Distribución vigente:
 | `TREQ-NEXO-014` | `NEXO` | Todo mantenimiento deberá separar plan, disparador, orden de trabajo, diagnóstico, ejecución, repuestos, proveedor o técnico, indisponibilidad, costo informado, evidencia, prueba y liberación. Las tareas preventivas, correctivas, de inspección, limpieza técnica y calibración conservarán versión y próxima obligación. Los repuestos se reservarán y consumirán desde inventario mediante referencia al activo y a la orden; describir piezas reemplazadas en texto no bastará. Garantías y seguros conservarán vigencia, cobertura, exclusiones, documentos, reclamaciones y resultado. Daño, reparación, baja, venta, descarte y reemplazo serán transiciones no destructivas con segregación de solicitud, aprobación, ejecución y efecto económico. Un activo no volverá a disponible sin prueba o liberación requerida por su política. | `CAP-SCOPE-007`; `CAP-07.07` a `CAP-07.10`; `H-CAP-SCOPE-007-008` a `H-CAP-SCOPE-007-013`; `H-CAP-SCOPE-007-018`; `H-CAP-SCOPE-007-021`; `H-CAP-SCOPE-007-022` | mantenimiento vencido o cerrado sin prueba, repuestos no descontados, garantía o seguro falsamente vigentes, activos inseguros en servicio y bajas sin autorización ni conciliación / crítica | contractual + mantenimiento + base de datos + inventario + documentos + autorización + integración + E2E + regresión / automatizada con validación técnica y documental | `NEXO-DOM-010`; `NEXO-DOM-012`; `NEXO-DOM-013`; `NEXO-DOM-016`; `NEXO-DOM-017`; `NEXO-DOM-025`; `NEXO-DOM-026`; `NEXO-DOM-028`; `NEXO-AUTH-026`; `NEXO-AUTH-027`; `NEXO-AUTH-030`; `NEXO-UX-032`; `NEXO-UX-035`; `CAP-SCOPE-012`; `CAP-SCOPE-013`; `CAP-SCOPE-016` | diseño E2 del ciclo de mantenimiento y disposición; arquitectura E3/E4 de repuestos, documentos y eventos; paquetes E5 NEXO/ORIGO/NUMERA | `vento-nexo`, `vento-origo`, `vento-numera`, `vento-shell` / Supabase local, CI, staging, talleres, proveedores y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | registros actuales de mantenimiento, próxima fecha, trabajo ejecutado, piezas reemplazadas y documentos; decisiones de `CAP-SCOPE-007`; integración todavía parcial con inventario y finanzas | `TREQ-NEXO-013`; `TREQ-NEXO-011`; `TREQ-NEXO-012`; `TREQ-ORIGO-005`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-012`; `TREQ-NUMERA-001` |
 | `TREQ-NEXO-015` | `NEXO` | Todo vehículo o equipo de transporte deberá conservar identidad física, placa o serial, propietario con evidencia, custodio, conductor asignado por vigencia, documentos, cobertura, capacidad, restricciones, condición, disponibilidad, inspecciones, mantenimiento y bloqueos. El kilometraje u otro medidor será monotónico; una lectura menor requerirá corrección auditada o cambio de medidor documentado. Compra de combustible, carga física y consumo estimado serán hechos distintos. Cada carga conservará vehículo, cantidad, unidad, lectura, estación o proveedor, documento, actor y fecha. La disponibilidad no podrá inferirse únicamente de la presencia del vehículo y deberá bloquearse según mantenimiento, documentos, condición o política. La relación con rutas y viajes se realizará sin convertir NEXO en fuente competidora del proceso logístico. | `CAP-SCOPE-007`; `CAP-07.12`; `CAP-07.13`; `H-CAP-SCOPE-007-016`; `H-CAP-SCOPE-007-017`; `H-CAP-SCOPE-007-018`; `OPS-ACT-001`; `NEXO-DOM-027` | vehículo crítico indisponible, documentos vencidos, kilometraje manipulado, combustible irreconciliable, mantenimiento omitido y conductor tratado como propietario / crítica | contractual + flota + documentos + medidores + mantenimiento + integración + seguridad + E2E + regresión / automatizada con validación operativa | `NEXO-DOM-027`; `NEXO-DOM-028`; `NEXO-AUTH-024` a `NEXO-AUTH-030`; `NEXO-UX-030` a `NEXO-UX-042`; `CAP-SCOPE-011`; `CAP-SCOPE-012`; `CAP-SCOPE-013`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | diseño E2 de flota y disponibilidad; arquitectura E3/E4 de documentos, medidores e integración; paquete E5 NEXO/logística | `vento-nexo`, `vento-shell`, aplicaciones logísticas y proveedores externos / Supabase local, CI, staging, vehículo y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | vehículo identificado como dependencia crítica en `OPS-ACT-001`; ausencia de ciclo integral comprobado de flota, kilometraje y combustible | `TREQ-NEXO-013`; `TREQ-NEXO-014`; `TREQ-INTEGRATION-012`; `TREQ-UX-004`; `TREQ-AUTH-017`; `TREQ-NUMERA-001` |
 
+| `TREQ-NEXO-016` | `NEXO` | La logística interna deberá separar necesidad de transporte, plan de ruta, versión publicada, viaje, parada, asignación de vehículo y conductor, plan de carga, manifiesto, remisión, envío físico, LPN, bulto, contenedor, custodia, entrega, recepción, retorno y cierre. Las rutas de fulfillment o abastecimiento configuradas por producto no podrán tratarse como recorridos físicos. Cada asignación validará disponibilidad, capacidad, documentos, mantenimiento, turno y conflictos. Preparado, cargado, validado, despachado, en tránsito, entregado y recibido mantendrán estados independientes. La transferencia de custodia requerirá aceptación explícita. El cierre reconciliará paradas, cantidades, condición, LPN, retornos, custodias, kilometraje, combustible informado, documentos, incidencias y pendientes sin sobrescritura destructiva. | `CAP-SCOPE-011`; `CAP-11.01` a `CAP-11.11`; `H-CAP-SCOPE-011-001` a `H-CAP-SCOPE-011-020`; `H-CAP-SCOPE-011-025` a `H-CAP-SCOPE-011-030` | rutas físicas confundidas con configuración de producto, vehículo o conductor inválido, carga equivocada, custodia ambigua, doble despacho, entrega sin recepción, retorno perdido y cierre irreconciliable / crítica | contractual + logística + flota + autorización + estados + base de datos + concurrencia + offline + idempotencia + E2E + regresión / automatizada con validación física y operativa | `OPS-LOG-001`; `NEXO-AUTH-001` a `NEXO-AUTH-030`; `NEXO-DOM-002` a `NEXO-DOM-008`; `NEXO-DOM-017`; `NEXO-DOM-019` a `NEXO-DOM-024`; `NEXO-DOM-027`; `NEXO-DOM-028`; `NEXO-UX-001` a `NEXO-UX-025`; `NEXO-UX-026` a `NEXO-UX-042`; `CAP-SCOPE-012`; `CAP-SCOPE-013`; `CAP-SCOPE-015`; `CAP-SCOPE-018` | diseño E2 de logística; arquitectura E3/E4 de rutas, estados, custodia, eventos y evidencia; paquete E5 NEXO; piloto físico y certificación del BLOQUE U | `vento-nexo`, `vento-shell`, dispositivos de conductor, escáneres, impresoras, vehículos y sedes / Supabase local, CI, staging, red intermitente y recorridos controlados | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-011`; remisiones, preparación, envíos físicos, conductor, tránsito y recepción actuales; flota delimitada en `CAP-SCOPE-007` | `TREQ-NEXO-011`; `TREQ-NEXO-012`; `TREQ-NEXO-013`; `TREQ-NEXO-015`; `TREQ-AUTH-013`; `TREQ-AUTH-015`; `TREQ-INTEGRATION-011`; `TREQ-UX-004`; `TREQ-UX-006` |
+
 #### FOGO
 
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
@@ -183621,6 +183625,8 @@ Distribución vigente:
 | `TREQ-PULSO-005` | `PULSO` | El ciclo comercial deberá separar solicitud, pedido, revisión, línea, comanda, preparación, cumplimiento, mesa, cuenta y venta. Cada pedido conservará canal, identidad externa, sede, modalidad, cliente opcional, snapshot de oferta y precio, impuestos, descuentos, revisiones y actores. Confirmar exigirá disponibilidad y condiciones trazables. Modificar, sustituir o cancelar conservará la versión original y los efectos ya emitidos. Las comandas se dirigirán por reglas versionadas de producto, sede, área, estación y dispositivo, con cola, acuse, reintento y contingencia. Pedido, preparación, cumplimiento, pago, fiscal, inventario y fidelización mantendrán estados independientes. Mesas, sesiones, traslado, unión, división y liberación no podrán ocultar cuentas o pedidos pendientes. | `CAP-SCOPE-009`; `CAP-09.01` a `CAP-09.07`; `CAP-09.11` a `CAP-09.14`; `H-CAP-SCOPE-009-003` a `H-CAP-SCOPE-009-015` | pedidos duplicados o perdidos, precios históricos alterados, disponibilidad falsa, comandas omitidas, mesas inconsistentes, preparación sin origen y canales divergentes / crítica | contractual + pedidos + estados + autorización + colas + realtime + E2E + regresión / automatizada con validación operativa | `PULSO-UX-001` a `PULSO-UX-007`; `PULSO-UX-009`; `PULSO-UX-013` a `PULSO-UX-021`; `PULSO-AUTH-001` a `PULSO-AUTH-016`; `PROC-CAT-009` a `PROC-CAT-018`; `UX-STATION-001` a `UX-STATION-012`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `PRINT-ARC-001` a `PRINT-ARC-020` | diseño E2 de pedidos, salón y comandas; arquitectura E3/E4 de estados, eventos, colas y printing; paquete E5 PULSO; certificación del BLOQUE U | `vento-pulso`, `vento-pass`, `vento-shell`, estaciones de salón, cocina, barra y mostrador / Supabase local, CI, staging, terminales y dispositivos físicos | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-009`; implementación parcial actual de salón, pedidos y realtime; contratos y enrutamiento pendientes | `TREQ-PULSO-001`; `TREQ-PULSO-002`; `TREQ-PULSO-003`; `TREQ-PULSO-004`; `TREQ-UX-003`; `TREQ-UX-006`; `TREQ-INTEGRATION-009` |
 | `TREQ-PULSO-006` | `PULSO` | Toda venta, cobro, pago, movimiento de caja, documento fiscal, propina, descuento, anulación, devolución, reembolso, reapertura y cierre deberá usar acciones nombradas, autorizadas y auditables. Venta, pago, caja y factura serán hechos distintos. Pagos parciales y medios combinados conservarán monto, moneda, proveedor, referencia, estado y actor; un timeout no se asumirá fallido. La sesión de caja conservará fondo, movimientos, efectivo esperado, conteo, diferencia, cierre y aprobación. El documento fiscal permanecerá con el proveedor autorizado y PULSO conservará su referencia y estado. Cancelación, anulación, devolución, reembolso y compensación tendrán semánticas y compensaciones separadas. El cierre conciliará ventas, pagos, efectivo, propinas, documentos, reversos y pendientes sin editar destructivamente la historia. | `CAP-SCOPE-009`; `CAP-09.08` a `CAP-09.10`; `CAP-09.15`; `H-CAP-SCOPE-009-016` a `H-CAP-SCOPE-009-023`; `H-CAP-SCOPE-009-029`; `H-CAP-SCOPE-009-030` | pagos duplicados, efectivo irreconciliable, fraude, correcciones opacas, facturas sin vínculo, propinas perdidas, reembolsos incorrectos y cierres falsos / crítica | contractual + pagos + caja + autorización + seguridad + concurrencia + idempotencia + conciliación + E2E + regresión / automatizada con validación operativa y contable | `PULSO-UX-008` a `PULSO-UX-010`; `PULSO-UX-013`; `PULSO-UX-014`; `PULSO-UX-017`; `PULSO-UX-019`; `PULSO-AUTH-006` a `PULSO-AUTH-016`; `AUTH-SRV-004` a `AUTH-SRV-018`; `AUTH-QA-020` a `AUTH-QA-022`; `UX-QA-027`; `CAP-SCOPE-010`; `CAP-SCOPE-012`; `CAP-SCOPE-016` | diseño E2 de venta, pago, caja y reversión; arquitectura E3/E4 de pagos, fiscalidad, seguridad y conciliación; paquete E5 PULSO/NUMERA; certificación del BLOQUE U | `vento-pulso`, `vento-shell`, `vento-numera`, proveedores de pago y fiscal, terminales POS / Supabase local, CI, staging y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-009`; pagos y órdenes actuales; ausencia de cierre integral; preguntas `DAT-22` a `DAT-25` y `OPE-07` | `TREQ-PULSO-001`; `TREQ-PULSO-004`; `TREQ-AUTH-013`; `TREQ-NUMERA-001`; `TREQ-PASS-008`; `TREQ-INTEGRATION-006` |
 
+| `TREQ-PULSO-007` | `PULSO` | El cumplimiento de pedidos de cliente deberá separar promesa, preparación, despacho comercial, asignación de entrega, recogida, intento, tránsito, llegada, entrega, prueba, aceptación, novedad, devolución y cierre. PULSO conservará el pedido y el resultado; PASS mostrará tracking, comunicaciones y PIN permitidos. El PIN tendrá vigencia, intentos limitados, rate limit, bloqueo y override autorizado con motivo, y no demostrará por sí solo ausencia de faltantes o daños. Un mensajero externo accederá únicamente a la entrega asignada mediante token temporal, mínimo, expirado y revocable, sin cuenta laboral ni acceso directo a Supabase. Dirección, teléfono, instrucciones y evidencia se minimizarán. Reintentos, pérdida de red y webhooks no duplicarán entrega, devolución, notificación ni compensación. | `CAP-SCOPE-011`; `CAP-11.07` a `CAP-11.12`; `H-CAP-SCOPE-011-015` a `H-CAP-SCOPE-011-025`; `H-CAP-SCOPE-011-029` | pedido marcado entregado sin destinatario, abuso de PIN, datos personales expuestos, tercero con acceso persistente, intentos duplicados, devolución perdida y tracking divergente / crítica | contractual + delivery + seguridad + privacidad + autorización + token temporal + offline + idempotencia + E2E + experiencia + regresión / automatizada con validación operativa | `PULSO-UX-001`; `PULSO-UX-007`; `PULSO-UX-009`; `PULSO-UX-013` a `PULSO-UX-019`; `PULSO-AUTH-001` a `PULSO-AUTH-016`; `PASS-UX-001`; `PASS-UX-006`; `PASS-UX-010`; `PASS-INT-004`; `INT-EXT-001` a `INT-EXT-020`; `CAP-SCOPE-010`; `CAP-SCOPE-016`; `CAP-SCOPE-018` | diseño E2 de entrega a cliente y tercero; arquitectura E3/E4 de sesiones, tokens, evidencia y notificaciones; paquetes E5 PULSO/PASS; piloto y certificación del BLOQUE U | `vento-pulso`, `vento-pass`, `vento-shell`, portal de domiciliarios y proveedores externos / local, CI, staging, dispositivos móviles, red intermitente y pedidos controlados | `IDENTIFICADO` | Pendiente | Pendiente | tracking persistente, sesión de entrega, PIN, portal externo, novedades y override existentes; decisiones de `CAP-SCOPE-009`, `CAP-SCOPE-010` y `CAP-SCOPE-011` | `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-PASS-010`; `TREQ-PASS-011`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-015`; `TREQ-UX-005` |
+
 #### NUMERA
 
 | ID | Dominio | Regla protegida | Origen | Riesgo / prioridad | Tipo / modalidad | Tarea responsable | Paquete | Repositorio / ambiente | Estado | Artefacto | Último resultado | Evidencia | Relación |
@@ -183640,6 +183646,9 @@ Distribución vigente:
 | `TREQ-PASS-007` | `PASS` | El retorno de pago y el seguimiento de un pedido deberán abrir una única experiencia canónica; cualquier pantalla alternativa deberá integrarse con paridad demostrada o retirarse, y ninguna cadena transitivamente huérfana podrá permanecer como implementación paralela sin decisión explícita. | `CODE-AUD-015` / `H-CODE-015-006` y `H-CODE-015-007` | Estados de pedido divergentes, PIN o información de entrega ausentes, retorno de pago dirigido a una pantalla incorrecta y mantenimiento duplicado / alta | contractual + integración + E2E + regresión / automatizada con validación móvil | `PASS-UX-001 — Inventariar pantallas actuales de cliente` | Pendiente de asignación en el paquete de convergencia de pedidos PASS y E5 | `vento-pass` / local, CI, staging, deep links, builds móviles y dispositivos físicos pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | Relacionado con `TREQ-PASS-006` y `TREQ-INTEGRATION-001` |
 | `TREQ-PASS-008` | `PASS` | La acumulación, gasto, ajuste, reversión y redención de puntos deberán ejecutarse únicamente mediante contratos de servidor autorizados, atómicos e idempotentes; el cliente no podrá insertar el ledger ni fijar el saldo, y la validación de un canje deberá limitarse por permiso, sede, estado y actor. | `CODE-AUD-017` / `H-CODE-017-004`, `H-CODE-017-005`, `H-CODE-017-006` | Creación fraudulenta de puntos, saldo inconsistente, doble gasto, redenciones huérfanas y validación fuera de sede / crítica | seguridad + RPC + base de datos + concurrencia + idempotencia + E2E / automatizada | `PULSO-AUTH-009 — Proteger acumulación de puntos`; `PULSO-AUTH-010 — Proteger redenciones`; `PASS-INT-001 — Definir integración PULSO → PASS para acumulación`; `PASS-INT-002 — Definir integración PULSO → PASS para redención` | Pendiente de asignación prioritaria en E5 | `vento-pass`, `vento-pulso`, `vento-shell` y Supabase VENTO / CI, staging y terminal POS | `IDENTIFICADO` | Pendiente | Pendiente | Políticas de `pass.loyalty_transactions` y `loyalty_redemptions`; trigger de saldo; flujo cliente de redención | `TREQ-PULSO-001`, `TREQ-AUTH-006` |
 | `TREQ-PASS-009` | `PASS` | La creación de intentos de pago y el procesamiento de webhooks deberán resistir solicitudes concurrentes, duplicadas, tardías y fuera de orden. Para una misma transacción e `idempotency_key`, las solicitudes concurrentes deberán converger en un único intento y resultado estable. Cada evento del proveedor deberá reclamarse de forma atómica antes de aplicar efectos; un replay no podrá confirmar, cancelar, reembolsar ni registrar dos veces una orden o transacción. Un evento tardío no podrá retroceder un estado terminal válido y toda ambigüedad deberá quedar pendiente de conciliación auditable. | `CODE-AUD-018` / `H-CODE-018-006` y `H-CODE-018-007` | Múltiples URLs o intentos para una misma transacción, doble aplicación de pagos, regresión de estados, pedidos confirmados o cancelados incorrectamente y conciliación incompleta / crítica | seguridad + RPC + webhook + base de datos + concurrencia + idempotencia + integración + E2E + regresión / automatizada con sandbox del proveedor | `INT-EXT-010`; `INT-EXT-012`; `INT-EXT-015`; `SUPA-ARC-020`; `SUPA-AUD-014`; `PASS-QA-002` | Pendiente de asignación prioritaria en E5, en el paquete de pagos PASS y en el roadmap ejecutable de migraciones y Edge Functions de `vento-shell` | `vento-pass` y `vento-shell` / CI, Supabase local, staging, Edge Functions y sandbox Wompi; carreras, replay, retraso y orden invertido pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Evidencia estática en `payments-create-intent`, `payments-webhook`, `checkout_payment_rpc` y `payment_webhook_and_reconciliation`; existen referencia y registro de eventos, pero el claim y el efecto no forman una única unidad demostrada | `TREQ-PASS-008`; `TREQ-INTEGRATION-003`; `TREQ-SUPABASE-005`; `TREQ-SUPABASE-006` |
+
+| `TREQ-PASS-010` | `PASS` | La identidad de cliente deberá separar persona, cuenta autenticada, contactos, verificaciones, relación de marca, perfil, preferencias y consentimientos. Una persona podrá ser cliente ocasional sin cuenta y vincular posteriormente su historia sin duplicar ventas. Correo, teléfono o nombre coincidentes no fusionarán automáticamente registros; toda fusión será revisada, trazable y reversible. Los consentimientos conservarán finalidad, canal, versión, fuente, vigencia y retiro. La fidelización se basará en un ledger inmutable y reconciliable; acumulación, redención, expiración, ajuste, reversión y compensación conservarán evento origen, regla y versión. El saldo será una proyección y los reintentos no duplicarán puntos ni beneficios. | `CAP-SCOPE-010`; `CAP-10.01`; `CAP-10.02`; `CAP-10.07`; `H-CAP-SCOPE-010-001` a `H-CAP-SCOPE-010-005`; `H-CAP-SCOPE-010-011` a `H-CAP-SCOPE-010-013`; `H-CAP-SCOPE-010-025` | perfiles duplicados, consentimientos inválidos, contacto indebido, pérdida de historia, saldo incorrecto, fraude de puntos y fusión irreversible / crítica | contractual + identidad + base de datos + privacidad + fidelización + concurrencia + idempotencia + migración + E2E + regresión / automatizada con conciliación controlada | `PASS-UX-002` a `PASS-UX-009`; `PASS-INT-001` a `PASS-INT-005`; `PASS-QA-001`; `PASS-QA-002`; `SUPA-AUD-019`; `SUPA-AUD-022`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `AUTH-QA-026`; `UX-QA-029`; `CAP-SCOPE-016` | diseño E2 de identidad y fidelización; arquitectura y migración E3/E4; paquete E5 PASS/PULSO; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-shell` y Supabase / local, CI, staging, dispositivos móviles y terminales POS | `IDENTIFICADO` | Pendiente | Pendiente | perfiles, puntos, recompensas, redenciones y consentimientos actuales; decisiones de `CAP-SCOPE-010` | `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-PASS-008`; `TREQ-PASS-009`; `TREQ-PULSO-004`; `TREQ-AUTH-006`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014` |
+| `TREQ-PASS-011` | `PASS` | Preguntas, solicitudes, reclamos, feedback, devoluciones, compensaciones, reservas y comunicaciones deberán usar expedientes y estados separados. Todo caso conservará canal, declaración original, cliente u ocasional, marca, sede, pedido o venta relacionados, categoría, prioridad, responsable, SLA, mensajes, adjuntos, investigación, decisión, comunicación y cierre. Una calificación negativa no será reclamo automático. Devolución, reembolso, producto de reemplazo, descuento, cortesía, cupón y puntos serán resultados distintos con autoridad y efectos explícitos. Las reservas conservarán capacidad, hold, condiciones, depósito, cambios, cancelación y no-show. Las comunicaciones operativas conservarán plantilla, versión, finalidad, canal, entrega, error y fallback sin confundirse con Marketing. | `CAP-SCOPE-010`; `CAP-10.03` a `CAP-10.06`; `CAP-10.08`; `CAP-10.09`; `H-CAP-SCOPE-010-006` a `H-CAP-SCOPE-010-010`; `H-CAP-SCOPE-010-014` a `H-CAP-SCOPE-010-019`; `H-CAP-SCOPE-010-024`; `H-CAP-SCOPE-010-026` | reclamos perdidos, cierre sin respuesta, compensación duplicada, reservas sobrevendidas, métricas engañosas, comunicación no entregada y evidencia dispersa / crítica | contractual + workflow + servicio + reservas + comunicaciones + autorización + concurrencia + idempotencia + E2E + experiencia + regresión / automatizada con validación operativa | `PROC-CAT-009` a `PROC-CAT-019`; `PROC-ACTOR-001` a `PROC-ACTOR-010`; `PASS-UX-001`; `PASS-UX-006`; `PASS-UX-010`; `PULSO-UX-009`; `PULSO-UX-018`; `VISO-UX-013` a `VISO-UX-020`; `UX-ADMIN-001` a `UX-ADMIN-005`; `CAP-SCOPE-012`; `CAP-SCOPE-014`; `CAP-SCOPE-017`; `UX-QA-027`; `UX-QA-029` | diseño E2 de atención, reclamos y reservas; arquitectura E3/E4; paquetes E5 PASS/PULSO/VISO; piloto y certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-shell`, proveedores de mensajería y pago / local, CI, staging y canales controlados | `IDENTIFICADO` | Pendiente | Pendiente | feedback, chat, pedidos, devoluciones y notificaciones parciales actuales; preguntas `OPE-02`, `OPE-10`, `OPE-11`, `DAT-24`, `DAT-25`, `COM-03` a `COM-05` | `TREQ-PASS-010`; `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014`; `TREQ-UX-005` |
 
 #### TALENTO
 
@@ -183667,6 +183676,10 @@ Distribución vigente:
 | `TREQ-INTEGRATION-013` | `INTEGRATION` | La cadena demanda → planificación → capacidad → materiales → ejecución → calidad → inventario → costo deberá utilizar contratos correlacionados e idempotentes. PULSO, PASS, POS y canales externos aportarán hechos de demanda; NEXO aportará stock, reservas, lotes, equipos y movimientos; VISO aportará disponibilidad laboral; ORIGO aportará abastecimiento; FOGO será propietario del plan, orden, lote y disposición; NUMERA consumirá resultados económicos. Cada efecto conservará source_system, source_event_id, documento, línea, versión, producto, unidad, cantidad, lote, sede, área y estado. Reintentos, parcialidad, eventos fuera de orden o fallos no duplicarán demanda, consumo, terminado, etiquetas ni costos. La conciliación detectará señales sin decisión, órdenes sin materiales, lotes sin efectos, efectos sin lote, retenidos publicados y costos sin hecho físico. | `CAP-SCOPE-008`; `CAP-08.01` a `CAP-08.14`; `H-CAP-SCOPE-008-001`; `H-CAP-SCOPE-008-005` a `H-CAP-SCOPE-008-008`; `H-CAP-SCOPE-008-014`; `H-CAP-SCOPE-008-018`; `H-CAP-SCOPE-008-022`; `H-CAP-SCOPE-008-026` | demanda o movimientos duplicados, producción sin materiales, terminado sin lote, retenido disponible, plan incongruente, costos irreconciliables y cierre falso / crítica | contractual + integración + eventos + concurrencia + idempotencia + compensación + conciliación + E2E + regresión / automatizada con validación operativa y financiera | `INT-PROD-001` a `INT-PROD-005`; `FOGO-UX-012`; `FOGO-UX-013`; `FOGO-UX-014`; `NEXO-UX-014` a `NEXO-UX-022`; `ORIGO-UX-014`; `ORIGO-UX-015`; `PROC-CAT-009` a `PROC-CAT-018`; `AUTH-QA-026`; `UX-QA-025` | diseño E2 de procesos; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 FOGO/NEXO/ORIGO/PULSO/PASS/VISO/NUMERA; certificación del BLOQUE U | `vento-fogo`, `vento-nexo`, `vento-origo`, `vento-pulso`, `vento-pass`, `vento-viso`, `vento-numera`, `vento-shell` y adaptadores externos / Supabase local, CI, staging y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-008`; integraciones parciales actuales; contratos productivos pendientes; fuentes de demanda y producción por validar | `TREQ-FOGO-003`; `TREQ-FOGO-004`; `TREQ-INTEGRATION-009`; `TREQ-INTEGRATION-010`; `TREQ-INTEGRATION-011`; `TREQ-NEXO-011`; `TREQ-NEXO-012`; `TREQ-NUMERA-001`; `TREQ-PULSO-001` |
 
 | `TREQ-INTEGRATION-014` | `INTEGRATION` | PASS, PULSO, POS externo, aplicaciones y mensajes deberán converger en contratos canónicos de pedido, venta y línea sin doble emisión. Durante la transición, el POS externo ingresará por adaptador, staging, payload original, hash, mapeo, cuarentena e idempotencia; PULSO emitirá posteriormente el mismo contrato. El corte se definirá por sede, terminal y fecha efectiva, impidiendo que ambas fuentes emitan la misma venta. Cada venta, anulación o devolución producirá exactamente una vez los efectos aplicables en NEXO, PASS y NUMERA, y los documentos o impresiones conservarán correlación. Reintentos, respuestas perdidas, parcialidad, eventos fuera de orden y fallos intermedios no duplicarán pedidos, pagos, stock, puntos, costos ni comandas. La conciliación detectará ventas sin efectos, efectos sin venta, líneas sin mapeo, estados incompatibles y cierres con pendientes. | `CAP-SCOPE-009`; `CAP-09.02` a `CAP-09.10`; `CAP-09.13`; `CAP-09.15`; `H-CAP-SCOPE-009-002`; `H-CAP-SCOPE-009-014`; `H-CAP-SCOPE-009-024` a `H-CAP-SCOPE-009-028` | doble venta, pedidos divergentes, inventario o puntos duplicados, costos ausentes, pagos incongruentes, retiro inseguro del POS externo y conciliación imposible / crítica | contractual + integración + eventos + migración + concurrencia + idempotencia + compensación + conciliación + E2E + regresión / automatizada con validación operativa y financiera | `INT-POS-001` a `INT-POS-024`; `INT-SALES-001` a `INT-SALES-011`; `PULSO-UX-016` a `PULSO-UX-018`; `PASS-INT-001`; `PASS-INT-002`; `NEXO-UX-014` a `NEXO-UX-022`; `AUTH-QA-026`; `AUTH-QA-027`; `UX-QA-027`; `CAP-SCOPE-012` | diseño E2 de procesos; contratos y adaptadores BLOQUE X; arquitectura E3/E4; paquetes E5 PULSO/PASS/NEXO/NUMERA; corte controlado y certificación del BLOQUE U | `vento-pulso`, `vento-pass`, `vento-nexo`, `vento-numera`, `vento-shell`, POS externo/Makos y canales externos / staging, Supabase local, CI, staging y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-009`; importación manual Makos; contratos `INT-POS` e `INT-SALES`; integraciones parciales actuales | `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-PULSO-001`; `TREQ-INTEGRATION-006`; `TREQ-INTEGRATION-009`; `TREQ-INTEGRATION-011`; `TREQ-INTEGRATION-013`; `TREQ-NEXO-011`; `TREQ-NUMERA-001`; `TREQ-PASS-008` |
+
+| `TREQ-INTEGRATION-015` | `INTEGRATION` | PASS, PULSO, VISO, proveedores de comunicación, POS externo y canales de atención deberán converger en contratos canónicos de cliente, caso, interacción, reserva, compensación y fidelización. Cada entrada externa conservará source_system, source_event_id, identidad o contacto declarado, payload original, timestamps, adjuntos y caso correlacionado. Un pedido, venta, pago, devolución, entrega o reclamo podrá aportar hechos al caso sin convertirse en una copia. Toda compensación producirá exactamente una vez los efectos aplicables en PULSO, NEXO, NUMERA y PASS. Reintentos, webhooks, operación offline, mensajes fuera de orden y respuestas perdidas no duplicarán casos, reservas, puntos, reembolsos ni comunicaciones. La conciliación detectará casos sin respuesta, compensaciones sin efecto, efectos sin decisión, puntos sin venta, reservas sobrepuestas y mensajes no entregados. | `CAP-SCOPE-010`; `CAP-10.01` a `CAP-10.10`; `H-CAP-SCOPE-010-006`; `H-CAP-SCOPE-010-009`; `H-CAP-SCOPE-010-010`; `H-CAP-SCOPE-010-015` a `H-CAP-SCOPE-010-019`; `H-CAP-SCOPE-010-024` | casos duplicados, atención fragmentada, compensación múltiple, puntos o reembolsos incongruentes, reserva sobrevendida, pérdida de mensajes y visión de cliente irreconciliable / crítica | contractual + integración + eventos + colas + webhook + concurrencia + idempotencia + compensación + conciliación + E2E + regresión / automatizada con validación operativa | `PASS-INT-001` a `PASS-INT-005`; `PULSO-UX-009`; `PULSO-UX-018`; `VISO-UX-013` a `VISO-UX-020`; `INT-APP-001` a `INT-APP-010`; `INT-DB-005` a `INT-DB-008`; `INT-EXT-001` a `INT-EXT-020`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `AUTH-QA-026`; `AUTH-QA-027`; `CAP-SCOPE-012`; `CAP-SCOPE-014`; `CAP-SCOPE-016` | diseño E2 de procesos; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 PASS/PULSO/VISO/NEXO/NUMERA; certificación del BLOQUE U | `vento-pass`, `vento-pulso`, `vento-viso`, `vento-nexo`, `vento-numera`, `vento-shell`, POS y proveedores externos / Supabase local, CI, staging, dispositivos y canales controlados | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-010`; integraciones parciales de pedido, loyalty, chat, push y reversión; contratos previos de venta | `TREQ-PASS-010`; `TREQ-PASS-011`; `TREQ-PULSO-005`; `TREQ-PULSO-006`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-014`; `TREQ-NEXO-011`; `TREQ-NUMERA-001`; `TREQ-INTEGRATION-003` |
+
+| `TREQ-INTEGRATION-016` | `INTEGRATION` | Las necesidades procedentes de remisiones, producción, compras, pedidos, devoluciones y traslados deberán converger en contratos canónicos de logística sin copiar ni reinterpretar sus objetos de origen. NEXO conservará planificación interna, carga, custodia, viajes y recepción; PULSO conservará cumplimiento de pedidos; PASS consumirá seguimiento; NUMERA recibirá efectos económicos; VISO y ANIMA aportarán disponibilidad laboral; terceros ingresarán por adaptadores o portales limitados. Salida, entrega, recepción, devolución, movimiento de inventario, finalización del pedido, comunicación y costo serán eventos correlacionados e idempotentes. Reintentos, operación offline, webhooks, parcialidad y eventos fuera de orden no producirán doble custodia, doble entrega, doble movimiento, doble reembolso o doble costo. La conciliación detectará operaciones sin resultado, entregas sin recepción, efectos sin origen, custodias abiertas, terceros sin cierre, devoluciones sin retorno y recorridos con pendientes. | `CAP-SCOPE-011`; `CAP-11.01` a `CAP-11.12`; `H-CAP-SCOPE-011-001`; `H-CAP-SCOPE-011-008` a `H-CAP-SCOPE-011-030` | demanda logística perdida, duplicación de despacho o entrega, inventario divergente, pedido cerrado prematuramente, tercero irreconciliable, devolución sin retorno, costo duplicado y custodias abiertas / crítica | contractual + integración + eventos + colas + webhook + offline + concurrencia + idempotencia + compensación + conciliación + E2E + regresión / automatizada con validación operativa y financiera | `OPS-LOG-001`; `INT-APP-001` a `INT-APP-010`; `INT-DB-001` a `INT-DB-008`; `INT-EXT-001` a `INT-EXT-020`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `EVID-ARC-001` a `EVID-ARC-010`; `NEXO-UX-009` a `NEXO-UX-025`; `PULSO-UX-016` a `PULSO-UX-019`; `PASS-INT-001` a `PASS-INT-005`; `CAP-SCOPE-012`; `CAP-SCOPE-017`; `CAP-SCOPE-018` | diseño E2 transversal; contratos BLOQUE X; arquitectura E3/E4 de eventos, colas, evidencia y conciliación; paquetes E5 NEXO/PULSO/PASS/NUMERA; certificación del BLOQUE U | `vento-nexo`, `vento-pulso`, `vento-pass`, `vento-numera`, `vento-viso`, `vento-anima`, `vento-shell` y proveedores externos / Supabase local, CI, staging, red intermitente y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-011`; integraciones parciales de remisiones, pedidos, tracking, PIN y entrega; contratos previos de inventario, venta y cliente | `TREQ-NEXO-016`; `TREQ-PULSO-007`; `TREQ-NEXO-011`; `TREQ-NEXO-015`; `TREQ-PULSO-005`; `TREQ-PASS-011`; `TREQ-AUTH-018`; `TREQ-INTEGRATION-011`; `TREQ-INTEGRATION-014`; `TREQ-INTEGRATION-015`; `TREQ-NUMERA-001` |
 
 #### UX
 
@@ -196380,8 +196393,1779 @@ CAP-SCOPE-011
 `CAP-SCOPE-011` consumirá los contratos de comunicación, caso de entrega y cliente aquí aprobados, pero no reabrirá la propiedad de PASS, PULSO o VISO ni la semántica de compensación.
 
 
-### [ ] CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
-### [ ] CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
+### ✅ CAP-SCOPE-011 — Evaluar logística, rutas, vehículos, combustible y entregas
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-010` aprobada  
+**Tarea anterior:** `CAP-SCOPE-010`  
+**Siguiente tarea reservada:** `CAP-SCOPE-012`  
+**Familia evaluada:** `CAP-11 — Transportar, despachar y entregar`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Rutas, asignaciones, despachos, entregas, combustible, tracking o actuaciones reales:** no autorizados  
+**Requisitos de prueba generados:** `TREQ-NEXO-016`, `TREQ-PULSO-007`, `TREQ-INTEGRATION-016`  
+**Requisitos previos reutilizados:** `TREQ-NEXO-011`, `TREQ-NEXO-012`, `TREQ-NEXO-013`, `TREQ-NEXO-015`, `TREQ-PULSO-005`, `TREQ-PASS-011`, `TREQ-AUTH-018`, `TREQ-INTEGRATION-011`, `TREQ-INTEGRATION-014`, `TREQ-INTEGRATION-015`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- consolidar necesidades de transporte procedentes de abastecimiento, producción, remisiones, ventas, devoluciones y movimientos internos;
+- distinguir una configuración de abastecimiento de producto de un recorrido físico ejecutado;
+- planear rutas y paradas con ventanas, prioridades, restricciones y capacidad;
+- asignar vehículo, conductor y apoyos por vigencia y operación;
+- preparar la carga con LOC, LPN, bultos, contenedores, cantidades, compatibilidad y orden de descarga;
+- confirmar condición y cantidades antes de la salida;
+- transferir custodia de forma explícita;
+- ejecutar el recorrido y registrar llegada, servicio, salida, desvío, pausa y contingencia;
+- registrar novedades sin alterar silenciosamente el estado del pedido o remisión;
+- entregar y confirmar recepción según destinatario, evidencia y política;
+- gestionar faltantes, daños, rechazo, devolución y logística inversa;
+- cerrar el recorrido conciliando carga, custodias, entregas, retornos, kilometraje, combustible y documentos;
+- integrar mensajeros, Rappi u otros terceros mediante credenciales y contratos mínimos;
+- proteger datos del cliente, del trabajador y de la operación;
+- emitir efectos físicos, comerciales y económicos exactamente una vez.
+
+La existencia de remisiones, preparación, envíos físicos, vista del conductor, tránsito, recepción, tracking de pedidos, portal externo y PIN no permite declarar resuelta la familia `CAP-11`. La cobertura exige un proceso logístico completo, versionado, conciliable y auditable.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-011` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP PLANEAR, ASIGNAR, CARGAR, CUSTODIAR,
+TRANSPORTAR, ENTREGAR, RECIBIR Y CERRAR CADA OPERACIÓN LOGÍSTICA,
+INCLUIDAS LAS ENTREGAS A CLIENTES Y MEDIANTE TERCEROS,
+SIN CONFUNDIR NECESIDAD, RUTA, VIAJE, PARADA, REMISIÓN, CARGA,
+LPN, VEHÍCULO, CONDUCTOR, CUSTODIA, ENTREGA NI RECEPCIÓN?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+RUTA DE ABASTECIMIENTO DE PRODUCTO = RECORRIDO FÍSICO DE VEHÍCULO
+```
+
+```text
+NECESIDAD DE TRANSPORTE = RUTA PUBLICADA = VIAJE EJECUTADO
+```
+
+```text
+REMISIÓN = CARGA = LPN = CONTENEDOR = VEHÍCULO
+```
+
+```text
+ASIGNAR CONDUCTOR = TRANSFERIR CUSTODIA
+```
+
+```text
+DESPACHAR = SALIR = ENTREGAR = RECIBIR = COMPLETAR
+```
+
+```text
+ENTREGA CONFIRMADA = MOVIMIENTO DE INVENTARIO APLICADO
+```
+
+```text
+PIN CORRECTO = AUSENCIA DE DIFERENCIAS O DAÑOS
+```
+
+```text
+COMPRA DE COMBUSTIBLE = CONSUMO DE LA RUTA
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `OPS-ACT-001`;
+- `OPS-PLAN-001` a `OPS-PLAN-004`;
+- `OPS-LOG-001` reservado para diseño TO-BE;
+- `OPS-CAN-001` y `OPS-B2B-001` cuando apliquen;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-010`;
+- `NEXO-AUTH-001` a `NEXO-AUTH-030`;
+- `NEXO-DOM-001` a `NEXO-DOM-028`;
+- `NEXO-UX-001` a `NEXO-UX-042`;
+- `PULSO-AUTH-001` a `PULSO-AUTH-016`;
+- `PULSO-UX-001` a `PULSO-UX-021`;
+- `PASS-UX-001` a `PASS-UX-010`;
+- `PASS-INT-001` a `PASS-INT-005`;
+- `INT-APP-001` a `INT-APP-010`;
+- `INT-EXT-001` a `INT-EXT-020`;
+- implementación actual de remisiones, fulfillment, envíos físicos, conductor, tránsito y recepción en NEXO;
+- implementación actual de tracking persistente, sesión de entrega, PIN, portal temporal, novedades y override para pedidos de cliente;
+- registro vivo de preguntas y respuestas ya capturadas.
+
+Las respuestas ya entregadas por el usuario no se vuelven a solicitar ni obligan a reabrir tareas aprobadas salvo contradicción material comprobada.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-11.01` — Planear necesidades de transporte;
+- `CAP-11.02` — Definir recorridos y prioridades;
+- `CAP-11.03` — Asignar vehículo y responsable;
+- `CAP-11.04` — Preparar carga;
+- `CAP-11.05` — Confirmar cantidades y condición al salir;
+- `CAP-11.06` — Transferir custodia para transporte;
+- `CAP-11.07` — Ejecutar recorrido;
+- `CAP-11.08` — Registrar novedades durante transporte;
+- `CAP-11.09` — Entregar y confirmar recepción;
+- `CAP-11.10` — Gestionar faltantes, daños y devoluciones;
+- `CAP-11.11` — Cerrar y revisar el recorrido;
+- `CAP-11.12` — Gestionar entregas mediante terceros.
+
+También fija fronteras con inventario, ventas, clientes, producción, compras, activos, combustible, mantenimiento, privacidad, documentos, analítica y continuidad.
+
+---
+
+#### 5. Fuera de alcance
+
+- crear o publicar rutas reales;
+- asignar conductores, vehículos o terceros;
+- despachar, recibir o marcar entregas;
+- registrar combustible, kilometraje o peajes reales;
+- activar geolocalización continua;
+- enviar mensajes o PIN a clientes reales;
+- contratar transportistas o modificar acuerdos externos;
+- definir tarifas, liquidaciones o tratamiento contable definitivo;
+- instalar sensores, GPS o dispositivos;
+- modificar estados de pedidos, remisiones o inventario;
+- crear tablas, RPC, Edge Functions, webhooks, colas o migraciones;
+- definir indicadores definitivos, reservados para `CAP-SCOPE-017`;
+- autorizar operaciones de contingencia o cambios físicos.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. Configuración de abastecimiento y ruta física son diferentes
+
+Una regla que indica desde qué sede o LOC se abastece un producto orienta preparación. No representa vehículo, conductor, secuencia de paradas ni ejecución real.
+
+##### 6.2. Necesidad, plan y viaje serán entidades diferentes
+
+La necesidad expresa demanda; el plan organiza; el viaje registra la ejecución. Cada revisión conservará origen y versión.
+
+##### 6.3. La ruta será versionada y publicable
+
+Cambiar secuencia o ventana después de publicar generará una revisión autorizada. El conductor verá la versión vigente y la historia permanecerá.
+
+##### 6.4. Vehículo, conductor y custodia no serán equivalentes
+
+Asignar recursos no transfiere automáticamente la responsabilidad física. La custodia comenzará mediante aceptación explícita de la carga.
+
+##### 6.5. La carga tendrá manifiesto
+
+Cada viaje conservará bultos, LPN, contenedores, remisiones, pedidos, cantidades, condición, compatibilidad y orden de descarga.
+
+##### 6.6. NEXO gobernará la logística interna
+
+NEXO será propietario de rutas internas, carga, custodia, remisiones, vehículos referenciados, viajes y recepción entre lugares.
+
+##### 6.7. PULSO gobernará el cumplimiento del pedido de cliente
+
+PULSO conservará promesa, despacho comercial, intento, entrega, novedad y resultado. No administrará mantenimiento ni inventario físico por duplicado.
+
+##### 6.8. PASS será superficie de seguimiento
+
+PASS mostrará estado, comunicación y PIN permitido. No podrá marcar entrega, reasignar tercero ni cambiar custodia fuera del contrato.
+
+##### 6.9. Entrega y recepción serán estados independientes
+
+Una entrega puede ocurrir antes de la inspección o aceptación completa. La recepción preservará cantidades, condición y diferencias.
+
+##### 6.10. El PIN prueba una interacción, no toda la condición
+
+El PIN puede confirmar presencia y entrega al destinatario, pero no elimina la necesidad de registrar faltantes, daño, rechazo o aceptación parcial.
+
+##### 6.11. El combustible pertenece al dominio de flota
+
+La ruta podrá recibir una atribución calculada o validada, pero no convertirá el viaje en fuente de compra, carga o medidor del vehículo.
+
+##### 6.12. Los terceros tendrán acceso temporal y mínimo
+
+Un mensajero externo no necesitará cuenta laboral ni acceso a Supabase. Recibirá únicamente la asignación necesaria mediante token limitado y revocable.
+
+##### 6.13. La ubicación se tratará como dato sensible
+
+No se impondrá tracking continuo por defecto. Se definirá finalidad, precisión, frecuencia, retención, visibilidad y contingencia.
+
+##### 6.14. Toda novedad conservará impacto y resolución
+
+Una incidencia no se resolverá cambiando el estado final. Se registrará causa, severidad, carga afectada, responsable, acción y resultado.
+
+##### 6.15. El recorrido se cerrará por conciliación
+
+No bastará completar todas las paradas visualmente. Deberán reconciliarse carga, entregas, devoluciones, custodias, documentos y pendientes.
+
+---
+
+#### 7. Línea base verificable
+
+##### 7.1. NEXO
+
+La implementación actual contiene, con alcance parcial:
+
+- solicitudes y remisiones entre sedes;
+- preparación y cantidades despachables;
+- selección de origen, LOC y existencias;
+- envíos físicos vinculados con remisiones;
+- vista de conductor con cargas pendientes;
+- confirmación de salida;
+- tablero de tránsito;
+- recepción de envíos y remisiones;
+- estados de preparado, tránsito, parcialidad y recepción;
+- reglas de autorización por sede, área, turno y actor;
+- configuraciones llamadas rutas de fulfillment o abastecimiento por producto.
+
+##### 7.2. PULSO y PASS
+
+La implementación actual contiene:
+
+- tracking persistente de pedidos;
+- estado visible en tiempo real;
+- sesión de entrega;
+- PIN de confirmación;
+- portal temporal para domiciliarios externos;
+- registro de novedades;
+- bloqueo de entrega normal cuando aplica PIN;
+- override administrativo con permiso;
+- tarjeta de pedido activo y deep links.
+
+##### 7.3. Limitaciones comprobables
+
+No se ha demostrado de extremo a extremo:
+
+- consolidación de necesidades de transporte;
+- planificación diaria o por ventana;
+- optimización o priorización de recorridos;
+- asignación integral de vehículo y conductor;
+- manifiesto y plan de carga;
+- aceptación bilateral de custodia;
+- viaje con paradas y revisiones;
+- logística inversa;
+- cierre y conciliación del recorrido;
+- integración económica de transporte;
+- gobierno completo de terceros;
+- política de ubicación y privacidad;
+- operación offline certificada.
+
+---
+
+#### 8. Clasificación de cobertura
+
+| Capacidad   | Nombre                                    | Tratamiento         | Propiedad                                                            | Decisión                                                                                                                                                                                                                   |
+| ----------- | ----------------------------------------- | ------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-11.01` | Planear necesidades de transporte         | `BUILD`             | NEXO con señales de PULSO, FOGO, ORIGO y remisiones                  | Crear una bandeja consolidada de necesidades con origen, destino, ventana, carga, prioridad, restricciones y fuente; una necesidad no será todavía una ruta ni un despacho.                                                |
+| `CAP-11.02` | Definir recorridos y prioridades          | `BUILD`             | NEXO                                                                 | Crear planes de ruta versionados con paradas, secuencia, ventanas, prioridades, restricciones, capacidad y criterio de publicación. Las rutas de abastecimiento de producto existentes no equivalen a itinerarios físicos. |
+| `CAP-11.03` | Asignar vehículo y responsable            | `BUILD`             | NEXO                                                                 | Crear asignaciones vigentes de vehículo, conductor y apoyos, validando disponibilidad, documentos, capacidad, turno, conflicto de agenda y aceptación.                                                                     |
+| `CAP-11.04` | Preparar carga                            | `REUSE_OR_REFACTOR` | NEXO                                                                 | Conservar preparación de remisiones, picks, LOC, LPN y envíos físicos; añadir plan de carga, compatibilidad, capacidad, orden de descarga, sellos y relación con ruta.                                                     |
+| `CAP-11.05` | Confirmar cantidades y condición al salir | `REUSE_OR_REFACTOR` | NEXO                                                                 | Conservar contraste de cantidades preparadas y despacho; exigir manifiesto, condición, temperatura cuando aplique, bultos, LPN, evidencia, diferencias y aceptación de salida.                                             |
+| `CAP-11.06` | Transferir custodia para transporte       | `REUSE_OR_REFACTOR` | NEXO                                                                 | Formalizar la aceptación explícita por conductor o tercero, con alcance, tiempo, carga, sellos, estado y controversia; despachar no será una asignación implícita de custodia.                                             |
+| `CAP-11.07` | Ejecutar recorrido                        | `REUSE_OR_REFACTOR` | NEXO para traslado interno y PULSO para entrega de pedido            | Reutilizar tránsito, vista del conductor y tracking; incorporar viaje, paradas, llegada, inicio de servicio, salida, desvío, pausa, reordenamiento autorizado y contingencia.                                              |
+| `CAP-11.08` | Registrar novedades durante transporte    | `REUSE_OR_REFACTOR` | NEXO o PULSO según el objeto transportado                            | Conservar novedades de remisión y entrega; normalizar tipo, severidad, ubicación aproximada, evidencia, carga afectada, acción, escalamiento y efecto sobre promesa.                                                       |
+| `CAP-11.09` | Entregar y confirmar recepción            | `REUSE_OR_REFACTOR` | NEXO para sedes y PULSO/PASS para cliente                            | Conservar recepción de remisiones y confirmación por PIN; separar entrega física, prueba, aceptación del destinatario, recepción de inventario y finalización del pedido.                                                  |
+| `CAP-11.10` | Gestionar faltantes, daños y devoluciones | `REUSE_OR_REFACTOR` | NEXO coordinando PULSO, PASS y NUMERA                                | Conservar diferencias y novedades; crear decisión de aceptación parcial, rechazo, retorno, reclamación, compensación y efecto físico/económico sin borrar el envío original.                                               |
+| `CAP-11.11` | Cerrar y revisar el recorrido             | `BUILD`             | NEXO                                                                 | Crear cierre del viaje con paradas, entregas, devoluciones, bultos, LPN, custodias, kilometraje, combustible atribuible, peajes, incidencias, documentos y pendientes.                                                     |
+| `CAP-11.12` | Gestionar entregas mediante terceros      | `REUSE_OR_REFACTOR` | PULSO con portal y adaptadores; NEXO cuando transporte carga interna | Conservar portal temporal, PIN, tracking y referencias; completar proveedor, servicio, asignación, token temporal, aceptación, intento, evidencia, liquidación, incidencia, privacidad y retiro de acceso.                 |
+
+---
+
+#### 9. Resumen de tratamientos
+
+| Tratamiento         | Cantidad |
+| ------------------- | -------: |
+| `REUSE_OR_REFACTOR` |        8 |
+| `BUILD`             |        4 |
+| **Total**           |   **12** |
+
+La clasificación conserva la inversión existente sin confundir infraestructura parcial con un proceso empresarial cerrado.
+
+---
+
+#### 10. Propiedad funcional
+
+| Dominio o aplicación          | Responsabilidad                                                                                                                                                         |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NEXO                          | operación logística interna, necesidades, planes de ruta, viajes, paradas, asignaciones, carga, custodia, remisiones, flota referenciada, novedades, recepción y cierre |
+| PULSO                         | cumplimiento del pedido de cliente, promesa, modalidad, despacho comercial, entrega, intento, novedad, resultado y coordinación con tercero                             |
+| PASS                          | seguimiento visible al cliente, PIN o mecanismo de confirmación, comunicaciones y presentación de novedades; no asigna vehículos ni modifica custodia                   |
+| FOGO                          | disponibilidad y fecha de salida del producto producido; no planifica rutas ni confirma entregas                                                                        |
+| ORIGO                         | entregas de proveedor, contratación de transportista o servicio externo y condiciones comerciales; no registra recepción física por duplicado                           |
+| NUMERA                        | costos, anticipos, liquidaciones, combustible, peajes, devoluciones y efectos económicos; no modifica el recorrido                                                      |
+| ANIMA / VISO                  | turno, disponibilidad laboral y asignación administrativa del trabajador; no sustituyen la asignación logística de una operación                                        |
+| Proveedor o mensajero externo | ejecuta únicamente la entrega asignada mediante contrato y credencial temporal; no accede directamente a Supabase                                                       |
+| SHELL / Supabase              | contratos, autorización, eventos, integridad, auditoría, tokens temporales, colas, idempotencia y migraciones                                                           |
+
+---
+
+#### 11. Fuentes de verdad objetivo
+
+| Objeto                        | Fuente objetivo                                                  | Regla                                                                                                     |
+| ----------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Necesidad de transporte       | registro canónico de necesidad logística                         | se deriva de remisión, pedido, compra, producción, devolución o traslado; no es ruta ni viaje             |
+| Plan de ruta                  | NEXO                                                             | versión publicada con paradas, secuencia, ventanas, restricciones y responsable de publicación            |
+| Viaje o recorrido ejecutado   | NEXO                                                             | instancia inmutable de ejecución vinculada al plan publicado y a sus revisiones autorizadas               |
+| Vehículo y disponibilidad     | NEXO dominio de activos y flota                                  | identidad y condición desde `CAP-SCOPE-007`; la operación logística solo referencia la asignación vigente |
+| Turno y aptitud del conductor | VISO/ANIMA + contexto de autorización                            | la asignación logística consume disponibilidad; no crea turno                                             |
+| Remisión y envío interno      | NEXO                                                             | conserva origen, destino, líneas y efectos físicos                                                        |
+| Pedido de cliente             | PULSO                                                            | conserva modalidad, promesa y resultado comercial                                                         |
+| Seguimiento y PIN del cliente | PASS consumiendo contrato compartido                             | no se convierte en fuente alternativa de entrega                                                          |
+| Prueba de entrega             | expediente de logística compartido con propietario según destino | firma, PIN, foto autorizada, nombre, sello o confirmación según política                                  |
+| Combustible y kilometraje     | NEXO flota; efecto económico en NUMERA                           | compra, carga, lectura y consumo estimado son hechos distintos                                            |
+| Entrega de tercero            | PULSO o NEXO según objeto + adaptador externo                    | payload, proveedor, referencia, estados, evidencia y conciliación                                         |
+| Documentos y evidencia        | servicios transversales E4                                       | manifiesto, hoja de ruta, etiqueta, comprobante, foto y adjuntos con retención y acceso mínimo            |
+
+---
+
+#### 12. Modelo conceptual logístico
+
+```text
+NECESIDAD DE TRANSPORTE
+        ↓ planificación
+PLAN DE RUTA + VERSIÓN
+        ↓ publicación
+ASIGNACIÓN DE RECURSOS
+        ↓ preparación
+PLAN Y MANIFIESTO DE CARGA
+        ↓ aceptación
+CUSTODIA
+        ↓ salida
+VIAJE
+        ├── PARADA 1
+        ├── PARADA 2
+        └── PARADA N
+                ↓
+ENTREGA / RECEPCIÓN / NOVEDAD / RETORNO
+        ↓
+CIERRE Y CONCILIACIÓN
+```
+
+Una operación logística podrá agrupar múltiples remisiones o pedidos, pero cada resultado permanecerá trazable hasta su objeto de origen.
+
+---
+
+#### 13. Necesidades de transporte
+
+Cada necesidad conservará como mínimo:
+
+- tipo de origen: remisión, pedido, compra, producción, devolución, activo o traslado;
+- identificador del objeto origen;
+- sede, LOC o dirección de origen;
+- sede, LOC o destinatario de destino;
+- ventana mínima y máxima;
+- prioridad y causa;
+- carga prevista, peso, volumen y bultos cuando se conozcan;
+- requisitos de frío, fragilidad, inocuidad, seguridad o vehículo;
+- estado y responsable de validación;
+- posibilidad de consolidación;
+- restricciones o bloqueo.
+
+No se creará una ruta aprobada directamente desde una señal sin revisión.
+
+---
+
+#### 14. Plan de ruta, viaje y parada
+
+##### 14.1. Plan de ruta
+
+Define la intención publicada: fecha, vehículo requerido, secuencia, ventanas, prioridades, restricciones y tiempos estimados.
+
+##### 14.2. Viaje
+
+Es la ejecución real de una versión publicada. Conserva salida, retorno, actor, vehículo, lecturas, cambios y resultado.
+
+##### 14.3. Parada
+
+Es una unidad independiente de servicio. Conserva destino, orden, ventana, llegada, salida, objetos a entregar o recoger, destinatario, estado, evidencia y novedad.
+
+##### 14.4. Revisión
+
+Un cambio posterior a publicación no sobrescribirá el plan. Deberá indicar motivo, actor, momento, diferencias y comunicación al conductor y destinos afectados.
+
+---
+
+#### 15. Priorización y capacidad
+
+La prioridad no dependerá solo del orden de creación. Podrá considerar:
+
+- ventana comprometida;
+- producto crítico o perecedero;
+- continuidad de una sede;
+- pedido de cliente;
+- cadena de frío;
+- disponibilidad de producción;
+- riesgo de vencimiento;
+- volumen, peso y compatibilidad;
+- regreso de reutilizables;
+- costo y distancia;
+- contingencia activa;
+- autorización gerencial documentada.
+
+La automatización futura deberá ser explicable y permitirá override con motivo. Esta tarea no selecciona algoritmo ni proveedor de mapas.
+
+---
+
+#### 16. Asignación de vehículo, conductor y apoyos
+
+La asignación verificará:
+
+- vehículo disponible y no bloqueado;
+- capacidad y restricciones compatibles;
+- documentos y seguros vigentes cuando apliquen;
+- mantenimiento, condición y combustible suficiente según política;
+- turno y contexto operativo del conductor;
+- licencia o habilitación necesaria;
+- conflicto con otras asignaciones;
+- punto y momento de recogida del vehículo;
+- apoyos de carga o descarga;
+- aceptación del responsable;
+- alternativa y sustitución.
+
+El conductor no obtendrá acceso global a rutas, sedes, inventarios o clientes por estar asignado a un viaje.
+
+---
+
+#### 17. Preparación y plan de carga
+
+La preparación deberá separar:
+
+```text
+CONTENIDO SOLICITADO
+≠ CONTENIDO PREPARADO
+≠ CONTENIDO CARGADO
+≠ CONTENIDO DESPACHADO
+```
+
+El plan de carga incluirá:
+
+- remisiones, pedidos y recogidas;
+- líneas y cantidades;
+- LPN, bultos y contenedores;
+- peso, volumen y capacidad;
+- compatibilidad y segregación;
+- frío y temperatura objetivo;
+- fragilidad y orientación;
+- sellos o cierres;
+- orden de descarga por parada;
+- elementos retornables;
+- diferencias y bloqueos;
+- evidencia requerida.
+
+Mover un LPN moverá su contenido según `CAP-SCOPE-006`; no se duplicará como stock suelto.
+
+---
+
+#### 18. Confirmación de salida y manifiesto
+
+Antes de salir deberá existir una confirmación verificable de:
+
+- vehículo y conductor correctos;
+- plan o revisión vigente;
+- carga real;
+- cantidades y unidades;
+- bultos, LPN y sellos;
+- condición y temperatura cuando aplique;
+- documentos y etiquetas;
+- diferencias aceptadas o bloqueantes;
+- hora y lugar;
+- actor de origen;
+- actor que acepta custodia.
+
+Una impresión o fotografía será evidencia, no la fuente exclusiva del estado.
+
+---
+
+#### 19. Transferencia de custodia
+
+La cadena mínima será:
+
+```text
+CUSTODIO DE ORIGEN
+        ↓ entrega documentada
+CONDUCTOR O TERCERO
+        ↓ entrega documentada
+RECEPTOR DE DESTINO
+```
+
+Cada transferencia conservará objeto, alcance, cantidad, condición, actor que entrega, actor que acepta, tiempo, ubicación, evidencia y controversia. Si el receptor rechaza o difiere, la custodia no se cerrará silenciosamente.
+
+---
+
+#### 20. Ejes de estado independientes
+
+| Eje                 | Estados de referencia                                                                              | Qué representa                             |
+| ------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Necesidad logística | `draft`, `validated`, `planned`, `cancelled`, `expired`                                            | demanda de transporte todavía no ejecutada |
+| Plan de ruta        | `draft`, `published`, `superseded`, `cancelled`                                                    | itinerario versionado y publicable         |
+| Asignación          | `proposed`, `confirmed`, `rejected`, `replaced`, `released`                                        | vehículo, conductor y apoyos               |
+| Carga               | `planning`, `picking`, `prepared`, `loaded`, `sealed`, `blocked`                                   | contenido físico antes de salida           |
+| Custodia            | `pending`, `accepted`, `transferred`, `disputed`, `closed`                                         | responsabilidad física vigente             |
+| Viaje               | `planned`, `ready`, `departed`, `in_progress`, `paused`, `completed`, `cancelled`                  | ejecución del recorrido                    |
+| Parada              | `planned`, `arrived`, `servicing`, `completed`, `failed`, `skipped`, `rescheduled`                 | resultado por destino                      |
+| Entrega             | `pending`, `attempted`, `partially_delivered`, `delivered`, `rejected`, `returned`                 | transferencia al destinatario              |
+| Recepción           | `pending`, `confirmed`, `partial`, `disputed`, `rejected`                                          | aceptación y efecto en destino             |
+| Tercero             | `requested`, `assigned`, `accepted`, `picked_up`, `in_transit`, `delivered`, `failed`, `cancelled` | ejecución delegada                         |
+
+Los valores exactos se congelarán en E2/E3. La regla aprobable es que estos ejes no se fusionen en un único campo.
+
+---
+
+#### 21. Ejecución del recorrido
+
+El conductor o ejecutor verá únicamente:
+
+- viaje asignado;
+- versión vigente;
+- vehículo;
+- paradas y secuencia;
+- ventanas e instrucciones mínimas;
+- carga relacionada;
+- contactos mínimos autorizados;
+- acciones disponibles según estado;
+- novedades y contingencias;
+- pendientes de custodia.
+
+El sistema permitirá registrar salida, llegada, inicio de atención, finalización, pausa, desvío, reordenamiento autorizado y retorno. No exigirá escribir mientras se conduce ni diseñará interacciones inseguras.
+
+---
+
+#### 22. Novedades y contingencias
+
+La taxonomía mínima contemplará:
+
+- vehículo indisponible o avería;
+- conductor indisponible;
+- retraso;
+- dirección incorrecta;
+- acceso bloqueado;
+- destinatario ausente;
+- rechazo;
+- faltante;
+- daño;
+- temperatura o condición fuera de rango;
+- sello roto;
+- carga equivocada;
+- accidente o incidente de seguridad;
+- fallo de red o dispositivo;
+- tercero no responde;
+- otra causa controlada.
+
+La novedad no marcará automáticamente entrega, cancelación ni ajuste. Producirá acción, escalamiento, comunicación y resultado trazables.
+
+---
+
+#### 23. Entrega y recepción
+
+##### 23.1. Entrega interna entre sedes
+
+NEXO registrará transferencia al receptor, cantidades, condición, diferencias y recepción física. El movimiento de inventario se aplicará mediante contrato idempotente.
+
+##### 23.2. Entrega a cliente
+
+PULSO conservará intento, destinatario, mecanismo de confirmación, evidencia, novedad y resultado. PASS mostrará la información permitida.
+
+##### 23.3. Confirmación por PIN
+
+El PIN:
+
+- pertenecerá al destinatario;
+- aparecerá según estado permitido;
+- tendrá vigencia e intentos limitados;
+- no se expondrá anticipadamente al mensajero;
+- no reemplazará el registro de diferencias;
+- tendrá contingencia y override con permiso y motivo.
+
+##### 23.4. Recepción parcial o disputada
+
+La observación original se conservará. La resolución posterior podrá generar aceptación, devolución, movimiento compensatorio, reclamo o efecto económico, sin editar la entrega original.
+
+---
+
+#### 24. Faltantes, daños, rechazo y logística inversa
+
+Cada diferencia deberá distinguir:
+
+- cantidad no cargada en origen;
+- faltante detectado en tránsito;
+- faltante en destino;
+- daño previo, durante transporte o al recibir;
+- rechazo total o parcial;
+- devolución inmediata;
+- recogida posterior;
+- retorno de reutilizables;
+- producto en cuarentena;
+- pérdida confirmada;
+- compensación al cliente;
+- reclamación al tercero.
+
+La devolución generará una operación inversa o parada de retorno cuando exista traslado físico. No se resolverá únicamente con un estado comercial.
+
+---
+
+#### 25. Vehículos, kilometraje y combustible
+
+`CAP-SCOPE-011` consume las decisiones de `CAP-SCOPE-007` y no reabre la identidad de flota.
+
+La relación objetivo será:
+
+```text
+VEHÍCULO Y MEDIDORES
+→ NEXO DOMINIO DE FLOTA
+
+ASIGNACIÓN Y VIAJE
+→ NEXO DOMINIO LOGÍSTICO
+
+COMPRA / CARGA DE COMBUSTIBLE
+→ NEXO + SOPORTE DE ORIGO CUANDO APLIQUE
+
+COSTO Y CONCILIACIÓN
+→ NUMERA
+```
+
+El viaje conservará lectura inicial y final cuando aplique. El consumo podrá calcularse o asignarse posteriormente, pero nunca se inventará como lectura física.
+
+---
+
+#### 26. Entregas mediante terceros
+
+El contrato mínimo de tercero incluirá:
+
+- proveedor o tipo de mensajero;
+- servicio solicitado;
+- referencia externa;
+- pedido, remisión o carga asignados;
+- identidad mínima del ejecutor cuando sea conocida;
+- token temporal por asignación;
+- aceptación o rechazo;
+- recogida;
+- estados e intentos;
+- evidencia;
+- novedad;
+- liquidación o costo;
+- cancelación;
+- expiración y revocación de acceso;
+- payload original e idempotencia si existe API o webhook.
+
+El tercero no escribirá directamente en tablas internas ni recibirá datos financieros, históricos o personales innecesarios.
+
+---
+
+#### 27. Datos personales y ubicación
+
+Los datos visibles para conductor o tercero se limitarán a la operación asignada. Dirección, teléfono, referencias, nombre, PIN y evidencia tendrán políticas específicas de acceso y retención.
+
+La geolocalización continua no se aprueba en esta tarea. E2 deberá decidir, con necesidad comprobada:
+
+- si se requiere ubicación;
+- precisión;
+- frecuencia;
+- inicio y fin;
+- quién puede verla;
+- cuánto se conserva;
+- qué ocurre sin permiso o sin señal;
+- cómo se evita vigilancia fuera del turno o viaje.
+
+---
+
+#### 28. Documentos, etiquetas y evidencia
+
+Podrán existir:
+
+- plan o hoja de ruta;
+- manifiesto de carga;
+- remisión;
+- etiquetas de bulto, LPN o contenedor;
+- comprobante de salida;
+- prueba de entrega;
+- registro de temperatura;
+- fotografía autorizada;
+- firma o sello;
+- documento del tercero;
+- comprobante de peaje o combustible;
+- acta de diferencia o devolución.
+
+Cada documento tendrá identidad, versión, relación con la operación, actor, fecha, estado y política de retención. Reimprimir no recreará viaje, entrega ni custodia.
+
+---
+
+#### 29. Operación offline, reintentos y orden de eventos
+
+Las acciones críticas usarán identidad de evento y estado previo esperado. El diseño cubrirá:
+
+- salida registrada sin confirmación de respuesta;
+- entrega enviada dos veces;
+- PIN validado con red inestable;
+- recepción posterior a una entrega parcial;
+- novedad fuera de orden;
+- cambio de ruta mientras el dispositivo está offline;
+- tercero que reintenta webhook;
+- sincronización posterior al cierre;
+- conflicto entre dos receptores;
+- pérdida o sustitución del dispositivo.
+
+La interfaz mostrará pendiente de sincronización y no representará como confirmado un resultado que el servidor todavía no aceptó.
+
+---
+
+#### 30. Cierre y conciliación del recorrido
+
+El cierre verificará:
+
+- todas las paradas con resultado;
+- remisiones y pedidos correlacionados;
+- bultos, LPN y contenedores entregados o retornados;
+- custodias cerradas o disputadas;
+- diferencias y devoluciones;
+- kilometraje o medidor;
+- combustible y peajes informados;
+- documentos y evidencia;
+- tercero y liquidación cuando aplique;
+- comunicaciones pendientes;
+- efectos de inventario, pedido y finanzas;
+- incidencias abiertas;
+- vehículo devuelto y disponibilidad posterior.
+
+El cierre podrá quedar `CON_PENDIENTES`, pero esos pendientes tendrán dueño y no desaparecerán del tablero.
+
+---
+
+#### 31. Preguntas existentes reutilizadas
+
+No se crean preguntas nuevas.
+
+| Identificador       | Información                                                                 | Uso                                                                                                                 |
+| ------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `ACT-01` a `ACT-06` | Vehículos, identificación, titular, custodia, disponibilidad y alternativa. | Alimentan flota y contingencia. El estado vigente se toma del registro consolidado; no se vuelven a preguntar aquí. |
+| `ACT-07` y `ACT-08` | Cantidad y ubicación de canastas de transporte.                             | Alimentan capacidad, custodia y retorno de reutilizables.                                                           |
+| `DAT-08` a `DAT-10` | Historia de solicitudes, despachos y recepciones de remisiones.             | Alimentan migración y línea base de cumplimiento; no bloquean la decisión de cobertura.                             |
+| `DAT-20` y `DAT-21` | Documento que acompaña Vaila y registro de entrega al cliente.              | Alimentan entregas mediante terceros y evidencia histórica.                                                         |
+| `COM-01` y `COM-02` | Origen del inventario y lugar de empaque de Vaila Vainilla.                 | Alimentan origen, preparación, carga y operación de entrega.                                                        |
+| `OPE-04`            | Autoridad para modificar una solicitud de remisión.                         | Alimenta revisiones antes de planificación y carga.                                                                 |
+
+Las respuestas ya entregadas se consolidarán en lote en el registro vivo. Esta tarea no modifica sus estados ni reabre documentos aprobados automáticamente.
+
+---
+
+#### 32. Hallazgos y destinos
+
+| ID                  | Hallazgo                                                                                                                                                           | Severidad | Tarea propietaria                                                                                 | Momento  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ------------------------------------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-011-001 | No existe una bandeja canónica consolidada de necesidades de transporte procedentes de remisiones, pedidos, compras, producción y devoluciones.                    | crítica   | `OPS-LOG-001`; `NEXO-UX-001`; `NEXO-UX-007`; `CAP-SCOPE-012`                                      | E2       |
+| H-CAP-SCOPE-011-002 | Las rutas de abastecimiento o fulfillment por producto existentes pueden confundirse con un recorrido físico de vehículo.                                          | crítica   | `OPS-LOG-001`; `NEXO-UX-001`; `NEXO-UX-008`; `NEXO-UX-011`                                        | E2/E3    |
+| H-CAP-SCOPE-011-003 | No se ha demostrado un plan de ruta versionado con paradas, secuencia, ventanas, publicación y revisiones.                                                         | crítica   | `OPS-LOG-001`; `NEXO-UX-005`; `NEXO-UX-007`; `NEXO-UX-011` a `NEXO-UX-013`                        | E2       |
+| H-CAP-SCOPE-011-004 | Capacidad, peso, volumen, frío, compatibilidad y orden de descarga no están reconciliados en un plan de carga integral.                                            | crítica   | `OPS-LOG-001`; `NEXO-DOM-024`; `NEXO-UX-010`; `NEXO-UX-027`; `CAP-SCOPE-013`                      | E2/E3    |
+| H-CAP-SCOPE-011-005 | La asignación de vehículo, conductor y apoyos no tiene ciclo integral de propuesta, validación, aceptación, reemplazo y liberación.                                | crítica   | `NEXO-DOM-027`; `NEXO-UX-005`; `NEXO-UX-007`; `OPS-LOG-001`; `CAP-SCOPE-002`                      | E2       |
+| H-CAP-SCOPE-011-006 | Disponibilidad del vehículo, mantenimiento, documentos, restricciones y conflictos de agenda todavía no bloquean de forma demostrada una asignación logística.     | crítica   | `NEXO-DOM-026`; `NEXO-DOM-027`; `NEXO-AUTH-024` a `NEXO-AUTH-030`; `CAP-SCOPE-013`                | E2/E3    |
+| H-CAP-SCOPE-011-007 | Compra de combustible, carga, lectura y consumo atribuible a viaje siguen requiriendo conciliación sin convertir el recorrido en fuente de flota.                  | alta      | `NEXO-DOM-027`; `NEXO-DOM-028`; `CAP-SCOPE-012`; `CAP-SCOPE-017`                                  | E2/E3    |
+| H-CAP-SCOPE-011-008 | La preparación existente de remisiones y envíos físicos necesita consolidarse en manifiesto de carga y relación explícita con ruta, viaje y parada.                | crítica   | `NEXO-UX-010`; `NEXO-UX-011`; `OPS-LOG-001`                                                       | E2/E5    |
+| H-CAP-SCOPE-011-009 | Preparado, cargado, validado, despachado y en tránsito pueden colapsarse en estados insuficientemente diferenciados.                                               | crítica   | `NEXO-UX-010` a `NEXO-UX-013`; `NEXO-AUTH-006` a `NEXO-AUTH-010`                                  | E2/E3    |
+| H-CAP-SCOPE-011-010 | La confirmación de cantidades, condición, sellos, LPN y temperatura al salir no está probada como aceptación bilateral completa.                                   | crítica   | `NEXO-UX-010` a `NEXO-UX-012`; `NEXO-DOM-017`; `CAP-SCOPE-006`                                    | E2/E5    |
+| H-CAP-SCOPE-011-011 | Despachar una remisión no demuestra por sí solo transferencia explícita de custodia al conductor o tercero.                                                        | crítica   | `NEXO-DOM-008`; `NEXO-DOM-017`; `NEXO-AUTH-008`; `NEXO-AUTH-025`; `OPS-LOG-001`                   | E2/E3    |
+| H-CAP-SCOPE-011-012 | Carga, LPN, contenedor físico, bulto, remisión y vehículo requieren relaciones sin doble contabilización ni identidad intercambiable.                              | crítica   | `NEXO-DOM-002` a `NEXO-DOM-007`; `NEXO-DOM-019` a `NEXO-DOM-024`; `CAP-SCOPE-006`                 | E2/E3    |
+| H-CAP-SCOPE-011-013 | La vista de conductor y tránsito existente no demuestra un itinerario completo con paradas, llegada, servicio, salida, reordenamiento y contingencia.              | alta      | `NEXO-UX-005`; `NEXO-UX-012`; `OPS-LOG-001`                                                       | E2/E5    |
+| H-CAP-SCOPE-011-014 | Un viaje puede agrupar varias remisiones o pedidos, pero el contrato de consolidación y separación de resultados no está cerrado.                                  | crítica   | `OPS-LOG-001`; `NEXO-UX-011` a `NEXO-UX-013`; `PULSO-UX-007`; `PULSO-UX-019`                      | E2/E3    |
+| H-CAP-SCOPE-011-015 | Las novedades de transporte requieren taxonomía, severidad, carga afectada, escalamiento, resolución y efecto sobre promesa.                                       | crítica   | `NEXO-UX-022`; `PULSO-UX-009`; `PASS-UX-010`; `OPS-LOG-001`                                       | E2       |
+| H-CAP-SCOPE-011-016 | No debe asumirse que seguimiento en tiempo real exige geolocalización continua; finalidad, precisión, retención y consentimiento laboral están por definir.        | crítica   | `CAP-SCOPE-002`; `CAP-SCOPE-016`; `AUTH-SRV-004` a `AUTH-SRV-018`; `OPS-LOG-001`                  | E2/E3    |
+| H-CAP-SCOPE-011-017 | Entrega física, prueba de entrega, aceptación del destinatario, recepción de inventario y finalización del pedido todavía pueden confundirse.                      | crítica   | `NEXO-UX-013`; `PULSO-UX-007`; `PULSO-UX-018`; `OPS-LOG-001`                                      | E2/E3    |
+| H-CAP-SCOPE-011-018 | La recepción parcial, diferencias y rechazo en destino requieren conservar observación original, autoridad y resolución posterior.                                 | crítica   | `NEXO-UX-013`; `NEXO-UX-022`; `NEXO-AUTH-010`; `CAP-SCOPE-006`                                    | E2/E5    |
+| H-CAP-SCOPE-011-019 | Faltantes, daño, temperatura, pérdida y devolución necesitan logística inversa y efectos físicos/económicos correlacionados.                                       | crítica   | `NEXO-UX-022`; `CAP-SCOPE-006`; `CAP-SCOPE-010`; `CAP-SCOPE-012`; `CAP-SCOPE-013`                 | E2/E3    |
+| H-CAP-SCOPE-011-020 | No existe cierre integral demostrado del recorrido con devoluciones, custodias, kilometraje, combustible, documentos y pendientes.                                 | crítica   | `OPS-LOG-001`; `NEXO-UX-007`; `NEXO-DOM-027`; `CAP-SCOPE-012`; `CAP-SCOPE-017`                    | E2/E5    |
+| H-CAP-SCOPE-011-021 | El flujo de entrega por PIN y tracking está implementado parcialmente, pero debe integrarse al contrato canónico de logística y no quedar como subsistema aislado. | crítica   | `PULSO-UX-007`; `PULSO-UX-018`; `PASS-UX-006`; `PASS-UX-010`; `OPS-LOG-001`                       | E2/E3    |
+| H-CAP-SCOPE-011-022 | El portal temporal para domiciliarios externos requiere gobierno de proveedor, asignación, token, expiración, revocación y acceso mínimo.                          | crítica   | `INT-EXT-001` a `INT-EXT-020`; `PULSO-AUTH-001` a `PULSO-AUTH-016`; `CAP-SCOPE-016`               | E2/E3    |
+| H-CAP-SCOPE-011-023 | PIN, intentos fallidos, expiración y override gerencial requieren prueba de seguridad, no repudio y contingencia.                                                  | crítica   | `PULSO-AUTH-007` a `PULSO-AUTH-016`; `PASS-QA-001`; `PASS-QA-002`; `AUTH-QA-020` a `AUTH-QA-024`  | E3/E5    |
+| H-CAP-SCOPE-011-024 | Los datos de dirección, teléfono, instrucciones y evidencia del cliente deben minimizarse para conductor y tercero.                                                | crítica   | `CAP-SCOPE-010`; `CAP-SCOPE-016`; `PASS-INT-004`; `PULSO-AUTH-011` a `PULSO-AUTH-014`             | E2/E3    |
+| H-CAP-SCOPE-011-025 | Operación offline, reintentos y eventos fuera de orden pueden duplicar salida, entrega, recepción, devolución o notificación.                                      | crítica   | `INT-APP-004` a `INT-APP-009`; `QUEUE-ARC-001` a `QUEUE-ARC-010`; `CODE-AUD-018`; `CAP-SCOPE-018` | E3/E5    |
+| H-CAP-SCOPE-011-026 | Peajes, combustible, servicios de tercero, devoluciones y costos por ruta todavía no tienen conciliación económica cerrada.                                        | alta      | `CAP-SCOPE-012`; `NEXO-DOM-028`; `INT-APP-001` a `INT-APP-010`                                    | E2/E3    |
+| H-CAP-SCOPE-011-027 | Cadena de frío y condición durante transporte requieren controles, dispositivos, evidencia y decisión ante excursión.                                              | crítica   | `CAP-SCOPE-006`; `CAP-SCOPE-008`; `CAP-SCOPE-013`; `CAP-SCOPE-015`; `OPS-LOG-001`                 | E2/E4    |
+| H-CAP-SCOPE-011-028 | No existen métricas canónicas de puntualidad, primera entrega, utilización, diferencias, devoluciones, incidencias y costo por recorrido.                          | alta      | `CAP-SCOPE-017`; `NEXO-UX-025`; `NEXO-UX-041`; `OPS-LOG-001`                                      | E2/E5    |
+| H-CAP-SCOPE-011-029 | La contingencia por vehículo, conductor, red, dispositivo, frío o tercero indisponible debe preservar custodia y continuidad.                                      | crítica   | `CAP-SCOPE-015`; `CAP-SCOPE-018`; `NEXO-DOM-027`; `INT-EXT-018`; `OPS-LOG-001`                    | E2/E4/E5 |
+| H-CAP-SCOPE-011-030 | La historia existente de remisiones, entregas y rutas puede ser parcial y no debe migrarse como completa sin calidad y trazabilidad.                               | alta      | `DAT-08` a `DAT-10`; `DAT-20`; `DAT-21`; `SUPA-TRANS-005` a `SUPA-TRANS-007`; `CAP-SCOPE-017`     | E1/E3    |
+
+No queda ningún hallazgo narrativo sin identificador, tarea propietaria y momento de resolución.
+
+---
+
+#### 33. Riesgos y controles mínimos
+
+| Riesgo                                 | Severidad | Control mínimo                                          |
+| -------------------------------------- | --------- | ------------------------------------------------------- |
+| ruta publicada con carga inviable      | crítica   | capacidad, compatibilidad, ventanas y validación previa |
+| vehículo o conductor no disponible     | crítica   | bloqueos, conflictos, aceptación y reemplazo            |
+| carga incompleta o equivocada          | crítica   | manifiesto, escaneo, diferencias y doble confirmación   |
+| custodia ambigua                       | crítica   | aceptación explícita y cadena de transferencias         |
+| salida o entrega duplicada             | crítica   | identidad estable e idempotencia                        |
+| producto dañado o fuera de temperatura | crítica   | condición, sensores, cuarentena y decisión              |
+| entrega marcada sin recepción          | crítica   | prueba, destinatario y estado independiente             |
+| datos del cliente expuestos            | crítica   | proyección mínima, token temporal y expiración          |
+| PIN abusado o compartido               | crítica   | intentos, expiración, rate limit y override auditado    |
+| devolución sin retorno físico          | crítica   | logística inversa y conciliación                        |
+| tercero sin revocación                 | crítica   | credencial temporal por asignación                      |
+| costos de transporte irreconciliables  | alta      | eventos, documentos y conciliación con NUMERA           |
+| recorrido cerrado con pendientes       | crítica   | checklist y bloqueos de cierre                          |
+| pérdida de operación por falta de red  | crítica   | cola offline, reintentos y contingencia                 |
+| tracking intrusivo                     | crítica   | finalidad, minimización y retención                     |
+
+---
+
+#### 34. Decisiones aprobables
+
+1. NEXO será propietario de la logística interna y PULSO del cumplimiento de pedidos de cliente.
+2. PASS será una superficie de seguimiento y confirmación permitida, no una fuente competidora.
+3. Las rutas de fulfillment de producto no se interpretarán como recorridos físicos.
+4. Necesidad, plan de ruta, viaje, parada, remisión, carga y entrega serán entidades distintas.
+5. La ruta publicada será versionada y cualquier cambio posterior será auditable.
+6. La asignación de vehículo y conductor validará disponibilidad y tendrá aceptación.
+7. La custodia comenzará y terminará mediante transferencias explícitas.
+8. Preparado, cargado, despachado, en tránsito, entregado y recibido serán estados independientes.
+9. Entrega y recepción no producirán efectos duplicados por reintento.
+10. El PIN no elimina faltantes, daño, aceptación parcial ni evidencia adicional.
+11. La logística inversa conservará relación con el envío original.
+12. El combustible permanecerá bajo flota y finanzas; la ruta solo recibirá atribución trazable.
+13. Los terceros usarán acceso temporal, mínimo y revocable.
+14. No se aprueba geolocalización continua por defecto.
+15. El cierre reconciliará carga, custodias, resultados, retornos, documentos y efectos.
+
+---
+
+#### 35. Decisiones diferidas con dueño
+
+| Decisión                                          | Dueño                             | Momento  |
+| ------------------------------------------------- | --------------------------------- | -------- |
+| algoritmo de planificación u optimización         | `OPS-LOG-001`                     | E2       |
+| políticas de prioridad y override                 | `OPS-LOG-001` + Gerencia          | E2       |
+| modelo físico de ruta, viaje, parada y asignación | arquitectura Supabase             | E3       |
+| proveedor de mapas o geocodificación              | `CAP-SCOPE-015` + BLOQUE X        | E2/E3    |
+| política de ubicación de trabajadores             | `CAP-SCOPE-002` + `CAP-SCOPE-016` | E2/E3    |
+| sensores y cadena de frío en transporte           | `CAP-SCOPE-013` + `CAP-SCOPE-015` | E2/E4    |
+| documentos e impresiones                          | BLOQUE E4                         | E4       |
+| tarifas, peajes, combustible y liquidación        | `CAP-SCOPE-012`                   | E2/E3    |
+| métricas y metas                                  | `CAP-SCOPE-017`                   | E2/E5    |
+| contingencias y recuperación                      | `CAP-SCOPE-018`                   | E2/E4/E5 |
+| proveedor externo y credenciales                  | `INT-EXT-001` a `INT-EXT-020`     | BLOQUE X |
+
+---
+
+#### 36. Requisitos de prueba generados
+
+```text
+TREQ-NEXO-016
+TREQ-PULSO-007
+TREQ-INTEGRATION-016
+```
+
+##### 36.1. `TREQ-NEXO-016`
+
+Protege planificación logística interna, ruta, viaje, parada, asignación, carga, manifiesto, custodia, salida, tránsito, recepción, diferencias, retorno y cierre.
+
+##### 36.2. `TREQ-PULSO-007`
+
+Protege cumplimiento de pedidos de cliente, tracking, entrega, PIN, intentos, novedades, override, tercero y minimización de datos.
+
+##### 36.3. `TREQ-INTEGRATION-016`
+
+Protege la cadena completa entre demanda, remisión o pedido, NEXO, PULSO, PASS, flota, NUMERA y terceros, con eventos exactamente una vez y conciliación.
+
+---
+
+#### 37. Puertas de implementación
+
+##### Puerta 1 — Procesos E2
+
+- ejecutar `OPS-LOG-001`;
+- aprobar actores, estados, excepciones y segregación;
+- definir rutas internas y entregas de cliente;
+- decidir política de terceros y ubicación.
+
+##### Puerta 2 — Datos y arquitectura E3/E4
+
+- congelar contratos de necesidad, plan, viaje, parada, asignación, carga, custodia, entrega e incidencia;
+- definir idempotencia, colas, offline y conciliación;
+- definir documentos, evidencia, impresión y notificaciones;
+- definir privacidad, retención y acceso.
+
+##### Puerta 3 — Implementación E5
+
+- asignar paquetes NEXO, PULSO, PASS, SHELL y NUMERA;
+- migrar sin reinterpretar rutas de fulfillment como viajes;
+- validar rollback y convivencia;
+- preparar datos y dispositivos de piloto.
+
+##### Puerta 4 — Piloto y certificación
+
+- ejecutar rutas internas controladas;
+- ejecutar entrega a cliente con PIN y contingencia;
+- probar tercero temporal;
+- probar parcialidad, devolución, pérdida de red y reintentos;
+- conciliar inventario, pedido, custodia y costos;
+- cerrar hallazgos y regresiones.
+
+---
+
+#### 38. Criterios de aceptación
+
+`CAP-SCOPE-011` podrá aprobarse cuando:
+
+- las doce subcapacidades tengan tratamiento explícito;
+- NEXO, PULSO, PASS, flota, NUMERA y terceros tengan fronteras claras;
+- se distinga ruta de abastecimiento de recorrido físico;
+- necesidad, plan, viaje, parada, carga, remisión y entrega no se fusionen;
+- asignación y custodia tengan reglas independientes;
+- entrega, recepción e inventario tengan estados y efectos separados;
+- combustible y kilometraje respeten `CAP-SCOPE-007`;
+- datos de cliente y ubicación tengan minimización;
+- las preguntas existentes tengan uso sin duplicación;
+- los 30 hallazgos tengan propietario y momento;
+- los tres requisitos nuevos estén incorporados en un `04A` completo válido;
+- no se haya autorizado implementación ni operación real.
+
+---
+
+#### 39. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cobertura objetivo de logística, rutas, transporte y entregas, sin ejecutar todavía el diseño detallado ni la implementación.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-012
+— Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
+```
+
+`CAP-SCOPE-012` consumirá los eventos de combustible, peajes, terceros, devoluciones y costos de transporte aquí delimitados, sin reabrir la propiedad física de NEXO ni la propiedad comercial de PULSO.
+
+
+### ✅ CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
+
+**Estado:** APROBADA
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-011` aprobada  
+**Tarea anterior:** `CAP-SCOPE-011`  
+**Siguiente tarea reservada:** `CAP-SCOPE-013`  
+**Familia evaluada:** `CAP-12 — Gestionar dinero, costos y obligaciones`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Movimientos financieros, recaudos, pagos, cierres, impuestos o actuaciones reales:** no autorizados  
+**Decisión incorporada durante la elaboración:** la cartera y cuentas por cobrar serán capacidad obligatoria de NUMERA  
+**Requisitos de prueba generados:** `TREQ-NUMERA-002`, `TREQ-NUMERA-003`, `TREQ-NUMERA-004`, `TREQ-INTEGRATION-017`  
+**Tareas nuevas derivadas:** `NUMERA-DOM-016`, `NUMERA-DOM-017`, `NUMERA-AUTH-014`, `NUMERA-UX-026`, `NUMERA-UX-027`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá registrar, conciliar, analizar y gobernar dinero, costos y obligaciones sin convertir las aplicaciones operativas en sistemas financieros paralelos ni confundir inteligencia económico-operativa con contabilidad oficial.
+
+La tarea debe permitir que NUMERA evolucione desde su base actual de centros de costo, gastos, presupuestos, punto de equilibrio y rentabilidad hacia una plataforma que incluya obligatoriamente cartera, cuentas por cobrar, cuentas por pagar, bancos, tesorería, conciliaciones, costos, cierres y reportes. Al mismo tiempo, deberá conservar un punto de extensión limpio para incorporar en el futuro contabilidad formal dentro de NUMERA o integrarla con un sistema externo.
+
+La cobertura no autoriza movimientos reales. Define qué debe existir, quién será propietario, qué seguirá siendo externo, qué deberá construirse y qué condiciones impedirán doble registro o pérdida de trazabilidad.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-012` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP CONVERTIR VENTAS, PAGOS, COMPRAS,
+RECEPCIONES, INVENTARIO, PRODUCCIÓN, GASTOS, NÓMINA, ACTIVOS,
+LOGÍSTICA Y OTROS HECHOS OPERATIVOS EN INFORMACIÓN ECONÓMICA,
+CARTERA, OBLIGACIONES, TESORERÍA, COSTOS, PRESUPUESTOS,
+CIERRES Y RENTABILIDAD, SIN DUPLICAR REGISTROS NI IMPEDIR
+UNA FUTURA CONTABILIDAD FORMAL DENTRO DE NUMERA?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+VENTA = PAGO = RECAUDO = DEPÓSITO = INGRESO CONTABLE
+```
+
+```text
+ORDEN DE COMPRA = RECEPCIÓN = FACTURA = CUENTA POR PAGAR = PAGO
+```
+
+```text
+CLIENTE = DEUDOR = CUENTA PASS
+```
+
+```text
+SALDO DE CARTERA = SUMA DE FACTURAS SIN APLICAR PAGOS
+```
+
+```text
+GASTO OPERATIVO = COSTO DE INVENTARIO = PAGO BANCARIO
+```
+
+```text
+TRANSFERENCIA INTERNA = VENTA FISCAL ENTRE ENTIDADES
+```
+
+```text
+NUMERA ACTUAL = CONTABILIDAD FORMAL COMPLETA
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-011`;
+- `NUMERA-AUD-001` a `NUMERA-AUD-012`;
+- `NUMERA-DOM-001` a `NUMERA-DOM-015`;
+- `NUMERA-AUTH-001` a `NUMERA-AUTH-013`;
+- `NUMERA-UX-001` a `NUMERA-UX-025`;
+- `OPS-CST-001`;
+- `INT-APP-001` a `INT-APP-010`;
+- `INT-DB-001` a `INT-DB-008`;
+- `INT-EXT-001` a `INT-EXT-020`;
+- `INT-POS-001` a `INT-POS-024`;
+- implementación actual de NUMERA y la migración `20260610161420_numera_economic_foundation.sql`;
+- implementaciones actuales de PULSO, ORIGO, NEXO, FOGO, PASS y ANIMA;
+- respuestas existentes del registro vivo, incluidas las diferencias actuales entre entidad legal, marca, emisor fiscal y titular de recaudo.
+
+Las respuestas ya entregadas no se vuelven a solicitar. Solo una contradicción material comprobada obligará a corregir una decisión aprobada.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-12.01` — Registrar hechos económicos;
+- `CAP-12.02` — Gestionar caja;
+- `CAP-12.03` — Gestionar bancos y pagos;
+- `CAP-12.04` — Gestionar cuentas por cobrar;
+- `CAP-12.05` — Gestionar cuentas por pagar;
+- `CAP-12.06` — Facturar y controlar documentos;
+- `CAP-12.07` — Conciliar ventas, pagos y entregas;
+- `CAP-12.08` — Conciliar compras y recepciones;
+- `CAP-12.09` — Calcular costos;
+- `CAP-12.10` — Distribuir costos compartidos;
+- `CAP-12.11` — Gestionar presupuestos;
+- `CAP-12.12` — Gestionar tesorería;
+- `CAP-12.13` — Gestionar impuestos y obligaciones;
+- `CAP-12.14` — Cerrar períodos y emitir reportes;
+- `CAP-12.15` — Analizar rentabilidad;
+
+---
+
+#### 5. Fuera de alcance
+
+- registrar o modificar gastos, presupuestos, pagos, recaudos, cartera u obligaciones reales;
+- ejecutar transferencias bancarias o pagos a proveedores;
+- emitir facturas, notas o documentos fiscales;
+- presentar declaraciones o calcular oficialmente impuestos;
+- cerrar o reabrir periodos reales;
+- migrar saldos históricos sin reconciliación;
+- crear plan de cuentas, comprobantes o libros oficiales en esta etapa;
+- seleccionar proveedor contable, bancario, fiscal o de pagos;
+- definir indicadores definitivos, reservados para `CAP-SCOPE-017`;
+- crear tablas, RPC, Edge Functions, webhooks, jobs o migraciones;
+- sustituir al contador, asesor fiscal o proveedor autorizado;
+- interpretar esta propuesta como recomendación legal, tributaria o contable.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. NUMERA será la capa económico-operativa
+
+Consolidará hechos, cartera, obligaciones, tesorería, costos, presupuestos, conciliaciones y rentabilidad. No sustituirá por defecto los libros oficiales ni la presentación tributaria.
+
+##### 6.2. La cartera será obligatoria
+
+Las cuentas por cobrar no quedarán como capacidad opcional. Tendrán dominio, permisos, experiencia, pruebas y paquetes propios.
+
+##### 6.3. La contabilidad formal seguirá siendo posible
+
+Los hechos económicos conservarán estructura suficiente para mapearse después a plan de cuentas, comprobantes, débitos, créditos y periodos contables.
+
+##### 6.4. Hecho económico y asiento contable serán distintos
+
+Un evento operativo podrá producir un hecho económico y posteriormente un asiento candidato o confirmado. Ninguna aplicación operativa escribirá directamente libros contables.
+
+##### 6.5. Entidad legal, marca y sede no son equivalentes
+
+Cada registro conservará entidad legal, marca o unidad comercial, sede, centro de costo, tercero, canal y emisor fiscal cuando apliquen.
+
+##### 6.6. La fuente operativa conservará el hecho
+
+PULSO conserva venta y caja; ORIGO compra; NEXO inventario y logística; FOGO producción; ANIMA hechos laborales. NUMERA consume sin recrear sus objetos.
+
+##### 6.7. Los registros financieros serán no destructivos
+
+Correcciones, anulaciones, reclasificaciones, reaperturas y castigos conservarán el original y generarán acciones compensatorias.
+
+##### 6.8. Cada saldo deberá explicarse
+
+Cartera, obligación, banco, caja, costo y presupuesto deberán poder navegar hasta documentos, eventos y actores de origen.
+
+##### 6.9. Pago y aplicación serán diferentes
+
+Recibir dinero no determina automáticamente qué cuenta por cobrar se canceló. La aplicación será explícita, parcial y reversible.
+
+##### 6.10. Documento y obligación serán diferentes
+
+Una factura o soporte puede originar una obligación, pero su validez, aceptación, vencimiento, pago y disputa mantendrán estados independientes.
+
+##### 6.11. Caja y bancos serán subdominios separados
+
+El efectivo operativo se origina en PULSO; los movimientos bancarios y la tesorería se gobernarán en NUMERA.
+
+##### 6.12. Los costos tendrán método y vigencia
+
+Costo estándar, promedio, último, real, landed e interno no se mezclarán ni se elegirán implícitamente.
+
+##### 6.13. Las transferencias internas serán gerenciales
+
+Podrán medir desempeño y costo entre centros, pero no se asumirán ventas fiscales salvo base jurídica y contable aprobada.
+
+##### 6.14. Los presupuestos serán versionados
+
+Presupuesto aprobado, forecast y escenario serán objetos distintos con autor, vigencia, comparación y aprobación.
+
+##### 6.15. Los periodos no se cerrarán por ocultamiento
+
+Toda diferencia permanecerá visible. El cierre bloqueará acciones definidas y la reapertura exigirá autoridad y motivo.
+
+##### 6.16. La fiscalidad oficial tendrá frontera explícita
+
+NUMERA conservará referencias, componentes y estados; el proveedor o sistema autorizado conservará emisión, cálculo o presentación oficial hasta decisión expresa.
+
+##### 6.17. La seguridad será por capacidad y territorio
+
+Lectura, registro, aprobación, pago, conciliación, cierre, reapertura, castigo y exportación requerirán permisos separados y alcance mínimo.
+
+##### 6.18. La conciliación será una capacidad de primer nivel
+
+Las diferencias no serán simples alertas visuales: tendrán expediente, responsable, estado, resolución y evidencia.
+
+##### 6.19. La idempotencia será transversal
+
+El mismo evento, extracto, pago o documento no podrá crear dos hechos, dos saldos ni dos efectos económicos.
+
+##### 6.20. El reporte será una proyección
+
+Un dashboard no será fuente de verdad ni podrá corregirse editando el agregado.
+
+---
+
+#### 7. Línea base verificable
+
+##### 7.1. NUMERA actual
+
+La aplicación actual dispone de:
+
+- acceso y permisos básicos;
+- periodos mensuales con estados `open`, `closed` y `locked`;
+- categorías de gastos;
+- captura manual de gastos por centro de costo;
+- presupuestos, ingreso esperado y margen objetivo;
+- vista mensual por centro de costo;
+- punto de equilibrio inicial;
+- lectura inicial de rentabilidad;
+- panel que consolida presupuesto, gasto y equilibrio.
+
+La migración fundacional declara expresamente que esta capa no es contabilidad formal. La pantalla de rentabilidad actual compara ingreso esperado, gasto y presupuesto, pero todavía no utiliza ingreso realizado ni costo completo.
+
+##### 7.2. Fuentes operativas
+
+- PULSO y POS externo contienen ventas, pagos, caja, anulaciones, devoluciones, propinas e impuestos.
+- ORIGO contiene compras, proveedores, órdenes y recepción empresarial parcial.
+- NEXO contiene existencias, movimientos, lotes, remisiones, activos, logística y costos físicos parciales.
+- FOGO contiene recetas, producción, consumos, rendimiento y merma parcial.
+- ANIMA contiene identidad laboral, turnos y hechos que podrán alimentar costos laborales.
+- PASS contiene clientes, pedidos, fidelización y pagos asociados a canales.
+
+##### 7.3. Brecha central
+
+La existencia de tablas y pantallas financieras no demuestra cartera, obligaciones, tesorería, conciliación, cierre, contabilidad ni fiscalidad completas.
+
+---
+
+#### 8. Propiedad objetivo
+
+```text
+NUMERA
+→ hechos económicos y subledger operativo
+→ cartera y cuentas por cobrar
+→ cuentas por pagar y obligaciones
+→ bancos y tesorería
+→ conciliaciones
+→ costos y variaciones
+→ presupuestos y forecast
+→ cierres económico-operativos
+→ rentabilidad y reportes
+
+PULSO
+→ venta, pago, caja y reversión operativa
+
+ORIGO
+→ compra, proveedor, orden, recepción empresarial y disputa
+
+NEXO
+→ movimiento físico, valoración de inventario, activos y logística
+
+FOGO
+→ consumo, producción, rendimiento y merma
+
+ANIMA
+→ hechos laborales y fuentes autorizadas para costo laboral
+
+PROVEEDOR FISCAL / SISTEMA CONTABLE EXTERNO
+→ factura y nota oficial
+→ libros oficiales mientras no se apruebe contabilidad interna
+→ declaraciones y presentación tributaria
+
+BANCOS / PROVEEDORES DE PAGO
+→ autorización, liquidación, extracto y movimiento externo
+```
+
+---
+
+#### 9. Entidades y conceptos obligatorios
+
+```text
+entidad legal
+≠ marca
+≠ sede
+≠ centro de costo
+≠ canal
+≠ emisor fiscal
+≠ titular bancario
+```
+
+```text
+hecho operativo
+≠ hecho económico
+≠ documento
+≠ obligación
+≠ pago
+≠ aplicación
+≠ asiento contable
+```
+
+```text
+cliente
+≠ deudor
+≠ cuenta PASS
+≠ tercero contable
+```
+
+```text
+cuenta por cobrar
+≠ cuota
+≠ vencimiento
+≠ saldo
+≠ pago recibido
+≠ pago aplicado
+```
+
+```text
+caja
+≠ cuenta bancaria
+≠ proveedor de pago
+≠ tesorería
+```
+
+```text
+costo
+≠ gasto
+≠ inversión
+≠ pago
+≠ merma
+```
+
+```text
+presupuesto
+≠ forecast
+≠ compromiso
+≠ gasto real
+```
+
+```text
+periodo operativo
+≠ periodo económico
+≠ periodo contable
+≠ periodo fiscal
+```
+
+---
+
+#### 10. Matriz de tratamiento
+
+| Capacidad | Nombre                             | Tratamiento        | Propietario                               | Decisión                                                                                                                                                |
+| --------- | ---------------------------------- | ------------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-12.01 | Registrar hechos económicos        | REUSE_OR_REFACTOR  | NUMERA                                    | Conservar la base de periodos y gastos, pero convertir cada hecho en un registro trazable, tipado, correlacionado y no destructivo.                     |
+| CAP-12.02 | Gestionar caja                     | REUSE_OR_REFACTOR  | PULSO + NUMERA                            | PULSO conserva la operación de caja; NUMERA recibe, concilia y analiza sesiones, movimientos, diferencias y cierres.                                    |
+| CAP-12.03 | Gestionar bancos y pagos           | BUILD              | NUMERA                                    | Construir cuentas financieras, extractos, movimientos, transferencias, aplicación, conciliación y control de acceso.                                    |
+| CAP-12.04 | Gestionar cuentas por cobrar       | BUILD              | NUMERA                                    | Capacidad obligatoria: cartera, vencimientos, recaudos, acuerdos, seguimiento, aging, exposición y cierre de saldos.                                    |
+| CAP-12.05 | Gestionar cuentas por pagar        | BUILD              | NUMERA                                    | Construir obligaciones desde compras, servicios y gastos, con vencimientos, aprobaciones, pagos y conciliación.                                         |
+| CAP-12.06 | Facturar y controlar documentos    | INTEGRATE_EXTERNAL | PULSO / ORIGO / proveedor fiscal + NUMERA | La emisión fiscal permanece en proveedor autorizado; NUMERA conserva referencia, estado, impuestos, tercero y conciliación.                             |
+| CAP-12.07 | Conciliar ventas, pagos y entregas | BUILD              | NUMERA                                    | Construir conciliación entre venta, medios de pago, caja, factura, entrega, devolución, reembolso y depósito.                                           |
+| CAP-12.08 | Conciliar compras y recepciones    | BUILD              | NUMERA                                    | Construir conciliación entre orden, recepción, diferencia, documento, obligación, devolución y pago.                                                    |
+| CAP-12.09 | Calcular costos                    | REUSE_OR_REFACTOR  | NUMERA + NEXO + FOGO + ORIGO              | Reutilizar precios, consumos y lotes; definir costo estándar, real, landed, merma, variación y vigencia.                                                |
+| CAP-12.10 | Distribuir costos compartidos      | BUILD              | NUMERA                                    | Construir reglas versionadas de drivers, asignación, transferencias internas y reversión.                                                               |
+| CAP-12.11 | Gestionar presupuestos             | REUSE_OR_REFACTOR  | NUMERA                                    | Conservar presupuesto por centro, ampliándolo a versiones, escenarios, responsables, aprobación y forecast.                                             |
+| CAP-12.12 | Gestionar tesorería                | BUILD              | NUMERA                                    | Construir posición, flujo de caja, programación, autorización, liquidez, compromisos y alertas.                                                         |
+| CAP-12.13 | Gestionar impuestos y obligaciones | INTEGRATE_EXTERNAL | Proveedor fiscal / contabilidad + NUMERA  | NUMERA conserva componentes, calendario, soportes, estimaciones y estado; el cálculo y presentación oficial permanecen externos hasta decisión expresa. |
+| CAP-12.14 | Cerrar períodos y emitir reportes  | BUILD              | NUMERA                                    | Construir cierre por periodo, checklist, bloqueos, conciliaciones, ajustes, reapertura y paquete de evidencia.                                          |
+| CAP-12.15 | Analizar rentabilidad              | REUSE_OR_REFACTOR  | NUMERA                                    | Ampliar la lectura inicial a rentabilidad real por entidad, sede, canal, producto, cliente, pedido y periodo.                                           |
+
+---
+
+#### 11. CAP-12.01 — Registro de hechos económicos
+
+Cada hecho tendrá identidad estable, tipo, entidad legal, sede, centro de costo, tercero, moneda, fecha de ocurrencia, fecha de reconocimiento, fuente, correlación, monto, impuestos, estado y evidencia. La corrección será compensatoria.
+
+---
+
+#### 12. CAP-12.02 — Caja
+
+PULSO ejecutará apertura, movimientos, conteo y cierre. NUMERA consumirá sesiones, efectivo esperado, diferencia, aprobación, depósito y conciliación. Una diferencia no se convertirá automáticamente en gasto o ingreso.
+
+---
+
+#### 13. CAP-12.03 — Bancos y pagos
+
+Se definirán cuentas, titulares, monedas, tipos, vigencias, saldos, movimientos, extractos, transferencias, beneficiarios, referencias, conciliación y datos sensibles. Un extracto importado será inmutable.
+
+---
+
+#### 14. CAP-12.04 — Cartera y cuentas por cobrar
+
+Se construirán deudores, cuentas, documentos, cuotas, vencimientos, saldos, recaudos, aplicaciones, anticipos, notas, disputas, acuerdos, promesas, aging, exposición, límite, gestión de cobro y castigo autorizado.
+
+---
+
+#### 15. CAP-12.05 — Cuentas por pagar
+
+Se construirán obligaciones desde compras, servicios, gastos, activos y otras fuentes. Se separarán aceptación, causación operativa, vencimiento, programación, aprobación, pago, retención, disputa y cierre.
+
+---
+
+#### 16. CAP-12.06 — Facturación y documentos
+
+PULSO u ORIGO originarán el contexto; el proveedor autorizado emitirá. NUMERA conservará número, emisor, receptor, impuestos, moneda, estado, referencias, hash o evidencia y conciliación.
+
+---
+
+#### 17. CAP-12.07 — Conciliación de ventas
+
+Se compararán ventas, pagos, caja, proveedor, factura, entrega, devoluciones, reembolsos, propinas, depósitos y eventos de cartera. Las diferencias tendrán expediente.
+
+---
+
+#### 18. CAP-12.08 — Conciliación de compras
+
+Se compararán solicitud, orden, recepción, factura, notas, obligación, devolución y pago. La parcialidad y tolerancia serán explícitas.
+
+---
+
+#### 19. CAP-12.09 — Costos
+
+Se separarán costo de adquisición, landed, estándar, real, promedio, último, producción, merma, logística e interno. Cada cálculo declarará método, entradas, versión y periodo.
+
+---
+
+#### 20. CAP-12.10 — Costos compartidos
+
+Cada distribución tendrá pool, driver, base, periodo, centros origen y destino, regla, versión, aprobación, resultado y reversión. No se usarán porcentajes ocultos.
+
+---
+
+#### 21. CAP-12.11 — Presupuestos
+
+Se distinguirán borrador, aprobado, revisión, forecast y escenario. Los cambios conservarán motivo, responsable y comparación.
+
+---
+
+#### 22. CAP-12.12 — Tesorería
+
+Se construirá posición de caja, bancos, cuentas por cobrar y pagar, compromisos, vencimientos, flujo proyectado, programación y alertas de liquidez.
+
+---
+
+#### 23. CAP-12.13 — Impuestos y obligaciones
+
+NUMERA podrá conservar componentes tributarios, calendario, soportes, estimaciones y estados; la determinación y presentación oficial seguirán con contabilidad o proveedor autorizado.
+
+---
+
+#### 24. CAP-12.14 — Cierre
+
+El cierre exigirá checklist, conciliaciones, diferencias aceptadas, responsables, evidencia y bloqueo. Los eventos tardíos usarán ajuste o reapertura autorizada.
+
+---
+
+#### 25. CAP-12.15 — Rentabilidad
+
+Se calculará con ingreso realizado y costo trazable, separando entidad, marca, sede, canal, producto, cliente, pedido y periodo. La lectura interna no sustituirá estados financieros oficiales.
+
+---
+
+#### 26. Cartera obligatoria en NUMERA
+
+La decisión del usuario se incorpora como regla canónica:
+
+```text
+LA CARTERA Y LAS CUENTAS POR COBRAR SE IMPLEMENTARÁN EN NUMERA.
+NO QUEDAN DIFERIDAS A UNA DECISIÓN FUTURA NI DEPENDEN DE
+QUE NUMERA SE CONVIERTA EN SISTEMA CONTABLE COMPLETO.
+```
+
+El mínimo funcional incluirá:
+
+- deudor persona o empresa, sin exigir cuenta PASS;
+- entidad legal acreedora;
+- origen comercial y documento relacionado;
+- cuenta por cobrar y cuotas;
+- fecha de emisión, exigibilidad y vencimiento;
+- moneda, capital, impuestos, descuentos y saldo;
+- pago recibido y aplicación parcial o total;
+- anticipos y saldos a favor;
+- notas y compensaciones;
+- disputa, retención y bloqueo;
+- acuerdo de pago, promesa y seguimiento;
+- aging y exposición;
+- gestión de cobro y evidencia de contacto;
+- castigo o condonación con autoridad independiente;
+- conciliación con bancos, caja, pagos y facturación;
+- historia completa y no destructiva.
+
+---
+
+#### 27. Extensión futura hacia contabilidad formal
+
+La arquitectura deberá permitir dos caminos sin rehacer los dominios operativos:
+
+##### Camino A — Integración externa
+
+NUMERA exporta hechos o asientos candidatos a un sistema contable y recibe identificadores, estados, periodos, comprobantes y diferencias.
+
+##### Camino B — Contabilidad dentro de NUMERA
+
+En una fase posterior podrán incorporarse:
+
+- plan de cuentas versionado por entidad legal;
+- terceros contables;
+- comprobantes y líneas débito/crédito;
+- reglas de contabilización;
+- centros de costo y dimensiones;
+- periodos contables;
+- auxiliares;
+- balance de prueba;
+- estados financieros;
+- cierre y reapertura contables;
+- libros y evidencia requerida.
+
+La decisión futura será propiedad de `NUMERA-DOM-017` y `NUMERA-UX-027`. Hasta entonces, ningún reporte económico-operativo se declarará libro o estado financiero oficial.
+
+---
+
+#### 28. Modelo multiempresa y multiemisor
+
+Las respuestas operativas muestran que marca, entidad legal, emisor de factura y titular de recaudo pueden variar. Por tanto, todo hecho financiero deberá identificar explícitamente:
+
+- entidad legal responsable;
+- marca o unidad comercial;
+- sede y centro de costo;
+- emisor fiscal;
+- tercero pagador o beneficiario;
+- cuenta de recaudo o pago;
+- canal y proveedor;
+- relación intercompañía o interna cuando exista.
+
+NUMERA no inferirá la entidad legal desde el nombre visible de la marca ni desde la sede.
+
+---
+
+#### 29. Estados mínimos
+
+| Objeto            | Estados mínimos                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------- |
+| hecho económico   | pending / recognized / reversed / disputed / reconciled                                       |
+| cuenta por cobrar | draft / open / partial / overdue / disputed / settled / written_off / cancelled               |
+| cuenta por pagar  | draft / pending_approval / approved / partial / due / overdue / paid / disputed / cancelled   |
+| pago o recaudo    | initiated / pending / confirmed / failed / reversed / unapplied / partially_applied / applied |
+| conciliación      | unmatched / suggested / matched / exception / approved / reopened                             |
+| presupuesto       | draft / submitted / approved / superseded / closed                                            |
+| periodo           | open / closing / closed / locked / reopened                                                   |
+| documento fiscal  | pending / issued / accepted / rejected / voided / credited                                    |
+
+---
+
+#### 30. Reglas de autoridad y segregación
+
+- quien crea un gasto no aprobará necesariamente su propio gasto;
+- quien programa un pago no deberá ejecutarlo y conciliarlo sin excepción autorizada;
+- quien registra un recaudo no podrá castigar la cartera;
+- cerrar y reabrir periodo serán permisos distintos;
+- exportar información financiera será independiente de verla;
+- modificar cuentas bancarias, beneficiarios o titulares será una acción sensible;
+- ajustes de costo y distribuciones compartidas tendrán aprobación;
+- cualquier excepción a segregación quedará motivada, temporal y auditada.
+
+---
+
+#### 31. Preguntas existentes reutilizadas
+
+| Pregunta        | Uso                                                                      |
+| --------------- | ------------------------------------------------------------------------ |
+| GOV-13 a GOV-19 | titulares de cuentas de recaudo y cuentas comerciales por unidad o canal |
+| ACT-15          | responsable actual de recibir y custodiar efectivo de las sedes          |
+| DAT-01 y DAT-03 | capacidad de exportación y detalle de ventas del POS actual              |
+| DAT-06          | fuente histórica de compras                                              |
+| DAT-14 y DAT-15 | fuente y resultado del pago laboral                                      |
+| DAT-22          | fuente del reparto de propinas                                           |
+| TEC-09          | inventario técnico de información financiera; ya respondida              |
+| DIF-14          | reglas de imputación de costos compartidos                               |
+
+No se crean preguntas nuevas. Las respuestas ya suministradas se consolidarán posteriormente en lote. Las preguntas pendientes bloquean configuración real, migración histórica o piloto, pero no bloquean aprobar la cobertura.
+
+---
+
+#### 32. Tareas nuevas derivadas
+
+| ID              | Tarea                                                                                     | Bloque propietario                         | Momento                                           |
+| --------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------- |
+| NUMERA-DOM-016  | Definir cartera, cuentas por cobrar, cobranza y exposición de crédito                     | BLOQUE O — NUMERA / dominio                | E2, antes de diseñar datos y pantallas de cartera |
+| NUMERA-DOM-017  | Definir arquitectura extensible hacia contabilidad formal, plan de cuentas y comprobantes | BLOQUE O — NUMERA / dominio                | E2-E3, antes de congelar contratos financieros    |
+| NUMERA-AUTH-014 | Definir permisos de cartera, acuerdos, castigos, bancos y datos financieros sensibles     | BLOQUE O — NUMERA / autorización           | E2-E3, antes de implementar cartera o tesorería   |
+| NUMERA-UX-026   | Diseñar cartera, vencimientos, recaudos, aplicación, acuerdos y gestión de cobro          | BLOQUE O — NUMERA / procesos y experiencia | E2, después de NUMERA-DOM-016                     |
+| NUMERA-UX-027   | Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos          | BLOQUE O — NUMERA / procesos y experiencia | E2-E3, después de NUMERA-DOM-017 y NUMERA-DOM-013 |
+
+Integración futura en el roadmap:
+
+```text
+Después de NUMERA-DOM-015:
+NUMERA-DOM-016
+NUMERA-DOM-017
+
+Después de NUMERA-AUTH-013:
+NUMERA-AUTH-014
+
+Después de NUMERA-UX-025:
+NUMERA-UX-026
+NUMERA-UX-027
+```
+
+Hasta la consolidación documental por lote, esta tarea será el artefacto propietario de esos identificadores.
+
+---
+
+#### 33. Hallazgos trazables
+
+| ID                  | Hallazgo                                                                                                                                         | Riesgo  | Tarea propietaria                                                                 | Momento  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------- | --------------------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-012-001 | La fundación NUMERA actual es económico-operativa y declara que no constituye contabilidad formal.                                               | crítica | NUMERA-DOM-001; NUMERA-DOM-013; NUMERA-DOM-015; NUMERA-DOM-017                    | E2       |
+| H-CAP-SCOPE-012-002 | El panel actual resume presupuesto, gasto y equilibrio, pero no prueba reconciliación integral con ventas, compras, inventario o producción.     | crítica | NUMERA-AUD-006; NUMERA-AUD-012; NUMERA-UX-014; NUMERA-UX-024                      | E1/E2    |
+| H-CAP-SCOPE-012-003 | Los gastos pueden capturarse manualmente sin soporte, aprobación, estado, anulación ni detección completa de duplicidad.                         | crítica | NUMERA-DOM-005; NUMERA-UX-009; NUMERA-UX-010; NUMERA-AUTH-004; NUMERA-AUTH-005    | E2/E3    |
+| H-CAP-SCOPE-012-004 | No existe un ledger canónico de hechos económicos con identidad estable, correlación, reversión y reconocimiento por periodo.                    | crítica | NUMERA-DOM-002 a NUMERA-DOM-005; NUMERA-DOM-011; NUMERA-DOM-014                   | E2/E3    |
+| H-CAP-SCOPE-012-005 | Empresa legal, marca, sede, centro de costo, emisor fiscal, titular de cuenta y canal pueden diferir y no deben colapsarse.                      | crítica | CAP-SCOPE-001; NUMERA-DOM-006; NUMERA-DOM-013; OPS-CST-001                        | E2/E3    |
+| H-CAP-SCOPE-012-006 | La cartera y las cuentas por cobrar no tienen tareas específicas suficientes en el roadmap, pese a ser obligatorias para el negocio.             | crítica | NUMERA-DOM-016; NUMERA-AUTH-014; NUMERA-UX-026                                    | E2/E3/E5 |
+| H-CAP-SCOPE-012-007 | No existe modelo canónico de deudor, documento, cuota, vencimiento, saldo, pago aplicado, acuerdo, disputa y castigo.                            | crítica | NUMERA-DOM-016; NUMERA-UX-026                                                     | E2/E3    |
+| H-CAP-SCOPE-012-008 | Un pago recibido puede existir sin aplicación a una cuenta por cobrar y no debe cerrar cartera por simple coincidencia de monto.                 | crítica | NUMERA-DOM-016; NUMERA-UX-017; NUMERA-UX-026                                      | E2/E3    |
+| H-CAP-SCOPE-012-009 | No existe aging de cartera, exposición, límite, promesa de pago, gestión de cobro ni trazabilidad de contacto.                                   | alta    | NUMERA-DOM-016; NUMERA-UX-026; CAP-SCOPE-017                                      | E2/E5    |
+| H-CAP-SCOPE-012-010 | Las cuentas por pagar y obligaciones están condicionadas en tareas existentes y deben pasar a alcance explícito.                                 | crítica | NUMERA-DOM-010; NUMERA-UX-020; NUMERA-DOM-015                                     | E2       |
+| H-CAP-SCOPE-012-011 | Orden, recepción, factura, nota, obligación y pago todavía no forman un expediente financiero conciliado.                                        | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005; TREQ-INTEGRATION-010                | E2/E3    |
+| H-CAP-SCOPE-012-012 | Los servicios y gastos no inventariables requieren aceptación y soporte sin crear recepciones físicas ficticias.                                 | alta    | CAP-SCOPE-005; NUMERA-DOM-003; NUMERA-DOM-005                                     | E2/E3    |
+| H-CAP-SCOPE-012-013 | Las sesiones y movimientos de caja existen en PULSO, pero NUMERA no demuestra cierre y conciliación de efectivo de extremo a extremo.            | crítica | NUMERA-DOM-009; NUMERA-UX-017; NUMERA-UX-021; CAP-SCOPE-009                       | E2/E3    |
+| H-CAP-SCOPE-012-014 | No existe maestro canónico de cuentas bancarias, titulares, monedas, saldos, permisos y vigencias.                                               | crítica | NUMERA-DOM-009; NUMERA-AUTH-002; NUMERA-AUTH-008; NUMERA-AUTH-014                 | E2/E3    |
+| H-CAP-SCOPE-012-015 | No existe importación o conciliación de extractos bancarios con reglas de matching, excepciones y aprobación.                                    | crítica | NUMERA-UX-021; INT-EXT-001 a INT-EXT-020; INT-DB-008                              | E3/E5    |
+| H-CAP-SCOPE-012-016 | Las cuentas receptoras por marca o entidad todavía tienen preguntas operativas pendientes y no deben inferirse.                                  | alta    | GOV-13 a GOV-19; NUMERA-DOM-009                                                   | E1/E2    |
+| H-CAP-SCOPE-012-017 | Venta, pago, depósito, factura, entrega, devolución y reembolso pueden divergir sin una conciliación diaria formal.                              | crítica | NUMERA-DOM-002; NUMERA-UX-017; INT-POS-017; INT-POS-020; CAP-SCOPE-009            | E2/E3/E5 |
+| H-CAP-SCOPE-012-018 | Compra, recepción, documento, devolución, obligación y pago pueden divergir sin conciliación formal.                                             | crítica | NUMERA-DOM-003; NUMERA-UX-018; CAP-SCOPE-005                                      | E2/E3/E5 |
+| H-CAP-SCOPE-012-019 | Consumo, producción, merma, stock y costo no tienen todavía una conciliación económica cerrada.                                                  | crítica | NUMERA-DOM-004; NUMERA-DOM-007; NUMERA-UX-019; CAP-SCOPE-006; CAP-SCOPE-008       | E2/E3/E5 |
+| H-CAP-SCOPE-012-020 | El costo estándar, último costo, promedio, real, landed e interno requieren definiciones y vigencias separadas.                                  | crítica | NUMERA-DOM-007; NUMERA-AUD-008; NUMERA-UX-022                                     | E2       |
+| H-CAP-SCOPE-012-021 | Las remisiones valorizadas pueden servir para gestión interna, pero no deben crear ingreso fiscal o gasto legal sin base jurídica.               | crítica | OPS-CST-001; NUMERA-DOM-007; NUMERA-DOM-013                                       | E2/E3    |
+| H-CAP-SCOPE-012-022 | Los costos compartidos no tienen drivers, versiones, aprobaciones, reversión ni explicación reproducible.                                        | alta    | OPS-CST-001; NUMERA-DOM-007; NUMERA-UX-022                                        | E2/E3    |
+| H-CAP-SCOPE-012-023 | Los presupuestos actuales carecen de workflow completo de versión, aprobación, modificación, forecast y escenarios.                              | alta    | NUMERA-DOM-006; NUMERA-DOM-011; NUMERA-UX-010; NUMERA-UX-023                      | E2/E3    |
+| H-CAP-SCOPE-012-024 | No existe una posición de tesorería consolidada con compromisos, vencimientos, liquidez y pagos programados.                                     | crítica | NUMERA-DOM-009; NUMERA-DOM-010; NUMERA-UX-020; NUMERA-UX-021                      | E2/E3    |
+| H-CAP-SCOPE-012-025 | No se ha definido segregación entre quien registra, aprueba, paga, concilia, cierra, reabre y exporta.                                           | crítica | NUMERA-AUTH-003 a NUMERA-AUTH-009; NUMERA-AUTH-014                                | E2/E3    |
+| H-CAP-SCOPE-012-026 | Los periodos admiten estados open, closed y locked, pero no existe workflow integral de checklist, aprobación y reapertura.                      | crítica | NUMERA-DOM-011; NUMERA-UX-011; NUMERA-UX-023                                      | E2/E3    |
+| H-CAP-SCOPE-012-027 | Un periodo cerrado puede recibir eventos tardíos y necesita reglas de periodo operativo, contable y de ajuste.                                   | crítica | NUMERA-DOM-011; NUMERA-DOM-014; NUMERA-DOM-017                                    | E2/E3    |
+| H-CAP-SCOPE-012-028 | La rentabilidad actual usa ingreso esperado y gasto, no ingreso realizado ni costo completo trazable.                                            | alta    | NUMERA-AUD-008; NUMERA-DOM-008; NUMERA-UX-022                                     | E1/E2    |
+| H-CAP-SCOPE-012-029 | No existe rentabilidad consolidada por entidad legal, marca, sede, canal, producto, pedido, cliente y periodo.                                   | alta    | NUMERA-DOM-008; CAP-SCOPE-017                                                     | E2/E5    |
+| H-CAP-SCOPE-012-030 | La facturación y los impuestos oficiales dependen de proveedores o contabilidad externos y requieren referencias y conciliación, no duplicación. | crítica | NUMERA-DOM-013; NUMERA-UX-027; INT-EXT-001 a INT-EXT-020                          | E2/E3    |
+| H-CAP-SCOPE-012-031 | La arquitectura actual no debe bloquear una futura contabilidad interna con plan de cuentas, comprobantes y partida doble.                       | alta    | NUMERA-DOM-017; NUMERA-UX-027                                                     | E2/E3    |
+| H-CAP-SCOPE-012-032 | Los datos financieros, bancarios, de cartera y fiscales requieren clasificación, minimización y exportación independiente.                       | crítica | NUMERA-AUTH-002; NUMERA-AUTH-007; NUMERA-AUTH-008; NUMERA-AUTH-014; CAP-SCOPE-016 | E2/E3    |
+| H-CAP-SCOPE-012-033 | Reintentos, importaciones y eventos fuera de orden pueden duplicar gastos, obligaciones, pagos, recaudos, costos o asientos candidatos.          | crítica | INT-APP-001 a INT-APP-010; INT-DB-001 a INT-DB-008; CAP-SCOPE-018                 | E3/E5    |
+| H-CAP-SCOPE-012-034 | La migración histórica no debe tratar hojas, saldos o reportes parciales como hechos completos sin reconciliación y evidencia.                   | alta    | DATA-NORM-DB-006; AUTH-DB-011; CUTOVER-OPS-005; HYPERCARE-OPS-005                 | E3/E5    |
+
+No queda hallazgo narrativo sin identificador, dueño y momento de resolución.
+
+---
+
+#### 34. Riesgos y controles mínimos
+
+| Riesgo                                    | Severidad | Control mínimo                                    |
+| ----------------------------------------- | --------- | ------------------------------------------------- |
+| doble registro de un mismo evento         | crítica   | identidad estable, idempotencia y conciliación    |
+| cartera cerrada por pago no aplicado      | crítica   | aplicación explícita y reversible                 |
+| entidad legal incorrecta                  | crítica   | dimensiones obligatorias y validación             |
+| pago a beneficiario alterado              | crítica   | aprobación, MFA y auditoría                       |
+| gasto sin soporte o aprobación            | alta      | workflow y evidencia                              |
+| obligación duplicada                      | crítica   | matching por proveedor, documento, monto y origen |
+| saldo bancario no conciliado              | crítica   | extracto inmutable y excepciones                  |
+| costo no reproducible                     | crítica   | método, versión, entradas y periodo               |
+| transferencia interna tratada como fiscal | crítica   | clasificación gerencial/legal separada            |
+| cierre con diferencias ocultas            | crítica   | checklist y pendientes visibles                   |
+| reapertura destructiva                    | crítica   | permiso, motivo y nueva versión                   |
+| exportación financiera excesiva           | crítica   | permiso independiente y minimización              |
+| evento tardío en periodo cerrado          | alta      | ajuste o reapertura gobernada                     |
+| dependencia irreversible de proveedor     | alta      | contrato canónico y adaptador                     |
+| migración de saldos incompletos           | crítica   | reconciliación, evidencia y cuarentena            |
+
+---
+
+#### 35. Decisiones aprobables
+
+1. NUMERA será la capa económico-operativa y de conciliación de Vento Group.
+2. La cartera y las cuentas por cobrar serán capacidad obligatoria de NUMERA.
+3. Las cuentas por pagar, bancos y tesorería pertenecerán al alcance objetivo de NUMERA.
+4. PULSO conservará operación de venta y caja; NUMERA conciliará sin duplicar.
+5. ORIGO conservará compras y recepción empresarial; NUMERA administrará obligación y conciliación.
+6. NEXO y FOGO conservarán hechos físicos y productivos; NUMERA calculará efectos y variaciones.
+7. Entidad legal, marca, sede, centro, emisor y titular bancario serán dimensiones independientes.
+8. Todo saldo deberá navegar hasta hechos y documentos de origen.
+9. Pago y aplicación serán objetos diferentes.
+10. La facturación e impuestos oficiales permanecerán externos mientras no se apruebe otro alcance.
+11. La arquitectura permitirá contabilidad formal futura dentro de NUMERA o por integración.
+12. Los costos internos no se asumirán ingresos o gastos legales.
+13. Presupuestos, forecast y escenarios serán distintos y versionados.
+14. Cierres y reaperturas conservarán historia.
+15. Las cinco tareas derivadas quedarán creadas y vinculadas a esta propuesta.
+
+---
+
+#### 36. Decisiones diferidas con dueño
+
+| Decisión                                                              | Dueño                                                    | Momento                                 |
+| --------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------- |
+| implementar contabilidad formal dentro de NUMERA o integrar proveedor | NUMERA-DOM-017; NUMERA-DOM-013; Dirección y Contabilidad | E2-E3                                   |
+| plan de cuentas y reglas de contabilización                           | NUMERA-DOM-017                                           | solo si se aprueba contabilidad interna |
+| proveedor contable o fiscal                                           | INT-EXT-001 a INT-EXT-020                                | BLOQUE X                                |
+| proveedor bancario o agregador de extractos                           | NUMERA-DOM-009; INT-EXT-001 a INT-EXT-020                | E2-E3                                   |
+| política de crédito, límites y castigos                               | NUMERA-DOM-016; Dirección                                | E2                                      |
+| reglas de cuentas por pagar y autorización                            | NUMERA-DOM-010; NUMERA-AUTH-005                          | E2                                      |
+| drivers de costos compartidos                                         | OPS-CST-001                                              | E2                                      |
+| metodologías de costo por familia                                     | NUMERA-DOM-007                                           | E2                                      |
+| calendario y responsabilidad tributaria                               | Contabilidad; NUMERA-DOM-013                             | E2-E3                                   |
+| métricas y metas financieras                                          | CAP-SCOPE-017                                            | E2-E5                                   |
+| contingencia y recuperación                                           | CAP-SCOPE-018                                            | E2-E5                                   |
+
+---
+
+#### 37. Requisitos de prueba generados
+
+```text
+TREQ-NUMERA-002
+TREQ-NUMERA-003
+TREQ-NUMERA-004
+TREQ-INTEGRATION-017
+```
+
+##### 37.1. `TREQ-NUMERA-002`
+
+Protege el ledger económico-operativo, dimensiones, periodos, correcciones, cierre, reapertura, evidencia y trazabilidad.
+
+##### 37.2. `TREQ-NUMERA-003`
+
+Protege cartera obligatoria, cuentas por pagar, bancos, caja, tesorería, pagos, aplicaciones, vencimientos, acuerdos, castigos y segregación.
+
+##### 37.3. `TREQ-NUMERA-004`
+
+Protege costos, distribuciones, presupuestos, forecast, punto de equilibrio y rentabilidad reproducible.
+
+##### 37.4. `TREQ-INTEGRATION-017`
+
+Protege la cadena de hechos financieros desde aplicaciones operativas, bancos, pagos y proveedores contables o fiscales, con idempotencia y conciliación.
+
+---
+
+#### 38. Puertas de implementación
+
+##### Puerta 1 — Procesos y dominio E2
+
+- ejecutar las tareas `NUMERA-DOM-*`;
+- incorporar `NUMERA-DOM-016` y `NUMERA-DOM-017`;
+- aprobar estados, actores, segregación, excepciones y políticas de cartera;
+- aprobar fronteras contables y fiscales.
+
+##### Puerta 2 — Datos y arquitectura E3
+
+- congelar contratos de hecho, cartera, obligación, pago, aplicación, cuenta, extracto, costo, presupuesto y periodo;
+- definir eventos, idempotencia, conciliación y compensación;
+- diseñar integración contable y bancaria;
+- definir migración y calidad.
+
+##### Puerta 3 — Implementación E5
+
+- implementar primero ledger, cartera y conciliaciones prioritarias;
+- incorporar tesorería, cuentas por pagar, costos y presupuestos;
+- conectar fuentes sin escritura cruzada;
+- validar permisos y exportaciones.
+
+##### Puerta 4 — Piloto y certificación
+
+- probar cartera real controlada;
+- conciliar ventas y pagos;
+- conciliar compras y recepciones;
+- probar extractos, pagos parciales, anticipos y diferencias;
+- cerrar y reabrir un periodo de prueba;
+- validar con Dirección y Contabilidad.
+
+---
+
+#### 39. Criterios de aceptación
+
+`CAP-SCOPE-012` podrá aprobarse cuando:
+
+- las quince subcapacidades tengan tratamiento explícito;
+- cartera quede clasificada como obligatoria y `BUILD`;
+- NUMERA, aplicaciones operativas y sistemas externos tengan fronteras claras;
+- entidad legal, marca, sede, centro, emisor y cuenta no se fusionen;
+- hecho, documento, obligación, pago, aplicación y asiento sean distintos;
+- costos, presupuestos, tesorería y cierres tengan reglas mínimas;
+- la contabilidad formal futura siga siendo posible sin rehacer los dominios;
+- las cinco tareas derivadas tengan identificador, bloque y momento;
+- los 34 hallazgos tengan propietario y momento;
+- los cuatro requisitos nuevos estén incorporados en un `04A` completo válido;
+- no se haya autorizado implementación ni actuación financiera real.
+
+---
+
+#### 40. Resultado y continuidad
+
+Al aprobarse esta tarea quedará definida la cobertura objetivo financiera de Vento Group, incluida la decisión obligatoria de implementar cartera en NUMERA y la capacidad de evolucionar posteriormente hacia contabilidad formal.
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-013
+— Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
+```
+
+`CAP-SCOPE-013` consumirá costos de mantenimiento, servicios, repuestos, inspecciones y calibraciones aquí delimitados, sin reabrir la propiedad financiera de NUMERA.
+
+---
+
+
 ### [ ] CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
 ### [ ] CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
 ### [ ] CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
