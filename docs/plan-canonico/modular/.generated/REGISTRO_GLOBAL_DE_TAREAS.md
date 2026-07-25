@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1409** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **194** |
+| Aprobadas | **195** |
 | En propuesta | **0** |
-| No iniciadas | **1215** |
+| No iniciadas | **1214** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `CAP-SCOPE-012` — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos | ✅ APROBADA |
-| Tarea actual | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | ⬜ NO INICIADA |
-| Siguiente | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido | ⬜ NO INICIADA |
+| Última aprobada | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | ✅ APROBADA |
+| Tarea actual | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido | ⬜ NO INICIADA |
+| Siguiente | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -222,7 +222,7 @@
 | ✅ APROBADA | `CAP-SCOPE-010` | Evaluar clientes, fidelización, reclamos y servicio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-011` | Evaluar logística, rutas, vehículos, combustible y entregas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-012` | Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
-| ⬜ NO INICIADA | `CAP-SCOPE-013` | Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
+| ✅ APROBADA | `CAP-SCOPE-013` | Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-014` | Evaluar marketing, campañas y contenido | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-015` | Evaluar TI, dispositivos, redes, impresión, soporte y seguridad | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ⬜ NO INICIADA | `CAP-SCOPE-016` | Evaluar privacidad, cumplimiento, documentos, conservación y auditoría | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |

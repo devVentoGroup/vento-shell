@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1409** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **194** |
+| Tareas aprobadas | **195** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1215** |
+| Tareas no iniciadas | **1214** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos** |
-| Tarea actual | **CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración** |
+| Última tarea aprobada | **CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración** |
+| Tarea actual | **CAP-SCOPE-014 — Evaluar marketing, campañas y contenido** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-014 — Evaluar marketing, campañas y contenido** |
+| Siguiente tarea | **CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 69 de 96 aprobadas; CAP-SCOPE-013 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 70 de 96 aprobadas; CAP-SCOPE-014 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-012` — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos |
-| Tarea actual | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido |
+| Última aprobada | `CAP-SCOPE-013` — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración |
+| Tarea actual | `CAP-SCOPE-014` — Evaluar marketing, campañas y contenido — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-015` — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **69 DE 96 APROBADAS — ACTUAL CAP-SCOPE-013** |
+| BLOQUE E1 | **70 DE 96 APROBADAS — ACTUAL CAP-SCOPE-014** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-012 — Evaluar costos, gastos, presupuestos, tesorería, contabilidad e impuestos
-        ↓
-TAREA ACTUAL
 CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
         ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 69 de 96 tareas aprobadas
+BLOQUE E1 — 70 de 96 tareas aprobadas
 ```

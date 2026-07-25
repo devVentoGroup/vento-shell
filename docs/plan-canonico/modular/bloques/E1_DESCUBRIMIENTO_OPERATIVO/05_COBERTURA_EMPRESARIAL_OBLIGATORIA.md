@@ -14291,7 +14291,633 @@ CAP-SCOPE-013
 ---
 
 
-### [ ] CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
+### ✅ CAP-SCOPE-013 — Evaluar instalaciones, mantenimiento, limpieza, inspecciones y calibración
+
+**Estado:** APROBADA 
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-012` aprobada, incluido el visor económico  
+**Tarea anterior:** `CAP-SCOPE-012`  
+**Siguiente tarea reservada:** `CAP-SCOPE-014`  
+**Familia evaluada:** `CAP-13 — Mantener instalaciones y condiciones de operación`  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Intervenciones, mantenimientos, limpieza, calibraciones, accesos u obras reales:** no autorizados  
+**Requisitos generados:** `TREQ-NEXO-017`, `TREQ-NEXO-018`, `TREQ-INTEGRATION-018`  
+**Tareas nuevas derivadas:** `NEXO-DOM-029` a `NEXO-DOM-038`, `NEXO-AUTH-031` y `032`, `NEXO-UX-043` a `048`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas  
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento Group deberá identificar, conservar, inspeccionar y mantener sus instalaciones y condiciones habilitantes sin confundir una sede con un espacio, un LOC con una instalación fija, una reparación locativa con el mantenimiento de un activo ni una inspección física con una auditoría de cumplimiento.
+
+La tarea establece el tratamiento objetivo de mantenimiento locativo, reparaciones, limpieza, saneamiento, plagas, servicios, inspecciones, calibración, llaves, seguridad física, obras y novedades. También determina qué deberá gobernar NEXO, qué deberán aportar VISO/SST, ORIGO, NUMERA y proveedores externos, y qué controles impedirán cierres ficticios o evidencia incompleta.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-013` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP MANTENER CADA ESPACIO E INSTALACIÓN
+SEGURO, LIMPIO, DISPONIBLE, CALIBRADO Y APTO PARA OPERAR,
+CON PLANES, ÓRDENES, EVIDENCIA Y RESPONSABLES TRAZABLES,
+SIN DUPLICAR EL MANTENIMIENTO DE ACTIVOS NI CONFUNDIR
+EJECUCIÓN EXTERNA CON PROPIEDAD DEL REGISTRO?
+```
+
+Quedan prohibidas equivalencias como:
+
+```text
+SEDE = ÁREA = ESPACIO = LOC = INSTALACIÓN = ACTIVO
+```
+
+```text
+SOLICITUD = ORDEN DE TRABAJO = EJECUCIÓN = CIERRE
+```
+
+```text
+LIMPIADO = VERIFICADO = LIBERADO
+```
+
+```text
+INSPECCIÓN FÍSICA = INSPECCIÓN SST = AUDITORÍA DE CUMPLIMIENTO
+```
+
+```text
+CALIBRACIÓN VIGENTE = EQUIPO DISPONIBLE PARA CUALQUIER USO
+```
+
+```text
+PROVEEDOR EJECUTA = PROVEEDOR GOBIERNA LA INSTALACIÓN
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- mapa canónico `CAP-13.01` a `CAP-13.11`;
+- `CAP-MAP-004`, `CAP-MAP-013`, `CAP-MAP-014` y `BRECHA-CAP-009`;
+- `CAP-SCOPE-001`, `CAP-SCOPE-003`, `CAP-SCOPE-005`, `CAP-SCOPE-006`, `CAP-SCOPE-007`, `CAP-SCOPE-008`, `CAP-SCOPE-011`, `CAP-SCOPE-012`, `CAP-SCOPE-016` y `CAP-SCOPE-018`;
+- `NEXO-DOM-012`, `NEXO-DOM-017`, `NEXO-DOM-019`, `NEXO-DOM-025`, `NEXO-DOM-026` y `NEXO-DOM-028`;
+- `NEXO-UX-030` a `NEXO-UX-042`;
+- validaciones físicas de LOC y estructuras actuales de mantenimiento de activos;
+- auditorías operativas, técnicas y preguntas ya registradas.
+
+La evidencia actual confirma infraestructura parcial, no un ciclo integral de instalaciones.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-13.01` — Inventariar espacios e instalaciones;
+- `CAP-13.02` — Planear mantenimiento;
+- `CAP-13.03` — Solicitar y ejecutar reparaciones;
+- `CAP-13.04` — Gestionar limpieza y saneamiento;
+- `CAP-13.05` — Controlar plagas;
+- `CAP-13.06` — Controlar agua, energía, gas y servicios;
+- `CAP-13.07` — Inspeccionar condiciones;
+- `CAP-13.08` — Calibrar equipos;
+- `CAP-13.09` — Gestionar llaves, acceso físico y seguridad;
+- `CAP-13.10` — Gestionar obras y adecuaciones;
+- `CAP-13.11` — Registrar y cerrar novedades;
+
+---
+
+#### 5. Clasificación de cobertura
+
+| Subcapacidad | Nombre                                      | Tratamiento        | Propietaria objetivo           | Decisión                                                                                                                                                                                          |
+| ------------ | ------------------------------------------- | ------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CAP-13.01    | Inventariar espacios e instalaciones        | REUSE_OR_REFACTOR  | NEXO                           | Reutilizar empresas, sedes, áreas, LOC, planos y validaciones físicas, separando la instalación fija del activo móvil y completando identidad, jerarquía, condición, criticidad y disponibilidad. |
+| CAP-13.02    | Planear mantenimiento                       | BUILD              | NEXO                           | Construir planes preventivos, predictivos y reglamentarios por instalación, componente, criticidad, frecuencia, responsable, ventana y evidencia.                                                 |
+| CAP-13.03    | Solicitar y ejecutar reparaciones           | BUILD              | NEXO + ORIGO                   | Construir solicitudes, triage, aprobación, orden de trabajo, ejecución propia o externa, prueba, liberación, costo y cierre.                                                                      |
+| CAP-13.04    | Gestionar limpieza y saneamiento            | BUILD              | NEXO + áreas operativas        | Construir planes maestros, procedimientos, frecuencias, responsables, productos, concentraciones, verificación, desviaciones y liberación del área.                                               |
+| CAP-13.05    | Controlar plagas                            | INTEGRATE_EXTERNAL | NEXO + proveedor especializado | Gobernar internamente mapa, programa, visitas, dispositivos, hallazgos, acciones y certificados; integrar la ejecución especializada externa.                                                     |
+| CAP-13.06    | Controlar agua, energía, gas y servicios    | BUILD              | NEXO + NUMERA                  | Construir contratos, puntos de servicio, medidores, lecturas, consumos, interrupciones, alertas, contingencias y conciliación de costo.                                                           |
+| CAP-13.07    | Inspeccionar condiciones                    | REUSE_OR_REFACTOR  | NEXO + VISO/SST                | Reutilizar validaciones físicas y controles SST, separando inspección de condición locativa de inspección de cumplimiento o riesgo laboral.                                                       |
+| CAP-13.08    | Calibrar equipos                            | REUSE_OR_REFACTOR  | NEXO + proveedor especializado | Extender mantenimiento de activos a control metrológico, patrones, tolerancias, certificados, vencimiento, fuera de tolerancia y evaluación de impacto.                                           |
+| CAP-13.09    | Gestionar llaves, acceso físico y seguridad | BUILD              | NEXO + VISO                    | Construir inventario, custodia, entrega, devolución, vigencia, zonas, incidencias y cierre de accesos físicos sin mezclarlo con autorización digital.                                             |
+| CAP-13.10    | Gestionar obras y adecuaciones              | BUILD              | NEXO + ORIGO + NUMERA          | Construir solicitud, alcance, presupuesto, aprobación, contratista, permisos, cronograma, afectación operativa, recepción y cierre.                                                               |
+| CAP-13.11    | Registrar y cerrar novedades                | BUILD              | NEXO                           | Construir expediente único de novedad locativa con severidad, contención, responsable, relación con orden de trabajo, verificación y cierre.                                                      |
+
+---
+
+#### 6. Resumen de clasificación
+
+| Tratamiento        | Cantidad |
+| ------------------ | -------- |
+| REUSE_OR_REFACTOR  | 3        |
+| BUILD              | 7        |
+| INTEGRATE_EXTERNAL | 1        |
+| TOTAL              | 11       |
+
+---
+
+#### 7. Arquitectura propietaria
+
+```text
+NEXO
+→ maestro de instalaciones, espacios y componentes fijos
+→ condición, criticidad y disponibilidad
+→ planes y órdenes de mantenimiento
+→ reparaciones y novedades
+→ limpieza, saneamiento y plagas
+→ servicios, medidores e interrupciones
+→ inspecciones físicas y calibración
+→ llaves, acceso físico y obras
+→ evidencia, verificación y cierre
+
+VISO / SST
+→ riesgos laborales, cumplimiento, responsables y acciones SST
+→ consume hallazgos físicos; no recrea la instalación
+
+ORIGO
+→ compra y contratación de repuestos, materiales y servicios externos
+→ no libera técnicamente la instalación
+
+NUMERA
+→ presupuesto, compromiso, gasto, costo y análisis
+→ no aprueba la condición técnica
+
+ÁREAS OPERATIVAS
+→ ejecutan o verifican tareas asignadas según responsabilidad
+→ no cambian planes ni cierran excepciones sin autorización
+
+PROVEEDORES EXTERNOS
+→ ejecutan servicios especializados y entregan evidencia
+→ no reciben acceso amplio ni gobiernan el expediente
+```
+
+---
+
+#### 8. Frontera entre instalación y activo
+
+La propiedad se resolverá por el objeto principal:
+
+```text
+espacio, red, muro, piso, techo, drenaje, circuito, tubería,
+puerta fija o componente incorporado al inmueble
+→ instalación
+```
+
+```text
+equipo identificable, trasladable o serializado
+→ activo
+```
+
+Cuando una intervención afecte ambos objetos, existirá una orden principal y relaciones secundarias. No se crearán dos reparaciones competidoras para el mismo daño.
+
+---
+
+#### 9. Modelo mínimo de instalaciones
+
+Cada instalación o componente fijo deberá conservar, cuando aplique:
+
+- entidad, sede, edificio, piso, zona, espacio y área operativa;
+- código estable y nombre humano;
+- tipo, propósito y criticidad;
+- plano, fotografías y documentación técnica;
+- relación con LOC, activos y puntos de servicio;
+- condición, disponibilidad y restricciones;
+- responsable administrativo y responsable operativo;
+- riesgos, requisitos sanitarios y ambientales;
+- fecha de alta, modificación, suspensión y retiro;
+- historial no destructivo.
+
+Un LOC puede estar dentro de un espacio, pero no representa por sí solo toda la instalación.
+
+---
+
+#### 10. Planificación de mantenimiento
+
+El plan deberá separar:
+
+- mantenimiento preventivo;
+- mantenimiento predictivo cuando exista dato suficiente;
+- mantenimiento reglamentario;
+- reparación correctiva;
+- emergencia;
+- inspección;
+- calibración o verificación;
+- obra o adecuación.
+
+Cada plan tendrá versión, vigencia, criticidad, frecuencia, disparador, ventana, recursos, procedimiento, responsable, criterios de aceptación y evidencia requerida.
+
+---
+
+#### 11. Solicitud, orden y cierre
+
+El ciclo objetivo será:
+
+```text
+novedad o necesidad
+→ clasificación y contención
+→ solicitud
+→ evaluación y prioridad
+→ aprobación
+→ orden de trabajo
+→ asignación interna o externa
+→ ejecución
+→ prueba o verificación
+→ liberación del espacio
+→ cierre técnico
+→ cierre económico y documental
+```
+
+Solicitud, orden, visita, ejecución, prueba, liberación y cierre serán objetos o estados distintos. Una fotografía o factura no cerrará por sí sola la intervención.
+
+---
+
+#### 12. Limpieza y saneamiento
+
+El programa maestro deberá definir por espacio, superficie o instalación:
+
+- procedimiento vigente;
+- frecuencia y disparadores extraordinarios;
+- responsable y sustituto;
+- producto, lote, concentración y tiempo de contacto;
+- herramientas y elementos de protección;
+- controles de contaminación cruzada;
+- verificación visual, instrumental o microbiológica cuando aplique;
+- resultado, desviación, repetición y liberación.
+
+La ejecución debe ser simple para el trabajador: tarea, pasos críticos, confirmación y evidencia. Las explicaciones extensas permanecerán bajo demanda.
+
+---
+
+#### 13. Control de plagas
+
+NEXO conservará:
+
+- programa y mapa;
+- puntos o dispositivos identificados;
+- proveedor y habilitaciones;
+- visitas programadas y ejecutadas;
+- productos y fichas aplicables;
+- capturas, tendencias y hallazgos;
+- acciones correctivas;
+- restricciones, tiempos de reingreso y liberación;
+- certificados, informes y vencimientos.
+
+La ejecución podrá ser externa, pero el expediente, las acciones y el estado de la instalación seguirán siendo internos.
+
+---
+
+#### 14. Agua, energía, gas y servicios
+
+El dominio deberá representar:
+
+- proveedor, contrato y titular;
+- punto de servicio y medidor;
+- unidad y método de lectura;
+- lectura inicial, final y periodo;
+- consumo, costo y anomalía;
+- corte, interrupción, fuga o pérdida;
+- contingencia y capacidad alternativa;
+- relación con producción, frío, seguridad y continuidad;
+- factura y conciliación con NUMERA.
+
+Una factura no sustituye la lectura física ni una lectura sustituye la factura.
+
+---
+
+#### 15. Inspecciones físicas
+
+La inspección locativa verificará condición física y aptitud operativa. VISO/SST conservará la evaluación de obligación, peligro laboral o cumplimiento.
+
+Cada inspección tendrá plantilla versionada, alcance, criterios, actor, fecha, resultados, evidencia, hallazgos y acciones. Un hallazgo crítico podrá bloquear disponibilidad, pero requerirá regla y autoridad explícitas.
+
+---
+
+#### 16. Calibración y control metrológico
+
+Para cada instrumento o equipo calibrable se conservarán:
+
+- magnitud, unidad, rango y resolución;
+- tolerancia y criterio de aceptación;
+- método, patrón y trazabilidad;
+- laboratorio o responsable;
+- certificado y resultados;
+- fecha, vencimiento y estado;
+- ajustes, sellos y restricciones;
+- evaluación de impacto cuando quede fuera de tolerancia;
+- relación con lotes, controles o decisiones afectadas.
+
+`calibrado`, `verificado`, `ajustado`, `fuera de tolerancia` y `no apto` no serán equivalentes.
+
+---
+
+#### 17. Llaves, acceso físico y seguridad
+
+Se administrarán llaves, controles, tarjetas, códigos y otros medios físicos mediante:
+
+- identidad estable;
+- zona o puerta habilitada;
+- custodia y responsable;
+- entrega, aceptación, devolución y pérdida;
+- vigencia, suspensión y revocación;
+- duplicados autorizados;
+- incidentes y cambio de cerradura o código;
+- conciliación al retiro o cambio de función.
+
+La autorización digital de SHELL y el acceso físico serán dominios separados y correlacionables.
+
+---
+
+#### 18. Obras y adecuaciones
+
+Cada obra conservará alcance, justificación, presupuesto, aprobación, diseños, permisos, contratista, cronograma, riesgos, cierres temporales, interferencias, cambios, pruebas, recepción, garantía y cierre.
+
+No se tratará una obra como una orden de mantenimiento ordinaria cuando cambie capacidad, distribución, uso, instalaciones o condiciones de operación.
+
+---
+
+#### 19. Novedades y disponibilidad
+
+Toda novedad tendrá:
+
+- instalación o espacio afectado;
+- categoría, severidad y criticidad;
+- reporte original y evidencia;
+- impacto y contención;
+- disponibilidad resultante;
+- responsable y SLA;
+- relación con inspección, orden, incidente o continuidad;
+- resolución, verificación y cierre;
+- reapertura no destructiva.
+
+Cerrar una novedad no borrará el daño ni liberará automáticamente el área.
+
+---
+
+#### 20. Integración con compras y finanzas
+
+ORIGO originará contratos, órdenes y recepción empresarial del servicio o material. NEXO confirmará la ejecución técnica y la condición física. NUMERA recibirá compromisos, gastos y costos.
+
+```text
+servicio solicitado
+≠ servicio contratado
+≠ visita ejecutada
+≠ trabajo aceptado técnicamente
+≠ factura aprobada
+≠ pago realizado
+```
+
+La correlación deberá impedir pago sin soporte, cierre técnico sin ejecución o doble gasto por reintentos.
+
+---
+
+#### 21. Evidencia y conservación
+
+Planos, fotografías, certificados, actas, informes, fichas, permisos y registros deberán vincularse al hecho correspondiente. Se aplicarán clasificación, vigencia, acceso mínimo, retención y sello de tiempo conforme a `CAP-SCOPE-016`.
+
+La evidencia podrá capturarse offline, pero su sincronización será idempotente y conservará actor, dispositivo, hora local, hora de servidor y estado de validación.
+
+---
+
+#### 22. Autorización y segregación
+
+Se separarán como mínimo:
+
+- consultar;
+- reportar novedad;
+- solicitar intervención;
+- priorizar;
+- aprobar gasto o contratación;
+- asignar;
+- ejecutar;
+- registrar evidencia;
+- verificar;
+- liberar;
+- cerrar;
+- reabrir;
+- administrar llaves;
+- aprobar obra;
+- exportar información sensible.
+
+Un proveedor externo recibirá acceso temporal y mínimo mediante portal o enlace controlado, no un rol interno amplio.
+
+---
+
+#### 23. Experiencia objetivo
+
+La experiencia deberá organizarse por trabajo pendiente, no por tablas técnicas:
+
+- `Qué requiere atención`;
+- `Qué vence pronto`;
+- `Qué está bloqueando la operación`;
+- `Qué debe ejecutarse hoy`;
+- `Qué espera verificación`;
+- `Qué quedó fuera de servicio`.
+
+Las pantallas operativas mostrarán acciones, estado y evidencia necesaria. Procedimientos completos, fórmulas y documentación técnica estarán disponibles bajo demanda.
+
+---
+
+#### 24. Operación offline e idempotencia
+
+La captura móvil podrá operar con conectividad intermitente. Cada ejecución, lectura, fotografía, firma, cierre o cambio de estado tendrá clave idempotente. La sincronización deberá detectar duplicados, conflictos, orden de eventos y versiones obsoletas sin sobrescribir silenciosamente el expediente.
+
+---
+
+#### 25. Datos históricos y migración
+
+No se migrarán hojas, chats, fotos o certificados masivamente sin:
+
+1. identificar fuente y propietario;
+2. deduplicar instalaciones y equipos;
+3. mapear sede, espacio, objeto y fecha;
+4. distinguir evidencia vigente de archivo histórico;
+5. reconciliar trabajos abiertos;
+6. conservar origen y nivel de confianza.
+
+La ausencia de datos históricos no autoriza inventarlos.
+
+---
+
+#### 26. Preguntas pendientes
+
+No se crean preguntas nuevas.
+
+Se reutilizan:
+
+- `DAT-16`, para localizar inspecciones de seguridad y salud actuales;
+- `OPE-04` a `OPE-11`, para autoridades de aprobación y excepción cuando correspondan;
+- auditorías operativas existentes para comprobar ejecución manual, proveedores, formularios y fuentes sombra.
+
+Las respuestas ya entregadas se consolidarán posteriormente en lote. No bloquean la clasificación objetivo de esta tarea.
+
+---
+
+#### 27. Hallazgos
+
+| ID                  | Hallazgo                                                                                                                                      | Severidad | Tarea propietaria                                                      | Puerta   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------------------------------------------------------------------- | -------- |
+| H-CAP-SCOPE-013-001 | CAP-13 no tiene una aplicación ni un ciclo integral comprobado; sedes, LOC y activos solo representan partes del contexto.                    | crítica   | NEXO-DOM-029 a NEXO-DOM-038; NEXO-UX-043 a NEXO-UX-048                 | E2/E3/E5 |
+| H-CAP-SCOPE-013-002 | Sede, área, espacio, LOC, instalación fija, componente y activo pueden confundirse y generar identidades duplicadas.                          | crítica   | NEXO-DOM-029; NEXO-DOM-019; CAP-SCOPE-001; CAP-SCOPE-007               | E2/E3    |
+| H-CAP-SCOPE-013-003 | No existe una jerarquía locativa canónica que represente pisos, zonas, cuartos, redes, puntos de servicio y componentes fijos.                | alta      | NEXO-DOM-029; NEXO-UX-043                                              | E2/E3    |
+| H-CAP-SCOPE-013-004 | La frontera entre mantenimiento de activo móvil y mantenimiento de instalación fija necesita resolución por objeto principal.                 | crítica   | NEXO-DOM-012; NEXO-DOM-026; NEXO-DOM-029; NEXO-DOM-030                 | E2       |
+| H-CAP-SCOPE-013-005 | No existe plan locativo versionado con criticidad, frecuencia, ventana, responsable, recursos y evidencia.                                    | crítica   | NEXO-DOM-030; NEXO-UX-044                                              | E2/E3    |
+| H-CAP-SCOPE-013-006 | Solicitud, orden de trabajo, ejecución, prueba, liberación y cierre no están modelados como estados independientes.                           | crítica   | NEXO-DOM-030; NEXO-AUTH-032; NEXO-UX-044                               | E2/E3    |
+| H-CAP-SCOPE-013-007 | No se separan mantenimiento planificado, reparación correctiva, emergencia y obra de adecuación.                                              | alta      | NEXO-DOM-030; NEXO-DOM-037; NEXO-DOM-038                               | E2       |
+| H-CAP-SCOPE-013-008 | No existe programa maestro de limpieza y saneamiento por área, superficie, equipo fijo y riesgo.                                              | crítica   | NEXO-DOM-031; NEXO-UX-045                                              | E2/E3    |
+| H-CAP-SCOPE-013-009 | La ejecución de limpieza no conserva de forma canónica actor, hora, producto, concentración, lote, evidencia y verificación.                  | crítica   | NEXO-DOM-031; NEXO-AUTH-031; NEXO-UX-045                               | E2/E3    |
+| H-CAP-SCOPE-013-010 | Químicos de limpieza, fichas, incompatibilidades, diluciones y consumos no están integrados con catálogo e inventario.                        | alta      | NEXO-DOM-031; CAP-SCOPE-004; CAP-SCOPE-006; CAP-SCOPE-016              | E2/E3    |
+| H-CAP-SCOPE-013-011 | Control de plagas depende de ejecución especializada, pero no existe expediente interno de mapa, dispositivos, visitas, hallazgos y acciones. | crítica   | NEXO-DOM-032; NEXO-UX-045; INT-EXT-001 a INT-EXT-020                   | E2/E3    |
+| H-CAP-SCOPE-013-012 | No existe ciclo para servicios públicos, medidores, contratos, lecturas, interrupciones, calidad o contingencias.                             | crítica   | NEXO-DOM-033; NEXO-UX-046; CAP-SCOPE-018                               | E2/E3    |
+| H-CAP-SCOPE-013-013 | Consumos anómalos de agua, energía o gas no se correlacionan con sede, producción, falla, factura y costo.                                    | alta      | NEXO-DOM-033; NUMERA-DOM-002; NUMERA-DOM-005; CAP-SCOPE-017            | E2/E3/E5 |
+| H-CAP-SCOPE-013-014 | Inspección física de instalación e inspección de cumplimiento o riesgo laboral pueden duplicarse sin frontera.                                | crítica   | NEXO-DOM-034; CAP-SCOPE-003; VISO-UX-032 a VISO-UX-039                 | E2       |
+| H-CAP-SCOPE-013-015 | Las validaciones LOC actuales son una base parcial, pero no cubren instalaciones completas ni plantillas versionadas por riesgo.              | alta      | NEXO-DOM-029; NEXO-DOM-034; NEXO-UX-043; NEXO-UX-046                   | E2/E3    |
+| H-CAP-SCOPE-013-016 | Hallazgos de inspección no tienen enlace obligatorio con contención, acción, orden de trabajo, responsable y verificación.                    | crítica   | NEXO-DOM-034; NEXO-DOM-038; NEXO-UX-046                                | E2/E3    |
+| H-CAP-SCOPE-013-017 | El mantenimiento de activos actual no constituye un sistema completo de control metrológico.                                                  | crítica   | NEXO-DOM-026; NEXO-DOM-035; NEXO-UX-046                                | E2/E3    |
+| H-CAP-SCOPE-013-018 | No existe maestro de magnitud, rango, tolerancia, patrón, método, laboratorio, certificado y próxima calibración.                             | crítica   | NEXO-DOM-035; NEXO-UX-046                                              | E2/E3    |
+| H-CAP-SCOPE-013-019 | Un resultado fuera de tolerancia no activa evaluación de impacto sobre mediciones, lotes, calidad o decisiones previas.                       | crítica   | NEXO-DOM-035; CAP-SCOPE-008; CAP-SCOPE-016                             | E2/E3/E5 |
+| H-CAP-SCOPE-013-020 | Equipo calibrable, instrumento portátil e instalación fija pueden recibir dos mantenimientos o quedar sin propietario.                        | alta      | NEXO-DOM-019; NEXO-DOM-026; NEXO-DOM-029; NEXO-DOM-035                 | E2       |
+| H-CAP-SCOPE-013-021 | Llaves, controles, tarjetas y códigos físicos no tienen inventario, custodia, vigencia, devolución y revocación canónicos.                    | crítica   | NEXO-DOM-036; NEXO-AUTH-031; NEXO-UX-047                               | E2/E3    |
+| H-CAP-SCOPE-013-022 | Acceso físico y autorización digital pueden confundirse; SHELL no debe gobernar llaves ni cerraduras.                                         | alta      | NEXO-DOM-036; CAP-SCOPE-001; CAP-SCOPE-015                             | E2       |
+| H-CAP-SCOPE-013-023 | Obras y adecuaciones carecen de expediente integral de alcance, aprobación, contratista, permisos, afectación y recepción.                    | crítica   | NEXO-DOM-037; NEXO-UX-047; ORIGO-UX-014; NUMERA-DOM-005                | E2/E3    |
+| H-CAP-SCOPE-013-024 | No existe control canónico de cierres temporales, áreas fuera de servicio, rutas alternativas y liberación posterior.                         | crítica   | NEXO-DOM-030; NEXO-DOM-037; NEXO-DOM-038; CAP-SCOPE-018                | E2/E3    |
+| H-CAP-SCOPE-013-025 | Contratistas externos pueden requerir acceso y evidencia sin convertirse en usuarios internos amplios.                                        | crítica   | NEXO-AUTH-031; NEXO-AUTH-032; INT-EXT-001 a INT-EXT-020; CAP-SCOPE-016 | E2/E3    |
+| H-CAP-SCOPE-013-026 | Certificados, actas, fotos, planos y reportes locativos no tienen política de clasificación, vigencia y conservación específica.              | alta      | NEXO-DOM-017; CAP-SCOPE-016; EVID-ARC-001 a EVID-ARC-010               | E2/E4    |
+| H-CAP-SCOPE-013-027 | ORIGO debe contratar bienes y servicios, pero no gobernar el estado físico ni cerrar técnicamente la instalación.                             | alta      | CAP-SCOPE-005; NEXO-DOM-030 a NEXO-DOM-037; TREQ-INTEGRATION-010       | E2/E3    |
+| H-CAP-SCOPE-013-028 | NUMERA debe recibir costos y compromisos, pero no aprobar técnicamente reparación, calibración o liberación.                                  | alta      | CAP-SCOPE-012; NEXO-DOM-030; NEXO-DOM-035; NEXO-DOM-037                | E2/E3    |
+| H-CAP-SCOPE-013-029 | La operación móvil u offline puede duplicar ejecuciones, fotos, lecturas, cierres o firmas sin idempotencia.                                  | crítica   | NEXO-DOM-031 a NEXO-DOM-038; INT-DB-008; QUEUE-ARC-001 a QUEUE-ARC-010 | E3/E5    |
+| H-CAP-SCOPE-013-030 | No está certificada la segregación entre reportar, aprobar, ejecutar, verificar, liberar, cerrar y reabrir.                                   | crítica   | NEXO-AUTH-031; NEXO-AUTH-032; AUTH-QA-001 a AUTH-QA-030                | E2/E3/E5 |
+
+---
+
+#### 28. Tareas nuevas derivadas
+
+| ID            | Tarea                                                                                                    | Bloque                         | Momento                                            |
+| ------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------- |
+| NEXO-DOM-029  | Definir jerarquía canónica de instalaciones, espacios, componentes fijos, puntos de servicio y condición | BLOQUE K — NEXO / dominio      | E2, antes del modelo de datos de instalaciones     |
+| NEXO-DOM-030  | Definir planes de mantenimiento, solicitudes, órdenes de trabajo, reparación, prueba y liberación        | BLOQUE K — NEXO / dominio      | E2-E3, antes de implementar mantenimiento locativo |
+| NEXO-DOM-031  | Definir limpieza, saneamiento, procedimientos, frecuencias, químicos, verificación y liberación          | BLOQUE K — NEXO / dominio      | E2-E3, antes de digitalizar rutinas de limpieza    |
+| NEXO-DOM-032  | Definir control de plagas, mapa, dispositivos, visitas, hallazgos, acciones y certificados               | BLOQUE K — NEXO / dominio      | E2-E3, antes de integrar proveedor de plagas       |
+| NEXO-DOM-033  | Definir servicios, medidores, lecturas, consumos, interrupciones, alertas y contingencias                | BLOQUE K — NEXO / dominio      | E2-E3, antes de automatizar consumos o alertas     |
+| NEXO-DOM-034  | Definir inspecciones físicas, plantillas versionadas, hallazgos y acciones correctivas                   | BLOQUE K — NEXO / dominio      | E2, coordinada con CAP-SCOPE-003                   |
+| NEXO-DOM-035  | Definir control metrológico, calibración, verificación, tolerancias, certificados e impacto              | BLOQUE K — NEXO / dominio      | E2-E3, antes de liberar equipos críticos           |
+| NEXO-DOM-036  | Definir llaves, credenciales físicas, zonas, custodia, entrega, devolución e incidencias                 | BLOQUE K — NEXO / dominio      | E2-E3, antes del control físico de acceso          |
+| NEXO-DOM-037  | Definir obras, adecuaciones, contratistas, permisos, afectación operativa, recepción y garantía          | BLOQUE K — NEXO / dominio      | E2-E3, antes de gestionar proyectos locativos      |
+| NEXO-DOM-038  | Definir novedades locativas, severidad, contención, escalamiento, resolución y cierre                    | BLOQUE K — NEXO / dominio      | E2, antes del diseño de bandejas y alertas         |
+| NEXO-AUTH-031 | Proteger instalaciones, mantenimiento, limpieza, inspecciones, calibración, acceso físico y obras        | BLOQUE K — NEXO / autorización | E2-E3, antes de implementar acciones               |
+| NEXO-AUTH-032 | Separar reporte, solicitud, aprobación, ejecución, verificación, liberación, cierre y reapertura         | BLOQUE K — NEXO / autorización | E2-E3, antes de pruebas integrales                 |
+| NEXO-UX-043   | Diseñar registro y mapa simple de instalaciones, espacios, condición y disponibilidad                    | BLOQUE K2 — NEXO / experiencia | E2, después de NEXO-DOM-029                        |
+| NEXO-UX-044   | Diseñar solicitudes, órdenes de trabajo, mantenimiento y reparaciones                                    | BLOQUE K2 — NEXO / experiencia | E2, después de NEXO-DOM-030                        |
+| NEXO-UX-045   | Diseñar limpieza, saneamiento, plagas y evidencia operativa por área                                     | BLOQUE K2 — NEXO / experiencia | E2, después de NEXO-DOM-031 y 032                  |
+| NEXO-UX-046   | Diseñar inspecciones, calibración, servicios, medidores y alertas                                        | BLOQUE K2 — NEXO / experiencia | E2, después de NEXO-DOM-033 a 035                  |
+| NEXO-UX-047   | Diseñar llaves, acceso físico, obras, cierres temporales y novedades                                     | BLOQUE K2 — NEXO / experiencia | E2, después de NEXO-DOM-036 a 038                  |
+| NEXO-UX-048   | Validar el prototipo con Operaciones, Producción, Limpieza, Mantenimiento, SST y responsables de sede    | BLOQUE K2 — NEXO / experiencia | E2, antes de remitir a E5                          |
+
+---
+
+#### 29. Ubicación exacta de las tareas nuevas
+
+En `docs/plan-canonico/modular/bloques/K_NEXO/01_EXTENSION_DE_DOMINIO_LPN_CONTENEDORES_ACTIVOS_Y_REUTILIZABLES.md` o su archivo modular sucesor:
+
+- agregar `NEXO-DOM-029` a `NEXO-DOM-038` después de `NEXO-DOM-028`;
+- agregar `NEXO-AUTH-031` y `NEXO-AUTH-032` después de `NEXO-AUTH-030`;
+- agregar `NEXO-UX-043` a `NEXO-UX-048` después de `NEXO-UX-042`.
+
+Si el bloque se divide antes de ejecutar estas tareas, los identificadores se conservarán y el manifiesto deberá registrar la nueva ruta.
+
+---
+
+#### 30. Requisitos de prueba generados
+
+El registro `04A` completo incorpora:
+
+```text
+TREQ-NEXO-017
+TREQ-NEXO-018
+TREQ-INTEGRATION-018
+```
+
+- `TREQ-NEXO-017` protege identidad locativa, mantenimiento, reparación, órdenes, disponibilidad y cierre.
+- `TREQ-NEXO-018` protege limpieza, plagas, servicios, inspecciones, calibración, acceso físico, obras y novedades.
+- `TREQ-INTEGRATION-018` protege la coordinación con ORIGO, NUMERA, VISO/SST, continuidad y proveedores externos.
+
+---
+
+#### 31. Dependencias principales
+
+- `CAP-SCOPE-001`: empresas, sedes, áreas y responsabilidades;
+- `CAP-SCOPE-003`: riesgos, inspecciones SST y cumplimiento;
+- `CAP-SCOPE-005`: proveedores, contratos y servicios;
+- `CAP-SCOPE-006`: insumos y existencias;
+- `CAP-SCOPE-007`: activos, mantenimiento, repuestos y calibración parcial;
+- `CAP-SCOPE-008`: calidad, inocuidad y liberación productiva;
+- `CAP-SCOPE-012`: costos, presupuestos y obligaciones;
+- `CAP-SCOPE-016`: documentos, privacidad y evidencia;
+- `CAP-SCOPE-018`: continuidad y contingencias.
+
+---
+
+#### 32. Criterios de aceptación
+
+`CAP-SCOPE-013` podrá aprobarse cuando:
+
+- las once subcapacidades estén clasificadas;
+- NEXO quede como propietaria del expediente físico y locativo;
+- activo móvil e instalación fija estén separados;
+- mantenimiento, reparación, limpieza, plagas, servicios, inspección, calibración, acceso, obra y novedad tengan ciclos explícitos;
+- ejecución externa no transfiera propiedad del registro;
+- ORIGO, NUMERA y VISO/SST tengan fronteras claras;
+- se creen tareas específicas para cada brecha;
+- los tres `TREQ` queden dentro del `04A` completo;
+- no se creen preguntas repetidas;
+- no se autorice implementación;
+- `CAP-SCOPE-014` permanezca como única continuidad inmediata.
+
+---
+
+#### 33. Lo que esta tarea no autoriza
+
+- crear tablas, RPC, migraciones o permisos;
+- iniciar mantenimientos, reparaciones, limpieza, fumigaciones o calibraciones;
+- comprar servicios o equipos;
+- entregar llaves o modificar accesos;
+- cerrar áreas o ejecutar obras;
+- subir datos personales o documentos sensibles;
+- reemplazar proveedores actuales;
+- declarar apta una instalación por la sola existencia de una pantalla;
+- iniciar `CAP-SCOPE-014`.
+
+---
+
+#### 34. Resultado y continuidad
+
+Al aprobarse quedará definida la cadena:
+
+```text
+instalación y condición
+→ plan o novedad
+→ solicitud y orden
+→ ejecución interna o externa
+→ verificación y liberación
+→ evidencia, costo y cierre
+```
+
+La continuidad será exclusivamente:
+
+```text
+CAP-SCOPE-014
+— Evaluar marketing, campañas y contenido
+```
+
+---
+
+#### 35. Estado de aprobación
+
+```text
+PROPUESTA PARA APROBACIÓN — NO APROBADA
+```
+
+No deberá marcarse como aprobada hasta que el usuario responda expresamente `APROBADO`.
+
+
 ### [ ] CAP-SCOPE-014 — Evaluar marketing, campañas y contenido
 ### [ ] CAP-SCOPE-015 — Evaluar TI, dispositivos, redes, impresión, soporte y seguridad
 ### [ ] CAP-SCOPE-016 — Evaluar privacidad, cumplimiento, documentos, conservación y auditoría
