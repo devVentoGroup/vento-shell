@@ -30,48 +30,435 @@
 
 ## 2.1 Prioridad P1 — información faltante
 
-| ID       | Pregunta                                                                            | Responsable             | Respuesta esperada                         | Estado      | Origen                        |
-| -------- | ----------------------------------------------------------------------------------- | ----------------------- | ------------------------------------------ | ----------- | ----------------------------- |
-| `ADM-01` | ¿Cuál es la dirección física completa de Oficina 1?                                 | Gerencia                | una dirección completa                     | `PENDIENTE` | `OPS-ADM-001`                 |
-| `ADM-07` | ¿Qué nombre aparece como titular del inmueble o del contrato de Oficina 1?          | Gerencia                | un nombre o `NO SÉ`                        | `PENDIENTE` | `OPS-ADM-001`                 |
-| `ADM-08` | ¿Qué nombre de empresa aparece en los documentos de Oficina 1?                      | Contabilidad            | un nombre o `NO SÉ`                        | `PENDIENTE` | `OPS-ADM-001`                 |
-| `ADM-09` | ¿A Oficina 1 llegan cartas o notificaciones dirigidas oficialmente a la empresa?    | Gerencia                | `SÍ`, `NO` o `NO SÉ`                       | `PENDIENTE` | `OPS-ADM-001`                 |
-| `GOV-13` | ¿A nombre de quién está la cuenta principal que recibe el dinero de Vento Café?     | Contabilidad            | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-14` | ¿A nombre de quién está la cuenta principal que recibe el dinero de Saudo?          | Contabilidad            | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-15` | ¿A nombre de quién está la cuenta principal que recibe el dinero de Molka?          | Contabilidad            | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-16` | ¿A nombre de quién está la cuenta principal que recibe el dinero de Vaila Vainilla? | Contabilidad            | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-17` | ¿A nombre de quién está la cuenta principal que recibe el dinero de catering?       | Contabilidad            | empresa, persona o `NO EXISTE`             | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-18` | ¿A nombre de quién está la cuenta comercial de Rappi?                               | Gerencia o Contabilidad | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-19` | ¿A nombre de quién está la cuenta comercial de Shopify?                             | Gerencia o Contabilidad | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `GOV-20` | ¿A nombre de quién está la cuenta comercial de ManyChat?                            | Gerencia o Mercadeo     | empresa o persona titular                  | `PENDIENTE` | `OPS-GOV-001`, `CAP-MAP-003`  |
-| `DAT-15` | ¿Dónde se conserva el resultado final del pago laboral?                             | Contabilidad            | archivo, aplicación, proveedor o ubicación | `PENDIENTE` | `OPS-PLAN-001`, `CAP-MAP-004` |
+### `ADM-01` — Dirección física de Oficina 1
+
+**Pregunta:** ¿Cuál es la dirección física completa de Oficina 1?  
+**Responsable:** Gerencia  
+**Respuesta esperada:** una dirección completa  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-ADM-001`
+
+**Respuesta:**  
+> 
+
+**Respondido por:**  
+> 
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `ADM-07` — Titular del inmueble o contrato
+
+**Pregunta:** ¿Qué nombre aparece como titular del inmueble o del contrato de Oficina 1?  
+**Responsable:** Gerencia  
+**Respuesta esperada:** un nombre o `NO SÉ`  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-ADM-001`
+
+**Respuesta:**  
+> El titular del inmueble es Marta la dueña del negocio de la pescadería ubicado en uno de los locales del mismo edificio. El contrato de arrendamiento está a nombre de Vento Group S.A.S.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `ADM-08` — Empresa en documentos de Oficina 1
+
+**Pregunta:** ¿Qué nombre de empresa aparece en los documentos de Oficina 1?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** un nombre o `NO SÉ`  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-ADM-001`
+
+**Respuesta:**  
+> Vento Group S.A.S.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `ADM-09` — Correspondencia oficial
+
+**Pregunta:** ¿A Oficina 1 llegan cartas o notificaciones dirigidas oficialmente a la empresa?  
+**Responsable:** Gerencia  
+**Respuesta esperada:** `SÍ`, `NO` o `NO SÉ`  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-ADM-001`
+
+**Respuesta:**  
+> SÍ
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-13` — Cuenta principal de Vento Café
+
+**Pregunta:** ¿A nombre de quién está la cuenta principal que recibe el dinero de Vento Café?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Es la cuenta corriente de Nathalia Ibarra, titular de Vento Group S.A.S., que es la empresa que factura a nombre de Vento Café.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-14` — Cuenta principal de Saudo
+
+**Pregunta:** ¿A nombre de quién está la cuenta principal que recibe el dinero de Saudo?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Jeffersson García, persona natural, es el titular de la cuenta principal que recibe el dinero de Saudo.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-15` — Cuenta principal de Molka
+
+**Pregunta:** ¿A nombre de quién está la cuenta principal que recibe el dinero de Molka?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Nathalia Ibarra, persona natural, es la titular de la cuenta principal que recibe el dinero de Molka.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-16` — Cuenta principal de Vaila Vainilla
+
+**Pregunta:** ¿A nombre de quién está la cuenta principal que recibe el dinero de Vaila Vainilla?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Depende de la facturación: si factura mediante Nathalia Ibarra, la cuenta es de ella; si factura mediante Jefersson García, la cuenta es de él; si factura mediante Vento Group S.A.S., la cuenta es de la empresa.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-17` — Cuenta principal de catering
+
+**Pregunta:** ¿A nombre de quién está la cuenta principal que recibe el dinero de catering?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** empresa, persona o `NO EXISTE`  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Vento Group S.A.S. es la titular de la cuenta principal que recibe el dinero de catering.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-18` — Cuenta comercial de Rappi
+
+**Pregunta:** ¿A nombre de quién está la cuenta comercial de Rappi?  
+**Responsable:** Gerencia o Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Vento Group S.A.S. es la titular de la cuenta comercial de Rappi.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-19` — Cuenta comercial de Shopify
+
+**Pregunta:** ¿A nombre de quién está la cuenta comercial de Shopify?  
+**Responsable:** Gerencia o Contabilidad  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Jefersson García es el titular de la cuenta comercial de Shopify.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `GOV-20` — Cuenta comercial de ManyChat
+
+**Pregunta:** ¿A nombre de quién está la cuenta comercial de ManyChat?  
+**Responsable:** Gerencia o Mercadeo  
+**Respuesta esperada:** empresa o persona titular  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-GOV-001`, `CAP-MAP-003`
+
+**Respuesta:**  
+> Vento Group S.A.S. es la titular de la cuenta comercial de ManyChat.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `DAT-15` — Resultado final del pago laboral
+
+**Pregunta:** ¿Dónde se conserva el resultado final del pago laboral?  
+**Responsable:** Contabilidad  
+**Respuesta esperada:** archivo, aplicación, proveedor o ubicación  
+**Estado:** `PENDIENTE`  
+**Origen:** `OPS-PLAN-001`, `CAP-MAP-004`
+
+**Respuesta:**  
+> Informes financieros de TNS, que incluyen el resultado final del pago laboral, se conservan en la carpeta de contabilidad de la Oficina 1 y en el correo electrónico de la contadora.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
 
 ## 2.2 Prioridad P2 — respuestas incompletas
 
-| ID       | Pregunta o comprobación                                                                                    | Responsable                | Respuesta esperada                                 | Estado          | Motivo                                                  |
-| -------- | ---------------------------------------------------------------------------------------------------------- | -------------------------- | -------------------------------------------------- | --------------- | ------------------------------------------------------- |
-| `ACT-07` | ¿Cuántas canastas de transporte existen actualmente?                                                       | Bodega u Operaciones       | un número exacto                                   | `POR_COMPLETAR` | la respuesta anterior fue `NO SÉ`                       |
-| `ACT-09` | ¿Existe algún equipo pendiente de instalar?                                                                | Operaciones                | `SÍ` o `NO`; si se desconoce, comprobar inventario | `POR_COMPLETAR` | la respuesta anterior fue `NO SÉ`                       |
-| `ACT-10` | ¿Qué equipo está pendiente de instalar?                                                                    | Operaciones                | una descripción                                    | `CONDICIONADA`  | solo se responde si `ACT-09 = SÍ`                       |
-| `DAT-16` | ¿Qué empresa externa conserva las inspecciones de seguridad y salud y dónde quedan disponibles para Vento? | Responsable SST o Gerencia | nombre de empresa + medio de acceso                | `POR_COMPLETAR` | la respuesta anterior solo indicó “una empresa externa” |
-| `DAT-22` | ¿Cuál es el nombre y la ubicación del archivo donde se registra cómo se repartieron las propinas?          | Gerencia o Contabilidad    | nombre del archivo + ubicación                     | `POR_COMPLETAR` | la respuesta anterior solo indicó “un archivo”          |
+### `ACT-07` — Cantidad de canastas
+
+**Pregunta:** ¿Cuántas canastas de transporte existen actualmente?  
+**Responsable:** Bodega u Operaciones  
+**Respuesta esperada:** un número exacto  
+**Estado:** `POR_COMPLETAR`  
+**Motivo:** la respuesta anterior fue `NO SÉ`
+
+**Respuesta:**  
+> 
+
+**Respondido por:**  
+> 
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `ACT-09` — Equipos pendientes de instalar
+
+**Pregunta:** ¿Existe algún equipo pendiente de instalar?  
+**Responsable:** Operaciones  
+**Respuesta esperada:** `SÍ` o `NO`; si se desconoce, comprobar inventario  
+**Estado:** `POR_COMPLETAR`  
+**Motivo:** la respuesta anterior fue `NO SÉ`
+
+**Respuesta:**  
+> Es equipo sobrante, no pendiente de instalar.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `ACT-10` — Descripción del equipo pendiente
+
+**Pregunta:** ¿Qué equipo está pendiente de instalar?  
+**Responsable:** Operaciones  
+**Respuesta esperada:** una descripción  
+**Estado:** `CONDICIONADA`  
+**Condición:** solo se responde si `ACT-09 = SÍ`
+
+**Respuesta:**  
+> No hay.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `DAT-16` — Empresa externa de SST
+
+**Pregunta:** ¿Qué empresa externa conserva las inspecciones de seguridad y salud y dónde quedan disponibles para Vento?  
+**Responsable:** Responsable SST o Gerencia  
+**Respuesta esperada:** nombre de empresa + medio de acceso  
+**Estado:** `POR_COMPLETAR`  
+**Motivo:** la respuesta anterior solo indicó “una empresa externa”
+
+**Respuesta:**  
+> 
+
+**Respondido por:**  
+> 
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+### `DAT-22` — Archivo de distribución de propinas
+
+**Pregunta:** ¿Cuál es el nombre y la ubicación del archivo donde se registra cómo se repartieron las propinas?  
+**Responsable:** Gerencia o Contabilidad  
+**Respuesta esperada:** nombre del archivo + ubicación  
+**Estado:** `POR_COMPLETAR`  
+**Motivo:** la respuesta anterior solo indicó “un archivo”
+
+**Respuesta:**  
+> Está en drive, solo es un excel con los nombres de los empleados y el valor que les corresponde.
+
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
 
 ## 2.3 Prioridad P3 — dato por comprobar
 
-| ID       | Pregunta                                           | Responsable            | Respuesta esperada                | Estado          | Motivo                                               |
-| -------- | -------------------------------------------------- | ---------------------- | --------------------------------- | --------------- | ---------------------------------------------------- |
-| `DAT-02` | ¿Cuál es la fecha más antigua disponible en Makos? | Administrador de Makos | fecha exacta o al menos mes y año | `POR_COMPROBAR` | la respuesta anterior indicó “desde febrero” sin año | desde mayo de este año |
+### `DAT-02` — Fecha más antigua disponible en Makos
 
-## 2.4 Formato de respuesta
+**Pregunta:** ¿Cuál es la fecha más antigua disponible en Makos?  
+**Responsable:** Administrador de Makos  
+**Respuesta esperada:** fecha exacta o al menos mes y año  
+**Estado:** `POR_COMPROBAR`  
+**Motivo:** la respuesta anterior indicó “desde febrero” sin año
 
-```text
-ADM-01: [dirección completa]
-GOV-13: [titular de la cuenta]
-ACT-07: [número exacto]
-DAT-02: [mes y año o fecha exacta]
-```
+**Respuesta:**  
+> Febrero de 2026
 
-Se admiten `NO EXISTE`, `NO APLICA`, `NO TENGO ACCESO` o `NO SÉ`. Sin embargo, `NO SÉ` no cierra la pregunta: la mueve a comprobación o asignación a otra persona.
+**Respondido por:**  
+> Carlos Ibarra
+
+**Fecha:**  
+> 
+
+**Evidencia u observación:**  
+> 
+
+---
+
+## 2.4 Reglas para diligenciar
+
+1. Escribir la respuesta directamente debajo de **Respuesta**.
+2. Identificar a la persona o cargo en **Respondido por**.
+3. Registrar la fecha en formato `AAAA-MM-DD`.
+4. Usar **Evidencia u observación** para indicar documento, archivo, captura, enlace, ubicación o aclaración.
+5. Se admiten `NO EXISTE`, `NO APLICA`, `NO TENGO ACCESO` o `NO SÉ`. `NO SÉ` no cierra la pregunta: la mueve a comprobación o asignación a otra persona.
 
 ---
 
