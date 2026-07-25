@@ -18,17 +18,17 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **129** |
-| Tareas canónicas con marcador | **1518** |
+| Tareas canónicas con marcador | **1539** |
 | Tareas `AUTH` únicas | **316** |
 | Tareas aprobadas | **199** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1319** |
+| Tareas no iniciadas | **1340** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros** |
-| Tarea actual | **CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación** |
+| Tarea actual | **CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación** |
 | Estado de la tarea actual | **NO INICIADA** |
 | Siguiente tarea | **CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
@@ -40,7 +40,7 @@
 | Estado          | Valor                                                                                        |
 | --------------- | -------------------------------------------------------------------------------------------- |
 | Última aprobada | `CAP-SCOPE-017` — Evaluar analítica, indicadores y datos maestros |
-| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, respaldo y recuperación — **NO INICIADA** |
+| Tarea actual | `CAP-SCOPE-018` — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación — **NO INICIADA** |
 | Siguiente tarea | `CAP-SCOPE-019` — Aprobar clasificación y propietario de cada dominio evaluado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                           |
 
@@ -90,7 +90,7 @@
 CAP-SCOPE-017 — Evaluar analítica, indicadores y datos maestros
         ↓
 TAREA ACTUAL
-CAP-SCOPE-018 — Evaluar continuidad operativa, respaldo y recuperación
+CAP-SCOPE-018 — Evaluar continuidad operativa, contingencia, incidentes, respaldo y recuperación
         ↓
 SIGUIENTE TAREA RESERVADA
 CAP-SCOPE-019 — Aprobar clasificación y propietario de cada dominio evaluado
