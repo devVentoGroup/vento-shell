@@ -215,7 +215,44 @@ FASE 4 — HABILITADORES TRANSVERSALES
 31. BLOQUE P — Dispositivos compartidos
 32. BLOQUE Q — Simulación estricta
 32A. BLOQUE Z — Tecnología y soporte como habilitador transversal
+
+Secuencia interna recomendada:
+
+```text
+TI-DOM-001 a TI-DOM-013
+→ TI-AUTH-001 a TI-AUTH-004
+→ TI-UX-001 a TI-UX-006
+→ TI-INT-001 a TI-INT-003
+```
+
+Reglas:
+
+- el modelo operativo, los recursos y los ciclos se definen antes de la experiencia;
+- la autorización precede accesos privilegiados, soporte remoto y configuración sensible;
+- red, dispositivos, impresión y soporte mínimos deberán estar listos antes de los pilotos que dependan de ellos;
+- el BLOQUE Z no sustituye AUTH-DEV, PRINT-ARC, BLOQUE T, BLOQUE X ni continuidad.
+
 32B. BLOQUE AA — Gobierno de información como habilitador transversal
+
+Secuencia interna recomendada:
+
+```text
+INFO-DOM-001
+→ INFO-DOM-002 e INFO-DOM-003
+→ INFO-DOM-004 a INFO-DOM-013
+→ INFO-AUTH-001 a INFO-AUTH-004
+→ INFO-UX-001 a INFO-UX-006
+→ INFO-INT-001 a INFO-INT-003
+```
+
+Reglas:
+
+- inventario, responsables y finalidades se definen primero;
+- clasificación y taxonomía preceden bibliotecas, búsquedas y exportaciones;
+- INFO-DOM-006 deberá aprobarse antes de eliminación o disposición automatizada;
+- INFO-DOM-008 e INFO-DOM-009 deberán aprobarse antes de ampliar el tratamiento de datos personales;
+- eliminar una cuenta no autoriza eliminar expedientes sujetos a conservación.
+
 32C. BLOQUE AB — Analítica, indicadores y datos maestros como habilitador transversal
 
 Secuencia interna recomendada:
@@ -229,6 +266,18 @@ DATA-DOM-001 a DATA-DOM-003
 → DATA-UX-001 a DATA-UX-008
 → DATA-INT-001 a DATA-INT-004
 ```
+
+Reglas:
+
+- cada dominio conserva su fuente de verdad y el BLOQUE AB no crea una tabla maestra universal;
+- DATA-DOM-001 a DATA-DOM-003 preceden fusiones, migraciones y crosswalks;
+- DATA-DOM-004 precede la declaración de cualquier KPI oficial;
+- DATA-DOM-006 y DATA-DOM-007 preceden la certificación de reportes;
+- ninguna pantalla podrá definir una fórmula local competidora;
+- señal, hipótesis, correlación y causa confirmada deberán permanecer separadas;
+- una acción de mejora no se cerrará sin comprobar resultados;
+- DATA-INT-004 precede el envío de datos a BI, hojas externas o inteligencia artificial;
+- la inteligencia artificial actúa como asistente y no como autoridad empresarial.
 
 
 AUTH-UI-040 a AUTH-UI-051 implementa:
@@ -319,7 +368,7 @@ FASE 5 — NEXO
 
 33. Consumir la matriz E1 y auditar implementación real de NEXO
 34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística
-35. Ejecutar SUBBLOQUE K2 completo, incluidas NEXO-DOM-019 a NEXO-DOM-028 y NEXO-UX-026 a NEXO-UX-042
+35. Ejecutar SUBBLOQUE K2 completo, incluidas NEXO-DOM-019 a NEXO-DOM-038, NEXO-AUTH-021 a NEXO-AUTH-032 y NEXO-UX-026 a NEXO-UX-048
 36. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor, dispositivo y subdominio
 37. Aprobar paquetes E5 de NEXO con archivos, datos, autorización, eventos, impresión, pruebas y rollback
 38. Implementar funcionalidad, pantallas, acciones, datos, autorización, contratos y seguridad de NEXO
