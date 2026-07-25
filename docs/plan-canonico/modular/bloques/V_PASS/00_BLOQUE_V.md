@@ -23,6 +23,9 @@ operational_role_permissions
 ### [ ] PASS-UX-008 — Diseñar perfil del cliente
 ### [ ] PASS-UX-009 — Diferenciar estado pendiente, usado y cancelado
 ### [ ] PASS-UX-010 — Definir mensajes de error comprensibles
+### [ ] PASS-UX-011 — Consolidar navegación y rutas canónicas de la experiencia cliente
+### [ ] PASS-UX-012 — Simplificar interfaz móvil, estados de carga, error, offline y recuperación
+### [ ] PASS-UX-013 — Ejecutar pruebas con clientes reales
 ### [ ] PASS-INT-001 — Definir integración PULSO → PASS para acumulación
 ### [ ] PASS-INT-002 — Definir integración PULSO → PASS para redención
 ### [ ] PASS-INT-003 — Definir administración laboral de productos de fidelización
@@ -30,4 +33,3 @@ operational_role_permissions
 ### [ ] PASS-INT-005 — Evitar mezclar identidad cliente y trabajador
 ### [ ] PASS-QA-001 — Probar flujo completo de acumulación
 ### [ ] PASS-QA-002 — Probar flujo completo de redención
-
