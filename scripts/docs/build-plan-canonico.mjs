@@ -20,6 +20,17 @@ function maskFencedCode(source) {
   }).join('\n');
 }
 
+function listMarkdownFiles(directory) {
+  if (!fs.existsSync(directory)) return [];
+
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) return listMarkdownFiles(fullPath);
+    if (!entry.isFile() || !entry.name.endsWith('.md')) return [];
+    return [path.relative(baseDir, fullPath).replaceAll('\\', '/')];
+  });
+}
+
 try {
   syncPlanContinuity({ root, checkOnly });
 } catch (error) {
@@ -32,6 +43,14 @@ if (!Array.isArray(manifest.files) || manifest.files.length === 0) fail('manifes
 
 const duplicatePaths = manifest.files.filter((file, index, all) => all.indexOf(file) !== index);
 if (duplicatePaths.length) fail(`rutas duplicadas en manifest.json: ${[...new Set(duplicatePaths)].join(', ')}`);
+
+const manifestPaths = new Set(manifest.files);
+const orphanFragments = listMarkdownFiles(path.join(baseDir, 'bloques'))
+  .filter((relativePath) => !relativePath.endsWith('/README.md'))
+  .filter((relativePath) => !manifestPaths.has(relativePath));
+if (orphanFragments.length) {
+  fail(`fragmentos Markdown fuera de manifest.json: ${orphanFragments.join(', ')}`);
+}
 
 let compiled = '';
 for (const relativePath of manifest.files) {
