@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **188** |
+| Tareas aprobadas | **189** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1213** |
+| Tareas no iniciadas | **1212** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN** |
-| Tarea actual | **CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento** |
+| Última tarea aprobada | **CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento** |
+| Tarea actual | **CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad** |
+| Siguiente tarea | **CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 63 de 96 aprobadas; CAP-SCOPE-007 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 64 de 96 aprobadas; CAP-SCOPE-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-006` — Evaluar inventario, lotes, vencimientos, LOC y LPN |
-| Tarea actual | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad |
+| Última aprobada | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento |
+| Tarea actual | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **63 DE 96 APROBADAS — ACTUAL CAP-SCOPE-007** |
+| BLOQUE E1 | **64 DE 96 APROBADAS — ACTUAL CAP-SCOPE-008** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
-        ↓
-TAREA ACTUAL
 CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
         ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 63 de 96 tareas aprobadas
+BLOQUE E1 — 64 de 96 tareas aprobadas
 ```

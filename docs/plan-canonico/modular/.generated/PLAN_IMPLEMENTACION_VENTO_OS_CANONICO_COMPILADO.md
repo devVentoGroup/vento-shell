@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **126** |
 | Tareas canónicas con marcador | **1401** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **188** |
+| Tareas aprobadas | **189** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1213** |
+| Tareas no iniciadas | **1212** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                 |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN** |
-| Tarea actual | **CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento** |
+| Última tarea aprobada | **CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento** |
+| Tarea actual | **CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad** |
+| Siguiente tarea | **CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos** |
 | Bloque actual | **BLOQUE E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación** |
-| Progreso del bloque | **BLOQUE E1: 63 de 96 aprobadas; CAP-SCOPE-007 pendiente** |
+| Progreso del bloque | **BLOQUE E1: 64 de 96 aprobadas; CAP-SCOPE-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                       |
 | --------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última aprobada | `CAP-SCOPE-006` — Evaluar inventario, lotes, vencimientos, LOC y LPN |
-| Tarea actual | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento — **NO INICIADA** |
-| Siguiente tarea | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad |
+| Última aprobada | `CAP-SCOPE-007` — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento |
+| Tarea actual | `CAP-SCOPE-008` — Evaluar producción, planificación, rendimiento, calidad e inocuidad — **NO INICIADA** |
+| Siguiente tarea | `CAP-SCOPE-009` — Evaluar ventas, pedidos, mesas, comandas, caja y pagos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                          |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                              |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E1 | **63 DE 96 APROBADAS — ACTUAL CAP-SCOPE-007** |
+| BLOQUE E1 | **64 DE 96 APROBADAS — ACTUAL CAP-SCOPE-008** |
 | Implementación física             | **NO INICIADA**                            |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-CAP-SCOPE-006 — Evaluar inventario, lotes, vencimientos, LOC y LPN
-        ↓
-TAREA ACTUAL
 CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
         ↓
+SIGUIENTE TAREA RESERVADA
+CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E1 — 63 de 96 tareas aprobadas
+BLOQUE E1 — 64 de 96 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183462,12 +183462,12 @@ Dominios iniciales:
 
 | Métrica | Resultado |
 | --- | ---: |
-| Requisitos vigentes | **92** |
+| Requisitos vigentes | **95** |
 | Dominios con requisitos | **14** |
-| Filas con catorce columnas | **92 de 92** |
+| Filas con catorce columnas | **95 de 95** |
 | Identificadores duplicados | **0** |
 | Relaciones `TREQ-*` no resolubles | **0** |
-| Última tarea incorporada | `CAP-SCOPE-005` |
+| Última tarea incorporada | `CAP-SCOPE-006` |
 | Fecha de normalización | `2026-07-24` |
 
 Distribución vigente:
@@ -183479,14 +183479,14 @@ Distribución vigente:
 | `SUPABASE` | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-012` | 12 |
 | `ANIMA` | `TREQ-ANIMA-001` a `TREQ-ANIMA-004` | 4 |
 | `VISO` | `TREQ-VISO-001` | 1 |
-| `NEXO` | `TREQ-NEXO-001` a `TREQ-NEXO-010` | 10 |
+| `NEXO` | `TREQ-NEXO-001` a `TREQ-NEXO-012` | 12 |
 | `FOGO` | `TREQ-FOGO-001` a `TREQ-FOGO-002` | 2 |
 | `ORIGO` | `TREQ-ORIGO-001` a `TREQ-ORIGO-005` | 5 |
 | `PULSO` | `TREQ-PULSO-001` a `TREQ-PULSO-004` | 4 |
 | `NUMERA` | `TREQ-NUMERA-001` | 1 |
 | `PASS` | `TREQ-PASS-001` a `TREQ-PASS-009` | 9 |
 | `TALENTO` | `TREQ-TALENTO-001` | 1 |
-| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-010` | 10 |
+| `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-011` | 11 |
 | `UX` | `TREQ-UX-001` a `TREQ-UX-007` | 7 |
 
 ### Procedimiento obligatorio de actualización
@@ -183583,6 +183583,8 @@ Distribución vigente:
 | `TREQ-NEXO-008` | `NEXO` | Ningún producto podrá participar en una operación de inventario aplicando silenciosamente semántica predeterminada por ausencia de SKU o perfil canónico; toda excepción transitoria deberá ser identificable, auditable, regularizable y protegida por pruebas de paridad. | `CODE-AUD-013` / `H-CODE-013-008` y `H-CODE-013-009` | Cantidades interpretadas con una modalidad incorrecta, pérdidas de trazabilidad, duplicidad de productos, despacho erróneo y permanencia indefinida de datos sin regularizar / alta | contractual + base de datos + migración + regresión / automatizada con validación controlada de datos | `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos` | Pendiente de asignación en E5 y en el roadmap ejecutable de transición de Supabase | `vento-nexo` y `vento-shell` / local, CI, staging y Supabase remoto pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | Relacionado con `TREQ-NEXO-002` y `TREQ-NEXO-006` |
 | `TREQ-NEXO-009` | `NEXO` | La capacidad de una sede y área para solicitar, preparar, despachar, transportar o recibir remisiones deberá resolverse mediante una jerarquía canónica única y reutilizable; capacidades explícitas, reglas globales, overrides, contexto, permisos y fallbacks deberán producir la misma decisión en interfaz y servidor. | `CODE-AUD-014` / `H-CODE-014-006` | Sedes habilitadas o bloqueadas incorrectamente, productos visibles que no pueden guardarse, ampliación silenciosa de alcance y diferencias entre trabajador y dispositivo compartido / crítica | contractual + autorización + integración + E2E + regresión / automatizada con validación operativa | `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión` | Pendiente de asignación en el paquete NEXO de remisiones y E5 | `vento-nexo` y `vento-shell` / local, CI, staging, tablet y estación compartida pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `NEXO-UX-010` a `NEXO-UX-013`; `NEXO-AUTH-029`; relacionado con `TREQ-NEXO-006` y `TREQ-NEXO-007` |
 | `TREQ-NEXO-010` | `NEXO` | Para un mismo producto, sede, presentación y operación, todos los consumidores deberán resolver de forma equivalente la unidad de stock, unidad de entrada, factor de conversión, modalidad de medición, tolerancia, disponibilidad y política de solicitud; ningún flujo podrá inventar una precedencia o fallback incompatible. | `CODE-AUD-014` / `H-CODE-014-007` y `H-CODE-014-008` | Cantidades convertidas de forma distinta, presentaciones inconsistentes, stock incorrecto, productos aceptados en una pantalla y rechazados en otra y pérdida de trazabilidad de unidades / crítica | contractual + integración + base de datos + regresión + E2E / automatizada con validación operativa | `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras` | Pendiente de asignación en E3, paquete de contratos de producto y E5 | `vento-nexo`, `vento-shell`, `vento-fogo` y `vento-origo` / local, CI, staging y Supabase remoto pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Pendiente | `CAP-SCOPE-004`; `CAP-SCOPE-006`; relacionado con `TREQ-NEXO-008` |
+| `TREQ-NEXO-011` | `NEXO` | El inventario deberá conservar una fuente canónica de movimientos y proyecciones reconciliables para sede, LOC, posición, presentación, lote, LPN y estado. Cantidad física, reservada, disponible, en tránsito, cuarentena, dañada, vencida y perdida serán estados o componentes diferenciados. Toda entrada, ubicación, reserva, consumo, salida, traslado, remisión, conteo o ajuste se ejecutará atómicamente o con idempotencia y compensación verificables. Ninguna cantidad podrá contabilizarse simultáneamente como stock suelto y contenido de LPN, ni modificarse en una proyección sin movimiento correlacionado. El conteo será una observación; la diferencia se investigará y el ajuste requerirá decisión autorizada y movimiento compensatorio. Los reintentos, concurrencia y operación offline no producirán saldo negativo no autorizado, sobreasignación, doble movimiento ni pérdida de la intención original. | `CAP-SCOPE-006`; `CAP-06.01` a `CAP-06.13`; `H-CAP-SCOPE-006-001` a `H-CAP-SCOPE-006-014`; `H-CAP-SCOPE-006-019`; `TREQ-SUPABASE-002`; `TREQ-NEXO-004`; `TREQ-NEXO-006`; `TREQ-NEXO-010` | saldos irreconciliables, doble contabilización, reservas sobreasignadas, stock disponible incorrecto, conteos destructivos, movimientos duplicados y cantidades negativas no autorizadas / crítica | contractual + base de datos + concurrencia + idempotencia + autorización + offline + E2E + regresión / automatizada con validación operativa | `NEXO-UX-014` a `NEXO-UX-022`; `NEXO-UX-026` a `NEXO-UX-029`; `NEXO-AUTH-011` a `NEXO-AUTH-013`; `NEXO-AUTH-021` a `NEXO-AUTH-030`; `NEXO-DOM-002` a `NEXO-DOM-007`; `NEXO-DOM-019` a `NEXO-DOM-024`; `SUPA-AUD-018`; `SUPA-AUD-019`; `SUPA-ARC-003`; `SUPA-ARC-005`; `SUPA-ARC-006`; `SUPA-ARC-012` a `SUPA-ARC-014`; `PROC-CAT-002`; `PROC-CAT-009` a `PROC-CAT-018`; `UX-QA-024` | diseño E2 de inventario; arquitectura E3 de ledger, proyecciones y LPN; paquete E5 NEXO; certificación del BLOQUE U | `vento-nexo`, `vento-shell` / Supabase local, CI, staging, tablets, kioscos, escáneres y operación física controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-006`; implementación actual de stock por sede/LOC/posición/presentación; movimientos, conteos, ajustes, remisiones y fragmentos LPN; hallazgo de atomicidad no demostrada | `TREQ-NEXO-002`; `TREQ-NEXO-004`; `TREQ-NEXO-006`; `TREQ-NEXO-008`; `TREQ-NEXO-009`; `TREQ-NEXO-010`; `TREQ-SUPABASE-002`; `TREQ-SUPABASE-012`; `TREQ-UX-005`; `TREQ-UX-006` |
+| `TREQ-NEXO-012` | `NEXO` | Todo producto sujeto a trazabilidad deberá conservar lote o serial, origen, fecha relevante, estado de liberación, vencimiento o vida útil, ubicación, cantidad y condición. FEFO solo podrá seleccionar existencia liberada y utilizable. La cuarentena, daño, pérdida, vencimiento, devolución, disposición y liberación serán transiciones auditables que no borran la existencia ni su costo histórico. Los LOC y productos sujetos a frío u otra condición deberán relacionarse con rangos versionados, lecturas con fuente y calidad, excursiones, evaluación, contingencia y decisión final. Una lectura faltante o fuera de rango no liberará ni descartará automáticamente; generará un caso pendiente según política. Lotes, condiciones y contenido dentro de LPN conservarán la misma trazabilidad al empacar, mover, dividir, unir o desempacar. | `CAP-SCOPE-006`; `CAP-06.02`; `CAP-06.14`; `CAP-06.15`; `H-CAP-SCOPE-006-006`; `H-CAP-SCOPE-006-015` a `H-CAP-SCOPE-006-017`; `NEXO-DOM-023`; `CAP-SCOPE-003`; `CAP-SCOPE-008`; `CAP-SCOPE-013` | consumo de producto vencido o no liberado, pérdida de origen de lote, cadena de frío no demostrable, disposición sin autorización y trazabilidad rota dentro de LPN / crítica | contractual + inocuidad + base de datos + sensores + evidencia + autorización + E2E + regresión / automatizada con validación física y documental | `NEXO-DOM-010`; `NEXO-DOM-017`; `NEXO-DOM-023`; `NEXO-DOM-024`; `NEXO-UX-014`; `NEXO-UX-022`; `NEXO-UX-027` a `NEXO-UX-029`; `PROC-CAT-002`; `PROC-CAT-009` a `PROC-CAT-018`; `CAP-SCOPE-003`; `CAP-SCOPE-008`; `CAP-SCOPE-013`; `CAP-SCOPE-015`; `CAP-SCOPE-018`; `EVID-ARC-001` a `EVID-ARC-010` | diseño E2 de lotes, condición y frío; arquitectura E3/E4; paquetes E5 NEXO/FOGO y servicios de condición; certificación del BLOQUE U | `vento-nexo`, `vento-fogo`, `vento-shell`, sensores o captura manual / Supabase local, CI, staging, cámaras frías, congelación y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-006`; campos parciales de lote y vencimiento; zonas frías reales; preguntas `OPE-01`; ausencia de ciclo integral comprobado de condición y excursión | `TREQ-NEXO-003`; `TREQ-NEXO-004`; `TREQ-NEXO-010`; `TREQ-FOGO-001`; `TREQ-FOGO-002`; `TREQ-INTEGRATION-008`; `TREQ-SUPABASE-004`; `TREQ-UX-004`; `TREQ-UX-006` |
 
 #### FOGO
 
@@ -183650,6 +183652,7 @@ Distribución vigente:
 | `TREQ-INTEGRATION-008` | `INTEGRATION` | El ciclo SST deberá conservar propiedad única e integración trazable entre ANIMA, VISO, NEXO, FOGO, SHELL y fuentes externas. Un reporte creado desde cualquier canal producirá un solo expediente con identificador estable; el reporte original no se sobrescribirá. Las incidencias de asistencia no se convertirán ni contarán como incidentes SST sin relación explícita. Reintentos, cola offline y eventos repetidos no duplicarán casos, inspecciones, acciones, entregas de EPP, alertas ni evidencia. Toda investigación, hallazgo y acción conservará correlación con su origen. NEXO confirmará hechos físicos de EPP sin decidir la necesidad preventiva; FOGO emitirá hechos de higiene o inocuidad sin apropiarse del expediente SST. Las decisiones o certificados externos conservarán fuente y alcance. El cierre de una acción requerirá evidencia y verificación de eficacia, y los consumidores deberán converger al mismo estado sin copias editables competidoras. | `CAP-SCOPE-003`; `CAP-03.03` a `CAP-03.10`; `H-CAP-SCOPE-003-003`; `H-CAP-SCOPE-003-006`; `H-CAP-SCOPE-003-008`; `H-CAP-SCOPE-003-013`; `H-CAP-SCOPE-003-014`; `BKL-FUNC-003` | expedientes duplicados, incidentes mal clasificados, acciones huérfanas, EPP sin trazabilidad, evidencia divergente, sincronización offline repetida y cierre aparente / crítica | contractual + integración + idempotencia + offline + concurrencia + eventos + E2E + regresión / automatizada con validación operativa y documental | `PROC-CAT-009` a `PROC-CAT-018`; `PROC-ACTOR-003`; `UX-ADMIN-001` a `UX-ADMIN-005`; `NEXO-DOM-008` a `NEXO-DOM-011`; `NEXO-DOM-017`; `NEXO-DOM-026`; `CAP-SCOPE-008`; `CAP-SCOPE-013`; `CAP-SCOPE-018`; `INT-EXT-001` a `INT-EXT-019`; `AUTH-QA-026`; `AUTH-QA-027`; `AUTH-QA-029`; `AUTH-QA-030` | diseño E2 del proceso SST; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 VISO/ANIMA/NEXO/FOGO/SHELL; certificación del BLOQUE U | `vento-viso`, `vento-anima`, `vento-nexo`, `vento-fogo`, `vento-shell` / Supabase local, CI, staging, red intermitente, dispositivo compartido y simulación de fuentes externas | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-003`; semántica actual de incidencias de asistencia; estructuras parciales de inventario y evidencia; requisitos offline existentes | `TREQ-ANIMA-003`; `TREQ-ANIMA-004`; `TREQ-AUTH-017`; `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-007`; `TREQ-SUPABASE-004`; `TREQ-UX-005`; `TREQ-VISO-001` |
 | `TREQ-INTEGRATION-009` | `INTEGRATION` | PULSO deberá ser la fuente interna de menú, oferta y disponibilidad comercial; PASS, VISO y canales externos consumirán una publicación versionada y no mantendrán catálogos editables competidores. Cada ítem conservará producto o variante canónicos, sede, canal, vigencia, configuración vendible, referencia de precio y causa de disponibilidad. Stock, capacidad productiva, horario, calidad y override manual se conservarán como señales diferenciadas. Todo override tendrá actor, motivo y expiración. Los cambios deberán invalidar caché, propagarse y conciliarse sin publicar versiones mezcladas. Cada identificador externo se mapeará de forma explícita a producto, presentación y receta cuando aplique; una línea sin mapeo quedará en cuarentena sin producir efectos automáticos de inventario, costo o fidelización. | `CAP-SCOPE-004`; `CAP-04.07`; `CAP-04.08`; `CAP-04.10`; `H-CAP-SCOPE-004-008` a `H-CAP-SCOPE-004-010`; `H-CAP-SCOPE-004-012` a `H-CAP-SCOPE-004-014`; `H-CAP-SCOPE-004-016`; `INT-POS-011`; `BKL-FUNC-004` | menús divergentes, venta de producto incorrecto o no disponible, advertencias desactualizadas, doble catálogo, mapeos externos erróneos y efectos automáticos sobre una línea no identificada / crítica | contractual + integración + caché + eventos + idempotencia + conciliación + E2E + regresión / automatizada con validación en POS, móvil y canales | `PULSO-UX-001`; `PULSO-UX-021`; `PASS-UX-001`; `INT-POS-011`; `INT-POS-012`; `INT-POS-020`; `SHELL-CON-016`; `INT-APP-010`; `INT-DB-008`; `UX-QA-027`; `UX-QA-029` | diseño E2 de menú y oferta; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 PULSO y PASS; integración del POS externo; certificación del BLOQUE U | `vento-pulso`, `vento-pass`, `vento-viso`, `vento-shell` y sistemas externos / CI, staging, terminal POS, Android, iOS y canales controlados | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-004`; superficies actuales de menú y oferta; mapeo futuro `INT-POS-011`; hallazgos de fuentes competidoras | `TREQ-PASS-004`; `TREQ-PASS-006`; `TREQ-INTEGRATION-001`; `TREQ-INTEGRATION-006`; `TREQ-SUPABASE-012`; `TREQ-UX-005` |
 | `TREQ-INTEGRATION-010` | `INTEGRATION` | La cadena de abastecimiento deberá conservar correlación única desde la señal de demanda y solicitud de ORIGO hasta la orden aprobada, recepción empresarial, inspección, entrada física de NEXO y hecho económico de NUMERA. ORIGO será fuente de la compra y recepción; NEXO será fuente de stock, LOC, lote, vencimiento, condición, entrada y devolución física; NUMERA o el sistema financiero aprobado será fuente de la obligación y conciliación. Recepciones totales, parciales, diferencias, servicios, devoluciones, respuestas perdidas y reintentos deberán converger sin crear una segunda recepción, volver a sumar inventario, duplicar costos o emitir dos hechos económicos. Los fallos parciales quedarán pendientes y reconciliables. Una compra de servicio utilizará aceptación y evidencia sin crear stock. Toda compensación conservará relación con la operación original. | `CAP-SCOPE-005`; `CAP-05.08` a `CAP-05.10`; `H-CAP-SCOPE-005-011` a `H-CAP-SCOPE-005-014`; `H-CAP-SCOPE-005-017`; `INT-PROC-001` a `INT-PROC-005` | recepción o inventario duplicados, orden cerrada incorrectamente, stock sin recepción, servicios convertidos en inventario, costos u obligaciones dobles y diferencias imposibles de conciliar / crítica | contractual + integración + RPC + base de datos + concurrencia + idempotencia + compensación + E2E + regresión / automatizada con validación operativa y contable | `INT-PROC-001` a `INT-PROC-005`; `ORIGO-UX-009` a `ORIGO-UX-015`; `ORIGO-AUTH-007`; `ORIGO-AUTH-008`; `NEXO-UX-014`; `NUMERA-DOM-003`; `NUMERA-DOM-014`; `NUMERA-UX-018`; `INT-APP-010`; `INT-DB-005` a `INT-DB-008`; `UX-QA-026`; `UX-QA-028` | diseño E2 de recepción; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 ORIGO/NEXO/NUMERA; certificación del BLOQUE U | `vento-origo`, `vento-nexo`, `vento-numera`, `vento-shell` / Supabase local, CI, staging, recepción operativa y conciliación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-005`; enlace actual ORIGO → NEXO; recepción parcial y diferencias pendientes; contratos `INT-PROC-*`; requisito atómico previo de recepción | `TREQ-ORIGO-001`; `TREQ-ORIGO-003`; `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-006`; `TREQ-SUPABASE-002`; `TREQ-NUMERA-001`; `TREQ-UX-005` |
+| `TREQ-INTEGRATION-011` | `INTEGRATION` | Todo hecho externo que produzca un efecto de inventario deberá atravesar un contrato correlacionado e idempotente hacia NEXO. La recepción de ORIGO, el consumo y producto terminado de FOGO, la venta, anulación o devolución de PULSO o POS externo, y el despacho o recepción de una remisión deberán producir el movimiento físico exactamente una vez. Cada frontera conservará source_system, source_event_id, documento, línea, versión, cantidad, unidad, lote, ubicación, actor y estado de aplicación. Una respuesta perdida, reintento, evento fuera de orden, parcialidad o fallo posterior no podrá duplicar stock, cerrar incorrectamente el proceso ni ocultar una operación pendiente. Las compensaciones conservarán relación con el evento original y la conciliación detectará eventos sin efecto, efectos sin evento, diferencias de cantidad y estados incompatibles. | `CAP-SCOPE-006`; `CAP-06.03`; `CAP-06.07` a `CAP-06.11`; `H-CAP-SCOPE-006-009` a `H-CAP-SCOPE-006-012`; `INT-PROC-001` a `INT-PROC-005`; `INT-PROD-001` a `INT-PROD-005`; `INT-POS-011` a `INT-POS-020`; `INT-SALES-001` a `INT-SALES-011` | inventario duplicado o ausente, recepción o lote cerrados incorrectamente, venta sin salida, producción sin consumo, remisión sin efecto y compensaciones imposibles de conciliar / crítica | contractual + integración + eventos + RPC + concurrencia + idempotencia + compensación + E2E + regresión / automatizada con validación operativa | `INT-PROC-001` a `INT-PROC-005`; `INT-PROD-001` a `INT-PROD-005`; `INT-POS-011` a `INT-POS-020`; `INT-SALES-001` a `INT-SALES-011`; `NEXO-UX-009` a `NEXO-UX-017`; `ORIGO-UX-009` a `ORIGO-UX-015`; `FOGO-UX-012`; `FOGO-UX-013`; `INT-APP-010`; `INT-DB-005` a `INT-DB-008`; `AUTH-QA-026`; `AUTH-QA-027`; `UX-QA-024` a `UX-QA-026`; `UX-QA-028` | diseño E2 de procesos; contratos BLOQUE X; arquitectura E3/E4; paquetes E5 ORIGO/FOGO/NEXO/PULSO; certificación del BLOQUE U | `vento-origo`, `vento-fogo`, `vento-nexo`, `vento-pulso`, `vento-shell` y adaptador POS / Supabase local, CI, staging y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | decisiones de `CAP-SCOPE-006`; integraciones parciales documentadas; efectos de remisión desactivables; contratos `INT-*`; requisitos previos de recepción, producción y ventas | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-006`; `TREQ-INTEGRATION-009`; `TREQ-INTEGRATION-010`; `TREQ-NEXO-006`; `TREQ-FOGO-001`; `TREQ-ORIGO-003`; `TREQ-PULSO-001`; `TREQ-SUPABASE-002`; `TREQ-UX-005` |
 
 #### UX
 
@@ -192221,7 +192224,1297 @@ CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos
 ```
 
 
-### [ ] CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
+### ✅ CAP-SCOPE-007 — Evaluar activos, vajilla, decoración, herramientas, repuestos y mantenimiento
+
+**Estado:** APROBADA  
+**Bloque:** E1 — Descubrimiento integral de operación, capacidades y cobertura de implementación  
+**Dependencia cumplida:** `CAP-SCOPE-006` aprobada  
+**Tarea anterior:** `CAP-SCOPE-006`  
+**Siguiente tarea reservada:** `CAP-SCOPE-008`  
+**Familia evaluada:** `CAP-07 — Gestionar activos, equipos y elementos reutilizables`  
+**Naturaleza:** decisión de cobertura empresarial y definición conceptual objetivo  
+**Implementación técnica:** no autorizada  
+**Migraciones o cambios en Supabase:** no autorizados  
+**Movimientos, préstamos, conteos, mantenimientos, reparaciones, bajas o disposiciones reales:** no autorizados  
+**Requisitos de prueba generados:** `TREQ-NEXO-013`, `TREQ-NEXO-014`, `TREQ-NEXO-015`, `TREQ-INTEGRATION-012`  
+**Actualización del registro de pruebas:** se entrega el archivo `04A` completo regenerado; quedan prohibidas las filas sueltas
+
+---
+
+#### 1. Propósito
+
+Definir el tratamiento objetivo de las capacidades mediante las cuales Vento Group deberá:
+
+- identificar activos individuales, modelos o tipos de activo y reutilizables controlados por cantidad;
+- distinguir activo, inventario consumible, repuesto, herramienta, vajilla, decoración, kit, contenedor, LPN y vehículo;
+- registrar ubicación, custodia, responsable operativo, usuario, propietario y centro de costo como dimensiones independientes;
+- controlar entrega, préstamo, devolución, transferencia, tránsito y tenencia por terceros;
+- contar activos individuales y familias por cantidad sin sobrescribir la observación original;
+- registrar condición, disponibilidad, daño, pérdida, faltante, hallazgo y recuperación mediante eventos auditables;
+- planear y ejecutar mantenimiento preventivo, correctivo, inspección, limpieza técnica y calibración;
+- relacionar reparación con diagnóstico, mano de obra, proveedor, repuestos, costo, indisponibilidad y prueba de retorno al servicio;
+- controlar garantías, seguros, documentos y reclamaciones sin asumir vigencia por la sola existencia de un archivo;
+- gestionar baja, venta, descarte, reemplazo y disposición sin borrar identidad ni historia;
+- representar kits y conjuntos con reglas de completitud;
+- controlar vehículos y equipos de transporte, kilometraje, combustible, documentos y disponibilidad;
+- integrar adquisición, mantenimiento, pérdida y baja con ORIGO y NUMERA sin duplicar fuentes de verdad;
+- conservar evidencia suficiente para reconstruir quién tenía cada recurso, dónde estaba, en qué condición y por qué cambió.
+
+La existencia actual de pantallas, tablas, fichas técnicas, conteos, movimientos o formularios de mantenimiento no permite considerar cerrada la familia `CAP-07`. La cobertura exige un ciclo de vida completo y coherente desde el alta hasta la disposición final.
+
+---
+
+#### 2. Pregunta de decisión
+
+`CAP-SCOPE-007` responde:
+
+```text
+¿CÓMO DEBE VENTO GROUP IDENTIFICAR, UBICAR, CUSTODIAR, PRESTAR,
+CONTAR, MANTENER, REPARAR, ASEGURAR Y RETIRAR SUS ACTIVOS,
+REUTILIZABLES, VAJILLA, DECORACIÓN, HERRAMIENTAS, REPUESTOS,
+KITS Y VEHÍCULOS, SIN CONFUNDIR EXISTENCIA FÍSICA, PROPIEDAD,
+CUSTODIA, DISPONIBILIDAD, COSTO NI RESPONSABILIDAD?
+```
+
+La tarea rechaza equivalencias incorrectas como:
+
+```text
+TIPO DE ACTIVO = ACTIVO FÍSICO
+```
+
+```text
+ACTIVO = PRODUCTO DE INVENTARIO
+```
+
+```text
+REUTILIZABLE POR CANTIDAD = ACTIVO SERIALIZADO
+```
+
+```text
+REPUESTO = ACTIVO INSTALADO
+```
+
+```text
+UBICACIÓN = CUSTODIO = PROPIETARIO
+```
+
+```text
+USUARIO DEL ACTIVO = RESPONSABLE CONTABLE
+```
+
+```text
+QR = IDENTIDAD
+```
+
+```text
+LPN = CONTENEDOR FÍSICO = KIT
+```
+
+```text
+MOVIMIENTO DE UBICACIÓN = TRANSFERENCIA DE CUSTODIA
+```
+
+```text
+CONTEO = AJUSTE = BAJA
+```
+
+```text
+CONDICIÓN = DISPONIBILIDAD
+```
+
+```text
+REGISTRO DE MANTENIMIENTO = ORDEN DE TRABAJO CERRADA
+```
+
+```text
+PIEZAS REEMPLAZADAS EN TEXTO = CONSUMO TRAZABLE DE REPUESTOS
+```
+
+```text
+DOCUMENTO ADJUNTO = GARANTÍA O SEGURO VIGENTE
+```
+
+```text
+PÉRDIDA = REGISTRO ELIMINADO
+```
+
+```text
+VEHÍCULO = CONDUCTOR
+```
+
+```text
+COMPRA DE COMBUSTIBLE = CONSUMO DEL VEHÍCULO
+```
+
+---
+
+#### 3. Fuentes consolidadas
+
+- `OPS-ACT-001` — inventario AS-IS de activos y puntos externos de custodia;
+- `OPS-AUD-001` a `OPS-AUD-015`;
+- `CAP-MAP-001` a `CAP-MAP-015`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `CAP-SCOPE-001` a `CAP-SCOPE-006`;
+- `QA-REG-001` y el Registro Canónico de Requisitos de Prueba;
+- la implementación vigente de NEXO para catálogo de tipos de activo, activos individuales, grupos por cantidad, ubicación, movimientos, documentos, conteos y mantenimiento;
+- la evidencia de formularios y acciones actuales para identidad, localización, préstamo, devolución, salida a mantenimiento y registros de trabajo;
+- la evidencia de que garantías se representan parcialmente como documentos y no como ciclo contractual;
+- la evidencia de que repuestos reemplazados pueden conservarse como texto sin consumo físico correlacionado;
+- las tareas `NEXO-DOM-001` a `NEXO-DOM-028`, `NEXO-AUTH-021` a `NEXO-AUTH-030` y `NEXO-UX-026` a `NEXO-UX-042`;
+- las decisiones aprobadas de inventario, LPN, compras, costos, autorización, documentos, evidencia y continuidad.
+
+Las respuestas y evidencias ya registradas no se vuelven a solicitar.
+
+---
+
+#### 4. Alcance evaluado
+
+- `CAP-07.01` — Identificar y clasificar activos;
+- `CAP-07.02` — Registrar ubicación y custodia;
+- `CAP-07.03` — Entregar, prestar y devolver;
+- `CAP-07.04` — Transferir custodia;
+- `CAP-07.05` — Contar activos y reutilizables;
+- `CAP-07.06` — Registrar condición, daño, pérdida y faltante;
+- `CAP-07.07` — Planear y ejecutar mantenimiento;
+- `CAP-07.08` — Gestionar reparación y repuestos;
+- `CAP-07.09` — Controlar garantías y seguros;
+- `CAP-07.10` — Gestionar baja, venta, descarte o reemplazo;
+- `CAP-07.11` — Gestionar kits y conjuntos;
+- `CAP-07.12` — Gestionar vehículos y equipos de transporte;
+- `CAP-07.13` — Controlar combustible, kilometraje y disponibilidad.
+
+También fija fronteras con catálogo, inventario, compras, logística, instalaciones, SST, documentos, costos, contabilidad, seguros, continuidad y analítica.
+
+---
+
+#### 5. Fuera de alcance
+
+- realizar inventario físico, conteos, préstamos, transferencias o reasignaciones reales;
+- mover, reparar, dar de baja, vender, descartar o reemplazar activos;
+- declarar propiedad, valor contable, depreciación, cobertura o aseguramiento sin soporte profesional;
+- contratar mantenimientos, repuestos, pólizas o servicios;
+- definir todavía tasas de depreciación, vida útil contable o tratamiento tributario;
+- crear códigos, placas o etiquetas reales;
+- migrar activos, documentos, mantenimientos o movimientos históricos;
+- crear tablas, vistas, RPC, triggers, buckets, políticas RLS o migraciones;
+- diseñar rutas y entregas logísticas, que continuarán en `CAP-SCOPE-011`;
+- diseñar mantenimiento de instalaciones como proceso completo, que continuará en `CAP-SCOPE-013`;
+- sustituir inspecciones SST, metrología, revisión técnico-mecánica o validación profesional;
+- convertir documentos sensibles de vehículos, seguros, facturas o seriales en información pública;
+- autorizar uso operativo de un activo únicamente porque aparece como activo en el sistema.
+
+---
+
+#### 6. Principios canónicos
+
+##### 6.1. NEXO será propietario del estado físico del activo
+
+NEXO conservará identidad física, ubicación, custodia, condición, disponibilidad, movimientos, conteos, mantenimiento y disposición operacional.
+
+ORIGO será propietario de la compra o contratación externa; NUMERA será propietario del tratamiento económico y contable que posteriormente se apruebe.
+
+##### 6.2. El modelo o tipo no es el activo físico
+
+Un tipo describe características comunes. Un activo individual representa una unidad física identificable.
+
+Una cafetera de un modelo determinado podrá tener varios activos físicos con serial, estado, ubicación y mantenimiento independientes.
+
+##### 6.3. El control individual y el control por cantidad son distintos
+
+Se utilizará activo individual cuando la unidad requiera serial, placa, QR, mantenimiento, garantía, valor o historia propia.
+
+Se utilizará grupo reutilizable por cantidad cuando varias unidades equivalentes se controlen sin identidad individual razonable, como parte de vajilla, cubiertos, bandejas o decoración repetida.
+
+##### 6.4. Consumible, repuesto, herramienta y activo no son equivalentes
+
+Un consumible se agota por uso. Un repuesto permanece como stock hasta ser consumido o instalado. Una herramienta puede ser activo individual o reutilizable por cantidad según criticidad. Un componente instalado podrá adquirir identidad propia solo cuando lo exija su trazabilidad.
+
+##### 6.5. Propiedad, custodia, ubicación, uso y costo son dimensiones independientes
+
+La presencia de un recurso en una sede no demuestra propiedad. El custodio no necesariamente es quien lo usa. El usuario no necesariamente responde contablemente. El centro de costo no determina la ubicación.
+
+##### 6.6. La identidad será estable y no dependerá del QR
+
+El identificador canónico será inmutable. Códigos visibles, placas, seriales, alias y etiquetas podrán cambiar o reemitirse conservando historial.
+
+Una etiqueta dañada no crea un activo nuevo.
+
+##### 6.7. El ciclo de vida será no destructivo
+
+Alta, activación, préstamo, tránsito, mantenimiento, pérdida, hallazgo, retiro, venta y disposición serán estados o eventos. Ninguno borrará el expediente ni reutilizará su identificador.
+
+##### 6.8. Los movimientos conservarán hecho y responsabilidad
+
+Todo movimiento registrará tipo, origen, destino, custodio anterior, custodio nuevo, actor, fecha efectiva, causa, evidencia y aceptación cuando corresponda.
+
+##### 6.9. La entrega y el préstamo no son simples cambios de ubicación
+
+Deberán conservar receptor, propósito, plazo, condición de salida, fecha prevista, condiciones de devolución y estado de cierre.
+
+##### 6.10. La transferencia de custodia requiere aceptación
+
+Una transferencia podrá quedar pendiente hasta que el receptor confirme. La ubicación física podrá cambiar antes o después, pero no se inferirá custodia por proximidad.
+
+##### 6.11. El conteo es una observación
+
+La captura conservará quién contó, alcance, ubicación, fecha, cantidad o identidad observada y evidencia. Las diferencias se investigarán antes de corregir el registro.
+
+##### 6.12. Condición y disponibilidad serán separadas
+
+Un activo puede estar en condición aceptable pero reservado, prestado o no disponible. También puede estar disponible físicamente pero bloqueado por seguridad, garantía o mantenimiento vencido.
+
+##### 6.13. El mantenimiento tendrá plan, orden y ejecución
+
+Se distinguirán plan de mantenimiento, disparador, orden de trabajo, ejecución, resultado, prueba de retorno al servicio y próxima obligación.
+
+##### 6.14. La reparación consumirá repuestos trazables
+
+Los repuestos deberán reservarse y consumirse desde inventario mediante referencia al activo y a la orden. El texto libre podrá describir trabajo, pero no reemplazará el movimiento de stock.
+
+##### 6.15. Garantía y seguro tendrán vigencia y reclamación
+
+Se conservarán proveedor o asegurador, cobertura, inicio, fin, condiciones, exclusiones, documentos, reclamaciones y resultado. La existencia de un PDF no demuestra cobertura vigente.
+
+##### 6.16. La baja y disposición requerirán segregación
+
+Solicitar, evaluar, autorizar, ejecutar disposición y registrar efecto económico serán pasos diferentes. Quien custodia no aprobará automáticamente la baja.
+
+##### 6.17. Los kits tendrán definición e instancia
+
+La definición indicará componentes y reglas de completitud. La instancia representará un conjunto real. Un kit podrá transportarse en un LPN, pero no será el mismo concepto.
+
+##### 6.18. El vehículo será activo especializado
+
+Vehículo, conductor, custodio, ruta, viaje, documento, mantenimiento y disponibilidad serán entidades o relaciones distintas.
+
+##### 6.19. El kilometraje será monotónico con correcciones auditables
+
+Una lectura menor no sobrescribirá la anterior. Generará corrección, justificación o cambio de odómetro documentado.
+
+##### 6.20. Combustible comprado y combustible consumido no serán equivalentes
+
+La compra tendrá documento y costo; la carga tendrá vehículo, cantidad, lectura, estación y actor; el rendimiento será derivado y sujeto a calidad de datos.
+
+##### 6.21. Los activos externos y en poder de terceros seguirán dentro del control
+
+La ausencia de una sede formal no elimina la obligación de registrar punto externo, tercero, evidencia, fecha prevista de retorno y responsable interno.
+
+##### 6.22. La información financiera será consumida, no duplicada
+
+NEXO emitirá hechos de adquisición, mantenimiento, pérdida y baja. NUMERA determinará su tratamiento económico cuando `CAP-SCOPE-012` lo apruebe.
+
+---
+
+#### 7. Modelo conceptual objetivo
+
+| Concepto                  | Definición                             | No equivale a                    |
+| ------------------------- | -------------------------------------- | -------------------------------- |
+| tipo o modelo de activo   | plantilla de características comunes   | unidad física                    |
+| activo individual         | unidad física con identidad propia     | producto, stock o tipo           |
+| grupo reutilizable        | familia controlada por cantidad        | activo serializado               |
+| componente o repuesto     | existencia destinada a reparación      | activo instalado automáticamente |
+| kit definido              | composición y reglas                   | kit físico                       |
+| instancia de kit          | conjunto real y verificable            | LPN                              |
+| vehículo                  | activo especializado de transporte     | conductor o viaje                |
+| ubicación                 | lugar físico actual                    | custodio o propietario           |
+| custodia                  | responsabilidad de tenencia            | uso, propiedad o costo           |
+| asignación de uso         | persona o proceso autorizado a usar    | custodia permanente              |
+| condición                 | estado físico observado                | disponibilidad                   |
+| disponibilidad            | capacidad de ser utilizado             | condición física                 |
+| mantenimiento planificado | obligación futura                      | ejecución realizada              |
+| orden de trabajo          | expediente de intervención             | evento terminado                 |
+| evento de mantenimiento   | trabajo ejecutado y resultado          | plan                             |
+| garantía                  | derecho contractual frente a proveedor | seguro                           |
+| seguro                    | cobertura frente a riesgos             | garantía                         |
+| baja                      | decisión de retirar del servicio       | eliminación del registro         |
+| disposición               | destino físico final                   | baja aprobada                    |
+| lectura de kilometraje    | observación de medidor                 | viaje o consumo                  |
+| carga de combustible      | entrega física al vehículo             | factura de compra                |
+
+---
+
+#### 8. Estados canónicos mínimos
+
+##### 8.1. Estado de registro
+
+```text
+BORRADOR
+PENDIENTE_VALIDACION
+ACTIVO
+INACTIVO
+RETIRADO
+ARCHIVADO
+```
+
+##### 8.2. Disponibilidad operacional
+
+```text
+DISPONIBLE
+ASIGNADO
+PRESTADO
+EN_TRANSITO
+EN_MANTENIMIENTO
+BLOQUEADO
+NO_DISPONIBLE
+NO_LOCALIZADO
+```
+
+##### 8.3. Condición
+
+```text
+NUEVO
+BUENO
+REGULAR
+DEGRADADO
+DAÑADO
+INOPERATIVO
+PENDIENTE_EVALUACION
+```
+
+##### 8.4. Custodia
+
+```text
+SIN_ASIGNAR
+PENDIENTE_ACEPTACION
+ACEPTADA
+EN_TRANSFERENCIA
+EN_TERCERO
+DISPUTADA
+CERRADA
+```
+
+##### 8.5. Mantenimiento
+
+```text
+PLANIFICADO
+PROGRAMADO
+EN_DIAGNOSTICO
+EN_EJECUCION
+PENDIENTE_REPUESTO
+PENDIENTE_PRUEBA
+COMPLETADO
+CANCELADO
+```
+
+##### 8.6. Garantía o reclamación
+
+```text
+VIGENTE
+POR_VENCER
+VENCIDA
+RECLAMACION_ABIERTA
+EN_EVALUACION
+APROBADA
+RECHAZADA
+CERRADA
+```
+
+##### 8.7. Baja y disposición
+
+```text
+PROPUESTA
+EN_EVALUACION
+APROBADA
+RECHAZADA
+PENDIENTE_DISPOSICION
+DISPUESTA
+VENDIDA
+REEMPLAZADA
+CANCELADA
+```
+
+---
+
+#### 9. Propiedad funcional y tecnológica
+
+| Dominio                                   | Propiedad                                                                                        |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Jefatura de Operaciones                   | gobierno operativo del inventario patrimonial y prioridad de levantamiento                       |
+| responsable de sede o área                | validación de ubicación, uso, condición y custodia observada                                     |
+| custodio                                  | tenencia y devolución; no propiedad ni aprobación de baja                                        |
+| responsable de mantenimiento              | plan, diagnóstico, ejecución, prueba y liberación técnica                                        |
+| NEXO                                      | expediente físico, movimientos, conteos, mantenimiento y flota                                   |
+| ORIGO                                     | compra de activos, repuestos, mantenimiento externo, garantías de proveedor y contratos          |
+| NUMERA                                    | costo, gasto, activo contable, depreciación, pérdida, venta y baja económica cuando sea aprobado |
+| VISO                                      | supervisión administrativa y enlaces; no fuente del activo                                       |
+| SHELL / Supabase                          | contratos, integridad, autorización, evidencia técnica y migraciones                             |
+| asesoría contable, jurídica o aseguradora | validaciones profesionales y externas                                                            |
+
+---
+
+#### 10. Línea base de implementación verificable
+
+La implementación actual permite afirmar que:
+
+- existe una superficie de inventario de activos en NEXO;
+- existen tipos o modelos, activos individuales y grupos repetidos controlados por cantidad;
+- existen campos para código, placa, serial, marca, modelo, ubicación y condición;
+- existen movimientos de activo y etiquetas de préstamo, devolución y salida a mantenimiento;
+- existen sesiones y líneas de conteo de activos;
+- existen documentos como ficha técnica, manual, factura y garantía;
+- existen registros parciales de mantenimiento, próxima fecha, trabajo ejecutado y piezas reemplazadas;
+- existe separación conceptual inicial entre catálogo y activo físico;
+- no existe evidencia suficiente de un ciclo integral de seguros, reclamaciones, baja, venta, disposición, kits, flota, kilometraje y combustible;
+- la integración física y económica de repuestos, mantenimiento, adquisición y baja todavía no está cerrada.
+
+La clasificación `REUSE_OR_REFACTOR` no declara estas capacidades terminadas; reconoce infraestructura útil que deberá someterse al modelo objetivo.
+
+---
+
+#### 11. Matriz de decisión de cobertura
+
+| Capacidad                                                         | Tratamiento         | Propietario objetivo    | Decisión                                                                                                                                                                                    |
+| ----------------------------------------------------------------- | ------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CAP-07.01` — Identificar y clasificar activos                    | `REUSE_OR_REFACTOR` | NEXO                    | Conservar el catálogo y las superficies actuales, pero separar tipo o modelo, activo individual, reutilizable por cantidad, repuesto, kit, vehículo y consumible mediante reglas canónicas. |
+| `CAP-07.02` — Registrar ubicación y custodia                      | `REUSE_OR_REFACTOR` | NEXO                    | Reutilizar ubicación y movimientos existentes, incorporando custodia, responsable operativo, tercero, sede, LOC y vigencias sin inferir propiedad.                                          |
+| `CAP-07.03` — Entregar, prestar y devolver                        | `REUSE_OR_REFACTOR` | NEXO                    | Formalizar entrega, préstamo y devolución como expedientes con actor, receptor, vencimiento, condición, evidencia y cierre; no como simple cambio de ubicación.                             |
+| `CAP-07.04` — Transferir custodia                                 | `REUSE_OR_REFACTOR` | NEXO                    | Convertir las transferencias actuales en eventos de custodia aceptados, rechazados o pendientes, conservando origen, destino, condición y responsabilidad.                                  |
+| `CAP-07.05` — Contar activos y reutilizables                      | `REUSE_OR_REFACTOR` | NEXO                    | Conservar sesiones y líneas de conteo, separando observación, diferencia, investigación, decisión y corrección, tanto para activos individuales como grupos por cantidad.                   |
+| `CAP-07.06` — Registrar condición, daño, pérdida y faltante       | `REUSE_OR_REFACTOR` | NEXO                    | Normalizar condición y disponibilidad, crear casos auditables de daño, pérdida y hallazgo, y prohibir que un cambio de texto sobrescriba el historial.                                      |
+| `CAP-07.07` — Planear y ejecutar mantenimiento                    | `REUSE_OR_REFACTOR` | NEXO                    | Evolucionar los registros actuales hacia planes, órdenes, ejecución, evidencia, prueba de retorno al servicio y próxima fecha o medidor.                                                    |
+| `CAP-07.08` — Gestionar reparación y repuestos                    | `REUSE_OR_REFACTOR` | NEXO + ORIGO            | Conectar reparación con diagnóstico, proveedor, repuestos reservados y consumidos, costo, indisponibilidad y resultado, sin registrar piezas únicamente como texto libre.                   |
+| `CAP-07.09` — Controlar garantías y seguros                       | `BUILD`             | NEXO + fuentes externas | Construir vigencias, coberturas, exclusiones, reclamaciones, documentos, alertas y decisiones; un archivo adjunto no equivale a garantía o seguro vigente.                                  |
+| `CAP-07.10` — Gestionar baja, venta, descarte o reemplazo         | `BUILD`             | NEXO + NUMERA           | Construir solicitud, evaluación, autorización, disposición física, evento económico y cierre no destructivo, conservando identidad e historia.                                              |
+| `CAP-07.11` — Gestionar kits y conjuntos                          | `BUILD`             | NEXO                    | Construir definición de kit, instancia, componentes obligatorios u opcionales, completitud, préstamo, devolución y sustitución sin fusionar kit con LPN.                                    |
+| `CAP-07.12` — Gestionar vehículos y equipos de transporte         | `BUILD`             | NEXO                    | Construir expediente de vehículo o equipo, documentos, custodios, disponibilidad, inspección, mantenimiento e integración con logística, sin convertir conductor en propietario.            |
+| `CAP-07.13` — Controlar combustible, kilometraje y disponibilidad | `BUILD`             | NEXO + ORIGO + NUMERA   | Construir lecturas monotónicas, correcciones auditables, cargas de combustible, rendimiento, indisponibilidad y conciliación de compras y uso.                                              |
+
+Resumen:
+
+| Tratamiento         | Cantidad |
+| ------------------- | -------: |
+| `REUSE_OR_REFACTOR` |        8 |
+| `BUILD`             |        5 |
+| **Total**           |   **13** |
+
+---
+
+#### 12. CAP-07.01 — Identificar y clasificar activos
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Conservar el catálogo y las superficies actuales, pero separar tipo o modelo, activo individual, reutilizable por cantidad, repuesto, kit, vehículo y consumible mediante reglas canónicas.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-001`; `NEXO-UX-030`; `SUPA-AUD-019`; `SUPA-AUD-022`.
+
+---
+
+#### 13. CAP-07.02 — Registrar ubicación y custodia
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Reutilizar ubicación y movimientos existentes, incorporando custodia, responsable operativo, tercero, sede, LOC y vigencias sin inferir propiedad.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-007`; `NEXO-DOM-008`; `NEXO-UX-031`; `NEXO-AUTH-025`.
+
+---
+
+#### 14. CAP-07.03 — Entregar, prestar y devolver
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Formalizar entrega, préstamo y devolución como expedientes con actor, receptor, vencimiento, condición, evidencia y cierre; no como simple cambio de ubicación.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-011`; `NEXO-UX-031`; `NEXO-AUTH-025`; `PROC-CAT-009` a `PROC-CAT-018`.
+
+---
+
+#### 15. CAP-07.04 — Transferir custodia
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Convertir las transferencias actuales en eventos de custodia aceptados, rechazados o pendientes, conservando origen, destino, condición y responsabilidad.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-008`; `NEXO-DOM-011`; `NEXO-UX-031`; `NEXO-AUTH-025`.
+
+---
+
+#### 16. CAP-07.05 — Contar activos y reutilizables
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Conservar sesiones y líneas de conteo, separando observación, diferencia, investigación, decisión y corrección, tanto para activos individuales como grupos por cantidad.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-015`; `NEXO-UX-034`; `NEXO-AUTH-027`; `PROC-CAT-009` a `PROC-CAT-018`.
+
+---
+
+#### 17. CAP-07.06 — Registrar condición, daño, pérdida y faltante
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Normalizar condición y disponibilidad, crear casos auditables de daño, pérdida y hallazgo, y prohibir que un cambio de texto sobrescriba el historial.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-010`; `NEXO-DOM-017`; `NEXO-UX-032`; `NEXO-AUTH-026`.
+
+---
+
+#### 18. CAP-07.07 — Planear y ejecutar mantenimiento
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Evolucionar los registros actuales hacia planes, órdenes, ejecución, evidencia, prueba de retorno al servicio y próxima fecha o medidor.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-012`; `NEXO-DOM-026`; `NEXO-UX-032`; `CAP-SCOPE-013`.
+
+---
+
+#### 19. CAP-07.08 — Gestionar reparación y repuestos
+
+**Tratamiento:** `REUSE_OR_REFACTOR`  
+**Propietario objetivo:** NEXO + ORIGO
+
+##### Línea base
+
+Existe infraestructura parcial reutilizable, pero no un ciclo empresarial completamente validado.
+
+##### Decisión objetivo
+
+Conectar reparación con diagnóstico, proveedor, repuestos reservados y consumidos, costo, indisponibilidad y resultado, sin registrar piezas únicamente como texto libre.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-016`; `NEXO-DOM-025`; `NEXO-DOM-026`; `ORIGO-UX-015`; `CAP-SCOPE-012`.
+
+---
+
+#### 20. CAP-07.09 — Controlar garantías y seguros
+
+**Tratamiento:** `BUILD`  
+**Propietario objetivo:** NEXO + fuentes externas
+
+##### Línea base
+
+No existe evidencia de una capacidad integral y gobernada que pueda declararse operativa.
+
+##### Decisión objetivo
+
+Construir vigencias, coberturas, exclusiones, reclamaciones, documentos, alertas y decisiones; un archivo adjunto no equivale a garantía o seguro vigente.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-017`; `NEXO-DOM-026`; `CAP-SCOPE-016`; `CAP-SCOPE-018`.
+
+---
+
+#### 21. CAP-07.10 — Gestionar baja, venta, descarte o reemplazo
+
+**Tratamiento:** `BUILD`  
+**Propietario objetivo:** NEXO + NUMERA
+
+##### Línea base
+
+No existe evidencia de una capacidad integral y gobernada que pueda declararse operativa.
+
+##### Decisión objetivo
+
+Construir solicitud, evaluación, autorización, disposición física, evento económico y cierre no destructivo, conservando identidad e historia.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-013`; `NEXO-DOM-028`; `CAP-SCOPE-012`; `PROC-CAT-009` a `PROC-CAT-018`.
+
+---
+
+#### 22. CAP-07.11 — Gestionar kits y conjuntos
+
+**Tratamiento:** `BUILD`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+No existe evidencia de una capacidad integral y gobernada que pueda declararse operativa.
+
+##### Decisión objetivo
+
+Construir definición de kit, instancia, componentes obligatorios u opcionales, completitud, préstamo, devolución y sustitución sin fusionar kit con LPN.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-014`; `NEXO-UX-033`; `NEXO-AUTH-024`; `NEXO-AUTH-025`.
+
+---
+
+#### 23. CAP-07.12 — Gestionar vehículos y equipos de transporte
+
+**Tratamiento:** `BUILD`  
+**Propietario objetivo:** NEXO
+
+##### Línea base
+
+No existe evidencia de una capacidad integral y gobernada que pueda declararse operativa.
+
+##### Decisión objetivo
+
+Construir expediente de vehículo o equipo, documentos, custodios, disponibilidad, inspección, mantenimiento e integración con logística, sin convertir conductor en propietario.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-027`; `CAP-SCOPE-011`; `CAP-SCOPE-013`; `CAP-SCOPE-016`.
+
+---
+
+#### 24. CAP-07.13 — Controlar combustible, kilometraje y disponibilidad
+
+**Tratamiento:** `BUILD`  
+**Propietario objetivo:** NEXO + ORIGO + NUMERA
+
+##### Línea base
+
+No existe evidencia de una capacidad integral y gobernada que pueda declararse operativa.
+
+##### Decisión objetivo
+
+Construir lecturas monotónicas, correcciones auditables, cargas de combustible, rendimiento, indisponibilidad y conciliación de compras y uso.
+
+##### Reglas mínimas
+
+- conservar identificadores estables y vigencias;
+- impedir actualizaciones destructivas de historia;
+- registrar actor real, contexto, causa y evidencia;
+- aplicar permisos atómicos y segregación de funciones;
+- resolver concurrencia, reintentos y correcciones mediante eventos trazables;
+- no inferir propiedad, custodia, disponibilidad o costo desde nombres o ubicación.
+
+##### Destino canónico
+
+`NEXO-DOM-027`; `NEXO-DOM-028`; `CAP-SCOPE-011`; `CAP-SCOPE-012`.
+
+---
+
+#### 25. Fronteras con otros dominios
+
+| Dominio                | Frontera                                                                                           |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| `CAP-04` catálogo      | define producto, repuesto y tipo; no la existencia patrimonial individual                          |
+| `CAP-05` compras       | origina adquisición o servicio; no determina custodia ni disponibilidad                            |
+| `CAP-06` inventario    | controla repuestos y consumibles antes de instalación; no sustituye expediente del activo          |
+| `CAP-11` logística     | gestiona rutas, viajes y entregas; consume disponibilidad de vehículos                             |
+| `CAP-12` finanzas      | determina costo, gasto, depreciación y efecto económico                                            |
+| `CAP-13` instalaciones | gestiona mantenimiento de inmuebles e infraestructura; puede compartir órdenes y proveedores       |
+| `CAP-15` tecnología    | administra dispositivos tecnológicos como servicio, pero su identidad física puede residir en NEXO |
+| `CAP-16` documentos    | conserva facturas, manuales, pólizas y evidencia con privacidad y retención                        |
+| `CAP-18` continuidad   | utiliza criticidad, repuestos y disponibilidad para contingencias                                  |
+| LPN                    | identifica contenido logístico; no sustituye activo, kit, contenedor físico ni custodia            |
+
+---
+
+#### 26. Información conceptual requerida
+
+##### 26.1. Tipo o modelo
+
+- identificador estable;
+- familia;
+- fabricante, marca y modelo;
+- características técnicas;
+- unidad de control;
+- política de identificación individual o por cantidad;
+- criticidad y requisitos de mantenimiento.
+
+##### 26.2. Activo individual
+
+- código interno;
+- serial, placa u otro identificador;
+- tipo o modelo;
+- estado de registro;
+- condición y disponibilidad;
+- ubicación física;
+- custodio y usuario;
+- propietario declarado con nivel de evidencia;
+- fecha y fuente de adquisición;
+- documentos;
+- garantía y seguro;
+- medidores aplicables;
+- historial completo.
+
+##### 26.3. Grupo reutilizable
+
+- familia;
+- unidad de conteo;
+- sede o punto;
+- cantidad registrada;
+- cantidad observada;
+- condición agregada cuando sea útil;
+- responsable;
+- reglas de préstamo y conteo;
+- criterio para individualizar una unidad.
+
+##### 26.4. Mantenimiento
+
+- plan y versión;
+- disparador por fecha, uso, ciclos, kilometraje o condición;
+- orden de trabajo;
+- diagnóstico;
+- tareas;
+- técnico o proveedor;
+- salida y retorno;
+- repuestos;
+- costo informado;
+- evidencia;
+- prueba y liberación;
+- próxima obligación.
+
+##### 26.5. Vehículo
+
+- placa e identidad;
+- tipo, marca, modelo y año;
+- propietario y custodio;
+- documentos y vigencias;
+- kilometraje;
+- capacidad y restricciones;
+- estado de disponibilidad;
+- mantenimiento e inspecciones;
+- cargas de combustible;
+- incidentes y bloqueos;
+- relación con viajes sin duplicar el dominio logístico.
+
+---
+
+#### 27. Eventos e integraciones requeridos
+
+Eventos mínimos:
+
+```text
+asset_registered
+asset_identity_corrected
+asset_location_changed
+asset_custody_offered
+asset_custody_accepted
+asset_loaned
+asset_returned
+asset_transfer_started
+asset_transfer_completed
+asset_count_observed
+asset_difference_found
+asset_condition_reported
+asset_damaged
+asset_lost
+asset_found
+maintenance_due
+maintenance_work_order_opened
+maintenance_started
+spare_part_reserved
+spare_part_consumed
+maintenance_completed
+asset_released_to_service
+warranty_claim_opened
+insurance_claim_opened
+asset_retirement_requested
+asset_retirement_approved
+asset_disposed
+vehicle_odometer_read
+vehicle_fuel_loaded
+vehicle_availability_changed
+```
+
+Cada evento conservará identificador estable, versión, actor, fecha efectiva, origen, recurso, causa, estado y evidencia. Los consumidores deberán ser idempotentes.
+
+---
+
+#### 28. Autorización y segregación
+
+Deberán separarse, como mínimo:
+
+- consultar activos;
+- crear tipo o modelo;
+- registrar activo individual;
+- actualizar identificación sensible;
+- registrar ubicación;
+- asignar o aceptar custodia;
+- prestar y devolver;
+- iniciar y aprobar transferencia;
+- capturar conteo;
+- investigar diferencia;
+- aprobar corrección;
+- reportar daño o pérdida;
+- cambiar disponibilidad;
+- crear plan de mantenimiento;
+- abrir, ejecutar y cerrar orden;
+- consumir repuestos;
+- registrar garantía o seguro;
+- abrir reclamación;
+- proponer y aprobar baja;
+- ejecutar disposición;
+- registrar kilometraje y combustible;
+- imprimir o reimprimir etiqueta.
+
+La administración no dependerá de check-in cuando la matriz aprobada no lo exija. Las acciones físicas de sede o área deberán validar contexto operativo cuando corresponda.
+
+---
+
+#### 29. Experiencia por actor
+
+##### Operaciones
+
+- búsqueda por código, QR, serial, familia, ubicación o custodio;
+- alertas de activos no localizados, vencimientos y mantenimiento;
+- vista de disponibilidad y criticidad;
+- conciliación de conteos y movimientos.
+
+##### Custodio o trabajador
+
+- confirmar recepción;
+- consultar activos asignados;
+- reportar daño, pérdida o devolución;
+- ver instrucciones esenciales sin exponer datos financieros.
+
+##### Mantenimiento
+
+- bandeja de órdenes;
+- diagnóstico, tareas y repuestos;
+- evidencia antes y después;
+- prueba de retorno;
+- operación móvil o tablet cuando sea necesario.
+
+##### Contabilidad o Gerencia
+
+- soportes de adquisición;
+- costo y estado de baja;
+- garantías, seguros y reclamaciones;
+- reportes sin alterar el estado físico.
+
+##### Logística
+
+- vehículos disponibles;
+- restricciones y documentos vigentes;
+- kilometraje y combustible;
+- bloqueo por mantenimiento o seguridad.
+
+---
+
+#### 30. Operación offline y contingencia
+
+- un escaneo offline no creará identidades duplicadas;
+- los movimientos pendientes conservarán clave de idempotencia;
+- la aceptación de custodia requerirá sincronización y autorización vigentes;
+- un conteo offline preservará líneas y marca temporal;
+- un mantenimiento no se cerrará únicamente en memoria local;
+- la imposibilidad de imprimir no impedirá identificar el activo mediante código alternativo;
+- la pérdida de red no permitirá aprobar baja, venta o disposición sin control;
+- kilometraje y combustible pendientes deberán detectar duplicados al sincronizar.
+
+---
+
+#### 31. Evidencia, conservación y auditoría
+
+Se conservarán:
+
+- identidad anterior y nueva;
+- ubicación y custodia anteriores y nuevas;
+- actor real y actor operativo;
+- fecha de captura y fecha efectiva;
+- razón estructurada;
+- documentos y hash cuando aplique;
+- fotos con contexto, no como única prueba;
+- conteos originales;
+- aprobaciones y rechazos;
+- mantenimiento, diagnóstico, repuestos y prueba;
+- reclamaciones de garantía o seguro;
+- baja y disposición;
+- lecturas de kilometraje y combustible;
+- relación con compra, costo y documento financiero.
+
+Seriales, placas, facturas, pólizas y documentos sensibles tendrán acceso restringido y conservación definida en `CAP-SCOPE-016`.
+
+---
+
+#### 32. Patrones legacy destinados a retiro
+
+- usar producto del catálogo como si fuera la unidad física;
+- crear un activo nuevo por cada reimpresión de QR;
+- registrar grupos repetidos como activos individuales ficticios;
+- usar cantidad de stock para representar vajilla o decoración sin modelo de reutilizable;
+- cambiar ubicación para simular préstamo o custodia;
+- sobrescribir condición, serial o custodio sin evento;
+- eliminar un activo perdido o dado de baja;
+- cerrar conteos alterando directamente la cantidad registrada;
+- registrar piezas reemplazadas solo como texto;
+- considerar documento de garantía como garantía vigente;
+- mezclar mantenimiento de activo con mantenimiento de instalación sin propietario;
+- permitir que el custodio apruebe su propia pérdida o baja;
+- asociar vehículo permanentemente con un conductor;
+- permitir reducción de kilometraje sin corrección formal;
+- deducir consumo de combustible únicamente desde facturas;
+- mantener tablas, perfiles o eventos duplicados como fuentes competidoras.
+
+---
+
+#### 33. Preguntas pendientes y validaciones controladas
+
+No se crean preguntas nuevas.
+
+Las incertidumbres AS-IS ya reconocidas por `OPS-ACT-001` se mantienen como validaciones controladas:
+
+- inventario físico completo por sede y punto externo;
+- titularidad jurídica o contable;
+- custodios actuales;
+- condición y disponibilidad real;
+- documentos de adquisición, garantía, seguro y mantenimiento;
+- activos en poder de terceros;
+- vehículo, canastas y reutilizables;
+- equipos pendientes de instalar;
+- impacto económico y centro de costo.
+
+Estas validaciones no bloquean la decisión de cobertura, pero sí bloquearán migración, valoración, baja, disposición o salida a piloto cuando sean necesarias para el paquete correspondiente.
+
+---
+
+#### 34. Riesgos principales
+
+| Riesgo                            | Severidad | Control mínimo                               |
+| --------------------------------- | --------- | -------------------------------------------- |
+| activo duplicado                  | crítica   | identidad estable y detección de duplicados  |
+| propiedad inferida                | crítica   | nivel de evidencia y validación profesional  |
+| activo fuera de sede sin custodio | crítica   | punto externo, tercero y fecha de retorno    |
+| préstamo sin devolución           | alta      | vencimiento, responsable y escalamiento      |
+| transferencia no aceptada         | alta      | estado pendiente y confirmación              |
+| conteo destructivo                | crítica   | observación, diferencia y decisión separadas |
+| pérdida borrada                   | crítica   | estado, investigación y disposición          |
+| mantenimiento vencido             | crítica   | plan, alerta y bloqueo según política        |
+| repuesto sin movimiento           | alta      | reserva y consumo correlacionados            |
+| garantía o seguro falso vigente   | crítica   | vigencia, cobertura y fuente                 |
+| baja sin segregación              | crítica   | solicitud, aprobación y evidencia            |
+| kit incompleto                    | alta      | definición e instancia con completitud       |
+| vehículo no disponible            | crítica   | disponibilidad y contingencia                |
+| kilometraje inconsistente         | alta      | monotonía y corrección auditable             |
+| combustible irreconciliable       | alta      | compra, carga y lectura diferenciadas        |
+| datos sensibles expuestos         | crítica   | RLS, masking y almacenamiento privado        |
+
+---
+
+#### 35. Hallazgos y destinos canónicos
+
+| ID                  | Hallazgo                                                                                                    | Riesgo  | Tarea propietaria                                                | Momento            |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------- | ------------------ |
+| H-CAP-SCOPE-007-001 | el catálogo, el tipo y la unidad física todavía pueden competir conceptualmente                             | crítica | `NEXO-DOM-001`; `SUPA-AUD-019`; `SUPA-AUD-022`                   | E2/E3              |
+| H-CAP-SCOPE-007-002 | el inventario físico AS-IS permanece incompleto                                                             | alta    | `OPS-ACT-001`; `NEXO-UX-039`; `NEXO-UX-040`                      | antes de migración |
+| H-CAP-SCOPE-007-003 | activos individuales y grupos por cantidad requieren reglas de conversión y no duplicidad                   | crítica | `NEXO-DOM-009`; `NEXO-UX-030`; `SUPA-AUD-019`                    | E2/E3              |
+| H-CAP-SCOPE-007-004 | ubicación, custodia, uso, propiedad y costo no tienen contrato integral comprobado                          | crítica | `NEXO-DOM-007`; `NEXO-DOM-008`; `NEXO-DOM-017`; `CAP-SCOPE-012`  | E2/E3              |
+| H-CAP-SCOPE-007-005 | activos externos o en poder de terceros no están conciliados                                                | crítica | `NEXO-DOM-008`; `NEXO-DOM-011`; `NEXO-UX-031`                    | E2                 |
+| H-CAP-SCOPE-007-006 | préstamo, devolución y transferencia existen parcialmente pero no como expediente cerrado                   | alta    | `NEXO-DOM-011`; `NEXO-UX-031`; `NEXO-AUTH-025`                   | E2                 |
+| H-CAP-SCOPE-007-007 | conteos de activos requieren confirmar historia, investigación y aprobación de diferencia                   | alta    | `NEXO-DOM-015`; `NEXO-UX-034`; `NEXO-AUTH-027`                   | E2/E5              |
+| H-CAP-SCOPE-007-008 | condición, daño, pérdida, faltante y hallazgo no forman un ciclo completo comprobado                        | crítica | `NEXO-DOM-010`; `NEXO-DOM-017`; `NEXO-UX-032`                    | E2                 |
+| H-CAP-SCOPE-007-009 | mantenimiento actual conserva registros útiles pero no demuestra plan, orden, prueba y liberación completos | crítica | `NEXO-DOM-012`; `NEXO-DOM-026`; `CAP-SCOPE-013`                  | E2/E3              |
+| H-CAP-SCOPE-007-010 | piezas reemplazadas pueden quedar como texto sin consumo de repuesto                                        | crítica | `NEXO-DOM-016`; `NEXO-DOM-025`; `TREQ-INTEGRATION-012`           | E2/E4              |
+| H-CAP-SCOPE-007-011 | garantía aparece como tipo documental, no como ciclo de vigencia y reclamación                              | alta    | `NEXO-DOM-017`; `NEXO-DOM-026`; `CAP-SCOPE-016`                  | E2/E4              |
+| H-CAP-SCOPE-007-012 | no existe evidencia de un ciclo integral de seguros                                                         | alta    | `NEXO-DOM-026`; `CAP-SCOPE-016`; `CAP-SCOPE-018`                 | E2/E4              |
+| H-CAP-SCOPE-007-013 | baja, venta, descarte y reemplazo no están cerrados física y económicamente                                 | crítica | `NEXO-DOM-013`; `NEXO-DOM-028`; `CAP-SCOPE-012`                  | E2/E4              |
+| H-CAP-SCOPE-007-014 | kits y conjuntos no tienen instancias y completitud integral comprobadas                                    | alta    | `NEXO-DOM-014`; `NEXO-UX-033`                                    | E2                 |
+| H-CAP-SCOPE-007-015 | LPN, contenedor físico y kit requieren frontera explícita                                                   | crítica | `NEXO-DOM-019`; `NEXO-DOM-020`; `NEXO-DOM-024`                   | E2/E3              |
+| H-CAP-SCOPE-007-016 | el vehículo crítico no tiene dominio integral de flota comprobado                                           | crítica | `NEXO-DOM-027`; `CAP-SCOPE-011`                                  | E2                 |
+| H-CAP-SCOPE-007-017 | kilometraje, combustible y disponibilidad no tienen ciclo correlacionado                                    | crítica | `NEXO-DOM-027`; `NEXO-DOM-028`; `CAP-SCOPE-011`; `CAP-SCOPE-012` | E2/E4              |
+| H-CAP-SCOPE-007-018 | adquisición, mantenimiento, pérdida y baja no están conciliados entre ORIGO, NEXO y NUMERA                  | crítica | `ORIGO-UX-014`; `ORIGO-UX-015`; `NEXO-DOM-028`; `CAP-SCOPE-012`  | E2/E4              |
+| H-CAP-SCOPE-007-019 | permisos atómicos y segregación del dominio aún deben verificarse                                           | crítica | `NEXO-AUTH-021` a `NEXO-AUTH-030`                                | E2/E5              |
+| H-CAP-SCOPE-007-020 | impresión, reimpresión y etiquetas dañadas requieren mantener identidad estable                             | alta    | `NEXO-DOM-018`; `NEXO-AUTH-028`; `NEXO-UX-037`; `NEXO-UX-038`    | E4/E5              |
+| H-CAP-SCOPE-007-021 | mantenimiento de activo, instalación y calibración pueden solaparse sin propietario                         | alta    | `NEXO-DOM-026`; `CAP-SCOPE-013`; `CAP-SCOPE-019`                 | E1/E2              |
+| H-CAP-SCOPE-007-022 | datos sensibles de activos, vehículos, pólizas y facturas requieren política específica                     | crítica | `CAP-SCOPE-016`; `NEXO-AUTH-024`; `NEXO-AUTH-026`                | E1/E3              |
+
+Todos los hallazgos tienen propietario y puerta. No queda pendiente narrativo sin destino.
+
+---
+
+#### 36. Decisiones canónicas resultantes
+
+1. NEXO será propietario del estado físico y operacional de activos y reutilizables.
+2. Tipo o modelo, activo individual y grupo por cantidad serán conceptos distintos.
+3. Activo, consumible, repuesto, herramienta, kit, LPN y vehículo no se fusionarán.
+4. Propiedad, custodia, ubicación, uso y centro de costo se registrarán por separado.
+5. La identidad será estable aunque cambien QR, placa visible o alias.
+6. Los movimientos serán eventos no destructivos.
+7. El préstamo incluirá receptor, plazo, condición y cierre.
+8. La transferencia de custodia requerirá aceptación.
+9. El conteo será observación y no corrección automática.
+10. Condición y disponibilidad serán dimensiones separadas.
+11. Daño, pérdida, faltante y hallazgo tendrán casos auditables.
+12. Mantenimiento separará plan, orden, ejecución, prueba y liberación.
+13. Los repuestos se reservarán y consumirán desde inventario.
+14. Garantía y seguro tendrán vigencia, cobertura y reclamación.
+15. Baja y disposición requerirán autorización segregada.
+16. Los kits tendrán definición, instancia y completitud.
+17. Un kit podrá viajar dentro de un LPN sin convertirse en LPN.
+18. Los vehículos serán activos especializados y no extensiones del conductor.
+19. El kilometraje será monotónico y corregible mediante eventos.
+20. Compra, carga y consumo de combustible serán hechos distintos.
+21. Los activos en terceros o puntos externos permanecerán controlados.
+22. ORIGO originará adquisiciones y servicios; NEXO conservará el estado físico.
+23. NUMERA recibirá hechos económicos sin convertirse en maestro de identidad física.
+24. La familia `CAP-07` es parcialmente reutilizable, pero no está cerrada.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+Esta tarea genera cuatro requisitos distintos y no duplicados:
+
+```text
+TREQ-NEXO-013
+TREQ-NEXO-014
+TREQ-NEXO-015
+TREQ-INTEGRATION-012
+```
+
+Los detalles completos se incorporan exclusivamente en el archivo canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado.
+
+No se entregan filas independientes.
+
+##### 37.1. `TREQ-NEXO-013`
+
+Protege identidad, clasificación, ubicación, custodia, préstamos, transferencias, conteos, condición, activos individuales, reutilizables y kits.
+
+##### 37.2. `TREQ-NEXO-014`
+
+Protege plan y ejecución de mantenimiento, reparación, repuestos, garantía, seguro, baja y disposición.
+
+##### 37.3. `TREQ-NEXO-015`
+
+Protege vehículos, documentos, kilometraje, combustible y disponibilidad.
+
+##### 37.4. `TREQ-INTEGRATION-012`
+
+Protege la cadena ORIGO → NEXO → NUMERA para adquisición, mantenimiento, repuestos, pérdida, venta y baja, sin efectos duplicados.
+
+---
+
+#### 38. Dependencias habilitadas y restricciones
+
+- `CAP-SCOPE-008`;
+- `CAP-SCOPE-011`;
+- `CAP-SCOPE-012`;
+- `CAP-SCOPE-013`;
+- `CAP-SCOPE-015`;
+- `CAP-SCOPE-016`;
+- `CAP-SCOPE-017`;
+- `CAP-SCOPE-018`;
+- `CAP-SCOPE-019`;
+- `NEXO-DOM-001` a `NEXO-DOM-028`;
+- `NEXO-AUTH-021` a `NEXO-AUTH-030`;
+- `NEXO-UX-026` a `NEXO-UX-042`;
+- diseño TO-BE de activos, custodia, mantenimiento, repuestos, kits y flota;
+- arquitectura E3 de datos, documentos, eventos y seguridad;
+- integraciones E4 con ORIGO, NUMERA, documentos y servicios externos;
+- paquetes E5 de NEXO e integraciones relacionadas.
+
+No autoriza movimientos, mantenimientos, inventario físico, migración, compra, baja, disposición ni operación real.
+
+---
+
+#### 39. Criterios de aceptación
+
+1. las trece subcapacidades tengan tratamiento explícito;
+2. tipo, activo individual y grupo reutilizable estén separados;
+3. activo, inventario, repuesto, kit, contenedor y LPN no se fusionen;
+4. propiedad, custodia, ubicación, uso y costo estén separados;
+5. la identidad sea estable y no dependa del QR;
+6. préstamos, devoluciones y transferencias tengan ciclo explícito;
+7. conteo, diferencia, investigación y corrección estén separados;
+8. condición y disponibilidad sean dimensiones diferentes;
+9. daño, pérdida, faltante y hallazgo sean auditables;
+10. mantenimiento tenga plan, orden, ejecución, prueba y liberación;
+11. reparación consuma repuestos correlacionados;
+12. garantía y seguro tengan vigencia y reclamación;
+13. baja y disposición sean no destructivas y segregadas;
+14. kits tengan definición, instancia y completitud;
+15. vehículos, conductor, viaje y custodia estén separados;
+16. kilometraje y combustible tengan controles explícitos;
+17. ORIGO, NEXO y NUMERA tengan fronteras claras;
+18. los veintidós hallazgos tengan destino;
+19. no se creen preguntas narrativas nuevas;
+20. se generen los cuatro requisitos de prueba;
+21. el registro `04A` completo tenga 99 requisitos válidos;
+22. ninguna fila tenga más o menos de catorce columnas;
+23. no se autorice implementación;
+24. la continuidad quede en `CAP-SCOPE-008`.
+
+---
+
+#### 40. Resultado y continuidad
+
+**Estado:** PROPUESTA PARA APROBACIÓN
+
+Al aprobarse:
+
+- `CAP-SCOPE-007` será la decisión canónica de cobertura para activos, reutilizables, mantenimiento, repuestos, kits y vehículos;
+- `TREQ-NEXO-013`, `TREQ-NEXO-014`, `TREQ-NEXO-015` y `TREQ-INTEGRATION-012` quedarán incorporados al registro canónico;
+- NEXO conservará la propiedad del estado físico y los demás dominios emitirán o consumirán hechos correlacionados;
+- ningún conteo, movimiento, mantenimiento, baja, compra o efecto real quedará autorizado;
+- la continuidad será:
+
+```text
+CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
+```
+
+
 ### [ ] CAP-SCOPE-008 — Evaluar producción, planificación, rendimiento, calidad e inocuidad
 ### [ ] CAP-SCOPE-009 — Evaluar ventas, pedidos, mesas, comandas, caja y pagos
 ### [ ] CAP-SCOPE-010 — Evaluar clientes, fidelización, reclamos y servicio
