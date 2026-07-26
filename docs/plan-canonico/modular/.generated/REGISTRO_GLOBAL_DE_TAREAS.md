@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **223** |
+| Aprobadas | **242** |
 | En propuesta | **0** |
-| No iniciadas | **1347** |
+| No iniciadas | **1328** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-CAT-001` — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | ✅ APROBADA |
-| Tarea actual | `PROC-CAT-002` — Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | ⬜ NO INICIADA |
-| Siguiente | `PROC-CAT-003` — Crear identificador estable para cada proceso | ⬜ NO INICIADA |
+| Última aprobada | `PROC-CAT-020` — Identificar procesos duplicados entre aplicaciones | ✅ APROBADA |
+| Tarea actual | `PROC-ACTOR-001` — Vincular cada proceso con roles base aplicables | ⬜ NO INICIADA |
+| Siguiente | `PROC-ACTOR-002` — Vincular cada proceso con roles operativos aplicables | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -251,25 +251,25 @@
 | ✅ APROBADA | `GAP-CTRL-008` | Impedir cerrar una fase con brechas críticas sin propietario | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `E1-GATE-001` | Ejecutar y aprobar la puerta de cierre de BLOQUE E1 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md` |
 | ✅ APROBADA | `PROC-CAT-001` | Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-005` | Definir aplicación propietaria de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-006` | Definir aplicaciones consumidoras de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-007` | Definir actor que inicia cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-008` | Definir actores que continúan cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-009` | Definir estado inicial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-010` | Definir estados intermedios | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-011` | Definir estado final | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-012` | Definir transiciones permitidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-013` | Definir acciones excepcionales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-014` | Definir cancelación, reversión y corrección | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-015` | Definir información de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-016` | Definir información producida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-017` | Definir eventos empresariales emitidos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-002` | Diseñar el proceso TO-BE para capacidades manuales, parciales, rotas o ausentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-003` | Crear identificador estable para cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-004` | Definir propósito empresarial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-005` | Definir aplicación propietaria de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-006` | Definir aplicaciones consumidoras de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-007` | Definir actor que inicia cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-008` | Definir actores que continúan cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-009` | Definir estado inicial de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-010` | Definir estados intermedios de cada proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-011` | Definir estado final | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-012` | Definir transiciones permitidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-013` | Definir acciones excepcionales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-014` | Definir cancelación, reversión y corrección | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-015` | Definir información de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-016` | Definir información producida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-017` | Definir eventos empresariales emitidos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |

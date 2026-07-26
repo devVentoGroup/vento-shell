@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "sequence_id": "E2-PROCESS-001",
+  "sequence_id": "E2-ACTORS-001",
   "block_code": "BLOQUE E2",
   "block_title": "Arquitectura funcional, procesos y experiencia transversal",
-  "previous_task_id": "E1-GATE-001",
-  "current_task_id": "PROC-CAT-001",
-  "next_reserved_task_id": "PROC-CAT-002",
+  "previous_task_id": "PROC-CAT-020",
+  "current_task_id": "PROC-ACTOR-001",
+  "next_reserved_task_id": "PROC-ACTOR-002",
   "block_status": "EN_CURSO",
   "segments": [
     {
-      "prefix": "PROC-CAT",
+      "prefix": "PROC-ACTOR",
       "from": 1,
-      "to": 20
+      "to": 10
     }
   ]
 }

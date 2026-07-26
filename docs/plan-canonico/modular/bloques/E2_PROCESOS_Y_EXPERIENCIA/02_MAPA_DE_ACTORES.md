@@ -10,4 +10,3 @@ MAPA DE ACTORES
 ### [ ] PROC-ACTOR-008 — Definir procesos del dominio cliente
 ### [ ] PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo
 ### [ ] PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
-

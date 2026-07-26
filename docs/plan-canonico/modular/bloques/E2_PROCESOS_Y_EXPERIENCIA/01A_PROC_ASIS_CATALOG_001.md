@@ -1,6 +1,6 @@
 # PROC-ASIS-CATALOG-001 — Catálogo consolidado de procesos AS-IS
 
-**Estado del artefacto:** `PROPUESTA PARA APROBACIÓN`  
+**Estado del artefacto:** `APROBADO`  
 **Tarea propietaria:** `PROC-CAT-001`  
 **Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal  
 **Versión:** `2026-07-25.1`  
