@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **251** |
+| Tareas aprobadas | **253** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1319** |
+| Tareas no iniciadas | **1317** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo** |
-| Tarea actual | **PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol** |
+| Última tarea aprobada | **UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación** |
+| Tarea actual | **OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Siguiente tarea | **OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 9 de 10 aprobadas; PROC-ACTOR-010 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 11 de 101 aprobadas; OPS-CAN-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-ACTOR-009` — Definir procesos de sistema sin actor humano directo |
-| Tarea actual | `PROC-ACTOR-010` — Prohibir autorización derivada únicamente del nombre del rol — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `UX-STATION-001` — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación |
+| Tarea actual | `OPS-CAN-001` — Diseñar la arquitectura objetivo de canales corporativos y comerciales — **NO INICIADA** |
+| Siguiente tarea | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **9 DE 10 APROBADAS — ACTUAL PROC-ACTOR-010** |
+| BLOQUE E2 | **11 DE 101 APROBADAS — ACTUAL OPS-CAN-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,13 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo
+UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
         ↓
 TAREA ACTUAL
-PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
+OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales
+        ↓
+SIGUIENTE TAREA RESERVADA
+OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 9 de 10 tareas aprobadas
+BLOQUE E2 — 11 de 101 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183465,12 +183468,12 @@ Dominios iniciales:
 
 | Métrica                           |        Resultado |
 | --------------------------------- | ---------------: |
-| Requisitos vigentes               |          **337** |
+| Requisitos vigentes               |          **345** |
 | Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        |   **329 de 329** |
+| Filas con catorce columnas        |   **345 de 345** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          | `PROC-ACTOR-009` |
+| Última tarea incorporada          | `PROC-ACTOR-010` |
 | Fecha de normalización            |     `2026-07-26` |
 
 Distribución vigente:
@@ -183479,7 +183482,7 @@ Distribución vigente:
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
-| `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-190`               |      190 |
+| `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-198`               |      198 |
 | `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-011`             |       11 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-013`       |       13 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-005`             |        5 |
@@ -183741,14 +183744,22 @@ Distribución vigente:
 | `TREQ-PROC-180` | `PROC` | Pedidos, pagos, reembolsos, puntos, redenciones, reservas, entregas, reclamos, compensaciones y respuestas incentivadas deberán ser idempotentes, correlacionables y conciliables entre aplicaciones y canales. Cliente, pagador, receptor, beneficiario, cuenta B2B y actor técnico se conservarán separados; un acuse externo no cerrará el hecho empresarial. | `PROC-ACTOR-008` | Doble cobro, puntos duplicados, entrega falsa, compensación repetida, pedido perdido y cierre por webhook técnico / crítica | integración + idempotencia + concurrencia + contractual + E2E / automatizada | `PASS-INT-001`; `PASS-INT-002`; `INT-EXT-001` a `INT-EXT-019`; `PROC-CAT-017`; `AUTH-QA-030` | Contratos cliente, adaptadores externos, colas, conciliación, E5 y certificación U | PASS, PULSO, NEXO, NUMERA, AURA, `vento-shell` y proveedores sandbox / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Reglas transaccionales y separación de participantes aprobadas en `PROC-ACTOR-008`; implementación pendiente | `TREQ-PROC-003`; `TREQ-PROC-090`; `TREQ-PROC-173`; `TREQ-PROC-176`; `TREQ-INTEGRATION-003` |
 | `TREQ-PROC-181` | `PROC` | PIN, OTP, reautenticación, firma dibujada, firma electrónica, fotografía u otra confirmación cliente deberán vincularse al actor o relación, contenido mostrado, versión, recurso, transición, dispositivo, canal y momento. No podrán reutilizarse tras cambiar pedido, cantidades, destinatario, precio, documento, actor o sesión. En dispositivos compartidos se limpiarán credenciales y datos, y offline se revalidará con idempotencia. | `PROC-ACTOR-008` | Firma atribuida a persona incorrecta, entrega aceptada por el conductor, consentimiento reutilizado, fuga en tablet y duplicidad offline / crítica | seguridad + evidencia + dispositivo compartido + offline + idempotencia + E2E / automatizada con pruebas físicas | `INFO-DOM-011`; `AUTH-DEV-007`; `SHELL-UI-014`; `SHELL-UI-017`; `SHELL-UI-019`; `EVID-ARC-001` a `EVID-ARC-008`; `AUTH-QA-030` | Firma y evidencia, tablets, colas offline, E5 y certificación U | PASS, PULSO, NEXO, aplicaciones de estación, Storage y Supabase / CI, staging, dispositivos y desconexión | `IDENTIFICADO` | Pendiente | Pendiente | Regla de confirmación cliente, no reutilización y limpieza de dispositivo aprobada en `PROC-ACTOR-008`; implementación pendiente | `TREQ-PROC-148`; `TREQ-PROC-149`; `TREQ-PROC-163`; `TREQ-PROC-173`; `TREQ-PROC-180` |
 | `TREQ-PROC-182` | `PROC` | CI, migración y cutover deberán validar las seis clasificaciones, relaciones cliente-recurso, separación cliente-trabajador-canal, proyecciones mínimas, consentimientos, idempotencia y no exposición de procesos internos. Deberán detectar roles `client` hardcodeados, consultas por identificador sin ownership, perfiles duplicados, consentimientos sin versión, canales usados como cliente y rutas legacy con acceso excesivo. | `PROC-ACTOR-008` | Regresión documental, IDOR legacy, identidad duplicada, exposición masiva, cutover con pérdida de consentimiento y autorización por nombre de rol / crítica | contractual + migración + CI + seguridad + regresión / automatizada | `SHELL-CI-017`; `SHELL-CI-018`; `SUPA-TRANS-005`; `PASS-INT-005`; `PROC-ACTOR-009`; `PROC-ACTOR-010`; `AUTH-QA-027`; `AUTH-QA-030` | Verificadores, transición E3/R, paquetes E5, cutover e hypercare | `vento-shell`, Supabase y repositorios cliente/internos / local, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de clasificación, seguridad, proyección y migración aprobadas en `PROC-ACTOR-008`; automatización y cutover pendientes | `TREQ-PROC-174`; `TREQ-PROC-175`; `TREQ-PROC-176`; `TREQ-PROC-177`; `TREQ-PROC-178`; `TREQ-SHELL-008` |
-| `TREQ-PROC-183` | `PROC` | Los 69 procesos deberán resolver exactamente a una de cuatro clasificaciones de participación de sistema: `SISTEMA_EJECUTOR_PRINCIPAL`, `SISTEMA_EJECUTOR_PARCIAL`, `SISTEMA_DISPARADOR_O_VIGILANTE` o `SIN_ACTOR_SISTEMA_DIRECTO`. La validación comprobará los conteos 6, 24, 25 y 14, cobertura completa y coherencia con actores humanos, cliente, aplicaciones propietarias, estados, eventos y auditoría. | `PROC-ACTOR-009` | Procesos automatizados sin gobierno, hechos físicos atribuidos a sistema, clasificación contradictoria y automatización usada como autorización / crítica | contractual + documentación ejecutable + CI + regresión / automatizada | `PROC-ACTOR-009`; `PROC-ACTOR-010`; `SUPA-AUD-011`; `SUPA-AUD-014`; `SHELL-CI-017`; `AUTH-QA-030` | Clasificación de actores, auditoría de automatizaciones, E3/E4, paquetes E5 y certificación U | `vento-shell`, Supabase y aplicaciones propietarias / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Matriz propuesta con 69 procesos, 55 con actor de sistema directo en alguna etapa y 14 sin actor directo; aprobación e implementación pendientes | `TREQ-PROC-175`; `TREQ-PROC-184`; `TREQ-PROC-190` |
-| `TREQ-PROC-184` | `PROC` | Toda acción de sistema deberá identificar `service_principal_id`, tipo, nombre y versión del servicio, aplicación, proceso, etapa, acción, capacidad, alcance, trigger, regla y versión, comando, idempotencia, correlación, causa, entradas, salidas, resultado y timestamps. `service_role` o una cuenta técnica no podrán funcionar como identidad, permiso universal ni empleado ficticio. | `PROC-ACTOR-009` | Acciones anónimas, privilegio transversal, imposibilidad de atribuir cambios, service role como bypass y auditoría incompleta / crítica | identidad técnica + autorización + contractual + seguridad + auditoría / automatizada | `SHELL-CON-017`; `SUPA-AUD-011`; `AUTH-DB-010`; `AUTH-DB-024`; `INT-EXT-002`; `AUTH-QA-029`; `AUTH-QA-030` | Principales técnicos, autorización de servicios, auditoría, E3/E4, E5 y certificación U | `vento-shell`, Supabase, Edge Functions, cron, workers e integraciones / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato mínimo de principal técnico definido en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-AUTH-013`; `TREQ-PROC-097`; `TREQ-PROC-183` |
-| `TREQ-PROC-185` | `PROC` | Webhooks, eventos, cron, timers, sensores y mensajes externos solo podrán activar un adaptador o evaluación interna después de validar origen, firma, timestamp, replay y contrato. Un acuse técnico o ejecución exitosa no probará pago, entrega, recepción, aprobación, custodia, firma ni cierre empresarial. | `PROC-ACTOR-009` | Falsificación de eventos, replay, cierres por `200 OK`, estados externos tratados como verdad y efectos sin conciliación / crítica | integración + seguridad + contractual + replay + E2E / automatizada | `INT-EXT-010`; `INT-EXT-011`; `INT-EXT-012`; `INT-EXT-017`; `INT-DB-001`; `INT-DB-007`; `SHELL-CON-017`; `AUTH-QA-030` | Adaptadores externos, registro de integraciones, conciliación, E4/E5 y certificación U | Integraciones externas, Supabase, aplicaciones propietarias y sandboxes / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Frontera entre trigger técnico, adaptador y resultado empresarial definida en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-007`; `TREQ-PROC-100`; `TREQ-PROC-180`; `TREQ-PROC-184` |
-| `TREQ-PROC-186` | `PROC` | Todo trabajo asíncrono deberá conservar tiempo empresarial y de procesamiento, zona horaria, prioridad, vencimiento, clave idempotente, orden causal, concurrencia, cancelación, reintentos, backoff, límite, replay, cola de fallos, recuperación, backfill y restatement. Un reintento no podrá crear una nueva decisión, pago, entrega, movimiento, asiento, punto, documento o firma. | `PROC-ACTOR-009` | Duplicidad, procesamiento fuera de orden, carreras, trabajos eternos, backfills engañosos y pérdida de causalidad / crítica | cola + idempotencia + concurrencia + recuperación + migración / automatizada | `QUEUE-ARC-002` a `QUEUE-ARC-008`; `SHELL-CON-023`; `INT-DB-005`; `INT-DB-007`; `SUPA-TRANS-005`; `AUTH-QA-030` | Infraestructura de colas, idempotencia, transición, E4/E5 y certificación U | `vento-shell`, Supabase, workers, colas e integraciones / CI, staging y pruebas de fallos | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de tiempo, reintentos, replay y concurrencia definido en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-091`; `TREQ-PROC-102`; `TREQ-PROC-173`; `TREQ-PROC-180`; `TREQ-PROC-185` |
-| `TREQ-PROC-187` | `PROC` | Contratación, decisiones laborales, riesgo residual, selección de proveedor, aprobación de compra, recepción física, conteo y ajuste, custodia, liberación de calidad, producción, entrega, compensación, diferencia de caja, pago, concesión de acceso, desempeño y presupuesto deberán conservar gates humanos explícitos. El sistema podrá calcular, recomendar, bloquear preventivamente o escalar, pero no sustituir la autoridad ni la segregación. | `PROC-ACTOR-009` | Decisiones discrecionales automatizadas, autoaprobación, fraude, atribución falsa, pérdida de segregación y acciones irreversibles sin responsable / crítica | autorización + segregación + contractual + seguridad + regresión / automatizada | `PROC-ACTOR-003`; `PROC-ACTOR-005`; `PROC-ACTOR-006`; `AUTH-DB-010`; `INFO-AUTH-003`; `AUTH-QA-030` | Gates humanos, segregación, acciones sensibles, E5 y certificación U | Aplicaciones propietarias, `vento-shell` y Supabase / CI, staging y pruebas adversariales | `IDENTIFICADO` | Pendiente | Pendiente | Catálogo de decisiones reservadas a personas definido en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-137`; `TREQ-PROC-139`; `TREQ-PROC-153`; `TREQ-PROC-160`; `TREQ-PROC-184` |
-| `TREQ-PROC-188` | `PROC` | Evidencia, documentos, etiquetas, métricas, asientos y resultados generados por sistema deberán declarar su origen calculado, generado, recibido, materializado, publicado, reconciliado o reproducido. Nunca se presentarán como observación física, aceptación, firma o aprobación humana. Si derivan de una decisión previa, conservarán la referencia al actor, autorización, alcance y vigencia originales. | `PROC-ACTOR-009` | Firma falsa, evidencia ambigua, documento atribuido a persona incorrecta, ledger sin origen y auditoría que confunde efecto técnico con decisión / crítica | evidencia + auditoría + contractual + seguridad + regresión / automatizada | `PROC-CAT-016`; `PROC-CAT-017`; `PROC-CAT-018`; `EVID-ARC-001` a `EVID-ARC-010`; `INFO-DOM-011`; `AUTH-QA-029`; `AUTH-QA-030` | Evidencia y auditoría, documentos, acciones sensibles, E4/E5 y certificación U | Aplicaciones propietarias, Storage, `vento-shell` y Supabase / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de procedencia y no suplantación de evidencia definido en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-097`; `TREQ-PROC-098`; `TREQ-PROC-149`; `TREQ-PROC-164`; `TREQ-PROC-181` |
-| `TREQ-PROC-189` | `PROC` | Dispositivo compartido, cola offline y servicio de sincronización deberán conservar separados principal técnico, actor humano original, momento del hecho, momento de sincronización, turno, sede, área, rol, recurso, versión, evidencia, firma, idempotencia y resultado de revalidación. El servicio no podrá reemplazar al trabajador ni reutilizar una acción pendiente después de cambiar actor, recurso o versión. | `PROC-ACTOR-009` | Acciones offline atribuidas al sistema, firma reutilizada, trabajador equivocado, permisos revocados ignorados y duplicidad al reconectar / crítica | dispositivo compartido + offline + identidad + idempotencia + E2E / automatizada con pruebas físicas | `AUTH-DEV-007`; `AUTH-DEV-010`; `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `NFR-REQ-004`; `SHELL-CON-023`; `AUTH-QA-030` | Dispositivos, colas offline, revalidación, E5 y certificación U | ANIMA, NEXO, FOGO, PULSO, `vento-shell`, Supabase y dispositivos / CI, staging, conexión y desconexión | `IDENTIFICADO` | Pendiente | Pendiente | Separación de dispositivo, actor original y sincronizador definida en propuesta `PROC-ACTOR-009`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-PROC-148`; `TREQ-PROC-164`; `TREQ-PROC-173`; `TREQ-PROC-181`; `TREQ-PROC-186` |
-| `TREQ-PROC-190` | `PROC` | CI, migración y cutover deberán validar las cuatro clasificaciones, contratos de principal técnico, gates humanos, versionado, idempotencia, replay, auditoría, evidencia y separación de dispositivos. Deberán detectar `service_role` como bypass, cron o triggers con escrituras directas no declaradas, cuentas técnicas compartidas, jobs huérfanos, reglas sin versión, atribución a empleados ficticios y automatizaciones legacy fuera de la aplicación propietaria. | `PROC-ACTOR-009` | Regresión de privilegios, automatizaciones invisibles, jobs sin dueño, transición con dobles efectos y bypass de autorización / crítica | contractual + migración + CI + seguridad + regresión / automatizada | `SHELL-CI-017`; `SHELL-CI-018`; `SUPA-AUD-011`; `SUPA-AUD-014`; `SUPA-TRANS-005`; `AUTH-DB-024`; `PROC-ACTOR-010`; `AUTH-QA-027`; `AUTH-QA-030` | Verificadores, auditoría Supabase, transición E3/R, E4, paquetes E5, cutover e hypercare | `vento-shell`, Supabase y todos los repositorios / local, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de clasificación, seguridad y transición definidas en propuesta `PROC-ACTOR-009`; automatización y cutover pendientes | `TREQ-PROC-182`; `TREQ-PROC-183`; `TREQ-PROC-184`; `TREQ-PROC-185`; `TREQ-PROC-186`; `TREQ-SHELL-008` |
+| `TREQ-PROC-183` | `PROC` | Los 69 procesos deberán resolver exactamente a una de cuatro clasificaciones de participación de sistema: `SISTEMA_EJECUTOR_PRINCIPAL`, `SISTEMA_EJECUTOR_PARCIAL`, `SISTEMA_DISPARADOR_O_VIGILANTE` o `SIN_ACTOR_SISTEMA_DIRECTO`. La validación comprobará los conteos 6, 24, 25 y 14, cobertura completa y coherencia con actores humanos, cliente, aplicaciones propietarias, estados, eventos y auditoría. | `PROC-ACTOR-009` | Procesos automatizados sin gobierno, hechos físicos atribuidos a sistema, clasificación contradictoria y automatización usada como autorización / crítica | contractual + documentación ejecutable + CI + regresión / automatizada | `PROC-ACTOR-009`; `PROC-ACTOR-010`; `SUPA-AUD-011`; `SUPA-AUD-014`; `SHELL-CI-017`; `AUTH-QA-030` | Clasificación de actores, auditoría de automatizaciones, E3/E4, paquetes E5 y certificación U | `vento-shell`, Supabase y aplicaciones propietarias / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Matriz aprobada con 69 procesos, 55 con actor de sistema directo en alguna etapa y 14 sin actor directo; implementación pendiente | `TREQ-PROC-175`; `TREQ-PROC-184`; `TREQ-PROC-190` |
+| `TREQ-PROC-184` | `PROC` | Toda acción de sistema deberá identificar `service_principal_id`, tipo, nombre y versión del servicio, aplicación, proceso, etapa, acción, capacidad, alcance, trigger, regla y versión, comando, idempotencia, correlación, causa, entradas, salidas, resultado y timestamps. `service_role` o una cuenta técnica no podrán funcionar como identidad, permiso universal ni empleado ficticio. | `PROC-ACTOR-009` | Acciones anónimas, privilegio transversal, imposibilidad de atribuir cambios, service role como bypass y auditoría incompleta / crítica | identidad técnica + autorización + contractual + seguridad + auditoría / automatizada | `SHELL-CON-017`; `SUPA-AUD-011`; `AUTH-DB-010`; `AUTH-DB-024`; `INT-EXT-002`; `AUTH-QA-029`; `AUTH-QA-030` | Principales técnicos, autorización de servicios, auditoría, E3/E4, E5 y certificación U | `vento-shell`, Supabase, Edge Functions, cron, workers e integraciones / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato mínimo de principal técnico aprobado en `PROC-ACTOR-009`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-AUTH-013`; `TREQ-PROC-097`; `TREQ-PROC-183` |
+| `TREQ-PROC-185` | `PROC` | Webhooks, eventos, cron, timers, sensores y mensajes externos solo podrán activar un adaptador o evaluación interna después de validar origen, firma, timestamp, replay y contrato. Un acuse técnico o ejecución exitosa no probará pago, entrega, recepción, aprobación, custodia, firma ni cierre empresarial. | `PROC-ACTOR-009` | Falsificación de eventos, replay, cierres por `200 OK`, estados externos tratados como verdad y efectos sin conciliación / crítica | integración + seguridad + contractual + replay + E2E / automatizada | `INT-EXT-010`; `INT-EXT-011`; `INT-EXT-012`; `INT-EXT-017`; `INT-DB-001`; `INT-DB-007`; `SHELL-CON-017`; `AUTH-QA-030` | Adaptadores externos, registro de integraciones, conciliación, E4/E5 y certificación U | Integraciones externas, Supabase, aplicaciones propietarias y sandboxes / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Frontera entre trigger técnico, adaptador y resultado empresarial aprobada en `PROC-ACTOR-009`; implementación pendiente | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-007`; `TREQ-PROC-100`; `TREQ-PROC-180`; `TREQ-PROC-184` |
+| `TREQ-PROC-186` | `PROC` | Todo trabajo asíncrono deberá conservar tiempo empresarial y de procesamiento, zona horaria, prioridad, vencimiento, clave idempotente, orden causal, concurrencia, cancelación, reintentos, backoff, límite, replay, cola de fallos, recuperación, backfill y restatement. Un reintento no podrá crear una nueva decisión, pago, entrega, movimiento, asiento, punto, documento o firma. | `PROC-ACTOR-009` | Duplicidad, procesamiento fuera de orden, carreras, trabajos eternos, backfills engañosos y pérdida de causalidad / crítica | cola + idempotencia + concurrencia + recuperación + migración / automatizada | `QUEUE-ARC-002` a `QUEUE-ARC-008`; `SHELL-CON-023`; `INT-DB-005`; `INT-DB-007`; `SUPA-TRANS-005`; `AUTH-QA-030` | Infraestructura de colas, idempotencia, transición, E4/E5 y certificación U | `vento-shell`, Supabase, workers, colas e integraciones / CI, staging y pruebas de fallos | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de tiempo, reintentos, replay y concurrencia aprobado en `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-091`; `TREQ-PROC-102`; `TREQ-PROC-173`; `TREQ-PROC-180`; `TREQ-PROC-185` |
+| `TREQ-PROC-187` | `PROC` | Contratación, decisiones laborales, riesgo residual, selección de proveedor, aprobación de compra, recepción física, conteo y ajuste, custodia, liberación de calidad, producción, entrega, compensación, diferencia de caja, pago, concesión de acceso, desempeño y presupuesto deberán conservar gates humanos explícitos. El sistema podrá calcular, recomendar, bloquear preventivamente o escalar, pero no sustituir la autoridad ni la segregación. | `PROC-ACTOR-009` | Decisiones discrecionales automatizadas, autoaprobación, fraude, atribución falsa, pérdida de segregación y acciones irreversibles sin responsable / crítica | autorización + segregación + contractual + seguridad + regresión / automatizada | `PROC-ACTOR-003`; `PROC-ACTOR-005`; `PROC-ACTOR-006`; `AUTH-DB-010`; `INFO-AUTH-003`; `AUTH-QA-030` | Gates humanos, segregación, acciones sensibles, E5 y certificación U | Aplicaciones propietarias, `vento-shell` y Supabase / CI, staging y pruebas adversariales | `IDENTIFICADO` | Pendiente | Pendiente | Catálogo de decisiones reservadas a personas aprobado en `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-137`; `TREQ-PROC-139`; `TREQ-PROC-153`; `TREQ-PROC-160`; `TREQ-PROC-184` |
+| `TREQ-PROC-188` | `PROC` | Evidencia, documentos, etiquetas, métricas, asientos y resultados generados por sistema deberán declarar su origen calculado, generado, recibido, materializado, publicado, reconciliado o reproducido. Nunca se presentarán como observación física, aceptación, firma o aprobación humana. Si derivan de una decisión previa, conservarán la referencia al actor, autorización, alcance y vigencia originales. | `PROC-ACTOR-009` | Firma falsa, evidencia ambigua, documento atribuido a persona incorrecta, ledger sin origen y auditoría que confunde efecto técnico con decisión / crítica | evidencia + auditoría + contractual + seguridad + regresión / automatizada | `PROC-CAT-016`; `PROC-CAT-017`; `PROC-CAT-018`; `EVID-ARC-001` a `EVID-ARC-010`; `INFO-DOM-011`; `AUTH-QA-029`; `AUTH-QA-030` | Evidencia y auditoría, documentos, acciones sensibles, E4/E5 y certificación U | Aplicaciones propietarias, Storage, `vento-shell` y Supabase / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de procedencia y no suplantación de evidencia aprobado en `PROC-ACTOR-009`; implementación pendiente | `TREQ-PROC-097`; `TREQ-PROC-098`; `TREQ-PROC-149`; `TREQ-PROC-164`; `TREQ-PROC-181` |
+| `TREQ-PROC-189` | `PROC` | Dispositivo compartido, cola offline y servicio de sincronización deberán conservar separados principal técnico, actor humano original, momento del hecho, momento de sincronización, turno, sede, área, rol, recurso, versión, evidencia, firma, idempotencia y resultado de revalidación. El servicio no podrá reemplazar al trabajador ni reutilizar una acción pendiente después de cambiar actor, recurso o versión. | `PROC-ACTOR-009` | Acciones offline atribuidas al sistema, firma reutilizada, trabajador equivocado, permisos revocados ignorados y duplicidad al reconectar / crítica | dispositivo compartido + offline + identidad + idempotencia + E2E / automatizada con pruebas físicas | `AUTH-DEV-007`; `AUTH-DEV-010`; `ANIMA-AUTH-014`; `ANIMA-AUTH-015`; `NFR-REQ-004`; `SHELL-CON-023`; `AUTH-QA-030` | Dispositivos, colas offline, revalidación, E5 y certificación U | ANIMA, NEXO, FOGO, PULSO, `vento-shell`, Supabase y dispositivos / CI, staging, conexión y desconexión | `IDENTIFICADO` | Pendiente | Pendiente | Separación de dispositivo, actor original y sincronizador aprobada en `PROC-ACTOR-009`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-PROC-148`; `TREQ-PROC-164`; `TREQ-PROC-173`; `TREQ-PROC-181`; `TREQ-PROC-186` |
+| `TREQ-PROC-190` | `PROC` | CI, migración y cutover deberán validar las cuatro clasificaciones, contratos de principal técnico, gates humanos, versionado, idempotencia, replay, auditoría, evidencia y separación de dispositivos. Deberán detectar `service_role` como bypass, cron o triggers con escrituras directas no declaradas, cuentas técnicas compartidas, jobs huérfanos, reglas sin versión, atribución a empleados ficticios y automatizaciones legacy fuera de la aplicación propietaria. | `PROC-ACTOR-009` | Regresión de privilegios, automatizaciones invisibles, jobs sin dueño, transición con dobles efectos y bypass de autorización / crítica | contractual + migración + CI + seguridad + regresión / automatizada | `SHELL-CI-017`; `SHELL-CI-018`; `SUPA-AUD-011`; `SUPA-AUD-014`; `SUPA-TRANS-005`; `AUTH-DB-024`; `PROC-ACTOR-010`; `AUTH-QA-027`; `AUTH-QA-030` | Verificadores, auditoría Supabase, transición E3/R, E4, paquetes E5, cutover e hypercare | `vento-shell`, Supabase y todos los repositorios / local, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de clasificación, seguridad y transición aprobadas en `PROC-ACTOR-009`; automatización y cutover pendientes | `TREQ-PROC-182`; `TREQ-PROC-183`; `TREQ-PROC-184`; `TREQ-PROC-185`; `TREQ-PROC-186`; `TREQ-SHELL-008` |
+| `TREQ-PROC-191` | `PROC` | Los 69 procesos deberán consumir una decisión de autorización que no pueda resolverse únicamente mediante nombre de rol, cargo, oficio, sede, área, estación, ruta, aplicación, dispositivo o tipo de principal. La validación cubrirá los ocho roles base, doce roles operativos y los planos personal, administrativo, operativo, cliente y sistema. | `PROC-ACTOR-010` | Bypass transversal, privilegios invisibles al catálogo, matrices documentales sin efecto real y decisiones divergentes entre aplicaciones / crítica | contractual + autorización + seguridad + documentación ejecutable + regresión / automatizada | `PROC-ACTOR-010`; `SHELL-AUTH-001` a `SHELL-AUTH-005`; `AUTH-DB-034`; `SHELL-CI-017`; `AUTH-QA-030` | Cierre del mapa de actores, autorización compartida, paquetes E5 y certificación U | Todos los repositorios, Supabase, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Matriz propuesta con cobertura de 69 procesos y prohibición transversal; aprobación e implementación pendientes | `TREQ-AUTH-001`; `TREQ-AUTH-004`; `TREQ-PROC-183`; `TREQ-PROC-192`; `TREQ-PROC-198` |
+| `TREQ-PROC-192` | `PROC` | Toda decisión protegida deberá resolver principal, actor, permiso exacto y versión, modalidad, proceso, etapa, acción, recurso, alcance, territorio, relación, contexto, estado, denegaciones, segregación, sensibilidad, frescura y razones. La ausencia de un dato obligatorio producirá `DENY`; el rol no podrá completar valores faltantes ni transformar elegibilidad en autorización. | `PROC-ACTOR-010` | Allow por defecto, recurso no resuelto, alcance implícito, denegaciones ignoradas y permisos rellenados desde el rol / crítica | contractual + autorización + seguridad + RPC + RLS + regresión / automatizada | `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-035`; `SHELL-AUTH-001` a `SHELL-AUTH-003`; `AUTH-QA-020` a `AUTH-QA-024`; `AUTH-QA-030` | Contexto y evaluador canónicos, E3/R, E5 y certificación U | `vento-shell`, Supabase y aplicaciones consumidoras / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato mínimo y precedencia definidos en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-001`; `TREQ-AUTH-004`; `TREQ-PROC-119`; `TREQ-PROC-128`; `TREQ-PROC-191` |
+| `TREQ-PROC-193` | `PROC` | El análisis estático y dinámico deberá detectar comparaciones autorizadoras como `role === ...`, listas de roles privilegiados, `role IN (...)` en RLS o RPC, fallbacks desde rol y helpers `is_owner` o equivalentes usados como decisión final. Los usos permitidos de rol para presentación, clasificación, asignación o elegibilidad deberán estar explícitamente separados y, cuando corresponda, anotados. | `PROC-ACTOR-010` | Nuevos hardcodes, excepciones distribuidas, falsos positivos que impiden migrar y bypasses ocultos en frontend, servidor o base de datos / crítica | análisis estático + contractual + CI + seguridad + regresión / automatizada | `AUTH-AUD-018`; `CODE-AUD-009`; `SHELL-AUD-002` a `SHELL-AUD-005`; `SHELL-AUTH-004`; `SHELL-CI-018`; `AUTH-QA-027`; `AUTH-QA-030` | Lint, inventario de consumidores, gates de CI, E5 y certificación U | Todos los repositorios, SQL de Supabase y CI | `IDENTIFICADO` | Pendiente | Pendiente | Catálogo de usos permitidos y prohibidos definido en propuesta `PROC-ACTOR-010`; reglas de lint pendientes | `TREQ-AUTH-002`; `TREQ-AUTH-004`; `TREQ-SHELL-008`; `TREQ-PROC-191`; `TREQ-PROC-198` |
+| `TREQ-PROC-194` | `PROC` | `propietario`, `gerente_general`, `gerente`, `supervisor` y cualquier rol administrativo podrán recibir alcance y permisos explícitos, pero nunca bypass universal. Una capacidad reservada podrá exigir rol estructural como condición necesaria, siempre junto con permiso exacto, actor activo, recurso, alcance, denegaciones, segregación y auditoría. | `PROC-ACTOR-010` | Escalamiento por jerarquía, propietario convertido en service role, gerente general heredando capacidades reservadas y alcance global aplicado a permisos no concedidos / crítica | autorización + seguridad + segregación + contractual + regresión / automatizada | `AUTH-MOD-003`; `AUTH-MOD-004`; `AUTH-RBAC-001` a `AUTH-RBAC-005`; `AUTH-DB-034`; `AUTH-QA-001` a `AUTH-QA-003`; `AUTH-QA-030` | Roles administrativos, capacidades reservadas, E5 y certificación U | VISO, ANIMA, NUMERA, `vento-shell`, Supabase / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Regla de elegibilidad estructural sin bypass definida en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-001`; `TREQ-PROC-120`; `TREQ-PROC-137`; `TREQ-PROC-153`; `TREQ-PROC-191` |
+| `TREQ-PROC-195` | `PROC` | Ningún rol operativo autorizará por nombre. Toda acción operacional deberá exigir concesión exacta y, según modalidad, turno vigente, rol operativo efectivo, sede, área, check-in, recurso, estado y evidencia. Quedan prohibidos fallbacks desde rol base, perfil predeterminado, último turno, `navigation_role`, estación o selección del frontend. | `PROC-ACTOR-010` | Operación fuera de turno, oficios legacy permanentes, cruce territorial, tablets con permisos propios y acciones físicas sin actor efectivo / crítica | autorización operativa + contexto + dispositivo compartido + E2E + regresión / automatizada | `PROC-ACTOR-002`; `AUTH-CTX-001` a `AUTH-CTX-030`; `AUTH-DB-006` a `AUTH-DB-010`; `AUTH-QA-004` a `AUTH-QA-018`; `AUTH-QA-030` | Contexto operativo, dispositivos, E5 y certificación U | NEXO, FOGO, ORIGO, PULSO, `vento-shell`, Supabase y estaciones / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Regla operativa sin autorización por nombre definida en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-PROC-127`; `TREQ-PROC-160`; `TREQ-PROC-164`; `TREQ-PROC-191` |
+| `TREQ-PROC-196` | `PROC` | Etiquetas de identidad o contexto como `trabajador_operativo`, `role=client`, `navigation_role`, dispositivo, estación, cuenta técnica o `service_role` no podrán autorizar. Los procesos personales exigirán relación con el sujeto; los procesos cliente, propiedad o relación y consentimiento; los dispositivos, actor humano vigente; y los servicios, principal técnico y capacidad acotada. | `PROC-ACTOR-010` | IDOR, empleado consultando casos ajenos, cliente accediendo por ID conocido, dispositivo actuando como trabajador y servicio privilegiado sin propósito / crítica | identidad + relación + privacidad + dispositivo + principal técnico + seguridad / automatizada | `PROC-ACTOR-004`; `PROC-ACTOR-008`; `PROC-ACTOR-009`; `AUTH-DEV-007`; `SHELL-CON-017`; `AUTH-DB-010`; `AUTH-QA-017` a `AUTH-QA-022`; `AUTH-QA-030` | Identidades de dominio, dispositivos, integraciones, E4/E5 y certificación U | PASS, ANIMA, NEXO, FOGO, PULSO, `vento-shell`, Supabase e integraciones / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Separación de identidades y prohibición de etiquetas autorizadoras definida en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-003`; `TREQ-PROC-145`; `TREQ-PROC-176`; `TREQ-PROC-184`; `TREQ-PROC-191` |
+| `TREQ-PROC-197` | `PROC` | Caché, sesión, simulación, override, emergencia y colas offline deberán vincularse con actor, permiso, recurso, alcance, versiones, frescura y expiración. Cambios de rol, permiso, denegación, sede, área, turno, check-in, actor o recurso deberán invalidar o revalidar. Ningún snapshot podrá mantenerse válido únicamente porque conserva el mismo nombre de rol. | `PROC-ACTOR-010` | Revocación tardía, permisos obsoletos, simulación que altera acceso real, firma offline aplicada a otro actor y override permanente por jerarquía / crítica | caché + frescura + offline + simulación + seguridad + concurrencia / automatizada | `AUTH-DB-035`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `AUTH-DEV-010`; `NFR-REQ-004`; `AUTH-QA-019`; `AUTH-QA-025`; `AUTH-QA-026`; `AUTH-QA-030` | Invalidation, offline, overrides, E5 y certificación U | Todos los repositorios, Supabase, cachés y dispositivos / CI, staging y pruebas offline | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de frescura, invalidación, simulación y override definidas en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-004`; `TREQ-PROC-148`; `TREQ-PROC-173`; `TREQ-PROC-189`; `TREQ-PROC-192` |
+| `TREQ-PROC-198` | `PROC` | La migración deberá inventariar todos los usos de rol, clasificarlos, mapear acciones a permisos y recursos exactos, implementar evaluación canónica, comparar decisiones legacy/canónicas, investigar divergencias, retirar fallbacks y bloquear regresiones. No se eliminará un bypass sin pruebas negativas, evidencia de adopción y rollback seguro; el rollback no podrá restaurar autorización insegura por nombre. | `PROC-ACTOR-010` | Corte operativo, pérdida de acceso legítimo, privilegios residuales, doble fuente de autorización y rollback que reintroduce vulnerabilidades / crítica | migración + contractual + CI + seguridad + regresión + cutover / automatizada | `SHELL-AUD-002` a `SHELL-AUD-005`; `SHELL-AUTH-004`; `SHELL-AUTH-005`; `AUTH-DB-020`; `AUTH-DB-030`; `AUTH-DB-031`; `SHELL-CI-017` a `SHELL-CI-019`; `AUTH-QA-027` a `AUTH-QA-030` | Migración de autorización, paquetes E5, cutover, rollback, hypercare y certificación U | Todos los repositorios, `vento-shell`, Supabase, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Secuencia de inventario, evaluación dual, retiro y certificación definida en propuesta `PROC-ACTOR-010`; implementación pendiente | `TREQ-AUTH-001`; `TREQ-AUTH-002`; `TREQ-AUTH-004`; `TREQ-PROC-190`; `TREQ-PROC-191`; `TREQ-PROC-193` |
 
 #### SHELL
 
@@ -221025,6 +221036,47 @@ Regla de realimentación:
 - una devolución deberá actualizar la trazabilidad y no crear inventarios
   paralelos.
 
+### Secuencia documental interna
+
+La continuidad de E2 se calcula desde `active-sequence.json`. No se actualiza
+manualmente la cabecera al cerrar cada subbloque.
+
+El orden lógico aprobado para desarrollar las tareas existentes es:
+
+1. cerrar `PROC-ACTOR-001` a `PROC-ACTOR-010`;
+2. inventariar la realidad física mediante `UX-STATION-001`;
+3. completar los procesos transversales `OPS-CAN-001`, `OPS-LOG-001` y
+   `OPS-B2B-001`;
+4. completar `CAP-TAL-001` a `CAP-TAL-006`;
+5. fijar principios de experiencia mediante `UX-BASE-001` a `UX-BASE-015`;
+6. definir `NFR-REQ-001` a `NFR-REQ-011`;
+7. diseñar estaciones mediante `UX-STATION-002` a `UX-STATION-007`;
+8. definir gramática, bandeja y composición mediante `UX-STATION-010` a
+   `UX-STATION-012`;
+9. prototipar y aprobar mediante `UX-STATION-008` y `UX-STATION-009`;
+10. diseñar `UX-ADMIN-001` a `UX-ADMIN-005`;
+11. definir `PROC-SCREEN-001` a `PROC-SCREEN-028`;
+12. cerrar cobertura mediante `PROC-COVER-001` a `PROC-COVER-010`;
+13. aprobar la puerta no funcional `NFR-REQ-012`.
+
+La recolección de evidencia podrá realizarse en paralelo. La aprobación
+documental conservará este orden para impedir que una pantalla se diseñe antes
+de conocer procesos, actores, condiciones físicas y requisitos no funcionales.
+
+En particular:
+
+```text
+DISEÑO COMPLETO DE ESTACIÓN
+UX-STATION-002 a UX-STATION-007
++ UX-STATION-010 a UX-STATION-012
+        ↓
+PROTOTIPO CON TRABAJADORES
+UX-STATION-008
+        ↓
+APROBACIÓN DE MATRIZ
+UX-STATION-009
+```
+
 ### CATÁLOGO DE PROCESOS
 
 ### ✅ PROC-CAT-001 — Consolidar el catálogo AS-IS de procesos levantado y aprobado en E1
@@ -234574,10 +234626,685 @@ APROBADA
 No se inicia `PROC-ACTOR-010` hasta aprobación expresa de esta tarea.
 
 
-### [ ] PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
+### ✅ PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
+
+**Estado:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Tarea anterior:** `PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo` — APROBADA
+
+**Siguiente tarea reservada:** `UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación`
+
+**Artefacto producido:** `PROC-ROLE-NAME-AUTHORIZATION-PROHIBITION-001`
+
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+
+**Roles base cubiertos:** **8**
+
+**Roles operativos cubiertos:** **12**
+
+**Identidades adicionales cubiertas:** cliente, trabajador como sujeto, dispositivo compartido y principal técnico
+**Cambios en código, migraciones o Supabase:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Cerrar el mapa canónico de actores estableciendo que ningún nombre de rol, cargo, oficio, área, sede, estación, dispositivo, ruta, aplicación o tipo de principal podrá constituir por sí solo una autorización empresarial.
+
+La regla aplica a:
+
+```text
+FRONTEND
+MIDDLEWARE
+SERVER ACTIONS
+API Y RPC
+RLS
+STORAGE
+REALTIME
+EDGE FUNCTIONS
+CRON, JOBS Y COLAS
+APLICACIONES MÓVILES
+OPERACIÓN OFFLINE
+DISPOSITIVOS COMPARTIDOS
+```
+
+---
+
+#### 2. Decisión canónica
+
+```text
+NOMBRE O CÓDIGO DE ROL
+        ↓
+CLASIFICA, AGRUPA O HABILITA ELEGIBILIDAD
+        ↓
+NO PRODUCE UNA DECISIÓN ALLOW
+```
+
+Toda acción protegida deberá resolver:
+
+```text
+PRINCIPAL AUTENTICADO
++
+IDENTIDAD Y ACTOR EFECTIVO
++
+PERMISO EXACTO Y VIGENTE
++
+MODALIDAD DEL PERMISO
++
+RECURSO Y ACCIÓN SOLICITADA
++
+ALCANCE TERRITORIAL Y EMPRESARIAL
++
+CONTEXTO PERSONAL, ADMINISTRATIVO, OPERATIVO, CLIENTE O TÉCNICO
++
+ESTADO, PRECONDICIONES Y SEGREGACIÓN
++
+DENEGACIONES Y RESTRICCIONES APLICABLES
++
+FRESCURA DE LA DECISIÓN
+=
+DECISIÓN CANÓNICA ALLOW O DENY
+```
+
+El rol puede ser uno de los datos de entrada del contexto. Nunca será la decisión completa.
+
+---
+
+#### 3. Dependencias canónicas
+
+Esta propuesta conserva y aplica:
+
+- `ADR-AUTH-001 — ACCEPTED`;
+- `AUTH-AUD-018 — Buscar decisiones hardcodeadas por rol`;
+- `AUTH-AUD-020 — Crear informe de riesgos y brechas`;
+- `AUTH-MOD-001` a `AUTH-MOD-021`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-030`;
+- `PROC-CAT-001` a `PROC-CAT-020`;
+- `PROC-ACTOR-001` a `PROC-ACTOR-009`;
+- `CODE-AUD-009`, `CODE-AUD-014` y `CODE-AUD-017`;
+- `SHELL-AUD-002` a `SHELL-AUD-005`;
+- `SHELL-AUTH-001` a `SHELL-AUTH-005`;
+- `AUTH-DB-006` a `AUTH-DB-010`;
+- `AUTH-DB-021` a `AUTH-DB-024`;
+- `AUTH-DB-033` a `AUTH-DB-035`;
+- `SHELL-CI-017` a `SHELL-CI-019`;
+- `AUTH-QA-001` a `AUTH-QA-030`.
+
+No se modifica todavía ningún guard, helper, política, RPC, ruta, pantalla, caché o dato físico.
+
+---
+
+#### 4. Qué representa un rol
+
+##### 4.1. Rol base
+
+Representa una responsabilidad laboral permanente y permite construir una matriz de concesiones administrativas o laborales.
+
+```text
+ROL BASE
+→ fuente posible de concesiones explícitas
+→ clasificación de experiencia
+→ cobertura potencial
+→ NO autorización final
+```
+
+##### 4.2. Rol operativo
+
+Representa una función temporal durante un turno válido.
+
+```text
+ROL OPERATIVO
++
+TURNO Y CONTEXTO VÁLIDOS
+→ permite consultar sus concesiones operativas
+→ NO crea permisos por sí mismo
+```
+
+##### 4.3. Etiquetas que no son roles autorizadores
+
+No podrán utilizarse como autorización:
+
+- `navigation_role`;
+- nombre de estación o dispositivo;
+- nombre de sede, área o tipo de sede;
+- perfil operativo predeterminado;
+- último rol utilizado;
+- rol simulado;
+- `role=client`;
+- `service_role`;
+- nombre de una aplicación o ruta;
+- texto visible del cargo.
+
+---
+
+#### 5. Usos permitidos del nombre del rol
+
+El código de rol podrá utilizarse para:
+
+1. buscar concesiones explícitas en una matriz versionada;
+2. validar que una asignación de rol sea estructuralmente admisible;
+3. determinar elegibilidad para una capacidad reservada, siempre junto con permiso exacto y demás condiciones;
+4. escoger etiquetas, ayudas, navegación o presentación;
+5. agrupar métricas y reportes autorizados;
+6. proponer valores predeterminados no vinculantes;
+7. seleccionar escenarios de prueba;
+8. describir al actor en auditoría después de resolver la autorización;
+9. restringir qué roles pueden recibir una concesión, sin concederla automáticamente;
+10. comparar matrices durante una migración controlada.
+
+Estos usos deberán quedar separados del punto donde se emite `ALLOW` o `DENY`.
+
+---
+
+#### 6. Usos prohibidos
+
+Queda prohibido:
+
+```ts
+if (role === "propietario") return true;
+if (["propietario", "gerente_general"].includes(role)) allow();
+if (operationalRole === "bodeguero") permitMutation();
+```
+
+También queda prohibido:
+
+- conceder una ruta, botón o mutación por una lista local de roles;
+- asumir acceso total porque el rol es global;
+- asumir acceso a toda la sede porque el rol es `gerente` o `supervisor`;
+- derivar un oficio operativo desde `employees.role`;
+- completar un permiso faltante con el rol base;
+- completar contexto operativo con perfil, navegación o último turno;
+- convertir el área o estación en permiso;
+- asumir propiedad de un recurso porque `role=client`;
+- utilizar `service_role` como autorización empresarial;
+- omitir RLS o validación de servidor porque la interfaz ocultó la acción;
+- mantener listas privilegiadas distintas en cada aplicación;
+- interpretar una simulación como permiso real;
+- conservar acceso en caché después de revocación, cambio de rol o fin de turno;
+- autorizar un recurso nuevo mediante un snapshot creado para otro recurso;
+- emitir `ALLOW` cuando falte permiso, alcance, recurso o contexto.
+
+---
+
+#### 7. Elegibilidad estructural no equivale a autorización
+
+Algunas capacidades pueden exigir una clase estructural específica.
+
+Ejemplo conceptual:
+
+```text
+ROL BASE = propietario
++
+PERMISO RESERVADO DE PROPIETARIO
++
+EMPLEADO ACTIVO
++
+ALCANCE Y RECURSO VÁLIDOS
++
+SIN DENEGACIÓN
+=
+ACCIÓN AUTORIZABLE
+```
+
+Esto es válido porque el rol es **una condición necesaria**, no la condición suficiente.
+
+Queda prohibido:
+
+```text
+ROL BASE = propietario
+=
+ALLOW UNIVERSAL
+```
+
+La misma regla aplica a cualquier rol administrativo u operativo.
+
+---
+
+#### 8. Contrato mínimo de decisión
+
+Toda evaluación deberá producir o poder reconstruir:
+
+```text
+decision_id
+principal_id
+principal_type
+actor_id
+actor_type
+base_role_code
+operational_role_code
+permission_code
+permission_catalog_version
+permission_modality
+process_id
+process_instance_id
+stage_id
+action
+resource_type
+resource_id
+company_id
+site_id
+area_id
+shift_id
+checkin_id
+scope_resolution
+subject_or_relationship
+service_capability
+individual_denials
+segregation_result
+sensitivity_requirements
+context_version
+freshness_token
+decision = ALLOW | DENY
+reason_codes[]
+decided_at
+expires_at
+evaluator_version
+trace_id
+```
+
+Un campo no aplicable podrá ser nulo de forma explícita. No podrá sustituirse por el nombre del rol.
+
+---
+
+#### 9. Precedencia obligatoria
+
+```text
+PRINCIPAL O ACTOR INVÁLIDO
+        > cualquier rol
+
+EMPLEADO INACTIVO
+        > cualquier permiso heredado
+
+DENEGACIÓN INDIVIDUAL O TRANSVERSAL
+        > concesión por matriz
+
+FALTA DE PERMISO EXACTO
+        > nombre o jerarquía del rol
+
+ALCANCE O RECURSO NO AUTORIZADO
+        > permiso sin cobertura suficiente
+
+FALTA DE TURNO/CHECK-IN CUANDO APLICA
+        > rol operativo
+
+SEGREGACIÓN INCUMPLIDA
+        > capacidad funcional
+
+CONTEXTO DESACTUALIZADO
+        > decisión en caché
+```
+
+La ausencia de información necesaria produce `DENY`, no un fallback por rol.
+
+---
+
+#### 10. Reglas por clase de actor
+
+##### 10.1. Propietario y gerente general
+
+- pueden recibir permisos globales explícitos;
+- no reciben bypass universal;
+- no sustituyen turno, check-in o rol operativo;
+- `gerente_general` no hereda capacidades reservadas de propietario;
+- propietario tampoco equivale a `service_role`.
+
+##### 10.2. Gerente y supervisor
+
+- su cobertura se limita a sedes, áreas y recursos autorizados;
+- supervisar no concede mutar, aprobar o cerrar;
+- una sede seleccionada no amplía cobertura;
+- una vista transversal no concede escritura transversal.
+
+##### 10.3. Roles funcionales administrativos
+
+`auxiliar_administrativa`, `contador` y `marketing` solo ejecutan permisos explícitos del dominio y alcance concedidos. El cargo no habilita datos sensibles, exportaciones, aprobaciones ni acciones de terceros.
+
+##### 10.4. `trabajador_operativo`
+
+El rol base acredita pertenencia laboral, no un oficio activo. La operación exige turno y rol operativo efectivos.
+
+##### 10.5. Roles operativos
+
+`bodeguero`, `cajero_satelite`, `produccion_*`, `conductor_logistica` y demás roles operativos no reciben todas las acciones de su dominio. Cada acción exige permiso atómico, estado, recurso, sede, área, turno y check-in cuando corresponda.
+
+##### 10.6. Cliente
+
+`role=client` no concede acceso a pedidos, puntos, reclamos o datos. Se exige identidad de dominio, relación con el recurso, acción válida, finalidad y consentimiento aplicables.
+
+##### 10.7. Dispositivo compartido
+
+El dispositivo no hereda permisos por `navigation_role`, estación o plantilla. Las acciones empresariales se atribuyen al actor humano vigente.
+
+##### 10.8. Principal técnico
+
+`service_role`, cron, webhook, worker o Edge Function no reciben autoridad general. Se exige principal técnico, capacidad, proceso, acción, alcance, trigger, versión e idempotencia.
+
+---
+
+#### 11. Cobertura de los 69 procesos
+
+Leyenda de planos:
+
+```text
+P = personal
+A = administrativo
+O = operativo
+C = cliente
+S = sistema directo en alguna etapa
+```
+
+| Proceso      | Propósito                                                                                                                                                                                  | Planos aplicables  | Atajo prohibido principal                                                                                                                  | Resolución mínima obligatoria                                                                                                                                                                                                                                                                                                                   | Control mínimo                                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` | Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento                                                                                            | `A`                | `propietario`/`gerente*`/`supervisor` ⇒ allow                                                                                              | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; decisión, razones y auditoría                                                                                                                                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol                                                                                                    |
+| `VPROC-0002` | Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                                                                          | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+| `VPROC-0003` | Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                                                                                      | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0004` | Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                                                                            | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0005` | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                                                                                         | `P`, `A`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso                                                      | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                                                               | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; autorización por etapa                                                                            |
+| `VPROC-0006` | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                                                                                         | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0007` | Administrar asignaciones laborales y programación publicada con historial y revisión controlada                                                                                            | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0008` | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables                                                                                                     | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0009` | Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                                                                                       | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0010` | Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                                                                             | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0011` | Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                                                                            | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0012` | Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                                                                              | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0013` | Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                                                                              | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0014` | Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                                                                                | `A`, `O`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso                                                    | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                        | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0015` | Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                                                                           | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0016` | Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                                                                                 | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                                                                                    | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0018` | Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                                                                                    | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0019` | Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                                                                           | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0020` | Comparar proveedores y condiciones con evidencia suficiente para decidir                                                                                                                   | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0021` | Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                                                                                   | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+| `VPROC-0022` | Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica                                                                         | `A`, `O`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso                                                    | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                        | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0023` | Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento                                                                                                                     | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0024` | Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                                                                            | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0025` | Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                                                                                 | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0026` | Contar como observación, investigar diferencias y ajustar mediante decisión separada                                                                                                       | `A`, `O`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso                                                    | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                        | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0027` | Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                                                                           | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0028` | Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                                                                             | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0029` | Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                                                                              | `P`, `A`, `O`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0030` | Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                                                                           | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0031` | Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                                                                              | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0032` | Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                                                                                | `P`, `A`, `O`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0033` | Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                                                                                       | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0034` | Preparar materiales y ejecutar producción contra una versión aprobada                                                                                                                      | `O`                | rol operativo, área o estación ⇒ permiso                                                                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; turno, rol operativo efectivo, sede/área y check-in aplicable; decisión, razones y auditoría                                                                                                                                                    | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out                                                                    |
+| `VPROC-0035` | Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                                                                             | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0036` | Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                                                                              | `O`, `S`           | rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad                                                        | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                              | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay                                    |
+| `VPROC-0037` | Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                                                                               | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0038` | Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                                                                                      | `O`, `C`           | rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad                                                 | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; decisión, razones y auditoría                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR                                                         |
+| `VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                                                                             | `O`, `C`, `S`      | rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad; `service_role`, webhook o job ⇒ autoridad      | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                             | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay                         |
+| `VPROC-0040` | Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                                                                               | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0041` | Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                                                                                     | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0042` | Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                                                                                         | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0043` | Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                                                                               | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0044` | Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                                                                                | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                                                                                | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0046` | Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                                                                                         | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0047` | Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento                                                                                                     | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0048` | Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                                                                                | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0049` | Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                                                                                        | `O`, `C`           | rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad                                                 | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; decisión, razones y auditoría                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR                                                         |
+| `VPROC-0050` | Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                                                                                 | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0051` | Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                                                                            | `A`, `C`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; `role=client`, teléfono, correo o ID ⇒ propiedad; `service_role`, webhook o job ⇒ autoridad | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; anti-IDOR; identidad de servicio y replay                                                         |
+| `VPROC-0052` | Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                                                                              | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+| `VPROC-0053` | Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                                                                                 | `A`, `C`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; `role=client`, teléfono, correo o ID ⇒ propiedad; `service_role`, webhook o job ⇒ autoridad | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; anti-IDOR; identidad de servicio y replay                                                         |
+| `VPROC-0054` | Gestionar costos, distribución, cierre y rentabilidad con reglas versionadas                                                                                                               | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+| `VPROC-0055` | Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                                                                                    | `A`, `O`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso                                                    | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                        | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0056` | Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                                                                                  | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0057` | Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                                                                                    | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0058` | Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                                                                                      | `P`, `A`, `O`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría          | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0059` | Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                                                                                   | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0060` | Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                                                                                 | `P`, `A`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso; `service_role`, webhook o job ⇒ autoridad           | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                         | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay; autorización por etapa                                            |
+| `VPROC-0061` | Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                                                                               | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0062` | Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                                                                                   | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0063` | Gestionar riesgos empresariales: Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado de riesgo, tratamiento y seguimiento.            | `A`, `O`, `S`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `service_role`, webhook o job ⇒ autoridad         | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría                                  | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; identidad de servicio y replay; autorización por etapa            |
+| `VPROC-0064` | Gestionar relaciones con asesores y autoridades: Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar la propiedad interna del resultado. | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+| `VPROC-0065` | Acompañar desempeño y desarrollo: Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con uso explícito y privacidad aprobada.                           | `P`, `A`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; ser empleado o sujeto ⇒ acceso al caso                                                      | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                                                                               | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; autorización por etapa                                                                            |
+| `VPROC-0066` | Entregar y controlar elementos de protección: Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección.                               | `P`, `A`, `O`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0067` | Gestionar kits y conjuntos: Definir kit, instancia, componentes obligatorios y opcionales, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor.    | `P`, `A`, `O`      | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; ser empleado o sujeto ⇒ acceso al caso            | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; relación propia/sujeto; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; reevaluación por etapa y handoff; decisión, razones y auditoría                                                                | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; autorización por etapa                                            |
+| `VPROC-0068` | Medir satisfacción: Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido.                                             | `A`, `O`, `C`, `S` | `propietario`/`gerente*`/`supervisor` ⇒ allow; rol operativo, área o estación ⇒ permiso; `role=client`, teléfono, correo o ID ⇒ propiedad  | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; turno, rol operativo efectivo, sede/área y check-in aplicable; relación cliente/consentimiento; principal técnico, capacidad, trigger e idempotencia; reevaluación por etapa y handoff; decisión, razones y auditoría | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; revocación por turno/check-out; anti-IDOR; identidad de servicio y replay; autorización por etapa |
+| `VPROC-0069` | Gestionar presupuestos: Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación sin convertir el presupuesto en hecho contable.                  | `A`, `S`           | `propietario`/`gerente*`/`supervisor` ⇒ allow; `service_role`, webhook o job ⇒ autoridad                                                   | principal y actor válidos; permiso exacto/versionado; recurso y acción; alcance y denegaciones; cobertura administrativa; principal técnico, capacidad, trigger e idempotencia; decisión, razones y auditoría                                                                                                                                   | backend canónico; RLS/RPC cuando aplique; prueba negativa por rol; identidad de servicio y replay                                                                    |
+
+La matriz no crea permisos nuevos. Declara que **todos los procesos** deben consumir una decisión de autorización independiente del nombre del rol.
+
+---
+
+#### 12. Reglas por capa tecnológica
+
+##### 12.1. Interfaz y navegación
+
+La interfaz podrá adaptar presentación por rol, pero:
+
+```text
+BOTÓN VISIBLE
+≠ AUTORIZACIÓN
+
+BOTÓN OCULTO
+≠ CONTROL DE SEGURIDAD
+```
+
+Toda mutación deberá validarse nuevamente en servidor.
+
+##### 12.2. Middleware, rutas y server actions
+
+- no mantendrán listas privilegiadas locales;
+- declararán el permiso y recurso requeridos;
+- consumirán el evaluador canónico;
+- denegarán acceso directo por URL y formularios manipulados;
+- distinguirán navegación de capacidad empresarial.
+
+##### 12.3. RPC y funciones
+
+Toda RPC sensible deberá validar principal, actor, permiso exacto, recurso, sede, área, estado y contexto. `SECURITY DEFINER` no elimina estas validaciones.
+
+##### 12.4. RLS y grants
+
+Las políticas no concederán acceso por `employees.role IN (...)`. Los grants técnicos no equivalen a autorización sobre filas.
+
+##### 12.5. Storage y Realtime
+
+Buckets, objetos, canales y payloads deberán aplicar identidad, relación, permiso, alcance y minimización. El nombre del rol no habilitará suscripción o descarga transversal.
+
+##### 12.6. Edge Functions, cron y colas
+
+Resolverán principal técnico y capacidad explícita. No utilizarán `service_role` como sustituto del actor o decisión de negocio.
+
+---
+
+#### 13. Caché, offline y frescura
+
+Una decisión almacenada deberá estar vinculada a:
+
+```text
+actor
+permiso
+recurso
+alcance
+context_version
+permission_catalog_version
+freshness_token
+expires_at
+```
+
+Al cambiar rol, permiso, denegación, sede, área, turno, check-in, actor de dispositivo o recurso:
+
+```text
+INVALIDAR O REVALIDAR
+```
+
+Una cola offline conservará la decisión original como evidencia, pero revalidará al sincronizar. No podrá ejecutar mediante el rol que el usuario tenía anteriormente.
+
+---
+
+#### 14. Simulación, soporte, override y emergencia
+
+##### Simulación
+
+El rol simulado solo cambia el escenario hipotético. No modifica la autorización real ni RLS.
+
+##### Soporte
+
+Observar o diagnosticar no concede mutar. Toda acción de soporte sensible tendrá permiso y auditoría propios.
+
+##### Override
+
+Un override deberá declarar:
+
+- permiso específico;
+- causa;
+- recurso;
+- alcance;
+- duración;
+- actor responsable;
+- control compensatorio;
+- auditoría y revisión.
+
+No podrá denominarse simplemente “override de propietario”.
+
+##### Emergencia
+
+El acceso de emergencia deberá ser explícito, temporal, acotado, revocable y auditado. El rol no activa la emergencia por sí solo.
+
+---
+
+#### 15. Migración y retiro de hardcodes
+
+La transición seguirá este orden:
+
+1. inventariar comparaciones y listas de roles en todos los repositorios;
+2. clasificar cada uso como presentación, elegibilidad estructural o autorización;
+3. conservar únicamente usos no autorizadores documentados;
+4. asignar a cada acción un permiso, recurso, alcance y contexto exactos;
+5. implementar `get_access_context` y `evaluate_authorization` canónicos;
+6. migrar frontend, middleware, server actions, RPC, RLS, Storage, Realtime y automatizaciones;
+7. ejecutar evaluación dual legacy/canónica sin ampliar acceso;
+8. investigar toda divergencia;
+9. retirar fallbacks y listas privilegiadas locales;
+10. activar denegación cerrada;
+11. ejecutar pruebas negativas por cada rol y proceso crítico;
+12. bloquear nuevas comparaciones autorizadoras mediante lint y CI;
+13. conservar evidencia de adopción antes de eliminar objetos legacy;
+14. habilitar rollback por repositorio sin restaurar bypasses inseguros.
+
+Durante la transición:
+
+```text
+RESULTADO LEGACY = ALLOW
+RESULTADO CANÓNICO = DENY
+→ NO AMPLIAR AUTOMÁTICAMENTE
+→ INVESTIGAR Y RESOLVER
+```
+
+---
+
+#### 16. Decisiones reservadas y tareas responsables
+
+| Decisión o implementación                               | Tarea responsable                   |
+| ------------------------------------------------------- | ----------------------------------- |
+| inventario de guards y helpers duplicados               | `SHELL-AUD-002` a `SHELL-AUD-005`   |
+| SDK canónico de contexto y autorización                 | `SHELL-AUTH-001` a `SHELL-AUTH-003` |
+| lint y gates contra consumidores legacy                 | `SHELL-AUTH-004`                    |
+| migración de consumidores en todos los repositorios     | `SHELL-AUTH-005`                    |
+| contexto de acceso canónico                             | `AUTH-DB-033`, `AUTH-DB-035`        |
+| evaluación de autorización canónica                     | `AUTH-DB-034`                       |
+| validaciones dentro de RPC sensibles                    | `AUTH-DB-006` a `AUTH-DB-010`       |
+| políticas, Storage, Realtime y automatizaciones         | `AUTH-DB-021` a `AUTH-DB-024`       |
+| retiro de objetos legacy                                | `AUTH-DB-030`                       |
+| certificación de paridad                                | `AUTH-DB-031`                       |
+| verificación automática del registro y bloqueo de merge | `SHELL-CI-017` a `SHELL-CI-019`     |
+| pruebas negativas y regresión integral                  | `AUTH-QA-001` a `AUTH-QA-030`       |
+| estaciones e interacción física                         | `UX-STATION-001` a `UX-STATION-012` |
+
+No queda pendiente narrativo sin tarea responsable.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+Esta tarea genera:
+
+```text
+TREQ-PROC-191
+TREQ-PROC-192
+TREQ-PROC-193
+TREQ-PROC-194
+TREQ-PROC-195
+TREQ-PROC-196
+TREQ-PROC-197
+TREQ-PROC-198
+```
+
+El detalle canónico se incorpora exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+---
+
+#### 18. Criterios de aceptación
+
+- [ ] La prohibición aplica a los 69 procesos.
+- [ ] Los ocho roles base y doce roles operativos quedan cubiertos.
+- [ ] Cliente, dispositivo, simulación y principal técnico no se convierten en bypasses equivalentes.
+- [ ] El rol solo se utiliza para clasificación, elegibilidad o búsqueda de concesiones explícitas.
+- [ ] Ninguna capa emite `ALLOW` únicamente por nombre o lista de roles.
+- [ ] Propietario y gerente general no reciben bypass universal.
+- [ ] Las capacidades reservadas exigen rol estructural, permiso exacto y demás condiciones.
+- [ ] Toda acción protegida declara permiso, recurso, alcance y contexto.
+- [ ] La operación exige turno, rol operativo efectivo y check-in cuando corresponda.
+- [ ] Las relaciones personales y cliente se validan por recurso, no por etiqueta de rol.
+- [ ] `service_role` no equivale a autorización empresarial.
+- [ ] Cachés y colas offline se invalidan o revalidan.
+- [ ] Simulación, override y emergencia no usan el rol como autoridad suficiente.
+- [ ] Existe una ruta explícita para inventariar, migrar, probar y retirar hardcodes.
+- [ ] Los requisitos nuevos se encuentran en el registro canónico completo.
+- [ ] No se implementó código, migraciones ni cambios en Supabase.
+- [ ] `UX-STATION-001` permanece sin iniciar.
+
+---
+
+#### 19. Resultado del subbloque de actores
+
+Con la aprobación futura de esta tarea quedarán definidos:
+
+```text
+ROLES BASE APLICABLES
++
+ROLES OPERATIVOS APLICABLES
++
+INICIADOR / EJECUTOR / SUPERVISOR / APROBADOR
++
+PROCESOS PERSONALES
++
+PROCESOS ADMINISTRATIVOS
++
+PROCESOS OPERATIVOS
++
+PROCESOS HÍBRIDOS
++
+DOMINIO CLIENTE
++
+ACTORES DE SISTEMA
++
+PROHIBICIÓN DE AUTORIZACIÓN POR NOMBRE DE ROL
+```
+
+Esto cierra la definición documental del mapa de actores. No certifica todavía su implementación física.
+
+---
+
+#### 20. Estado
+
+```text
+APROBADA
+```
+
+No se inicia `UX-STATION-001` hasta aprobación expresa de esta tarea.
+
 MODELO DE ESTACIONES OPERATIVAS COMPARTIDAS
 
-Reglas obligatorias:
+### Reglas obligatorias:
 
 1. Ninguna modalidad de interacción se considerará predeterminada para todos los procesos.
 2. Cada paso operativo deberá comparar, cuando sean aplicables:
@@ -234607,7 +235334,229 @@ Reglas obligatorias:
 7. `AUTH-DEV-*` implementa posteriormente la identidad, límites, sesión, autorización y auditoría del dispositivo compartido.
 8. `PROC-SCREEN-*` no podrá diseñar una pantalla operativa definitiva antes de conocer la estación y modalidad de interacción aplicables.
 
-### [ ] UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
+### ✅ UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
+
+**Estado:** PROPUESTA PARA APROBACIÓN
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Marcador exacto que reemplaza:** `### [ ] UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación`
+
+**Tarea anterior:** `PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol` — APROBADA
+
+**Siguiente tarea reservada:** `OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales`
+
+**Artefacto producido:** `UX-STATION-INVENTORY-001`
+
+**Cambios en código, migraciones o Supabase:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Crear una línea base única de los lugares, áreas, puestos, dispositivos,
+periféricos y condiciones físicas que deberán soportar la experiencia
+operativa de Vento OS.
+
+Esta tarea describe el **AS-IS físico y operativo**. No selecciona todavía
+hardware objetivo, modalidad definitiva de interacción, montaje, navegación,
+pantallas ni arquitectura de autorización.
+
+---
+
+#### 2. Dependencias canónicas
+
+- BLOQUE E1 cerrado con resultado `PASS_WITH_CARRYOVER`;
+- `PROC-CAT-001` a `PROC-CAT-020`;
+- `PROC-ACTOR-001` a `PROC-ACTOR-010`;
+- catálogo de áreas, sedes, zonas y capacidades de BLOQUE E1;
+- auditoría de dispositivos y seguridad de BLOQUE A;
+- `TREQ-UX-004`, que protege la viabilidad física de estaciones y
+  periféricos.
+
+Las observaciones históricas de E1 son evidencia inicial. No se convierten
+automáticamente en especificación objetivo ni prueban que la condición siga
+vigente.
+
+---
+
+#### 3. Alcance territorial
+
+El inventario cubrirá:
+
+| Lugar canónico       | Cobertura mínima                                                                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Oficina 1            | puestos administrativos que participan o supervisan procesos operativos                                                                      |
+| Centro de Producción | bodega, recepción, despacho, Cocina Caliente, Panadería y Bollería, Repostería, Pastelería y Tortas, Galletería, Barra y Servicios Generales |
+| Vento Café           | caja, servicio interior, servicio exterior, cocina, bar, barra, mostrador y entrega                                                          |
+| Saudo                | caja, servicio, cocina, bebidas, mostrador y entrega                                                                                         |
+| Molka                | mostrador, caja, preparación, servicio y entrega                                                                                             |
+
+`Centro de Distribución` no se inventariará como sede: E1 confirmó que no
+existe físicamente y que la logística se ejecuta desde el Centro de
+Producción.
+
+---
+
+#### 4. Unidad mínima de inventario
+
+Cada fila de `UX-STATION-INVENTORY-001` representará una combinación
+observable:
+
+```text
+LUGAR
++ ÁREA O ZONA
++ PUESTO O PUNTO DE TRABAJO
++ FUNCIÓN OPERATIVA
++ FRANJA O CONDICIÓN RELEVANTE
+```
+
+No se fusionarán puestos únicamente porque utilicen la misma aplicación o el
+mismo nombre de rol.
+
+---
+
+#### 5. Campos obligatorios
+
+| Grupo           | Campos                                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------------- |
+| identidad       | ID estable, lugar, área, zona, nombre operativo y responsable de verificación                      |
+| operación       | procesos y pasos observados, actor habitual, relevos, concurrencia y picos                         |
+| movilidad       | fijo, semifijo, móvil, recorrido, distancia y cambios de zona                                      |
+| interacción     | manos libres u ocupadas, guantes, humedad, grasa, ruido, iluminación, postura y lectura disponible |
+| dispositivo     | equipo observado, propiedad, uso personal o compartido, ubicación y aplicaciones usadas            |
+| sesión          | cuenta individual o conjunta, cambio de actor, bloqueo, abandono y atribución real                 |
+| periféricos     | impresora, escáner, cámara, datáfono, campana, comandera, etiqueta u otro apoyo                    |
+| infraestructura | energía, montaje, protección física, red, señal, carga y mantenimiento                             |
+| contingencia    | operación manual, pérdida de red o energía, equipo alterno y reconciliación posterior              |
+| evidencia       | fuente, fecha, observador, soporte permitido y nivel de confianza                                  |
+| estado          | `CONFIRMADO`, `CONFIRMADO_PARCIAL`, `POR_VERIFICAR` o `NO_APLICA`                                  |
+
+No se recopilarán PIN, contraseña, token, dato de pago ni información personal
+innecesaria.
+
+---
+
+#### 6. Línea base documental conocida
+
+| Lugar o familia                   | Hecho documentado que debe verificarse                                                                                           | Estado inicial       |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Vento Café — servicio             | los meseros usan una tablet compartida con cuenta conjunta de Servicio                                                           | `CONFIRMADO_PARCIAL` |
+| Vento Café — caja                 | existe una estación de caja; el datáfono puede circular y el pago se informa verbalmente                                         | `CONFIRMADO_PARCIAL` |
+| Vento Café — cocina, bar y barra  | Makos distribuye comandas; existen impresoras y entrega mediante ventana o campana                                               | `CONFIRMADO_PARCIAL` |
+| Saudo — servicio                  | se utiliza tablet compartida o celular con cuenta operativa conjunta                                                             | `CONFIRMADO_PARCIAL` |
+| Saudo — caja y cocina             | la comunicación ordinaria es verbal; existe una impresora que no se usa habitualmente                                            | `CONFIRMADO_PARCIAL` |
+| Molka — mostrador                 | una persona puede atender, cobrar, preparar, servir y entregar desde un flujo concentrado                                        | `CONFIRMADO_PARCIAL` |
+| Centro de Producción — bodega     | existe referencia técnica a un kiosco de bodega con política amplia que requiere verificación física y funcional                 | `CONFIRMADO_PARCIAL` |
+| Centro de Producción — producción | existen áreas con frío, mesones, canastas, bandejas y trabajo manual cuya interacción física aún no está inventariada por puesto | `POR_VERIFICAR`      |
+| dispositivos compartidos          | la auditoría no encontró sesiones persistidas de actor en tablets o dispositivos operativos compartidos                          | `CONFIRMADO_PARCIAL` |
+
+`CONFIRMADO_PARCIAL` significa que existe evidencia documental suficiente para
+iniciar el inventario, pero no una observación física vigente y completa.
+
+---
+
+#### 7. Instrumento de verificación
+
+La verificación podrá ejecutarla un responsable de sede o área sin
+conocimientos técnicos:
+
+1. recorrer cada área durante una condición ordinaria y, cuando sea posible,
+   durante un pico;
+2. identificar cada punto donde se consulta, registra, confirma, imprime,
+   escanea, cobra, entrega o corrige;
+3. registrar quién lo usa realmente y cómo cambia el actor;
+4. anotar restricciones físicas y ambientales;
+5. identificar dispositivo, periféricos, energía y red disponibles;
+6. describir qué ocurre cuando el equipo o la conexión no están disponibles;
+7. adjuntar únicamente evidencia no sensible y necesaria;
+8. confirmar la fila con responsable del área y fecha.
+
+Una respuesta `NO SÉ` se convertirá en `POR_VERIFICAR`; nunca se sustituirá
+por una suposición técnica.
+
+---
+
+#### 8. Reglas de calidad y cierre de vacíos
+
+1. Cada lugar y área tendrá al menos una fila o una justificación
+   `NO_APLICA`.
+2. Toda fila tendrá fuente, fecha y responsable de verificación.
+3. Un dispositivo registrado en Supabase no probará por sí solo su existencia,
+   ubicación o uso físico vigente.
+4. Una plantilla de dispositivo no se confundirá con una instancia real.
+5. Cuenta compartida, dispositivo compartido y estación compartida se
+   registrarán como conceptos distintos.
+6. Las variantes por sede o turno se conservarán como condiciones, no como
+   procesos duplicados.
+7. Todo `POR_VERIFICAR` que permanezca al aprobar esta tarea tendrá:
+   responsable, evidencia requerida, condición de activación y cierre en
+   `UX-STATION-008`.
+8. Un riesgo de identidad o autorización se vinculará además con
+   `AUTH-DEV-001` a `AUTH-DEV-016`.
+9. Un vacío de red, energía, dispositivo o contingencia alimentará
+   `NFR-REQ-004`, `NFR-REQ-008`, `NFR-REQ-010` o `NFR-REQ-011`, según
+   corresponda.
+
+---
+
+#### 9. Uso posterior del inventario
+
+| Decisión                               | Tarea propietaria                                 |
+| -------------------------------------- | ------------------------------------------------- |
+| comparar modalidades de interacción    | `UX-STATION-002`                                  |
+| definir perfiles canónicos de estación | `UX-STATION-003`                                  |
+| identidad y cambio de actor            | `UX-STATION-004`; `AUTH-DEV-001` a `AUTH-DEV-016` |
+| superficie contextual                  | `UX-STATION-005`                                  |
+| hardware y periféricos objetivo        | `UX-STATION-006`                                  |
+| contingencia y recuperación            | `UX-STATION-007`                                  |
+| gramática, bandeja y composición       | `UX-STATION-010` a `UX-STATION-012`               |
+| validación con trabajadores            | `UX-STATION-008`                                  |
+| matriz final                           | `UX-STATION-009`                                  |
+| contrato de pantallas                  | `PROC-SCREEN-001` a `PROC-SCREEN-028`             |
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea crea un inventario documental del entorno físico y
+no introduce ni modifica comportamiento ejecutable. La regla de viabilidad
+física ya está protegida por `TREQ-UX-004`; sus escenarios se concretarán
+durante `UX-STATION-008` y la planificación de pruebas correspondiente.
+
+---
+
+#### 10. Criterios de aceptación
+
+- [ ] Los cinco lugares reales y todas sus áreas relevantes están cubiertos.
+- [ ] `Centro de Distribución` no reaparece como sede física.
+- [ ] Cada fila usa la unidad mínima y los campos obligatorios.
+- [ ] Se distinguen puesto, estación, dispositivo, sesión, actor y periférico.
+- [ ] Se documentan movilidad, ergonomía, higiene, ambiente, energía y red.
+- [ ] Se documenta la contingencia observada sin diseñar todavía la solución.
+- [ ] Toda evidencia tiene fuente, fecha, responsable y nivel de confianza.
+- [ ] No se recopilan secretos ni datos personales innecesarios.
+- [ ] Cada vacío conserva un destino exacto y una condición de cierre.
+- [ ] No se seleccionó hardware, modalidad o pantalla definitiva.
+- [ ] No se implementó código, migraciones ni cambios en Supabase.
+- [ ] `OPS-CAN-001` permanece sin iniciar.
+
+---
+
+#### 11. Estado y continuidad
+
+```text
+PROC-ACTOR-010 APROBADA
+UX-STATION-001 APROBADA
+OPS-CAN-001 NO INICIADA
+```
+
+No se inicia `OPS-CAN-001` hasta la aprobación expresa de esta tarea y una
+solicitud explícita de continuidad.
+
+
 ### [ ] UX-STATION-002 — Comparar modalidades de interacción para cada paso operativo
 ### [ ] UX-STATION-003 — Definir perfiles canónicos de estación compartida
 ### [ ] UX-STATION-004 — Diseñar identificación, cambio y cierre de actor en estaciones compartidas
@@ -237486,8 +238435,36 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
-7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE** mediante `E1-GATE-001 — APROBADA` y `E1-GATE-MANIFEST-002`, con resultado `PASS_WITH_CARRYOVER`. El catálogo de procesos `PROC-CAT-001` a `PROC-CAT-020` está **APROBADO**; la continuidad documental pasa a `PROC-ACTOR-001`.
-8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
+7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE** mediante `E1-GATE-001 — APROBADA` y `E1-GATE-MANIFEST-002`, con resultado `PASS_WITH_CARRYOVER`. El catálogo de procesos `PROC-CAT-001` a `PROC-CAT-020` y el mapa de actores `PROC-ACTOR-001` a `PROC-ACTOR-010` están **APROBADOS**; la continuidad documental pasa a `UX-STATION-001`.
+8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales.
+
+   Secuencia interna obligatoria de BLOQUE E2:
+
+   `PROC-ACTOR-001` a `PROC-ACTOR-010`
+   → `UX-STATION-001`
+   → `OPS-CAN-001`
+   → `OPS-LOG-001`
+   → `OPS-B2B-001`
+   → `CAP-TAL-001` a `CAP-TAL-006`
+   → `UX-BASE-001` a `UX-BASE-015`
+   → `NFR-REQ-001` a `NFR-REQ-011`
+   → `UX-STATION-002` a `UX-STATION-007`
+   → `UX-STATION-010` a `UX-STATION-012`
+   → `UX-STATION-008`
+   → `UX-STATION-009`
+   → `UX-ADMIN-001` a `UX-ADMIN-005`
+   → `PROC-SCREEN-001` a `PROC-SCREEN-028`
+   → `PROC-COVER-001` a `PROC-COVER-010`
+   → `NFR-REQ-012`.
+
+   `UX-STATION-008` y `UX-STATION-009` quedan después de
+   `UX-STATION-010` a `UX-STATION-012`: el prototipo y la matriz final deben
+   validar un diseño completo, no una estación que todavía carezca de
+   gramática, bandeja o composición.
+
+   La cabecera, la tarea actual y la siguiente tarea se derivan
+   automáticamente de `active-sequence.json`; no deberán corregirse
+   manualmente al terminar cada subbloque.
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
 11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo

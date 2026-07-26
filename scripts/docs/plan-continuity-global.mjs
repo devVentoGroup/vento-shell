@@ -156,7 +156,7 @@ function summarizeRegistry(taskMap) {
   };
 }
 
-function resolveContinuity(taskMap, sequenceIds) {
+export function resolveContinuity(taskMap, sequenceIds) {
   const tasks = sequenceIds.map((id) => {
     const task = taskMap.get(id);
     if (!task) fail(`no se encontró la tarea requerida por la secuencia activa: ${id}.`);
@@ -167,7 +167,13 @@ function resolveContinuity(taskMap, sequenceIds) {
   const currentIndex = tasks.findIndex((task) => task.state !== 'APROBADA');
 
   if (currentIndex < 0) {
-    fail('toda la secuencia activa está aprobada; debe definirse manualmente la transición al siguiente bloque.');
+    return {
+      sequence: tasks,
+      lastApproved: tasks.at(-1),
+      current: null,
+      next: null,
+      isComplete: true,
+    };
   }
   if (currentIndex === 0) {
     fail(`la secuencia activa no tiene una tarea aprobada anterior a ${tasks[0].id}.`);
@@ -190,6 +196,7 @@ function resolveContinuity(taskMap, sequenceIds) {
     lastApproved: tasks[currentIndex - 1],
     current: tasks[currentIndex],
     next: tasks[currentIndex + 1] ?? null,
+    isComplete: false,
   };
 }
 
@@ -261,6 +268,9 @@ function progressStatus(task) {
 
 function buildProgressSummary(continuity, activeConfig) {
   const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
+  if (continuity.isComplete) {
+    return `${activeConfig.block_code}: ${approved} de ${continuity.sequence.length - 1} aprobadas; secuencia documental completa`;
+  }
   return `${activeConfig.block_code}: ${approved} de ${continuity.sequence.length - 1} aprobadas; ${continuity.current.id} ${progressStatus(continuity.current)}`;
 }
 
@@ -322,7 +332,10 @@ function updateProgressSection(section, taskMap, continuity, activeConfig) {
   updated = updated.replace(activePattern, '');
 
   const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
-  const activeRow = `| ${activeConfig.block_code} | **${approved} DE ${continuity.sequence.length - 1} APROBADAS — ACTUAL ${continuity.current.id}** |`;
+  const activeStatus = continuity.isComplete
+    ? `${approved} DE ${continuity.sequence.length - 1} APROBADAS — SECUENCIA DOCUMENTAL COMPLETA`
+    : `${approved} DE ${continuity.sequence.length - 1} APROBADAS — ACTUAL ${continuity.current.id}`;
+  const activeRow = `| ${activeConfig.block_code} | **${activeStatus}** |`;
   const implementationPattern = /^\|\s*Implementación física\s*\|[^\n]*\|$/m;
   if (!implementationPattern.test(updated)) fail('no se encontró la fila Implementación física.');
   return updated.replace(implementationPattern, `${activeRow}\n$&`);
@@ -337,11 +350,15 @@ function buildControlBlock(continuity, activeConfig) {
     'ÚLTIMA TAREA APROBADA',
     formatTask(continuity.lastApproved),
     '        ↓',
-    'TAREA ACTUAL',
-    formatTask(continuity.current),
   ];
 
-  if (continuity.next) {
+  if (continuity.isComplete) {
+    lines.push('SECUENCIA DOCUMENTAL COMPLETA');
+  } else {
+    lines.push('TAREA ACTUAL', formatTask(continuity.current));
+  }
+
+  if (!continuity.isComplete && continuity.next) {
     lines.push('        ↓', 'SIGUIENTE TAREA RESERVADA', formatTask(continuity.next));
   }
 
@@ -360,17 +377,47 @@ function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig
   updated = replaceRow(updated, 'Fragmentos canónicos', `**${manifest.files.length}**`);
   updated = replaceRegistrySummaryRows(updated, stats);
   updated = replaceRow(updated, 'Última tarea aprobada', `**${formatTask(continuity.lastApproved)}**`);
-  updated = replaceRow(updated, 'Tarea actual', `**${formatTask(continuity.current)}**`);
-  updated = replaceRow(updated, 'Estado de la tarea actual', `**${continuity.current.state}**`);
+  updated = replaceRow(
+    updated,
+    'Tarea actual',
+    continuity.isComplete ? '**NINGUNA — SECUENCIA DOCUMENTAL COMPLETA**' : `**${formatTask(continuity.current)}**`
+  );
+  updated = replaceRow(
+    updated,
+    'Estado de la tarea actual',
+    continuity.isComplete ? '**SECUENCIA DOCUMENTAL COMPLETA**' : `**${continuity.current.state}**`
+  );
   updated = replaceRow(updated, 'Bloque actual', `**${activeConfig.block_code} — ${activeConfig.block_title}**`);
-  updated = replaceRow(updated, 'Siguiente tarea', continuity.next ? `**${formatTask(continuity.next)}**` : '**NINGUNA — CIERRE DEL BLOQUE**');
+  updated = replaceRow(
+    updated,
+    'Siguiente tarea',
+    continuity.next
+      ? `**${formatTask(continuity.next)}**`
+      : continuity.isComplete
+        ? '**NINGUNA — SECUENCIA DOCUMENTAL COMPLETA**'
+        : '**NINGUNA — CIERRE DEL BLOQUE**'
+  );
   updated = replaceRow(updated, 'Progreso del bloque', `**${buildProgressSummary(continuity, activeConfig)}**`);
 
   updated = replaceSection(updated, '### Continuidad inmediata', (section) => {
     let result = section;
     result = replaceRow(result, 'Última aprobada', formatTask(continuity.lastApproved, true));
-    result = replaceRow(result, 'Tarea actual', `${formatTask(continuity.current, true)} — **${continuity.current.state}**`);
-    result = replaceRow(result, 'Siguiente tarea', continuity.next ? formatTask(continuity.next, true) : 'NINGUNA — CIERRE DEL BLOQUE');
+    result = replaceRow(
+      result,
+      'Tarea actual',
+      continuity.isComplete
+        ? 'NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA**'
+        : `${formatTask(continuity.current, true)} — **${continuity.current.state}**`
+    );
+    result = replaceRow(
+      result,
+      'Siguiente tarea',
+      continuity.next
+        ? formatTask(continuity.next, true)
+        : continuity.isComplete
+          ? 'NINGUNA — SECUENCIA DOCUMENTAL COMPLETA'
+          : 'NINGUNA — CIERRE DEL BLOQUE'
+    );
     return result;
   });
 
@@ -419,10 +466,15 @@ function buildRegistryMarkdown(taskMap, stats, continuity) {
     '| Relación | Tarea | Estado |',
     '| --- | --- | --- |',
     `| Última aprobada | \`${continuity.lastApproved.id}\` — ${escapeMarkdownCell(continuity.lastApproved.title)} | ✅ APROBADA |`,
-    `| Tarea actual | \`${continuity.current.id}\` — ${escapeMarkdownCell(continuity.current.title)} | ${stateIcon(continuity.current.state)} ${continuity.current.state} |`,
   ];
 
-  if (continuity.next) {
+  if (continuity.isComplete) {
+    lines.push('| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |');
+  } else {
+    lines.push(`| Tarea actual | \`${continuity.current.id}\` — ${escapeMarkdownCell(continuity.current.title)} | ${stateIcon(continuity.current.state)} ${continuity.current.state} |`);
+  }
+
+  if (!continuity.isComplete && continuity.next) {
     lines.push(`| Siguiente | \`${continuity.next.id}\` — ${escapeMarkdownCell(continuity.next.title)} | ${stateIcon(continuity.next.state)} ${continuity.next.state} |`);
   }
 
@@ -475,7 +527,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
       headerChanged ? 'cabecera' : null,
       registryChanged ? 'registro global' : null,
     ].filter(Boolean).join(' y ');
-    fail(`${pending} desactualizado(s). Estado derivado: última ${continuity.lastApproved.id}; actual ${continuity.current.id}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`);
+    fail(`${pending} desactualizado(s). Estado derivado: última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`);
   }
 
   if (!checkOnly) {
@@ -491,7 +543,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     `OK: continuidad y registro global ${action}; ${stats.total} tareas; ${stats.approved} aprobadas; ${stats.proposed} en propuesta; ${stats.notStarted} no iniciadas; ${stats.rejected} rechazadas.`
   );
   console.log(
-    `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current.id}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`
+    `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`
   );
 
   return { changed: headerChanged || registryChanged, stats, taskMap, activeConfig, ...continuity };

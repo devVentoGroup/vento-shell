@@ -10,17 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **251** |
+| Aprobadas | **253** |
 | En propuesta | **0** |
-| No iniciadas | **1319** |
+| No iniciadas | **1317** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-ACTOR-009` — Definir procesos de sistema sin actor humano directo | ✅ APROBADA |
-| Tarea actual | `PROC-ACTOR-010` — Prohibir autorización derivada únicamente del nombre del rol | ⬜ NO INICIADA |
+| Última aprobada | `UX-STATION-001` — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | ✅ APROBADA |
+| Tarea actual | `OPS-CAN-001` — Diseñar la arquitectura objetivo de canales corporativos y comerciales | ⬜ NO INICIADA |
+| Siguiente | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -278,8 +279,8 @@
 | ✅ APROBADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ✅ APROBADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ✅ APROBADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ⬜ NO INICIADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ⬜ NO INICIADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |

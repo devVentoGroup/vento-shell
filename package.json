@@ -13,6 +13,7 @@
     "generate-favicon": "node scripts/generate-favicon.mjs",
     "docs:plan:build": "node scripts/docs/build-plan-canonico.mjs",
     "docs:plan:check": "node scripts/docs/build-plan-canonico.mjs --check",
+    "docs:plan:test": "node --test scripts/docs/plan-continuity-global.test.mjs",
     "docs:plan:watch": "node scripts/docs/watch-plan-canonico.mjs"
   },
   "dependencies": {

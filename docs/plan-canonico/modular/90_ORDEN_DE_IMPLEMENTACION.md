@@ -38,8 +38,36 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
-7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE** mediante `E1-GATE-001 — APROBADA` y `E1-GATE-MANIFEST-002`, con resultado `PASS_WITH_CARRYOVER`. El catálogo de procesos `PROC-CAT-001` a `PROC-CAT-020` está **APROBADO**; la continuidad documental pasa a `PROC-ACTOR-001`.
-8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales, incluyendo `OPS-CAN-001`, `OPS-LOG-001`, `OPS-B2B-001` y `CAP-TAL-001` a `CAP-TAL-006`
+7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE** mediante `E1-GATE-001 — APROBADA` y `E1-GATE-MANIFEST-002`, con resultado `PASS_WITH_CARRYOVER`. El catálogo de procesos `PROC-CAT-001` a `PROC-CAT-020` y el mapa de actores `PROC-ACTOR-001` a `PROC-ACTOR-010` están **APROBADOS**; la continuidad documental pasa a `UX-STATION-001`.
+8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales.
+
+   Secuencia interna obligatoria de BLOQUE E2:
+
+   `PROC-ACTOR-001` a `PROC-ACTOR-010`
+   → `UX-STATION-001`
+   → `OPS-CAN-001`
+   → `OPS-LOG-001`
+   → `OPS-B2B-001`
+   → `CAP-TAL-001` a `CAP-TAL-006`
+   → `UX-BASE-001` a `UX-BASE-015`
+   → `NFR-REQ-001` a `NFR-REQ-011`
+   → `UX-STATION-002` a `UX-STATION-007`
+   → `UX-STATION-010` a `UX-STATION-012`
+   → `UX-STATION-008`
+   → `UX-STATION-009`
+   → `UX-ADMIN-001` a `UX-ADMIN-005`
+   → `PROC-SCREEN-001` a `PROC-SCREEN-028`
+   → `PROC-COVER-001` a `PROC-COVER-010`
+   → `NFR-REQ-012`.
+
+   `UX-STATION-008` y `UX-STATION-009` quedan después de
+   `UX-STATION-010` a `UX-STATION-012`: el prototipo y la matriz final deben
+   validar un diseño completo, no una estación que todavía carezca de
+   gramática, bandeja o composición.
+
+   La cabecera, la tarea actual y la siguiente tarea se derivan
+   automáticamente de `active-sequence.json`; no deberán corregirse
+   manualmente al terminar cada subbloque.
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
 10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
 11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo

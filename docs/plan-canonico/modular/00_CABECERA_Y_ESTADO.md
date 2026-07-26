@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **251** |
+| Tareas aprobadas | **253** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1319** |
+| Tareas no iniciadas | **1317** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo** |
-| Tarea actual | **PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol** |
+| Última tarea aprobada | **UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación** |
+| Tarea actual | **OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Siguiente tarea | **OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 9 de 10 aprobadas; PROC-ACTOR-010 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 11 de 101 aprobadas; OPS-CAN-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-ACTOR-009` — Definir procesos de sistema sin actor humano directo |
-| Tarea actual | `PROC-ACTOR-010` — Prohibir autorización derivada únicamente del nombre del rol — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `UX-STATION-001` — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación |
+| Tarea actual | `OPS-CAN-001` — Diseñar la arquitectura objetivo de canales corporativos y comerciales — **NO INICIADA** |
+| Siguiente tarea | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **9 DE 10 APROBADAS — ACTUAL PROC-ACTOR-010** |
+| BLOQUE E2 | **11 DE 101 APROBADAS — ACTUAL OPS-CAN-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,11 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo
+UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
         ↓
 TAREA ACTUAL
-PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
+OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales
+        ↓
+SIGUIENTE TAREA RESERVADA
+OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 9 de 10 tareas aprobadas
+BLOQUE E2 — 11 de 101 tareas aprobadas
 ```

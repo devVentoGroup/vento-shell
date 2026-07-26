@@ -3904,15 +3904,23 @@ No se inicia `PROC-ACTOR-010` hasta aprobación expresa de esta tarea.
 
 ### ✅ PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
 
-**Estado:** APROBADA  
-**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal  
-**Tarea anterior:** `PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo` — APROBADA  
-**Siguiente tarea reservada:** `UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación`  
-**Artefacto producido:** `PROC-ROLE-NAME-AUTHORIZATION-PROHIBITION-001`  
-**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`  
-**Roles base cubiertos:** **8**  
-**Roles operativos cubiertos:** **12**  
-**Identidades adicionales cubiertas:** cliente, trabajador como sujeto, dispositivo compartido y principal técnico  
+**Estado:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Tarea anterior:** `PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo` — APROBADA
+
+**Siguiente tarea reservada:** `UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación`
+
+**Artefacto producido:** `PROC-ROLE-NAME-AUTHORIZATION-PROHIBITION-001`
+
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+
+**Roles base cubiertos:** **8**
+
+**Roles operativos cubiertos:** **12**
+
+**Identidades adicionales cubiertas:** cliente, trabajador como sujeto, dispositivo compartido y principal técnico
 **Cambios en código, migraciones o Supabase:** no autorizados
 
 ---
