@@ -10,18 +10,17 @@
 | --- | ---: |
 | Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **242** |
+| Aprobadas | **251** |
 | En propuesta | **0** |
-| No iniciadas | **1328** |
+| No iniciadas | **1319** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-CAT-020` — Identificar procesos duplicados entre aplicaciones | ✅ APROBADA |
-| Tarea actual | `PROC-ACTOR-001` — Vincular cada proceso con roles base aplicables | ⬜ NO INICIADA |
-| Siguiente | `PROC-ACTOR-002` — Vincular cada proceso con roles operativos aplicables | ⬜ NO INICIADA |
+| Última aprobada | `PROC-ACTOR-009` — Definir procesos de sistema sin actor humano directo | ✅ APROBADA |
+| Tarea actual | `PROC-ACTOR-010` — Prohibir autorización derivada únicamente del nombre del rol | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -270,15 +269,15 @@
 | ✅ APROBADA | `PROC-CAT-018` | Definir auditoría necesaria | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-CAT-019` | Definir métricas de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-CAT-020` | Identificar procesos duplicados entre aplicaciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-004` | Definir procesos personales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-005` | Definir procesos administrativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-006` | Definir procesos operativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
-| ⬜ NO INICIADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-001` | Vincular cada proceso con roles base aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-002` | Vincular cada proceso con roles operativos aplicables | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-003` | Diferenciar iniciador, ejecutor, supervisor y aprobador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-004` | Definir procesos personales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-005` | Definir procesos administrativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-006` | Definir procesos operativos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-007` | Definir procesos híbridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-008` | Definir procesos del dominio cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
+| ✅ APROBADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ⬜ NO INICIADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ⬜ NO INICIADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |

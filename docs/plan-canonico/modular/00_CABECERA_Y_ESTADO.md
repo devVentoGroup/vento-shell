@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **242** |
+| Tareas aprobadas | **251** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1328** |
+| Tareas no iniciadas | **1319** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-CAT-020 — Identificar procesos duplicados entre aplicaciones** |
-| Tarea actual | **PROC-ACTOR-001 — Vincular cada proceso con roles base aplicables** |
+| Última tarea aprobada | **PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo** |
+| Tarea actual | **PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-ACTOR-002 — Vincular cada proceso con roles operativos aplicables** |
+| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 0 de 10 aprobadas; PROC-ACTOR-001 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 9 de 10 aprobadas; PROC-ACTOR-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-CAT-020` — Identificar procesos duplicados entre aplicaciones |
-| Tarea actual | `PROC-ACTOR-001` — Vincular cada proceso con roles base aplicables — **NO INICIADA** |
-| Siguiente tarea | `PROC-ACTOR-002` — Vincular cada proceso con roles operativos aplicables |
+| Última aprobada | `PROC-ACTOR-009` — Definir procesos de sistema sin actor humano directo |
+| Tarea actual | `PROC-ACTOR-010` — Prohibir autorización derivada únicamente del nombre del rol — **NO INICIADA** |
+| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **0 DE 10 APROBADAS — ACTUAL PROC-ACTOR-001** |
+| BLOQUE E2 | **9 DE 10 APROBADAS — ACTUAL PROC-ACTOR-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,11 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-CAT-020 — Identificar procesos duplicados entre aplicaciones
+PROC-ACTOR-009 — Definir procesos de sistema sin actor humano directo
         ↓
 TAREA ACTUAL
-PROC-ACTOR-001 — Vincular cada proceso con roles base aplicables
-        ↓
-SIGUIENTE TAREA RESERVADA
-PROC-ACTOR-002 — Vincular cada proceso con roles operativos aplicables
+PROC-ACTOR-010 — Prohibir autorización derivada únicamente del nombre del rol
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 0 de 10 tareas aprobadas
+BLOQUE E2 — 9 de 10 tareas aprobadas
 ```
