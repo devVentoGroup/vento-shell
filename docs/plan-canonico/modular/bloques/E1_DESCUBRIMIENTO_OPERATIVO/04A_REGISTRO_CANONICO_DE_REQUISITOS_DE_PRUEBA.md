@@ -21,7 +21,9 @@ Cada requisito deberá vincularse con:
 
 Los requisitos utilizarán:
 
-`TREQ-<DOMINIO>-<NNN>`
+`TREQ-<DOMINIO>-<SECUENCIA>`
+
+La secuencia utiliza un mínimo de tres dígitos (`001` a `999`) y continúa sin truncamiento cuando supera ese rango (`1000`, `1001`, ...).
 
 Dominios iniciales:
 

@@ -110,6 +110,21 @@ test('acepta un registro coherente sin cifras hardcodeadas', () => {
   assert.equal(result.stats.latestTask, 'TASK-BASE-001');
 });
 
+test('acepta secuencias TREQ de cuatro dígitos', () => {
+  const extraRows = Array.from({ length: 999 }, (_, index) => ({
+    ID: `\`TREQ-AUTH-${String(index + 2).padStart(3, '0')}\``,
+    Dominio: '`AUTH`',
+  }));
+  const source = registry({ extraRows }).replace(
+    '| `AUTH` | `TREQ-AUTH-001` | 1000 |',
+    '| `AUTH` | `TREQ-AUTH-001` a `TREQ-AUTH-1000` | 1000 |'
+  );
+
+  const result = validateTreqRegistrySource(source, context);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.stats.requirements, 1000);
+});
+
 test('rechaza identificadores duplicados', () => {
   const duplicate = {
     ID: '`TREQ-AUTH-001`',

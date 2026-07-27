@@ -25,7 +25,7 @@ const TASK_HEADING = new RegExp(
   `^###\\s+(?<marker>\\[[ x~]\\]|[✅🟡❌])\\s+(?<id>${TASK_PATTERN})\\b`,
   'gmu'
 );
-const TREQ_ID = /^TREQ-([A-Z]+)-(\d{3})$/;
+const TREQ_ID = /^TREQ-([A-Z]+)-(\d{3,})$/;
 
 function cleanCell(value) {
   return value.trim().replace(/^`|`$/g, '').replace(/\*\*/g, '').trim();
@@ -68,7 +68,7 @@ function extractTaskIds(value) {
 
 function expandTreqReferences(value) {
   const references = new Set();
-  const rangeRegex = /TREQ-([A-Z]+)-(\d{3})`?\s+a\s+`?TREQ-\1-(\d{3})/g;
+  const rangeRegex = /TREQ-([A-Z]+)-(\d{3,})`?\s+a\s+`?TREQ-\1-(\d{3,})/g;
   let withoutRanges = value;
 
   for (const match of value.matchAll(rangeRegex)) {
@@ -82,7 +82,7 @@ function expandTreqReferences(value) {
     withoutRanges = withoutRanges.replace(match[0], '');
   }
 
-  for (const match of withoutRanges.matchAll(/\bTREQ-[A-Z]+-\d{3}\b/g)) {
+  for (const match of withoutRanges.matchAll(/\bTREQ-[A-Z]+-\d{3,}\b/g)) {
     references.add(match[0]);
   }
   return [...references];

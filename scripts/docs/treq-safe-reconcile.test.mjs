@@ -39,6 +39,24 @@ test('restaura filas históricas y conserva filas nuevas', () => {
   assert.ok(result.candidateSource.includes('\r\n'));
 });
 
+test('reconoce filas TREQ con secuencias de cuatro dígitos', () => {
+  const baselineSource = `${row('TREQ-PROC-1000', 'Aprobada')}\n`;
+  const currentSource = [
+    row('TREQ-PROC-1000', 'Corregida'),
+    row('TREQ-PROC-1001', 'Nueva'),
+    '',
+  ].join('\n');
+
+  const result = reconcileTreqRegistrySource({
+    currentSource,
+    baselineSource,
+  });
+
+  assert.deepEqual(result.changedExistingIds, ['TREQ-PROC-1000']);
+  assert.deepEqual(result.newIds, ['TREQ-PROC-1001']);
+  assert.deepEqual(result.missingBaselineIds, []);
+});
+
 test('reporta filas históricas eliminadas y no las inventa', () => {
   const baselineSource = `${row('TREQ-PROC-001', 'Aprobada')}\n`;
   const currentSource = `${row('TREQ-PROC-002', 'Nueva')}\n`;

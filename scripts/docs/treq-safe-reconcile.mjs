@@ -1,4 +1,4 @@
-const TREQ_ROW_PATTERN = /^\| `(?<id>TREQ-[A-Z]+-\d{3})` \|/;
+const TREQ_ROW_PATTERN = /^\| `(?<id>TREQ-[A-Z]+-\d{3,})` \|/;
 
 function splitSource(source) {
   const newline = source.includes('\r\n') ? '\r\n' : '\n';

@@ -110,7 +110,7 @@ function attemptSafeReconciliation() {
 
   const invalidRowIds = new Set(
     currentValidation.errors
-      .map((error) => error.match(/^(TREQ-[A-Z]+-\d{3}):/)?.[1])
+      .map((error) => error.match(/^(TREQ-[A-Z]+-\d{3,}):/)?.[1])
       .filter(Boolean)
   );
   const approvedTaskIds = new Set(
