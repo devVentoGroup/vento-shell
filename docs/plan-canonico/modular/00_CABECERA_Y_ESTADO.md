@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **299** |
+| Tareas aprobadas | **304** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1277** |
+| Tareas no iniciadas | **1272** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico** |
-| Tarea actual | **UX-ADMIN-001 — Inventariar tareas administrativas por dominio, frecuencia y complejidad** |
+| Última tarea aprobada | **UX-ADMIN-005 — Prototipar y aprobar flujos administrativos con usuarios reales** |
+| Tarea actual | **PROC-SCREEN-001 — Crear identificador estable para cada pantalla** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **UX-ADMIN-002 — Diseñar modo guiado para altas y configuraciones complejas** |
+| Siguiente tarea | **PROC-SCREEN-002 — Vincular cada pantalla con una aplicación** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 57 de 101 aprobadas; UX-ADMIN-001 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 62 de 101 aprobadas; PROC-SCREEN-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `UX-STATION-009` — Aprobar la matriz proceso → paso → estación → interacción → periférico |
-| Tarea actual | `UX-ADMIN-001` — Inventariar tareas administrativas por dominio, frecuencia y complejidad — **NO INICIADA** |
-| Siguiente tarea | `UX-ADMIN-002` — Diseñar modo guiado para altas y configuraciones complejas |
+| Última aprobada | `UX-ADMIN-005` — Prototipar y aprobar flujos administrativos con usuarios reales |
+| Tarea actual | `PROC-SCREEN-001` — Crear identificador estable para cada pantalla — **NO INICIADA** |
+| Siguiente tarea | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **57 DE 101 APROBADAS — ACTUAL UX-ADMIN-001** |
+| BLOQUE E2 | **62 DE 101 APROBADAS — ACTUAL PROC-SCREEN-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico
+UX-ADMIN-005 — Prototipar y aprobar flujos administrativos con usuarios reales
         ↓
 TAREA ACTUAL
-UX-ADMIN-001 — Inventariar tareas administrativas por dominio, frecuencia y complejidad
+PROC-SCREEN-001 — Crear identificador estable para cada pantalla
         ↓
 SIGUIENTE TAREA RESERVADA
-UX-ADMIN-002 — Diseñar modo guiado para altas y configuraciones complejas
+PROC-SCREEN-002 — Vincular cada pantalla con una aplicación
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 57 de 101 tareas aprobadas
+BLOQUE E2 — 62 de 101 tareas aprobadas
 ```

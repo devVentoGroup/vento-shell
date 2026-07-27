@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **299** |
+| Aprobadas | **304** |
 | En propuesta | **0** |
-| No iniciadas | **1277** |
+| No iniciadas | **1272** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `UX-STATION-009` — Aprobar la matriz proceso → paso → estación → interacción → periférico | ✅ APROBADA |
-| Tarea actual | `UX-ADMIN-001` — Inventariar tareas administrativas por dominio, frecuencia y complejidad | ⬜ NO INICIADA |
-| Siguiente | `UX-ADMIN-002` — Diseñar modo guiado para altas y configuraciones complejas | ⬜ NO INICIADA |
+| Última aprobada | `UX-ADMIN-005` — Prototipar y aprobar flujos administrativos con usuarios reales | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-001` — Crear identificador estable para cada pantalla | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -293,11 +293,11 @@
 | ✅ APROBADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ✅ APROBADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ✅ APROBADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ✅ APROBADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ✅ APROBADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ✅ APROBADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ✅ APROBADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
+| ✅ APROBADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
