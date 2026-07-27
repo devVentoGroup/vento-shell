@@ -412,7 +412,668 @@ NFR-REQ-002  NO INICIADA
 La aprobación de esta tarea congela las clases y la matriz inicial para diseño. No marca como implementada, medida o verificada la disponibilidad de ningún proceso.
 
 
-### [ ] NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
+### ✅ NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
+
+- **Estado:** APROBADA
+- **Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+- **Tarea anterior:** `NFR-REQ-001 — Definir criticidad y disponibilidad por proceso` — APROBADA
+- **Siguiente tarea reservada:** `NFR-REQ-003 — Definir tiempos máximos de respuesta` — NO INICIADA
+- **Artefactos producidos:** `NFR-WORKLOAD-CONTRACT-001`; `NFR-PROCESS-WORKLOAD-MATRIX-001`; `NFR-CAPACITY-EVIDENCE-REGISTER-001`
+- **Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+- **Naturaleza:** contrato de demanda, concurrencia, crecimiento, evidencia y capacidad; no dimensionamiento físico definitivo ni implementación
+**Cambios en código, migraciones, Supabase, aplicaciones, infraestructura o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento OS describirá, medirá y proyectará el volumen, la concurrencia y el crecimiento de cada proceso empresarial, de modo que las decisiones posteriores de arquitectura, índices, colas, almacenamiento, hardware, pruebas de carga y paquetes de implementación se basen en una envolvente verificable y no en el promedio actual, la cantidad total de usuarios o una estimación informal.
+
+```text
+VOLUMEN
+≠ CANTIDAD DE FILAS
+
+CONCURRENCIA
+≠ CANTIDAD DE CUENTAS
+
+CRECIMIENTO
+≠ MULTIPLICAR TODO POR EL MISMO PORCENTAJE
+
+PROMEDIO
+≠ PICO
+≠ RÁFAGA
+≠ BACKLOG DE RECUPERACIÓN
+```
+
+La aprobación de esta tarea congela un contrato y una matriz inicial de diseño. No declara medidos ni certificados los valores reales de producción.
+
+---
+
+#### 2. Continuidad lógica
+
+`NFR-REQ-001` ya definió qué procesos son críticos y en qué ventanas deben producir un resultado mínimo. Ahora debe establecerse cuánta demanda puede llegar, cuántos actores o sistemas pueden operar simultáneamente y cómo cambia esa demanda antes de fijar tiempos máximos de respuesta, operación offline, hardware, observabilidad o recuperación.
+
+```text
+CRITICIDAD Y DISPONIBILIDAD
+→ VOLUMEN, CONCURRENCIA Y CRECIMIENTO
+→ TIEMPOS DE RESPUESTA
+→ OFFLINE Y SINCRONIZACIÓN
+→ HARDWARE, OBSERVABILIDAD Y RECUPERACIÓN
+→ ESTACIONES, PANTALLAS Y PAQUETES
+```
+
+---
+
+#### 3. Distinciones canónicas
+
+| Concepto                    | Definición                                                                                    |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| unidad natural              | hecho empresarial contado: pedido, línea, movimiento, lote, marcación, archivo, evento o caso |
+| volumen                     | cantidad de unidades naturales dentro de una ventana y un alcance explícitos                  |
+| throughput                  | unidades completadas por intervalo, separado de unidades recibidas                            |
+| concurrencia humana         | personas activas simultáneamente dentro del alcance                                           |
+| concurrencia de dispositivo | estaciones, tablets, kioscos o terminales activas simultáneamente                             |
+| concurrencia de escritura   | mutaciones simultáneas sobre el mismo recurso o conjunto contendido                           |
+| concurrencia sistémica      | requests, jobs, webhooks, eventos o consumidores en vuelo                                     |
+| backlog                     | trabajo recibido que todavía no alcanzó su resultado empresarial                              |
+| ráfaga                      | incremento breve que no representa el promedio ordinario                                      |
+| crecimiento                 | cambio de volumen, cardinalidad, fan-out, tamaño o retención dentro de un horizonte           |
+| capacidad                   | carga que el sistema puede procesar conservando integridad, seguridad y objetivos aprobados   |
+
+No se utilizará una sola métrica para todos los procesos.
+
+---
+
+#### 4. Contrato mínimo de perfil de carga
+
+Cada proceso y cada variante material conservarán:
+
+```text
+process_id
+process_version
+workload_profile_version
+scope_type
+scope_id
+natural_unit
+natural_window
+workload_shapes[]
+volume_band
+baseline_value
+baseline_period
+baseline_source
+baseline_confidence
+p50_volume
+p95_volume
+maximum_observed
+peak_window
+burst_duration
+active_cases
+backlog_size
+concurrent_humans
+concurrent_devices
+concurrent_writers_same_resource
+inflight_requests
+inflight_jobs
+event_fanout
+payload_size
+attachment_size
+retention_growth
+growth_profiles[]
+scenario_current
+scenario_12m
+scenario_24m
+scenario_stress
+dependencies[]
+measurement_owner
+review_triggers[]
+```
+
+Un valor sin periodo, alcance, unidad, fuente y confianza será tratado como una opinión, no como baseline.
+
+---
+
+#### 5. Alcances y ventanas naturales
+
+Todo volumen deberá declarar simultáneamente:
+
+```text
+EMPRESA O MARCA
+SEDE
+ÁREA
+CANAL
+PROCESO Y ETAPA
+VENTANA TEMPORAL
+UNIDAD NATURAL
+```
+
+La ventana podrá ser minuto, hora, turno, día operativo, semana, corte, campaña, evento, cierre o periodo presupuestal. No se compararán directamente “500 líneas por día” con “500 casos por mes”.
+
+Los perfiles corporativos y multisede conservarán tanto el total como la distribución. El total agregado no podrá ocultar que una sola sede, área, terminal, producto o intervalo concentra la carga.
+
+---
+
+#### 6. Formas de carga
+
+| Código           | Significado                                                            |
+| ---------------- | ---------------------------------------------------------------------- |
+| `WS-CASE`        | expediente o caso con estados, propietario, vencimientos y evidencia   |
+| `WS-REFERENCE`   | lectura intensiva de una versión gobernada con pocas escrituras        |
+| `WS-TRANSACTION` | hechos o líneas frecuentes que deben ser atómicos e idempotentes       |
+| `WS-BATCH`       | carga concentrada en un corte, cierre, publicación o ciclo             |
+| `WS-EVENT`       | emisión, consumo o fan-out de eventos empresariales                    |
+| `WS-INTEGRATION` | entrada o salida con un sistema externo, reintentos y conciliación     |
+| `WS-FILE`        | carga, consulta o retención relevante de documentos, fotos o evidencia |
+| `WS-ANALYTICAL`  | agregación, comparación o lectura amplia sobre datos históricos        |
+| `WS-EMERGENCY`   | volumen ordinario bajo con ráfagas no planificables durante incidentes |
+
+Un proceso podrá tener varias formas. La forma principal orienta el diseño; las secundarias impiden que una tabla transaccional o un archivo pesado queden ocultos detrás de un conteo de casos.
+
+---
+
+#### 7. Bandas iniciales de volumen
+
+| Banda | Envolvente inicial por ventana natural | Uso                                                                              |
+| ----- | -------------------------------------: | -------------------------------------------------------------------------------- |
+| `L0`  |                         0 a 5 unidades | evento excepcional o caso esporádico; no elimina la necesidad de soportar ráfaga |
+| `L1`  |                        6 a 50 unidades | casos de baja frecuencia o ciclos pequeños                                       |
+| `L2`  |                      51 a 500 unidades | carga operativa recurrente de escala moderada                                    |
+| `L3`  |                   501 a 5.000 unidades | transacciones, líneas, lecturas o evidencias de alta frecuencia                  |
+| `L4`  | más de 5.000 unidades o flujo continuo | telemetría, eventos o fan-out intensivo; requiere justificación explícita        |
+
+Las bandas son **envolventes de diseño**, no afirmaciones de producción actual. El valor exacto deberá reemplazar la banda en el paquete aplicable antes de aprobar `DELIV-PKG-025` cuando el proceso sea `C0`, `C1`, de alta frecuencia o tenga riesgo de propagación.
+
+La unidad y la ventana de cada fila gobiernan la interpretación de la banda.
+
+---
+
+#### 8. Clases iniciales de concurrencia
+
+| Clase |                                             Envolvente inicial | Regla                                                        |
+| ----- | -------------------------------------------------------------: | ------------------------------------------------------------ |
+| `K0`  |                           un escritor autoritativo por recurso | exclusividad estricta; pueden existir lectores               |
+| `K1`  |             hasta 5 actores o dispositivos activos por alcance | trabajo administrativo o de caso con baja simultaneidad      |
+| `K2`  |              6 a 20 actores o dispositivos activos por alcance | coordinación multiárea o multisede moderada                  |
+| `K3`  |             21 a 75 actores, dispositivos o estaciones activos | operación distribuida con picos de turno o servicio          |
+| `K4`  | más de 75 operaciones en vuelo, consumidores o fan-out técnico | concurrencia principalmente sistémica, de integración o cola |
+
+La clase describe el máximo simultáneo relevante para diseño, no la nómina completa. Un proceso con dos usuarios puede tener `K4` si emite eventos a muchos consumidores; uno con cien empleados puede ser `K0` sobre un cierre exclusivo.
+
+---
+
+#### 9. Perfiles de crecimiento
+
+| Perfil | Impulsor                                                                                              |
+| ------ | ----------------------------------------------------------------------------------------------------- |
+| `G0`   | estable o excepcional; el volumen de casos no crece materialmente, aunque la historia sí puede crecer |
+| `G1`   | crecimiento orgánico por personas, proveedores o actividad ordinaria                                  |
+| `G2`   | crecimiento por nuevas sedes, áreas, productos, dispositivos, canales o empresas                      |
+| `G3`   | estacionalidad, promociones, eventos, cierres o ráfagas operativas                                    |
+| `G4`   | acumulación por retención de movimientos, archivos, versiones, auditoría o evidencia                  |
+
+Cada proceso tendrá uno o varios perfiles. El crecimiento de archivos, auditoría y movimientos se tratará separadamente del crecimiento de actores o transacciones.
+
+---
+
+#### 10. Horizontes obligatorios
+
+Todo perfil cuantitativo posterior deberá conservar cuatro escenarios:
+
+```text
+CURRENT_BASELINE
+→ medición reproducible del estado actual
+
+APPROVED_12M
+→ sedes, productos, personas, canales y proyectos aprobados
+
+PLAUSIBLE_24M
+→ expansión razonable documentada, sin presentarla como compromiso
+
+STRESS_SCENARIO
+→ pico, reconexión, backlog, campaña, cierre o incidente adverso
+```
+
+No se extrapolará automáticamente el máximo histórico. El escenario de crecimiento deberá identificar el impulsor empresarial y la fecha en la que puede materializarse.
+
+---
+
+#### 11. Jerarquía de evidencia
+
+La fuente preferida será, en orden:
+
+1. hechos autoritativos del dominio y sus timestamps;
+2. eventos o receipts correlacionados;
+3. exportaciones verificables de sistemas externos;
+4. logs técnicos vinculados con resultado empresarial;
+5. registros físicos o manuales conciliados;
+6. estimación estructurada de operación;
+7. entrevista, únicamente como hipótesis.
+
+Toda medición deberá corregir o declarar:
+
+- duplicados y reintentos;
+- operaciones anuladas o compensadas;
+- timestamps tardíos;
+- zona horaria;
+- datos eliminados o no retenidos;
+- periodos incompletos;
+- sedes cerradas;
+- pruebas y tráfico sintético;
+- cambios de versión;
+- eventos sin resultado confirmado.
+
+---
+
+#### 12. Estado de confianza
+
+```text
+MEASURED_REPRODUCIBLE
+DERIVED_RECONCILED
+ESTIMATED_WITH_EVIDENCE
+CLASS_ONLY
+UNKNOWN_BLOCKING
+```
+
+- `MEASURED_REPRODUCIBLE`: consulta y periodo repetibles;
+- `DERIVED_RECONCILED`: cálculo desde hechos correlacionados y conciliados;
+- `ESTIMATED_WITH_EVIDENCE`: estimación con fuente operativa y supuestos explícitos;
+- `CLASS_ONLY`: solo existe banda cualitativa de esta tarea;
+- `UNKNOWN_BLOCKING`: la ausencia de datos impide aprobar un paquete crítico.
+
+La matriz de esta tarea inicia en `CLASS_ONLY`. No se fingirá precisión para cerrar documentalmente el bloque.
+
+---
+
+#### 13. Promedio, pico, ráfaga y backlog
+
+Todo perfil distinguirá:
+
+```text
+PROMEDIO POR VENTANA
+P50
+P95
+MÁXIMO OBSERVADO
+PICO EMPRESARIAL ESPERADO
+DURACIÓN DE RÁFAGA
+BACKLOG NORMAL
+BACKLOG DESPUÉS DE FALLA
+TIEMPO PARA DRENAR BACKLOG
+```
+
+Los escenarios mínimos incluyen:
+
+- apertura y cierre de turno;
+- horas pico de venta;
+- producción y despacho simultáneos;
+- corte de compras, nómina, caja o presupuesto;
+- promoción, evento o temporada;
+- reconexión de dispositivos;
+- reenvío de webhooks;
+- recuperación después de indisponibilidad;
+- importación o backfill;
+- incidente de seguridad, inocuidad o continuidad.
+
+---
+
+#### 14. Concurrencia y contención
+
+La medición separará:
+
+```text
+ACTORES SIMULTÁNEOS
+DISPOSITIVOS SIMULTÁNEOS
+SESIONES SIMULTÁNEAS
+LECTORES DEL MISMO RECURSO
+ESCRITORES DEL MISMO RECURSO
+TRABAJOS ASÍNCRONOS EN VUELO
+CONSUMIDORES DEL MISMO EVENTO
+```
+
+Los siguientes objetos exigirán análisis explícito de contención:
+
+- caja y cierre;
+- conteo y alcance contado;
+- lote de producción;
+- receta o versión publicada;
+- LPN, LOC e inventario disponible;
+- recepción y orden de compra;
+- remisión y custodia;
+- pago, devolución y ledger;
+- turno y check-in;
+- documento o evidencia en sustitución;
+- presupuesto o cierre financiero.
+
+La solución concreta —locking, versión optimista, lease, serialización, cola o partición— pertenece a E3, E4 y al paquete propietario. Esta tarea define qué debe medirse y probarse.
+
+---
+
+#### 15. Eventos, fan-out y trabajos asíncronos
+
+Un hecho empresarial podrá generar múltiples consumidores. La carga deberá registrar:
+
+```text
+EVENTOS EMITIDOS
+CONSUMIDORES ESPERADOS
+CONSUMIDORES ACTIVOS
+REINTENTOS
+DUPLICADOS DETECTADOS
+DEAD-LETTER
+TIEMPO EN COLA
+OPERACIONES EN VUELO
+```
+
+Un pedido con cinco consumidores no contará como una sola operación técnica. Tampoco se multiplicará como cinco hechos empresariales.
+
+Los reintentos y la recuperación de backlog no podrán producir dobles movimientos, pagos, puntos, impresiones o notificaciones.
+
+---
+
+#### 16. Tamaño de payload, archivos y retención
+
+El crecimiento deberá considerar:
+
+- líneas por caso;
+- pasos y mediciones por lote;
+- movimientos por LPN o remisión;
+- columnas y cardinalidad de maestros;
+- eventos de auditoría;
+- fotos, firmas, PDFs y adjuntos;
+- payload original de integraciones;
+- versiones de recetas, políticas y documentos;
+- índices y proyecciones;
+- retención online, archivo y disposición.
+
+```text
+MISMO NÚMERO DE CASOS
+≠ MISMO COSTO DE DATOS
+```
+
+`NFR-REQ-006`, `EVID-ARC-*`, `SUPA-ARC-021` y `SUPA-ARC-022` definirán retención, arquitectura e índices aplicables.
+
+---
+
+#### 17. Consultas, reportes y análisis
+
+La carga analítica se medirá separadamente de la carga operativa:
+
+```text
+FILAS LEÍDAS
+PERIODO CONSULTADO
+DIMENSIONES Y FILTROS
+AGRUPACIONES
+EXPORTACIÓN
+USUARIOS SIMULTÁNEOS
+FRECUENCIA DE REFRESCO
+```
+
+Un dashboard o cierre no podrá degradar la captura de ventas, producción, inventario, pagos o asistencia. Las proyecciones, vistas, réplicas o modelos de lectura se decidirán en la arquitectura posterior.
+
+---
+
+#### 18. Dependencias e integraciones externas
+
+Cada dependencia externa declarará:
+
+- rate limit;
+- cuota;
+- tamaño máximo;
+- latencia y timeout;
+- webhook, polling o batch;
+- reintentos y backoff;
+- ventana de mantenimiento;
+- backlog máximo tolerable;
+- tiempo de conciliación;
+- comportamiento ante duplicado;
+- crecimiento contractual esperado.
+
+Una cuota del proveedor no se convertirá en capacidad interna sin medir mapeo, validación, persistencia, fan-out y conciliación.
+
+---
+
+#### 19. Tablets, kioscos y estaciones multiárea
+
+Para los dos POS táctiles del Centro de Producción y cualquier estación multiárea:
+
+- se medirán actores y dispositivos, no solo cuentas;
+- cada área conservará su cola, tarea, receta, lote y contexto;
+- se probará lectura simultánea de recetas y captura de producción;
+- el cambio de trabajador y área no mezclará borradores;
+- la reconexión podrá producir una ráfaga mayor que la actividad en línea;
+- dos equipos no se declararán redundancia ni capacidad doble sin prueba física;
+- una impresora, escáner o red compartida podrá ser el cuello de botella aunque la aplicación responda.
+
+---
+
+#### 20. Crecimiento de cardinalidad
+
+Además del throughput, deberán proyectarse:
+
+```text
+EMPRESAS Y MARCAS
+SEDES Y ÁREAS
+TRABAJADORES Y DISPOSITIVOS
+PRODUCTOS, PRESENTACIONES Y RECETAS
+PROVEEDORES Y CLIENTES
+LOC, LPN, ACTIVOS Y KITS
+PEDIDOS, LÍNEAS Y MOVIMIENTOS
+LOTES Y MEDICIONES
+DOCUMENTOS, ARCHIVOS Y AUDITORÍA
+INTEGRACIONES Y CONSUMIDORES
+```
+
+Una tabla que crece lentamente puede volverse crítica por consultas sin filtro, índices incorrectos, joins de alta cardinalidad o retención indefinida.
+
+---
+
+#### 21. Envolvente de diseño y margen
+
+La envolvente de diseño se calculará posteriormente como:
+
+```text
+MAX(
+  PICO MEDIDO Y RECONCILIADO,
+  ESCENARIO EMPRESARIAL APROBADO,
+  RÁFAGA ESPERADA,
+  BACKLOG DE RECUPERACIÓN
+)
++
+MARGEN JUSTIFICADO
+```
+
+No se fija un multiplicador universal. El margen dependerá de criticidad, confianza, costo de escalar, elasticidad, tiempo de aprovisionamiento y consecuencias de saturación.
+
+Saturar no podrá traducirse en pérdida silenciosa. El sistema deberá aplicar límites, backpressure, colas, degradación o rechazo explícito según el contrato posterior.
+
+---
+
+#### 22. Gobierno y revisión
+
+Cada perfil tendrá propietario funcional y técnico, fuente, fecha, versión y nivel de confianza. Se revisará cuando ocurra:
+
+- nueva sede, marca, área o canal;
+- cambio de horario o turnos;
+- campaña o evento relevante;
+- nuevo POS, proveedor o integración;
+- cambio de retención;
+- crecimiento de catálogo;
+- saturación, timeout o backlog;
+- incidente o reconexión masiva;
+- migración de dominio;
+- cambio de hardware;
+- desviación material entre forecast y carga real.
+
+No podrá reducirse un perfil para evitar inversión sin evidencia y aprobación.
+
+---
+
+#### 23. Matriz inicial de carga esperada
+
+La matriz siguiente clasifica los 69 procesos para diseño. Sus bandas son provisionales `CLASS_ONLY`; no sustituyen la medición y el forecast cuantitativo del paquete.
+
+| Proceso                                                                                                                                                                   | Familia                                                         | Forma                                    | Volumen | Concurrencia | Crecimiento | Unidad y ventana natural                          | Principal pico                                          | Lectura de diseño                                                      |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------- | ------- | ------------ | ----------- | ------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `VPROC-0001` — Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento                                                            | Gobierno y estructura                                           | `WS-CASE`                                | `L1`    | `K1`         | `G1+G4`     | decisiones y compromisos / mes empresarial        | comités, incidentes y cierres estratégicos              | casos de baja frecuencia con historial y seguimiento acumulativo       |
+| `VPROC-0002` — Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                                          | Gobierno y estructura                                           | `WS-REFERENCE`                           | `L1`    | `K1`         | `G2+G4`     | entidades organizativas y cambios / mes           | apertura, cierre o reorganización de sedes              | pocas escrituras y muchas consultas de estructura vigente              |
+| `VPROC-0003` — Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                                                      | Gobierno y estructura                                           | `WS-REFERENCE`                           | `L2`    | `K2`         | `G2+G4`     | consultas de política / día y versiones / mes     | cambios de delegación o política                        | lectura transversal con edición controlada y versionada                |
+| `VPROC-0004` — Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                                            | Gobierno y estructura                                           | `WS-CASE+WS-EVENT`                       | `L2`    | `K2`         | `G2+G3+G4`  | compromisos y handoffs / día                      | cambios de turno, cierres y contingencias               | trabajo compartido con eventos y vencimientos                          |
+| `VPROC-0005` — Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                                                         | Personas y trabajo                                              | `WS-CASE+WS-FILE`                        | `L1`    | `K1`         | `G1+G3+G4`  | vacantes y candidatos / mes                       | aperturas de sede y temporadas de contratación          | casos humanos con documentos y campañas puntuales                      |
+| `VPROC-0006` — Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                                                         | Personas y trabajo                                              | `WS-CASE+WS-FILE`                        | `L1`    | `K1`         | `G2+G4`     | vinculaciones e incorporaciones / mes             | ingresos masivos o apertura de sede                     | casos de ciclo largo con evidencia y retención                         |
+| `VPROC-0007` — Administrar asignaciones laborales y programación publicada con historial y revisión controlada                                                            | Personas y trabajo                                              | `WS-BATCH+WS-CASE`                       | `L2`    | `K2`         | `G2+G3+G4`  | asignaciones y turnos / semana                    | publicación semanal, cambios y reemplazos               | carga cíclica con concurrencia de responsables y trabajadores          |
+| `VPROC-0008` — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables                                                                     | Personas y trabajo                                              | `WS-TRANSACTION`                         | `L2`    | `K3`         | `G2+G3+G4`  | marcaciones / día operativo                       | entradas, salidas y cambios de turno                    | picos sincronizados por reloj y múltiples dispositivos                 |
+| `VPROC-0009` — Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                                                       | Personas y trabajo                                              | `WS-CASE+WS-EVENT`                       | `L1`    | `K2`         | `G1+G3+G4`  | novedades laborales / día                         | ausencias simultáneas y contingencias                   | casos moderados que disparan cobertura y notificaciones                |
+| `VPROC-0010` — Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                                             | Personas y trabajo                                              | `WS-BATCH+WS-TRANSACTION`                | `L2`    | `K1`         | `G2+G4`     | líneas laborales / corte                          | cierre de nómina y beneficios                           | procesamiento por ciclos con exclusividad de cierre                    |
+| `VPROC-0011` — Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                                            | Personas y trabajo                                              | `WS-CASE+WS-EVENT`                       | `L1`    | `K1`         | `G1+G4`     | retiros y revocaciones / mes                      | retiro colectivo o incidente de seguridad               | bajo volumen con fan-out de revocación y evidencia                     |
+| `VPROC-0012` — Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                                              | Seguridad, higiene y cumplimiento                               | `WS-CASE+WS-FILE`                        | `L2`    | `K2`         | `G2+G4`     | inspecciones, hallazgos y acciones / semana       | auditorías, apertura de sede o incidente                | casos programados con fotografías y seguimiento                        |
+| `VPROC-0013` — Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                                              | Seguridad, higiene y cumplimiento                               | `WS-EMERGENCY+WS-FILE`                   | `L0`    | `K2`         | `G0+G4`     | incidentes / evento                               | emergencia o accidente con múltiples reportes           | volumen ordinario bajo pero ráfaga impredecible y evidencia pesada     |
+| `VPROC-0014` — Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                                                | Seguridad, higiene y cumplimiento                               | `WS-TRANSACTION+WS-FILE`                 | `L2`    | `K2`         | `G2+G4`     | controles y observaciones / turno                 | apertura, cierre y producción intensiva                 | captura repetitiva por área con retención de evidencia                 |
+| `VPROC-0015` — Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                                           | Productos, recetas y conocimiento                               | `WS-REFERENCE`                           | `L2`    | `K2`         | `G2+G4`     | productos, presentaciones y equivalencias activas | carga de catálogo, nueva sede o canal                   | maestro versionado con lectura transversal y crecimiento por catálogo  |
+| `VPROC-0016` — Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                                                 | Productos, recetas y conocimiento                               | `WS-REFERENCE+WS-FILE`                   | `L2`    | `K2`         | `G2+G4`     | recetas, versiones y consultas / turno            | publicación de menú y producción simultánea             | edición limitada y lectura operativa intensa en estaciones             |
+| `VPROC-0017` — Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                                                    | Productos, recetas y conocimiento                               | `WS-REFERENCE+WS-EVENT`                  | `L2`    | `K3`         | `G2+G3`     | cambios de oferta y lecturas / canal-día          | horas de servicio, agotados y promociones               | actualizaciones con fan-out hacia canales y picos comerciales          |
+| `VPROC-0018` — Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                                                    | Productos, recetas y conocimiento                               | `WS-REFERENCE`                           | `L2`    | `K2`         | `G2+G4`     | especificaciones y consultas / turno              | cambios de producto o incidente de alérgeno             | lectura crítica y versionada con crecimiento de catálogo               |
+| `VPROC-0019` — Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                                           | Compras y proveedores                                           | `WS-CASE`                                | `L2`    | `K2`         | `G2+G3+G4`  | necesidades y líneas solicitadas / día            | cortes de compra y quiebres de inventario               | entrada recurrente desde varias áreas con backlog controlado           |
+| `VPROC-0020` — Comparar proveedores y condiciones con evidencia suficiente para decidir                                                                                   | Compras y proveedores                                           | `WS-CASE+WS-FILE`                        | `L1`    | `K1`         | `G1+G4`     | comparaciones y ofertas / semana                  | licitaciones, cambios de proveedor y compras relevantes | casos de baja frecuencia con archivos y análisis                       |
+| `VPROC-0021` — Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                                                   | Compras y proveedores                                           | `WS-CASE+WS-TRANSACTION`                 | `L2`    | `K2`         | `G2+G3+G4`  | órdenes y líneas aprobadas / día                  | cortes de abastecimiento y urgencias                    | transacciones moderadas con segregación y evidencia                    |
+| `VPROC-0022` — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica                                         | Compras y proveedores                                           | `WS-TRANSACTION+WS-FILE`                 | `L2`    | `K2`         | `G2+G3+G4`  | recepciones y líneas / día                        | llegadas simultáneas y cierre de proveedores            | captura física por ventana con diferencias y anexos                    |
+| `VPROC-0023` — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento                                                                                     | Inventario y almacenamiento                                     | `WS-REFERENCE`                           | `L2`    | `K2`         | `G2+G4`     | LOC, zonas y consultas / turno                    | reorganización, expansión o conteo                      | maestro espacial con lectura operativa y cambios controlados           |
+| `VPROC-0024` — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                                            | Inventario y almacenamiento                                     | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | movimientos de ingreso y ubicación / día          | recepciones, producción y cierres de turno              | alto volumen transaccional y contención por ubicación o LPN            |
+| `VPROC-0025` — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                                                 | Inventario y almacenamiento                                     | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | retiros, consumos y traslados / día               | producción, servicio y abastecimiento interno           | movimientos frecuentes con concurrencia multiárea                      |
+| `VPROC-0026` — Contar como observación, investigar diferencias y ajustar mediante decisión separada                                                                       | Inventario y almacenamiento                                     | `WS-BATCH+WS-TRANSACTION`                | `L3`    | `K2`         | `G2+G3+G4`  | líneas observadas / sesión de conteo              | inventario general, cierres y auditorías                | ráfagas de captura con exclusividad por alcance                        |
+| `VPROC-0027` — Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                                           | Inventario y almacenamiento                                     | `WS-TRANSACTION+WS-EVENT+WS-FILE`        | `L2`    | `K2`         | `G2+G4`     | eventos de condición y evidencia / día            | vencimientos, fallas de frío o cuarentenas              | eventos moderados con picos críticos y evidencia                       |
+| `VPROC-0028` — Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                                             | Inventario y almacenamiento                                     | `WS-CASE+WS-TRANSACTION+WS-EVENT`        | `L3`    | `K3`         | `G2+G3+G4`  | solicitudes, remisiones y líneas / día            | cortes, despacho y demanda de sedes                     | flujo multiárea con estados, líneas y handoffs concurrentes            |
+| `VPROC-0029` — Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                                              | Activos, vehículos, reutilizables y contenedores                | `WS-CASE+WS-TRANSACTION`                 | `L2`    | `K2`         | `G2+G4`     | activos, asignaciones y transferencias / mes      | inventarios, ingresos o retiros laborales               | casos de custodia con historial creciente                              |
+| `VPROC-0030` — Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                                           | Activos, vehículos, reutilizables y contenedores                | `WS-CASE+WS-FILE`                        | `L2`    | `K2`         | `G2+G4`     | órdenes de mantenimiento y evidencias / día       | fallas simultáneas o mantenimiento preventivo           | casos con archivos, repuestos y tiempos de espera                      |
+| `VPROC-0031` — Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                                              | Activos, vehículos, reutilizables y contenedores                | `WS-TRANSACTION+WS-CASE`                 | `L2`    | `K2`         | `G2+G4`     | viajes, cargas de combustible e incidencias / día | despachos, rutas y fallas de vehículo                   | carga moderada vinculada a disponibilidad logística                    |
+| `VPROC-0032` — Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                                                | Activos, vehículos, reutilizables y contenedores                | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | entregas y retornos de reutilizables / día        | despachos, eventos y cierres                            | muchos objetos y handoffs distribuidos                                 |
+| `VPROC-0033` — Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                                                       | Producción                                                      | `WS-BATCH+WS-CASE`                       | `L2`    | `K2`         | `G2+G3+G4`  | solicitudes y líneas planificadas / día           | cortes diarios, pedidos grandes y eventos               | planificación por lote con múltiples fuentes de demanda                |
+| `VPROC-0034` — Preparar materiales y ejecutar producción contra una versión aprobada                                                                                      | Producción                                                      | `WS-TRANSACTION+WS-REFERENCE+WS-EVENT`   | `L3`    | `K3`         | `G2+G3+G4`  | pasos, consumos y mediciones / día                | producción simultánea por áreas y lotes                 | ejecución frecuente con lecturas de receta y escrituras concurrentes   |
+| `VPROC-0035` — Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                                             | Producción                                                      | `WS-CASE+WS-FILE`                        | `L2`    | `K2`         | `G2+G4`     | decisiones de calidad / lote                      | liberaciones acumuladas o hallazgos                     | casos por lote con evidencia y autoridad                               |
+| `VPROC-0036` — Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                                              | Producción                                                      | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | unidades empacadas y etiquetas / día              | picos de producción y despacho                          | alta frecuencia con periféricos y trazabilidad                         |
+| `VPROC-0037` — Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                                               | Producción                                                      | `WS-TRANSACTION+WS-BATCH`                | `L2`    | `K2`         | `G2+G4`     | rendimientos, mermas y cierres / lote             | cierres simultáneos y reprocesos                        | carga moderada con cálculos y conciliación                             |
+| `VPROC-0038` — Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                                                      | Pedidos, ventas, pagos y caja                                   | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | pedidos, líneas y eventos / día                   | horas pico, fines de semana y promociones               | flujo de alta frecuencia y fan-out a preparación, pago e inventario    |
+| `VPROC-0039` — Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                                             | Pedidos, ventas, pagos y caja                                   | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K3`         | `G2+G3+G4`  | ventas, líneas y entregas / día                   | horas pico y promociones                                | transacciones rápidas con múltiples terminales                         |
+| `VPROC-0040` — Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                                               | Pedidos, ventas, pagos y caja                                   | `WS-INTEGRATION+WS-EVENT`                | `L3`    | `K4`         | `G2+G3+G4`  | pedidos y líneas externas / día                   | promociones del canal, reintentos y reconexión          | ingesta externa con fan-out, deduplicación y ráfagas                   |
+| `VPROC-0041` — Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                                                     | Pedidos, ventas, pagos y caja                                   | `WS-CASE+WS-FILE+WS-BATCH`               | `L1`    | `K2`         | `G2+G3+G4`  | oportunidades, cotizaciones y órdenes B2B / mes   | eventos, temporadas y clientes grandes                  | pocos casos con muchas líneas, documentos y coordinación               |
+| `VPROC-0042` — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                                                         | Pedidos, ventas, pagos y caja                                   | `WS-CASE+WS-TRANSACTION+WS-EVENT`        | `L2`    | `K2`         | `G2+G3+G4`  | cambios, anulaciones y devoluciones / día         | fallas de servicio o campaña                            | casos excepcionales con efectos distribuidos                           |
+| `VPROC-0043` — Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                                               | Pedidos, ventas, pagos y caja                                   | `WS-TRANSACTION+WS-INTEGRATION+WS-EVENT` | `L3`    | `K4`         | `G2+G3+G4`  | intentos y confirmaciones de pago / día           | horas pico, reintentos y caída del proveedor            | transacción externa sensible con resultado incierto y fan-out fiscal   |
+| `VPROC-0044` — Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                                                | Pedidos, ventas, pagos y caja                                   | `WS-BATCH+WS-TRANSACTION`                | `L2`    | `K1`         | `G2+G4`     | cierres, medios y líneas / turno                  | cambio de responsable y cierre de sede                  | lote exclusivo por caja con conciliación de múltiples fuentes          |
+| `VPROC-0045` — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                                                | Clientes, fidelización, reclamos y reservas                     | `WS-TRANSACTION+WS-EVENT`                | `L3`    | `K4`         | `G2+G3+G4`  | identificaciones y asientos de loyalty / día      | horas pico y campañas                                   | ledger de alta frecuencia con consumidores múltiples                   |
+| `VPROC-0046` — Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                                                         | Clientes, fidelización, reclamos y reservas                     | `WS-CASE+WS-FILE`                        | `L1`    | `K2`         | `G1+G3+G4`  | reclamos, evidencias y compensaciones / día       | incidente de producto o campaña                         | casos de baja frecuencia con picos reputacionales y archivos           |
+| `VPROC-0047` — Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento                                                                     | Clientes, fidelización, reclamos y reservas                     | `WS-CASE+WS-EVENT`                       | `L2`    | `K2`         | `G2+G3+G4`  | reservas, asistentes y comunicaciones / día       | fines de semana, fechas especiales y eventos            | casos programados con picos estacionales y notificaciones              |
+| `VPROC-0048` — Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                                                | Transporte y entregas                                           | `WS-BATCH+WS-CASE`                       | `L2`    | `K2`         | `G2+G3+G4`  | rutas, paradas y cargas / día                     | corte de despacho y eventos                             | planificación por ventana con restricciones y lotes                    |
+| `VPROC-0049` — Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                                                        | Transporte y entregas                                           | `WS-TRANSACTION+WS-FILE+WS-EVENT`        | `L2`    | `K3`         | `G2+G3+G4`  | paradas, entregas y evidencias / día              | salidas simultáneas, tráfico y reconexión               | captura móvil distribuida con pruebas y estados                        |
+| `VPROC-0050` — Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                                                 | Transporte y entregas                                           | `WS-INTEGRATION+WS-EVENT`                | `L2`    | `K4`         | `G2+G3+G4`  | entregas y eventos externos / día                 | picos del proveedor y reintentos                        | integración externa con polling, webhooks y conciliación               |
+| `VPROC-0051` — Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                                            | Finanzas y obligaciones                                         | `WS-EVENT+WS-TRANSACTION`                | `L3`    | `K4`         | `G2+G3+G4`  | hechos económicos y líneas / día                  | cierres, reintentos y backfill de eventos               | fan-out asíncrono y ledger acumulativo                                 |
+| `VPROC-0052` — Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                                              | Finanzas y obligaciones                                         | `WS-BATCH+WS-TRANSACTION+WS-INTEGRATION` | `L2`    | `K1`         | `G2+G4`     | obligaciones y pagos / corte                      | vencimientos y ventanas bancarias                       | procesamiento por lote con conciliación externa                        |
+| `VPROC-0053` — Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                                                 | Finanzas y obligaciones                                         | `WS-CASE+WS-TRANSACTION+WS-INTEGRATION`  | `L2`    | `K2`         | `G2+G4`     | cobros, recaudos y aplicaciones / día             | vencimientos y pagos masivos                            | casos y transacciones con conciliación financiera                      |
+| `VPROC-0054` — Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas                                                                  | Finanzas y obligaciones                                         | `WS-BATCH+WS-ANALYTICAL`                 | `L3`    | `K2`         | `G2+G4`     | líneas de costo, distribución y cierre / ciclo    | cierres mensuales y recalculo histórico                 | carga analítica y batch sobre historia creciente                       |
+| `VPROC-0055` — Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                                                    | Instalaciones, marketing, tecnología, información y continuidad | `WS-CASE+WS-FILE`                        | `L2`    | `K2`         | `G2+G4`     | controles, novedades y órdenes / día              | apertura, cierre y fallas de servicios                  | casos recurrentes con evidencia y programación                         |
+| `VPROC-0056` — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                                                  | Instalaciones, marketing, tecnología, información y continuidad | `WS-CASE+WS-FILE+WS-EVENT`               | `L2`    | `K4`         | `G2+G3+G4`  | contenidos, promociones y publicaciones / campaña | lanzamientos y temporadas                               | archivos con fan-out a múltiples canales                               |
+| `VPROC-0057` — Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                                                    | Instalaciones, marketing, tecnología, información y continuidad | `WS-INTEGRATION+WS-CASE`                 | `L2`    | `K3`         | `G2+G3+G4`  | conversaciones y oportunidades / día              | campañas y publicaciones virales                        | entrada multicanal con casos y SLA comercial                           |
+| `VPROC-0058` — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                                                      | Instalaciones, marketing, tecnología, información y continuidad | `WS-CASE+WS-FILE+WS-EMERGENCY`           | `L2`    | `K2`         | `G2+G3+G4`  | tickets, incidentes y evidencias / día            | caída transversal o despliegue                          | casos ordinarios con ráfagas de incidente                              |
+| `VPROC-0059` — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                                                   | Instalaciones, marketing, tecnología, información y continuidad | `WS-CASE+WS-EVENT`                       | `L1`    | `K4`         | `G2+G4`     | altas, cambios y revocaciones / día               | incidente de seguridad o incorporación masiva           | bajo volumen humano con fan-out técnico de identidad                   |
+| `VPROC-0060` — Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                                                 | Instalaciones, marketing, tecnología, información y continuidad | `WS-FILE+WS-EVENT`                       | `L3`    | `K4`         | `G2+G4`     | documentos, versiones y evidencias / día          | cargas masivas, cierres y procesos con fotografías      | crecimiento acumulativo de archivos, metadatos y eventos               |
+| `VPROC-0061` — Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                                               | Instalaciones, marketing, tecnología, información y continuidad | `WS-ANALYTICAL+WS-BATCH`                 | `L3`    | `K2`         | `G2+G4`     | hechos analizados y consultas / ciclo             | cierres, revisiones y análisis ad hoc                   | lecturas amplias sobre historia creciente                              |
+| `VPROC-0062` — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                                                   | Instalaciones, marketing, tecnología, información y continuidad | `WS-EMERGENCY+WS-CASE+WS-FILE`           | `L0`    | `K3`         | `G0+G4`     | incidentes de continuidad / evento                | fallo general, ejercicio o recuperación masiva          | bajo volumen normal con ráfaga transversal y backlog de reconciliación |
+| `VPROC-0063` — Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado de riesgo, tratamiento y seguimiento              | Capacidades sin precursor AS-IS explícito                       | `WS-CASE+WS-ANALYTICAL`                  | `L1`    | `K1`         | `G1+G4`     | riesgos, tratamientos y revisiones / ciclo        | comités, incidentes y cambios estratégicos              | casos de gobierno con historial y análisis                             |
+| `VPROC-0064` — Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar la propiedad interna del resultado                   | Capacidades sin precursor AS-IS explícito                       | `WS-CASE+WS-FILE+WS-BATCH`               | `L1`    | `K2`         | `G1+G4`     | requerimientos y entregables / mes                | vencimientos regulatorios o auditorías                  | pocos casos documentales con picos por plazo                           |
+| `VPROC-0065` — Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con uso explícito y privacidad aprobada                              | Capacidades sin precursor AS-IS explícito                       | `WS-CASE+WS-FILE`                        | `L1`    | `K1`         | `G1+G4`     | evaluaciones y decisiones / ciclo                 | ciclos de evaluación o cambios organizativos            | casos sensibles y programados con evidencia                            |
+| `VPROC-0066` — Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección                                              | Capacidades sin precursor AS-IS explícito                       | `WS-TRANSACTION+WS-FILE`                 | `L2`    | `K2`         | `G2+G4`     | entregas, cambios y devoluciones de EPP / día     | ingresos, campañas de reposición o incidentes           | transacciones de seguridad con evidencia y vigencia                    |
+| `VPROC-0067` — Definir kit, instancia, componentes obligatorios y opcionales, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor | Capacidades sin precursor AS-IS explícito                       | `WS-TRANSACTION+WS-REFERENCE`            | `L2`    | `K2`         | `G2+G4`     | kits, componentes y movimientos / día             | despachos, ingresos y devoluciones masivas              | composición versionada y movimientos de custodia                       |
+| `VPROC-0068` — Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido                                  | Capacidades sin precursor AS-IS explícito                       | `WS-BATCH+WS-ANALYTICAL+WS-INTEGRATION`  | `L2`    | `K4`         | `G2+G3+G4`  | respuestas y eventos / campaña                    | campaña, encuesta postventa o incidente reputacional    | ingesta por lotes con análisis y sesgo acumulado                       |
+| `VPROC-0069` — Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación sin convertir el presupuesto en hecho contable           | Capacidades sin precursor AS-IS explícito                       | `WS-BATCH+WS-ANALYTICAL`                 | `L3`    | `K2`         | `G2+G4`     | líneas, escenarios y desviaciones / ciclo         | presupuesto anual, reforecast y cierre                  | cálculo cíclico sobre historia y versiones crecientes                  |
+
+---
+
+#### 24. Resumen de la matriz
+
+```text
+VOLUMEN
+L0    2 procesos
+L1   13 procesos
+L2   37 procesos
+L3   17 procesos
+L4    0 procesos
+```
+
+```text
+CONCURRENCIA
+K0    0 procesos
+K1   11 procesos
+K2   36 procesos
+K3   13 procesos
+K4    9 procesos
+```
+
+La ausencia de `L4` o `K0` como perfil primario no elimina esas clases. `L4` queda reservada para telemetría o volúmenes que la medición posterior demuestre; la exclusividad `K0` aparece como restricción interna de recursos en procesos clasificados `K1` o `K2`.
+
+---
+
+#### 25. Relación con tareas posteriores
+
+| Decisión posterior                        | Tarea propietaria                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| latencias y tiempos máximos               | `NFR-REQ-003`                                                      |
+| colas offline y sincronización            | `NFR-REQ-004`                                                      |
+| sensibilidad de datos de carga            | `NFR-REQ-005`                                                      |
+| retención y trazabilidad                  | `NFR-REQ-006`                                                      |
+| hardware, red y periféricos               | `NFR-REQ-008`                                                      |
+| métricas, dashboards y alertas            | `NFR-REQ-009`                                                      |
+| recuperación, RTO y RPO                   | `NFR-REQ-010`; `CONT-DOM-002` a `CONT-DOM-004`                     |
+| compatibilidad por dispositivo            | `NFR-REQ-011`                                                      |
+| índices y crecimiento de base de datos    | `SUPA-AUD-020`; `SUPA-ARC-021`; `SUPA-ARC-022`                     |
+| colas, backpressure y dead-letter         | `QUEUE-ARC-001` a `QUEUE-ARC-012`                                  |
+| integraciones y rate limits               | `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`       |
+| perfil cuantitativo y pruebas por paquete | `DELIV-PKG-013`; `DELIV-PKG-016`; `DELIV-PKG-017`; `DELIV-PKG-025` |
+| ejecución de carga y certificación        | BLOQUES `T`, `R`, `U` y tareas `SHELL-CI-*` aplicables             |
+
+Los valores exactos no quedan como pendientes narrativos: deben incorporarse al perfil del paquete antes de su aprobación física.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+Se crean:
+
+```text
+TREQ-PROC-247 a TREQ-PROC-270
+```
+
+Protegen unidad natural, bandas, concurrencia, crecimiento, picos, backlog, contención, fan-out, archivos, cardinalidad, análisis, integraciones, estaciones multiárea, evidencia, gobierno, matriz completa y pruebas de capacidad.
+
+---
+
+#### 27. Criterios de aceptación
+
+- [ ] Volumen, throughput, concurrencia, backlog y crecimiento están separados.
+- [ ] Todo perfil exige unidad, ventana, alcance, fuente y confianza.
+- [ ] Se definen formas de carga, bandas `L0` a `L4`, concurrencia `K0` a `K4` y perfiles `G0` a `G4`.
+- [ ] Promedio, pico, ráfaga, backlog y recuperación se miden por separado.
+- [ ] Concurrencia humana, de dispositivo, de escritura y sistémica no se confunden.
+- [ ] Se identifican recursos con contención y trabajo exclusivo.
+- [ ] Eventos, reintentos, fan-out y trabajos en cola forman parte de la carga.
+- [ ] Archivos, auditoría, retención y cardinalidad forman parte del crecimiento.
+- [ ] Reportes y análisis no se mezclan con carga transaccional.
+- [ ] Las dependencias externas conservan cuotas, rate limits y conciliación.
+- [ ] Las estaciones multiárea consideran cambio de actor, reconexión y periféricos.
+- [ ] Cada uno de `VPROC-0001` a `VPROC-0069` tiene unidad, forma, banda, concurrencia, crecimiento y pico.
+- [ ] La matriz no presenta clases como mediciones reales.
+- [ ] Los perfiles críticos no podrán llegar a `DELIV-PKG-025` con `UNKNOWN_BLOCKING`.
+- [ ] Se crean `TREQ-PROC-247` a `TREQ-PROC-270` en el registro completo.
+- [ ] No se modifica código, Supabase, migraciones, infraestructura ni operación.
+- [ ] `NFR-REQ-003` permanece no iniciada.
+
+---
+
+#### 28. Estado y continuidad
+
+```text
+NFR-REQ-001  APROBADA
+NFR-REQ-002  APROBADA
+NFR-REQ-003  NO INICIADA
+```
+
+La aprobación de esta tarea congela el contrato y la matriz inicial de carga. No certifica capacidad, escalabilidad ni rendimiento de ningún entorno.
+
+
 ### [ ] NFR-REQ-003 — Definir tiempos máximos de respuesta
 ### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
 ### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
