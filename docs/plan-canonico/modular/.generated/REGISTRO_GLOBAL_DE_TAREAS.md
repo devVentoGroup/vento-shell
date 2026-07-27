@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **306** |
+| Aprobadas | **307** |
 | En propuesta | **0** |
-| No iniciadas | **1270** |
+| No iniciadas | **1269** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-005` — Clasificar pantalla operativa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -300,7 +300,7 @@
 | ✅ APROBADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ✅ APROBADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |

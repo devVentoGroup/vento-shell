@@ -149,7 +149,7 @@ export function validateScreenCatalog({ root = process.cwd() } = {}) {
   const screenTask = section(
     screenSource,
     /^### ✅ PROC-SCREEN-002\b/m,
-    /^### \[ \] PROC-SCREEN-003\b/m
+    /^### (?:🟡|\[~\]|\[ \]) PROC-SCREEN-003\b/m
   );
   const applicationCodes = extractApplicationCodes(applicationSource);
   const screens = extractScreens(screenTask);

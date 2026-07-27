@@ -27,6 +27,10 @@ Comandos desde la raíz de vento-shell:
 
    npm run docs:process-apps:check
 
+7. Validar cada vínculo pantalla-proceso y su cobertura:
+
+   npm run docs:screen-processes:check
+
 Organización:
 
 - manifest.json controla únicamente el orden físico de compilación.
@@ -36,6 +40,9 @@ Organización:
 - validate-process-application-integrity.mjs exige que las 69 propietarias y
   todas las consumidoras resuelvan contra BLOQUE C, sin autoconsumo ni códigos
   futuros tratados como aplicaciones.
+- validate-screen-process-bindings.mjs exige un proceso primario por pantalla,
+  referencias válidas, modalidades coherentes, cobertura de los 67 procesos
+  activos y conservación explícita de los dos procesos diferidos de AURA.
 - active-sequence.json puede declarar varios segmentos y prefijos; el script
   encuentra la primera tarea no aprobada y avanza automáticamente entre ellos.
 - si toda la secuencia queda aprobada, el script informa

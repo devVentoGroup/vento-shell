@@ -1262,7 +1262,520 @@ PROC-SCREEN-003 — Vincular cada pantalla con un proceso
 ```
 
 
-### [ ] PROC-SCREEN-003 — Vincular cada pantalla con un proceso
+### ✅ PROC-SCREEN-003 — Vincular cada pantalla con un proceso
+
+**Estado propuesto:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Marcador exacto que reemplaza:** `### [ ] PROC-SCREEN-003 — Vincular cada pantalla con un proceso`
+
+**Tarea anterior:** `PROC-SCREEN-002 — Vincular cada pantalla con una aplicación` — APROBADA
+
+**Siguiente tarea reservada:** `PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso` — NO INICIADA
+
+**Artefactos lógicos contenidos en esta propuesta:**
+
+- `SCREEN-PROCESS-BINDING-CONTRACT-001`;
+- `SCREEN-PROCESS-BINDING-REGISTER-001`;
+- `SCREEN-PROCESS-COVERAGE-MATRIX-001`;
+- `SCREEN-CROSS-OWNER-PROJECTION-RULES-001`;
+- `SCREEN-PROCESS-CHANGE-POLICY-001`;
+- `SCREEN-PROCESS-BINDING-VALIDATION-GATE-001`.
+
+**Resultado cuantitativo propuesto:** **175 pantallas canónicas**, **175 vínculos primarios** y **268 vínculos relacionados**; **67 procesos activos** quedan cubiertos y `VPROC-0056` y `VPROC-0057` permanecen diferidos junto con AURA.
+
+**Naturaleza:** contrato documental entre identidades `VSCREEN-*` y procesos `VPROC-*`. No vincula todavía pasos, carriles UX, actores, dispositivos, acciones, estados, sensibilidad, permisos, rutas ni operaciones técnicas.
+
+**Cambios en código de producto, componentes, rutas, repositorios consumidores, Supabase, tablas, migraciones, RLS, RPC, eventos, analítica o producción:** no autorizados por esta tarea. Los validadores del compilador documental sí forman parte de la puerta de integridad.
+
+---
+
+#### 1. Propósito
+
+Vincular cada pantalla canónica con el proceso empresarial cuyo resultado principal presenta, inicia, ejecuta, supervisa o proyecta, sin confundir:
+
+```text
+PANTALLA
+≠
+PROCESO
+≠
+APLICACION PROPIETARIA DEL PROCESO
+≠
+PASO
+≠
+PERMISO
+```
+
+La relación responde **qué proceso explica la existencia de la pantalla**. No concede autorización, no mueve la propiedad del proceso y no afirma que toda la ejecución ocurra dentro de esa pantalla.
+
+---
+
+#### 2. Dependencias consumidas
+
+La propuesta consume, sin reabrir:
+
+- `PROC-SCREEN-001` y la identidad estable `VSCREEN-*`;
+- `PROC-SCREEN-002`, `SCREEN-CANONICAL-CATALOG-001` y la aplicación primaria de cada pantalla;
+- `PROC-CAT-001` a `PROC-CAT-020`;
+- `VPROC-0001` a `VPROC-0069`, sus propietarias y fronteras;
+- `PROC-ACTOR-001` a `PROC-ACTOR-010`;
+- `UX-BASE-001` a `UX-BASE-015`;
+- `UX-STATION-001` a `UX-STATION-012`;
+- `UX-ADMIN-001` a `UX-ADMIN-005`;
+- las capacidades E1, contratos TALENTO–VISO–ANIMA y decisiones PASS–PULSO–NEXO.
+
+---
+
+#### 3. Alcance
+
+Esta propuesta:
+
+1. incorpora `primary_process_id` a cada `VSCREEN-*`;
+2. permite `related_process_ids[]` solo cuando la pantalla compone, supervisa o proyecta otros procesos;
+3. exige una modalidad de vínculo explícita;
+4. materializa 175 vínculos primarios sin duplicados ni omisiones;
+5. conserva la aplicación propietaria de cada proceso;
+6. cubre los 67 procesos activos;
+7. conserva `VPROC-0056` y `VPROC-0057` como excepciones diferidas de AURA;
+8. define cómo versionar un cambio de proceso sin reutilizar silenciosamente la identidad de pantalla;
+9. deja pasos y decisiones de interacción reservados a tareas posteriores;
+10. integra una puerta automática de coherencia.
+
+---
+
+#### 4. Exclusiones
+
+Esta tarea no:
+
+- vincula pasos exactos de un proceso;
+- convierte una pantalla en proceso;
+- cambia la propietaria aprobada de un `VPROC-*`;
+- concede lectura, acción o acceso;
+- decide actores, dispositivos o estaciones;
+- clasifica pantallas por carril UX;
+- define acciones principales o secundarias;
+- define estados de interfaz;
+- vincula APIs, Server Actions, RPC, eventos o tablas;
+- mapea rutas o componentes legacy;
+- activa AURA;
+- crea `talento` como aplicación;
+- implementa las pantallas en repositorios.
+
+---
+
+#### 5. Contrato canónico de vínculo
+
+Cada registro incorpora:
+
+| Campo                              | Obligación                                                                                                  |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `screen_id`                        | `VSCREEN-*` canónico y único                                                                                |
+| `primary_process_id`               | exactamente un `VPROC-*` existente que explica el resultado principal                                      |
+| `related_process_ids[]`            | cero o más procesos existentes, distintos del primario y sin duplicados                                    |
+| `process_binding_mode`             | modalidad canónica que explica la relación entre pantalla, aplicación y proceso                            |
+| `process_binding_version`          | versión semántica del vínculo                                                                               |
+| `process_binding_reason`           | fundamento funcional verificable                                                                           |
+| `process_binding_task`             | tarea que propone, aprueba o modifica la relación                                                           |
+| `process_owner_application_id`     | propietaria aprobada en `PROC-CAT-005`; se consulta, no se redefine                                         |
+| `process_binding_status`           | `PROPOSED`, `CANONICAL`, `CHANGE_PROPOSED`, `SUPERSEDED` o `RETIRED_WITH_SCREEN`                            |
+
+Valores de esta propuesta:
+
+```text
+process_binding_version: 1.0.0
+process_binding_status: PROPOSED
+process_binding_task: PROC-SCREEN-003
+decision_record: INITIAL_SCREEN_PROCESS_BINDING
+```
+
+---
+
+#### 6. Modalidades permitidas
+
+| Modalidad                  | Uso                                                                                                                     |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `OWNER_WORKSPACE`          | la pantalla vive en la aplicación propietaria del proceso y presenta trabajo propio                                    |
+| `TRANSVERSAL_ENTRY`        | SHELL presenta entrada, contexto, notificación o recuperación y entrega el control a la propietaria                     |
+| `SUPERVISION_SURFACE`      | una aplicación administrativa supervisa o corrige un proceso gobernado por otra aplicación sin duplicar el hecho        |
+| `PERSONAL_CHANNEL`         | ANIMA presenta o inicia la experiencia propia del trabajador frente a un proceso laboral gobernado por otra aplicación |
+| `CUSTOMER_CHANNEL`         | PASS presenta o inicia la experiencia propia del cliente frente a un proceso comercial gobernado por PULSO o NEXO       |
+
+La modalidad no es un permiso ni reemplaza `primary_application_id`.
+
+---
+
+#### 7. Regla para escoger el proceso primario
+
+Se escogerá, en orden:
+
+1. el proceso cuyo resultado principal reconoce la persona;
+2. el proceso que recibe la acción o intención principal;
+3. el proceso que conserva el caso o compromiso empresarial;
+4. el proceso que gobierna el cierre visible;
+5. el proceso que seguiría existiendo aunque la pantalla cambiara de ruta o componente.
+
+No se escogerá por:
+
+- repositorio actual;
+- tabla consultada;
+- componente reutilizado;
+- primer dato visible;
+- aplicación desde la que se enlaza;
+- rol de la persona;
+- proceso técnicamente más cercano;
+- conveniencia para reducir vínculos.
+
+---
+
+#### 8. Procesos relacionados
+
+`related_process_ids[]` se utilizará únicamente cuando otro proceso:
+
+- aporte una proyección necesaria;
+- reciba un handoff explícito;
+- sea supervisado desde la pantalla;
+- produzca un efecto derivado visible;
+- comparta un caso sin perder su propia propiedad.
+
+Un proceso relacionado no convierte la pantalla en su espacio de trabajo primario. Los pasos exactos permanecen reservados a `PROC-SCREEN-004`.
+
+---
+
+#### 9. SCREEN-PROCESS-BINDING-REGISTER-001
+
+| Screen ID | Pantalla | Aplicación | Proceso primario | Procesos relacionados | Modalidad | Fundamento |
+| --- | --- | --- | --- | --- | --- | --- |
+| `VSCREEN-0001` | Hub Vento OS | `shell` | `VPROC-0059` | `VPROC-0004`, `VPROC-0058`, `VPROC-0062` | `TRANSVERSAL_ENTRY` | Resuelve acceso y conduce a trabajo propietario sin ejecutarlo en SHELL. |
+| `VSCREEN-0002` | Inicio de sesión y recuperación | `shell` | `VPROC-0059` | — | `TRANSVERSAL_ENTRY` | La autenticación habilita el ciclo de acceso, pero no concede autoridad empresarial. |
+| `VSCREEN-0003` | Resolución de contexto y acceso | `shell` | `VPROC-0059` | `VPROC-0003` | `TRANSVERSAL_ENTRY` | Explica alcance efectivo y políticas aplicables antes del handoff. |
+| `VSCREEN-0004` | Activación de dispositivo compartido | `shell` | `VPROC-0059` | `VPROC-0058` | `TRANSVERSAL_ENTRY` | Activa una sesión técnica controlada y deriva incidencias al proceso de soporte. |
+| `VSCREEN-0005` | Bandeja transversal de tareas y notificaciones | `shell` | `VPROC-0004` | `VPROC-0058`, `VPROC-0062` | `TRANSVERSAL_ENTRY` | Presenta compromisos y alertas y entrega cada ejecución a su aplicación propietaria. |
+| `VSCREEN-0006` | Centro de soporte y diagnóstico | `shell` | `VPROC-0058` | `VPROC-0062` | `TRANSVERSAL_ENTRY` | Inicia diagnóstico y recuperación sin absorber el caso tecnológico o de continuidad. |
+| `VSCREEN-0007` | Inicio ejecutivo y gerencial | `viso` | `VPROC-0001` | `VPROC-0061`, `VPROC-0063` | `OWNER_WORKSPACE` | Consolida decisiones, indicadores y riesgos que requieren seguimiento directivo. |
+| `VSCREEN-0008` | Estructura organizativa | `viso` | `VPROC-0002` | — | `OWNER_WORKSPACE` | Mantiene la estructura canónica sin derivar autorización de la jerarquía. |
+| `VSCREEN-0009` | Políticas, delegaciones y límites | `viso` | `VPROC-0003` | `VPROC-0059` | `OWNER_WORKSPACE` | Gobierna políticas y delegaciones que luego condicionan accesos. |
+| `VSCREEN-0010` | Compromisos y transferencias internas | `viso` | `VPROC-0004` | `VPROC-0001` | `OWNER_WORKSPACE` | Conserva responsable, entrega, aceptación y cierre transversal. |
+| `VSCREEN-0011` | Embudo de candidatos | `viso` | `VPROC-0005` | — | `OWNER_WORKSPACE` | Organiza necesidad, vacante, candidatura y etapa sin crear vínculo laboral. |
+| `VSCREEN-0012` | Caso de selección | `viso` | `VPROC-0005` | `VPROC-0060` | `OWNER_WORKSPACE` | Evalúa y decide con evidencia sin convertir al candidato en trabajador. |
+| `VSCREEN-0013` | Vinculación e incorporación | `viso` | `VPROC-0006` | `VPROC-0059`, `VPROC-0060` | `OWNER_WORKSPACE` | Orquesta vínculo, documentos y habilitación inicial. |
+| `VSCREEN-0014` | Directorio y expediente laboral | `viso` | `VPROC-0006` | `VPROC-0007`, `VPROC-0009`, `VPROC-0011`, `VPROC-0060` | `OWNER_WORKSPACE` | Conserva el expediente laboral y sus episodios sin mezclar solicitudes personales. |
+| `VSCREEN-0015` | Programación laboral | `viso` | `VPROC-0007` | `VPROC-0009` | `OWNER_WORKSPACE` | Publica asignaciones y programación con historial. |
+| `VSCREEN-0016` | Revisión de asistencia | `viso` | `VPROC-0008` | `VPROC-0007`, `VPROC-0009` | `SUPERVISION_SURFACE` | Supervisa y corrige hechos de ANIMA mediante decisión autorizada, sin reescribirlos. |
+| `VSCREEN-0017` | Novedades, ausencias y reemplazos | `viso` | `VPROC-0009` | `VPROC-0007`, `VPROC-0008` | `OWNER_WORKSPACE` | Resuelve el caso laboral y sus efectos sobre programación y asistencia. |
+| `VSCREEN-0018` | Retiro y revocación coordinada | `viso` | `VPROC-0011` | `VPROC-0029`, `VPROC-0059`, `VPROC-0060` | `OWNER_WORKSPACE` | Coordina cierre laboral, devolución, revocación y evidencia. |
+| `VSCREEN-0019` | Catálogo de roles y permisos | `viso` | `VPROC-0059` | `VPROC-0003` | `OWNER_WORKSPACE` | Gobierna definición y vigencia de acceso tecnológico. |
+| `VSCREEN-0020` | Perfil de acceso del trabajador | `viso` | `VPROC-0059` | `VPROC-0006`, `VPROC-0007` | `OWNER_WORKSPACE` | Vincula autoridad laboral vigente con solicitudes y revocaciones de acceso. |
+| `VSCREEN-0021` | Simulación de permisos y conflictos | `viso` | `VPROC-0059` | `VPROC-0003` | `OWNER_WORKSPACE` | Evalúa alcance y conflictos sin conceder permisos por simulación. |
+| `VSCREEN-0022` | Gobierno de dispositivos compartidos | `viso` | `VPROC-0059` | `VPROC-0058` | `OWNER_WORKSPACE` | Gobierna habilitación, vigencia y revocación de dispositivos compartidos. |
+| `VSCREEN-0023` | Riesgos de seguridad y salud | `viso` | `VPROC-0012` | `VPROC-0063` | `OWNER_WORKSPACE` | Mantiene riesgos SST, controles y acciones correctivas. |
+| `VSCREEN-0024` | Incidentes y emergencias | `viso` | `VPROC-0013` | `VPROC-0062` | `OWNER_WORKSPACE` | Conserva respuesta, expediente, investigación y seguimiento. |
+| `VSCREEN-0025` | Controles de higiene y cumplimiento | `viso` | `VPROC-0014` | `VPROC-0012` | `OWNER_WORKSPACE` | Gobierna obligaciones y hallazgos sin sustituir el control operativo de dominio. |
+| `VSCREEN-0026` | Bandeja de casos administrativos transversales | `viso` | `VPROC-0004` | `VPROC-0060`, `VPROC-0063`, `VPROC-0064` | `OWNER_WORKSPACE` | Coordina casos administrativos sin mezclarlos con soporte o instalaciones. |
+| `VSCREEN-0027` | Inicio personal del trabajador | `anima` | `VPROC-0007` | `VPROC-0008`, `VPROC-0009` | `PERSONAL_CHANNEL` | Presenta al trabajador su programación, asistencia y solicitudes propias. |
+| `VSCREEN-0028` | Registro de entrada, pausa y salida | `anima` | `VPROC-0008` | — | `OWNER_WORKSPACE` | Captura hechos personales e inmutables de asistencia. |
+| `VSCREEN-0029` | Mi programación | `anima` | `VPROC-0007` | — | `PERSONAL_CHANNEL` | Proyecta la programación publicada por VISO sin mantener otra fuente. |
+| `VSCREEN-0030` | Mi asistencia y solicitud de corrección | `anima` | `VPROC-0008` | `VPROC-0009` | `OWNER_WORKSPACE` | Presenta hechos propios e inicia correcciones trazables. |
+| `VSCREEN-0031` | Mis novedades, permisos y ausencias | `anima` | `VPROC-0009` | `VPROC-0007` | `PERSONAL_CHANNEL` | Inicia y consulta el caso personal cuya decisión gobierna VISO. |
+| `VSCREEN-0032` | Mi perfil laboral | `anima` | `VPROC-0006` | `VPROC-0011` | `PERSONAL_CHANNEL` | Proyecta vínculo vigente y datos personales permitidos. |
+| `VSCREEN-0033` | Resumen de inventario y abastecimiento interno | `nexo` | `VPROC-0028` | `VPROC-0019`, `VPROC-0024`, `VPROC-0025` | `OWNER_WORKSPACE` | Resume necesidades, existencias y movimientos sin crear compras. |
+| `VSCREEN-0034` | Catálogo de productos físicos | `nexo` | `VPROC-0015` | `VPROC-0018` | `OWNER_WORKSPACE` | Mantiene identidad física, presentación y relación con especificaciones. |
+| `VSCREEN-0035` | Editor de producto, unidad y presentación | `nexo` | `VPROC-0015` | — | `OWNER_WORKSPACE` | Edita el maestro físico y sus equivalencias. |
+| `VSCREEN-0036` | Especificaciones y criterios de calidad | `nexo` | `VPROC-0018` | `VPROC-0015`, `VPROC-0035` | `OWNER_WORKSPACE` | Mantiene especificación maestra y criterios consumidos por calidad. |
+| `VSCREEN-0037` | Catálogo de ubicaciones | `nexo` | `VPROC-0023` | — | `OWNER_WORKSPACE` | Gobierna ubicaciones y condiciones sin confundirlas con existencia. |
+| `VSCREEN-0038` | Identificación y detalle de ubicación | `nexo` | `VPROC-0023` | `VPROC-0024` | `OWNER_WORKSPACE` | Identifica la ubicación y muestra movimientos autorizados relacionados. |
+| `VSCREEN-0039` | Consulta de existencias | `nexo` | `VPROC-0024` | `VPROC-0025`, `VPROC-0027` | `OWNER_WORKSPACE` | Proyecta saldo desde movimientos y condición física. |
+| `VSCREEN-0040` | Conteo de inventario | `nexo` | `VPROC-0026` | — | `OWNER_WORKSPACE` | Registra observaciones de conteo sin ajustar automáticamente. |
+| `VSCREEN-0041` | Revisión de conteo y diferencias | `nexo` | `VPROC-0026` | `VPROC-0060` | `OWNER_WORKSPACE` | Investiga diferencias y conserva evidencia. |
+| `VSCREEN-0042` | Caso de ajuste de inventario | `nexo` | `VPROC-0026` | `VPROC-0051` | `OWNER_WORKSPACE` | Separa la decisión de ajuste de la observación y del efecto económico. |
+| `VSCREEN-0043` | Confirmación de entrada a inventario | `nexo` | `VPROC-0024` | `VPROC-0022` | `OWNER_WORKSPACE` | Registra el efecto físico después de la aceptación de ORIGO. |
+| `VSCREEN-0044` | Retiro y consumo de existencias | `nexo` | `VPROC-0025` | `VPROC-0034` | `OWNER_WORKSPACE` | Conserva origen, unidad, destino y motivo del retiro. |
+| `VSCREEN-0045` | Traslado interno de existencias | `nexo` | `VPROC-0025` | `VPROC-0023` | `OWNER_WORKSPACE` | Ejecuta traslado correlacionado entre ubicaciones. |
+| `VSCREEN-0046` | Solicitud de remisión | `nexo` | `VPROC-0028` | — | `OWNER_WORKSPACE` | Inicia abastecimiento interno con cantidades conciliables. |
+| `VSCREEN-0047` | Preparación de remisión | `nexo` | `VPROC-0028` | `VPROC-0025` | `OWNER_WORKSPACE` | Reserva y prepara existencias sin anticipar despacho. |
+| `VSCREEN-0048` | Carga y despacho de remisión | `nexo` | `VPROC-0028` | `VPROC-0048` | `OWNER_WORKSPACE` | Entrega custodia al tránsito y, cuando aplica, a la ruta planificada. |
+| `VSCREEN-0049` | Seguimiento de remisión en tránsito | `nexo` | `VPROC-0028` | `VPROC-0049` | `OWNER_WORKSPACE` | Sigue custodia y novedades hasta la recepción interna. |
+| `VSCREEN-0050` | Recepción de remisión | `nexo` | `VPROC-0028` | `VPROC-0024` | `OWNER_WORKSPACE` | Cierra cantidades por etapa y registra entrada física correlacionada. |
+| `VSCREEN-0051` | Vencimiento, cuarentena, daño y merma | `nexo` | `VPROC-0027` | `VPROC-0014`, `VPROC-0035` | `OWNER_WORKSPACE` | Gobierna condición y disposición física con controles de cumplimiento. |
+| `VSCREEN-0052` | LPN, contenedores y reutilizables | `nexo` | `VPROC-0032` | `VPROC-0029` | `OWNER_WORKSPACE` | Conserva identidad, tenencia, retorno y completitud de contenedores. |
+| `VSCREEN-0053` | Activos y custodia | `nexo` | `VPROC-0029` | `VPROC-0030` | `OWNER_WORKSPACE` | Mantiene identidad, ubicación, custodio y condición del activo. |
+| `VSCREEN-0054` | Etiquetas e impresión logística | `nexo` | `VPROC-0024` | `VPROC-0015`, `VPROC-0023`, `VPROC-0032` | `OWNER_WORKSPACE` | Materializa identificación logística sin alterar maestros ni movimientos. |
+| `VSCREEN-0055` | Inicio y cola de producción | `fogo` | `VPROC-0033` | `VPROC-0034` | `OWNER_WORKSPACE` | Presenta planes liberados y lotes ejecutables. |
+| `VSCREEN-0056` | Planeación de producción | `fogo` | `VPROC-0033` | `VPROC-0028` | `OWNER_WORKSPACE` | Convierte señales de demanda y capacidad en un plan aprobado. |
+| `VSCREEN-0057` | Preparación e inicio de lote | `fogo` | `VPROC-0034` | `VPROC-0016`, `VPROC-0025` | `OWNER_WORKSPACE` | Fija receta, materiales y lote antes de ejecutar. |
+| `VSCREEN-0058` | Ejecución de lote | `fogo` | `VPROC-0034` | `VPROC-0025`, `VPROC-0035` | `OWNER_WORKSPACE` | Registra consumo, producción y controles durante la ejecución. |
+| `VSCREEN-0059` | Registro parcial de producción | `fogo` | `VPROC-0034` | `VPROC-0037` | `OWNER_WORKSPACE` | Conserva avances parciales sin cerrar prematuramente el resultado. |
+| `VSCREEN-0060` | Finalización y cierre de lote | `fogo` | `VPROC-0037` | `VPROC-0034`, `VPROC-0035`, `VPROC-0036` | `OWNER_WORKSPACE` | Concilia rendimiento, merma, calidad, empaque y cierre. |
+| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016` | `VPROC-0034` | `OWNER_WORKSPACE` | Presenta la versión aprobada utilizada por el lote. |
+| `VSCREEN-0062` | Catálogo y editor de recetas | `fogo` | `VPROC-0016` | `VPROC-0015`, `VPROC-0018` | `OWNER_WORKSPACE` | Mantiene receta y referencia maestros físicos sin duplicarlos. |
+| `VSCREEN-0063` | Revisión, aprobación y publicación de receta | `fogo` | `VPROC-0016` | `VPROC-0060` | `OWNER_WORKSPACE` | Versiona la decisión y su evidencia. |
+| `VSCREEN-0064` | Prueba de receta y rendimiento | `fogo` | `VPROC-0016` | `VPROC-0037` | `OWNER_WORKSPACE` | Conserva prueba, resultado y decisión antes de publicar. |
+| `VSCREEN-0065` | Control de calidad y liberación | `fogo` | `VPROC-0035` | `VPROC-0018`, `VPROC-0027` | `OWNER_WORKSPACE` | Decide liberación, retención, rechazo o corrección. |
+| `VSCREEN-0066` | Empaque, etiquetado y almacenamiento de terminado | `fogo` | `VPROC-0036` | `VPROC-0024`, `VPROC-0035` | `OWNER_WORKSPACE` | Conserva empaque y trazabilidad antes del ingreso a NEXO. |
+| `VSCREEN-0067` | Reproceso, aprovechamiento, merma y cierre productivo | `fogo` | `VPROC-0037` | `VPROC-0027`, `VPROC-0054` | `OWNER_WORKSPACE` | Gobierna disposición productiva y proyecta el resultado económico. |
+| `VSCREEN-0068` | Bandeja de necesidades de compra | `origo` | `VPROC-0019` | `VPROC-0028` | `OWNER_WORKSPACE` | Recibe y prioriza necesidades sin crear una orden. |
+| `VSCREEN-0069` | Solicitud de compra | `origo` | `VPROC-0019` | `VPROC-0020` | `OWNER_WORKSPACE` | Formaliza necesidad, alcance y evidencia para decidir abastecimiento. |
+| `VSCREEN-0070` | Catálogo de proveedores | `origo` | `VPROC-0020` | — | `OWNER_WORKSPACE` | Presenta proveedores y condiciones aptas para comparación. |
+| `VSCREEN-0071` | Alta y expediente de proveedor | `origo` | `VPROC-0020` | `VPROC-0060` | `OWNER_WORKSPACE` | Conserva identidad, documentos y vigencias del proveedor. |
+| `VSCREEN-0072` | Comparación de cotizaciones | `origo` | `VPROC-0020` | `VPROC-0019` | `OWNER_WORKSPACE` | Compara condiciones con evidencia sin emitir compra. |
+| `VSCREEN-0073` | Editor de orden de compra | `origo` | `VPROC-0021` | `VPROC-0020` | `OWNER_WORKSPACE` | Prepara la orden bajo condiciones seleccionadas. |
+| `VSCREEN-0074` | Bandeja de aprobaciones de compra | `origo` | `VPROC-0021` | `VPROC-0003` | `OWNER_WORKSPACE` | Aplica autoridad y límites sin aceptar físicamente la compra. |
+| `VSCREEN-0075` | Detalle y seguimiento de orden | `origo` | `VPROC-0021` | `VPROC-0022` | `OWNER_WORKSPACE` | Sigue compromiso comercial hasta recepción y cierre. |
+| `VSCREEN-0076` | Cola de recepciones | `origo` | `VPROC-0022` | `VPROC-0021` | `OWNER_WORKSPACE` | Presenta órdenes susceptibles de aceptación comercial y física. |
+| `VSCREEN-0077` | Recepción total o parcial | `origo` | `VPROC-0022` | `VPROC-0024`, `VPROC-0051` | `OWNER_WORKSPACE` | Acepta o rechaza recepción y emite efectos posteriores correlacionados. |
+| `VSCREEN-0078` | Resolución de diferencias de recepción | `origo` | `VPROC-0022` | `VPROC-0020`, `VPROC-0052` | `OWNER_WORKSPACE` | Resuelve faltantes, sobrantes, calidad y efecto económico sin doble recepción. |
+| `VSCREEN-0079` | Historial y auditoría de abastecimiento | `origo` | `VPROC-0022` | `VPROC-0019`, `VPROC-0020`, `VPROC-0021`, `VPROC-0060` | `OWNER_WORKSPACE` | Reconstruye el ciclo de compra con evidencia y decisiones. |
+| `VSCREEN-0080` | Inicio POS | `pulso` | `VPROC-0039` | `VPROC-0038`, `VPROC-0044` | `OWNER_WORKSPACE` | Presenta trabajo comercial abierto por canal y caja. |
+| `VSCREEN-0081` | Creación de venta o pedido | `pulso` | `VPROC-0039` | `VPROC-0038`, `VPROC-0040`, `VPROC-0041` | `OWNER_WORKSPACE` | Crea el compromiso comercial bajo el canal seleccionado. |
+| `VSCREEN-0082` | Mapa de salón y mesas | `pulso` | `VPROC-0038` | — | `OWNER_WORKSPACE` | Gobierna ocupación, mesa y servicio de apertura a cierre. |
+| `VSCREEN-0083` | Detalle y modificación de pedido | `pulso` | `VPROC-0038` | `VPROC-0039`, `VPROC-0042` | `OWNER_WORKSPACE` | Mantiene el pedido y separa cambios materiales y compensaciones. |
+| `VSCREEN-0084` | Cobro y medios de pago | `pulso` | `VPROC-0043` | `VPROC-0051` | `OWNER_WORKSPACE` | Cobra, confirma y emite soporte conciliable. |
+| `VSCREEN-0085` | Identificación de cliente y acumulación | `pulso` | `VPROC-0045` | `VPROC-0038`, `VPROC-0039` | `SUPERVISION_SURFACE` | Ejecuta acumulación durante la venta sin mantener el ledger de PASS. |
+| `VSCREEN-0086` | Redención de puntos o beneficios | `pulso` | `VPROC-0045` | `VPROC-0043` | `SUPERVISION_SURFACE` | Solicita redención y aplica su resultado a la venta. |
+| `VSCREEN-0087` | Bandeja de pedidos de canales externos | `pulso` | `VPROC-0040` | `VPROC-0042`, `VPROC-0050` | `OWNER_WORKSPACE` | Normaliza, deduplica y admite pedidos externos. |
+| `VSCREEN-0088` | Seguimiento de preparación y entrega | `pulso` | `VPROC-0039` | `VPROC-0038`, `VPROC-0040`, `VPROC-0050` | `OWNER_WORKSPACE` | Sigue el compromiso comercial desde preparación hasta entrega. |
+| `VSCREEN-0089` | Apertura de caja | `pulso` | `VPROC-0044` | — | `OWNER_WORKSPACE` | Inicia responsabilidad y fondo de caja. |
+| `VSCREEN-0090` | Cierre de caja | `pulso` | `VPROC-0044` | `VPROC-0051` | `OWNER_WORKSPACE` | Concilia ventas, pagos, efectivo y diferencias. |
+| `VSCREEN-0091` | Anulación, devolución y reembolso | `pulso` | `VPROC-0042` | `VPROC-0043`, `VPROC-0046`, `VPROC-0051` | `OWNER_WORKSPACE` | Separa decisión comercial de devolución, pago y compensación. |
+| `VSCREEN-0092` | Oferta, menú, precio comercial y disponibilidad | `pulso` | `VPROC-0017` | `VPROC-0015`, `VPROC-0016` | `OWNER_WORKSPACE` | Publica oferta vendible desde maestros y recetas gobernados. |
+| `VSCREEN-0093` | Revisión de ventas, caja y terminales | `pulso` | `VPROC-0044` | `VPROC-0043`, `VPROC-0061` | `OWNER_WORKSPACE` | Supervisa cierres y diferencias y alimenta análisis. |
+| `VSCREEN-0094` | Inicio financiero y ejecutivo | `numera` | `VPROC-0061` | `VPROC-0051`, `VPROC-0054`, `VPROC-0069` | `OWNER_WORKSPACE` | Presenta medición, cierre, presupuesto y decisiones financieras. |
+| `VSCREEN-0095` | Bandeja de hechos económicos | `numera` | `VPROC-0051` | — | `OWNER_WORKSPACE` | Recibe y clasifica hechos correlacionados con su origen. |
+| `VSCREEN-0096` | Registro de gasto y soporte | `numera` | `VPROC-0051` | `VPROC-0060` | `OWNER_WORKSPACE` | Registra el hecho económico y conserva soporte verificable. |
+| `VSCREEN-0097` | Bandeja de aprobaciones financieras | `numera` | `VPROC-0052` | `VPROC-0054`, `VPROC-0069` | `OWNER_WORKSPACE` | Aplica decisión financiera sin recrear el compromiso operativo. |
+| `VSCREEN-0098` | Cuentas por pagar y obligaciones | `numera` | `VPROC-0052` | `VPROC-0022` | `OWNER_WORKSPACE` | Gobierna obligación, aprobación, pago y conciliación. |
+| `VSCREEN-0099` | Cuentas por cobrar y cartera | `numera` | `VPROC-0053` | `VPROC-0041`, `VPROC-0043` | `OWNER_WORKSPACE` | Conserva cartera, recaudo, aplicación y saldo. |
+| `VSCREEN-0100` | Caja, bancos y movimientos financieros | `numera` | `VPROC-0052` | `VPROC-0053` | `OWNER_WORKSPACE` | Gestiona tesorería y movimientos que liquidan obligaciones o cartera. |
+| `VSCREEN-0101` | Conciliación de ventas y pagos | `numera` | `VPROC-0051` | `VPROC-0043`, `VPROC-0044` | `OWNER_WORKSPACE` | Concilia hechos comerciales sin reescribir ventas ni cajas. |
+| `VSCREEN-0102` | Conciliación de compras y recepciones | `numera` | `VPROC-0051` | `VPROC-0022`, `VPROC-0052` | `OWNER_WORKSPACE` | Concilia compra, recepción, obligación y pago. |
+| `VSCREEN-0103` | Conciliación de inventario, producción y variaciones | `numera` | `VPROC-0054` | `VPROC-0024`, `VPROC-0025`, `VPROC-0037` | `OWNER_WORKSPACE` | Analiza efectos físicos y productivos sin duplicar sus ledgers. |
+| `VSCREEN-0104` | Costos, rentabilidad y escenarios | `numera` | `VPROC-0054` | `VPROC-0069` | `OWNER_WORKSPACE` | Calcula costos, rentabilidad y escenarios con reglas versionadas. |
+| `VSCREEN-0105` | Cierre, reapertura y corrección de periodo | `numera` | `VPROC-0054` | `VPROC-0051` | `OWNER_WORKSPACE` | Gobierna cierre y correcciones sin alterar historia. |
+| `VSCREEN-0106` | Reportes y exportaciones financieras | `numera` | `VPROC-0061` | `VPROC-0054` | `OWNER_WORKSPACE` | Publica análisis y evidencia derivados de hechos conciliados. |
+| `VSCREEN-0107` | Inicio del cliente y resumen de beneficios | `pass` | `VPROC-0045` | `VPROC-0068` | `OWNER_WORKSPACE` | Presenta relación, saldo, beneficios y experiencia personal. |
+| `VSCREEN-0108` | QR personal de identificación | `pass` | `VPROC-0045` | — | `OWNER_WORKSPACE` | Presenta credencial personal sin ejecutar acumulación o redención. |
+| `VSCREEN-0109` | Catálogo de beneficios y recompensas | `pass` | `VPROC-0045` | `VPROC-0017` | `OWNER_WORKSPACE` | Proyecta beneficios vigentes y condiciones comerciales. |
+| `VSCREEN-0110` | Ticket o QR de redención | `pass` | `VPROC-0045` | `VPROC-0043` | `OWNER_WORKSPACE` | Prepara una intención de redención que PULSO aplica en la venta. |
+| `VSCREEN-0111` | Historial de puntos y redenciones | `pass` | `VPROC-0045` | — | `OWNER_WORKSPACE` | Consulta el ledger personal y sus receipts. |
+| `VSCREEN-0112` | Perfil, privacidad y consentimientos | `pass` | `VPROC-0045` | `VPROC-0060` | `OWNER_WORKSPACE` | Gobierna perfil de fidelización y consentimientos trazables. |
+| `VSCREEN-0113` | Registro y seguimiento de decisiones empresariales | `viso` | `VPROC-0001` | `VPROC-0004` | `OWNER_WORKSPACE` | Conserva decisión, autoridad, compromisos y verificación. |
+| `VSCREEN-0114` | Solicitudes y certificaciones de acceso | `viso` | `VPROC-0059` | `VPROC-0060` | `OWNER_WORKSPACE` | Gestiona solicitud, aprobación, vigencia, revocación y evidencia. |
+| `VSCREEN-0115` | Gobierno de documentos y evidencia | `viso` | `VPROC-0060` | `VPROC-0003` | `OWNER_WORKSPACE` | Gobierna clasificación, custodia, retención y disposición. |
+| `VSCREEN-0116` | Registro de riesgos empresariales | `viso` | `VPROC-0063` | `VPROC-0012` | `OWNER_WORKSPACE` | Mantiene riesgo, tratamiento, aceptación y seguimiento empresarial. |
+| `VSCREEN-0117` | Requerimientos de asesores y autoridades | `viso` | `VPROC-0064` | `VPROC-0060` | `OWNER_WORKSPACE` | Conserva obligación, vencimiento, responsable, entrega y evidencia. |
+| `VSCREEN-0118` | Gestión de desempeño y desarrollo | `viso` | `VPROC-0065` | `VPROC-0060` | `OWNER_WORKSPACE` | Gobierna objetivos, retroalimentación y decisiones sensibles. |
+| `VSCREEN-0119` | Asignación y control de elementos de protección | `viso` | `VPROC-0066` | `VPROC-0025`, `VPROC-0029` | `OWNER_WORKSPACE` | Gobierna necesidad y asignación personal; NEXO conserva existencias. |
+| `VSCREEN-0120` | Mesa de servicio tecnológico | `viso` | `VPROC-0058` | `VPROC-0059`, `VPROC-0060` | `OWNER_WORKSPACE` | Conserva solicitud, incidente, problema, cambio, SLA y cierre. |
+| `VSCREEN-0121` | Continuidad, contingencia y recuperación | `viso` | `VPROC-0062` | `VPROC-0004`, `VPROC-0060` | `OWNER_WORKSPACE` | Gobierna plan, incidente empresarial, recuperación y aprendizaje. |
+| `VSCREEN-0122` | Privacidad, cumplimiento y conservación | `viso` | `VPROC-0060` | `VPROC-0003`, `VPROC-0063`, `VPROC-0064` | `OWNER_WORKSPACE` | Articula políticas, riesgos, obligaciones, retención y evidencia. |
+| `VSCREEN-0123` | Gestión de comunicaciones internas | `viso` | `VPROC-0004` | `VPROC-0060` | `OWNER_WORKSPACE` | Gobierna comunicación laboral, entrega, acuse y seguimiento. |
+| `VSCREEN-0124` | Mis comunicados laborales | `anima` | `VPROC-0004` | `VPROC-0060` | `PERSONAL_CHANNEL` | Presenta al trabajador comunicaciones y acuses propios. |
+| `VSCREEN-0125` | Mi carnet laboral | `anima` | `VPROC-0006` | `VPROC-0059` | `PERSONAL_CHANNEL` | Proyecta identidad laboral vigente sin convertirla en permiso universal. |
+| `VSCREEN-0126` | Mis documentos laborales | `anima` | `VPROC-0060` | `VPROC-0006` | `PERSONAL_CHANNEL` | Permite consulta y entrega personal bajo custodia y retención gobernadas. |
+| `VSCREEN-0127` | Mi capacitación | `anima` | `VPROC-0065` | `VPROC-0014` | `PERSONAL_CHANNEL` | Presenta aprendizaje y evidencia personal vinculados al desarrollo o cumplimiento. |
+| `VSCREEN-0128` | Mis objetivos y retroalimentación | `anima` | `VPROC-0065` | — | `PERSONAL_CHANNEL` | Presenta la experiencia personal sin abrir información de terceros. |
+| `VSCREEN-0129` | Mis solicitudes de soporte | `anima` | `VPROC-0058` | — | `PERSONAL_CHANNEL` | Inicia y consulta solicitudes propias; VISO gobierna resolución y SLA. |
+| `VSCREEN-0130` | Mis reportes de seguridad y salud | `anima` | `VPROC-0013` | `VPROC-0012` | `PERSONAL_CHANNEL` | Permite reportar incidentes o riesgos propios y recibir seguimiento mínimo. |
+| `VSCREEN-0131` | Mis elementos de protección | `anima` | `VPROC-0066` | `VPROC-0029` | `PERSONAL_CHANNEL` | Presenta asignación, aceptación, vigencia y devolución personal. |
+| `VSCREEN-0132` | Reservas de inventario | `nexo` | `VPROC-0028` | `VPROC-0025`, `VPROC-0033` | `OWNER_WORKSPACE` | Reserva disponibilidad para una necesidad autorizada sin registrar consumo. |
+| `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos | `nexo` | `VPROC-0030` | `VPROC-0029`, `VPROC-0055` | `OWNER_WORKSPACE` | Gobierna mantenimiento del activo y su liberación. |
+| `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos | `nexo` | `VPROC-0030` | `VPROC-0020`, `VPROC-0060` | `OWNER_WORKSPACE` | Conserva caso, cobertura, proveedor, evidencia y resultado del activo. |
+| `VSCREEN-0135` | Kits y conjuntos | `nexo` | `VPROC-0067` | `VPROC-0029`, `VPROC-0032` | `OWNER_WORKSPACE` | Gobierna definición, armado, custodia y completitud. |
+| `VSCREEN-0136` | Flota y vehículos | `nexo` | `VPROC-0031` | `VPROC-0029`, `VPROC-0048` | `OWNER_WORKSPACE` | Conserva vehículo, disponibilidad, condición e incidencias. |
+| `VSCREEN-0137` | Kilometraje y combustible | `nexo` | `VPROC-0031` | `VPROC-0054` | `OWNER_WORKSPACE` | Registra uso y consumo y proyecta su costo. |
+| `VSCREEN-0138` | Planeación de rutas y despachos | `nexo` | `VPROC-0048` | `VPROC-0028`, `VPROC-0031` | `OWNER_WORKSPACE` | Planifica vehículo, carga, secuencia y restricciones. |
+| `VSCREEN-0139` | Ejecución de ruta y prueba de entrega | `nexo` | `VPROC-0049` | `VPROC-0048` | `OWNER_WORKSPACE` | Conserva custodia, prueba, rechazo, novedad o retorno. |
+| `VSCREEN-0140` | Novedades, rechazos y retornos logísticos | `nexo` | `VPROC-0049` | `VPROC-0027`, `VPROC-0032` | `OWNER_WORKSPACE` | Resuelve efectos físicos de la ejecución logística. |
+| `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo | `nexo` | `VPROC-0055` | `VPROC-0012`, `VPROC-0030` | `OWNER_WORKSPACE` | Gobierna condición y cierre de instalaciones sin mezclarse con soporte TI. |
+| `VSCREEN-0142` | Configuración de políticas y rutas logísticas | `nexo` | `VPROC-0048` | `VPROC-0028`, `VPROC-0049` | `OWNER_WORKSPACE` | Versiona restricciones y reglas logísticas. |
+| `VSCREEN-0143` | Diseñador de etiquetas logísticas | `nexo` | `VPROC-0015` | `VPROC-0023`, `VPROC-0032` | `OWNER_WORKSPACE` | Diseña identificación desde maestros físicos y contextos logísticos. |
+| `VSCREEN-0144` | Configuración y cola de impresión logística | `nexo` | `VPROC-0024` | `VPROC-0015`, `VPROC-0023` | `OWNER_WORKSPACE` | Ejecuta impresión correlacionada con el objeto y movimiento autorizados. |
+| `VSCREEN-0145` | Contratos, precios y condiciones de proveedor | `origo` | `VPROC-0020` | `VPROC-0021`, `VPROC-0060` | `OWNER_WORKSPACE` | Gobierna condiciones comparables y vigentes antes de comprar. |
+| `VSCREEN-0146` | Desempeño y reclamaciones de proveedor | `origo` | `VPROC-0020` | `VPROC-0022`, `VPROC-0061` | `OWNER_WORKSPACE` | Evalúa proveedor desde evidencia de recepción y resultado. |
+| `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B | `pulso` | `VPROC-0041` | `VPROC-0017`, `VPROC-0047` | `OWNER_WORKSPACE` | Conserva propuesta, capacidad, condiciones y aprobación comercial. |
+| `VSCREEN-0148` | Ejecución de catering o venta B2B | `pulso` | `VPROC-0041` | `VPROC-0033`, `VPROC-0043`, `VPROC-0048` | `OWNER_WORKSPACE` | Sigue producción, facturación y entrega sin transferir sus dominios. |
+| `VSCREEN-0149` | Operación de reservas y eventos | `pulso` | `VPROC-0047` | `VPROC-0038`, `VPROC-0041` | `OWNER_WORKSPACE` | Gobierna capacidad comprometida, reserva y relación con el pedido. |
+| `VSCREEN-0150` | Casos de reclamo y compensación | `pulso` | `VPROC-0046` | `VPROC-0042`, `VPROC-0051`, `VPROC-0061` | `OWNER_WORKSPACE` | Conserva reclamo, causa, resolución, compensación y aprendizaje. |
+| `VSCREEN-0151` | Coordinación de entrega mediante tercero | `pulso` | `VPROC-0050` | `VPROC-0039`, `VPROC-0040` | `OWNER_WORKSPACE` | Conserva promesa, seguimiento, prueba y conciliación del tercero. |
+| `VSCREEN-0152` | Análisis de satisfacción y servicio | `pulso` | `VPROC-0068` | `VPROC-0046`, `VPROC-0061` | `OWNER_WORKSPACE` | Separa medición, reclamo, compensación y mejora. |
+| `VSCREEN-0153` | Paquete laboral para pagos y beneficios | `numera` | `VPROC-0010` | `VPROC-0007`, `VPROC-0008`, `VPROC-0009` | `OWNER_WORKSPACE` | Reconcilia vínculo, tiempo y novedades para pago laboral. |
+| `VSCREEN-0154` | Facturas y documentos fiscales | `numera` | `VPROC-0051` | `VPROC-0043`, `VPROC-0052`, `VPROC-0060` | `OWNER_WORKSPACE` | Conserva documento fiscal y su hecho económico correlacionado. |
+| `VSCREEN-0155` | Tesorería y programación de pagos | `numera` | `VPROC-0052` | `VPROC-0053`, `VPROC-0069` | `OWNER_WORKSPACE` | Programa liquidez y pagos sin convertir presupuesto en hecho. |
+| `VSCREEN-0156` | Presupuestos, escenarios y forecast | `numera` | `VPROC-0069` | `VPROC-0054`, `VPROC-0061` | `OWNER_WORKSPACE` | Gobierna versión, supuestos, aprobación, consumo y desviación. |
+| `VSCREEN-0157` | Impuestos y obligaciones de cumplimiento | `numera` | `VPROC-0052` | `VPROC-0051`, `VPROC-0060`, `VPROC-0064` | `OWNER_WORKSPACE` | Gestiona obligación, soporte, vencimiento, pago y evidencia. |
+| `VSCREEN-0158` | Distribución y asignación de costos | `numera` | `VPROC-0054` | `VPROC-0051` | `OWNER_WORKSPACE` | Aplica reglas versionadas y conserva explicación y reversión. |
+| `VSCREEN-0159` | Indicadores, análisis y planes de mejora | `numera` | `VPROC-0061` | `VPROC-0001`, `VPROC-0063` | `OWNER_WORKSPACE` | Vincula medición, análisis, decisión, acción y verificación. |
+| `VSCREEN-0160` | Inicio y selección del portal de compras | `pass` | `VPROC-0039` | `VPROC-0017`, `VPROC-0045`, `VPROC-0050` | `CUSTOMER_CHANNEL` | Inicia intención de compra propia; PULSO conserva pedido y venta. |
+| `VSCREEN-0161` | Menú y catálogo comercial del cliente | `pass` | `VPROC-0017` | `VPROC-0045` | `CUSTOMER_CHANNEL` | Proyecta oferta publicada sin mantener precio o disponibilidad paralelos. |
+| `VSCREEN-0162` | Carrito y configuración del pedido | `pass` | `VPROC-0039` | `VPROC-0017`, `VPROC-0042` | `CUSTOMER_CHANNEL` | Conserva intención local y la entrega a PULSO para crear el pedido. |
+| `VSCREEN-0163` | Dirección, modalidad y programación de entrega | `pass` | `VPROC-0050` | `VPROC-0048`, `VPROC-0049` | `CUSTOMER_CHANNEL` | Captura preferencia del cliente; propietarios logísticos validan capacidad y ejecución. |
+| `VSCREEN-0164` | Revisión, checkout e inicio de pago | `pass` | `VPROC-0043` | `VPROC-0039`, `VPROC-0042` | `CUSTOMER_CHANNEL` | Presenta total y comienza pago; PULSO confirma el resultado comercial. |
+| `VSCREEN-0165` | Confirmación de pedido y retorno de pago | `pass` | `VPROC-0043` | `VPROC-0039`, `VPROC-0051` | `CUSTOMER_CHANNEL` | Presenta receipt correlacionado sin declarar éxito antes de confirmación. |
+| `VSCREEN-0166` | Mis pedidos y detalle | `pass` | `VPROC-0039` | `VPROC-0038`, `VPROC-0040`, `VPROC-0041`, `VPROC-0050` | `CUSTOMER_CHANNEL` | Proyecta pedidos propios de los canales comerciales aplicables. |
+| `VSCREEN-0167` | Seguimiento de preparación y entrega del cliente | `pass` | `VPROC-0050` | `VPROC-0039`, `VPROC-0049` | `CUSTOMER_CHANNEL` | Presenta avance y prueba autorizada sin gobernar la ruta. |
+| `VSCREEN-0168` | Chat y comunicación asociada al pedido | `pass` | `VPROC-0047` | `VPROC-0039`, `VPROC-0046`, `VPROC-0050` | `CUSTOMER_CHANNEL` | Vincula comunicación al pedido y deriva reclamos o entrega cuando corresponda. |
+| `VSCREEN-0169` | Mis reclamos y casos de servicio | `pass` | `VPROC-0046` | `VPROC-0042`, `VPROC-0050` | `CUSTOMER_CHANNEL` | Inicia y consulta el caso propio; PULSO gobierna resolución y compensación. |
+| `VSCREEN-0170` | Mis reservas y eventos | `pass` | `VPROC-0047` | `VPROC-0041` | `CUSTOMER_CHANNEL` | Presenta reservas propias y sus condiciones sin administrar capacidad global. |
+| `VSCREEN-0171` | Calificación y satisfacción | `pass` | `VPROC-0068` | `VPROC-0046` | `CUSTOMER_CHANNEL` | Captura respuesta personal separada de reclamo e incentivo. |
+| `VSCREEN-0172` | Comunicaciones y notificaciones del cliente | `pass` | `VPROC-0047` | `VPROC-0045`, `VPROC-0060` | `CUSTOMER_CHANNEL` | Presenta comunicaciones consentidas y receipts personales. |
+| `VSCREEN-0173` | Trazabilidad e investigación de lote | `fogo` | `VPROC-0035` | `VPROC-0034`, `VPROC-0036`, `VPROC-0037`, `VPROC-0060` | `OWNER_WORKSPACE` | Reconstruye materiales, ejecución, calidad, empaque y disposición. |
+| `VSCREEN-0174` | Controles operativos de inocuidad | `fogo` | `VPROC-0014` | `VPROC-0012`, `VPROC-0035` | `SUPERVISION_SURFACE` | Ejecuta controles operativos y entrega hallazgos al gobierno de cumplimiento. |
+| `VSCREEN-0175` | Seguridad de cuenta y sesiones | `shell` | `VPROC-0059` | `VPROC-0058`, `VPROC-0060` | `TRANSVERSAL_ENTRY` | Presenta sesiones y recuperación personal sin gobernar autoridad laboral. |
+
+---
+
+#### 10. Cobertura de procesos
+
+| Disposición | Procesos | Resultado |
+| --- | --- | --- |
+| vinculados con una o más pantallas | `VPROC-0001` a `VPROC-0055` y `VPROC-0058` a `VPROC-0069` | `COVERED` |
+| aplicación canónica diferida | `VPROC-0056`, `VPROC-0057` | `DEFERRED_APP_SCOPE` |
+
+Los procesos diferidos no se asignan artificialmente a PULSO, PASS, VISO o SHELL. Su primera pantalla exigirá continuidad funcional de AURA y una nueva admisión canónica.
+
+---
+
+#### 11. Fronteras que no podrán reinterpretarse
+
+1. SHELL presenta entradas transversales; no se vuelve propietario de acceso laboral, soporte o continuidad.
+2. VISO puede supervisar asistencia de ANIMA sin crear un ledger paralelo.
+3. ANIMA presenta programación y casos personales; VISO conserva programación y decisiones laborales.
+4. PASS conserva fidelización y experiencia personal; PULSO conserva pedido, venta, pago, reclamo, reserva y resultado comercial.
+5. NEXO conserva planeación y ejecución logística propia; PULSO conserva entrega comercial mediante tercero.
+6. ORIGO acepta la recepción de compra; NEXO registra el efecto físico posterior.
+7. FOGO conserva receta, lote, calidad y cierre productivo; NEXO conserva maestros físicos y existencias.
+8. NUMERA consume hechos económicos y operativos; no recrea ventas, recepciones, movimientos o lotes.
+9. TALENTO continúa como canal futuro sin `app_code`; `VPROC-0005` y `VPROC-0006` permanecen gobernados por VISO.
+10. AURA conserva `VPROC-0056` y `VPROC-0057` diferidos; no se les inventa una pantalla sustituta.
+
+---
+
+#### 12. Cambio de vínculo
+
+Cambiar `primary_process_id` exige:
+
+1. propuesta trazable;
+2. comparación de intención, objeto, entrada, salida y efecto;
+3. análisis de pasos, acciones, métricas, rutas y consumidores posteriores;
+4. nueva versión del vínculo;
+5. conservación del proceso anterior;
+6. actualización coordinada de TREQ y validadores;
+7. creación de otro `VSCREEN-*` cuando cambie materialmente la identidad.
+
+Un cambio de propietaria de proceso no podrá ejecutarse desde este registro: deberá resolverse primero en el catálogo de procesos.
+
+---
+
+#### 13. Validaciones obligatorias
+
+La compilación deberá fallar cuando:
+
+1. falte una de las 175 pantallas;
+2. una pantalla aparezca más de una vez;
+3. una pantalla no tenga exactamente un proceso primario;
+4. un proceso primario o relacionado no exista;
+5. el proceso primario se repita entre relacionados;
+6. existan procesos relacionados duplicados;
+7. una modalidad no pertenezca al vocabulario permitido;
+8. `OWNER_WORKSPACE` contradiga la aplicación propietaria del proceso;
+9. una frontera entre aplicaciones se presente como propiedad;
+10. falte cobertura de un proceso activo;
+11. `VPROC-0056` o `VPROC-0057` se vinculen mientras AURA siga diferida;
+12. se utilice `talento` como aplicación;
+13. PASS aparezca como propietaria de pedido, venta, pago o entrega comercial;
+14. se introduzcan pasos, permisos u operaciones técnicas antes de su tarea;
+15. el conteo declarado no coincida con la matriz física.
+
+---
+
+#### 14. Seguridad y autorización
+
+El vínculo pantalla–proceso no concede:
+
+- acceso a la pantalla;
+- lectura de objetos;
+- ejecución de acciones;
+- pertenencia a un rol;
+- alcance por sede o territorio;
+- autoridad para aprobar;
+- acceso por URL directa;
+- confianza en un handoff;
+- acceso a procesos relacionados.
+
+Cada aplicación continuará resolviendo identidad, actor, capacidad, contexto, recurso, versión, estado y alcance.
+
+---
+
+#### 15. Decisiones reservadas
+
+| Pendiente | Tarea propietaria |
+| --- | --- |
+| vincular pasos exactos | `PROC-SCREEN-004` |
+| clasificar carriles UX | `PROC-SCREEN-005` a `PROC-SCREEN-011` |
+| definir actores | `PROC-SCREEN-012` |
+| definir dispositivos | `PROC-SCREEN-013` |
+| definir acciones | `PROC-SCREEN-014` y `PROC-SCREEN-015` |
+| definir entradas, salidas y estados | `PROC-SCREEN-016` a `PROC-SCREEN-021` |
+| sensibilidad y permisos | `PROC-SCREEN-022` a `PROC-SCREEN-024` |
+| operaciones técnicas | `PROC-SCREEN-025` |
+| rutas y legado | `PROC-SCREEN-026` |
+| métricas y aceptación operativa | `PROC-SCREEN-027` y `PROC-SCREEN-028` |
+| admisión funcional de AURA | tareas canónicas de AURA y nueva admisión `PROC-SCREEN-*` |
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado propuesto:** GENERA 24 REQUISITOS DE PRUEBA.
+
+Se proponen `TREQ-UX-553` a `TREQ-UX-576`. Permanecerán `IDENTIFICADO`; la implementación y evidencia corresponden a CI, paquetes E5, BLOQUE U, staging y pilotos.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [x] Se consumen 175 identidades de pantalla sin renumerarlas.
+- [x] Cada pantalla recibe exactamente un proceso primario.
+- [x] Los procesos relacionados son explícitos, válidos y no duplican el primario.
+- [x] Se utilizan únicamente `VPROC-0001` a `VPROC-0069`.
+- [x] Los 67 procesos activos quedan cubiertos.
+- [x] `VPROC-0056` y `VPROC-0057` permanecen diferidos junto con AURA.
+- [x] La aplicación de pantalla no se confunde con la propietaria del proceso.
+- [x] Se distinguen espacio propietario, entrada transversal, supervisión, canal personal y canal de cliente.
+- [x] PASS conserva el portal de compra completo sin apropiarse de pedido, pago o logística.
+- [x] ANIMA conserva experiencia personal sin apropiarse de decisiones laborales.
+- [x] SHELL conserva entrada transversal sin convertirse en aplicación empresarial universal.
+- [x] Se preservan las fronteras ORIGO–NEXO, FOGO–NEXO, PULSO–PASS y VISO–ANIMA.
+- [x] No se crean pantallas para AURA ni una aplicación TALENTO por inferencia.
+- [x] Se reservan pasos, acciones, permisos, rutas y operaciones técnicas.
+- [x] Se proponen `TREQ-UX-553` a `TREQ-UX-576`.
+- [x] Se define una puerta automática de integridad.
+- [x] No se implementa código de producto ni se avanza a `PROC-SCREEN-004`.
+
+---
+
+#### 18. Resultado y continuidad
+
+**Estado propuesto:** PROPUESTA PARA APROBACIÓN
+
+Al aprobarse:
+
+- los vínculos pasarán de `PROPOSED` a `CANONICAL`;
+- `PROC-SCREEN-003` será la última tarea aprobada;
+- la continuidad documental pasará exclusivamente a:
+
+```text
+PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso
+```
+
+Hasta recibir `APROBADO`:
+
+```text
+PROC-SCREEN-002 APROBADA
+PROC-SCREEN-003 APROBADO
+PROC-SCREEN-004 NO INICIADA
+```
+
 ### [ ] PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso
 ### [ ] PROC-SCREEN-005 — Clasificar pantalla operativa
 ### [ ] PROC-SCREEN-006 — Clasificar pantalla administrativa

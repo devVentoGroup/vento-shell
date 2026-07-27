@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **306** |
+| Tareas aprobadas | **307** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1270** |
+| Tareas no iniciadas | **1269** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-SCREEN-002 — Vincular cada pantalla con una aplicación** |
-| Tarea actual | **PROC-SCREEN-003 — Vincular cada pantalla con un proceso** |
+| Última tarea aprobada | **PROC-SCREEN-003 — Vincular cada pantalla con un proceso** |
+| Tarea actual | **PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso** |
+| Siguiente tarea | **PROC-SCREEN-005 — Clasificar pantalla operativa** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 64 de 101 aprobadas; PROC-SCREEN-003 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 65 de 101 aprobadas; PROC-SCREEN-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación |
-| Tarea actual | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso — **NO INICIADA** |
-| Siguiente tarea | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso |
+| Última aprobada | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso |
+| Tarea actual | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso — **NO INICIADA** |
+| Siguiente tarea | `PROC-SCREEN-005` — Clasificar pantalla operativa |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **64 DE 101 APROBADAS — ACTUAL PROC-SCREEN-003** |
+| BLOQUE E2 | **65 DE 101 APROBADAS — ACTUAL PROC-SCREEN-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-SCREEN-002 — Vincular cada pantalla con una aplicación
-        ↓
-TAREA ACTUAL
 PROC-SCREEN-003 — Vincular cada pantalla con un proceso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PROC-SCREEN-004 — Vincular cada pantalla con un paso del proceso
         ↓
+SIGUIENTE TAREA RESERVADA
+PROC-SCREEN-005 — Clasificar pantalla operativa
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 64 de 101 tareas aprobadas
+BLOQUE E2 — 65 de 101 tareas aprobadas
 ```

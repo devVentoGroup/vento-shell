@@ -5,6 +5,7 @@ import { syncPlanContinuity } from './plan-continuity-final-newline.mjs';
 import { validateCanonicalTreqRegistry } from './validate-treq-registry.mjs';
 import { validateScreenCatalog } from './validate-screen-catalog.mjs';
 import { validateProcessApplicationIntegrity } from './validate-process-application-integrity.mjs';
+import { validateScreenProcessBindings } from './validate-screen-process-bindings.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -90,6 +91,19 @@ try {
     + `${processAppStats.applications} aplicaciones canónicas; `
     + `${processAppStats.directRelationships} consumos directos; `
     + `${processAppStats.conditionalRelationships} condicionales.`
+  );
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
+
+try {
+  const screenProcessStats = validateScreenProcessBindings({ root });
+  console.log(
+    `OK: vínculos pantalla-proceso; ${screenProcessStats.screens} pantallas; `
+    + `${screenProcessStats.primaryBindings} primarios; `
+    + `${screenProcessStats.relatedBindings} relacionados; `
+    + `${screenProcessStats.coveredProcesses} procesos activos; `
+    + `${screenProcessStats.deferredProcesses} diferidos.`
   );
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));
