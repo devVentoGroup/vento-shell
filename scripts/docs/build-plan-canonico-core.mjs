@@ -3,6 +3,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { syncPlanContinuity } from './plan-continuity-final-newline.mjs';
 import { validateCanonicalTreqRegistry } from './validate-treq-registry.mjs';
+import { validateScreenCatalog } from './validate-screen-catalog.mjs';
+import { validateProcessApplicationIntegrity } from './validate-process-application-integrity.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -65,6 +67,29 @@ try {
   console.log(
     `OK: registro TREQ; ${treqStats.requirements} requisitos; ${treqStats.domains} dominios; `
     + `última tarea ${treqStats.latestTask}.`
+  );
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
+
+try {
+  const screenStats = validateScreenCatalog({ root });
+  console.log(
+    `OK: catálogo de pantallas; ${screenStats.screens} pantallas; `
+    + `${screenStats.activeApplications} aplicaciones habilitadas; `
+    + `${screenStats.processes} procesos cubiertos; última ${screenStats.lastScreenId}.`
+  );
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
+
+try {
+  const processAppStats = validateProcessApplicationIntegrity({ root });
+  console.log(
+    `OK: integridad proceso-aplicación; ${processAppStats.processes} procesos; `
+    + `${processAppStats.applications} aplicaciones canónicas; `
+    + `${processAppStats.directRelationships} consumos directos; `
+    + `${processAppStats.conditionalRelationships} condicionales.`
   );
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));

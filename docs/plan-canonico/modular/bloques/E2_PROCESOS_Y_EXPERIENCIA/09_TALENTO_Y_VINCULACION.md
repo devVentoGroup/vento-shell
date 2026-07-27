@@ -1156,8 +1156,8 @@ Esta propuesta consume y no reemplaza:
   evidencia;
 - la decisión de que VISO conserva requisición, vacante empresarial y autoridad
   laboral;
-- la decisión de que TALENTO conserva publicación, perfil de candidato,
-  postulación y expediente prelaboral;
+- la decisión de que el dominio prelaboral futuro TALENTO conserva publicación,
+  perfil, postulación y expediente bajo gobierno de VISO, sin `app_code` propio;
 - la decisión de que ANIMA solo recibe al trabajador vinculado y activado.
 
 Los documentos existentes en `vento-talento` se consideran drafts y evidencia
@@ -3816,7 +3816,7 @@ No se inicia `CAP-TAL-004` hasta la aprobación expresa de esta tarea.
 **Artefacto producido:** `CAP-TAL-SELECTION-DECISION-OFFER-CONTRACT-001`  
 **Procesos canónicos principales:** `VPROC-0005` y `VPROC-0006`  
 **Naturaleza:** proceso de selección, evaluación, entrevistas, validaciones, decisión laboral, oferta y pre-registro  
-**Aplicaciones propietarias:** TALENTO para evidencia prelaboral y experiencia del candidato; VISO para decisión, condiciones y autoridad laboral; ANIMA permanece fuera del proceso hasta el handoff autorizado  
+**Propiedad y canales:** VISO es la aplicación propietaria de `VPROC-0005` y `VPROC-0006`; la base futura TALENTO conserva evidencia prelaboral solo como canal candidato hasta obtener `app_code`; ANIMA permanece fuera hasta el handoff autorizado
 **Cambios en código, datos, migraciones, RLS, RPC, Storage, Supabase, proveedores, plantillas jurídicas, contratos o aplicaciones:** no autorizados
 
 ---
@@ -5516,7 +5516,7 @@ CAP-TAL-005 — NO INICIADA
 **Artefacto producido:** `CAP-TAL-HANDOFF-ORCHESTRATION-CONTRACT-001`  
 **Procesos canónicos principales:** `VPROC-0005` y `VPROC-0006`  
 **Naturaleza:** contrato transversal de identidad, materialización laboral, asignaciones, transferencia documental, aprovisionamiento de acceso, eventos, recuperación y conciliación  
-**Aplicaciones propietarias:** TALENTO aporta el caso prelaboral y conserva su cierre histórico; VISO autoriza y materializa el vínculo laboral; la plataforma de identidad y autorización resuelve accesos; ANIMA consume la proyección del trabajador y gestiona su activación de acceso  
+**Propiedad y canales:** VISO gobierna el caso prelaboral, autoriza y materializa el vínculo; la base futura TALENTO podrá aportar interacción candidata sin propiedad de aplicación; identidad y autorización resuelven accesos; ANIMA consume la proyección del trabajador
 **Cambios en código, datos, migraciones, RLS, RPC, Storage, Supabase, Auth, Edge Functions, colas, proveedores o aplicaciones:** no autorizados
 
 ---
@@ -5620,7 +5620,7 @@ Esta propuesta consume y no reemplaza:
 
 Decisiones preservadas:
 
-1. TALENTO conserva candidato, postulación y expediente histórico de selección.
+1. El dominio prelaboral futuro TALENTO conserva candidato, postulación y expediente histórico bajo propiedad funcional de VISO.
 2. VISO conserva la decisión, el pre-registro, el vínculo, el episodio laboral y
    las asignaciones administrativas.
 3. ANIMA no crea vínculos ni permisos; consume al trabajador habilitado.
@@ -5741,16 +5741,16 @@ nombres.
 
 | Verdad                                | Fuente autorizada                    | Consumidores                                     |
 | ------------------------------------- | ------------------------------------ | ------------------------------------------------ |
-| candidato, postulación y selección    | TALENTO                              | VISO por proyección mínima                       |
-| decisión y oferta aprobada            | VISO                                 | TALENTO para experiencia del candidato           |
-| aceptación de oferta                  | TALENTO con referencia a oferta VISO | VISO                                             |
-| pre-registro                          | VISO                                 | TALENTO por estado resumido                      |
+| candidato, postulación y selección    | VISO / dominio prelaboral TALENTO    | canal candidato futuro por contrato              |
+| decisión y oferta aprobada            | VISO                                 | canal candidato futuro para presentación         |
+| aceptación de oferta                  | VISO, recibida desde canal candidato | procesos de vinculación autorizados              |
+| pre-registro                          | VISO                                 | canal candidato futuro por estado resumido       |
 | persona e identidades enlazadas       | identidad canónica                   | todas las aplicaciones autorizadas               |
 | empleado y episodio laboral           | VISO/dominio laboral                 | ANIMA, NUMERA y consumidores autorizados         |
 | empresa, sede, área y cargo asignados | VISO                                 | autorización y ANIMA                             |
 | permisos efectivos                    | motor de autorización                | VISO y aplicaciones                              |
 | invitación y estado de credencial     | identidad/ANIMA                      | VISO por proyección                              |
-| expediente histórico de selección     | TALENTO                              | acceso restringido por finalidad                 |
+| expediente histórico de selección     | VISO / dominio prelaboral TALENTO    | acceso restringido por finalidad                 |
 | documentos laborales vigentes         | custodia laboral/VISO                | ANIMA solo para la persona y finalidad permitida |
 
 Una proyección no podrá convertirse en fuente de verdad porque una pantalla la
@@ -6953,7 +6953,7 @@ CAP-TAL-006 — NO INICIADA
 **Artefacto producido:** `CAP-TAL-PROBATION-CONTINUITY-OFFBOARDING-READINESS-001`  
 **Procesos canónicos principales:** `VPROC-0006` y procesos laborales, de identidad, autorización, evidencia y cierre relacionados  
 **Naturaleza:** contrato funcional, laboral, temporal, de autorización, continuidad, cierre, revocación, conciliación y readiness  
-**Aplicaciones propietarias:** VISO administra vínculo, período de prueba, decisiones y cierre; ANIMA presenta la experiencia y acciones permitidas del trabajador; TALENTO conserva el expediente histórico prelaboral; SHELL y los contratos compartidos resuelven identidad, autorización, eventos y revocación  
+**Aplicaciones propietarias y canales:** VISO administra vínculo, período de prueba, decisiones y cierre; ANIMA presenta la experiencia permitida; la base futura TALENTO conserva evidencia prelaboral como canal subordinado; SHELL y los contratos compartidos resuelven identidad, autorización, eventos y revocación
 **Cambios en código, datos, migraciones, RLS, RPC, Storage, Supabase, Auth, Edge Functions, colas, proveedores o aplicaciones:** no autorizados
 
 ---

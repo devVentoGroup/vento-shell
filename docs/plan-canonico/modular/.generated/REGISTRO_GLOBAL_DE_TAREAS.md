@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **304** |
+| Aprobadas | **306** |
 | En propuesta | **0** |
-| No iniciadas | **1272** |
+| No iniciadas | **1270** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `UX-ADMIN-005` — Prototipar y aprobar flujos administrativos con usuarios reales | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-001` — Crear identificador estable para cada pantalla | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-002` — Vincular cada pantalla con una aplicación | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -298,8 +298,8 @@
 | ✅ APROBADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ✅ APROBADA | `UX-ADMIN-004` | Definir ayudas contextuales, validación preventiva y vista previa de impacto | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ✅ APROBADA | `UX-ADMIN-005` | Prototipar y aprobar flujos administrativos con usuarios reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |

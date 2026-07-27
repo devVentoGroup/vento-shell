@@ -19992,7 +19992,7 @@ materializadas, entre otras:
 14. PULSO conservará la operación comercial; PASS la experiencia del cliente; VISO los casos administrativos.
 15. NEXO conservará logística interna e instalaciones; PULSO el cumplimiento del pedido de cliente.
 16. NUMERA será la capa económico-operativa sin declararse todavía contabilidad formal completa.
-17. AURA y TALENTO conservarán propiedad objetivo aunque su cobertura actual deba medirse como futura, parcial o ausente.
+17. AURA conservará propiedad objetivo diferida; TALENTO conservará dominio y canal futuro bajo propiedad funcional de VISO mientras no exista `app_code` canónico.
 18. La propiedad tecnológica será distribuida bajo coordinación del BLOQUE Z.
 19. No será obligatorio crear inmediatamente un área formal de TI, datos, información o continuidad; sí será obligatorio asignar las funciones.
 20. Una persona podrá ejercer varias funciones temporalmente, pero no se fusionarán sus responsabilidades ni se eliminarán revisiones independientes.

@@ -424,7 +424,7 @@ Se incorporan `TREQ-UX-320` a `TREQ-UX-343` al Registro Canónico completo. Todo
 - [x] Cada fila declara propietario o frontera distribuida explícita.
 - [x] Cada fila declara actor funcional, frecuencia, volumen, complejidad, riesgo, ruta y auditoría.
 - [x] La frecuencia no se confunde con prioridad y la complejidad no depende de jerarquía.
-- [x] Se preserva la propiedad funcional de NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA, TALENTO, ANIMA y SHELL.
+- [x] Se preserva la propiedad funcional de VISO, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA, ANIMA y SHELL, y se trata TALENTO como canal futuro sin `app_code`.
 - [x] VISO no se convierte en un formulario universal.
 - [x] Se identifican candidatos para modo guiado y modo experto.
 - [x] Se protegen aprobaciones, acciones masivas, exportaciones, reversiones y datos sensibles.
@@ -528,7 +528,7 @@ Esta tarea consume y no reemplaza:
 - `NFR-REQ-001` a `NFR-REQ-011`;
 - `UX-STATION-001` a `UX-STATION-012` y la matriz aprobada por `UX-STATION-009`;
 - los contratos de identidad, contexto, autorización, territorialidad y segregación `AUTH-*`;
-- la propiedad funcional de VISO, TALENTO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL;
+- la propiedad funcional de VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL, con TALENTO como canal futuro;
 - los procesos `VPROC-0001` a `VPROC-0069` y sus estados, transiciones, acciones excepcionales y auditoría;
 - la obligación de vincular todo vacío a una tarea propietaria concreta.
 
@@ -1144,7 +1144,7 @@ Esta tarea consume y no reemplaza:
 - `UX-STATION-001` a `UX-STATION-012`;
 - los contratos `AUTH-*` de actor, permiso, territorio, segregación, privacidad y dispositivo;
 - los procesos `VPROC-0001` a `VPROC-0069`;
-- la propiedad funcional de VISO, TALENTO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL;
+- la propiedad funcional de VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL, con TALENTO como canal futuro;
 - los contratos de idempotencia, concurrencia, eventos, handoff, tareas pendientes y evidencia reservados para SHELL, E4, E5 y BLOQUE U.
 
 Esta tarea no define librería de tablas, motor de consultas, endpoint, índice, caché, esquema de importación, formato físico de exportación, política final de retención ni tecnología de analítica.
@@ -1918,7 +1918,7 @@ Esta tarea consume y no reemplaza:
 - `UX-STATION-001` a `UX-STATION-012`;
 - los contratos `AUTH-*` de actor, permiso, territorio, segregación, privacidad y dispositivo;
 - los procesos `VPROC-0001` a `VPROC-0069`;
-- la propiedad funcional de VISO, TALENTO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL;
+- la propiedad funcional de VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS, NUMERA y SHELL, con TALENTO como canal futuro;
 - los contratos futuros de acciones, eventos, tareas pendientes, handoffs, evidencia, notificaciones y receipts.
 
 Esta tarea no:

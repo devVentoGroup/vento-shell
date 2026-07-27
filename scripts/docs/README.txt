@@ -19,10 +19,23 @@ Comandos desde la raíz de vento-shell:
 
    npm run docs:treq:check
 
+5. Validar catálogo, aplicaciones y cobertura semántica de pantallas:
+
+   npm run docs:screens:check
+
+6. Validar propietarias y consumidoras de todos los procesos:
+
+   npm run docs:process-apps:check
+
 Organización:
 
 - manifest.json controla únicamente el orden físico de compilación.
 - active-sequence.json controla el orden documental de ejecución.
+- validate-screen-catalog.mjs impide aceptar un catálogo de pantallas con IDs,
+  distribución, aplicaciones, cobertura VPROC o excepciones contradictorias.
+- validate-process-application-integrity.mjs exige que las 69 propietarias y
+  todas las consumidoras resuelvan contra BLOQUE C, sin autoconsumo ni códigos
+  futuros tratados como aplicaciones.
 - active-sequence.json puede declarar varios segmentos y prefijos; el script
   encuentra la primera tarea no aprobada y avanza automáticamente entre ellos.
 - si toda la secuencia queda aprobada, el script informa
