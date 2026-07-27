@@ -36,5 +36,14 @@ jobs:
       - name: Compilar plan canónico
         run: npm run docs:plan:build
 
+      - name: Probar continuidad documental
+        run: npm run docs:plan:test
+
+      - name: Probar validador del registro TREQ
+        run: npm run docs:treq:test
+
+      - name: Verificar registro TREQ
+        run: npm run docs:treq:check
+
       - name: Verificar invariantes y compilado
         run: npm run docs:plan:check

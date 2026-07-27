@@ -75,9 +75,9 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
 13. Aprobar dominios, arquitectura de datos, normalización y plan de transición
 14. BLOQUE E4 — Definir colas, impresión, notificaciones, documentos y evidencia
 15. Aprobar contratos, planes de implementación y criterios de piloto de los servicios transversales
-16. BLOQUE E5 — Convertir capacidades aprobadas en paquetes de implementación, readiness, cutover, piloto, rollback e hypercare
+16. BLOQUE E5 — Convertir capacidades aprobadas en paquetes y planes verificables de implementación, readiness, cutover, piloto, rollback e hypercare
 17. Reabrir el catálogo y actualizar matrices o datasets únicamente cuando una capacidad nueva madura lo requiera
-18. Aprobar puerta de entrada a fundación compartida e implementación por paquetes
+18. Aprobar la puerta documental `E5-GATE-008` para habilitar posteriormente la ejecución por `SHELL-CI-020` a `SHELL-CI-024`
 
 En esta fase se define:
 
@@ -131,13 +131,36 @@ Reglas:
 - Los defectos encontrados durante piloto o hypercare generan pruebas de regresión.
 - U ejecuta la certificación integral y no sustituye las pruebas de cada paquete.
 
+### Ciclo obligatorio de ejecución de cada paquete aprobado
+
+```text
+E5-GATE-008 — paquete y planes aprobados; todavía sin despliegue
+        ↓
+SHELL-CI-020 — implementar y desplegar el paquete aprobado
+        ↓
+BLOQUE R — ejecutar las tareas de datos o Supabase aplicables
+        ↓
+SHELL-CI-021 — ejecutar readiness y reunir evidencia
+        ↓
+SHELL-CI-022 — ejecutar cutover y piloto controlado
+        ↓
+SHELL-CI-023 — ejecutar hypercare y estabilización
+        ↓
+SHELL-CI-024 — certificar cierre y transferir a soporte
+        ↓
+BLOQUE U — certificación integral transversal
+```
+
+Ningún artefacto de planificación de E5 prueba por sí solo que un despliegue,
+una migración, un piloto o un periodo de hypercare hayan ocurrido.
+
 
 FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 
 1.  BLOQUE H — Crear la fundación de VENTO-SHELL como núcleo compartido
 2.  Crear contratos, eventos, normalización compartida, helpers puros y estructura inicial de @vento/supabase
 3.  Ejecutar AUTH-UI-030 a AUTH-UI-039
-4.  BLOQUE T — Establecer CI, pruebas, staging, drift y rollback base
+4.  BLOQUE T — Establecer CI, pruebas, staging, drift, rollback base y el ciclo `SHELL-CI-020` a `SHELL-CI-024`
 5.  BLOQUE J — Inventariar y proteger acciones de servidor
 6.  BLOQUE R — Ejecutar R0, R1 y los primeros paquetes aprobados de R2
 7.  BLOQUE S — Mensajes y experiencia de bloqueo
@@ -437,10 +460,10 @@ FASE 5 — NEXO
 35. Ejecutar SUBBLOQUE K2 completo, incluidas NEXO-DOM-019 a NEXO-DOM-038, NEXO-AUTH-021 a NEXO-AUTH-032 y NEXO-UX-026 a NEXO-UX-048
 36. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor, dispositivo y subdominio
 37. Aprobar paquetes E5 de NEXO con archivos, datos, autorización, eventos, impresión, pruebas y rollback
-38. Implementar funcionalidad, pantallas, acciones, datos, autorización, contratos y seguridad de NEXO
-39. Completar readiness operativo, integraciones y servicios transversales requeridos
-40. Ejecutar cutover, pilotos operativos, conciliación e hypercare
-41. Aprobar NEXO por procesos y subdominios con evidencia de cierre
+38. Ejecutar `SHELL-CI-020` para implementar funcionalidad, pantallas, acciones, datos, autorización, contratos y seguridad de NEXO; ejecutar BLOQUE R cuando aplique
+39. Ejecutar `SHELL-CI-021` para completar readiness operativo, integraciones y servicios transversales requeridos
+40. Ejecutar `SHELL-CI-022` y `SHELL-CI-023` para cutover, pilotos operativos, conciliación e hypercare
+41. Ejecutar `SHELL-CI-024` y aprobar NEXO por procesos y subdominios con evidencia de cierre
 
 FASE 6 — FOGO Y ORIGO
 
@@ -448,12 +471,12 @@ FASE 6 — FOGO Y ORIGO
 43. Auditar y diseñar ORIGO
 44. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos de FOGO y ORIGO
 45. Aprobar paquetes E5 de FOGO y ORIGO
-46. Implementar funcionalidad, datos, autorización y seguridad de FOGO
-47. Implementar funcionalidad, datos, autorización y seguridad de ORIGO
+46. Ejecutar `SHELL-CI-020` para implementar funcionalidad, datos, autorización y seguridad de FOGO; ejecutar BLOQUE R cuando aplique
+47. Ejecutar `SHELL-CI-020` para implementar funcionalidad, datos, autorización y seguridad de ORIGO; ejecutar BLOQUE R cuando aplique
 48. Implementar INT-PROD — FOGO ↔ NEXO e INT-PROC — ORIGO → NEXO → NUMERA
-49. Completar readiness y ejecutar pilotos por proceso
-50. Ejecutar conciliación, correcciones e hypercare
-51. Aprobar FOGO y ORIGO con evidencia de cierre
+49. Ejecutar `SHELL-CI-021` y `SHELL-CI-022` para completar readiness y pilotos por proceso
+50. Ejecutar `SHELL-CI-023` para conciliación, correcciones e hypercare
+51. Ejecutar `SHELL-CI-024` y aprobar FOGO y ORIGO con evidencia de cierre
 
 FOGO y ORIGO podrán avanzar en paralelo después de estabilizar
 los contratos de productos, presentaciones, existencias y movimientos
@@ -465,10 +488,10 @@ FASE 7 — PULSO
 53. Ejecutar SUBBLOQUE N2 — Procesos y experiencia de PULSO
 54. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por actor y dispositivo
 55. Aprobar paquetes E5 de PULSO
-56. Implementar funcionalidad, datos, autorización, seguridad e INT-SALES de PULSO
-57. Completar readiness y ejecutar piloto progresivo en sedes satélite
-58. Ejecutar conciliación, correcciones e hypercare
-59. Aprobar PULSO con evidencia de cierre
+56. Ejecutar `SHELL-CI-020` para implementar funcionalidad, datos, autorización, seguridad e INT-SALES de PULSO; ejecutar BLOQUE R cuando aplique
+57. Ejecutar `SHELL-CI-021` y `SHELL-CI-022` para completar readiness y el piloto progresivo en sedes satélite
+58. Ejecutar `SHELL-CI-023` para conciliación, correcciones e hypercare
+59. Ejecutar `SHELL-CI-024` y aprobar PULSO con evidencia de cierre
 
 FASE 8 — NUMERA
 
@@ -476,32 +499,32 @@ FASE 8 — NUMERA
 61. Aprobar alcance ejecutivo, analítico, financiero y contable de NUMERA
 62. Ejecutar NUMERA-DOM-001 a NUMERA-DOM-015, SUBBLOQUE O2 y AUTH-UI-052 a AUTH-UI-060
 63. Aprobar prototipos y paquetes E5 de NUMERA
-64. Implementar funcionalidad, datos, autorización, contratos y seguridad de NUMERA
+64. Ejecutar `SHELL-CI-020` para implementar funcionalidad, datos, autorización, contratos y seguridad de NUMERA; ejecutar BLOQUE R cuando aplique
 65. Integrar eventos, conciliaciones y fuentes aprobadas de ORIGO, FOGO, NEXO y ventas
-66. Completar readiness y ejecutar piloto, conciliación e hypercare con contabilidad y dirección
-67. Aprobar NUMERA únicamente con cobertura, diferencias y evidencia documentadas
+66. Ejecutar `SHELL-CI-021` a `SHELL-CI-023` para readiness, piloto, conciliación e hypercare con contabilidad y dirección
+67. Ejecutar `SHELL-CI-024` y aprobar NUMERA únicamente con cobertura, diferencias y evidencia documentadas
 
 FASE 9 — VISO COMPLETO
 
 68. Ejecutar SUBBLOQUE G3 — Experiencia administrativa de VISO
 69. Ejecutar AUTH-UI-052 a AUTH-UI-060 y validar prototipos por rol
 70. Aprobar paquetes E5 de VISO
-71. Implementar reorganización funcional, autorización y administración por dominios
+71. Ejecutar `SHELL-CI-020` para implementar reorganización funcional, autorización y administración por dominios; ejecutar BLOQUE R cuando aplique
 72. Integrar auditoría consolidada y vista previa por trabajador
-73. Completar readiness y ejecutar piloto con cada rol administrativo
-74. Ejecutar correcciones e hypercare
-75. Aprobar VISO completo con evidencia de cierre
+73. Ejecutar `SHELL-CI-021` y `SHELL-CI-022` para completar readiness y el piloto con cada rol administrativo
+74. Ejecutar `SHELL-CI-023` para correcciones e hypercare
+75. Ejecutar `SHELL-CI-024` y aprobar VISO completo con evidencia de cierre
 
 FASE 10 — PASS
 
 76. Ejecutar BLOQUE V — PASS e integración con el dominio laboral
 77. Diseñar y validar la experiencia del cliente
 78. Aprobar paquetes E5 de PASS
-79. Implementar acumulación y redención desde la fuente comercial vigente sin duplicar identidad, saldo ni efectos
-80. Probar identidad cliente, seguridad, datos, integraciones y readiness
-81. Ejecutar piloto progresivo de fidelización
-82. Ejecutar conciliación, correcciones e hypercare
-83. Aprobar PASS con evidencia de cierre
+79. Ejecutar `SHELL-CI-020` para implementar acumulación y redención desde la fuente comercial vigente sin duplicar identidad, saldo ni efectos; ejecutar BLOQUE R cuando aplique
+80. Ejecutar `SHELL-CI-021` para probar identidad cliente, seguridad, datos, integraciones y readiness
+81. Ejecutar `SHELL-CI-022` para el piloto progresivo de fidelización
+82. Ejecutar `SHELL-CI-023` para conciliación, correcciones e hypercare
+83. Ejecutar `SHELL-CI-024` y aprobar PASS con evidencia de cierre
 
 FASE 11 — TALENTO
 
@@ -509,7 +532,7 @@ FASE 11 — TALENTO
 85. Materializar BLOQUE Y y su roadmap propio únicamente después de la puerta definida en `CAP-TAL-006`
 86. Auditar y reconciliar la base técnica existente antes de adoptarla
 87. Aprobar prototipos, contratos TALENTO → VISO → ANIMA y paquetes E5
-88. Implementar y pilotear sin conceder acceso laboral antes de la vinculación autorizada
+88. Ejecutar `SHELL-CI-020` a `SHELL-CI-024` para implementar, validar readiness, pilotear, estabilizar y cerrar sin conceder acceso laboral antes de la vinculación autorizada
 
 FASE 12 — AURA
 
@@ -524,7 +547,7 @@ FASE 13 — CIERRE TRANSVERSAL
 94. Completar y validar BLOQUE X de extremo a extremo
 95. Confirmar idempotencia, reintentos y compensaciones
 96. Confirmar que no existan registros manuales duplicados
-97. Completar BLOQUE T — CI, versionado y despliegue
+97. Completar BLOQUE T — CI, versionado, despliegue y evidencia de `SHELL-CI-020` a `SHELL-CI-024`
 98. Ejecutar BLOQUE U — Pruebas integrales
 99. Ejecutar pruebas de seguridad
 100. Ejecutar pruebas funcionales

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { syncPlanContinuity } from './plan-continuity-final-newline.mjs';
+import { validateCanonicalTreqRegistry } from './validate-treq-registry.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -57,6 +58,16 @@ if (duplicatePaths.length) fail(`rutas duplicadas en manifest.json: ${[...new Se
 const unregisteredBlocks = findUnregisteredBlockDirectories(manifest.files);
 if (unregisteredBlocks.length) {
   fail(`bloques con fragmentos Markdown fuera de manifest.json: ${unregisteredBlocks.join(', ')}`);
+}
+
+try {
+  const treqStats = validateCanonicalTreqRegistry({ root });
+  console.log(
+    `OK: registro TREQ; ${treqStats.requirements} requisitos; ${treqStats.domains} dominios; `
+    + `última tarea ${treqStats.latestTask}.`
+  );
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
 }
 
 let compiled = '';

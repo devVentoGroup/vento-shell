@@ -197,7 +197,13 @@ BLOQUES E3, E4, X Y ROADMAPS POR APLICACIÓN
 → pueden devolver nuevas brechas o dependencias a E1 y E2
 
 BLOQUE E5
-→ convierte el diseño aprobado en paquetes implementables
+→ convierte el diseño aprobado en paquetes y planes de ejecución aprobables
+
+BLOQUE T + BLOQUE R CUANDO APLIQUE
+→ implementan y despliegan cada paquete aprobado
+
+READINESS, CUTOVER, PILOTO E HYPERCARE
+→ se ejecutan mediante `SHELL-CI-021` a `SHELL-CI-024`
 ```
 
 ### Distribución canónica de tareas derivadas de OPS-AUD-001
@@ -230,7 +236,7 @@ dependencias contractuales, técnicas y operativas.
 | E2     | Procesos, actores, pantallas y experiencia                                |
 | E3     | Arquitectura y gobierno integral de Supabase                              |
 | E4     | Colas, impresión, notificaciones y evidencia                              |
-| E5     | Paquetes de implementación, readiness, cutover e hypercare                |
+| E5     | Planificación de paquetes, readiness, cutover, piloto e hypercare         |
 | F      | ANIMA                                                                     |
 | G      | VISO                                                                      |
 | H      | VENTO-SHELL como núcleo compartido                                        |
@@ -256,3 +262,15 @@ dependencias contractuales, técnicas y operativas.
 | AA     | Gobierno de información, privacidad, documentos, conservación y auditoría |
 | AB     | Analítica, indicadores, calidad de datos y datos maestros                 |
 | AC     | Continuidad operativa, contingencia, incidentes, respaldo y recuperación  |
+
+Secuencia transversal de un paquete:
+
+```text
+E5-GATE-008 — APROBACIÓN PREVIA
+→ SHELL-CI-020 — IMPLEMENTACIÓN Y DESPLIEGUE
+→ SHELL-CI-021 — READINESS DE EJECUCIÓN
+→ SHELL-CI-022 — CUTOVER Y PILOTO
+→ SHELL-CI-023 — HYPERCARE
+→ SHELL-CI-024 — CIERRE Y TRANSFERENCIA
+→ BLOQUE U — CERTIFICACIÓN INTEGRAL APLICABLE
+```

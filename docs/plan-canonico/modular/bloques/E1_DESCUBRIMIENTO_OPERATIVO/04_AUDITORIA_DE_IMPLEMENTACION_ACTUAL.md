@@ -7553,6 +7553,19 @@ interfaz completa, parcial, degradada o ficticia
 TREQ y tarea responsable
 ```
 
+### [ ] WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz
+
+- **Estado:** NO INICIADA
+- **Origen:** hallazgo `H-CODE-010-004` de `CODE-AUD-010`
+- **Propietario:** plan web de Vento Group
+
+**Resultado esperado:** la interfaz registra consentimiento y un resultado real
+mediante un contrato aprobado, o se retira por completo sin confirmar una
+suscripción inexistente.
+
+**Límite:** este marcador registra la tarea ya identificada; no inicia su
+implementación ni la incorpora a la secuencia documental activa.
+
 La continuidad será:
 
 ```text

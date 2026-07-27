@@ -28,6 +28,10 @@ El BLOQUE U ejecutará:
 - pilotos con usuarios reales;
 - validación final de requisitos `TREQ-*`.
 
+La ejecución por paquete ocurre antes mediante `SHELL-CI-020` a
+`SHELL-CI-024`. U consume esa evidencia, ejecuta certificación transversal y
+puede rechazar el cierre; no reemplaza readiness, cutover, piloto o hypercare.
+
 ### [ ] AUTH-QA-001 — Propietario sin check-in entra a administración
 ### [ ] AUTH-QA-002 — Gerente general sin check-in entra a administración
 ### [ ] AUTH-QA-003 — Gerente de sede solo opera sus sedes

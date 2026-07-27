@@ -5,12 +5,13 @@ CAPACIDAD APROBADA
 → PROCESO TO-BE
 → DISEÑO FUNCIONAL Y TÉCNICO
 → PAQUETE DE IMPLEMENTACIÓN
-→ PRUEBAS
-→ READINESS
-→ CUTOVER
-→ PILOTO OPERATIVO
-→ HYPERCARE
-→ EVIDENCIA DE CIERRE
+→ PLAN DE PRUEBAS
+→ PLAN DE READINESS
+→ PLAN DE CUTOVER Y PILOTO
+→ PLAN DE HYPERCARE
+→ CRITERIOS DE EVIDENCIA Y CIERRE
+→ E5-GATE-008
+→ IMPLEMENTACIÓN FÍSICA POSTERIOR
 ```
 
 Una capacidad no podrá pasar a implementación cuando:
@@ -38,3 +39,22 @@ Todo paquete de implementación deberá:
 - impedir el cierre con requisitos críticos sin implementar;
 - justificar cualquier requisito diferido mediante una tarea exacta;
 - actualizar el Registro Canónico de Requisitos de Prueba.
+
+### Límite entre planificación y ejecución
+
+E5 solo podrá aprobar artefactos disponibles antes de implementar:
+
+- alcance y archivos previstos;
+- comandos y orden de aplicación;
+- escenarios y datos de prueba;
+- checklist de readiness;
+- plan de cutover y piloto;
+- plan de hypercare;
+- condiciones de suspensión;
+- rollback;
+- criterios y formato de evidencia.
+
+La evidencia real de código desplegado, migraciones aplicadas, restauración
+probada, piloto ejecutado o estabilización pertenece respectivamente a
+`SHELL-CI-020`, BLOQUE R, `SHELL-CI-021`, `SHELL-CI-022`,
+`SHELL-CI-023`, `SHELL-CI-024` y BLOQUE U.

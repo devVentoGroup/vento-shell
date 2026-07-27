@@ -8,11 +8,11 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1570** |
+| Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
 | Aprobadas | **277** |
 | En propuesta | **0** |
-| No iniciadas | **1293** |
+| No iniciadas | **1299** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
@@ -199,6 +199,7 @@
 | ✅ APROBADA | `CODE-AUD-008` | Detectar `TODO`, `FIXME`, stubs y funciones no terminadas | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-009` | Detectar valores hardcodeados y decisiones técnicas temporales | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-010` | Detectar pantallas con interfaz pero sin lógica completa | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
+| ⬜ NO INICIADA | `WEB-FRM-011` | Implementar suscripción de newsletter o retirar la interfaz | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-011` | Detectar infraestructura sin proceso funcional utilizable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-012` | Detectar procesos implementados solo parcialmente | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-013` | Detectar código legacy todavía activo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
@@ -551,41 +552,41 @@
 | ⬜ NO INICIADA | `DELIV-PKG-023` | Definir criterios de aceptación y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-024` | Vincular el paquete con el registro canónico de brechas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-025` | Aprobar el paquete antes de iniciar implementación física | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
-| ⬜ NO INICIADA | `READY-GATE-001` | Confirmar código desplegado en el entorno objetivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-002` | Confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-003` | Confirmar permisos, matrices y dispositivos configurados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-004` | Confirmar usuarios, roles, sedes, áreas y turnos requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-005` | Confirmar catálogos y datos maestros mínimos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-006` | Confirmar integraciones y credenciales de prueba o producción | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-007` | Confirmar hardware, red, escáneres e impresoras | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-008` | Confirmar procedimientos operativos y contingencias | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-009` | Confirmar capacitación y material de apoyo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-010` | Confirmar mesa de soporte, responsables y escalamiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-011` | Confirmar monitoreo, métricas y alertas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-012` | Confirmar respaldo y rollback probados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-013` | Capturar línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-014` | Registrar riesgos aceptados y condiciones de suspensión | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `READY-GATE-015` | Aprobar formalmente la entrada al piloto operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-001` | Definir fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `READY-GATE-001` | Definir criterio y evidencia para confirmar código desplegado en el entorno objetivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-002` | Definir criterio y evidencia para confirmar migraciones aplicadas y datos validados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-003` | Definir criterio y evidencia para confirmar permisos, matrices y dispositivos configurados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-004` | Definir criterio y evidencia para confirmar usuarios, roles, sedes, áreas y turnos requeridos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-005` | Definir criterio y evidencia para confirmar catálogos y datos maestros mínimos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-006` | Definir criterio y evidencia para confirmar integraciones y credenciales del ambiente | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-007` | Definir criterio y evidencia para confirmar hardware, red, escáneres e impresoras | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-008` | Definir criterio y evidencia para confirmar procedimientos operativos y contingencias | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-009` | Definir criterio y evidencia para confirmar capacitación y material de apoyo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-010` | Definir criterio y evidencia para confirmar mesa de soporte, responsables y escalamiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-011` | Definir criterio y evidencia para confirmar monitoreo, métricas y alertas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-012` | Definir criterio y evidencia para confirmar respaldo y rollback probados | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-013` | Definir método y evidencia para capturar la línea base previa al piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-014` | Definir registro de riesgos aceptados y condiciones de suspensión | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `READY-GATE-015` | Definir autoridad y criterio para aprobar la entrada al piloto operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/03_PUERTA_DE_READINESS_OPERATIVO.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-001` | Definir criterio para seleccionar fecha, ventana y responsables del cutover | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-002` | Definir secuencia de activación por sede, área, rol o proceso | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-003` | Definir convivencia temporal con el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-004` | Evitar doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-004` | Diseñar controles contra doble registro y doble efecto durante la transición | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-005` | Definir conciliaciones durante el piloto | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
 | ⬜ NO INICIADA | `CUTOVER-OPS-006` | Definir criterio de pausa, reversión o continuación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-007` | Registrar incidentes, decisiones y cambios de alcance | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-008` | Medir tiempos, errores, adopción y resultado empresarial | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-009` | Aprobar salida del piloto o exigir correcciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `CUTOVER-OPS-010` | Retirar el proceso anterior solo con evidencia suficiente | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-001` | Definir periodo de acompañamiento intensivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-007` | Diseñar el registro de incidentes, decisiones y cambios de alcance | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-008` | Definir métricas de tiempos, errores, adopción y resultado empresarial | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-009` | Definir autoridad y criterio para aprobar salida del piloto o exigir correcciones | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `CUTOVER-OPS-010` | Definir condiciones y evidencia para retirar el proceso anterior | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/04_CUTOVER_Y_PILOTO.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-001` | Definir inicio, duración y salida del acompañamiento intensivo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `HYPERCARE-OPS-002` | Definir responsables funcionales y técnicos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-003` | Monitorear errores, colas, integraciones y rendimiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-004` | Monitorear adopción, tiempos y desviaciones operativas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-005` | Conciliar datos y efectos entre dominios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-006` | Priorizar y corregir incidentes de estabilización | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-007` | Registrar deuda aceptada y tareas posteriores | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-008` | Confirmar soporte ordinario y documentación definitiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-009` | Confirmar retiro controlado de contingencias temporales | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `HYPERCARE-OPS-010` | Aprobar cierre con evidencia funcional, técnica y operativa | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-003` | Definir monitoreo de errores, colas, integraciones y rendimiento | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-004` | Definir monitoreo de adopción, tiempos y desviaciones operativas | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-005` | Definir conciliaciones de datos y efectos entre dominios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-006` | Definir clasificación, prioridad y procedimiento de corrección de incidentes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-007` | Definir registro y aprobación de deuda y tareas posteriores | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-008` | Definir criterio de transferencia a soporte ordinario y documentación definitiva | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-009` | Definir criterio y evidencia para retirar contingencias temporales | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
+| ⬜ NO INICIADA | `HYPERCARE-OPS-010` | Definir autoridad y evidencia para aprobar cierre funcional, técnico y operativo | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/05_HYPERCARE_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `E5-GATE-001` | Confirmar que cada capacidad priorizada tiene paquete aprobado | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-002` | Confirmar que cada brecha crítica tiene propietario y destino | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ⬜ NO INICIADA | `E5-GATE-003` | Confirmar que los requisitos no funcionales están cubiertos | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
@@ -1283,6 +1284,11 @@
 | ⬜ NO INICIADA | `SHELL-CI-017` | Crear verificador automático del Registro Canónico de Requisitos de Prueba | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `SHELL-CI-018` | Bloquear merge o despliegue cuando fallen pruebas obligatorias | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-020` | Implementar y desplegar cada paquete aprobado por E5 | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-021` | Ejecutar y resolver el checklist de readiness aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-022` | Ejecutar cutover y piloto conforme al plan aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-023` | Ejecutar hypercare, conciliación y estabilización | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
+| ⬜ NO INICIADA | `SHELL-CI-024` | Certificar cierre del paquete y transferencia a soporte | `bloques/T_CALIDAD_Y_DESPLIEGUE/00_BLOQUE_T.md` |
 | ⬜ NO INICIADA | `AUTH-QA-001` | Propietario sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-002` | Gerente general sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
 | ⬜ NO INICIADA | `AUTH-QA-003` | Gerente de sede solo opera sus sedes | `bloques/U_PRUEBAS_INTEGRALES/00_BLOQUE_U.md` |
