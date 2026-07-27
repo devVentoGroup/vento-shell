@@ -12,10 +12,10 @@
     "lint": "eslint",
     "generate-favicon": "node scripts/generate-favicon.mjs",
     "docs:plan:build": "node scripts/docs/build-plan-canonico.mjs",
-    "docs:plan:check": "node scripts/docs/build-plan-canonico.mjs --check",
+    "docs:plan:check": "node scripts/docs/build-plan-canonico-core.mjs --check",
     "docs:plan:test": "node --test scripts/docs/plan-continuity-global.test.mjs",
     "docs:treq:check": "node scripts/docs/validate-treq-registry.mjs",
-    "docs:treq:test": "node --test scripts/docs/validate-treq-registry.test.mjs",
+    "docs:treq:test": "node --test scripts/docs/validate-treq-registry.test.mjs scripts/docs/treq-safe-reconcile.test.mjs",
     "docs:plan:watch": "node scripts/docs/watch-plan-canonico.mjs"
   },
   "dependencies": {

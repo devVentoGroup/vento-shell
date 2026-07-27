@@ -14,11 +14,18 @@ const watchedDirectory = path.join(
   "modular"
 );
 
-const buildScript = path.join(
+const safeBuildScript = path.join(
   repositoryRoot,
   "scripts",
   "docs",
-  "build-plan-canonico.mjs"
+  "safe-build-plan-canonico.mjs"
+);
+
+const checkScript = path.join(
+  repositoryRoot,
+  "scripts",
+  "docs",
+  "build-plan-canonico-core.mjs"
 );
 
 const ignoredDirectories = new Set([
@@ -31,6 +38,7 @@ const ignoredDirectories = new Set([
 let debounceTimer = null;
 let buildRunning = false;
 let buildPending = false;
+const pendingChanges = new Set();
 
 function normalizeRelativePath(filename) {
   return String(filename ?? "").replaceAll("\\", "/");
@@ -51,7 +59,7 @@ function shouldProcess(filename) {
 
   return (
     relativePath.endsWith(".md") ||
-    relativePath.endsWith("manifest.json")
+    relativePath.endsWith(".json")
   );
 }
 
@@ -95,12 +103,12 @@ async function rebuild() {
 
   try {
     await runNodeScript(
-      [buildScript],
+      [safeBuildScript],
       "Generando documento compilado..."
     );
 
     await runNodeScript(
-      [buildScript, "--check"],
+      [checkScript, "--check"],
       "Validando documento compilado..."
     );
 
@@ -123,14 +131,19 @@ async function rebuild() {
 
 function scheduleRebuild(filename) {
   clearTimeout(debounceTimer);
+  pendingChanges.add(normalizeRelativePath(filename));
 
   console.log(
     `[PLAN CANÓNICO] Cambio detectado: ${normalizeRelativePath(filename)}`
   );
 
   debounceTimer = setTimeout(() => {
+    console.log(
+      `[PLAN CANÓNICO] Aplicando lote estable de ${pendingChanges.size} archivo(s).`
+    );
+    pendingChanges.clear();
     rebuild();
-  }, 500);
+  }, 2000);
 }
 
 console.log("[PLAN CANÓNICO] Vigilancia automática iniciada.");

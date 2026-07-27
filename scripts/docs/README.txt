@@ -2,9 +2,9 @@ PLAN CANÓNICO MODULAR
 
 Comandos desde la raíz de vento-shell:
 
-1. Regenerar continuidad, registro global y compilado:
+1. Regenerar continuidad, reconciliar reemplazos completos y compilar:
 
-   node scripts/docs/build-plan-canonico.mjs
+   npm run docs:plan:build
 
 2. Verificar que las fuentes y los derivados están sincronizados:
 
@@ -32,6 +32,18 @@ Organización:
 - 04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md es la única fuente del
   registro TREQ y se reemplaza completo cuando cambia; no se mantienen filas
   sueltas ni registros paralelos.
+- cada build correcto conserva localmente el último 04A válido bajo
+  .generated/.state/. Si un reemplazo completo trae filas históricas de una
+  base anterior, el build restaura únicamente las filas que el validador marca
+  como erróneas, conserva los cambios históricos válidos y los TREQ nuevos, y
+  guarda una copia íntegra del archivo entrante bajo
+  .generated/.recovery/.
+- la reconciliación automática solo se aplica cuando no falta ninguna fila
+  histórica y el candidato resultante supera el validador completo. Ante una
+  eliminación o una ambigüedad, no reescribe la fuente.
+- el watcher agrupa durante dos segundos los guardados relacionados antes de
+  compilar, evitando validar como definitivo el estado intermedio entre la
+  tarea específica y 04A.
 - el build ejecuta el validador TREQ antes de compilar y bloquea dominios,
   secuencias, columnas, estados, tipos, propietarios, relaciones, cifras o
   evidencia obsoleta.

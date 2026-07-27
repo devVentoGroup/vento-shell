@@ -36,7 +36,7 @@
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
-        "reveal": "silent",
+        "reveal": "always",
         "panel": "dedicated",
         "clear": false,
         "showReuseMessage": false

@@ -1074,7 +1074,632 @@ NFR-REQ-003  NO INICIADA
 La aprobación de esta tarea congela el contrato y la matriz inicial de carga. No certifica capacidad, escalabilidad ni rendimiento de ningún entorno.
 
 
-### [ ] NFR-REQ-003 — Definir tiempos máximos de respuesta
+### ✅ NFR-REQ-003 — Definir tiempos máximos de respuesta
+
+**Estado:** APROBADA
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+**Tarea anterior:** `NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado` — APROBADA
+**Siguiente tarea reservada:** `NFR-REQ-004 — Definir comportamiento offline y sincronización` — NO INICIADA
+**Artefactos producidos:** `NFR-RESPONSE-TIME-CONTRACT-001`; `NFR-PROCESS-RESPONSE-MATRIX-001`; `NFR-TIMEOUT-AND-UNKNOWN-RESULT-POLICY-001`
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+**Naturaleza:** contrato de latencia, acuse, finalización, timeout y transición asíncrona; no optimización física ni implementación
+**Cambios en código, migraciones, Supabase, aplicaciones, infraestructura o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir tiempos máximos de respuesta verificables para las interacciones, consultas, comandos, trabajos asíncronos, integraciones y periféricos que participan en los procesos de Vento OS, de modo que la experiencia, la seguridad operacional y la capacidad técnica se diseñen contra presupuestos explícitos y no contra expresiones ambiguas como “rápido”, “en tiempo real” o “casi inmediato”.
+
+```text
+TIEMPO DE RESPUESTA
+≠ TIEMPO TOTAL DEL PROCESO
+≠ DISPONIBILIDAD
+≠ RTO
+≠ TIEMPO DE ATENCIÓN HUMANA
+
+ACUSE RECIBIDO
+≠ RESULTADO AUTORITATIVO
+≠ EFECTO FÍSICO COMPLETADO
+```
+
+La aprobación de esta tarea congela presupuestos iniciales de diseño. No declara que los entornos actuales ya los cumplan ni sustituye las mediciones y pruebas de carga requeridas por cada paquete.
+
+---
+
+#### 2. Continuidad lógica
+
+`NFR-REQ-001` definió criticidad y ventanas de disponibilidad. `NFR-REQ-002` definió volumen, concurrencia, picos y crecimiento. Con esas dos entradas ya es posible fijar cuánto puede tardar cada clase de interacción bajo una carga declarada antes de degradarse, pasar a segundo plano, quedar pendiente o activar contingencia.
+
+```text
+CRITICIDAD Y DISPONIBILIDAD
++
+CARGA, CONCURRENCIA Y CRECIMIENTO
+        ↓
+PRESUPUESTO DE RESPUESTA
+        ↓
+TIMEOUT, PENDIENTE, RESULTADO DESCONOCIDO O ASÍNCRONO
+        ↓
+OFFLINE, HARDWARE, OBSERVABILIDAD Y RECUPERACIÓN
+```
+
+---
+
+#### 3. Distinciones canónicas
+
+| Concepto               | Definición                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------- |
+| feedback local         | reacción visual, háptica o sonora producida sin esperar al servidor                       |
+| acuse de intención     | confirmación de que la aplicación recibió la acción y empezó a procesarla                 |
+| acuse autoritativo     | receipt del servicio propietario que acepta o rechaza la intención                        |
+| resultado autoritativo | estado empresarial persistido y consultable después de aplicar reglas                     |
+| finalización física    | impresión, pago, lectura, entrega u otra consecuencia fuera del servidor                  |
+| latencia end-to-end    | tiempo desde la intención humana o evento emisor hasta el resultado observable            |
+| espera de cola         | tiempo antes de iniciar la ejecución de un trabajo aceptado                               |
+| tiempo de servicio     | duración de la ejecución una vez iniciada                                                 |
+| deadline empresarial   | instante máximo para producir un resultado, aunque sea mediante contingencia              |
+| timeout técnico        | límite de espera de una llamada o capa; no demuestra por sí solo que la operación falló   |
+| hard ceiling de UX     | límite antes de cambiar explícitamente a pendiente, asíncrono, desconocido o contingencia |
+
+```text
+TIMEOUT DEL CLIENTE
+≠ OPERACIÓN NO EJECUTADA
+
+SPINNER VISIBLE
+≠ PROGRESO DEMOSTRADO
+```
+
+---
+
+#### 4. Contrato mínimo de presupuesto de respuesta
+
+Cada operación material deberá declarar:
+
+```text
+process_id
+process_step_id
+operation_id
+operation_kind
+actor_and_device_profile
+workload_profile_version
+response_class
+async_class
+measurement_start_event
+ack_event
+authoritative_end_event
+physical_end_event
+p50_target
+p95_target
+p99_target_when_required
+hard_ceiling
+timeout_behavior
+unknown_result_behavior
+cancel_behavior
+retry_and_idempotency_policy
+degraded_behavior
+dependency_budget_refs[]
+measurement_environment
+evidence_source
+owner
+review_triggers[]
+```
+
+No se medirá una operación sin un evento inicial y un evento final inequívocos. “La pantalla se sintió lenta” será un hallazgo válido, pero no sustituirá una medición reproducible.
+
+---
+
+#### 5. Presupuestos universales de interacción
+
+Estos límites se aplican a todas las superficies compatibles, incluso cuando la operación empresarial tarde más:
+
+| Presupuesto                                     | Objetivo inicial | Hard ceiling | Regla                                                         |
+| ----------------------------------------------- | ---------------: | -----------: | ------------------------------------------------------------- |
+| reacción al toque, tecla o selección            |   `≤ 100 ms` p95 |     `200 ms` | el control debe responder visualmente sin esperar al servidor |
+| mostrar acuse, carga, pendiente o bloqueo       |   `≤ 300 ms` p95 |     `500 ms` | ninguna acción queda silenciosa                               |
+| mostrar progreso determinista                   |          `≤ 1 s` |        `2 s` | obligatorio cuando el resultado no será inmediato             |
+| reanudación caliente de una superficie          |      `≤ 1 s` p95 |        `2 s` | conserva contexto y muestra frescura                          |
+| arranque frío hasta shell utilizable            |      `≤ 3 s` p95 |        `5 s` | puede diferir datos secundarios, no identidad ni contexto     |
+| navegación operativa hasta contenido utilizable |      `≤ 2 s` p95 |        `5 s` | no cuenta un skeleton vacío como contenido utilizable         |
+
+Los presupuestos se validarán en dispositivos, red y perfiles aprobados. Un equipo fuera de compatibilidad no podrá utilizarse para rebajar silenciosamente el objetivo canónico.
+
+---
+
+#### 6. Clases de respuesta foreground
+
+| Clase | Uso                                                                           | p95 inicial | p99 inicial | Hard ceiling | Comportamiento al superarlo                                                           |
+| ----- | ----------------------------------------------------------------------------- | ----------: | ----------: | -----------: | ------------------------------------------------------------------------------------- |
+| `R1`  | decisión crítica, seguridad, acceso, pago o control que habilita continuar    |       `1 s` |       `2 s` |        `3 s` | bloquear nueva intención, mostrar estado y activar consulta de receipt o contingencia |
+| `R2`  | operación táctil ordinaria, escaneo, movimiento, pedido, producción o entrega |       `2 s` |       `4 s` |        `5 s` | conservar contexto y pasar a pendiente o reintento seguro                             |
+| `R3`  | consulta o caso administrativo estándar                                       |       `3 s` |       `6 s` |        `8 s` | mostrar progreso y permitir cancelar o continuar en segundo plano                     |
+| `R4`  | comparación, cálculo o consulta compleja todavía interactiva                  |       `5 s` |      `10 s` |       `15 s` | dejar de bloquear la pantalla y convertirse en trabajo asíncrono                      |
+
+Los valores anteriores son presupuestos end-to-end para el resultado foreground bajo la envolvente aprobada. No son cuotas exclusivas de base de datos, red o frontend.
+
+Para procesos `C0`, `C1`, `K3` o `K4`, el paquete deberá demostrar también p99 o un escenario equivalente de estrés. Para cargas `L0` y `L1`, donde un percentil alto puede carecer de estabilidad estadística, se utilizarán escenarios repetibles y el hard ceiling.
+
+---
+
+#### 7. Clases de trabajo asíncrono
+
+| Clase | Acuse y job ID | Primera actualización |                     Finalización inicial |     Hard ceiling |
+| ----- | -------------: | --------------------: | ---------------------------------------: | ---------------: |
+| `A1`  |        `≤ 2 s` |               `≤ 5 s` |                             `≤ 30 s` p95 |           `60 s` |
+| `A2`  |        `≤ 2 s` |               `≤ 5 s` |                            `≤ 2 min` p95 |          `5 min` |
+| `A3`  |        `≤ 2 s` |              `≤ 10 s` | deadline explícito del proceso o paquete | nunca indefinido |
+
+`A3` aplica a cierres, cálculos amplios, importaciones, conciliaciones, publicaciones o reportes cuyo límite correcto es un corte empresarial y no una espera de interfaz. Deberá declarar propietario, deadline, progreso, cancelación, reintento, resultado parcial y conciliación.
+
+```text
+TRABAJO ASÍNCRONO ACEPTADO
+→ JOB ID O RECEIPT
+→ ESTADO CONSULTABLE
+→ RESULTADO, RECHAZO O CONCILIACIÓN
+```
+
+---
+
+#### 8. Inicio y final de la medición
+
+| Caso              | Inicio                    | Fin                                                                   |
+| ----------------- | ------------------------- | --------------------------------------------------------------------- |
+| toque o teclado   | evento de entrada         | primer cambio visual correspondiente                                  |
+| navegación        | intención de navegar      | identidad, contexto, estado y acción principal utilizables            |
+| consulta          | solicitud emitida         | datos autoritativos o stale claramente identificado                   |
+| mutación          | confirmación humana       | receipt y estado autoritativo consultable                             |
+| escaneo           | código decodificado       | recurso resuelto o razón de rechazo visible                           |
+| archivo           | confirmación de carga     | receipt de archivo y metadatos; procesamiento se mide aparte          |
+| impresión         | creación del print job    | aceptación de la cola; envío e impresión física se miden aparte       |
+| integración       | evento recibido o emitido | acuse del contrato propietario; efectos downstream se miden separados |
+| trabajo asíncrono | aceptación con job ID     | estado terminal o parcial explícito                                   |
+
+No se detendrá el cronómetro al ocultar un modal, mostrar un toast o cambiar la URL si el resultado empresarial aún no está disponible.
+
+---
+
+#### 9. Lecturas, mutaciones y resultados desconocidos
+
+Una consulta vencida podrá reintentarse cuando no produzca efectos. Una mutación vencida no se marcará automáticamente como fallida.
+
+```text
+MUTACIÓN ENVIADA
++ RESPUESTA NO RECIBIDA
+        ↓
+RESULT_UNKNOWN
+        ↓
+CONSULTAR IDEMPOTENCY KEY, RECEIPT Y RECURSO
+        ↓
+CONFIRMAR, REINTENTAR LA MISMA INTENCIÓN O CONCILIAR
+```
+
+Reglas:
+
+- el timeout del navegador no creará una nueva intención;
+- el reintento conservará la misma clave de idempotencia;
+- el botón no volverá a habilitarse como si nada hubiera ocurrido;
+- el usuario verá qué está confirmado, pendiente, rechazado o desconocido;
+- pagos, inventario, producción, custodia y handoffs nunca utilizarán reintento ciego;
+- la recuperación exacta se vincula con `UX-BASE-013`, `UX-BASE-014`, `NFR-REQ-004` y `QUEUE-ARC-*`.
+
+---
+
+#### 10. Progreso, cancelación y espera
+
+Cuando una operación supere `1 s`, la interfaz mostrará estado comprensible. Cuando pueda superar el hard ceiling de `R4`, deberá convertirse en trabajo asíncrono antes de bloquear la superficie.
+
+Un indicador de progreso deberá distinguir:
+
+```text
+PREPARANDO
+EN COLA
+PROCESANDO
+ESPERANDO DEPENDENCIA
+PARCIAL
+COMPLETADO
+RECHAZADO
+CANCELANDO
+REQUIERE CONCILIACIÓN
+```
+
+La cancelación solo se presentará cuando exista semántica real. Cerrar una ventana no cancelará automáticamente una operación ya aceptada.
+
+---
+
+#### 11. Arranque, navegación y reanudación
+
+El arranque y la navegación deberán priorizar:
+
+1. identidad del actor;
+2. dispositivo y aplicación;
+3. sede, área, turno y contexto activo;
+4. estado de conectividad y frescura;
+5. tarea y acción principal;
+6. contenido secundario.
+
+La aplicación no esperará a cargar dashboards, historiales o catálogos secundarios para mostrar una superficie operativa segura. La reanudación verificará checkpoint y contexto conforme a `UX-BASE-014`; una pantalla rápida con contexto obsoleto no cumple el presupuesto.
+
+---
+
+#### 12. Búsqueda, filtros y recetarios
+
+- el feedback de escritura o selección será local y cumplirá `≤ 100 ms`;
+- una búsqueda ordinaria deberá entregar resultados `R2` o explicar que continúa;
+- un filtro administrativo complejo podrá usar `R3` o `R4`;
+- cambiar de área en los POS multiárea deberá resolver contexto y bandeja en `R2`;
+- abrir una receta vigente durante producción deberá cumplir `R1` cuando la versión ya está disponible localmente o `R2` cuando requiere consulta autoritativa;
+- un recetario no ocultará que la versión está vencida, en caché o pendiente de validación para aparentar rapidez.
+
+---
+
+#### 13. Escáneres y captura táctil
+
+Presupuestos iniciales:
+
+| Etapa                                       |          Objetivo | Hard ceiling |
+| ------------------------------------------- | ----------------: | -----------: |
+| decodificar código recibido                 |    `≤ 300 ms` p95 |     `500 ms` |
+| mostrar que el código fue leído             |    `≤ 100 ms` p95 |     `200 ms` |
+| resolver producto, LOC, LPN, pedido o tarea | clase `R1` o `R2` |  según clase |
+| registrar cantidad o evidencia local        |        `≤ 300 ms` |     `500 ms` |
+| confirmar efecto autoritativo               |        clase `R2` |        `5 s` |
+
+Un escaneo duplicado, fuera de contexto o no reconocido deberá responder dentro del mismo presupuesto y no quedar silenciosamente descartado.
+
+---
+
+#### 14. Impresión y otros periféricos
+
+```text
+PRINT JOB ACEPTADO
+≠ ENVIADO A LA IMPRESORA
+≠ IMPRESO
+≠ ENTREGADO
+```
+
+Presupuestos iniciales:
+
+- creación y receipt del print job: `≤ 2 s`;
+- resolución de routing: `≤ 3 s`;
+- aceptación o error del adaptador: `≤ 5 s`;
+- confirmación física, cuando sea verificable: `≤ 10 s` o estado pendiente explícito;
+- lectura de báscula, terminal de pago, cámara o lector: feedback local `≤ 300 ms`; resultado final según contrato del periférico.
+
+La reimpresión será una intención nueva y auditable. Un timeout no repetirá automáticamente el documento, cobro o etiqueta.
+
+---
+
+#### 15. Integraciones y servicios externos
+
+La interfaz interna no esperará indefinidamente a un proveedor. Cada contrato externo deberá declarar:
+
+```text
+CONNECT TIMEOUT
+READ TIMEOUT
+RETRY BUDGET
+RATE LIMIT
+BACKOFF
+CIRCUIT BREAKER
+IDEMPOTENCY
+RECONCILIATION DEADLINE
+```
+
+El acuse interno de un trabajo con proveedor deberá cumplir `≤ 2 s` cuando pueda continuar asíncronamente. Pago, documento fiscal, pedido externo, banco o entrega de tercero conservarán un estado `PENDING_EXTERNAL`, `RESULT_UNKNOWN`, `REJECTED` o `CONFIRMED`; no se anunciarán como completados solo porque la solicitud salió de Vento OS.
+
+---
+
+#### 16. Operación offline y reconexión
+
+Esta tarea solo fija la experiencia temporal; `NFR-REQ-004` definirá qué operaciones pueden existir offline y cómo sincronizan.
+
+- una captura local permitida cumplirá feedback y acuse local inmediatos;
+- “guardado en este equipo” no se presentará como resultado autoritativo;
+- al reconectar, el usuario verá el tamaño de la cola y el progreso dentro de `1 s`;
+- el drenaje de backlog será `A1`, `A2` o `A3` según volumen y dependencias;
+- el procesamiento respetará backpressure para no degradar las interacciones foreground;
+- una operación con resultado desconocido se resolverá antes de crear otra intención equivalente.
+
+---
+
+#### 17. Superficies administrativas, reportes y exportaciones
+
+Las superficies densas podrán utilizar `R3` o `R4`, pero no bloquearán una sesión con cálculos largos.
+
+- filtros y ordenamientos ordinarios: `R3`;
+- comparación o agregación compleja: `R4`;
+- exportación o cálculo pequeño: `A1`;
+- conciliación, cierre o informe amplio: `A2` o `A3`;
+- la solicitud devolverá job ID, parámetros, versión, propietario y deadline;
+- la descarga no se habilitará antes de validar autorización y versión;
+- resultados parciales no se presentarán como totales completos.
+
+---
+
+#### 18. Carga, percentiles y ambientes de prueba
+
+Los presupuestos se evaluarán contra los perfiles de `NFR-REQ-002`:
+
+```text
+CURRENT_BASELINE
+APPROVED_12M
+PLAUSIBLE_24M
+STRESS_SCENARIO
+```
+
+Cada resultado declarará:
+
+- ambiente y versión;
+- dispositivo y navegador;
+- red y latencia introducida;
+- volumen y concurrencia;
+- datos y cardinalidad;
+- caché fría o caliente;
+- dependencia simulada o real;
+- percentil;
+- errores, timeouts y saturación;
+- evidencia reproducible.
+
+Un resultado de desarrollo local sin carga, datos o dependencias representativas no certificará el presupuesto de un paquete.
+
+---
+
+#### 19. Descomposición técnica posterior
+
+El presupuesto end-to-end se distribuirá posteriormente entre:
+
+```text
+CLIENTE Y RENDER
+RED
+AUTH Y CONTEXTO
+SERVICIO PROPIETARIO
+BASE DE DATOS
+COLA
+DEPENDENCIA EXTERNA
+PERIFÉRICO
+```
+
+Esta tarea no asigna todavía porcentajes fijos a cada capa. La descomposición dependerá de la arquitectura aprobada en E3, E4, X y del paquete concreto. Optimizar una capa sin medir el resultado end-to-end no demostrará cumplimiento.
+
+---
+
+#### 20. Saturación y backpressure
+
+Cuando la carga supere la envolvente aprobada, la respuesta deberá degradarse de forma controlada:
+
+```text
+PRIORIZAR R1 Y R2
+→ LIMITAR R4 Y TRABAJOS MASIVOS
+→ APLICAR COLA Y BACKPRESSURE
+→ MOSTRAR CAPACIDAD O ESPERA
+→ NO PERDER NI DUPLICAR EFECTOS
+```
+
+La saturación no podrá producir confirmaciones falsas, pérdida silenciosa, timeout masivo sin estado, retries simultáneos o bloqueo de controles de seguridad e inocuidad.
+
+---
+
+#### 21. Observabilidad y alertas posteriores
+
+`NFR-REQ-009` definirá dashboards y alertas, pero cada operación deberá quedar diseñada para medir:
+
+- feedback local;
+- tiempo a acuse;
+- tiempo a resultado autoritativo;
+- espera y servicio de cola;
+- dependencia externa;
+- tiempo de periférico;
+- percentiles y hard ceiling;
+- error, timeout, cancelación y resultado desconocido;
+- correlación con proceso, etapa, actor, dispositivo, sede y área sin exponer datos sensibles.
+
+---
+
+#### 22. Matriz inicial de tiempos por proceso
+
+La matriz asigna una clase foreground y una clase asíncrona inicial. Las clases son presupuestos de diseño y deberán medirse por paquete; no afirman cumplimiento actual.
+
+| Proceso                                                                                                                                                                   | Criticidad / carga | Foreground | Asíncrono | Override obligatorio                                                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ---------- | --------- | --------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` — Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento                                                            | `C2` / `L1` / `K1` | `R3`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0002` — Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                                          | `C3` / `L1` / `K1` | `R3`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0003` — Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                                                      | `C2` / `L2` / `K2` | `R2`       | —         | consulta de política o delegación vigente → `R1` cuando habilita una decisión operativa             |
+| `VPROC-0004` — Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                                            | `C2` / `L2` / `K2` | `R2`       | `A1`      | aceptación de handoff o transferencia de custodia → `R2` con resultado autoritativo                 |
+| `VPROC-0005` — Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                                                         | `C4` / `L1` / `K1` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0006` — Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                                                         | `C3` / `L1` / `K1` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0007` — Administrar asignaciones laborales y programación publicada con historial y revisión controlada                                                            | `C2` / `L2` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0008` — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables                                                                     | `C2` / `L2` / `K3` | `R2`       | —         | marcación de entrada o salida → `R1` para acuse y `R2` para confirmación                            |
+| `VPROC-0009` — Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                                                       | `C1` / `L1` / `K2` | `R2`       | `A1`      | reemplazo que deja un área sin cobertura → `R1`                                                     |
+| `VPROC-0010` — Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                                             | `C2` / `L2` / `K1` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0011` — Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                                            | `C1` / `L1` / `K1` | `R1`       | —         | revocación de acceso → `R1`; cierre documental puede continuar en `A2`                              |
+| `VPROC-0012` — Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                                              | `C2` / `L2` / `K2` | `R3`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0013` — Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                                              | `C0` / `L0` / `K2` | `R1`       | —         | la respuesta física nunca espera al sistema; registro digital → `R1`                                |
+| `VPROC-0014` — Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                                                | `C0` / `L2` / `K2` | `R1`       | —         | control que habilita continuar producción o servicio → `R1`                                         |
+| `VPROC-0015` — Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                                           | `C2` / `L2` / `K2` | `R2`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0016` — Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                                                 | `C1` / `L2` / `K2` | `R2`       | `A2`      | consulta de receta publicada en producción → `R1`; edición y publicación → `R3`/`A2`                |
+| `VPROC-0017` — Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                                                    | `C1` / `L2` / `K3` | `R2`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0018` — Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                                                    | `C0` / `L2` / `K2` | `R1`       | —         | alérgeno o restricción en decisión de producto → `R1`                                               |
+| `VPROC-0019` — Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                                           | `C2` / `L2` / `K2` | `R3`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0020` — Comparar proveedores y condiciones con evidencia suficiente para decidir                                                                                   | `C3` / `L1` / `K1` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0021` — Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                                                   | `C2` / `L2` / `K2` | `R3`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0022` — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica                                         | `C1` / `L2` / `K2` | `R2`       | `A1`      | aceptación o rechazo de recepción física → `R2`; archivos pueden continuar en `A1`                  |
+| `VPROC-0023` — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento                                                                                     | `C1` / `L2` / `K2` | `R2`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0024` — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                                            | `C1` / `L3` / `K3` | `R2`       | `A1`      | movimiento con escaneo → `R2`; fan-out y proyecciones → `A1`                                        |
+| `VPROC-0025` — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                                                 | `C1` / `L3` / `K3` | `R2`       | `A1`      | retiro o traslado que afecta disponibilidad inmediata → `R2`                                        |
+| `VPROC-0026` — Contar como observación, investigar diferencias y ajustar mediante decisión separada                                                                       | `C2` / `L3` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0027` — Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                                           | `C0` / `L2` / `K2` | `R1`       | `A1`      | cuarentena, frío o disposición → `R1`                                                               |
+| `VPROC-0028` — Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                                             | `C1` / `L3` / `K3` | `R2`       | `A1`      | claim, despacho, entrega y recepción → `R2`; conciliación → `A1`                                    |
+| `VPROC-0029` — Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                                              | `C2` / `L2` / `K2` | `R2`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0030` — Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                                           | `C1` / `L2` / `K2` | `R2`       | —         | falla de frío, gas, energía o seguridad → `R1`                                                      |
+| `VPROC-0031` — Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                                              | `C1` / `L2` / `K2` | `R2`       | —         | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0032` — Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                                                | `C2` / `L3` / `K3` | `R2`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0033` — Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                                                       | `C1` / `L2` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0034` — Preparar materiales y ejecutar producción contra una versión aprobada                                                                                      | `C1` / `L3` / `K3` | `R2`       | `A1`      | consulta de receta, lote y siguiente paso → `R1`; registro ordinario → `R2`                         |
+| `VPROC-0035` — Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                                             | `C0` / `L2` / `K2` | `R1`       | `A2`      | decisión de liberar o retener → `R1`                                                                |
+| `VPROC-0036` — Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                                              | `C1` / `L3` / `K3` | `R2`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0037` — Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                                               | `C2` / `L2` / `K2` | `R2`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0038` — Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                                                      | `C1` / `L3` / `K3` | `R2`       | `A1`      | pedido, cambio de estado y cobro → `R2`; cierres y conciliación → `A1`/`A3`                         |
+| `VPROC-0039` — Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                                             | `C1` / `L3` / `K3` | `R2`       | `A1`      | cobro y entrega correlacionados → `R1`/`R2`                                                         |
+| `VPROC-0040` — Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                                               | `C1` / `L3` / `K4` | `R2`       | `A1`      | acuse del pedido externo → `R2`; normalización y conciliación → `A1`                                |
+| `VPROC-0041` — Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                                                     | `C2` / `L1` / `K2` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0042` — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                                                         | `C1` / `L2` / `K2` | `R2`       | `A1`      | anulación, devolución o reversa → `R1`/`R2` con estado desconocido protegido                        |
+| `VPROC-0043` — Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                                               | `C1` / `L3` / `K4` | `R1`       | `A1`      | confirmación de pago → `R1`; proveedor externo nunca autoriza doble cobro                           |
+| `VPROC-0044` — Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                                                | `C1` / `L2` / `K1` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0045` — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                                                | `C3` / `L3` / `K4` | `R2`       | `A1`      | identificación en caja → `R2`; acumulación o ledger secundario → `A1`                               |
+| `VPROC-0046` — Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                                                         | `C2` / `L1` / `K2` | `R3`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0047` — Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento                                                                     | `C2` / `L2` / `K2` | `R3`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0048` — Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                                                | `C1` / `L2` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0049` — Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                                                        | `C1` / `L2` / `K3` | `R2`       | `A1`      | confirmación de entrega, rechazo o retorno → `R2`                                                   |
+| `VPROC-0050` — Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                                                 | `C1` / `L2` / `K4` | `R2`       | `A1`      | estado del tercero → `R2`; conciliación → `A1`                                                      |
+| `VPROC-0051` — Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                                            | `C1` / `L3` / `K4` | `R2`       | `A1`      | evento económico aceptado → `R2`; proyecciones y conciliación → `A1`                                |
+| `VPROC-0052` — Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                                              | `C2` / `L2` / `K1` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0053` — Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                                                 | `C2` / `L2` / `K2` | `R3`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0054` — Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas                                                                  | `C3` / `L3` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0055` — Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                                                    | `C1` / `L2` / `K2` | `R2`       | `A1`      | hallazgo que impide operar → `R1`                                                                   |
+| `VPROC-0056` — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                                                  | `C3` / `L2` / `K4` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0057` — Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                                                    | `C3` / `L2` / `K3` | `R3`       | `A1`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0058` — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                                                      | `C1` / `L2` / `K2` | `R1`       | `A2`      | incidente crítico → `R1`; diagnóstico o adjuntos → `A2`                                             |
+| `VPROC-0059` — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                                                   | `C0` / `L1` / `K4` | `R1`       | `A1`      | revocación, bloqueo o cambio de acceso → `R1`                                                       |
+| `VPROC-0060` — Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                                                 | `C2` / `L3` / `K4` | `R3`       | `A2`      | acuse de carga y metadatos → `R3`; análisis de archivo → `A2`                                       |
+| `VPROC-0061` — Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                                               | `C4` / `L3` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0062` — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                                                   | `C0` / `L0` / `K3` | `R1`       | `A1`      | activación de contingencia → `R1`; recuperación y conciliación → `A1`/`A2`                          |
+| `VPROC-0063` — Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado de riesgo, tratamiento y seguimiento              | `C2` / `L1` / `K1` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0064` — Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar la propiedad interna del resultado                   | `C2` / `L1` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0065` — Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con uso explícito y privacidad aprobada                              | `C4` / `L1` / `K1` | `R4`       | `A2`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0066` — Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección                                              | `C0` / `L2` / `K2` | `R1`       | `A1`      | validación de requisito de EPP antes de una tarea → `R1`                                            |
+| `VPROC-0067` — Definir kit, instancia, componentes obligatorios y opcionales, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor | `C2` / `L2` / `K2` | `R2`       | `A1`      | verificación de completitud del kit en entrega o devolución → `R2`                                  |
+| `VPROC-0068` — Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido                                  | `C4` / `L2` / `K4` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+| `VPROC-0069` — Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación sin convertir el presupuesto en hecho contable           | `C3` / `L3` / `K2` | `R4`       | `A3`      | las etapas ordinarias conservan la clase principal; una excepción material deberá declarar override |
+
+La distribución inicial es:
+
+```text
+FOREGROUND
+R1   11 procesos
+R2   29 procesos
+R3   10 procesos
+R4   19 procesos
+
+ASÍNCRONO PRINCIPAL PERMITIDO
+A1   29 procesos
+A2   13 procesos
+A3   12 procesos
+—    15 procesos
+```
+
+La ausencia de una clase asíncrona en la matriz no prohíbe evidencia o telemetría posterior; indica que el resultado principal del proceso no debe diferirse ordinariamente a un job.
+
+---
+
+#### 23. Pruebas obligatorias por clase
+
+| Clase | Prueba mínima                                                                                                              |
+| ----- | -------------------------------------------------------------------------------------------------------------------------- |
+| `R1`  | carga nominal, p95, p99 o escenario equivalente, dependencia lenta, timeout después de enviar, idempotencia y contingencia |
+| `R2`  | carga nominal y pico, concurrencia de escritura, doble toque, red degradada y reanudación                                  |
+| `R3`  | cardinalidad creciente, filtros, permisos, caché fría y cancelación                                                        |
+| `R4`  | agregación, dataset amplio, progreso, conversión a asíncrono y protección del foreground                                   |
+| `A1`  | acuse, job ID, reintento, cancelación, resultado terminal y expiración                                                     |
+| `A2`  | backlog, prioridad, recuperación, resultado parcial, dead-letter y conciliación                                            |
+| `A3`  | deadline, corte, dependencia externa, reanudación, rollback y evidencia de cierre                                          |
+
+Las pruebas deberán fallar cuando solo el promedio cumple, cuando el hard ceiling deja la pantalla bloqueada o cuando una mutación vencida puede repetirse con un efecto nuevo.
+
+---
+
+#### 24. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo los siguientes requisitos derivados de `NFR-REQ-003`:
+
+| ID              | Regla protegida                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| `TREQ-PROC-271` | separar feedback local, acuse, resultado autoritativo, finalización física y tiempo empresarial |
+| `TREQ-PROC-272` | exigir eventos de inicio y fin inequívocos para toda medición                                   |
+| `TREQ-PROC-273` | evaluar p50, p95, p99 cuando aplique y hard ceiling; prohibir aprobación por promedio           |
+| `TREQ-PROC-274` | cumplir presupuestos universales de toque, acuse, progreso, arranque y navegación               |
+| `TREQ-PROC-275` | aplicar clases `R1` a `R4` bajo carga y ambiente declarados                                     |
+| `TREQ-PROC-276` | convertir esperas largas en `A1`, `A2` o `A3` con receipt y estado consultable                  |
+| `TREQ-PROC-277` | impedir acciones silenciosas, spinners indefinidos y progreso ficticio                          |
+| `TREQ-PROC-278` | tratar timeout de mutación como resultado desconocido hasta consultar receipt                   |
+| `TREQ-PROC-279` | conservar idempotency key y evitar reintentos que creen una intención nueva                     |
+| `TREQ-PROC-280` | diferenciar lectura, mutación, trabajo asíncrono, integración y efecto físico                   |
+| `TREQ-PROC-281` | cumplir tiempos de arranque, navegación, reanudación y contexto visible                         |
+| `TREQ-PROC-282` | cumplir respuesta de búsqueda, filtros, cambio de área y consulta de receta                     |
+| `TREQ-PROC-283` | cumplir feedback, decodificación y resolución de escáneres sin descartar errores                |
+| `TREQ-PROC-284` | separar receipt, routing, adaptador e impresión física; impedir duplicados                      |
+| `TREQ-PROC-285` | gobernar timeout, retry, rate limit y conciliación de integraciones externas                    |
+| `TREQ-PROC-286` | distinguir captura local, sincronización y drenaje de backlog al reconectar                     |
+| `TREQ-PROC-287` | convertir reportes, exportaciones y conciliaciones largas en jobs auditables                    |
+| `TREQ-PROC-288` | probar presupuestos con perfiles actuales, 12 meses, 24 meses y estrés                          |
+| `TREQ-PROC-289` | medir dispositivo, red, datos, caché, dependencia y versión del ambiente                        |
+| `TREQ-PROC-290` | aplicar backpressure priorizando `R1` y `R2` sin pérdida ni confirmación falsa                  |
+| `TREQ-PROC-291` | instrumentar tiempos por capa y correlación end-to-end sin exponer datos sensibles              |
+| `TREQ-PROC-292` | probar cancelación, expiración, resultado parcial y recuperación de jobs                        |
+| `TREQ-PROC-293` | validar overrides críticos y modalidades multiárea, periféricos y red degradada                 |
+| `TREQ-PROC-294` | cubrir los 69 procesos con clase, override, prueba y evidencia por paquete                      |
+
+```text
+NFR-REQ-003 APROBADA
+→ 04A REGENERADO COMPLETO
+→ TREQ-PROC-271 A TREQ-PROC-294 INCORPORADOS
+→ ÚLTIMA TAREA INCORPORADA = NFR-REQ-003
+```
+
+---
+
+#### 25. Relación con tareas posteriores
+
+| Decisión posterior                                | Tarea propietaria                                                  |
+| ------------------------------------------------- | ------------------------------------------------------------------ |
+| operación offline, sincronización y cola local    | `NFR-REQ-004`                                                      |
+| privacidad de métricas, payloads y trazas         | `NFR-REQ-005`                                                      |
+| retención de mediciones y evidencia               | `NFR-REQ-006`                                                      |
+| accesibilidad del feedback y progreso             | `NFR-REQ-007`                                                      |
+| dispositivo, red, escáner, impresora y periférico | `NFR-REQ-008`                                                      |
+| instrumentación, SLI, SLO, alertas y soporte      | `NFR-REQ-009`                                                      |
+| recuperación, RTO y RPO                           | `NFR-REQ-010`; `CONT-DOM-002` a `CONT-DOM-004`                     |
+| compatibilidad de navegadores y dispositivos      | `NFR-REQ-011`                                                      |
+| índices, planes y rendimiento de datos            | `SUPA-AUD-020`; `SUPA-ARC-021`                                     |
+| colas, prioridad, backpressure y dead-letter      | `QUEUE-ARC-001` a `QUEUE-ARC-012`                                  |
+| contratos y timeouts externos                     | `INT-APP-*`; `INT-EXT-*`; `INT-POS-*`                              |
+| impresión y adaptadores                           | `PRINT-ARC-001` a `PRINT-ARC-020`                                  |
+| pruebas, archivos exactos y aceptación            | `DELIV-PKG-013`; `DELIV-PKG-016`; `DELIV-PKG-017`; `DELIV-PKG-025` |
+
+No queda ningún presupuesto técnico específico de una capa como pendiente narrativo; se resolverá en la arquitectura o paquete propietario correspondiente.
+
+---
+
+#### 26. Criterios de aceptación
+
+- [ ] Feedback, acuse, resultado autoritativo, efecto físico y deadline empresarial están separados.
+- [ ] Cada medición tiene evento inicial, evento final, alcance, carga, ambiente y versión.
+- [ ] Se definen presupuestos universales y clases `R1` a `R4`.
+- [ ] Se definen trabajos `A1` a `A3` con receipt, estado, cancelación y deadline.
+- [ ] Un timeout de mutación no se presenta automáticamente como fallo ni habilita reintento ciego.
+- [ ] Ninguna operación queda silenciosa o en spinner indefinido.
+- [ ] Arranque, navegación, reanudación, búsqueda y cambio de área tienen límites explícitos.
+- [ ] Escáneres, impresión, pagos e integraciones separan sus etapas y estados.
+- [ ] Offline local y sincronización autoritativa no se confunden.
+- [ ] Reportes y trabajos largos dejan de bloquear el foreground.
+- [ ] Los presupuestos se prueban bajo carga, concurrencia, crecimiento y estrés definidos en `NFR-REQ-002`.
+- [ ] Saturación y backpressure priorizan operaciones críticas sin perder ni duplicar efectos.
+- [ ] Cada uno de `VPROC-0001` a `VPROC-0069` tiene clase foreground, clase asíncrona y override cuando corresponde.
+- [ ] Los identificadores `TREQ-PROC-271` a `TREQ-PROC-294` están incorporados en el registro canónico completo.
+- [ ] No se modifica código, Supabase, migraciones, infraestructura ni operación.
+- [ ] `NFR-REQ-004` permanece no iniciada.
+
+---
+
+#### 27. Estado y continuidad
+
+```text
+NFR-REQ-001  APROBADA
+NFR-REQ-002  APROBADA
+NFR-REQ-003  APROBADA
+NFR-REQ-004  NO INICIADA
+```
+
+La aprobación de esta tarea congela los presupuestos iniciales e incorpora sus requisitos al registro canónico completo. No certifica que ninguna aplicación, consulta, integración o periférico ya cumpla dichos tiempos.
+
+
 ### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
 ### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
 ### [ ] NFR-REQ-006 — Definir trazabilidad y retención
