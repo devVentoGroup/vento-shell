@@ -7,7 +7,11 @@ import {
   buildCanonicalTreqContext,
   validateTreqRegistrySource,
 } from './validate-treq-registry.mjs';
-import { reconcileTreqRegistrySource } from './treq-safe-reconcile.mjs';
+import {
+  normalizeApprovedTaskEvidence,
+  reconcileTreqRegistrySource,
+  updateLatestTaskSummary,
+} from './treq-safe-reconcile.mjs';
 
 const root = process.cwd();
 const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
@@ -33,10 +37,6 @@ function readContext() {
     fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8')
   );
   return buildCanonicalTreqContext({ baseDir, manifest });
-}
-
-function validateSource(source) {
-  return validateTreqRegistrySource(source, readContext());
 }
 
 function loadValidSnapshot() {
@@ -99,7 +99,8 @@ function saveRecoveryCopy(source, reconciliation) {
 
 function attemptSafeReconciliation() {
   const currentSource = fs.readFileSync(registryPath, 'utf8');
-  const currentValidation = validateSource(currentSource);
+  const context = readContext();
+  const currentValidation = validateTreqRegistrySource(currentSource, context);
 
   if (currentValidation.errors.length === 0) {
     return null;
@@ -130,7 +131,25 @@ function attemptSafeReconciliation() {
     return null;
   }
 
-  const candidateValidation = validateSource(reconciliation.candidateSource);
+  const approvedTaskIds = new Set(
+    [...context.tasks.values()]
+      .filter((task) => task.state === 'APROBADA')
+      .map((task) => task.id)
+  );
+  reconciliation.candidateSource = normalizeApprovedTaskEvidence({
+    source: reconciliation.candidateSource,
+    rowIds: reconciliation.newIds,
+    approvedTaskIds,
+  });
+  reconciliation.candidateSource = updateLatestTaskSummary(
+    reconciliation.candidateSource,
+    context.expectedLatestTaskId
+  );
+
+  const candidateValidation = validateTreqRegistrySource(
+    reconciliation.candidateSource,
+    context
+  );
   if (candidateValidation.errors.length > 0) {
     return null;
   }

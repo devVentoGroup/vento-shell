@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **280** |
-| Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1296** |
+| Tareas aprobadas | **281** |
+| Tareas en propuesta | **1** |
+| Tareas no iniciadas | **1294** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NFR-REQ-003 — Definir tiempos máximos de respuesta** |
-| Tarea actual | **NFR-REQ-004 — Definir comportamiento offline y sincronización** |
-| Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NFR-REQ-005 — Definir privacidad y sensibilidad** |
+| Última tarea aprobada | **NFR-REQ-004 — Definir comportamiento offline y sincronización** |
+| Tarea actual | **NFR-REQ-005 — Definir privacidad y sensibilidad** |
+| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
+| Siguiente tarea | **NFR-REQ-006 — Definir trazabilidad y retención** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 38 de 101 aprobadas; NFR-REQ-004 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 39 de 101 aprobadas; NFR-REQ-005 en propuesta** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NFR-REQ-003` — Definir tiempos máximos de respuesta |
-| Tarea actual | `NFR-REQ-004` — Definir comportamiento offline y sincronización — **NO INICIADA** |
-| Siguiente tarea | `NFR-REQ-005` — Definir privacidad y sensibilidad |
+| Última aprobada | `NFR-REQ-004` — Definir comportamiento offline y sincronización |
+| Tarea actual | `NFR-REQ-005` — Definir privacidad y sensibilidad — **PROPUESTA PARA APROBACIÓN** |
+| Siguiente tarea | `NFR-REQ-006` — Definir trazabilidad y retención |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **38 DE 101 APROBADAS — ACTUAL NFR-REQ-004** |
+| BLOQUE E2 | **39 DE 101 APROBADAS — ACTUAL NFR-REQ-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,16 +87,16 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NFR-REQ-003 — Definir tiempos máximos de respuesta
-        ↓
-TAREA ACTUAL
 NFR-REQ-004 — Definir comportamiento offline y sincronización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NFR-REQ-005 — Definir privacidad y sensibilidad
         ↓
+SIGUIENTE TAREA RESERVADA
+NFR-REQ-006 — Definir trazabilidad y retención
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 38 de 101 tareas aprobadas
+BLOQUE E2 — 39 de 101 tareas aprobadas
 ```
 ## Protocolo obligatorio de continuidad
 
@@ -183499,12 +183499,12 @@ Dominios iniciales:
 
 | Métrica                           |      Resultado |
 | --------------------------------- | -------------: |
-| Requisitos vigentes               |        **849** |
+| Requisitos vigentes               |        **909** |
 | Dominios con requisitos           |         **19** |
-| Filas con catorce columnas        | **849 de 849** |
+| Filas con catorce columnas        | **909 de 909** |
 | Identificadores duplicados        |          **0** |
 | Relaciones `TREQ-*` no resolubles |          **0** |
-| Última tarea incorporada          |  `NFR-REQ-003` |
+| Última tarea incorporada          |  `NFR-REQ-004` |
 | Fecha de normalización            |   `2026-07-27` |
 
 Distribución vigente:
@@ -183513,7 +183513,7 @@ Distribución vigente:
 | ------------- | ----------------------------------------------- | -------: |
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
-| `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-294`               |      294 |
+| `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-354`               |      354 |
 | `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-011`             |       11 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-013`       |       13 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-005`             |        5 |
@@ -183829,42 +183829,42 @@ Distribución vigente:
 | `TREQ-PROC-233` | `PROC` | La evaluación identificará dependencias upstream y procesos downstream y comprobará la propagación temporal de una interrupción. Una dependencia compartida o un punto único de falla no podrá quedar oculto por clasificaciones independientes. | `NFR-REQ-001` | Cascada de fallos, capacidad sobreestimada, recuperación en orden incorrecto y múltiples procesos detenidos / crítica | dependencias + arquitectura + continuidad + E2E / automatizada | NFR-REQ-001; NFR-REQ-008 a NFR-REQ-010; CONT-DOM-003; CONT-DOM-012 | Diseño E2; arquitectura E3/E4; continuidad AC | servicios compartidos, red, energía, frío, Auth, datos e integraciones / pruebas de fallos | `IDENTIFICADO` | Pendiente | Pendiente | Regla de dependencias y propagación definida en `NFR-REQ-001` aprobada | TREQ-INTEGRATION-023; TREQ-CONT-004; TREQ-PROC-229 |
 | `TREQ-PROC-234` | `PROC` | Toda dependencia externa declarará proveedor, autoridad, ventana, SLA conocido, estado visible, contingencia, evidencia, conciliación y criterio de retorno. La caída del tercero se medirá separadamente, pero no desaparecerá del impacto del proceso. | `NFR-REQ-001` | Proveedor usado como excusa, indisponibilidad no contabilizada, doble efecto al recuperar y usuario sin alternativa / alta | integración externa + disponibilidad + contingencia + regresión / híbrida | NFR-REQ-001; INT-EXT-001 a INT-EXT-020; CONT-DOM-013 | Diseño E2/X; paquetes E5 | POS, bancos, pagos, fiscal, mensajería, logística y otros terceros / staging y simulación | `IDENTIFICADO` | Pendiente | Pendiente | Modificador de dependencia externa definido en `NFR-REQ-001` aprobada | TREQ-INTEGRATION-018; TREQ-INTEGRATION-023; TREQ-PROC-233 |
 | `TREQ-PROC-235` | `PROC` | El perfil canónico conservará el máximo impacto ordinario; perfiles por sede, área, canal, temporada, turno o dispositivo podrán precisar ventanas y contingencias, pero no reducir la clase sin evidencia, propietario y aprobación versionada. | `NFR-REQ-001` | Sede desprotegida, configuración local más débil, estacionalidad ignorada y disponibilidad incoherente / alta | territorial + configuración + gobierno + regresión / automatizada | NFR-REQ-001; UX-STATION-002 a UX-STATION-009; AUTH-DEV-001 a AUTH-DEV-016 | Diseño E2; estaciones; paquetes E5 | todas las sedes, áreas y dispositivos / CI documental y pruebas físicas | `IDENTIFICADO` | Pendiente | Pendiente | Gobierno de variantes locales definido en `NFR-REQ-001` aprobada | TREQ-AUTH-003; TREQ-UX-218; TREQ-UX-237; TREQ-PROC-229 |
-| `TREQ-PROC-236` | `PROC` | El mantenimiento solo podrá excluirse de la medición cuando esté aprobado, comunicado y fuera de la ventana requerida o exista alternativa equivalente probada. Ventanas ocultas, mantenimiento extendido y caída del proveedor conservarán impacto y evidencia. | `NFR-REQ-001` | Disponibilidad artificialmente alta, mantenimiento en hora pico y SLA manipulado / alta | regresión + SLO + mantenimiento + observabilidad + auditoría / automatizada | NFR-REQ-001; NFR-REQ-009; DELIV-PKG-017 a DELIV-PKG-020 | Diseño E2; paquetes E5; operación | infraestructura, aplicaciones y terceros / monitoreo y reportes | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de denominador y mantenimiento definidas en `NFR-REQ-001` aprobada | TREQ-PROC-229; TREQ-PROC-234; TREQ-PROC-241 |
+| `TREQ-PROC-236` | `PROC` | El mantenimiento solo podrá excluirse de la medición cuando esté aprobado, comunicado y fuera de la ventana requerida o exista alternativa equivalente probada. Ventanas ocultas, mantenimiento extendido y caída del proveedor conservarán impacto y evidencia. | `NFR-REQ-001` | Disponibilidad artificialmente alta, mantenimiento en hora pico y SLA manipulado / alta | contractual + SLO + mantenimiento + observabilidad + auditoría / automatizada e híbrida | NFR-REQ-001; NFR-REQ-009; DELIV-PKG-017 a DELIV-PKG-020 | Diseño E2; paquetes E5; operación | infraestructura, aplicaciones y terceros / monitoreo y reportes | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de denominador y mantenimiento definidas en `NFR-REQ-001` aprobada | TREQ-PROC-229; TREQ-PROC-234; TREQ-PROC-241 |
 | `TREQ-PROC-237` | `PROC` | Un resultado parcial, estado desconocido, operación pendiente, cola bloqueada o conciliación requerida no contará como disponibilidad plena. La medición conservará tiempo y volumen en cada estado sin convertir `DEGRADED_SAFE` en éxito ordinario. | `NFR-REQ-001` | SLO verde con transacciones pendientes, duplicados, backlog oculto y falsa recuperación / crítica | métricas + colas + integración + observabilidad + regresión / automatizada | NFR-REQ-001; NFR-REQ-004; NFR-REQ-009; QUEUE-ARC-001 a QUEUE-ARC-012 | Diseño E2/E4; paquetes E5 | colas, mutaciones, sincronización y conciliación / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Tratamiento de parcial, desconocido y degradado definido en `NFR-REQ-001` aprobada | TREQ-UX-253; TREQ-UX-281; TREQ-INTEGRATION-003; TREQ-PROC-230 |
 | `TREQ-PROC-238` | `PROC` | Una contingencia manual solo sostendrá disponibilidad mínima cuando tenga condición de activación, actor, folio, datos mínimos, custodia, límites, control de duplicados, reincorporación y conciliación. Papel, chat o memoria informal no convertirán el proceso en disponible. | `NFR-REQ-001` | Hechos perdidos, doble digitación, autoridad informal, auditoría falsa y cierre sin conciliación / crítica | manual operativa + continuidad + evidencia + E2E / híbrida | NFR-REQ-001; NFR-REQ-004; UX-STATION-007; CONT-DOM-007 a CONT-DOM-010; EVID-ARC-001 a EVID-ARC-010 | Diseño E2/E4; continuidad AC; piloto | estaciones y procesos con contingencia / ejercicios físicos | `IDENTIFICADO` | Pendiente | Pendiente | Condiciones de contingencia que puede sostener disponibilidad definidas en `NFR-REQ-001` aprobada | TREQ-CONT-003; TREQ-CONT-005; TREQ-UX-269; TREQ-PROC-231 |
 | `TREQ-PROC-239` | `PROC` | La degradación, contingencia o recuperación no ampliará permisos, territorio, rol, vigencia, segregación ni capacidad del dispositivo. Las acciones sensibles permanecerán bloqueadas o exigirán autoridad y evidencia equivalentes. | `NFR-REQ-001` | Bypass de seguridad durante caída, cuenta compartida, ajuste no autorizado y fraude / crítica | seguridad + autorización + continuidad + E2E / automatizada | NFR-REQ-001; AUTH-SRV-001 a AUTH-SRV-018; AUTH-DEV-001 a AUTH-DEV-016; CONT-AUTH-001 a CONT-AUTH-004 | Diseño E2; autorización E3; continuidad AC; certificación U | todas las aplicaciones y estaciones / CI, staging y ejercicios | `IDENTIFICADO` | Pendiente | Pendiente | Guardrail de autorización durante degradación definido en `NFR-REQ-001` aprobada | TREQ-AUTH-001; TREQ-AUTH-014; TREQ-UX-152; TREQ-PROC-238 |
 | `TREQ-PROC-240` | `PROC` | Cada proceso definirá la frescura y consistencia mínima de sus datos para considerarse disponible. Una copia obsoleta podrá permitir referencia o captura según política, pero no mutaciones o decisiones que exijan estado actual. | `NFR-REQ-001` | Decisión con inventario, permiso, receta, precio o custodia obsoletos y resultado inválido / crítica | datos + consistencia + disponibilidad + regresión / automatizada | NFR-REQ-001; NFR-REQ-004; DATA-DOM-001 a DATA-DOM-017; SUPA-ARC-001 a SUPA-ARC-025 | Diseño E2/E3; paquetes E5 | todas las fuentes de verdad y consumidores / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Relación entre disponibilidad, frescura y estado autoritativo definida en `NFR-REQ-001` aprobada | TREQ-DATA-002; TREQ-UX-258; TREQ-PROC-231 |
-| `TREQ-PROC-241` | `PROC` | La observabilidad medirá disponibilidad por proceso y ventana requerida, incluyendo estados, duración, volumen afectado, dependencia causal, sede, área, canal, modo degradado, backlog, conciliación y resultado empresarial. Métricas de infraestructura no sustituirán la métrica del proceso. | `NFR-REQ-001` | Monitoreo técnico sin impacto empresarial, alertas tardías y recuperación no demostrada / alta | regresión + observabilidad + métricas + alertas + auditoría / automatizada | NFR-REQ-001; NFR-REQ-009; OBS-ARC-001 a OBS-ARC-016; DATA-DOM-004 a DATA-DOM-007 | Diseño E2/E4; paquetes E5; operación | observabilidad transversal y tableros / CI, staging y producción futura | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de medición empresarial definido en `NFR-REQ-001` aprobada | TREQ-PROC-019; TREQ-PROC-236; TREQ-PROC-237 |
+| `TREQ-PROC-241` | `PROC` | La observabilidad medirá disponibilidad por proceso y ventana requerida, incluyendo estados, duración, volumen afectado, dependencia causal, sede, área, canal, modo degradado, backlog, conciliación y resultado empresarial. Métricas de infraestructura no sustituirán la métrica del proceso. | `NFR-REQ-001` | Monitoreo técnico sin impacto empresarial, alertas tardías y recuperación no demostrada / alta | contractual + observabilidad + métricas + alertas + auditoría / automatizada | NFR-REQ-001; NFR-REQ-009; OBS-ARC-001 a OBS-ARC-016; DATA-DOM-004 a DATA-DOM-007 | Diseño E2/E4; paquetes E5; operación | observabilidad transversal y tableros / CI, staging y producción futura | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de medición empresarial definido en `NFR-REQ-001` aprobada | TREQ-PROC-019; TREQ-PROC-236; TREQ-PROC-237 |
 | `TREQ-PROC-242` | `PROC` | Toda clasificación tendrá propietario funcional, evidencia, versión, fecha, revisores y disparadores de revalidación. Disminuir criticidad o ventana requerirá aprobación; no se permitirá clasificar todo como crítico para evitar priorización real. | `NFR-REQ-001` | Clasificaciones eternas, costo injustificado, riesgo aceptado informalmente y ausencia de prioridades / alta | gobierno + versionado + auditoría + regresión / híbrida | NFR-REQ-001; PROC-CAT-018 a PROC-CAT-020; CONT-DOM-001 a CONT-DOM-004 | Diseño E2; continuidad AC | registro canónico de procesos / revisión documental y auditoría | `IDENTIFICADO` | Pendiente | Pendiente | Gobierno y disparadores de revisión definidos en `NFR-REQ-001` aprobada | TREQ-PROC-227; TREQ-PROC-228; TREQ-PROC-235 |
 | `TREQ-PROC-243` | `PROC` | La matriz canónica deberá contener exactamente un perfil inicial para cada proceso `VPROC-0001` a `VPROC-0069`, sin huecos, duplicados ni procesos inventados. Cada fila incluirá clase, ventana, degradación y justificación. | `NFR-REQ-001` | Proceso sin requisitos no funcionales, duplicidad, clasificación parcial y estaciones diseñadas sobre cobertura incompleta / crítica | contractual + cobertura + datos + regresión / automatizada | NFR-REQ-001; PROC-CAT-003; PROC-COVER-001 a PROC-COVER-010; SHELL-CI-017 | Diseño E2; CI documental | plan canónico y registro de procesos / CI | `IDENTIFICADO` | Pendiente | Pendiente | Matriz inicial completa de 69 procesos definida en `NFR-REQ-001` aprobada | TREQ-PROC-010; TREQ-PROC-022; TREQ-PROC-227; TREQ-PROC-242 |
 | `TREQ-PROC-244` | `PROC` | Los objetivos cuantitativos de volumen, respuesta, offline, hardware, observabilidad, RTO, RPO, MTPD y MBCO deberán derivarse del perfil aprobado y permanecer asignados a sus tareas propietarias. NFR-REQ-001 no inventará porcentajes ni tiempos sin evidencia. | `NFR-REQ-001` | Falsa precisión, SLO incompatible, infraestructura subdimensionada y responsabilidades duplicadas / alta | trazabilidad + requisitos + gobierno + regresión / automatizada | NFR-REQ-001 a NFR-REQ-012; CONT-DOM-002 a CONT-DOM-004; DELIV-PKG-013 | Diseño E2; continuidad AC; paquetes E5 | roadmap y paquetes / CI documental | `IDENTIFICADO` | Pendiente | Pendiente | Frontera y asignación de objetivos posteriores definida en `NFR-REQ-001` aprobada | TREQ-PROC-229; TREQ-PROC-242; TREQ-CONT-001 |
 | `TREQ-PROC-245` | `PROC` | La prioridad de un incidente se calculará con impacto actual, alcance, urgencia, propagación, ventana y workaround, utilizando la criticidad del proceso como entrada y no como resultado único. Dos incidentes del mismo proceso podrán tener prioridades distintas. | `NFR-REQ-001` | Todo incidente crítico o ninguno, soporte desordenado y atención sin considerar alcance real / alta | soporte + incidentes + disponibilidad + regresión / automatizada | NFR-REQ-001; NFR-REQ-009; TI-DOM-001 a TI-DOM-013; OBS-ARC-001 a OBS-ARC-016 | Diseño E2/E4; soporte Z | mesa de ayuda, observabilidad y procesos / simulaciones | `IDENTIFICADO` | Pendiente | Pendiente | Separación entre criticidad de proceso y prioridad de incidente definida en `NFR-REQ-001` aprobada | TREQ-PROC-227; TREQ-PROC-241; TREQ-UX-097 |
 | `TREQ-PROC-246` | `PROC` | La certificación probará cada clase y ventana con interrupciones antes, durante y después de etapas críticas; dependencia externa; sitio o turno alterno; mantenimiento; degradación segura; contingencia; resultado desconocido; recuperación y conciliación. Deberá comprobar que el proceso produce su resultado mínimo o se declara no disponible sin mentir al usuario. | `NFR-REQ-001` | Clasificación documental sin evidencia, contingencia no ejecutable, SLO falso y piloto inseguro / crítica | E2E + fallos + continuidad + experiencia + regresión / híbrida | NFR-REQ-001; NFR-REQ-012; UX-STATION-008 a UX-STATION-009; AUTH-QA-001 a AUTH-QA-030; UX-QA-001 a UX-QA-030; CONT-DOM-014 | Diseño E2; paquetes E5; piloto; certificación U | todos los procesos, sedes, dispositivos y dependencias / CI, staging y ejercicios físicos | `IDENTIFICADO` | Pendiente | Pendiente | Escenarios de prueba y criterio de certificación definidos en `NFR-REQ-001` aprobada | TREQ-PROC-230; TREQ-PROC-231; TREQ-PROC-233; TREQ-PROC-238; TREQ-PROC-243 |
 
-| `TREQ-PROC-247` | `PROC` | Todo proceso medirá volumen mediante una unidad natural, ventana temporal y alcance explícitos. No se utilizarán filas de base de datos, usuarios registrados o requests HTTP como sustitutos automáticos del hecho empresarial. | `NFR-REQ-002` | Dimensionamiento sobre métricas equivocadas, duplicados y capacidad imposible de comparar / alta | contrato + proceso + capacidad + regresión / automatizada con revisión funcional | `NFR-REQ-002`; `PROC-CAT-001` a `PROC-CAT-020`; `DELIV-PKG-013` | Diseño E2; perfil no funcional por paquete E5 | plan canónico, dominios propietarios y telemetría futura / CI documental y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de unidad natural, ventana y alcance definido en `NFR-REQ-002` | `TREQ-PROC-227`; `TREQ-PROC-229`; `TREQ-PROC-246` |
-| `TREQ-PROC-248` | `PROC` | Cada perfil de carga conservará proceso, versión, alcance, unidad, baseline, periodo, fuente, confianza, percentiles, máximo, pico, ráfaga, backlog, concurrencias, tamaños, fan-out, crecimiento y escenarios. Un número sin esos metadatos no será baseline canónico. | `NFR-REQ-002` | Forecast no reproducible, cifras sin origen y decisiones técnicas basadas en opiniones / crítica | contrato de datos + gobierno + documentación + regresión / automatizada | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017` | Diseño E2; observabilidad; paquetes E5 | `vento-shell` y repositorios propietarios / CI documental, staging y telemetría | `IDENTIFICADO` | Pendiente | Pendiente | Esquema mínimo de `NFR-CAPACITY-EVIDENCE-REGISTER-001` definido en `NFR-REQ-002` | `TREQ-PROC-247`; `TREQ-PROC-241` |
-| `TREQ-PROC-249` | `PROC` | Las formas `WS-CASE`, `WS-REFERENCE`, `WS-TRANSACTION`, `WS-BATCH`, `WS-EVENT`, `WS-INTEGRATION`, `WS-FILE`, `WS-ANALYTICAL` y `WS-EMERGENCY` se asignarán según el comportamiento real. Un proceso podrá declarar varias formas sin ocultarlas bajo un conteo único. | `NFR-REQ-002` | Arquitectura uniforme para cargas incompatibles, archivos o fan-out ignorados y pruebas irrelevantes / alta | clasificación + arquitectura + regresión / automatizada con revisión | `NFR-REQ-002`; `PROC-SCREEN-001` a `PROC-SCREEN-028`; `SUPA-ARC-021` | Diseño E2; arquitectura E3; paquetes E5 | todos los procesos y repositorios / documentación, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Taxonomía de formas de carga definida en `NFR-REQ-002` | `TREQ-PROC-247`; `TREQ-INTEGRATION-023`; `TREQ-UX-227` |
-| `TREQ-PROC-250` | `PROC` | Las bandas `L0` a `L4` se interpretarán únicamente dentro de la unidad y ventana declaradas. Se tratarán como envolventes iniciales de diseño y no como mediciones de producción; los paquetes críticos deberán reemplazarlas por valores con evidencia. | `NFR-REQ-002` | Falsa precisión, comparación de periodos incompatibles y paquete subdimensionado / crítica | capacidad + gobierno + readiness + regresión / híbrida | `NFR-REQ-002`; `DELIV-PKG-013`; `DELIV-PKG-025`; `READY-GATE-011` | Diseño E2; planificación E5; readiness de ejecución | procesos críticos y paquetes / documentación, staging y pruebas de carga | `IDENTIFICADO` | Pendiente | Pendiente | Bandas de volumen y frontera entre clasificación y medición definidas en `NFR-REQ-002` | `TREQ-PROC-228`; `TREQ-PROC-247`; `TREQ-PROC-248` |
-| `TREQ-PROC-251` | `PROC` | Toda medición distinguirá volumen recibido, throughput completado, trabajo activo y backlog. Un proceso no se declarará capaz porque acepte entradas mientras su cola, conciliación o resultado empresarial se acumulan sin límite. | `NFR-REQ-002` | Colas ocultas, SLA aparente, pérdida de operación y cierre falso / crítica | colas + capacidad + proceso + observabilidad + regresión / automatizada | `NFR-REQ-002`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `NFR-REQ-009`; `DELIV-PKG-017` | Diseño E2; servicios E4; observabilidad y paquetes E5 | procesos con colas o etapas / CI, staging y fallos inyectados | `IDENTIFICADO` | Pendiente | Pendiente | Separación entre entrada, throughput, trabajo activo y backlog definida en `NFR-REQ-002` | `TREQ-INTEGRATION-003`; `TREQ-PROC-235`; `TREQ-UX-253` |
-| `TREQ-PROC-252` | `PROC` | La carga declarará promedio, P50, P95, máximo observado, pico esperado, duración de ráfaga, backlog normal, backlog de recuperación y tiempo de drenaje. El promedio no podrá utilizarse como capacidad objetivo. | `NFR-REQ-002` | Saturación en hora pico, recuperación interminable y pruebas que solo cubren días tranquilos / crítica | regresión + capacidad + recuperación + pruebas de carga / automatizada | `NFR-REQ-002`; `NFR-REQ-003`; `NFR-REQ-009`; `NFR-REQ-010`; `DELIV-PKG-016` | Diseño E2; recuperación y observabilidad; pruebas por paquete | todos los procesos críticos / staging y entornos de carga | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de promedio, percentiles, pico, ráfaga y backlog definido en `NFR-REQ-002` | `TREQ-PROC-229`; `TREQ-PROC-240`; `TREQ-UX-273` |
-| `TREQ-PROC-253` | `PROC` | La concurrencia humana, de dispositivo, de sesión, de lectura, de escritura, de job y de consumidor se medirá por separado. La cantidad de cuentas o empleados no podrá sustituir la simultaneidad real. | `NFR-REQ-002` | Pools, locks y estaciones dimensionados con métricas falsas; deadlocks y denegación durante picos / crítica | concurrencia + arquitectura + capacidad + regresión / automatizada | `NFR-REQ-002`; `NFR-REQ-008`; `NFR-REQ-011`; `SUPA-ARC-021`; `DELIV-PKG-013` | Diseño E2; arquitectura E3; hardware y paquetes E5 | aplicaciones, dispositivos, base de datos y colas / staging y pruebas concurrentes | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de concurrencia y clases `K0` a `K4` definidas en `NFR-REQ-002` | `TREQ-PROC-237`; `TREQ-UX-206`; `TREQ-UX-240` |
-| `TREQ-PROC-254` | `PROC` | Cada recurso con exclusividad o alta contención deberá declarar alcance de conflicto y máximo de escritores simultáneos. Caja, conteo, lote, receta publicada, inventario, recepción, remisión, pago, turno, evidencia y presupuesto no podrán usar sobrescritura silenciosa. | `NFR-REQ-002` | Pérdida de actualizaciones, doble efecto, cierre corrupto y custodia ambigua / crítica | concurrencia + versionado + idempotencia + E2E / automatizada con fallos | `NFR-REQ-002`; `SUPA-ARC-012`; `SUPA-ARC-016`; `QUEUE-ARC-009`; `DELIV-PKG-016` | Diseño E2; contratos E3/E4; pruebas por paquete | recursos transaccionales / CI, staging y concurrencia controlada | `IDENTIFICADO` | Pendiente | Pendiente | Inventario de recursos contendidos y obligación de medir escritores definido en `NFR-REQ-002` | `TREQ-INTEGRATION-003`; `TREQ-PROC-164`; `TREQ-UX-264` |
-| `TREQ-PROC-255` | `PROC` | Los perfiles de crecimiento usarán escenarios `CURRENT_BASELINE`, `APPROVED_12M`, `PLAUSIBLE_24M` y `STRESS_SCENARIO`, cada uno con impulsor empresarial, fecha, supuestos y confianza. No se aplicará un porcentaje único a todos los dominios. | `NFR-REQ-002` | Forecast arbitrario, sobrecosto, falta de capacidad ante expansión y escenarios confundidos con compromisos / alta | forecast + gobierno + capacidad + regresión / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017` | Diseño E2; planificación E5; revisión periódica | todos los procesos / registro de capacidad y revisión empresarial | `IDENTIFICADO` | Pendiente | Pendiente | Horizontes y perfiles de crecimiento definidos en `NFR-REQ-002` | `TREQ-PROC-228`; `TREQ-PROC-241`; `TREQ-DATA-003` |
-| `TREQ-PROC-256` | `PROC` | El crecimiento por sedes, áreas, trabajadores, dispositivos, productos, recetas, proveedores, clientes, LOC, LPN, activos, pedidos, líneas, movimientos, lotes, documentos, auditoría, integraciones y consumidores se proyectará por separado. | `NFR-REQ-002` | Cardinalidad inesperada, índices ineficientes, navegación lenta y retención insostenible / alta | base de datos + cardinalidad + capacidad + arquitectura / automatizada e híbrida | `NFR-REQ-002`; `SUPA-AUD-020`; `SUPA-ARC-021`; `SUPA-ARC-022`; `DELIV-PKG-013` | Diseño E2; auditoría y arquitectura E3; paquetes E5 | Supabase, Storage y repositorios consumidores / análisis, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de cardinalidad y crecimiento estructural definidas en `NFR-REQ-002` | `TREQ-SUPABASE-009`; `TREQ-DATA-003`; `TREQ-PROC-248` |
-| `TREQ-PROC-257` | `PROC` | La medición deberá corregir duplicados, reintentos, anulaciones, compensaciones, eventos tardíos, zonas horarias, periodos incompletos, datos no retenidos, tráfico sintético y cambios de versión. Las entrevistas se conservarán como hipótesis, no como hechos medidos. | `NFR-REQ-002` | Baseline inflado o reducido, forecast falso y pruebas calibradas con datos contaminados / crítica | calidad de datos + medición + auditoría + regresión / automatizada con revisión | `NFR-REQ-002`; `NFR-REQ-006`; `NFR-REQ-009`; `DATA-DOM-006`; `DATA-DOM-007` | Diseño E2; gobierno de datos; observabilidad | fuentes empresariales, logs y sistemas externos / análisis reproducible | `IDENTIFICADO` | Pendiente | Pendiente | Jerarquía de evidencia y reglas de limpieza de baseline definidas en `NFR-REQ-002` | `TREQ-DATA-001`; `TREQ-DATA-002`; `TREQ-PROC-248` |
-| `TREQ-PROC-258` | `PROC` | Cada valor tendrá estado `MEASURED_REPRODUCIBLE`, `DERIVED_RECONCILED`, `ESTIMATED_WITH_EVIDENCE`, `CLASS_ONLY` o `UNKNOWN_BLOCKING`. Un paquete crítico no podrá aprobarse con información bloqueante desconocida. | `NFR-REQ-002` | Números provisionales tratados como verdad, riesgo oculto y aprobación sin capacidad demostrable / crítica | gobierno + readiness + evidencia + regresión / híbrida | `NFR-REQ-002`; `DELIV-PKG-013`; `DELIV-PKG-023`; `DELIV-PKG-025`; `E5-GATE-003` | Diseño E2; paquetes y puerta E5 | registro de capacidad y paquetes / documentación y revisión de readiness | `IDENTIFICADO` | Pendiente | Pendiente | Estados de confianza y bloqueo de paquetes definidos en `NFR-REQ-002` | `TREQ-PROC-248`; `TREQ-PROC-250`; `TREQ-PROC-257` |
-| `TREQ-PROC-259` | `PROC` | La carga de eventos registrará eventos emitidos, consumidores, fan-out, operaciones en vuelo, reintentos, duplicados, dead-letter y tiempo en cola. Los efectos técnicos no se confundirán con hechos empresariales. | `NFR-REQ-002` | Capacidad de integración subestimada, tormenta de reintentos y efectos duplicados / crítica | eventos + integración + colas + idempotencia + pruebas de carga / automatizada | `NFR-REQ-002`; `INT-APP-001` a `INT-APP-010`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `DELIV-PKG-016` | Diseño E2; contratos E4; pruebas por paquete | event bus, jobs e integraciones / CI, staging y fallos inyectados | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de fan-out, inflight, reintentos y dead-letter definido en `NFR-REQ-002` | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-023`; `TREQ-PROC-251` |
-| `TREQ-PROC-260` | `PROC` | El tamaño de líneas, payloads, fotos, firmas, PDFs, documentos, versiones y auditoría se medirá junto con el conteo de casos. La retención y el almacenamiento no podrán dimensionarse solo por transacciones diarias. | `NFR-REQ-002` | Storage agotado, costos imprevistos, payloads rechazados y respaldo incapaz de cumplir / alta | base de datos + archivos + retención + capacidad / automatizada e híbrida | `NFR-REQ-002`; `NFR-REQ-006`; `EVID-ARC-001` a `EVID-ARC-010`; `SUPA-ARC-022` | Diseño E2; arquitectura E3/E4; paquetes E5 | Supabase, Storage, aplicaciones e integraciones / CI y pruebas de tamaño | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de tamaño, archivos y retención definidas en `NFR-REQ-002` | `TREQ-PROC-256`; `TREQ-UX-178`; `TREQ-SUPABASE-011` |
-| `TREQ-PROC-261` | `PROC` | Las consultas analíticas declararán filas leídas, periodo, dimensiones, filtros, agregaciones, exportaciones, refresco y usuarios simultáneos. Una carga administrativa no podrá degradar mutaciones operativas críticas. | `NFR-REQ-002` | Escaneos completos durante servicio, timeouts, bloqueo de escritura y dashboard que detiene operación / crítica | regresión + rendimiento + aislamiento + pruebas de carga / automatizada | `NFR-REQ-002`; `NFR-REQ-003`; `SUPA-ARC-021`; `UX-ADMIN-001` a `UX-ADMIN-005`; `DELIV-PKG-016` | Diseño E2; arquitectura E3; pruebas por paquete | VISO, NUMERA, reportes y base de datos / staging y datasets representativos | `IDENTIFICADO` | Pendiente | Pendiente | Separación y contrato de carga analítica definidos en `NFR-REQ-002` | `TREQ-DATA-003`; `TREQ-UX-229`; `TREQ-PROC-256` |
-| `TREQ-PROC-262` | `PROC` | Toda integración externa declarará cuota, rate limit, tamaño, timeout, mecanismo, reintentos, backoff, mantenimiento, backlog, conciliación y crecimiento contractual. La cuota del proveedor no será tratada como capacidad interna. | `NFR-REQ-002` | Bloqueo por proveedor, pérdida de eventos, rate limit agotado y backlog sin drenaje / crítica | integración externa + resiliencia + capacidad + E2E / automatizada con simulador | `NFR-REQ-002`; `INT-EXT-001` a `INT-EXT-020`; `NFR-REQ-003`; `NFR-REQ-009`; `DELIV-PKG-016` | Diseño E2; integración X/E4; pruebas por paquete | proveedores externos, adaptadores y staging / sandboxes y fallos controlados | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de capacidad para dependencias externas definido en `NFR-REQ-002` | `TREQ-INTEGRATION-019`; `TREQ-INTEGRATION-023`; `TREQ-PROC-234` |
-| `TREQ-PROC-263` | `PROC` | Los picos de apertura, cierre, comidas, producción, despacho, cortes, campañas, eventos, reenvío de webhooks, importación, reconexión, recuperación e incidentes se probarán como escenarios separados. La ráfaga de recuperación podrá superar la carga en línea. | `NFR-REQ-002` | Sistema estable en promedio pero colapsado al abrir, cerrar o reconectar / crítica | escenarios + capacidad + recuperación + E2E / automatizada con carga | `NFR-REQ-002`; `NFR-REQ-004`; `NFR-REQ-010`; `CONT-DOM-014`; `DELIV-PKG-016` | Diseño E2; continuidad; pruebas por paquete y certificación U | todos los dominios críticos / staging, laboratorio y piloto controlado | `IDENTIFICADO` | Pendiente | Pendiente | Catálogo mínimo de picos, ráfagas y recuperación definido en `NFR-REQ-002` | `TREQ-CONT-006`; `TREQ-PROC-252`; `TREQ-UX-273` |
-| `TREQ-PROC-264` | `PROC` | Las estaciones compartidas y multiárea medirán actores, dispositivos, áreas, lectura de recetas, escrituras, cambio de sesión, reconexión y periféricos. Dos equipos no se contarán como capacidad doble o redundancia sin prueba física. | `NFR-REQ-002` | Cuello de botella en POS, mezcla de áreas, cola de reconexión y falsa redundancia / crítica | hardware + dispositivos compartidos + concurrencia + experiencia + E2E / híbrida | `NFR-REQ-002`; `NFR-REQ-008`; `NFR-REQ-011`; `UX-STATION-002` a `UX-STATION-009`; `FOGO-UX-015` | Diseño E2; estaciones; paquetes FOGO y pruebas físicas | POS táctiles del Centro de Producción y estaciones futuras / dispositivos reales | `IDENTIFICADO` | Pendiente | Pendiente | Perfil específico de tablets, kioscos y POS multiárea definido en `NFR-REQ-002` | `TREQ-AUTH-003`; `TREQ-UX-218`; `TREQ-UX-245`; `TREQ-UX-291` |
-| `TREQ-PROC-265` | `PROC` | La capacidad de periféricos y recursos compartidos, incluida impresión, escaneo, red, energía, báscula, terminal de pago y almacenamiento local, se incluirá en el perfil cuando limite el resultado empresarial. | `NFR-REQ-002` | Aplicación rápida con operación detenida por impresora, red, escáner o almacenamiento / alta | hardware + periféricos + capacidad + experiencia / híbrida | `NFR-REQ-002`; `NFR-REQ-008`; `PRINT-ARC-001` a `PRINT-ARC-020`; `UX-STATION-006`; `UX-STATION-008` | Diseño E2; servicios E4; pruebas físicas y paquetes E5 | estaciones, redes y periféricos / laboratorio y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Regla de incluir periféricos y recursos compartidos en la capacidad definida en `NFR-REQ-002` | `TREQ-UX-212`; `TREQ-UX-221`; `TREQ-PROC-264` |
-| `TREQ-PROC-266` | `PROC` | La envolvente de diseño será el máximo entre pico medido, escenario empresarial aprobado, ráfaga esperada y backlog de recuperación, más un margen justificado. No se aplicará un multiplicador universal. | `NFR-REQ-002` | Sobreaprovisionamiento sin criterio o saturación por usar solo el promedio / alta | regresión + capacity planning + riesgo + arquitectura + readiness / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `READY-GATE-011`; `E5-GATE-003` | Diseño E2; paquetes E5; readiness | todos los paquetes con NFR / registro de capacidad, staging y revisión | `IDENTIFICADO` | Pendiente | Pendiente | Fórmula conceptual de envolvente y regla de margen definido en `NFR-REQ-002` | `TREQ-PROC-250`; `TREQ-PROC-252`; `TREQ-PROC-255` |
-| `TREQ-PROC-267` | `PROC` | La saturación deberá producir backpressure, cola, degradación, límite o rechazo explícito según contrato. No podrá perder, truncar o confirmar silenciosamente trabajo, ni convertir timeout en reintento ciego. | `NFR-REQ-002` | Pérdida silenciosa, doble ejecución, corrupción y usuario engañado durante sobrecarga / crítica | resiliencia + colas + experiencia + idempotencia + E2E / automatizada con fallos | `NFR-REQ-002`; `NFR-REQ-003`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `AUTH-SRV-001` a `AUTH-SRV-018`; `UX-BASE-006` | Diseño E2; arquitectura E4; implementación por paquetes | API, RPC, jobs, UI y periféricos / CI, staging y carga adversarial | `IDENTIFICADO` | Pendiente | Pendiente | Comportamiento obligatorio ante saturación definido en `NFR-REQ-002` | `TREQ-INTEGRATION-003`; `TREQ-UX-108`; `TREQ-PROC-251`; `TREQ-PROC-259` |
-| `TREQ-PROC-268` | `PROC` | Cada perfil se revisará ante nueva sede, área, canal, horario, integración, retención, catálogo, hardware, saturación, incidente, migración o desviación material del forecast. Los cambios conservarán versión, propietario y evidencia. | `NFR-REQ-002` | Capacidad obsoleta, crecimiento no detectado y paquetes basados en una empresa que ya cambió / alta | gobierno + versionado + observabilidad + regresión / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017`; `PROC-COVER-010` | Diseño E2; revisión continua; paquetes E5 | registro de capacidad y roadmap / documentación, métricas y revisión periódica | `IDENTIFICADO` | Pendiente | Pendiente | Gobierno, versionado y disparadores de revisión definidos en `NFR-REQ-002` | `TREQ-PROC-241`; `TREQ-PROC-258`; `TREQ-PROC-266` |
-| `TREQ-PROC-269` | `PROC` | Las pruebas de capacidad cubrirán carga nominal, pico, ráfaga, concurrencia sobre el mismo recurso, fan-out, proveedor lento, rate limit, backlog, reconexión, drenaje, archivos grandes y consultas analíticas. Medirán resultado empresarial, errores, colas, duplicados y recuperación. | `NFR-REQ-002` | Prueba de carga superficial, sistema rápido pero incorrecto y defectos que aparecen solo en recuperación / crítica | pruebas de carga + concurrencia + resiliencia + E2E / automatizada e híbrida | `NFR-REQ-002`; `NFR-REQ-003`; `NFR-REQ-009`; `NFR-REQ-010`; `DELIV-PKG-016`; `AUTH-QA-030` | Diseño E2; infraestructura T; implementación por paquete; certificación U | todos los repositorios y dependencias / CI, staging, laboratorio y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz mínima de escenarios y resultados de capacidad definida en `NFR-REQ-002` | `TREQ-PROC-252`; `TREQ-PROC-254`; `TREQ-PROC-259`; `TREQ-PROC-263`; `TREQ-PROC-267` |
-| `TREQ-PROC-270` | `PROC` | La matriz `NFR-PROCESS-WORKLOAD-MATRIX-001` cubrirá exactamente `VPROC-0001` a `VPROC-0069` y asignará familia, formas, banda de volumen, clase de concurrencia, crecimiento, unidad, pico y lectura de diseño. Las bandas permanecerán `CLASS_ONLY` hasta ser reemplazadas por evidencia. | `NFR-REQ-002` | Procesos omitidos, clases duplicadas, medición fingida y arquitectura sin cobertura empresarial / crítica | documentación ejecutable + cobertura + CI + regresión / automatizada | `NFR-REQ-002`; `SHELL-CI-017`; `SHELL-CI-018`; `PROC-COVER-001` a `PROC-COVER-010`; `DELIV-PKG-013` | Cierre E2; verificadores; paquetes E5 | `vento-shell` / CI documental y revisión funcional | `IDENTIFICADO` | Pendiente | Pendiente | Matriz inicial completa de 69 procesos definida en `NFR-REQ-002` | `TREQ-PROC-226`; `TREQ-PROC-242`; `TREQ-PROC-246`; `TREQ-PROC-249`; `TREQ-PROC-250`; `TREQ-PROC-253`; `TREQ-PROC-255` |
+| `TREQ-PROC-247` | `PROC` | Todo proceso medirá volumen mediante una unidad natural, ventana temporal y alcance explícitos. No se utilizarán filas de base de datos, usuarios registrados o requests HTTP como sustitutos automáticos del hecho empresarial. | `NFR-REQ-002` | Dimensionamiento sobre métricas equivocadas, duplicados y capacidad imposible de comparar / alta | contrato + proceso + capacidad + regresión / automatizada con revisión funcional | `NFR-REQ-002`; `PROC-CAT-001` a `PROC-CAT-020`; `DELIV-PKG-013` | Diseño E2; perfil no funcional por paquete E5 | plan canónico, dominios propietarios y telemetría futura / CI documental y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de unidad natural, ventana y alcance definido en `NFR-REQ-002` aprobada | `TREQ-PROC-227`; `TREQ-PROC-229`; `TREQ-PROC-246` |
+| `TREQ-PROC-248` | `PROC` | Cada perfil de carga conservará proceso, versión, alcance, unidad, baseline, periodo, fuente, confianza, percentiles, máximo, pico, ráfaga, backlog, concurrencias, tamaños, fan-out, crecimiento y escenarios. Un número sin esos metadatos no será baseline canónico. | `NFR-REQ-002` | Forecast no reproducible, cifras sin origen y decisiones técnicas basadas en opiniones / crítica | contrato de datos + gobierno + documentación + regresión / automatizada | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017` | Diseño E2; observabilidad; paquetes E5 | `vento-shell` y repositorios propietarios / CI documental, staging y telemetría | `IDENTIFICADO` | Pendiente | Pendiente | Esquema mínimo de `NFR-CAPACITY-EVIDENCE-REGISTER-001` definido en `NFR-REQ-002` aprobada | `TREQ-PROC-247`; `TREQ-PROC-241` |
+| `TREQ-PROC-249` | `PROC` | Las formas `WS-CASE`, `WS-REFERENCE`, `WS-TRANSACTION`, `WS-BATCH`, `WS-EVENT`, `WS-INTEGRATION`, `WS-FILE`, `WS-ANALYTICAL` y `WS-EMERGENCY` se asignarán según el comportamiento real. Un proceso podrá declarar varias formas sin ocultarlas bajo un conteo único. | `NFR-REQ-002` | Arquitectura uniforme para cargas incompatibles, archivos o fan-out ignorados y pruebas irrelevantes / alta | clasificación + arquitectura + regresión / automatizada con revisión | `NFR-REQ-002`; `PROC-SCREEN-001` a `PROC-SCREEN-028`; `SUPA-ARC-021` | Diseño E2; arquitectura E3; paquetes E5 | todos los procesos y repositorios / documentación, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Taxonomía de formas de carga definida en `NFR-REQ-002` aprobada | `TREQ-PROC-247`; `TREQ-INTEGRATION-023`; `TREQ-UX-227` |
+| `TREQ-PROC-250` | `PROC` | Las bandas `L0` a `L4` se interpretarán únicamente dentro de la unidad y ventana declaradas. Se tratarán como envolventes iniciales de diseño y no como mediciones de producción; los paquetes críticos deberán reemplazarlas por valores con evidencia. | `NFR-REQ-002` | Falsa precisión, comparación de periodos incompatibles y paquete subdimensionado / crítica | capacidad + gobierno + readiness + regresión / híbrida | `NFR-REQ-002`; `DELIV-PKG-013`; `DELIV-PKG-025`; `READY-GATE-011` | Diseño E2; planificación E5; readiness de ejecución | procesos críticos y paquetes / documentación, staging y pruebas de carga | `IDENTIFICADO` | Pendiente | Pendiente | Bandas de volumen y frontera entre clasificación y medición definidas en `NFR-REQ-002` aprobada | `TREQ-PROC-228`; `TREQ-PROC-247`; `TREQ-PROC-248` |
+| `TREQ-PROC-251` | `PROC` | Toda medición distinguirá volumen recibido, throughput completado, trabajo activo y backlog. Un proceso no se declarará capaz porque acepte entradas mientras su cola, conciliación o resultado empresarial se acumulan sin límite. | `NFR-REQ-002` | Colas ocultas, SLA aparente, pérdida de operación y cierre falso / crítica | colas + capacidad + proceso + observabilidad + regresión / automatizada | `NFR-REQ-002`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `NFR-REQ-009`; `DELIV-PKG-017` | Diseño E2; servicios E4; observabilidad y paquetes E5 | procesos con colas o etapas / CI, staging y fallos inyectados | `IDENTIFICADO` | Pendiente | Pendiente | Separación entre entrada, throughput, trabajo activo y backlog definida en `NFR-REQ-002` aprobada | `TREQ-INTEGRATION-003`; `TREQ-PROC-235`; `TREQ-UX-253` |
+| `TREQ-PROC-252` | `PROC` | La carga declarará promedio, P50, P95, máximo observado, pico esperado, duración de ráfaga, backlog normal, backlog de recuperación y tiempo de drenaje. El promedio no podrá utilizarse como capacidad objetivo. | `NFR-REQ-002` | Saturación en hora pico, recuperación interminable y pruebas que solo cubren días tranquilos / crítica | regresión + capacidad + recuperación + pruebas de carga / automatizada | `NFR-REQ-002`; `NFR-REQ-003`; `NFR-REQ-009`; `NFR-REQ-010`; `DELIV-PKG-016` | Diseño E2; recuperación y observabilidad; pruebas por paquete | todos los procesos críticos / staging y entornos de carga | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de promedio, percentiles, pico, ráfaga y backlog definido en `NFR-REQ-002` aprobada | `TREQ-PROC-229`; `TREQ-PROC-240`; `TREQ-UX-273` |
+| `TREQ-PROC-253` | `PROC` | La concurrencia humana, de dispositivo, de sesión, de lectura, de escritura, de job y de consumidor se medirá por separado. La cantidad de cuentas o empleados no podrá sustituir la simultaneidad real. | `NFR-REQ-002` | Pools, locks y estaciones dimensionados con métricas falsas; deadlocks y denegación durante picos / crítica | concurrencia + arquitectura + capacidad + regresión / automatizada | `NFR-REQ-002`; `NFR-REQ-008`; `NFR-REQ-011`; `SUPA-ARC-021`; `DELIV-PKG-013` | Diseño E2; arquitectura E3; hardware y paquetes E5 | aplicaciones, dispositivos, base de datos y colas / staging y pruebas concurrentes | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de concurrencia y clases `K0` a `K4` definidas en `NFR-REQ-002` aprobada | `TREQ-PROC-237`; `TREQ-UX-206`; `TREQ-UX-240` |
+| `TREQ-PROC-254` | `PROC` | Cada recurso con exclusividad o alta contención deberá declarar alcance de conflicto y máximo de escritores simultáneos. Caja, conteo, lote, receta publicada, inventario, recepción, remisión, pago, turno, evidencia y presupuesto no podrán usar sobrescritura silenciosa. | `NFR-REQ-002` | Pérdida de actualizaciones, doble efecto, cierre corrupto y custodia ambigua / crítica | concurrencia + versionado + idempotencia + E2E / automatizada con fallos | `NFR-REQ-002`; `SUPA-ARC-012`; `SUPA-ARC-016`; `QUEUE-ARC-009`; `DELIV-PKG-016` | Diseño E2; contratos E3/E4; pruebas por paquete | recursos transaccionales / CI, staging y concurrencia controlada | `IDENTIFICADO` | Pendiente | Pendiente | Inventario de recursos contendidos y obligación de medir escritores definido en `NFR-REQ-002` aprobada | `TREQ-INTEGRATION-003`; `TREQ-PROC-164`; `TREQ-UX-264` |
+| `TREQ-PROC-255` | `PROC` | Los perfiles de crecimiento usarán escenarios `CURRENT_BASELINE`, `APPROVED_12M`, `PLAUSIBLE_24M` y `STRESS_SCENARIO`, cada uno con impulsor empresarial, fecha, supuestos y confianza. No se aplicará un porcentaje único a todos los dominios. | `NFR-REQ-002` | Forecast arbitrario, sobrecosto, falta de capacidad ante expansión y escenarios confundidos con compromisos / alta | forecast + gobierno + capacidad + regresión / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017` | Diseño E2; planificación E5; revisión periódica | todos los procesos / registro de capacidad y revisión empresarial | `IDENTIFICADO` | Pendiente | Pendiente | Horizontes y perfiles de crecimiento definidos en `NFR-REQ-002` aprobada | `TREQ-PROC-228`; `TREQ-PROC-241`; `TREQ-DATA-003` |
+| `TREQ-PROC-256` | `PROC` | El crecimiento por sedes, áreas, trabajadores, dispositivos, productos, recetas, proveedores, clientes, LOC, LPN, activos, pedidos, líneas, movimientos, lotes, documentos, auditoría, integraciones y consumidores se proyectará por separado. | `NFR-REQ-002` | Cardinalidad inesperada, índices ineficientes, navegación lenta y retención insostenible / alta | base de datos + cardinalidad + capacidad + arquitectura / automatizada e híbrida | `NFR-REQ-002`; `SUPA-AUD-020`; `SUPA-ARC-021`; `SUPA-ARC-022`; `DELIV-PKG-013` | Diseño E2; auditoría y arquitectura E3; paquetes E5 | Supabase, Storage y repositorios consumidores / análisis, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de cardinalidad y crecimiento estructural definidas en `NFR-REQ-002` aprobada | `TREQ-SUPABASE-009`; `TREQ-DATA-003`; `TREQ-PROC-248` |
+| `TREQ-PROC-257` | `PROC` | La medición deberá corregir duplicados, reintentos, anulaciones, compensaciones, eventos tardíos, zonas horarias, periodos incompletos, datos no retenidos, tráfico sintético y cambios de versión. Las entrevistas se conservarán como hipótesis, no como hechos medidos. | `NFR-REQ-002` | Baseline inflado o reducido, forecast falso y pruebas calibradas con datos contaminados / crítica | calidad de datos + medición + auditoría + regresión / automatizada con revisión | `NFR-REQ-002`; `NFR-REQ-006`; `NFR-REQ-009`; `DATA-DOM-006`; `DATA-DOM-007` | Diseño E2; gobierno de datos; observabilidad | fuentes empresariales, logs y sistemas externos / análisis reproducible | `IDENTIFICADO` | Pendiente | Pendiente | Jerarquía de evidencia y reglas de limpieza de baseline definidas en `NFR-REQ-002` aprobada | `TREQ-DATA-001`; `TREQ-DATA-002`; `TREQ-PROC-248` |
+| `TREQ-PROC-258` | `PROC` | Cada valor tendrá estado `MEASURED_REPRODUCIBLE`, `DERIVED_RECONCILED`, `ESTIMATED_WITH_EVIDENCE`, `CLASS_ONLY` o `UNKNOWN_BLOCKING`. Un paquete crítico no podrá aprobarse con información bloqueante desconocida. | `NFR-REQ-002` | Números provisionales tratados como verdad, riesgo oculto y aprobación sin capacidad demostrable / crítica | gobierno + readiness + evidencia + regresión / híbrida | `NFR-REQ-002`; `DELIV-PKG-013`; `DELIV-PKG-023`; `DELIV-PKG-025`; `E5-GATE-003` | Diseño E2; paquetes y puerta E5 | registro de capacidad y paquetes / documentación y revisión de readiness | `IDENTIFICADO` | Pendiente | Pendiente | Estados de confianza y bloqueo de paquetes definidos en `NFR-REQ-002` aprobada | `TREQ-PROC-248`; `TREQ-PROC-250`; `TREQ-PROC-257` |
+| `TREQ-PROC-259` | `PROC` | La carga de eventos registrará eventos emitidos, consumidores, fan-out, operaciones en vuelo, reintentos, duplicados, dead-letter y tiempo en cola. Los efectos técnicos no se confundirán con hechos empresariales. | `NFR-REQ-002` | Capacidad de integración subestimada, tormenta de reintentos y efectos duplicados / crítica | eventos + integración + colas + idempotencia + pruebas de carga / automatizada | `NFR-REQ-002`; `INT-APP-001` a `INT-APP-010`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `DELIV-PKG-016` | Diseño E2; contratos E4; pruebas por paquete | event bus, jobs e integraciones / CI, staging y fallos inyectados | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de fan-out, inflight, reintentos y dead-letter definido en `NFR-REQ-002` aprobada | `TREQ-INTEGRATION-003`; `TREQ-INTEGRATION-023`; `TREQ-PROC-251` |
+| `TREQ-PROC-260` | `PROC` | El tamaño de líneas, payloads, fotos, firmas, PDFs, documentos, versiones y auditoría se medirá junto con el conteo de casos. La retención y el almacenamiento no podrán dimensionarse solo por transacciones diarias. | `NFR-REQ-002` | Storage agotado, costos imprevistos, payloads rechazados y respaldo incapaz de cumplir / alta | base de datos + archivos + retención + capacidad / automatizada e híbrida | `NFR-REQ-002`; `NFR-REQ-006`; `EVID-ARC-001` a `EVID-ARC-010`; `SUPA-ARC-022` | Diseño E2; arquitectura E3/E4; paquetes E5 | Supabase, Storage, aplicaciones e integraciones / CI y pruebas de tamaño | `IDENTIFICADO` | Pendiente | Pendiente | Dimensiones de tamaño, archivos y retención definidas en `NFR-REQ-002` aprobada | `TREQ-PROC-256`; `TREQ-UX-178`; `TREQ-SUPABASE-011` |
+| `TREQ-PROC-261` | `PROC` | Las consultas analíticas declararán filas leídas, periodo, dimensiones, filtros, agregaciones, exportaciones, refresco y usuarios simultáneos. Una carga administrativa no podrá degradar mutaciones operativas críticas. | `NFR-REQ-002` | Escaneos completos durante servicio, timeouts, bloqueo de escritura y dashboard que detiene operación / crítica | regresión + rendimiento + aislamiento + pruebas de carga / automatizada | `NFR-REQ-002`; `NFR-REQ-003`; `SUPA-ARC-021`; `UX-ADMIN-001` a `UX-ADMIN-005`; `DELIV-PKG-016` | Diseño E2; arquitectura E3; pruebas por paquete | VISO, NUMERA, reportes y base de datos / staging y datasets representativos | `IDENTIFICADO` | Pendiente | Pendiente | Separación y contrato de carga analítica definidos en `NFR-REQ-002` aprobada | `TREQ-DATA-003`; `TREQ-UX-229`; `TREQ-PROC-256` |
+| `TREQ-PROC-262` | `PROC` | Toda integración externa declarará cuota, rate limit, tamaño, timeout, mecanismo, reintentos, backoff, mantenimiento, backlog, conciliación y crecimiento contractual. La cuota del proveedor no será tratada como capacidad interna. | `NFR-REQ-002` | Bloqueo por proveedor, pérdida de eventos, rate limit agotado y backlog sin drenaje / crítica | integración externa + resiliencia + capacidad + E2E / automatizada con simulador | `NFR-REQ-002`; `INT-EXT-001` a `INT-EXT-020`; `NFR-REQ-003`; `NFR-REQ-009`; `DELIV-PKG-016` | Diseño E2; integración X/E4; pruebas por paquete | proveedores externos, adaptadores y staging / sandboxes y fallos controlados | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de capacidad para dependencias externas definido en `NFR-REQ-002` aprobada | `TREQ-INTEGRATION-019`; `TREQ-INTEGRATION-023`; `TREQ-PROC-234` |
+| `TREQ-PROC-263` | `PROC` | Los picos de apertura, cierre, comidas, producción, despacho, cortes, campañas, eventos, reenvío de webhooks, importación, reconexión, recuperación e incidentes se probarán como escenarios separados. La ráfaga de recuperación podrá superar la carga en línea. | `NFR-REQ-002` | Sistema estable en promedio pero colapsado al abrir, cerrar o reconectar / crítica | escenarios + capacidad + recuperación + E2E / automatizada con carga | `NFR-REQ-002`; `NFR-REQ-004`; `NFR-REQ-010`; `CONT-DOM-014`; `DELIV-PKG-016` | Diseño E2; continuidad; pruebas por paquete y certificación U | todos los dominios críticos / staging, laboratorio y piloto controlado | `IDENTIFICADO` | Pendiente | Pendiente | Catálogo mínimo de picos, ráfagas y recuperación definido en `NFR-REQ-002` aprobada | `TREQ-CONT-006`; `TREQ-PROC-252`; `TREQ-UX-273` |
+| `TREQ-PROC-264` | `PROC` | Las estaciones compartidas y multiárea medirán actores, dispositivos, áreas, lectura de recetas, escrituras, cambio de sesión, reconexión y periféricos. Dos equipos no se contarán como capacidad doble o redundancia sin prueba física. | `NFR-REQ-002` | Cuello de botella en POS, mezcla de áreas, cola de reconexión y falsa redundancia / crítica | hardware + dispositivos compartidos + concurrencia + experiencia + E2E / híbrida | `NFR-REQ-002`; `NFR-REQ-008`; `NFR-REQ-011`; `UX-STATION-002` a `UX-STATION-009`; `FOGO-UX-015` | Diseño E2; estaciones; paquetes FOGO y pruebas físicas | POS táctiles del Centro de Producción y estaciones futuras / dispositivos reales | `IDENTIFICADO` | Pendiente | Pendiente | Perfil específico de tablets, kioscos y POS multiárea definido en `NFR-REQ-002` aprobada | `TREQ-AUTH-003`; `TREQ-UX-218`; `TREQ-UX-245`; `TREQ-UX-291` |
+| `TREQ-PROC-265` | `PROC` | La capacidad de periféricos y recursos compartidos, incluida impresión, escaneo, red, energía, báscula, terminal de pago y almacenamiento local, se incluirá en el perfil cuando limite el resultado empresarial. | `NFR-REQ-002` | Aplicación rápida con operación detenida por impresora, red, escáner o almacenamiento / alta | hardware + periféricos + capacidad + experiencia / híbrida | `NFR-REQ-002`; `NFR-REQ-008`; `PRINT-ARC-001` a `PRINT-ARC-020`; `UX-STATION-006`; `UX-STATION-008` | Diseño E2; servicios E4; pruebas físicas y paquetes E5 | estaciones, redes y periféricos / laboratorio y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Regla de incluir periféricos y recursos compartidos en la capacidad definida en `NFR-REQ-002` aprobada | `TREQ-UX-212`; `TREQ-UX-221`; `TREQ-PROC-264` |
+| `TREQ-PROC-266` | `PROC` | La envolvente de diseño será el máximo entre pico medido, escenario empresarial aprobado, ráfaga esperada y backlog de recuperación, más un margen justificado. No se aplicará un multiplicador universal. | `NFR-REQ-002` | Sobreaprovisionamiento sin criterio o saturación por usar solo el promedio / alta | regresión + capacity planning + riesgo + arquitectura + readiness / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `READY-GATE-011`; `E5-GATE-003` | Diseño E2; paquetes E5; readiness | todos los paquetes con NFR / registro de capacidad, staging y revisión | `IDENTIFICADO` | Pendiente | Pendiente | Fórmula conceptual de envolvente y regla de margen definido en `NFR-REQ-002` aprobada | `TREQ-PROC-250`; `TREQ-PROC-252`; `TREQ-PROC-255` |
+| `TREQ-PROC-267` | `PROC` | La saturación deberá producir backpressure, cola, degradación, límite o rechazo explícito según contrato. No podrá perder, truncar o confirmar silenciosamente trabajo, ni convertir timeout en reintento ciego. | `NFR-REQ-002` | Pérdida silenciosa, doble ejecución, corrupción y usuario engañado durante sobrecarga / crítica | resiliencia + colas + experiencia + idempotencia + E2E / automatizada con fallos | `NFR-REQ-002`; `NFR-REQ-003`; `QUEUE-ARC-001` a `QUEUE-ARC-012`; `AUTH-SRV-001` a `AUTH-SRV-018`; `UX-BASE-006` | Diseño E2; arquitectura E4; implementación por paquetes | API, RPC, jobs, UI y periféricos / CI, staging y carga adversarial | `IDENTIFICADO` | Pendiente | Pendiente | Comportamiento obligatorio ante saturación definido en `NFR-REQ-002` aprobada | `TREQ-INTEGRATION-003`; `TREQ-UX-108`; `TREQ-PROC-251`; `TREQ-PROC-259` |
+| `TREQ-PROC-268` | `PROC` | Cada perfil se revisará ante nueva sede, área, canal, horario, integración, retención, catálogo, hardware, saturación, incidente, migración o desviación material del forecast. Los cambios conservarán versión, propietario y evidencia. | `NFR-REQ-002` | Capacidad obsoleta, crecimiento no detectado y paquetes basados en una empresa que ya cambió / alta | gobierno + versionado + observabilidad + regresión / híbrida | `NFR-REQ-002`; `NFR-REQ-009`; `DELIV-PKG-013`; `DELIV-PKG-017`; `PROC-COVER-010` | Diseño E2; revisión continua; paquetes E5 | registro de capacidad y roadmap / documentación, métricas y revisión periódica | `IDENTIFICADO` | Pendiente | Pendiente | Gobierno, versionado y disparadores de revisión definidos en `NFR-REQ-002` aprobada | `TREQ-PROC-241`; `TREQ-PROC-258`; `TREQ-PROC-266` |
+| `TREQ-PROC-269` | `PROC` | Las pruebas de capacidad cubrirán carga nominal, pico, ráfaga, concurrencia sobre el mismo recurso, fan-out, proveedor lento, rate limit, backlog, reconexión, drenaje, archivos grandes y consultas analíticas. Medirán resultado empresarial, errores, colas, duplicados y recuperación. | `NFR-REQ-002` | Prueba de carga superficial, sistema rápido pero incorrecto y defectos que aparecen solo en recuperación / crítica | pruebas de carga + concurrencia + resiliencia + E2E / automatizada e híbrida | `NFR-REQ-002`; `NFR-REQ-003`; `NFR-REQ-009`; `NFR-REQ-010`; `DELIV-PKG-016`; `AUTH-QA-030` | Diseño E2; infraestructura T; implementación por paquete; certificación U | todos los repositorios y dependencias / CI, staging, laboratorio y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz mínima de escenarios y resultados de capacidad definida en `NFR-REQ-002` aprobada | `TREQ-PROC-252`; `TREQ-PROC-254`; `TREQ-PROC-259`; `TREQ-PROC-263`; `TREQ-PROC-267` |
+| `TREQ-PROC-270` | `PROC` | La matriz `NFR-PROCESS-WORKLOAD-MATRIX-001` cubrirá exactamente `VPROC-0001` a `VPROC-0069` y asignará familia, formas, banda de volumen, clase de concurrencia, crecimiento, unidad, pico y lectura de diseño. Las bandas permanecerán `CLASS_ONLY` hasta ser reemplazadas por evidencia. | `NFR-REQ-002` | Procesos omitidos, clases duplicadas, medición fingida y arquitectura sin cobertura empresarial / crítica | documentación ejecutable + cobertura + CI + regresión / automatizada | `NFR-REQ-002`; `SHELL-CI-017`; `SHELL-CI-018`; `PROC-COVER-001` a `PROC-COVER-010`; `DELIV-PKG-013` | Cierre E2; verificadores; paquetes E5 | `vento-shell` / CI documental y revisión funcional | `IDENTIFICADO` | Pendiente | Pendiente | Matriz inicial completa de 69 procesos definida en `NFR-REQ-002` aprobada | `TREQ-PROC-226`; `TREQ-PROC-242`; `TREQ-PROC-246`; `TREQ-PROC-249`; `TREQ-PROC-250`; `TREQ-PROC-253`; `TREQ-PROC-255` |
 
 | `TREQ-PROC-271` | `PROC` | Toda medición de rendimiento deberá separar respuesta local de interfaz, acuse de recepción, resultado autoritativo, finalización física y tiempo empresarial. Ninguna de estas etapas podrá utilizarse como sustituto silencioso de otra. | `NFR-REQ-003` | Confundir feedback con éxito, mostrar operaciones no confirmadas como completadas y perder trazabilidad temporal / crítica | contractual + proceso + regresión / automatizada con revisión funcional | NFR-REQ-003; PROC-SCREEN-001 a PROC-SCREEN-028; DELIV-PKG-016 | Diseño E2; contratos de pantalla; paquete E5 y certificación | todas las aplicaciones y procesos / CI, staging y dispositivos representativos | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de capas temporales definido en `NFR-REQ-003` aprobada | TREQ-PROC-227; TREQ-PROC-247; TREQ-UX-005 |
 | `TREQ-PROC-272` | `PROC` | Toda métrica deberá declarar evento inicial, evento final, reloj, zona temporal, alcance, carga, ambiente, versión y criterio de exclusión. Una medición sin esos elementos no podrá aprobar un SLO. | `NFR-REQ-003` | Latencias incomparables, relojes inconsistentes, métricas manipulables y objetivos sin evidencia / alta | contractual + observabilidad + regresión / automatizada | NFR-REQ-003; NFR-REQ-009; DELIV-PKG-013; DELIV-PKG-016 | Diseño E2; instrumentación E4; paquete E5 | todas las aplicaciones, servicios y jobs / CI, staging y telemetría futura | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de inicio y fin de medición definido en `NFR-REQ-003` aprobada | TREQ-PROC-248; TREQ-PROC-267; TREQ-PROC-291 |
@@ -183890,6 +183890,67 @@ Distribución vigente:
 | `TREQ-PROC-292` | `PROC` | Todo job deberá probar creación, receipt, prioridad, cancelación real, expiración, resultado parcial, reintento, dead-letter, recuperación y estado terminal. Un job cancelado o expirado no podrá producir efectos tardíos no conciliados. | `NFR-REQ-003` | Procesamiento fantasma, efectos después de cancelar y backlog imposible de cerrar / crítica | integración + idempotencia + regresión / automatizada | NFR-REQ-003; QUEUE-ARC-001; NFR-REQ-009; DELIV-PKG-017 | Diseño E2; colas E4 y paquetes E5 | jobs y procesos asíncronos / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Ciclo temporal de jobs definido en `NFR-REQ-003` aprobada | TREQ-PROC-276; TREQ-PROC-287; TREQ-PROC-290 |
 | `TREQ-PROC-293` | `PROC` | Los overrides críticos, estaciones multiárea, dispositivos compartidos, periféricos y red degradada deberán conservar su clase temporal y contexto. Una ruta rápida no podrá omitir autorización, receta vigente, área, evidencia o conciliación. | `NFR-REQ-003` | Optimización insegura, mezcla de áreas y pérdida de controles bajo demora / crítica | seguridad + experiencia + hardware + regresión / híbrida | NFR-REQ-003; AUTH-CTX-030; UX-STATION-004; UX-STATION-007 | Diseño E2; estaciones y paquetes operativos | FOGO, NEXO, PULSO y estaciones compartidas / hardware real y red degradada | `IDENTIFICADO` | Pendiente | Pendiente | Overrides y escenarios críticos definidos en `NFR-REQ-003` aprobada | TREQ-UX-270; TREQ-PROC-281; TREQ-PROC-282 |
 | `TREQ-PROC-294` | `PROC` | Cada uno de `VPROC-0001` a `VPROC-0069` deberá conservar clase foreground, clase asíncrona cuando aplique, overrides críticos, ambiente, escenario de carga, prueba propietaria y evidencia antes de aprobar su paquete físico. | `NFR-REQ-003` | Procesos sin objetivo, cobertura parcial y aprobación física sin evidencia de rendimiento / crítica | contractual + proceso + regresión / automatizada con revisión funcional | NFR-REQ-003; DELIV-PKG-013; DELIV-PKG-016; DELIV-PKG-017 | Cierre E2; paquetes E5 y certificación U | 69 procesos y repositorios propietarios / CI, staging y ambientes de piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz completa de tiempos de respuesta definida en `NFR-REQ-003` aprobada | TREQ-PROC-246; TREQ-PROC-270; TREQ-PROC-275 |
+
+| `TREQ-PROC-295` | `PROC` | La política offline deberá resolverse por proceso, etapa, operación, efecto empresarial, actor y dispositivo. Una aplicación no podrá declararse completa ni uniformemente offline por una sola bandera. | `NFR-REQ-004` | Arquitectura offline demasiado amplia, acciones sensibles habilitadas localmente y falsa capacidad operativa / crítica | contractual + proceso + regresión / automatizada con revisión funcional | NFR-REQ-004; PROC-SCREEN-001 a PROC-SCREEN-028; DELIV-PKG-013 | Diseño E2; contratos de pantalla; perfiles por paquete E5 | todas las aplicaciones y procesos / CI documental, staging y estaciones representativas | `IDENTIFICADO` | Pendiente | Pendiente | Política granular definida en `NFR-REQ-004` aprobada | TREQ-UX-250; TREQ-PROC-294 |
+| `TREQ-PROC-296` | `PROC` | Cada perfil deberá medir por separado red local, salida a internet, DNS, autenticación, servicio propietario, base de datos, almacenamiento, integración, periférico, sesión, contexto, frescura y confirmación. El indicador online del navegador no será evidencia suficiente. | `NFR-REQ-004` | Diagnóstico incorrecto, degradación invisible y activación indebida de capacidades / crítica | contractual + integración + hardware / híbrida | NFR-REQ-004; NFR-REQ-008; NFR-REQ-009; UX-STATION-007 | Diseño E2; hardware, observabilidad y contingencia | aplicaciones, servicios, red y periféricos / staging y pruebas físicas | `IDENTIFICADO` | Pendiente | Pendiente | Vector de conectividad definido en `NFR-REQ-004` aprobada | TREQ-UX-250; TREQ-PROC-289 |
+| `TREQ-PROC-297` | `PROC` | Toda operación deberá declarar exactamente una clase `OF0_ONLINE_ONLY`, `OF1_CACHED_REFERENCE`, `OF2_LOCAL_DRAFT`, `OF3_LOCAL_CAPTURE`, `OF4_LEASED_EXECUTION` u `OF5_MANUAL_CONTINGENCY`, con precondiciones, límites y salida explícitos. | `NFR-REQ-004` | Comportamientos ambiguos, captura local tratada como ejecución y contingencias permanentes / crítica | contractual + proceso + regresión / automatizada | NFR-REQ-004; UX-BASE-013; DELIV-PKG-013 | Diseño E2; perfil no funcional y paquete E5 | 69 procesos y aplicaciones propietarias / CI documental y staging | `IDENTIFICADO` | Pendiente | Pendiente | Clases `OF0` a `OF5` definidas en `NFR-REQ-004` aprobada | TREQ-UX-251; TREQ-PROC-295 |
+| `TREQ-PROC-298` | `PROC` | La interfaz deberá distinguir `LOCAL_DRAFT`, `LOCAL_CAPTURED`, `QUEUED`, `SYNCING`, `SERVER_RECEIVED`, `CONFIRMED`, `RESULT_UNKNOWN`, `CONFLICT`, `REJECTED` y `RECONCILIATION_REQUIRED`. Ningún estado local podrá presentarse como resultado autoritativo. | `NFR-REQ-004` | Confirmación falsa, doble acción y pérdida de confianza operativa / crítica | interfaz + experiencia + regresión / automatizada y manual controlada | NFR-REQ-004; UX-BASE-005; UX-BASE-006; PROC-SCREEN-001 a PROC-SCREEN-028 | Diseño E2; contratos de pantalla y UX-QA | web, móvil, kioscos y POS / CI visual, staging y trabajadores | `IDENTIFICADO` | Pendiente | Pendiente | Estados humanos definidos en `NFR-REQ-004` aprobada | TREQ-UX-252; TREQ-PROC-277 |
+| `TREQ-PROC-299` | `PROC` | Toda intención local persistida deberá conservar operation_id, idempotency_key, proceso, etapa, comando, actor, principal, dispositivo, contexto, territorio, recurso, versión observada, dependencias, timestamps, expiración, sensibilidad y versión de esquema. | `NFR-REQ-004` | Operaciones huérfanas, atribución perdida, reenvíos inseguros y cola no migrable / crítica | contractual + base de datos + idempotencia / automatizada | NFR-REQ-004; QUEUE-ARC-002; QUEUE-ARC-003; AUTH-SRV-001 | Diseño E2; arquitectura de colas E4 y paquetes transaccionales | clientes, almacenamiento local y servicios propietarios / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Envelope local mínimo definido en `NFR-REQ-004` aprobada | TREQ-UX-254; TREQ-PROC-248; TREQ-PROC-278 |
+| `TREQ-PROC-300` | `PROC` | La idempotency key deberá crearse antes del primer envío y conservarse en reintentos, reinicios, reconexiones y handoffs técnicos de la misma intención. Solo una intención empresarial nueva podrá crear otra clave. | `NFR-REQ-004` | Pagos, movimientos, lotes, entregas o impresiones duplicados / crítica | idempotencia + integración + regresión / automatizada | NFR-REQ-004; QUEUE-ARC-003; QUEUE-ARC-006; AUTH-SRV-001 | Diseño E2; colas E4 y paquetes E5 | mutaciones e integraciones / CI con fallas inyectadas y staging | `IDENTIFICADO` | Pendiente | Pendiente | Idempotencia offline definida en `NFR-REQ-004` aprobada | TREQ-PROC-278; TREQ-PROC-279; TREQ-UX-255 |
+| `TREQ-PROC-301` | `PROC` | La outbox deberá respetar dependencias y orden causal por proceso, recurso, actor y área. Un rechazo terminal bloqueará dependientes; una operación independiente podrá continuar; la prioridad nunca alterará causalidad. | `NFR-REQ-004` | Estados imposibles, efectos fuera de orden y conciliación incorrecta / crítica | integración + concurrencia + regresión / automatizada | NFR-REQ-004; QUEUE-ARC-002; QUEUE-ARC-004; QUEUE-ARC-009 | Diseño E2; infraestructura de colas E4 | colas locales y remotas / CI, staging y reconexión | `IDENTIFICADO` | Pendiente | Pendiente | Orden causal definido en `NFR-REQ-004` aprobada | TREQ-UX-256; TREQ-PROC-299; TREQ-PROC-300 |
+| `TREQ-PROC-302` | `PROC` | Todo dato cacheado deberá conservar fetched_at, valid_until, freshness_class, source_version y stale_behavior. La interfaz deberá mostrar su antigüedad y bloquear operaciones que exijan frescura superior. | `NFR-REQ-004` | Decisiones sobre inventario, receta, turno, permiso o estado obsoleto / crítica | contractual + interfaz + regresión / automatizada | NFR-REQ-004; NFR-REQ-005; NFR-REQ-009; UX-BASE-005 | Diseño E2; privacidad, observabilidad y pantallas | cachés y proyecciones locales / CI, staging y offline | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de frescura definido en `NFR-REQ-004` aprobada | TREQ-UX-257; TREQ-PROC-296 |
+| `TREQ-PROC-303` | `PROC` | `OF4_LEASED_EXECUTION` solo se permitirá mediante envelope emitido previamente que limite actor, capacidad, recurso, territorio, dispositivo, cantidad, vigencia, versión de política y condición de revalidación. Un permiso visto antes no será autoridad vigente. | `NFR-REQ-004` | Ejecución offline sin autorización, alcance ampliado y uso después de revocación / crítica | seguridad + autorización + regresión / automatizada | NFR-REQ-004; AUTH-CTX-030; AUTH-DEV-001 a AUTH-DEV-016; AUTH-SRV-005 | Diseño E2; autorización compartida y paquetes operativos | dispositivos autorizados y servicios de escritura / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Autorización offline finita definida en `NFR-REQ-004` aprobada | TREQ-UX-258; TREQ-AUTH-008; TREQ-PROC-297 |
+| `TREQ-PROC-304` | `PROC` | Las colas, cachés, borradores, receipts y evidencias locales deberán aislarse por dispositivo, actor, contexto, sede y área. Un cambio de trabajador no podrá transferir pendientes ni datos del actor anterior. | `NFR-REQ-004` | Acciones mal atribuidas, fuga de datos y mezcla de áreas en dispositivos compartidos / crítica | seguridad + experiencia + regresión / híbrida | NFR-REQ-004; UX-BASE-013; UX-BASE-014; AUTH-DEV-013 | Diseño E2; estaciones y paquetes operativos | kioscos, tablets y POS compartidos / hardware real y staging | `IDENTIFICADO` | Pendiente | Pendiente | Aislamiento local definido en `NFR-REQ-004` aprobada | TREQ-UX-259; TREQ-UX-270; TREQ-AUTH-003 |
+| `TREQ-PROC-305` | `PROC` | El almacenamiento local deberá aplicar minimización, partición, cifrado cuando corresponda, expiración, limpieza por logout o revocación y exclusión de secretos y datasets sensibles. La conveniencia offline no justificará persistir salarios, diagnósticos, banca o notas internas. | `NFR-REQ-004` | Exposición de datos sensibles, persistencia indebida y acceso del siguiente actor / crítica | seguridad + contractual + regresión / automatizada con revisión de privacidad | NFR-REQ-004; NFR-REQ-005; AUTH-DEV-013; DELIV-PKG-014 | Diseño E2; privacidad y paquetes E5 | clientes y dispositivos / CI de seguridad, staging y revisión manual | `IDENTIFICADO` | Pendiente | Pendiente | Límites de privacidad local definidos en `NFR-REQ-004` aprobada | TREQ-UX-260; TREQ-AUTH-006; TREQ-PROC-304 |
+| `TREQ-PROC-306` | `PROC` | Toda observación física offline deberá conservar por separado momento observado, registro local, primer intento de envío, recepción del servidor y confirmación. La sincronización no podrá reemplazar la hora del hecho. | `NFR-REQ-004` | Trazabilidad falsa, vencimientos erróneos y evidencia temporal inválida / crítica | contractual + proceso + regresión / automatizada | NFR-REQ-004; NFR-REQ-006; EVID-ARC-001; PROC-CAT-018 | Diseño E2; trazabilidad E4 y paquetes | capturas operativas y evidencias / CI, staging y dispositivos | `IDENTIFICADO` | Pendiente | Pendiente | Secuencia temporal de observación definida en `NFR-REQ-004` aprobada | TREQ-UX-261; TREQ-PROC-272 |
+| `TREQ-PROC-307` | `PROC` | Tomar claims, transferir custodia, aceptar handoffs o excluir a otros actores será online por defecto. Una excepción offline exigirá lease previo, recurso exacto, vencimiento, secuencia, evidencia y reconciliación posterior. | `NFR-REQ-004` | Doble asignación, custodia disputada y trabajo excluyente concurrente / crítica | concurrencia + seguridad + integración / automatizada | NFR-REQ-004; AUTH-CTX-030; QUEUE-ARC-009; PROC-CAT-010 | Diseño E2; autorización, colas y procesos propietarios | NEXO, FOGO, PULSO y handoffs / CI y staging con dos dispositivos | `IDENTIFICADO` | Pendiente | Pendiente | Frontera de claims y custodia definida en `NFR-REQ-004` aprobada | TREQ-UX-262; TREQ-PROC-301; TREQ-PROC-304 |
+| `TREQ-PROC-308` | `PROC` | Aprobaciones sensibles, anulaciones, reversas, cambios de acceso, publicación de maestros, pagos, cierres financieros, exportaciones sensibles, overrides y conciliaciones finales permanecerán `OF0_ONLINE_ONLY` salvo contrato posterior explícito. | `NFR-REQ-004` | Fraude, segregación rota, configuración divergente y efectos irreversibles sin control / crítica | seguridad + contractual + regresión / automatizada | NFR-REQ-004; UX-BASE-009; NFR-REQ-005; AUTH-SRV-005 | Diseño E2; autorización y paquetes sensibles | superficies administrativas y transacciones sensibles / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Acciones online obligatorias definidas en `NFR-REQ-004` aprobada | TREQ-UX-263; TREQ-AUTH-007; TREQ-PROC-303 |
+| `TREQ-PROC-309` | `PROC` | Cuando se pierda respuesta después de enviar una operación, el estado será `RESULT_UNKNOWN` hasta consultar idempotency key, receipt y recurso autoritativo. La interfaz no podrá reintentar, declarar fallo ni crear otra intención antes de resolverlo. | `NFR-REQ-004` | Doble efecto, cobros repetidos y conciliación imposible / crítica | idempotencia + integración + regresión / automatizada | NFR-REQ-004; NFR-REQ-003; QUEUE-ARC-003; NFR-REQ-009 | Diseño E2; colas, observabilidad y paquetes | todas las mutaciones / CI con pérdida después de ejecución | `IDENTIFICADO` | Pendiente | Pendiente | Resultado desconocido offline definido en `NFR-REQ-004` aprobada | TREQ-PROC-278; TREQ-PROC-279; TREQ-UX-264 |
+| `TREQ-PROC-310` | `PROC` | Los conflictos de versión, contexto, autorización, duplicado, dependencia, esquema, estado empresarial, cantidad, custodia y ventana deberán clasificarse. Ningún efecto empresarial se resolverá mediante `last write wins`. | `NFR-REQ-004` | Sobrescritura de hechos, pérdida de diferencias y estados imposibles / crítica | contractual + concurrencia + regresión / automatizada y manual controlada | NFR-REQ-004; QUEUE-ARC-008; QUEUE-ARC-009; PROC-CAT-014 | Diseño E2; colas E4 y conciliación por dominio | clientes, servicios y workspaces de conciliación / staging | `IDENTIFICADO` | Pendiente | Pendiente | Taxonomía de conflictos definida en `NFR-REQ-004` aprobada | TREQ-UX-265; TREQ-PROC-301; TREQ-PROC-309 |
+| `TREQ-PROC-311` | `PROC` | La reconexión deberá estabilizar conectividad, verificar reloj y servicios, revalidar sesión, dispositivo y contexto, descargar revocaciones y versiones, clasificar pendientes, sincronizar por dependencias, consultar receipts y detener conflictos antes de actualizar proyecciones. | `NFR-REQ-004` | Tormenta de reintentos, envío con permisos vencidos y confirmaciones contradictorias / crítica | integración + seguridad + regresión / automatizada con fallas inyectadas | NFR-REQ-004; QUEUE-ARC-006; NFR-REQ-009; UX-BASE-014 | Diseño E2; colas, observabilidad y reanudación | aplicaciones offline-capable / staging, pérdida y reconexión | `IDENTIFICADO` | Pendiente | Pendiente | Secuencia de reconexión definida en `NFR-REQ-004` aprobada | TREQ-UX-266; TREQ-PROC-300; TREQ-PROC-309 |
+| `TREQ-PROC-312` | `PROC` | Borradores y operaciones pendientes solo sobrevivirán recarga, cierre, suspensión, reinicio o actualización cuando la política, actor, dispositivo, esquema y dependencias sigan siendo compatibles. Cerrar la aplicación no confirmará ni descartará una operación. | `NFR-REQ-004` | Pérdida silenciosa, ejecución tardía bajo otro actor y pendientes incompatibles / crítica | regresión + experiencia + integración / automatizada | NFR-REQ-004; UX-BASE-014; NFR-REQ-011; DELIV-PKG-016 | Diseño E2; compatibilidad y paquetes | web, móvil, kioscos y POS / CI de lifecycle y staging | `IDENTIFICADO` | Pendiente | Pendiente | Ciclo de vida local definido en `NFR-REQ-004` aprobada | TREQ-UX-267; TREQ-PROC-304; TREQ-PROC-317 |
+| `TREQ-PROC-313` | `PROC` | Archivos, fotografías, firmas y mediciones deberán usar estados locales y remotos independientes, evitar duplicados mediante identidad o hash y no cerrar el recurso mientras falte evidencia obligatoria confirmada. | `NFR-REQ-004` | Evidencia huérfana, upload duplicado y cierre sin soporte requerido / crítica | integración + contractual + regresión / automatizada | NFR-REQ-004; NFR-REQ-006; EVID-ARC-001; STORAGE-ARC-001 | Diseño E2; evidencia y almacenamiento E4 | clientes, storage y dominios propietarios / CI, staging y red degradada | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de evidencia offline definido en `NFR-REQ-004` aprobada | TREQ-UX-268; TREQ-PROC-306; TREQ-PROC-309 |
+| `TREQ-PROC-314` | `PROC` | Backend, integración y periférico deberán conservar estados separados de comando enviado, recibido, ejecución física, resultado conocido o desconocido, reintento y conciliación. Backend online no implicará datáfono o impresora confirmados. | `NFR-REQ-004` | Pagos o impresiones duplicados, tickets falsos y operaciones físicas no conciliadas / crítica | hardware + integración + regresión / híbrida | NFR-REQ-004; NFR-REQ-008; PRINT-ARC-001; INT-EXT-001 a INT-EXT-020 | Diseño E2; periféricos e integraciones E4 | PULSO, NEXO, FOGO y ORIGO / staging y hardware real | `IDENTIFICADO` | Pendiente | Pendiente | Estados de periférico definidos en `NFR-REQ-004` aprobada | TREQ-UX-269; TREQ-PROC-280; TREQ-INTEGRATION-023 |
+| `TREQ-PROC-315` | `PROC` | Toda contingencia manual deberá declarar activación, responsable, formato, numeración, datos mínimos, duplicados, custodia, digitalización, conciliación y cierre. El retorno no copiará ciegamente el soporte físico. | `NFR-REQ-004` | Registros paralelos, duplicados y contingencia convertida en operación permanente / crítica | manual operativa + contractual + regresión / manual controlada y automatizada | NFR-REQ-004; UX-STATION-007; CONT-DOM-001; DELIV-PKG-021 | Diseño E2; continuidad y paquetes E5 | sedes y estaciones / simulacro, piloto y evidencia | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de contingencia definido en `NFR-REQ-004` aprobada | TREQ-UX-270; TREQ-CONT-004; TREQ-PROC-297 |
+| `TREQ-PROC-316` | `PROC` | Cada perfil deberá fijar límites de operaciones, bytes, archivos, antigüedad y backlog local. Al acercarse al límite aplicará backpressure, priorización, bloqueo seguro o contingencia; nunca eliminación silenciosa ni aceptación ilimitada. | `NFR-REQ-004` | Almacenamiento lleno, pérdida de pendientes y degradación no controlada / crítica | concurrencia + hardware + regresión / automatizada | NFR-REQ-004; NFR-REQ-002; NFR-REQ-008; QUEUE-ARC-004 | Diseño E2; capacidad, hardware y colas | dispositivos y clientes / pruebas de capacidad y staging | `IDENTIFICADO` | Pendiente | Pendiente | Capacidad local definida en `NFR-REQ-004` aprobada | TREQ-PROC-264; TREQ-PROC-290; TREQ-UX-271 |
+| `TREQ-PROC-317` | `PROC` | Toda operación local deberá declarar versión de esquema y estrategia de migración, compatibilidad, cuarentena o exportación segura. Una actualización incompatible no podrá ejecutar una cola antigua ni descartarla. | `NFR-REQ-004` | Operaciones corruptas, efectos con payload legacy y pérdida tras despliegue / crítica | migración + contractual + regresión / automatizada | NFR-REQ-004; NFR-REQ-011; QUEUE-ARC-010; DELIV-PKG-018 | Diseño E2; compatibilidad y rollout E5 | clientes con pendientes durante actualización / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Compatibilidad de esquema definida en `NFR-REQ-004` aprobada | TREQ-UX-272; TREQ-PROC-312; TREQ-PROC-316 |
+| `TREQ-PROC-318` | `PROC` | Las decisiones de vigencia offline deberán detectar reloj incorrecto y utilizar referencias temporales verificables cuando el riesgo lo exija. El reloj local no podrá prolongar turnos, leases, permisos, recetas ni ventanas expiradas. | `NFR-REQ-004` | Autorización extendida, secuencia temporal falsa y vencimientos omitidos / crítica | seguridad + contractual + regresión / automatizada y hardware | NFR-REQ-004; AUTH-CTX-030; NFR-REQ-008; NFR-REQ-009 | Diseño E2; contexto, hardware y observabilidad | dispositivos con deriva de reloj / CI y pruebas físicas | `IDENTIFICADO` | Pendiente | Pendiente | Integridad de reloj definida en `NFR-REQ-004` aprobada | TREQ-AUTH-008; TREQ-PROC-303; TREQ-PROC-306 |
+| `TREQ-PROC-319` | `PROC` | La disponibilidad parcial de Auth, datos, storage, funciones, integraciones o periféricos deberá degradar solo las capacidades dependientes y mostrar el componente faltante. La recuperación parcial no habilitará operaciones que aún dependan de otro servicio caído. | `NFR-REQ-004` | Fallback permisivo, indisponibilidad total innecesaria y errores difíciles de diagnosticar / alta | integración + contractual + regresión / automatizada | NFR-REQ-004; NFR-REQ-001; NFR-REQ-009; CONT-DOM-001 | Diseño E2; observabilidad y continuidad | servicios e integraciones / staging y caos controlado | `IDENTIFICADO` | Pendiente | Pendiente | Servicios parciales definidos en `NFR-REQ-004` aprobada | TREQ-PROC-227; TREQ-PROC-296; TREQ-PROC-311 |
+| `TREQ-PROC-320` | `PROC` | Cada operación pendiente deberá declarar prioridad `SYNC-0` a `SYNC-4`, deadline empresarial, vencimiento técnico y comportamiento al expirar. La prioridad no podrá superar causalidad, autorización ni segregación. | `NFR-REQ-004` | Backlog urgente atendido tarde, trabajo vencido ejecutado y hambre de colas / crítica | contractual + concurrencia + regresión / automatizada | NFR-REQ-004; QUEUE-ARC-004; NFR-REQ-002; NFR-REQ-003 | Diseño E2; colas E4 y paquetes | operaciones pendientes y jobs / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Prioridades de sincronización definidas en `NFR-REQ-004` aprobada | TREQ-PROC-290; TREQ-PROC-301; TREQ-PROC-316 |
+| `TREQ-PROC-321` | `PROC` | Durante reconexión y drenaje de backlog, las acciones foreground `R1` y `R2` deberán conservar capacidad y latencia protegidas. La sincronización histórica no podrá bloquear indefinidamente seguridad, venta, producción o custodia. | `NFR-REQ-004` | Recuperación que vuelve inutilizable la estación y retraso de acciones críticas / crítica | concurrencia + experiencia + regresión / automatizada | NFR-REQ-004; NFR-REQ-003; QUEUE-ARC-004; DELIV-PKG-017 | Diseño E2; capacidad y pruebas por paquete | estaciones operativas / staging con backlog y carga foreground | `IDENTIFICADO` | Pendiente | Pendiente | Prioridad foreground definida en `NFR-REQ-004` aprobada | TREQ-PROC-275; TREQ-PROC-286; TREQ-PROC-320 |
+| `TREQ-PROC-322` | `PROC` | Los POS compartidos de Repostería y Pastelería y Tortas deberán separar caché, receta, borrador, operación, cola y sincronización por actor y área. La última área usada por el equipo no será autoridad ni destino implícito. | `NFR-REQ-004` | Producción registrada en área incorrecta, receta equivocada y cola heredada / crítica | experiencia + seguridad + hardware + regresión / híbrida | NFR-REQ-004; UX-STATION-004; UX-STATION-007; FOGO-UX-002; FOGO-UX-003 | Diseño E2; estaciones y paquetes FOGO | POS táctiles del Centro de Producción / hardware real y trabajadores | `IDENTIFICADO` | Pendiente | Pendiente | Perfil multiárea definido en `NFR-REQ-004` aprobada | TREQ-UX-270; TREQ-PROC-293; TREQ-PROC-304 |
+| `TREQ-PROC-323` | `PROC` | La matriz `NFR-PROCESS-OFFLINE-MATRIX-001` deberá cubrir exactamente `VPROC-0001` a `VPROC-0069` y declarar clase offline, prioridad de sincronización, lectura, borrador, captura, ejecución local, frontera online, contingencia y justificación. | `NFR-REQ-004` | Procesos omitidos, capacidades fingidas y políticas globales sin cobertura / crítica | contractual + proceso + regresión / automatizada con revisión funcional | NFR-REQ-004; PROC-COVER-001 a PROC-COVER-010; DELIV-PKG-013 | Cierre E2; perfiles y paquetes E5 | 69 procesos y aplicaciones propietarias / CI documental y staging | `IDENTIFICADO` | Pendiente | Pendiente | Matriz completa definida en `NFR-REQ-004` aprobada | TREQ-PROC-246; TREQ-PROC-294; TREQ-PROC-297 |
+| `TREQ-PROC-324` | `PROC` | Antes de certificar una capacidad offline deberán probarse pérdida antes, durante y después del envío, reconexión inestable, sesión expirada, revocación, cambio de actor o área, concurrencia, esquema antiguo, almacenamiento lleno, reloj incorrecto, reinicio, evidencia parcial, periférico aislado y conciliación. | `NFR-REQ-004` | Certificación incompleta, fallos no reproducidos y despliegue inseguro / crítica | regresión + integración + hardware / automatizada y manual controlada | NFR-REQ-004; NFR-REQ-009; UX-STATION-008; DELIV-PKG-016; DELIV-PKG-025 | Cierre E2; pruebas, piloto y certificación | aplicaciones, servicios y estaciones / CI, staging, hardware y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Plan de pruebas offline definido en `NFR-REQ-004` aprobada | TREQ-UX-273; TREQ-PROC-291; TREQ-PROC-323 |
+| `TREQ-PROC-325` | `PROC` | Toda recolección, consulta, transformación, transmisión o persistencia deberá declarar una finalidad empresarial y limitar campos, precisión, periodo, población y volumen a lo estrictamente necesario. | `NFR-REQ-005` | Recolección excesiva, reutilización incompatible y exposición sin necesidad / crítica | seguridad + contractual + regresión / automatizada con revisión funcional | NFR-REQ-005; INFO-DOM-001; INFO-DOM-002; AUTH-SRV-004 | Diseño E2; gobierno de información y paquetes E5 | todas las aplicaciones, servicios y repositorios / CI, staging y revisión controlada | `IDENTIFICADO` | Pendiente | Pendiente | Finalidad y minimización definidas en propuesta `NFR-REQ-005` | TREQ-AUTH-006; TREQ-PROC-076; TREQ-PROC-108 |
+| `TREQ-PROC-326` | `PROC` | Toda información deberá usar una clase `S0_PUBLIC`, `S1_INTERNAL`, `S2_CONFIDENTIAL`, `S3_RESTRICTED` o `S4_HIGHLY_RESTRICTED`; una clase ausente o desconocida activará la política más restrictiva, nunca exposición pública. | `NFR-REQ-005` | Datos sensibles tratados como ordinarios y controles inconsistentes entre aplicaciones / crítica | contractual + seguridad + regresión / automatizada | NFR-REQ-005; INFO-DOM-002; SHELL-CI-020 | Diseño E2; contratos E3/E4 y paquetes E5 | catálogos, schemas y consumidores / CI documental, local y staging | `IDENTIFICADO` | Pendiente | Pendiente | Escala de sensibilidad definida en propuesta `NFR-REQ-005` | TREQ-PROC-068; TREQ-PROC-325 |
+| `TREQ-PROC-327` | `PROC` | La sensibilidad deberá asignarse al nivel útil de campo, atributo, documento, evento, metadato, expediente, agregado o derivado. Una aplicación, tabla o archivo no podrá imponer una única clase que degrade elementos más sensibles. | `NFR-REQ-005` | Clasificación demasiado gruesa, exposición por herencia incorrecta y controles globales inseguros / crítica | contractual + base de datos + seguridad / automatizada con revisión documental | NFR-REQ-005; INFO-DOM-002; INFO-DOM-003 | Diseño E2; modelos E3/E4 y paquetes E5 | todos los dominios de información / CI, revisión de schema y staging | `IDENTIFICADO` | Pendiente | Pendiente | Granularidad de clasificación definida en propuesta `NFR-REQ-005` | TREQ-DATA-001; TREQ-PROC-326 |
+| `TREQ-PROC-328` | `PROC` | Copias, joins, cachés, exportaciones, eventos, documentos y resultados derivados deberán heredar la clase más restrictiva de sus fuentes o elevarla cuando la combinación permita inferencia o daño adicional. | `NFR-REQ-005` | Derivados aparentemente inocuos que revelan personas, secretos o decisiones / crítica | seguridad + integración + regresión / automatizada | NFR-REQ-005; INFO-DOM-002; DATA-DOM-001; INT-APP-001 | Diseño E2; integración, analítica y paquetes E5 | pipelines, reportes, eventos y archivos / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Propagación de sensibilidad definida en propuesta `NFR-REQ-005` | TREQ-PROC-107; TREQ-PROC-108; TREQ-PROC-327 |
+| `TREQ-PROC-329` | `PROC` | Cada proyección sensible deberá tener sobre resoluble de clasificación, propietario, custodio, finalidad, actores, campos, masking, canales, offline, exportación, terceros, logging, retención referenciada e incidente. | `NFR-REQ-005` | Controles implícitos, consumidores sin política y decisiones irreproducibles / crítica | contractual + seguridad + integración / automatizada con revisión controlada | NFR-REQ-005; INFO-DOM-001; INFO-DOM-002; DELIV-PKG-016 | Diseño E2; gobierno E3/E4 y paquetes E5 | contratos compartidos y repositorios propietarios / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Sobre de manejo definido en propuesta `NFR-REQ-005` | TREQ-PROC-068; TREQ-PROC-076; TREQ-PROC-326 |
+| `TREQ-PROC-330` | `PROC` | Consultas, RPC, eventos, archivos y exportaciones usarán proyecciones mínimas autorizadas. Obtener modelos completos y ocultar campos solo en UI no constituirá control aceptable. | `NFR-REQ-005` | Payloads excesivos, filtración por cliente manipulado y exposición en memoria o red / crítica | RPC + RLS + seguridad + regresión / automatizada | NFR-REQ-005; AUTH-SRV-004 a AUTH-SRV-018; AUTH-DB-002 a AUTH-DB-010 | Diseño E2; autorización E3/E4 y paquetes E5 | APIs, RPC, Supabase y clientes / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Proyección mínima definida en propuesta `NFR-REQ-005` | TREQ-AUTH-013; TREQ-PROC-076; TREQ-PROC-325 |
+| `TREQ-PROC-331` | `PROC` | Enmascaramiento y truncamiento deberán aplicarse según acción y contexto sin exponer el valor completo en HTML, atributos accesibles, autocomplete, errores, URLs o payloads del cliente. | `NFR-REQ-005` | Dato oculto visualmente pero recuperable por navegador, accesibilidad o inspección / crítica | interfaz + seguridad + regresión / automatizada y manual controlada | NFR-REQ-005; AUTH-UI-001 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Diseño E2; componentes compartidos y paquetes E5 | web, móvil, kioscos y tecnologías de asistencia / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Enmascaramiento y no filtración indirecta definidos en propuesta `NFR-REQ-005` | TREQ-AUTH-013; TREQ-UX-114; TREQ-PROC-330 |
+| `TREQ-PROC-332` | `PROC` | Un conjunto no se declarará anónimo solo por retirar identificadores directos. Deberán distinguirse masking, tokenización, seudonimización, anonimización y agregación y evaluarse reidentificación por combinación o grupos pequeños. | `NFR-REQ-005` | Falsa anonimización, perfilado y exposición de personas mediante cruces o filtros / crítica | seguridad + contractual + regresión / automatizada con revisión experta | NFR-REQ-005; INFO-DOM-002; INFO-DOM-008; DATA-AUTH-001 | Diseño E2; gobierno de información y analítica | datasets, reportes y exportaciones / ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | Distinciones de desidentificación definidas en propuesta `NFR-REQ-005` | TREQ-PROC-108; TREQ-PROC-328 |
+| `TREQ-PROC-333` | `PROC` | Pantallas, búsquedas, listas, detalles, notificaciones y accesibilidad mostrarán solo información necesaria y no revelarán por existencia, conteo, mensaje o navegación un recurso fuera del alcance autorizado. | `NFR-REQ-005` | Enumeración, filtración lateral, notificaciones sensibles y diferencias que revelan existencia / crítica | interfaz + seguridad + E2E / automatizada y manual controlada | NFR-REQ-005; AUTH-UI-001 a AUTH-UI-060; AUTH-QA-020 a AUTH-QA-024 | Diseño E2; componentes y paquetes E5 | todas las superficies / CI, staging y dispositivos | `IDENTIFICADO` | Pendiente | Pendiente | Exposición de interfaz definida en propuesta `NFR-REQ-005` | TREQ-AUTH-010; TREQ-AUTH-013; TREQ-PROC-331 |
+| `TREQ-PROC-334` | `PROC` | Un cambio de actor, área, turno, check-in, bloqueo o expiración en dispositivo compartido deberá ocultar datos previos, invalidar proyecciones y aislar caché, portapapeles, archivos temporales, thumbnails y notificaciones. | `NFR-REQ-005` | Información del actor anterior visible o reutilizable por el siguiente / crítica | seguridad + hardware + E2E + regresión / automatizada y manual controlada | NFR-REQ-005; AUTH-DEV-001 a AUTH-DEV-016; UX-STATION-004; UX-STATION-005 | Diseño E2; dispositivos y paquetes E5 | POS, tablets, kioscos y equipos compartidos / hardware real y staging | `IDENTIFICADO` | Pendiente | Pendiente | Aislamiento en dispositivos compartidos definido en propuesta `NFR-REQ-005` | TREQ-AUTH-014; TREQ-PROC-304; TREQ-PROC-322 |
+| `TREQ-PROC-335` | `PROC` | `S4_HIGHLY_RESTRICTED` será online por defecto; `S3_RESTRICTED` solo persistirá localmente con excepción, cifrado, aislamiento, expiración y borrado verificable. Toda copia offline conservará finalidad, clase y versión de política. | `NFR-REQ-005` | Datos altamente sensibles en almacenamiento local, sesión revocada o dispositivo perdido / crítica | seguridad + hardware + regresión / automatizada con prueba física | NFR-REQ-005; NFR-REQ-004; AUTH-DEV-012; QUEUE-ARC-001 | Diseño E2; almacenamiento E3/E4 y paquetes E5 | clientes offline y dispositivos / CI, staging y hardware | `IDENTIFICADO` | Pendiente | Pendiente | Privacidad offline definida en propuesta `NFR-REQ-005` | TREQ-PROC-303; TREQ-PROC-305; TREQ-PROC-316 |
+| `TREQ-PROC-336` | `PROC` | Logs, trazas, métricas, alertas y errores utilizarán allowlists y redacción; nunca contendrán secretos, tokens, PIN, credenciales, documentos ni payloads sensibles completos. | `NFR-REQ-005` | Exposición masiva mediante observabilidad, soporte o errores persistentes / crítica | seguridad + integración + regresión / automatizada | NFR-REQ-005; NFR-REQ-009; OBS-ARC-001 a OBS-ARC-016; AUTH-QA-029 | Diseño E2; observabilidad E3/E4 y paquetes E5 | aplicaciones, servicios y proveedores de observabilidad / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Minimización de observabilidad definida en propuesta `NFR-REQ-005` | TREQ-AUTH-015; TREQ-PROC-291; TREQ-PROC-325 |
+| `TREQ-PROC-337` | `PROC` | Consultar no concederá exportar. Toda exportación o impresión deberá declarar finalidad, actor, columnas, población, volumen, clasificación, destino, vigencia y evidencia, con supresión de grupos pequeños cuando aplique. | `NFR-REQ-005` | Exfiltración masiva, reportes reidentificables y copias sin custodia / crítica | seguridad + contractual + E2E / automatizada con revisión manual | NFR-REQ-005; INFO-DOM-010; AUTH-SRV-016; DELIV-PKG-016 | Diseño E2; exportación E3/E4 y paquetes E5 | reportes, descargas e impresión / CI, staging y ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | Exportación e impresión definidas en propuesta `NFR-REQ-005` | TREQ-AUTH-006; TREQ-PROC-108; TREQ-PROC-332 |
+| `TREQ-PROC-338` | `PROC` | Archivos, imágenes, audio, video y evidencia deberán validar clase, nombre, metadatos, thumbnail, URL, canal y consumidor. Un enlace, nombre o preview no podrá revelar contenido fuera de autorización. | `NFR-REQ-005` | Storage público, URLs persistentes, metadatos sensibles y vistas previas filtradas / crítica | integración + seguridad + regresión / automatizada y manual controlada | NFR-REQ-005; INFO-DOM-003; INFO-DOM-005; EVID-ARC-001 a EVID-ARC-010 | Diseño E2; Storage E3/E4 y paquetes E5 | aplicaciones y almacenamiento de objetos / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Protección de archivos y metadatos definida en propuesta `NFR-REQ-005` | TREQ-SUPABASE-004; TREQ-AUTH-017; TREQ-PROC-329 |
+| `TREQ-PROC-339` | `PROC` | Toda integración o tercero recibirá solo campos mínimos para finalidad, receptor y ambiente aprobados y declarará canal, reutilización, subdestinos, errores, dead-letter, expiración, retorno y revocación. | `NFR-REQ-005` | Transferencia excesiva, reutilización por tercero y payloads sensibles en reintentos / crítica | integración + seguridad + contractual / automatizada con revisión controlada | NFR-REQ-005; INT-APP-001 a INT-APP-010; INT-EXT-001 a INT-EXT-020; INFO-DOM-010 | Diseño E2; integración E3/E4 y paquetes E5 | proveedores, webhooks, correo, mensajería y APIs / staging controlado | `IDENTIFICADO` | Pendiente | Pendiente | Frontera de terceros definida en propuesta `NFR-REQ-005` | TREQ-INTEGRATION-003; TREQ-PROC-307; TREQ-PROC-330 |
+| `TREQ-PROC-340` | `PROC` | Producción no se copiará íntegramente a desarrollo, CI, demos o pruebas. Se usarán datos sintéticos o transformados con necesidad, minimización, acceso, duración y eliminación referenciada. | `NFR-REQ-005` | Exposición de producción en ambientes débiles y comunicaciones reales desde pruebas / crítica | seguridad + migración + regresión / automatizada con revisión controlada | NFR-REQ-005; INFO-DOM-002; SHELL-CI-016; DELIV-PKG-016 | Diseño E2; CI y paquetes E5 | desarrollo, CI, staging, demos y soporte / ambientes no productivos | `IDENTIFICADO` | Pendiente | Pendiente | Datos no productivos definidos en propuesta `NFR-REQ-005` | TREQ-SHELL-005; TREQ-SUPABASE-011; TREQ-PROC-325 |
+| `TREQ-PROC-341` | `PROC` | Contraseñas, tokens, API keys, llaves privadas, PIN, códigos de recuperación y secretos no viajarán en URLs, logs, analytics, evidencia ni datos de negocio y tendrán custodia, alcance, rotación y revocación especializados. | `NFR-REQ-005` | Compromiso de credenciales, acceso transversal y secretos permanentes en repositorios o datos / crítica | seguridad + contractual + regresión / automatizada | NFR-REQ-005; AUTH-DEV-011 a AUTH-DEV-013; SUPA-ARC-001; SHELL-CI-016 | Diseño E2; secretos E3/E4 y paquetes E5 | repositorios, CI, aplicaciones y proveedores / escaneo y staging | `IDENTIFICADO` | Pendiente | Pendiente | Frontera de secretos definida en propuesta `NFR-REQ-005` | TREQ-AUTH-003; TREQ-SHELL-005; TREQ-PROC-336 |
+| `TREQ-PROC-342` | `PROC` | Datos derivados, perfiles y agregados deberán evaluar inferencia, reidentificación, población pequeña y finalidad; una predicción no se presentará como hecho ni habilitará drill-down individual no autorizado. | `NFR-REQ-005` | Perfilado indebido, decisiones erróneas y exposición individual desde analítica / crítica | seguridad + contractual + regresión / automatizada con revisión experta | NFR-REQ-005; DATA-DOM-001 a DATA-DOM-017; DATA-AUTH-001 a DATA-AUTH-004 | Diseño E2; analítica E3/E4 y paquetes E5 | métricas, modelos, tableros y exportaciones / ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | Inferencias y derivados definidos en propuesta `NFR-REQ-005` | TREQ-DATA-005; TREQ-PROC-108; TREQ-PROC-328 |
+| `TREQ-PROC-343` | `PROC` | Cuando una finalidad dependa de consentimiento o autorización revocable, el sistema distinguirá aceptación, rechazo, retiro, expiración y versión; el retiro bloqueará usos futuros aplicables sin sobrescribir evidencia histórica. | `NFR-REQ-005` | Tratamiento posterior a retiro, consentimiento agrupado y evidencia reescrita / crítica | contractual + seguridad + E2E / automatizada | NFR-REQ-005; INFO-DOM-008; INFO-DOM-009; PASS-INT-004 | Diseño E2; gobierno E3/E4 y paquetes E5 | clientes, trabajadores y otros titulares / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Finalidad y revocación definidas en propuesta `NFR-REQ-005` | TREQ-AUTH-018; TREQ-PASS-008; TREQ-PROC-325 |
+| `TREQ-PROC-344` | `PROC` | Reclasificar información deberá conservar clase anterior y nueva, motivo, alcance, autorizador, fecha, política, copias, derivados, consumidores y migración; publicar una versión no hará públicos borradores ni metadatos. | `NFR-REQ-005` | Downgrade silencioso, copias olvidadas y publicación accidental de historial / crítica | contractual + migración + regresión / automatizada con revisión controlada | NFR-REQ-005; INFO-DOM-002; INFO-DOM-004; INFO-DOM-013 | Diseño E2; gobierno E3/E4 y paquetes E5 | documentos, datos, eventos y consumidores / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Reclasificación definida en propuesta `NFR-REQ-005` | TREQ-PROC-328; TREQ-PROC-338 |
+| `TREQ-PROC-345` | `PROC` | Toda respuesta deberá combinar autorización de acción, proyección mínima y reglas de manejo. URL directa, cliente manipulado, RPC, RLS, búsqueda, caché y soporte deberán respetar el mismo límite. | `NFR-REQ-005` | Actor funcionalmente autorizado que obtiene campos o expedientes innecesarios / crítica | RLS + RPC + seguridad + E2E / automatizada adversarial | NFR-REQ-005; AUTH-SRV-004 a AUTH-SRV-018; AUTH-DB-002 a AUTH-DB-010; AUTH-QA-020 | Diseño E2; autorización E3/E4 y paquetes E5 | APIs, Supabase y clientes / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Frontera autorización-proyección definida en propuesta `NFR-REQ-005` | TREQ-AUTH-013; TREQ-PROC-330; TREQ-PROC-333 |
+| `TREQ-PROC-346` | `PROC` | Expedientes SST, salud, investigaciones, declaraciones y datos médicos usarán `S4_HIGHLY_RESTRICTED`, acceso por identidad, participación, caso y finalidad, y no se proyectarán a eventos operativos generales. | `NFR-REQ-005` | Exposición médica, decisiones laborales indebidas y acceso transversal entre sedes / crítica | seguridad + RLS + E2E / automatizada con revisión manual de privacidad | NFR-REQ-005; INFO-DOM-008; CAP-SCOPE-003; AUTH-QA-018 | Diseño E2; VISO, VITAL y gobierno E3/E4 | SST, salud y expedientes / local, CI, staging y revisión controlada | `IDENTIFICADO` | Pendiente | Pendiente | Perfil SST y salud definido en propuesta `NFR-REQ-005` | TREQ-AUTH-017; TREQ-PROC-327; TREQ-PROC-345 |
+| `TREQ-PROC-347` | `PROC` | Información laboral, nómina, desempeño, objetivos, retroalimentación, novedades y decisiones usará proyecciones por relación y finalidad; jefatura operativa no concederá acceso global ni uso disciplinario de telemetría. | `NFR-REQ-005` | Exposición laboral, vigilancia, represalias y decisiones fuera de competencia / crítica | seguridad + contractual + E2E / automatizada con revisión manual | NFR-REQ-005; CAP-SCOPE-002; PROC-ACTOR-004; PROC-ACTOR-005; VISO-AUTH-001 | Diseño E2; talento, VISO y gobierno E3/E4 | procesos laborales y analítica / ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | Perfil laboral y desempeño definido en propuesta `NFR-REQ-005` | TREQ-TALENTO-001; TREQ-AUTH-016; TREQ-PROC-342 |
+| `TREQ-PROC-348` | `PROC` | Identidad, contacto, fidelización, reclamos, reservas y comunicaciones de clientes deberán separar finalidad, consentimiento, notas internas, movimientos y compensaciones; personal y terceros recibirán proyecciones mínimas. | `NFR-REQ-005` | Datos de clientes entre marcas o sedes, contacto no autorizado y notas internas expuestas / crítica | seguridad + integración + E2E / automatizada con revisión manual | NFR-REQ-005; CAP-SCOPE-010; PASS-INT-004; PASS-INT-005; PULSO-AUTH-001 | Diseño E2; PASS, PULSO y consumidores | clientes, canales y sedes / CI, staging y revisión controlada | `IDENTIFICADO` | Pendiente | Pendiente | Perfil de clientes definido en propuesta `NFR-REQ-005` | TREQ-AUTH-018; TREQ-PASS-008; TREQ-PROC-343 |
+| `TREQ-PROC-349` | `PROC` | Pagos, cuentas, nómina, obligaciones, conciliaciones, presupuestos y costos usarán `S3_RESTRICTED` o superior, segregación, enmascaramiento y exportación reforzada; credenciales de pago nunca serán datos empresariales ordinarios. | `NFR-REQ-005` | Fraude, exposición financiera, pagos indebidos y credenciales en reportes / crítica | seguridad + contractual + E2E / automatizada con revisión controlada | NFR-REQ-005; CAP-SCOPE-012; NUMERA-AUTH-001; PULSO-AUTH-001; AUTH-SRV-016 | Diseño E2; NUMERA, PULSO y gobierno E3/E4 | finanzas, nómina y pagos / local, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Perfil financiero definido en propuesta `NFR-REQ-005` | TREQ-PROC-211; TREQ-PROC-337; TREQ-PROC-341 |
+| `TREQ-PROC-350` | `PROC` | Recetas, fórmulas, costos, rendimientos, especificaciones y conocimiento propietario deberán separar información publicable de conocimiento `S2_CONFIDENTIAL` o superior y limitarse por rol, área, versión y necesidad productiva. | `NFR-REQ-005` | Pérdida de propiedad intelectual, fórmulas expuestas y acceso de áreas no relacionadas / alta | seguridad + contractual + E2E / automatizada y manual controlada | NFR-REQ-005; CAP-SCOPE-006; CAP-SCOPE-008; FOGO-AUTH-001; NEXO-AUTH-001 | Diseño E2; FOGO, NEXO y paquetes E5 | producción, catálogos y documentos / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Perfil de conocimiento propietario definido en propuesta `NFR-REQ-005` | TREQ-FOGO-001; TREQ-PROC-327; TREQ-PROC-331 |
+| `TREQ-PROC-351` | `PROC` | Soporte y observabilidad deberán separar correlación técnica de identidad visible, limitar drill-down y registrar accesos administrativos; screenshots, dumps y grabaciones heredarán la clase del contenido. | `NFR-REQ-005` | Soporte convertido en bypass, evidencia diagnóstica expuesta y acceso administrativo invisible / crítica | seguridad + integración + regresión / automatizada con revisión manual | NFR-REQ-005; NFR-REQ-009; OBS-ARC-001 a OBS-ARC-016; CAP-SCOPE-015 | Diseño E2; soporte y observabilidad E3/E4 | herramientas internas y proveedores / staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Privacidad de soporte definida en propuesta `NFR-REQ-005` | TREQ-AUTH-015; TREQ-PROC-336; TREQ-PROC-341 |
+| `TREQ-PROC-352` | `PROC` | `NFR-PROCESS-PRIVACY-PROFILE-001` deberá cubrir exactamente `VPROC-0001` a `VPROC-0069` con categorías, clase, finalidad, actores, proyección, masking, offline, logs, exportación, tercero, retención referenciada, inferencia y prueba propietaria. | `NFR-REQ-005` | Procesos omitidos, clasificación global y paquetes certificados sin perfil de privacidad / crítica | contractual + proceso + regresión / automatizada con revisión funcional | NFR-REQ-005; PROC-COVER-001 a PROC-COVER-010; INFO-DOM-002; DELIV-PKG-013 | Cierre E2; perfiles y paquetes E5 | 69 procesos y repositorios propietarios / CI documental y staging | `IDENTIFICADO` | Pendiente | Pendiente | Perfil de 69 procesos definido en propuesta `NFR-REQ-005` | TREQ-PROC-246; TREQ-PROC-323; TREQ-PROC-326 |
+| `TREQ-PROC-353` | `PROC` | La certificación deberá probar acceso lateral, manipulación, búsqueda, exportación, dispositivo compartido, offline, revocación, logs, archivos, agregados pequeños, terceros, secretos, reclasificación, soporte y versiones de política. | `NFR-REQ-005` | Controles parciales aprobados sin probar canales secundarios ni estados degradados / crítica | regresión + seguridad + E2E / automatizada y manual controlada | NFR-REQ-005; AUTH-QA-001 a AUTH-QA-030; UX-QA-001 a UX-QA-030; DELIV-PKG-025 | Cierre E2; pruebas y certificación U | aplicaciones, servicios, dispositivos y terceros / CI, staging y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Plan de pruebas de privacidad definido en propuesta `NFR-REQ-005` | TREQ-PROC-324; TREQ-PROC-345; TREQ-PROC-352 |
+| `TREQ-PROC-354` | `PROC` | Ningún paquete podrá declararse listo sin evidencia versionada de clasificación, finalidad, minimización, autorización, canales, offline, observabilidad, exportación, terceros y riesgos residuales, sin usar la aprobación documental como certificación física. | `NFR-REQ-005` | Falsa conformidad, controles sin propietario y despliegue con exposición conocida / crítica | contractual + seguridad + regresión / automatizada con gate manual controlado | NFR-REQ-005; INFO-DOM-012; DELIV-PKG-016; DELIV-PKG-025; READY-GATE-005 | Cierre E2; gobierno, paquetes E5 y certificación U | todos los repositorios y ambientes / CI, staging y pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Gobierno y certificación definidos en propuesta `NFR-REQ-005` | TREQ-PROC-329; TREQ-PROC-352; TREQ-PROC-353 |
 
 #### SHELL
 
@@ -184139,7 +184200,7 @@ Distribución vigente:
 | `TREQ-TALENTO-067` | `TALENTO` | Authorized_at, employment_effective_at, access_not_before, first_shift_at e invitation_expires_at serán fechas distintas. Un episodio futuro quedará programado y no concederá permisos, equipo, turnos o contexto antes de la política aprobada. Cambiar fecha revalidará acceso y documentos; cancelar antes de inicio no se registrará como retiro de un trabajador activo. | CAP-TAL-005 | Acceso prematuro, turnos visibles antes del ingreso, invitación vencida al iniciar, fecha alterada sin revalidación y offboarding ficticio / crítica | tiempo efectivo + autorización + invitación + estados + E2E / automatizada | CAP-TAL-006; VISO-AUTH-001 a VISO-AUTH-020; ANIMA-AUTH-001 a ANIMA-AUTH-020; AUTH-DB-035; QUEUE-ARC-004 | Diseño E2; scheduling E3/E4; paquete E5; pruebas temporales y certificación U | vento-viso, vento-anima, vento-shell, Auth / CI y staging con reloj controlado | IDENTIFICADO | Pendiente | Pendiente | Fechas, episodio programado y acceso anticipado limitado definidos en CAP-TAL-005 aprobada | TREQ-AUTH-014; TREQ-TALENTO-009; TREQ-TALENTO-053; TREQ-TALENTO-066 |
 | `TREQ-TALENTO-068` | `TALENTO` | Se distinguirán C0 handoff autorizado, C1 empleo comprometido y C2 handoff completado. TALENTO solo marcará hired después de C1 confirmado y enlazará employee y employment_episode. Un fallo de ANIMA podrá dejar hired con access_pending; no devolverá la persona a candidata ni ocultará el pendiente. COMPLETED exigirá conciliación y receipt de pasos críticos. | CAP-TAL-005 | Postulación contratada sin vínculo, vínculo válido revertido por email, aplicación abierta después del alta, handoff completo con acceso pendiente y enlace ambiguo / crítica | estados + integración + evidencia + reconciliación + E2E / automatizada | CAP-TAL-006; INT-APP-001 a INT-APP-010; QUEUE-ARC-001 a QUEUE-ARC-012; EVID-ARC-001 a EVID-ARC-010 | Diseño E2; arquitectura E3/E4; paquete E5 TALENTO/VISO/ANIMA; certificación U | vento-talento, vento-viso, vento-anima, vento-shell / CI y staging | IDENTIFICADO | Pendiente | Pendiente | Commit points, cierre TALENTO, enlace y acceso pendiente definidos en CAP-TAL-005 aprobada | TREQ-TALENTO-007; TREQ-TALENTO-053; TREQ-TALENTO-060; TREQ-TALENTO-066 |
 | `TREQ-TALENTO-069` | `TALENTO` | Las compensaciones dependerán del commit point. Antes de C1 podrán cancelar/superseder sin offboarding; después de C1 no borrarán employee o episodio y corregirán asignaciones, reintentarán documentos/acceso o abrirán proceso laboral. Todo fallo parcial conservará efecto aplicado, responsable y siguiente acción. Una identidad equivocada activará freeze e incidente, no merge o delete silencioso. | CAP-TAL-005 | Rollback destructivo, empleado borrado por fallo de notificación, asignación corregida sin historial, identidad equivocada fusionada y caso parcial abandonado / crítica | compensación + incidentes + estados + recuperación + E2E + caos / automatizada con revisión manual | CAP-TAL-006; QUEUE-ARC-001 a QUEUE-ARC-012; INT-DB-006; AUTH-DB-029; EVID-ARC-001 a EVID-ARC-010 | Diseño E2; runbooks E3/E4; paquete E5; pruebas de caos y certificación U | vento-shell, vento-viso, vento-talento, vento-anima, Supabase / CI y staging | IDENTIFICADO | Pendiente | Pendiente | Matriz de compensación, cancelación y efectos posteriores a C1 definida en CAP-TAL-005 aprobada | TREQ-AUTH-016; TREQ-TALENTO-058; TREQ-TALENTO-060; TREQ-TALENTO-068 |
-| `TREQ-TALENTO-070` | `TALENTO` | Los dominios publicarán eventos versionados mediante outbox y consumidores idempotentes mediante inbox o equivalente. Una conciliación detectará handoffs sin C1, episodios sin origen, asignaciones o accesos huérfanos, hired sin episode, invitaciones sin vínculo, pasos críticos pendientes, eventos no consumidos y callbacks duplicados. Cada diferencia abrirá caso; no se sobrescribirá una fuente con otra. | CAP-TAL-005 | Eventos perdidos o duplicados, estados divergentes, acceso huérfano, empleado sin postulación, cierre falso y reparación automática destructiva / crítica | integración + eventos + outbox/inbox + conciliación + observabilidad + E2E / automatizada | CAP-TAL-006; INT-APP-001 a INT-APP-010; INT-DB-003 a INT-DB-008; QUEUE-ARC-001 a QUEUE-ARC-012; AUTH-QA-001 a AUTH-QA-030 | Diseño E2; arquitectura E3/E4; paquete E5; monitoreo y certificación U | vento-shell, vento-talento, vento-viso, vento-anima, Supabase, canales / CI y staging | IDENTIFICADO | Pendiente | Pendiente | Eventos mínimos, outbox/inbox y matriz de conciliación definidos en CAP-TAL-005 aprobada | TREQ-INTEGRATION-003; TREQ-INTEGRATION-004; TREQ-TALENTO-060; TREQ-TALENTO-068 |
+| `TREQ-TALENTO-070` | `TALENTO` | Los dominios publicarán eventos versionados mediante outbox y consumidores idempotentes mediante inbox o equivalente. Una conciliación detectará handoffs sin C1, episodios sin origen, asignaciones o accesos huérfanos, hired sin episode, invitaciones sin vínculo, pasos críticos pendientes, eventos no consumidos y callbacks duplicados. Cada diferencia abrirá caso; no se sobrescribirá una fuente con otra. | CAP-TAL-005 | Eventos perdidos o duplicados, estados divergentes, acceso huérfano, empleado sin postulación, cierre falso y reparación automática destructiva / crítica | integración + eventos + outbox / automatizada | CAP-TAL-006; INT-APP-001 a INT-APP-010; INT-DB-003 a INT-DB-008; QUEUE-ARC-001 a QUEUE-ARC-012; AUTH-QA-001 a AUTH-QA-030 | Diseño E2; arquitectura E3/E4; paquete E5; monitoreo y certificación U | vento-shell, vento-talento, vento-viso, vento-anima, Supabase, canales / CI y staging | IDENTIFICADO | Pendiente | Pendiente | Eventos mínimos, outbox/inbox y matriz de conciliación definidos en CAP-TAL-005 aprobada | TREQ-INTEGRATION-003; TREQ-INTEGRATION-004; TREQ-TALENTO-060; TREQ-TALENTO-068 |
 | `TREQ-TALENTO-071` | `TALENTO` | Contratación externa, alta directa, reingreso, convocatoria interna, traslado/promoción, migración histórica y regularización usarán rutas explícitas con los mismos invariantes de identidad, episodio, asignaciones, autorización y auditoría. Altas directas no crearán candidaturas ficticias; reingresos crearán episodio nuevo; movimientos internos no duplicarán persona; migraciones conservarán procedencia y no enviarán invitación automática. | CAP-TAL-005 | Entrevistas inventadas, altas sin procedencia, traslados como candidatos nuevos, reingreso con permisos antiguos, migración que activa usuarios y estadísticas contaminadas / alta | procesos + excepciones + migración + identidad + E2E / híbrida | CAP-TAL-006; VISO-AUTH-001 a VISO-AUTH-020; AUTH-DB-016 a AUTH-DB-020; INT-DB-001 a INT-DB-008; AUTH-DB-028 | Diseño E2; contratos E3/E4; backfill y paquetes E5; certificación U | vento-viso, vento-talento, vento-anima, vento-shell / CI, staging y migración controlada | IDENTIFICADO | Pendiente | Pendiente | Tabla de rutas especiales e invariantes definida en CAP-TAL-005 aprobada | TREQ-AUTH-016; TREQ-TALENTO-010; TREQ-TALENTO-059; TREQ-TALENTO-063 |
 | `TREQ-TALENTO-072` | `TALENTO` | Todo comando y paso del handoff validará principal, actor efectivo, permiso atómico, empresa, sede, área, recurso, estado, versión, segregación, fecha y revocaciones. No se expondrá a authenticated genérico, no confiará en rol de UI, IDs o service_role, no incluirá secretos en eventos y no permitirá bypass desde TALENTO, ANIMA, soporte, RPC directa, dispositivo compartido o simulación. | CAP-TAL-005 | Escalamiento de privilegios, alta por RPC, acceso intersede, soporte como RRHH, secreto en log, simulación no auditada y bypass desde app / crítica | seguridad + autorización + servidor + RLS/RPC + auditoría + regresión / automatizada | CAP-TAL-006; AUTH-SRV-001 a AUTH-SRV-018; AUTH-DB-001 a AUTH-DB-035; VISO-AUTH-001 a VISO-AUTH-020; ANIMA-AUTH-001 a ANIMA-AUTH-020 | Diseño E2; seguridad E3/E4; paquete E5; pentest y certificación U | vento-shell, vento-viso, vento-talento, vento-anima, Supabase / CI y staging | IDENTIFICADO | Pendiente | Pendiente | Controles server, prohibiciones y límites de principal técnico definidos en CAP-TAL-005 aprobada | TREQ-AUTH-003; TREQ-AUTH-011; TREQ-AUTH-015; TREQ-TALENTO-057 |
 | `TREQ-TALENTO-073` | `TALENTO` | El cliente no completará autorización, compromiso laboral ni cierre offline. Un intento offline quedará pendiente y al reconectar revalidará versión, estado y autoridad con la misma idempotency key. La UI solo mostrará resultado final con receipt del servidor. PWA, móvil, deep links, logs, analytics y notificaciones no cachearán ni expondrán manifiestos, documentos, tokens o errores sensibles. | CAP-TAL-005 | Éxito fantasma, doble alta al reconectar, token en deep link, expediente en service worker, error sensible en analytics y estado local divergente / crítica | offline + clientes + privacidad + idempotencia + E2E / automatizada | CAP-TAL-006; QUEUE-ARC-001 a QUEUE-ARC-012; AUTH-DEV-001 a AUTH-DEV-016; UX-QA-001 a UX-QA-030; AUTH-SRV-001 a AUTH-SRV-018 | Diseño E2; clientes E3/E4; paquetes E5 web/native; certificación U | vento-talento, vento-viso, vento-anima, vento-shell / web, PWA, Android, iOS, CI y staging | IDENTIFICADO | Pendiente | Pendiente | Reglas offline, retry, receipt, caché y deep links definidas en CAP-TAL-005 aprobada | TREQ-TALENTO-038; TREQ-TALENTO-054; TREQ-TALENTO-061; TREQ-TALENTO-072 |
@@ -184354,7 +184415,7 @@ Distribución vigente:
 | `TREQ-UX-138` | `UX` | La migración inventariará campos repetidos, copy-paste, maestros paralelos, archivos duplicados, datos derivados capturados a mano, defaults no trazables, verificaciones contaminadas y reintentos duplicadores. Cada caso tendrá modo objetivo, propietario, contrato, prueba, telemetría, rollback y retiro controlado. | UX-BASE-007 | Duplicación legacy persistente, eliminación de evidencia válida, integración incompleta, regresión multiapp y mejora no medible / crítica | migración + auditoría + experiencia + regresión / híbrida | AUTH-UI-001 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; PROC-COVER-001 a PROC-COVER-010; UX-BASE-015; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; paquetes E5, rollout y certificación U | todos los repositorios y aplicaciones / CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Inventario, clasificación, migración y métricas de captura duplicada definidos en `UX-BASE-007` aprobada | TREQ-PROC-007; TREQ-UX-023; TREQ-UX-058; TREQ-UX-076; TREQ-UX-096; TREQ-UX-117 |
 
 | `TREQ-UX-139` | `UX` | La clasificación de una tarea como frecuente utilizará evidencia por proceso, actor, sede, área, turno, estación y condición: volumen, repetición en sesión, tiempo acumulado, picos, criticidad, bloqueos, errores, abandono y uso de contingencia. No se inferirá por intuición, jerarquía o preferencia del equipo. | UX-BASE-008 | Optimización de tareas poco relevantes, flujo frecuente real ignorado, decisiones sesgadas y esfuerzo invertido sin impacto / alta | analítica + investigación operativa + contractual + regresión / híbrida | PROC-COVER-001 a PROC-COVER-010; AUTH-UI-021 a AUTH-UI-025; UX-STATION-008; UX-BASE-015; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; pilotos E5 y certificación U | todas las aplicaciones y sedes piloto / analítica, prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Criterios de frecuencia, repetición, criticidad y clasificación definidos en `UX-BASE-008` aprobada | TREQ-PROC-007; TREQ-UX-023; TREQ-UX-029; TREQ-UX-138 |
-| `TREQ-UX-140` | `UX` | Antes de reducir pasos existirá una línea base end-to-end por proceso, paso, actor, territorio, dispositivo y condición. Medirá resultado, pantallas, comandos, campos, confirmaciones, escaneos, esperas, desplazamientos, interrupciones, errores, recuperación, frecuencia y controles; ningún paso se retirará sin conocer su función. | UX-BASE-008 | Eliminación de control necesario, optimización local que traslada trabajo, mejora no medible y regresión operativa / crítica | experiencia + investigación + procesos + telemetría + prueba con usuarios / híbrida | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-001 a AUTH-UI-029; UX-STATION-001 a UX-STATION-012; OBS-ARC-001 a OBS-ARC-016; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; observabilidad E3/E4; pilotos E5 | todos los repositorios, aplicaciones y estaciones / prototipos, staging y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Unidad de línea base, dimensiones y prohibición de retirar pasos sin función definida en `UX-BASE-008` aprobada | TREQ-UX-023; TREQ-UX-040; TREQ-UX-076; TREQ-UX-117; TREQ-UX-139 |
+| `TREQ-UX-140` | `UX` | Antes de reducir pasos existirá una línea base end-to-end por proceso, paso, actor, territorio, dispositivo y condición. Medirá resultado, pantallas, comandos, campos, confirmaciones, escaneos, esperas, desplazamientos, interrupciones, errores, recuperación, frecuencia y controles; ningún paso se retirará sin conocer su función. | UX-BASE-008 | Eliminación de control necesario, optimización local que traslada trabajo, mejora no medible y regresión operativa / crítica | experiencia + investigación + procesos + telemetría + prueba con usuarios / manual controlada | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-001 a AUTH-UI-029; UX-STATION-001 a UX-STATION-012; OBS-ARC-001 a OBS-ARC-016; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; observabilidad E3/E4; pilotos E5 | todos los repositorios, aplicaciones y estaciones / prototipos, staging y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Unidad de línea base, dimensiones y prohibición de retirar pasos sin función definida en `UX-BASE-008` aprobada | TREQ-UX-023; TREQ-UX-040; TREQ-UX-076; TREQ-UX-117; TREQ-UX-139 |
 | `TREQ-UX-141` | `UX` | Cada tarea frecuente tendrá un camino ordinario mínimo desde tarea o cola pertinente hasta resultado, receipt y siguiente paso. Conservará proceso, recurso y contexto, evitará portadas intermedias, tendrá una acción primaria y no mezclará acciones excepcionales. | UX-BASE-008 | Navegación innecesaria, trabajador sin orientación, tarea reiniciada, CTA competidores y cierre sin siguiente paso / alta | experiencia + procesos + navegación + E2E / automatizada con validación humana | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-024 a AUTH-UI-025; AUTH-UI-052 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Diseño E2; prototipos BLOQUE I; paquetes E5 | SHELL y todas las aplicaciones / CI, prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de golden path, entrada, acción primaria y salida definido en `UX-BASE-008` aprobada | TREQ-UX-024; TREQ-UX-029; TREQ-UX-030; TREQ-UX-041; TREQ-UX-139 |
 | `TREQ-UX-142` | `UX` | La reducción de pasos no eliminará identificación del actor, autorización, validación de recurso y versión, segregación, custodia, observación física, evidencia, consentimiento, controles de sensibilidad, concurrencia ni idempotencia. Un control solo podrá simplificarse si un mecanismo equivalente y probado asume su función. | UX-BASE-008 | Bypass por velocidad, fraude, atribución falsa, inventario o pago incorrecto, evidencia insuficiente y operación duplicada / crítica | seguridad + autorización + evidencia + contractual + E2E / automatizada | AUTH-SRV-*; AUTH-UI-030 a AUTH-UI-045; EVID-ARC-001 a EVID-ARC-010; QUEUE-ARC-001 a QUEUE-ARC-012; UX-QA-018 a UX-QA-030 | Diseño E2; seguridad y evidencia E3/E4; paquetes E5 y certificación U | todas las aplicaciones, Supabase y dispositivos / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Guardrails obligatorios y criterio de equivalencia de controles definidos en `UX-BASE-008` aprobada | TREQ-AUTH-006; TREQ-INTEGRATION-003; TREQ-UX-025; TREQ-UX-100; TREQ-UX-120 |
 | `TREQ-UX-143` | `UX` | Las precondiciones conocidas se validarán antes de solicitar captura: actor, turno, check-in, rol, territorio, permiso, recurso, estado, claim, versión, catálogo, dispositivo, conectividad y dependencias. Si pueden cambiar, se revalidarán al confirmar sin ocultar desde el inicio el riesgo de expiración. | UX-BASE-008 | Formulario completado para descubrir bloqueo tardío, trabajo perdido, claim ajeno, contexto vencido y frustración evitable / crítica | autorización + validación temprana + concurrencia + experiencia + E2E / automatizada | AUTH-SRV-*; AUTH-UI-030 a AUTH-UI-045; PROC-SCREEN-001 a PROC-SCREEN-028; QUEUE-ARC-001 a QUEUE-ARC-012; UX-QA-003 a UX-QA-005 | Diseño E2; contratos E3/E4; paquetes E5 | aplicaciones operativas y administrativas / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Preflight de condiciones y revalidación de commit definidos en `UX-BASE-008` aprobada | TREQ-AUTH-008; TREQ-UX-025; TREQ-UX-031; TREQ-UX-077; TREQ-UX-097 |
@@ -184369,7 +184430,7 @@ Distribución vigente:
 | `TREQ-UX-152` | `UX` | Toda acción frecuente reintentable controlará doble toque y activación concurrente, obtendrá idempotency key antes del envío, mostrará estado pendiente y recuperará el resultado original. La defensa no dependerá solo del botón; el servidor impedirá duplicar movimientos, pagos, recepciones, impresiones y handoffs. | UX-BASE-008 | Doble movimiento, doble cobro, impresión repetida, recepción duplicada y timeout resuelto mediante reenvío destructivo / crítica | idempotencia + concurrencia + interfaz + E2E / automatizada | QUEUE-ARC-001 a QUEUE-ARC-012; INT-APP-001 a INT-APP-010; AUTH-SRV-*; UX-QA-018 a UX-QA-020 | Diseño E2; colas e integración E3/E4; paquetes E5 | aplicaciones, Supabase, colas y periféricos / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Protección contra doble activación, timeout y reintento definida en `UX-BASE-008` aprobada | TREQ-INTEGRATION-003; TREQ-UX-025; TREQ-UX-102; TREQ-UX-132; TREQ-UX-150 |
 | `TREQ-UX-153` | `UX` | Cada camino frecuente declarará si requiere online, admite captura o cola offline, queda en lectura obsoleta o usa contingencia manual. Offline conservará actor, contexto, tarea y pendientes, revalidará al sincronizar, aplicará cada efecto una vez y enviará conflictos fuera del flujo ordinario. | UX-BASE-008 | Trabajo perdido, acción offline no autorizada, sincronización duplicada, contexto vencido y conflicto oculto / crítica | offline + resiliencia + idempotencia + E2E / automatizada con contingencia | UX-BASE-013; UX-BASE-014; QUEUE-ARC-001 a QUEUE-ARC-012; INT-APP-001 a INT-APP-010; UX-QA-018 a UX-QA-020 | Diseño E2; resiliencia E3/E4; paquetes E5 y piloto | web, móvil, tablets, kioscos y colas / CI, staging y pruebas offline | `IDENTIFICADO` | Pendiente | Pendiente | Modos offline, estado conservado, revalidación y salida de conflictos definidos en `UX-BASE-008` aprobada | TREQ-INTEGRATION-002; TREQ-UX-039; TREQ-UX-108; TREQ-UX-132; TREQ-UX-152 |
 | `TREQ-UX-154` | `UX` | En dispositivos compartidos la rapidez procederá de estación y aplicación precargadas, identificación rápida aprobada, cola territorial, reanudación del actor y escaneo. Nunca mantendrá sesión humana permanente ni reutilizará actor, PIN, firma, borrador, permiso, selección sensible o tarea privada del trabajador anterior. | UX-BASE-008 | Operación rápida atribuida a otra persona, fuga de datos, credencial compartida, claim heredado y kiosco convertido en usuario humano / crítica | dispositivos + privacidad + estado + E2E / automatizada con prueba física | AUTH-DEV-001 a AUTH-DEV-016; UX-STATION-002 a UX-STATION-012; AUTH-UI-036; UX-QA-006 a UX-QA-008 | Diseño E2; dispositivos E3/E4; paquetes E5 y piloto | tablets, kioscos y estaciones / CI, staging y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Atajos permitidos y datos prohibidos entre actores definidos en `UX-BASE-008` aprobada | TREQ-AUTH-011; TREQ-UX-065; TREQ-UX-088; TREQ-UX-131; TREQ-UX-151 |
-| `TREQ-UX-155` | `UX` | La reducción de pasos disminuirá esfuerzo motor y cognitivo: targets táctiles adecuados, menor teclado, foco lógico, sin scroll horizontal innecesario, soporte de teclado y lector, cambios anunciados, ausencia de gestos ocultos, corrección posible y tiempos suficientes. Se validará en condiciones físicas reales. | UX-BASE-008 | Flujo rápido solo para usuarios expertos, errores táctiles, exclusión por discapacidad, fatiga, gesto no descubrible y optimización inviable en piso / alta | experiencia + accesibilidad + ergonomía + estaciones + prueba con usuarios / híbrida | UX-BASE-011; UX-STATION-002 a UX-STATION-012; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos y estaciones E3/E4; paquetes E5 y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Criterios de ergonomía, accesibilidad y validación física definidos en `UX-BASE-008` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-137 |
+| `TREQ-UX-155` | `UX` | La reducción de pasos disminuirá esfuerzo motor y cognitivo: targets táctiles adecuados, menor teclado, foco lógico, sin scroll horizontal innecesario, soporte de teclado y lector, cambios anunciados, ausencia de gestos ocultos, corrección posible y tiempos suficientes. Se validará en condiciones físicas reales. | UX-BASE-008 | Flujo rápido solo para usuarios expertos, errores táctiles, exclusión por discapacidad, fatiga, gesto no descubrible y optimización inviable en piso / alta | experiencia + accesibilidad + ergonomía + estaciones + prueba con usuarios / manual controlada | UX-BASE-011; UX-STATION-002 a UX-STATION-012; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos y estaciones E3/E4; paquetes E5 y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Criterios de ergonomía, accesibilidad y validación física definidos en `UX-BASE-008` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-137 |
 | `TREQ-UX-156` | `UX` | Un flujo reducido conservará borradores, punto seguro, resultado confirmado, receipt y estado pendiente para recuperar interrupciones sin repetir trabajo. Si una optimización empeora el coste de recuperación, aumenta pérdida o impide comprender qué quedó aplicado, deberá rechazarse. | UX-BASE-008 | Ahorro de segundos con pérdida de minutos, formulario reiniciado, operación repetida, estado desconocido y trabajador obligado a reconstruir / crítica | resiliencia + estado + experiencia + E2E / automatizada | UX-BASE-013; UX-BASE-014; QUEUE-ARC-001 a QUEUE-ARC-012; OBS-ARC-001 a OBS-ARC-016; UX-QA-018 a UX-QA-020 | Diseño E2; resiliencia y observabilidad E3/E4; paquetes E5 | todas las aplicaciones y dispositivos / CI, staging y pruebas de interrupción | `IDENTIFICADO` | Pendiente | Pendiente | Criterio de recuperación no peor, conservación y rechazo de optimización destructiva definido en `UX-BASE-008` aprobada | TREQ-UX-028; TREQ-UX-039; TREQ-UX-101; TREQ-UX-108; TREQ-UX-132 |
 | `TREQ-UX-157` | `UX` | El camino frecuente solo incluirá casos ordinarios compatibles. Diferencias materiales, conflictos, overrides, ajustes, reversas y acciones sensibles abrirán una ruta excepcional separada con contexto y datos conservados; no se añadirán todos sus campos y controles al flujo principal para evitar otra pantalla. | UX-BASE-008 | Camino ordinario saturado, override accidental, excepción convertida en hábito, controles ocultos y trabajador enfrentado a opciones irrelevantes / crítica | excepciones + interfaz + seguridad + E2E / híbrida | UX-BASE-009; UX-BASE-010; PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-024 a AUTH-UI-025; UX-QA-001 a UX-QA-030 | Diseño E2; prototipos; paquetes E5 | todas las aplicaciones / prototipos, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Frontera entre camino ordinario y ruta excepcional definida en `UX-BASE-008` aprobada | TREQ-UX-027; TREQ-UX-073; TREQ-UX-107; TREQ-UX-141; TREQ-UX-145 |
 | `TREQ-UX-158` | `UX` | La mejora se evaluará por éxito correcto, tiempo end-to-end, espera, campos, toques, desplazamientos, apps atravesadas, retrocesos, errores, correcciones, reintentos, conflictos, recuperación, contingencia y comprensión. Las métricas no compararán velocidad individual sin contexto ni incentivarán omitir controles o diferencias. | UX-BASE-008 | Optimización aparente, presión para saltar controles, vigilancia laboral, trabajadores ocultando diferencias y mejora basada solo en clics / crítica | experiencia + métricas + ética + observabilidad + investigación / híbrida | OBS-ARC-001 a OBS-ARC-016; UX-STATION-008; UX-BASE-015; UX-QA-021 a UX-QA-030 | Diseño E2; observabilidad E3/E4; pilotos y certificación U | todas las aplicaciones y sedes piloto / analítica, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Métricas multidimensionales y guardrails contra vigilancia e incentivos perversos definidos en `UX-BASE-008` aprobada | TREQ-UX-040; TREQ-UX-076; TREQ-UX-095; TREQ-UX-117; TREQ-UX-140 |
@@ -184393,7 +184454,7 @@ Distribución vigente:
 | `TREQ-UX-176` | `UX` | Una excepción masiva mostrará conjunto exacto, alcance, materialidad acumulada, incompatibles y efecto total; validará y registrará cada elemento, usará idempotencia por lote y elemento y reportará éxitos y fallos parciales. No existirá Forzar a todos sobre un conjunto heterogéneo u oculto. | UX-BASE-009 | Acción destructiva masiva, recursos fuera de alcance, reintento total, impacto no comprendido y fallos parciales ocultos / crítica | bulk + autorización + idempotencia + E2E / automatizada | UX-ADMIN-001 a UX-ADMIN-005; AUTH-UI-030 a AUTH-UI-045; QUEUE-ARC-001 a QUEUE-ARC-012; UX-QA-018 a UX-QA-030 | Diseño E2; backoffice E3/E4; paquetes E5 | VISO, NUMERA, ORIGO, TALENTO y operaciones masivas / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Guardrails de excepciones masivas y resultados parciales definidos en `UX-BASE-009` aprobada | TREQ-UX-012; TREQ-UX-036; TREQ-UX-112; TREQ-UX-134; TREQ-UX-172 |
 | `TREQ-UX-177` | `UX` | Las notificaciones y escalaciones mostrarán clase, recurso permitido, materialidad, plazo, estado y acción esperada, sin datos sensibles innecesarios. Enviar una notificación no iniciará revisión, aprobará ni ejecutará; el silencio o vencimiento no autoaprobarán la excepción. | UX-BASE-009 | Aprobación implícita, destinatario equivocado, dato sensible en push, SLA confundido con autoridad y solicitud ignorada / crítica | notificaciones + privacidad + workflow + E2E / automatizada | INT-APP-001 a INT-APP-010; QUEUE-ARC-001 a QUEUE-ARC-012; AUTH-SRV-*; AUD-EVT-001 a AUD-EVT-018; UX-QA-018 a UX-QA-030 | Diseño E2; mensajería E3/E4; paquetes E5 | ANIMA, SHELL, aplicaciones, email y push / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Notificación, escalamiento, vencimiento y ausencia de autoaprobación definidos en `UX-BASE-009` aprobada | TREQ-INTEGRATION-004; TREQ-PROC-218; TREQ-UX-106; TREQ-UX-164; TREQ-UX-165 |
 | `TREQ-UX-178` | `UX` | La solicitud, revisión y notificación de una excepción aplicarán minimización y masking. Un actor podrá conocer que requiere revisión especializada sin acceder a diagnóstico, salario, dato financiero, regla antifraude, identidad protegida o evidencia completa; los detalles técnicos quedarán en observabilidad restringida. | UX-BASE-009 | Fuga de información sensible, expediente visible por notificación, antifraude expuesto, aprobador con más datos de los necesarios y diagnóstico revelado / crítica | privacidad + seguridad + masking + E2E / automatizada | AUTH-UI-038 a AUTH-UI-039; AUTH-SRV-*; EVID-ARC-001 a EVID-ARC-010; OBS-ARC-001 a OBS-ARC-016; UX-QA-018 a UX-QA-030 | Diseño E2; privacidad E3/E4; paquetes E5 | todas las aplicaciones, logs y canales / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Minimización, masking y separación de detalle técnico definidos en `UX-BASE-009` aprobada | TREQ-AUTH-013; TREQ-UX-069; TREQ-UX-075; TREQ-UX-113; TREQ-UX-165 |
-| `TREQ-UX-179` | `UX` | La ruta excepcional será operable por teclado y lector, no dependerá de color, hover o gesto oculto, anunciará entrada y salida, mantendrá recurso y efecto visibles, permitirá revisión previa y ofrecerá regreso seguro. La separación no hará imposible descubrir una excepción legítima para el actor autorizado. | UX-BASE-009 | Acción sensible inaccesible, confirmación accidental, diálogo incomprensible, foco perdido y trabajador obligado a pedir a otro que actúe / alta | experiencia + accesibilidad + contenido + interacción + prueba con usuarios / híbrida | UX-BASE-010; UX-BASE-011; UX-STATION-008 a UX-STATION-012; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos; paquetes E5 y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Criterios de accesibilidad, revisión y regreso seguro definidos en `UX-BASE-009` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-161 |
+| `TREQ-UX-179` | `UX` | La ruta excepcional será operable por teclado y lector, no dependerá de color, hover o gesto oculto, anunciará entrada y salida, mantendrá recurso y efecto visibles, permitirá revisión previa y ofrecerá regreso seguro. La separación no hará imposible descubrir una excepción legítima para el actor autorizado. | UX-BASE-009 | Acción sensible inaccesible, confirmación accidental, diálogo incomprensible, foco perdido y trabajador obligado a pedir a otro que actúe / alta | experiencia + accesibilidad + contenido + interacción + prueba con usuarios / manual controlada | UX-BASE-010; UX-BASE-011; UX-STATION-008 a UX-STATION-012; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos; paquetes E5 y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Criterios de accesibilidad, revisión y regreso seguro definidos en `UX-BASE-009` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-161 |
 | `TREQ-UX-180` | `UX` | La observabilidad medirá excepciones por clase, causa, proceso, territorio, actor, materialidad, aprobación, expiración, ejecución, conciliación y repetición. Detectará overrides habituales, autoaprobación indebida y acciones fuera de política sin castigar reportes legítimos ni incentivar ocultar diferencias. | UX-BASE-009 | Abuso invisible, excepción habitual no corregida, métrica usada para represalia, aprobación apresurada y problemas ocultos / crítica | experiencia + observabilidad + analítica + ética + auditoría / híbrida | OBS-ARC-001 a OBS-ARC-016; AUD-EVT-001 a AUD-EVT-018; UX-BASE-015; UX-QA-021 a UX-QA-030 | Diseño E2; observabilidad E3/E4; pilotos y certificación U | todas las aplicaciones y sedes piloto / analítica, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Métricas, patrones de abuso y guardrails de uso definidos en `UX-BASE-009` aprobada | TREQ-UX-040; TREQ-UX-076; TREQ-UX-095; TREQ-UX-117; TREQ-UX-158 |
 | `TREQ-UX-181` | `UX` | La migración inventariará botones, menús y comandos excepcionales, direct state writes, overrides legacy, acciones ambiguas y duplicadas. Cada caso se vinculará a VPROC y action_id, recibirá autoridad, lifecycle, prototipo, prueba con trabajadores y aprobadores, piloto, telemetría, rollback y retiro controlado. | UX-BASE-009 | Botón legacy conservado, acción real sin cobertura, excepción retirada prematuramente, regresión operativa y bypass residual / crítica | migración + auditoría + prototipo + regresión / híbrida | AUTH-UI-001 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; PROC-COVER-001 a PROC-COVER-010; UX-BASE-015; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; paquetes E5, rollout y certificación U | todos los repositorios, aplicaciones y estaciones / prototipos, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Taxonomía, secuencia de migración y criterio de retiro definidos en `UX-BASE-009` aprobada | TREQ-PROC-007; TREQ-UX-023; TREQ-UX-058; TREQ-UX-096; TREQ-UX-159; TREQ-UX-180 |
 | `TREQ-UX-182` | `UX` | Toda superficie aplicará una jerarquía explícita de divulgación: mostrará primero propósito, contexto, estado, tarea y acción necesaria, y revelará después detalle o configuración únicamente cuando sean relevantes, autorizados y solicitados o exigidos por una condición objetiva. | UX-BASE-010 | Pantalla saturada, trabajador confundido, opciones críticas invisibles y arquitectura inconsistente / alta | experiencia + interfaz + contractual + E2E / híbrida | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-015 a AUTH-UI-025; AUTH-UI-052 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Diseño E2; inventario BLOQUE I; prototipos y paquetes E5 | todas las aplicaciones y dispositivos / prototipos, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Jerarquía, secuencia y regla principal de divulgación definidas en `UX-BASE-010` aprobada | TREQ-UX-001; TREQ-UX-008; TREQ-UX-059; TREQ-UX-139; TREQ-UX-161 |
@@ -184414,7 +184475,7 @@ Distribución vigente:
 | `TREQ-UX-197` | `UX` | Los filtros esenciales que cambian periodo, territorio o universo permanecerán visibles. Todo filtro avanzado activo se resumirá en la capa principal, podrá limpiarse selectivamente y no producirá una tabla aparentemente vacía sin explicación. Las vistas guardadas tendrán nombre, propietario y compatibilidad. | UX-BASE-010 | Análisis sobre universo equivocado, filtro oculto, tabla vacía engañosa, vista compartida fuera de alcance y decisiones incorrectas / alta | filtros + tablas + preferencias + E2E / automatizada | UX-BASE-012; UX-ADMIN-001 a UX-ADMIN-005; AUTH-UI-052 a AUTH-UI-060; UX-QA-009 a UX-QA-017 | Diseño E2; backoffice y paquetes E5 | aplicaciones administrativas / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de filtros, resumen y vistas guardadas definidas en `UX-BASE-010` aprobada | TREQ-UX-012; TREQ-UX-036; TREQ-UX-064; TREQ-UX-191; TREQ-UX-196 |
 | `TREQ-UX-198` | `UX` | Antes de ejecutar una acción masiva, la experiencia revelará conjunto exacto, territorio, efecto común, incompatibles, consecuencias, permisos y resultados parciales. Ninguna opción avanzada oculta cambiará silenciosamente el universo o efecto del lote. | UX-BASE-010 | Acción masiva fuera de alcance, efecto no comprendido, elementos incompatibles, reintento total y pérdida material / crítica | bulk + autorización + idempotencia + E2E / automatizada | UX-ADMIN-001 a UX-ADMIN-005; AUTH-UI-030 a AUTH-UI-045; QUEUE-ARC-001 a QUEUE-ARC-012; UX-QA-018 a UX-QA-030 | Diseño E2; backoffice E3/E4; paquetes E5 | VISO, NUMERA, ORIGO, TALENTO y acciones masivas / CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Divulgación de alcance y efecto para lotes definida en `UX-BASE-010` aprobada | TREQ-UX-036; TREQ-UX-112; TREQ-UX-134; TREQ-UX-176; TREQ-UX-192 |
 | `TREQ-UX-199` | `UX` | En tablets, kioscos y dispositivos compartidos la divulgación no dependerá de hover, tendrá objetivos táctiles, mantendrá actor y contexto, evitará paneles estrechos y limpiará capas personales al cambiar de actor. Una opción avanzada no transformará la estación en backoffice general. | UX-BASE-010 | Control inaccesible, sesión heredada, dato personal visible, toque accidental y kiosco con privilegios administrativos / crítica | táctil + dispositivos + privacidad + E2E / automatizada con prueba física | UX-BASE-011; UX-STATION-001 a UX-STATION-012; AUTH-DEV-001 a AUTH-DEV-016; UX-QA-006 a UX-QA-008 | Diseño E2; estaciones E3/E4; paquetes E5 y piloto | tablets, kioscos y estaciones / staging y sedes piloto | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de dispositivos, actor y limpieza definidas en `UX-BASE-010` aprobada | TREQ-AUTH-011; TREQ-UX-038; TREQ-UX-065; TREQ-UX-088; TREQ-UX-174 |
-| `TREQ-UX-200` | `UX` | Todo control de divulgación será operable por teclado y lector, expondrá nombre y estado, relacionará control y región, conservará orden y foco, anunciará cambios y no dependerá de color, icono, gesto u hover. El contenido colapsado no permanecerá navegable como visible. | UX-BASE-010 | Opción avanzada inaccesible, foco perdido, lector desorientado, contenido crítico no anunciado y activación accidental / alta | experiencia + accesibilidad + interacción + contenido + prueba con usuarios / híbrida | AUTH-UI-055 a AUTH-UI-060; UX-BASE-011; UX-STATION-008 a UX-STATION-012; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de accesibilidad de controles y regiones definido en `UX-BASE-010` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-179 |
+| `TREQ-UX-200` | `UX` | Todo control de divulgación será operable por teclado y lector, expondrá nombre y estado, relacionará control y región, conservará orden y foco, anunciará cambios y no dependerá de color, icono, gesto u hover. El contenido colapsado no permanecerá navegable como visible. | UX-BASE-010 | Opción avanzada inaccesible, foco perdido, lector desorientado, contenido crítico no anunciado y activación accidental / alta | experiencia + accesibilidad + interacción + contenido + prueba con usuarios / manual controlada | AUTH-UI-055 a AUTH-UI-060; UX-BASE-011; UX-STATION-008 a UX-STATION-012; UX-QA-001 a UX-QA-007 | Diseño E2; prototipos y certificación U | web, móvil, tablets, kioscos y tecnologías de asistencia / prototipos y staging | `IDENTIFICADO` | Pendiente | Pendiente | Contrato de accesibilidad de controles y regiones definido en `UX-BASE-010` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-091; TREQ-UX-114; TREQ-UX-179 |
 | `TREQ-UX-201` | `UX` | Cada capa declarará comportamiento online y offline. La capa esencial mostrará frescura; los detalles cacheados serán read-only cuando corresponda; una opción que exige validación no se habilitará offline; al reconectar se revalidarán actor, permiso, recurso y versión sin perder borradores. | UX-BASE-010 | Dato obsoleto presentado como actual, mutación offline indebida, caché entre actores, borrador perdido y acción con contexto vencido / crítica | offline + caché + resiliencia + E2E / automatizada con interrupciones | UX-BASE-013; UX-BASE-014; QUEUE-ARC-001 a QUEUE-ARC-012; AUTH-SRV-*; UX-QA-018 a UX-QA-020 | Diseño E2; resiliencia E3/E4; paquetes E5 y piloto | web, móvil, tablets y kioscos / CI, staging y pruebas offline | `IDENTIFICADO` | Pendiente | Pendiente | Estados de conectividad, frescura y revalidación definidos en `UX-BASE-010` aprobada | TREQ-INTEGRATION-002; TREQ-UX-039; TREQ-UX-094; TREQ-UX-108; TREQ-UX-173 |
 | `TREQ-UX-202` | `UX` | Búsqueda, favoritos, aliases, deep links y navegación cross-app solo descubrirán opciones avanzadas autorizadas y no revelarán previews sensibles. El destino resolverá contexto y recurso; una preferencia o URL no transportará permiso, actor, estado ni alcance. El diagnóstico técnico quedará separado del mensaje humano. | UX-BASE-010 | Acceso por URL, favorito obsoleto, presencia sensible revelada, autorización transportada y stack técnico expuesto / crítica | navegación + integración + seguridad + E2E / automatizada | AUTH-UI-040 a AUTH-UI-045; INT-APP-001 a INT-APP-010; OBS-ARC-001 a OBS-ARC-016; UX-QA-018 a UX-QA-030 | Diseño E2; integración E3/E4; paquetes E5 | SHELL y todas las aplicaciones / CI y staging integrado | `IDENTIFICADO` | Pendiente | Pendiente | Reglas cross-app, búsqueda, favoritos y diagnóstico definidas en `UX-BASE-010` aprobada | TREQ-AUTH-013; TREQ-UX-052; TREQ-UX-070; TREQ-UX-107; TREQ-UX-175 |
 | `TREQ-UX-203` | `UX` | La migración inventariará niveles, acordeones, tabs, modales, menús, campos ocultos, filtros, datos precargados y rutas avanzadas. Identificará contenido crítico mal oculto, irrelevante visible, leaks, excepciones embebidas y nesting legacy; cada cambio tendrá prototipo, prueba de descubrimiento, piloto, métricas, rollback y retiro controlado. | UX-BASE-010 | Contenido crítico retirado, opción legítima imposible de encontrar, fuga residual, regresión operativa y rediseño basado solo en clics / crítica | migración + prototipo + experiencia + regresión / híbrida | AUTH-UI-001 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; UX-BASE-015; UX-QA-001 a UX-QA-030; OBS-ARC-001 a OBS-ARC-016 | Diseño E2; inventario BLOQUE I; paquetes E5, rollout y certificación U | todos los repositorios, aplicaciones y estaciones / prototipos, CI, staging y producción controlada | `IDENTIFICADO` | Pendiente | Pendiente | Taxonomía, métricas, secuencia de migración y guardrails definidos en `UX-BASE-010` aprobada | TREQ-UX-023; TREQ-UX-058; TREQ-UX-096; TREQ-UX-159; TREQ-UX-181 |
@@ -184516,9 +184577,9 @@ Distribución vigente:
 | `TREQ-UX-297` | `UX` | Todo texto visible se vinculará a un concepto empresarial y a un `concept_id` estable dentro de `UX-TERMINOLOGY-REGISTER-001`, con definición, límites, ejemplos, propietario, audiencias, contextos, versión, estado y evidencia. No se gobernarán términos únicamente como cadenas dispersas. | UX-BASE-015 | Modelo semántico fragmentado, etiquetas contradictorias y cambios imposibles de rastrear / alta | contrato semántico + gobierno + documentación + regresión / híbrida | PROC-SCREEN-001 a PROC-SCREEN-028; UX-STATION-010 a UX-STATION-012; UX-QA-001 a UX-QA-030 | Diseño E2; contratos de pantalla; paquetes E5 | todos los repositorios y superficies / documentación, CI y staging | `IDENTIFICADO` | Pendiente | Pendiente | Estructura del registro canónico de terminología definida en `UX-BASE-015` aprobada | TREQ-UX-021; TREQ-UX-038; TREQ-UX-049 |
 | `TREQ-UX-298` | `UX` | Concepto empresarial, identificador semántico, etiqueta por audiencia, alias reconocido e identificador técnico permanecerán separados. Ninguna tabla, enum, permiso, RPC, ruta o código interno se convertirá automáticamente en texto de interfaz, y ninguna lógica dependerá de la etiqueta traducida. | UX-BASE-015 | Jerga técnica visible, autorización derivada de texto, traducciones que rompen lógica y acoplamiento entre UI y base de datos / crítica | arquitectura + i18n + autorización + contrato + regresión / automatizada | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-029; AUTH-UI-044; UX-QA-001 a UX-QA-030 | Diseño E2; fundación UI; paquetes E5 | todas las aplicaciones / CI y revisión de código | `IDENTIFICADO` | Pendiente | Pendiente | Separación entre semántica, texto y técnica definida en `UX-BASE-015` aprobada | TREQ-AUTH-013; TREQ-UX-029; TREQ-UX-048; TREQ-UX-297 |
 | `TREQ-UX-299` | `UX` | Cada término tendrá estado `DISCOVERED`, `CANDIDATE`, `PROVISIONAL`, `IN_VALIDATION`, `VALIDATED`, `VALIDATED_WITH_CONTEXT`, `REJECTED`, `DEPRECATED` o `REVALIDATION_REQUIRED`, además de propietario, versión, evidencia y disparadores de revalidación. Una validación local no concederá validez global. | UX-BASE-015 | Términos provisionales tratados como definitivos, cambios sin evidencia y reutilización fuera del contexto probado / alta | gobierno + ciclo de vida + documentación + regresión / híbrida | UX-STATION-008; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Diseño E2; prototipado; certificación U | registro terminológico y todos los productos / documentación y repositorio de evidencia | `IDENTIFICADO` | Pendiente | Pendiente | Estados y gobierno terminológico definidos en `UX-BASE-015` aprobada | TREQ-UX-297; TREQ-UX-298 |
-| `TREQ-UX-300` | `UX` | La matriz de participantes incluirá actores operativos y de supervisión, personal nuevo y experimentado, distinta familiaridad digital, sedes o áreas relevantes, turnos, dispositivos personales y compartidos y necesidades de accesibilidad. Ningún término operativo se validará solo con gerencia, diseño o desarrollo. | UX-BASE-015 | Sesgo de muestra, lenguaje comprensible solo para expertos y fallos en operación real / alta | experiencia + investigación contextual + muestreo + accesibilidad + validación manual controlada / híbrida | UX-STATION-008; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Prototipado E2; paquetes E5; certificación U | sedes, áreas y dispositivos reales / sesiones moderadas y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz de cobertura de participantes definida en `UX-BASE-015` aprobada | TREQ-UX-015; TREQ-UX-226; TREQ-UX-296; TREQ-UX-299 |
-| `TREQ-UX-301` | `UX` | La terminología se validará dentro de tareas realistas en el dispositivo y contexto objetivo, incluyendo escenario ordinario y al menos un bloqueo, diferencia o cambio de estado. Una palabra aislada, encuesta de preferencia o revisión estática no será evidencia suficiente. | UX-BASE-015 | Falsa claridad fuera del flujo, selección por gusto y términos que fallan bajo presión / alta | usabilidad contextual + E2E manual + prototipo + regresión / manual controlada | UX-STATION-008; AUTH-UI-055 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; UX-QA-001 a UX-QA-030 | Prototipado E2; diseño de pantalla; paquetes E5 | dispositivos y estaciones objetivo / laboratorio contextual y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | Protocolo contextual de validación definido en `UX-BASE-015` aprobada | TREQ-UX-226; TREQ-UX-296; TREQ-UX-300 |
-| `TREQ-UX-302` | `UX` | Las sesiones utilizarán preguntas neutrales, explicación con palabras propias, predicción del efecto, selección de acción, clasificación de conceptos y observación del vocabulario espontáneo. No se enseñará la definición antes de medir ni se aceptará `¿entiendes?` como prueba. | UX-BASE-015 | Respuestas inducidas, cortesía confundida con comprensión y entrenamiento previo que invalida resultados / alta | experiencia + investigación + protocolo + ética + revisión manual controlada / manual controlada | UX-STATION-008; UX-QA-001 a UX-QA-030 | Prototipado E2; certificación U | sesiones con trabajadores / guías, grabaciones permitidas y notas anonimizadas | `IDENTIFICADO` | Pendiente | Pendiente | Guía neutral, teach-back y técnicas de validación definidas en `UX-BASE-015` aprobada | TREQ-UX-300; TREQ-UX-301 |
+| `TREQ-UX-300` | `UX` | La matriz de participantes incluirá actores operativos y de supervisión, personal nuevo y experimentado, distinta familiaridad digital, sedes o áreas relevantes, turnos, dispositivos personales y compartidos y necesidades de accesibilidad. Ningún término operativo se validará solo con gerencia, diseño o desarrollo. | UX-BASE-015 | Sesgo de muestra, lenguaje comprensible solo para expertos y fallos en operación real / alta | experiencia + investigación contextual + muestreo + accesibilidad / manual controlada | UX-STATION-008; AUTH-UI-055 a AUTH-UI-060; UX-QA-001 a UX-QA-030 | Prototipado E2; paquetes E5; certificación U | sedes, áreas y dispositivos reales / sesiones moderadas y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz de cobertura de participantes definida en `UX-BASE-015` aprobada | TREQ-UX-015; TREQ-UX-226; TREQ-UX-296; TREQ-UX-299 |
+| `TREQ-UX-301` | `UX` | La terminología se validará dentro de tareas realistas en el dispositivo y contexto objetivo, incluyendo escenario ordinario y al menos un bloqueo, diferencia o cambio de estado. Una palabra aislada, encuesta de preferencia o revisión estática no será evidencia suficiente. | UX-BASE-015 | Falsa claridad fuera del flujo, selección por gusto y términos que fallan bajo presión / alta | experiencia + usabilidad contextual + prototipo + regresión / manual E2E | UX-STATION-008; AUTH-UI-055 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; UX-QA-001 a UX-QA-030 | Prototipado E2; diseño de pantalla; paquetes E5 | dispositivos y estaciones objetivo / laboratorio contextual y operación controlada | `IDENTIFICADO` | Pendiente | Pendiente | Protocolo contextual de validación definido en `UX-BASE-015` aprobada | TREQ-UX-226; TREQ-UX-296; TREQ-UX-300 |
+| `TREQ-UX-302` | `UX` | Las sesiones utilizarán preguntas neutrales, explicación con palabras propias, predicción del efecto, selección de acción, clasificación de conceptos y observación del vocabulario espontáneo. No se enseñará la definición antes de medir ni se aceptará `¿entiendes?` como prueba. | UX-BASE-015 | Respuestas inducidas, cortesía confundida con comprensión y entrenamiento previo que invalida resultados / alta | experiencia + investigación + protocolo + ética / manual controlada | UX-STATION-008; UX-QA-001 a UX-QA-030 | Prototipado E2; certificación U | sesiones con trabajadores / guías, grabaciones permitidas y notas anonimizadas | `IDENTIFICADO` | Pendiente | Pendiente | Guía neutral, teach-back y técnicas de validación definidas en `UX-BASE-015` aprobada | TREQ-UX-300; TREQ-UX-301 |
 | `TREQ-UX-303` | `UX` | La aprobación medirá comprensión, acción correcta al primer intento, predicción del efecto, ayuda, retrocesos, confusión e interpretación peligrosa. Acciones críticas exigirán cero interpretación peligrosa; hallazgos `S0_CRITICAL` o `S1_HIGH` bloquearán el término y obligarán a corregir y reprobar. | UX-BASE-015 | Aprobación basada en percepción, promedios que ocultan riesgo y términos críticos ambiguos / crítica | experiencia + métricas + riesgo + usabilidad + criterios de aceptación / híbrida | UX-STATION-008; UX-QA-001 a UX-QA-030; AUTH-QA-001 a AUTH-QA-030 | Prototipado E2; paquetes E5; certificación U | todos los flujos críticos / sesiones, matrices y regresión | `IDENTIFICADO` | Pendiente | Pendiente | Umbrales y severidad terminológica definidos en `UX-BASE-015` aprobada | TREQ-UX-301; TREQ-UX-302 |
 | `TREQ-UX-304` | `UX` | Términos vinculados con seguridad, dinero, inventario, custodia, alérgenos, calidad, privacidad, permisos o efectos irreversibles deberán indicar claramente el objeto, efecto, responsable y estado de confirmación. Un único error crítico impedirá su aprobación aunque el promedio general sea alto. | UX-BASE-015 | Daño físico, pérdida financiera, movimiento incorrecto, exposición de datos y acción irreversible por lenguaje ambiguo / crítica | seguridad + dominio + usabilidad + E2E + regresión / híbrida | subbloques UX y AUTH propietarios; UX-STATION-008; UX-QA-001 a UX-QA-030; AUTH-QA-001 a AUTH-QA-030 | Diseño E2; paquetes E5; certificación U | procesos críticos de todas las aplicaciones / dispositivos reales y staging | `IDENTIFICADO` | Pendiente | Pendiente | Regla de terminología crítica definida en `UX-BASE-015` aprobada | TREQ-AUTH-015; TREQ-UX-103; TREQ-UX-174; TREQ-UX-303 |
 | `TREQ-UX-305` | `UX` | Todo CTA permitirá predecir la acción y su efecto antes de pulsarlo. Etiquetas genéricas como `Confirmar`, `Continuar`, `Resolver`, `Procesar` o iconos aislados deberán ampliarse cuando el objeto o consecuencia no sea inequívoco; acciones ordinarias, destructivas y excepcionales conservarán jerarquía y lenguaje distintos. | UX-BASE-015 | Efecto inesperado, pulsación accidental, acción excepcional confundida con ordinaria y errores repetidos / crítica | copy + interacción + riesgo + accesibilidad + regresión / híbrida | PROC-SCREEN-001 a PROC-SCREEN-028; AUTH-UI-024; AUTH-UI-025; UX-QA-001 a UX-QA-030 | Diseño E2; contratos de pantalla; paquetes E5 | todas las superficies interactivas / prototipos, CI visual y staging | `IDENTIFICADO` | Pendiente | Pendiente | Protocolo de validación de CTA definido en `UX-BASE-015` aprobada | TREQ-UX-100; TREQ-UX-162; TREQ-UX-208; TREQ-UX-303; TREQ-UX-304 |
@@ -184533,7 +184594,7 @@ Distribución vigente:
 | `TREQ-UX-314` | `UX` | En dispositivos compartidos y POS multiárea, la terminología permitirá identificar actor, área activa, área propietaria de cada tarea, recetario, receta, versión, lote, borrador y efecto del cambio de área. Repostería y Pastelería y Tortas no se fusionarán semánticamente ni heredarán trabajo entre sí. | UX-BASE-015 | Producción atribuida al área equivocada, recetas mezcladas, borradores heredados y autorización implícita / crítica | dispositivo compartido + contexto + FOGO + E2E + usabilidad / híbrida | UX-STATION-004; UX-STATION-005; UX-STATION-008; FOGO-UX-002; FOGO-UX-003; FOGO-UX-008; FOGO-UX-009; FOGO-UX-015; FOGO-AUTH-016 | Diseño E2; paquete E5 FOGO; certificación U | POS del Centro de Producción / dispositivos reales y staging | `IDENTIFICADO` | Pendiente | Pendiente | Protocolo terminológico para estaciones multiárea definido en `UX-BASE-015` aprobada | TREQ-UX-246; TREQ-UX-270; TREQ-UX-291; TREQ-UX-308 |
 | `TREQ-UX-315` | `UX` | El lenguaje será directo, consistente y accesible, sin dobles negaciones, abreviaturas no explicadas ni dependencia exclusiva de iconos, color o posición. Etiqueta visible, nombre accesible, ayuda y lectura por tecnología asistiva conservarán el mismo significado; la lógica será traducible. | UX-BASE-015 | Exclusión, acción equivocada con lector de pantalla, términos truncados y localización imposible / alta | accesibilidad + lenguaje claro + i18n + regresión / automatizada e híbrida | NFR-REQ-007; PROC-SCREEN-001 a PROC-SCREEN-028; UX-QA-001 a UX-QA-030 | Diseño E2; paquetes E5; certificación U | todas las aplicaciones y dispositivos / CI de accesibilidad y pruebas manuales | `IDENTIFICADO` | Pendiente | Pendiente | Reglas de accesibilidad y lenguaje claro definidas en `UX-BASE-015` aprobada | TREQ-UX-114; TREQ-UX-199; TREQ-UX-220; TREQ-UX-295 |
 | `TREQ-UX-316` | `UX` | Las pruebas de terminología usarán datos ficticios o minimizados, consentimiento informado, evidencia proporcional y hallazgos anonimizados; no capturarán credenciales, PIN, información médica ni datos innecesarios y no se usarán para disciplina o evaluación individual de desempeño. | UX-BASE-015 | Exposición de datos, vigilancia laboral, respuestas sesgadas y pérdida de confianza / crítica | experiencia + privacidad + ética + investigación + auditoría / manual controlada | NFR-REQ-005; NFR-REQ-006; UX-STATION-008; UX-QA-001 a UX-QA-030 | Diseño E2; investigación; certificación U | sesiones, grabaciones y repositorio de evidencia / ambientes controlados | `IDENTIFICADO` | Pendiente | Pendiente | Política de privacidad y ética de validación definida en `UX-BASE-015` aprobada | TREQ-AUTH-015; TREQ-UX-116; TREQ-UX-200; TREQ-UX-295; TREQ-UX-300 |
-| `TREQ-UX-317` | `UX` | La capacitación podrá complementar términos profesionales necesarios, pero no sustituirá comprensión demostrada. Cuando una palabra requiera formación, tendrá definición operativa, uso consistente, ayuda contextual y prueba posterior; no se aprobará porque el trabajador memorizó una instrucción. | UX-BASE-015 | Interfaces dependientes de entrenamiento, rotación costosa y errores de personal nuevo / alta | experiencia + capacitación + lenguaje + usabilidad + gestión del cambio / híbrida | UX-STATION-008; subbloques UX propietarios; UX-QA-001 a UX-QA-030 | Diseño E2; paquetes E5; adopción | todos los productos y materiales de capacitación / sesiones y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Frontera entre capacitación y validación definida en `UX-BASE-015` aprobada | TREQ-UX-300; TREQ-UX-301; TREQ-UX-302; TREQ-UX-310 |
+| `TREQ-UX-317` | `UX` | La capacitación podrá complementar términos profesionales necesarios, pero no sustituirá comprensión demostrada. Cuando una palabra requiera formación, tendrá definición operativa, uso consistente, ayuda contextual y prueba posterior; no se aprobará porque el trabajador memorizó una instrucción. | UX-BASE-015 | Interfaces dependientes de entrenamiento, rotación costosa y errores de personal nuevo / alta | experiencia + capacitación + lenguaje + usabilidad + gestión del cambio / manual controlada | UX-STATION-008; subbloques UX propietarios; UX-QA-001 a UX-QA-030 | Diseño E2; paquetes E5; adopción | todos los productos y materiales de capacitación / sesiones y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Frontera entre capacitación y validación definida en `UX-BASE-015` aprobada | TREQ-UX-300; TREQ-UX-301; TREQ-UX-302; TREQ-UX-310 |
 | `TREQ-UX-318` | `UX` | Después del despliegue se monitorizarán búsquedas sin resultado, ayuda repetida, retrocesos, CTA equivocados, bloqueos, términos reportados y alias espontáneos. La telemetría generará hipótesis y disparará revalidación, pero no decidirá por sí sola la etiqueta ni se usará para medir productividad individual. | UX-BASE-015 | Confusión persistente invisible, optimización por métricas erróneas y vigilancia laboral / alta | experiencia + observabilidad + feedback + ética + mejora continua / híbrida | NFR-REQ-009; OBS-ARC-001 a OBS-ARC-016; UX-QA-001 a UX-QA-030; subbloques UX propietarios | Diseño E2; observabilidad E3/E4; paquetes E5 | todas las aplicaciones / telemetría, soporte y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Feedback continuo y disparadores de revalidación definidos en `UX-BASE-015` aprobada | TREQ-UX-159; TREQ-UX-181; TREQ-UX-203; TREQ-UX-296; TREQ-UX-299 |
 | `TREQ-UX-319` | `UX` | La migración inventariará jerga visible, traducciones literales, verbos inconsistentes, estados como enums, abreviaturas, strings hardcodeados usados como lógica, mensajes genéricos, impresos y capacitación compensatoria. La certificación probará términos por riesgo, actor, sede, área, dispositivo, accesibilidad y contexto; ningún término se marcará `VALIDATED` sin evidencia versionada. | UX-BASE-015 | Migración parcial, contradicciones entre interfaz e impresos, regresión lingüística y falsa certificación / crítica | migración + certificación + regresión + gobierno / híbrida | AUTH-UI-001 a AUTH-UI-060; PROC-SCREEN-001 a PROC-SCREEN-028; UX-STATION-008; UX-QA-001 a UX-QA-030; AUTH-QA-001 a AUTH-QA-030 | Diseño E2; paquetes E5; certificación U | todos los repositorios, impresos, documentos y dispositivos / CI, staging y piloto | `IDENTIFICADO` | Pendiente | Pendiente | Matriz de migración y certificación terminológica definida en `UX-BASE-015` aprobada | TREQ-UX-297; TREQ-UX-299; TREQ-UX-303; TREQ-UX-310; TREQ-UX-312; TREQ-UX-315; TREQ-UX-318 |
 
@@ -237873,8 +237934,1422 @@ NFR-REQ-004  NO INICIADA
 La aprobación de esta tarea congela los presupuestos iniciales e incorpora sus requisitos al registro canónico completo. No certifica que ninguna aplicación, consulta, integración o periférico ya cumpla dichos tiempos.
 
 
-### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
-### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
+### ✅ NFR-REQ-004 — Definir comportamiento offline y sincronización
+
+**Estado:** APROBADA
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+**Tarea anterior:** `NFR-REQ-003 — Definir tiempos máximos de respuesta` — APROBADA
+**Siguiente tarea reservada:** `NFR-REQ-005 — Definir privacidad y sensibilidad` — NO INICIADA
+**Artefactos propuestos:** `NFR-OFFLINE-SYNC-CONTRACT-001`; `NFR-PROCESS-OFFLINE-MATRIX-001`; `NFR-LOCAL-OPERATION-ENVELOPE-001`; `NFR-SYNC-RECONCILIATION-POLICY-001`
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+**Naturaleza:** contrato no funcional de conectividad parcial, trabajo local, outbox, sincronización, idempotencia, conflicto y conciliación; no implementación de Service Workers, bases locales, colas ni infraestructura
+**Cambios en código, migraciones, Supabase, aplicaciones, dispositivos, red o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Convertir los principios aprobados en `UX-BASE-013` y `UX-BASE-014` en un contrato no funcional verificable por proceso, operación y estación, definiendo qué puede consultarse, redactarse, observarse, capturarse o ejecutarse cuando la conectividad o un servicio requerido no están plenamente disponibles, y cómo debe sincronizarse posteriormente sin duplicar efectos, perder atribución, ampliar autoridad ni ocultar conflictos.
+
+```text
+OFFLINE
+≠ COPIA LOCAL DE TODA LA APLICACIÓN
+
+SINCRONIZAR
+≠ REPRODUCIR CIEGAMENTE UNA LISTA DE REQUESTS
+
+CONECTIVIDAD RECUPERADA
+≠ SISTEMA LISTO PARA ENVIAR
+
+CAPTURA LOCAL
+≠ RESULTADO EMPRESARIAL CONFIRMADO
+
+REINTENTO
+≠ NUEVA OPERACIÓN
+```
+
+La aprobación de esta tarea congelará políticas y envolventes iniciales de diseño. No declarará que ninguna aplicación actual sea offline-capable ni autorizará persistencia local o ejecución diferida antes de implementar y probar los controles correspondientes.
+
+---
+
+#### 2. Continuidad lógica
+
+```text
+CRITICIDAD Y DISPONIBILIDAD
+NFR-REQ-001
+        +
+VOLUMEN, CONCURRENCIA Y CRECIMIENTO
+NFR-REQ-002
+        +
+RESPUESTA, TIMEOUT Y RESULTADO DESCONOCIDO
+NFR-REQ-003
+        +
+COMPORTAMIENTO HUMANO ANTE CONECTIVIDAD E INTERRUPCIÓN
+UX-BASE-013 Y UX-BASE-014
+        ↓
+POLÍTICA OFFLINE Y SINCRONIZACIÓN POR OPERACIÓN
+NFR-REQ-004
+        ↓
+PRIVACIDAD, RETENCIÓN, HARDWARE, OBSERVABILIDAD Y RECUPERACIÓN
+NFR-REQ-005 A NFR-REQ-011
+```
+
+`UX-BASE-013` ya establece estados visibles, frescura, autorización offline, orden causal, conflictos, contingencia y reconexión. `UX-BASE-014` establece checkpoints, reanudación y resultados desconocidos. Esta tarea no reabre esas decisiones: las traduce en perfiles obligatorios, límites medibles, prioridades de sincronización y una matriz de cobertura para los 69 procesos.
+
+---
+
+#### 3. Unidad de decisión
+
+La política offline pertenecerá a la operación y a su etapa, no a la aplicación completa.
+
+```text
+PROCESS_ID
++
+PROCESS_STEP
++
+OPERATION_ID
++
+BUSINESS_EFFECT
++
+ACTOR Y DISPOSITIVO
++
+RECURSO Y VERSIÓN
++
+FRESCURA REQUERIDA
++
+DEPENDENCIAS
++
+SENSIBILIDAD
+=
+PERFIL OFFLINE
+```
+
+Por tanto:
+
+```text
+NEXO ES OFFLINE
+FOGO ES OFFLINE
+PULSO ES OFFLINE
+```
+
+son afirmaciones inválidas. Una misma pantalla puede permitir consulta cacheada, captura local y una acción obligatoriamente en línea, cada una con estados y límites distintos.
+
+---
+
+#### 4. Vector de disponibilidad requerido
+
+La conectividad no se reducirá a `navigator.onLine` ni a la existencia de Wi-Fi. Cada operación declarará cuáles componentes necesita:
+
+```text
+TRANSPORTE DE RED
+SERVICIO DE IDENTIDAD Y SESIÓN
+RESOLUCIÓN DE ACCESS CONTEXT
+SERVICIO PROPIETARIO DEL DOMINIO
+SERVICIO DE SINCRONIZACIÓN
+RELOJ CONFIABLE
+ALMACENAMIENTO LOCAL SEGURO
+DEPENDENCIA EXTERNA
+PERIFÉRICO
+```
+
+Estados iniciales:
+
+```text
+ONLINE_STABLE
+ONLINE_DEGRADED
+PARTIAL_SERVICE
+OFFLINE_CONFIRMED
+CONNECTIVITY_UNKNOWN
+RECOVERING_SYNC
+SYNC_BLOCKED
+```
+
+Una operación solo se considerará disponible cuando todos sus componentes obligatorios estén utilizables o exista un perfil degradado aprobado. Wi-Fi conectado con Auth, Supabase, proveedor, datáfono o impresora indisponibles no será `ONLINE_STABLE`.
+
+---
+
+#### 5. Clases canónicas de capacidad offline
+
+| Clase                    | Nombre                          | Permite                                                                 | No permite por sí sola                                               |
+| ------------------------ | ------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `OF0_ONLINE_ONLY`        | únicamente en línea             | preparar información no persistente y explicar el bloqueo               | crear una intención durable ni afirmar efecto                        |
+| `OF1_CACHED_REFERENCE`   | referencia cacheada             | consultar una versión identificada con frescura visible                 | editar, publicar o tratar la caché como verdad vigente               |
+| `OF2_LOCAL_DRAFT`        | borrador local                  | redactar o preparar trabajo todavía no enviado                          | reservar recursos, cambiar estado ni producir efecto                 |
+| `OF3_LOCAL_CAPTURE`      | captura local revalidable       | registrar observaciones, evidencia o hechos físicos para revisión       | asumir aceptación, autorización o impacto empresarial                |
+| `OF4_LEASED_EXECUTION`   | ejecución offline bajo envelope | ejecutar un conjunto finito de operaciones previamente autorizadas      | ampliar alcance, extender vigencia o encadenar trabajo no autorizado |
+| `OF5_MANUAL_CONTINGENCY` | contingencia física gobernada   | mantener resultado mínimo mediante procedimiento numerado y conciliable | convertirse en canal digital alterno permanente                      |
+
+Una operación podrá combinar clases, pero deberá declarar cuál es aplicable a cada acción. `OF4` exige un envelope emitido previamente; `OF5` no equivale a una cola digital.
+
+---
+
+#### 6. Contrato mínimo de operación local
+
+Toda intención durable creada en el dispositivo deberá conservar, como mínimo:
+
+```text
+local_operation_id
+idempotency_key
+process_id
+process_step
+operation_kind
+business_effect_requested
+principal_id
+actor_id
+device_id
+context_id_observed
+site_id
+area_id
+shift_id
+checkin_id
+resource_refs[]
+observed_resource_versions[]
+authorization_envelope_ref
+schema_version
+payload_hash
+payload_minimized
+observed_at
+created_local_at
+queued_at
+dependency_operation_ids[]
+expires_at
+freshness_requirements[]
+sensitivity_class
+evidence_refs[]
+retry_count
+sync_priority
+sync_state
+last_sync_attempt_at
+last_error_class
+receipt_refs[]
+```
+
+La forma es documental. No autoriza una tabla, IndexedDB, SQLite, Service Worker, caché o proveedor concreto.
+
+---
+
+#### 7. Estados de una operación local
+
+```text
+DRAFT_LOCAL
+CAPTURED_LOCAL
+QUEUED
+WAITING_DEPENDENCY
+VALIDATING
+SYNCING
+ACCEPTED_PENDING_EFFECT
+CONFIRMED
+REJECTED
+CONFLICT
+RESULT_UNKNOWN
+EXPIRED
+SUPERSEDED
+QUARANTINED
+RECONCILIATION_REQUIRED
+DISCARDED_WITH_REASON
+```
+
+Reglas:
+
+- `CAPTURED_LOCAL` no se mostrará como guardado en servidor;
+- `QUEUED` no significa aceptado;
+- `ACCEPTED_PENDING_EFFECT` no significa terminado;
+- `CONFIRMED` exige receipt o estado autoritativo verificable;
+- `RESULT_UNKNOWN` bloquea un nuevo intento independiente;
+- `QUARANTINED` conserva el dato sin ejecutarlo cuando esquema, actor, autorización o versión no son compatibles;
+- ningún estado terminal se inferirá por ocultar una pantalla o reiniciar el dispositivo.
+
+---
+
+#### 8. Prioridades y deadlines de sincronización
+
+| Clase                | Regla                                                                                |            Objetivo inicial después de conectividad estable |
+| -------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------: |
+| `SYNC-0_BLOCKING`    | debe reconciliarse antes de cualquier acción dependiente                             |          sin operación dependiente hasta resultado terminal |
+| `SYNC-1_URGENT`      | seguridad, acceso, dinero, custodia, inventario o continuidad                        | inicio `≤ 15 s`; resultado o conflicto visible `≤ 60 s` p95 |
+| `SYNC-2_OPERATIONAL` | trabajo ordinario del turno que afecta colas o handoffs                              |        inicio `≤ 60 s`; resultado o conflicto `≤ 5 min` p95 |
+| `SYNC-3_CYCLE`       | debe quedar reconciliado antes de cierre, corte, publicación o cambio de responsable |                                deadline explícito del ciclo |
+| `SYNC-4_DEFERRED`    | borrador o actividad planificable sin efecto inmediato                               |         deadline explícito; nunca almacenamiento indefinido |
+
+El tiempo empieza después de confirmar conectividad estable, hora válida, sesión, dispositivo, contexto, esquema y servicios requeridos. No incluye el tiempo durante el cual una dependencia obligatoria sigue indisponible, pero ese periodo deberá permanecer visible y medirse por separado.
+
+---
+
+#### 9. Frescura y caché
+
+Se preservan las clases aprobadas:
+
+```text
+REAL_TIME_REQUIRED
+SHORT_LIVED
+SHIFT_SCOPED
+DAY_SCOPED
+VERSION_SCOPED
+REFERENCE_LONG_LIVED
+```
+
+Toda entrada cacheada declarará:
+
+```text
+source
+source_version
+fetched_at
+valid_until
+freshness_class
+scope
+sensitivity
+stale_behavior
+```
+
+Una versión expirada podrá permitir lectura histórica o referencia controlada, pero no habilitará una nueva mutación que requiera estado vigente. Permisos, claims, saldos, disponibilidad para prometer, custodia y estados transaccionales no se convertirán en autoridad por estar cacheados.
+
+---
+
+#### 10. Autorización offline
+
+`OF4_LEASED_EXECUTION` solo será admisible con un envelope verificable y finito que declare:
+
+```text
+actor
+dispositivo
+sitio y área
+capacidad exacta
+recurso o conjunto finito
+secuencia permitida
+límites cuantitativos
+emitido_en
+vence_en
+versión de política
+condiciones de revocación
+condiciones de revalidación
+```
+
+```text
+PERMISO CONOCIDO ANTES
+≠ PERMISO VÁLIDO AHORA
+
+ENVELOPE VENCIDO
+→ NO CREA NUEVAS MUTACIONES
+→ PUEDE CONSERVAR EVIDENCIA YA OBSERVADA
+```
+
+Al sincronizar se revalidarán identidad, vínculo, turno, check-in, contexto, dispositivo, permiso, denegaciones, recurso, versión y vigencia. Un rechazo de autorización no borrará una observación física; la enviará al estado de evidencia o conciliación que corresponda.
+
+---
+
+#### 11. Orden causal y dependencias
+
+La outbox no será una lista FIFO global. Cada operación declarará dependencias y partición lógica.
+
+```text
+SOLICITUD
+→ PREPARACIÓN
+→ CARGA
+→ ENTREGA
+→ RECEPCIÓN
+```
+
+Reglas:
+
+1. una operación dependiente no se sincroniza antes de su prerequisito;
+2. un rechazo terminal bloquea o reclasifica dependientes;
+3. operaciones independientes pueden avanzar;
+4. actores, áreas y contextos distintos no comparten una secuencia implícita;
+5. prioridad no altera causalidad;
+6. una operación `SUPERSEDED` nunca se ejecuta después;
+7. la cola conserva una secuencia estable por recurso cuando existe contención;
+8. el detalle físico de retry, backoff, dead-letter y workers pertenece a `QUEUE-ARC-001` a `QUEUE-ARC-012`.
+
+---
+
+#### 12. Secuencia canónica de reconexión
+
+```text
+1. ESTABILIZAR CONECTIVIDAD
+2. VERIFICAR HORA, DNS Y SERVICIOS REQUERIDOS
+3. REVALIDAR SESIÓN Y DISPOSITIVO
+4. RESOLVER ACCESS CONTEXT NUEVO
+5. DESCARGAR REVOCACIONES, VERSIONES Y POLÍTICAS
+6. VALIDAR ESQUEMA DE OPERACIONES LOCALES
+7. CONSULTAR RECEIPTS E IDEMPOTENCY KEYS
+8. CLASIFICAR PENDIENTES, EXPIRADOS Y CONFLICTOS
+9. ORDENAR POR DEPENDENCIA Y PRIORIDAD
+10. SINCRONIZAR SIN BLOQUEAR TRABAJO FOREGROUND
+11. DETENER LA RAMA AFECTADA ANTE CONFLICTO
+12. ACTUALIZAR PROYECCIONES
+13. MOSTRAR RESUMEN HUMANO Y PENDIENTES RESTANTES
+```
+
+Recuperar acceso a internet no enviará automáticamente toda la cola. La recuperación parcial de un servicio no habilitará operaciones que dependan de otro servicio todavía indisponible.
+
+---
+
+#### 13. Idempotencia, timeout y resultado desconocido
+
+Toda mutación durable tendrá una idempotency key estable desde antes del primer envío.
+
+```text
+TIMEOUT
+→ CONSULTAR RECEIPT
+→ CONSULTAR RECURSO
+→ REUTILIZAR LA MISMA INTENCIÓN
+→ NUNCA CREAR OTRA PARA “PROBAR”
+```
+
+Para pagos, inventario, producción, puntos, impresión, facturación, custodia, claims y handoffs:
+
+- un timeout produce `RESULT_UNKNOWN`;
+- un reintento conserva intención, actor, contexto, payload hash e idempotency key;
+- una respuesta tardía deberá reconciliarse con el estado visible;
+- el usuario no verá un CTA limpio que permita duplicar el efecto;
+- si no existe evidencia suficiente, la operación pasa a revisión o contingencia, no a éxito ni fallo inventados.
+
+---
+
+#### 14. Conflictos
+
+Clases mínimas:
+
+```text
+RESOURCE_VERSION_CONFLICT
+CONTEXT_CHANGED
+AUTHORIZATION_CHANGED
+DUPLICATE_OPERATION
+DEPENDENCY_REJECTED
+SCHEMA_INCOMPATIBLE
+BUSINESS_STATE_CHANGED
+QUANTITY_CONFLICT
+CUSTODY_CONFLICT
+TIME_WINDOW_EXPIRED
+CLOCK_INVALID
+LOCAL_STORAGE_CORRUPTED
+```
+
+Queda prohibido `last write wins` para efectos empresariales. Resoluciones permitidas, según proceso:
+
+```text
+ACCEPT_SERVER_STATE
+REAPPLY_ALLOWED_FIELDS
+CREATE_CORRECTION
+SPLIT_OPERATION
+ESCALATE
+DISCARD_LOCAL_DRAFT
+MANUAL_RECONCILIATION
+```
+
+El sistema explicará qué cambió, qué se conserva, qué no se ejecutó, si el hecho físico ocurrió, quién puede resolver y cuál es la siguiente acción segura.
+
+---
+
+#### 15. Capacidad, antigüedad y backpressure local
+
+Cada cola o almacén local declarará:
+
+```text
+max_operations
+max_bytes
+max_attachment_bytes
+max_age_by_operation
+warning_threshold
+hard_threshold
+eviction_policy
+quarantine_policy
+manual_contingency_trigger
+```
+
+Reglas:
+
+- no se descartará silenciosamente la operación más antigua;
+- no se reemplazará una operación por otra sin relación explícita de supersession;
+- al llegar al umbral de advertencia se mostrará riesgo y antigüedad;
+- al llegar al hard threshold se aplicará backpressure, solo lectura, pausa segura o contingencia;
+- evidencia obligatoria no se elimina para liberar espacio;
+- la capacidad se validará contra las bandas `L0` a `L4`, ráfagas y backlog de `NFR-REQ-002`.
+
+---
+
+#### 16. Aplicación, esquema y ciclo de vida
+
+Las operaciones deberán sobrevivir, según política, a recarga, suspensión, cierre accidental, reinicio y pérdida breve de energía. No se ejecutarán en segundo plano sin revalidar actor, envelope, dispositivo, esquema, red, cancelación y dependencias.
+
+Ante una actualización:
+
+```text
+ESQUEMA COMPATIBLE
+→ migrar y validar
+
+ESQUEMA TRANSFORMABLE
+→ transformar con versión y prueba
+
+ESQUEMA INCOMPATIBLE
+→ QUARANTINED
+→ conservar evidencia
+→ revisión o conciliación
+```
+
+Desinstalar, limpiar almacenamiento, cambiar de navegador o restablecer el dispositivo deberá tener una política explícita de advertencia, custodia y recuperación. `NFR-REQ-011` definirá compatibilidad mínima por dispositivo; `NFR-REQ-005` y `NFR-REQ-006` definirán sensibilidad y retención.
+
+---
+
+#### 17. Tiempo y orden de los hechos
+
+Se distinguirán:
+
+```text
+observed_at
+created_local_at
+first_send_at
+accepted_at
+business_effect_at
+confirmed_at
+reconciled_at
+```
+
+La hora de sincronización no reemplazará la hora de observación. Un reloj local fuera de tolerancia deberá marcar el dato, impedir operaciones sensibles dependientes del tiempo y usar orden de servidor o secuencia lógica cuando corresponda.
+
+---
+
+#### 18. Dispositivos compartidos y multiárea
+
+Toda partición local incluirá:
+
+```text
+DEVICE_ID
++
+ACTOR_ID
++
+CONTEXT_ID
++
+SITE_ID
++
+AREA_ID
+```
+
+Al cambiar de actor o área:
+
+- se detienen nuevas mutaciones de la partición anterior;
+- no se transfieren borradores, cola, claims ni custodia;
+- se protege la visibilidad de pendientes del actor anterior;
+- se resuelve una sesión y contexto nuevos;
+- las operaciones pendientes conservan atribución original;
+- sin mecanismo de identidad offline aprobado, la estación pasa a consulta o contingencia.
+
+En los POS táctiles de Repostería y Pastelería y Tortas, cada operación conservará área exacta, receta versionada, lote, actor y cola separados. Un selector local nunca amplía permiso ni convierte las áreas en una sola.
+
+---
+
+#### 19. Archivos y evidencia
+
+Estados mínimos:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+QUARANTINED
+```
+
+- un archivo subido parcialmente no es evidencia confirmada;
+- hash, operation ID o clave estable evitan duplicados;
+- el recurso no se cierra si falta evidencia obligatoria;
+- tamaño, tipo, sensibilidad y retención se validan antes y después de subir;
+- la evidencia se vincula al hecho observado, no solo a la hora de upload;
+- la eliminación local posterior exige confirmación y política aprobada.
+
+---
+
+#### 20. Periféricos e integraciones parciales
+
+Backend, impresora, escáner, datáfono, cámara, balanza y proveedor externo tendrán estados independientes.
+
+```text
+BACKEND OFFLINE + IMPRESORA LOCAL DISPONIBLE
+≠ IMPRESIÓN EMPRESARIAL CONFIRMADA
+
+BACKEND ONLINE + DATÁFONO SIN RESPUESTA
+≠ PAGO FALLIDO
+```
+
+Cada interacción declarará comando, receipt, ejecución física, resultado conocido o desconocido, posibilidad de reintento y conciliación. Los límites físicos y de red corresponden a `NFR-REQ-008`; contratos de integración a `INT-APP-*` e `INT-EXT-*`.
+
+---
+
+#### 21. Contingencia manual
+
+Toda contingencia deberá definir:
+
+```text
+condición de activación
+responsable
+formato o identificador
+numeración
+datos mínimos
+control de duplicados
+custodia
+momento y actor del hecho
+momento de digitalización
+responsable de conciliación
+criterio de cierre
+```
+
+La digitalización posterior no copiará ciegamente: consultará si el efecto ya existe, relacionará el soporte, preservará actor original, distinguirá observación, transcripción y aprobación, y cerrará la contingencia solo después de reconciliar.
+
+---
+
+#### 22. Matriz inicial por proceso
+
+La matriz clasifica la envolvente de diseño. No afirma que el flujo actual esté implementado, cifrado, probado o certificado para operar offline.
+
+| Proceso                                                                                                                                         | Perfil offline inicial                                                                     | Prioridad de sincronización | Frontera obligatoriamente en línea                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` — Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento                                  | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-3_CYCLE`              | La aprobación, asignación definitiva y cierre requieren confirmación en línea.                                |
+| `VPROC-0002` — Mantener estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                    | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-4_DEFERRED`           | Las modificaciones maestras y su publicación son únicamente en línea.                                         |
+| `VPROC-0003` — Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                            | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La edición, delegación y revocación requieren confirmación autoritativa en línea.                             |
+| `VPROC-0004` — Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                  | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-2_OPERATIONAL`        | El handoff, la aceptación y el cambio de responsable son en línea o quedan en conciliación.                   |
+| `VPROC-0005` — Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                               | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-4_DEFERRED`           | Publicación, decisión y creación de vínculo requieren estado autoritativo en línea.                           |
+| `VPROC-0006` — Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                               | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | Habilitación, identidad laboral y accesos solo se confirman en línea.                                         |
+| `VPROC-0007` — Administrar asignaciones laborales y programación publicada con historial y revisión controlada                                  | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar, cambiar cobertura o sustituir un turno exige confirmación en línea.                                 |
+| `VPROC-0008` — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables                                           | `OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                                               | `SYNC-2_OPERATIONAL`        | La captura local conserva actor, dispositivo y hora; la corrección y aprobación son en línea.                 |
+| `VPROC-0009` — Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                             | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-2_OPERATIONAL`        | La aprobación y reasignación efectiva de cobertura requieren servicio autoritativo.                           |
+| `VPROC-0010` — Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                   | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-3_CYCLE`              | Cálculo final, aprobación, emisión y conciliación permanecen en línea.                                        |
+| `VPROC-0011` — Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                  | `OF1_CACHED_REFERENCE + OF5_MANUAL_CONTINGENCY`                                            | `SYNC-1_URGENT`             | La revocación digital no puede simularse offline; la contención manual se reconcilia de inmediato.            |
+| `VPROC-0012` — Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Hallazgos críticos activan contención; el cierre y aceptación del riesgo son en línea.                        |
+| `VPROC-0013` — Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                    | `OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                                               | `SYNC-1_URGENT`             | La respuesta física no depende del sistema; el expediente se reconcilia sin perder hora ni actor.             |
+| `VPROC-0014` — Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                      | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La versión aplicable debe ser verificable; bloqueos y desviaciones críticas se reconcilian primero.           |
+| `VPROC-0015` — Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                 | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-3_CYCLE`              | Crear, modificar o publicar maestros y equivalencias exige conexión.                                          |
+| `VPROC-0016` — Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                       | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-1_URGENT`             | La receta aprobada puede consultarse por versión; aprobación y publicación son en línea.                      |
+| `VPROC-0017` — Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                          | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE`                                                 | `SYNC-1_URGENT`             | Publicar disponibilidad, precio u oferta exige confirmación y propagación en línea.                           |
+| `VPROC-0018` — Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                          | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La consulta offline solo usa versión vigente conocida; cambios y publicación son en línea.                    |
+| `VPROC-0019` — Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                 | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-3_CYCLE`              | La consolidación y priorización autoritativa se realizan al sincronizar.                                      |
+| `VPROC-0020` — Comparar proveedores y condiciones con evidencia suficiente para decidir                                                         | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | La selección, aprobación y compromiso económico requieren información vigente en línea.                       |
+| `VPROC-0021` — Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                         | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Aprobar, emitir o modificar una orden de compra es únicamente en línea.                                       |
+| `VPROC-0022` — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica               | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La observación física puede capturarse; la recepción definitiva y efecto económico requieren conciliación.    |
+| `VPROC-0023` — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento                                                           | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | Los cambios de topología, estado o disponibilidad de ubicación son en línea.                                  |
+| `VPROC-0024` — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                  | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-0_BLOCKING`           | Solo un envelope finito permite ejecución offline; el siguiente movimiento depende de reconciliación.         |
+| `VPROC-0025` — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                       | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                        | `SYNC-0_BLOCKING`           | No se promete stock ni se encadenan consumos sobre existencias no reconciliadas.                              |
+| `VPROC-0026` — Contar como observación, investigar diferencias y ajustar mediante decisión separada                                             | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-2_OPERATIONAL`        | El conteo se captura offline; investigar, aprobar y ajustar permanecen separados y en línea.                  |
+| `VPROC-0027` — Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                 | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La contención física es inmediata; liberar, disponer o ajustar exige autoridad y conciliación.                |
+| `VPROC-0028` — Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                   | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-1_URGENT`             | Cada etapa conserva operación propia; handoff y recepción digital requieren confirmación o conciliación.      |
+| `VPROC-0029` — Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | La transferencia de custodia no se confirma localmente sin lease y aceptación posterior.                      |
+| `VPROC-0030` — Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                 | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La inmovilización física puede ser inmediata; cierre, disposición y garantía se confirman en línea.           |
+| `VPROC-0031` — Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Kilometraje e incidencias pueden capturarse; habilitación y asignación vigente deben reconciliarse.           |
+| `VPROC-0032` — Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                      | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Entrega y retorno físicos se observan; custodia digital se confirma después de reconciliar.                   |
+| `VPROC-0033` — Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                             | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar o reprogramar producción requiere demanda e inventario vigentes.                                     |
+| `VPROC-0034` — Preparar materiales y ejecutar producción contra una versión aprobada                                                            | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | La receta versionada y el lote delimitan el envelope; consumos y resultados se reconcilian causalmente.       |
+| `VPROC-0035` — Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                   | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-0_BLOCKING`           | La retención física puede aplicarse offline; liberar o rechazar definitivamente exige confirmación.           |
+| `VPROC-0036` — Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | Etiqueta y ubicación deben vincularse al lote; impresión local no equivale a registro confirmado.             |
+| `VPROC-0037` — Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                     | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-2_OPERATIONAL`        | La captura puede continuar; el cierre del lote y los efectos de inventario esperan conciliación.              |
+| `VPROC-0038` — Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                            | `OF1_CACHED_REFERENCE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                     | `SYNC-0_BLOCKING`           | Pedidos pueden operar bajo envelope; pago, cierre y resultado fiscal no admiten confirmación local ficticia.  |
+| `VPROC-0039` — Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                   | `OF1_CACHED_REFERENCE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                     | `SYNC-0_BLOCKING`           | La entrega y el cobro deben quedar correlacionados; un datáfono sin respuesta produce resultado desconocido.  |
+| `VPROC-0040` — Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                     | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La aceptación, deduplicación y transferencia de pedidos externos requieren conectividad con el canal.         |
+| `VPROC-0041` — Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                           | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Aprobación de capacidad, facturación y compromiso contractual son en línea.                                   |
+| `VPROC-0042` — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                               | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Modificar, anular, devolver o compensar efectos confirmados es únicamente en línea.                           |
+| `VPROC-0043` — Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                     | `OF5_MANUAL_CONTINGENCY`                                                                   | `SYNC-0_BLOCKING`           | Pago y soporte fiscal son online por defecto; todo timeout queda como resultado desconocido.                  |
+| `VPROC-0044` — Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                      | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                             | `SYNC-0_BLOCKING`           | El conteo puede capturarse; el cierre y cambio de responsable requieren confirmación autoritativa.            |
+| `VPROC-0045` — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                      | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-0_BLOCKING`           | Saldo, acumulación y redención nunca se confirman desde caché ni se duplican por reintento.                   |
+| `VPROC-0046` — Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                               | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | La compensación y devolución son en línea; alertas de seguridad escalan a SYNC-1.                             |
+| `VPROC-0047` — Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento                                           | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | La reserva solo queda confirmada con capacidad autoritativa y receipt.                                        |
+| `VPROC-0048` — Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                      | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar ruta, asignar vehículo y liberar despacho requieren estado vigente.                                  |
+| `VPROC-0049` — Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                              | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY` | `SYNC-1_URGENT`             | Prueba de entrega puede capturarse localmente; custodia y cierre se reconcilian sin duplicar.                 |
+| `VPROC-0050` — Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                       | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-2_OPERATIONAL`        | Eventos del tercero son online; una observación manual no sustituye el estado del proveedor.                  |
+| `VPROC-0051` — Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                  | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-1_URGENT`             | Los eventos pueden quedar en outbox; contabilización y efecto financiero son autoritativos en línea.          |
+| `VPROC-0052` — Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                    | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Aprobación, pago, cancelación y conciliación bancaria son únicamente en línea.                                |
+| `VPROC-0053` — Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                       | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-1_URGENT`             | La evidencia puede capturarse; aplicar recaudo o compensar diferencias requiere confirmación.                 |
+| `VPROC-0054` — Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas                                        | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Cálculo final, publicación, cierre y versión presupuestal requieren procesamiento autoritativo.               |
+| `VPROC-0055` — Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                          | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | Controles físicos continúan; hallazgos que condicionan apertura se reconcilian prioritariamente.              |
+| `VPROC-0056` — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                        | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | Aprobar, publicar o retirar contenido y promociones es en línea.                                              |
+| `VPROC-0057` — Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                          | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | La entrada automática depende del canal; la captura manual se deduplica al sincronizar.                       |
+| `VPROC-0058` — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                            | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La contención puede ser manual; asignación, cierre y conocimiento se reconcilian con evidencia.               |
+| `VPROC-0059` — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                         | `OF1_CACHED_REFERENCE + OF5_MANUAL_CONTINGENCY`                                            | `SYNC-0_BLOCKING`           | Conceder, cambiar o revocar acceso es online; la contención manual no simula revocación completada.           |
+| `VPROC-0060` — Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                       | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-2_OPERATIONAL`        | Archivos usan estados propios; carga parcial o archivo local no equivale a evidencia vinculada.               |
+| `VPROC-0061` — Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                     | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | Agregaciones, publicación de resultados y decisiones se calculan con datos reconciliados.                     |
+| `VPROC-0062` — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                         | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La operación mínima puede ser manual; la recuperación digital no se declara completa antes de conciliar.      |
+| `VPROC-0063` — Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado                         | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                               | `SYNC-3_CYCLE`              | Aceptar riesgo, cambiar tratamiento o cerrar acción requiere versión autoritativa.                            |
+| `VPROC-0064` — Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar propiedad interna          | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                               | `SYNC-3_CYCLE`              | La presentación formal y sus acuses dependen del canal o autoridad en línea.                                  |
+| `VPROC-0065` — Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con privacidad aprobada                    | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-4_DEFERRED`           | Datos sensibles no persisten localmente salvo política cifrada; decisiones y publicación son en línea.        |
+| `VPROC-0066` — Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La entrega física puede capturarse; habilitación de trabajo depende de evidencia reconciliada o contingencia. |
+| `VPROC-0067` — Definir kit, instancia, componentes, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY` | `SYNC-2_OPERATIONAL`        | Completitud y custodia se capturan; préstamo, devolución y sustitución se reconcilian causalmente.            |
+| `VPROC-0068` — Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido        | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-4_DEFERRED`           | Compensaciones y cambios de consentimiento son autoritativos en línea.                                        |
+| `VPROC-0069` — Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación                                | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Aprobación, vigencia, consumo reservado y cierre de versión son en línea.                                     |
+
+---
+
+#### 23. Lectura de la matriz
+
+La columna de perfil es una clasificación inicial por proceso. Cada etapa deberá descomponerse antes de implementación. En particular:
+
+- `OF1` no permite mutar usando datos stale;
+- `OF2` no reserva ni bloquea recursos;
+- `OF3` captura hechos y evidencia, no decisiones finales;
+- `OF4` requiere envelope, límites, expiración e idempotencia;
+- `OF5` mantiene el resultado mínimo por un procedimiento físico gobernado;
+- `SYNC-0` bloquea trabajo dependiente hasta resolver;
+- una misma operación puede escalar de `SYNC-3` a `SYNC-1` por seguridad, inocuidad, acceso, dinero o custodia.
+
+---
+
+#### 24. Observabilidad mínima
+
+Sin definir todavía la plataforma física, deberán poder medirse:
+
+```text
+time_offline
+queue_depth
+queue_bytes
+oldest_pending_age
+sync_attempts
+sync_latency
+conflicts_by_class
+unknown_results
+duplicates_prevented
+operations_expired
+operations_quarantined
+manual_contingencies
+reconciliation_duration
+local_storage_pressure
+schema_migration_failures
+```
+
+Guardrails:
+
+```text
+EFECTO DUPLICADO POR REINTENTO = 0
+OPERACIÓN LOCAL MOSTRADA COMO CONFIRMADA = 0
+BORRADOR O COLA TRANSFERIDOS ENTRE ACTORES = 0
+MUTACIÓN CON ENVELOPE VENCIDO = 0
+CONFLICTO EMPRESARIAL RESUELTO POR LAST WRITE WINS = 0
+EVIDENCIA O PENDIENTE ELIMINADOS SILENCIOSAMENTE = 0
+```
+
+La instrumentación detallada, dashboards y alertas pertenecen a `NFR-REQ-009`, `OBS-ARC-*` y `QUEUE-ARC-011`. Las métricas no se utilizarán para atribuir al trabajador fallas de red o infraestructura.
+
+---
+
+#### 25. Pruebas obligatorias
+
+Cada capacidad aplicable deberá probar:
+
+1. red lenta y pérdida antes de enviar;
+2. pérdida durante envío;
+3. ejecución del servidor seguida de pérdida de respuesta;
+4. reconexión breve y nueva caída;
+5. servicio parcial;
+6. sesión expirada;
+7. permiso o dispositivo revocado;
+8. cambio de actor, área, turno y check-in;
+9. dos dispositivos sobre el mismo recurso;
+10. operación duplicada;
+11. dependencia rechazada;
+12. operación expirada;
+13. esquema antiguo y actualización con pendientes;
+14. almacenamiento cerca del límite, lleno y corrupto;
+15. reloj local incorrecto;
+16. reinicio y pérdida de energía;
+17. archivo parcialmente cargado;
+18. backend y periférico con disponibilidad divergente;
+19. backlog de reconexión bajo carga foreground;
+20. contingencia manual y reconciliación;
+21. cola multiárea en los POS del Centro de Producción;
+22. recuperación del checkpoint sin heredar autoridad.
+
+Las pruebas de implementación corresponden a los paquetes E5, `QUEUE-ARC-*`, `SHELL-CI-*`, bloques `R`, `T`, `U`, `UX-QA-*` y tareas por aplicación. Esta tarea solo congela el contrato.
+
+---
+
+#### 26. Propiedad de decisiones posteriores
+
+| Decisión                                        | Tarea propietaria                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------ |
+| sensibilidad, cifrado y minimización local      | `NFR-REQ-005`                                                      |
+| trazabilidad, retención y eliminación           | `NFR-REQ-006`                                                      |
+| accesibilidad de estados y conflictos           | `NFR-REQ-007`; `UX-QA-001` a `UX-QA-030`                           |
+| hardware, red, almacenamiento y periféricos     | `NFR-REQ-008`                                                      |
+| métricas, soporte y alertas                     | `NFR-REQ-009`; `OBS-ARC-*`                                         |
+| respaldo, RTO y RPO                             | `NFR-REQ-010`; `CONT-DOM-002` a `CONT-DOM-004`                     |
+| compatibilidad de dispositivo, navegador y SO   | `NFR-REQ-011`                                                      |
+| checkpoints y reanudación                       | `UX-BASE-014` y tareas de materialización por aplicación           |
+| identidad y límites del dispositivo             | `AUTH-DEV-001` a `AUTH-DEV-016`                                    |
+| contrato físico de colas, retries y dead-letter | `QUEUE-ARC-001` a `QUEUE-ARC-012`                                  |
+| integración entre aplicaciones y proveedores    | `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`       |
+| protección autoritativa de comandos             | `AUTH-SRV-*`; `AUTH-DB-*`; `SUPA-ARC-*`                            |
+| contingencia por estación                       | `UX-STATION-007`                                                   |
+| prototipo y prueba física                       | `UX-STATION-008`; tareas `*-UX-*`; `UX-QA-*`                       |
+| perfiles, capacidad y certificación por paquete | `DELIV-PKG-013`; `DELIV-PKG-016`; `DELIV-PKG-017`; `DELIV-PKG-025` |
+
+No queda una decisión diferida sin tarea o familia propietaria.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+Esta propuesta incorpora al registro canónico completo:
+
+```text
+TREQ-PROC-295 a TREQ-PROC-324
+```
+
+Cobertura:
+
+1. política por operación y no por aplicación;
+2. vector real de conectividad;
+3. clases `OF0` a `OF5`;
+4. estados visibles de operación local;
+5. envelope mínimo;
+6. idempotencia estable;
+7. orden causal y dependencias;
+8. frescura y caché;
+9. autorización offline finita;
+10. aislamiento por actor, dispositivo y área;
+11. privacidad de caché y almacenamiento;
+12. hora de observación y secuencia temporal;
+13. claims, custodia y handoffs online por defecto;
+14. acciones sensibles obligatoriamente online;
+15. resultado desconocido;
+16. conflictos sin `last write wins`;
+17. reconexión ordenada;
+18. ciclo de vida y reinicio;
+19. archivos y evidencia;
+20. periféricos e integraciones parciales;
+21. contingencia manual;
+22. capacidad local y backpressure;
+23. compatibilidad de esquema;
+24. integridad de reloj;
+25. servicios parcialmente disponibles;
+26. deadlines y prioridad de sincronización;
+27. prioridad del trabajo foreground frente al backlog;
+28. POS compartidos multiárea;
+29. matriz de `VPROC-0001` a `VPROC-0069`;
+30. pruebas de fallo, observabilidad, gobierno y certificación.
+
+Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-004` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+
+---
+
+#### 28. Criterios de aceptación
+
+- [ ] La política offline pertenece a operación, etapa, actor, dispositivo y efecto, no a la aplicación completa.
+- [ ] Se distingue conectividad, servicio, sesión, contexto, frescura, periférico y confirmación.
+- [ ] Las clases `OF0` a `OF5` tienen límites inequívocos.
+- [ ] El contrato local conserva identidad, idempotencia, contexto, versiones, dependencias, expiración y sensibilidad.
+- [ ] Los estados locales no se presentan como estados autoritativos.
+- [ ] Se definen prioridades `SYNC-0` a `SYNC-4` y deadlines verificables.
+- [ ] La caché conserva versión y frescura y nunca amplía autorización.
+- [ ] `OF4` exige envelope previamente emitido, finito y revalidable.
+- [ ] La outbox respeta dependencias, particiones y orden causal.
+- [ ] La reconexión revalida sesión, dispositivo, contexto, políticas, esquema y receipts antes de enviar.
+- [ ] Timeout y reintento no crean una segunda intención.
+- [ ] Los conflictos empresariales nunca usan `last write wins`.
+- [ ] No se eliminan silenciosamente pendientes, borradores ni evidencia por capacidad local.
+- [ ] Las operaciones sobreviven al ciclo de vida solo bajo política y compatibilidad verificadas.
+- [ ] Se preservan hora de observación, sincronización y confirmación por separado.
+- [ ] Dispositivos compartidos aíslan actor, contexto y área.
+- [ ] Archivos y periféricos conservan estados y receipts propios.
+- [ ] Toda contingencia manual tiene activación, numeración, custodia y conciliación.
+- [ ] Los 69 procesos tienen perfil, prioridad y frontera online iniciales.
+- [ ] Se incorporan `TREQ-PROC-295` a `TREQ-PROC-324` al `04A` completo, con origen y evidencia de propuesta.
+- [ ] No se implementan colas, Service Workers, almacenamiento, código, migraciones ni cambios en Supabase.
+- [ ] `NFR-REQ-005` permanece no iniciada.
+
+---
+
+#### 29. Estado y continuidad
+
+```text
+NFR-REQ-002   APROBADA
+NFR-REQ-003   APROBADA
+NFR-REQ-004   APROBADA
+NFR-REQ-005   NO INICIADA
+```
+
+La aprobación de esta tarea congelará el contrato y la matriz inicial. No certificará que una aplicación, dispositivo o proceso actual pueda funcionar offline.
+
+
+### 🟡 NFR-REQ-005 — Definir privacidad y sensibilidad
+
+**Estado:** PROPUESTA PARA APROBACIÓN
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+**Tarea anterior:** `NFR-REQ-004 — Definir comportamiento offline y sincronización` — APROBADA
+**Siguiente tarea reservada:** `NFR-REQ-006 — Definir trazabilidad y retención` — NO INICIADA
+**Artefactos propuestos:** `NFR-PRIVACY-SENSITIVITY-CONTRACT-001`; `NFR-INFORMATION-HANDLING-MATRIX-001`; `NFR-PROCESS-PRIVACY-PROFILE-001`; `NFR-DATA-EXPOSURE-BOUNDARY-001`
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+**Naturaleza:** contrato no funcional de privacidad, clasificación, sensibilidad, minimización, exposición y manejo; no dictamen jurídico, implementación criptográfica, política de retención ni certificación
+**Cambios en código, migraciones, Supabase, aplicaciones, infraestructura o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir un contrato verificable para clasificar y manejar la información de Vento OS según su sensibilidad, finalidad, identificabilidad, daño potencial, contexto, actor y canal. El objetivo es impedir que una autorización funcional correcta termine exponiendo más información de la necesaria mediante pantallas, payloads, archivos, cachés, logs, exportaciones, integraciones o ambientes no productivos.
+
+```text
+AUTORIZACIÓN PARA EJECUTAR UNA ACCIÓN
+≠ AUTORIZACIÓN PARA VER TODOS SUS DATOS
+
+ACCESO A UN PROCESO
+≠ ACCESO A TODO EL EXPEDIENTE
+
+CIFRADO
+≠ MINIMIZACIÓN
+≠ AUTORIZACIÓN
+≠ ANONIMIZACIÓN
+
+DATO SIN NOMBRE DIRECTO
+≠ DATO ANÓNIMO
+```
+
+La aprobación de esta tarea congelará criterios iniciales de diseño. No declarará cumplimiento legal, certificación de seguridad ni adecuación de los sistemas actuales.
+
+---
+
+#### 2. Continuidad lógica
+
+`NFR-REQ-001` definió criticidad y disponibilidad. `NFR-REQ-002` fijó carga y crecimiento. `NFR-REQ-003` estableció presupuestos temporales. `NFR-REQ-004` determinó qué puede existir localmente y cómo se sincroniza. Antes de definir retención en `NFR-REQ-006`, debe establecerse qué información existe, qué tan sensible es, para qué se usa y bajo qué límites puede mostrarse, copiarse, transmitirse o persistirse.
+
+```text
+PROCESO, ACTOR Y FINALIDAD
+        ↓
+INFORMACIÓN MÍNIMA NECESARIA
+        ↓
+CLASIFICACIÓN Y SENSIBILIDAD
+        ↓
+REGLAS DE MANEJO Y EXPOSICIÓN
+        ↓
+RETENCIÓN, TRAZABILIDAD Y DISPOSICIÓN
+```
+
+---
+
+#### 3. Alcance
+
+El contrato aplica a:
+
+- datos estructurados y no estructurados;
+- documentos, imágenes, audio, video y evidencia;
+- identificadores, metadatos, relaciones y timestamps;
+- datos calculados, inferidos, agregados y perfiles;
+- payloads, eventos, receipts, colas y cachés;
+- logs, trazas, métricas, alertas y volcados de diagnóstico;
+- archivos descargados, impresos, exportados o compartidos;
+- datos en producción, staging, desarrollo, pruebas y soporte;
+- información alojada por aplicaciones propias o terceros;
+- datos observados, capturados offline o pendientes de sincronización.
+
+No se limita a datos personales. Recetas, precios, costos, credenciales, configuraciones, investigaciones, hallazgos de seguridad y decisiones empresariales también pueden requerir manejo restringido.
+
+---
+
+#### 4. Principios obligatorios
+
+1. **Finalidad explícita:** todo uso deberá responder a una finalidad empresarial identificable.
+2. **Minimización:** cada consumidor recibirá solo campos, precisión, periodo y población necesarios.
+3. **Necesidad de conocer:** pertenecer a un área o tener acceso a una pantalla no concede acceso total.
+4. **Separación de deberes:** consulta, modificación, aprobación, exportación y administración tendrán permisos diferenciados.
+5. **Protección por defecto:** una categoría desconocida no se tratará como pública ni de bajo riesgo.
+6. **Contexto efectivo:** actor, sede, área, turno, dispositivo, relación con el caso y estado condicionarán la exposición.
+7. **Propagación de sensibilidad:** copias, derivados, joins, cachés y exportaciones heredarán o elevarán la clasificación.
+8. **No exposición indirecta:** conteos pequeños, nombres de archivo, URLs, errores, logs y metadatos no podrán eludir el control principal.
+9. **Reversibilidad controlada:** enmascarar o seudonimizar no equivale a anonimizar.
+10. **Evidencia proporcional:** la prueba del control no deberá reproducir innecesariamente el dato protegido.
+
+---
+
+#### 5. Modelo de clasificación
+
+Se adopta la siguiente escala inicial:
+
+| Clase | Nombre | Descripción | Ejemplos orientativos |
+| --- | --- | --- | --- |
+| `S0_PUBLIC` | pública | divulgación aprobada para audiencia abierta | menús publicados, horarios públicos, contenido comercial aprobado |
+| `S1_INTERNAL` | interna | operación ordinaria sin divulgación externa | instrucciones generales, catálogos internos, estados operativos no sensibles |
+| `S2_CONFIDENTIAL` | confidencial | acceso limitado por función, sede, relación o finalidad | datos de proveedores, precios acordados, casos de cliente, rutas internas |
+| `S3_RESTRICTED` | restringida | daño alto por exposición, alteración o correlación | información laboral, financiera, disciplinaria, investigación, ubicación individual |
+| `S4_HIGHLY_RESTRICTED` | altamente restringida | secretos, salud, credenciales o información cuyo compromiso exige contención inmediata | credenciales, secretos, tokens, PIN, datos médicos, evidencia especialmente sensible |
+
+La clase se asignará al nivel más específico útil: campo, atributo, documento, evento, expediente, agregado, archivo o conjunto. Una tabla o aplicación no tendrá necesariamente una sola sensibilidad.
+
+---
+
+#### 6. Dimensiones de evaluación
+
+La clasificación deberá considerar conjuntamente:
+
+- identificabilidad directa e indirecta;
+- población afectada y posibilidad de reidentificación;
+- naturaleza laboral, médica, financiera, comercial, técnica o de seguridad;
+- daño físico, económico, reputacional, laboral u operacional;
+- obligación contractual, regulatoria o de confidencialidad aplicable;
+- precisión, granularidad, vigencia y contexto temporal;
+- facilidad de copia, agregación, cruce o difusión;
+- relación entre actor, titular, caso, sede y finalidad;
+- exposición a terceros, dispositivos compartidos y canales externos;
+- sensibilidad adquirida por inferencia o combinación.
+
+La clasificación más restrictiva aplicable prevalecerá hasta que exista una reclasificación explícita y aprobada.
+
+---
+
+#### 7. Categorías mínimas de información
+
+| Categoría | Clase inicial mínima | Regla principal |
+| --- | --- | --- |
+| contenido público aprobado | `S0_PUBLIC` | solo la versión publicada y vigente es pública |
+| operación interna ordinaria | `S1_INTERNAL` | no divulgar externamente por defecto |
+| clientes, contactos y consentimientos | `S2_CONFIDENTIAL` | finalidad, relación y canal autorizados |
+| proveedores, contratos y condiciones | `S2_CONFIDENTIAL` | proyección mínima según compra, pago o evaluación |
+| trabajadores, turnos, asistencia y expedientes | `S3_RESTRICTED` | acceso propio o funcional estrictamente delimitado |
+| nómina, pagos, cuentas y decisiones financieras | `S3_RESTRICTED` | segregación, enmascaramiento y exportación controlada |
+| SST, salud, investigaciones y declaraciones | `S4_HIGHLY_RESTRICTED` | aislamiento por caso, participación y finalidad |
+| credenciales, secretos, tokens, PIN y llaves | `S4_HIGHLY_RESTRICTED` | nunca exponer en UI, logs, analytics ni archivos ordinarios |
+| recetas, fórmulas, costos y conocimiento propietario | `S2_CONFIDENTIAL` | acceso por función, versión y necesidad productiva |
+| vulnerabilidades, incidentes y configuraciones sensibles | `S3_RESTRICTED` | divulgación mínima y coordinación de contención |
+| telemetría y auditoría identificable | `S2_CONFIDENTIAL` | minimizar payload y restringir drill-down |
+| evidencia, firmas y documentos | clase del contenido o superior | metadatos y copias heredan sensibilidad |
+
+La clasificación definitiva corresponde a `INFO-DOM-001`, `INFO-DOM-002`, `INFO-DOM-008` y contratos posteriores. Esta tarea fija el mínimo no funcional que esos contratos no podrán degradar.
+
+---
+
+#### 8. Sobre obligatorio de manejo
+
+Cada categoría o proyección sensible deberá poder declarar:
+
+```text
+classification
+information_owner
+custodian
+purpose
+allowed_actor_and_context
+allowed_fields
+masking_rule
+allowed_channels
+local_storage_policy
+offline_policy
+export_policy
+third_party_policy
+logging_policy
+retention_policy_reference
+disposal_policy_reference
+incident_route
+classification_version
+```
+
+La ausencia del sobre o de una referencia resoluble bloqueará la exposición o utilizará la política más restrictiva; nunca habilitará un fallback amplio.
+
+---
+
+#### 9. Minimización por proyección
+
+Las aplicaciones consumidoras no recibirán modelos completos para ocultar campos únicamente en la interfaz. Cada consulta, RPC, evento, exportación y payload deberá usar una proyección adecuada a la acción.
+
+```text
+SELECT * + OCULTAR EN UI
+= CONTROL INVÁLIDO
+
+PROYECCIÓN MÍNIMA
++ AUTORIZACIÓN EN SERVIDOR
++ PRESENTACIÓN SEGURA
+= FRONTERA ACEPTABLE
+```
+
+Se minimizarán también:
+
+- longitud y precisión;
+- rango temporal;
+- número de registros;
+- población y granularidad geográfica;
+- adjuntos y metadatos;
+- identificadores correlacionables;
+- campos utilizados solo para depuración.
+
+---
+
+#### 10. Identificadores, seudonimización y anonimización
+
+Eliminar nombre, correo o documento no será suficiente si sede, turno, rol, timestamps, trayectoria, caso o combinación de atributos permiten reconocer a una persona.
+
+- **enmascaramiento:** reduce exposición visual, pero conserva el dato original;
+- **tokenización:** sustituye un valor mediante referencia controlada;
+- **seudonimización:** reduce asociación directa, pero puede ser reversible bajo control;
+- **anonimización:** exige riesgo de reidentificación suficientemente reducido y evaluación documentada;
+- **agregación:** no será segura si grupos pequeños o filtros permiten inferencia.
+
+Ninguna interfaz o reporte podrá denominar “anónimo” a un conjunto únicamente porque omitió un identificador directo.
+
+---
+
+#### 11. Exposición en interfaz
+
+La interfaz deberá:
+
+- mostrar únicamente campos necesarios para la tarea activa;
+- enmascarar valores cuando la función no requiera el dato completo;
+- impedir revelado por hover, HTML, atributos accesibles, autocomplete o código fuente;
+- ocultar contenido durante cambio de actor, bloqueo o expiración;
+- evitar información sensible en títulos, URLs, notificaciones y vistas previas;
+- distinguir ausencia de permiso de ausencia del dato sin filtrar su existencia;
+- aplicar protección equivalente en escritorio, móvil, kiosco, impresión y accesibilidad.
+
+Ocultar visualmente no sustituirá autorización de servidor, RLS, RPC ni política de almacenamiento.
+
+---
+
+#### 12. Dispositivos compartidos y trabajo offline
+
+`NFR-REQ-004` queda restringida por estas reglas:
+
+- `S4_HIGHLY_RESTRICTED` será online por defecto y no persistirá localmente salvo excepción explícita;
+- `S3_RESTRICTED` exigirá cifrado, aislamiento por actor, expiración y borrado verificable;
+- ninguna cola transferirá información entre actores, áreas o sesiones;
+- logout, cambio de turno, revocación y pérdida de contexto bloquearán visualización y sincronización;
+- notificaciones locales no expondrán contenido sensible;
+- thumbnails, cachés del sistema, archivos temporales y portapapeles respetarán la misma clasificación;
+- una copia offline conservará finalidad, clasificación y versión de política.
+
+El detalle físico de cifrado y almacenamiento se materializará en arquitectura y paquetes E5; esta tarea define el resultado obligatorio.
+
+---
+
+#### 13. Logs, métricas, trazas y soporte
+
+No deberán aparecer secretos, tokens, PIN, credenciales, payloads completos ni documentos en logs. Para información sensible se aplicarán allowlists de campos, redacción y correlación mediante identificadores no reveladores.
+
+Los sistemas de observabilidad deberán:
+
+- separar correlación técnica de identidad visible;
+- limitar búsqueda y drill-down;
+- evitar cardinalidad basada en datos personales;
+- impedir que mensajes de error reproduzcan entradas sensibles;
+- registrar accesos administrativos a evidencia de diagnóstico;
+- aplicar sensibilidad y retención también a dumps, screenshots y sesiones de soporte.
+
+`NFR-REQ-009` definirá métricas y alertas; no podrá ampliar el contenido permitido por esta tarea.
+
+---
+
+#### 14. Exportaciones, reportes e impresión
+
+Toda exportación deberá declarar finalidad, actor, alcance, filtros, columnas, clasificación, destino, vigencia y evidencia. El permiso de consulta ordinaria no concederá automáticamente permiso de exportación masiva.
+
+Guardrails:
+
+- límites de volumen y población;
+- supresión o agrupación de celdas pequeñas;
+- enmascaramiento de columnas no necesarias;
+- marca de clasificación y contexto cuando aplique;
+- descarga mediante enlace temporal y no adivinable;
+- prohibición de índices públicos y URLs persistentes;
+- control de copias impresas y archivos temporales;
+- revocación del acceso futuro sin prometer borrar copias legítimamente custodiadas.
+
+---
+
+#### 15. Integraciones y terceros
+
+Antes de transmitir información a otra aplicación o tercero se verificará:
+
+1. finalidad y autoridad de la transferencia;
+2. campos mínimos y clasificación;
+3. identidad del receptor y ambiente;
+4. canal y protección requeridos;
+5. restricciones de reutilización;
+6. tratamiento de errores, reintentos y dead-letter;
+7. subencargados o destinos adicionales;
+8. retorno, revocación, expiración y evidencia.
+
+Una integración no recibirá secretos internos ni payloads completos por comodidad técnica. Webhooks, correo, mensajería, analytics y herramientas de soporte se consideran canales externos hasta que exista contrato aprobado.
+
+---
+
+#### 16. Datos de prueba y ambientes no productivos
+
+Producción no se copiará íntegramente a desarrollo, demos, CI o pruebas. Se preferirán datos sintéticos. Cuando un escenario exija información representativa:
+
+- se minimizará y transformará antes de salir del entorno autorizado;
+- se documentará la necesidad;
+- se limitarán usuarios y duración;
+- se impedirá envío de mensajes o acciones reales;
+- se verificará eliminación según `NFR-REQ-006`;
+- las evidencias de prueba no incluirán secretos ni datos innecesarios.
+
+Capturas de pantalla, grabaciones y archivos usados para soporte conservarán la clasificación del contenido.
+
+---
+
+#### 17. Secretos y credenciales
+
+Contraseñas, tokens, refresh tokens, API keys, llaves privadas, PIN, códigos de recuperación y secretos de firma:
+
+- no se almacenarán en texto claro;
+- no se mostrarán nuevamente después de su creación salvo contrato específico;
+- no viajarán en URLs, analytics, logs ni mensajes ordinarios;
+- no se compartirán entre ambientes;
+- tendrán propietario, alcance, rotación y revocación;
+- no se incluirán en datos de negocio, evidencia o exportaciones;
+- utilizarán mecanismos de custodia especializados definidos en arquitectura.
+
+La presencia de un secreto en una fuente no reclasificará esa fuente como almacenamiento aceptable; obligará a retirar y contener.
+
+---
+
+#### 18. Datos derivados, analítica e inferencias
+
+Un resultado agregado o calculado podrá ser más sensible que sus entradas. Segmentos pequeños, desempeño individual, fraude, salud, productividad, comportamiento, ubicación y combinaciones entre aplicaciones exigirán evaluación de inferencia.
+
+Se prohíbe:
+
+- crear perfiles nuevos sin finalidad y propietario;
+- usar telemetría operativa para disciplina individual sin contrato aprobado;
+- atribuir fallas de red o dispositivo al trabajador;
+- permitir drill-down hasta personas cuando solo se autorizó análisis agregado;
+- tratar una predicción como hecho confirmado;
+- reutilizar datos recolectados para una finalidad incompatible por conveniencia analítica.
+
+---
+
+#### 19. Consentimiento, avisos y derechos
+
+Cuando una finalidad dependa de consentimiento o autorización revocable:
+
+- el sistema distinguirá aceptación, rechazo, retiro, expiración y versión;
+- retirar consentimiento bloqueará usos futuros aplicables;
+- la evidencia histórica no se sobrescribirá;
+- no se agruparán finalidades independientes en una única aceptación;
+- la denegación no degradará servicios que no requieran legítimamente ese uso.
+
+El fundamento, los avisos, las solicitudes de acceso, rectificación, revocación o supresión y los requerimientos de autoridad serán definidos por `INFO-DOM-008` a `INFO-DOM-010`. Esta tarea no inventa obligaciones jurídicas.
+
+---
+
+#### 20. Cambio de clasificación
+
+Toda reclasificación deberá conservar:
+
+- clase anterior y nueva;
+- motivo y alcance;
+- actor autorizador;
+- fecha efectiva;
+- versión de política;
+- copias, derivados y consumidores afectados;
+- medidas de migración;
+- evidencia de que no quedaron proyecciones incompatibles.
+
+La publicación de un documento no convierte en públicos sus borradores, comentarios, metadatos, fuentes o historial. El vencimiento de una finalidad no equivale automáticamente a eliminación; `NFR-REQ-006` resolverá retención y disposición.
+
+---
+
+#### 21. Frontera con autorización
+
+`AUTH-*` decide quién puede ejecutar una acción bajo un contexto. `NFR-REQ-005` limita qué información necesita esa acción y cómo puede exponerse.
+
+```text
+DECISIÓN DE AUTORIZACIÓN
+        ↓
+PROYECCIÓN MÍNIMA
+        ↓
+REGLAS DE MANEJO
+        ↓
+PRESENTACIÓN, TRANSMISIÓN O PERSISTENCIA
+```
+
+URL directa, manipulación de cliente, RPC, RLS, exportación, caché, búsqueda, autocomplete y soporte deberán producir el mismo límite de información.
+
+---
+
+#### 22. Perfil inicial por familias de proceso
+
+| Familia | Procesos | Sensibilidad dominante | Restricción inicial |
+| --- | --- | --- | --- |
+| gobierno, riesgo y autoridades | `VPROC-0001` a `VPROC-0004`; `VPROC-0063`; `VPROC-0064`; `VPROC-0069` | `S2` a `S3` | acceso por expediente, finalidad y segregación |
+| talento y ciclo laboral | `VPROC-0005` a `VPROC-0011`; `VPROC-0065`; `VPROC-0066` | `S3` a `S4` | proyección individual, aislamiento y no exposición masiva |
+| SST, salud y emergencias | `VPROC-0012` a `VPROC-0014` | `S4` | acceso por participación y mínima información médica |
+| maestros, recetas y producto | `VPROC-0015` a `VPROC-0018` | `S1` a `S3` | separar publicación de conocimiento propietario |
+| proveedores y compras | `VPROC-0019` a `VPROC-0022` | `S2` a `S3` | condiciones, cuentas y evaluaciones restringidas |
+| inventario, activos y custodia | `VPROC-0023` a `VPROC-0032`; `VPROC-0067` | `S1` a `S3` | ubicación, responsable y diferencias por necesidad |
+| producción y calidad | `VPROC-0033` a `VPROC-0037` | `S1` a `S3` | fórmulas, lotes, hallazgos y evidencia delimitados |
+| venta, caja y clientes | `VPROC-0038` a `VPROC-0047`; `VPROC-0068` | `S2` a `S4` | separar identidad, pago, fidelización y reclamo |
+| logística y terceros | `VPROC-0048` a `VPROC-0050` | `S2` a `S3` | ubicación y prueba de entrega mínimas |
+| finanzas y costos | `VPROC-0051` a `VPROC-0054` | `S3` | segregación, enmascaramiento y exportación reforzada |
+| instalaciones y marketing | `VPROC-0055` a `VPROC-0057` | `S1` a `S3` | separar contenido público de contratos, incidentes y leads |
+| tecnología y accesos | `VPROC-0058`; `VPROC-0059` | `S3` a `S4` | secretos fuera de tickets y diagnóstico mínimo |
+| documentos, analítica y continuidad | `VPROC-0060` a `VPROC-0062` | clase del contenido o superior | herencia, agregación segura y acceso excepcional auditado |
+
+Cada uno de los 69 procesos deberá materializar una fila individual antes de su paquete E5. La agrupación anterior no autoriza una clase uniforme cuando una etapa o campo requiera mayor protección.
+
+---
+
+#### 23. Matriz obligatoria por proceso
+
+`NFR-PROCESS-PRIVACY-PROFILE-001` deberá cubrir exactamente `VPROC-0001` a `VPROC-0069` con:
+
+- categorías de información;
+- clase mínima y posibles elevaciones;
+- finalidad;
+- titulares o sujetos relacionados;
+- propietario y custodio;
+- actores y contextos autorizados;
+- campos y granularidad mínima;
+- reglas de enmascaramiento;
+- exposición en UI;
+- caché y offline;
+- logs y observabilidad;
+- exportación e impresión;
+- integración o tercero;
+- retención referenciada;
+- riesgo de agregación e inferencia;
+- prueba y evidencia propietarias.
+
+No se certificará un proceso con una celda “no aplica” sin justificación verificable.
+
+---
+
+#### 24. Pruebas obligatorias
+
+Cada capacidad aplicable deberá probar:
+
+1. actor autorizado para acción pero no para campo sensible;
+2. acceso entre sedes, áreas, casos y titulares;
+3. URL, formulario, RPC y payload manipulados;
+4. búsqueda y autocomplete sin filtración;
+5. lista, detalle, conteo, exportación e impresión;
+6. cambio de actor en dispositivo compartido;
+7. bloqueo, background, screenshot y notificación;
+8. caché, borrador, outbox y reconexión;
+9. revocación con datos pendientes;
+10. logs, trazas, errores y analytics;
+11. archivos, thumbnails, nombres y metadatos;
+12. agregados pequeños y reidentificación;
+13. ambientes no productivos y datos sintéticos;
+14. integración, webhook y tercero;
+15. secreto introducido accidentalmente;
+16. reclasificación y propagación a derivados;
+17. consentimiento retirado o finalidad expirada;
+18. soporte técnico y acceso administrativo;
+19. accesibilidad sin revelar información adicional;
+20. concurrencia entre versiones de política.
+
+Las pruebas físicas pertenecen a paquetes E5, `AUTH-QA-*`, `UX-QA-*`, `SHELL-CI-*`, `INFO-DOM-*`, `EVID-ARC-*`, `OBS-ARC-*`, `QUEUE-ARC-*` y tareas por aplicación.
+
+---
+
+#### 25. Guardrails
+
+```text
+SECRETOS EN LOGS, ANALYTICS O URL = 0
+S4 PERSISTIDO LOCALMENTE SIN EXCEPCIÓN = 0
+EXPORTACIÓN MASIVA POR PERMISO DE CONSULTA = 0
+DATOS PRODUCTIVOS ÍNTEGROS EN CI O DEMO = 0
+CAMBIO DE ACTOR CON DATOS DEL ACTOR ANTERIOR VISIBLES = 0
+PROYECCIÓN COMPLETA OCULTADA SOLO EN UI = 0
+CLASIFICACIÓN DESCONOCIDA TRATADA COMO PÚBLICA = 0
+ANONIMIZACIÓN DECLARADA SIN EVALUAR REIDENTIFICACIÓN = 0
+```
+
+Los umbrales de monitoreo se definirán en `NFR-REQ-009`; estos valores expresan prohibiciones de diseño.
+
+---
+
+#### 26. Propiedad de decisiones posteriores
+
+| Decisión | Tarea propietaria |
+| --- | --- |
+| inventario, propietarios, custodios y clasificación definitiva | `INFO-DOM-001`; `INFO-DOM-002` |
+| documentos, autenticidad, firmas y evidencia | `INFO-DOM-003` a `INFO-DOM-007`; `INFO-DOM-011`; `EVID-ARC-*` |
+| avisos, consentimiento y derechos | `INFO-DOM-008` a `INFO-DOM-010` |
+| retención, hold, anonimización y eliminación | `NFR-REQ-006`; `INFO-DOM-006` |
+| autorización de servidor, RLS y RPC | `AUTH-SRV-*`; `AUTH-DB-*`; `SUPA-ARC-*` |
+| dispositivos y credenciales | `AUTH-DEV-*`; `NFR-REQ-008`; `NFR-REQ-011` |
+| offline, colas y sincronización | `NFR-REQ-004`; `QUEUE-ARC-*` |
+| observabilidad, soporte y alertas | `NFR-REQ-009`; `OBS-ARC-*` |
+| cifrado, secretos y arquitectura física | bloques E3/E4; `SUPA-ARC-*`; paquetes E5 |
+| experiencia, masking y accesibilidad | `NFR-REQ-007`; `UX-BASE-*`; `UX-QA-*` |
+| integraciones y terceros | `INT-APP-*`; `INT-EXT-*`; BLOQUE X |
+| certificación por aplicación | `DELIV-PKG-*`; tareas `*-AUTH-*`; BLOQUE U |
+
+No se declara una tecnología, proveedor, algoritmo, plazo de retención ni fundamento jurídico sin su tarea propietaria.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+Esta propuesta incorpora al registro canónico completo:
+
+```text
+TREQ-PROC-325 a TREQ-PROC-354
+```
+
+Cobertura:
+
+1. finalidad y minimización;
+2. clasificación `S0` a `S4`;
+3. sensibilidad por campo y no por aplicación;
+4. herencia y elevación;
+5. sobre de manejo;
+6. proyecciones mínimas;
+7. enmascaramiento y no filtración indirecta;
+8. seudonimización, anonimización y reidentificación;
+9. UI y accesibilidad;
+10. dispositivos compartidos;
+11. offline y almacenamiento local;
+12. logs, trazas y errores;
+13. exportaciones e impresión;
+14. archivos y metadatos;
+15. integraciones y terceros;
+16. datos de prueba;
+17. secretos y credenciales;
+18. datos derivados e inferencias;
+19. consentimiento y finalidad;
+20. reclasificación;
+21. autorización más proyección;
+22. SST y salud;
+23. talento y desempeño;
+24. clientes y fidelización;
+25. pagos y finanzas;
+26. recetas y conocimiento propietario;
+27. observabilidad y soporte;
+28. clasificación por 69 procesos;
+29. guardrails y regresión;
+30. gobierno, evidencia y certificación.
+
+Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-005` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+
+---
+
+#### 28. Criterios de aceptación
+
+- [ ] Se distinguen privacidad, confidencialidad, autorización, cifrado, minimización y anonimización.
+- [ ] Las clases `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` tienen límites inequívocos.
+- [ ] La clasificación puede aplicarse a campo, documento, evento, metadato, agregado y derivado.
+- [ ] Una clasificación desconocida usa política restrictiva.
+- [ ] Copias, joins, exportaciones y derivados heredan o elevan sensibilidad.
+- [ ] Cada consumidor recibe una proyección mínima autorizada.
+- [ ] Se cubren UI, caché, offline, logs, métricas, exportaciones, archivos, integraciones y soporte.
+- [ ] Los secretos quedan fuera de datos empresariales, URLs, logs y analytics.
+- [ ] Se distinguen masking, tokenización, seudonimización, anonimización y agregación.
+- [ ] Dispositivos compartidos aíslan actor, contexto y datos locales.
+- [ ] Producción no se replica íntegramente a ambientes no productivos.
+- [ ] Consentimiento, finalidad y revocación no se confunden con retención o eliminación.
+- [ ] Los 69 procesos deberán tener perfil individual antes de implementación.
+- [ ] Se incorporan `TREQ-PROC-325` a `TREQ-PROC-354` al `04A` completo con evidencia de propuesta.
+- [ ] No se implementan código, cifrado, migraciones, Supabase, políticas físicas ni despliegues.
+- [ ] `NFR-REQ-006` permanece no iniciada.
+
+---
+
+#### 29. Estado y continuidad
+
+```text
+NFR-REQ-003   APROBADA
+NFR-REQ-004   APROBADA
+NFR-REQ-005   PROPUESTA PARA APROBACIÓN
+NFR-REQ-006   NO INICIADA
+```
+
+La aprobación explícita de esta tarea congelará el contrato inicial de privacidad y sensibilidad. No certificará cumplimiento jurídico ni seguridad efectiva de ninguna implementación.
+
 ### [ ] NFR-REQ-006 — Definir trazabilidad y retención
 ### [ ] NFR-REQ-007 — Definir accesibilidad y ergonomía
 ### [ ] NFR-REQ-008 — Definir hardware, red y periféricos requeridos

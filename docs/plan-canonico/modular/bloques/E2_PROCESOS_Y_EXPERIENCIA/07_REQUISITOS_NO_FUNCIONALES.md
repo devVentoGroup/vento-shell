@@ -1700,8 +1700,1422 @@ NFR-REQ-004  NO INICIADA
 La aprobación de esta tarea congela los presupuestos iniciales e incorpora sus requisitos al registro canónico completo. No certifica que ninguna aplicación, consulta, integración o periférico ya cumpla dichos tiempos.
 
 
-### [ ] NFR-REQ-004 — Definir comportamiento offline y sincronización
-### [ ] NFR-REQ-005 — Definir privacidad y sensibilidad
+### ✅ NFR-REQ-004 — Definir comportamiento offline y sincronización
+
+**Estado:** APROBADA
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+**Tarea anterior:** `NFR-REQ-003 — Definir tiempos máximos de respuesta` — APROBADA
+**Siguiente tarea reservada:** `NFR-REQ-005 — Definir privacidad y sensibilidad` — NO INICIADA
+**Artefactos propuestos:** `NFR-OFFLINE-SYNC-CONTRACT-001`; `NFR-PROCESS-OFFLINE-MATRIX-001`; `NFR-LOCAL-OPERATION-ENVELOPE-001`; `NFR-SYNC-RECONCILIATION-POLICY-001`
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+**Naturaleza:** contrato no funcional de conectividad parcial, trabajo local, outbox, sincronización, idempotencia, conflicto y conciliación; no implementación de Service Workers, bases locales, colas ni infraestructura
+**Cambios en código, migraciones, Supabase, aplicaciones, dispositivos, red o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Convertir los principios aprobados en `UX-BASE-013` y `UX-BASE-014` en un contrato no funcional verificable por proceso, operación y estación, definiendo qué puede consultarse, redactarse, observarse, capturarse o ejecutarse cuando la conectividad o un servicio requerido no están plenamente disponibles, y cómo debe sincronizarse posteriormente sin duplicar efectos, perder atribución, ampliar autoridad ni ocultar conflictos.
+
+```text
+OFFLINE
+≠ COPIA LOCAL DE TODA LA APLICACIÓN
+
+SINCRONIZAR
+≠ REPRODUCIR CIEGAMENTE UNA LISTA DE REQUESTS
+
+CONECTIVIDAD RECUPERADA
+≠ SISTEMA LISTO PARA ENVIAR
+
+CAPTURA LOCAL
+≠ RESULTADO EMPRESARIAL CONFIRMADO
+
+REINTENTO
+≠ NUEVA OPERACIÓN
+```
+
+La aprobación de esta tarea congelará políticas y envolventes iniciales de diseño. No declarará que ninguna aplicación actual sea offline-capable ni autorizará persistencia local o ejecución diferida antes de implementar y probar los controles correspondientes.
+
+---
+
+#### 2. Continuidad lógica
+
+```text
+CRITICIDAD Y DISPONIBILIDAD
+NFR-REQ-001
+        +
+VOLUMEN, CONCURRENCIA Y CRECIMIENTO
+NFR-REQ-002
+        +
+RESPUESTA, TIMEOUT Y RESULTADO DESCONOCIDO
+NFR-REQ-003
+        +
+COMPORTAMIENTO HUMANO ANTE CONECTIVIDAD E INTERRUPCIÓN
+UX-BASE-013 Y UX-BASE-014
+        ↓
+POLÍTICA OFFLINE Y SINCRONIZACIÓN POR OPERACIÓN
+NFR-REQ-004
+        ↓
+PRIVACIDAD, RETENCIÓN, HARDWARE, OBSERVABILIDAD Y RECUPERACIÓN
+NFR-REQ-005 A NFR-REQ-011
+```
+
+`UX-BASE-013` ya establece estados visibles, frescura, autorización offline, orden causal, conflictos, contingencia y reconexión. `UX-BASE-014` establece checkpoints, reanudación y resultados desconocidos. Esta tarea no reabre esas decisiones: las traduce en perfiles obligatorios, límites medibles, prioridades de sincronización y una matriz de cobertura para los 69 procesos.
+
+---
+
+#### 3. Unidad de decisión
+
+La política offline pertenecerá a la operación y a su etapa, no a la aplicación completa.
+
+```text
+PROCESS_ID
++
+PROCESS_STEP
++
+OPERATION_ID
++
+BUSINESS_EFFECT
++
+ACTOR Y DISPOSITIVO
++
+RECURSO Y VERSIÓN
++
+FRESCURA REQUERIDA
++
+DEPENDENCIAS
++
+SENSIBILIDAD
+=
+PERFIL OFFLINE
+```
+
+Por tanto:
+
+```text
+NEXO ES OFFLINE
+FOGO ES OFFLINE
+PULSO ES OFFLINE
+```
+
+son afirmaciones inválidas. Una misma pantalla puede permitir consulta cacheada, captura local y una acción obligatoriamente en línea, cada una con estados y límites distintos.
+
+---
+
+#### 4. Vector de disponibilidad requerido
+
+La conectividad no se reducirá a `navigator.onLine` ni a la existencia de Wi-Fi. Cada operación declarará cuáles componentes necesita:
+
+```text
+TRANSPORTE DE RED
+SERVICIO DE IDENTIDAD Y SESIÓN
+RESOLUCIÓN DE ACCESS CONTEXT
+SERVICIO PROPIETARIO DEL DOMINIO
+SERVICIO DE SINCRONIZACIÓN
+RELOJ CONFIABLE
+ALMACENAMIENTO LOCAL SEGURO
+DEPENDENCIA EXTERNA
+PERIFÉRICO
+```
+
+Estados iniciales:
+
+```text
+ONLINE_STABLE
+ONLINE_DEGRADED
+PARTIAL_SERVICE
+OFFLINE_CONFIRMED
+CONNECTIVITY_UNKNOWN
+RECOVERING_SYNC
+SYNC_BLOCKED
+```
+
+Una operación solo se considerará disponible cuando todos sus componentes obligatorios estén utilizables o exista un perfil degradado aprobado. Wi-Fi conectado con Auth, Supabase, proveedor, datáfono o impresora indisponibles no será `ONLINE_STABLE`.
+
+---
+
+#### 5. Clases canónicas de capacidad offline
+
+| Clase                    | Nombre                          | Permite                                                                 | No permite por sí sola                                               |
+| ------------------------ | ------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `OF0_ONLINE_ONLY`        | únicamente en línea             | preparar información no persistente y explicar el bloqueo               | crear una intención durable ni afirmar efecto                        |
+| `OF1_CACHED_REFERENCE`   | referencia cacheada             | consultar una versión identificada con frescura visible                 | editar, publicar o tratar la caché como verdad vigente               |
+| `OF2_LOCAL_DRAFT`        | borrador local                  | redactar o preparar trabajo todavía no enviado                          | reservar recursos, cambiar estado ni producir efecto                 |
+| `OF3_LOCAL_CAPTURE`      | captura local revalidable       | registrar observaciones, evidencia o hechos físicos para revisión       | asumir aceptación, autorización o impacto empresarial                |
+| `OF4_LEASED_EXECUTION`   | ejecución offline bajo envelope | ejecutar un conjunto finito de operaciones previamente autorizadas      | ampliar alcance, extender vigencia o encadenar trabajo no autorizado |
+| `OF5_MANUAL_CONTINGENCY` | contingencia física gobernada   | mantener resultado mínimo mediante procedimiento numerado y conciliable | convertirse en canal digital alterno permanente                      |
+
+Una operación podrá combinar clases, pero deberá declarar cuál es aplicable a cada acción. `OF4` exige un envelope emitido previamente; `OF5` no equivale a una cola digital.
+
+---
+
+#### 6. Contrato mínimo de operación local
+
+Toda intención durable creada en el dispositivo deberá conservar, como mínimo:
+
+```text
+local_operation_id
+idempotency_key
+process_id
+process_step
+operation_kind
+business_effect_requested
+principal_id
+actor_id
+device_id
+context_id_observed
+site_id
+area_id
+shift_id
+checkin_id
+resource_refs[]
+observed_resource_versions[]
+authorization_envelope_ref
+schema_version
+payload_hash
+payload_minimized
+observed_at
+created_local_at
+queued_at
+dependency_operation_ids[]
+expires_at
+freshness_requirements[]
+sensitivity_class
+evidence_refs[]
+retry_count
+sync_priority
+sync_state
+last_sync_attempt_at
+last_error_class
+receipt_refs[]
+```
+
+La forma es documental. No autoriza una tabla, IndexedDB, SQLite, Service Worker, caché o proveedor concreto.
+
+---
+
+#### 7. Estados de una operación local
+
+```text
+DRAFT_LOCAL
+CAPTURED_LOCAL
+QUEUED
+WAITING_DEPENDENCY
+VALIDATING
+SYNCING
+ACCEPTED_PENDING_EFFECT
+CONFIRMED
+REJECTED
+CONFLICT
+RESULT_UNKNOWN
+EXPIRED
+SUPERSEDED
+QUARANTINED
+RECONCILIATION_REQUIRED
+DISCARDED_WITH_REASON
+```
+
+Reglas:
+
+- `CAPTURED_LOCAL` no se mostrará como guardado en servidor;
+- `QUEUED` no significa aceptado;
+- `ACCEPTED_PENDING_EFFECT` no significa terminado;
+- `CONFIRMED` exige receipt o estado autoritativo verificable;
+- `RESULT_UNKNOWN` bloquea un nuevo intento independiente;
+- `QUARANTINED` conserva el dato sin ejecutarlo cuando esquema, actor, autorización o versión no son compatibles;
+- ningún estado terminal se inferirá por ocultar una pantalla o reiniciar el dispositivo.
+
+---
+
+#### 8. Prioridades y deadlines de sincronización
+
+| Clase                | Regla                                                                                |            Objetivo inicial después de conectividad estable |
+| -------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------: |
+| `SYNC-0_BLOCKING`    | debe reconciliarse antes de cualquier acción dependiente                             |          sin operación dependiente hasta resultado terminal |
+| `SYNC-1_URGENT`      | seguridad, acceso, dinero, custodia, inventario o continuidad                        | inicio `≤ 15 s`; resultado o conflicto visible `≤ 60 s` p95 |
+| `SYNC-2_OPERATIONAL` | trabajo ordinario del turno que afecta colas o handoffs                              |        inicio `≤ 60 s`; resultado o conflicto `≤ 5 min` p95 |
+| `SYNC-3_CYCLE`       | debe quedar reconciliado antes de cierre, corte, publicación o cambio de responsable |                                deadline explícito del ciclo |
+| `SYNC-4_DEFERRED`    | borrador o actividad planificable sin efecto inmediato                               |         deadline explícito; nunca almacenamiento indefinido |
+
+El tiempo empieza después de confirmar conectividad estable, hora válida, sesión, dispositivo, contexto, esquema y servicios requeridos. No incluye el tiempo durante el cual una dependencia obligatoria sigue indisponible, pero ese periodo deberá permanecer visible y medirse por separado.
+
+---
+
+#### 9. Frescura y caché
+
+Se preservan las clases aprobadas:
+
+```text
+REAL_TIME_REQUIRED
+SHORT_LIVED
+SHIFT_SCOPED
+DAY_SCOPED
+VERSION_SCOPED
+REFERENCE_LONG_LIVED
+```
+
+Toda entrada cacheada declarará:
+
+```text
+source
+source_version
+fetched_at
+valid_until
+freshness_class
+scope
+sensitivity
+stale_behavior
+```
+
+Una versión expirada podrá permitir lectura histórica o referencia controlada, pero no habilitará una nueva mutación que requiera estado vigente. Permisos, claims, saldos, disponibilidad para prometer, custodia y estados transaccionales no se convertirán en autoridad por estar cacheados.
+
+---
+
+#### 10. Autorización offline
+
+`OF4_LEASED_EXECUTION` solo será admisible con un envelope verificable y finito que declare:
+
+```text
+actor
+dispositivo
+sitio y área
+capacidad exacta
+recurso o conjunto finito
+secuencia permitida
+límites cuantitativos
+emitido_en
+vence_en
+versión de política
+condiciones de revocación
+condiciones de revalidación
+```
+
+```text
+PERMISO CONOCIDO ANTES
+≠ PERMISO VÁLIDO AHORA
+
+ENVELOPE VENCIDO
+→ NO CREA NUEVAS MUTACIONES
+→ PUEDE CONSERVAR EVIDENCIA YA OBSERVADA
+```
+
+Al sincronizar se revalidarán identidad, vínculo, turno, check-in, contexto, dispositivo, permiso, denegaciones, recurso, versión y vigencia. Un rechazo de autorización no borrará una observación física; la enviará al estado de evidencia o conciliación que corresponda.
+
+---
+
+#### 11. Orden causal y dependencias
+
+La outbox no será una lista FIFO global. Cada operación declarará dependencias y partición lógica.
+
+```text
+SOLICITUD
+→ PREPARACIÓN
+→ CARGA
+→ ENTREGA
+→ RECEPCIÓN
+```
+
+Reglas:
+
+1. una operación dependiente no se sincroniza antes de su prerequisito;
+2. un rechazo terminal bloquea o reclasifica dependientes;
+3. operaciones independientes pueden avanzar;
+4. actores, áreas y contextos distintos no comparten una secuencia implícita;
+5. prioridad no altera causalidad;
+6. una operación `SUPERSEDED` nunca se ejecuta después;
+7. la cola conserva una secuencia estable por recurso cuando existe contención;
+8. el detalle físico de retry, backoff, dead-letter y workers pertenece a `QUEUE-ARC-001` a `QUEUE-ARC-012`.
+
+---
+
+#### 12. Secuencia canónica de reconexión
+
+```text
+1. ESTABILIZAR CONECTIVIDAD
+2. VERIFICAR HORA, DNS Y SERVICIOS REQUERIDOS
+3. REVALIDAR SESIÓN Y DISPOSITIVO
+4. RESOLVER ACCESS CONTEXT NUEVO
+5. DESCARGAR REVOCACIONES, VERSIONES Y POLÍTICAS
+6. VALIDAR ESQUEMA DE OPERACIONES LOCALES
+7. CONSULTAR RECEIPTS E IDEMPOTENCY KEYS
+8. CLASIFICAR PENDIENTES, EXPIRADOS Y CONFLICTOS
+9. ORDENAR POR DEPENDENCIA Y PRIORIDAD
+10. SINCRONIZAR SIN BLOQUEAR TRABAJO FOREGROUND
+11. DETENER LA RAMA AFECTADA ANTE CONFLICTO
+12. ACTUALIZAR PROYECCIONES
+13. MOSTRAR RESUMEN HUMANO Y PENDIENTES RESTANTES
+```
+
+Recuperar acceso a internet no enviará automáticamente toda la cola. La recuperación parcial de un servicio no habilitará operaciones que dependan de otro servicio todavía indisponible.
+
+---
+
+#### 13. Idempotencia, timeout y resultado desconocido
+
+Toda mutación durable tendrá una idempotency key estable desde antes del primer envío.
+
+```text
+TIMEOUT
+→ CONSULTAR RECEIPT
+→ CONSULTAR RECURSO
+→ REUTILIZAR LA MISMA INTENCIÓN
+→ NUNCA CREAR OTRA PARA “PROBAR”
+```
+
+Para pagos, inventario, producción, puntos, impresión, facturación, custodia, claims y handoffs:
+
+- un timeout produce `RESULT_UNKNOWN`;
+- un reintento conserva intención, actor, contexto, payload hash e idempotency key;
+- una respuesta tardía deberá reconciliarse con el estado visible;
+- el usuario no verá un CTA limpio que permita duplicar el efecto;
+- si no existe evidencia suficiente, la operación pasa a revisión o contingencia, no a éxito ni fallo inventados.
+
+---
+
+#### 14. Conflictos
+
+Clases mínimas:
+
+```text
+RESOURCE_VERSION_CONFLICT
+CONTEXT_CHANGED
+AUTHORIZATION_CHANGED
+DUPLICATE_OPERATION
+DEPENDENCY_REJECTED
+SCHEMA_INCOMPATIBLE
+BUSINESS_STATE_CHANGED
+QUANTITY_CONFLICT
+CUSTODY_CONFLICT
+TIME_WINDOW_EXPIRED
+CLOCK_INVALID
+LOCAL_STORAGE_CORRUPTED
+```
+
+Queda prohibido `last write wins` para efectos empresariales. Resoluciones permitidas, según proceso:
+
+```text
+ACCEPT_SERVER_STATE
+REAPPLY_ALLOWED_FIELDS
+CREATE_CORRECTION
+SPLIT_OPERATION
+ESCALATE
+DISCARD_LOCAL_DRAFT
+MANUAL_RECONCILIATION
+```
+
+El sistema explicará qué cambió, qué se conserva, qué no se ejecutó, si el hecho físico ocurrió, quién puede resolver y cuál es la siguiente acción segura.
+
+---
+
+#### 15. Capacidad, antigüedad y backpressure local
+
+Cada cola o almacén local declarará:
+
+```text
+max_operations
+max_bytes
+max_attachment_bytes
+max_age_by_operation
+warning_threshold
+hard_threshold
+eviction_policy
+quarantine_policy
+manual_contingency_trigger
+```
+
+Reglas:
+
+- no se descartará silenciosamente la operación más antigua;
+- no se reemplazará una operación por otra sin relación explícita de supersession;
+- al llegar al umbral de advertencia se mostrará riesgo y antigüedad;
+- al llegar al hard threshold se aplicará backpressure, solo lectura, pausa segura o contingencia;
+- evidencia obligatoria no se elimina para liberar espacio;
+- la capacidad se validará contra las bandas `L0` a `L4`, ráfagas y backlog de `NFR-REQ-002`.
+
+---
+
+#### 16. Aplicación, esquema y ciclo de vida
+
+Las operaciones deberán sobrevivir, según política, a recarga, suspensión, cierre accidental, reinicio y pérdida breve de energía. No se ejecutarán en segundo plano sin revalidar actor, envelope, dispositivo, esquema, red, cancelación y dependencias.
+
+Ante una actualización:
+
+```text
+ESQUEMA COMPATIBLE
+→ migrar y validar
+
+ESQUEMA TRANSFORMABLE
+→ transformar con versión y prueba
+
+ESQUEMA INCOMPATIBLE
+→ QUARANTINED
+→ conservar evidencia
+→ revisión o conciliación
+```
+
+Desinstalar, limpiar almacenamiento, cambiar de navegador o restablecer el dispositivo deberá tener una política explícita de advertencia, custodia y recuperación. `NFR-REQ-011` definirá compatibilidad mínima por dispositivo; `NFR-REQ-005` y `NFR-REQ-006` definirán sensibilidad y retención.
+
+---
+
+#### 17. Tiempo y orden de los hechos
+
+Se distinguirán:
+
+```text
+observed_at
+created_local_at
+first_send_at
+accepted_at
+business_effect_at
+confirmed_at
+reconciled_at
+```
+
+La hora de sincronización no reemplazará la hora de observación. Un reloj local fuera de tolerancia deberá marcar el dato, impedir operaciones sensibles dependientes del tiempo y usar orden de servidor o secuencia lógica cuando corresponda.
+
+---
+
+#### 18. Dispositivos compartidos y multiárea
+
+Toda partición local incluirá:
+
+```text
+DEVICE_ID
++
+ACTOR_ID
++
+CONTEXT_ID
++
+SITE_ID
++
+AREA_ID
+```
+
+Al cambiar de actor o área:
+
+- se detienen nuevas mutaciones de la partición anterior;
+- no se transfieren borradores, cola, claims ni custodia;
+- se protege la visibilidad de pendientes del actor anterior;
+- se resuelve una sesión y contexto nuevos;
+- las operaciones pendientes conservan atribución original;
+- sin mecanismo de identidad offline aprobado, la estación pasa a consulta o contingencia.
+
+En los POS táctiles de Repostería y Pastelería y Tortas, cada operación conservará área exacta, receta versionada, lote, actor y cola separados. Un selector local nunca amplía permiso ni convierte las áreas en una sola.
+
+---
+
+#### 19. Archivos y evidencia
+
+Estados mínimos:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+QUARANTINED
+```
+
+- un archivo subido parcialmente no es evidencia confirmada;
+- hash, operation ID o clave estable evitan duplicados;
+- el recurso no se cierra si falta evidencia obligatoria;
+- tamaño, tipo, sensibilidad y retención se validan antes y después de subir;
+- la evidencia se vincula al hecho observado, no solo a la hora de upload;
+- la eliminación local posterior exige confirmación y política aprobada.
+
+---
+
+#### 20. Periféricos e integraciones parciales
+
+Backend, impresora, escáner, datáfono, cámara, balanza y proveedor externo tendrán estados independientes.
+
+```text
+BACKEND OFFLINE + IMPRESORA LOCAL DISPONIBLE
+≠ IMPRESIÓN EMPRESARIAL CONFIRMADA
+
+BACKEND ONLINE + DATÁFONO SIN RESPUESTA
+≠ PAGO FALLIDO
+```
+
+Cada interacción declarará comando, receipt, ejecución física, resultado conocido o desconocido, posibilidad de reintento y conciliación. Los límites físicos y de red corresponden a `NFR-REQ-008`; contratos de integración a `INT-APP-*` e `INT-EXT-*`.
+
+---
+
+#### 21. Contingencia manual
+
+Toda contingencia deberá definir:
+
+```text
+condición de activación
+responsable
+formato o identificador
+numeración
+datos mínimos
+control de duplicados
+custodia
+momento y actor del hecho
+momento de digitalización
+responsable de conciliación
+criterio de cierre
+```
+
+La digitalización posterior no copiará ciegamente: consultará si el efecto ya existe, relacionará el soporte, preservará actor original, distinguirá observación, transcripción y aprobación, y cerrará la contingencia solo después de reconciliar.
+
+---
+
+#### 22. Matriz inicial por proceso
+
+La matriz clasifica la envolvente de diseño. No afirma que el flujo actual esté implementado, cifrado, probado o certificado para operar offline.
+
+| Proceso                                                                                                                                         | Perfil offline inicial                                                                     | Prioridad de sincronización | Frontera obligatoriamente en línea                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | --------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` — Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento                                  | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-3_CYCLE`              | La aprobación, asignación definitiva y cierre requieren confirmación en línea.                                |
+| `VPROC-0002` — Mantener estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas                    | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-4_DEFERRED`           | Las modificaciones maestras y su publicación son únicamente en línea.                                         |
+| `VPROC-0003` — Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes                            | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La edición, delegación y revocación requieren confirmación autoritativa en línea.                             |
+| `VPROC-0004` — Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas                                                  | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-2_OPERATIONAL`        | El handoff, la aceptación y el cambio de responsable son en línea o quedan en conciliación.                   |
+| `VPROC-0005` — Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo                               | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-4_DEFERRED`           | Publicación, decisión y creación de vínculo requieren estado autoritativo en línea.                           |
+| `VPROC-0006` — Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona                               | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | Habilitación, identidad laboral y accesos solo se confirman en línea.                                         |
+| `VPROC-0007` — Administrar asignaciones laborales y programación publicada con historial y revisión controlada                                  | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar, cambiar cobertura o sustituir un turno exige confirmación en línea.                                 |
+| `VPROC-0008` — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables                                           | `OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                                               | `SYNC-2_OPERATIONAL`        | La captura local conserva actor, dispositivo y hora; la corrección y aprobación son en línea.                 |
+| `VPROC-0009` — Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos                                             | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-2_OPERATIONAL`        | La aprobación y reasignación efectiva de cobertura requieren servicio autoritativo.                           |
+| `VPROC-0010` — Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                                                   | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-3_CYCLE`              | Cálculo final, aprobación, emisión y conciliación permanecen en línea.                                        |
+| `VPROC-0011` — Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                                                  | `OF1_CACHED_REFERENCE + OF5_MANUAL_CONTINGENCY`                                            | `SYNC-1_URGENT`             | La revocación digital no puede simularse offline; la contención manual se reconcilia de inmediato.            |
+| `VPROC-0012` — Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Hallazgos críticos activan contención; el cierre y aceptación del riesgo son en línea.                        |
+| `VPROC-0013` — Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior                                    | `OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                                               | `SYNC-1_URGENT`             | La respuesta física no depende del sistema; el expediente se reconcilia sin perder hora ni actor.             |
+| `VPROC-0014` — Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados                                      | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La versión aplicable debe ser verificable; bloqueos y desviaciones críticas se reconcilian primero.           |
+| `VPROC-0015` — Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias                                                 | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-3_CYCLE`              | Crear, modificar o publicar maestros y equivalencias exige conexión.                                          |
+| `VPROC-0016` — Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas                                                       | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-1_URGENT`             | La receta aprobada puede consultarse por versión; aprobación y publicación son en línea.                      |
+| `VPROC-0017` — Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales                                          | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE`                                                 | `SYNC-1_URGENT`             | Publicar disponibilidad, precio u oferta exige confirmación y propagación en línea.                           |
+| `VPROC-0018` — Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto                                          | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La consulta offline solo usa versión vigente conocida; cambios y publicación son en línea.                    |
+| `VPROC-0019` — Capturar y priorizar necesidades de compra mediante una entrada única y trazable                                                 | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-3_CYCLE`              | La consolidación y priorización autoritativa se realizan al sincronizar.                                      |
+| `VPROC-0020` — Comparar proveedores y condiciones con evidencia suficiente para decidir                                                         | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | La selección, aprobación y compromiso económico requieren información vigente en línea.                       |
+| `VPROC-0021` — Aprobar y emitir compras separando flujo ordinario, urgencia y excepción                                                         | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Aprobar, emitir o modificar una orden de compra es únicamente en línea.                                       |
+| `VPROC-0022` — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica               | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La observación física puede capturarse; la recepción definitiva y efecto económico requieren conciliación.    |
+| `VPROC-0023` — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento                                                           | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | Los cambios de topología, estado o disponibilidad de ubicación son en línea.                                  |
+| `VPROC-0024` — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados                                                  | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-0_BLOCKING`           | Solo un envelope finito permite ejecución offline; el siguiente movimiento depende de reconciliación.         |
+| `VPROC-0025` — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino                                       | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                        | `SYNC-0_BLOCKING`           | No se promete stock ni se encadenan consumos sobre existencias no reconciliadas.                              |
+| `VPROC-0026` — Contar como observación, investigar diferencias y ajustar mediante decisión separada                                             | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-2_OPERATIONAL`        | El conteo se captura offline; investigar, aprobar y ajustar permanecen separados y en línea.                  |
+| `VPROC-0027` — Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición                                                 | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La contención física es inmediata; liberar, disponer o ajustar exige autoridad y conciliación.                |
+| `VPROC-0028` — Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa                                   | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-1_URGENT`             | Cada etapa conserva operación propia; handoff y recepción digital requieren confirmación o conciliación.      |
+| `VPROC-0029` — Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | La transferencia de custodia no se confirma localmente sin lease y aceptación posterior.                      |
+| `VPROC-0030` — Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos                                                 | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La inmovilización física puede ser inmediata; cierre, disposición y garantía se confirman en línea.           |
+| `VPROC-0031` — Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Kilometraje e incidencias pueden capturarse; habilitación y asignación vigente deben reconciliarse.           |
+| `VPROC-0032` — Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores                                      | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                        | `SYNC-2_OPERATIONAL`        | Entrega y retorno físicos se observan; custodia digital se confirma después de reconciliar.                   |
+| `VPROC-0033` — Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida                                             | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar o reprogramar producción requiere demanda e inventario vigentes.                                     |
+| `VPROC-0034` — Preparar materiales y ejecutar producción contra una versión aprobada                                                            | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | La receta versionada y el lote delimitan el envelope; consumos y resultados se reconcilian causalmente.       |
+| `VPROC-0035` — Inspeccionar y decidir liberación, retención, rechazo o corrección de producto                                                   | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-0_BLOCKING`           | La retención física puede aplicarse offline; liberar o rechazar definitivamente exige confirmación.           |
+| `VPROC-0036` — Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada                                                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                          | `SYNC-1_URGENT`             | Etiqueta y ubicación deben vincularse al lote; impresión local no equivale a registro confirmado.             |
+| `VPROC-0037` — Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo                                                     | `OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION`                                                 | `SYNC-2_OPERATIONAL`        | La captura puede continuar; el cierre del lote y los efectos de inventario esperan conciliación.              |
+| `VPROC-0038` — Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación                            | `OF1_CACHED_REFERENCE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                     | `SYNC-0_BLOCKING`           | Pedidos pueden operar bajo envelope; pago, cierre y resultado fiscal no admiten confirmación local ficticia.  |
+| `VPROC-0039` — Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados                                                   | `OF1_CACHED_REFERENCE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY`                     | `SYNC-0_BLOCKING`           | La entrega y el cobro deben quedar correlacionados; un datáfono sin respuesta produce resultado desconocido.  |
+| `VPROC-0040` — Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación                                     | `OF1_CACHED_REFERENCE`                                                                     | `SYNC-1_URGENT`             | La aceptación, deduplicación y transferencia de pedidos externos requieren conectividad con el canal.         |
+| `VPROC-0041` — Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B                           | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Aprobación de capacidad, facturación y compromiso contractual son en línea.                                   |
+| `VPROC-0042` — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos                               | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Modificar, anular, devolver o compensar efectos confirmados es únicamente en línea.                           |
+| `VPROC-0043` — Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable                                                     | `OF5_MANUAL_CONTINGENCY`                                                                   | `SYNC-0_BLOCKING`           | Pago y soporte fiscal son online por defecto; todo timeout queda como resultado desconocido.                  |
+| `VPROC-0044` — Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables                                                      | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                             | `SYNC-0_BLOCKING`           | El conteo puede capturarse; el cierre y cambio de responsable requieren confirmación autoritativa.            |
+| `VPROC-0045` — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados                                      | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-0_BLOCKING`           | Saldo, acumulación y redención nunca se confirman desde caché ni se duplican por reintento.                   |
+| `VPROC-0046` — Gestionar reclamo, devolución, compensación y aprendizaje de causa                                                               | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | La compensación y devolución son en línea; alertas de seguridad escalan a SYNC-1.                             |
+| `VPROC-0047` — Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento                                           | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | La reserva solo queda confirmada con capacidad autoritativa y receipt.                                        |
+| `VPROC-0048` — Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho                                                      | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Publicar ruta, asignar vehículo y liberar despacho requieren estado vigente.                                  |
+| `VPROC-0049` — Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente                                              | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY` | `SYNC-1_URGENT`             | Prueba de entrega puede capturarse localmente; custodia y cierre se reconcilian sin duplicar.                 |
+| `VPROC-0050` — Integrar entrega de tercero con seguimiento, prueba y conciliación interna                                                       | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-2_OPERATIONAL`        | Eventos del tercero son online; una observación manual no sustituye el estado del proveedor.                  |
+| `VPROC-0051` — Registrar hechos económicos desde eventos operativos y soportes correlacionados                                                  | `OF3_LOCAL_CAPTURE`                                                                        | `SYNC-1_URGENT`             | Los eventos pueden quedar en outbox; contabilización y efecto financiero son autoritativos en línea.          |
+| `VPROC-0052` — Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria                                                    | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-0_BLOCKING`           | Aprobación, pago, cancelación y conciliación bancaria son únicamente en línea.                                |
+| `VPROC-0053` — Gestionar cartera, cobro, recaudo, aplicación y diferencia                                                                       | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-1_URGENT`             | La evidencia puede capturarse; aplicar recaudo o compensar diferencias requiere confirmación.                 |
+| `VPROC-0054` — Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas                                        | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Cálculo final, publicación, cierre y versión presupuestal requieren procesamiento autoritativo.               |
+| `VPROC-0055` — Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones                          | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | Controles físicos continúan; hallazgos que condicionan apertura se reconcilian prioritariamente.              |
+| `VPROC-0056` — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro                                        | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | Aprobar, publicar o retirar contenido y promociones es en línea.                                              |
+| `VPROC-0057` — Convertir consultas y oportunidades de canales digitales en casos comerciales trazables                                          | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-3_CYCLE`              | La entrada automática depende del canal; la captura manual se deduplica al sincronizar.                       |
+| `VPROC-0058` — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento                            | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La contención puede ser manual; asignación, cierre y conocimiento se reconcilian con evidencia.               |
+| `VPROC-0059` — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación                                         | `OF1_CACHED_REFERENCE + OF5_MANUAL_CONTINGENCY`                                            | `SYNC-0_BLOCKING`           | Conceder, cambiar o revocar acceso es online; la contención manual no simula revocación completada.           |
+| `VPROC-0060` — Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia                                       | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-2_OPERATIONAL`        | Archivos usan estados propios; carga parcial o archivo local no equivale a evidencia vinculada.               |
+| `VPROC-0061` — Gestionar medición, análisis, decisión de mejora y verificación de resultado                                                     | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-4_DEFERRED`           | Agregaciones, publicación de resultados y decisiones se calculan con datos reconciliados.                     |
+| `VPROC-0062` — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje                         | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La operación mínima puede ser manual; la recuperación digital no se declara completa antes de conciliar.      |
+| `VPROC-0063` — Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado                         | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                               | `SYNC-3_CYCLE`              | Aceptar riesgo, cambiar tratamiento o cerrar acción requiere versión autoritativa.                            |
+| `VPROC-0064` — Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar propiedad interna          | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                               | `SYNC-3_CYCLE`              | La presentación formal y sus acuses dependen del canal o autoridad en línea.                                  |
+| `VPROC-0065` — Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con privacidad aprobada                    | `OF2_LOCAL_DRAFT`                                                                          | `SYNC-4_DEFERRED`           | Datos sensibles no persisten localmente salvo política cifrada; decisiones y publicación son en línea.        |
+| `VPROC-0066` — Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección                    | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF5_MANUAL_CONTINGENCY`                        | `SYNC-1_URGENT`             | La entrega física puede capturarse; habilitación de trabajo depende de evidencia reconciliada o contingencia. |
+| `VPROC-0067` — Definir kit, instancia, componentes, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor | `OF1_CACHED_REFERENCE + OF3_LOCAL_CAPTURE + OF4_LEASED_EXECUTION + OF5_MANUAL_CONTINGENCY` | `SYNC-2_OPERATIONAL`        | Completitud y custodia se capturan; préstamo, devolución y sustitución se reconcilian causalmente.            |
+| `VPROC-0068` — Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido        | `OF2_LOCAL_DRAFT + OF3_LOCAL_CAPTURE`                                                      | `SYNC-4_DEFERRED`           | Compensaciones y cambios de consentimiento son autoritativos en línea.                                        |
+| `VPROC-0069` — Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación                                | `OF1_CACHED_REFERENCE + OF2_LOCAL_DRAFT`                                                   | `SYNC-3_CYCLE`              | Aprobación, vigencia, consumo reservado y cierre de versión son en línea.                                     |
+
+---
+
+#### 23. Lectura de la matriz
+
+La columna de perfil es una clasificación inicial por proceso. Cada etapa deberá descomponerse antes de implementación. En particular:
+
+- `OF1` no permite mutar usando datos stale;
+- `OF2` no reserva ni bloquea recursos;
+- `OF3` captura hechos y evidencia, no decisiones finales;
+- `OF4` requiere envelope, límites, expiración e idempotencia;
+- `OF5` mantiene el resultado mínimo por un procedimiento físico gobernado;
+- `SYNC-0` bloquea trabajo dependiente hasta resolver;
+- una misma operación puede escalar de `SYNC-3` a `SYNC-1` por seguridad, inocuidad, acceso, dinero o custodia.
+
+---
+
+#### 24. Observabilidad mínima
+
+Sin definir todavía la plataforma física, deberán poder medirse:
+
+```text
+time_offline
+queue_depth
+queue_bytes
+oldest_pending_age
+sync_attempts
+sync_latency
+conflicts_by_class
+unknown_results
+duplicates_prevented
+operations_expired
+operations_quarantined
+manual_contingencies
+reconciliation_duration
+local_storage_pressure
+schema_migration_failures
+```
+
+Guardrails:
+
+```text
+EFECTO DUPLICADO POR REINTENTO = 0
+OPERACIÓN LOCAL MOSTRADA COMO CONFIRMADA = 0
+BORRADOR O COLA TRANSFERIDOS ENTRE ACTORES = 0
+MUTACIÓN CON ENVELOPE VENCIDO = 0
+CONFLICTO EMPRESARIAL RESUELTO POR LAST WRITE WINS = 0
+EVIDENCIA O PENDIENTE ELIMINADOS SILENCIOSAMENTE = 0
+```
+
+La instrumentación detallada, dashboards y alertas pertenecen a `NFR-REQ-009`, `OBS-ARC-*` y `QUEUE-ARC-011`. Las métricas no se utilizarán para atribuir al trabajador fallas de red o infraestructura.
+
+---
+
+#### 25. Pruebas obligatorias
+
+Cada capacidad aplicable deberá probar:
+
+1. red lenta y pérdida antes de enviar;
+2. pérdida durante envío;
+3. ejecución del servidor seguida de pérdida de respuesta;
+4. reconexión breve y nueva caída;
+5. servicio parcial;
+6. sesión expirada;
+7. permiso o dispositivo revocado;
+8. cambio de actor, área, turno y check-in;
+9. dos dispositivos sobre el mismo recurso;
+10. operación duplicada;
+11. dependencia rechazada;
+12. operación expirada;
+13. esquema antiguo y actualización con pendientes;
+14. almacenamiento cerca del límite, lleno y corrupto;
+15. reloj local incorrecto;
+16. reinicio y pérdida de energía;
+17. archivo parcialmente cargado;
+18. backend y periférico con disponibilidad divergente;
+19. backlog de reconexión bajo carga foreground;
+20. contingencia manual y reconciliación;
+21. cola multiárea en los POS del Centro de Producción;
+22. recuperación del checkpoint sin heredar autoridad.
+
+Las pruebas de implementación corresponden a los paquetes E5, `QUEUE-ARC-*`, `SHELL-CI-*`, bloques `R`, `T`, `U`, `UX-QA-*` y tareas por aplicación. Esta tarea solo congela el contrato.
+
+---
+
+#### 26. Propiedad de decisiones posteriores
+
+| Decisión                                        | Tarea propietaria                                                  |
+| ----------------------------------------------- | ------------------------------------------------------------------ |
+| sensibilidad, cifrado y minimización local      | `NFR-REQ-005`                                                      |
+| trazabilidad, retención y eliminación           | `NFR-REQ-006`                                                      |
+| accesibilidad de estados y conflictos           | `NFR-REQ-007`; `UX-QA-001` a `UX-QA-030`                           |
+| hardware, red, almacenamiento y periféricos     | `NFR-REQ-008`                                                      |
+| métricas, soporte y alertas                     | `NFR-REQ-009`; `OBS-ARC-*`                                         |
+| respaldo, RTO y RPO                             | `NFR-REQ-010`; `CONT-DOM-002` a `CONT-DOM-004`                     |
+| compatibilidad de dispositivo, navegador y SO   | `NFR-REQ-011`                                                      |
+| checkpoints y reanudación                       | `UX-BASE-014` y tareas de materialización por aplicación           |
+| identidad y límites del dispositivo             | `AUTH-DEV-001` a `AUTH-DEV-016`                                    |
+| contrato físico de colas, retries y dead-letter | `QUEUE-ARC-001` a `QUEUE-ARC-012`                                  |
+| integración entre aplicaciones y proveedores    | `INT-APP-001` a `INT-APP-010`; `INT-EXT-001` a `INT-EXT-020`       |
+| protección autoritativa de comandos             | `AUTH-SRV-*`; `AUTH-DB-*`; `SUPA-ARC-*`                            |
+| contingencia por estación                       | `UX-STATION-007`                                                   |
+| prototipo y prueba física                       | `UX-STATION-008`; tareas `*-UX-*`; `UX-QA-*`                       |
+| perfiles, capacidad y certificación por paquete | `DELIV-PKG-013`; `DELIV-PKG-016`; `DELIV-PKG-017`; `DELIV-PKG-025` |
+
+No queda una decisión diferida sin tarea o familia propietaria.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+Esta propuesta incorpora al registro canónico completo:
+
+```text
+TREQ-PROC-295 a TREQ-PROC-324
+```
+
+Cobertura:
+
+1. política por operación y no por aplicación;
+2. vector real de conectividad;
+3. clases `OF0` a `OF5`;
+4. estados visibles de operación local;
+5. envelope mínimo;
+6. idempotencia estable;
+7. orden causal y dependencias;
+8. frescura y caché;
+9. autorización offline finita;
+10. aislamiento por actor, dispositivo y área;
+11. privacidad de caché y almacenamiento;
+12. hora de observación y secuencia temporal;
+13. claims, custodia y handoffs online por defecto;
+14. acciones sensibles obligatoriamente online;
+15. resultado desconocido;
+16. conflictos sin `last write wins`;
+17. reconexión ordenada;
+18. ciclo de vida y reinicio;
+19. archivos y evidencia;
+20. periféricos e integraciones parciales;
+21. contingencia manual;
+22. capacidad local y backpressure;
+23. compatibilidad de esquema;
+24. integridad de reloj;
+25. servicios parcialmente disponibles;
+26. deadlines y prioridad de sincronización;
+27. prioridad del trabajo foreground frente al backlog;
+28. POS compartidos multiárea;
+29. matriz de `VPROC-0001` a `VPROC-0069`;
+30. pruebas de fallo, observabilidad, gobierno y certificación.
+
+Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-004` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+
+---
+
+#### 28. Criterios de aceptación
+
+- [ ] La política offline pertenece a operación, etapa, actor, dispositivo y efecto, no a la aplicación completa.
+- [ ] Se distingue conectividad, servicio, sesión, contexto, frescura, periférico y confirmación.
+- [ ] Las clases `OF0` a `OF5` tienen límites inequívocos.
+- [ ] El contrato local conserva identidad, idempotencia, contexto, versiones, dependencias, expiración y sensibilidad.
+- [ ] Los estados locales no se presentan como estados autoritativos.
+- [ ] Se definen prioridades `SYNC-0` a `SYNC-4` y deadlines verificables.
+- [ ] La caché conserva versión y frescura y nunca amplía autorización.
+- [ ] `OF4` exige envelope previamente emitido, finito y revalidable.
+- [ ] La outbox respeta dependencias, particiones y orden causal.
+- [ ] La reconexión revalida sesión, dispositivo, contexto, políticas, esquema y receipts antes de enviar.
+- [ ] Timeout y reintento no crean una segunda intención.
+- [ ] Los conflictos empresariales nunca usan `last write wins`.
+- [ ] No se eliminan silenciosamente pendientes, borradores ni evidencia por capacidad local.
+- [ ] Las operaciones sobreviven al ciclo de vida solo bajo política y compatibilidad verificadas.
+- [ ] Se preservan hora de observación, sincronización y confirmación por separado.
+- [ ] Dispositivos compartidos aíslan actor, contexto y área.
+- [ ] Archivos y periféricos conservan estados y receipts propios.
+- [ ] Toda contingencia manual tiene activación, numeración, custodia y conciliación.
+- [ ] Los 69 procesos tienen perfil, prioridad y frontera online iniciales.
+- [ ] Se incorporan `TREQ-PROC-295` a `TREQ-PROC-324` al `04A` completo, con origen y evidencia de propuesta.
+- [ ] No se implementan colas, Service Workers, almacenamiento, código, migraciones ni cambios en Supabase.
+- [ ] `NFR-REQ-005` permanece no iniciada.
+
+---
+
+#### 29. Estado y continuidad
+
+```text
+NFR-REQ-002   APROBADA
+NFR-REQ-003   APROBADA
+NFR-REQ-004   APROBADA
+NFR-REQ-005   NO INICIADA
+```
+
+La aprobación de esta tarea congelará el contrato y la matriz inicial. No certificará que una aplicación, dispositivo o proceso actual pueda funcionar offline.
+
+
+### ✅ NFR-REQ-005 — Definir privacidad y sensibilidad
+
+**Estado:** APROBADA
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+**Tarea anterior:** `NFR-REQ-004 — Definir comportamiento offline y sincronización` — APROBADA
+**Siguiente tarea reservada:** `NFR-REQ-006 — Definir trazabilidad y retención` — NO INICIADA
+**Artefactos propuestos:** `NFR-PRIVACY-SENSITIVITY-CONTRACT-001`; `NFR-INFORMATION-HANDLING-MATRIX-001`; `NFR-PROCESS-PRIVACY-PROFILE-001`; `NFR-DATA-EXPOSURE-BOUNDARY-001`
+**Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
+**Naturaleza:** contrato no funcional de privacidad, clasificación, sensibilidad, minimización, exposición y manejo; no dictamen jurídico, implementación criptográfica, política de retención ni certificación
+**Cambios en código, migraciones, Supabase, aplicaciones, infraestructura o despliegues:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir un contrato verificable para clasificar y manejar la información de Vento OS según su sensibilidad, finalidad, identificabilidad, daño potencial, contexto, actor y canal. El objetivo es impedir que una autorización funcional correcta termine exponiendo más información de la necesaria mediante pantallas, payloads, archivos, cachés, logs, exportaciones, integraciones o ambientes no productivos.
+
+```text
+AUTORIZACIÓN PARA EJECUTAR UNA ACCIÓN
+≠ AUTORIZACIÓN PARA VER TODOS SUS DATOS
+
+ACCESO A UN PROCESO
+≠ ACCESO A TODO EL EXPEDIENTE
+
+CIFRADO
+≠ MINIMIZACIÓN
+≠ AUTORIZACIÓN
+≠ ANONIMIZACIÓN
+
+DATO SIN NOMBRE DIRECTO
+≠ DATO ANÓNIMO
+```
+
+La aprobación de esta tarea congelará criterios iniciales de diseño. No declarará cumplimiento legal, certificación de seguridad ni adecuación de los sistemas actuales.
+
+---
+
+#### 2. Continuidad lógica
+
+`NFR-REQ-001` definió criticidad y disponibilidad. `NFR-REQ-002` fijó carga y crecimiento. `NFR-REQ-003` estableció presupuestos temporales. `NFR-REQ-004` determinó qué puede existir localmente y cómo se sincroniza. Antes de definir retención en `NFR-REQ-006`, debe establecerse qué información existe, qué tan sensible es, para qué se usa y bajo qué límites puede mostrarse, copiarse, transmitirse o persistirse.
+
+```text
+PROCESO, ACTOR Y FINALIDAD
+        ↓
+INFORMACIÓN MÍNIMA NECESARIA
+        ↓
+CLASIFICACIÓN Y SENSIBILIDAD
+        ↓
+REGLAS DE MANEJO Y EXPOSICIÓN
+        ↓
+RETENCIÓN, TRAZABILIDAD Y DISPOSICIÓN
+```
+
+---
+
+#### 3. Alcance
+
+El contrato aplica a:
+
+- datos estructurados y no estructurados;
+- documentos, imágenes, audio, video y evidencia;
+- identificadores, metadatos, relaciones y timestamps;
+- datos calculados, inferidos, agregados y perfiles;
+- payloads, eventos, receipts, colas y cachés;
+- logs, trazas, métricas, alertas y volcados de diagnóstico;
+- archivos descargados, impresos, exportados o compartidos;
+- datos en producción, staging, desarrollo, pruebas y soporte;
+- información alojada por aplicaciones propias o terceros;
+- datos observados, capturados offline o pendientes de sincronización.
+
+No se limita a datos personales. Recetas, precios, costos, credenciales, configuraciones, investigaciones, hallazgos de seguridad y decisiones empresariales también pueden requerir manejo restringido.
+
+---
+
+#### 4. Principios obligatorios
+
+1. **Finalidad explícita:** todo uso deberá responder a una finalidad empresarial identificable.
+2. **Minimización:** cada consumidor recibirá solo campos, precisión, periodo y población necesarios.
+3. **Necesidad de conocer:** pertenecer a un área o tener acceso a una pantalla no concede acceso total.
+4. **Separación de deberes:** consulta, modificación, aprobación, exportación y administración tendrán permisos diferenciados.
+5. **Protección por defecto:** una categoría desconocida no se tratará como pública ni de bajo riesgo.
+6. **Contexto efectivo:** actor, sede, área, turno, dispositivo, relación con el caso y estado condicionarán la exposición.
+7. **Propagación de sensibilidad:** copias, derivados, joins, cachés y exportaciones heredarán o elevarán la clasificación.
+8. **No exposición indirecta:** conteos pequeños, nombres de archivo, URLs, errores, logs y metadatos no podrán eludir el control principal.
+9. **Reversibilidad controlada:** enmascarar o seudonimizar no equivale a anonimizar.
+10. **Evidencia proporcional:** la prueba del control no deberá reproducir innecesariamente el dato protegido.
+
+---
+
+#### 5. Modelo de clasificación
+
+Se adopta la siguiente escala inicial:
+
+| Clase                  | Nombre                | Descripción                                                                            | Ejemplos orientativos                                                                |
+| ---------------------- | --------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `S0_PUBLIC`            | pública               | divulgación aprobada para audiencia abierta                                            | menús publicados, horarios públicos, contenido comercial aprobado                    |
+| `S1_INTERNAL`          | interna               | operación ordinaria sin divulgación externa                                            | instrucciones generales, catálogos internos, estados operativos no sensibles         |
+| `S2_CONFIDENTIAL`      | confidencial          | acceso limitado por función, sede, relación o finalidad                                | datos de proveedores, precios acordados, casos de cliente, rutas internas            |
+| `S3_RESTRICTED`        | restringida           | daño alto por exposición, alteración o correlación                                     | información laboral, financiera, disciplinaria, investigación, ubicación individual  |
+| `S4_HIGHLY_RESTRICTED` | altamente restringida | secretos, salud, credenciales o información cuyo compromiso exige contención inmediata | credenciales, secretos, tokens, PIN, datos médicos, evidencia especialmente sensible |
+
+La clase se asignará al nivel más específico útil: campo, atributo, documento, evento, expediente, agregado, archivo o conjunto. Una tabla o aplicación no tendrá necesariamente una sola sensibilidad.
+
+---
+
+#### 6. Dimensiones de evaluación
+
+La clasificación deberá considerar conjuntamente:
+
+- identificabilidad directa e indirecta;
+- población afectada y posibilidad de reidentificación;
+- naturaleza laboral, médica, financiera, comercial, técnica o de seguridad;
+- daño físico, económico, reputacional, laboral u operacional;
+- obligación contractual, regulatoria o de confidencialidad aplicable;
+- precisión, granularidad, vigencia y contexto temporal;
+- facilidad de copia, agregación, cruce o difusión;
+- relación entre actor, titular, caso, sede y finalidad;
+- exposición a terceros, dispositivos compartidos y canales externos;
+- sensibilidad adquirida por inferencia o combinación.
+
+La clasificación más restrictiva aplicable prevalecerá hasta que exista una reclasificación explícita y aprobada.
+
+---
+
+#### 7. Categorías mínimas de información
+
+| Categoría                                                | Clase inicial mínima           | Regla principal                                             |
+| -------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------- |
+| contenido público aprobado                               | `S0_PUBLIC`                    | solo la versión publicada y vigente es pública              |
+| operación interna ordinaria                              | `S1_INTERNAL`                  | no divulgar externamente por defecto                        |
+| clientes, contactos y consentimientos                    | `S2_CONFIDENTIAL`              | finalidad, relación y canal autorizados                     |
+| proveedores, contratos y condiciones                     | `S2_CONFIDENTIAL`              | proyección mínima según compra, pago o evaluación           |
+| trabajadores, turnos, asistencia y expedientes           | `S3_RESTRICTED`                | acceso propio o funcional estrictamente delimitado          |
+| nómina, pagos, cuentas y decisiones financieras          | `S3_RESTRICTED`                | segregación, enmascaramiento y exportación controlada       |
+| SST, salud, investigaciones y declaraciones              | `S4_HIGHLY_RESTRICTED`         | aislamiento por caso, participación y finalidad             |
+| credenciales, secretos, tokens, PIN y llaves             | `S4_HIGHLY_RESTRICTED`         | nunca exponer en UI, logs, analytics ni archivos ordinarios |
+| recetas, fórmulas, costos y conocimiento propietario     | `S2_CONFIDENTIAL`              | acceso por función, versión y necesidad productiva          |
+| vulnerabilidades, incidentes y configuraciones sensibles | `S3_RESTRICTED`                | divulgación mínima y coordinación de contención             |
+| telemetría y auditoría identificable                     | `S2_CONFIDENTIAL`              | minimizar payload y restringir drill-down                   |
+| evidencia, firmas y documentos                           | clase del contenido o superior | metadatos y copias heredan sensibilidad                     |
+
+La clasificación definitiva corresponde a `INFO-DOM-001`, `INFO-DOM-002`, `INFO-DOM-008` y contratos posteriores. Esta tarea fija el mínimo no funcional que esos contratos no podrán degradar.
+
+---
+
+#### 8. Sobre obligatorio de manejo
+
+Cada categoría o proyección sensible deberá poder declarar:
+
+```text
+classification
+information_owner
+custodian
+purpose
+allowed_actor_and_context
+allowed_fields
+masking_rule
+allowed_channels
+local_storage_policy
+offline_policy
+export_policy
+third_party_policy
+logging_policy
+retention_policy_reference
+disposal_policy_reference
+incident_route
+classification_version
+```
+
+La ausencia del sobre o de una referencia resoluble bloqueará la exposición o utilizará la política más restrictiva; nunca habilitará un fallback amplio.
+
+---
+
+#### 9. Minimización por proyección
+
+Las aplicaciones consumidoras no recibirán modelos completos para ocultar campos únicamente en la interfaz. Cada consulta, RPC, evento, exportación y payload deberá usar una proyección adecuada a la acción.
+
+```text
+SELECT * + OCULTAR EN UI
+= CONTROL INVÁLIDO
+
+PROYECCIÓN MÍNIMA
++ AUTORIZACIÓN EN SERVIDOR
++ PRESENTACIÓN SEGURA
+= FRONTERA ACEPTABLE
+```
+
+Se minimizarán también:
+
+- longitud y precisión;
+- rango temporal;
+- número de registros;
+- población y granularidad geográfica;
+- adjuntos y metadatos;
+- identificadores correlacionables;
+- campos utilizados solo para depuración.
+
+---
+
+#### 10. Identificadores, seudonimización y anonimización
+
+Eliminar nombre, correo o documento no será suficiente si sede, turno, rol, timestamps, trayectoria, caso o combinación de atributos permiten reconocer a una persona.
+
+- **enmascaramiento:** reduce exposición visual, pero conserva el dato original;
+- **tokenización:** sustituye un valor mediante referencia controlada;
+- **seudonimización:** reduce asociación directa, pero puede ser reversible bajo control;
+- **anonimización:** exige riesgo de reidentificación suficientemente reducido y evaluación documentada;
+- **agregación:** no será segura si grupos pequeños o filtros permiten inferencia.
+
+Ninguna interfaz o reporte podrá denominar “anónimo” a un conjunto únicamente porque omitió un identificador directo.
+
+---
+
+#### 11. Exposición en interfaz
+
+La interfaz deberá:
+
+- mostrar únicamente campos necesarios para la tarea activa;
+- enmascarar valores cuando la función no requiera el dato completo;
+- impedir revelado por hover, HTML, atributos accesibles, autocomplete o código fuente;
+- ocultar contenido durante cambio de actor, bloqueo o expiración;
+- evitar información sensible en títulos, URLs, notificaciones y vistas previas;
+- distinguir ausencia de permiso de ausencia del dato sin filtrar su existencia;
+- aplicar protección equivalente en escritorio, móvil, kiosco, impresión y accesibilidad.
+
+Ocultar visualmente no sustituirá autorización de servidor, RLS, RPC ni política de almacenamiento.
+
+---
+
+#### 12. Dispositivos compartidos y trabajo offline
+
+`NFR-REQ-004` queda restringida por estas reglas:
+
+- `S4_HIGHLY_RESTRICTED` será online por defecto y no persistirá localmente salvo excepción explícita;
+- `S3_RESTRICTED` exigirá cifrado, aislamiento por actor, expiración y borrado verificable;
+- ninguna cola transferirá información entre actores, áreas o sesiones;
+- logout, cambio de turno, revocación y pérdida de contexto bloquearán visualización y sincronización;
+- notificaciones locales no expondrán contenido sensible;
+- thumbnails, cachés del sistema, archivos temporales y portapapeles respetarán la misma clasificación;
+- una copia offline conservará finalidad, clasificación y versión de política.
+
+El detalle físico de cifrado y almacenamiento se materializará en arquitectura y paquetes E5; esta tarea define el resultado obligatorio.
+
+---
+
+#### 13. Logs, métricas, trazas y soporte
+
+No deberán aparecer secretos, tokens, PIN, credenciales, payloads completos ni documentos en logs. Para información sensible se aplicarán allowlists de campos, redacción y correlación mediante identificadores no reveladores.
+
+Los sistemas de observabilidad deberán:
+
+- separar correlación técnica de identidad visible;
+- limitar búsqueda y drill-down;
+- evitar cardinalidad basada en datos personales;
+- impedir que mensajes de error reproduzcan entradas sensibles;
+- registrar accesos administrativos a evidencia de diagnóstico;
+- aplicar sensibilidad y retención también a dumps, screenshots y sesiones de soporte.
+
+`NFR-REQ-009` definirá métricas y alertas; no podrá ampliar el contenido permitido por esta tarea.
+
+---
+
+#### 14. Exportaciones, reportes e impresión
+
+Toda exportación deberá declarar finalidad, actor, alcance, filtros, columnas, clasificación, destino, vigencia y evidencia. El permiso de consulta ordinaria no concederá automáticamente permiso de exportación masiva.
+
+Guardrails:
+
+- límites de volumen y población;
+- supresión o agrupación de celdas pequeñas;
+- enmascaramiento de columnas no necesarias;
+- marca de clasificación y contexto cuando aplique;
+- descarga mediante enlace temporal y no adivinable;
+- prohibición de índices públicos y URLs persistentes;
+- control de copias impresas y archivos temporales;
+- revocación del acceso futuro sin prometer borrar copias legítimamente custodiadas.
+
+---
+
+#### 15. Integraciones y terceros
+
+Antes de transmitir información a otra aplicación o tercero se verificará:
+
+1. finalidad y autoridad de la transferencia;
+2. campos mínimos y clasificación;
+3. identidad del receptor y ambiente;
+4. canal y protección requeridos;
+5. restricciones de reutilización;
+6. tratamiento de errores, reintentos y dead-letter;
+7. subencargados o destinos adicionales;
+8. retorno, revocación, expiración y evidencia.
+
+Una integración no recibirá secretos internos ni payloads completos por comodidad técnica. Webhooks, correo, mensajería, analytics y herramientas de soporte se consideran canales externos hasta que exista contrato aprobado.
+
+---
+
+#### 16. Datos de prueba y ambientes no productivos
+
+Producción no se copiará íntegramente a desarrollo, demos, CI o pruebas. Se preferirán datos sintéticos. Cuando un escenario exija información representativa:
+
+- se minimizará y transformará antes de salir del entorno autorizado;
+- se documentará la necesidad;
+- se limitarán usuarios y duración;
+- se impedirá envío de mensajes o acciones reales;
+- se verificará eliminación según `NFR-REQ-006`;
+- las evidencias de prueba no incluirán secretos ni datos innecesarios.
+
+Capturas de pantalla, grabaciones y archivos usados para soporte conservarán la clasificación del contenido.
+
+---
+
+#### 17. Secretos y credenciales
+
+Contraseñas, tokens, refresh tokens, API keys, llaves privadas, PIN, códigos de recuperación y secretos de firma:
+
+- no se almacenarán en texto claro;
+- no se mostrarán nuevamente después de su creación salvo contrato específico;
+- no viajarán en URLs, analytics, logs ni mensajes ordinarios;
+- no se compartirán entre ambientes;
+- tendrán propietario, alcance, rotación y revocación;
+- no se incluirán en datos de negocio, evidencia o exportaciones;
+- utilizarán mecanismos de custodia especializados definidos en arquitectura.
+
+La presencia de un secreto en una fuente no reclasificará esa fuente como almacenamiento aceptable; obligará a retirar y contener.
+
+---
+
+#### 18. Datos derivados, analítica e inferencias
+
+Un resultado agregado o calculado podrá ser más sensible que sus entradas. Segmentos pequeños, desempeño individual, fraude, salud, productividad, comportamiento, ubicación y combinaciones entre aplicaciones exigirán evaluación de inferencia.
+
+Se prohíbe:
+
+- crear perfiles nuevos sin finalidad y propietario;
+- usar telemetría operativa para disciplina individual sin contrato aprobado;
+- atribuir fallas de red o dispositivo al trabajador;
+- permitir drill-down hasta personas cuando solo se autorizó análisis agregado;
+- tratar una predicción como hecho confirmado;
+- reutilizar datos recolectados para una finalidad incompatible por conveniencia analítica.
+
+---
+
+#### 19. Consentimiento, avisos y derechos
+
+Cuando una finalidad dependa de consentimiento o autorización revocable:
+
+- el sistema distinguirá aceptación, rechazo, retiro, expiración y versión;
+- retirar consentimiento bloqueará usos futuros aplicables;
+- la evidencia histórica no se sobrescribirá;
+- no se agruparán finalidades independientes en una única aceptación;
+- la denegación no degradará servicios que no requieran legítimamente ese uso.
+
+El fundamento, los avisos, las solicitudes de acceso, rectificación, revocación o supresión y los requerimientos de autoridad serán definidos por `INFO-DOM-008` a `INFO-DOM-010`. Esta tarea no inventa obligaciones jurídicas.
+
+---
+
+#### 20. Cambio de clasificación
+
+Toda reclasificación deberá conservar:
+
+- clase anterior y nueva;
+- motivo y alcance;
+- actor autorizador;
+- fecha efectiva;
+- versión de política;
+- copias, derivados y consumidores afectados;
+- medidas de migración;
+- evidencia de que no quedaron proyecciones incompatibles.
+
+La publicación de un documento no convierte en públicos sus borradores, comentarios, metadatos, fuentes o historial. El vencimiento de una finalidad no equivale automáticamente a eliminación; `NFR-REQ-006` resolverá retención y disposición.
+
+---
+
+#### 21. Frontera con autorización
+
+`AUTH-*` decide quién puede ejecutar una acción bajo un contexto. `NFR-REQ-005` limita qué información necesita esa acción y cómo puede exponerse.
+
+```text
+DECISIÓN DE AUTORIZACIÓN
+        ↓
+PROYECCIÓN MÍNIMA
+        ↓
+REGLAS DE MANEJO
+        ↓
+PRESENTACIÓN, TRANSMISIÓN O PERSISTENCIA
+```
+
+URL directa, manipulación de cliente, RPC, RLS, exportación, caché, búsqueda, autocomplete y soporte deberán producir el mismo límite de información.
+
+---
+
+#### 22. Perfil inicial por familias de proceso
+
+| Familia                             | Procesos                                                              | Sensibilidad dominante         | Restricción inicial                                        |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------- |
+| gobierno, riesgo y autoridades      | `VPROC-0001` a `VPROC-0004`; `VPROC-0063`; `VPROC-0064`; `VPROC-0069` | `S2` a `S3`                    | acceso por expediente, finalidad y segregación             |
+| talento y ciclo laboral             | `VPROC-0005` a `VPROC-0011`; `VPROC-0065`; `VPROC-0066`               | `S3` a `S4`                    | proyección individual, aislamiento y no exposición masiva  |
+| SST, salud y emergencias            | `VPROC-0012` a `VPROC-0014`                                           | `S4`                           | acceso por participación y mínima información médica       |
+| maestros, recetas y producto        | `VPROC-0015` a `VPROC-0018`                                           | `S1` a `S3`                    | separar publicación de conocimiento propietario            |
+| proveedores y compras               | `VPROC-0019` a `VPROC-0022`                                           | `S2` a `S3`                    | condiciones, cuentas y evaluaciones restringidas           |
+| inventario, activos y custodia      | `VPROC-0023` a `VPROC-0032`; `VPROC-0067`                             | `S1` a `S3`                    | ubicación, responsable y diferencias por necesidad         |
+| producción y calidad                | `VPROC-0033` a `VPROC-0037`                                           | `S1` a `S3`                    | fórmulas, lotes, hallazgos y evidencia delimitados         |
+| venta, caja y clientes              | `VPROC-0038` a `VPROC-0047`; `VPROC-0068`                             | `S2` a `S4`                    | separar identidad, pago, fidelización y reclamo            |
+| logística y terceros                | `VPROC-0048` a `VPROC-0050`                                           | `S2` a `S3`                    | ubicación y prueba de entrega mínimas                      |
+| finanzas y costos                   | `VPROC-0051` a `VPROC-0054`                                           | `S3`                           | segregación, enmascaramiento y exportación reforzada       |
+| instalaciones y marketing           | `VPROC-0055` a `VPROC-0057`                                           | `S1` a `S3`                    | separar contenido público de contratos, incidentes y leads |
+| tecnología y accesos                | `VPROC-0058`; `VPROC-0059`                                            | `S3` a `S4`                    | secretos fuera de tickets y diagnóstico mínimo             |
+| documentos, analítica y continuidad | `VPROC-0060` a `VPROC-0062`                                           | clase del contenido o superior | herencia, agregación segura y acceso excepcional auditado  |
+
+Cada uno de los 69 procesos deberá materializar una fila individual antes de su paquete E5. La agrupación anterior no autoriza una clase uniforme cuando una etapa o campo requiera mayor protección.
+
+---
+
+#### 23. Matriz obligatoria por proceso
+
+`NFR-PROCESS-PRIVACY-PROFILE-001` deberá cubrir exactamente `VPROC-0001` a `VPROC-0069` con:
+
+- categorías de información;
+- clase mínima y posibles elevaciones;
+- finalidad;
+- titulares o sujetos relacionados;
+- propietario y custodio;
+- actores y contextos autorizados;
+- campos y granularidad mínima;
+- reglas de enmascaramiento;
+- exposición en UI;
+- caché y offline;
+- logs y observabilidad;
+- exportación e impresión;
+- integración o tercero;
+- retención referenciada;
+- riesgo de agregación e inferencia;
+- prueba y evidencia propietarias.
+
+No se certificará un proceso con una celda “no aplica” sin justificación verificable.
+
+---
+
+#### 24. Pruebas obligatorias
+
+Cada capacidad aplicable deberá probar:
+
+1. actor autorizado para acción pero no para campo sensible;
+2. acceso entre sedes, áreas, casos y titulares;
+3. URL, formulario, RPC y payload manipulados;
+4. búsqueda y autocomplete sin filtración;
+5. lista, detalle, conteo, exportación e impresión;
+6. cambio de actor en dispositivo compartido;
+7. bloqueo, background, screenshot y notificación;
+8. caché, borrador, outbox y reconexión;
+9. revocación con datos pendientes;
+10. logs, trazas, errores y analytics;
+11. archivos, thumbnails, nombres y metadatos;
+12. agregados pequeños y reidentificación;
+13. ambientes no productivos y datos sintéticos;
+14. integración, webhook y tercero;
+15. secreto introducido accidentalmente;
+16. reclasificación y propagación a derivados;
+17. consentimiento retirado o finalidad expirada;
+18. soporte técnico y acceso administrativo;
+19. accesibilidad sin revelar información adicional;
+20. concurrencia entre versiones de política.
+
+Las pruebas físicas pertenecen a paquetes E5, `AUTH-QA-*`, `UX-QA-*`, `SHELL-CI-*`, `INFO-DOM-*`, `EVID-ARC-*`, `OBS-ARC-*`, `QUEUE-ARC-*` y tareas por aplicación.
+
+---
+
+#### 25. Guardrails
+
+```text
+SECRETOS EN LOGS, ANALYTICS O URL = 0
+S4 PERSISTIDO LOCALMENTE SIN EXCEPCIÓN = 0
+EXPORTACIÓN MASIVA POR PERMISO DE CONSULTA = 0
+DATOS PRODUCTIVOS ÍNTEGROS EN CI O DEMO = 0
+CAMBIO DE ACTOR CON DATOS DEL ACTOR ANTERIOR VISIBLES = 0
+PROYECCIÓN COMPLETA OCULTADA SOLO EN UI = 0
+CLASIFICACIÓN DESCONOCIDA TRATADA COMO PÚBLICA = 0
+ANONIMIZACIÓN DECLARADA SIN EVALUAR REIDENTIFICACIÓN = 0
+```
+
+Los umbrales de monitoreo se definirán en `NFR-REQ-009`; estos valores expresan prohibiciones de diseño.
+
+---
+
+#### 26. Propiedad de decisiones posteriores
+
+| Decisión                                                       | Tarea propietaria                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| inventario, propietarios, custodios y clasificación definitiva | `INFO-DOM-001`; `INFO-DOM-002`                                |
+| documentos, autenticidad, firmas y evidencia                   | `INFO-DOM-003` a `INFO-DOM-007`; `INFO-DOM-011`; `EVID-ARC-*` |
+| avisos, consentimiento y derechos                              | `INFO-DOM-008` a `INFO-DOM-010`                               |
+| retención, hold, anonimización y eliminación                   | `NFR-REQ-006`; `INFO-DOM-006`                                 |
+| autorización de servidor, RLS y RPC                            | `AUTH-SRV-*`; `AUTH-DB-*`; `SUPA-ARC-*`                       |
+| dispositivos y credenciales                                    | `AUTH-DEV-*`; `NFR-REQ-008`; `NFR-REQ-011`                    |
+| offline, colas y sincronización                                | `NFR-REQ-004`; `QUEUE-ARC-*`                                  |
+| observabilidad, soporte y alertas                              | `NFR-REQ-009`; `OBS-ARC-*`                                    |
+| cifrado, secretos y arquitectura física                        | bloques E3/E4; `SUPA-ARC-*`; paquetes E5                      |
+| experiencia, masking y accesibilidad                           | `NFR-REQ-007`; `UX-BASE-*`; `UX-QA-*`                         |
+| integraciones y terceros                                       | `INT-APP-*`; `INT-EXT-*`; BLOQUE X                            |
+| certificación por aplicación                                   | `DELIV-PKG-*`; tareas `*-AUTH-*`; BLOQUE U                    |
+
+No se declara una tecnología, proveedor, algoritmo, plazo de retención ni fundamento jurídico sin su tarea propietaria.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+Esta propuesta incorpora al registro canónico completo:
+
+```text
+TREQ-PROC-325 a TREQ-PROC-354
+```
+
+Cobertura:
+
+1. finalidad y minimización;
+2. clasificación `S0` a `S4`;
+3. sensibilidad por campo y no por aplicación;
+4. herencia y elevación;
+5. sobre de manejo;
+6. proyecciones mínimas;
+7. enmascaramiento y no filtración indirecta;
+8. seudonimización, anonimización y reidentificación;
+9. UI y accesibilidad;
+10. dispositivos compartidos;
+11. offline y almacenamiento local;
+12. logs, trazas y errores;
+13. exportaciones e impresión;
+14. archivos y metadatos;
+15. integraciones y terceros;
+16. datos de prueba;
+17. secretos y credenciales;
+18. datos derivados e inferencias;
+19. consentimiento y finalidad;
+20. reclasificación;
+21. autorización más proyección;
+22. SST y salud;
+23. talento y desempeño;
+24. clientes y fidelización;
+25. pagos y finanzas;
+26. recetas y conocimiento propietario;
+27. observabilidad y soporte;
+28. clasificación por 69 procesos;
+29. guardrails y regresión;
+30. gobierno, evidencia y certificación.
+
+Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-005` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+
+---
+
+#### 28. Criterios de aceptación
+
+- [ ] Se distinguen privacidad, confidencialidad, autorización, cifrado, minimización y anonimización.
+- [ ] Las clases `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` tienen límites inequívocos.
+- [ ] La clasificación puede aplicarse a campo, documento, evento, metadato, agregado y derivado.
+- [ ] Una clasificación desconocida usa política restrictiva.
+- [ ] Copias, joins, exportaciones y derivados heredan o elevan sensibilidad.
+- [ ] Cada consumidor recibe una proyección mínima autorizada.
+- [ ] Se cubren UI, caché, offline, logs, métricas, exportaciones, archivos, integraciones y soporte.
+- [ ] Los secretos quedan fuera de datos empresariales, URLs, logs y analytics.
+- [ ] Se distinguen masking, tokenización, seudonimización, anonimización y agregación.
+- [ ] Dispositivos compartidos aíslan actor, contexto y datos locales.
+- [ ] Producción no se replica íntegramente a ambientes no productivos.
+- [ ] Consentimiento, finalidad y revocación no se confunden con retención o eliminación.
+- [ ] Los 69 procesos deberán tener perfil individual antes de implementación.
+- [ ] Se incorporan `TREQ-PROC-325` a `TREQ-PROC-354` al `04A` completo con evidencia de propuesta.
+- [ ] No se implementan código, cifrado, migraciones, Supabase, políticas físicas ni despliegues.
+- [ ] `NFR-REQ-006` permanece no iniciada.
+
+---
+
+#### 29. Estado y continuidad
+
+```text
+NFR-REQ-003   APROBADA
+NFR-REQ-004   APROBADA
+NFR-REQ-005   APROBADA
+NFR-REQ-006   NO INICIADA
+```
+
+La aprobación explícita de esta tarea congelará el contrato inicial de privacidad y sensibilidad. No certificará cumplimiento jurídico ni seguridad efectiva de ninguna implementación.
+
 ### [ ] NFR-REQ-006 — Definir trazabilidad y retención
 ### [ ] NFR-REQ-007 — Definir accesibilidad y ergonomía
 ### [ ] NFR-REQ-008 — Definir hardware, red y periféricos requeridos

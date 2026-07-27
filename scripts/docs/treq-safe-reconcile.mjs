@@ -26,6 +26,44 @@ function indexRows(lines) {
   return rows;
 }
 
+export function normalizeApprovedTaskEvidence({
+  source,
+  rowIds,
+  approvedTaskIds,
+}) {
+  const parsed = splitSource(source);
+  const targetRows = rowIds instanceof Set ? rowIds : new Set(rowIds);
+  const approvedTasks = approvedTaskIds instanceof Set
+    ? approvedTaskIds
+    : new Set(approvedTaskIds);
+  const taskPattern =
+    /\bpropuesta\s+(`?([A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})`?)/giu;
+
+  const lines = parsed.lines.map((line) => {
+    const rowId = line.match(TREQ_ROW_PATTERN)?.groups?.id;
+    if (!rowId || !targetRows.has(rowId)) {
+      return line;
+    }
+
+    return line.replace(taskPattern, (match, renderedTask, taskId) => {
+      if (!approvedTasks.has(taskId.toUpperCase())) {
+        return match;
+      }
+      return `${renderedTask} aprobada`;
+    });
+  });
+
+  return lines.join(parsed.newline)
+    + (parsed.endsWithNewline ? parsed.newline : '');
+}
+
+export function updateLatestTaskSummary(source, latestTaskId) {
+  return source.replace(
+    /^(\|\s*Última tarea incorporada\s*\|\s*).*?(\s*\|\s*)$/mu,
+    `$1\`${latestTaskId}\`$2`
+  );
+}
+
 export function reconcileTreqRegistrySource({
   currentSource,
   baselineSource,

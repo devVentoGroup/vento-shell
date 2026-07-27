@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { reconcileTreqRegistrySource } from './treq-safe-reconcile.mjs';
+import {
+  normalizeApprovedTaskEvidence,
+  reconcileTreqRegistrySource,
+  updateLatestTaskSummary,
+} from './treq-safe-reconcile.mjs';
 
 const row = (id, evidence) =>
   `| \`${id}\` | \`PROC\` | Regla | \`TASK-001\` | crítica | contractual / automatizada | \`TASK-001\` | Paquete | shell / CI | \`IDENTIFICADO\` | Pendiente | Pendiente | ${evidence} | — |`;
@@ -73,4 +77,34 @@ test('preserva cambios históricos que el validador no marcó como erróneos', (
   assert.match(result.candidateSource, /TREQ-PROC-001.*Aprobada/);
   assert.match(result.candidateSource, /TREQ-PROC-002.*Mejora válida/);
   assert.match(result.candidateSource, /TREQ-PROC-003.*Nueva/);
+});
+
+test('normaliza propuesta aprobada solo en filas nuevas seleccionadas', () => {
+  const source = [
+    row('TREQ-PROC-001', 'Definida en propuesta `NFR-REQ-004`'),
+    row('TREQ-PROC-002', 'Definida en propuesta `NFR-REQ-004`'),
+    '',
+  ].join('\n');
+
+  const result = normalizeApprovedTaskEvidence({
+    source,
+    rowIds: new Set(['TREQ-PROC-002']),
+    approvedTaskIds: new Set(['NFR-REQ-004']),
+  });
+
+  assert.match(result, /TREQ-PROC-001.*propuesta `NFR-REQ-004`/);
+  assert.match(result, /TREQ-PROC-002.*`NFR-REQ-004` aprobada/);
+});
+
+test('actualiza únicamente la última tarea del resumen', () => {
+  const source = [
+    '| Última tarea incorporada | `NFR-REQ-003` |',
+    '| Otra métrica | `NFR-REQ-003` |',
+    '',
+  ].join('\n');
+
+  const result = updateLatestTaskSummary(source, 'NFR-REQ-004');
+
+  assert.match(result, /Última tarea incorporada \| `NFR-REQ-004`/);
+  assert.match(result, /Otra métrica \| `NFR-REQ-003`/);
 });
