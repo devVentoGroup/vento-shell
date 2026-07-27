@@ -32,7 +32,7 @@ MODELO DE ESTACIONES OPERATIVAS COMPARTIDAS
 
 ### ✅ UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
 
-**Estado:** PROPUESTA PARA APROBACIÓN
+**Estado:** APROBADA
 
 **Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
 

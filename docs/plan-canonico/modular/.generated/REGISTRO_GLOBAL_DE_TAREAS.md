@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1570** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **253** |
+| Aprobadas | **277** |
 | En propuesta | **0** |
-| No iniciadas | **1317** |
+| No iniciadas | **1293** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `UX-STATION-001` — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | ✅ APROBADA |
-| Tarea actual | `OPS-CAN-001` — Diseñar la arquitectura objetivo de canales corporativos y comerciales | ⬜ NO INICIADA |
-| Siguiente | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | ⬜ NO INICIADA |
+| Última aprobada | `UX-BASE-015` — Validar terminología con trabajadores reales | ✅ APROBADA |
+| Tarea actual | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso | ⬜ NO INICIADA |
+| Siguiente | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -347,30 +347,30 @@
 | ⬜ NO INICIADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-004` | Ocultar funciones irrelevantes para el actor | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-005` | Mantener visible sede, área, turno y rol activos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-006` | Explicar bloqueos con lenguaje humano | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-007` | Evitar registrar dos veces la misma información | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-008` | Reducir pasos para tareas frecuentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-009` | Mantener acciones excepcionales fuera del flujo ordinario | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-010` | Aplicar divulgación progresiva a opciones avanzadas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-011` | Diseñar interfaces táctiles para tablets y kioscos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-012` | Diseñar interfaces densas solo para administración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
-| ⬜ NO INICIADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
-| ⬜ NO INICIADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
-| ⬜ NO INICIADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
-| ⬜ NO INICIADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
+| ✅ APROBADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-004` | Ocultar funciones irrelevantes para el actor | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-005` | Mantener visible sede, área, turno y rol activos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-006` | Explicar bloqueos con lenguaje humano | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-007` | Evitar registrar dos veces la misma información | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-008` | Reducir pasos para tareas frecuentes | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-009` | Mantener acciones excepcionales fuera del flujo ordinario | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-010` | Aplicar divulgación progresiva a opciones avanzadas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-011` | Diseñar interfaces táctiles para tablets y kioscos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-012` | Diseñar interfaces densas solo para administración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-013` | Definir comportamiento con conectividad inestable | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-014` | Definir reanudación del proceso después de interrupciones | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `UX-BASE-015` | Validar terminología con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
+| ✅ APROBADA | `CAP-TAL-001` | Diseñar alcance y responsabilidades de TALENTO, VISO y ANIMA | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `CAP-TAL-002` | Diseñar publicación de vacantes, consulta y postulación en TALENTO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `CAP-TAL-003` | Diseñar expediente progresivo de datos, documentos, consentimiento y conservación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `CAP-TAL-004` | Diseñar evaluación, entrevista, decisión, oferta y pre-registro de candidato | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `CAP-TAL-005` | Diseñar traspaso trazable e idempotente de TALENTO hacia ANIMA y VISO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `CAP-TAL-006` | Diseñar período de prueba, permisos provisionales, continuidad definitiva y cierre | `bloques/E2_PROCESOS_Y_EXPERIENCIA/09_TALENTO_Y_VINCULACION.md` |
+| ✅ APROBADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
+| ✅ APROBADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
+| ✅ APROBADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

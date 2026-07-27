@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1570** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **253** |
+| Tareas aprobadas | **277** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1317** |
+| Tareas no iniciadas | **1293** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación** |
-| Tarea actual | **OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales** |
+| Última tarea aprobada | **UX-BASE-015 — Validar terminología con trabajadores reales** |
+| Tarea actual | **NFR-REQ-001 — Definir criticidad y disponibilidad por proceso** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento** |
+| Siguiente tarea | **NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 11 de 101 aprobadas; OPS-CAN-001 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 35 de 101 aprobadas; NFR-REQ-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `UX-STATION-001` — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación |
-| Tarea actual | `OPS-CAN-001` — Diseñar la arquitectura objetivo de canales corporativos y comerciales — **NO INICIADA** |
-| Siguiente tarea | `OPS-LOG-001` — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento |
+| Última aprobada | `UX-BASE-015` — Validar terminología con trabajadores reales |
+| Tarea actual | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso — **NO INICIADA** |
+| Siguiente tarea | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **11 DE 101 APROBADAS — ACTUAL OPS-CAN-001** |
+| BLOQUE E2 | **35 DE 101 APROBADAS — ACTUAL NFR-REQ-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-UX-STATION-001 — Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación
+UX-BASE-015 — Validar terminología con trabajadores reales
         ↓
 TAREA ACTUAL
-OPS-CAN-001 — Diseñar la arquitectura objetivo de canales corporativos y comerciales
+NFR-REQ-001 — Definir criticidad y disponibilidad por proceso
         ↓
 SIGUIENTE TAREA RESERVADA
-OPS-LOG-001 — Diseñar el proceso transversal objetivo de Bodega y Abastecimiento
+NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 11 de 101 tareas aprobadas
+BLOQUE E2 — 35 de 101 tareas aprobadas
 ```
