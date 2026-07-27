@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **277** |
+| Tareas aprobadas | **278** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1299** |
+| Tareas no iniciadas | **1298** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **UX-BASE-015 — Validar terminología con trabajadores reales** |
-| Tarea actual | **NFR-REQ-001 — Definir criticidad y disponibilidad por proceso** |
+| Última tarea aprobada | **NFR-REQ-001 — Definir criticidad y disponibilidad por proceso** |
+| Tarea actual | **NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado** |
+| Siguiente tarea | **NFR-REQ-003 — Definir tiempos máximos de respuesta** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 35 de 101 aprobadas; NFR-REQ-001 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 36 de 101 aprobadas; NFR-REQ-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `UX-BASE-015` — Validar terminología con trabajadores reales |
-| Tarea actual | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso — **NO INICIADA** |
-| Siguiente tarea | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado |
+| Última aprobada | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso |
+| Tarea actual | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado — **NO INICIADA** |
+| Siguiente tarea | `NFR-REQ-003` — Definir tiempos máximos de respuesta |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **35 DE 101 APROBADAS — ACTUAL NFR-REQ-001** |
+| BLOQUE E2 | **36 DE 101 APROBADAS — ACTUAL NFR-REQ-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-UX-BASE-015 — Validar terminología con trabajadores reales
-        ↓
-TAREA ACTUAL
 NFR-REQ-001 — Definir criticidad y disponibilidad por proceso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NFR-REQ-002 — Definir volumen, concurrencia y crecimiento esperado
         ↓
+SIGUIENTE TAREA RESERVADA
+NFR-REQ-003 — Definir tiempos máximos de respuesta
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 35 de 101 tareas aprobadas
+BLOQUE E2 — 36 de 101 tareas aprobadas
 ```

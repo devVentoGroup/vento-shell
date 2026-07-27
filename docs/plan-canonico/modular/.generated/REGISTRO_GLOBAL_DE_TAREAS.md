@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **277** |
+| Aprobadas | **278** |
 | En propuesta | **0** |
-| No iniciadas | **1299** |
+| No iniciadas | **1298** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `UX-BASE-015` — Validar terminología con trabajadores reales | ✅ APROBADA |
-| Tarea actual | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso | ⬜ NO INICIADA |
-| Siguiente | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado | ⬜ NO INICIADA |
+| Última aprobada | `NFR-REQ-001` — Definir criticidad y disponibilidad por proceso | ✅ APROBADA |
+| Tarea actual | `NFR-REQ-002` — Definir volumen, concurrencia y crecimiento esperado | ⬜ NO INICIADA |
+| Siguiente | `NFR-REQ-003` — Definir tiempos máximos de respuesta | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -336,7 +336,7 @@
 | ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-004` | Definir comportamiento offline y sincronización | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
