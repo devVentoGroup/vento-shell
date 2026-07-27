@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **282** |
+| Tareas aprobadas | **299** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1294** |
+| Tareas no iniciadas | **1277** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NFR-REQ-005 — Definir privacidad y sensibilidad** |
-| Tarea actual | **NFR-REQ-006 — Definir trazabilidad y retención** |
+| Última tarea aprobada | **UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico** |
+| Tarea actual | **UX-ADMIN-001 — Inventariar tareas administrativas por dominio, frecuencia y complejidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NFR-REQ-007 — Definir accesibilidad y ergonomía** |
+| Siguiente tarea | **UX-ADMIN-002 — Diseñar modo guiado para altas y configuraciones complejas** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 40 de 101 aprobadas; NFR-REQ-006 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 57 de 101 aprobadas; UX-ADMIN-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NFR-REQ-005` — Definir privacidad y sensibilidad |
-| Tarea actual | `NFR-REQ-006` — Definir trazabilidad y retención — **NO INICIADA** |
-| Siguiente tarea | `NFR-REQ-007` — Definir accesibilidad y ergonomía |
+| Última aprobada | `UX-STATION-009` — Aprobar la matriz proceso → paso → estación → interacción → periférico |
+| Tarea actual | `UX-ADMIN-001` — Inventariar tareas administrativas por dominio, frecuencia y complejidad — **NO INICIADA** |
+| Siguiente tarea | `UX-ADMIN-002` — Diseñar modo guiado para altas y configuraciones complejas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **40 DE 101 APROBADAS — ACTUAL NFR-REQ-006** |
+| BLOQUE E2 | **57 DE 101 APROBADAS — ACTUAL UX-ADMIN-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NFR-REQ-005 — Definir privacidad y sensibilidad
+UX-STATION-009 — Aprobar la matriz proceso → paso → estación → interacción → periférico
         ↓
 TAREA ACTUAL
-NFR-REQ-006 — Definir trazabilidad y retención
+UX-ADMIN-001 — Inventariar tareas administrativas por dominio, frecuencia y complejidad
         ↓
 SIGUIENTE TAREA RESERVADA
-NFR-REQ-007 — Definir accesibilidad y ergonomía
+UX-ADMIN-002 — Diseñar modo guiado para altas y configuraciones complejas
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 40 de 101 tareas aprobadas
+BLOQUE E2 — 57 de 101 tareas aprobadas
 ```

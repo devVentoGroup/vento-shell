@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **282** |
+| Aprobadas | **299** |
 | En propuesta | **0** |
-| No iniciadas | **1294** |
+| No iniciadas | **1277** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NFR-REQ-005` — Definir privacidad y sensibilidad | ✅ APROBADA |
-| Tarea actual | `NFR-REQ-006` — Definir trazabilidad y retención | ⬜ NO INICIADA |
-| Siguiente | `NFR-REQ-007` — Definir accesibilidad y ergonomía | ⬜ NO INICIADA |
+| Última aprobada | `UX-STATION-009` — Aprobar la matriz proceso → paso → estación → interacción → periférico | ✅ APROBADA |
+| Tarea actual | `UX-ADMIN-001` — Inventariar tareas administrativas por dominio, frecuencia y complejidad | ⬜ NO INICIADA |
+| Siguiente | `UX-ADMIN-002` — Diseñar modo guiado para altas y configuraciones complejas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -282,17 +282,17 @@
 | ✅ APROBADA | `PROC-ACTOR-009` | Definir procesos de sistema sin actor humano directo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ✅ APROBADA | `PROC-ACTOR-010` | Prohibir autorización derivada únicamente del nombre del rol | `bloques/E2_PROCESOS_Y_EXPERIENCIA/02_MAPA_DE_ACTORES.md` |
 | ✅ APROBADA | `UX-STATION-001` | Inventariar puestos físicos, zonas de trabajo y condiciones reales de operación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-005` | Diseñar la superficie operativa contextual por estación, zona y proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-006` | Definir periféricos, montaje, alimentación, conectividad y mantenimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
-| ⬜ NO INICIADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-002` | Comparar modalidades de interacción para cada paso operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-003` | Definir perfiles canónicos de estación compartida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-004` | Diseñar identificación, cambio y cierre de actor en estaciones compartidas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-005` | Diseñar la superficie operativa contextual por estación, zona y proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-006` | Definir periféricos, montaje, alimentación, conectividad y mantenimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-007` | Definir operación degradada, offline, contingencia y recuperación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-008` | Prototipar alternativas con trabajadores reales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-009` | Aprobar la matriz proceso → paso → estación → interacción → periférico | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-010` | Definir gramática de interacción operativa de lectura mínima | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-011` | Diseñar bandeja contextual de trabajo y siguiente acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
+| ✅ APROBADA | `UX-STATION-012` | Definir composición dinámica de pasos mediante componentes operativos aprobados | `bloques/E2_PROCESOS_Y_EXPERIENCIA/03_ESTACIONES_OPERATIVAS_COMPARTIDAS.md` |
 | ⬜ NO INICIADA | `UX-ADMIN-001` | Inventariar tareas administrativas por dominio, frecuencia y complejidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `UX-ADMIN-002` | Diseñar modo guiado para altas y configuraciones complejas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `UX-ADMIN-003` | Diseñar modo experto para consulta, edición masiva y auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/04_EXPERIENCIA_ADMINISTRATIVA.md` |
@@ -341,12 +341,12 @@
 | ✅ APROBADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-004` | Definir comportamiento offline y sincronización | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-005` | Definir privacidad y sensibilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-006` | Definir trazabilidad y retención | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-007` | Definir accesibilidad y ergonomía | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-008` | Definir hardware, red y periféricos requeridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-009` | Definir observabilidad, soporte y alertas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-006` | Definir trazabilidad y retención | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-007` | Definir accesibilidad y ergonomía | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-008` | Definir hardware, red y periféricos requeridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-009` | Definir observabilidad, soporte y alertas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
 | ✅ APROBADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |

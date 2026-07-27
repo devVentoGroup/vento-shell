@@ -69,10 +69,10 @@
 **Origen:** `OPS-ACT-001`, `CAP-MAP-003`
 
 **Respuesta:**  
-> 
+> Pequeñas 40, medianas 21, grandes de baja altura 40, grandes de gran altura 16
 
 **Respondido por:**  
-> 
+> Jefe de Operaciones
 
 **Fecha:**  
 > 
