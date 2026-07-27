@@ -87,9 +87,11 @@ function saveRecoveryCopy(source, reconciliation) {
     `${JSON.stringify({
       createdAt: new Date().toISOString(),
       incomingSha256: sha256(source),
-      restoredHistoricalIds: reconciliation.changedExistingIds,
-      preservedHistoricalIds: reconciliation.preservedChangedExistingIds,
-      preservedNewIds: reconciliation.newIds,
+      restoredHistoricalIds: reconciliation.changedExistingIds ?? [],
+      preservedHistoricalIds:
+        reconciliation.preservedChangedExistingIds ?? [],
+      preservedNewIds: reconciliation.newIds ?? [],
+      normalizedApprovalIds: reconciliation.normalizedApprovalIds ?? [],
     }, null, 2)}\n`,
     'utf8'
   );
@@ -106,21 +108,60 @@ function attemptSafeReconciliation() {
     return null;
   }
 
+  const invalidRowIds = new Set(
+    currentValidation.errors
+      .map((error) => error.match(/^(TREQ-[A-Z]+-\d{3}):/)?.[1])
+      .filter(Boolean)
+  );
+  const approvedTaskIds = new Set(
+    [...context.tasks.values()]
+      .filter((task) => task.state === 'APROBADA')
+      .map((task) => task.id)
+  );
+
+  let approvalCandidate = normalizeApprovedTaskEvidence({
+    source: currentSource,
+    rowIds: invalidRowIds,
+    approvedTaskIds,
+  });
+  approvalCandidate = updateLatestTaskSummary(
+    approvalCandidate,
+    context.expectedLatestTaskId
+  );
+
+  if (
+    approvalCandidate !== currentSource
+    && validateTreqRegistrySource(approvalCandidate, context).errors.length === 0
+  ) {
+    const approvalSync = {
+      changedExistingIds: [],
+      preservedChangedExistingIds: [],
+      newIds: [],
+      normalizedApprovalIds: [...invalidRowIds],
+    };
+    const recoveryPath = saveRecoveryCopy(currentSource, approvalSync);
+    fs.writeFileSync(registryPath, approvalCandidate, 'utf8');
+
+    console.log(
+      `[PLAN CANÓNICO] Transición de aprobación TREQ sincronizada: `
+      + `${invalidRowIds.size} filas actualizadas; resumen vigente corregido.`
+    );
+    console.log(
+      `[PLAN CANÓNICO] Copia íntegra previa: ${recoveryPath}`
+    );
+
+    return { originalSource: currentSource, recoveryPath };
+  }
+
   const snapshot = loadValidSnapshot();
   if (!snapshot) {
     return null;
   }
 
-  const invalidHistoricalIds = new Set(
-    currentValidation.errors
-      .map((error) => error.match(/^(TREQ-[A-Z]+-\d{3}):/)?.[1])
-      .filter(Boolean)
-  );
-
   const reconciliation = reconcileTreqRegistrySource({
     currentSource,
     baselineSource: snapshot.source,
-    restoreIds: invalidHistoricalIds,
+    restoreIds: invalidRowIds,
   });
 
   if (
@@ -131,16 +172,16 @@ function attemptSafeReconciliation() {
     return null;
   }
 
-  const approvedTaskIds = new Set(
-    [...context.tasks.values()]
-      .filter((task) => task.state === 'APROBADA')
-      .map((task) => task.id)
-  );
+  const evidenceRows = new Set([
+    ...invalidRowIds,
+    ...reconciliation.newIds,
+  ]);
   reconciliation.candidateSource = normalizeApprovedTaskEvidence({
     source: reconciliation.candidateSource,
-    rowIds: reconciliation.newIds,
+    rowIds: evidenceRows,
     approvedTaskIds,
   });
+  reconciliation.normalizedApprovalIds = [...evidenceRows];
   reconciliation.candidateSource = updateLatestTaskSummary(
     reconciliation.candidateSource,
     context.expectedLatestTaskId

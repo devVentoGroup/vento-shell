@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1576** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **281** |
-| Tareas en propuesta | **1** |
+| Tareas aprobadas | **282** |
+| Tareas en propuesta | **0** |
 | Tareas no iniciadas | **1294** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NFR-REQ-004 — Definir comportamiento offline y sincronización** |
-| Tarea actual | **NFR-REQ-005 — Definir privacidad y sensibilidad** |
-| Estado de la tarea actual | **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | **NFR-REQ-006 — Definir trazabilidad y retención** |
+| Última tarea aprobada | **NFR-REQ-005 — Definir privacidad y sensibilidad** |
+| Tarea actual | **NFR-REQ-006 — Definir trazabilidad y retención** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **NFR-REQ-007 — Definir accesibilidad y ergonomía** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 39 de 101 aprobadas; NFR-REQ-005 en propuesta** |
+| Progreso del bloque | **BLOQUE E2: 40 de 101 aprobadas; NFR-REQ-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NFR-REQ-004` — Definir comportamiento offline y sincronización |
-| Tarea actual | `NFR-REQ-005` — Definir privacidad y sensibilidad — **PROPUESTA PARA APROBACIÓN** |
-| Siguiente tarea | `NFR-REQ-006` — Definir trazabilidad y retención |
+| Última aprobada | `NFR-REQ-005` — Definir privacidad y sensibilidad |
+| Tarea actual | `NFR-REQ-006` — Definir trazabilidad y retención — **NO INICIADA** |
+| Siguiente tarea | `NFR-REQ-007` — Definir accesibilidad y ergonomía |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **39 DE 101 APROBADAS — ACTUAL NFR-REQ-005** |
+| BLOQUE E2 | **40 DE 101 APROBADAS — ACTUAL NFR-REQ-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NFR-REQ-004 — Definir comportamiento offline y sincronización
-        ↓
-TAREA ACTUAL
 NFR-REQ-005 — Definir privacidad y sensibilidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NFR-REQ-006 — Definir trazabilidad y retención
         ↓
+SIGUIENTE TAREA RESERVADA
+NFR-REQ-007 — Definir accesibilidad y ergonomía
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 39 de 101 tareas aprobadas
+BLOQUE E2 — 40 de 101 tareas aprobadas
 ```

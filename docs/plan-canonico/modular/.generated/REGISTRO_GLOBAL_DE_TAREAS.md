@@ -10,8 +10,8 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **281** |
-| En propuesta | **1** |
+| Aprobadas | **282** |
+| En propuesta | **0** |
 | No iniciadas | **1294** |
 | Rechazadas | **0** |
 
@@ -19,9 +19,9 @@
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NFR-REQ-004` — Definir comportamiento offline y sincronización | ✅ APROBADA |
-| Tarea actual | `NFR-REQ-005` — Definir privacidad y sensibilidad | 🟡 PROPUESTA PARA APROBACIÓN |
-| Siguiente | `NFR-REQ-006` — Definir trazabilidad y retención | ⬜ NO INICIADA |
+| Última aprobada | `NFR-REQ-005` — Definir privacidad y sensibilidad | ✅ APROBADA |
+| Tarea actual | `NFR-REQ-006` — Definir trazabilidad y retención | ⬜ NO INICIADA |
+| Siguiente | `NFR-REQ-007` — Definir accesibilidad y ergonomía | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -340,7 +340,7 @@
 | ✅ APROBADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-004` | Definir comportamiento offline y sincronización | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| 🟡 PROPUESTA PARA APROBACIÓN | `NFR-REQ-005` | Definir privacidad y sensibilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-005` | Definir privacidad y sensibilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-006` | Definir trazabilidad y retención | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-007` | Definir accesibilidad y ergonomía | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ⬜ NO INICIADA | `NFR-REQ-008` | Definir hardware, red y periféricos requeridos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
