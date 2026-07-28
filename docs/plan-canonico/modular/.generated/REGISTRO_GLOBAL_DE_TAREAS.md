@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1576** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **307** |
+| Aprobadas | **312** |
 | En propuesta | **0** |
-| No iniciadas | **1269** |
+| No iniciadas | **1264** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-003` — Vincular cada pantalla con un proceso | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-004` — Vincular cada pantalla con un paso del proceso | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-005` — Clasificar pantalla operativa | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-008` — Clasificar pantalla de configuración | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-009` — Clasificar pantalla de auditoría | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-010` — Clasificar pantalla personal | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -301,11 +301,11 @@
 | ✅ APROBADA | `PROC-SCREEN-001` | Crear identificador estable para cada pantalla | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-002` | Vincular cada pantalla con una aplicación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-003` | Vincular cada pantalla con un proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-007` | Clasificar pantalla de supervisión | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-008` | Clasificar pantalla de configuración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-004` | Vincular cada pantalla con un paso del proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-005` | Clasificar pantalla operativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-006` | Clasificar pantalla administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-007` | Clasificar pantalla de supervisión | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-008` | Clasificar pantalla de configuración | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-009` | Clasificar pantalla de auditoría | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-010` | Clasificar pantalla personal | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-011` | Clasificar pantalla de cliente | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |

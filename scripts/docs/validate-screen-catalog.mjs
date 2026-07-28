@@ -149,7 +149,7 @@ export function validateScreenCatalog({ root = process.cwd() } = {}) {
   const screenTask = section(
     screenSource,
     /^### ✅ PROC-SCREEN-002\b/m,
-    /^### (?:🟡|\[~\]|\[ \]) PROC-SCREEN-003\b/m
+    /^### (?:✅|🟡|\[~\]|\[ \]) PROC-SCREEN-003\b/m
   );
   const applicationCodes = extractApplicationCodes(applicationSource);
   const screens = extractScreens(screenTask);
@@ -205,6 +205,19 @@ export function validateScreenCatalog({ root = process.cwd() } = {}) {
     ['VSCREEN-0171', 'pass'],
   ]);
   const screenById = new Map(screens.map((screen) => [screen.id, screen]));
+  for (const line of screenSource.split('\n')) {
+    const cells = splitRow(line);
+    if (!cells || cells.length < 2) continue;
+    const id = cleanCode(cells[0]);
+    const canonical = screenById.get(id);
+    if (!canonical) continue;
+    const observedName = cleanCode(cells[1]);
+    if (observedName !== canonical.name) {
+      throw new Error(
+        `${id} usa el nombre "${observedName}" fuera del catálogo; debe conservar "${canonical.name}".`
+      );
+    }
+  }
   for (const [screenId, app] of requiredBindings) {
     if (screenById.get(screenId)?.app !== app) {
       throw new Error(`${screenId} debe existir y permanecer vinculado con ${app}.`);
@@ -214,10 +227,6 @@ export function validateScreenCatalog({ root = process.cwd() } = {}) {
   if (screens.some((screen) => screen.app === 'talento')) {
     throw new Error('TALENTO no puede utilizarse como aplicación primaria sin app_code canónico.');
   }
-  if (screenTask.includes('Casos de instalaciones y soporte')) {
-    throw new Error('persiste la identidad ambigua que mezcla instalaciones y soporte.');
-  }
-
   const coverage = section(
     screenTask,
     /^#### 13\. SCREEN-COVERAGE-ADMISSION-REGISTER-001$/m,

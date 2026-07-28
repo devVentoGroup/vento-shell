@@ -29,6 +29,14 @@ function mutate(root, search, replacement) {
   fs.writeFileSync(fullPath, source.replace(search, replacement));
 }
 
+function mutateRegex(root, pattern, replacement) {
+  const relativePath = FILES[0];
+  const fullPath = path.join(root, relativePath);
+  const source = fs.readFileSync(fullPath, 'utf8');
+  assert.ok(pattern.test(source), `fixture no coincide con ${pattern}`);
+  fs.writeFileSync(fullPath, source.replace(pattern, replacement));
+}
+
 test('acepta el catálogo canónico vigente', () => {
   const root = fixture();
   assert.equal(validateScreenCatalog({ root }).screens, 175);
@@ -55,6 +63,20 @@ test('rechaza la transferencia silenciosa de una pantalla PASS', () => {
 
 test('rechaza cobertura incompleta o referencias a procesos inexistentes', () => {
   const root = fixture();
-  mutate(root, '| `VPROC-0069`           | `COVERED`', '| `VPROC-0070`           | `COVERED`');
+  mutateRegex(
+    root,
+    /^\| `VPROC-0069`\s+\| `COVERED`/m,
+    (row) => row.replace('`VPROC-0069`', '`VPROC-0070`')
+  );
   assert.throws(() => validateScreenCatalog({ root }), /procesos sin disposición de cobertura/);
+});
+
+test('rechaza nombres históricos reintroducidos por tareas posteriores', () => {
+  const root = fixture();
+  mutateRegex(
+    root,
+    /^\| `VSCREEN-0026` \| Bandeja de casos administrativos transversales\s+\| `viso`\s+\| `VPROC-0004` \|/m,
+    (row) => row.replace('Bandeja de casos administrativos transversales', 'Casos de instalaciones y soporte')
+  );
+  assert.throws(() => validateScreenCatalog({ root }), /debe conservar "Bandeja de casos administrativos transversales"/);
 });

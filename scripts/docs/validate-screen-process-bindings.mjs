@@ -37,7 +37,7 @@ function extractScreens(source) {
   const task = section(
     source,
     /^### ✅ PROC-SCREEN-002\b/m,
-    /^### (?:🟡|\[~\]|\[ \]) PROC-SCREEN-003\b/m
+    /^### (?:✅|🟡|\[~\]|\[ \]) PROC-SCREEN-003\b/m
   );
   const screens = new Map();
   for (const line of task.split('\n')) {
@@ -67,7 +67,7 @@ function extractBindings(source) {
   const task = section(
     source,
     /^### (?:🟡|\[~\]|✅) PROC-SCREEN-003\b/m,
-    /^### \[ \] PROC-SCREEN-004\b/m
+    /^### (?:✅|🟡|\[~\]|\[ \]) PROC-SCREEN-004\b/m
   );
   const bindings = [];
   for (const line of task.split('\n')) {

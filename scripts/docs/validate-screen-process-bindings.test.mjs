@@ -27,6 +27,13 @@ function mutate(root, search, replacement) {
   fs.writeFileSync(fullPath, source.replace(search, replacement));
 }
 
+function mutateRegex(root, pattern, replacement) {
+  const fullPath = path.join(root, FILES[0]);
+  const source = fs.readFileSync(fullPath, 'utf8');
+  assert.ok(pattern.test(source), `fixture no coincide con ${pattern}`);
+  fs.writeFileSync(fullPath, source.replace(pattern, replacement));
+}
+
 test('acepta los 175 vínculos pantalla-proceso propuestos', () => {
   const stats = validateScreenProcessBindings({ root: fixture() });
   assert.equal(stats.screens, 175);
@@ -43,22 +50,30 @@ test('rechaza una pantalla sin vínculo', () => {
 
 test('rechaza un proceso inexistente', () => {
   const root = fixture();
-  mutate(root, '| `VSCREEN-0171` | Calificación y satisfacción | `pass` | `VPROC-0068`', '| `VSCREEN-0171` | Calificación y satisfacción | `pass` | `VPROC-9999`');
+  mutateRegex(
+    root,
+    /^\| `VSCREEN-0171` \| Calificación y satisfacción\s+\| `pass`\s+\| `VPROC-0068`\s+\|/m,
+    (row) => row.replace('`VPROC-0068`', '`VPROC-9999`')
+  );
   assert.throws(() => validateScreenProcessBindings({ root }), /proceso primario inexistente VPROC-9999/);
 });
 
 test('rechaza propiedad silenciosa desde un canal PASS', () => {
   const root = fixture();
-  mutate(
+  mutateRegex(
     root,
-    '| `VSCREEN-0164` | Revisión, checkout e inicio de pago | `pass` | `VPROC-0043` | `VPROC-0039`, `VPROC-0042` | `CUSTOMER_CHANNEL`',
-    '| `VSCREEN-0164` | Revisión, checkout e inicio de pago | `pass` | `VPROC-0043` | `VPROC-0039`, `VPROC-0042` | `OWNER_WORKSPACE`'
+    /^\| `VSCREEN-0164` \| Revisión, checkout e inicio de pago\s+\| `pass`\s+\| `VPROC-0043`\s+\| `VPROC-0039`, `VPROC-0042`\s+\| `CUSTOMER_CHANNEL`\s+\|/m,
+    (row) => row.replace('`CUSTOMER_CHANNEL`', '`OWNER_WORKSPACE`')
   );
   assert.throws(() => validateScreenProcessBindings({ root }), /pertenece a pulso/);
 });
 
 test('rechaza vincular un proceso AURA diferido', () => {
   const root = fixture();
-  mutate(root, '| `VSCREEN-0123` | Gestión de comunicaciones internas | `viso` | `VPROC-0004`', '| `VSCREEN-0123` | Gestión de comunicaciones internas | `viso` | `VPROC-0056`');
+  mutateRegex(
+    root,
+    /^\| `VSCREEN-0123` \| Gestión de comunicaciones internas\s+\| `viso`\s+\| `VPROC-0004`\s+\|/m,
+    (row) => row.replace('`VPROC-0004`', '`VPROC-0056`')
+  );
   assert.throws(() => validateScreenProcessBindings({ root }), /vincula el proceso diferido VPROC-0056/);
 });
