@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **332** |
+| Tareas aprobadas | **334** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1243** |
+| Tareas no iniciadas | **1241** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1** |
-| Tarea actual | **PROC-COVER-002 — Vincular cada proceso con su operación manual actual** |
+| Última tarea aprobada | **PROC-COVER-003 — Vincular cada proceso con su implementación actual** |
+| Tarea actual | **PROC-COVER-004 — Clasificar proceso completo, parcial, manual, ausente o diferido** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-COVER-003 — Vincular cada proceso con su implementación actual** |
+| Siguiente tarea | **PROC-COVER-005 — Identificar dependencias que impiden completar el proceso** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 91 de 101 aprobadas; PROC-COVER-002 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 93 de 101 aprobadas; PROC-COVER-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 |
-| Tarea actual | `PROC-COVER-002` — Vincular cada proceso con su operación manual actual — **NO INICIADA** |
-| Siguiente tarea | `PROC-COVER-003` — Vincular cada proceso con su implementación actual |
+| Última aprobada | `PROC-COVER-003` — Vincular cada proceso con su implementación actual |
+| Tarea actual | `PROC-COVER-004` — Clasificar proceso completo, parcial, manual, ausente o diferido — **NO INICIADA** |
+| Siguiente tarea | `PROC-COVER-005` — Identificar dependencias que impiden completar el proceso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **91 DE 101 APROBADAS — ACTUAL PROC-COVER-002** |
+| BLOQUE E2 | **93 DE 101 APROBADAS — ACTUAL PROC-COVER-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1
-        ↓
-TAREA ACTUAL
-PROC-COVER-002 — Vincular cada proceso con su operación manual actual
-        ↓
-SIGUIENTE TAREA RESERVADA
 PROC-COVER-003 — Vincular cada proceso con su implementación actual
         ↓
+TAREA ACTUAL
+PROC-COVER-004 — Clasificar proceso completo, parcial, manual, ausente o diferido
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-COVER-005 — Identificar dependencias que impiden completar el proceso
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 91 de 101 tareas aprobadas
+BLOQUE E2 — 93 de 101 tareas aprobadas
 ```

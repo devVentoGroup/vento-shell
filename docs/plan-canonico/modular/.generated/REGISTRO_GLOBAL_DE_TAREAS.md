@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **332** |
+| Aprobadas | **334** |
 | En propuesta | **0** |
-| No iniciadas | **1243** |
+| No iniciadas | **1241** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 | ✅ APROBADA |
-| Tarea actual | `PROC-COVER-002` — Vincular cada proceso con su operación manual actual | ⬜ NO INICIADA |
-| Siguiente | `PROC-COVER-003` — Vincular cada proceso con su implementación actual | ⬜ NO INICIADA |
+| Última aprobada | `PROC-COVER-003` — Vincular cada proceso con su implementación actual | ✅ APROBADA |
+| Tarea actual | `PROC-COVER-004` — Clasificar proceso completo, parcial, manual, ausente o diferido | ⬜ NO INICIADA |
+| Siguiente | `PROC-COVER-005` — Identificar dependencias que impiden completar el proceso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -326,8 +326,8 @@
 | ✅ APROBADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-COVER-001` | Vincular cada proceso con una capacidad aprobada en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-004` | Clasificar proceso completo, parcial, manual, ausente o diferido | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
