@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **328** |
+| Tareas aprobadas | **330** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1247** |
+| Tareas no iniciadas | **1245** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-SCREEN-025 — Vincular cada acción con Server Action, API o RPC** |
-| Tarea actual | **PROC-SCREEN-026 — Identificar pantalla reemplazada o legacy** |
+| Última tarea aprobada | **PROC-SCREEN-027 — Definir métrica de usabilidad** |
+| Tarea actual | **PROC-SCREEN-028 — Definir criterio de aceptación operativo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-SCREEN-027 — Definir métrica de usabilidad** |
+| Siguiente tarea | **PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 87 de 101 aprobadas; PROC-SCREEN-026 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 89 de 101 aprobadas; PROC-SCREEN-028 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-SCREEN-025` — Vincular cada acción con Server Action, API o RPC |
-| Tarea actual | `PROC-SCREEN-026` — Identificar pantalla reemplazada o legacy — **NO INICIADA** |
-| Siguiente tarea | `PROC-SCREEN-027` — Definir métrica de usabilidad |
+| Última aprobada | `PROC-SCREEN-027` — Definir métrica de usabilidad |
+| Tarea actual | `PROC-SCREEN-028` — Definir criterio de aceptación operativo — **NO INICIADA** |
+| Siguiente tarea | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **87 DE 101 APROBADAS — ACTUAL PROC-SCREEN-026** |
+| BLOQUE E2 | **89 DE 101 APROBADAS — ACTUAL PROC-SCREEN-028** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-SCREEN-025 — Vincular cada acción con Server Action, API o RPC
-        ↓
-TAREA ACTUAL
-PROC-SCREEN-026 — Identificar pantalla reemplazada o legacy
-        ↓
-SIGUIENTE TAREA RESERVADA
 PROC-SCREEN-027 — Definir métrica de usabilidad
         ↓
+TAREA ACTUAL
+PROC-SCREEN-028 — Definir criterio de aceptación operativo
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 87 de 101 tareas aprobadas
+BLOQUE E2 — 89 de 101 tareas aprobadas
 ```
