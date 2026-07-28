@@ -1052,7 +1052,337 @@ SIGUIENTE = PROC-COVER-004
 ```
 
 
-### [ ] PROC-COVER-004 — Clasificar proceso completo, parcial, manual, ausente o diferido
+### ✅ PROC-COVER-004 — Clasificar proceso completo, parcial, manual, ausente o diferido
+
+**Estado:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Marcador exacto que reemplaza:** `### [ ] PROC-COVER-004 — Clasificar proceso completo, parcial, manual, ausente o diferido`
+
+**Tarea anterior:** `PROC-COVER-003 — Vincular cada proceso con su implementación actual` — APROBADA
+
+**Siguiente tarea reservada:** `PROC-COVER-005 — Identificar dependencias que impiden completar el proceso` — NO INICIADA
+
+**Artefactos lógicos contenidos en esta tarea:**
+
+- `PROCESS-CURRENT-COVERAGE-CLASSIFICATION-CONTRACT-001`;
+- `PROCESS-COVERAGE-CLASSIFICATION-DECISION-TREE-001`;
+- `PROCESS-COVERAGE-CLASSIFICATION-QUALITY-OVERLAY-001`;
+- `PROCESS-CURRENT-COVERAGE-CLASSIFICATION-MATRIX-001`;
+- `PROCESS-COVERAGE-CLASSIFICATION-CHANGE-RULE-001`;
+- `PROCESS-COVERAGE-CARRYOVER-004`.
+
+**Naturaleza:** clasificación documental del estado actual de los 69 procesos canónicos a partir de capacidad, operación manual e implementación verificable. No completa procesos, no modifica el TO-BE, no decide todavía dependencias, alcance mínimo u objetivo, ni autoriza implementación.
+
+**Cambios en aplicaciones, código, Supabase, migraciones, despliegues, proveedores externos u operación:** no autorizados por esta tarea.
+
+---
+
+#### 1. Propósito
+
+Asignar exactamente un estado principal vigente a cada proceso canónico, utilizando evidencia reproducible y evitando declarar `COMPLETE` por la sola existencia de una aplicación, ruta, tabla, procedimiento, proveedor externo o resultado aislado.
+
+```text
+CAPACIDAD APROBADA
+        +
+OPERACIÓN MANUAL ACTUAL
+        +
+IMPLEMENTACIÓN ACTUAL VERIFICABLE
+        +
+CONTRATO TO-BE Y EVIDENCIA
+        =
+CLASIFICACIÓN ACTUAL ÚNICA POR PROCESO
+```
+
+La clasificación describe el corte actual. No representa la prioridad, el tratamiento objetivo ni la aceptación productiva definitiva.
+
+---
+
+#### 2. Dependencias y línea base preservada
+
+Esta tarea consume sin reemplazar:
+
+- `PROC-COVER-001`, con capacidad primaria y capacidades de apoyo;
+- `PROC-COVER-002`, con 69 líneas base de operación manual;
+- `PROC-COVER-003`, con 69 vínculos de implementación y 30 brechas internas;
+- `CAP-COVER-001` a `CAP-COVER-012`;
+- `CODE-AUD-001` a `CODE-AUD-020`;
+- `PROC-CAT-001` a `PROC-CAT-020`;
+- `PROC-SCREEN-001` a `PROC-SCREEN-028`;
+- el registro canónico de brechas y requisitos de prueba.
+
+La huella del carryover de operación e implementación consumido es:
+
+```text
+d663a1752a281bb0c04a1ef2db9a421873336eb86e2937aa91993eb6c0c4e8a4
+```
+
+---
+
+#### 3. Estados principales permitidos
+
+| Estado | Criterio canónico | Consecuencia |
+| --- | --- | --- |
+| `COMPLETE` | Existe una cadena vigente de principio a fin que satisface el contrato canónico, maneja excepciones críticas, conserva autoridad, datos, auditoría y evidencia, y está aceptada para el alcance evaluado. | Puede continuar a la matriz final únicamente si conserva evidencia vigente y no aparecen dependencias materiales. |
+| `PARTIAL` | Existe al menos una etapa o resultado empresarial utilizable, pero faltan etapas, controles, variantes, conciliaciones o cierre material del contrato canónico. | Debe identificar dependencias y alcance faltante antes de cualquier declaración de completitud. |
+| `MANUAL` | Existe una operación AS-IS confirmada y el resultado actual depende principalmente de personas, documentos o coordinación directa; no se acredita una cadena técnica completa. | Se reconoce la operación actual sin convertirla en implementación digital ni degradarla automáticamente por su modalidad. |
+| `ABSENT` | No se confirmó un proceso actual alcanzable de principio a fin para el alcance evaluado; canales, tablas, código, archivos o fragmentos aislados no bastan. | Debe conservar brecha, propietario y alcance objetivo; las primitivas técnicas no cambian el estado. |
+| `DEFERRED` | Existe una decisión aprobada que aplaza el proceso o su adopción; se conservan propietario, condición de reactivación, revisión y riesgo de continuidad. | Debe preservar decisión, revisión, condición de reactivación y prohibición de implementación anticipada. |
+
+Los cinco estados son mutuamente excluyentes para el mismo proceso, alcance y fecha de corte. Un proceso puede cambiar de estado únicamente mediante nueva evidencia versionada.
+
+---
+
+#### 4. Reglas estrictas por estado
+
+##### 4.1. `COMPLETE`
+
+`COMPLETE` requiere simultáneamente: resultado end-to-end; inicio y cierre alcanzables; estados y transiciones válidos; excepciones críticas; cancelación, reversión o corrección cuando aplique; autoridad de servidor; datos y fuente de verdad; auditoría; integraciones; evidencia de uso; pruebas y aceptación vigentes.
+
+Una operación manual, externa o híbrida podría ser `COMPLETE` en el futuro si satisface todos esos criterios. La modalidad tecnológica no decide el estado.
+
+##### 4.2. `PARTIAL`
+
+`PARTIAL` exige al menos un resultado o etapa utilizable, pero conserva una brecha material de alcance, continuidad, excepción, conciliación, integración, autorización, datos, auditoría, pruebas o cierre. Una mejora cosmética no justifica esta clasificación.
+
+##### 4.3. `MANUAL`
+
+`MANUAL` reconoce que existe una operación real predominantemente humana o documental y que no se ha acreditado una cadena técnica completa. Mantiene por separado la condición `FRAGMENTADO`, `PARCIAL`, `INFORMAL`, `CONCENTRADO`, `OPERATIVO_CON_VARIANTES` u otra condición AS-IS.
+
+##### 4.4. `ABSENT`
+
+`ABSENT` significa que no se confirmó un proceso actual alcanzable para el alcance evaluado. No significa que la capacidad sea innecesaria ni que no existan archivos, tablas, canales o actividades relacionadas.
+
+##### 4.5. `DEFERRED`
+
+`DEFERRED` solo procede por decisión aprobada. La falta de tiempo, de código, de dueño o de evidencia no permite usar este estado para ocultar una ausencia.
+
+---
+
+#### 5. Árbol de decisión obligatorio
+
+```text
+1. ¿Existe decisión aprobada de diferimiento aplicable al proceso?
+   SÍ → DEFERRED
+
+2. ¿Existe operación actual predominantemente manual confirmada, sin cadena técnica completa?
+   SÍ → MANUAL
+
+3. ¿Existe al menos una etapa o resultado empresarial actual utilizable?
+   SÍ, pero faltan elementos materiales → PARTIAL
+
+4. ¿Existe evidencia completa, vigente y aceptada de todos los criterios aplicables?
+   SÍ → COMPLETE
+
+5. En los demás casos → ABSENT
+```
+
+La evaluación de `COMPLETE` se realiza después de verificar que el resultado no quedó capturado por `MANUAL` o `PARTIAL`. La clasificación no puede elevarse por percepción de avance.
+
+---
+
+#### 6. Overlay de calidad y evidencia
+
+El estado principal no elimina la modalidad ni la calidad AS-IS. Cada fila conserva:
+
+- modalidad y condición manual;
+- perfil topológico de implementación;
+- confianza de la evidencia;
+- resultado actualmente confirmado;
+- límite material;
+- propietario de la continuidad.
+
+```text
+ESTADO PRINCIPAL
+        +
+MODALIDAD / CONDICIÓN AS-IS
+        +
+PERFIL DE IMPLEMENTACIÓN
+        +
+CONFIANZA Y FECHA DE CORTE
+        =
+LECTURA COMPLETA SIN FALSOS POSITIVOS
+```
+
+---
+
+#### 7. PROCESS-CURRENT-COVERAGE-CLASSIFICATION-MATRIX-001
+
+| Proceso | Clasificación ID | Definición TO-BE preservada | Capacidad primaria | Referencia manual | Implementación | Perfil topológico | Estado principal | Criterio aplicado | Resultado actual confirmado | Brecha, límite o decisión | Modalidad y condición AS-IS | Confianza | Propietario y continuidad | Estado de registro |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `VPROC-0001` | `CLASS-VPROC-0001` | Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento | `CAP-01.02` — Tomar y registrar decisiones empresariales | `MANOP-VPROC-0001` | `IMPL-VPROC-0001` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0002` | `CLASS-VPROC-0002` | Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas | `CAP-01.03` — Gobernar empresas, marcas y establecimientos | `MANOP-VPROC-0002` | `IMPL-VPROC-0002` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies administrativas y datos parciales para entidades organizativas | No se confirma reconciliación jurídica-operativa ni propagación consistente a todos los consumidores | `HIBRIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0003` | `CLASS-VPROC-0003` | Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes | `CAP-01.05` — Definir responsabilidades y límites de decisión | `MANOP-VPROC-0003` | `IMPL-VPROC-0003` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0004` | `CLASS-VPROC-0004` | Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas | `CAP-01.08` — Coordinar operación entre negocios y sedes | `MANOP-VPROC-0004` | `IMPL-VPROC-0004` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `INFORMAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0005` | `CLASS-VPROC-0005` | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `CAP-02.02` — Reclutar y seleccionar | `MANOP-VPROC-0005` | `IMPL-VPROC-0005` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen rutas de vacantes y soporte administrativo para etapas de selección | No se confirma flujo único desde necesidad aprobada hasta decisión y handoff de vinculación | `MANUAL_CONTROLADO` / `OPERATIVO_CON_VARIANTES` | `MEDIUM` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0006` | `CLASS-VPROC-0006` | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `CAP-02.03` — Vincular e incorporar trabajadores | `MANOP-VPROC-0006` | `IMPL-VPROC-0006` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen invitaciones, autenticación, expediente y superficies laborales en sistemas separados | No se confirma una orquestación única de vinculación, preparación, asignación, acceso y cierre de incorporación | `HIBRIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0007` | `CLASS-VPROC-0007` | Administrar asignaciones laborales y programación publicada con historial y revisión controlada | `CAP-02.06` — Programar turnos | `MANOP-VPROC-0007` | `IMPL-VPROC-0007` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen superficies y servicios para programación/publicación de turnos | Variantes, reemplazos, correcciones y confirmación de recepción continúan con puentes manuales | `DIGITAL_PARCIAL` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0008` | `CLASS-VPROC-0008` | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables | `CAP-02.07` — Registrar asistencia y tiempo trabajado | `MANOP-VPROC-0008` | `IMPL-VPROC-0008` | `DEPLOYED_MOBILE_WITH_ADMIN_REVIEW` | `PARTIAL` | Existen captura móvil y revisión administrativa desplegadas, pero las correcciones y excepciones no cierran todavía el contrato completo. | Aplicación móvil desplegada y revisión administrativa confirmadas para el hecho principal de asistencia | Correcciones, excepciones, omisiones y conciliación integral no se confirman como proceso cerrado | `DIGITAL_INTERNO` / `OPERATIVO_ESTABLE` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0009` | `CLASS-VPROC-0009` | Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos | `CAP-02.08` — Gestionar novedades, ausencias y reemplazos | `MANOP-VPROC-0009` | `IMPL-VPROC-0009` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0010` | `CLASS-VPROC-0010` | Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales | `CAP-02.12` — Gestionar pagos y beneficios laborales | `MANOP-VPROC-0010` | `IMPL-VPROC-0010` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | La ejecución o preparación de pagos usa plataforma externa y control humano | No se confirma paquete laboral autorizado, conciliación, rechazo, reversión y evidencia unificados | `HIBRIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0011` | `CLASS-VPROC-0011` | Orquestar retiro laboral, devolución, revocación de accesos y cierre documental | `CAP-02.13` — Gestionar retiro y cierre de accesos | `MANOP-VPROC-0011` | `IMPL-VPROC-0011` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies y servicios reales de creación, aceptación, sesión y revocación de algunos accesos | No se confirma ciclo transversal completo para todas las aplicaciones, activos, credenciales y verificación final | `MANUAL_DISTRIBUIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0012` | `CLASS-VPROC-0012` | Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas | `CAP-03.01` — Identificar peligros y riesgos laborales | `MANOP-VPROC-0012` | `IMPL-VPROC-0012` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0013` | `CLASS-VPROC-0013` | Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior | `CAP-03.04` — Reportar e investigar incidentes | `MANOP-VPROC-0013` | `IMPL-VPROC-0013` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0014` | `CLASS-VPROC-0014` | Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados | `CAP-03.06` — Controlar higiene e inocuidad | `MANOP-VPROC-0014` | `IMPL-VPROC-0014` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0015` | `CLASS-VPROC-0015` | Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias | `CAP-04.01` — Definir productos y servicios | `MANOP-VPROC-0015` | `IMPL-VPROC-0015` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen catálogos y consumidores distribuidos para productos y presentaciones | No se confirma una única fuente versionada con equivalencias, vigencia y propagación atómica | `DIGITAL_PARCIAL` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0016` | `CLASS-VPROC-0016` | Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas | `CAP-04.05` — Definir recetas y métodos de preparación | `MANOP-VPROC-0016` | `IMPL-VPROC-0016` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen superficies productivas y fragmentos de recetas o preparación | Desarrollo, prueba, aprobación, publicación, versión y vigencia no están confirmados end-to-end | `HIBRIDO` / `PARCIAL` | `MEDIUM` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0017` | `CLASS-VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `CAP-04.07` — Gestionar menús y disponibilidad | `MANOP-VPROC-0017` | `IMPL-VPROC-0017` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies internas, web y externas que publican oferta | No se confirma publicación derivada de una única definición con vigencia y retiro reconciliados | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0018` | `CLASS-VPROC-0018` | Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto | `CAP-04.09` — Gestionar calidad y especificaciones | `MANOP-VPROC-0018` | `IMPL-VPROC-0018` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0019` | `CLASS-VPROC-0019` | Capturar y priorizar necesidades de compra mediante una entrada única y trazable | `CAP-05.02` — Solicitar productos, materiales o servicios | `MANOP-VPROC-0019` | `IMPL-VPROC-0019` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen rutas y formularios de compras que soportan etapas del proceso | Entrada única, priorización, aprobación, urgencia, emisión y cierre no se confirman como cadena completa | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0020` | `CLASS-VPROC-0020` | Comparar proveedores y condiciones con evidencia suficiente para decidir | `CAP-05.04` — Solicitar y comparar ofertas | `MANOP-VPROC-0020` | `IMPL-VPROC-0020` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0021` | `CLASS-VPROC-0021` | Aprobar y emitir compras separando flujo ordinario, urgencia y excepción | `CAP-05.07` — Emitir y controlar órdenes | `MANOP-VPROC-0021` | `IMPL-VPROC-0021` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen rutas y formularios de compras que soportan etapas del proceso | Entrada única, priorización, aprobación, urgencia, emisión y cierre no se confirman como cadena completa | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0022` | `CLASS-VPROC-0022` | Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica | `CAP-05.08` — Recibir productos y servicios | `MANOP-VPROC-0022` | `IMPL-VPROC-0022` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies separadas de recepción e inventario | No se confirma conciliación única entre recepción física, documental, inventario, diferencia y efecto económico | `HIBRIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0023` | `CLASS-VPROC-0023` | Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento | `CAP-06.01` — Definir lugares de almacenamiento | `MANOP-VPROC-0023` | `IMPL-VPROC-0023` | `INTERNAL_APP_FRAGMENT_IMPLEMENTATION` | `PARTIAL` | Existe un fragmento interno verificable, pero no una cadena completa de inicio, continuidad, corrección y cierre. | Existen rutas, datos y acciones para partes de ubicación y movimiento de inventario | No se confirma cobertura completa por LOC, unidad, conversión, correlación y corrección | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0024` | `CLASS-VPROC-0024` | Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados | `CAP-06.03` — Registrar entradas | `MANOP-VPROC-0024` | `IMPL-VPROC-0024` | `INTERNAL_APP_FRAGMENT_IMPLEMENTATION` | `PARTIAL` | Existe un fragmento interno verificable, pero no una cadena completa de inicio, continuidad, corrección y cierre. | Existen rutas, datos y acciones para partes de ubicación y movimiento de inventario | No se confirma cobertura completa por LOC, unidad, conversión, correlación y corrección | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0025` | `CLASS-VPROC-0025` | Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino | `CAP-06.07` — Registrar consumo y salida | `MANOP-VPROC-0025` | `IMPL-VPROC-0025` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen recorridos digitales utilizables para etapas concretas | Conversión, custodia, diferencias, excepciones, conciliación y cierre continúan parciales o manuales | `HIBRIDO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0026` | `CLASS-VPROC-0026` | Contar como observación, investigar diferencias y ajustar mediante decisión separada | `CAP-06.12` — Contar inventario | `MANOP-VPROC-0026` | `IMPL-VPROC-0026` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen recorridos digitales utilizables para etapas concretas | Conversión, custodia, diferencias, excepciones, conciliación y cierre continúan parciales o manuales | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0027` | `CLASS-VPROC-0027` | Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición | `CAP-06.14` — Controlar vencimiento, daño y pérdida | `MANOP-VPROC-0027` | `IMPL-VPROC-0027` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0028` | `CLASS-VPROC-0028` | Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa | `CAP-06.09` — Solicitar y gestionar remisiones | `MANOP-VPROC-0028` | `IMPL-VPROC-0028` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen recorridos digitales utilizables para etapas concretas | Conversión, custodia, diferencias, excepciones, conciliación y cierre continúan parciales o manuales | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0029` | `CLASS-VPROC-0029` | Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos | `CAP-07.02` — Registrar ubicación y custodia | `MANOP-VPROC-0029` | `IMPL-VPROC-0029` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0030` | `CLASS-VPROC-0030` | Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos | `CAP-07.07` — Planear y ejecutar mantenimiento | `MANOP-VPROC-0030` | `IMPL-VPROC-0030` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0031` | `CLASS-VPROC-0031` | Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias | `CAP-07.12` — Gestionar vehículos y equipos de transporte | `MANOP-VPROC-0031` | `IMPL-VPROC-0031` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `CONCENTRADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0032` | `CLASS-VPROC-0032` | Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores | `CAP-07.03` — Entregar, prestar y devolver | `MANOP-VPROC-0032` | `IMPL-VPROC-0032` | `TECHNICAL_FOUNDATION_WITH_MANUAL_OPERATION` | `MANUAL` | La operación real continúa siendo manual; la base técnica existente no forma todavía un proceso integrado y alcanzable. | Existe operación manual y una base técnica de LPN/contención | No existe ciclo técnico alcanzable de contenido, custodia, traslado, retorno, completitud y cierre | `MANUAL` / `INFORMAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0033` | `CLASS-VPROC-0033` | Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida | `CAP-08.02` — Planear cantidades y fechas | `MANOP-VPROC-0033` | `IMPL-VPROC-0033` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0034` | `CLASS-VPROC-0034` | Preparar materiales y ejecutar producción contra una versión aprobada | `CAP-08.07` — Ejecutar lotes o preparaciones | `MANOP-VPROC-0034` | `IMPL-VPROC-0034` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen superficies de producción y captura parcial | No se confirma ejecución completa contra versión, consumo, rendimiento, merma y cierre conciliado | `HIBRIDO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0035` | `CLASS-VPROC-0035` | Inspeccionar y decidir liberación, retención, rechazo o corrección de producto | `CAP-08.12` — Liberar, retener o rechazar producto | `MANOP-VPROC-0035` | `IMPL-VPROC-0035` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0036` | `CLASS-VPROC-0036` | Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada | `CAP-08.11` — Empacar y etiquetar | `MANOP-VPROC-0036` | `IMPL-VPROC-0036` | `TECHNICAL_FRAGMENT_WITH_PHYSICAL_OPERATION` | `PARTIAL` | La actividad física existe y la tecnología cubre solo una parte de la trazabilidad y del cierre. | Se confirma actividad física de empaque/etiquetado y capacidades técnicas de impresión en NEXO | No se confirma trazabilidad unificada entre producto terminado, etiqueta, lote, almacenamiento y liberación | `HIBRIDO` / `OPERATIVO_CON_VARIANTES` | `MEDIUM` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0037` | `CLASS-VPROC-0037` | Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo | `CAP-08.13` — Gestionar reproceso y aprovechamiento | `MANOP-VPROC-0037` | `IMPL-VPROC-0037` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0038` | `CLASS-VPROC-0038` | Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación | `CAP-09.11` — Gestionar mesas y servicio presencial | `MANOP-VPROC-0038` | `IMPL-VPROC-0038` | `LEGACY_POS_WITH_INTERNAL_FOUNDATION` | `PARTIAL` | La operación legacy produce resultados actuales y la fundación interna aún no sustituye el ciclo completo. | La operación comercial actual se ejecuta principalmente en Makos y existen fragmentos internos en PULSO | No se confirma en PULSO un ciclo interno completo de apertura, venta, cobro, corrección, caja y cierre | `DIGITAL_PARCIAL` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0039` | `CLASS-VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados | `CAP-09.12` — Gestionar pedidos para llevar | `MANOP-VPROC-0039` | `IMPL-VPROC-0039` | `LEGACY_POS_WITH_INTERNAL_FOUNDATION` | `PARTIAL` | La operación legacy produce resultados actuales y la fundación interna aún no sustituye el ciclo completo. | La operación comercial actual se ejecuta principalmente en Makos y existen fragmentos internos en PULSO | No se confirma en PULSO un ciclo interno completo de apertura, venta, cobro, corrección, caja y cierre | `DIGITAL_PARCIAL` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0040` | `CLASS-VPROC-0040` | Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación | `CAP-09.13` — Gestionar pedidos recibidos por aplicaciones o mensajes | `MANOP-VPROC-0040` | `IMPL-VPROC-0040` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | Existen canales o proveedores externos activos que ejecutan etapas del proceso | Clasificación, traducción de estados, idempotencia, custodia, conciliación y cierre interno no se confirman de punta a punta | `EXTERNO_CON_CONTINUIDAD_INTERNA` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0041` | `CLASS-VPROC-0041` | Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B | `CAP-09.14` — Gestionar pedidos especiales, catering y ventas a empresas | `MANOP-VPROC-0041` | `IMPL-VPROC-0041` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0042` | `CLASS-VPROC-0042` | Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos | `CAP-09.05` — Modificar, sustituir o cancelar pedidos | `MANOP-VPROC-0042` | `IMPL-VPROC-0042` | `LEGACY_POS_WITH_INTERNAL_FOUNDATION` | `PARTIAL` | La operación legacy produce resultados actuales y la fundación interna aún no sustituye el ciclo completo. | La operación comercial actual se ejecuta principalmente en Makos y existen fragmentos internos en PULSO | No se confirma en PULSO un ciclo interno completo de apertura, venta, cobro, corrección, caja y cierre | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0043` | `CLASS-VPROC-0043` | Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable | `CAP-09.09` — Cobrar y confirmar pagos | `MANOP-VPROC-0043` | `IMPL-VPROC-0043` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen cobros/facturación operativos y servicios técnicos de pago | No se confirma contrato único de pago, reversión, factura, conciliación, puntos y cierre económico | `HIBRIDO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0044` | `CLASS-VPROC-0044` | Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables | `CAP-09.15` — Cerrar y revisar la jornada de venta | `MANOP-VPROC-0044` | `IMPL-VPROC-0044` | `LEGACY_POS_WITH_INTERNAL_FOUNDATION` | `PARTIAL` | La operación legacy produce resultados actuales y la fundación interna aún no sustituye el ciclo completo. | La operación comercial actual se ejecuta principalmente en Makos y existen fragmentos internos en PULSO | No se confirma en PULSO un ciclo interno completo de apertura, venta, cobro, corrección, caja y cierre | `HIBRIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0045` | `CLASS-VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `CAP-10.07` — Gestionar fidelización y beneficios | `MANOP-VPROC-0045` | `IMPL-VPROC-0045` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | PASS está desplegada y existen superficies internas para identificar cliente y operar fidelización | Consentimientos, ledger, acumulación, redención, reversión y privacidad no se confirman como contrato único | `DIGITAL_PARCIAL` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0046` | `CLASS-VPROC-0046` | Gestionar reclamo, devolución, compensación y aprendizaje de causa | `CAP-10.04` — Recibir y resolver reclamos | `MANOP-VPROC-0046` | `IMPL-VPROC-0046` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | Existen canales o proveedores externos activos que ejecutan etapas del proceso | Clasificación, traducción de estados, idempotencia, custodia, conciliación y cierre interno no se confirman de punta a punta | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0047` | `CLASS-VPROC-0047` | Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento | `CAP-10.08` — Gestionar reservas y eventos | `MANOP-VPROC-0047` | `IMPL-VPROC-0047` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0048` | `CLASS-VPROC-0048` | Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho | `CAP-11.02` — Definir recorridos y prioridades | `MANOP-VPROC-0048` | `IMPL-VPROC-0048` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `CONCENTRADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0049` | `CLASS-VPROC-0049` | Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente | `CAP-11.09` — Entregar y confirmar recepción | `MANOP-VPROC-0049` | `IMPL-VPROC-0049` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen recorridos digitales utilizables para etapas concretas | Conversión, custodia, diferencias, excepciones, conciliación y cierre continúan parciales o manuales | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0050` | `CLASS-VPROC-0050` | Integrar entrega de tercero con seguimiento, prueba y conciliación interna | `CAP-11.12` — Gestionar entregas mediante terceros | `MANOP-VPROC-0050` | `IMPL-VPROC-0050` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | Existen canales o proveedores externos activos que ejecutan etapas del proceso | Clasificación, traducción de estados, idempotencia, custodia, conciliación y cierre interno no se confirman de punta a punta | `EXTERNO_DEPENDIENTE` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0051` | `CLASS-VPROC-0051` | Registrar hechos económicos desde eventos operativos y soportes correlacionados | `CAP-12.01` — Registrar hechos económicos | `MANOP-VPROC-0051` | `IMPL-VPROC-0051` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies financieras y hechos en sistemas origen | No se confirma ingestión correlacionada, clasificación, validación y asiento/reporte completo | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0052` | `CLASS-VPROC-0052` | Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria | `CAP-12.05` — Gestionar cuentas por pagar | `MANOP-VPROC-0052` | `IMPL-VPROC-0052` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | Existen datos de proveedor/compra y ejecución bancaria externa | Obligación, aprobación, pago, rechazo y conciliación bancaria no están unificados | `HIBRIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0053` | `CLASS-VPROC-0053` | Gestionar cartera, cobro, recaudo, aplicación y diferencia | `CAP-12.04` — Gestionar cuentas por cobrar | `MANOP-VPROC-0053` | `IMPL-VPROC-0053` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen superficies y datos parciales para cartera, costos o reportes | Reglas, versiones, aplicación de recaudo, distribución, cierre y rentabilidad no se confirman end-to-end | `MANUAL_CONTROLADO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0054` | `CLASS-VPROC-0054` | Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas | `CAP-12.09` — Calcular costos | `MANOP-VPROC-0054` | `IMPL-VPROC-0054` | `INTERNAL_APP_WITH_MANUAL_BRIDGE` | `PARTIAL` | La aplicación interna soporta etapas materiales, pero requiere continuidad humana para completar o reconciliar el resultado. | Existen superficies y datos parciales para cartera, costos o reportes | Reglas, versiones, aplicación de recaudo, distribución, cierre y rentabilidad no se confirman end-to-end | `MANUAL_DISTRIBUIDO` / `PARCIAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0055` | `CLASS-VPROC-0055` | Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones | `CAP-13.07` — Inspeccionar condiciones | `MANOP-VPROC-0055` | `IMPL-VPROC-0055` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_CONTROLADO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0056` | `CLASS-VPROC-0056` | Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro | `CAP-14.03` — Crear y aprobar contenido | `MANOP-VPROC-0056` | `IMPL-VPROC-0056` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies de contenido/publicación y canales activos | Solicitud, aprobación, versionado, campaña, retiro y medición no están unificados | `MANUAL_CONTROLADO` / `OPERATIVO_CON_VARIANTES` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0057` | `CLASS-VPROC-0057` | Convertir consultas y oportunidades de canales digitales en casos comerciales trazables | `CAP-14.07` — Captar oportunidades de venta | `MANOP-VPROC-0057` | `IMPL-VPROC-0057` | `EXTERNAL_SYSTEM_WITH_MANUAL_BRIDGE` | `PARTIAL` | Un proveedor externo ejecuta etapas reales y el resto depende de clasificación, conciliación o cierre manual. | Existen canales o proveedores externos activos que ejecutan etapas del proceso | Clasificación, traducción de estados, idempotencia, custodia, conciliación y cierre interno no se confirman de punta a punta | `EXTERNO_CON_CONTINUIDAD_INTERNA` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0058` | `CLASS-VPROC-0058` | Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento | `CAP-15.06` — Atender solicitudes de soporte | `MANOP-VPROC-0058` | `IMPL-VPROC-0058` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `INFORMAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0059` | `CLASS-VPROC-0059` | Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación | `CAP-15.01` — Gestionar cuentas y accesos | `MANOP-VPROC-0059` | `IMPL-VPROC-0059` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen superficies y servicios reales de creación, aceptación, sesión y revocación de algunos accesos | No se confirma ciclo transversal completo para todas las aplicaciones, activos, credenciales y verificación final | `MANUAL_DISTRIBUIDO` / `CONCENTRADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0060` | `CLASS-VPROC-0060` | Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia | `CAP-16.03` — Guardar y localizar documentos | `MANOP-VPROC-0060` | `IMPL-VPROC-0060` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen múltiples soportes de creación, almacenamiento y consulta | Clasificación, versión, retención, acceso, archivo, eliminación y cadena de custodia no están unificados | `HIBRIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0061` | `CLASS-VPROC-0061` | Gestionar medición, análisis, decisión de mejora y verificación de resultado | `CAP-17.11` — Definir y seguir acciones de mejora | `MANOP-VPROC-0061` | `IMPL-VPROC-0061` | `MULTI_SYSTEM_FRAGMENTED_IMPLEMENTATION` | `PARTIAL` | Varias superficies soportan etapas reales, pero no existe una orquestación única ni un cierre reconciliado. | Existen datos, exportaciones y análisis manuales | Definición de indicador, calidad, decisión, acción de mejora y verificación no están correlacionadas | `MANUAL_DISTRIBUIDO` / `FRAGMENTADO` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0062` | `CLASS-VPROC-0062` | Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje | `CAP-18.05` — Mantener operación mínima | `MANOP-VPROC-0062` | `IMPL-VPROC-0062` | `MANUAL_OR_DOCUMENTARY_IMPLEMENTATION` | `MANUAL` | La operación actual está confirmada y se ejecuta principalmente mediante personas, documentos o coordinación directa. | Existe operación o soporte manual observado; no se confirma una cadena técnica end-to-end | No se confirma entrada digital autoritativa, continuidad de estados, cierre y auditoría en una única implementación | `MANUAL_DISTRIBUIDO` / `INFORMAL` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-009; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0063` | `CLASS-VPROC-0063` | CAP-01.07 — Gestionar riesgos empresariales: Gestionar riesgos estratégicos, financieros, operativos, legales y tecnológicos como registro versionado de riesgo, tratamiento y seguimiento. | `CAP-01.07` — Gestionar riesgos empresariales | `MANOP-VPROC-0063` | `IMPL-VPROC-0063` | `NO_CONFIRMED_CURRENT_IMPLEMENTATION` | `ABSENT` | No existe evidencia suficiente de una operación o implementación independiente y alcanzable. | No se confirma implementación actual independiente | Debe verificarse si existe operación o implementación dispersa; en caso contrario registrar ausencia canónica | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `LOW` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0064` | `CLASS-VPROC-0064` | CAP-01.09 — Gestionar relaciones con asesores y autoridades: Gobernar requerimientos, conceptos, entregables, vencimientos, comunicaciones y evidencia sin delegar la propiedad interna del resultado. | `CAP-01.09` — Gestionar relaciones con asesores y autoridades | `MANOP-VPROC-0064` | `IMPL-VPROC-0064` | `NO_CONFIRMED_CURRENT_IMPLEMENTATION` | `ABSENT` | No existe evidencia suficiente de una operación o implementación independiente y alcanzable. | No se confirma implementación actual independiente | Debe verificarse si existe operación o implementación dispersa; en caso contrario registrar ausencia canónica | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `LOW` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0065` | `CLASS-VPROC-0065` | CAP-02.10 — Acompañar desempeño y desarrollo: Mantener un proceso diferido y sensible de objetivos, retroalimentación y decisiones, con uso explícito y privacidad aprobada. | `CAP-02.10` — Acompañar desempeño y desarrollo | `MANOP-VPROC-0065` | `IMPL-VPROC-0065` | `TECHNICAL_BASE_NOT_ADOPTED` | `DEFERRED` | Existe una base técnica sin despliegue ni adopción, y el proceso tiene una decisión explícita de diferimiento. | Existe base técnica local de TALENTO | Proceso diferido por decisión aprobada; no hay despliegue ni adopción y cualquier reactivación exige revisión funcional, de privacidad y de alcance. | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010; tarea funcional propietaria | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0066` | `CLASS-VPROC-0066` | CAP-03.03 — Entregar y controlar elementos de protección: Gestionar requisito, entrega, aceptación, vigencia, cambio, devolución y evidencia de elementos de protección. | `CAP-03.03` — Entregar y controlar elementos de protección | `MANOP-VPROC-0066` | `IMPL-VPROC-0066` | `NO_CONFIRMED_CURRENT_IMPLEMENTATION` | `ABSENT` | No existe evidencia suficiente de una operación o implementación independiente y alcanzable. | No se confirma implementación actual independiente | Debe verificarse si existe operación o implementación dispersa; en caso contrario registrar ausencia canónica | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `LOW` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0067` | `CLASS-VPROC-0067` | CAP-07.11 — Gestionar kits y conjuntos: Definir kit, instancia, componentes obligatorios y opcionales, completitud, préstamo, devolución y sustitución sin confundir kit, activo, LPN o contenedor. | `CAP-07.11` — Gestionar kits y conjuntos | `MANOP-VPROC-0067` | `IMPL-VPROC-0067` | `TECHNICAL_FOUNDATION_WITHOUT_PROCESS` | `ABSENT` | Existen primitivas técnicas, pero no un proceso utilizable con estados, acciones, resultado y cierre. | Existen primitivas relacionadas con contenedores, activos e inventario | No se confirma modelo ni flujo de kit, instancia, componentes, completitud, préstamo, devolución y sustitución | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `HIGH` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0068` | `CLASS-VPROC-0068` | CAP-10.06 — Medir satisfacción: Separar medición, incentivo, reclamo y compensación; conservar muestra, canal, consentimiento, respuesta y sesgo conocido. | `CAP-10.06` — Medir satisfacción | `MANOP-VPROC-0068` | `IMPL-VPROC-0068` | `CHANNEL_FOUNDATION_WITHOUT_GOVERNED_PROCESS` | `ABSENT` | Existen canales de interacción, pero no un proceso gobernado que convierta esas interacciones en un resultado medible y cerrado. | Existen canales capaces de recibir retroalimentación | No se confirma muestreo, consentimiento, sesgo, análisis ni separación de reclamo, incentivo y compensación | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `MEDIUM` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+| `VPROC-0069` | `CLASS-VPROC-0069` | CAP-12.11 — Gestionar presupuestos: Gestionar versión presupuestal, supuestos, aprobación, vigencia, consumo, proyección y desviación sin convertir el presupuesto en hecho contable. | `CAP-12.11` — Gestionar presupuestos | `MANOP-VPROC-0069` | `IMPL-VPROC-0069` | `TECHNICAL_FOUNDATION_WITHOUT_PROCESS` | `ABSENT` | Existen primitivas técnicas, pero no un proceso utilizable con estados, acciones, resultado y cierre. | Existen superficies y datos financieros parciales | No se confirma ciclo de presupuesto versionado, aprobado, vigente, consumido, proyectado y reconciliado | `NO_CONFIRMADA` / `SIN_LINEA_BASE_ASIS_STANDALONE` | `MEDIUM` | PROC-COVER-005; PROC-COVER-006; PROC-COVER-008; PROC-COVER-010 | `CLASSIFIED_CURRENT_STATE` |
+
+---
+
+#### 8. Resultado cuantitativo
+
+| Clasificación | Cantidad | Interpretación |
+| --- | ---: | --- |
+| `COMPLETE` | **0** | Ningún proceso reunió evidencia suficiente del contrato completo y aceptado para todo su alcance. |
+| `PARTIAL` | **39** | Existe resultado o etapa utilizable, pero permanecen brechas materiales. |
+| `MANUAL` | **23** | Existe operación actual predominantemente humana o documental sin cadena técnica completa acreditada. |
+| `ABSENT` | **6** | No se confirmó proceso actual alcanzable; existen como máximo fragmentos, canales o primitivas. |
+| `DEFERRED` | **1** | El proceso de desempeño y desarrollo conserva diferimiento explícito y base técnica no adoptada. |
+| **Total** | **69** | Cobertura exacta del catálogo canónico. |
+
+El resultado `COMPLETE = 0` no significa que la empresa carezca de operación. Significa que ninguna fila dispone todavía de evidencia suficiente para afirmar que el contrato canónico completo, sus excepciones, controles y aceptación están satisfechos de punta a punta.
+
+---
+
+#### 9. Decisiones específicas
+
+- `VPROC-0008` permanece `PARTIAL`: la asistencia tiene captura móvil y revisión administrativa, pero correcciones y excepciones no cierran todavía el proceso completo.
+- `VPROC-0032` queda `MANUAL`: existen control físico y seguimiento humano de reutilizables, mientras la fundación LPN no forma un ciclo alcanzable.
+- `VPROC-0038`, `VPROC-0039`, `VPROC-0042` y `VPROC-0044` quedan `PARTIAL`: Makos está activo y PULSO conserva fundación interna, pero no existe sustitución integral del ciclo POS.
+- `VPROC-0063`, `VPROC-0064` y `VPROC-0066` quedan `ABSENT` por falta de línea base independiente y de implementación alcanzable confirmadas.
+- `VPROC-0065` queda `DEFERRED`: TALENTO contiene base técnica no adoptada y el proceso sensible permanece expresamente diferido.
+- `VPROC-0067`, `VPROC-0068` y `VPROC-0069` quedan `ABSENT`: primitivas de inventario, canales de retroalimentación o datos financieros no acreditan los procesos de kits, satisfacción o presupuestos.
+
+---
+
+#### 10. Regla de cambio de clasificación
+
+Todo cambio deberá registrar:
+
+1. clasificación anterior y nueva;
+2. alcance y variante afectados;
+3. evidencia nueva;
+4. fecha, ambiente, versión o commit;
+5. criterio del árbol que cambió;
+6. brechas cerradas, abiertas o reabiertas;
+7. impacto en pantallas, acciones, permisos, datos, integraciones, pruebas y paquetes;
+8. aprobador y puerta correspondiente.
+
+No se reescribirá silenciosamente una clasificación histórica. La pérdida de evidencia, una regresión, un incidente, una dependencia nueva o el vencimiento de aceptación podrán degradar `COMPLETE` o `PARTIAL`.
+
+---
+
+#### 11. Continuidad hacia PROC-COVER-005 a PROC-COVER-010
+
+| Tarea | Consumo obligatorio de esta clasificación |
+| --- | --- |
+| `PROC-COVER-005` | Identificar dependencias exactas de los 39 parciales, 23 manuales, seis ausentes y un diferido. |
+| `PROC-COVER-006` | Definir alcance mínimo y objetivo sin usar el estado actual como límite del TO-BE. |
+| `PROC-COVER-007` | Impedir que infraestructura o interfaz eleven un estado a completo. |
+| `PROC-COVER-008` | Consolidar capacidad, proceso, pantalla e implementación con la clasificación vigente. |
+| `PROC-COVER-009` | Relacionar AS-IS y TO-BE, especialmente en procesos manuales y legacy. |
+| `PROC-COVER-010` | Vincular o materializar todas las brechas detectadas, sin registros paralelos. |
+
+---
+
+#### 12. Huellas reproducibles
+
+```text
+carryover_operacion_implementacion: d663a1752a281bb0c04a1ef2db9a421873336eb86e2937aa91993eb6c0c4e8a4
+matriz_clasificacion_actual: 78b57e394f18b06faa10433f3edf2ba88152e451c8e99d27d8519bd6c4d7245f
+```
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+Esta tarea genera `TREQ-PROC-1163` a `TREQ-PROC-1210`. El detalle completo se incorpora en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`, que permanece como única fuente canónica.
+
+---
+
+#### 14. Validaciones estructurales obligatorias
+
+- [x] Existen exactamente 69 filas y 69 identificadores `CLASS-VPROC-*` únicos.
+- [x] Cada proceso tiene exactamente uno de los cinco estados permitidos.
+- [x] La distribución es 0 completos, 39 parciales, 23 manuales, 6 ausentes y 1 diferido.
+- [x] La definición, capacidad, referencia manual e implementación se preservan.
+- [x] Ninguna ruta, tabla, despliegue o proveedor eleva por sí solo el estado.
+- [x] `DEFERRED` aparece únicamente con decisión explícita.
+- [x] Cada estado distinto de completo conserva continuidad documental.
+- [x] No se modificó código, Supabase, migraciones, despliegues ni operación.
+
+---
+
+#### 15. Estado final y continuidad
+
+```text
+PROC-COVER-004 = APROBADA
+69 / 69 PROCESOS CLASIFICADOS
+COMPLETE = 0
+PARTIAL = 39
+MANUAL = 23
+ABSENT = 6
+DEFERRED = 1
+
+SIGUIENTE TAREA
+PROC-COVER-005 — Identificar dependencias que impiden completar el proceso
+```
+
+
 ### [ ] PROC-COVER-005 — Identificar dependencias que impiden completar el proceso
 ### [ ] PROC-COVER-006 — Definir alcance mínimo y alcance objetivo
 ### [ ] PROC-COVER-007 — Prohibir declarar completo un proceso con solo infraestructura
