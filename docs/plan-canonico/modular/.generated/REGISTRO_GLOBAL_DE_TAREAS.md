@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **322** |
+| Aprobadas | **325** |
 | En propuesta | **0** |
-| No iniciadas | **1253** |
+| No iniciadas | **1250** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-019` — Definir estados de carga | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-020` — Definir estados de bloqueo | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-021` — Definir recuperación ante errores | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-022` — Definir información sensible visible | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-023` — Definir permiso de lectura | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-024` — Definir permisos de cada acción | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -316,9 +316,9 @@
 | ✅ APROBADA | `PROC-SCREEN-017` | Definir condiciones de salida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-023` | Definir permiso de lectura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-024` | Definir permisos de cada acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
