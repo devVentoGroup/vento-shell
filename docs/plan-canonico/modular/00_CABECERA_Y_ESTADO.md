@@ -18,30 +18,30 @@
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
 | Fragmentos canónicos | **134** |
-| Tareas canónicas con marcador | **1576** |
+| Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **321** |
+| Tareas aprobadas | **322** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1255** |
+| Tareas no iniciadas | **1253** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-SCREEN-017 — Definir condiciones de salida** |
-| Tarea actual | **PROC-SCREEN-018 — Definir estados vacíos** |
+| Última tarea aprobada | **PROC-SCREEN-019 — Definir estados de carga** |
+| Tarea actual | **PROC-SCREEN-020 — Definir estados de bloqueo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-SCREEN-019 — Definir estados de carga** |
+| Siguiente tarea | **PROC-SCREEN-021 — Definir recuperación ante errores** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 79 de 101 aprobadas; PROC-SCREEN-018 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 81 de 101 aprobadas; PROC-SCREEN-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-SCREEN-017` — Definir condiciones de salida |
-| Tarea actual | `PROC-SCREEN-018` — Definir estados vacíos — **NO INICIADA** |
-| Siguiente tarea | `PROC-SCREEN-019` — Definir estados de carga |
+| Última aprobada | `PROC-SCREEN-019` — Definir estados de carga |
+| Tarea actual | `PROC-SCREEN-020` — Definir estados de bloqueo — **NO INICIADA** |
+| Siguiente tarea | `PROC-SCREEN-021` — Definir recuperación ante errores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **79 DE 101 APROBADAS — ACTUAL PROC-SCREEN-018** |
+| BLOQUE E2 | **81 DE 101 APROBADAS — ACTUAL PROC-SCREEN-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-SCREEN-017 — Definir condiciones de salida
-        ↓
-TAREA ACTUAL
-PROC-SCREEN-018 — Definir estados vacíos
-        ↓
-SIGUIENTE TAREA RESERVADA
 PROC-SCREEN-019 — Definir estados de carga
         ↓
+TAREA ACTUAL
+PROC-SCREEN-020 — Definir estados de bloqueo
+        ↓
+SIGUIENTE TAREA RESERVADA
+PROC-SCREEN-021 — Definir recuperación ante errores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 79 de 101 tareas aprobadas
+BLOQUE E2 — 81 de 101 tareas aprobadas
 ```

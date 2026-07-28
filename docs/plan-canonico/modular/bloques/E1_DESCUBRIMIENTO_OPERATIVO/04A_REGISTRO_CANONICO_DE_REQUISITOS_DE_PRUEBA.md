@@ -83,13 +83,13 @@ Dominios iniciales:
 
 | Métrica                           |         Resultado |
 | --------------------------------- | ----------------: |
-| Requisitos vigentes               |          **2262** |
+| Requisitos vigentes               |          **2320** |
 | Dominios con requisitos           |            **19** |
-| Filas con catorce columnas        |  **2262 de 2262** |
+| Filas con catorce columnas        |  **2320 de 2320** |
 | Identificadores duplicados        |             **0** |
 | Relaciones `TREQ-*` no resolubles |             **0** |
-| Última tarea incorporada          | `PROC-SCREEN-017` |
-| Fecha de normalización            |      `2026-07-27` |
+| Última tarea incorporada          | `PROC-SCREEN-019` |
+| Fecha de normalización            |      `2026-07-28` |
 
 Distribución vigente:
 
@@ -113,7 +113,7 @@ Distribución vigente:
 | `PASS`        | `TREQ-PASS-001` a `TREQ-PASS-012`               |       12 |
 | `TALENTO`     | `TREQ-TALENTO-001` a `TREQ-TALENTO-097`         |       97 |
 | `INTEGRATION` | `TREQ-INTEGRATION-001` a `TREQ-INTEGRATION-023` |       23 |
-| `UX`          | `TREQ-UX-001` a `TREQ-UX-1006`                  |     1006 |
+| `UX`          | `TREQ-UX-001` a `TREQ-UX-1064`                  |     1064 |
 
 ### Procedimiento obligatorio de actualización
 
@@ -2556,6 +2556,65 @@ Distribución vigente:
 | `TREQ-UX-1004` | `UX` | La salida de `VSCREEN-0135` deberá modificar la instancia de kit y la de `VSCREEN-0176` su definición versionada. | `PROC-SCREEN-017` | Operación y configuración de kits fusionadas nuevamente / crítica | contractual + regresión / automatizada | `PROC-SCREEN-017`; `PROC-SCREEN-018` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, matriz y registro de condiciones de salida | vento-shell y aplicaciones VENTO / documentación, CI, staging y pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Resultados, receipts, eventos, handoffs, destinos y recuperación contractual definidos; implementación y evidencia pendientes | TREQ-UX-940; TREQ-UX-995 |
 | `TREQ-UX-1005` | `UX` | `VSCREEN-0144` deberá devolver estado del trabajo de impresión y `VSCREEN-0177` estado de configuración o prueba técnica. | `PROC-SCREEN-017` | Cola productiva y configuración de impresoras mezcladas / crítica | hardware + integración + regresión / automatizada | `PROC-SCREEN-017`; `PROC-SCREEN-018` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, matriz y registro de condiciones de salida | vento-shell y aplicaciones VENTO / documentación, CI, staging y pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Resultados, receipts, eventos, handoffs, destinos y recuperación contractual definidos; implementación y evidencia pendientes | TREQ-UX-941; TREQ-UX-997 |
 | `TREQ-UX-1006` | `UX` | Cambiar el significado de salida, éxito, receipt, handoff o destino deberá versionarse y validarse con usuarios reales. | `PROC-SCREEN-017` | Deriva silenciosa del proceso y mensajes de resultado incomprensibles / crítica | contractual + experiencia + regresión / híbrida | `PROC-SCREEN-017`; `PROC-SCREEN-018` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, matriz y registro de condiciones de salida | vento-shell y aplicaciones VENTO / documentación, CI, staging y pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Resultados, receipts, eventos, handoffs, destinos y recuperación contractual definidos; implementación y evidencia pendientes | TREQ-UX-975; TREQ-UX-976; TREQ-UX-977 |
+| `TREQ-UX-1007` | `UX` | Toda una de las 177 pantallas deberá declarar exactamente un perfil vacío base y conservar identidad, nombre, aplicación, clase, entrada y salida aprobados. | `PROC-SCREEN-018` | Omisión o deriva de pantallas al incorporar estados vacíos / crítica | contractual + unitaria + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-976; TREQ-UX-977 |
+| `TREQ-UX-1008` | `UX` | Un estado vacío solo podrá activarse después de una consulta o inicialización autorizada y exitosa; carga, bloqueo, error, parcialidad y resultado desconocido tendrán estados distintos. | `PROC-SCREEN-018` | Errores o denegaciones presentados como ausencia de datos / crítica | contractual + interfaz + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-978; TREQ-UX-987 |
+| `TREQ-UX-1009` | `UX` | La resolución deberá distinguir vacío base, filtros sin coincidencias, ausencia de selección y cola despejada posterior a una salida confirmada. | `PROC-SCREEN-018` | Mensajes y acciones incorrectos para causas de vacío diferentes / crítica | contractual + interfaz + experiencia / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-917; TREQ-UX-1007 |
+| `TREQ-UX-1010` | `UX` | El vacío filtrado deberá conservar y mostrar filtros, periodo y alcance y no afirmar inexistencia global de registros. | `PROC-SCREEN-018` | Decisiones tomadas por una consulta filtrada interpretada como inexistencia total / crítica | interfaz + experiencia + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-922; TREQ-UX-1009 |
+| `TREQ-UX-1011` | `UX` | Una cola podrá mostrarse despejada únicamente cuando la consulta autorizada esté completa, fresca y con cero pendientes reales. | `PROC-SCREEN-018` | Pendientes ocultos por caché vencida, consulta parcial u offline / crítica | integración + interfaz + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-979; TREQ-UX-1008 |
+| `TREQ-UX-1012` | `UX` | El estado sin trabajo asignado no permitirá autoasignación, creación de órdenes ni ampliación de sede, área, turno o ruta. | `PROC-SCREEN-018` | Trabajo creado o tomado fuera del proceso y alcance autorizado / crítica | seguridad + autorización + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-AUTH-001; TREQ-UX-923; TREQ-UX-1011 |
+| `TREQ-UX-1013` | `UX` | Los perfiles de inicio, primer registro y configuración solo expondrán acciones ya aprobadas y volverán a validar entrada, autorización y contexto antes de ejecutarlas. | `PROC-SCREEN-018` | CTA visible que el servidor no autoriza o que inicia una operación sin contexto / crítica | seguridad + contractual + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-915; TREQ-UX-967 |
+| `TREQ-UX-1014` | `UX` | La ausencia de selección no se confundirá con recurso inexistente, eliminado o no autorizado; esos casos pasarán a recuperación, error o bloqueo. | `PROC-SCREEN-018` | No selección usada para ocultar pérdida de recurso o denegación / crítica | contractual + seguridad + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-958; TREQ-UX-1008 |
+| `TREQ-UX-1015` | `UX` | Los estados sin historial o sin recurso propio no enumerarán registros, identidades, cuentas o recursos de terceros. | `PROC-SCREEN-018` | Exposición lateral de existencia de datos personales / crítica | seguridad + privacidad + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-AUTH-018; TREQ-UX-969 |
+| `TREQ-UX-1016` | `UX` | Los estados sin oferta y carrito vacío respetarán sede, vigencia, elegibilidad, precio, stock y ausencia de compromiso, pedido o pago. | `PROC-SCREEN-018` | Disponibilidad falsa, checkout sin líneas o compromiso comercial indebido / crítica | integración + contractual + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-1001; TREQ-UX-1002 |
+| `TREQ-UX-1017` | `UX` | Un estado sin mensajes no revelará conversaciones, participantes o comunicaciones fuera del alcance y solo permitirá iniciar mensaje con recurso vigente. | `PROC-SCREEN-018` | Enumeración de conversaciones o envío sin caso relacionado / crítica | seguridad + interfaz + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-AUTH-018; TREQ-UX-923 |
+| `TREQ-UX-1018` | `UX` | Los estados sin evidencia o sin snapshot declararán periodo, alcance, fuentes y frescura y no concluirán que el hecho nunca ocurrió ni que el valor medido es cero. | `PROC-SCREEN-018` | Ausencia de filas interpretada como ausencia del hecho o valor cero / crítica | auditoría + contractual + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-981; TREQ-UX-998 |
+| `TREQ-UX-1019` | `UX` | El perfil sin endpoint solo aplicará en configuración y descubrimiento; una impresora requerida ausente durante operación producirá bloqueo técnico. | `PROC-SCREEN-018` | Trabajo operativo mostrado vacío cuando en realidad carece de infraestructura / crítica | hardware + interfaz + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-941; TREQ-UX-1005 |
+| `TREQ-UX-1020` | `UX` | Renderizar, entrar o refrescar un estado vacío no ejecutará mutaciones, efectos externos, reservas, consumos, pagos, impresiones o eventos empresariales. | `PROC-SCREEN-018` | Efectos de negocio disparados por montar una pantalla vacía / crítica | idempotencia + integración + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-913; TREQ-UX-997 |
+| `TREQ-UX-1021` | `UX` | Toda CTA primaria o alternativa de un estado vacío deberá referenciar una de las 885 acciones aprobadas o declarar NONE. | `PROC-SCREEN-018` | Acciones invisibles al contrato y permisos no gobernados / crítica | contractual + unitaria + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-917; TREQ-UX-921 |
+| `TREQ-UX-1022` | `UX` | La disponibilidad de la CTA vacía deberá respetar la disponibilidad, confirmación, permiso y protección del lado servidor de la acción original. | `PROC-SCREEN-018` | CTA vacía que evade reglas de acción o seguridad / crítica | seguridad + autorización + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-921; TREQ-UX-967 |
+| `TREQ-UX-1023` | `UX` | En dispositivo compartido, el estado vacío no conservará datos, filtros, borradores, adjuntos o referencias sensibles del actor anterior. | `PROC-SCREEN-018` | Exposición entre actores consecutivos en una estación compartida / crítica | seguridad + interfaz + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-AUTH-014; TREQ-UX-986 |
+| `TREQ-UX-1024` | `UX` | La ausencia de caché offline, la falta de conectividad o una fuente sin conciliar no podrán mostrarse como estado vacío. | `PROC-SCREEN-018` | Operación real ocultada por ausencia local de datos / crítica | integración + experiencia + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-979; TREQ-UX-1008 |
+| `TREQ-UX-1025` | `UX` | Un resultado parcial, asíncrono o desconocido conservará su receipt y seguimiento y no podrá convertirse en estado vacío. | `PROC-SCREEN-018` | Trabajo pendiente o efecto incierto borrado visualmente / crítica | integración + idempotencia + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-980; TREQ-UX-988; TREQ-UX-989 |
+| `TREQ-UX-1026` | `UX` | Cada estado vacío deberá comunicar título, explicación, alcance, frescura y acciones mediante texto perceptible, foco correcto y lectura asistiva. | `PROC-SCREEN-018` | Pantalla vacía incomprensible o inaccesible / alta | accesibilidad + interfaz + experiencia / híbrida | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-916; TREQ-UX-976 |
+| `TREQ-UX-1027` | `UX` | La terminología deberá distinguir no hay registros, no hay pendientes, no hay coincidencias, no hay selección y no está disponible. | `PROC-SCREEN-018` | Mensajes ambiguos que inducen acciones incorrectas / alta | experiencia + regresión / híbrida | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-889; TREQ-UX-1006 |
+| `TREQ-UX-1028` | `UX` | La telemetría del estado vacío registrará pantalla, perfil, variante, alcance técnico y motivo estructurado sin payloads sensibles. | `PROC-SCREEN-018` | Imposibilidad de diagnosticar vacíos o filtración en analítica / alta | auditoría + privacidad + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-975; TREQ-UX-986 |
+| `TREQ-UX-1029` | `UX` | Las colas vacías usarán actualización por evento o refresco manual controlado y no busy polling indiscriminado. | `PROC-SCREEN-018` | Carga innecesaria, batería agotada y estados inconsistentes / alta | integración + rendimiento + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-979; TREQ-UX-1011 |
+| `TREQ-UX-1030` | `UX` | La variante posterior a terminación solo aparecerá después de receipt confirmado, invalidación y nueva consulta con cero trabajo restante. | `PROC-SCREEN-018` | Cola mostrada vacía antes de confirmar el resultado / crítica | integración + idempotencia + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-982; TREQ-UX-990 |
+| `TREQ-UX-1031` | `UX` | Entrar en un estado vacío no limpiará borradores, evidencia ni trabajo no confirmado y respetará la política de abandono y salida. | `PROC-SCREEN-018` | Pérdida de captura por interpretar vacío como reinicio / crítica | regresión + interfaz + E2E / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-924; TREQ-UX-985 |
+| `TREQ-UX-1032` | `UX` | Los estados vacíos del cliente se limitarán a recursos propios y ofrecerán alternativas seguras sin enumerar cuenta, pedidos, pagos o elegibilidad de terceros. | `PROC-SCREEN-018` | Exposición de cliente o navegación comercial insegura / crítica | seguridad + privacidad + experiencia / híbrida | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-AUTH-018; TREQ-UX-1002 |
+| `TREQ-UX-1033` | `UX` | Remisiones, producción, POS, rutas, inventario e impresión sin trabajo no modificarán estados, custodia, stock, lotes, cajas, pedidos ni trabajos externos. | `PROC-SCREEN-018` | Estado vacío usado para cerrar o crear operación material / crítica | integración + E2E + regresión / automatizada | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-999; TREQ-UX-1000; TREQ-UX-1005 |
+| `TREQ-UX-1034` | `UX` | Cambiar disparador, perfil, variante, contenido o CTA de un estado vacío será cambio contractual versionado y validado con usuarios y CI documental. | `PROC-SCREEN-018` | Deriva silenciosa de comportamiento y mensajes / alta | contractual + experiencia + regresión / híbrida | `PROC-SCREEN-018`; `PROC-SCREEN-019` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados vacíos | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, predicados, acciones y fronteras de vacío definidos; implementación y evidencia pendientes | TREQ-UX-1006; TREQ-UX-1007 |
+
+| `TREQ-UX-1035` | `UX` | Cada una de las 177 pantallas conservará identidad, aplicación, clase, entrada, salida y perfil vacío al incorporar su perfil de carga. | `PROC-SCREEN-019` | Deriva contractual o pérdida de cobertura / crítica | contractual + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1007; TREQ-UX-1034 |
+| `TREQ-UX-1036` | `UX` | La precedencia impedirá mostrar carga cuando corresponda bloqueo, error, resultado unknown, contenido confirmado o vacío. | `PROC-SCREEN-019` | Spinner que oculta la causa real y bloquea recuperación / crítica | contractual + interfaz + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1008; TREQ-UX-1025 |
+| `TREQ-UX-1037` | `UX` | La carga inicial solo ocupará toda la superficie cuando ninguna región segura sea utilizable o identidad y contexto aún no estén resueltos. | `PROC-SCREEN-019` | Bloqueo global innecesario de la operación / alta | interfaz + experiencia + regresión / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-920; TREQ-UX-1009 |
+| `TREQ-UX-1038` | `UX` | La carga de sección bloqueará únicamente su región y conservará navegación, filtros y secciones independientes confirmadas. | `PROC-SCREEN-019` | Pérdida de productividad y contexto por bloqueo excesivo / alta | interfaz + experiencia + E2E / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1009; TREQ-UX-1016 |
+| `TREQ-UX-1039` | `UX` | Los skeletons no fabricarán nombres, estados, conteos, saldos, QR, fotos, importes ni otros datos empresariales o sensibles. | `PROC-SCREEN-019` | Exposición o interpretación falsa durante carga / crítica | seguridad + interfaz + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1022; TREQ-UX-1028 |
+| `TREQ-UX-1040` | `UX` | El refresco en segundo plano conservará la última versión confirmada con marca de antigüedad, versión o as_of. | `PROC-SCREEN-019` | Datos desaparecidos o confundidos con información vigente / alta | integración + interfaz + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1011; TREQ-UX-1029 |
+| `TREQ-UX-1041` | `UX` | La paginación conservará filas previas y no duplicará, perderá ni reordenará resultados al repetir o recuperar un cursor. | `PROC-SCREEN-019` | Colección inconsistente por red, reintento o concurrencia / crítica | integración + concurrencia + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1010; TREQ-UX-1029 |
+| `TREQ-UX-1042` | `UX` | Toda acción pendiente bloqueará la referencia mínima y evitará doble envío o replay incompatible sin inmovilizar trabajo independiente. | `PROC-SCREEN-019` | Mutación duplicada o bloqueo total innecesario / crítica | idempotencia + interfaz + E2E / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-982; TREQ-UX-1015 |
+| `TREQ-UX-1043` | `UX` | Los commits mutables conservarán idempotency key o correlación y consultarán el estado antes de repetir cuando pudo existir aceptación previa. | `PROC-SCREEN-019` | Duplicación por timeout o respuesta perdida / crítica | idempotencia + integración + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-982; TREQ-UX-989 |
+| `TREQ-UX-1044` | `UX` | Borradores, adjuntos, carritos, conteos, rutas y capturas no se limpiarán hasta alcanzar la confirmación terminal aprobada. | `PROC-SCREEN-019` | Pérdida de trabajo durante espera o reintento / crítica | interfaz + E2E + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-985; TREQ-UX-1031 |
+| `TREQ-UX-1045` | `UX` | Ninguna acción declarará éxito, navegará al destino terminal o invalidará el recurso antes de satisfacer su límite de confirmación. | `PROC-SCREEN-019` | Éxito anticipado y estado empresarial falso / crítica | contractual + integración + E2E / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-982; TREQ-UX-990 |
+| `TREQ-UX-1046` | `UX` | Aceptado, encolado, procesando, enviado al periférico y completado permanecerán como etapas distintas de efectos externos. | `PROC-SCREEN-019` | Impresión, entrega o integración marcada completa prematuramente / crítica | integración + E2E + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-989; TREQ-UX-1005 |
+| `TREQ-UX-1047` | `UX` | Los pagos conservarán pedido, importe, referencia, intento y estados interno y externo hasta reconciliación canónica. | `PROC-SCREEN-019` | Doble cobro o pedido y pago divergentes / crítica | integración + idempotencia + E2E / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1003; TREQ-UX-1025 |
+| `TREQ-UX-1048` | `UX` | Los trabajos de impresión distinguirán creado, enviado, aceptado, impreso, fallido y unknown y no asumirán éxito del periférico. | `PROC-SCREEN-019` | Trabajo perdido o marcado impreso sin evidencia / crítica | hardware + integración + regresión / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1005; TREQ-UX-1033 |
+| `TREQ-UX-1049` | `UX` | Una espera que exceda el plazo contractual de la fuente saldrá de carga y entregará timeout o recuperación a PROC-SCREEN-021. | `PROC-SCREEN-019` | Spinner infinito sin acción ni diagnóstico / crítica | experiencia + integración + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1024; TREQ-UX-1025 |
+| `TREQ-UX-1050` | `UX` | Offline o ausencia de conectividad no se presentará como carga indefinida y conservará estado local, correlación y reconciliación pendientes. | `PROC-SCREEN-019` | Operación local confundida con ejecución confirmada / crítica | integración + idempotencia + E2E / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1024; TREQ-UX-1030 |
+| `TREQ-UX-1051` | `UX` | Al cambiar de actor en dispositivo compartido se eliminarán datos, borradores, anuncios y caché visible anteriores antes de cargar el nuevo contexto. | `PROC-SCREEN-019` | Exposición cruzada entre trabajadores consecutivos / crítica | seguridad + interfaz + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-AUTH-014; TREQ-UX-1023 |
+| `TREQ-UX-1052` | `UX` | Cada región cargando expondrá semántica ocupada, nombre accesible y anuncios relevantes sin repetición continua. | `PROC-SCREEN-019` | Carga invisible o ruidosa para tecnología asistiva / alta | interfaz + experiencia + regresión / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-916; TREQ-UX-1026 |
+| `TREQ-UX-1053` | `UX` | Animaciones y skeletons respetarán movimiento reducido, contraste, foco y tamaño táctil sin desplazar el objetivo activo. | `PROC-SCREEN-019` | Mareo, pérdida de foco o activación errónea / alta | interfaz + experiencia + manual operativa / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-916; TREQ-UX-1026 |
+| `TREQ-UX-1054` | `UX` | El progreso determinado solo se mostrará cuando total o fases sean medibles y avanzará de forma coherente con la fuente. | `PROC-SCREEN-019` | Porcentaje ficticio o retroceso engañoso / alta | interfaz + experiencia + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1027; TREQ-UX-1034 |
+| `TREQ-UX-1055` | `UX` | El progreso indeterminado comunicará la operación real y no simulará porcentaje, cantidad procesada o tiempo restante. | `PROC-SCREEN-019` | Expectativas falsas y decisiones prematuras / alta | interfaz + experiencia + regresión / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1027; TREQ-UX-1034 |
+| `TREQ-UX-1056` | `UX` | Salir u ocultar una pantalla no cancelará un commit, pago, impresión, generación o sincronización sin operación contractual explícita. | `PROC-SCREEN-019` | Trabajo huérfano o cancelación imaginaria / crítica | contractual + integración + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-989; TREQ-UX-1025 |
+| `TREQ-UX-1057` | `UX` | La cancelación, cuando exista, confirmará alcance y resultado y permanecerá distinta de abandonar, volver o cerrar la vista. | `PROC-SCREEN-019` | Interrupción ambigua de operación material / crítica | contractual + E2E + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-985; TREQ-UX-1006 |
+| `TREQ-UX-1058` | `UX` | Las respuestas fuera de orden o pertenecientes a filtros, actores o versiones anteriores no reemplazarán el estado más reciente. | `PROC-SCREEN-019` | Race condition y fuga de contexto / crítica | concurrencia + seguridad + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1010; TREQ-UX-1023 |
+| `TREQ-UX-1059` | `UX` | La reconexión Realtime recuperará cursor o snapshot, detectará huecos y evitará duplicar mensajes, estados y notificaciones. | `PROC-SCREEN-019` | Timeline incompleta o duplicada tras desconexión / crítica | integración + concurrencia + E2E / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1024; TREQ-UX-1029 |
+| `TREQ-UX-1060` | `UX` | Los paneles financieros y analíticos no mostrarán cero, vacío, saldo o cierre cuando una fuente o periodo siga cargando. | `PROC-SCREEN-019` | Decisión financiera basada en resultado incompleto / crítica | integración + interfaz + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1011; TREQ-UX-1025 |
+| `TREQ-UX-1061` | `UX` | POS conservará sesión, carrito, pedido y precios confirmados y bloqueará únicamente el cobro o transición incompatible enviados. | `PROC-SCREEN-019` | Venta perdida, doble cobro o terminal inmovilizada / crítica | E2E + idempotencia + interfaz / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1003; TREQ-UX-1033 |
+| `TREQ-UX-1062` | `UX` | Las estaciones operativas conservarán sede, área, turno, recurso, escaneo y evidencia local durante carga de sección o sincronización. | `PROC-SCREEN-019` | Reinicio de tarea o mezcla de contexto operacional / crítica | E2E + interfaz + regresión / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-999; TREQ-UX-1023 |
+| `TREQ-UX-1063` | `UX` | La telemetría de carga registrará pantalla, perfil, variante, fase, duración y resultado sin payloads, importes o identificadores sensibles. | `PROC-SCREEN-019` | Imposibilidad de diagnóstico o filtración en observabilidad / alta | seguridad + experiencia + regresión / automatizada | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-975; TREQ-UX-1028 |
+| `TREQ-UX-1064` | `UX` | Cambiar perfil, variante, presentación, alcance bloqueado, condición terminal o política de datos será cambio contractual versionado. | `PROC-SCREEN-019` | Deriva silenciosa de loaders y commits / alta | contractual + regresión + experiencia / híbrida | `PROC-SCREEN-019`; `PROC-SCREEN-020` a `PROC-SCREEN-028`; CI documental; paquetes E5; UX-QA; BLOQUE U | Contrato, catálogo y matriz de estados de carga | vento-shell y aplicaciones VENTO / documentación, CI, staging, dispositivos personales y compartidos, pilotos | `IDENTIFICADO` | Pendiente | Pendiente | Perfiles, variantes, pendientes, confirmaciones y fronteras de carga definidos; implementación y evidencia pendientes | TREQ-UX-1006; TREQ-UX-1034 |
 
 ### Reglas obligatorias
 
@@ -2578,259 +2637,3 @@ Distribución vigente:
 15. Los archivos `TREQ_NUEVOS_*` no constituyen fuentes canónicas y no volverán a utilizarse para actualizar este registro.
 
 APROBADA
-
-### ✅ QA-REG-001 — Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001
-
-#### 1. Objetivo
-
-Consolidar en el Registro Canónico las reglas verificables aprobadas antes de
-`QA-GOV-001`, sin implementar pruebas ni modificar código, base de datos,
-configuración, CI o despliegues.
-
-La consolidación cubre:
-
-- 167 tareas aprobadas anteriores a `QA-GOV-001`:
-  - 123 `AUTH-*`;
-  - 22 `OPS-*`;
-  - 15 `CAP-MAP-*`;
-  - 7 `CODE-AUD-*`;
-- 95 hallazgos de `H-CODE-001-*` a `H-CODE-007-*`;
-- `AUTH-QA-001` a `AUTH-QA-030`;
-- `UX-QA-001` a `UX-QA-030`;
-- decisiones sobre migraciones, RLS, RPC, Realtime, Edge Functions, cron,
-  dispositivos compartidos, simulación, operación real y continuidad.
-
----
-
-#### 2. Corrección estructural ejecutada
-
-Se separó `TREQ-ANIMA-003` de la fila de `TREQ-SUPABASE-006`.
-
-Resultado:
-
-- cada requisito ocupa una fila independiente;
-- todas las filas tienen catorce columnas;
-- no se perdió contenido de ninguna de las dos filas;
-- se conservaron los 51 requisitos existentes;
-- se normalizaron responsables de requisitos que todavía apuntaban a auditorías
-  `CODE-AUD-*` ya finalizadas.
-
----
-
-#### 3. Criterio de consolidación
-
-Cada decisión retrospectiva se clasificó como:
-
-| Clasificación                           | Tratamiento                                                       |
-| --------------------------------------- | ----------------------------------------------------------------- |
-| regla concreta no cubierta              | nuevo `TREQ-*`                                                    |
-| regla ya cubierta                       | relación u origen ampliado, sin duplicar identificador            |
-| conjunto de casos equivalentes          | un requisito contractual común con varios `AUTH-QA-*` o `UX-QA-*` |
-| inventario o conteo sin comportamiento  | no genera requisito                                               |
-| decisión exclusivamente documental      | no genera requisito ejecutable                                    |
-| capacidad futura con riesgo ya aprobado | requisito identificado y ligado a su puerta futura                |
-| VITAL                                   | fuera de Vento OS; no se incorpora                                |
-| AURA                                    | continúa condicionada a `AURA-AUD-010` y `UX-QA-030`              |
-
----
-
-#### 4. Resultado cuantitativo histórico de `QA-REG-001`
-
-> Esta sección conserva el corte existente al aprobar `QA-REG-001`. No representa el total vigente del registro, que se publica en `Resumen vigente`.
-
-
-| Métrica                              |        Resultado |
-| ------------------------------------ | ---------------: |
-| Requisitos existentes conservados    |               51 |
-| Requisitos retrospectivos nuevos     |               30 |
-| Total resultante                     |               81 |
-| Filas con catorce columnas           | **1864 de 1864** |
-| Identificadores duplicados           |                0 |
-| Requisitos eliminados                |                0 |
-| Tareas nuevas de roadmap creadas     |                0 |
-| Código o infraestructura modificados |                0 |
-
-Los treinta requisitos nuevos son:
-
-- `TREQ-AUTH-008` a `TREQ-AUTH-015`;
-- `TREQ-SHELL-005` a `TREQ-SHELL-009`;
-- `TREQ-SUPABASE-007` a `TREQ-SUPABASE-010`;
-- `TREQ-VISO-001`;
-- `TREQ-NUMERA-001`;
-- `TREQ-TALENTO-001`;
-- `TREQ-INTEGRATION-004` a `TREQ-INTEGRATION-006`;
-- `TREQ-UX-001` a `TREQ-UX-007`.
-
----
-
-#### 5. Cobertura retrospectiva de AUTH-QA
-
-| Casos de certificación                                                     | Requisitos que los protegen                                 |
-| -------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `AUTH-QA-001` a `AUTH-QA-006`                                              | `TREQ-AUTH-008`                                             |
-| `AUTH-QA-003`, `AUTH-QA-007` a `AUTH-QA-009`, `AUTH-QA-023`, `AUTH-QA-024` | `TREQ-AUTH-009`                                             |
-| `AUTH-QA-010` a `AUTH-QA-016`                                              | `TREQ-AUTH-010`                                             |
-| `AUTH-QA-017`, `AUTH-QA-018`                                               | `TREQ-AUTH-011`, `TREQ-AUTH-003`                            |
-| `AUTH-QA-019`                                                              | `TREQ-AUTH-012`                                             |
-| `AUTH-QA-020` a `AUTH-QA-022`                                              | `TREQ-AUTH-013`, `TREQ-SUPABASE-007`                        |
-| `AUTH-QA-025`                                                              | `TREQ-AUTH-014`                                             |
-| `AUTH-QA-026`                                                              | `TREQ-AUTH-014`, `TREQ-ANIMA-003`, `TREQ-ANIMA-004`         |
-| `AUTH-QA-027`                                                              | `TREQ-SHELL-006`                                            |
-| `AUTH-QA-028`                                                              | `TREQ-SHELL-007`, `TREQ-SUPABASE-008`                       |
-| `AUTH-QA-029`                                                              | `TREQ-AUTH-015`                                             |
-| `AUTH-QA-030`                                                              | `TREQ-SHELL-008` y todos los requisitos críticos aplicables |
-
-`AUTH-QA-*` conserva su función de certificación. Los `TREQ-*` definen el
-comportamiento protegido y no sustituyen las tareas del BLOQUE U.
-
----
-
-#### 6. Cobertura retrospectiva de UX-QA
-
-| Casos de certificación                 | Requisitos que los protegen                                   |
-| -------------------------------------- | ------------------------------------------------------------- |
-| `UX-QA-001` a `UX-QA-003`              | `TREQ-UX-001`                                                 |
-| `UX-QA-004`, `UX-QA-015`, `UX-QA-019`  | `TREQ-UX-002`                                                 |
-| `UX-QA-005`, `UX-QA-007`, `UX-QA-016`  | `TREQ-UX-003`                                                 |
-| `UX-QA-006`                            | `TREQ-UX-004`                                                 |
-| `UX-QA-008`, `UX-QA-012`, `UX-QA-013`  | `TREQ-INTEGRATION-005`                                        |
-| `UX-QA-009`, `UX-QA-010`, `UX-QA-017`  | `TREQ-INTEGRATION-006`, `TREQ-UX-005`                         |
-| `UX-QA-011`, `UX-QA-018`, `UX-QA-019`  | `TREQ-UX-006`, `TREQ-INTEGRATION-003`                         |
-| `UX-QA-014`, `UX-QA-020` a `UX-QA-029` | `TREQ-UX-007` y requisitos funcionales de cada aplicación     |
-| `UX-QA-023`                            | `TREQ-VISO-001`                                               |
-| `UX-QA-028`                            | `TREQ-NUMERA-001`                                             |
-| `UX-QA-030`                            | `TREQ-SHELL-001`; solo después de aprobar continuidad de AURA |
-
----
-
-#### 7. Matriz mínima obligatoria de CI y regresión
-
-| Tipo de superficie            | Puertas mínimas antes de merge                                                                          | Puertas adicionales antes de release o piloto                               |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| aplicación web                | instalación bloqueada, lint, typecheck, build, pruebas unitarias o contractuales, verificación `TREQ-*` | integración, E2E del proceso, seguridad aplicable, rollback y evidencia     |
-| aplicación Expo               | instalación bloqueada, lint, typecheck, export o build verificable, pruebas unitarias o contractuales   | dispositivo físico, permisos, offline, deep links, E2E y evidencia          |
-| paquete compartido            | build, tipos, unitarias, contratos y changelog                                                          | matriz de consumidores, despliegue independiente y rollback                 |
-| Supabase y migraciones        | reconstrucción limpia, schema, integridad, RLS, RPC, tipos y drift                                      | upgrade, backup, restauración, rollback, performance y paridad de ambientes |
-| Edge Function, webhook o cron | tests de entrada, autenticación, firma o secreto, errores y observabilidad                              | replay, idempotencia, reintentos, rate limit, conciliación y contingencia   |
-| hardware o estación           | validación contractual de salida y procedimiento reproducible                                           | prueba física, conectividad degradada, recuperación y usuario real          |
-
-Reglas:
-
-1. build, lint o typecheck no sustituyen pruebas funcionales;
-2. un comando roto o ausente es una puerta fallida, no una excepción silenciosa;
-3. los repositorios móviles deberán incorporar lint y un build o export local
-   reproducible;
-4. todo repositorio deberá exponer un comando automatizado de pruebas;
-5. los artefactos de CI deberán identificar commit, ambiente, suite, resultado y
-   requisitos `TREQ-*` cubiertos;
-6. `SHELL-CI-016` a `SHELL-CI-019` materializarán esta matriz;
-7. `AUTH-DB-027` a `AUTH-DB-031` materializarán la matriz de Supabase y
-   autorización.
-
----
-
-#### 8. Decisiones de deduplicación
-
-1. No se creó un requisito por cada una de las sesenta tareas `AUTH-QA-*` y
-   `UX-QA-*`; los casos equivalentes se agruparon por comportamiento protegido.
-2. Los casos territoriales no duplican `TREQ-AUTH-001`, `004` y `007`; se crea
-   `TREQ-AUTH-009` porque define el escenario contractual completo de resolución
-   y rotación.
-3. La cola offline de ANIMA continúa protegida por `TREQ-ANIMA-003` y
-   `TREQ-ANIMA-004`; `TREQ-AUTH-014` agrega únicamente invalidación y
-   reautorización transversal.
-4. Idempotencia general continúa en `TREQ-INTEGRATION-003`; UX degradada se
-   separa en `TREQ-UX-006` porque requiere estados y recuperación comprensibles.
-5. Seguridad de Edge Functions permanece en `TREQ-SUPABASE-006`;
-   `TREQ-SUPABASE-010` agrega paridad, versionado y propiedad operacional.
-6. Atomicidad de inventario permanece en `TREQ-SUPABASE-002`; la eliminación de
-   doble digitación y fuentes competidoras se protege transversalmente mediante
-   `TREQ-INTEGRATION-006`.
-7. VITAL permanece excluida. AURA no recibe un requisito funcional nuevo antes
-   de la decisión `AURA-AUD-010`.
-
----
-
-#### 9. Estados iniciales
-
-Los treinta requisitos nuevos quedan en `IDENTIFICADO`.
-
-No se marcan como `PLANIFICADO` porque todavía deben vincularse con paquetes E5
-concretos, criterios ejecutables, repositorio, ambiente y artefacto. Tampoco se
-marcan como `IMPLEMENTADO` o `VERIFICADO` porque no se ejecutaron pruebas durante
-esta tarea.
-
----
-
-#### 10. Hallazgos documentales
-
-| ID                 | Hallazgo                                                                               | Tratamiento                                                      |
-| ------------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `H-QA-REG-001-001` | `TREQ-ANIMA-003` estaba concatenado a `TREQ-SUPABASE-006`                              | corregido en esta propuesta                                      |
-| `H-QA-REG-001-002` | varios requisitos apuntaban a auditorías `CODE-AUD-*` ya finalizadas como responsables | responsables sustituidos por tareas futuras ejecutables          |
-| `H-QA-REG-001-003` | no existía matriz mínima transversal de CI y regresión                                 | definida y asignada a `SHELL-CI-016` a `SHELL-CI-019`            |
-| `H-QA-REG-001-004` | `AUTH-QA-*` y `UX-QA-*` no estaban relacionados sistemáticamente con requisitos        | matrices de cobertura incorporadas                               |
-| `H-QA-REG-001-005` | VISO, NUMERA y TALENTO no tenían requisito de dominio                                  | se crean `TREQ-VISO-001`, `TREQ-NUMERA-001` y `TREQ-TALENTO-001` |
-
-Todos los hallazgos tienen resolución dentro de esta tarea o tarea canónica
-futura. No queda pendiente narrativo sin destino.
-
----
-
-#### 11. Restricciones respetadas
-
-Esta tarea no:
-
-- implementa ni ejecuta pruebas;
-- modifica código, migraciones, Supabase, CI o despliegues;
-- crea nuevas tareas del roadmap;
-- altera decisiones aprobadas;
-- declara operativo un producto sin despliegue;
-- introduce VITAL en Vento OS;
-- aprueba continuidad de AURA;
-- marca requisitos como verificados sin evidencia.
-
----
-
-#### 12. Requisitos de prueba derivados por esta tarea
-
-**Resultado:** GENERA 30 REQUISITOS DE PRUEBA RETROSPECTIVOS.
-
-Los requisitos se incorporaron como filas completas en este mismo registro. Desde la normalización de 2026-07-24, cualquier actualización posterior exige regenerar el archivo completo y queda prohibido utilizar filas sueltas o archivos paralelos.
-
----
-
-#### 13. Criterios de aceptación
-
-`QA-REG-001` podrá aprobarse cuando:
-
-1. los 51 requisitos existentes permanezcan conservados;
-2. `TREQ-ANIMA-003` sea una fila independiente;
-3. existieran exactamente 81 filas y 81 identificadores únicos en el corte histórico de `QA-REG-001`;
-4. cada fila tenga catorce columnas;
-5. los treinta requisitos retrospectivos tengan origen, regla, riesgo, tipo,
-   responsable, paquete, repositorio, estado, evidencia y relación;
-6. las tareas responsables existan en el roadmap;
-7. `AUTH-QA-*` y `UX-QA-*` tengan cobertura trazable;
-8. la matriz mínima de CI y regresión esté definida;
-9. no se hayan creado tareas nuevas ni modificado implementación;
-10. la continuidad quede ubicada en `CAP-SCOPE-001`.
-
----
-
-#### 14. Resultado y continuidad
-
-**Estado:** APROBADA
-
-Al aprobarse:
-
-- este archivo será la fuente canónica del registro retrospectivo inicial;
-- `QA-REG-001` cambiará a estado aprobado;
-- los requisitos conservarán estado `IDENTIFICADO` hasta su maduración;
-- `SHELL-CI-017` deberá automatizar la validación estructural;
-- cada paquete E5 deberá declarar qué requisitos implementa;
-- la continuidad documental será:
-
-```text
-CAP-SCOPE-001 — Evaluar gobierno, empresas, sedes y organización
-```

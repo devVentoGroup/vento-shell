@@ -8,20 +8,20 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1576** |
+| Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **321** |
+| Aprobadas | **322** |
 | En propuesta | **0** |
-| No iniciadas | **1255** |
+| No iniciadas | **1253** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-017` — Definir condiciones de salida | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-018` — Definir estados vacíos | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-019` — Definir estados de carga | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-019` — Definir estados de carga | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-020` — Definir estados de bloqueo | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-021` — Definir recuperación ante errores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -210,7 +210,6 @@
 | ✅ APROBADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
 | ✅ APROBADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_AUDITORIA_DE_IMPLEMENTACION_ACTUAL.md` |
-| ✅ APROBADA | `QA-REG-001` | Consolidar retrospectivamente requisitos de prueba anteriores a QA-GOV-001 | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` |
 | ✅ APROBADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
 | ✅ APROBADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_COBERTURA_EMPRESARIAL_OBLIGATORIA.md` |
@@ -315,8 +314,8 @@
 | ✅ APROBADA | `PROC-SCREEN-015` | Definir acciones secundarias | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-016` | Definir condiciones de entrada | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-017` | Definir condiciones de salida | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-018` | Definir estados vacíos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-019` | Definir estados de carga | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-020` | Definir estados de bloqueo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-021` | Definir recuperación ante errores | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
