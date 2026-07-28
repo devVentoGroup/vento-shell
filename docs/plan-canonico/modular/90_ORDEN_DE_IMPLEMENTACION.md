@@ -69,8 +69,8 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    automáticamente de `active-sequence.json`; no deberán corregirse
    manualmente al terminar cada subbloque.
 9. Ejecutar AUTH-UI-001 a AUTH-UI-029 y aprobar propiedad funcional y contrato de pantallas
-10. BLOQUE X — Definir integraciones internas, externas y contrato canónico de ventas
-11. Aprobar traspasos entre aplicaciones e integración temporal del POS externo
+10. BLOQUE X — Definir documentalmente integraciones internas, externas, traspasos y contrato canónico de ventas, sin ejecutar sincronizaciones, pilotos ni efectos operativos
+11. Aprobar los contratos y planes de traspaso entre aplicaciones y de integración temporal del POS externo; su implementación y ejecución quedan reservadas a los paquetes E5 y sus puertas
 12. BLOQUE E3 — Auditar Supabase, normalización, fuentes de verdad y arquitectura objetivo
 13. Aprobar dominios, arquitectura de datos, normalización y plan de transición
 14. BLOQUE E4 — Definir colas, impresión, notificaciones, documentos y evidencia

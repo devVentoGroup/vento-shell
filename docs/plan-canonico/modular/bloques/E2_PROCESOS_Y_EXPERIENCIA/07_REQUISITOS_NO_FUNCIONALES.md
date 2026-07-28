@@ -1706,7 +1706,7 @@ La aprobación de esta tarea congela los presupuestos iniciales e incorpora sus 
 **Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
 **Tarea anterior:** `NFR-REQ-003 — Definir tiempos máximos de respuesta` — APROBADA
 **Siguiente tarea reservada:** `NFR-REQ-005 — Definir privacidad y sensibilidad` — NO INICIADA
-**Artefactos propuestos:** `NFR-OFFLINE-SYNC-CONTRACT-001`; `NFR-PROCESS-OFFLINE-MATRIX-001`; `NFR-LOCAL-OPERATION-ENVELOPE-001`; `NFR-SYNC-RECONCILIATION-POLICY-001`
+**Artefactos aprobados:** `NFR-OFFLINE-SYNC-CONTRACT-001`; `NFR-PROCESS-OFFLINE-MATRIX-001`; `NFR-LOCAL-OPERATION-ENVELOPE-001`; `NFR-SYNC-RECONCILIATION-POLICY-001`
 **Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
 **Naturaleza:** contrato no funcional de conectividad parcial, trabajo local, outbox, sincronización, idempotencia, conflicto y conciliación; no implementación de Service Workers, bases locales, colas ni infraestructura
 **Cambios en código, migraciones, Supabase, aplicaciones, dispositivos, red o despliegues:** no autorizados
@@ -2452,7 +2452,7 @@ No queda una decisión diferida sin tarea o familia propietaria.
 
 #### 27. Requisitos de prueba derivados
 
-Esta propuesta incorpora al registro canónico completo:
+Esta tarea aprobada incorpora al registro canónico completo:
 
 ```text
 TREQ-PROC-295 a TREQ-PROC-324
@@ -2491,7 +2491,7 @@ Cobertura:
 29. matriz de `VPROC-0001` a `VPROC-0069`;
 30. pruebas de fallo, observabilidad, gobierno y certificación.
 
-Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-004` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+La evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-004` aprobada. Los identificadores no cambian.
 
 ---
 
@@ -2516,7 +2516,7 @@ Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá i
 - [ ] Archivos y periféricos conservan estados y receipts propios.
 - [ ] Toda contingencia manual tiene activación, numeración, custodia y conciliación.
 - [ ] Los 69 procesos tienen perfil, prioridad y frontera online iniciales.
-- [ ] Se incorporan `TREQ-PROC-295` a `TREQ-PROC-324` al `04A` completo, con origen y evidencia de propuesta.
+- [ ] Se incorporan `TREQ-PROC-295` a `TREQ-PROC-324` al `04A` completo, con origen y evidencia de tarea aprobada.
 - [ ] No se implementan colas, Service Workers, almacenamiento, código, migraciones ni cambios en Supabase.
 - [ ] `NFR-REQ-005` permanece no iniciada.
 
@@ -2540,7 +2540,7 @@ La aprobación de esta tarea congelará el contrato y la matriz inicial. No cert
 **Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
 **Tarea anterior:** `NFR-REQ-004 — Definir comportamiento offline y sincronización` — APROBADA
 **Siguiente tarea reservada:** `NFR-REQ-006 — Definir trazabilidad y retención` — NO INICIADA
-**Artefactos propuestos:** `NFR-PRIVACY-SENSITIVITY-CONTRACT-001`; `NFR-INFORMATION-HANDLING-MATRIX-001`; `NFR-PROCESS-PRIVACY-PROFILE-001`; `NFR-DATA-EXPOSURE-BOUNDARY-001`
+**Artefactos aprobados:** `NFR-PRIVACY-SENSITIVITY-CONTRACT-001`; `NFR-INFORMATION-HANDLING-MATRIX-001`; `NFR-PROCESS-PRIVACY-PROFILE-001`; `NFR-DATA-EXPOSURE-BOUNDARY-001`
 **Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`
 **Naturaleza:** contrato no funcional de privacidad, clasificación, sensibilidad, minimización, exposición y manejo; no dictamen jurídico, implementación criptográfica, política de retención ni certificación
 **Cambios en código, migraciones, Supabase, aplicaciones, infraestructura o despliegues:** no autorizados
@@ -3041,7 +3041,7 @@ No se declara una tecnología, proveedor, algoritmo, plazo de retención ni fund
 
 #### 27. Requisitos de prueba derivados
 
-Esta propuesta incorpora al registro canónico completo:
+Esta tarea aprobada incorpora al registro canónico completo:
 
 ```text
 TREQ-PROC-325 a TREQ-PROC-354
@@ -3080,7 +3080,7 @@ Cobertura:
 29. guardrails y regresión;
 30. gobierno, evidencia y certificación.
 
-Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-005` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+La evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-005` aprobada. Los identificadores no cambian.
 
 ---
 
@@ -3099,7 +3099,7 @@ Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá i
 - [ ] Producción no se replica íntegramente a ambientes no productivos.
 - [ ] Consentimiento, finalidad y revocación no se confunden con retención o eliminación.
 - [ ] Los 69 procesos deberán tener perfil individual antes de implementación.
-- [ ] Se incorporan `TREQ-PROC-325` a `TREQ-PROC-354` al `04A` completo con evidencia de propuesta.
+- [ ] Se incorporan `TREQ-PROC-325` a `TREQ-PROC-354` al `04A` completo con evidencia de tarea aprobada.
 - [ ] No se implementan código, cifrado, migraciones, Supabase, políticas físicas ni despliegues.
 - [ ] `NFR-REQ-006` permanece no iniciada.
 
@@ -3122,7 +3122,7 @@ La aprobación explícita de esta tarea congelará el contrato inicial de privac
 **Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal  
 **Tarea anterior:** `NFR-REQ-005 — Definir privacidad y sensibilidad` — APROBADA  
 **Siguiente tarea reservada:** `NFR-REQ-007 — Definir accesibilidad y ergonomía` — NO INICIADA  
-**Artefactos propuestos:** `NFR-TRACEABILITY-RETENTION-CONTRACT-001`; `NFR-AUDIT-EVENT-ENVELOPE-001`; `NFR-RETENTION-POLICY-MATRIX-001`; `NFR-DISPOSITION-CONTROL-001`; `NFR-PROCESS-TRACEABILITY-PROFILE-001`  
+**Artefactos aprobados:** `NFR-TRACEABILITY-RETENTION-CONTRACT-001`; `NFR-AUDIT-EVENT-ENVELOPE-001`; `NFR-RETENTION-POLICY-MATRIX-001`; `NFR-DISPOSITION-CONTROL-001`; `NFR-PROCESS-TRACEABILITY-PROFILE-001`
 **Procesos cubiertos:** `VPROC-0001` a `VPROC-0069`  
 **Naturaleza:** contrato no funcional de trazabilidad, historial, conservación, archivo, suspensión de disposición, anonimización y eliminación controlada; no dictamen jurídico, tabla legal definitiva, implementación física de auditoría, diseño de respaldos ni certificación  
 **Cambios en código, migraciones, Supabase, aplicaciones, Storage, infraestructura o despliegues:** no autorizados
@@ -4067,7 +4067,7 @@ No queda un pendiente narrativo sin destino. Esta tarea no fija plazos legales n
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-Esta propuesta incorpora al registro canónico completo:
+Esta tarea aprobada incorpora al registro canónico completo:
 
 ```text
 TREQ-PROC-355 a TREQ-PROC-389
@@ -4111,7 +4111,7 @@ Cobertura:
 34. guardrails;
 35. gobierno y certificación.
 
-Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-006` en propuesta. Al aprobarse, la evidencia se actualizará a tarea aprobada sin cambiar los identificadores.
+La evidencia de estas filas deberá indicar expresamente que proviene de `NFR-REQ-006` aprobada. Los identificadores no cambian.
 
 ---
 
@@ -4133,7 +4133,7 @@ Mientras la tarea permanezca en propuesta, la evidencia de estas filas deberá i
 - [ ] Restaurar backups reaplica disposiciones y evita resurrección.
 - [ ] Consultar o exportar auditoría queda auditado.
 - [ ] Cada uno de los 69 procesos tendrá perfil individual antes de implementación.
-- [ ] Se incorporan `TREQ-PROC-355` a `TREQ-PROC-389` al registro completo con evidencia de propuesta.
+- [ ] Se incorporan `TREQ-PROC-355` a `TREQ-PROC-389` al registro completo con evidencia de tarea aprobada.
 - [ ] Todos los pendientes se vinculan con tareas existentes y exactas.
 - [ ] No se implementan código, migraciones, Supabase, Storage, jobs, políticas físicas ni despliegues.
 - [ ] `NFR-REQ-007` permanece no iniciada.
@@ -6127,15 +6127,15 @@ Un campo desconocido será `UNRESOLVED` con tarea, responsable y puerta de resol
 
 La línea base vendor-neutral usará como mínimo:
 
-| Señal | Uso | Regla |
-| --- | --- | --- |
-| métricas | tendencias, tasas, percentiles, capacidad y alertas | unidades, dimensiones y cardinalidad controladas |
-| logs estructurados | detalle de eventos, errores y decisiones técnicas | esquema estable, nivel, contexto y redacción segura |
-| trazas | recorrido de solicitudes, comandos, jobs e integraciones | contexto propagado y spans con límites claros |
-| health checks | disponibilidad de capacidades concretas | no mezclar liveness, readiness y salud empresarial |
-| pruebas black-box | comportamiento visible desde fuera | validar camino real, no solo proceso interno |
-| eventos empresariales | hechos materiales de dominio | propiedad y contrato de `PROC-CAT-017` |
-| auditoría | actor, autorización, cambio y evidencia | propiedad de `NFR-REQ-006` y contratos de auditoría |
+| Señal                 | Uso                                                      | Regla                                               |
+| --------------------- | -------------------------------------------------------- | --------------------------------------------------- |
+| métricas              | tendencias, tasas, percentiles, capacidad y alertas      | unidades, dimensiones y cardinalidad controladas    |
+| logs estructurados    | detalle de eventos, errores y decisiones técnicas        | esquema estable, nivel, contexto y redacción segura |
+| trazas                | recorrido de solicitudes, comandos, jobs e integraciones | contexto propagado y spans con límites claros       |
+| health checks         | disponibilidad de capacidades concretas                  | no mezclar liveness, readiness y salud empresarial  |
+| pruebas black-box     | comportamiento visible desde fuera                       | validar camino real, no solo proceso interno        |
+| eventos empresariales | hechos materiales de dominio                             | propiedad y contrato de `PROC-CAT-017`              |
+| auditoría             | actor, autorización, cambio y evidencia                  | propiedad de `NFR-REQ-006` y contratos de auditoría |
 
 Perfiles y volcados profundos se usarán solo bajo diagnóstico controlado; no formarán la línea base ordinaria ni se capturarán indefinidamente.
 
@@ -6255,14 +6255,14 @@ Queda prohibido registrar secretos, tokens, PIN, credenciales, payloads completo
 
 #### 13. Severidad técnica de logs
 
-| Nivel | Uso permitido |
-| --- | --- |
-| `TRACE` | diagnóstico temporal y muestreado en ambientes autorizados |
+| Nivel   | Uso permitido                                                                         |
+| ------- | ------------------------------------------------------------------------------------- |
+| `TRACE` | diagnóstico temporal y muestreado en ambientes autorizados                            |
 | `DEBUG` | detalle de desarrollo o diagnóstico controlado, desactivado por defecto en producción |
-| `INFO` | hitos técnicos esperados y de volumen razonable |
-| `WARN` | degradación, fallback, reintento o condición recuperable |
-| `ERROR` | operación fallida o resultado no obtenido que exige análisis |
-| `FATAL` | componente incapaz de continuar de forma segura |
+| `INFO`  | hitos técnicos esperados y de volumen razonable                                       |
+| `WARN`  | degradación, fallback, reintento o condición recuperable                              |
+| `ERROR` | operación fallida o resultado no obtenido que exige análisis                          |
+| `FATAL` | componente incapaz de continuar de forma segura                                       |
 
 La severidad del log no determinará automáticamente la prioridad de una alerta. Miles de errores contenidos pueden requerir análisis, mientras una sola pérdida financiera puede exigir respuesta crítica.
 
@@ -6307,15 +6307,15 @@ Una señal podrá referenciar otro objeto, pero no reemplazarlo. La eliminación
 
 Se separarán como mínimo:
 
-| Estado | Pregunta |
-| --- | --- |
-| liveness | ¿el componente puede seguir ejecutándose? |
-| readiness | ¿puede aceptar trabajo de forma segura? |
-| dependency health | ¿las dependencias necesarias responden dentro del contrato? |
-| degraded | ¿opera con limitaciones explícitas y controladas? |
-| business health | ¿el efecto empresarial extremo a extremo está ocurriendo? |
-| data health | ¿los datos están frescos, completos y conciliados? |
-| device/peripheral health | ¿la estación puede ejecutar el paso físico requerido? |
+| Estado                   | Pregunta                                                    |
+| ------------------------ | ----------------------------------------------------------- |
+| liveness                 | ¿el componente puede seguir ejecutándose?                   |
+| readiness                | ¿puede aceptar trabajo de forma segura?                     |
+| dependency health        | ¿las dependencias necesarias responden dentro del contrato? |
+| degraded                 | ¿opera con limitaciones explícitas y controladas?           |
+| business health          | ¿el efecto empresarial extremo a extremo está ocurriendo?   |
+| data health              | ¿los datos están frescos, completos y conciliados?          |
+| device/peripheral health | ¿la estación puede ejecutar el paso físico requerido?       |
 
 Un componente vivo pero incapaz de completar el proceso no estará `HEALTHY`. Un health check no ejecutará mutaciones empresariales irreversibles.
 
@@ -6587,12 +6587,12 @@ Las alertas de causa podrán crear ticket o enriquecer diagnóstico; no deberán
 
 #### 30. Severidad de alerta e incidente
 
-| Nivel | Condición inicial | Respuesta esperada |
-| --- | --- | --- |
+| Nivel    | Condición inicial                                                                                           | Respuesta esperada                                                  |
+| -------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | `OBS-P0` | riesgo inmediato para personas, seguridad, dinero, integridad crítica o interrupción amplia sin alternativa | atención inmediata, coordinación y comunicación ejecutiva aplicable |
-| `OBS-P1` | proceso crítico degradado o interrumpido, efecto creciente o alternativa insuficiente | atención prioritaria dentro de la ventana definida y escalamiento |
-| `OBS-P2` | degradación limitada, capacidad cercana al límite o workaround controlado | ticket priorizado, análisis y fecha de resolución |
-| `OBS-P3` | tendencia, deuda o mejora sin impacto actual material | backlog gobernado y revisión periódica |
+| `OBS-P1` | proceso crítico degradado o interrumpido, efecto creciente o alternativa insuficiente                       | atención prioritaria dentro de la ventana definida y escalamiento   |
+| `OBS-P2` | degradación limitada, capacidad cercana al límite o workaround controlado                                   | ticket priorizado, análisis y fecha de resolución                   |
+| `OBS-P3` | tendencia, deuda o mejora sin impacto actual material                                                       | backlog gobernado y revisión periódica                              |
 
 La severidad se basará en impacto y urgencia, no en el nombre del componente ni en el nivel de un log. Los contratos posteriores podrán refinar tiempos, pero no reducir una condición crítica sin evidencia.
 
@@ -6875,12 +6875,12 @@ Omitir un escenario exigirá `NO_APLICA` justificado.
 
 #### 44. Excepciones y severidad de brechas
 
-| Nivel | Ejemplo | Efecto |
-| --- | --- | --- |
+| Nivel        | Ejemplo                                                                             | Efecto                              |
+| ------------ | ----------------------------------------------------------------------------------- | ----------------------------------- |
 | `OBS-GAP-P0` | proceso crítico sin detección, alerta no entregada o telemetría que expone secretos | bloquea piloto, cutover u operación |
-| `OBS-GAP-P1` | alerta crítica sin runbook, correlación rota o salud empresarial no observable | bloquea release o aceptación |
-| `OBS-GAP-P2` | diagnóstico parcial con control compensatorio y plazo | aceptación condicionada |
-| `OBS-GAP-P3` | mejora de detalle o eficiencia sin riesgo material actual | planificable |
+| `OBS-GAP-P1` | alerta crítica sin runbook, correlación rota o salud empresarial no observable      | bloquea release o aceptación        |
+| `OBS-GAP-P2` | diagnóstico parcial con control compensatorio y plazo                               | aceptación condicionada             |
+| `OBS-GAP-P3` | mejora de detalle o eficiencia sin riesgo material actual                           | planificable                        |
 
 `NFR-OBSERVABILITY-EXCEPTION-REGISTER-001` exigirá alcance, riesgo, señal faltante, control compensatorio, propietario, vencimiento, tarea de cierre y evidencia. No habrá excepciones permanentes por limitación histórica de la herramienta.
 
@@ -6888,22 +6888,22 @@ Omitir un escenario exigirá `NO_APLICA` justificado.
 
 #### 45. Responsabilidad documental
 
-| Decisión o implementación | Tarea propietaria |
-| --- | --- |
-| arquitectura de señales y correlación | `OBS-ARC-001` a `OBS-ARC-016` |
-| operación de monitoreo y salud | `TI-DOM-010`; `TI-INT-001` |
-| incidentes, prioridades y soporte | `TI-DOM-001`; `TI-DOM-007`; `TI-UX-001`; `TI-UX-002`; `TI-UX-004` |
-| problemas y causa raíz | `TI-DOM-008`; `TI-UX-004` |
-| cambios y correlación de releases | `TI-DOM-009`; BLOQUE T |
-| seguridad de soporte y diagnóstico | `TI-AUTH-001` a `TI-AUTH-004` |
-| mapa de salud técnica | `TI-UX-003`; `TI-UX-006` |
-| integraciones con herramientas y proveedores | `TI-INT-001` a `TI-INT-003` |
-| colas y eventos | `QUEUE-ARC-001` a `QUEUE-ARC-012`; contratos E3/E4 |
-| impresión y periféricos | `PRINT-ARC-001` a `PRINT-ARC-020`; `NFR-REQ-008` |
-| privacidad y retención | `NFR-REQ-005`; `NFR-REQ-006`; `INFO-DOM-*` |
-| respaldo y recuperación | `NFR-REQ-010`; `CONT-DOM-001` a `CONT-DOM-015` |
-| implementación por repositorio | paquetes E5 propietarios |
-| pruebas y certificación | `SHELL-CI-020` a `SHELL-CI-024`; `UX-QA-001` a `UX-QA-030`; BLOQUE U |
+| Decisión o implementación                    | Tarea propietaria                                                    |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| arquitectura de señales y correlación        | `OBS-ARC-001` a `OBS-ARC-016`                                        |
+| operación de monitoreo y salud               | `TI-DOM-010`; `TI-INT-001`                                           |
+| incidentes, prioridades y soporte            | `TI-DOM-001`; `TI-DOM-007`; `TI-UX-001`; `TI-UX-002`; `TI-UX-004`    |
+| problemas y causa raíz                       | `TI-DOM-008`; `TI-UX-004`                                            |
+| cambios y correlación de releases            | `TI-DOM-009`; BLOQUE T                                               |
+| seguridad de soporte y diagnóstico           | `TI-AUTH-001` a `TI-AUTH-004`                                        |
+| mapa de salud técnica                        | `TI-UX-003`; `TI-UX-006`                                             |
+| integraciones con herramientas y proveedores | `TI-INT-001` a `TI-INT-003`                                          |
+| colas y eventos                              | `QUEUE-ARC-001` a `QUEUE-ARC-012`; contratos E3/E4                   |
+| impresión y periféricos                      | `PRINT-ARC-001` a `PRINT-ARC-020`; `NFR-REQ-008`                     |
+| privacidad y retención                       | `NFR-REQ-005`; `NFR-REQ-006`; `INFO-DOM-*`                           |
+| respaldo y recuperación                      | `NFR-REQ-010`; `CONT-DOM-001` a `CONT-DOM-015`                       |
+| implementación por repositorio               | paquetes E5 propietarios                                             |
+| pruebas y certificación                      | `SHELL-CI-020` a `SHELL-CI-024`; `UX-QA-001` a `UX-QA-030`; BLOQUE U |
 
 Toda brecha detectada quedará vinculada de inmediato con una tarea de esta tabla o generará una nueva tarea explícita en el bloque propietario.
 
@@ -7159,19 +7159,19 @@ No obliga a respaldar todo de la misma forma. Un objeto reconstruible podrá ten
 
 #### 5. Conceptos que deberán permanecer separados
 
-| Concepto | Significado canónico |
-| --- | --- |
-| alta disponibilidad | capacidad de mantener o reanudar servicio mediante redundancia sin restaurar una copia histórica |
-| réplica | copia operativa sincronizada que puede propagar corrupción, eliminación o cifrado |
-| snapshot | captura puntual cuya consistencia y dependencia deberán comprobarse |
-| backup | copia administrada para recuperación, con catálogo, política, integridad, retención y aislamiento |
-| archive | conservación de largo plazo o evidencia; no presume recuperación operativa rápida |
-| export | extracción portátil que puede ser incompleta, no consistente o no restaurable |
-| rollback | retorno de código, configuración o migración; no sustituye recuperación de datos |
-| failover | traslado del servicio a una capacidad alterna; puede conservar el mismo estado corrupto |
-| restore | reconstrucción técnica desde una copia o cadena de recuperación |
-| recovery | retorno verificado del servicio mínimo empresarial y posterior conciliación |
-| reconciliation | comparación y resolución de hechos faltantes, duplicados, tardíos o conflictivos |
+| Concepto            | Significado canónico                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| alta disponibilidad | capacidad de mantener o reanudar servicio mediante redundancia sin restaurar una copia histórica  |
+| réplica             | copia operativa sincronizada que puede propagar corrupción, eliminación o cifrado                 |
+| snapshot            | captura puntual cuya consistencia y dependencia deberán comprobarse                               |
+| backup              | copia administrada para recuperación, con catálogo, política, integridad, retención y aislamiento |
+| archive             | conservación de largo plazo o evidencia; no presume recuperación operativa rápida                 |
+| export              | extracción portátil que puede ser incompleta, no consistente o no restaurable                     |
+| rollback            | retorno de código, configuración o migración; no sustituye recuperación de datos                  |
+| failover            | traslado del servicio a una capacidad alterna; puede conservar el mismo estado corrupto           |
+| restore             | reconstrucción técnica desde una copia o cadena de recuperación                                   |
+| recovery            | retorno verificado del servicio mínimo empresarial y posterior conciliación                       |
+| reconciliation      | comparación y resolución de hechos faltantes, duplicados, tardíos o conflictivos                  |
 
 Ninguno de estos objetos se presentará como equivalente por comodidad de interfaz o proveedor.
 
@@ -7265,13 +7265,13 @@ Todo objetivo tendrá:
 
 Se adoptan perfiles cualitativos iniciales sin tiempos implícitos:
 
-| Perfil | Criterio |
-| --- | --- |
-| `RC0_SAFETY_INTEGRITY` | seguridad humana, acceso crítico, dinero, integridad o efecto irreversible |
-| `RC1_CRITICAL_OPERATION` | operación principal sin alternativa sostenible o con acumulación rápida de daño |
-| `RC2_IMPORTANT_OPERATION` | interrupción material con alternativa temporal limitada |
-| `RC3_SUPPORTING` | capacidad necesaria para normalización, análisis o eficiencia, con workaround viable |
-| `RC4_RECONSTRUCTIBLE` | objeto o capacidad demostrablemente regenerable sin pérdida material ni dependencia circular |
+| Perfil                    | Criterio                                                                                     |
+| ------------------------- | -------------------------------------------------------------------------------------------- |
+| `RC0_SAFETY_INTEGRITY`    | seguridad humana, acceso crítico, dinero, integridad o efecto irreversible                   |
+| `RC1_CRITICAL_OPERATION`  | operación principal sin alternativa sostenible o con acumulación rápida de daño              |
+| `RC2_IMPORTANT_OPERATION` | interrupción material con alternativa temporal limitada                                      |
+| `RC3_SUPPORTING`          | capacidad necesaria para normalización, análisis o eficiencia, con workaround viable         |
+| `RC4_RECONSTRUCTIBLE`     | objeto o capacidad demostrablemente regenerable sin pérdida material ni dependencia circular |
 
 El perfil orienta prioridad y profundidad; no asigna automáticamente un número. Un mismo proceso podrá contener varios grupos con perfiles distintos.
 
@@ -7956,12 +7956,12 @@ La periodicidad final dependerá de criticidad, cambios, incidentes, expiración
 
 #### 41. Excepciones y severidad de brechas
 
-| Clase | Ejemplos | Tratamiento |
-| --- | --- | --- |
-| `REC-GAP-P0` | fuente crítica sin copia aislada; llave irrecuperable; restauración imposible; RTO o RPO crítico sin dueño | bloquea piloto o producción aplicable |
-| `REC-GAP-P1` | restauración no probada; cadena incompleta; grupo inconsistente; runbook crítico vencido | resolución antes de readiness o control temporal aprobado |
-| `REC-GAP-P2` | cobertura parcial, automatización insuficiente o evidencia antigua con alternativa viable | tarea y fecha obligatorias |
-| `REC-GAP-P3` | mejora de eficiencia o documentación sin riesgo inmediato | backlog priorizado |
+| Clase        | Ejemplos                                                                                                   | Tratamiento                                               |
+| ------------ | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `REC-GAP-P0` | fuente crítica sin copia aislada; llave irrecuperable; restauración imposible; RTO o RPO crítico sin dueño | bloquea piloto o producción aplicable                     |
+| `REC-GAP-P1` | restauración no probada; cadena incompleta; grupo inconsistente; runbook crítico vencido                   | resolución antes de readiness o control temporal aprobado |
+| `REC-GAP-P2` | cobertura parcial, automatización insuficiente o evidencia antigua con alternativa viable                  | tarea y fecha obligatorias                                |
+| `REC-GAP-P3` | mejora de eficiencia o documentación sin riesgo inmediato                                                  | backlog priorizado                                        |
 
 Toda excepción tendrá alcance, causa, riesgo, control, responsable, vencimiento, criterio de salida y autoridad de aceptación.
 
@@ -7969,20 +7969,20 @@ Toda excepción tendrá alcance, causa, riesgo, control, responsable, vencimient
 
 #### 42. Responsabilidad documental
 
-| Decisión o implementación | Tarea propietaria |
-| --- | --- |
-| análisis de impacto y objetivos numéricos | `CONT-DOM-002` a `CONT-DOM-004` |
-| política e inventario de respaldos | `CONT-DOM-011`; `TI-DOM-011` |
-| runbooks, restauración, failover y retorno | `CONT-DOM-012`; `CONT-UX-005` |
-| proveedores y recursos alternativos | `CONT-DOM-013`; `CONT-INT-003` |
-| ejercicios | `CONT-DOM-014`; `CONT-UX-007` |
-| lecciones y mantenimiento | `CONT-DOM-015` |
-| autorización de recuperación | `CONT-AUTH-001` a `CONT-AUTH-004`; `TI-AUTH-001` a `TI-AUTH-004` |
-| arquitectura de Supabase y Storage | tareas `SUPA-ARC-*`, `SUPA-TRANS-*` y BLOQUE R aplicables |
-| colas, replay y conciliación | `QUEUE-ARC-*`; `CONT-INT-004` |
-| observabilidad y soporte | `NFR-REQ-009`; `OBS-ARC-*`; BLOQUE Z |
-| implementación por dominio | paquetes E5 propietarios |
-| certificación transversal | readiness, BLOQUE T y BLOQUE U |
+| Decisión o implementación                  | Tarea propietaria                                                |
+| ------------------------------------------ | ---------------------------------------------------------------- |
+| análisis de impacto y objetivos numéricos  | `CONT-DOM-002` a `CONT-DOM-004`                                  |
+| política e inventario de respaldos         | `CONT-DOM-011`; `TI-DOM-011`                                     |
+| runbooks, restauración, failover y retorno | `CONT-DOM-012`; `CONT-UX-005`                                    |
+| proveedores y recursos alternativos        | `CONT-DOM-013`; `CONT-INT-003`                                   |
+| ejercicios                                 | `CONT-DOM-014`; `CONT-UX-007`                                    |
+| lecciones y mantenimiento                  | `CONT-DOM-015`                                                   |
+| autorización de recuperación               | `CONT-AUTH-001` a `CONT-AUTH-004`; `TI-AUTH-001` a `TI-AUTH-004` |
+| arquitectura de Supabase y Storage         | tareas `SUPA-ARC-*`, `SUPA-TRANS-*` y BLOQUE R aplicables        |
+| colas, replay y conciliación               | `QUEUE-ARC-*`; `CONT-INT-004`                                    |
+| observabilidad y soporte                   | `NFR-REQ-009`; `OBS-ARC-*`; BLOQUE Z                             |
+| implementación por dominio                 | paquetes E5 propietarios                                         |
+| certificación transversal                  | readiness, BLOQUE T y BLOQUE U                                   |
 
 Un hallazgo no podrá cerrarse con “se verá en continuidad”; deberá quedar enlazado a una tarea concreta de esta tabla o generar una nueva.
 
@@ -8268,15 +8268,15 @@ No se usarán filas genéricas como “Android”, “tablet” o “Chrome” s
 
 #### 7. Estados de soporte
 
-| Estado | Significado |
-| --- | --- |
-| `SUPPORTED` | combinación verificada, soportada y sin limitaciones materiales no declaradas |
+| Estado                      | Significado                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| `SUPPORTED`                 | combinación verificada, soportada y sin limitaciones materiales no declaradas               |
 | `SUPPORTED_WITH_CONDITIONS` | compatible bajo condiciones explícitas de orientación, periférico, política o configuración |
-| `DEGRADED_SUPPORTED` | conserva resultado y controles mediante una modalidad degradada aprobada |
-| `TEMPORARILY_BLOCKED` | combinación antes soportada bloqueada por incidente, regresión o riesgo vigente |
-| `UNSUPPORTED` | no se diseñó, no se verificó o no puede cumplir el contrato |
-| `UNKNOWN_BLOCKED` | no existe evidencia suficiente; no se habilita una acción crítica |
-| `RETIRED` | soporte finalizado mediante transición aprobada |
+| `DEGRADED_SUPPORTED`        | conserva resultado y controles mediante una modalidad degradada aprobada                    |
+| `TEMPORARILY_BLOCKED`       | combinación antes soportada bloqueada por incidente, regresión o riesgo vigente             |
+| `UNSUPPORTED`               | no se diseñó, no se verificó o no puede cumplir el contrato                                 |
+| `UNKNOWN_BLOCKED`           | no existe evidencia suficiente; no se habilita una acción crítica                           |
+| `RETIRED`                   | soporte finalizado mediante transición aprobada                                             |
 
 `UNKNOWN_BLOCKED` no se transformará automáticamente en `SUPPORTED` porque un usuario haya completado una vez el flujo.
 
@@ -8286,15 +8286,15 @@ No se usarán filas genéricas como “Android”, “tablet” o “Chrome” s
 
 Se adoptan perfiles funcionales iniciales:
 
-| Perfil | Uso objetivo | Condiciones mínimas |
-| --- | --- | --- |
-| `DP1_ADMIN_DESKTOP` | administración, análisis, configuración y trabajo documental | teclado y puntero; viewport amplio; multitarea; descarga y carga controladas |
-| `DP2_OPERATIVE_TABLET` | ejecución operativa táctil en estación o movilidad corta | tacto, orientación aprobada, cámara opcional, bloqueo, batería y montaje según estación |
-| `DP3_PERSONAL_MOBILE` | autoservicio de cliente o trabajador y acciones personales | identidad individual, pantalla pequeña, conectividad variable y permisos del sistema |
-| `DP4_SHARED_KIOSK_POS` | estación compartida, POS, kiosco o punto dedicado | actor efectivo, cambio de usuario, pantalla fijada, periféricos, bloqueo y limpieza de sesión |
-| `DP5_MOBILE_FIELD` | recorrido, logística, conteo o captura en movimiento | cámara o escáner, batería, protección, offline y red intermitente |
-| `DP6_PERIPHERAL_HOST` | estación que coordina impresión, medición, escaneo o integración local | drivers o adaptadores aprobados, puertos, red, spool, diagnóstico y sustitución |
-| `DP7_READ_ONLY_FALLBACK` | consulta mínima durante degradación o contingencia | datos marcados con frescura, sin mutaciones no autorizadas y salida clara |
+| Perfil                   | Uso objetivo                                                           | Condiciones mínimas                                                                           |
+| ------------------------ | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `DP1_ADMIN_DESKTOP`      | administración, análisis, configuración y trabajo documental           | teclado y puntero; viewport amplio; multitarea; descarga y carga controladas                  |
+| `DP2_OPERATIVE_TABLET`   | ejecución operativa táctil en estación o movilidad corta               | tacto, orientación aprobada, cámara opcional, bloqueo, batería y montaje según estación       |
+| `DP3_PERSONAL_MOBILE`    | autoservicio de cliente o trabajador y acciones personales             | identidad individual, pantalla pequeña, conectividad variable y permisos del sistema          |
+| `DP4_SHARED_KIOSK_POS`   | estación compartida, POS, kiosco o punto dedicado                      | actor efectivo, cambio de usuario, pantalla fijada, periféricos, bloqueo y limpieza de sesión |
+| `DP5_MOBILE_FIELD`       | recorrido, logística, conteo o captura en movimiento                   | cámara o escáner, batería, protección, offline y red intermitente                             |
+| `DP6_PERIPHERAL_HOST`    | estación que coordina impresión, medición, escaneo o integración local | drivers o adaptadores aprobados, puertos, red, spool, diagnóstico y sustitución               |
+| `DP7_READ_ONLY_FALLBACK` | consulta mínima durante degradación o contingencia                     | datos marcados con frescura, sin mutaciones no autorizadas y salida clara                     |
 
 Un equipo podrá cumplir varios perfiles, pero deberá certificarse por separado para cada uno.
 
@@ -8339,18 +8339,18 @@ review_date
 
 Cada aplicación deberá declarar los perfiles que soporta y rechaza. La matriz inicial no asumirá que todas las aplicaciones deben ejecutarse en todos los dispositivos.
 
-| Aplicación o familia | Orientación inicial de compatibilidad |
-| --- | --- |
-| SHELL | escritorio administrativo y superficies de contexto autorizadas; componentes compartidos deberán preservar compatibilidad de consumidoras |
-| ANIMA | móvil personal prioritario y escritorio o tablet como alternativa cuando el proceso lo permita |
-| PASS | móvil personal prioritario; cámara, enlaces, notificaciones y almacenamiento se validarán por plataforma |
-| VISO | escritorio prioritario; tablet únicamente para capacidades declaradas |
-| NEXO | tablet, móvil de campo, kiosco y escritorio según paso, estación y periférico |
-| FOGO | tablet o estación compartida según área; interacción compatible con ambiente productivo |
-| ORIGO | escritorio y tablet según recepción, compra, documento o periférico |
-| PULSO | POS, tablet o estación dedicada; pagos e impresión requieren perfil físico específico |
-| NUMERA | escritorio prioritario; acceso móvil limitado a capacidades declaradas |
-| AURA | no adquiere soporte por figurar en la matriz; dependerá de continuidad aprobada y paquete propio |
+| Aplicación o familia | Orientación inicial de compatibilidad                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| SHELL                | escritorio administrativo y superficies de contexto autorizadas; componentes compartidos deberán preservar compatibilidad de consumidoras |
+| ANIMA                | móvil personal prioritario y escritorio o tablet como alternativa cuando el proceso lo permita                                            |
+| PASS                 | móvil personal prioritario; cámara, enlaces, notificaciones y almacenamiento se validarán por plataforma                                  |
+| VISO                 | escritorio prioritario; tablet únicamente para capacidades declaradas                                                                     |
+| NEXO                 | tablet, móvil de campo, kiosco y escritorio según paso, estación y periférico                                                             |
+| FOGO                 | tablet o estación compartida según área; interacción compatible con ambiente productivo                                                   |
+| ORIGO                | escritorio y tablet según recepción, compra, documento o periférico                                                                       |
+| PULSO                | POS, tablet o estación dedicada; pagos e impresión requieren perfil físico específico                                                     |
+| NUMERA               | escritorio prioritario; acceso móvil limitado a capacidades declaradas                                                                    |
+| AURA                 | no adquiere soporte por figurar en la matriz; dependerá de continuidad aprobada y paquete propio                                          |
 
 Esta orientación deberá concretarse mediante `NFR-APPLICATION-DEVICE-SUPPORT-MATRIX-001`; no habilita rutas todavía.
 
@@ -8698,15 +8698,15 @@ No se permitirá que una versión antigua continúe mutando contra contratos inc
 
 Antes de iniciar una capacidad crítica, la aplicación deberá poder determinar el estado y:
 
-| Estado | Comportamiento mínimo |
-| --- | --- |
-| `SUPPORTED` | permitir según autorización y contexto |
-| `SUPPORTED_WITH_CONDITIONS` | comprobar y mostrar las condiciones aplicables |
-| `DEGRADED_SUPPORTED` | activar la modalidad declarada y marcar sus límites |
-| `TEMPORARILY_BLOCKED` | bloquear el paso, preservar trabajo y mostrar ruta de soporte |
-| `UNSUPPORTED` | impedir la capacidad incompatible sin simular error genérico |
-| `UNKNOWN_BLOCKED` | recopilar diagnóstico mínimo y no ejecutar efecto crítico |
-| `RETIRED` | mostrar fecha, alternativa y procedimiento de transición |
+| Estado                      | Comportamiento mínimo                                         |
+| --------------------------- | ------------------------------------------------------------- |
+| `SUPPORTED`                 | permitir según autorización y contexto                        |
+| `SUPPORTED_WITH_CONDITIONS` | comprobar y mostrar las condiciones aplicables                |
+| `DEGRADED_SUPPORTED`        | activar la modalidad declarada y marcar sus límites           |
+| `TEMPORARILY_BLOCKED`       | bloquear el paso, preservar trabajo y mostrar ruta de soporte |
+| `UNSUPPORTED`               | impedir la capacidad incompatible sin simular error genérico  |
+| `UNKNOWN_BLOCKED`           | recopilar diagnóstico mínimo y no ejecutar efecto crítico     |
+| `RETIRED`                   | mostrar fecha, alternativa y procedimiento de transición      |
 
 El mensaje deberá indicar qué falta, qué puede conservarse y cómo continuar.
 
@@ -8842,12 +8842,12 @@ Emulación podrá ampliar cobertura, no reemplazar el nivel físico aplicable.
 
 #### 36. Severidad de incompatibilidades
 
-| Clase | Ejemplos | Tratamiento |
-| --- | --- | --- |
-| `COMPAT-P0` | acción crítica ejecutable parcialmente; autorización o actor incorrectos; corrupción; pago o movimiento duplicable | bloquea piloto o producción aplicable |
-| `COMPAT-P1` | flujo principal imposible; cámara, impresión u offline críticos sin fallback; versión vulnerable | resolver antes de readiness o control temporal aprobado |
-| `COMPAT-P2` | degradación material, rendimiento insuficiente o limitación de modalidad con alternativa viable | tarea, fecha y condición obligatorias |
-| `COMPAT-P3` | defecto cosmético o mejora sin impacto en resultado, acceso o seguridad | backlog priorizado |
+| Clase       | Ejemplos                                                                                                           | Tratamiento                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `COMPAT-P0` | acción crítica ejecutable parcialmente; autorización o actor incorrectos; corrupción; pago o movimiento duplicable | bloquea piloto o producción aplicable                   |
+| `COMPAT-P1` | flujo principal imposible; cámara, impresión u offline críticos sin fallback; versión vulnerable                   | resolver antes de readiness o control temporal aprobado |
+| `COMPAT-P2` | degradación material, rendimiento insuficiente o limitación de modalidad con alternativa viable                    | tarea, fecha y condición obligatorias                   |
+| `COMPAT-P3` | defecto cosmético o mejora sin impacto en resultado, acceso o seguridad                                            | backlog priorizado                                      |
 
 Todo defecto conservará combinación exacta, paso, evidencia, reproducibilidad y alcance.
 
@@ -8875,19 +8875,19 @@ No se aprobarán excepciones indefinidas para versiones sin soporte, sesiones co
 
 #### 38. Responsabilidad documental
 
-| Decisión o implementación | Tarea propietaria |
-| --- | --- |
-| perfiles y matriz inicial | `NFR-REQ-011` |
-| estaciones, interacción y periféricos | `UX-STATION-002` a `UX-STATION-012` |
-| accesibilidad y ergonomía | `NFR-REQ-007`; `UX-BASE-001` a `UX-BASE-015` |
-| hardware, red y periféricos | `NFR-REQ-008`; `TI-DOM-002` a `TI-DOM-005` |
-| observabilidad y soporte | `NFR-REQ-009`; `TI-DOM-007` a `TI-DOM-010` |
-| recuperación y continuidad | `NFR-REQ-010`; `CONT-DOM-001` a `CONT-DOM-015` |
-| identidad de dispositivo compartido | `AUTH-DEV-001` a `AUTH-DEV-016` |
-| pantallas y procesos | `PROC-SCREEN-001` a `PROC-SCREEN-028`; `PROC-COVER-001` a `PROC-COVER-010` |
-| implementación por aplicación | paquetes E5 propietarios |
-| releases, despliegues y rollback | BLOQUE T |
-| certificación transversal y pilotos | BLOQUE U; `UX-QA-001` a `UX-QA-030` |
+| Decisión o implementación             | Tarea propietaria                                                          |
+| ------------------------------------- | -------------------------------------------------------------------------- |
+| perfiles y matriz inicial             | `NFR-REQ-011`                                                              |
+| estaciones, interacción y periféricos | `UX-STATION-002` a `UX-STATION-012`                                        |
+| accesibilidad y ergonomía             | `NFR-REQ-007`; `UX-BASE-001` a `UX-BASE-015`                               |
+| hardware, red y periféricos           | `NFR-REQ-008`; `TI-DOM-002` a `TI-DOM-005`                                 |
+| observabilidad y soporte              | `NFR-REQ-009`; `TI-DOM-007` a `TI-DOM-010`                                 |
+| recuperación y continuidad            | `NFR-REQ-010`; `CONT-DOM-001` a `CONT-DOM-015`                             |
+| identidad de dispositivo compartido   | `AUTH-DEV-001` a `AUTH-DEV-016`                                            |
+| pantallas y procesos                  | `PROC-SCREEN-001` a `PROC-SCREEN-028`; `PROC-COVER-001` a `PROC-COVER-010` |
+| implementación por aplicación         | paquetes E5 propietarios                                                   |
+| releases, despliegues y rollback      | BLOQUE T                                                                   |
+| certificación transversal y pilotos   | BLOQUE U; `UX-QA-001` a `UX-QA-030`                                        |
 
 Un hallazgo no podrá quedar como “probar en otros dispositivos”; deberá vincularse a una tarea concreta o generar una nueva.
 
@@ -9022,5 +9022,350 @@ NFR-REQ-012   NO INICIADA
 La aprobación explícita de esta tarea congela el contrato inicial de compatibilidad mínima por dispositivo. No certifica ningún modelo, sistema operativo, navegador, WebView, periférico o estación existente.
 
 
-### [ ] NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+### ✅ NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+
+**Estado:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Marcador exacto que reemplaza:** `### [ ] NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5`
+
+**Tarea anterior:** `PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1` — APROBADA
+
+**Siguiente tarea reservada:** `NINGUNA — CIERRE DOCUMENTAL DEL BLOQUE E2`
+
+**Artefactos lógicos contenidos en esta tarea:**
+
+- `NFR-APPROVAL-GATE-CONTRACT-001`;
+- `NFR-BASELINE-MANIFEST-001`;
+- `NFR-PROCESS-FAMILY-COVERAGE-CHECK-001`;
+- `NFR-E5-PACKAGE-OBLIGATION-MATRIX-001`;
+- `NFR-LIFECYCLE-GATE-MATRIX-001`;
+- `NFR-BLOCKING-SEVERITY-PRECEDENCE-001`;
+- `NFR-EXCEPTION-CARRYOVER-CONTRACT-001`;
+- `NFR-CERTIFICATION-BOUNDARY-001`;
+- `NFR-E2-CLOSURE-MANIFEST-001`;
+
+**Naturaleza:** puerta documental final de BLOQUE E2 que consolida y aprueba la línea base no funcional definida por `NFR-REQ-001` a `NFR-REQ-011`, comprueba su cobertura sobre los 69 procesos y establece las obligaciones que deberán materializar los paquetes E5. No certifica implementaciones, dispositivos, tiempos, infraestructura, recuperación, accesibilidad ni producción.
+
+**Cambios en código, migraciones, Supabase, aplicaciones, infraestructura, hardware, red, proveedores, despliegues, pilotos, cutover o producción:** no autorizados por esta tarea.
+
+---
+
+#### 1. Propósito
+
+Cerrar BLOQUE E2 con una línea base no funcional única y utilizable por arquitectura, servicios y planificación de implementación, evitando dos errores opuestos: iniciar E5 sin obligaciones no funcionales o interpretar una definición documental como evidencia de cumplimiento real.
+
+```text
+CONTRATOS NFR APROBADOS
+        +
+COBERTURA DE 69 PROCESOS
+        +
+TRAZABILIDAD HACIA PANTALLAS, ESTACIONES, DATOS Y DEPENDENCIAS
+        =
+BASELINE APROBADA PARA ARQUITECTURA Y PLANIFICACIÓN E5
+        ≠
+IMPLEMENTACIÓN CERTIFICADA, PILOTO AUTORIZADO O PRODUCCIÓN APROBADA
+```
+
+---
+
+#### 2. Fuentes y línea base verificada
+
+- `NFR-REQ-001` a `NFR-REQ-011` — APROBADAS;
+- `VPROC-0001` a `VPROC-0069` — 69 procesos canónicos;
+- 177 pantallas, 449 vínculos proceso-pantalla y contratos de aceptación aprobados;
+- 820 brechas E1 abiertas y encaminadas, 22 referencias de control y 207 paquetes de brecha;
+- 3.228 requisitos de prueba vigentes antes de esta tarea;
+- 354 requisitos NFR históricos consecutivos, `TREQ-PROC-227` a `TREQ-PROC-580`;
+- clasificación vigente: 39 `PARTIAL`, 23 `MANUAL`, 6 `ABSENT`, 1 `DEFERRED`, 0 `COMPLETE`.
+
+```text
+header_git_blob: 80d86733ac6d1b21158a7df9dc9b31548bae1e62
+nfr_owner_git_blob: 42cfa7640335ef6cc0e0e49fcb144a4229565ac9
+base_04A_git_blob: c00c9e9a0d6bb6558a6fbd1330a6360ec3d06e75
+gap_register_git_blob: 5836d3f14dc8857258475210ef47b062c4e66963
+```
+
+---
+
+#### 3. Distinciones obligatorias
+
+| Concepto                | Significado permitido                                             | No significa                                      |
+| ----------------------- | ----------------------------------------------------------------- | ------------------------------------------------- |
+| `BASELINE_NFR_APPROVED` | contratos, perfiles, matrices y guardrails documentales aprobados | comportamiento implementado o probado             |
+| `PASS_FOR_E5_PLANNING`  | arquitectura y paquetes pueden consumir la línea base             | autorización de implementar, pilotear o desplegar |
+| perfil cualitativo      | envolvente inicial para diseñar medición y capacidad              | valor medido, SLO o certificación                 |
+| contingencia definida   | modalidad y límites documentados                                  | contingencia practicada o sostenible              |
+| perfil de dispositivo   | combinación y capacidades requeridas                              | modelo, versión o estación homologados            |
+| requisito identificado  | obligación trazable en `04A`                                      | prueba implementada o verificada                  |
+| excepción registrada    | desviación temporal gobernada                                     | renuncia permanente a la obligación               |
+
+---
+
+#### 4. NFR-BASELINE-MANIFEST-001
+
+| Fuente        | Dimensión                             | Artefactos principales                                                                                                                                                                                                                                                                                          | Procesos | TREQ históricos                      | Estado de implementación |
+| ------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------: | ------------------------------------ | ------------------------ |
+| `NFR-REQ-001` | Criticidad y disponibilidad           | NFR-PROCESS-CRITICALITY-CONTRACT-001; NFR-PROCESS-AVAILABILITY-MATRIX-001                                                                                                                                                                                                                                       |       69 | `TREQ-PROC-227 a TREQ-PROC-246` (20) | `NOT_EVALUATED`          |
+| `NFR-REQ-002` | Volumen, concurrencia y crecimiento   | NFR-WORKLOAD-CONTRACT-001; NFR-PROCESS-WORKLOAD-MATRIX-001; NFR-CAPACITY-EVIDENCE-REGISTER-001                                                                                                                                                                                                                  |       69 | `TREQ-PROC-247 a TREQ-PROC-270` (24) | `NOT_EVALUATED`          |
+| `NFR-REQ-003` | Tiempos máximos de respuesta          | NFR-RESPONSE-TIME-CONTRACT-001; NFR-PROCESS-RESPONSE-MATRIX-001; NFR-TIMEOUT-AND-UNKNOWN-RESULT-POLICY-001                                                                                                                                                                                                      |       69 | `TREQ-PROC-271 a TREQ-PROC-294` (24) | `NOT_EVALUATED`          |
+| `NFR-REQ-004` | Offline y sincronización              | NFR-OFFLINE-SYNC-CONTRACT-001; NFR-PROCESS-OFFLINE-MATRIX-001; NFR-LOCAL-OPERATION-ENVELOPE-001; NFR-SYNC-RECONCILIATION-POLICY-001                                                                                                                                                                             |       69 | `TREQ-PROC-295 a TREQ-PROC-324` (30) | `NOT_EVALUATED`          |
+| `NFR-REQ-005` | Privacidad y sensibilidad             | NFR-PRIVACY-SENSITIVITY-CONTRACT-001; NFR-INFORMATION-HANDLING-MATRIX-001; NFR-PROCESS-PRIVACY-PROFILE-001; NFR-DATA-EXPOSURE-BOUNDARY-001                                                                                                                                                                      |       69 | `TREQ-PROC-325 a TREQ-PROC-354` (30) | `NOT_EVALUATED`          |
+| `NFR-REQ-006` | Trazabilidad y retención              | NFR-TRACEABILITY-RETENTION-CONTRACT-001; NFR-AUDIT-EVENT-ENVELOPE-001; NFR-RETENTION-POLICY-MATRIX-001; NFR-DISPOSITION-CONTROL-001; NFR-PROCESS-TRACEABILITY-PROFILE-001                                                                                                                                       |       69 | `TREQ-PROC-355 a TREQ-PROC-389` (35) | `NOT_EVALUATED`          |
+| `NFR-REQ-007` | Accesibilidad y ergonomía             | NFR-ACCESSIBILITY-ERGONOMICS-CONTRACT-001; NFR-INTERACTION-TARGET-PROFILE-001; NFR-PROCESS-ACCESSIBILITY-PROFILE-001; NFR-ACCESSIBILITY-TEST-MATRIX-001; NFR-ACCESSIBILITY-EXCEPTION-REGISTER-001                                                                                                               |       69 | `TREQ-PROC-390 a TREQ-PROC-424` (35) | `NOT_EVALUATED`          |
+| `NFR-REQ-008` | Hardware, red y periféricos           | NFR-HARDWARE-NETWORK-PERIPHERAL-CONTRACT-001; NFR-STATION-CAPABILITY-PROFILE-001; NFR-NETWORK-SERVICE-PROFILE-001; NFR-PERIPHERAL-OPERATION-CONTRACT-001; NFR-PROCESS-TECHNICAL-DEPENDENCY-MATRIX-001; NFR-TECHNICAL-ACCEPTANCE-MATRIX-001; NFR-HARDWARE-EXCEPTION-REGISTER-001                                 |       69 | `TREQ-PROC-425 a TREQ-PROC-460` (36) | `NOT_EVALUATED`          |
+| `NFR-REQ-009` | Observabilidad, soporte y alertas     | NFR-OBSERVABILITY-SUPPORT-ALERTING-CONTRACT-001; NFR-SERVICE-OBSERVABILITY-PROFILE-001; NFR-PROCESS-OBSERVABILITY-MATRIX-001; NFR-SLI-SLO-REFERENCE-MATRIX-001; NFR-ALERT-CATALOG-001; NFR-SUPPORT-OPERATING-MODEL-001; NFR-RUNBOOK-CATALOG-001; NFR-OBSERVABILITY-EXCEPTION-REGISTER-001                       |       69 | `TREQ-PROC-461 a TREQ-PROC-500` (40) | `NOT_EVALUATED`          |
+| `NFR-REQ-010` | Respaldo, RTO y RPO                   | NFR-BACKUP-RECOVERY-CONTRACT-001; NFR-RECOVERY-OBJECT-INVENTORY-001; NFR-PROCESS-RECOVERY-PROFILE-001; NFR-RTO-RPO-MATRIX-001; NFR-BACKUP-POLICY-MATRIX-001; NFR-RESTORE-RUNBOOK-CATALOG-001; NFR-RECOVERY-EXERCISE-MATRIX-001; NFR-RECOVERY-EXCEPTION-REGISTER-001                                             |       69 | `TREQ-PROC-501 a TREQ-PROC-540` (40) | `NOT_EVALUATED`          |
+| `NFR-REQ-011` | Compatibilidad mínima por dispositivo | NFR-DEVICE-COMPATIBILITY-CONTRACT-001; NFR-DEVICE-PROFILE-CATALOG-001; NFR-APPLICATION-DEVICE-SUPPORT-MATRIX-001; NFR-PROCESS-DEVICE-COMPATIBILITY-MATRIX-001; NFR-RUNTIME-SUPPORT-POLICY-001; NFR-CAPABILITY-DETECTION-CONTRACT-001; NFR-REAL-DEVICE-TEST-MATRIX-001; NFR-COMPATIBILITY-EXCEPTION-REGISTER-001 |       69 | `TREQ-PROC-541 a TREQ-PROC-580` (40) | `NOT_EVALUATED`          |
+
+```text
+11 FAMILIAS APROBADAS
+× 69 PROCESOS
+= 759 INTERSECCIONES PROCESO-FAMILIA REQUERIDAS
+
+TREQ-PROC-227 A TREQ-PROC-580
+= 354 REQUISITOS NFR HISTÓRICOS PRESERVADOS
+```
+
+---
+
+#### 5. Resultado de la puerta
+
+| Campo                            | Resultado                                   |
+| -------------------------------- | ------------------------------------------- |
+| `nfr_gate_status`                | `PASS_FOR_E5_PLANNING`                      |
+| `baseline_status`                | `APPROVED_AND_FROZEN_FOR_DOWNSTREAM_DESIGN` |
+| `implementation_conformance`     | `NOT_EVALUATED`                             |
+| `pilot_authorization`            | `NOT_GRANTED_BY_THIS_TASK`                  |
+| `cutover_authorization`          | `NOT_GRANTED_BY_THIS_TASK`                  |
+| `production_authorization`       | `NOT_GRANTED_BY_THIS_TASK`                  |
+| `new_unrouted_gaps`              | `0`                                         |
+| `process_classification_changes` | `0`                                         |
+| `E2_closure`                     | `DOCUMENTALLY_CLOSED`                       |
+
+La puerta pasa porque las once dimensiones tienen contrato aprobado, cobertura declarada, requisitos de prueba y tareas posteriores. No pasa porque la infraestructura actual haya demostrado cumplimiento.
+
+---
+
+#### 6. Estados permitidos de evaluación posterior
+
+| Estado                    | Uso                                                         |
+| ------------------------- | ----------------------------------------------------------- |
+| `DEFINED_QUALITATIVE`     | perfil documental suficiente para arquitectura inicial      |
+| `MEASUREMENT_PLANNED`     | método, ambiente, responsable y fecha definidos             |
+| `MEASURED`                | valor obtenido con contexto y evidencia reproducible        |
+| `VERIFIED`                | valor y comportamiento aceptados por revisor independiente  |
+| `UNKNOWN_BLOCKING`        | falta un dato o prueba crítica; bloquea la puerta aplicable |
+| `NOT_APPLICABLE_APPROVED` | no aplica con justificación, propietario y revisión         |
+| `EXCEPTION_ACTIVE`        | desviación temporal aprobada, controlada y no vencida       |
+
+Un valor cualitativo puede habilitar diseño. No puede habilitar por sí solo piloto, cutover o producción.
+
+---
+
+#### 7. NFR-E5-PACKAGE-OBLIGATION-MATRIX-001
+
+Todo paquete E5 deberá contener un manifiesto no funcional con, como mínimo:
+
+```text
+package_id
+process_ids[]
+process_versions[]
+minimum_scope_refs[]
+target_scope_refs[]
+screen_ids[]
+station_ids[]
+application_and_repository_refs[]
+data_and_integration_refs[]
+nfr_profile_refs[11]
+critical_stage_overrides[]
+quantitative_targets[]
+measurement_sources[]
+supported_device_combinations[]
+test_requirement_ids[]
+gap_ids[]
+evidence_plan[]
+exceptions[]
+rollback_and_recovery_plan
+observability_and_support_plan
+owner
+independent_reviewer
+gate_status
+```
+
+La ausencia de una dimensión se expresará como `NOT_APPLICABLE_APPROVED`; nunca mediante celda vacía, “pendiente” narrativo o eliminación del campo.
+
+---
+
+#### 8. NFR-LIFECYCLE-GATE-MATRIX-001
+
+| Puerta                   | Evidencia mínima                                                             | Bloqueo obligatorio                                        | Resultado de esta tarea          |
+| ------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------- |
+| arquitectura E3/E4       | baseline cualitativa, dependencias y riesgos                                 | familia NFR ausente o propietario inexistente              | `AUTHORIZED_TO_CONSUME_BASELINE` |
+| definición de paquete E5 | manifiesto completo, medición planificada, TREQ y brechas                    | `UNKNOWN_BLOCKING` sin ruta o dimensión omitida            | `AUTHORIZED_TO_PLAN`             |
+| inicio de implementación | objetivos, pruebas, ambientes, responsables y excepciones                    | severidad crítica sin tratamiento                          | `NOT_AUTHORIZED_BY_THIS_TASK`    |
+| piloto                   | evidencia integrada, personas y dispositivos reales, contingencia practicada | P0/P1, incompatibilidad crítica o privacidad insegura      | `NOT_AUTHORIZED_BY_THIS_TASK`    |
+| cutover                  | paridad, rollback, recuperación, observabilidad y reconciliación             | retorno no probado o fuente competidora no gobernada       | `NOT_AUTHORIZED_BY_THIS_TASK`    |
+| producción               | aceptación independiente, monitoreo post-release y soporte                   | defecto crítico, evidencia vencida o ausencia de respuesta | `NOT_AUTHORIZED_BY_THIS_TASK`    |
+
+---
+
+#### 9. Precedencia y conflictos entre dimensiones
+
+1. Una prohibición de seguridad, privacidad, inocuidad, integridad, retención o recuperación prevalece sobre una mejora de velocidad o conveniencia.
+2. Un override de etapa crítica prevalece sobre el perfil general del proceso.
+3. `UNKNOWN_BLOCKING` prevalece sobre una estimación no demostrada.
+4. El perfil soportado más restrictivo prevalece para la combinación real de dispositivo y runtime.
+5. Una contingencia manual no puede reducir autorización, evidencia, accesibilidad o reconciliación.
+6. Un proveedor externo no puede reducir la responsabilidad ni el criterio de aceptación interno.
+7. Ningún promedio compensará un hard ceiling, un P0/P1, una pérdida de datos o un resultado empresarial desconocido.
+
+---
+
+#### 10. NFR-BLOCKING-SEVERITY-PRECEDENCE-001
+
+| Clase normalizada | Fuentes equivalentes                                                                          | Tratamiento                                                     |
+| ----------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `NFR-B0`          | `A11Y-P0`, `TECH-P0`, `OBS-GAP-P0`, `REC-GAP-P0`, `COMPAT-P0` y condición crítica equivalente | bloquea piloto, cutover o producción afectada                   |
+| `NFR-B1`          | clases P1 y falla material sin alternativa segura                                             | resolver antes de readiness o aprobar control temporal estricto |
+| `NFR-C2`          | clases P2 con alternativa viable                                                              | aceptación condicionada con dueño, vencimiento y monitoreo      |
+| `NFR-P3`          | clases P3 sin efecto material                                                                 | backlog priorizado                                              |
+
+La normalización no elimina la severidad original ni cambia su criterio específico; únicamente permite consolidar gates entre familias.
+
+---
+
+#### 11. NFR-EXCEPTION-CARRYOVER-CONTRACT-001
+
+Toda excepción deberá conservar:
+
+```text
+exception_id
+source_nfr_family
+exact_scope
+reason
+risk_and_severity
+compensating_control
+affected_population_and_sites
+owner
+approver
+starts_at
+expires_at
+closure_task
+monitoring
+exit_criterion
+evidence_refs[]
+```
+
+No se permite excepción indefinida, heredada por costumbre, sustentada solo en “siempre se ha hecho así” ni aplicada a una versión, sede o combinación distinta de la aprobada.
+
+---
+
+#### 12. Tratamiento de modalidades especiales
+
+| Modalidad               | Obligación                                                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| proceso manual          | aplicar autoridad, privacidad, evidencia, accesibilidad, continuidad, recuperación y aceptación mediante procedimiento controlado |
+| proveedor externo       | conservar contrato, límites, observabilidad, reconciliación, contingencia, evidencia y salida                                     |
+| infraestructura parcial | no declarar cumplimiento del proceso; medir únicamente la capacidad realmente demostrada                                          |
+| proceso diferido        | mantener controles mínimos de inactividad y exigir puerta formal de reactivación                                                  |
+| dispositivo compartido  | aislar actor, contexto, datos locales, colas, periféricos y cambio de área                                                        |
+| operación offline       | mantener resultado local separado del autoritativo y revalidar antes de sincronizar                                               |
+
+`VPROC-0065` continúa diferido. Esta puerta no autoriza su activación, captura de desempeño ni tratamiento de datos sensibles.
+
+---
+
+#### 13. NFR-CERTIFICATION-BOUNDARY-001
+
+La evidencia de cumplimiento deberá identificar versión, ambiente, carga, dispositivo, datos, actor, escenario, resultado, defectos y aprobadores. Se rechazará:
+
+- certificación basada únicamente en documento, captura, demo o build exitoso;
+- prueba ejecutada en otra versión, sede, perfil, dataset o runtime no equivalente;
+- implementador como único aprobador;
+- promedio que oculta p95, p99, hard ceiling, backlog o fallo crítico;
+- prueba emulada cuando la capacidad física o periférica exige dispositivo real;
+- evidencia sin privacidad, retención, integridad o ubicación reproducible;
+- aceptación heredada después de un cambio material;
+- cierre de paquete con brecha crítica o excepción vencida.
+
+---
+
+#### 14. Brechas y realimentación
+
+Esta tarea no crea brechas nuevas. Las 820 brechas del registro E1 continúan abiertas y encaminadas. Todo hallazgo nuevo durante E3, E4, E5, piloto, cutover o producción deberá incorporarse al registro canónico E1 en el mismo cambio documental, con propietario, momento, tarea, paquete y evidencia de cierre.
+
+```text
+PENDIENTE NARRATIVO = PROHIBIDO
+HALLAZGO NUEVO = GAP E1 O VÍNCULO EXPLÍCITO EN EL MISMO CAMBIO
+```
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo:
+
+```text
+TREQ-PROC-1511 a TREQ-PROC-1560
+```
+
+Protegen la integridad de la baseline, la cobertura de 759 intersecciones, la frontera de certificación, el manifiesto E5, los gates por ciclo de vida, las once dimensiones NFR, la precedencia, las excepciones, los procesos manuales y externos, la realimentación de brechas y la actualización segura del `04A`.
+
+---
+
+#### 16. Validaciones documentales obligatorias
+
+- exactamente 11 tareas NFR fuente aprobadas;
+- exactamente 69 procesos por familia;
+- exactamente 759 intersecciones proceso-familia requeridas;
+- exactamente 354 TREQ NFR históricos entre `227` y `580`;
+- exactamente 50 TREQ nuevos entre `1511` y `1560`;
+- 3.228 filas históricas preservadas;
+- 3.278 filas finales con catorce columnas;
+- cero IDs duplicados;
+- cero relaciones no resolubles;
+- cero autorreferencias;
+- cero gaps nuevos sin ruta;
+- cero cambios de clasificación de procesos;
+- UTF-8, LF, newline final y ausencia de espacios finales.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [ ] Los once contratos NFR aprobados aparecen en el manifiesto con artefactos y rangos TREQ.
+- [ ] Los 69 procesos quedan cubiertos por las once familias sin omisiones.
+- [ ] La puerta distingue baseline aprobada, planificación E5, implementación, piloto, cutover y producción.
+- [ ] El resultado de esta tarea no certifica ninguna implementación o dispositivo.
+- [ ] El manifiesto obligatorio de paquete E5 contiene alcance, perfiles, valores, pruebas, brechas, evidencia, excepciones, recuperación y responsables.
+- [ ] Las bandas cualitativas no se presentan como mediciones reales.
+- [ ] Los valores críticos desconocidos bloquean la puerta aplicable.
+- [ ] La precedencia impide degradar seguridad, privacidad, integridad, evidencia o continuidad para cumplir rendimiento o conveniencia.
+- [ ] Las excepciones tienen propietario, control, vencimiento, tarea y criterio de salida.
+- [ ] Los procesos manuales, externos, offline y compartidos conservan requisitos equivalentes.
+- [ ] VPROC-0065 permanece diferido e inactivo.
+- [ ] No se crean brechas nuevas y toda futura brecha tiene ruta de retorno a E1.
+- [ ] Se incorporan TREQ-PROC-1511 a TREQ-PROC-1560 al 04A completo.
+- [ ] No se modifica código, Supabase, infraestructura, hardware, proveedores ni producción.
+- [ ] BLOQUE E2 queda cerrado documentalmente y no existe siguiente tarea interna reservada.
+
+---
+
+#### 18. NFR-E2-CLOSURE-MANIFEST-001
+
+```text
+NFR-REQ-001 A NFR-REQ-011 = APROBADAS
+NFR-REQ-012 = APROBADA
+NFR_GATE_STATUS = PASS_FOR_E5_PLANNING
+IMPLEMENTATION_CONFORMANCE = NOT_EVALUATED
+PILOT_AUTHORIZATION = NOT_GRANTED
+CUTOVER_AUTHORIZATION = NOT_GRANTED
+PRODUCTION_AUTHORIZATION = NOT_GRANTED
+BLOQUE E2 = CERRADO DOCUMENTALMENTE
+SIGUIENTE TAREA INTERNA = NINGUNA
+```
+
+La continuidad posterior deberá seguir el orden canónico de arquitectura, servicios, paquetes, pruebas, readiness y certificación. Esta tarea no adelanta ninguna de esas ejecuciones.
 

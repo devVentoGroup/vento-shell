@@ -66,6 +66,19 @@ function extractTaskIds(value) {
     .filter((id) => !id.startsWith('TREQ-'));
 }
 
+function findUnknownCanonicalTaskIds(value, tasks) {
+  const canonicalPrefixes = new Set(
+    [...tasks.keys()].map((id) => id.replace(/-\d{3}$/, ''))
+  );
+
+  return [...new Set(
+    extractTaskIds(value).filter((id) => {
+      const prefix = id.replace(/-\d{3}$/, '');
+      return canonicalPrefixes.has(prefix) && !tasks.has(id);
+    })
+  )];
+}
+
 function expandTreqReferences(value) {
   const references = new Set();
   const rangeRegex = /TREQ-([A-Z]+)-(\d{3,})`?\s+a\s+`?TREQ-\1-(\d{3,})/g;
@@ -336,6 +349,10 @@ export function validateTreqRegistrySource(source, context) {
     for (const field of ['Origen', 'Tarea responsable']) {
       const known = extractTaskIds(row[field]).filter((id) => context.tasks.has(id));
       if (known.length === 0) errors.push(`${row.ID}: "${field}" no referencia ninguna tarea canónica existente.`);
+      const unknown = findUnknownCanonicalTaskIds(row[field], context.tasks);
+      if (unknown.length > 0) {
+        errors.push(`${row.ID}: "${field}" referencia tareas canónicas inexistentes: ${unknown.join(', ')}.`);
+      }
     }
     if (/pendiente/i.test(row.Paquete)
       && extractTaskIds(row['Tarea responsable']).every((id) => !context.tasks.has(id))) {
@@ -361,6 +378,17 @@ export function validateTreqRegistrySource(source, context) {
       const task = context.tasks.get(proposal[1].toUpperCase());
       if (task?.state === 'APROBADA') {
         errors.push(`${row.ID}: la evidencia sigue llamando propuesta a la tarea aprobada ${task.id}.`);
+      }
+    }
+    if (/\b(?:definid[oa]s?\s+en\s+propuesta|regla\s+de\s+\w+\s+propuesta|aprobación\s+pendiente)\b/i.test(row.Evidencia)) {
+      const approvedSources = extractTaskIds(`${row.Origen} ${row['Tarea responsable']}`)
+        .map((id) => context.tasks.get(id))
+        .filter((task) => task?.state === 'APROBADA');
+      if (approvedSources.length > 0) {
+        errors.push(
+          `${row.ID}: la evidencia conserva lenguaje de propuesta o aprobación pendiente `
+          + `para tareas ya aprobadas: ${[...new Set(approvedSources.map((task) => task.id))].join(', ')}.`
+        );
       }
     }
   }

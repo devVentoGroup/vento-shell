@@ -5484,9 +5484,9 @@ Protegen respectivamente:
 
 #### 41. Resultado y continuidad
 
-**Estado propuesto:** PROPUESTA PARA APROBACIÓN
+**Estado confirmado:** APROBADA
 
-Al aprobarse:
+Como resultado de la aprobación:
 
 - este bloque será el contrato canónico de evaluación, decisión, oferta y
   pre-registro;
@@ -6922,9 +6922,9 @@ Esta tarea no:
 
 #### 44. Resultado y continuidad
 
-**Estado propuesto:** PROPUESTA PARA APROBACIÓN
+**Estado confirmado:** APROBADA
 
-Al aprobarse:
+Como resultado de la aprobación:
 
 - este bloque será el contrato canónico de handoff TALENTO–VISO–ANIMA;
 - el RPC legacy quedará formalmente clasificado como diseño parcial sujeto a

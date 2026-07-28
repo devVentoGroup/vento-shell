@@ -2672,7 +2672,7 @@ No habilita implementación, navegación, integración, migración, cambios en S
 
 ### ✅ PROC-CAT-007 — Definir actor que inicia cada proceso
 
-**Estado:** PAPROBADA 
+**Estado:** APROBADA
 **Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal  
 **Dependencias obligatorias:** `E1-GATE-001` — APROBADA; `PROC-CAT-001` a `PROC-CAT-006` — APROBADAS  
 **Línea base recibida:** `PROC-CANONICAL-ID-REGISTRY-001`, `PROC-BUSINESS-PURPOSE-REGISTRY-001`, `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` y `PROC-APPLICATION-CONSUMER-REGISTRY-001`  

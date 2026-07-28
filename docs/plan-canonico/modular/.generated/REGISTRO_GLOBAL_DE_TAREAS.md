@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **341** |
+| Aprobadas | **342** |
 | En propuesta | **0** |
-| No iniciadas | **1234** |
+| No iniciadas | **1233** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **21.65% (341/1575)** |
+| Porcentaje de completamiento | **21.71% (342/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 | ✅ APROBADA |
-| Tarea actual | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 | ⬜ NO INICIADA |
+| Última aprobada | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 | ✅ APROBADA |
+| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
 
 ## Registro completo
 
@@ -346,7 +346,7 @@
 | ✅ APROBADA | `NFR-REQ-009` | Definir observabilidad, soporte y alertas | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-010` | Definir respaldo, RTO y RPO | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-011` | Definir compatibilidad mínima por dispositivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
-| ⬜ NO INICIADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
+| ✅ APROBADA | `NFR-REQ-012` | Aprobar requisitos no funcionales antes de E5 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `UX-BASE-001` | Separar experiencia operativa y administrativa | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
 | ✅ APROBADA | `UX-BASE-002` | Mostrar primero la tarea actual del trabajador | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
 | ✅ APROBADA | `UX-BASE-003` | Evitar navegación basada en nombres técnicos | `bloques/E2_PROCESOS_Y_EXPERIENCIA/08_PRINCIPIOS_DE_EXPERIENCIA.md` |
@@ -1434,56 +1434,56 @@
 | ⬜ NO INICIADA | `INT-EXT-018` | Definir contingencia ante indisponibilidad del proveedor | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-EXT-019` | Definir retiro de integración y revocación de credenciales | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-EXT-020` | Prohibir credenciales compartidas entre integraciones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-WORK-001` | VISO publica turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-WORK-002` | ANIMA presenta turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-WORK-003` | ANIMA registra asistencia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-WORK-004` | Supabase confirma contexto efectivo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-WORK-005` | SHELL y aplicaciones consumen contexto | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROC-001` | ORIGO aprueba orden de compra | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROC-002` | ORIGO registra recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROC-003` | NEXO crea entrada de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROC-004` | NUMERA recibe evento económico | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROC-005` | Evitar recepción duplicada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROD-001` | FOGO solicita o reserva insumos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROD-002` | NEXO registra consumo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROD-003` | FOGO finaliza lote | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROD-004` | NEXO registra producto terminado | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-PROD-005` | Resolver producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-001` | Definir contrato para que VISO publique el turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-002` | Definir contrato para que ANIMA presente el turno | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-003` | Definir contrato para que ANIMA registre la asistencia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-004` | Definir confirmación autoritativa del contexto efectivo en Supabase | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-WORK-005` | Definir consumo del contexto por SHELL y las aplicaciones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-001` | Definir contrato para que ORIGO apruebe la orden de compra | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-002` | Definir contrato para que ORIGO registre la recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-003` | Definir contrato para que NEXO cree la entrada de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-004` | Definir contrato para que NUMERA reciba el evento económico | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROC-005` | Definir control que evite una recepción duplicada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-001` | Definir contrato para que FOGO solicite o reserve insumos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-002` | Definir contrato para que NEXO registre el consumo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-003` | Definir contrato para que FOGO finalice el lote | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-004` | Definir contrato para que NEXO registre el producto terminado | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-PROD-005` | Definir tratamiento de producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-001` | Auditar documentación, endpoints, webhooks y límites del POS vigente | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-003` | Definir al POS vigente como fuente temporal del hecho de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-004` | Solicitar credencial independiente, revocable e inicialmente de solo lectura | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-004` | Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-005` | Definir contrato canónico de venta y línea de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-006` | Importar encabezados, líneas, estados y timestamps | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-007` | Importar descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-008` | Importar anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-009` | Conservar payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-010` | Mapear empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-011` | Mapear producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-012` | Enviar líneas sin mapeo a cuarentena sin descontar inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-006` | Definir importación de encabezados, líneas, estados y timestamps | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-007` | Definir importación de descuentos, impuestos, propinas y medios de pago | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-008` | Definir importación de anulaciones, devoluciones y reembolsos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-009` | Definir conservación de payload original, versión, hash y fecha de recepción | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-010` | Definir mapeo de empresa, sede, terminal y caja externa | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-011` | Definir mapeo de producto externo, producto Vento, presentación y receta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-012` | Definir cuarentena de líneas sin mapeo y sin descuento de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-013` | Definir idempotencia por sistema, venta y línea externa | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-014` | Definir webhook cuando exista y polling de conciliación como respaldo | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-015` | Emitir evento canónico de venta validada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-016` | Producir salida de inventario en NEXO exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-017` | Producir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-018` | Producir evento de fidelización para PASS cuando corresponda | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-019` | Compensar anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-020` | Ejecutar conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-021` | Ejecutar piloto sin efectos sobre inventario ni finanzas | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-022` | Ejecutar piloto controlado con efectos habilitados | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-015` | Definir emisión del evento canónico de venta validada | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-016` | Definir salida de inventario en NEXO exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-017` | Definir evento económico para NUMERA exactamente una vez | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-018` | Definir evento de fidelización para PASS cuando corresponda | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-019` | Definir compensación de anulaciones y devoluciones sin borrar historia | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-020` | Definir conciliación diaria entre POS y efectos internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-021` | Diseñar piloto sin efectos sobre inventario ni finanzas | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-022` | Diseñar piloto controlado con efectos habilitados | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-POS-023` | Definir transición futura desde POS externo hacia PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-POS-024` | Revocar o reducir credenciales cuando PULSO asuma la fuente | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-001` | PULSO registra venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-002` | PULSO emite el mismo contrato canónico utilizado durante la transición | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-003` | NEXO registra salida de inventario | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-004` | NUMERA recibe evento de venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-005` | PASS acumula puntos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-006` | PASS procesa redención | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-007` | Evitar efectos duplicados por reintento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-008` | Conciliar convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-POS-024` | Definir revocación o reducción de credenciales cuando PULSO asuma la fuente | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-001` | Definir contrato para que PULSO registre la venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-002` | Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-003` | Definir registro de salida de inventario en NEXO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-004` | Definir recepción del evento de venta en NUMERA | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-005` | Definir acumulación de puntos en PASS | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-006` | Definir procesamiento de redención en PASS | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-007` | Definir control contra efectos duplicados por reintento | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-008` | Definir conciliación de convivencia entre POS externo y PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-SALES-009` | Definir corte por sede, terminal y fecha efectiva | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-010` | Impedir que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
-| ⬜ NO INICIADA | `INT-SALES-011` | Retirar adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-010` | Definir control que impida que ambas fuentes emitan la misma venta | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
+| ⬜ NO INICIADA | `INT-SALES-011` | Definir retiro del adaptador externo sin modificar consumidores internos | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-MKT-001` | Definir campañas solo después de aprobar AURA | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |
 | ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/00_BLOQUE_X.md` |

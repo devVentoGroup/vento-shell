@@ -181,6 +181,22 @@ test('rechaza evidencia que llama propuesta a una tarea aprobada', () => {
   })), /sigue llamando propuesta/);
 });
 
+test('rechaza extremos inexistentes dentro de un rango de tareas canónicas', () => {
+  assert.match(errorsFor(registry({
+    rowOverrides: {
+      'Tarea responsable': '`TASK-BASE-001` a `TASK-BASE-002`',
+    },
+  })), /tareas canónicas inexistentes: TASK-BASE-002/);
+});
+
+test('rechaza lenguaje residual de propuesta para una tarea fuente aprobada', () => {
+  assert.match(errorsFor(registry({
+    rowOverrides: {
+      Evidencia: 'Regla de transferencia propuesta; aprobación pendiente',
+    },
+  })), /conserva lenguaje de propuesta o aprobación pendiente/);
+});
+
 test('rechaza una última tarea incoherente con la secuencia activa', () => {
   assert.match(errorsFor(registry({
     summaryOverrides: { latest: '`OTHER-BASE-001`' },

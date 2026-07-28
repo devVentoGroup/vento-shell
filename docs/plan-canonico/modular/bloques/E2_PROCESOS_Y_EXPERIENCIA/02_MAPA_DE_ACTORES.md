@@ -2800,11 +2800,11 @@ El detalle completo se incorpora únicamente en `04A_REGISTRO_CANONICO_DE_REQUIS
 APROBADA
 ```
 
-Al aprobarse:
+Como resultado de la aprobación:
 
-- `PROC-HYBRID-PROCESS-CLASSIFICATION-001` será el contrato canónico de hibridación;
+- `PROC-HYBRID-PROCESS-CLASSIFICATION-001` queda como contrato canónico de hibridación;
 - `PROC-ACTOR-006` permanecerá aprobada;
-- los requisitos `TREQ-PROC-167` a `TREQ-PROC-174` quedarán identificados;
+- los requisitos `TREQ-PROC-167` a `TREQ-PROC-174` quedan identificados;
 - la continuidad será exclusivamente:
 
 ```text

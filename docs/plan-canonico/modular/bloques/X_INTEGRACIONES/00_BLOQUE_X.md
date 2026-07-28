@@ -22,6 +22,17 @@ REGLA GENERAL
 Una integración no deberá obligar al trabajador a registrar nuevamente
 la información que ya produjo una aplicación propietaria.
 
+FRONTERA DE FASE
+
+Antes de BLOQUE E3, todas las tareas de BLOQUE X son documentales: definen
+contratos objetivo, responsabilidades, controles, secuencias, planes de prueba,
+transición y retiro. Los verbos de negocio describen el comportamiento que
+deberá implementar posteriormente el paquete propietario; no autorizan crear
+credenciales, llamar proveedores, modificar Supabase, sincronizar datos,
+producir efectos internos, ejecutar pilotos, hacer cutover ni operar en
+producción. La implementación y la evidencia real corresponden a E5, BLOQUE R,
+`SHELL-CI-020` a `SHELL-CI-024` y las puertas aplicables.
+
 ### [ ] INT-APP-001 — Crear catálogo de eventos empresariales
 ### [ ] INT-APP-002 — Definir aplicación emisora de cada evento
 ### [ ] INT-APP-003 — Definir aplicaciones consumidoras
@@ -83,27 +94,27 @@ Reglas:
 
 VISO → ANIMA → CONTEXTO
 
-### [ ] INT-WORK-001 — VISO publica turno
-### [ ] INT-WORK-002 — ANIMA presenta turno
-### [ ] INT-WORK-003 — ANIMA registra asistencia
-### [ ] INT-WORK-004 — Supabase confirma contexto efectivo
-### [ ] INT-WORK-005 — SHELL y aplicaciones consumen contexto
+### [ ] INT-WORK-001 — Definir contrato para que VISO publique el turno
+### [ ] INT-WORK-002 — Definir contrato para que ANIMA presente el turno
+### [ ] INT-WORK-003 — Definir contrato para que ANIMA registre la asistencia
+### [ ] INT-WORK-004 — Definir confirmación autoritativa del contexto efectivo en Supabase
+### [ ] INT-WORK-005 — Definir consumo del contexto por SHELL y las aplicaciones
 
 ORIGO → NEXO → NUMERA
 
-### [ ] INT-PROC-001 — ORIGO aprueba orden de compra
-### [ ] INT-PROC-002 — ORIGO registra recepción
-### [ ] INT-PROC-003 — NEXO crea entrada de inventario
-### [ ] INT-PROC-004 — NUMERA recibe evento económico
-### [ ] INT-PROC-005 — Evitar recepción duplicada
+### [ ] INT-PROC-001 — Definir contrato para que ORIGO apruebe la orden de compra
+### [ ] INT-PROC-002 — Definir contrato para que ORIGO registre la recepción
+### [ ] INT-PROC-003 — Definir contrato para que NEXO cree la entrada de inventario
+### [ ] INT-PROC-004 — Definir contrato para que NUMERA reciba el evento económico
+### [ ] INT-PROC-005 — Definir control que evite una recepción duplicada
 
 FOGO ↔ NEXO
 
-### [ ] INT-PROD-001 — FOGO solicita o reserva insumos
-### [ ] INT-PROD-002 — NEXO registra consumo
-### [ ] INT-PROD-003 — FOGO finaliza lote
-### [ ] INT-PROD-004 — NEXO registra producto terminado
-### [ ] INT-PROD-005 — Resolver producción insuficiente para remisiones
+### [ ] INT-PROD-001 — Definir contrato para que FOGO solicite o reserve insumos
+### [ ] INT-PROD-002 — Definir contrato para que NEXO registre el consumo
+### [ ] INT-PROD-003 — Definir contrato para que FOGO finalice el lote
+### [ ] INT-PROD-004 — Definir contrato para que NEXO registre el producto terminado
+### [ ] INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
 
 POS EXTERNO → CONTRATO CANÓNICO DE VENTAS → NEXO / NUMERA / PASS
 
@@ -136,27 +147,27 @@ El POS externo no será propietario de:
 ### [ ] INT-POS-001 — Auditar documentación, endpoints, webhooks y límites del POS vigente
 ### [ ] INT-POS-002 — Confirmar información disponible mediante API
 ### [ ] INT-POS-003 — Definir al POS vigente como fuente temporal del hecho de venta
-### [ ] INT-POS-004 — Solicitar credencial independiente, revocable e inicialmente de solo lectura
+### [ ] INT-POS-004 — Definir requisitos y procedimiento de una credencial independiente, revocable e inicialmente de solo lectura
 ### [ ] INT-POS-005 — Definir contrato canónico de venta y línea de venta
-### [ ] INT-POS-006 — Importar encabezados, líneas, estados y timestamps
-### [ ] INT-POS-007 — Importar descuentos, impuestos, propinas y medios de pago
-### [ ] INT-POS-008 — Importar anulaciones, devoluciones y reembolsos
-### [ ] INT-POS-009 — Conservar payload original, versión, hash y fecha de recepción
-### [ ] INT-POS-010 — Mapear empresa, sede, terminal y caja externa
-### [ ] INT-POS-011 — Mapear producto externo, producto Vento, presentación y receta
-### [ ] INT-POS-012 — Enviar líneas sin mapeo a cuarentena sin descontar inventario
+### [ ] INT-POS-006 — Definir importación de encabezados, líneas, estados y timestamps
+### [ ] INT-POS-007 — Definir importación de descuentos, impuestos, propinas y medios de pago
+### [ ] INT-POS-008 — Definir importación de anulaciones, devoluciones y reembolsos
+### [ ] INT-POS-009 — Definir conservación de payload original, versión, hash y fecha de recepción
+### [ ] INT-POS-010 — Definir mapeo de empresa, sede, terminal y caja externa
+### [ ] INT-POS-011 — Definir mapeo de producto externo, producto Vento, presentación y receta
+### [ ] INT-POS-012 — Definir cuarentena de líneas sin mapeo y sin descuento de inventario
 ### [ ] INT-POS-013 — Definir idempotencia por sistema, venta y línea externa
 ### [ ] INT-POS-014 — Definir webhook cuando exista y polling de conciliación como respaldo
-### [ ] INT-POS-015 — Emitir evento canónico de venta validada
-### [ ] INT-POS-016 — Producir salida de inventario en NEXO exactamente una vez
-### [ ] INT-POS-017 — Producir evento económico para NUMERA exactamente una vez
-### [ ] INT-POS-018 — Producir evento de fidelización para PASS cuando corresponda
-### [ ] INT-POS-019 — Compensar anulaciones y devoluciones sin borrar historia
-### [ ] INT-POS-020 — Ejecutar conciliación diaria entre POS y efectos internos
-### [ ] INT-POS-021 — Ejecutar piloto sin efectos sobre inventario ni finanzas
-### [ ] INT-POS-022 — Ejecutar piloto controlado con efectos habilitados
+### [ ] INT-POS-015 — Definir emisión del evento canónico de venta validada
+### [ ] INT-POS-016 — Definir salida de inventario en NEXO exactamente una vez
+### [ ] INT-POS-017 — Definir evento económico para NUMERA exactamente una vez
+### [ ] INT-POS-018 — Definir evento de fidelización para PASS cuando corresponda
+### [ ] INT-POS-019 — Definir compensación de anulaciones y devoluciones sin borrar historia
+### [ ] INT-POS-020 — Definir conciliación diaria entre POS y efectos internos
+### [ ] INT-POS-021 — Diseñar piloto sin efectos sobre inventario ni finanzas
+### [ ] INT-POS-022 — Diseñar piloto controlado con efectos habilitados
 ### [ ] INT-POS-023 — Definir transición futura desde POS externo hacia PULSO
-### [ ] INT-POS-024 — Revocar o reducir credenciales cuando PULSO asuma la fuente
+### [ ] INT-POS-024 — Definir revocación o reducción de credenciales cuando PULSO asuma la fuente
 
 Flujo obligatorio:
 
@@ -189,17 +200,17 @@ Reglas:
 
 PULSO → CONTRATO CANÓNICO DE VENTAS → NEXO / NUMERA / PASS
 
-### [ ] INT-SALES-001 — PULSO registra venta
-### [ ] INT-SALES-002 — PULSO emite el mismo contrato canónico utilizado durante la transición
-### [ ] INT-SALES-003 — NEXO registra salida de inventario
-### [ ] INT-SALES-004 — NUMERA recibe evento de venta
-### [ ] INT-SALES-005 — PASS acumula puntos
-### [ ] INT-SALES-006 — PASS procesa redención
-### [ ] INT-SALES-007 — Evitar efectos duplicados por reintento
-### [ ] INT-SALES-008 — Conciliar convivencia entre POS externo y PULSO
+### [ ] INT-SALES-001 — Definir contrato para que PULSO registre la venta
+### [ ] INT-SALES-002 — Definir emisión en PULSO del mismo contrato canónico utilizado durante la transición
+### [ ] INT-SALES-003 — Definir registro de salida de inventario en NEXO
+### [ ] INT-SALES-004 — Definir recepción del evento de venta en NUMERA
+### [ ] INT-SALES-005 — Definir acumulación de puntos en PASS
+### [ ] INT-SALES-006 — Definir procesamiento de redención en PASS
+### [ ] INT-SALES-007 — Definir control contra efectos duplicados por reintento
+### [ ] INT-SALES-008 — Definir conciliación de convivencia entre POS externo y PULSO
 ### [ ] INT-SALES-009 — Definir corte por sede, terminal y fecha efectiva
-### [ ] INT-SALES-010 — Impedir que ambas fuentes emitan la misma venta
-### [ ] INT-SALES-011 — Retirar adaptador externo sin modificar consumidores internos
+### [ ] INT-SALES-010 — Definir control que impida que ambas fuentes emitan la misma venta
+### [ ] INT-SALES-011 — Definir retiro del adaptador externo sin modificar consumidores internos
 
 AURA ↔ PASS / PULSO
 
