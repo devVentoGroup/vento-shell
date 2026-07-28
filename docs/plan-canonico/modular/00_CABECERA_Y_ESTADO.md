@@ -20,11 +20,11 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **342** |
+| Tareas aprobadas | **343** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1233** |
+| Tareas no iniciadas | **1232** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **21.71% (342/1575)** |
+| Porcentaje de completamiento | **21.78% (343/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
