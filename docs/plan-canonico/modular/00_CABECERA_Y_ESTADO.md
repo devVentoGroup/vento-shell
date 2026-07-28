@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **343** |
+| Tareas aprobadas | **344** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1232** |
+| Tareas no iniciadas | **1231** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **21.78% (343/1575)** |
+| Porcentaje de completamiento | **21.84% (344/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5** |
-| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 101 de 101 aprobadas; secuencia documental completa** |
+| Última tarea aprobada | **AUTH-UI-002 — Inventariar todas las rutas de FOGO** |
+| Tarea actual | **AUTH-UI-003 — Inventariar todas las rutas de ORIGO** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **AUTH-UI-004 — Inventariar todas las rutas de PULSO** |
+| Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
+| Progreso del bloque | **BLOQUE I: 2 de 29 aprobadas; AUTH-UI-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 |
-| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | NINGUNA — SECUENCIA DOCUMENTAL COMPLETA |
+| Última aprobada | `AUTH-UI-002` — Inventariar todas las rutas de FOGO |
+| Tarea actual | `AUTH-UI-003` — Inventariar todas las rutas de ORIGO — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-004` — Inventariar todas las rutas de PULSO |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **101 DE 101 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
+| BLOQUE I | **2 DE 29 APROBADAS — ACTUAL AUTH-UI-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,10 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+AUTH-UI-002 — Inventariar todas las rutas de FOGO
         ↓
-SECUENCIA DOCUMENTAL COMPLETA
+TAREA ACTUAL
+AUTH-UI-003 — Inventariar todas las rutas de ORIGO
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-004 — Inventariar todas las rutas de PULSO
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 101 de 101 tareas aprobadas
+BLOQUE I — 2 de 29 tareas aprobadas
 ```

@@ -10,18 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **343** |
+| Aprobadas | **344** |
 | En propuesta | **0** |
-| No iniciadas | **1232** |
+| No iniciadas | **1231** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **21.78% (343/1575)** |
+| Porcentaje de completamiento | **21.84% (344/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 | ✅ APROBADA |
-| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
+| Última aprobada | `AUTH-UI-002` — Inventariar todas las rutas de FOGO | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-003` — Inventariar todas las rutas de ORIGO | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-004` — Inventariar todas las rutas de PULSO | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -789,7 +790,7 @@
 | ⬜ NO INICIADA | `SHELL-APP-019` | Probar navegación por rol | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
 | ⬜ NO INICIADA | `SHELL-APP-020` | Probar navegación con bloqueos reales | `bloques/H2_SHELL_APP/00_BLOQUE_H2.md` |
 | ✅ APROBADA | `AUTH-UI-001` | Inventariar todas las rutas de NEXO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
-| ⬜ NO INICIADA | `AUTH-UI-002` | Inventariar todas las rutas de FOGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
+| ✅ APROBADA | `AUTH-UI-002` | Inventariar todas las rutas de FOGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-003` | Inventariar todas las rutas de ORIGO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-004` | Inventariar todas las rutas de PULSO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |
 | ⬜ NO INICIADA | `AUTH-UI-005` | Inventariar todas las rutas de VISO | `bloques/I_NAVEGACION_Y_PANTALLAS/00_BLOQUE_I.md` |

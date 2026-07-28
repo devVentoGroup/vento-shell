@@ -1,84 +1,14 @@
 {
   "schema_version": 1,
-  "sequence_id": "E2-DOCUMENTAL-001",
-  "block_code": "BLOQUE E2",
-  "block_title": "Arquitectura funcional, procesos y experiencia transversal",
-  "previous_task_id": "PROC-CAT-020",
+  "sequence_id": "I-DOCUMENTAL-001",
+  "block_code": "BLOQUE I",
+  "block_title": "Navegación, pantallas y autorización de vistas",
+  "previous_task_id": "NFR-REQ-012",
   "segments": [
     {
-      "prefix": "PROC-ACTOR",
+      "prefix": "AUTH-UI",
       "from": 1,
-      "to": 10
-    },
-    {
-      "prefix": "UX-STATION",
-      "from": 1,
-      "to": 1
-    },
-    {
-      "prefix": "OPS-CAN",
-      "from": 1,
-      "to": 1
-    },
-    {
-      "prefix": "OPS-LOG",
-      "from": 1,
-      "to": 1
-    },
-    {
-      "prefix": "OPS-B2B",
-      "from": 1,
-      "to": 1
-    },
-    {
-      "prefix": "CAP-TAL",
-      "from": 1,
-      "to": 6
-    },
-    {
-      "prefix": "UX-BASE",
-      "from": 1,
-      "to": 15
-    },
-    {
-      "prefix": "NFR-REQ",
-      "from": 1,
-      "to": 11
-    },
-    {
-      "prefix": "UX-STATION",
-      "from": 2,
-      "to": 7
-    },
-    {
-      "prefix": "UX-STATION",
-      "from": 10,
-      "to": 12
-    },
-    {
-      "prefix": "UX-STATION",
-      "from": 8,
-      "to": 9
-    },
-    {
-      "prefix": "UX-ADMIN",
-      "from": 1,
-      "to": 5
-    },
-    {
-      "prefix": "PROC-SCREEN",
-      "from": 1,
-      "to": 28
-    },
-    {
-      "prefix": "PROC-COVER",
-      "from": 1,
-      "to": 10
-    },
-    {
-      "prefix": "NFR-REQ",
-      "from": 12,
-      "to": 12
+      "to": 29
     }
   ]
 }
