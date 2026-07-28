@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **325** |
+| Tareas aprobadas | **326** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1250** |
+| Tareas no iniciadas | **1249** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-SCREEN-022 — Definir información sensible visible** |
-| Tarea actual | **PROC-SCREEN-023 — Definir permiso de lectura** |
+| Última tarea aprobada | **PROC-SCREEN-023 — Definir permiso de lectura** |
+| Tarea actual | **PROC-SCREEN-024 — Definir permisos de cada acción** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-SCREEN-024 — Definir permisos de cada acción** |
+| Siguiente tarea | **PROC-SCREEN-025 — Vincular cada acción con Server Action, API o RPC** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 84 de 101 aprobadas; PROC-SCREEN-023 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 85 de 101 aprobadas; PROC-SCREEN-024 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-SCREEN-022` — Definir información sensible visible |
-| Tarea actual | `PROC-SCREEN-023` — Definir permiso de lectura — **NO INICIADA** |
-| Siguiente tarea | `PROC-SCREEN-024` — Definir permisos de cada acción |
+| Última aprobada | `PROC-SCREEN-023` — Definir permiso de lectura |
+| Tarea actual | `PROC-SCREEN-024` — Definir permisos de cada acción — **NO INICIADA** |
+| Siguiente tarea | `PROC-SCREEN-025` — Vincular cada acción con Server Action, API o RPC |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **84 DE 101 APROBADAS — ACTUAL PROC-SCREEN-023** |
+| BLOQUE E2 | **85 DE 101 APROBADAS — ACTUAL PROC-SCREEN-024** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-SCREEN-022 — Definir información sensible visible
-        ↓
-TAREA ACTUAL
 PROC-SCREEN-023 — Definir permiso de lectura
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PROC-SCREEN-024 — Definir permisos de cada acción
         ↓
+SIGUIENTE TAREA RESERVADA
+PROC-SCREEN-025 — Vincular cada acción con Server Action, API o RPC
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 84 de 101 tareas aprobadas
+BLOQUE E2 — 85 de 101 tareas aprobadas
 ```
