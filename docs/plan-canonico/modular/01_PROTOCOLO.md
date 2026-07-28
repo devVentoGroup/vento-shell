@@ -24,78 +24,331 @@
 3. No implementar código, migraciones ni cambios en Supabase,
    salvo que la tarea lo ordene expresamente.
 
-4. Cada tarea documental desarrollada, independientemente de su prefijo
-   (`AUTH-*`, `OPS-*`, `CAP-*`, `CODE-*`, `GAP-*` u otro identificador
-   canónico), deberá entregarse como un archivo Markdown descargable e
-   independiente que contenga exclusivamente el bloque completo de la tarea.
+4. Formato obligatorio de entrega, revisión y aprobación documental
+
+   Esta regla aplica a toda tarea documental, independientemente de su prefijo
+   (`AUTH-*`, `OPS-*`, `CAP-*`, `CODE-*`, `GAP-*`, `PROC-*`, `UX-*` u otro
+   identificador canónico).
+
+   #### 4.1. Artefacto de tarea entregado por defecto
+
+   Cada tarea deberá entregarse como un archivo Markdown descargable,
+   independiente y codificado en UTF-8, que contenga exclusivamente el bloque
+   completo de la tarea solicitada.
 
    El archivo deberá estar listo para reemplazar el marcador o bloque
-   correspondiente dentro del documento canónico.
+   correspondiente dentro del archivo modular propietario.
 
    Convención obligatoria de nombre:
 
-   `<ID-DE-TAREA>_PROPUESTA_PARA_REEMPLAZAR.md`
+   `<ID-DE-TAREA>_APROBADA_PARA_REEMPLAZAR.md`
 
    Ejemplo:
 
-   `CODE-AUD-007_PROPUESTA_PARA_REEMPLAZAR.md`
+   `PROC-SCREEN-018_APROBADA_PARA_REEMPLAZAR.md`
 
-   En el mensaje del chat deberá incluirse únicamente:
+   El contenido se entregará preformateado con:
 
-   - el enlace de descarga del archivo `.md`;
-   - el marcador exacto que debe reemplazarse;
-   - el marcador de la tarea siguiente que debe conservarse;
-   - un resumen breve de las decisiones propuestas;
-   - los identificadores de requisitos de prueba generados o la declaración expresa `NO GENERA REQUISITOS DE PRUEBA`;
-   - el estado de la tarea.
+   `### ✅ <ID-DE-TAREA> — <TÍTULO>`
 
-   No deberá pegarse en el chat el contenido completo de la tarea.
+   y:
 
-   No entregar la tarea como:
+   `**Estado:** APROBADA`
 
-   - bloque de código Markdown completo dentro del chat;
-   - bloque de redacción editable;
-   - documento editable integrado en la interfaz;
-   - texto normal extenso;
-   - resumen sin archivo adjunto;
-   - documento canónico completo;
-   - archivo que incluya tareas diferentes de la solicitada;
-   - archivo que sustituya silenciosamente todo el documento canónico.
+   Este estado preformateado permite insertar el archivo y ejecutar los
+   validadores documentales que reconocen tareas materializadas mediante el
+   marcador `### ✅`.
 
-   El archivo deberá ser Markdown plano codificado en UTF-8 y utilizar
-   la extensión `.md`.
+   Sin embargo, el archivo no se considerará canónicamente aprobado hasta que
+   el usuario lo revise y responda explícitamente:
 
-   El archivo entregado es un artefacto transitorio de revisión y reemplazo.
-   No convierte la tarea en un fragmento canónico individual. Durante la
-   consolidación, el contenido aprobado deberá insertarse dentro del archivo
-   lógico propietario definido por la arquitectura modular.
+   **APROBADO**
 
-1. Toda tarea nueva inicia con:
+   Por tanto:
 
-   **PROPUESTA PARA APROBACIÓN**
+   - el archivo llega listo para reemplazo y validación;
+   - la decisión no se vuelve canónica antes de la aprobación expresa;
+   - no será necesario generar una segunda versión únicamente para cambiar
+     `PROPUESTA` por `APROBADA`;
+   - si el usuario solicita correcciones sustantivas, se regenerará el mismo
+     archivo `*_APROBADA_PARA_REEMPLAZAR.md` con las correcciones;
+   - una aprobación expresa no autoriza avanzar automáticamente a la tarea
+     siguiente.
 
-   Mientras permanezca en propuesta deberá utilizar dentro del archivo:
+   #### 4.2. Alcance exacto del archivo de tarea
 
-   `### 🟡 <ID-DE-TAREA> — <TÍTULO>`
+   El archivo de tarea deberá incluir únicamente:
+
+   - la tarea solicitada completa;
+   - sus artefactos, matrices, reglas, validaciones y carryovers;
+   - sus requisitos de prueba derivados o la declaración expresa de que no
+     genera requisitos;
+   - la continuidad inmediata hacia la siguiente tarea reservada.
+
+   No deberá incluir:
+
+   - otras tareas anteriores o posteriores;
+   - la página o sección modular completa;
+   - el plan canónico completo;
+   - el archivo compilado;
+   - el encabezado global;
+   - el registro global de tareas;
+   - un archivo adicional de resumen;
+   - filas `TREQ-*` sueltas;
+   - un archivo paralelo `TREQ_NUEVOS_*`;
+   - cambios silenciosos en decisiones ya aprobadas.
+
+   La unidad transitoria entregada para revisión es la tarea. La unidad física
+   canónica del repositorio continúa siendo el bloque o sección lógica
+   propietaria.
+
+   #### 4.3. Contenido obligatorio de la respuesta en el chat
+
+   La respuesta del chat deberá incluir únicamente:
+
+   1. enlace de descarga del archivo de tarea `.md`;
+   2. marcador exacto que debe reemplazarse;
+   3. enlace de descarga del registro `04A` completo cuando corresponda;
+   4. indicación de que `04A` debe reemplazarse completamente;
+   5. resumen final breve de las decisiones y cifras de la tarea;
+   6. requisitos `TREQ-*` creados, modificados, diferidos u obsoletos;
+   7. validaciones realmente ejecutadas y su resultado;
+   8. validaciones pendientes de ejecutar localmente, cuando no hayan podido
+      ejecutarse;
+   9. siguiente tarea reservada.
+
+   El resumen final se presentará en el chat y no dentro de un archivo
+   adicional.
+
+   No deberá pegarse en el chat el contenido completo de la tarea ni el
+   contenido completo de `04A`.
+
+   #### 4.4. Registro Canónico de Requisitos de Prueba
+
+   Cuando una tarea genere, modifique, difiera, descarte u obsolete uno o más
+   requisitos `TREQ-*`, deberá entregarse también el archivo completo:
+
+   `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`
+
+   El usuario reemplazará el archivo completo. No deberá localizar puntos de
+   inserción, copiar filas sueltas ni combinar tablas manualmente.
+
+   El archivo `04A` entregado deberá:
+
+   - partir de la última versión canónica disponible;
+   - preservar todas las filas históricas válidas;
+   - incorporar exclusivamente los cambios autorizados;
+   - conservar el orden de dominios declarado en el propio documento;
+   - ordenar cada dominio por número ascendente;
+   - actualizar cifras globales y por dominio;
+   - actualizar la última tarea incorporada;
+   - conservar exactamente catorce columnas por fila;
+   - usar identificadores únicos;
+   - mantener secuencias coherentes;
+   - usar dominios, estados, tipos y propietarios permitidos;
+   - resolver todas las relaciones `TREQ-*`;
+   - impedir autorreferencias;
+   - impedir pérdida, reemplazo o degradación de requisitos históricos.
+
+   Queda prohibido depender de la reconciliación automática del compilador para
+   reparar deliberadamente un archivo `04A` incompleto. La entrega deberá ser
+   completa y válida antes de reemplazarse.
+
+   Si el compilador restaura o corrige filas desde
+   `.generated/.state/` o genera una copia en `.generated/.recovery/`, deberá
+   declararse que el archivo entrante necesitó reconciliación y revisarse la
+   diferencia antes de considerar correcta la actualización.
+
+   Cuando la tarea no genere ni modifique requisitos `TREQ-*`:
+
+   - no se entregará una copia innecesaria de `04A`;
+   - la tarea deberá declarar `NO GENERA REQUISITOS DE PRUEBA`;
+   - deberá incluir una justificación concreta.
+
+   #### 4.5. Consulta obligatoria del remoto antes de desarrollar
+
+   Antes de desarrollar cada tarea se deberá consultar la rama canónica vigente
+   del repositorio y revisar, como mínimo:
+
+   - `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+   - `docs/plan-canonico/modular/active-sequence.json`;
+   - el archivo modular propietario de la tarea;
+   - las tareas aprobadas que constituyen su base;
+   - `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+   - `package.json`;
+   - los validadores documentales aplicables;
+   - los contratos, catálogos, procesos, pasos, actores, dispositivos, acciones,
+     estados y decisiones que la tarea consume.
+
+   Los nombres, identificadores, cantidades, aplicaciones, procesos, pasos,
+   estados y títulos documentados se conservarán exactamente. No se
+   renombrarán, resumirán, normalizarán ni mejorarán por inferencia.
+
+   Cuando el remoto esté detrás de una tarea local ya aprobada:
+
+   - se declarará expresamente el desfase;
+   - el remoto seguirá siendo fuente para identidades y contratos ya
+     materializados;
+   - el último artefacto local aprobado será la base inmediata para la
+     continuidad todavía no subida;
+   - no se sobrescribirá ni descartará trabajo aprobado por usar una versión
+     remota anterior.
+
+   No se realizará ninguna escritura en GitHub sin autorización explícita del
+   usuario.
+
+   #### 4.6. Validación obligatoria contra los scripts del repositorio
+
+   Los archivos deberán diseñarse respetando los scripts reales del repositorio.
+   Desde la raíz de `vento-shell`, la validación global esperada será:
+
+   ```bash
+   npm run docs:plan:build
+   npm run docs:plan:check
+   npm run docs:plan:test
+   npm run docs:treq:check
+   npm run docs:treq:test
+   git diff --check
+   ```
+
+   Cuando la tarea afecte sus dominios, se ejecutarán además de forma directa
+   los validadores aplicables para obtener un diagnóstico específico:
+
+   ```bash
+   npm run docs:process-apps:check
+   npm run docs:screens:check
+   npm run docs:screen-processes:check
+   npm run docs:screen-matrices:check
+   ```
+
+   Reglas de validación:
+
+   - `docs:plan:build` deberá ejecutarse antes de `docs:plan:check`;
+   - no se editarán manualmente `00_CABECERA_Y_ESTADO.md` ni archivos bajo
+     `.generated/` para forzar continuidad;
+   - `manifest.json` controla el orden físico de compilación;
+   - `active-sequence.json` controla el orden documental de ejecución;
+   - `04A` es la única fuente canónica del registro de pruebas;
+   - el build deberá validar `04A` antes de compilar;
+   - una tarea de pantallas deberá conservar la cobertura, nombres,
+     aplicaciones, procesos, pasos, vocabularios, resúmenes y carryover que
+     exigen sus validadores;
+   - una tarea nueva deberá existir una sola vez en el bloque propietario y en
+     `active-sequence.json` cuando forme parte de la continuidad;
+   - no se declarará `compilación correcta`, `pruebas aprobadas` o
+     `validación final correcta` si los comandos reales no fueron ejecutados.
+
+   La respuesta distinguirá siempre entre:
+
+   - **VALIDACIÓN ESTRUCTURAL DEL ARTEFACTO:** comprobaciones realizadas sobre
+     los archivos generados;
+   - **VALIDACIÓN REAL DEL REPOSITORIO:** comandos ejecutados contra un checkout
+     actualizado de `vento-shell`.
+
+   Si no existe acceso a un checkout actualizado, deberá indicarse:
+
+   `VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL`
+
+   #### 4.7. Revisión y aprobación por el usuario
+
+   El flujo obligatorio será:
+
+   ```text
+   ARCHIVO PREPARADO COMO APROBADO PARA REEMPLAZO
+           ↓
+   REVISIÓN DEL USUARIO
+           ↓
+   CORRECCIÓN, SI FUE SOLICITADA
+           ↓
+   APROBADO EXPLÍCITO DEL USUARIO
+           ↓
+   APROBACIÓN CANÓNICA CONCEPTUAL
+           ↓
+   CONTINUACIÓN SOLO CUANDO EL USUARIO LA SOLICITE
+   ```
+
+   Antes de que el usuario diga **APROBADO**:
+
+   - no se tratarán las decisiones como canónicas;
+   - no se actualizará conceptualmente la última tarea aprobada;
+   - no se avanzará a la tarea siguiente;
+   - no se implementará código;
+   - no se escribirá en GitHub.
+
+   Después de **APROBADO**:
+
+   - no será obligatorio regenerar el archivo si no hubo correcciones;
+   - la tarea quedará aprobada para su incorporación local o remota;
+   - las actualizaciones administrativas podrán consolidarse posteriormente
+     mediante los scripts;
+   - solo se continuará cuando el usuario solicite expresamente la siguiente
+     tarea.
+
+   #### 4.8. Integridad y prohibiciones
+
+   Ninguna respuesta deberá:
+
+   - usar una versión antigua de `04A` sin declararlo;
+   - reducir silenciosamente la cobertura de una matriz;
+   - cambiar nombres o identificadores canónicos;
+   - omitir pantallas, procesos, pasos, acciones o requisitos;
+   - inventar resultados de scripts;
+   - entregar un archivo completo de la sección cuando solo se pidió una tarea;
+   - entregar una tarea sin el `04A` completo cuando cambien requisitos;
+   - crear archivos paralelos para evitar reemplazar `04A`;
+   - editar derivados para ocultar inconsistencias de las fuentes;
+   - continuar automáticamente después de una aprobación.
+
+   La entrega se considerará completa únicamente cuando el usuario pueda:
+
+   1. descargar el archivo de tarea;
+   2. reemplazar exactamente su marcador;
+   3. reemplazar `04A` completo cuando corresponda;
+   4. ejecutar los scripts sin reconstrucciones manuales;
+   5. revisar el resumen final;
+   6. aprobar o solicitar correcciones.
+
+
+5. Toda tarea nueva se entregará por defecto como:
+
+   **APROBADA PARA REEMPLAZAR — PENDIENTE DE CONFIRMACIÓN DEL USUARIO**
+
+   Desde su primera entrega deberá utilizar dentro del archivo:
+
+   `### ✅ <ID-DE-TAREA> — <TÍTULO>`
+
+   y:
+
+   `**Estado:** APROBADA`
+
+   El nombre del archivo será:
+
+   `<ID-DE-TAREA>_APROBADA_PARA_REEMPLAZAR.md`
 
    El archivo deberá contener toda la definición sustantiva necesaria
-   para evaluar y aprobar la tarea, sin depender de explicaciones
+   para evaluar y confirmar la tarea, sin depender de explicaciones
    complementarias del chat.
 
-2. No marcar una tarea como aprobada hasta que el usuario diga
+   El marcador `✅`, el estado `APROBADA` y el nombre
+   `*_APROBADA_PARA_REEMPLAZAR.md` expresan que el artefacto está completo y
+   listo para reemplazo. No sustituyen la confirmación canónica del usuario.
+
+6. La aprobación canónica conceptual solo ocurrirá cuando el usuario diga
    explícitamente:
 
    **APROBADO**
 
    Antes de esa instrucción:
 
-   - no utilizar el marcador ✅;
-   - no cambiar el estado interno de la tarea a `APROBADA`;
-   - no presentar decisiones propuestas como canónicas;
+   - se conservarán el marcador `✅` y el estado `APROBADA` del artefacto
+     preparado;
+   - no se registrará la tarea como última tarea canónicamente aprobada;
+   - no se actualizará la continuidad por inferencia;
+   - no se presentarán sus decisiones como canónicamente confirmadas;
    - no iniciar implementación;
    - no avanzar automáticamente a la tarea siguiente.
 
-3. Después de la aprobación:
+7. Después de la aprobación:
 
    - la tarea quedará conceptualmente aprobada para la siguiente
      consolidación documental;
@@ -113,7 +366,7 @@
    La versión aprobada deberá conservar íntegramente las decisiones
    aceptadas y no incluir tareas adicionales.
 
-4. No avanzar a la tarea siguiente hasta que el usuario lo solicite
+8. No avanzar a la tarea siguiente hasta que el usuario lo solicite
    expresamente.
 
    Cuando el usuario solicite la siguiente tarea, deberá entregarse
@@ -122,7 +375,7 @@
    La ausencia de una consolidación inmediata no invalida las
    aprobaciones expresas ya otorgadas.
 
-5. Cuando un hallazgo de auditoría contradiga una decisión posterior,
+9. Cuando un hallazgo de auditoría contradiga una decisión posterior,
    prevalece la decisión canónica aprobada más reciente.
 
    La tarea documental inmediata se determina mediante:
@@ -147,26 +400,26 @@
    actualizarse el encabezado, la continuidad inmediata y la transición de
    la tarea precedente durante la siguiente consolidación documental.
 
-6.  El BLOQUE A contiene evidencia histórica.
+10. El BLOQUE A contiene evidencia histórica.
     ADR-AUTH-001 y las tareas AUTH aprobadas contienen decisiones normativas.
 
-7.  Toda futura migración de Supabase deberá crearse y documentarse
+11. Toda futura migración de Supabase deberá crearse y documentarse
     en vento-shell.
 
-8.  No reducir silenciosamente el alcance de una tarea.
+12. No reducir silenciosamente el alcance de una tarea.
 
-9.  El roadmap de autorización define quién puede ejecutar una capacidad,
+13. El roadmap de autorización define quién puede ejecutar una capacidad,
     bajo qué modalidad, alcance, contexto y recurso.
 
-10. El roadmap funcional y de experiencia define qué proceso resuelve
+14. El roadmap funcional y de experiencia define qué proceso resuelve
     cada aplicación, qué pantallas utiliza cada actor y cómo se conecta
     el proceso entre aplicaciones.
 
-11. Las decisiones funcionales, de navegación o experiencia no podrán
+15. Las decisiones funcionales, de navegación o experiencia no podrán
     contradecir el catálogo canónico, las matrices, el contexto efectivo,
     la precedencia ni las denegaciones aprobadas.
 
-12. Ninguna pantalla, ruta o componente se considerará terminado únicamente
+16. Ninguna pantalla, ruta o componente se considerará terminado únicamente
     porque exista técnicamente. Deberá estar vinculado con:
     - un proceso empresarial;
     - un actor objetivo;
@@ -176,21 +429,21 @@
     - criterios de usabilidad;
     - trazabilidad cuando corresponda.
 
-13. Las aplicaciones se reorganizarán por procesos y responsabilidades
+17. Las aplicaciones se reorganizarán por procesos y responsabilidades
     empresariales, no por carpetas, rutas técnicas o nombres de componentes.
 
-14. Toda función transversal deberá tener una aplicación propietaria.
+18. Toda función transversal deberá tener una aplicación propietaria.
     Las demás aplicaciones podrán consumirla, pero no duplicar su lógica,
     su autorización ni su fuente de verdad.
 
-15. Los cambios funcionales o de experiencia que no requieran modificar
+19. Los cambios funcionales o de experiencia que no requieran modificar
     Supabase deberán documentarse en el roadmap y en el repositorio
     propietario de la aplicación.
 
     Cuando el cambio requiera una migración de Supabase,
     aplicará obligatoriamente el punto 11.
 
-16. Toda nueva necesidad funcional o técnica deberá analizarse primero
+20. Toda nueva necesidad funcional o técnica deberá analizarse primero
     contra:
 
     - el documento canónico vigente;
@@ -198,7 +451,7 @@
     - el código actual del repositorio propietario;
     - las decisiones aprobadas que afecten el proceso.
 
-17. Antes de entregar una implementación deberá determinarse expresamente
+21. Antes de entregar una implementación deberá determinarse expresamente
     si el cambio afecta:
 
     - permisos;
@@ -216,7 +469,7 @@
     - auditoría;
     - experiencia o navegación.
 
-18. Todo cambio contractual deberá pasar por:
+22. Todo cambio contractual deberá pasar por:
 
     - propuesta documental;
     - análisis de impacto;
@@ -226,10 +479,10 @@
     - pruebas;
     - actualización documental.
 
-19. Un cambio que no afecte autorización deberá declararlo expresamente
+23. Un cambio que no afecte autorización deberá declararlo expresamente
     antes de implementarse.
 
-20. Todo paquete de implementación deberá incluir, cuando corresponda:
+24. Todo paquete de implementación deberá incluir, cuando corresponda:
 
     - repositorio propietario;
     - archivos exactos que se crean o modifican;
@@ -242,11 +495,11 @@
     - mecanismo de rollback;
     - actualización documental requerida.
 
-21. Ningún cambio entregado en otra conversación deberá aplicarse
+25. Ningún cambio entregado en otra conversación deberá aplicarse
     automáticamente sin verificarlo contra el documento canónico vigente
     y el estado actual de los repositorios.
 
-22. Supabase deberá tratarse como una plataforma canónica integral y no
+26. Supabase deberá tratarse como una plataforma canónica integral y no
     únicamente como un conjunto de tablas en `public`.
 
     Su gobierno incluirá, como mínimo:
@@ -268,7 +521,7 @@
     - tipos generados;
     - auditoría, rendimiento, retención y recuperación.
 
-23. La organización física de Supabase se definirá en el BLOQUE E3 y se
+27. La organización física de Supabase se definirá en el BLOQUE E3 y se
     implementará en el BLOQUE R.
 
     El BLOQUE E3 auditará el estado real, definirá la arquitectura objetivo
@@ -277,7 +530,7 @@
     El BLOQUE R aplicará las migraciones, protecciones, pruebas y retiro
     controlado de estructuras legacy.
 
-24. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
+28. Ninguna tabla, función, política, trigger, bucket, canal Realtime,
     Edge Function, webhook, tarea programada o secreto podrá reorganizarse,
     renombrarse, trasladarse o retirarse sin:
 
@@ -293,14 +546,14 @@
     - rollback;
     - actualización documental.
 
-25. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
+29. Los esquemas administrados por Supabase, incluidos `auth`, `storage`,
     `realtime`, `extensions` y `supabase_migrations`, deberán distinguirse
     de los esquemas empresariales de Vento.
 
     No deberán moverse, renombrarse ni utilizarse como contenedores de
     lógica empresarial salvo mediante mecanismos oficialmente soportados.
 
-26. Los esquemas empresariales de Vento deberán organizarse por dominios
+30. Los esquemas empresariales de Vento deberán organizarse por dominios
     estables y fuentes de verdad, no por:
 
     - aplicación;
@@ -313,7 +566,7 @@
     Una aplicación podrá consumir varios dominios y un dominio podrá ser
     consumido por varias aplicaciones sin duplicar sus datos.
 
-27. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
+31. `public` no deberá asumirse como ubicación predeterminada de todo objeto.
 
     Cada objeto deberá declarar expresamente:
 
@@ -329,7 +582,7 @@
     - estrategia de auditoría;
     - ciclo de vida.
 
-28. El estado desplegado de Supabase deberá ser reproducible desde
+32. El estado desplegado de Supabase deberá ser reproducible desde
     `vento-shell`.
 
     Los cambios directos realizados desde Dashboard, Table Editor,
@@ -337,7 +590,7 @@
     emergencia controlada y convertirse después en una migración
     versionada, verificable y documentada.
 
-29. La autenticación técnica, la identidad empresarial y la autorización
+33. La autenticación técnica, la identidad empresarial y la autorización
     deberán permanecer separadas.
 
     `auth.users`
@@ -349,13 +602,13 @@
     catálogo, matrices, contexto y recurso
     → autorización efectiva
 
-30. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
+34. Toda arquitectura de Supabase deberá conservar compatibilidad temporal
     con las aplicaciones existentes.
 
     No se moverán objetos entre esquemas ni se retirarán nombres legacy
     mediante un cambio único si existen consumidores activos.
 
-31. La normalización de datos deberá definirse por dominio, entidad y campo.
+35. La normalización de datos deberá definirse por dominio, entidad y campo.
 
     No existirá una transformación universal aplicada indiscriminadamente
     a todo valor textual.
@@ -385,7 +638,7 @@
     Las correcciones ortográficas ambiguas no se aplicarán silenciosamente.
     Deberán enviarse a revisión o aprobación humana.
 
-32. Las claves de permisos, credenciales de integración y secretos técnicos
+36. Las claves de permisos, credenciales de integración y secretos técnicos
     deberán mantenerse como conceptos separados.
 
     `PermissionKey`
@@ -410,7 +663,7 @@
     - compartirse entre producción, staging y desarrollo;
     - entregarse a un proveedor para escribir directamente en Supabase.
 
-33. Toda integración externa deberá operar mediante un adaptador y un
+37. Toda integración externa deberá operar mediante un adaptador y un
     contrato empresarial canónico.
 
     Un sistema externo no deberá:
@@ -424,7 +677,7 @@
     El adaptador deberá validar, transformar, mapear, deduplicar, auditar
     y emitir eventos canónicos antes de afectar otros dominios.
 
-34. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
+38. Ninguna tarea podrá cerrarse dejando un pendiente, brecha, riesgo,
     decisión diferida, supuesto por verificar o elemento fuera de alcance
     sin destino documental explícito.
 

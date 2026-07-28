@@ -29,13 +29,12 @@ test('rechaza que una guía operativa vuelva a ser supervisión primaria', () =>
   const root = fixture();
   const target = path.join(root, relative);
   const source = fs.readFileSync(target, 'utf8');
-  fs.writeFileSync(
-    target,
-    source.replace(
-      '| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` |',
-      '| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION` | `SUPERVISION_CONTROL` |',
-    ),
+  const mutated = source.replace(
+    /^(\| `VSCREEN-0061`[^\r\n]*?)`OUTSIDE_SUPERVISION_CLASS`(\s*\|\s*)`NONE`(\s*\|)/m,
+    '$1`PRIMARY_SUPERVISION`$2`SUPERVISION_CONTROL`$3',
   );
+  assert.notEqual(mutated, source, 'el fixture debe localizar la fila de supervisión de VSCREEN-0061');
+  fs.writeFileSync(target, mutated);
   assert.throws(
     () => validateScreenClassifications({ root }),
     /resultado cuantitativo|clasificaciones primarias|decisión semántica/,
