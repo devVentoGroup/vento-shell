@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **336** |
+| Aprobadas | **337** |
 | En propuesta | **0** |
-| No iniciadas | **1239** |
+| No iniciadas | **1238** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-COVER-005` — Identificar dependencias que impiden completar el proceso | ✅ APROBADA |
-| Tarea actual | `PROC-COVER-006` — Definir alcance mínimo y alcance objetivo | ⬜ NO INICIADA |
-| Siguiente | `PROC-COVER-007` — Prohibir declarar completo un proceso con solo infraestructura | ⬜ NO INICIADA |
+| Última aprobada | `PROC-COVER-006` — Definir alcance mínimo y alcance objetivo | ✅ APROBADA |
+| Tarea actual | `PROC-COVER-007` — Prohibir declarar completo un proceso con solo infraestructura | ⬜ NO INICIADA |
+| Siguiente | `PROC-COVER-008` — Aprobar matriz capacidad → proceso → pantalla → implementación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -330,7 +330,7 @@
 | ✅ APROBADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-004` | Clasificar proceso completo, parcial, manual, ausente o diferido | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
