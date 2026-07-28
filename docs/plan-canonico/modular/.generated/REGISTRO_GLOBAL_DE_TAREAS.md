@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **330** |
+| Aprobadas | **331** |
 | En propuesta | **0** |
-| No iniciadas | **1245** |
+| No iniciadas | **1244** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-027` — Definir métrica de usabilidad | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-028` — Definir criterio de aceptación operativo | ⬜ NO INICIADA |
-| Siguiente | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-028` — Definir criterio de aceptación operativo | ✅ APROBADA |
+| Tarea actual | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 | ⬜ NO INICIADA |
+| Siguiente | `PROC-COVER-002` — Vincular cada proceso con su operación manual actual | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -324,7 +324,7 @@
 | ✅ APROBADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-026` | Identificar pantalla reemplazada o legacy | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-001` | Vincular cada proceso con una capacidad aprobada en E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-002` | Vincular cada proceso con su operación manual actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-003` | Vincular cada proceso con su implementación actual | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |

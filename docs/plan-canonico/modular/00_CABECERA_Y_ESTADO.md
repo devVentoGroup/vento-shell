@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **330** |
+| Tareas aprobadas | **331** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1245** |
+| Tareas no iniciadas | **1244** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-SCREEN-027 — Definir métrica de usabilidad** |
-| Tarea actual | **PROC-SCREEN-028 — Definir criterio de aceptación operativo** |
+| Última tarea aprobada | **PROC-SCREEN-028 — Definir criterio de aceptación operativo** |
+| Tarea actual | **PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1** |
+| Siguiente tarea | **PROC-COVER-002 — Vincular cada proceso con su operación manual actual** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 89 de 101 aprobadas; PROC-SCREEN-028 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 90 de 101 aprobadas; PROC-COVER-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-SCREEN-027` — Definir métrica de usabilidad |
-| Tarea actual | `PROC-SCREEN-028` — Definir criterio de aceptación operativo — **NO INICIADA** |
-| Siguiente tarea | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 |
+| Última aprobada | `PROC-SCREEN-028` — Definir criterio de aceptación operativo |
+| Tarea actual | `PROC-COVER-001` — Vincular cada proceso con una capacidad aprobada en E1 — **NO INICIADA** |
+| Siguiente tarea | `PROC-COVER-002` — Vincular cada proceso con su operación manual actual |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **89 DE 101 APROBADAS — ACTUAL PROC-SCREEN-028** |
+| BLOQUE E2 | **90 DE 101 APROBADAS — ACTUAL PROC-COVER-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-SCREEN-027 — Definir métrica de usabilidad
-        ↓
-TAREA ACTUAL
 PROC-SCREEN-028 — Definir criterio de aceptación operativo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PROC-COVER-001 — Vincular cada proceso con una capacidad aprobada en E1
         ↓
+SIGUIENTE TAREA RESERVADA
+PROC-COVER-002 — Vincular cada proceso con su operación manual actual
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 89 de 101 tareas aprobadas
+BLOQUE E2 — 90 de 101 tareas aprobadas
 ```
