@@ -34,10 +34,10 @@ function mutateRegex(root, pattern, replacement) {
   fs.writeFileSync(fullPath, source.replace(pattern, replacement));
 }
 
-test('acepta los 175 vínculos pantalla-proceso propuestos', () => {
+test('acepta los 177 vínculos pantalla-proceso aprobados', () => {
   const stats = validateScreenProcessBindings({ root: fixture() });
-  assert.equal(stats.screens, 175);
-  assert.equal(stats.primaryBindings, 175);
+  assert.equal(stats.screens, 177);
+  assert.equal(stats.primaryBindings, 177);
   assert.equal(stats.coveredProcesses, 67);
   assert.equal(stats.deferredProcesses, 2);
 });

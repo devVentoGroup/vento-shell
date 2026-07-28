@@ -630,7 +630,7 @@ PROC-SCREEN-002 — Vincular cada pantalla con una aplicación
 
 **Corrección integral de consistencia:** `2026-07-27.2` — reconcilia BLOQUE C, capacidades E1, `VPROC-0001` a `VPROC-0069`, superficies verificadas en repositorios y excepciones deliberadas de AURA, TALENTO y canales externos.
 
-**Resultado cuantitativo corregido:** **175 pantallas canónicas** vinculadas a **9 aplicaciones habilitadas**; el catálogo de BLOQUE C conserva **10 aplicaciones canónicas**, pero `aura` mantiene **0** pantallas por su estado funcional diferido.
+**Resultado cuantitativo corregido:** **177 pantallas canónicas** vinculadas a **9 aplicaciones habilitadas**; el catálogo de BLOQUE C conserva **10 aplicaciones canónicas**, pero `aura` mantiene **0** pantallas por su estado funcional diferido.
 
 **Naturaleza:** materialización documental inicial del catálogo canónico de pantallas y asignación de una aplicación primaria a cada identidad. No define todavía procesos, pasos, clasificaciones UX, actores, dispositivos, acciones, estados, permisos ni operaciones técnicas.
 
@@ -681,7 +681,7 @@ Esta tarea:
 
 1. amplía el registro mínimo de `PROC-SCREEN-001` con `primary_application_id`;
 2. define qué significa aplicación primaria de una pantalla;
-3. materializa `VSCREEN-0001` a `VSCREEN-0175`;
+3. materializa `VSCREEN-0001` a `VSCREEN-0177`;
 4. asigna exactamente una aplicación primaria a cada pantalla;
 5. conserva identidad, aplicación y propiedad de datos como conceptos distintos;
 6. define handoffs, proyecciones y composición entre aplicaciones;
@@ -877,18 +877,32 @@ Una aplicación operativa puede contener pantallas administrativas propias. Eso 
 | `shell`    | `VSCREEN-0001` a `VSCREEN-0006` | `VSCREEN-0175`                  |        7 | entrada, contexto, cuenta y capacidades transversales            |
 | `viso`     | `VSCREEN-0007` a `VSCREEN-0026` | `VSCREEN-0113` a `VSCREEN-0123` |       31 | gobierno, personas, acceso, cumplimiento y casos administrativos |
 | `anima`    | `VSCREEN-0027` a `VSCREEN-0032` | `VSCREEN-0124` a `VSCREEN-0131` |       14 | experiencia personal del trabajador                              |
-| `nexo`     | `VSCREEN-0033` a `VSCREEN-0054` | `VSCREEN-0132` a `VSCREEN-0144` |       35 | inventario, logística, activos, flota, instalaciones e impresión |
+| `nexo`     | `VSCREEN-0033` a `VSCREEN-0054` | `VSCREEN-0132` a `VSCREEN-0144`, `VSCREEN-0176` a `VSCREEN-0177` |       37 | inventario, logística, activos, flota, instalaciones e impresión |
 | `fogo`     | `VSCREEN-0055` a `VSCREEN-0067` | `VSCREEN-0173` a `VSCREEN-0174` |       15 | producción, recetas, inocuidad, trazabilidad y cierre productivo |
 | `origo`    | `VSCREEN-0068` a `VSCREEN-0079` | `VSCREEN-0145` a `VSCREEN-0146` |       14 | necesidades, proveedores, contratos, compras y recepción         |
 | `pulso`    | `VSCREEN-0080` a `VSCREEN-0093` | `VSCREEN-0147` a `VSCREEN-0152` |       20 | venta, catering, reservas, caja, servicio y oferta               |
 | `numera`   | `VSCREEN-0094` a `VSCREEN-0106` | `VSCREEN-0153` a `VSCREEN-0159` |       20 | hechos económicos, tesorería, fiscalidad, presupuesto y análisis |
 | `pass`     | `VSCREEN-0107` a `VSCREEN-0112` | `VSCREEN-0160` a `VSCREEN-0172` |       19 | experiencia personal, compras, pedidos y servicio del cliente    |
 | `aura`     | —                               | —                               |        0 | aplicación canónica diferida; admisión pendiente de alcance      |
-| **Total**  | `VSCREEN-0001` a `VSCREEN-0112` | `VSCREEN-0113` a `VSCREEN-0175` |  **175** | catálogo inicial corregido y reconciliado con E1 y `VPROC-*`     |
+| **Total**  | `VSCREEN-0001` a `VSCREEN-0112` | `VSCREEN-0113` a `VSCREEN-0177` |  **177** | catálogo inicial corregido y reconciliado con E1 y `VPROC-*`     |
 
 Los rangos contiguos reflejan únicamente el orden del lote inicial. **No son rangos reservados por aplicación y no codifican semántica en el ID.** Las pantallas futuras utilizarán la siguiente secuencia global disponible, aunque intercalen aplicaciones.
 
 Ningún conteo de pantallas implica relación uno a uno con permisos, procesos, roles o capacidades.
+
+---
+
+
+#### 8.1 Corrección de identidades mixtas
+
+La revisión integral separa dos identidades que mezclaban configuración reutilizable con operación de instancias:
+
+| Identidad histórica | Alcance que conserva | Nueva identidad | Alcance separado |
+| --- | --- | --- | --- |
+| Identidad 0135 | instancias y operación de kits | Identidad 0176 | definición reutilizable de kits y conjuntos |
+| Identidad 0144 | cola y trabajos de impresión | Identidad 0177 | configuración reutilizable de impresoras |
+
+Los IDs históricos no se reasignan ni se eliminan. El cambio conserva trazabilidad, evita dos intenciones dominantes en una sola pantalla y obliga a que vínculos de proceso, paso y clasificación consuman las cuatro identidades exactas.
 
 ---
 
@@ -1032,7 +1046,7 @@ Todos los registros siguientes poseen versión `1.0.0`, estado `CANONICAL`, alta
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`              | Crear, priorizar, expirar, liberar o consumir reservas explícitas sin modificar la existencia física por el solo acto de reservar.                              | CAP-06.06 + inventario                    | `CANONICAL` |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`              | Planear, asignar, ejecutar, probar y cerrar mantenimiento preventivo o correctivo con repuestos y retorno al servicio.                                          | CAP-07.07 + `VPROC-0030`                  | `CANONICAL` |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`              | Gestionar cobertura, vigencia, documentos, reclamación, resultado y efecto sobre disponibilidad o disposición del activo.                                       | CAP-07 + `VPROC-0030`                     | `CANONICAL` |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`              | Definir kits e instancias, verificar componentes, completitud, préstamo, devolución y sustitución sin confundirlos con LPN.                                     | CAP-07.11 + `VPROC-0067`                  | `CANONICAL` |
+| `VSCREEN-0135` | Instancias y operación de kits | `nexo` | Armar y controlar instancias de kit, verificar componentes, completitud, préstamo, devolución y sustitución sin confundirlas con LPN ni con la definición maestra. | CAP-07.11 + `VPROC-0067` | `CANONICAL` |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`              | Administrar identidad, condición, documentos, disponibilidad, custodio e incidencias de vehículos y equipos de transporte.                                      | CAP-07.12 + `VPROC-0031`                  | `CANONICAL` |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`              | Registrar lecturas, cargas, consumo, evidencia y alertas de rendimiento por vehículo sin confundir compra con consumo.                                          | CAP-07.12 + `VPROC-0031`                  | `CANONICAL` |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`              | Preparar ruta, vehículo, conductor, carga, secuencia, capacidad y restricciones antes de autorizar el despacho.                                                 | CAP-11 + `VPROC-0048`                     | `CANONICAL` |
@@ -1041,7 +1055,7 @@ Todos los registros siguientes poseen versión `1.0.0`, estado `CANONICAL`, alta
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`              | Gestionar limpieza, inspecciones, mantenimiento, plagas, servicios, calibración y cierre de novedades de instalaciones.                                         | CAP-13 + `VPROC-0055`                     | `CANONICAL` |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`              | Versionar políticas de solicitud, abastecimiento, cumplimiento, rutas, sedes y productos habilitados para operación logística.                                  | CAP-06 + CAP-11                           | `CANONICAL` |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`              | Diseñar, versionar, previsualizar y aprobar plantillas de etiqueta vinculadas con objetos logísticos autorizados.                                               | CAP-15 + impresión logística              | `CANONICAL` |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`              | Configurar impresoras y gestionar trabajos, reintentos, resultado y reimpresión sin convertir la cola en propietaria del documento.                             | CAP-15 + impresión logística              | `CANONICAL` |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística | `nexo` | Gestionar trabajos, reintentos, resultados y reimpresiones sin configurar impresoras ni convertir la cola en propietaria del documento. | CAP-15 + impresión logística | `CANONICAL` |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`             | Versionar contratos, listas de precio, impuestos, fletes, mínimos, vigencias y condiciones autorizadas por proveedor.                                           | CAP-05 + `VPROC-0020`                     | `CANONICAL` |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`             | Analizar cumplimiento desde hechos y gestionar reclamaciones, respuestas, compromisos y resolución con evidencia.                                               | CAP-05 + abastecimiento                   | `CANONICAL` |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`             | Calificar una oportunidad, preparar cotización y validar capacidad, condiciones, aprobaciones y vigencia antes del compromiso.                                  | CAP-09 + `VPROC-0041`                     | `CANONICAL` |
@@ -1073,6 +1087,8 @@ Todos los registros siguientes poseen versión `1.0.0`, estado `CANONICAL`, alta
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`              | Reconstruir materiales, receta, ejecución, calidad, destinos y evidencia de un lote para investigar una desviación o retiro.                                    | CAP-08 + producción                       | `CANONICAL` |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`              | Ejecutar listas, mediciones, verificaciones y acciones de inocuidad vinculadas con producción, producto, área y vigencia.                                       | CAP-08 + inocuidad                        | `CANONICAL` |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`             | Permitir gestionar recuperación, factores, sesiones, dispositivos personales y cierre de cuenta sin administrar permisos empresariales.                         | AUTH + privacidad transversal             | `CANONICAL` |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | Definir versiones reutilizables de kit, componentes obligatorios u opcionales, sustituciones y reglas de completitud sin operar instancias concretas. | CAP-07.11 + `VPROC-0067` | `CANONICAL` |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | Mantener impresoras, capacidades, destinos, vigencia y políticas de impresión reutilizables sin operar trabajos concretos. | CAP-15 + impresión logística | `CANONICAL` |
 
 ---
 
@@ -1152,8 +1168,8 @@ Cuando el cambio altera materialmente la identidad, se crea otro `VSCREEN-*` y s
 
 La automatización posterior deberá comprobar:
 
-1. existen exactamente 175 registros en este corte;
-2. los identificadores son `VSCREEN-0001` a `VSCREEN-0175` sin duplicados ni saltos;
+1. existen exactamente 177 registros en este corte;
+2. los identificadores son `VSCREEN-0001` a `VSCREEN-0177` sin duplicados ni saltos;
 3. cada pantalla tiene exactamente una aplicación primaria;
 4. toda aplicación primaria pertenece al catálogo permitido;
 5. ningún registro usa `talento`, VITAL o un código inventado;
@@ -1226,10 +1242,10 @@ Se incorporan `TREQ-UX-509` a `TREQ-UX-552` al Registro Canónico completo. Perm
 
 - [x] Se consume el formato y gobierno de `PROC-SCREEN-001`.
 - [x] Se define aplicación primaria sin confundirla con repositorio, tabla, servicio o permiso.
-- [x] Se materializan `VSCREEN-0001` a `VSCREEN-0175` sin duplicados ni saltos.
+- [x] Se materializan `VSCREEN-0001` a `VSCREEN-0177` sin duplicados ni saltos.
 - [x] Cada pantalla tiene exactamente una aplicación primaria.
 - [x] Se utilizan únicamente códigos canónicos aprobados.
-- [x] Se asignan 175 pantallas a 9 aplicaciones habilitadas.
+- [x] Se asignan 177 pantallas a 9 aplicaciones habilitadas.
 - [x] Se reconoce que el catálogo de BLOQUE C contiene 10 aplicaciones y que `aura` conserva cero pantallas por su estado funcional diferido.
 - [x] No se crea una aplicación `talento` por inferencia.
 - [x] Se preservan los límites entre VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS y SHELL.
@@ -1283,7 +1299,7 @@ PROC-SCREEN-003 — Vincular cada pantalla con un proceso
 - `SCREEN-PROCESS-CHANGE-POLICY-001`;
 - `SCREEN-PROCESS-BINDING-VALIDATION-GATE-001`.
 
-**Resultado cuantitativo aprobado:** **175 pantallas canónicas**, **175 vínculos primarios** y **268 vínculos relacionados**; **67 procesos activos** quedan cubiertos y `VPROC-0056` y `VPROC-0057` permanecen diferidos junto con AURA.
+**Resultado cuantitativo aprobado:** **177 pantallas canónicas**, **177 vínculos primarios** y **272 vínculos relacionados**; **67 procesos activos** quedan cubiertos y `VPROC-0056` y `VPROC-0057` permanecen diferidos junto con AURA.
 
 **Naturaleza:** contrato documental entre identidades `VSCREEN-*` y procesos `VPROC-*`. No vincula todavía pasos, carriles UX, actores, dispositivos, acciones, estados, sensibilidad, permisos, rutas ni operaciones técnicas.
 
@@ -1334,7 +1350,7 @@ Esta propuesta:
 1. incorpora `primary_process_id` a cada `VSCREEN-*`;
 2. permite `related_process_ids[]` solo cuando la pantalla compone, supervisa o proyecta otros procesos;
 3. exige una modalidad de vínculo explícita;
-4. materializa 175 vínculos primarios sin duplicados ni omisiones;
+4. materializa 177 vínculos primarios sin duplicados ni omisiones;
 5. conserva la aplicación propietaria de cada proceso;
 6. cubre los 67 procesos activos;
 7. conserva `VPROC-0056` y `VPROC-0057` como excepciones diferidas de AURA;
@@ -1580,7 +1596,7 @@ Un proceso relacionado no convierte la pantalla en su espacio de trabajo primari
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028`     | `VPROC-0025`, `VPROC-0033`                             | `OWNER_WORKSPACE`     | Reserva disponibilidad para una necesidad autorizada sin registrar consumo.             |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030`     | `VPROC-0029`, `VPROC-0055`                             | `OWNER_WORKSPACE`     | Gobierna mantenimiento del activo y su liberación.                                      |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030`     | `VPROC-0020`, `VPROC-0060`                             | `OWNER_WORKSPACE`     | Conserva caso, cobertura, proveedor, evidencia y resultado del activo.                  |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067`     | `VPROC-0029`, `VPROC-0032`                             | `OWNER_WORKSPACE`     | Gobierna definición, armado, custodia y completitud.                                    |
+| `VSCREEN-0135` | Instancias y operación de kits | `nexo` | `VPROC-0067` | `VPROC-0029`, `VPROC-0032` | `OWNER_WORKSPACE` | Gobierna armado, custodia, completitud, préstamo, devolución y sustitución de instancias. |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031`     | `VPROC-0029`, `VPROC-0048`                             | `OWNER_WORKSPACE`     | Conserva vehículo, disponibilidad, condición e incidencias.                             |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031`     | `VPROC-0054`                                           | `OWNER_WORKSPACE`     | Registra uso y consumo y proyecta su costo.                                             |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048`     | `VPROC-0028`, `VPROC-0031`                             | `OWNER_WORKSPACE`     | Planifica vehículo, carga, secuencia y restricciones.                                   |
@@ -1589,7 +1605,7 @@ Un proceso relacionado no convierte la pantalla en su espacio de trabajo primari
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055`     | `VPROC-0012`, `VPROC-0030`                             | `OWNER_WORKSPACE`     | Gobierna condición y cierre de instalaciones sin mezclarse con soporte TI.              |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048`     | `VPROC-0028`, `VPROC-0049`                             | `OWNER_WORKSPACE`     | Versiona restricciones y reglas logísticas.                                             |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015`     | `VPROC-0023`, `VPROC-0032`                             | `OWNER_WORKSPACE`     | Diseña identificación desde maestros físicos y contextos logísticos.                    |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024`     | `VPROC-0015`, `VPROC-0023`                             | `OWNER_WORKSPACE`     | Ejecuta impresión correlacionada con el objeto y movimiento autorizados.                |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística | `nexo` | `VPROC-0024` | `VPROC-0015`, `VPROC-0023` | `OWNER_WORKSPACE` | Opera la cola y los trabajos de impresión correlacionados con el objeto autorizado. |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020`     | `VPROC-0021`, `VPROC-0060`                             | `OWNER_WORKSPACE`     | Gobierna condiciones comparables y vigentes antes de comprar.                           |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020`     | `VPROC-0022`, `VPROC-0061`                             | `OWNER_WORKSPACE`     | Evalúa proveedor desde evidencia de recepción y resultado.                              |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041`     | `VPROC-0017`, `VPROC-0047`                             | `OWNER_WORKSPACE`     | Conserva propuesta, capacidad, condiciones y aprobación comercial.                      |
@@ -1621,6 +1637,8 @@ Un proceso relacionado no convierte la pantalla en su espacio de trabajo primari
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035`     | `VPROC-0034`, `VPROC-0036`, `VPROC-0037`, `VPROC-0060` | `OWNER_WORKSPACE`     | Reconstruye materiales, ejecución, calidad, empaque y disposición.                      |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014`     | `VPROC-0012`, `VPROC-0035`                             | `SUPERVISION_SURFACE` | Ejecuta controles operativos y entrega hallazgos al gobierno de cumplimiento.           |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059`     | `VPROC-0058`, `VPROC-0060`                             | `TRANSVERSAL_ENTRY`   | Presenta sesiones y recuperación personal sin gobernar autoridad laboral.               |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067` | `VPROC-0015`, `VPROC-0029` | `OWNER_WORKSPACE` | Mantiene la definición reutilizable consumida por armado, inventario y custodia de kits. |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024` | `VPROC-0023`, `VPROC-0058` | `OWNER_WORKSPACE` | Mantiene el recurso técnico y sus políticas; la ejecución de trabajos permanece separada. |
 
 ---
 
@@ -1670,7 +1688,7 @@ Un cambio de propietaria de proceso no podrá ejecutarse desde este registro: de
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. una pantalla no tenga exactamente un proceso primario;
 4. un proceso primario o relacionado no exista;
@@ -1734,7 +1752,7 @@ Se incorporan `TREQ-UX-553` a `TREQ-UX-576`. Permanecerán `IDENTIFICADO`; la im
 
 #### 17. Criterios de aceptación
 
-- [x] Se consumen 175 identidades de pantalla sin renumerarlas.
+- [x] Se consumen 177 identidades de pantalla sin renumerarlas.
 - [x] Cada pantalla recibe exactamente un proceso primario.
 - [x] Los procesos relacionados son explícitos, válidos y no duplican el primario.
 - [x] Se utilizan únicamente `VPROC-0001` a `VPROC-0069`.
@@ -1786,7 +1804,7 @@ PROC-SCREEN-004 NO INICIADA
 - `SCREEN-PROCESS-STEP-VALIDATION-GATE-001`;
 - `SCREEN-PROCESS-STEP-CARRYOVER-REGISTER-001`;
 
-**Resultado cuantitativo:** **175 pantallas**, **175 vínculos primarios de paso**, **175 anclas de paso**, **67 procesos activos cubiertos**, **23 roles de paso**, **6 posiciones de ciclo de vida** y **2 procesos AURA diferidos sin pantalla ni paso inventado**.
+**Resultado cuantitativo:** **177 pantallas**, **177 vínculos primarios de paso**, **177 anclas de paso**, **67 procesos activos cubiertos**, **23 roles de paso**, **6 posiciones de ciclo de vida** y **2 procesos AURA diferidos sin pantalla ni paso inventado**.
 
 **Naturaleza:** contrato documental entre pantalla, proceso y paso de interacción empresarial. No define todavía carril UX, actores, dispositivos, acciones, estados de interfaz, permisos, rutas ni operaciones técnicas.
 
@@ -1835,7 +1853,7 @@ La tarea no reabre los procesos ni convierte los nombres de pantalla en pasos. C
 2. definir un formato estable y namespaced por proceso;
 3. definir un vocabulario controlado de roles de paso;
 4. definir la posición del paso dentro del ciclo de vida;
-5. materializar 175 vínculos sin omisiones ni duplicados;
+5. materializar 177 vínculos sin omisiones ni duplicados;
 6. cubrir los 67 procesos activos;
 7. conservar `VPROC-0056` y `VPROC-0057` sin pantalla ni paso mientras AURA permanezca diferida;
 8. distinguir paso dominante, pasos vecinos, estado, transición, acción y operación técnica;
@@ -2156,7 +2174,7 @@ Se deberá dividir la pantalla o crear otra identidad cuando:
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028` | `VPROC-0028::STEP-RESERVE_STOCK` — Reservar inventario                                                    | `EXECUTE`      | `IN_PROGRESS`   |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030` | `VPROC-0030::STEP-PLAN_AND_EXECUTE_ASSET_MAINTENANCE` — Planear y ejecutar mantenimiento de activo        | `PLAN`         | `IN_PROGRESS`   |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030` | `VPROC-0030::STEP-MANAGE_ASSET_CLAIM` — Gestionar garantía, seguro o reclamación                          | `EXECUTE`      | `IN_PROGRESS`   |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067` | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT` — Armar y controlar kit                                       | `EXECUTE`      | `IN_PROGRESS`   |
+| `VSCREEN-0135` | Instancias y operación de kits                                      | `nexo`     | `VPROC-0067` | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT` — Armar y controlar kit                                       | `EXECUTE`      | `IN_PROGRESS`   |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031` | `VPROC-0031::STEP-MANAGE_FLEET_ASSET` — Gestionar flota y vehículos                                       | `CONFIGURE`    | `IN_PROGRESS`   |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031` | `VPROC-0031::STEP-CAPTURE_MILEAGE_AND_FUEL` — Registrar kilometraje y combustible                         | `CAPTURE`      | `IN_PROGRESS`   |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048` | `VPROC-0048::STEP-PLAN_ROUTE_AND_DISPATCH` — Planear ruta y despacho                                      | `PLAN`         | `IN_PROGRESS`   |
@@ -2165,7 +2183,7 @@ Se deberá dividir la pantalla o crear otra identidad cuando:
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055` | `VPROC-0055::STEP-MANAGE_FACILITY_SERVICE` — Gestionar instalaciones y mantenimiento locativo             | `EXECUTE`      | `IN_PROGRESS`   |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048` | `VPROC-0048::STEP-CONFIGURE_LOGISTICS_POLICY` — Configurar políticas y rutas logísticas                   | `CONFIGURE`    | `IN_PROGRESS`   |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015` | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE` — Diseñar etiqueta logística                           | `CONFIGURE`    | `IN_PROGRESS`   |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024` | `VPROC-0024::STEP-CONFIGURE_AND_OPERATE_PRINT_QUEUE` — Configurar y operar cola de impresión              | `EXECUTE`      | `IN_PROGRESS`   |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística           | `nexo`     | `VPROC-0024` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE` — Operar cola y trabajos de impresión              | `EXECUTE`      | `IN_PROGRESS`   |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020` | `VPROC-0020::STEP-GOVERN_SUPPLIER_TERMS` — Gestionar contratos, precios y condiciones                     | `CONFIGURE`    | `IN_PROGRESS`   |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020` | `VPROC-0020::STEP-REVIEW_SUPPLIER_PERFORMANCE` — Evaluar desempeño y reclamaciones de proveedor           | `REVIEW`       | `DECISION`      |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041` | `VPROC-0041::STEP-QUALIFY_B2B_OPPORTUNITY` — Calificar oportunidad y preparar cotización                  | `REVIEW`       | `INITIAL`       |
@@ -2197,6 +2215,8 @@ Se deberá dividir la pantalla o crear otra identidad cuando:
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035` | `VPROC-0035::STEP-INVESTIGATE_BATCH_TRACEABILITY` — Investigar trazabilidad de lote                       | `AUDIT`        | `CROSS_CUTTING` |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014` | `VPROC-0014::STEP-EXECUTE_FOOD_SAFETY_CONTROL` — Ejecutar control operativo de inocuidad                  | `VALIDATE`     | `IN_PROGRESS`   |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059` | `VPROC-0059::STEP-MANAGE_ACCOUNT_SECURITY` — Gestionar seguridad de cuenta y sesiones                     | `RECOVER`      | `CROSS_CUTTING` |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067` | `VPROC-0067::STEP-MAINTAIN_KIT_DEFINITION` — Mantener definición de kit | `CONFIGURE` | `IN_PROGRESS` |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS` — Configurar impresoras logísticas | `CONFIGURE` | `IN_PROGRESS` |
 
 ---
 
@@ -2227,7 +2247,7 @@ Se deberá dividir la pantalla o crear otra identidad cuando:
 | `VPROC-0021`   |                    3 |              3 | `COVERED`            |
 | `VPROC-0022`   |                    4 |              4 | `COVERED`            |
 | `VPROC-0023`   |                    2 |              2 | `COVERED`            |
-| `VPROC-0024`   |                    4 |              4 | `COVERED`            |
+| `VPROC-0024`   |                    5 |              5 | `COVERED`            |
 | `VPROC-0025`   |                    2 |              2 | `COVERED`            |
 | `VPROC-0026`   |                    3 |              3 | `COVERED`            |
 | `VPROC-0027`   |                    1 |              1 | `COVERED`            |
@@ -2268,7 +2288,7 @@ Se deberá dividir la pantalla o crear otra identidad cuando:
 | `VPROC-0064`   |                    1 |              1 | `COVERED`            |
 | `VPROC-0065`   |                    3 |              3 | `COVERED`            |
 | `VPROC-0066`   |                    2 |              2 | `COVERED`            |
-| `VPROC-0067`   |                    1 |              1 | `COVERED`            |
+| `VPROC-0067`   |                    2 |              2 | `COVERED`            |
 | `VPROC-0068`   |                    2 |              2 | `COVERED`            |
 | `VPROC-0069`   |                    1 |              1 | `COVERED`            |
 | `VPROC-0056`   |                    0 |              0 | `DEFERRED_APP_SCOPE` |
@@ -2289,7 +2309,7 @@ La cobertura acredita que todo proceso activo tiene al menos una superficie ubic
 | `INITIATE`     |         5 |
 | `TRIAGE`       |         7 |
 | `CAPTURE`      |         8 |
-| `CONFIGURE`    |        18 |
+| `CONFIGURE`    |        20 |
 | `PLAN`         |         6 |
 | `VALIDATE`     |         6 |
 | `REVIEW`       |        10 |
@@ -2307,7 +2327,7 @@ La cobertura acredita que todo proceso activo tiene al menos una superficie ubic
 | `RECEIPT`      |         1 |
 | `RECOVER`      |         4 |
 | `SELF_SERVICE` |        14 |
-| **Total**      |   **175** |
+| **Total**      |   **177** |
 
 ##### 15.2 Posiciones
 
@@ -2315,11 +2335,11 @@ La cobertura acredita que todo proceso activo tiene al menos una superficie ubic
 | --------------- | --------: |
 | `PRECONDITION`  |         5 |
 | `INITIAL`       |        21 |
-| `IN_PROGRESS`   |        98 |
+| `IN_PROGRESS`   |       100 |
 | `DECISION`      |        29 |
 | `TERMINAL`      |         7 |
 | `CROSS_CUTTING` |        15 |
-| **Total**       |   **175** |
+| **Total**       |   **177** |
 
 ---
 
@@ -2355,7 +2375,7 @@ Un cambio de etiqueta humana o redacción no exige nueva referencia si el paso m
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. una pantalla no tenga exactamente una referencia primaria de paso;
 4. el proceso embebido en la referencia no coincida con `primary_process_id`;
@@ -2422,7 +2442,7 @@ Se incorporan `TREQ-UX-577` a `TREQ-UX-608` al Registro Canónico completo. Perm
 
 #### 22. Criterios de aceptación
 
-- [x] Se consumen las 175 pantallas sin renumerarlas.
+- [x] Se consumen las 177 pantallas sin renumerarlas.
 - [x] Cada pantalla tiene exactamente un proceso y una referencia primaria de paso.
 - [x] La referencia de paso está namespaced por el proceso correcto.
 - [x] Los 67 procesos activos tienen cobertura.
@@ -2433,7 +2453,7 @@ Se incorporan `TREQ-UX-577` a `TREQ-UX-608` al Registro Canónico completo. Perm
 - [x] No se deriva autorización desde el vínculo.
 - [x] Se preservan fronteras SHELL, VISO–ANIMA, PULSO–PASS, ORIGO–NEXO, FOGO–NEXO y NUMERA–orígenes.
 - [x] Se definen cambio, versionado e historial.
-- [x] Los conteos de 175 filas, 23 roles, 6 posiciones y 67 procesos coinciden.
+- [x] Los conteos de 177 filas, 23 roles, 6 posiciones y 67 procesos coinciden.
 - [x] Se generan `TREQ-UX-577` a `TREQ-UX-608`.
 - [x] No se anticipan carriles, actores, dispositivos, acciones, permisos, rutas o APIs.
 - [x] No se implementa código ni se avanza a `PROC-SCREEN-005`.
@@ -2477,7 +2497,7 @@ PROC-SCREEN-005 — Clasificar pantalla operativa
 - `SCREEN-OPERATIONAL-CLASSIFICATION-VALIDATION-GATE-001`;
 - `SCREEN-OPERATIONAL-CARRYOVER-REGISTER-001`.
 
-**Resultado cuantitativo:** **175 pantallas clasificadas**, de las cuales **51** quedan como `PRIMARY_OPERATIONAL`, **33** como `SECONDARY_OPERATIONAL` y **91** como `OUTSIDE_OPERATIONAL_CLASS`; se utilizan **11 patrones operativos**, existen **84 pantallas con relevancia operativa** y no se crean pantallas para AURA.
+**Resultado cuantitativo:** **177 pantallas clasificadas**, de las cuales **54** quedan como `PRIMARY_OPERATIONAL`, **30** como `SECONDARY_OPERATIONAL` y **93** como `OUTSIDE_OPERATIONAL_CLASS`; se utilizan **11 patrones operativos**, existen **84 pantallas con relevancia operativa** y no se crean pantallas para AURA.
 
 **Naturaleza:** clasificación documental del grado de relación de cada pantalla con la ejecución operativa interna. No define todavía clasificación administrativa, de supervisión, configuración, auditoría, personal o de cliente; tampoco define actores, dispositivos, acciones, estados de interfaz, sensibilidad, permisos, rutas u operaciones técnicas.
 
@@ -2524,7 +2544,7 @@ La tarea consume estas fuentes sin reabrirlas. Una pantalla no se clasifica como
 
 #### 3. Alcance
 
-1. incorporar `operational_fit` a las 175 pantallas;
+1. incorporar `operational_fit` a las 177 pantallas;
 2. distinguir operación primaria, soporte operativo secundario y ausencia de clase operativa;
 3. definir once patrones operativos reutilizables;
 4. clasificar cada pantalla mediante proceso, paso, objeto, efecto y urgencia;
@@ -2586,13 +2606,15 @@ No basta con:
 
 | Valor                       | Significado                                                                         | Efecto documental                                                    |
 | --------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `PRIMARY_OPERATIONAL`       | la ejecución operativa interna es la intención dominante de la pantalla             | reserva `OPERATIONAL` como clase primaria                            |
+| `PRIMARY_OPERATIONAL`       | ejecutar, entrar, identificar, consultar o guiar trabajo vivo es la intención dominante e indispensable de la pantalla | reserva `OPERATIONAL` como clase primaria |
 | `SECONDARY_OPERATIONAL`     | la pantalla presta soporte inmediato a la operación, pero otra clase será primaria  | agrega relevancia operativa secundaria sin cerrar la clase principal |
 | `OUTSIDE_OPERATIONAL_CLASS` | la pantalla no representa ejecución ni soporte operativo interno bajo este contrato | queda disponible para las clasificaciones posteriores                |
 
 Cada pantalla recibe exactamente uno de estos tres valores en esta tarea.
 
 `SECONDARY_OPERATIONAL` no significa menor importancia. Significa que la pantalla apoya la operación mediante planificación, consulta, cola, control, monitoreo, recuperación o autoservicio, mientras su intención primaria pertenece probablemente a otro carril que deberá aprobarse después.
+
+Una entrada, identificación, consulta o guía puede ser `PRIMARY_OPERATIONAL` cuando constituye el trabajo dominante del paso activo y su ausencia o demora impide ejecutar correctamente. No se exige una mutación material artificial para reconocer esa intención.
 
 ---
 
@@ -2713,7 +2735,7 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0035` | Editor de producto, unidad y presentación             | `nexo`     | `VPROC-0015::STEP-MAINTAIN_PRODUCT_PRESENTATION`            | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
 | `VSCREEN-0036` | Especificaciones y criterios de calidad               | `nexo`     | `VPROC-0018::STEP-MAINTAIN_QUALITY_SPECIFICATION`           | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
 | `VSCREEN-0037` | Catálogo de ubicaciones                               | `nexo`     | `VPROC-0023::STEP-MAINTAIN_LOCATION_CATALOG`                | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
-| `VSCREEN-0038` | Identificación y detalle de ubicación                 | `nexo`     | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`            | `SECONDARY_OPERATIONAL`     | `OPERATIONAL_LOOKUP`     | La pantalla aporta consulta o identificación necesaria para ejecutar, pero no concentra la ejecución material principal. Conserva relevancia operativa secundaria y su clase primaria se resolverá en PROC-SCREEN-006 a PROC-SCREEN-011.           |
+| `VSCREEN-0038` | Identificación y detalle de ubicación | `nexo` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `PRIMARY_OPERATIONAL` | `OPERATIONAL_LOOKUP` | La identificación y consulta inmediata de la ubicación es el trabajo operativo dominante del paso activo. |
 | `VSCREEN-0039` | Consulta de existencias                               | `nexo`     | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`                   | `SECONDARY_OPERATIONAL`     | `OPERATIONAL_LOOKUP`     | La pantalla aporta consulta o identificación necesaria para ejecutar, pero no concentra la ejecución material principal. Conserva relevancia operativa secundaria y su clase primaria se resolverá en PROC-SCREEN-006 a PROC-SCREEN-011.           |
 | `VSCREEN-0040` | Conteo de inventario                                  | `nexo`     | `VPROC-0026::STEP-CAPTURE_PHYSICAL_COUNT`                   | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CAPTURE`    | La intención dominante registra hechos, cantidades, tiempos o condiciones de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                      |
 | `VSCREEN-0041` | Revisión de conteo y diferencias                      | `nexo`     | `VPROC-0026::STEP-REVIEW_COUNT_VARIANCE`                    | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CONTROL`    | La intención dominante valida, revisa, reconcilia o decide sobre trabajo activo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
@@ -2736,7 +2758,7 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0058` | Ejecución de lote                                     | `fogo`     | `VPROC-0034::STEP-EXECUTE_BATCH`                            | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0059` | Registro parcial de producción                        | `fogo`     | `VPROC-0034::STEP-CAPTURE_BATCH_PROGRESS`                   | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CAPTURE`    | La intención dominante registra hechos, cantidades, tiempos o condiciones de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                      |
 | `VSCREEN-0060` | Finalización y cierre de lote                         | `fogo`     | `VPROC-0037::STEP-CLOSE_BATCH`                              | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CLOSURE`    | La intención dominante cierra una sesión, lote o ciclo operativo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                               |
-| `VSCREEN-0061` | Receta operativa                                      | `fogo`     | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE`                | `SECONDARY_OPERATIONAL`     | `OPERATIONAL_LOOKUP`     | La pantalla aporta consulta o identificación necesaria para ejecutar, pero no concentra la ejecución material principal. Conserva relevancia operativa secundaria y su clase primaria se resolverá en PROC-SCREEN-006 a PROC-SCREEN-011.           |
+| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OPERATIONAL_LOOKUP` | Consultar la receta aplicable es indispensable para ejecutar correctamente el lote activo y constituye la guía operativa dominante. |
 | `VSCREEN-0062` | Catálogo y editor de recetas                          | `fogo`     | `VPROC-0016::STEP-AUTHOR_RECIPE`                            | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
 | `VSCREEN-0063` | Revisión, aprobación y publicación de receta          | `fogo`     | `VPROC-0016::STEP-APPROVE_AND_PUBLISH_RECIPE`               | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno o auditoría del dominio productivo; no corresponde a ejecución operativa dominante en esta pantalla.                                                                                                                                      |
 | `VSCREEN-0064` | Prueba de receta y rendimiento                        | `fogo`     | `VPROC-0016::STEP-TEST_RECIPE_AND_YIELD`                    | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CONTROL`    | La intención dominante valida, revisa, reconcilia o decide sobre trabajo activo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
@@ -2755,7 +2777,7 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0077` | Recepción total o parcial                             | `origo`    | `VPROC-0022::STEP-RECEIVE_PURCHASE`                         | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0078` | Resolución de diferencias de recepción                | `origo`    | `VPROC-0022::STEP-RESOLVE_RECEIPT_VARIANCE`                 | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXCEPTION`  | La intención dominante resuelve una excepción, reversión, rechazo o retorno operativo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                          |
 | `VSCREEN-0079` | Historial y auditoría de abastecimiento               | `origo`    | `VPROC-0022::STEP-AUDIT_PROCUREMENT_CYCLE`                  | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Superficie histórica o de auditoría; no opera el caso vivo y se revisará en PROC-SCREEN-009.                                                                                                                                                       |
-| `VSCREEN-0080` | Inicio POS                                            | `pulso`    | `VPROC-0039::STEP-ENTER_POS_WORKSPACE`                      | `SECONDARY_OPERATIONAL`     | `OPERATIONAL_ENTRY`      | La pantalla habilita la entrada inmediata a trabajo operativo, pero no concentra la ejecución material principal. Conserva relevancia operativa secundaria y su clase primaria se resolverá en PROC-SCREEN-006 a PROC-SCREEN-011.                  |
+| `VSCREEN-0080` | Inicio POS | `pulso` | `VPROC-0039::STEP-ENTER_POS_WORKSPACE` | `PRIMARY_OPERATIONAL` | `OPERATIONAL_ENTRY` | Es la entrada inmediata al trabajo vivo de venta, salón, mostrador o caja; no es un tablero supervisor por defecto. |
 | `VSCREEN-0081` | Creación de venta o pedido                            | `pulso`    | `VPROC-0039::STEP-CREATE_SALE_OR_ORDER`                     | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0082` | Mapa de salón y mesas                                 | `pulso`    | `VPROC-0038::STEP-MANAGE_TABLE_SERVICE`                     | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0083` | Detalle y modificación de pedido                      | `pulso`    | `VPROC-0038::STEP-MODIFY_ACTIVE_ORDER`                      | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXCEPTION`  | La intención dominante resuelve una excepción, reversión, rechazo o retorno operativo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                          |
@@ -2810,7 +2832,7 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028::STEP-RESERVE_STOCK`                            | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030::STEP-PLAN_AND_EXECUTE_ASSET_MAINTENANCE`       | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_PLANNING`   | La intención dominante prepara capacidad o secuencia de ejecución próxima sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                      |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030::STEP-MANAGE_ASSET_CLAIM`                       | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Maestro, configuración o gestión no inmediata del dominio logístico; no corresponde a ejecución operativa dominante.                                                                                                                               |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
+| `VSCREEN-0135` | Instancias y operación de kits                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031::STEP-MANAGE_FLEET_ASSET`                       | `SECONDARY_OPERATIONAL`     | `OPERATIONAL_LOOKUP`     | La pantalla aporta consulta o identificación necesaria para ejecutar, pero no concentra la ejecución material principal. Conserva relevancia operativa secundaria y su clase primaria se resolverá en PROC-SCREEN-006 a PROC-SCREEN-011.           |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031::STEP-CAPTURE_MILEAGE_AND_FUEL`                 | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CAPTURE`    | La intención dominante registra hechos, cantidades, tiempos o condiciones de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                      |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048::STEP-PLAN_ROUTE_AND_DISPATCH`                  | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_PLANNING`   | La intención dominante prepara capacidad o secuencia de ejecución próxima sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                      |
@@ -2819,7 +2841,7 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055::STEP-MANAGE_FACILITY_SERVICE`                  | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048::STEP-CONFIGURE_LOGISTICS_POLICY`               | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`          | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024::STEP-CONFIGURE_AND_OPERATE_PRINT_QUEUE`        | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística           | `nexo`     | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE`        | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_EXECUTION`  | La intención dominante ejecuta o confirma una mutación material de la operación sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020::STEP-GOVERN_SUPPLIER_TERMS`                    | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Gobierno, configuración o publicación de reglas y maestros; no ejecuta trabajo operativo vivo y se revisará en PROC-SCREEN-008.                                                                                                                    |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020::STEP-REVIEW_SUPPLIER_PERFORMANCE`              | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Trabajo administrativo, de gobierno o decisión de backoffice; no tiene ejecución operativa interna dominante.                                                                                                                                      |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041::STEP-QUALIFY_B2B_OPPORTUNITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Configuración, análisis o desarrollo comercial fuera de la ejecución operativa inmediata.                                                                                                                                                          |
@@ -2851,6 +2873,8 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035::STEP-INVESTIGATE_BATCH_TRACEABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Superficie histórica o de auditoría; no opera el caso vivo y se revisará en PROC-SCREEN-009.                                                                                                                                                       |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014::STEP-EXECUTE_FOOD_SAFETY_CONTROL`              | `PRIMARY_OPERATIONAL`       | `OPERATIONAL_CONTROL`    | La intención dominante valida, revisa, reconcilia o decide sobre trabajo activo sobre un caso activo; un retraso o error afecta de forma inmediata la continuidad, custodia, producción, servicio, venta o entrega.                                |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059::STEP-MANAGE_ACCOUNT_SECURITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `NONE`                   | Acceso, cuenta o navegación transversal; no constituye por sí misma una superficie operativa.                                                                                                                                                      |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067::STEP-MAINTAIN_KIT_DEFINITION` | `OUTSIDE_OPERATIONAL_CLASS` | `NONE` | Mantiene una definición reutilizable; no opera una instancia de kit. |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS` | `OUTSIDE_OPERATIONAL_CLASS` | `NONE` | Mantiene recursos y políticas reutilizables; no opera un trabajo de impresión. |
 
 ---
 
@@ -2861,13 +2885,13 @@ Se clasifica `OUTSIDE_OPERATIONAL_CLASS` cuando predomina:
 | `shell`    |                  0 |                    4 |                        3 |       7 |
 | `viso`     |                  0 |                   10 |                       21 |      31 |
 | `anima`    |                  1 |                    6 |                        7 |      14 |
-| `nexo`     |                 24 |                    5 |                        6 |      35 |
-| `fogo`     |                  9 |                    3 |                        3 |      15 |
+| `nexo`     |                 25 |                    4 |                        8 |      37 |
+| `fogo`     |                 10 |                    2 |                        3 |      15 |
 | `origo`    |                  2 |                    3 |                        9 |      14 |
-| `pulso`    |                 15 |                    2 |                        3 |      20 |
+| `pulso`    |                 16 |                    1 |                        3 |      20 |
 | `numera`   |                  0 |                    0 |                       20 |      20 |
 | `pass`     |                  0 |                    0 |                       19 |      19 |
-| **Total**  |             **51** |               **33** |                   **91** | **175** |
+| **Total**  |             **54** |               **30** |                   **93** | **177** |
 
 Las aplicaciones no determinan la clasificación. La tabla solo comprueba que la matriz física y sus conteos coincidan.
 
@@ -2956,7 +2980,7 @@ Un cambio de aplicación, ruta o componente no cambia automáticamente la clasif
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. falte `operational_fit`;
 4. el valor no pertenezca al vocabulario;
@@ -2964,7 +2988,7 @@ La compilación deberá fallar cuando:
 6. una pantalla fuera de clase use un patrón operativo;
 7. falte fundamento;
 8. proceso o paso no coincidan con las tareas anteriores;
-9. los conteos no sean 51, 33 y 91;
+9. los conteos no sean 54, 30 y 93;
 10. la distribución por aplicación no coincida;
 11. los patrones no sumen 84;
 12. PASS o NUMERA reciban `PRIMARY_OPERATIONAL` sin una nueva decisión aprobada;
@@ -3031,9 +3055,9 @@ Se incorporan `TREQ-UX-609` a `TREQ-UX-638` al Registro Canónico completo. Perm
 
 #### 20. Criterios de aceptación
 
-- [x] Se clasifican las 175 pantallas sin renumerarlas.
+- [x] Se clasifican las 177 pantallas sin renumerarlas.
 - [x] Cada pantalla recibe exactamente un `operational_fit`.
-- [x] Se distinguen 51 primarias, 33 secundarias y 91 fuera de clase.
+- [x] Se distinguen 54 primarias, 30 secundarias y 93 fuera de clase.
 - [x] Las 84 pantallas con relevancia operativa utilizan once patrones cerrados.
 - [x] La clasificación se deriva de proceso, paso, efecto y urgencia, no de aplicación o repositorio.
 - [x] Se preservan las fronteras de SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA y PASS.
@@ -3085,7 +3109,7 @@ PROC-SCREEN-006 — Clasificar pantalla administrativa
 - `SCREEN-ADMINISTRATIVE-CLASSIFICATION-VALIDATION-GATE-001`;
 - `SCREEN-ADMINISTRATIVE-CARRYOVER-REGISTER-001`.
 
-**Resultado cuantitativo:** **175 pantallas clasificadas**, de las cuales **53** quedan como `PRIMARY_ADMINISTRATIVE`, **50** como `SECONDARY_ADMINISTRATIVE` y **72** como `OUTSIDE_ADMINISTRATIVE_CLASS`; se utilizan **12 patrones administrativos**, existen **103 pantallas con relevancia administrativa** y ninguna pantalla recibe simultáneamente clase primaria operativa y administrativa.
+**Resultado cuantitativo:** **177 pantallas clasificadas**, de las cuales **53** quedan como `PRIMARY_ADMINISTRATIVE`, **51** como `SECONDARY_ADMINISTRATIVE` y **73** como `OUTSIDE_ADMINISTRATIVE_CLASS`; se utilizan **12 patrones administrativos**, existen **104 pantallas con relevancia administrativa** y ninguna pantalla recibe simultáneamente clase primaria operativa y administrativa.
 
 **Naturaleza:** clasificación documental del grado de relación de cada pantalla con el trabajo administrativo interno, el backoffice y el gobierno empresarial. No define todavía clasificación de supervisión, configuración, auditoría, personal o cliente; tampoco define actores, dispositivos, acciones, estados de interfaz, sensibilidad, permisos, rutas u operaciones técnicas.
 
@@ -3132,7 +3156,7 @@ La tarea no utiliza la aplicación, el repositorio ni el rol histórico como sus
 
 #### 3. Alcance
 
-1. incorporar `administrative_fit` a las 175 pantallas;
+1. incorporar `administrative_fit` a las 177 pantallas;
 2. distinguir trabajo administrativo primario, relevancia administrativa secundaria y ausencia de clase administrativa;
 3. definir doce patrones administrativos reutilizables;
 4. clasificar cada pantalla mediante objeto, expediente, caso, decisión, responsabilidad y resultado;
@@ -3323,7 +3347,7 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0035` | Editor de producto, unidad y presentación             | `nexo`     | `VPROC-0015::STEP-MAINTAIN_PRODUCT_PRESENTATION`            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RESOURCE_MANAGEMENT` | La pantalla administra maestros, recursos, activos, proveedores o configuraciones de apoyo, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.          |
 | `VSCREEN-0036` | Especificaciones y criterios de calidad               | `nexo`     | `VPROC-0018::STEP-MAINTAIN_QUALITY_SPECIFICATION`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_COMPLIANCE`          | La pantalla gobierna riesgo, política, obligación, evidencia o cumplimiento, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                         |
 | `VSCREEN-0037` | Catálogo de ubicaciones                               | `nexo`     | `VPROC-0023::STEP-MAINTAIN_LOCATION_CATALOG`                | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RESOURCE_MANAGEMENT` | La pantalla administra maestros, recursos, activos, proveedores o configuraciones de apoyo, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.          |
-| `VSCREEN-0038` | Identificación y detalle de ubicación                 | `nexo`     | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`            | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase.                                                                                                             |
+| `VSCREEN-0038` | Identificación y detalle de ubicación | `nexo` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE` | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase. |
 | `VSCREEN-0039` | Consulta de existencias                               | `nexo`     | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`                   | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase.                                                                                                             |
 | `VSCREEN-0040` | Conteo de inventario                                  | `nexo`     | `VPROC-0026::STEP-CAPTURE_PHYSICAL_COUNT`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0041` | Revisión de conteo y diferencias                      | `nexo`     | `VPROC-0026::STEP-REVIEW_COUNT_VARIANCE`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_REVIEW`              | La pantalla revisa, contrasta o evalúa información para una decisión de backoffice, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                  |
@@ -3346,7 +3370,7 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0058` | Ejecución de lote                                     | `fogo`     | `VPROC-0034::STEP-EXECUTE_BATCH`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0059` | Registro parcial de producción                        | `fogo`     | `VPROC-0034::STEP-CAPTURE_BATCH_PROGRESS`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0060` | Finalización y cierre de lote                         | `fogo`     | `VPROC-0037::STEP-CLOSE_BATCH`                              | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
-| `VSCREEN-0061` | Receta operativa                                      | `fogo`     | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE`                | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase.                                                                                                             |
+| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE` | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase. |
 | `VSCREEN-0062` | Catálogo y editor de recetas                          | `fogo`     | `VPROC-0016::STEP-AUTHOR_RECIPE`                            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RESOURCE_MANAGEMENT` | La pantalla administra maestros, recursos, activos, proveedores o configuraciones de apoyo, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.          |
 | `VSCREEN-0063` | Revisión, aprobación y publicación de receta          | `fogo`     | `VPROC-0016::STEP-APPROVE_AND_PUBLISH_RECIPE`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_APPROVAL`            | La pantalla aplica aprobación, certificación o autoridad administrativa explícita, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                   |
 | `VSCREEN-0064` | Prueba de receta y rendimiento                        | `fogo`     | `VPROC-0016::STEP-TEST_RECIPE_AND_YIELD`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_REVIEW`              | La pantalla revisa, contrasta o evalúa información para una decisión de backoffice, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                  |
@@ -3365,7 +3389,7 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0077` | Recepción total o parcial                             | `origo`    | `VPROC-0022::STEP-RECEIVE_PURCHASE`                         | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RECORD`              | La pantalla mantiene un expediente, registro o documento administrativo canónico, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                    |
 | `VSCREEN-0078` | Resolución de diferencias de recepción                | `origo`    | `VPROC-0022::STEP-RESOLVE_RECEIPT_VARIANCE`                 | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_CASE`                | La pantalla gestiona un caso administrativo desde apertura hasta resolución, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                         |
 | `VSCREEN-0079` | Historial y auditoría de abastecimiento               | `origo`    | `VPROC-0022::STEP-AUDIT_PROCUREMENT_CYCLE`                  | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_REVIEW`              | La pantalla revisa, contrasta o evalúa información para una decisión de backoffice, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                  |
-| `VSCREEN-0080` | Inicio POS                                            | `pulso`    | `VPROC-0039::STEP-ENTER_POS_WORKSPACE`                      | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase.                                                                                                             |
+| `VSCREEN-0080` | Inicio POS | `pulso` | `VPROC-0039::STEP-ENTER_POS_WORKSPACE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE` | No cumple los criterios de backoffice, coordinación, expediente, aprobación, planificación, cumplimiento o conciliación definidos para esta clase. |
 | `VSCREEN-0081` | Creación de venta o pedido                            | `pulso`    | `VPROC-0039::STEP-CREATE_SALE_OR_ORDER`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0082` | Mapa de salón y mesas                                 | `pulso`    | `VPROC-0038::STEP-MANAGE_TABLE_SERVICE`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0083` | Detalle y modificación de pedido                      | `pulso`    | `VPROC-0038::STEP-MODIFY_ACTIVE_ORDER`                      | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
@@ -3420,7 +3444,7 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028::STEP-RESERVE_STOCK`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030::STEP-PLAN_AND_EXECUTE_ASSET_MAINTENANCE`       | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_PLANNING`            | La pantalla planifica capacidad, recursos, obligaciones o trabajo futuro, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                            |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030::STEP-MANAGE_ASSET_CLAIM`                       | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `ADMIN_CASE`                | La intención dominante gestiona un caso administrativo desde apertura hasta resolución y conserva responsabilidad de backoffice sobre un expediente, caso, recurso, obligación o decisión; no ejecuta la mutación operativa material principal.                |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
+| `VSCREEN-0135` | Instancias y operación de kits                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031::STEP-MANAGE_FLEET_ASSET`                       | `SECONDARY_OPERATIONAL`     | `PRIMARY_ADMINISTRATIVE`       | `ADMIN_RESOURCE_MANAGEMENT` | La intención dominante administra maestros, recursos, activos, proveedores o configuraciones de apoyo y conserva responsabilidad de backoffice sobre un expediente, caso, recurso, obligación o decisión; no ejecuta la mutación operativa material principal. |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031::STEP-CAPTURE_MILEAGE_AND_FUEL`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048::STEP-PLAN_ROUTE_AND_DISPATCH`                  | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | La ejecución operativa ya es la intención primaria y no existe una carga administrativa suficiente para añadir esta clase; gobierno, permisos y auditoría permanecen separados.                                                                                |
@@ -3429,7 +3453,7 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055::STEP-MANAGE_FACILITY_SERVICE`                  | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_CASE`                | La pantalla gestiona un caso administrativo desde apertura hasta resolución, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                         |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048::STEP-CONFIGURE_LOGISTICS_POLICY`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_PLANNING`            | La pantalla planifica capacidad, recursos, obligaciones o trabajo futuro, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                            |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`          | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RESOURCE_MANAGEMENT` | La pantalla administra maestros, recursos, activos, proveedores o configuraciones de apoyo, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.          |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024::STEP-CONFIGURE_AND_OPERATE_PRINT_QUEUE`        | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_RESOURCE_MANAGEMENT` | La pantalla administra maestros, recursos, activos, proveedores o configuraciones de apoyo, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.          |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística | `nexo` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE` | Opera trabajos de impresión; la administración del recurso técnico quedó separada en VSCREEN-0177. |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020::STEP-GOVERN_SUPPLIER_TERMS`                    | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `ADMIN_RESOURCE_MANAGEMENT` | La intención dominante administra maestros, recursos, activos, proveedores o configuraciones de apoyo y conserva responsabilidad de backoffice sobre un expediente, caso, recurso, obligación o decisión; no ejecuta la mutación operativa material principal. |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020::STEP-REVIEW_SUPPLIER_PERFORMANCE`              | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `ADMIN_REVIEW`              | La intención dominante revisa, contrasta o evalúa información para una decisión de backoffice y conserva responsabilidad de backoffice sobre un expediente, caso, recurso, obligación o decisión; no ejecuta la mutación operativa material principal.         |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041::STEP-QUALIFY_B2B_OPPORTUNITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `ADMIN_CASE`                | La intención dominante gestiona un caso administrativo desde apertura hasta resolución y conserva responsabilidad de backoffice sobre un expediente, caso, recurso, obligación o decisión; no ejecuta la mutación operativa material principal.                |
@@ -3461,6 +3485,8 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035::STEP-INVESTIGATE_BATCH_TRACEABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_REVIEW`              | La pantalla revisa, contrasta o evalúa información para una decisión de backoffice, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                  |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014::STEP-EXECUTE_FOOD_SAFETY_CONTROL`              | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `ADMIN_COMPLIANCE`          | La pantalla gobierna riesgo, política, obligación, evidencia o cumplimiento, pero su intención primaria es operativa o corresponde a supervisión, configuración o auditoría. La relevancia administrativa se conserva como secundaria.                         |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059::STEP-MANAGE_ACCOUNT_SECURITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `NONE`                      | Superficie transversal de acceso, cuenta o navegación sin expediente, planificación ni decisión administrativa empresarial dominante.                                                                                                                          |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067::STEP-MAINTAIN_KIT_DEFINITION` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `ADMIN_RESOURCE_MANAGEMENT` | Administra una definición maestra de apoyo, mientras configuración conserva la intención primaria. |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `ADMIN_RESOURCE_MANAGEMENT` | Administra el recurso técnico de apoyo, mientras configuración conserva la intención primaria. |
 
 ---
 
@@ -3471,15 +3497,15 @@ Se clasifica `OUTSIDE_ADMINISTRATIVE_CLASS` cuando predomina:
 | `shell`    |                       0 |                         3 |                             4 |       7 |
 | `viso`     |                      24 |                         7 |                             0 |      31 |
 | `anima`    |                       0 |                         0 |                            14 |      14 |
-| `nexo`     |                       2 |                        14 |                            19 |      35 |
+| `nexo`     |                       2 |                        15 |                            20 |      37 |
 | `fogo`     |                       0 |                         9 |                             6 |      15 |
 | `origo`    |                       9 |                         5 |                             0 |      14 |
 | `pulso`    |                       1 |                         9 |                            10 |      20 |
 | `numera`   |                      17 |                         3 |                             0 |      20 |
 | `pass`     |                       0 |                         0 |                            19 |      19 |
-| **Total**  |                  **53** |                    **50** |                        **72** | **175** |
+| **Total**  |                  **53** |                    **51** |                        **73** | **177** |
 
-La aplicación no determina la clasificación. El resumen comprueba únicamente que las 175 filas y sus conteos coincidan.
+La aplicación no determina la clasificación. El resumen comprueba únicamente que las 177 filas y sus conteos coincidan.
 
 ---
 
@@ -3496,10 +3522,10 @@ La aplicación no determina la clasificación. El resumen comprueba únicamente 
 | `ADMIN_COORDINATION`                    |         8 |
 | `ADMIN_RECONCILIATION`                  |         8 |
 | `ADMIN_COMPLIANCE`                      |        11 |
-| `ADMIN_RESOURCE_MANAGEMENT`             |        15 |
+| `ADMIN_RESOURCE_MANAGEMENT`             |        16 |
 | `ADMIN_COMMUNICATION`                   |         1 |
 | `ADMIN_ANALYSIS`                        |         7 |
-| **Total con relevancia administrativa** |   **103** |
+| **Total con relevancia administrativa** |   **104** |
 
 Las 72 pantallas con `NONE` continúan hacia las tareas posteriores sin recibir una categoría inventada.
 
@@ -3572,7 +3598,7 @@ Un cambio de rol, ruta, aplicación o componente no cambia automáticamente la c
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. falte `administrative_fit`;
 4. el valor no pertenezca al vocabulario;
@@ -3580,9 +3606,9 @@ La compilación deberá fallar cuando:
 6. una pantalla fuera de clase use un patrón administrativo;
 7. falte fundamento;
 8. proceso, paso o clasificación operativa no coincidan con tareas anteriores;
-9. los conteos no sean 53, 50 y 72;
+9. los conteos no sean 53, 51 y 73;
 10. la distribución por aplicación no coincida;
-11. los patrones no sumen 103;
+11. los patrones no sumen 104;
 12. exista una pantalla primaria operativa y primaria administrativa;
 13. PASS o ANIMA reciban clase primaria administrativa sin una nueva decisión aprobada;
 14. una pantalla de configuración, supervisión o auditoría sea primaria administrativa solo por vivir en backoffice;
@@ -3648,10 +3674,10 @@ Se incorporan `TREQ-UX-639` a `TREQ-UX-668` al Registro Canónico completo. Perm
 
 #### 21. Criterios de aceptación
 
-- [x] Se clasifican las 175 pantallas sin renumerarlas.
+- [x] Se clasifican las 177 pantallas sin renumerarlas.
 - [x] Cada pantalla recibe exactamente un `administrative_fit`.
-- [x] Se distinguen 53 primarias, 50 secundarias y 72 fuera de clase.
-- [x] Las 103 pantallas con relevancia administrativa utilizan doce patrones cerrados.
+- [x] Se distinguen 53 primarias, 51 secundarias y 73 fuera de clase.
+- [x] Las 104 pantallas con relevancia administrativa utilizan doce patrones cerrados.
 - [x] Ninguna pantalla queda primaria operativa y primaria administrativa simultáneamente.
 - [x] La clasificación deriva de objeto, expediente, caso, decisión y responsabilidad, no de aplicación o repositorio.
 - [x] Se preservan las fronteras entre VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS y SHELL.
@@ -3704,7 +3730,7 @@ PROC-SCREEN-007 — Clasificar pantalla de supervisión
 - `SCREEN-SUPERVISION-CLASSIFICATION-VALIDATION-GATE-001`;
 - `SCREEN-SUPERVISION-CARRYOVER-REGISTER-001`.
 
-**Resultado cuantitativo:** **175 pantallas clasificadas**, de las cuales **17** quedan como `PRIMARY_SUPERVISION`, **59** como `SECONDARY_SUPERVISION` y **99** como `OUTSIDE_SUPERVISION_CLASS`; se utilizan **12 patrones de supervisión**, existen **76 pantallas con relevancia de supervisión** y ninguna pantalla recibe simultáneamente dos clases primarias aprobadas.
+**Resultado cuantitativo:** **177 pantallas clasificadas**, de las cuales **12** quedan como `PRIMARY_SUPERVISION`, **60** como `SECONDARY_SUPERVISION` y **105** como `OUTSIDE_SUPERVISION_CLASS`; se utilizan **12 patrones de supervisión**, existen **72 pantallas con relevancia de supervisión** y ninguna pantalla recibe simultáneamente dos clases primarias aprobadas.
 
 **Naturaleza:** clasificación documental del grado en que cada pantalla permite vigilar, priorizar, coordinar, controlar o intervenir sobre trabajo de terceros, poblaciones, colas, recursos, compromisos o resultados agregados. No define todavía clasificación de configuración, auditoría, personal o cliente; tampoco define actores, dispositivos, acciones, estados de interfaz, sensibilidad, permisos, rutas u operaciones técnicas.
 
@@ -3753,7 +3779,7 @@ La tarea no utiliza títulos jerárquicos, nombres de rol, aplicación o reposit
 
 #### 3. Alcance
 
-1. incorporar `supervision_fit` a las 175 pantallas;
+1. incorporar `supervision_fit` a las 177 pantallas;
 2. distinguir supervisión primaria, supervisión secundaria y ausencia de clase;
 3. definir doce patrones de supervisión reutilizables;
 4. clasificar cada pantalla mediante población, amplitud, señal, desvío, intervención y drill-down;
@@ -3809,6 +3835,8 @@ No basta con:
 - consultar un historial;
 - pertenecer a VISO o NUMERA;
 - llamarse “inicio”, “resumen” o “dashboard”.
+
+La clase primaria exige evidencia conjunta de amplitud o terceros, señal accionable, posibilidad real de intervención y drill-down trazable. Una bandeja propia, un diagnóstico técnico, una guía de ejecución o la publicación de un reporte no cumplen el contrato por el nombre de la superficie.
 
 ---
 
@@ -3909,8 +3937,8 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0002` | Inicio de sesión y recuperación                       | `shell`    | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Acceso, cuenta, activación técnica o navegación transversal sin vigilancia dominante sobre trabajo empresarial de terceros.                                                                                                                                                                     |
 | `VSCREEN-0003` | Resolución de contexto y acceso                       | `shell`    | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`                | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Acceso, cuenta, activación técnica o navegación transversal sin vigilancia dominante sobre trabajo empresarial de terceros.                                                                                                                                                                     |
 | `VSCREEN-0004` | Activación de dispositivo compartido                  | `shell`    | `VPROC-0059::STEP-ACTIVATE_SHARED_DEVICE`                   | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Acceso, cuenta, activación técnica o navegación transversal sin vigilancia dominante sobre trabajo empresarial de terceros.                                                                                                                                                                     |
-| `VSCREEN-0005` | Bandeja transversal de tareas y notificaciones        | `shell`    | `VPROC-0004::STEP-TRIAGE_TRANSVERSAL_WORK`                  | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`        | `SUPERVISION_QUEUE`        | La intención dominante presenta trabajo pendiente y permite priorizar, distribuir o escalar. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.                  |
-| `VSCREEN-0006` | Centro de soporte y diagnóstico                       | `shell`    | `VPROC-0058::STEP-DIAGNOSE_AND_ROUTE_SUPPORT`               | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`        | `SUPERVISION_SERVICE`      | La intención dominante coordina diagnóstico, atención, SLA, recuperación y escalamiento. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.                      |
+| `VSCREEN-0005` | Bandeja transversal de tareas y notificaciones | `shell` | `VPROC-0004::STEP-TRIAGE_TRANSVERSAL_WORK` | `SECONDARY_OPERATIONAL` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | La bandeja personal o transversal no demuestra población ajena, agregado, intervención ni drill-down supervisor. |
+| `VSCREEN-0006` | Centro de soporte y diagnóstico | `shell` | `VPROC-0058::STEP-DIAGNOSE_AND_ROUTE_SUPPORT` | `SECONDARY_OPERATIONAL` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Diagnostica y deriva soporte; la supervisión de casos de servicio pertenece a una superficie distinta. |
 | `VSCREEN-0007` | Inicio ejecutivo y gerencial                          | `viso`     | `VPROC-0001::STEP-REVIEW_EXECUTIVE_WORK`                    | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`        | `SUPERVISION_DASHBOARD`    | La intención dominante consolida señales, carga, desviaciones y prioridades para orientar intervención. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.       |
 | `VSCREEN-0008` | Estructura organizativa                               | `viso`     | `VPROC-0002::STEP-MAINTAIN_ORGANIZATIONAL_STRUCTURE`        | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | No existe vigilancia dominante sobre múltiples casos, personas, recursos, compromisos o desviaciones; la pantalla continuará hacia las clases posteriores.                                                                                                                                      |
 | `VSCREEN-0009` | Políticas, delegaciones y límites                     | `viso`     | `VPROC-0003::STEP-AUTHOR_POLICIES_AND_LIMITS`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
@@ -3942,7 +3970,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0035` | Editor de producto, unidad y presentación             | `nexo`     | `VPROC-0015::STEP-MAINTAIN_PRODUCT_PRESENTATION`            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
 | `VSCREEN-0036` | Especificaciones y criterios de calidad               | `nexo`     | `VPROC-0018::STEP-MAINTAIN_QUALITY_SPECIFICATION`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | No existe vigilancia dominante sobre múltiples casos, personas, recursos, compromisos o desviaciones; la pantalla continuará hacia las clases posteriores.                                                                                                                                      |
 | `VSCREEN-0037` | Catálogo de ubicaciones                               | `nexo`     | `VPROC-0023::STEP-MAINTAIN_LOCATION_CATALOG`                | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
-| `VSCREEN-0038` | Identificación y detalle de ubicación                 | `nexo`     | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`            | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | No existe vigilancia dominante sobre múltiples casos, personas, recursos, compromisos o desviaciones; la pantalla continuará hacia las clases posteriores.                                                                                                                                      |
+| `VSCREEN-0038` | Identificación y detalle de ubicación | `nexo` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | No existe vigilancia dominante sobre múltiples casos, personas, recursos, compromisos o desviaciones; la pantalla continuará hacia las clases posteriores. |
 | `VSCREEN-0039` | Consulta de existencias                               | `nexo`     | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`                   | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`        | `SUPERVISION_MONITORING`   | La intención dominante sigue casos, recursos o compromisos todavía abiertos. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.                                  |
 | `VSCREEN-0040` | Conteo de inventario                                  | `nexo`     | `VPROC-0026::STEP-CAPTURE_PHYSICAL_COUNT`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0041` | Revisión de conteo y diferencias                      | `nexo`     | `VPROC-0026::STEP-REVIEW_COUNT_VARIANCE`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_REVIEW`       | La pantalla contrasta evidencia y determina si el trabajo puede continuar o requiere intervención, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                |
@@ -3965,7 +3993,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0058` | Ejecución de lote                                     | `fogo`     | `VPROC-0034::STEP-EXECUTE_BATCH`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0059` | Registro parcial de producción                        | `fogo`     | `VPROC-0034::STEP-CAPTURE_BATCH_PROGRESS`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`      | `SUPERVISION_MONITORING`   | La pantalla sigue casos, recursos o compromisos todavía abiertos, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                                 |
 | `VSCREEN-0060` | Finalización y cierre de lote                         | `fogo`     | `VPROC-0037::STEP-CLOSE_BATCH`                              | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`      | `SUPERVISION_PERFORMANCE`  | La pantalla evalúa resultados, tendencias, variaciones y planes de mejora, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                        |
-| `VSCREEN-0061` | Receta operativa                                      | `fogo`     | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE`                | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`        | `SUPERVISION_CONTROL`      | La intención dominante verifica coherencia, cumplimiento o resultado de un ciclo activo. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.                      |
+| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Guía la ejecución del lote activo; no vigila una población, cola o resultado agregado. |
 | `VSCREEN-0062` | Catálogo y editor de recetas                          | `fogo`     | `VPROC-0016::STEP-AUTHOR_RECIPE`                            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
 | `VSCREEN-0063` | Revisión, aprobación y publicación de receta          | `fogo`     | `VPROC-0016::STEP-APPROVE_AND_PUBLISH_RECIPE`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | No existe vigilancia dominante sobre múltiples casos, personas, recursos, compromisos o desviaciones; la pantalla continuará hacia las clases posteriores.                                                                                                                                      |
 | `VSCREEN-0064` | Prueba de receta y rendimiento                        | `fogo`     | `VPROC-0016::STEP-TEST_RECIPE_AND_YIELD`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_REVIEW`       | La pantalla contrasta evidencia y determina si el trabajo puede continuar o requiere intervención, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                |
@@ -3984,7 +4012,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0077` | Recepción total o parcial                             | `origo`    | `VPROC-0022::STEP-RECEIVE_PURCHASE`                         | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_CONTROL`      | La pantalla verifica coherencia, cumplimiento o resultado de un ciclo activo, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                     |
 | `VSCREEN-0078` | Resolución de diferencias de recepción                | `origo`    | `VPROC-0022::STEP-RESOLVE_RECEIPT_VARIANCE`                 | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_EXCEPTION`    | La pantalla concentra desvíos, diferencias, rechazos, retornos o correcciones, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                    |
 | `VSCREEN-0079` | Historial y auditoría de abastecimiento               | `origo`    | `VPROC-0022::STEP-AUDIT_PROCUREMENT_CYCLE`                  | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es reconstrucción histórica, evidencia o auditoría; la clase correspondiente se resolverá en PROC-SCREEN-009.                                                                                                                                                            |
-| `VSCREEN-0080` | Inicio POS                                            | `pulso`    | `VPROC-0039::STEP-ENTER_POS_WORKSPACE`                      | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`        | `SUPERVISION_DASHBOARD`    | La intención dominante consolida señales, carga, desviaciones y prioridades para orientar intervención. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.       |
+| `VSCREEN-0080` | Inicio POS | `pulso` | `VPROC-0039::STEP-ENTER_POS_WORKSPACE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION` | `SUPERVISION_DASHBOARD` | Puede mostrar señales de la estación como apoyo, pero su intención primaria es entrar al trabajo operativo vivo. |
 | `VSCREEN-0081` | Creación de venta o pedido                            | `pulso`    | `VPROC-0039::STEP-CREATE_SALE_OR_ORDER`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0082` | Mapa de salón y mesas                                 | `pulso`    | `VPROC-0038::STEP-MANAGE_TABLE_SERVICE`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`      | `SUPERVISION_MONITORING`   | La pantalla sigue casos, recursos o compromisos todavía abiertos, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                                 |
 | `VSCREEN-0083` | Detalle y modificación de pedido                      | `pulso`    | `VPROC-0038::STEP-MODIFY_ACTIVE_ORDER`                      | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
@@ -4010,7 +4038,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0103` | Conciliación de inventario, producción y variaciones  | `numera`   | `VPROC-0054::STEP-RECONCILE_OPERATING_VARIANCES`            | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_CONTROL`      | La pantalla verifica coherencia, cumplimiento o resultado de un ciclo activo, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                     |
 | `VSCREEN-0104` | Costos, rentabilidad y escenarios                     | `numera`   | `VPROC-0054::STEP-ANALYZE_COST_AND_PROFITABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_PERFORMANCE`  | La pantalla evalúa resultados, tendencias, variaciones y planes de mejora, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                        |
 | `VSCREEN-0105` | Cierre, reapertura y corrección de periodo            | `numera`   | `VPROC-0054::STEP-CLOSE_OR_REOPEN_PERIOD`                   | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_CONTROL`      | La pantalla verifica coherencia, cumplimiento o resultado de un ciclo activo, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                     |
-| `VSCREEN-0106` | Reportes y exportaciones financieras                  | `numera`   | `VPROC-0061::STEP-PUBLISH_FINANCIAL_REPORT`                 | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`        | `SUPERVISION_PERFORMANCE`  | La intención dominante evalúa resultados, tendencias, variaciones y planes de mejora. La pantalla permite comprender el estado de trabajo ajeno o agregado, detectar desvíos y orientar intervención sin convertirse en el espacio principal de ejecución o backoffice.                         |
+| `VSCREEN-0106` | Reportes y exportaciones financieras | `numera` | `VPROC-0061::STEP-PUBLISH_FINANCIAL_REPORT` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Publica evidencia financiera; su clasificación primaria especializada se reserva para auditoría en PROC-SCREEN-009. |
 | `VSCREEN-0107` | Inicio del cliente y resumen de beneficios            | `pass`     | `VPROC-0045::STEP-ENTER_LOYALTY_HOME`                       | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Canal personal de cliente; no supervisa poblaciones, equipos, colas ni resultados internos. Su clase primaria se resolverá en PROC-SCREEN-011.                                                                                                                                                  |
 | `VSCREEN-0108` | QR personal de identificación                         | `pass`     | `VPROC-0045::STEP-PRESENT_CUSTOMER_ID`                      | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Canal personal de cliente; no supervisa poblaciones, equipos, colas ni resultados internos. Su clase primaria se resolverá en PROC-SCREEN-011.                                                                                                                                                  |
 | `VSCREEN-0109` | Catálogo de beneficios y recompensas                  | `pass`     | `VPROC-0045::STEP-CONSULT_REWARDS_CATALOG`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Canal personal de cliente; no supervisa poblaciones, equipos, colas ni resultados internos. Su clase primaria se resolverá en PROC-SCREEN-011.                                                                                                                                                  |
@@ -4039,7 +4067,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028::STEP-RESERVE_STOCK`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030::STEP-PLAN_AND_EXECUTE_ASSET_MAINTENANCE`       | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_CAPACITY`     | La pantalla equilibra demanda, capacidad, programación o disponibilidad, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                          |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030::STEP-MANAGE_ASSET_CLAIM`                       | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_EXCEPTION`    | La pantalla concentra desvíos, diferencias, rechazos, retornos o correcciones, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                    |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
+| `VSCREEN-0135` | Instancias y operación de kits                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031::STEP-MANAGE_FLEET_ASSET`                       | `SECONDARY_OPERATIONAL`     | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_CAPACITY`     | La pantalla equilibra demanda, capacidad, programación o disponibilidad, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                          |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031::STEP-CAPTURE_MILEAGE_AND_FUEL`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla ejecuta trabajo operativo directo y no contiene una función independiente de supervisión sobre una población, cola o resultado agregado.                                                                                                                                            |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048::STEP-PLAN_ROUTE_AND_DISPATCH`                  | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`      | `SUPERVISION_CAPACITY`     | La pantalla equilibra demanda, capacidad, programación o disponibilidad, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                          |
@@ -4048,7 +4076,7 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055::STEP-MANAGE_FACILITY_SERVICE`                  | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_MONITORING`   | La pantalla sigue casos, recursos o compromisos todavía abiertos, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                                 |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048::STEP-CONFIGURE_LOGISTICS_POLICY`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`          | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024::STEP-CONFIGURE_AND_OPERATE_PRINT_QUEUE`        | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es mantener maestros, reglas, políticas o plantillas; la posible clase de configuración se resolverá en PROC-SCREEN-008.                                                                                                                                                 |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística | `nexo` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Opera trabajos de impresión; no configura el recurso ni supervisa una población agregada. |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020::STEP-GOVERN_SUPPLIER_TERMS`                    | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla administra un expediente, caso, obligación o recurso concreto; no predomina la supervisión transversal o agregada.                                                                                                                                                                  |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020::STEP-REVIEW_SUPPLIER_PERFORMANCE`              | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`      | `SUPERVISION_PERFORMANCE`  | La pantalla evalúa resultados, tendencias, variaciones y planes de mejora, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                        |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041::STEP-QUALIFY_B2B_OPPORTUNITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La pantalla administra un expediente, caso, obligación o recurso concreto; no predomina la supervisión transversal o agregada.                                                                                                                                                                  |
@@ -4080,6 +4108,8 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035::STEP-INVESTIGATE_BATCH_TRACEABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | La intención dominante es reconstrucción histórica, evidencia o auditoría; la clase correspondiente se resolverá en PROC-SCREEN-009.                                                                                                                                                            |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014::STEP-EXECUTE_FOOD_SAFETY_CONTROL`              | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`      | `SUPERVISION_COMPLIANCE`   | La pantalla vigila controles, obligaciones y hallazgos que requieren seguimiento, pero su intención primaria ya es operativa o administrativa. Conserva supervisión secundaria sin duplicar la ejecución, el expediente ni la fuente de verdad.                                                 |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059::STEP-MANAGE_ACCOUNT_SECURITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS`  | `NONE`                     | Acceso, cuenta, activación técnica o navegación transversal sin vigilancia dominante sobre trabajo empresarial de terceros.                                                                                                                                                                     |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067::STEP-MAINTAIN_KIT_DEFINITION` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Mantiene configuración reutilizable; no supervisa trabajo vivo. |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `NONE` | Mantiene configuración reutilizable; no supervisa una cola operativa. |
 
 ---
 
@@ -4087,16 +4117,16 @@ Se clasifica `OUTSIDE_SUPERVISION_CLASS` cuando predomina:
 
 | Aplicación | Primaria supervisión | Secundaria supervisión | Fuera de clase |   Total |
 | ---------- | -------------------: | ---------------------: | -------------: | ------: |
-| `shell`    |                    2 |                      0 |              5 |       7 |
+| `shell`    |                    0 |                      0 |              7 |       7 |
 | `viso`     |                    3 |                     16 |             12 |      31 |
 | `anima`    |                    0 |                      0 |             14 |      14 |
-| `nexo`     |                    2 |                     13 |             20 |      35 |
-| `fogo`     |                    3 |                      6 |              6 |      15 |
+| `nexo`     |                    2 |                     13 |             22 |      37 |
+| `fogo`     |                    2 |                      6 |              7 |      15 |
 | `origo`    |                    1 |                      6 |              7 |      14 |
-| `pulso`    |                    3 |                      9 |              8 |      20 |
-| `numera`   |                    3 |                      9 |              8 |      20 |
+| `pulso`    |                    2 |                     10 |              8 |      20 |
+| `numera`   |                    2 |                      9 |              9 |      20 |
 | `pass`     |                    0 |                      0 |             19 |      19 |
-| **Total**  |               **17** |                 **59** |         **99** | **175** |
+| **Total**  |               **12** |                 **60** |        **105** | **177** |
 
 La distribución por aplicación es una comprobación de integridad, no una regla de clasificación.
 
@@ -4107,18 +4137,18 @@ La distribución por aplicación es una comprobación de integridad, no una regl
 | Patrón                                  | Pantallas |
 | --------------------------------------- | --------: |
 | `SUPERVISION_DASHBOARD`                 |         4 |
-| `SUPERVISION_QUEUE`                     |         7 |
+| `SUPERVISION_QUEUE`                     |         6 |
 | `SUPERVISION_MONITORING`                |        12 |
 | `SUPERVISION_REVIEW`                    |         6 |
-| `SUPERVISION_CONTROL`                   |        10 |
+| `SUPERVISION_CONTROL`                   |         9 |
 | `SUPERVISION_EXCEPTION`                 |        10 |
 | `SUPERVISION_CAPACITY`                  |         7 |
 | `SUPERVISION_COMPLIANCE`                |         6 |
-| `SUPERVISION_PERFORMANCE`               |         8 |
+| `SUPERVISION_PERFORMANCE`               |         7 |
 | `SUPERVISION_RISK`                      |         3 |
-| `SUPERVISION_SERVICE`                   |         2 |
+| `SUPERVISION_SERVICE`                   |         1 |
 | `SUPERVISION_COORDINATION`              |         1 |
-| **Total con relevancia de supervisión** |    **76** |
+| **Total con relevancia de supervisión** |    **72** |
 
 Las 99 pantallas con `NONE` continúan hacia configuración, auditoría, personal o cliente sin recibir una clase inventada.
 
@@ -4214,7 +4244,7 @@ Cambiar el título del rol, la ruta o el gráfico no cambia automáticamente la 
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. falte `supervision_fit`;
 4. el valor no pertenezca al vocabulario;
@@ -4222,8 +4252,8 @@ La compilación deberá fallar cuando:
 6. una pantalla fuera de clase use un patrón;
 7. falte fundamento;
 8. proceso, paso o clases anteriores no coincidan;
-9. los conteos no sean 17, 59 y 99;
-10. los patrones no sumen 76;
+9. los conteos no sean 12, 60 y 105;
+10. los patrones no sumen 72;
 11. exista una pantalla primaria de supervisión y primaria operativa;
 12. exista una pantalla primaria de supervisión y primaria administrativa;
 13. PASS o ANIMA reciban supervisión primaria sin nueva decisión;
@@ -4288,10 +4318,10 @@ Se incorporan `TREQ-UX-669` a `TREQ-UX-698` al Registro Canónico completo. Perm
 
 #### 21. Criterios de aceptación
 
-- [x] Se clasifican las 175 pantallas.
+- [x] Se clasifican las 177 pantallas.
 - [x] Cada pantalla recibe exactamente un `supervision_fit`.
-- [x] Se distinguen 17 primarias, 59 secundarias y 99 fuera de clase.
-- [x] Las 76 pantallas relevantes usan doce patrones.
+- [x] Se distinguen 12 primarias, 60 secundarias y 105 fuera de clase.
+- [x] Las 72 pantallas relevantes usan doce patrones.
 - [x] Ninguna pantalla acumula dos clases primarias aprobadas.
 - [x] Supervisión se separa de operación, administración, configuración y auditoría.
 - [x] Se definen amplitud, frescura, fuente, drill-down e intervención.
@@ -4345,7 +4375,7 @@ PROC-SCREEN-008 — Clasificar pantalla de configuración
 - `SCREEN-CONFIGURATION-VALIDATION-GATE-001`;
 - `SCREEN-CONFIGURATION-CARRYOVER-REGISTER-001`.
 
-**Resultado cuantitativo:** **175 pantallas clasificadas**, de las cuales **15** quedan como `PRIMARY_CONFIGURATION`, **14** como `SECONDARY_CONFIGURATION` y **146** como `OUTSIDE_CONFIGURATION_CLASS`; se utilizan **12 patrones**, existen **29 pantallas con relevancia de configuración**, AURA conserva cero pantallas y ningún nombre canónico fue modificado.
+**Resultado cuantitativo:** **177 pantallas clasificadas**, de las cuales **16** quedan como `PRIMARY_CONFIGURATION`, **12** como `SECONDARY_CONFIGURATION` y **149** como `OUTSIDE_CONFIGURATION_CLASS`; se utilizan **12 patrones**, existen **28 pantallas con relevancia de configuración**, AURA conserva cero pantallas y ningún nombre canónico fue modificado.
 
 **Huella de nombres `screen_id|working_name`:** `cebd5daf5e5fadff5beb5fb45b9963c5a8a3808cf0972092fc63f97168d49984`
 
@@ -4416,7 +4446,7 @@ VSCREEN-0032 = Mi perfil laboral
 
 #### 4. Alcance
 
-1. incorporar `configuration_fit` a las 175 pantallas;
+1. incorporar `configuration_fit` a las 177 pantallas;
 2. distinguir configuración primaria, secundaria y ausencia de clase;
 3. definir doce patrones cerrados;
 4. separar configuración reusable de edición de casos, planificación, operación y preferencias personales;
@@ -4424,7 +4454,7 @@ VSCREEN-0032 = Mi perfil laboral
 6. conservar las clases aprobadas en `PROC-SCREEN-005` a `PROC-SCREEN-007`;
 7. impedir dos clases primarias simultáneas;
 8. establecer versionado, vigencia, impacto, publicación y rollback;
-9. conservar exactos los 175 nombres del catálogo;
+9. conservar exactos los 177 nombres del catálogo;
 10. preparar la continuidad hacia auditoría, personal y cliente.
 
 ---
@@ -4586,8 +4616,8 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0002` | Inicio de sesión y recuperación                       | `shell`    | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Resuelve acceso, sesión, contexto o cuenta en tiempo de ejecución; no mantiene configuración empresarial reutilizable.                                                                                                                                     |
 | `VSCREEN-0003` | Resolución de contexto y acceso                       | `shell`    | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`                | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Resuelve acceso, sesión, contexto o cuenta en tiempo de ejecución; no mantiene configuración empresarial reutilizable.                                                                                                                                     |
 | `VSCREEN-0004` | Activación de dispositivo compartido                  | `shell`    | `VPROC-0059::STEP-ACTIVATE_SHARED_DEVICE`                   | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Resuelve acceso, sesión, contexto o cuenta en tiempo de ejecución; no mantiene configuración empresarial reutilizable.                                                                                                                                     |
-| `VSCREEN-0005` | Bandeja transversal de tareas y notificaciones        | `shell`    | `VPROC-0004::STEP-TRIAGE_TRANSVERSAL_WORK`                  | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
-| `VSCREEN-0006` | Centro de soporte y diagnóstico                       | `shell`    | `VPROC-0058::STEP-DIAGNOSE_AND_ROUTE_SUPPORT`               | `SECONDARY_OPERATIONAL`     | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
+| `VSCREEN-0005` | Bandeja transversal de tareas y notificaciones | `shell` | `VPROC-0004::STEP-TRIAGE_TRANSVERSAL_WORK` | `SECONDARY_OPERATIONAL` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal. |
+| `VSCREEN-0006` | Centro de soporte y diagnóstico | `shell` | `VPROC-0058::STEP-DIAGNOSE_AND_ROUTE_SUPPORT` | `SECONDARY_OPERATIONAL` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal. |
 | `VSCREEN-0007` | Inicio ejecutivo y gerencial                          | `viso`     | `VPROC-0001::STEP-REVIEW_EXECUTIVE_WORK`                    | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
 | `VSCREEN-0008` | Estructura organizativa                               | `viso`     | `VPROC-0002::STEP-MAINTAIN_ORGANIZATIONAL_STRUCTURE`        | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_STRUCTURE`       | La intención dominante mantiene una estructura reutilizable que organiza entidades, ubicaciones o ámbitos. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                              |
 | `VSCREEN-0009` | Políticas, delegaciones y límites                     | `viso`     | `VPROC-0003::STEP-AUTHOR_POLICIES_AND_LIMITS`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_POLICY`          | La intención dominante define y versiona políticas, límites o reglas transversales reutilizables. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                       |
@@ -4619,7 +4649,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0035` | Editor de producto, unidad y presentación             | `nexo`     | `VPROC-0015::STEP-MAINTAIN_PRODUCT_PRESENTATION`            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_MASTER_DATA`     | La intención dominante crea o mantiene datos maestros utilizados por múltiples instancias futuras. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                      |
 | `VSCREEN-0036` | Especificaciones y criterios de calidad               | `nexo`     | `VPROC-0018::STEP-MAINTAIN_QUALITY_SPECIFICATION`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_SPECIFICATION`   | La intención dominante define especificaciones y criterios reutilizables de aceptación. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                                 |
 | `VSCREEN-0037` | Catálogo de ubicaciones                               | `nexo`     | `VPROC-0023::STEP-MAINTAIN_LOCATION_CATALOG`                | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_STRUCTURE`       | La intención dominante mantiene una estructura reutilizable que organiza entidades, ubicaciones o ámbitos. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                              |
-| `VSCREEN-0038` | Identificación y detalle de ubicación                 | `nexo`     | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`            | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_STRUCTURE`       | La intención dominante mantiene una estructura reutilizable que organiza entidades, ubicaciones o ámbitos. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                              |
+| `VSCREEN-0038` | Identificación y detalle de ubicación | `nexo` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | Identifica una ubicación concreta y consulta su contenido; el catálogo reutilizable permanece en VSCREEN-0037. |
 | `VSCREEN-0039` | Consulta de existencias                               | `nexo`     | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`                   | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
 | `VSCREEN-0040` | Conteo de inventario                                  | `nexo`     | `VPROC-0026::STEP-CAPTURE_PHYSICAL_COUNT`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0041` | Revisión de conteo y diferencias                      | `nexo`     | `VPROC-0026::STEP-REVIEW_COUNT_VARIANCE`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
@@ -4642,7 +4672,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0058` | Ejecución de lote                                     | `fogo`     | `VPROC-0034::STEP-EXECUTE_BATCH`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0059` | Registro parcial de producción                        | `fogo`     | `VPROC-0034::STEP-CAPTURE_BATCH_PROGRESS`                   | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0060` | Finalización y cierre de lote                         | `fogo`     | `VPROC-0037::STEP-CLOSE_BATCH`                              | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
-| `VSCREEN-0061` | Receta operativa                                      | `fogo`     | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE`                | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
+| `VSCREEN-0061` | Receta operativa | `fogo` | `VPROC-0016::STEP-CONSULT_APPLICABLE_RECIPE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal. |
 | `VSCREEN-0062` | Catálogo y editor de recetas                          | `fogo`     | `VPROC-0016::STEP-AUTHOR_RECIPE`                            | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_MASTER_DATA`     | La intención dominante crea o mantiene datos maestros utilizados por múltiples instancias futuras. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                      |
 | `VSCREEN-0063` | Revisión, aprobación y publicación de receta          | `fogo`     | `VPROC-0016::STEP-APPROVE_AND_PUBLISH_RECIPE`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_PUBLICATION`     | La intención dominante revisa y publica una versión reutilizable que condiciona operación posterior. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                    |
 | `VSCREEN-0064` | Prueba de receta y rendimiento                        | `fogo`     | `VPROC-0016::STEP-TEST_RECIPE_AND_YIELD`                    | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
@@ -4661,7 +4691,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0077` | Recepción total o parcial                             | `origo`    | `VPROC-0022::STEP-RECEIVE_PURCHASE`                         | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0078` | Resolución de diferencias de recepción                | `origo`    | `VPROC-0022::STEP-RESOLVE_RECEIPT_VARIANCE`                 | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0079` | Historial y auditoría de abastecimiento               | `origo`    | `VPROC-0022::STEP-AUDIT_PROCUREMENT_CYCLE`                  | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | No define ni mantiene una estructura, política, maestro, especificación, plantilla, publicación o regla reutilizable bajo este contrato.                                                                                                                   |
-| `VSCREEN-0080` | Inicio POS                                            | `pulso`    | `VPROC-0039::STEP-ENTER_POS_WORKSPACE`                      | `SECONDARY_OPERATIONAL`     | `OUTSIDE_ADMINISTRATIVE_CLASS` | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
+| `VSCREEN-0080` | Inicio POS | `pulso` | `VPROC-0039::STEP-ENTER_POS_WORKSPACE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal. |
 | `VSCREEN-0081` | Creación de venta o pedido                            | `pulso`    | `VPROC-0039::STEP-CREATE_SALE_OR_ORDER`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0082` | Mapa de salón y mesas                                 | `pulso`    | `VPROC-0038::STEP-MANAGE_TABLE_SERVICE`                     | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0083` | Detalle y modificación de pedido                      | `pulso`    | `VPROC-0038::STEP-MODIFY_ACTIVE_ORDER`                      | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
@@ -4687,7 +4717,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0103` | Conciliación de inventario, producción y variaciones  | `numera`   | `VPROC-0054::STEP-RECONCILE_OPERATING_VARIANCES`            | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
 | `VSCREEN-0104` | Costos, rentabilidad y escenarios                     | `numera`   | `VPROC-0054::STEP-ANALYZE_COST_AND_PROFITABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
 | `VSCREEN-0105` | Cierre, reapertura y corrección de periodo            | `numera`   | `VPROC-0054::STEP-CLOSE_OR_REOPEN_PERIOD`                   | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
-| `VSCREEN-0106` | Reportes y exportaciones financieras                  | `numera`   | `VPROC-0061::STEP-PUBLISH_FINANCIAL_REPORT`                 | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `PRIMARY_SUPERVISION`       | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal.                                                                                                                   |
+| `VSCREEN-0106` | Reportes y exportaciones financieras | `numera` | `VPROC-0061::STEP-PUBLISH_FINANCIAL_REPORT` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | La intención dominante es vigilar carga, riesgo, desviaciones o resultados; la pantalla no mantiene configuración como objeto principal. |
 | `VSCREEN-0107` | Inicio del cliente y resumen de beneficios            | `pass`     | `VPROC-0045::STEP-ENTER_LOYALTY_HOME`                       | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Es una superficie de cliente. Preferencias, consentimientos, direcciones o elecciones propias no se clasifican como configuración empresarial.                                                                                                             |
 | `VSCREEN-0108` | QR personal de identificación                         | `pass`     | `VPROC-0045::STEP-PRESENT_CUSTOMER_ID`                      | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Es una superficie de cliente. Preferencias, consentimientos, direcciones o elecciones propias no se clasifican como configuración empresarial.                                                                                                             |
 | `VSCREEN-0109` | Catálogo de beneficios y recompensas                  | `pass`     | `VPROC-0045::STEP-CONSULT_REWARDS_CATALOG`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Es una superficie de cliente. Preferencias, consentimientos, direcciones o elecciones propias no se clasifican como configuración empresarial.                                                                                                             |
@@ -4716,7 +4746,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0132` | Reservas de inventario                                | `nexo`     | `VPROC-0028::STEP-RESERVE_STOCK`                            | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0133` | Planes y órdenes de mantenimiento de activos          | `nexo`     | `VPROC-0030::STEP-PLAN_AND_EXECUTE_ASSET_MAINTENANCE`       | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `SECONDARY_CONFIGURATION`      | `CONFIG_CONTROL_PLAN`    | La pantalla mantiene planes, calendarios o controles recurrentes, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario.                       |
 | `VSCREEN-0134` | Garantías, seguros y reclamaciones de activos         | `nexo`     | `VPROC-0030::STEP-MANAGE_ASSET_CLAIM`                       | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
-| `VSCREEN-0135` | Kits y conjuntos                                      | `nexo`     | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `SECONDARY_CONFIGURATION`      | `CONFIG_MASTER_DATA`     | La pantalla crea o mantiene datos maestros utilizados por múltiples instancias futuras, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario. |
+| `VSCREEN-0135` | Instancias y operación de kits | `nexo` | `VPROC-0067::STEP-ASSEMBLE_AND_CONTROL_KIT` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | Opera instancias de kit; la definición reutilizable quedó separada en VSCREEN-0176. |
 | `VSCREEN-0136` | Flota y vehículos                                     | `nexo`     | `VPROC-0031::STEP-MANAGE_FLEET_ASSET`                       | `SECONDARY_OPERATIONAL`     | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `SECONDARY_CONFIGURATION`      | `CONFIG_MASTER_DATA`     | La pantalla crea o mantiene datos maestros utilizados por múltiples instancias futuras, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario. |
 | `VSCREEN-0137` | Kilometraje y combustible                             | `nexo`     | `VPROC-0031::STEP-CAPTURE_MILEAGE_AND_FUEL`                 | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0138` | Planeación de rutas y despachos                       | `nexo`     | `VPROC-0048::STEP-PLAN_ROUTE_AND_DISPATCH`                  | `PRIMARY_OPERATIONAL`       | `OUTSIDE_ADMINISTRATIVE_CLASS` | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
@@ -4725,7 +4755,7 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0141` | Instalaciones, servicios y mantenimiento locativo     | `nexo`     | `VPROC-0055::STEP-MANAGE_FACILITY_SERVICE`                  | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `SECONDARY_CONFIGURATION`      | `CONFIG_CONTROL_PLAN`    | La pantalla mantiene planes, calendarios o controles recurrentes, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario.                       |
 | `VSCREEN-0142` | Configuración de políticas y rutas logísticas         | `nexo`     | `VPROC-0048::STEP-CONFIGURE_LOGISTICS_POLICY`               | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_POLICY`          | La intención dominante define y versiona políticas, límites o reglas transversales reutilizables. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                       |
 | `VSCREEN-0143` | Diseñador de etiquetas logísticas                     | `nexo`     | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`          | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION`        | `CONFIG_TEMPLATE`        | La intención dominante diseña y versiona una plantilla reutilizable. La configuración afecta múltiples instancias futuras, conserva versión y no ejecuta por sí sola un caso operativo.                                                                    |
-| `VSCREEN-0144` | Configuración y cola de impresión logística           | `nexo`     | `VPROC-0024::STEP-CONFIGURE_AND_OPERATE_PRINT_QUEUE`        | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `SECONDARY_CONFIGURATION`      | `CONFIG_DEVICE_POLICY`   | La pantalla gobierna capacidades, vigencia o parámetros de dispositivos, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario.                |
+| `VSCREEN-0144` | Cola y trabajos de impresión logística | `nexo` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE` | `PRIMARY_OPERATIONAL` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS` | `NONE` | Opera trabajos de impresión; la configuración de impresoras quedó separada en VSCREEN-0177. |
 | `VSCREEN-0145` | Contratos, precios y condiciones de proveedor         | `origo`    | `VPROC-0020::STEP-GOVERN_SUPPLIER_TERMS`                    | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `OUTSIDE_SUPERVISION_CLASS` | `SECONDARY_CONFIGURATION`      | `CONFIG_TERMS`           | La pantalla versiona condiciones contractuales o comerciales reutilizables, pero su intención primaria ya es operativa, administrativa o de supervisión. La configuración permanece acotada, versionada y subordinada al contrato propietario.             |
 | `VSCREEN-0146` | Desempeño y reclamaciones de proveedor                | `origo`    | `VPROC-0020::STEP-REVIEW_SUPPLIER_PERFORMANCE`              | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
 | `VSCREEN-0147` | Oportunidades y cotizaciones de catering o B2B        | `pulso`    | `VPROC-0041::STEP-QUALIFY_B2B_OPPORTUNITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `PRIMARY_ADMINISTRATIVE`       | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es administrar un caso, expediente, obligación o decisión; no mantener una regla o maestro reutilizable independiente.                                                                                                              |
@@ -4757,6 +4787,8 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `VSCREEN-0173` | Trazabilidad e investigación de lote                  | `fogo`     | `VPROC-0035::STEP-INVESTIGATE_BATCH_TRACEABILITY`           | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE`     | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Reconstruye e investiga historia de lote; su clase primaria corresponde a auditoría y se resolverá en PROC-SCREEN-009.                                                                                                                                     |
 | `VSCREEN-0174` | Controles operativos de inocuidad                     | `fogo`     | `VPROC-0014::STEP-EXECUTE_FOOD_SAFETY_CONTROL`              | `PRIMARY_OPERATIONAL`       | `SECONDARY_ADMINISTRATIVE`     | `SECONDARY_SUPERVISION`     | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | La intención dominante es ejecutar o cerrar trabajo operativo vivo; los valores del caso no constituyen configuración reutilizable.                                                                                                                        |
 | `VSCREEN-0175` | Seguridad de cuenta y sesiones                        | `shell`    | `VPROC-0059::STEP-MANAGE_ACCOUNT_SECURITY`                  | `OUTSIDE_OPERATIONAL_CLASS` | `OUTSIDE_ADMINISTRATIVE_CLASS` | `OUTSIDE_SUPERVISION_CLASS` | `OUTSIDE_CONFIGURATION_CLASS`  | `NONE`                   | Resuelve acceso, sesión, contexto o cuenta en tiempo de ejecución; no mantiene configuración empresarial reutilizable.                                                                                                                                     |
+| `VSCREEN-0176` | Definición de kits y conjuntos | `nexo` | `VPROC-0067::STEP-MAINTAIN_KIT_DEFINITION` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION` | `CONFIG_MASTER_DATA` | Define y versiona el maestro reutilizable consumido por futuras instancias de kit. |
+| `VSCREEN-0177` | Configuración de impresoras logísticas | `nexo` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS` | `OUTSIDE_OPERATIONAL_CLASS` | `SECONDARY_ADMINISTRATIVE` | `OUTSIDE_SUPERVISION_CLASS` | `PRIMARY_CONFIGURATION` | `CONFIG_DEVICE_POLICY` | Mantiene impresoras, capacidades, destinos, vigencia y políticas reutilizables. |
 
 ---
 
@@ -4767,15 +4799,15 @@ Se clasifica `OUTSIDE_CONFIGURATION_CLASS` cuando predomina:
 | `shell`    |                      0 |                        0 |              7 |       7 |
 | `viso`     |                      4 |                        5 |             22 |      31 |
 | `anima`    |                      0 |                        0 |             14 |      14 |
-| `nexo`     |                      7 |                        5 |             23 |      35 |
+| `nexo`     |                      8 |                        3 |             26 |      37 |
 | `fogo`     |                      2 |                        0 |             13 |      15 |
 | `origo`    |                      1 |                        2 |             11 |      14 |
 | `pulso`    |                      1 |                        0 |             19 |      20 |
 | `numera`   |                      0 |                        2 |             18 |      20 |
 | `pass`     |                      0 |                        0 |             19 |      19 |
-| **Total**  |                 **15** |                   **14** |        **146** | **175** |
+| **Total**  |                 **16** |                   **12** |        **149** | **177** |
 
-La aplicación no determina la clase. El resumen solo reconcilia las 175 filas físicas.
+La aplicación no determina la clase. El resumen solo reconcilia las 177 filas físicas.
 
 ---
 
@@ -4783,7 +4815,7 @@ La aplicación no determina la clase. El resumen solo reconcilia las 175 filas f
 
 | Patrón                                    | Pantallas |
 | ----------------------------------------- | --------: |
-| `CONFIG_STRUCTURE`                        |         3 |
+| `CONFIG_STRUCTURE`                        |         2 |
 | `CONFIG_POLICY`                           |         4 |
 | `CONFIG_ACCESS_MODEL`                     |         2 |
 | `CONFIG_DEVICE_POLICY`                    |         2 |
@@ -4795,7 +4827,7 @@ La aplicación no determina la clase. El resumen solo reconcilia las 175 filas f
 | `CONFIG_CONTROL_PLAN`                     |         5 |
 | `CONFIG_TERMS`                            |         1 |
 | `CONFIG_ALLOCATION_RULE`                  |         1 |
-| **Total con relevancia de configuración** |    **29** |
+| **Total con relevancia de configuración** |    **28** |
 
 Las 146 pantallas con `NONE` continúan hacia auditoría, personal o cliente, o conservan una clase primaria ya aprobada.
 
@@ -4869,7 +4901,7 @@ Una tarea de clasificación nunca podrá corregir un nombre “de paso”.
 
 La compilación deberá fallar cuando:
 
-1. falte una de las 175 pantallas;
+1. falte una de las 177 pantallas;
 2. una pantalla aparezca más de una vez;
 3. un nombre difiera del catálogo canónico;
 4. falte `configuration_fit`;
@@ -4879,7 +4911,7 @@ La compilación deberá fallar cuando:
 8. falte fundamento;
 9. las clases anteriores no coincidan;
 10. exista otra clase primaria junto con `PRIMARY_CONFIGURATION`;
-11. los conteos no sean 15, 14 y 146;
+11. los conteos no sean 16, 12 y 149;
 12. los patrones no sumen 29;
 13. una personalización de caso se clasifique como configuración;
 14. una preferencia personal o de cliente sea configuración empresarial;
@@ -4941,11 +4973,11 @@ Se incorporan `TREQ-UX-699` a `TREQ-UX-728` al Registro Canónico completo. Perm
 
 #### 22. Criterios de aceptación
 
-- [x] Se clasifican las 175 pantallas.
-- [x] Los 175 nombres se conservan exactamente.
+- [x] Se clasifican las 177 pantallas.
+- [x] Los 177 nombres se conservan exactamente.
 - [x] Cada pantalla recibe exactamente un `configuration_fit`.
-- [x] Se distinguen 15 primarias, 14 secundarias y 146 fuera de clase.
-- [x] Las 29 pantallas relevantes usan doce patrones.
+- [x] Se distinguen 16 primarias, 12 secundarias y 149 fuera de clase.
+- [x] Las 28 pantallas relevantes usan doce patrones.
 - [x] Ninguna primaria de configuración compite con otra clase primaria.
 - [x] Se separa configuración de operación, administración, supervisión y auditoría.
 - [x] Se separa configuración reusable de personalización de casos.

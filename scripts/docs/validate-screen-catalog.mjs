@@ -203,6 +203,8 @@ export function validateScreenCatalog({ root = process.cwd() } = {}) {
     ['VSCREEN-0168', 'pass'],
     ['VSCREEN-0170', 'pass'],
     ['VSCREEN-0171', 'pass'],
+    ['VSCREEN-0176', 'nexo'],
+    ['VSCREEN-0177', 'nexo'],
   ]);
   const screenById = new Map(screens.map((screen) => [screen.id, screen]));
   for (const line of screenSource.split('\n')) {

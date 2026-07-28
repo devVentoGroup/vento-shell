@@ -39,7 +39,7 @@ function mutateRegex(root, pattern, replacement) {
 
 test('acepta el catálogo canónico vigente', () => {
   const root = fixture();
-  assert.equal(validateScreenCatalog({ root }).screens, 175);
+  assert.equal(validateScreenCatalog({ root }).screens, 177);
 });
 
 test('rechaza una pantalla faltante aunque los demás documentos existan', () => {

@@ -6,6 +6,10 @@ import { validateCanonicalTreqRegistry } from './validate-treq-registry.mjs';
 import { validateScreenCatalog } from './validate-screen-catalog.mjs';
 import { validateProcessApplicationIntegrity } from './validate-process-application-integrity.mjs';
 import { validateScreenProcessBindings } from './validate-screen-process-bindings.mjs';
+import {
+  validateScreenClassifications,
+  validateScreenStepBindings,
+} from './validate-screen-contract-matrices.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -107,6 +111,17 @@ try {
   );
 } catch (error) {
   fail(error instanceof Error ? error.message : String(error));
+}
+
+try {
+  const stepStats = validateScreenStepBindings({ root });
+  const classificationStats = validateScreenClassifications({ root });
+  console.log(
+    `OK: matrices de pantalla; ${stepStats.screens} pasos; ${stepStats.anchors} anclas; `
+    + `${classificationStats.matrices} clasificaciones de ${classificationStats.screens} pantallas.`
+  );
+} catch (error) {
+  fail(`Matrices de pantalla inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 let compiled = '';
