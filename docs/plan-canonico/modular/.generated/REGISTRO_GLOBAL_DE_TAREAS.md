@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **327** |
+| Aprobadas | **328** |
 | En propuesta | **0** |
-| No iniciadas | **1248** |
+| No iniciadas | **1247** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-SCREEN-024` — Definir permisos de cada acción | ✅ APROBADA |
-| Tarea actual | `PROC-SCREEN-025` — Vincular cada acción con Server Action, API o RPC | ⬜ NO INICIADA |
-| Siguiente | `PROC-SCREEN-026` — Identificar pantalla reemplazada o legacy | ⬜ NO INICIADA |
+| Última aprobada | `PROC-SCREEN-025` — Vincular cada acción con Server Action, API o RPC | ✅ APROBADA |
+| Tarea actual | `PROC-SCREEN-026` — Identificar pantalla reemplazada o legacy | ⬜ NO INICIADA |
+| Siguiente | `PROC-SCREEN-027` — Definir métrica de usabilidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -321,7 +321,7 @@
 | ✅ APROBADA | `PROC-SCREEN-022` | Definir información sensible visible | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-023` | Definir permiso de lectura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ✅ APROBADA | `PROC-SCREEN-024` | Definir permisos de cada acción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
-| ⬜ NO INICIADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
+| ✅ APROBADA | `PROC-SCREEN-025` | Vincular cada acción con Server Action, API o RPC | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-026` | Identificar pantalla reemplazada o legacy | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-027` | Definir métrica de usabilidad | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
 | ⬜ NO INICIADA | `PROC-SCREEN-028` | Definir criterio de aceptación operativo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md` |
