@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **338** |
+| Aprobadas | **339** |
 | En propuesta | **0** |
-| No iniciadas | **1237** |
+| No iniciadas | **1236** |
 | Rechazadas | **0** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-COVER-007` — Prohibir declarar completo un proceso con solo infraestructura | ✅ APROBADA |
-| Tarea actual | `PROC-COVER-008` — Aprobar matriz capacidad → proceso → pantalla → implementación | ⬜ NO INICIADA |
-| Siguiente | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE | ⬜ NO INICIADA |
+| Última aprobada | `PROC-COVER-008` — Aprobar matriz capacidad → proceso → pantalla → implementación | ✅ APROBADA |
+| Tarea actual | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE | ⬜ NO INICIADA |
+| Siguiente | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -332,7 +332,7 @@
 | ✅ APROBADA | `PROC-COVER-005` | Identificar dependencias que impiden completar el proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-006` | Definir alcance mínimo y alcance objetivo | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |

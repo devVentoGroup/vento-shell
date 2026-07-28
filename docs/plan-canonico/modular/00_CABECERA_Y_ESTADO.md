@@ -20,28 +20,28 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **338** |
+| Tareas aprobadas | **339** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1237** |
+| Tareas no iniciadas | **1236** |
 | Tareas rechazadas | **0** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-COVER-007 — Prohibir declarar completo un proceso con solo infraestructura** |
-| Tarea actual | **PROC-COVER-008 — Aprobar matriz capacidad → proceso → pantalla → implementación** |
+| Última tarea aprobada | **PROC-COVER-008 — Aprobar matriz capacidad → proceso → pantalla → implementación** |
+| Tarea actual | **PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE** |
+| Siguiente tarea | **PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 97 de 101 aprobadas; PROC-COVER-008 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 98 de 101 aprobadas; PROC-COVER-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-COVER-007` — Prohibir declarar completo un proceso con solo infraestructura |
-| Tarea actual | `PROC-COVER-008` — Aprobar matriz capacidad → proceso → pantalla → implementación — **NO INICIADA** |
-| Siguiente tarea | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE |
+| Última aprobada | `PROC-COVER-008` — Aprobar matriz capacidad → proceso → pantalla → implementación |
+| Tarea actual | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE — **NO INICIADA** |
+| Siguiente tarea | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +54,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **97 DE 101 APROBADAS — ACTUAL PROC-COVER-008** |
+| BLOQUE E2 | **98 DE 101 APROBADAS — ACTUAL PROC-COVER-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +87,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-COVER-007 — Prohibir declarar completo un proceso con solo infraestructura
-        ↓
-TAREA ACTUAL
 PROC-COVER-008 — Aprobar matriz capacidad → proceso → pantalla → implementación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE
         ↓
+SIGUIENTE TAREA RESERVADA
+PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 97 de 101 tareas aprobadas
+BLOQUE E2 — 98 de 101 tareas aprobadas
 ```
