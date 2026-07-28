@@ -20,28 +20,29 @@
 | Fragmentos canónicos | **134** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **340** |
+| Tareas aprobadas | **341** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1235** |
+| Tareas no iniciadas | **1234** |
 | Tareas rechazadas | **0** |
+| Porcentaje de completamiento | **21.65% (341/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE** |
-| Tarea actual | **PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1** |
+| Última tarea aprobada | **PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1** |
+| Tarea actual | **NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5** |
+| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
 | Bloque actual | **BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal** |
-| Progreso del bloque | **BLOQUE E2: 99 de 101 aprobadas; PROC-COVER-010 pendiente** |
+| Progreso del bloque | **BLOQUE E2: 100 de 101 aprobadas; NFR-REQ-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE |
-| Tarea actual | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 — **NO INICIADA** |
-| Siguiente tarea | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 |
+| Última aprobada | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 |
+| Tarea actual | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 — **NO INICIADA** |
+| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -54,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E2 | **99 DE 101 APROBADAS — ACTUAL PROC-COVER-010** |
+| BLOQUE E2 | **100 DE 101 APROBADAS — ACTUAL NFR-REQ-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -87,14 +88,11 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE
-        ↓
-TAREA ACTUAL
 PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E2 — 99 de 101 tareas aprobadas
+BLOQUE E2 — 100 de 101 tareas aprobadas
 ```

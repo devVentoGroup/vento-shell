@@ -142,17 +142,28 @@ function readGlobalTaskRegistry(baseDir, manifest) {
   return taskMap;
 }
 
+export function calculateCompletionPercentage(approved, total) {
+  if (!Number.isInteger(approved) || !Number.isInteger(total) || approved < 0 || total < 0) {
+    fail('los conteos de completamiento deben ser enteros no negativos.');
+  }
+  if (approved > total) fail('las tareas aprobadas no pueden superar el total canónico.');
+  if (total === 0) return 0;
+  return Number(((approved / total) * 100).toFixed(2));
+}
+
 function summarizeRegistry(taskMap) {
   const tasks = [...taskMap.values()];
   const count = (state) => tasks.filter((task) => task.state === state).length;
+  const approved = count('APROBADA');
 
   return {
     total: tasks.length,
     auth: tasks.filter((task) => task.id.startsWith('AUTH-')).length,
-    approved: count('APROBADA'),
+    approved,
     proposed: count('PROPUESTA PARA APROBACIÓN'),
     notStarted: count('NO INICIADA'),
     rejected: count('RECHAZADA'),
+    completionPercentage: calculateCompletionPercentage(approved, tasks.length),
   };
 }
 
@@ -222,6 +233,7 @@ function replaceRegistrySummaryRows(header, stats) {
     'Tareas en propuesta',
     'Tareas no iniciadas',
     'Tareas rechazadas',
+    'Porcentaje de completamiento',
   ];
 
   let updated = header;
@@ -241,6 +253,7 @@ function replaceRegistrySummaryRows(header, stats) {
     `| Tareas en propuesta | **${stats.proposed}** |`,
     `| Tareas no iniciadas | **${stats.notStarted}** |`,
     `| Tareas rechazadas | **${stats.rejected}** |`,
+    `| Porcentaje de completamiento | **${stats.completionPercentage.toFixed(2)}% (${stats.approved}/${stats.total})** |`,
   ].join('\n');
 
   return updated.replace(anchorPattern, `${anchor}\n${rows}`);
@@ -460,6 +473,7 @@ function buildRegistryMarkdown(taskMap, stats, continuity) {
     `| En propuesta | **${stats.proposed}** |`,
     `| No iniciadas | **${stats.notStarted}** |`,
     `| Rechazadas | **${stats.rejected}** |`,
+    `| Porcentaje de completamiento | **${stats.completionPercentage.toFixed(2)}% (${stats.approved}/${stats.total})** |`,
     '',
     '## Continuidad activa',
     '',

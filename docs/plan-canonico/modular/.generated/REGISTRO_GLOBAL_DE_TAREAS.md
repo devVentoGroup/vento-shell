@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **340** |
+| Aprobadas | **341** |
 | En propuesta | **0** |
-| No iniciadas | **1235** |
+| No iniciadas | **1234** |
 | Rechazadas | **0** |
+| Porcentaje de completamiento | **21.65% (341/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PROC-COVER-009` — Vincular explícitamente proceso AS-IS y proceso TO-BE | ✅ APROBADA |
-| Tarea actual | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 | ⬜ NO INICIADA |
-| Siguiente | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 | ⬜ NO INICIADA |
+| Última aprobada | `PROC-COVER-010` — Registrar nuevas brechas y devolverlas al registro canónico de E1 | ✅ APROBADA |
+| Tarea actual | `NFR-REQ-012` — Aprobar requisitos no funcionales antes de E5 | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -334,7 +334,7 @@
 | ✅ APROBADA | `PROC-COVER-007` | Prohibir declarar completo un proceso con solo infraestructura | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-008` | Aprobar matriz capacidad → proceso → pantalla → implementación | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `PROC-COVER-009` | Vincular explícitamente proceso AS-IS y proceso TO-BE | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
-| ⬜ NO INICIADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
+| ✅ APROBADA | `PROC-COVER-010` | Registrar nuevas brechas y devolverlas al registro canónico de E1 | `bloques/E2_PROCESOS_Y_EXPERIENCIA/06_COBERTURA_DE_PROCESOS.md` |
 | ✅ APROBADA | `NFR-REQ-001` | Definir criticidad y disponibilidad por proceso | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-002` | Definir volumen, concurrencia y crecimiento esperado | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |
 | ✅ APROBADA | `NFR-REQ-003` | Definir tiempos máximos de respuesta | `bloques/E2_PROCESOS_Y_EXPERIENCIA/07_REQUISITOS_NO_FUNCIONALES.md` |

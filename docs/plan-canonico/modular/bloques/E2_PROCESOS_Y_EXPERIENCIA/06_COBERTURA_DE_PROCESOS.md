@@ -3322,5 +3322,328 @@ PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico 
 ```
 
 
-### [ ] PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1
+### ✅ PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1
+
+**Estado:** APROBADA
+
+**Bloque:** E2 — Arquitectura funcional, procesos y experiencia transversal
+
+**Marcador exacto que reemplaza:** `### [ ] PROC-COVER-010 — Registrar nuevas brechas y devolverlas al registro canónico de E1`
+
+**Tarea anterior:** `PROC-COVER-009 — Vincular explícitamente proceso AS-IS y proceso TO-BE` — APROBADA
+
+**Siguiente tarea reservada:** `NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5` — NO INICIADA
+
+**Artefactos lógicos contenidos en esta tarea:**
+
+- `PROCESS-GAP-RETURN-CONTRACT-001`;
+- `PROCESS-GAP-CANDIDATE-RECONCILIATION-001`;
+- `PROCESS-GAP-DEDUPLICATION-RULE-001`;
+- `PROCESS-GAP-RETURN-MATRIX-001`;
+- `PROCESS-GAP-REGISTER-DELTA-001`;
+- `PROCESS-GAP-PACKAGE-DELTA-001`;
+- `PROCESS-GAP-GATE-REASSESSMENT-001`;
+- `PROCESS-GAP-CARRYOVER-010`;
+
+**Naturaleza:** cierre documental del subbloque `PROC-COVER-*` que reconcilia todos los hallazgos de cobertura contra el registro canónico de brechas de E1. Vincula brechas existentes, amplía su evidencia sin duplicarlas y crea únicamente seis brechas materiales que no estaban representadas de forma suficiente. No resuelve las brechas ni autoriza implementación.
+
+**Cambios en procesos, capacidades, pantallas, aplicaciones, permisos, código, Supabase, migraciones, despliegues o producción:** no autorizados por esta tarea.
+
+---
+
+#### 1. Propósito
+
+Evitar que las diferencias detectadas por `PROC-COVER-002` a `PROC-COVER-009` queden como referencias internas, notas narrativas o duplicados. Cada hallazgo deberá terminar en una de tres decisiones auditables: vínculo con brecha existente, ampliación versionada de una brecha existente o creación de una brecha canónica nueva con propietario, fecha, tarea, paquete y perfil de cierre.
+
+```text
+HALLAZGO DE COBERTURA
+        ↓
+BÚSQUEDA Y COMPARACIÓN CONTRA 814 BRECHAS E1
+        ↓
+VINCULAR | AMPLIAR | CREAR
+        ↓
+PROPIETARIO + FECHA + TAREA + PAQUETE + PERFIL + EVIDENCIA
+```
+
+---
+
+#### 2. Fuentes y línea base
+
+- 7 referencias `MANUAL-GAP-VPROC-*` de `PROC-COVER-002`;
+- 30 referencias `IMPL-GAP-VPROC-*` de `PROC-COVER-003`;
+- 5 excepciones `COVER-EXC-008-*` de `PROC-COVER-008`;
+- 7 confirmaciones de ausencia de precursor en `PROC-COVER-009`;
+- 69 procesos, 177 pantallas, 413 dependencias, alcances y guards aprobados;
+- registro E1 vigente con 814 brechas, 22 referencias de control/evidencia, 201 paquetes y puerta `PASS_WITH_CARRYOVER`.
+
+```text
+base_gap_git_blob: f563ed086ae65c5f9e2f78efaa71c842107a5a5c
+base_04A_git_blob: f5884aab361822ed996ab036ec28c38e3ddabf39
+```
+
+---
+
+#### 3. Regla de deduplicación
+
+Una referencia nueva no crea automáticamente una brecha nueva. Se considera la misma brecha cuando coinciden materialmente resultado afectado, causa, riesgo, capacidad, propietario de resolución y evidencia de cierre. Se amplía la brecha existente cuando el hallazgo añade alcance, procesos, pantallas o evidencia sin cambiar su causa dominante. Solo se crea una brecha cuando ningún registro anterior gobierna de forma suficiente la condición material.
+
+| Decisión                      | Efecto                                                                 | Prohibición                                   |
+| ----------------------------- | ---------------------------------------------------------------------- | --------------------------------------------- |
+| `LINKED_TO_EXISTING_GAP`      | La referencia interna queda vinculada a una o más brechas E1 vigentes. | No crear otro ID por cambiar de tarea fuente. |
+| `EXISTING_GAP_SCOPE_EXTENDED` | Se añade evidencia y alcance mediante delta versionado.                | No reescribir ni borrar la fila histórica.    |
+| `NEW_CANONICAL_GAP_CREATED`   | Se crea ID, propietario, fecha, tarea, paquete, perfil y evidencia.    | No crear gap sin ruta de resolución.          |
+
+---
+
+#### 4. Resultado de reconciliación de candidatos
+
+| Caso                  | Alcance                                              | Fuentes reconciliadas                                           | Decisión                      | Brecha(s) canónica(s)                    | Propietario | Resolución                                                    |
+| --------------------- | ---------------------------------------------------- | --------------------------------------------------------------- | ----------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `IMPL-GAP-VPROC-0001` | `VPROC-0001`                                         | IMPL-GAP-VPROC-0001                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0003` | `VPROC-0003`                                         | IMPL-GAP-VPROC-0003                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0004` | `VPROC-0004`                                         | IMPL-GAP-VPROC-0004                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0009` | `VPROC-0009`                                         | IMPL-GAP-VPROC-0009                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0012` | `VPROC-0012`                                         | IMPL-GAP-VPROC-0012                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0013` | `VPROC-0013`                                         | IMPL-GAP-VPROC-0013                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0014` | `VPROC-0014`                                         | IMPL-GAP-VPROC-0014                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0018` | `VPROC-0018`                                         | IMPL-GAP-VPROC-0018                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0020` | `VPROC-0020`                                         | IMPL-GAP-VPROC-0020                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0027` | `VPROC-0027`                                         | IMPL-GAP-VPROC-0027                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0029` | `VPROC-0029`                                         | IMPL-GAP-VPROC-0029                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0030` | `VPROC-0030`                                         | IMPL-GAP-VPROC-0030                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0031` | `VPROC-0031`                                         | IMPL-GAP-VPROC-0031                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0033` | `VPROC-0033`                                         | IMPL-GAP-VPROC-0033                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0035` | `VPROC-0035`                                         | IMPL-GAP-VPROC-0035                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0037` | `VPROC-0037`                                         | IMPL-GAP-VPROC-0037                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0041` | `VPROC-0041`                                         | IMPL-GAP-VPROC-0041                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0047` | `VPROC-0047`                                         | IMPL-GAP-VPROC-0047                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0048` | `VPROC-0048`                                         | IMPL-GAP-VPROC-0048                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0055` | `VPROC-0055`                                         | IMPL-GAP-VPROC-0055                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0058` | `VPROC-0058`                                         | IMPL-GAP-VPROC-0058                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0062` | `VPROC-0062`                                         | IMPL-GAP-VPROC-0062                                             | `LINKED_TO_EXISTING_GAP`      | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | `OWN-OPS`   | bloques propietarios del proceso + primer paquete E5 afectado |
+| `IMPL-GAP-VPROC-0032` | `VPROC-0032`                                         | IMPL-GAP-VPROC-0032                                             | `EXISTING_GAP_SCOPE_EXTENDED` | H-CAP-SCOPE-007-006; H-CAP-SCOPE-007-007 | `OWN-OPS`   | NEXO-DOM-011; NEXO-DOM-015; NEXO-DOM-017                      |
+| `CASE-VPROC-0063`     | `VPROC-0063`                                         | MANUAL-GAP-VPROC-0063; IMPL-GAP-VPROC-0063; PLINEAGE-VPROC-0063 | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-001                     | `OWN-GG`    | INFO-DOM-012; GAP-PKG-202                                     |
+| `CASE-VPROC-0064`     | `VPROC-0064`                                         | MANUAL-GAP-VPROC-0064; IMPL-GAP-VPROC-0064; PLINEAGE-VPROC-0064 | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-002                     | `OWN-GG`    | INFO-INT-003; GAP-PKG-203                                     |
+| `CASE-VPROC-0065`     | `VPROC-0065`                                         | MANUAL-GAP-VPROC-0065; IMPL-GAP-VPROC-0065; PLINEAGE-VPROC-0065 | `LINKED_TO_EXISTING_GAP`      | H-CAP-SCOPE-002-010; H-CAP-COVER-011-008 | `OWN-TAL`   | VISO-UX-002; decisión formal de reactivación                  |
+| `CASE-VPROC-0066`     | `VPROC-0066`                                         | MANUAL-GAP-VPROC-0066; IMPL-GAP-VPROC-0066; PLINEAGE-VPROC-0066 | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-003                     | `OWN-SST`   | NEXO-DOM-001; GAP-PKG-204                                     |
+| `CASE-VPROC-0067`     | `VPROC-0067`                                         | MANUAL-GAP-VPROC-0067; IMPL-GAP-VPROC-0067; PLINEAGE-VPROC-0067 | `EXISTING_GAP_SCOPE_EXTENDED` | H-CAP-SCOPE-008-012                      | `OWN-OPS`   | NEXO-DOM-014; GAP-PKG-107                                     |
+| `CASE-VPROC-0068`     | `VPROC-0068`                                         | MANUAL-GAP-VPROC-0068; IMPL-GAP-VPROC-0068; PLINEAGE-VPROC-0068 | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-004                     | `OWN-COM`   | DATA-DOM-012; GAP-PKG-205                                     |
+| `CASE-VPROC-0069`     | `VPROC-0069`                                         | MANUAL-GAP-VPROC-0069; IMPL-GAP-VPROC-0069; PLINEAGE-VPROC-0069 | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-005                     | `OWN-FIN`   | NUMERA-DOM-018; GAP-PKG-206                                   |
+| `COVER-EXC-008-001`   | VPROC-0056; VPROC-0057                               | COVER-EXC-008-001                                               | `EXISTING_GAP_SCOPE_EXTENDED` | H-CODE-019-005; H-CAP-SCOPE-014-006      | `OWN-COM`   | AURA-AUD-010; AURA-DOM-002; GAP-PKG-192; GAP-PKG-147          |
+| `COVER-EXC-008-002`   | 77 VSCREEN-*                                         | COVER-EXC-008-002                                               | `NEW_CANONICAL_GAP_CREATED`   | H-PROC-COVER-010-006                     | `OWN-TEC`   | SHELL-AUD-011; GAP-PKG-207                                    |
+| `COVER-EXC-008-003`   | 95 VSCREEN-*                                         | COVER-EXC-008-003                                               | `EXISTING_GAP_SCOPE_EXTENDED` | H-CAP-COVER-003-010; H-CAP-COVER-008-002 | `OWN-TEC`   | tarea propietaria de cada action gap; paquetes E5             |
+| `COVER-EXC-008-004`   | 5 VSCREEN-*                                          | COVER-EXC-008-004                                               | `EXISTING_GAP_SCOPE_EXTENDED` | H-CAP-COVER-003-010; H-CAP-COVER-008-009 | `OWN-TEC`   | tarea propietaria de cada rama; paquetes E5                   |
+| `COVER-EXC-008-005`   | VPROC-0065; VSCREEN-0118; VSCREEN-0127; VSCREEN-0128 | COVER-EXC-008-005                                               | `LINKED_TO_EXISTING_GAP`      | H-CAP-SCOPE-002-010                      | `OWN-TAL`   | decisión formal de reactivación; VISO-UX-002                  |
+
+Resultado: 49 referencias fuente revisadas, 42 referencias candidatas, 35 casos reconciliados después de fusionar evidencia coincidente, 24 vínculos directos, 5 ampliaciones y 6 brechas nuevas.
+
+---
+
+#### 5. PROCESS-GAP-RETURN-MATRIX-001
+
+| Proceso      | Registro          | Capacidad   | Clasificación | Fuentes de cobertura                                                               | Resultado                                 | Brecha(s) E1                             | Ruta de resolución                                                                                                      |
+| ------------ | ----------------- | ----------- | ------------- | ---------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` | `PGAP-VPROC-0001` | `CAP-01.02` | `MANUAL`      | IMPL-GAP-VPROC-0001                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0002` | `PGAP-VPROC-0002` | `CAP-01.03` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0003` | `PGAP-VPROC-0003` | `CAP-01.05` | `MANUAL`      | IMPL-GAP-VPROC-0003                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0004` | `PGAP-VPROC-0004` | `CAP-01.08` | `MANUAL`      | IMPL-GAP-VPROC-0004                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0005` | `PGAP-VPROC-0005` | `CAP-02.02` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0006` | `PGAP-VPROC-0006` | `CAP-02.03` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0007` | `PGAP-VPROC-0007` | `CAP-02.06` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0008` | `PGAP-VPROC-0008` | `CAP-02.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0009` | `PGAP-VPROC-0009` | `CAP-02.08` | `MANUAL`      | IMPL-GAP-VPROC-0009                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0010` | `PGAP-VPROC-0010` | `CAP-02.12` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0011` | `PGAP-VPROC-0011` | `CAP-02.13` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0012` | `PGAP-VPROC-0012` | `CAP-03.01` | `MANUAL`      | IMPL-GAP-VPROC-0012                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0013` | `PGAP-VPROC-0013` | `CAP-03.04` | `MANUAL`      | IMPL-GAP-VPROC-0013                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0014` | `PGAP-VPROC-0014` | `CAP-03.06` | `MANUAL`      | IMPL-GAP-VPROC-0014                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0015` | `PGAP-VPROC-0015` | `CAP-04.01` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0016` | `PGAP-VPROC-0016` | `CAP-04.05` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0017` | `PGAP-VPROC-0017` | `CAP-04.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0018` | `PGAP-VPROC-0018` | `CAP-04.09` | `MANUAL`      | IMPL-GAP-VPROC-0018                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0019` | `PGAP-VPROC-0019` | `CAP-05.02` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0020` | `PGAP-VPROC-0020` | `CAP-05.04` | `MANUAL`      | IMPL-GAP-VPROC-0020                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0021` | `PGAP-VPROC-0021` | `CAP-05.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0022` | `PGAP-VPROC-0022` | `CAP-05.08` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0023` | `PGAP-VPROC-0023` | `CAP-06.01` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0024` | `PGAP-VPROC-0024` | `CAP-06.03` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0025` | `PGAP-VPROC-0025` | `CAP-06.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0026` | `PGAP-VPROC-0026` | `CAP-06.12` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0027` | `PGAP-VPROC-0027` | `CAP-06.14` | `MANUAL`      | IMPL-GAP-VPROC-0027                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0028` | `PGAP-VPROC-0028` | `CAP-06.09` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0029` | `PGAP-VPROC-0029` | `CAP-07.02` | `MANUAL`      | IMPL-GAP-VPROC-0029                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0030` | `PGAP-VPROC-0030` | `CAP-07.07` | `MANUAL`      | IMPL-GAP-VPROC-0030                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0031` | `PGAP-VPROC-0031` | `CAP-07.12` | `MANUAL`      | IMPL-GAP-VPROC-0031                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0032` | `PGAP-VPROC-0032` | `CAP-07.03` | `MANUAL`      | IMPL-GAP-VPROC-0032                                                                | `EXISTING_GAP_SCOPE_EXTENDED`             | H-CAP-SCOPE-007-006; H-CAP-SCOPE-007-007 | NEXO-DOM-011; NEXO-DOM-015; NEXO-DOM-017                                                                                |
+| `VPROC-0033` | `PGAP-VPROC-0033` | `CAP-08.02` | `MANUAL`      | IMPL-GAP-VPROC-0033                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0034` | `PGAP-VPROC-0034` | `CAP-08.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0035` | `PGAP-VPROC-0035` | `CAP-08.12` | `MANUAL`      | IMPL-GAP-VPROC-0035                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0036` | `PGAP-VPROC-0036` | `CAP-08.11` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0037` | `PGAP-VPROC-0037` | `CAP-08.13` | `MANUAL`      | IMPL-GAP-VPROC-0037                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0038` | `PGAP-VPROC-0038` | `CAP-09.11` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0039` | `PGAP-VPROC-0039` | `CAP-09.12` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0040` | `PGAP-VPROC-0040` | `CAP-09.13` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0041` | `PGAP-VPROC-0041` | `CAP-09.14` | `MANUAL`      | IMPL-GAP-VPROC-0041                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0042` | `PGAP-VPROC-0042` | `CAP-09.05` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0043` | `PGAP-VPROC-0043` | `CAP-09.09` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0044` | `PGAP-VPROC-0044` | `CAP-09.15` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0045` | `PGAP-VPROC-0045` | `CAP-10.07` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0046` | `PGAP-VPROC-0046` | `CAP-10.04` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0047` | `PGAP-VPROC-0047` | `CAP-10.08` | `MANUAL`      | IMPL-GAP-VPROC-0047                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0048` | `PGAP-VPROC-0048` | `CAP-11.02` | `MANUAL`      | IMPL-GAP-VPROC-0048                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0049` | `PGAP-VPROC-0049` | `CAP-11.09` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0050` | `PGAP-VPROC-0050` | `CAP-11.12` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0051` | `PGAP-VPROC-0051` | `CAP-12.01` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0052` | `PGAP-VPROC-0052` | `CAP-12.05` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0053` | `PGAP-VPROC-0053` | `CAP-12.04` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0054` | `PGAP-VPROC-0054` | `CAP-12.09` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0055` | `PGAP-VPROC-0055` | `CAP-13.07` | `MANUAL`      | IMPL-GAP-VPROC-0055                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0056` | `PGAP-VPROC-0056` | `CAP-14.03` | `PARTIAL`     | COVER-EXC-008-001                                                                  | `EXISTING_GAP_SCOPE_EXTENDED`             | H-CODE-019-005; H-CAP-SCOPE-014-006      | AURA-AUD-010; AURA-DOM-002; GAP-PKG-192; GAP-PKG-147                                                                    |
+| `VPROC-0057` | `PGAP-VPROC-0057` | `CAP-14.07` | `PARTIAL`     | COVER-EXC-008-001                                                                  | `EXISTING_GAP_SCOPE_EXTENDED`             | H-CODE-019-005; H-CAP-SCOPE-014-006      | AURA-AUD-010; AURA-DOM-002; GAP-PKG-192; GAP-PKG-147                                                                    |
+| `VPROC-0058` | `PGAP-VPROC-0058` | `CAP-15.06` | `MANUAL`      | IMPL-GAP-VPROC-0058                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0059` | `PGAP-VPROC-0059` | `CAP-15.01` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0060` | `PGAP-VPROC-0060` | `CAP-16.03` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0061` | `PGAP-VPROC-0061` | `CAP-17.11` | `PARTIAL`     | —                                                                                  | `NO_NEW_GAP_FROM_COVERAGE_RECONCILIATION` | —                                        | Conservar dependencias, clasificación y gates ya aprobados; cualquier evidencia nueva deberá reabrir esta conciliación. |
+| `VPROC-0062` | `PGAP-VPROC-0062` | `CAP-18.05` | `MANUAL`      | IMPL-GAP-VPROC-0062                                                                | `LINKED_TO_EXISTING_GAP`                  | H-CAP-COVER-002-008; H-CAP-COVER-003-007 | bloques propietarios del proceso + primer paquete E5 afectado                                                           |
+| `VPROC-0063` | `PGAP-VPROC-0063` | `CAP-01.07` | `ABSENT`      | MANUAL-GAP-VPROC-0063; IMPL-GAP-VPROC-0063; PLINEAGE-VPROC-0063                    | `NEW_CANONICAL_GAP_CREATED`               | H-PROC-COVER-010-001                     | INFO-DOM-012; GAP-PKG-202                                                                                               |
+| `VPROC-0064` | `PGAP-VPROC-0064` | `CAP-01.09` | `ABSENT`      | MANUAL-GAP-VPROC-0064; IMPL-GAP-VPROC-0064; PLINEAGE-VPROC-0064                    | `NEW_CANONICAL_GAP_CREATED`               | H-PROC-COVER-010-002                     | INFO-INT-003; GAP-PKG-203                                                                                               |
+| `VPROC-0065` | `PGAP-VPROC-0065` | `CAP-02.10` | `DEFERRED`    | MANUAL-GAP-VPROC-0065; IMPL-GAP-VPROC-0065; PLINEAGE-VPROC-0065; COVER-EXC-008-005 | `LINKED_TO_EXISTING_GAP`                  | H-CAP-SCOPE-002-010; H-CAP-COVER-011-008 | VISO-UX-002; decisión formal de reactivación; decisión formal de reactivación; VISO-UX-002                              |
+| `VPROC-0066` | `PGAP-VPROC-0066` | `CAP-03.03` | `ABSENT`      | MANUAL-GAP-VPROC-0066; IMPL-GAP-VPROC-0066; PLINEAGE-VPROC-0066                    | `NEW_CANONICAL_GAP_CREATED`               | H-PROC-COVER-010-003                     | NEXO-DOM-001; GAP-PKG-204                                                                                               |
+| `VPROC-0067` | `PGAP-VPROC-0067` | `CAP-07.11` | `ABSENT`      | MANUAL-GAP-VPROC-0067; IMPL-GAP-VPROC-0067; PLINEAGE-VPROC-0067                    | `EXISTING_GAP_SCOPE_EXTENDED`             | H-CAP-SCOPE-008-012                      | NEXO-DOM-014; GAP-PKG-107                                                                                               |
+| `VPROC-0068` | `PGAP-VPROC-0068` | `CAP-10.06` | `ABSENT`      | MANUAL-GAP-VPROC-0068; IMPL-GAP-VPROC-0068; PLINEAGE-VPROC-0068                    | `NEW_CANONICAL_GAP_CREATED`               | H-PROC-COVER-010-004                     | DATA-DOM-012; GAP-PKG-205                                                                                               |
+| `VPROC-0069` | `PGAP-VPROC-0069` | `CAP-12.11` | `ABSENT`      | MANUAL-GAP-VPROC-0069; IMPL-GAP-VPROC-0069; PLINEAGE-VPROC-0069                    | `NEW_CANONICAL_GAP_CREATED`               | H-PROC-COVER-010-005                     | NUMERA-DOM-018; GAP-PKG-206                                                                                             |
+
+La ausencia de una brecha nueva en una fila no significa que el proceso esté completo o libre de dependencias. Significa únicamente que `PROC-COVER-010` no encontró una condición material distinta de las brechas E1 ya vigentes.
+
+---
+
+#### 6. PROCESS-GAP-REGISTER-DELTA-001 — seis brechas nuevas
+
+| Gap ID                 | Proceso/alcance     | Capacidad   | Clase         | Criticidad          | Hallazgo                                                                                                                                                                                                                             | Propietario | Fecha        | Tarea primaria                                                                                                                   | Paquete       | Perfil          | Evidencia y cierre                                                                                                                                                                                                                                     | Estado    |
+| ---------------------- | ------------------- | ----------- | ------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
+| `H-PROC-COVER-010-001` | `VPROC-0063`        | `CAP-01.07` | `OPERACION`   | `ALTA`              | No existe una operación vigente y evidenciable para registrar, evaluar, tratar, aceptar, seguir y cerrar riesgos estratégicos, financieros, operativos, legales y tecnológicos de Vento Group.                                       | `OWN-GG`    | `2026-10-23` | `INFO-DOM-012` — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento      | `GAP-PKG-202` | `CLOSE-OPE-ADP` | `INFO-DOM-012` deberá ampliar su registro para cubrir riesgo empresarial end-to-end, con propietario, taxonomía, evaluación, tratamiento, aceptación, seguimiento, revisión y cierre; `READY-GATE-014` consumirá ese registro sin sustituirlo.         | `ABIERTA` |
+| `H-PROC-COVER-010-002` | `VPROC-0064`        | `CAP-01.09` | `CONTRACTUAL` | `ALTA`              | No existe un ciclo interno gobernado que asigne propietario, expediente, requerimiento, vencimiento, concepto, respuesta, aceptación, obligación y cierre para relaciones con asesores y autoridades.                                | `OWN-GG`    | `2026-08-21` | `INFO-INT-003` — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos                   | `GAP-PKG-203` | `CLOSE-CON-CTR` | `INFO-INT-003` deberá definir el contrato externo y el expediente interno correlacionado; la responsabilidad empresarial, la decisión y el cierre no podrán delegarse al tercero.                                                                      | `ABIERTA` |
+| `H-PROC-COVER-010-003` | `VPROC-0066`        | `CAP-03.03` | `OPERACION`   | `CRITICA_EXPLICITA` | No se confirmó un proceso completo para determinar requerimiento de EPP, entregar el elemento correcto, obtener aceptación, controlar vigencia, sustitución, devolución, pérdida y evidencia por persona, riesgo, sede y área.       | `OWN-SST`   | `2026-09-11` | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | `GAP-PKG-204` | `CLOSE-OPE-ADP` | `NEXO-DOM-001` deberá clasificar el objeto físico y enlazar `NEXO-DOM-008`, `NEXO-DOM-011`, `NEXO-DOM-017` e `INFO-DOM-011`; el paquete deberá probar entrega, aceptación, vigencia, cambio, devolución y trazabilidad SST.                            | `ABIERTA` |
+| `H-PROC-COVER-010-004` | `VPROC-0068`        | `CAP-10.06` | `FUNCIONAL`   | `ALTA`              | La existencia de canales de feedback no demuestra un proceso gobernado de satisfacción: faltan población, muestra, canal, consentimiento, respuesta, sesgo, análisis, uso y separación frente a reclamo, incentivo y compensación.   | `OWN-COM`   | `2026-10-23` | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia                                 | `GAP-PKG-205` | `CLOSE-FUN-VAL` | `DATA-DOM-012` deberá definir medición, muestra, sesgo, semántica, linaje y análisis; `INFO-DOM-008` deberá gobernar finalidad y consentimiento. Una calificación no podrá cerrar reclamos ni autorizar compensaciones.                                | `ABIERTA` |
+| `H-PROC-COVER-010-005` | `VPROC-0069`        | `CAP-12.11` | `FUNCIONAL`   | `ALTA`              | Existen estructuras y análisis financieros parciales, pero no un ciclo presupuestal alcanzable y gobernado para versión, supuestos, aprobación, vigencia, consumo, proyección, desviación, reforecast y supersesión.                 | `OWN-FIN`   | `2026-10-23` | `NUMERA-DOM-018` — Definir motor de escenarios, versiones de precios, costos, supuestos y publicación                            | `GAP-PKG-206` | `CLOSE-FUN-IMP` | `NUMERA-DOM-018` deberá implementar el ciclo de versión y escenario, con `NUMERA-AUTH-015` y `DATA-DOM-013`; presupuesto, disponibilidad de caja, compromiso, hecho económico y asiento contable permanecerán separados.                               | `ABIERTA` |
+| `H-PROC-COVER-010-006` | `VPROC-TRANSVERSAL` | `CAP-15.06` | `TECNICA`     | `ALTA`              | Para 77 pantallas canónicas no se confirmó una superficie equivalente en los snapshots de repositorio; una búsqueda estática no prueba inexistencia en runtime, consumo dinámico, deep link, QR, notificación o integración externa. | `OWN-TEC`   | `2026-10-02` | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados           | `GAP-PKG-207` | `CLOSE-TEC-VAL` | `SHELL-AUD-011` deberá ejecutar auditoría de consumidores y runtime por pantalla antes de construir, migrar o retirar; deberá registrar evidencia de ausencia o predecesor, tráfico, deep links, compatibilidad, paridad, rollback y puerta de retiro. | `ABIERTA` |
+
+Las seis filas son nuevas porque la línea base anterior no representaba suficientemente el proceso operativo ausente o la obligación transversal concreta. Ninguna se presenta como cerrada.
+
+---
+
+#### 7. Ampliaciones versionadas de brechas existentes
+
+| Brecha existente      | Evidencia nueva                                                 | Ampliación aprobada                                                                                                                                         | Estado                   |
+| --------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `H-CAP-SCOPE-007-006` | IMPL-GAP-VPROC-0032                                             | Añadir contenido, completitud, retorno y cierre de reutilizables/contenedores como evidencia de la misma cadena de custodia; no crear gap paralelo.         | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-SCOPE-007-007` | IMPL-GAP-VPROC-0032                                             | Añadir reconciliación de completitud, diferencia y aprobación antes de considerar cerrado el ciclo físico.                                                  | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-SCOPE-008-012` | MANUAL-GAP-VPROC-0067; IMPL-GAP-VPROC-0067; PLINEAGE-VPROC-0067 | Precisar kit, definición, instancia, componentes obligatorios/opcionales, sustitución, préstamo, devolución y separación frente a activo, LPN y contenedor. | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CODE-019-005`      | COVER-EXC-008-001                                               | Añadir que VPROC-0056 y VPROC-0057 no reciben pantallas sustitutas mientras AURA permanezca diferida.                                                       | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-SCOPE-014-006` | COVER-EXC-008-001                                               | Conservar el ciclo comercial/marketing como propietario futuro sin inventar navegación ni datos actuales.                                                   | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-COVER-003-010` | COVER-EXC-008-003; COVER-EXC-008-004                            | Añadir 95 pantallas con safe-block y cinco ramas condicionales; aceptación funcional continúa prohibida hasta cerrar action gaps.                           | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-COVER-008-002` | COVER-EXC-008-003                                               | Actualizar la evidencia: la existencia de contrato TREQ/aceptación no equivale a ejecución ni verificación de las 95 pantallas bloqueadas.                  | `ABIERTA_SCOPE_EXTENDED` |
+| `H-CAP-COVER-008-009` | COVER-EXC-008-004                                               | Añadir política de prueba separada para rama activa y rama bloqueada; el promedio o éxito parcial no aprueba la pantalla completa.                          | `ABIERTA_SCOPE_EXTENDED` |
+
+La ampliación no cambia el ID, causa histórica, propietario, paquete ni perfil de cierre salvo que el delta lo indique expresamente. La evidencia original permanece intacta.
+
+---
+
+#### 8. Paquetes de resolución nuevos
+
+| Paquete       | Gap                    | Clase         | Propietario | Ola/fecha           | Tarea primaria                                                                                                                   | Tareas de apoyo obligatorias                           | Perfil          |
+| ------------- | ---------------------- | ------------- | ----------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------- |
+| `GAP-PKG-202` | `H-PROC-COVER-010-001` | `OPERACION`   | `OWN-GG`    | `W4` / `2026-10-23` | `INFO-DOM-012` — Crear registro de obligaciones, controles, evidencias, responsables, frecuencias y brechas de cumplimiento      | READY-GATE-014; DATA-DOM-004; DATA-DOM-015             | `CLOSE-OPE-ADP` |
+| `GAP-PKG-203` | `H-PROC-COVER-010-002` | `CONTRACTUAL` | `OWN-GG`    | `W1` / `2026-08-21` | `INFO-INT-003` — Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos                   | INFO-DOM-010; INFO-DOM-003; INFO-DOM-011               | `CLOSE-CON-CTR` |
+| `GAP-PKG-204` | `H-PROC-COVER-010-003` | `OPERACION`   | `OWN-SST`   | `W2` / `2026-09-11` | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | NEXO-DOM-008; NEXO-DOM-011; NEXO-DOM-017; INFO-DOM-011 | `CLOSE-OPE-ADP` |
+| `GAP-PKG-205` | `H-PROC-COVER-010-004` | `FUNCIONAL`   | `OWN-COM`   | `W4` / `2026-10-23` | `DATA-DOM-012` — Definir analítica de servicio, clientes, fidelización, reputación y experiencia                                 | INFO-DOM-008; DATA-DOM-004; DATA-DOM-015               | `CLOSE-FUN-VAL` |
+| `GAP-PKG-206` | `H-PROC-COVER-010-005` | `FUNCIONAL`   | `OWN-FIN`   | `W4` / `2026-10-23` | `NUMERA-DOM-018` — Definir motor de escenarios, versiones de precios, costos, supuestos y publicación                            | NUMERA-AUTH-015; DATA-DOM-013; NUMERA-DOM-014          | `CLOSE-FUN-IMP` |
+| `GAP-PKG-207` | `H-PROC-COVER-010-006` | `TECNICA`     | `OWN-TEC`   | `W3` / `2026-10-02` | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados           | PROC-SCREEN-026; DELIV-PKG-009; SHELL-CI-017           | `CLOSE-TEC-VAL` |
+
+---
+
+#### 9. Puerta E1 revaluada
+
+La devolución incrementa la línea vigente de 814 a 820 brechas y de 201 a 207 paquetes. Las 22 referencias de control/evidencia permanecen. Una brecha nueva es crítica explícita (`H-PROC-COVER-010-003`), pero ya posee propietario, fecha, tarea, paquete, perfil y evidencia requerida; por tanto, la puerta E1 conserva `PASS_WITH_CARRYOVER`.
+
+| Control                                                        |                                     Resultado actualizado |
+| -------------------------------------------------------------- | --------------------------------------------------------: |
+| Brechas canónicas                                              |                                                   **820** |
+| Brechas nuevas                                                 |                                                     **6** |
+| Brechas con alcance ampliado                                   | **8 registros de delta sobre 5 decisiones reconciliadas** |
+| Referencias de control/evidencia                               |                                                    **22** |
+| Paquetes de resolución                                         |                                                   **207** |
+| Brechas críticas explícitas                                    |                                                   **139** |
+| Nuevas brechas sin propietario, fecha, tarea, paquete o perfil |                                                     **0** |
+| Cierres falsos                                                 |                                                     **0** |
+| Estado de puerta                                               |                                     `PASS_WITH_CARRYOVER` |
+
+---
+
+#### 10. Reglas de continuidad
+
+- Las referencias `MANUAL-GAP-*`, `IMPL-GAP-*`, `COVER-EXC-*` y `PLINEAGE-*` permanecen como evidencia de origen y no sustituyen los IDs del registro E1.
+- Una brecha vinculada o ampliada continúa abierta hasta cumplir el perfil de cierre y aportar evidencia reproducible.
+- Los seis paquetes nuevos deberán incorporarse a cualquier paquete E5 que afecte su proceso antes de piloto, cutover o producción.
+- `VPROC-0065` permanece diferido; su vínculo con `H-CAP-SCOPE-002-010` no autoriza reactivación.
+- `VPROC-0067` queda cubierto por `H-CAP-SCOPE-008-012`; la tarea no crea otra brecha de kits.
+- Las 77 pantallas sin superficie confirmada no se consideran inexistentes en runtime y no autorizan borrado.
+- Las 95 pantallas safe-block y cinco ramas condicionales permanecen bloqueadas por sus gaps propietarios; la ampliación no equivale a aceptación.
+- Toda discrepancia futura entre operación, implementación, pantalla, alcance o linaje deberá generar un nuevo delta del registro E1 antes de continuar.
+
+---
+
+#### 11. Resultado cuantitativo
+
+| Métrica                              | Resultado |
+| ------------------------------------ | --------: |
+| Procesos revisados                   |    **69** |
+| Referencias fuente revisadas         |    **49** |
+| Referencias candidatas               |    **42** |
+| Casos reconciliados                  |    **35** |
+| Vínculos con brechas existentes      |    **24** |
+| Decisiones con ampliación de alcance |     **5** |
+| Filas de ampliación                  |     **8** |
+| Brechas nuevas                       |     **6** |
+| Paquetes nuevos                      |     **6** |
+| Brechas sin ruta                     |     **0** |
+| Procesos elevados a COMPLETE         |     **0** |
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+Esta tarea genera `TREQ-PROC-1461` a `TREQ-PROC-1510`. El detalle completo se incorpora en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+---
+
+#### 13. Validaciones estructurales obligatorias
+
+- [x] Se revisaron 69 procesos y 49 referencias fuente.
+- [x] Las 42 referencias candidatas se reconciliaron en 35 casos sin pérdida.
+- [x] Existen exactamente seis IDs nuevos `H-PROC-COVER-010-*`.
+- [x] Cada gap nuevo tiene clase, criticidad, propietario, fecha, tarea, paquete, perfil, evidencia y estado abierto.
+- [x] Las tareas primarias existen en el roadmap canónico.
+- [x] Los paquetes `GAP-PKG-202` a `GAP-PKG-207` son únicos.
+- [x] Las ampliaciones apuntan a brechas E1 existentes.
+- [x] La línea histórica de 814 brechas permanece intacta y el delta es append-only.
+- [x] La puerta conserva `PASS_WITH_CARRYOVER` sin cerrar brechas.
+- [x] No cambió la clasificación 39/23/6/1 ni existe proceso COMPLETE.
+- [x] No se modificó código, Supabase, migraciones, despliegues ni operación.
+
+---
+
+#### 14. Estado final y continuidad
+
+```text
+PROC-COVER-010 = APROBADA
+820 BRECHAS CANÓNICAS VIGENTES
+6 BRECHAS NUEVAS
+8 AMPLIACIONES APPEND-ONLY
+207 PAQUETES DE RESOLUCIÓN
+E1 = PASS_WITH_CARRYOVER
+
+SIGUIENTE TAREA
+NFR-REQ-012 — Aprobar requisitos no funcionales antes de E5
+```
 

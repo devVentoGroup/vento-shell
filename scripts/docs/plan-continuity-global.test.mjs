@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { resolveContinuity } from './plan-continuity-global.mjs';
+import {
+  calculateCompletionPercentage,
+  resolveContinuity,
+} from './plan-continuity-global.mjs';
 
 function task(id, state) {
   return {
@@ -68,4 +71,10 @@ test('rechaza aprobaciones fuera del orden declarado', () => {
     ]),
     /aprobaciones fuera de orden/
   );
+});
+
+test('calcula el porcentaje de completamiento con dos decimales', () => {
+  assert.equal(calculateCompletionPercentage(340, 1575), 21.59);
+  assert.equal(calculateCompletionPercentage(0, 0), 0);
+  assert.equal(calculateCompletionPercentage(1575, 1575), 100);
 });
