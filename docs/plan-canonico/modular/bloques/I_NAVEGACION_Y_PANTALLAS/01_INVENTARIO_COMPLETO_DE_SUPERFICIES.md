@@ -1734,6 +1734,822 @@ AUTH-UI-007 — APROBADA
 APROBADA
 
 
-### [ ] AUTH-UI-008 — Inventariar todas las superficies de SHELL
-### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
-### [ ] AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
+### ✅ AUTH-UI-008 — Inventariar todas las superficies de SHELL
+
+**Estado:** APROBADA
+**Fecha de aprobación documental:** 2026-07-28
+**Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas
+**Tipo de tarea:** inventario técnico-documental de superficies runtime, embebidas, transversales y template; sin cambios de código, Supabase, navegación runtime ni despliegue
+**Marcador exacto que reemplaza:** `### [ ] AUTH-UI-008 — Inventariar todas las superficies de SHELL`
+**Última tarea aprobada:** `AUTH-UI-007 — Inventariar todas las pantallas de ANIMA`
+**Siguiente tarea reservada:** `AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS`
+
+#### 1. Objetivo
+
+Inventariar de forma exhaustiva, reproducible y sin mezclar categorías todas las superficies actuales de SHELL en el snapshot inspeccionado: páginas runtime, superficies interactivas embebidas, layout, middleware, metadata generada, componentes UI fuente y el template `app-shell-standard` conservado en el mismo repositorio.
+
+La tarea fija existencia, topología y evidencia. No asigna todavía procesos, actores, permisos definitivos, propiedad funcional, candidatura de retiro ni disponibilidad productiva adicional.
+
+#### 2. Fuente inspeccionada
+
+| Campo                                | Valor                                                            |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| Repositorio                          | `devVentoGroup/vento-shell`                                      |
+| Rama                                 | `main`                                                           |
+| Commit de código inspeccionado       | `8f26161e9dbdbabc55e700d4a20d3d358146eef4`                       |
+| Commit documental vigente al iniciar | `0f3aa70407ecc5de5fa4ff601b1976c1bd29375b`                       |
+| Framework                            | Next.js 16.1.1, React 19.2.3 y App Router                        |
+| Raíz runtime                         | `src/app/`                                                       |
+| Puerta transversal                   | `middleware.ts`                                                  |
+| Template fuente                      | `templates/app-shell-standard/`                                  |
+| Base TREQ                            | registro `04A` con 3.418 requisitos y última tarea `AUTH-UI-007` |
+| Cambios ejecutados                   | ninguno en código, Supabase, rutas, despliegues o GitHub         |
+
+#### 3. Frontera obligatoria
+
+```text
+RUTA RUNTIME
+≠ SUPERFICIE EMBEBIDA
+≠ LAYOUT
+≠ MIDDLEWARE
+≠ METADATA GENERADA
+≠ PRIMITIVA UI
+≠ TEMPLATE FUENTE
+≠ SUPERFICIE DESPLEGADA EN UNA APP CONSUMIDORA
+≠ PERMISO DEFINITIVO
+≠ PROCESO
+≠ CAPACIDAD COMPLETA
+```
+
+#### 4. Método de inventario
+
+1. Cada `src/app/**/page.tsx` activo se registra como ruta de página.
+2. `layout.tsx`, `icon.tsx`, middleware y componentes embebidos se registran por separado.
+3. Query parameters, estados de modal y tarjetas repetidas no crean rutas nuevas.
+4. `templates/app-shell-standard` se registra como plantilla fuente, no como runtime de SHELL.
+5. Las primitivas de `src/components/ui` se registran como componentes fuente, no como superficies empresariales.
+6. La ausencia de `src/app/api` se registra como cero handlers, sin impedir que futuras altas deban inventariarse y protegerse.
+7. Ocultar o deshabilitar un enlace no sustituye autorización en el destino.
+8. Todo hallazgo queda ligado a tarea y requisito, sin pendientes narrativos.
+
+#### 5. Resumen reconciliado
+
+| Métrica                                        | Resultado |
+| ---------------------------------------------- | --------: |
+| Rutas de página runtime                        |     **2** |
+| Patrones estáticos                             |     **2** |
+| Patrones dinámicos                             |     **0** |
+| Layouts runtime                                |     **1** |
+| Puertas middleware                             |     **1** |
+| Superficies metadata generadas                 |     **1** |
+| Superficies interactivas embebidas             |     **5** |
+| Aplicaciones mostradas por el launcher runtime |     **5** |
+| Hosts reconocidos por metadata de login        |     **7** |
+| Route handlers bajo `src/app/api`              |     **0** |
+| Módulos del template AppShell                  |     **7** |
+| Primitivas UI fuente fuera del template        |     **5** |
+| Enlaces placeholder de perfil/configuración    |     **2** |
+| Requisitos nuevos                              |    **24** |
+
+#### 6. `SHELL-RUNTIME-SURFACE-INVENTORY-001`
+
+| ID                  | Tipo                 | Patrón / exposición   | Archivo fuente                     | Propósito observado                                                    | Evidencia de acceso                                                          | Límite                                                                                   |
+| ------------------- | -------------------- | --------------------- | ---------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `SHELL-SURFACE-001` | `PAGE`               | `/`                   | `src/app/page.tsx`                 | Hub y launcher central de aplicaciones                                 | Sesión exigida en servidor y middleware; disponibilidad por `has_permission` | No implica que cada aplicación destino esté completa ni que el permiso esté normalizado. |
+| `SHELL-SURFACE-002` | `PAGE`               | `/login`              | `src/app/login/page.tsx`           | Acceso central, metadata por destino y redirección de sesión existente | Pública controlada; redirige si ya existe usuario                            | `returnTo` requiere endurecimiento y allowlist.                                          |
+| `SHELL-SURFACE-003` | `EMBEDDED`           | tarjetas del launcher | `src/app/page.tsx`                 | Cinco tarjetas para VISO, NEXO, FOGO, ORIGO y PULSO                    | Estado habilitado o bloqueado por RPC                                        | Visibilidad no reemplaza autorización del destino.                                       |
+| `SHELL-SURFACE-004` | `EMBEDDED`           | rail de logos         | `src/app/page.tsx`                 | Resumen visual de las cinco aplicaciones                               | Deriva del mismo catálogo local                                              | No es una ruta ni un catálogo canónico independiente.                                    |
+| `SHELL-SURFACE-005` | `EMBEDDED`           | menú de sesión        | `src/app/page.tsx`                 | Email, perfil, configuración y cierre de sesión                        | Solo aparece dentro de `/` autenticado                                       | Perfil y configuración son placeholders hacia `/`.                                       |
+| `SHELL-SURFACE-006` | `EMBEDDED`           | formulario de acceso  | `src/features/auth/login-form.tsx` | Email, contraseña, mostrar/ocultar, errores, cooldown y envío          | Supabase Auth en cliente                                                     | No constituye autorización empresarial.                                                  |
+| `SHELL-SURFACE-007` | `EMBEDDED`           | modal de recuperación | `src/features/auth/login-form.tsx` | Solicitud de enlace de restablecimiento                                | Supabase Auth y destino web-auth                                             | Accesibilidad y contrato transversal pendientes.                                         |
+| `SHELL-SURFACE-008` | `GLOBAL`             | raíz HTML             | `src/app/layout.tsx`               | Metadata, fuentes y guard global de rueda en inputs numéricos          | Envuelve toda página                                                         | `metadataBase` usa `hub.ventogroup.co`; reconciliación pendiente.                        |
+| `SHELL-SURFACE-009` | `GLOBAL_SECURITY`    | matcher transversal   | `middleware.ts`                    | Renovación y validación de sesión, cookies y redirección               | Protege rutas no excluidas                                                   | `/api` está excluido de forma global.                                                    |
+| `SHELL-SURFACE-010` | `GENERATED_METADATA` | icono App Router      | `src/app/icon.tsx`                 | PNG 32×32 generado con `ImageResponse`                                 | Expuesto por convención de Next.js                                           | No es página ni capacidad empresarial.                                                   |
+
+#### 7. Catálogo runtime observado
+
+| Aplicación | Destino                       | Permiso local  | Estado calculado                                      |
+| ---------- | ----------------------------- | -------------- | ----------------------------------------------------- |
+| VISO       | `https://viso.ventogroup.co`  | `viso.access`  | RPC canónica o fallback; fail-closed ante error final |
+| NEXO       | `https://nexo.ventogroup.co`  | `nexo.access`  | RPC canónica o fallback; fail-closed ante error final |
+| FOGO       | `https://fogo.ventogroup.co`  | `fogo.access`  | RPC canónica o fallback; fail-closed ante error final |
+| ORIGO      | `https://origo.ventogroup.co` | `origo.access` | RPC canónica o fallback; fail-closed ante error final |
+| PULSO      | `https://pulso.ventogroup.co` | `pulso.access` | RPC canónica o fallback; fail-closed ante error final |
+
+La lista anterior es evidencia local del snapshot. No se aprueba como catálogo definitivo porque difiere de otras listas del mismo repositorio.
+
+#### 8. Topología de acceso
+
+```text
+Solicitud a ruta protegida
+→ middleware valida cookies/configuración/usuario
+→ sin sesión: /login?returnTo=<URL>
+→ sesión válida y ruta /
+→ servidor vuelve a comprobar usuario
+→ resuelve cinco permisos de aplicación
+→ habilita o bloquea cada tarjeta
+```
+
+Exclusiones actuales del middleware:
+
+```text
+_next | login | favicon.ico | logos | images | fonts | api
+```
+
+No existen handlers bajo `src/app/api` en el snapshot. La exclusión sigue siendo una frontera de seguridad obligatoria para cualquier alta futura.
+
+#### 9. Login y recuperación
+
+- `/login` reconoce metadata para NEXO, ORIGO, FOGO, VISO, PULSO, ANIMA y AURA.
+- `safeReturnTo` conserva rutas relativas, pero también admite cualquier URL absoluta `http` o `https`.
+- El formulario utiliza `signInWithPassword`, muestra error, evita doble envío mientras carga y aplica cooldown local de 30 segundos cuando el mensaje contiene `rate limit`.
+- La recuperación usa `NEXT_PUBLIC_SET_PASSWORD_URL` o el fallback `https://anima.ventogroup.co/api/set-password`.
+- El modal de recuperación es una superficie embebida y no una ruta adicional.
+
+#### 10. `SHELL-TEMPLATE-SURFACE-INVENTORY-001`
+
+| ID                   | Módulo fuente   | Archivo                                                                       | Clasificación                | Estado runtime en SHELL                                           |
+| -------------------- | --------------- | ----------------------------------------------------------------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| `SHELL-TEMPLATE-001` | layout estándar | `templates/app-shell-standard/src/app/layout.tsx`                             | `TEMPLATE_LAYOUT`            | No importado por `src/app/layout.tsx`                             |
+| `SHELL-TEMPLATE-002` | VentoShell      | `templates/app-shell-standard/src/components/vento/standard/vento-shell.tsx`  | `TEMPLATE_SERVER_SHELL`      | No runtime en SHELL                                               |
+| `SHELL-TEMPLATE-003` | VentoChrome     | `templates/app-shell-standard/src/components/vento/standard/vento-chrome.tsx` | `TEMPLATE_NAVIGATION_CHROME` | No runtime en SHELL; acoplado a NEXO                              |
+| `SHELL-TEMPLATE-004` | AppSwitcher     | `templates/app-shell-standard/src/components/vento/standard/app-switcher.tsx` | `TEMPLATE_APP_SWITCHER`      | No runtime en SHELL; catálogo local divergente                    |
+| `SHELL-TEMPLATE-005` | ProfileMenu     | `templates/app-shell-standard/src/components/vento/standard/profile-menu.tsx` | `TEMPLATE_PROFILE_CONTEXT`   | No runtime en SHELL; override de rol y sede pendiente de gobierno |
+| `SHELL-TEMPLATE-006` | UI kit          | `templates/app-shell-standard/src/components/vento/standard/ui.tsx`           | `TEMPLATE_UI_KIT`            | Fuente para copiar; no ruta                                       |
+| `SHELL-TEMPLATE-007` | Table kit       | `templates/app-shell-standard/src/components/vento/standard/table.tsx`        | `TEMPLATE_TABLE_KIT`         | Fuente para copiar; no ruta                                       |
+
+El README ordena copiar estos archivos a repositorios nuevos. Por tanto, el template es una fuente de propagación transversal y debe conservar versión, linaje y pruebas, pero no incrementa el conteo de rutas runtime de SHELL.
+
+#### 11. Primitivas UI fuente
+
+| ID                    | Archivo                        | Exportación principal | Clasificación               |
+| --------------------- | ------------------------------ | --------------------- | --------------------------- |
+| `SHELL-UI-SOURCE-001` | `src/components/ui/Button.tsx` | `Button`              | primitiva fuente            |
+| `SHELL-UI-SOURCE-002` | `src/components/ui/Card.tsx`   | `Card`                | primitiva fuente            |
+| `SHELL-UI-SOURCE-003` | `src/components/ui/Chip.tsx`   | `Chip`                | primitiva fuente            |
+| `SHELL-UI-SOURCE-004` | `src/components/ui/Input.tsx`  | `Input`               | primitiva fuente            |
+| `SHELL-UI-SOURCE-005` | `src/components/ui/Modal.tsx`  | `Modal`               | primitiva fuente con portal |
+
+No se confirmó un consumidor runtime dentro de las dos páginas actuales. Su clasificación definitiva como activa, compartida, duplicada, legacy o retirable corresponde a `AUTH-UI-026` a `AUTH-UI-029` y `SHELL-AUD-011`.
+
+#### 12. Hallazgos y carryover obligatorio
+
+| ID                          | Hallazgo                                                                                                                  | Tratamiento                                                                        | Propietario y momento                                             |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `SHELL-SURFACE-FINDING-001` | El launcher runtime, la metadata de login y el AppSwitcher template mantienen listas distintas de aplicaciones y estados. | No consolidar aquí; exigir catálogo único versionado.                              | `AUTH-UI-026`, `AUTH-UI-045`, `SHELL-CON-002`; `TREQ-SHELL-028`.  |
+| `SHELL-SURFACE-FINDING-002` | `safeReturnTo` admite cualquier URL absoluta HTTP o HTTPS.                                                                | Clasificar como frontera de redirección crítica; permitir solo destinos aprobados. | `AUTH-UI-041`, `AUTH-UI-044`, `AUTH-SRV-*`; `TREQ-SHELL-018`.     |
+| `SHELL-SURFACE-FINDING-003` | El middleware excluye todo `/api`, aunque no existen handlers actuales.                                                   | Toda alta futura deberá autoautorizarse y actualizar inventario.                   | `AUTH-UI-042` a `AUTH-UI-045`; `TREQ-SHELL-025`.                  |
+| `SHELL-SURFACE-FINDING-004` | “Mi perfil” y “Configuración de usuario” apuntan ambos a `/`.                                                             | No contarlos como pantallas implementadas; resolver o retirar placeholders.        | `AUTH-UI-026` a `AUTH-UI-029`; `TREQ-SHELL-027`.                  |
+| `SHELL-SURFACE-FINDING-005` | `metadataBase` usa `hub.ventogroup.co` mientras la superficie productiva canónica es `os.ventogroup.co`.                  | Reconciliar dominio o aprobar alias explícito.                                     | `AUTH-UI-026`, `AUTH-UI-045`; `TREQ-SHELL-026`.                   |
+| `SHELL-SURFACE-FINDING-006` | El launcher soporta dos firmas de `has_permission`.                                                                       | Mantener como compatibilidad temporal, no como doble contrato permanente.          | `AUTH-UI-030` a `AUTH-UI-044`, `AUTH-DB-034`; `TREQ-SHELL-015`.   |
+| `SHELL-SURFACE-FINDING-007` | La recuperación de SHELL depende del handler web-auth de ANIMA.                                                           | Formalizar contrato, disponibilidad, token y rollback.                             | `AUTH-UI-041`, `AUTH-UI-045`; `TREQ-SHELL-021`, `TREQ-ANIMA-025`. |
+| `SHELL-SURFACE-FINDING-008` | El template estándar está acoplado a rutas, permisos y textos de NEXO.                                                    | No tratarlo como estándar transversal sin parametrización.                         | `SHELL-AUD-001` a `SHELL-AUD-011`; `TREQ-SHELL-030`.              |
+| `SHELL-SURFACE-FINDING-009` | ProfileMenu template persiste override de rol y sede desde cliente.                                                       | La simulación no concederá autoridad y deberá validarse en servidor.               | `AUTH-SIM-*`, `AUTH-SRV-*`; `TREQ-SHELL-031`.                     |
+| `SHELL-SURFACE-FINDING-010` | AppSwitcher template contiene caracteres de reemplazo y estados divergentes.                                              | Bloquear adopción hasta normalizar UTF-8 y catálogo.                               | `SHELL-AUD-001`, `UX-QA-022`; `TREQ-SHELL-035`.                   |
+| `SHELL-SURFACE-FINDING-011` | Existen dos familias de primitivas UI dentro del repositorio.                                                             | Clasificar consumidores y duplicación antes de copiar o retirar.                   | `AUTH-UI-026` a `AUTH-UI-029`, `SHELL-AUD-011`; `TREQ-SHELL-032`. |
+
+No queda hallazgo detectado sin requisito, tarea propietaria y momento de resolución.
+
+#### 13. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo:
+
+```text
+TREQ-SHELL-012 a TREQ-SHELL-035
+```
+
+| ID               | Regla protegida                                                                                                                                                                                                                                                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-SHELL-012` | El inventario de SHELL deberá detectar exactamente dos rutas de página runtime, una raíz de layout, una puerta middleware, una superficie de icono generado, cinco superficies interactivas embebidas, siete módulos del template AppShell y cinco primitivas UI fuente, sin confundir componentes o plantillas con rutas desplegadas. |
+| `TREQ-SHELL-013` | Cada superficie inventariada deberá conservar identificador estable, categoría, archivo fuente, patrón o condición de exposición y estado runtime o template. Un cambio de archivo, categoría, exposición o commit deberá producir delta explícito.                                                                                    |
+| `TREQ-SHELL-014` | La ruta `/` deberá exigir sesión válida, resolver únicamente las aplicaciones declaradas para el launcher y mostrar exactamente cinco tarjetas runtime para VISO, NEXO, FOGO, ORIGO y PULSO en el snapshot aprobado.                                                                                                                   |
+| `TREQ-SHELL-015` | La disponibilidad de cada tarjeta del launcher deberá derivarse de una decisión canónica de permiso. La compatibilidad temporal entre las firmas `has_permission(p_permission_code,...)` y `has_permission(p_app_id,p_code,...)` deberá ser explícita, fallar cerrada y retirarse mediante transición versionada.                      |
+| `TREQ-SHELL-016` | Una aplicación sin acceso efectivo deberá permanecer no navegable y mostrar estado bloqueado. Alterar HTML, href, estado local o interfaz no deberá permitir la operación protegida en la aplicación destino.                                                                                                                          |
+| `TREQ-SHELL-017` | Cerrar sesión desde SHELL deberá invalidar la sesión central aplicable, redirigir al acceso aprobado y evitar que caché, historial, cookies derivadas o aplicaciones consumidoras continúen autorizando con contexto anterior.                                                                                                         |
+| `TREQ-SHELL-018` | El parámetro `returnTo` de `/login` deberá aceptar únicamente rutas internas o orígenes Vento OS explícitamente aprobados, normalizados y vinculados al flujo solicitado. URLs absolutas arbitrarias, esquemas no permitidos, credenciales embebidas y dominios no registrados deberán rechazarse.                                     |
+| `TREQ-SHELL-019` | La ruta `/login` deberá redirigir una sesión ya válida al destino permitido, conservar metadata coherente con el host aprobado y no exponer formularios ni estados de autenticación cuando el usuario ya esté autenticado.                                                                                                             |
+| `TREQ-SHELL-020` | El formulario de acceso deberá manejar envío, espera, errores, límite de intentos y visibilidad de contraseña sin duplicar solicitudes, revelar datos sensibles ni representar como autenticada una sesión fallida.                                                                                                                    |
+| `TREQ-SHELL-021` | La recuperación de contraseña iniciada en SHELL deberá usar un destino versionado y aprobado, conservar vínculo con ANIMA web-auth sin dependencia oculta y validar token, expiración, usuario y resultado antes de permitir establecer contraseña.                                                                                    |
+| `TREQ-SHELL-022` | El modal de recuperación deberá gestionar apertura, cierre, foco, teclado, envío, confirmación y error de forma accesible; cerrar o reintentar no deberá perder silenciosamente una solicitud confirmada ni duplicar correos.                                                                                                          |
+| `TREQ-SHELL-023` | El middleware deberá proteger todas las rutas runtime salvo exclusiones aprobadas y explícitas. Cambios en matcher, prefijos estáticos, login o API deberán producir delta y no podrán abrir una superficie protegida por coincidencia accidental.                                                                                     |
+| `TREQ-SHELL-024` | Ante ausencia de cookies Supabase, configuración incompleta, error de autenticación o usuario inválido, el middleware deberá fallar cerrado, limpiar únicamente cookies aplicables y redirigir al acceso central sin bucles ni pérdida de cookies ajenas.                                                                              |
+| `TREQ-SHELL-025` | El snapshot aprobado deberá conservar cero route handlers bajo `src/app/api`. Cualquier handler futuro deberá incorporarse al inventario y aplicar autenticación y autorización propias porque el matcher actual excluye `/api`.                                                                                                       |
+| `TREQ-SHELL-026` | El layout raíz, metadata, dominio canónico e icono generado deberán identificar la misma aplicación SHELL. `metadataBase`, títulos, iconos y dominio productivo no podrán divergir entre `hub.ventogroup.co` y `os.ventogroup.co` sin alias aprobado.                                                                                  |
+| `TREQ-SHELL-027` | Las opciones “Mi perfil” y “Configuración de usuario” no podrán presentarse como capacidades implementadas mientras ambas resuelvan a `/`. Deberán recibir destinos y contratos propios o quedar explícitamente no disponibles.                                                                                                        |
+| `TREQ-SHELL-028` | El catálogo de aplicaciones usado por el launcher, metadata de login, template AppSwitcher, navegación runtime y registros canónicos deberá provenir de una única fuente versionada. Cantidades, destinos, estado activo o próximo y nombres no podrán divergir entre listas locales.                                                  |
+| `TREQ-SHELL-029` | Los siete módulos de `templates/app-shell-standard` deberán permanecer clasificados como plantilla fuente y no como superficies runtime de SHELL hasta que un consumidor los copie o adopte mediante versión, procedencia y validación explícitas.                                                                                     |
+| `TREQ-SHELL-030` | La visibilidad de enlaces del template VentoChrome y AppSwitcher deberá derivarse de permisos y contexto canónicos, pero nunca sustituirá autorización de servidor. Rutas hardcodeadas para NEXO no podrán presentarse como estándar transversal sin parametrización.                                                                  |
+| `TREQ-SHELL-031` | La simulación de rol y selección de sede del ProfileMenu template deberán estar separadas de la autoridad real, limitarse a actores permitidos, expirar, auditarse y validarse en servidor. Cookies o escrituras cliente no podrán conceder rol, sede ni permiso efectivo.                                                             |
+| `TREQ-SHELL-032` | Las cinco primitivas de `src/components/ui` y los kits `ui.tsx` y `table.tsx` del template deberán reconciliarse como componentes activos, compartidos, duplicados, legacy o sin consumidor antes de retiro o adopción. No se contarán como rutas ni capacidades empresariales.                                                        |
+| `TREQ-SHELL-033` | El snapshot aprobado deberá conservar dos patrones estáticos y cero dinámicos. Query parameters como `returnTo`, `email` o `site_id`, estados de modal y tarjetas repetidas no crearán rutas o pantallas adicionales.                                                                                                                  |
+| `TREQ-SHELL-034` | Todo enlace absoluto desde SHELL hacia una aplicación deberá corresponder a un dominio y aplicación activos del catálogo canónico, usar transporte seguro y conservar el destino solicitado sin aceptar sustitución por datos del cliente o configuración no gobernada.                                                                |
+| `TREQ-SHELL-035` | Textos, etiquetas y estados de las superficies template deberán conservar codificación UTF-8 válida, nombres aprobados y significado consistente. Caracteres corruptos o estados “próximamente” divergentes bloquearán la adopción del template.                                                                                       |
+
+#### 14. Validaciones documentales realizadas
+
+| Control                       | Resultado                                           |
+| ----------------------------- | --------------------------------------------------- |
+| Base 04A leída completa       | **3.418 requisitos**                                |
+| Nuevos requisitos             | **24**                                              |
+| Total regenerado              | **3.442**                                           |
+| Dominio SHELL                 | **35 requisitos — TREQ-SHELL-001 a TREQ-SHELL-035** |
+| Identificadores duplicados    | **0**                                               |
+| Filas con catorce columnas    | **3.442 de 3.442**                                  |
+| Relaciones TREQ no resolubles | **0**                                               |
+| Secuencia SHELL               | **continua, sin saltos**                            |
+| Código o Supabase modificado  | **no**                                              |
+
+#### 15. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] AUTH-UI-008 — Inventariar todas las superficies de SHELL` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No insertar filas TREQ manualmente.
+
+#### 16. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-UI-008 — Inventariar todas las superficies de SHELL
+        ↓
+TAREA ACTUAL
+AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
+```
+
+### ✅ AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+
+**Estado:** APROBADA
+**Fecha de aprobación documental:** 2026-07-28
+**Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas
+**Tipo de tarea:** inventario técnico-documental transversal de superficies laborales embebidas en PASS y operaciones laborales de PULSO relacionadas con PASS; sin cambios de código, Supabase, navegación runtime ni despliegue
+**Marcador exacto que reemplaza:** `### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS`
+**Última tarea aprobada:** `AUTH-UI-008 — Inventariar todas las superficies de SHELL`
+**Siguiente tarea reservada:** `AUTH-UI-010 — Auditar rutas y superficies actuales de AURA`
+
+#### 1. Objetivo
+
+Inventariar de forma exhaustiva, reproducible y sin confundir audiencias todas las superficies laborales actuales relacionadas con PASS. La revisión cubre dos fronteras distintas:
+
+1. las superficies laborales embebidas dentro de la aplicación móvil de cliente `vento-pass`, donde se consulta perfil laboral y se ofrece un modo local de prueba de rol y sede;
+2. la superficie operativa de trabajadores en `vento-pulso`, donde caja identifica clientes, otorga puntos y valida redenciones de Vento Pass.
+
+La tarea registra existencia, topología, montaje y evidencia. No convierte PASS en aplicación laboral, no asigna todavía procesos ni propiedad funcional definitiva, no aprueba permisos, no valida RLS o acciones de servidor y no declara una superficie apta para retiro o producción adicional.
+
+#### 2. Fuentes inspeccionadas
+
+| Campo                        | PASS                                                             | PULSO                                      |
+| ---------------------------- | ---------------------------------------------------------------- | ------------------------------------------ |
+| Repositorio                  | `devVentoGroup/vento-pass`                                       | `devVentoGroup/vento-pulso`                |
+| Rama                         | `main`                                                           | `main`                                     |
+| Commit inspeccionado         | `b5a4aec908ef12226f798078577ab089a29ccda2`                       | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| Framework                    | Expo 54, React Native 0.81.5 y React Navigation Native Stack     | Next.js 16 y App Router                    |
+| Entrada principal            | `App.js`                                                         | `src/app/`                                 |
+| Superficie laboral principal | bloques embebidos de `Header.tsx`                                | `/scanner`                                 |
+| Base TREQ                    | registro `04A` con 3.442 requisitos y última tarea `AUTH-UI-008` | mismo registro canónico                    |
+| Cambios ejecutados           | ninguno                                                          | ninguno                                    |
+
+#### 3. Frontera obligatoria
+
+```text
+PANTALLA DE CLIENTE PASS
+≠ SUPERFICIE LABORAL EMBEBIDA
+≠ PERFIL LABORAL
+≠ SIMULACIÓN DE ROL O SEDE
+≠ AUTORIDAD REAL
+
+RUTA PULSO /scanner
+≠ PANTALLA MÓVIL PASS
+≠ MODO IDENTIFICACIÓN
+≠ MODO REDENCIÓN
+≠ ACCIÓN DE SERVIDOR
+≠ COMPONENTE DE CÁMARA NO MONTADO
+```
+
+| Decisión posterior                                                        | Tarea propietaria             |
+| ------------------------------------------------------------------------- | ----------------------------- |
+| Asignar `process_id` y `process_step`                                     | `AUTH-UI-011` y `AUTH-UI-012` |
+| Definir propietaria y consumidoras                                        | `AUTH-UI-013` y `AUTH-UI-014` |
+| Clasificar audiencia, actor, dispositivo, frecuencia y acciones           | `AUTH-UI-015` a `AUTH-UI-025` |
+| Resolver duplicación, legacy, componentes dormantes y retiro              | `AUTH-UI-026` a `AUTH-UI-029` |
+| Aprobar lectura, mutación, contexto, URL directa y protección de servidor | `AUTH-UI-030` a `AUTH-UI-044` |
+| Reconciliar registro y navegación unificada                               | `AUTH-UI-045`                 |
+
+#### 4. Método de inventario
+
+1. El stack de `App.js` se utiliza para comprobar si existe una ruta laboral dedicada dentro de PASS.
+2. Un bloque visual solo se clasifica como laboral cuando depende del perfil, rol, sede o actuación de un trabajador.
+3. Hooks, contextos y catálogos se registran como soporte no visual y no incrementan el conteo de superficies runtime.
+4. En PULSO, `/scanner` se registra como una ruta y sus modos, formularios y estados como superficies subordinadas de la misma página.
+5. Las acciones de servidor se registran como fronteras técnicas, no como vistas.
+6. Un componente presente en código pero no importado por la ruta activa se clasifica como dormante.
+7. Ocultar un control, seleccionar un rol en cliente o exigir un PIN visual no se presenta como autorización definitiva.
+8. Todo hallazgo queda ligado a un requisito y a tareas posteriores; no quedan pendientes narrativos sin propietario.
+
+#### 5. Resumen reconciliado
+
+| Métrica                                           | Resultado |
+| ------------------------------------------------- | --------: |
+| Rutas exclusivamente laborales dentro de PASS     |     **0** |
+| Superficies laborales runtime embebidas en PASS   |     **3** |
+| Módulos laborales de soporte no visual en PASS    |     **4** |
+| Rutas PULSO activas relacionadas con PASS         |     **1** |
+| Superficies runtime dentro de `/scanner`          |     **7** |
+| Modos funcionales dentro de `/scanner`            |     **2** |
+| Fronteras de acción de servidor relacionadas      |     **3** |
+| Componentes de cámara presentes pero no montados  |     **1** |
+| Superficies laborales runtime relacionadas, total |    **10** |
+| Requisitos nuevos                                 |    **22** |
+
+#### 6. `PASS-LABOR-SURFACE-INVENTORY-001`
+
+| ID                       | Tipo               | Archivo fuente                   | Exposición                        | Comportamiento observado                                 | Condición observada                                                 | Límite documental                                                          |
+| ------------------------ | ------------------ | -------------------------------- | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `PASS-LABOR-SURFACE-001` | `EMBEDDED_CONTEXT` | `src/components/home/Header.tsx` | bloque dentro del menú de usuario | muestra rol activo y sede activa                         | existe perfil laboral y el rol local pertenece a `PRIVILEGED_ROLES` | No prueba autorización, vigencia laboral ni contexto efectivo de servidor. |
+| `PASS-LABOR-SURFACE-002` | `EMBEDDED_ACTIONS` | `src/components/home/Header.tsx` | acciones del menú                 | abre cambio de rol o sede y permite restablecer rol real | misma condición privilegiada local                                  | No es una ruta ni una capacidad laboral autónoma.                          |
+| `PASS-LABOR-SURFACE-003` | `MODAL_SIMULATION` | `src/components/home/Header.tsx` | modal “Modo de prueba”            | selecciona rol y sede y muestra estado simulado          | `canSwitchRole` calculado en cliente                                | La simulación local no puede conceder autoridad real.                      |
+
+El stack principal registra pantallas de cliente y comercio, pero no una pantalla dedicada a trabajo, administración laboral o caja. `Home` sigue siendo una pantalla de cliente aunque incorpore estos tres bloques condicionales.
+
+#### 7. `PASS-LABOR-SUPPORT-REGISTER-001`
+
+| ID                       | Clasificación    | Archivo                                | Función observada                                                         | Estado                                             |
+| ------------------------ | ---------------- | -------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
+| `PASS-LABOR-SUPPORT-001` | `DATA_RESOLVER`  | `src/hooks/useEmployeeProfile.ts`      | consulta `employees` para el usuario autenticado                          | soporte no visual activo                           |
+| `PASS-LABOR-SUPPORT-002` | `DATA_RESOLVER`  | `src/hooks/useEmployeeSites.ts`        | consulta asignaciones activas y sede fallback                             | soporte no visual activo                           |
+| `PASS-LABOR-SUPPORT-003` | `CLIENT_CONTEXT` | `src/contexts/RoleOverrideContext.tsx` | persiste rol y sede simulados en `AsyncStorage` bajo `vento.roleOverride` | soporte no visual activo                           |
+| `PASS-LABOR-SUPPORT-004` | `LOCAL_CATALOG`  | `src/constants/roles.ts`               | mantiene etiquetas, opciones y roles privilegiados locales                | soporte no visual activo; reconciliación pendiente |
+
+Estos módulos no son vistas. Su existencia explica cómo aparecen las superficies laborales de `Header`, pero no incrementa el conteo de rutas ni autoriza operaciones.
+
+#### 8. Topología móvil de PASS y ausencia de ruta laboral dedicada
+
+`App.js` utiliza React Navigation Native Stack, no Expo Router. El stack contiene `Home`, `AccountSettings`, experiencias de marca y pantallas de compra condicionadas por feature flags. Los deep links explícitos son raíz, `orders` y `payment-return`.
+
+```text
+sesión válida + perfil cliente completo
+→ Home
+→ Home consulta opcionalmente employees y employee_sites
+→ si existe rol local privilegiado
+→ Header expone contexto y simulación laboral embebidos
+```
+
+No se registra una ruta laboral independiente porque el contexto laboral aparece dentro de `Home` y no como `Stack.Screen` propio.
+
+#### 9. `PULSO-PASS-LABOR-SURFACE-INVENTORY-001`
+
+| ID                       | Tipo                      | Patrón o estado      | Archivo fuente                              | Comportamiento observado                           | Protección observada                             | Límite documental                                         |
+| ------------------------ | ------------------------- | -------------------- | ------------------------------------------- | -------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------- |
+| `PULSO-PASS-SURFACE-001` | `PAGE`                    | `/scanner`           | `src/app/scanner/page.tsx`                  | contenedor de identificación, puntos y redenciones | sesión, `pulso`, sede y permiso local `pos.main` | El permiso exacto por acción queda pendiente.             |
+| `PULSO-PASS-SURFACE-002` | `MODE`                    | `identification`     | `src/modules/pos/components/qr-scanner.tsx` | procesa Vento ID o UUID para identificar cliente   | acción de servidor y sede recibida               | No autoriza automáticamente otorgar puntos.               |
+| `PULSO-PASS-SURFACE-003` | `STATE_CARD`              | cliente seleccionado | `src/modules/pos/components/qr-scanner.tsx` | muestra nombre, correo y saldo de puntos           | resultado de identificación                      | Proyección y minimización quedan pendientes.              |
+| `PULSO-PASS-SURFACE-004` | `MUTATION_FORM`           | otorgar puntos       | `src/modules/pos/components/qr-scanner.tsx` | captura monto, estima puntos y confirma            | cliente identificado y acción de servidor        | La estimación de interfaz no es resultado contable.       |
+| `PULSO-PASS-SURFACE-005` | `MODE`                    | `redemption`         | `src/modules/pos/components/qr-scanner.tsx` | valida un código de canje                          | acción de servidor                               | Debe diferenciar pendiente, usado, cancelado y vencido.   |
+| `PULSO-PASS-SURFACE-006` | `SHARED_DEVICE_SIGNATURE` | `sharedActorPin`     | `src/modules/pos/components/qr-scanner.tsx` | solicita PIN cuando la sesión es compartida        | `operationalSession.isSharedDevice`              | El campo visual no acredita validación integral.          |
+| `PULSO-PASS-SURFACE-007` | `FEEDBACK_STATE`          | carga, éxito y error | `src/modules/pos/components/qr-scanner.tsx` | comunica procesamiento y resultado                 | estado local derivado de respuestas              | No debe anticipar éxito ni ocultar duplicado o conflicto. |
+
+Identificación y redención son modos de una misma ruta. No se contabilizan como páginas separadas.
+
+#### 10. Fronteras técnicas relacionadas
+
+| ID                       | Función                    | Archivo                                                 | Clasificación                                   |
+| ------------------------ | -------------------------- | ------------------------------------------------------- | ----------------------------------------------- |
+| `PULSO-PASS-ACTION-001`  | `identifyClientAction`     | `src/modules/pos/actions/identify-client.action.ts`     | acción de servidor, no superficie               |
+| `PULSO-PASS-ACTION-002`  | `awardLoyaltyPointsAction` | `src/modules/pos/actions/award-loyalty.action.ts`       | acción de servidor, no superficie               |
+| `PULSO-PASS-ACTION-003`  | `processRedemptionAction`  | `src/modules/pos/actions/validate-redemption.action.ts` | acción de servidor, no superficie               |
+| `PULSO-PASS-DORMANT-001` | `CameraQRScanner`          | `src/modules/pos/components/camera-qr-scanner.tsx`      | componente fuente no montado por la ruta actual |
+
+El flujo runtime comprobado usa ingreso manual o lector USB. La existencia del componente de cámara no permite declarar que la cámara esté disponible en la superficie actual.
+
+#### 11. Hallazgos y cierre de brechas
+
+| ID                       | Hallazgo                                                                            | Tratamiento obligatorio                                                                          | Propietario documental                                                                          |
+| ------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `PASS-LABOR-FINDING-001` | Una aplicación de cliente consulta identidad y sedes laborales.                     | Mantener separación de audiencias, proyección mínima y fallback no privilegiado.                 | `AUTH-UI-014`, `AUTH-UI-020`, `AUTH-UI-030` a `AUTH-UI-044`; `TREQ-PASS-015` a `TREQ-PASS-018`. |
+| `PASS-LABOR-FINDING-002` | PASS persiste simulación de rol y sede en AsyncStorage.                             | Tratarla como simulación sin autoridad, con expiración, auditoría y limpieza.                    | `AUTH-SIM-*`; `TREQ-PASS-019`, `TREQ-PASS-020`.                                                 |
+| `PASS-LABOR-FINDING-003` | El catálogo local de roles usa claves legacy inglesas y una lista propia.           | Reconciliarlo con el catálogo canónico antes de usarlo para autorización.                        | `AUTH-CAT-*`, `AUTH-UI-026`, `AUTH-UI-045`; `TREQ-PASS-021`.                                    |
+| `PASS-LABOR-FINDING-004` | `/scanner` protege el conjunto con `pos.main`.                                      | Descomponer permisos exactos para identificar, otorgar puntos y validar redención.               | `AUTH-UI-030` a `AUTH-UI-044`, `PULSO-AUTH-016`; `TREQ-PASS-022`.                               |
+| `PASS-LABOR-FINDING-005` | La tarjeta operativa muestra nombre, email y puntos.                                | Aprobar una proyección mínima por finalidad y limpiar estado al terminar.                        | `PASS-INT-004`, `AUTH-QA-030`; `TREQ-PASS-023`, `TREQ-PASS-024`.                                |
+| `PASS-LABOR-FINDING-006` | La referencia de acumulación se genera con timestamp y aleatoriedad en la interfaz. | Sustituirla por idempotencia empresarial estable y validada por servidor.                        | `PASS-INT-005`, `QUEUE-ARC-*`; `TREQ-PASS-025`, `TREQ-PASS-026`.                                |
+| `PASS-LABOR-FINDING-007` | El PIN aparece solo para dispositivo compartido.                                    | Vincular actor humano, principal técnico, dispositivo, sede y resultado; proteger el secreto.    | `AUTH-DEV-*`, `AUTH-SRV-*`; `TREQ-PASS-029`, `TREQ-PASS-030`.                                   |
+| `PASS-LABOR-FINDING-008` | Existe un componente de cámara que no participa en la ruta actual.                  | Mantenerlo como dormante hasta montaje, permiso, pruebas físicas y actualización del inventario. | `AUTH-UI-026` a `AUTH-UI-029`, `UX-STATION-*`; `TREQ-PASS-031`.                                 |
+
+No queda hallazgo detectado sin requisito, tarea propietaria y momento de resolución.
+
+#### 12. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo:
+
+```text
+TREQ-PASS-013 a TREQ-PASS-034
+```
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-PASS-013` | El inventario laboral relacionado con PASS deberá detectar exactamente tres superficies laborales embebidas activas en la aplicación móvil PASS, siete superficies runtime en la operación PULSO asociada a PASS, cuatro módulos de soporte no visuales, tres fronteras de acción de servidor y un componente de cámara presente pero no montado, sin convertir pantallas de cliente, hooks, acciones o código dormante en rutas laborales adicionales. |
+| `TREQ-PASS-014` | Cada superficie laboral relacionada con PASS deberá conservar identificador estable, repositorio, archivo fuente, categoría, condición de exposición, actor observado y estado runtime, soporte o dormante. Un cambio de archivo, montaje, feature flag, condición de rol, ruta, deep link o commit deberá generar un delta explícito.                                                                                                                  |
+| `TREQ-PASS-015` | PASS deberá conservar cero rutas de navegación exclusivamente laborales en el stack móvil mientras el snapshot aprobado no incorpore una. La presencia de perfil de empleado, rol, sede o simulación dentro de Home no convertirá una pantalla de cliente en aplicación laboral ni habilitará acciones operativas no declaradas.                                                                                                                        |
+| `TREQ-PASS-016` | El bloque laboral del menú de PASS solo deberá mostrarse cuando el principal autenticado resuelva un perfil laboral vigente y una capacidad aprobada para consultar contexto. La ausencia, error o retiro del perfil deberá ocultar controles laborales sin afectar la experiencia normal de cliente.                                                                                                                                                   |
+| `TREQ-PASS-017` | La consulta de perfil laboral desde PASS deberá estar vinculada al usuario autenticado y devolver únicamente identificador, rol necesario, sede base y nombre mínimo. No podrá consultar perfiles de terceros, usar datos cliente para elevar rol ni tratar una fila ausente como autorización laboral.                                                                                                                                                 |
+| `TREQ-PASS-018` | La lista de sedes laborales visible en PASS deberá contener únicamente asignaciones activas y autorizadas del trabajador, identificar la primaria y resolver cualquier fallback contra una sede permitida. Una sede inactiva, ajena o enviada por el cliente no podrá incorporarse al selector ni convertirse en contexto efectivo.                                                                                                                     |
+| `TREQ-PASS-019` | El cambio de rol o sede almacenado por PASS deberá ser exclusivamente una simulación visible y separada de la autoridad real. AsyncStorage, estado React, selección local, texto de rol o sede y navegación cliente no podrán conceder permisos, ampliar datos, firmar acciones ni modificar contexto de servidor.                                                                                                                                      |
+| `TREQ-PASS-020` | Toda simulación laboral en PASS deberá exigir actor autorizado, mostrar aviso persistente, registrar rol y sede reales y simulados, tener expiración y salida explícita, limpiarse al cerrar sesión o perder vínculo y bloquear mutaciones críticas. Una reinstalación, actualización, cambio de usuario o recuperación de caché no podrá reactivar una simulación perteneciente a otro contexto.                                                       |
+| `TREQ-PASS-021` | Los roles locales de PASS deberán reconciliarse con el catálogo canónico de Vento OS. Alias ingleses, opciones omitidas, roles legacy y etiquetas humanas no podrán utilizarse como claves definitivas de autorización ni permitir simulaciones incompatibles con sede, área o modalidad laboral.                                                                                                                                                       |
+| `TREQ-PASS-022` | La superficie PULSO `/scanner` relacionada con PASS deberá exigir sesión válida, acceso a PULSO, sede efectiva y permisos exactos por acción. El permiso general `pos.main` no podrá autorizar por sí solo identificación de cliente, otorgamiento de puntos y validación de redenciones cuando estas acciones requieran capacidades distintas.                                                                                                         |
+| `TREQ-PASS-023` | La identificación de cliente en PULSO deberá aceptar únicamente formatos canónicos de Vento ID, resolver la identidad en servidor, limitarse a la sede y finalidad operativa y devolver una proyección mínima. Códigos desconocidos, manipulados, reutilizados con otra semántica o pertenecientes a otra entidad deberán fallar cerrados.                                                                                                              |
+| `TREQ-PASS-024` | La tarjeta operativa de cliente en PULSO deberá mostrar solo los campos necesarios para la acción autorizada. Nombre, correo y saldo de puntos tendrán finalidad, enmascaramiento, territorio y retención definidos; no se permitirá búsqueda masiva, copia lateral ni persistencia del perfil después de limpiar, cambiar de cliente, cerrar sesión o expirar la operación.                                                                            |
+| `TREQ-PASS-025` | Otorgar puntos desde PULSO deberá ejecutarse mediante comando de servidor autorizado, territorial, atómico e idempotente que valide cliente, compra elegible, monto, moneda, reglas vigentes, actor, dispositivo y referencia externa. El saldo y ledger deberán confirmarse juntos y una respuesta perdida o reintento no podrá duplicar puntos.                                                                                                       |
+| `TREQ-PASS-026` | La idempotency key o referencia externa para otorgar puntos no podrá depender únicamente de `Date.now`, `Math.random`, identificadores truncados ni estado de interfaz. Deberá provenir de la transacción empresarial o de un identificador estable emitido y validado por servidor, y reutilizarse ante reintento del mismo hecho.                                                                                                                     |
+| `TREQ-PASS-027` | Validar una redención desde PULSO deberá comprobar código, usuario, recompensa, sede, estado pendiente, vigencia, saldo ya debitado o reservado, actor efectivo y no utilización previa. La transición a usada deberá ser atómica e idempotente y conservar evidencia; códigos usados, cancelados, vencidos o de otra sede deberán rechazarse sin efectos.                                                                                              |
+| `TREQ-PASS-028` | Identificación y redención deberán permanecer registradas como dos modos subordinados de una sola ruta `/scanner` mientras compartan el mismo contenedor runtime. Cambiar de modo deberá limpiar código, cliente, monto y mensajes incompatibles sin crear rutas ficticias ni conservar estado de la operación anterior.                                                                                                                                |
+| `TREQ-PASS-029` | En dispositivo compartido, toda mutación de puntos o redención deberá exigir firma del trabajador real antes del comando y vincular principal técnico, actor humano, dispositivo, sede, permiso y resultado. La sesión administrativa del dispositivo no podrá transferir sus privilegios al cajero que firma.                                                                                                                                          |
+| `TREQ-PASS-030` | La firma o PIN del trabajador en PULSO deberá capturarse como secreto efímero, no mostrarse, persistirse, reutilizarse ni incluirse en logs, métricas o mensajes. Deberá aplicar límites de intentos, bloqueo, rotación y respuesta uniforme, y limpiarse después de éxito, error, cambio de cliente, cambio de modo o expiración.                                                                                                                      |
+| `TREQ-PASS-031` | El componente `CameraQRScanner` deberá permanecer clasificado como fuente no montada y no como superficie runtime mientras `/scanner` no lo importe ni exponga. Su futura activación exigirá inventario, permiso de cámara, selección de dispositivo, privacidad, fallback, pruebas físicas y actualización de conteos antes de presentarse como disponible.                                                                                            |
+| `TREQ-PASS-032` | Los estados de procesamiento, éxito y error de la superficie PULSO-PASS deberán corresponder al resultado confirmado de servidor. La interfaz no mostrará cliente identificado, puntos otorgados o canje validado antes de confirmar el efecto, y distinguirá error recuperable, duplicado, conflicto, denegación y resultado ya aplicado.                                                                                                              |
+| `TREQ-PASS-033` | Los módulos laborales de soporte dentro de PASS deberán fallar cerrados y aislarse de la experiencia de cliente. Un error al leer `employees`, `employee_sites`, rol local o override no podrá impedir acceso de cliente válido, exponer datos laborales, conservar simulación obsoleta ni degradarse a privilegios por defecto.                                                                                                                        |
+| `TREQ-PASS-034` | El registro unificado deberá reconciliar las superficies laborales embebidas de PASS con la ruta operativa PULSO `/scanner`, sus modos y acciones, sin duplicarlas como pantallas PASS ni atribuir a PASS mutaciones propietarias de PULSO. Propiedad, consumo, procesos, actores, permisos y protección de servidor se completarán en las tareas posteriores del BLOQUE I.                                                                             |
+
+#### 13. Huellas de la línea base
+
+```text
+PASS_RUNTIME_SHA256 = 79a1806c023ad40a43161884aaeb38351372c20e600cda637d9aca06c2d03123
+PASS_SUPPORT_SHA256 = 02c40c84ee81a1bd400c9e6960f671144fcc72bddf5fc13125e7e96b4b57eb6d
+PULSO_RUNTIME_SHA256 = b549d14f061aa669c1344d8f768a01e27922e4468f1302112dd425886c5a4e2f
+ACTION_BOUNDARIES_SHA256 = 0bb048b3bdc03fcf27aaaf473ad0b97e5ed51966b26eb123a4ed8740a988eb36
+DORMANT_COMPONENT_SHA256 = efcd1c55d707ac985ce8fbc06b28137db069f0995ea393da29ad1524bd3e9d32
+COMBINED_INVENTORY_SHA256 = bafeda6f59649ebebba4708be132c0555b8ecd48b625781ac0355521b6efc737
+```
+
+#### 14. Criterios de aceptación
+
+- [x] PASS conserva cero rutas exclusivamente laborales y tres superficies laborales embebidas.
+- [x] Los cuatro módulos de soporte laboral de PASS están separados del conteo runtime.
+- [x] PULSO conserva una ruta relacionada con PASS y siete superficies subordinadas dentro de ella.
+- [x] Identificación y redención se registran como modos, no como rutas duplicadas.
+- [x] Las tres acciones de servidor están registradas como fronteras técnicas, no como vistas.
+- [x] `CameraQRScanner` permanece clasificado como componente no montado.
+- [x] La simulación local no se presenta como autoridad real.
+- [x] Los hallazgos tienen requisito, tarea propietaria y momento de resolución.
+- [x] Se incorporan `TREQ-PASS-013` a `TREQ-PASS-034` sin modificar requisitos históricos.
+- [x] No se implementa código, navegación runtime, migración, Supabase ni despliegue.
+
+#### 15. Validaciones documentales realizadas
+
+| Control                       | Resultado                                         |
+| ----------------------------- | ------------------------------------------------- |
+| Base 04A leída completa       | **3.442 requisitos**                              |
+| Nuevos requisitos             | **22**                                            |
+| Total regenerado              | **3.464**                                         |
+| Dominio PASS                  | **34 requisitos — TREQ-PASS-001 a TREQ-PASS-034** |
+| Identificadores duplicados    | **0**                                             |
+| Filas con catorce columnas    | **3.464 de 3.464**                                |
+| Relaciones TREQ no resolubles | **0**                                             |
+| Secuencia PASS                | **continua, sin saltos**                          |
+| Código o Supabase modificado  | **no**                                            |
+
+#### 16. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No insertar filas TREQ manualmente.
+
+#### 17. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+        ↓
+TAREA ACTUAL
+AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-011 — Asignar process_id a cada vista
+```
+
+
+### ✅ AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
+
+**Estado:** APROBADA  
+**Fecha de aprobación documental:** 2026-07-28  
+**Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas  
+**Tipo de tarea:** auditoría técnico-documental de existencia, rutas y superficies actuales; sin cambios de código, Supabase, despliegue, DNS ni navegación runtime  
+**Marcador exacto que reemplaza:** `### [ ] AUTH-UI-010 — Auditar rutas y superficies actuales de AURA`  
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md`  
+**Siguiente tarea:** `AUTH-UI-011 — Asignar process_id a cada vista`
+
+#### 1. Objetivo
+
+Auditar de forma exhaustiva y reproducible las rutas y superficies que existen actualmente alrededor del dominio funcional previsto para AURA, diferenciando con precisión:
+
+1. la aplicación AURA standalone, que no existe en el snapshot inspeccionado;
+2. la reserva de catálogo y launcher de AURA;
+3. las superficies administrativas de contenido web que hoy pertenecen a VISO;
+4. las superficies públicas de `ventogroup.co` que consumen ese contenido;
+5. las acciones de servidor, el handler de media, las tablas y los contratos cross-repo relacionados.
+
+La tarea registra realidad actual. No decide todavía continuidad, reemplazo o retiro de AURA; no transfiere propiedad desde VISO; no crea una aplicación; no aprueba permisos definitivos; no modifica rutas, base de datos ni despliegues.
+
+#### 2. Fuentes inspeccionadas
+
+| Fuente                                                   | Rama o commit                              | Alcance                                                                                             |
+| -------------------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `devVentoGroup/vento-shell`                              | `0f3aa70407ecc5de5fa4ff601b1976c1bd29375b` | plan canónico, login central, template, reserva AURA, esquema website CMS y políticas RLS           |
+| `devVentoGroup/vento-viso`                               | `776a5b01008b342cdc9fbcc046a185a82d93f7f5` | AppSwitcher AURA, siete rutas CMS, nueve superficies internas, siete acciones y un handler de media |
+| `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-pulso` | snapshots canónicos vigentes               | cuatro AppSwitchers adicionales con AURA `soon`                                                     |
+| `devVentoGroup/Vento-Group`                              | `604227aa0c36eda7bb7cf55f66369aa664f4290f` | siete patrones públicos relacionados y adaptador de contenido                                       |
+| Registro 04A base                                        | `AUTH-UI-009`                              | 3.464 requisitos antes de esta tarea                                                                |
+
+#### 3. Frontera obligatoria
+
+```text
+AURA RESERVADA EN CATÁLOGO
+≠ AURA IMPLEMENTADA
+
+CMS ACTUAL EN VISO
+≠ AURA STANDALONE
+
+RUTA PÚBLICA EN ventogroup.co
+≠ RUTA ADMINISTRATIVA
+
+SERVER ACTION O API
+≠ PANTALLA
+
+TABLA website_*
+≠ PROPIETARIO FUNCIONAL DEFINITIVO
+
+PUBLICADO
+≠ APROBADO
+≠ VIGENTE
+```
+
+| Decisión                                                         | Tarea propietaria               |
+| ---------------------------------------------------------------- | ------------------------------- |
+| Confirmar repositorio, producto, usuarios, datos y permisos AURA | `AURA-AUD-001` a `AURA-AUD-006` |
+| Definir relación con VISO, PASS y PULSO                          | `AURA-AUD-007` a `AURA-AUD-009` |
+| Decidir continuidad, reemplazo o retiro                          | `AURA-AUD-010`                  |
+| Registrar ADR y desbloquear o mantener bloqueado el roadmap      | `AURA-AUD-011` y `AURA-AUD-012` |
+| Asignar proceso, paso, propietaria y consumidores a las vistas   | `AUTH-UI-011` a `AUTH-UI-014`   |
+| Aprobar permisos, acceso directo y protección de servidor        | `AUTH-UI-030` a `AUTH-UI-044`   |
+
+#### 4. Método de auditoría
+
+1. Se enumeraron todos los repositorios accesibles de Vento Group y se confirmó la ausencia de un repositorio AURA.
+2. Se contrastó la auditoría técnica previa de AURA con cinco AppSwitchers, el login central, el template y el plan canónico.
+3. Se buscaron todas las páginas bajo `src/app/website-cms` en VISO y se abrió cada archivo de ruta.
+4. Se separaron rutas, superficies subordinadas, server actions y route handlers.
+5. Se inspeccionó el consumidor público de `website_blocks` y `website_items` en `Vento-Group`.
+6. Se reconciliaron categorías, page slugs, block keys, publicación, fallbacks, políticas RLS y credenciales de servidor.
+7. Cada brecha quedó vinculada a requisito y tarea propietaria.
+
+#### 5. Resultado cuantitativo reconciliado
+
+| Métrica                                             |                           Resultado |
+| --------------------------------------------------- | ----------------------------------: |
+| Repositorios standalone AURA                        |                               **0** |
+| Rutas standalone AURA                               |                               **0** |
+| Pantallas standalone AURA                           |                               **0** |
+| Representaciones runtime AURA sin aplicación propia | **7 — 5 AppSwitchers + 2 en login** |
+| Referencias de template no runtime                  |                               **1** |
+| Rutas administrativas actuales relacionadas en VISO |                               **7** |
+| Rutas VISO estáticas                                |                               **4** |
+| Rutas VISO dinámicas                                |                               **3** |
+| Superficies subordinadas VISO inventariadas         |                               **9** |
+| Server actions relacionadas                         |                               **7** |
+| Route handlers relacionados                         |                               **1** |
+| Patrones públicos consumidores en Vento-Group       |                               **7** |
+| Patrones públicos que renderizan contenido          |                               **6** |
+| Patrones públicos de redirección                    |                               **1** |
+| Patrones públicos estáticos                         |                               **6** |
+| Patrones públicos dinámicos                         |                               **1** |
+| Categorías del modelo website_items                 |                               **5** |
+| Tablas maestras actuales del CMS                    |                               **2** |
+| Hallazgos con propietario documental                |                              **10** |
+| Decisiones de continuidad tomadas por esta tarea    |                               **0** |
+
+#### 6. `AURA-CURRENT-EXISTENCE-REGISTER-001`
+
+| Elemento                   | Resultado                                                     | Evidencia                                | Interpretación aprobada               |
+| -------------------------- | ------------------------------------------------------------- | ---------------------------------------- | ------------------------------------- |
+| Repositorio AURA           | `ABSENT`                                                      | listado completo de repositorios VENTO   | no existe aplicación standalone       |
+| Rutas o pantallas AURA     | `0`                                                           | auditoría técnica y búsqueda transversal | no existe inventario runtime propio   |
+| Navegación registrada AURA | `0` en la auditoría técnica base                              | `app_navigation_items` auditado          | no existe menú funcional AURA         |
+| Pantallas registradas AURA | `0` en la auditoría técnica base                              | `app_screen_registry` auditado           | no existe superficie registrada       |
+| Permiso base               | `aura.access` reservado                                       | catálogo canónico                        | no concede capacidades funcionales    |
+| AppSwitchers               | cinco entradas AURA `soon` hacia `https://aura.ventogroup.co` | NEXO, FOGO, ORIGO, PULSO y VISO          | placeholders, no disponibilidad       |
+| Login central              | metadata por host y chip visible AURA                         | `vento-shell/src/app/login/page.tsx`     | referencia activa, no aplicación      |
+| Template                   | una entrada AURA `soon`                                       | template AppShell de `vento-shell`       | fuente no runtime                     |
+| Roadmap AURA               | bloqueado                                                     | BLOQUE W                                 | no autoriza implementación ni canales |
+
+#### 7. `AURA-CURRENT-PLACEHOLDER-SURFACE-INVENTORY-001`
+
+| ID                   | Repositorio | Archivo fuente                                | Representación                                | Estado observado |
+| -------------------- | ----------- | --------------------------------------------- | --------------------------------------------- | ---------------- |
+| AURA-PLACEHOLDER-001 | vento-nexo  | src/components/vento/standard/vento-shell.tsx | AppSwitcher tile                              | soon             |
+| AURA-PLACEHOLDER-002 | vento-fogo  | src/components/vento/standard/vento-shell.tsx | AppSwitcher tile                              | soon             |
+| AURA-PLACEHOLDER-003 | vento-origo | src/components/vento/standard/vento-shell.tsx | AppSwitcher tile                              | soon             |
+| AURA-PLACEHOLDER-004 | vento-pulso | src/components/vento/standard/vento-shell.tsx | AppSwitcher tile                              | soon             |
+| AURA-PLACEHOLDER-005 | vento-viso  | src/components/vento/standard/vento-shell.tsx | AppSwitcher tile                              | soon             |
+| AURA-PLACEHOLDER-006 | vento-shell | src/app/login/page.tsx                        | Login metadata selected by aura returnTo host | active reference |
+| AURA-PLACEHOLDER-007 | vento-shell | src/app/login/page.tsx                        | Visible AURA chip in connected apps           | active reference |
+
+Referencia reutilizable no runtime:
+
+| ID                | Repositorio | Archivo fuente                                                              | Referencia                             | Estado |
+| ----------------- | ----------- | --------------------------------------------------------------------------- | -------------------------------------- | ------ |
+| AURA-TEMPLATE-001 | vento-shell | templates/app-shell-standard/src/components/vento/standard/app-switcher.tsx | Non-runtime AppSwitcher template entry | soon   |
+
+Estas representaciones anuncian o tematizan AURA, pero no son rutas internas de una aplicación AURA.
+
+#### 8. `AURA-CURRENT-ADMIN-ROUTE-INVENTORY-001`
+
+| ID                           | Patrón                     | Tipo    | Archivo fuente                             | Superficie observada                                | Propietario actual |
+| ---------------------------- | -------------------------- | ------- | ------------------------------------------ | --------------------------------------------------- | ------------------ |
+| AURA-CURRENT-ADMIN-ROUTE-001 | /website-cms               | STATIC  | src/app/website-cms/page.tsx               | Panel CMS, filtros, tarjetas y bloques              | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-002 | /website-cms/venues        | STATIC  | src/app/website-cms/venues/page.tsx        | Restaurantes, completitud e importación desde PASS  | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-003 | /website-cms/items/new     | STATIC  | src/app/website-cms/items/new/page.tsx     | Alta de restaurante, empleo, servicio, evento o app | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-004 | /website-cms/blocks/new    | STATIC  | src/app/website-cms/blocks/new/page.tsx    | Alta de bloque editorial                            | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-005 | /website-cms/items/[id]    | DYNAMIC | src/app/website-cms/items/[id]/page.tsx    | Edición y eliminación de tarjeta                    | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-006 | /website-cms/blocks/[id]   | DYNAMIC | src/app/website-cms/blocks/[id]/page.tsx   | Edición de bloque editorial                         | VISO               |
+| AURA-CURRENT-ADMIN-ROUTE-007 | /website-cms/venues/[slug] | DYNAMIC | src/app/website-cms/venues/[slug]/page.tsx | Editor y previsualización de detalle de restaurante | VISO               |
+
+Las siete rutas pertenecen actualmente a `appId: viso`. No se renombran ni se contabilizan como rutas AURA.
+
+#### 9. `AURA-CURRENT-INTERNAL-SURFACE-INVENTORY-001`
+
+| ID                       | Tipo                  | Archivo fuente                                     | Comportamiento                                            |
+| ------------------------ | --------------------- | -------------------------------------------------- | --------------------------------------------------------- |
+| AURA-CURRENT-SURFACE-001 | DASHBOARD             | src/app/website-cms/page.tsx                       | panel, filtros, accesos rápidos y listados                |
+| AURA-CURRENT-SURFACE-002 | CREATE_FORM           | src/app/website-cms/items/new/page.tsx             | creación de tarjetas de contenido                         |
+| AURA-CURRENT-SURFACE-003 | EDIT_FORM             | src/app/website-cms/items/[id]/page.tsx            | edición, completitud y publicación de tarjetas            |
+| AURA-CURRENT-SURFACE-004 | DELETE_CONTROL        | src/app/website-cms/items/[id]/page.tsx            | eliminación física de tarjeta                             |
+| AURA-CURRENT-SURFACE-005 | CREATE_FORM           | src/app/website-cms/blocks/new/page.tsx            | creación de bloque editorial                              |
+| AURA-CURRENT-SURFACE-006 | EDIT_FORM             | src/app/website-cms/blocks/[id]/page.tsx           | edición y publicación de bloque                           |
+| AURA-CURRENT-SURFACE-007 | IMPORT_AND_LIST       | src/app/website-cms/venues/page.tsx                | importación idempotente parcial y listado de restaurantes |
+| AURA-CURRENT-SURFACE-008 | DETAIL_EDITOR_PREVIEW | src/app/website-cms/venues/[slug]/page.tsx         | tarjeta, hero, galería y vista pública                    |
+| AURA-CURRENT-SURFACE-009 | MEDIA_UPLOAD          | src/components/viso/website-media-upload-field.tsx | carga de imagen o video y captura de URL pública          |
+
+Las nueve superficies son unidades interactivas dentro de las siete rutas. No aumentan el conteo de páginas.
+
+#### 10. Fronteras técnicas actuales
+
+##### 10.1 Server actions
+
+| ID                      | Acción                 | Archivo fuente                             |
+| ----------------------- | ---------------------- | ------------------------------------------ |
+| AURA-CURRENT-ACTION-001 | importBusinesses       | src/app/website-cms/venues/page.tsx        |
+| AURA-CURRENT-ACTION-002 | createWebsiteItem      | src/app/website-cms/items/new/page.tsx     |
+| AURA-CURRENT-ACTION-003 | updateWebsiteItem      | src/app/website-cms/items/[id]/page.tsx    |
+| AURA-CURRENT-ACTION-004 | deleteWebsiteItem      | src/app/website-cms/items/[id]/page.tsx    |
+| AURA-CURRENT-ACTION-005 | createWebsiteBlock     | src/app/website-cms/blocks/new/page.tsx    |
+| AURA-CURRENT-ACTION-006 | updateBlock            | src/app/website-cms/blocks/[id]/page.tsx   |
+| AURA-CURRENT-ACTION-007 | updateRestaurantDetail | src/app/website-cms/venues/[slug]/page.tsx |
+
+##### 10.2 Route handler
+
+| ID                   | Patrón                         | Método | Archivo fuente                                 |
+| -------------------- | ------------------------------ | ------ | ---------------------------------------------- |
+| AURA-CURRENT-API-001 | /api/viso/upload-website-media | POST   | src/app/api/viso/upload-website-media/route.ts |
+
+El handler de media es una frontera API y no una pantalla. En el snapshot observado autentica usuario, restringe por dos roles locales, acepta imagen o video hasta el límite configurado, carga al bucket y devuelve URL pública.
+
+#### 11. `AURA-CURRENT-PUBLIC-CONSUMER-INVENTORY-001`
+
+| ID                      | Patrón               | Tipo    | Comportamiento            | Archivo fuente                       | Consumo                                             |
+| ----------------------- | -------------------- | ------- | ------------------------- | ------------------------------------ | --------------------------------------------------- |
+| AURA-CURRENT-PUBLIC-001 | /                    | STATIC  | RENDER                    | src/app/page.tsx                     | home blocks; restaurant, job, service and app items |
+| AURA-CURRENT-PUBLIC-002 | /restaurantes        | STATIC  | RENDER                    | src/app/restaurantes/page.tsx        | restaurant items and restaurantes blocks            |
+| AURA-CURRENT-PUBLIC-003 | /restaurantes/[slug] | DYNAMIC | RENDER                    | src/app/restaurantes/[slug]/page.tsx | restaurant item and detail blocks                   |
+| AURA-CURRENT-PUBLIC-004 | /empleos             | STATIC  | RENDER                    | src/app/empleos/page.tsx             | job items                                           |
+| AURA-CURRENT-PUBLIC-005 | /servicios           | STATIC  | RENDER                    | src/app/servicios/page.tsx           | service items and servicios blocks                  |
+| AURA-CURRENT-PUBLIC-006 | /ecosistema          | STATIC  | RENDER                    | src/app/ecosistema/page.tsx          | app items                                           |
+| AURA-CURRENT-PUBLIC-007 | /eventos             | STATIC  | REDIRECT_TO_/restaurantes | src/app/eventos/page.tsx             | none                                                |
+
+La ruta `/eventos` existe, pero no consume eventos: redirige a `/restaurantes`. Por tanto, la categoría `event` del CMS no tiene actualmente una superficie pública equivalente a la promesa de la interfaz administrativa.
+
+#### 12. Contrato de datos y consumo observado
+
+| Elemento               | Productor o administrador actual | Consumidor actual  | Regla observada                                                           |
+| ---------------------- | -------------------------------- | ------------------ | ------------------------------------------------------------------------- |
+| `website_items`        | VISO CMS                         | `Vento-Group`      | categorías restaurant, job, service, event y app; `is_published` booleano |
+| `website_blocks`       | VISO CMS                         | `Vento-Group`      | page_slug y block_key; `is_published` booleano                            |
+| `pass.pass_satellites` | PASS                             | importador de VISO | fuente parcial de restaurantes activos                                    |
+| bucket `website-media` | handler VISO                     | sitio público      | URLs públicas de imagen y video                                           |
+| contenido fallback     | código de `Vento-Group`          | sitio público      | se usa ante credenciales ausentes, error o cero filas según cada consulta |
+
+El cliente público usa service role cuando está disponible y cae a anon cuando no. La política endurecida observada permite lectura de filas publicadas únicamente a `authenticated`; por ello el despliegue sin service role puede fallar y activar fallbacks sin hacer visible la causa al usuario.
+
+#### 13. Hallazgos y cierre documental
+
+| ID                       | Hallazgo                                                                                                                                                                                   | Propietario documental                                                                               |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| AURA-CURRENT-FINDING-001 | No existe repositorio, aplicación, ruta ni pantalla standalone de AURA; cinco AppSwitchers y dos representaciones del login central la referencian, pero ninguna constituye producto AURA. | AURA-AUD-001 a AURA-AUD-004; TREQ-AURA-004 a TREQ-AURA-006                                           |
+| AURA-CURRENT-FINDING-002 | Las capacidades actuales de contenido web viven en VISO y son consumidas por Vento-Group; no deben atribuirse silenciosamente a AURA.                                                      | AURA-AUD-007; AUTH-UI-013; AUTH-UI-014; TREQ-AURA-007                                                |
+| AURA-CURRENT-FINDING-003 | Las páginas CMS exigen acceso general a VISO y luego usan cliente administrativo; no se observa permiso específico de lectura o mutación por acción.                                       | AUTH-UI-030 a AUTH-UI-044; AURA-AUTH-001; TREQ-AURA-008 a TREQ-AURA-010                              |
+| AURA-CURRENT-FINDING-004 | El upload de media autoriza por una lista local de dos roles y no por el catálogo canónico de capacidades.                                                                                 | AURA-AUTH-001 a AURA-AUTH-004; AUTH-SRV-004 a AUTH-SRV-018; TREQ-AURA-018                            |
+| AURA-CURRENT-FINDING-005 | Items y bloques nacen publicados por defecto y page_slug, block_key, CTA y URL admiten entradas amplias sin flujo de aprobación independiente.                                             | AURA-DOM-001 a AURA-DOM-005; AURA-UX-001 a AURA-UX-004; TREQ-AURA-011 a TREQ-AURA-016; TREQ-AURA-019 |
+| AURA-CURRENT-FINDING-006 | VISO permite crear y anunciar eventos para ventogroup.co/eventos, pero la ruta pública redirige a restaurantes.                                                                            | AURA-AUD-004; AURA-AUD-007; TREQ-AURA-022                                                            |
+| AURA-CURRENT-FINDING-007 | VISO escribe gallery_ y gallery_media, mientras el consumidor público busca galeria_ y galeria_media.                                                                                      | AURA-AUD-004; AURA-INT-001; TREQ-AURA-017; TREQ-AURA-023                                             |
+| AURA-CURRENT-FINDING-008 | El sitio público prefiere service role y cae a anon; la política endurecida permite lectura autenticada, y ante error o ausencia se sirve contenido fallback.                              | AURA-INT-001; SUPABASE y seguridad; TREQ-AURA-020; TREQ-AURA-021; TREQ-AURA-024                      |
+| AURA-CURRENT-FINDING-009 | La eliminación de items es física y no se observa versión, aprobación, rollback, historial editorial ni verificación de referencias públicas.                                              | AURA-DOM-001 a AURA-DOM-005; EVID-ARC; TREQ-AURA-013; TREQ-AURA-019; TREQ-AURA-026                   |
+| AURA-CURRENT-FINDING-010 | El contrato cross-repo entre VISO, tablas website y Vento-Group carece de versión ejecutable y prueba de compatibilidad visible.                                                           | AURA-INT-001; SHELL-CI-017; TREQ-AURA-023 a TREQ-AURA-027                                            |
+
+No queda hallazgo detectado sin requisito, tarea propietaria y momento de resolución.
+
+#### 14. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo:
+
+```text
+TREQ-AURA-004 a TREQ-AURA-027
+```
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-AURA-004` | El inventario actual de AURA deberá detectar cero repositorios standalone, cero rutas propias y cero pantallas propias, y deberá separar esa ausencia de la existencia de un código de aplicación reservado, un permiso base y siete representaciones runtime de acceso o launcher, además de una referencia de template no runtime. Ningún placeholder podrá contabilizarse como producto implementado. |
+| `TREQ-AURA-005` | Cada alta, retiro o cambio de repositorio, dominio, ruta, pantalla, launcher, navegación, permiso reservado o commit relacionado con AURA deberá producir un delta explícito contra el inventario aprobado, con identificador estable, fuente y huella reproducible.                                                                                                                                     |
+| `TREQ-AURA-006` | Las cinco tarjetas AppSwitcher, las dos representaciones del login central y cualquier catálogo de aplicaciones deberán mostrar AURA como no disponible mientras no exista repositorio, despliegue, rutas certificadas, autorización y decisión formal de continuidad. La URL reservada no deberá abrir una aplicación equivocada, vacía o no protegida.                                                 |
+| `TREQ-AURA-007` | Las siete rutas administrativas actuales de contenido web deberán conservarse atribuidas a VISO y las siete rutas públicas consumidoras a Vento-Group hasta que una decisión aprobada transfiera propiedad. No se duplicarán como rutas AURA ni se declarará a AURA fuente de verdad por inferencia.                                                                                                     |
+| `TREQ-AURA-008` | La lectura del CMS deberá exigir una capacidad específica de contenido web además del acceso general a VISO. Conocer o abrir directamente `/website-cms` o cualquiera de sus rutas hijas no deberá conceder lectura de borradores, contenido oculto, URLs, medios o datos editoriales.                                                                                                                   |
+| `TREQ-AURA-009` | Crear, actualizar, publicar, ocultar, eliminar, importar y subir media deberán usar capacidades atómicas distintas y comprobarse en servidor para la ruta y la acción exactas. El permiso de lectura, el acceso general a VISO o la visibilidad del menú no autorizarán mutaciones.                                                                                                                      |
+| `TREQ-AURA-010` | Toda operación que use `createAdminClient` o service role deberá autorizar actor, capacidad, recurso, sede o alcance y estado antes de consultar o mutar. La elevación técnica no podrá sustituir RLS, ampliar el conjunto de filas ni aceptar identificadores enviados por cliente sin resolución de servidor.                                                                                          |
+| `TREQ-AURA-011` | Crear una tarjeta de contenido deberá validar categoría, título, slug normalizado, unicidad, fechas, URL de acción, media, orden, alcance y estado inicial. La colisión de slug deberá resolverse de manera determinista y la creación no deberá publicar por defecto sin política aprobada.                                                                                                             |
+| `TREQ-AURA-012` | Actualizar una tarjeta deberá detectar edición concurrente, preservar identidad y versión, validar cambios de categoría o slug contra consumidores y registrar actor, antes, después y motivo. Un cambio de URL no deberá romper enlaces públicos, SEO, referencias o campañas sin redirección explícita.                                                                                                |
+| `TREQ-AURA-013` | Eliminar una tarjeta deberá comprobar referencias, estado publicado, dependencias, URLs, campañas y evidencia antes de ejecutar. La operación deberá ser reversible o usar retiro lógico con retención y auditoría; una eliminación física directa no será el comportamiento canónico.                                                                                                                   |
+| `TREQ-AURA-014` | Crear un bloque deberá aceptar únicamente page_slug, block_key y block_type registrados y compatibles con el consumidor público. Entradas libres, claves desconocidas o combinaciones no renderizadas deberán rechazarse o permanecer en borrador técnico sin publicación.                                                                                                                               |
+| `TREQ-AURA-015` | Actualizar un bloque deberá preservar unicidad, validar compatibilidad del tipo y la clave, detectar concurrencia y registrar versión y actor. Cambiar page_slug o block_key no podrá crear contenido duplicado, huérfano o incompatible con el frontend.                                                                                                                                                |
+| `TREQ-AURA-016` | Importar restaurantes desde PASS deberá ser idempotente, conservar vínculo estable con el satélite o sede origen, distinguir datos importados de datos editoriales, no sobreescribir curaduría y reportar altas, omitidos, conflictos y retiros. Comparar solo slugs no será suficiente para reconciliar identidad.                                                                                      |
+| `TREQ-AURA-017` | El editor de detalle de restaurante deberá escribir exactamente las claves, tipos y page_slug que consume la página pública, y deberá probar hero, galería, tarjeta, CTA y publicación en conjunto antes de guardar. Una previsualización local no podrá ocultar incompatibilidades del consumidor real.                                                                                                 |
+| `TREQ-AURA-018` | La carga de media deberá exigir capacidad canónica, validar firma real del archivo además de MIME declarado, tamaño, dimensiones, duración, derechos, malware, nombre, deduplicación, cuota y alcance. El scope enviado por cliente no decidirá por sí solo la ruta, y la URL pública solo se emitirá después de una carga íntegra y auditable.                                                          |
+| `TREQ-AURA-019` | Borrador, revisión, aprobación, programación, publicación, ocultamiento, retiro y archivo deberán ser estados y transiciones distintas con segregación de funciones, vigencia, actor y evidencia. El booleano `is_published` no podrá representar por sí solo el ciclo editorial ni una aprobación equivaler a publicación.                                                                              |
+| `TREQ-AURA-020` | El sitio público deberá consumir únicamente contenido publicado y vigente mediante una identidad técnica explícita, de mínimo privilegio y compatible con las políticas de lectura. La ausencia de service role, una política RLS incompatible o un error de consulta deberá producir estado observable y no una degradación silenciosa.                                                                 |
+| `TREQ-AURA-021` | Los fallbacks editoriales deberán estar etiquetados como contenido de contingencia, versionados y gobernados. Un error, falta de credenciales o tabla vacía no podrá mostrar placeholders como si fueran contenido vigente de producción ni reintroducir promociones, vacantes, eventos o apps retirados.                                                                                                |
+| `TREQ-AURA-022` | La categoría event, los filtros, formularios, textos y CTAs solo deberán presentarse como publicables cuando exista una ruta pública consumidora activa. Mientras `/eventos` redirija a `/restaurantes`, crear o publicar eventos deberá bloquearse, advertirse o dirigirse a un destino explícitamente aprobado.                                                                                        |
+| `TREQ-AURA-023` | El contrato de bloques deberá definir una única convención versionada para page_slug, block_key y block_type. En particular, gallery y galeria no podrán coexistir sin alias explícito, migración y prueba que asegure que lo escrito por VISO es leído por Vento-Group.                                                                                                                                 |
+| `TREQ-AURA-024` | El contrato entre esquema, políticas RLS, cliente administrativo de VISO y cliente público de Vento-Group deberá versionarse y probarse como una unidad. Una migración de políticas o columnas no podrá desplegarse si rompe lectura pública, edición, importación, publicación o fallback controlado.                                                                                                   |
+| `TREQ-AURA-025` | Toda URL interna, CTA, canonical, preview y redirección producida por el CMS deberá validarse contra rutas activas y políticas de seguridad. No se admitirán `#`, destinos retirados, ciclos, redirecciones inesperadas, esquemas peligrosos ni enlaces a `/eventos` mientras ese destino no represente la acción anunciada.                                                                             |
+| `TREQ-AURA-026` | Toda lectura y mutación editorial deberá generar auditoría correlacionable de actor, principal técnico, capacidad, recurso, versión, estado anterior, estado nuevo, origen, resultado y publicación afectada. Deberán existir métricas y reconciliación para filas sin consumidor, URLs rotas, medios faltantes, contenido publicado vencido y fallos de sincronización.                                 |
+| `TREQ-AURA-027` | Una futura transferencia de las capacidades CMS desde VISO hacia AURA deberá depender de decisión formal y ADR, definir propietario y consumidores, migrar rutas y permisos sin duplicar maestros, preservar URLs y evidencia, ejecutar cutover y rollback, y retirar o redirigir las superficies anteriores solo después de reconciliación completa.                                                    |
+
+#### 15. Huellas de la línea base
+
+```text
+STANDALONE_AURA_STATE_SHA256 = 27aa457c166115087c18174e4f95500b0a817152268f603e17f8a1e1dab0c16b
+RUNTIME_PLACEHOLDER_SURFACES_SHA256 = 69483222be343ab33f14fa81f072d7d8f340d68d252dba9079ddb5585265643e
+TEMPLATE_REFERENCES_SHA256 = d2a550ac87dec6c68d8a60a5ab2ef6f09ea1d827631e15f3e0c35e47a936d615
+VISO_ADMIN_ROUTES_SHA256 = 1867bfd2e4c558227a33bc7354a150ab6c970c2a4cd0f5acb6310127884d58f3
+VISO_INTERNAL_SURFACES_SHA256 = 219e621396fe48d5ff490cf9f04b0e5ba0344ee1d30ea3b68df5080235de8fa8
+VISO_SERVER_ACTIONS_SHA256 = acd5b697f03f135baabda73466ad87032b7ce63a91f435911cc608428c6133ed
+VISO_API_HANDLERS_SHA256 = 0eb8f26fc40349d3ccdafe94455457045cfd12965df75c1cb3b3250cd73f8b04
+PUBLIC_CONSUMER_ROUTES_SHA256 = 3622a43fbabffa9da801f0a28a43240d4acacb960b5a7fff7bc60b402ac34149
+FINDINGS_SHA256 = 6f9560efe9f65378a3649598d9789cde85c3c5c2c56792b7eb1b73deca067337
+COMBINED_INVENTORY_SHA256 = b6dc17623bc1d6eaa93001c877157c6030d16f6df87e6628075d348f3ea5d386
+```
+
+#### 16. Criterios de aceptación
+
+- [x] Se confirma cero repositorios, rutas y pantallas standalone de AURA.
+- [x] Las siete representaciones runtime y la referencia de template se separan de una implementación real.
+- [x] Se inventariaron exactamente siete rutas administrativas actuales en VISO.
+- [x] Se separan nueve superficies subordinadas, siete server actions y un handler API.
+- [x] Se inventariaron siete patrones públicos relacionados, con seis vistas y una redirección.
+- [x] Las superficies actuales conservan su propietario observado y no se transfieren por inferencia a AURA.
+- [x] Se documentan las incompatibilidades event, gallery o galeria, RLS, fallback y autorización.
+- [x] Cada hallazgo tiene requisito y tarea propietaria.
+- [x] Se incorporan `TREQ-AURA-004` a `TREQ-AURA-027` sin modificar filas históricas.
+- [x] No se ejecuta código de producto, migración, cambio Supabase, DNS ni despliegue.
+
+#### 17. Validaciones documentales realizadas
+
+| Control                       | Resultado                                         |
+| ----------------------------- | ------------------------------------------------- |
+| Base 04A leída completa       | **3.464 requisitos**                              |
+| Nuevos requisitos             | **24**                                            |
+| Total regenerado              | **3.488**                                         |
+| Dominio AURA                  | **27 requisitos — TREQ-AURA-001 a TREQ-AURA-027** |
+| Identificadores duplicados    | **0**                                             |
+| Filas con catorce columnas    | **3.488 de 3.488**                                |
+| Relaciones TREQ no resolubles | **0**                                             |
+| Secuencia AURA                | **continua, sin saltos**                          |
+| Filas históricas modificadas  | **0**                                             |
+| Código o Supabase modificado  | **no**                                            |
+
+#### 18. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] AUTH-UI-010 — Auditar rutas y superficies actuales de AURA` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No insertar filas TREQ manualmente.
+
+#### 19. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
+        ↓
+TAREA ACTUAL
+AUTH-UI-011 — Asignar process_id a cada vista
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-012 — Asignar process_step a cada vista
+```
+

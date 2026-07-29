@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **349** |
+| Aprobadas | **352** |
 | En propuesta | **0** |
-| No iniciadas | **1226** |
+| No iniciadas | **1223** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.16% (349/1575)** |
+| Porcentaje de completamiento | **22.35% (352/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-007` — Inventariar todas las pantallas de ANIMA | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-008` — Inventariar todas las superficies de SHELL | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-009` — Inventariar superficies laborales relacionadas con PASS | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-010` — Auditar rutas y superficies actuales de AURA | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-011` — Asignar process_id a cada vista | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-012` — Asignar process_step a cada vista | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -796,9 +796,9 @@
 | ✅ APROBADA | `AUTH-UI-005` | Inventariar todas las rutas de VISO | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-006` | Inventariar todas las rutas de NUMERA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-007` | Inventariar todas las pantallas de ANIMA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-008` | Inventariar todas las superficies de SHELL | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-009` | Inventariar superficies laborales relacionadas con PASS | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-010` | Auditar rutas y superficies actuales de AURA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
+| ✅ APROBADA | `AUTH-UI-008` | Inventariar todas las superficies de SHELL | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
+| ✅ APROBADA | `AUTH-UI-009` | Inventariar superficies laborales relacionadas con PASS | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
+| ✅ APROBADA | `AUTH-UI-010` | Auditar rutas y superficies actuales de AURA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-011` | Asignar process_id a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-012` | Asignar process_step a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-013` | Definir aplicación propietaria | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |

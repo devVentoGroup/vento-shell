@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **349** |
+| Tareas aprobadas | **352** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1226** |
+| Tareas no iniciadas | **1223** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **22.16% (349/1575)** |
+| Porcentaje de completamiento | **22.35% (352/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-007 — Inventariar todas las pantallas de ANIMA** |
-| Tarea actual | **AUTH-UI-008 — Inventariar todas las superficies de SHELL** |
+| Última tarea aprobada | **AUTH-UI-010 — Auditar rutas y superficies actuales de AURA** |
+| Tarea actual | **AUTH-UI-011 — Asignar process_id a cada vista** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS** |
+| Siguiente tarea | **AUTH-UI-012 — Asignar process_step a cada vista** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 7 de 29 aprobadas; AUTH-UI-008 pendiente** |
+| Progreso del bloque | **BLOQUE I: 10 de 29 aprobadas; AUTH-UI-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-007` — Inventariar todas las pantallas de ANIMA |
-| Tarea actual | `AUTH-UI-008` — Inventariar todas las superficies de SHELL — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-009` — Inventariar superficies laborales relacionadas con PASS |
+| Última aprobada | `AUTH-UI-010` — Auditar rutas y superficies actuales de AURA |
+| Tarea actual | `AUTH-UI-011` — Asignar process_id a cada vista — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-012` — Asignar process_step a cada vista |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **7 DE 29 APROBADAS — ACTUAL AUTH-UI-008** |
+| BLOQUE I | **10 DE 29 APROBADAS — ACTUAL AUTH-UI-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-007 — Inventariar todas las pantallas de ANIMA
+AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
         ↓
 TAREA ACTUAL
-AUTH-UI-008 — Inventariar todas las superficies de SHELL
+AUTH-UI-011 — Asignar process_id a cada vista
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+AUTH-UI-012 — Asignar process_step a cada vista
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 7 de 29 tareas aprobadas
+BLOQUE I — 10 de 29 tareas aprobadas
 ```
