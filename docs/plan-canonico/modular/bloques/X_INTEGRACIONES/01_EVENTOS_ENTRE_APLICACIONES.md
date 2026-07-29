@@ -2159,7 +2159,530 @@ INT-APP-007 — Definir auditoría transversal
 APROBADA
 
 
-### [ ] INT-APP-006 — Definir compensaciones
+### ✅ INT-APP-006 — Definir compensaciones
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-006 — Definir compensaciones`
+**Tarea anterior:** `INT-APP-005 — Definir reintentos` — APROBADA
+**Siguiente tarea:** `INT-APP-007 — Definir auditoría transversal`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@9a51cccf27f415b606212f73c2bc5bdda1947bbc`
+**Tipo de tarea:** definición documental transversal de elegibilidad, clasificación, planificación, ejecución, verificación y conciliación de compensaciones; sin implementación, tablas, Supabase, colas, workers, APIs, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir un contrato único y cerrado para tratar efectos empresariales ya confirmados que deban detenerse, neutralizarse, sustituirse, revertirse, devolverse, reembolsarse, revocarse, ajustarse, corregirse, reexpresarse o compensarse, preservando las identidades, fronteras de propiedad, idempotencia y reglas de reintento aprobadas.
+
+```text
+FALLO, CAMBIO O DECISIÓN POSTERIOR
+        ↓
+DEMOSTRAR QUÉ EFECTO OCURRIÓ REALMENTE
+        ↓
+CLASIFICAR REVERSIBILIDAD Y ACCIÓN CCR
+        ↓
+AUTORIZAR Y VERSIONAR PLAN
+        ↓
+EJECUTAR PASOS EN CADA APLICACIÓN PROPIETARIA
+        ↓
+VERIFICAR + CONCILIAR + CERRAR RESIDUALES
+```
+
+Una compensación no es un rollback técnico global. Es un conjunto de acciones empresariales nuevas, vinculadas, autorizadas, idempotentes y verificables que conserva intacto el hecho original.
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                                        | Revisión o blob                            | Responsabilidad                                                         |
+| ----------------------------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------- |
+| `vento-shell`                                                                 | `9a51cccf27f415b606212f73c2bc5bdda1947bbc` | revisión remota con `INT-APP-005` y 04A integrados                      |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`                            | `977c072fec220b4d15ef1991ef3b2f3821a6e747` | contratos `INT-APP-001` a `INT-APP-005` y marcador de esta tarea        |
+| `PROC-CAT-014` / `PROC-PROCESS-CANCELLATION-REVERSAL-CORRECTION-REGISTRY-001` | `55913e1380a83c12f50cfe368c1787c83222473e` | 69 procesos, 276 acciones CCR, doce clases y reglas de reversibilidad   |
+| `INT-APP-004`                                                                 | integrado en el remoto                     | identidad, huella, scopes, inbox y resultados idempotentes              |
+| `INT-APP-005`                                                                 | integrado en el remoto                     | retry, resultado desconocido, agotamiento y frontera retry–compensación |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                            | `8215544ea9a669e212ade2bb7ea4212ba96ca194` | línea base de 4.158 requisitos hasta `TREQ-INTEGRATION-167`             |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-EVENT-COMPENSATION-POLICY-001@1.0.0
+```
+
+| Propiedad                  | Valor                                      | Regla                                                                 |
+| -------------------------- | ------------------------------------------ | --------------------------------------------------------------------- |
+| `policy_id`                | `ENTERPRISE-EVENT-COMPENSATION-POLICY-001` | identidad estable del contrato                                        |
+| `policy_version`           | `1.0.0`                                    | primera definición transversal                                        |
+| `policy_status`            | `DEFINED`                                  | contrato documental; no prueba implementación                         |
+| `covered_processes`        | **69**                                     | `VPROC-0001` a `VPROC-0069`                                           |
+| `covered_ccr_actions`      | **276**                                    | cuatro acciones por proceso aprobadas en `PROC-CAT-014`               |
+| `resolution_treatments`    | **12**                                     | mapeo cerrado por clase CCR                                           |
+| `reversibility_classes`    | **5**                                      | clasificación obligatoria previa                                      |
+| `plan_stages`              | **8**                                      | secuencia contractual de resolución                                   |
+| `plan_outcomes`            | **11**                                     | vocabulario cerrado de resultado                                      |
+| `normal_event_definitions` | **395**                                    | catálogo de eventos de `INT-APP-001`                                  |
+| `event_consumer_relations` | **2.020**                                  | relaciones de `INT-APP-003`                                           |
+| `transport_guarantee`      | `AT_LEAST_ONCE`                            | la redelivery puede ocurrir; la idempotencia sigue siendo obligatoria |
+| `aura_runtime_status`      | `DEFINED_DEFERRED`                         | contrato definido sin ejecución activa                                |
+
+#### 4. Principios normativos
+
+1. No existe compensación sin un efecto confirmado, identificable y atribuible.
+2. Agotar reintentos, recibir un timeout o perder una respuesta no prueba que el efecto haya ocurrido ni autoriza compensarlo.
+3. El efecto original permanece inmutable y consultable.
+4. Cada efecto inverso o mitigador pertenece a la aplicación y proceso que gobiernan esa fuente de verdad.
+5. Una orquestadora coordina; no escribe fuentes privadas ajenas.
+6. Cada paso tiene identidad, huella, autorización, resultado y evidencia propios.
+7. La misma compensación repetida devuelve el resultado previo; no reaplica el efecto.
+8. Un plan parcial no se presenta como completo y no genera una cadena inversa recursiva por inferencia.
+9. Los efectos irreversibles se mitigan, corrigen o compensan; nunca se presentan como si no hubieran ocurrido.
+10. Cancelar, anular, sustituir y corregir permanecen semánticamente separados de revertir o compensar.
+11. La ejecución no empieza hasta disponer de clasificación, autoridad, dependencias y criterio de cierre.
+12. Esta tarea no selecciona saga engine, broker, cola, scheduler, worker, librería ni modelo físico.
+
+#### 5. Puerta de elegibilidad
+
+```text
+¿EXISTE EFECTO CONFIRMADO?
+├── NO → `NOT_REQUIRED` O `ELIGIBILITY_REJECTED`
+└── SÍ
+    ↓
+¿LA ACCIÓN CCR Y LA AUTORIDAD SON VÁLIDAS?
+├── NO → `ELIGIBILITY_REJECTED`
+└── SÍ
+    ↓
+CLASIFICAR REVERSIBILIDAD
+    ↓
+PLANIFICAR PASOS PROPIETARIOS Y RESIDUALES
+```
+
+Un efecto se considera confirmado únicamente mediante una fuente aprobada: resultado idempotente recuperado, evento persistido, movimiento, ledger, recibo externo validado, documento, decisión o evidencia equivalente gobernada por la propietaria.
+
+Queda prohibido inferir confirmación desde:
+
+- texto de error;
+- timeout;
+- estado visual del botón;
+- ausencia de respuesta;
+- log aislado;
+- importe o cantidad coincidente;
+- proximidad temporal;
+- nombre de estado legacy;
+- intento agotado.
+
+#### 6. Tratamientos canónicos por clase CCR
+
+| Clase CCR    | Tratamiento transversal         | Límite                                                                       |
+| ------------ | ------------------------------- | ---------------------------------------------------------------------------- |
+| `CANCEL`     | `FUTURE_STOP_WITH_RESIDUALS`    | Detiene trabajo futuro; no deshace efectos confirmados.                      |
+| `VOID`       | `INVALID_RECORD_NEUTRALIZATION` | Solo neutraliza un registro sin efecto válido; conserva evidencia.           |
+| `SUPERSEDE`  | `PROSPECTIVE_REPLACEMENT`       | Crea versión sucesora; no reescribe vigencia histórica.                      |
+| `COMPENSATE` | `LINKED_COMPENSATION`           | Crea restitución o mitigación medible cuando no existe reverso literal.      |
+| `REVERSE`    | `LINKED_REVERSAL`               | Ejecuta operación inversa autorizada e idempotente.                          |
+| `RETURN`     | `PHYSICAL_RETURN`               | Crea flujo físico inverso con custodia, cantidades, condición y aceptación.  |
+| `REFUND`     | `FINANCIAL_REFUND`              | Crea transacción financiera inversa y conciliable.                           |
+| `REVOKE`     | `AUTHORITY_REVOCATION`          | Retira autoridad futura e invalida sesiones, tokens, dispositivos y cachés.  |
+| `ADJUST`     | `LINKED_ADJUSTMENT`             | Registra diferencia y ajuste separado sin modificar el hecho original.       |
+| `CORRECT`    | `VERSIONED_CORRECTION`          | Crea enmienda con antes/después, causa, autoridad e impacto.                 |
+| `RESTATE`    | `LINKED_RESTATEMENT`            | Reexpresa clasificación o resultado sin alterar el hecho fuente.             |
+| `DEACTIVATE` | `CONTROLLED_DEACTIVATION`       | Retira un modo alternativo y reconcilia pendientes antes del retorno normal. |
+
+Cada una de las 276 acciones aprobadas deberá conservar su identificador `VPROC-####.CCR-###`, clase y propietaria. Esta política no renombra, fusiona ni reemplaza esas acciones.
+
+#### 7. Clasificación obligatoria de reversibilidad
+
+| Clase                        | Tratamiento mínimo                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| `REVERSIBLE_DIRECTO`         | Existe operación inversa definida y segura.                                  |
+| `REVERSIBLE_CON_CONDICIONES` | Exige ventana, aprobación, disponibilidad, proveedor, estado o conciliación. |
+| `SOLO_COMPENSABLE`           | No puede deshacerse literalmente; exige restitución, mitigación o ajuste.    |
+| `IRREVERSIBLE`               | Solo admite corrección de representación, mitigación y evidencia.            |
+| `PENDIENTE_DE_DETERMINAR`    | Bloquea ejecución hasta que el contrato propietario defina el tratamiento.   |
+
+Reglas:
+
+1. `PENDIENTE_DE_DETERMINAR` falla de forma cerrada.
+2. `IRREVERSIBLE` bloquea reversión literal.
+3. La clasificación se realiza por efecto, no por proceso completo.
+4. Un plan puede contener pasos de clases distintas.
+5. Cambiar clasificación exige nueva versión contractual y revisión de impacto.
+
+#### 8. Etapas del plan
+
+| Orden | Etapa                    |
+| ----: | ------------------------ |
+|     1 | `DETECT_AND_CORRELATE`   |
+|     2 | `INQUIRE_OR_RECONCILE`   |
+|     3 | `CLASSIFY_REVERSIBILITY` |
+|     4 | `AUTHORIZE`              |
+|     5 | `PLAN_DEPENDENCIES`      |
+|     6 | `EXECUTE_OWNER_STEPS`    |
+|     7 | `VERIFY_EFFECTS`         |
+|     8 | `RECONCILE_AND_CLOSE`    |
+
+No se podrá saltar de detección a ejecución. `INQUIRE_OR_RECONCILE` es obligatoria cuando el resultado sea incierto o dependa de un proveedor.
+
+#### 9. Vocabulario cerrado de outcomes
+
+| Outcome                         |
+| ------------------------------- |
+| `NOT_REQUIRED`                  |
+| `ELIGIBILITY_REJECTED`          |
+| `PLANNED`                       |
+| `IN_PROGRESS`                   |
+| `PARTIALLY_APPLIED`             |
+| `COMPLETED`                     |
+| `RECONCILIATION_REQUIRED`       |
+| `FAILED_INTERVENTION_REQUIRED`  |
+| `CANCELLED_BEFORE_FIRST_EFFECT` |
+| `SUPERSEDED_BY_NEW_PLAN`        |
+| `BLOCKED_IRREVERSIBLE`          |
+
+Interpretación:
+
+- `NOT_REQUIRED`: se demostró que no existe efecto que tratar;
+- `ELIGIBILITY_REJECTED`: la acción, autoridad, ventana o clasificación no permiten el plan;
+- `PLANNED`: plan versionado y autorizado, todavía sin pasos confirmados;
+- `IN_PROGRESS`: al menos un paso inició y no existe cierre;
+- `PARTIALLY_APPLIED`: existen efectos compensatorios confirmados y pasos obligatorios pendientes o fallidos;
+- `COMPLETED`: todos los pasos obligatorios y verificaciones terminaron, y los residuales aceptados tienen propietario y autoridad;
+- `RECONCILIATION_REQUIRED`: el resultado no puede determinarse automáticamente;
+- `FAILED_INTERVENTION_REQUIRED`: el plan no puede continuar sin decisión humana;
+- `CANCELLED_BEFORE_FIRST_EFFECT`: se detuvo antes de confirmar cualquier paso;
+- `SUPERSEDED_BY_NEW_PLAN`: otra versión asumió el trabajo conservando la anterior;
+- `BLOCKED_IRREVERSIBLE`: se intentó un tratamiento no permitido para el efecto.
+
+#### 10. Identidad del plan
+
+Todo plan deberá conservar como mínimo:
+
+```text
+compensation_plan_id
++ compensation_plan_version
++ process_id
++ ccr_action_id
++ original_effect_ref
++ original_event_id or source_command_id when applicable
++ correlation_id
++ causation_id
++ owner_application
++ reversibility_class
++ trigger_source
++ reason_code
++ requested_by
++ authorized_by
++ scope_and_territory
++ plan_fingerprint
++ outcome
++ residual_obligations
++ evidence_references
++ created_at + authorized_at + closed_at
+```
+
+La huella incluirá acción, efecto original, alcance, importes, cantidades, destinatarios, recursos, orden de dependencias y versión contractual. La misma identidad con una huella distinta produce conflicto.
+
+#### 11. Contrato de cada paso
+
+```text
+compensation_step_id
++ compensation_plan_id
++ owner_application
++ owner_process_id
++ effect_code
++ original_effect_ref
++ idempotency_scope
++ idempotency_key
++ fingerprint
++ prerequisites
++ expected_effect
++ verification_source
++ authorization_reference
++ attempt_reference
++ outcome
++ residual_if_failed
+```
+
+Un paso no podrá:
+
+- escribir un estado o saldo ajeno;
+- inventar un efecto original;
+- cambiar de propietaria durante reintentos;
+- reutilizar la clave para otro importe, cantidad, recurso o destinatario;
+- declararse completo por aceptar técnicamente un mensaje;
+- ocultar un fallo detrás de un no-op no autorizado.
+
+#### 12. Fuentes permitidas de activación
+
+| Fuente                      | Condición                                                                              |
+| --------------------------- | -------------------------------------------------------------------------------------- |
+| `PROCESS_CCR_ACTION`        | Acción VPROC-####.CCR-### aprobada por el proceso propietario.                         |
+| `RECONCILIATION_DECISION`   | Conciliación demuestra un efecto confirmado que requiere tratamiento.                  |
+| `AUTHORIZED_MANUAL_REQUEST` | Actor autorizado solicita tratamiento con causa y evidencia estructuradas.             |
+| `EXTERNAL_REVERSAL_RECEIPT` | Proveedor confirma reverso, devolución o contracargo que debe reflejarse internamente. |
+
+`RETRY_EXHAUSTED`, `TIMEOUT`, `CONSUMER_FAILED` y `DEAD_LETTER_CANDIDATE` no son fuentes autónomas de compensación. Solo pueden conducir a indagación, conciliación o decisión autorizada.
+
+#### 13. Dependencias, orden y concurrencia
+
+1. El plan declara un grafo dirigido de pasos.
+2. Cada dependencia expresa qué invariante debe quedar verificada antes de continuar.
+3. No existe rollback global en orden inverso por defecto.
+4. Dos pasos pueden ejecutarse en paralelo únicamente cuando no comparten agregado, saldo, custodia, documento, autorización ni dependencia.
+5. Los pasos sobre el mismo agregado usan versión, claim o control equivalente.
+6. Un conflicto de concurrencia no se resuelve sobrescribiendo el resultado previo.
+7. Un reinicio recupera plan, versión, pasos y resultados durables.
+8. Una nueva versión del plan no reutiliza identificadores de pasos con significado distinto.
+
+#### 14. Parcialidad, residuales y cierre
+
+Cuando un plan sea parcial deberá registrar:
+
+- pasos confirmados;
+- pasos pendientes;
+- pasos fallidos;
+- pasos imposibles o irreversibles;
+- importes, cantidades o recursos todavía expuestos;
+- propietario y fecha de cada residual;
+- riesgo y control compensatorio;
+- condición de conciliación;
+- autoridad que acepta un residual.
+
+`COMPLETED` queda prohibido mientras exista un paso obligatorio sin verificación o un residual sin dueño. Un residual aceptado no equivale a desaparecerlo.
+
+#### 15. Cancelación y sustitución del plan
+
+- antes del primer efecto, el plan puede terminar `CANCELLED_BEFORE_FIRST_EFFECT`;
+- después del primer efecto, no puede abandonarse ni borrarse;
+- un cambio material crea una versión sucesora;
+- la versión sucesora referencia todos los pasos y resultados heredados;
+- la versión previa termina `SUPERSEDED_BY_NEW_PLAN` únicamente cuando la nueva asume explícitamente sus pendientes;
+- ninguna sustitución reaplica pasos ya confirmados.
+
+#### 16. Autorización y segregación
+
+Cada paso deberá revalidar:
+
+```text
+principal técnico
++ actor humano efectivo
++ permiso exacto
++ sede y área
++ turno o check-in cuando aplique
++ recurso y territorio
++ estado y versión
++ sensibilidad
++ segregación requerida
++ vigencia de la decisión
+```
+
+Solicitar, aprobar, ejecutar, verificar y cerrar podrán requerir capacidades distintas. La autoridad que aprobó el plan no concede acceso indefinido a todos los datos o efectos involucrados.
+
+#### 17. Frontera entre aplicaciones
+
+| Efecto                                         | Propietaria de ejecución       | Regla                                                                                     |
+| ---------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------- |
+| cancelación o modificación comercial           | PULSO y `VPROC-0042`           | coordina el caso; no modifica directamente inventario, pago, puntos, producción o entrega |
+| retorno, ajuste, custodia o disposición física | NEXO                           | crea movimientos o decisiones nuevas con cantidades y aceptación                          |
+| producción, reproceso o calidad                | FOGO con NEXO                  | FOGO decide ejecución y calidad; NEXO registra efectos físicos autorizados                |
+| reembolso, caja o efecto financiero            | PULSO y NUMERA según la fuente | crea transacción inversa y conciliación; no edita el pago original                        |
+| fidelización                                   | PASS                           | crea movimiento de ledger inverso o compensatorio                                         |
+| acceso y sesiones                              | VISO y SHELL                   | revoca autoridad y verifica propagación en consumidores                                   |
+| compra, recepción y obligación                 | ORIGO, NEXO y NUMERA           | cada etapa conserva efecto, documento y conciliación propios                              |
+| documento, firma, retención o evidencia        | VISO o servicio documental     | crea versión, retractación o mitigación; no borra el original                             |
+| asiento, costo, presupuesto o reporte          | NUMERA                         | ajusta o reexpresa sin reescribir el hecho fuente                                         |
+
+#### 18. Fronteras críticas
+
+##### 18.1. ORIGO → NEXO → NUMERA
+
+Cancelar una orden no elimina una recepción ni un pago ya confirmados. Retorno físico, nota comercial, reverso financiero y corrección documental son pasos separados con propietarias distintas.
+
+##### 18.2. FOGO → NEXO → PULSO
+
+Retener o retornar producto no anula receta, ejecución, venta o pago. La calidad puede bloquear disponibilidad; NEXO controla movimiento y PULSO trata el compromiso comercial.
+
+##### 18.3. PULSO → PASS → NUMERA
+
+Reembolso, reverso de puntos y ajuste contable usan identidades y ledgers separados. Ninguno recrea la venta ni comparte una clave universal.
+
+##### 18.4. VISO → ANIMA → SHELL
+
+Corregir asistencia no restaura permisos ni sesiones. Revocar acceso no borra programación, vínculo, marcaciones ni evidencia histórica.
+
+#### 19. Proveedores externos y resultado desconocido
+
+1. Un timeout exige consulta o conciliación antes de compensar.
+2. Un recibo de reverso externo se valida y deduplica.
+3. Un reembolso interno no se considera completo hasta conciliar proveedor, caja, venta, impuestos y cliente.
+4. El adaptador conserva identificadores externos y no cambia importe, destinatario o canal para obtener éxito.
+5. Un proveedor que no soporte reverso directo se clasifica `SOLO_COMPENSABLE` o `IRREVERSIBLE` según contrato.
+6. Una devolución técnica del proveedor no autoriza escribir directamente en otra aplicación.
+
+#### 20. Operación offline
+
+Una cola offline:
+
+- no crea compensaciones por expiración o conflicto;
+- conserva plan, versión, actor, dispositivo, huella y efecto original;
+- revalida autoridad y estado al sincronizar;
+- no transfiere trabajo a otro actor en dispositivo compartido;
+- envía resultados inciertos a conciliación;
+- no revive permisos, turnos, sesiones o versiones vencidos;
+- no aplica pasos ya confirmados en otro canal.
+
+Los estados detallados de sincronización permanecen reservados para `INT-APP-008`.
+
+#### 21. Efectos no reversibles por defecto
+
+Se tratarán como irreversibles hasta que exista contrato más específico:
+
+- consumo físico ya ocurrido;
+- mensaje o notificación entregados;
+- documento, firma o evidencia histórica;
+- asistencia realmente registrada;
+- declaración fiscal o legal presentada;
+- decisión sanitaria o de calidad utilizada;
+- dato ya consultado o acceso ya ejercido;
+- lesión, incidente o hecho económico real.
+
+La respuesta permitida será corrección de representación, comunicación posterior, mitigación, reexpresión o compensación; nunca eliminación ni afirmación de inexistencia.
+
+#### 22. AURA diferida
+
+Las relaciones con AURA mantienen clases, tratamientos y requisitos definidos, pero:
+
+- no crean planes ejecutables;
+- no disparan efectos inversos;
+- no habilitan colas, workers ni conciliaciones automáticas;
+- no publican capacidad operativa;
+- no superan `DEFINED_DEFERRED` antes de cobertura, autorización, readiness y paquete E5 aprobados.
+
+#### 23. Decisiones reservadas
+
+| Decisión                                                           | Tarea propietaria                 |
+| ------------------------------------------------------------------ | --------------------------------- |
+| campos completos de auditoría y trazas                             | `INT-APP-007`                     |
+| estados de sincronización y recuperación offline                   | `INT-APP-008`                     |
+| error parcial, cuarentena, dead-letter e intervención              | `INT-APP-009`                     |
+| comandos inversos y prohibición física de escrituras cruzadas      | `INT-APP-010`                     |
+| tablas, constraints, outbox, inbox, plan, steps y migraciones      | BLOQUES E3 y R                    |
+| colas, scheduler, workers, circuit breaker y observabilidad física | BLOQUE E4                         |
+| SDK, schemas, tipos y canonicalización compartida                  | BLOQUE H                          |
+| paquetes, implementación, pruebas, piloto, rollback e hypercare    | BLOQUE E5 y ejecución por paquete |
+
+#### 24. Cambios no autorizados
+
+`INT-APP-006` no autoriza:
+
+- crear tablas, índices, funciones, triggers, RPC, RLS o migraciones;
+- implementar saga engine, workflow engine, broker, cola, cron o worker;
+- ejecutar devoluciones, reembolsos, revocaciones, ajustes o compensaciones reales;
+- modificar las 276 acciones CCR aprobadas;
+- cambiar propietarias, eventos, consumidoras, audiencias o permisos;
+- tratar retry agotado como compensación;
+- borrar o sobrescribir hechos, eventos, movimientos, ledgers, pagos, documentos o auditoría;
+- activar AURA;
+- iniciar piloto, cutover, producción o hypercare;
+- escribir en GitHub.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-168 a TREQ-INTEGRATION-197
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado con esta tarea.
+
+#### 26. Huellas de integridad
+
+```text
+COMPENSATION_TREATMENT_REGISTRY_SHA256 = 29f9addfc119a17d5de16cc563b9a1cbc242422e4ca836a9d643b571ef6898fa
+COMPENSATION_REVERSIBILITY_MATRIX_SHA256 = 51e11dd3fe9335b12643e9673d0e5afbc54b92f375e037688c753b413df12ef2
+COMPENSATION_OUTCOME_VOCABULARY_SHA256 = ae27632687e76c74bc6eebb6058834a594803c445cff1bfdba84799a893a0468
+COMPENSATION_POLICY_SHA256 = 631dbac025e700eff30394d63ab4c7d3c5a09059bbc9314c829d5942234f6506
+REMOTE_COMMIT_SHA = 9a51cccf27f415b606212f73c2bc5bdda1947bbc
+REMOTE_X_BLOCK_BLOB_SHA1 = 977c072fec220b4d15ef1991ef3b2f3821a6e747
+REMOTE_04A_BASE_BLOB_SHA1 = 8215544ea9a669e212ade2bb7ea4212ba96ca194
+PROC_CCR_SOURCE_BLOB_SHA1 = 55913e1380a83c12f50cfe368c1787c83222473e
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-005` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se preservaron los 69 procesos y las 276 acciones CCR.
+- [x] Se definieron doce tratamientos, cinco clases de reversibilidad, ocho etapas y once outcomes.
+- [x] Se separó retry agotado de compensación.
+- [x] Se definieron elegibilidad, identidad, huella, pasos, dependencias, concurrencia y cierre.
+- [x] Se preservó propiedad por aplicación y se prohibieron escrituras cruzadas.
+- [x] Se cubrieron retorno físico, reembolso, puntos, acceso, producción, documentos, externos y offline.
+- [x] Se definieron parcialidad, residuales y sustitución de planes.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `9a51cccf27f415b606212f73c2bc5bdda1947bbc`            |
+| Blob del mini-bloque X                       | `977c072fec220b4d15ef1991ef3b2f3821a6e747`            |
+| Blob 04A remoto base                         | `8215544ea9a669e212ade2bb7ea4212ba96ca194`            |
+| Procesos cubiertos                           | **69**                                                |
+| Acciones CCR cubiertas                       | **276**                                               |
+| Tratamientos cerrados                        | **12**                                                |
+| Clases de reversibilidad                     | **5**                                                 |
+| Etapas del plan                              | **8**                                                 |
+| Outcomes cerrados                            | **11**                                                |
+| Requisitos base                              | **4.158**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.188**                                             |
+| Dominio INTEGRATION                          | **197 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-197** |
+| Filas con catorce columnas                   | **4.188 de 4.188**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.158**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Validación real del repositorio
+
+```text
+VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+```
+
+Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
+
+```bash
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+#### 30. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-006 — Definir compensaciones` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+4. No modificar derivados bajo `.generated/` para forzar continuidad.
+
+#### 31. Continuidad preparada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-005 — Definir reintentos
+        ↓
+TAREA ACTUAL EN REVISIÓN
+INT-APP-006 — Definir compensaciones
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-007 — Definir auditoría transversal
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-007 — Definir auditoría transversal
 ### [ ] INT-APP-008 — Definir estados pendientes de sincronización
 ### [ ] INT-APP-009 — Definir manejo de errores parciales

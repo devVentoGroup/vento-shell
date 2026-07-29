@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **376** |
+| Tareas aprobadas | **377** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1199** |
+| Tareas no iniciadas | **1198** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.87% (376/1575)** |
+| Porcentaje de completamiento | **23.94% (377/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-APP-005 — Definir reintentos** |
-| Tarea actual | **INT-APP-006 — Definir compensaciones** |
+| Última tarea aprobada | **INT-APP-006 — Definir compensaciones** |
+| Tarea actual | **INT-APP-007 — Definir auditoría transversal** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-APP-007 — Definir auditoría transversal** |
+| Siguiente tarea | **INT-APP-008 — Definir estados pendientes de sincronización** |
 | Bloque actual | **BLOQUE X — Integraciones empresariales internas y externas** |
-| Progreso del bloque | **BLOQUE X: 5 de 10 aprobadas; INT-APP-006 pendiente** |
+| Progreso del bloque | **BLOQUE X: 6 de 10 aprobadas; INT-APP-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-APP-005` — Definir reintentos |
-| Tarea actual | `INT-APP-006` — Definir compensaciones — **NO INICIADA** |
-| Siguiente tarea | `INT-APP-007` — Definir auditoría transversal |
+| Última aprobada | `INT-APP-006` — Definir compensaciones |
+| Tarea actual | `INT-APP-007` — Definir auditoría transversal — **NO INICIADA** |
+| Siguiente tarea | `INT-APP-008` — Definir estados pendientes de sincronización |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE X | **5 DE 10 APROBADAS — ACTUAL INT-APP-006** |
+| BLOQUE X | **6 DE 10 APROBADAS — ACTUAL INT-APP-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-APP-005 — Definir reintentos
-        ↓
-TAREA ACTUAL
 INT-APP-006 — Definir compensaciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-APP-007 — Definir auditoría transversal
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-008 — Definir estados pendientes de sincronización
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 5 de 10 tareas aprobadas
+BLOQUE X — 6 de 10 tareas aprobadas
 ```
