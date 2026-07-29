@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **368** |
+| Aprobadas | **369** |
 | En propuesta | **0** |
-| No iniciadas | **1207** |
+| No iniciadas | **1206** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.37% (368/1575)** |
+| Porcentaje de completamiento | **23.43% (369/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-026` — Identificar vistas duplicadas | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-027` — Identificar vistas legacy | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-028` — Identificar vistas candidatas a retiro | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-027` — Identificar vistas legacy | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-028` — Identificar vistas candidatas a retiro | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -815,7 +815,7 @@
 | ✅ APROBADA | `AUTH-UI-024` | Definir acción principal | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-025` | Definir acciones secundarias | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-026` | Identificar vistas duplicadas | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
-| ⬜ NO INICIADA | `AUTH-UI-027` | Identificar vistas legacy | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
+| ✅ APROBADA | `AUTH-UI-027` | Identificar vistas legacy | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-028` | Identificar vistas candidatas a retiro | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-029` | Identificar vistas técnicas que no deben ser permisos | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-030` | Asignar permiso de lectura a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
