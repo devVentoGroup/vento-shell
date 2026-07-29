@@ -1,5 +1,10 @@
 $ErrorActionPreference = "Continue"
 
+# Evita caracteres corruptos al ejecutarse desde consolas Windows configuradas
+# con una página de códigos distinta de UTF-8.
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+$OutputEncoding = [Console]::OutputEncoding
+
 # vento-shell/scripts -> vento-shell -> carpeta que contiene todos los repos
 $workspaceRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 
@@ -33,7 +38,16 @@ foreach ($repo in $repos) {
             continue
         }
 
-        git pull --ff-only --quiet
+        # No usar `git pull` sin destino: algunos repos pueden tener varias
+        # ramas de integración configuradas y Git no sabe cuál avanzar.
+        $upstream = git rev-parse --abbrev-ref '@{upstream}' 2>$null
+
+        if (-not $upstream) {
+            Write-Host "⚠️ $($repo.Name): [$branch] no tiene upstream; no se hizo pull"
+            continue
+        }
+
+        git merge --ff-only --quiet $upstream
 
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ $($repo.Name): actualizado [$branch]"

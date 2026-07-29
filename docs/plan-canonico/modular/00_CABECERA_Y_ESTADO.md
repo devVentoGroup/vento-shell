@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **367** |
+| Tareas aprobadas | **368** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1208** |
+| Tareas no iniciadas | **1207** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.30% (367/1575)** |
+| Porcentaje de completamiento | **23.37% (368/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-025 — Definir acciones secundarias** |
-| Tarea actual | **AUTH-UI-026 — Identificar vistas duplicadas** |
+| Última tarea aprobada | **AUTH-UI-026 — Identificar vistas duplicadas** |
+| Tarea actual | **AUTH-UI-027 — Identificar vistas legacy** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-027 — Identificar vistas legacy** |
+| Siguiente tarea | **AUTH-UI-028 — Identificar vistas candidatas a retiro** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 25 de 29 aprobadas; AUTH-UI-026 pendiente** |
+| Progreso del bloque | **BLOQUE I: 26 de 29 aprobadas; AUTH-UI-027 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-025` — Definir acciones secundarias |
-| Tarea actual | `AUTH-UI-026` — Identificar vistas duplicadas — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-027` — Identificar vistas legacy |
+| Última aprobada | `AUTH-UI-026` — Identificar vistas duplicadas |
+| Tarea actual | `AUTH-UI-027` — Identificar vistas legacy — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-028` — Identificar vistas candidatas a retiro |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **25 DE 29 APROBADAS — ACTUAL AUTH-UI-026** |
+| BLOQUE I | **26 DE 29 APROBADAS — ACTUAL AUTH-UI-027** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-025 — Definir acciones secundarias
-        ↓
-TAREA ACTUAL
 AUTH-UI-026 — Identificar vistas duplicadas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-027 — Identificar vistas legacy
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-028 — Identificar vistas candidatas a retiro
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 25 de 29 tareas aprobadas
+BLOQUE I — 26 de 29 tareas aprobadas
 ```
