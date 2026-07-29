@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **383** |
+| Aprobadas | **384** |
 | En propuesta | **0** |
-| No iniciadas | **1192** |
+| No iniciadas | **1191** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.32% (383/1575)** |
+| Porcentaje de completamiento | **24.38% (384/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-AUD-002` — Clasificar esquemas administrados por Supabase y esquemas de Vento | ✅ APROBADA |
-| Tarea actual | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API | ⬜ NO INICIADA |
-| Siguiente | `SUPA-AUD-004` — Inventariar tablas, particiones, vistas y vistas materializadas | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API | ✅ APROBADA |
+| Tarea actual | `SUPA-AUD-004` — Inventariar tablas, particiones, vistas y vistas materializadas | ⬜ NO INICIADA |
+| Siguiente | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -374,7 +374,7 @@
 | ✅ APROBADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
 | ✅ APROBADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-004` | Inventariar tablas, particiones, vistas y vistas materializadas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-005` | Inventariar claves primarias, foráneas, constraints, enums y secuencias | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-006` | Inventariar funciones, RPC, procedimientos y firmas públicas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **383** |
+| Tareas aprobadas | **384** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1192** |
+| Tareas no iniciadas | **1191** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.32% (383/1575)** |
+| Porcentaje de completamiento | **24.38% (384/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento** |
-| Tarea actual | **SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API** |
+| Última tarea aprobada | **SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API** |
+| Tarea actual | **SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas** |
+| Siguiente tarea | **SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 2 de 24 aprobadas; SUPA-AUD-003 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 3 de 24 aprobadas; SUPA-AUD-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-002` — Clasificar esquemas administrados por Supabase y esquemas de Vento |
-| Tarea actual | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-004` — Inventariar tablas, particiones, vistas y vistas materializadas |
+| Última aprobada | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API |
+| Tarea actual | `SUPA-AUD-004` — Inventariar tablas, particiones, vistas y vistas materializadas — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **2 DE 24 APROBADAS — ACTUAL SUPA-AUD-003** |
+| BLOQUE E3 | **3 DE 24 APROBADAS — ACTUAL SUPA-AUD-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento
-        ↓
-TAREA ACTUAL
 SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 2 de 24 tareas aprobadas
+BLOQUE E3 — 3 de 24 tareas aprobadas
 ```

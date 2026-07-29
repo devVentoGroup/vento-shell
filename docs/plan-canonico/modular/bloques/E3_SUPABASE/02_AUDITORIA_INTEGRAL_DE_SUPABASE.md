@@ -764,7 +764,304 @@ VENTO_SCHEMA_REGISTRY_SHA256 = d9758f76ffbf1a84c6b7b4b963f52b2cae569a9d8776b971e
 SCHEMA_CLASSIFICATION_POLICY_SHA256 = 0cda615837ef9f960c572e9a5ea54d77d530feb7ea587461e9466aa00813178a
 ```
 
-### [ ] SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
+### ✅ SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
+
+**Estado:** APROBADA
+**Fecha:** 2026-07-29
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento` — APROBADA
+**Tarea siguiente:** `SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas`
+**Descripción:** Identifica la exposición de los 23 esquemas no efímeros frente a la Data API de Supabase, separando configuración PostgREST, privilegio `USAGE`, privilegios sobre objetos y autorización por filas, y clasifica cada esquema según la evidencia versionada, remota y de consumo disponible.
+
+#### 1. Resultado canónico
+
+La exposición mediante Data API no se deduce del nombre del esquema ni de un `GRANT` aislado. El resultado se organiza en cinco estados mutuamente excluyentes:
+
+| Estado de exposición                                           | Cantidad | Esquemas                                                                                                                                                           |
+| -------------------------------------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DECLARADO_EN_CONFIG_VERSIONADA`                               |    **2** | `public`, `graphql_public`                                                                                                                                         |
+| `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` |    **3** | `club`, `pass`, `viso`                                                                                                                                             |
+| `GRANT_READY_NO_DECLARADO`                                     |    **4** | `payments`, `pos`, `talento`, `vital`                                                                                                                              |
+| `PRIVADO_NO_EXPONER`                                           |    **1** | `app_private`                                                                                                                                                      |
+| `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        |   **13** | `auth`, `realtime`, `storage`, `cron`, `extensions`, `net`, `vault`, `graphql`, `information_schema`, `pg_catalog`, `pg_toast`, `pgbouncer`, `supabase_migrations` |
+
+```text
+23 ESQUEMAS NO EFÍMEROS
+=
+2 DECLARADOS EN CONFIGURACIÓN VERSIONADA
++ 3 REQUERIDOS POR IMPLEMENTACIÓN Y PENDIENTES DE RECONCILIACIÓN REMOTA
++ 4 PREPARADOS MEDIANTE GRANTS PERO NO DECLARADOS
++ 1 PRIVADO
++ 13 GESTIONADOS NO DECLARADOS COMO DATA API
+```
+
+Artefacto resultante:
+
+```text
+SUPABASE-DATA-API-SCHEMA-EXPOSURE-REGISTRY-001@1.0.0
+```
+
+#### 2. Modelo obligatorio de exposición
+
+Para que un objeto sea alcanzable mediante PostgREST deben coincidir cuatro capas independientes:
+
+| Capa                | Pregunta                                                                        | Evidencia                                                                     |
+| ------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `CONFIGURED_SCHEMA` | ¿El esquema está incluido en la lista de esquemas expuestos de PostgREST?       | `api.schemas` en configuración versionada o configuración remota del proyecto |
+| `SCHEMA_USAGE`      | ¿El rol API puede resolver nombres dentro del esquema?                          | `has_schema_privilege(..., 'USAGE')` o grants equivalentes                    |
+| `OBJECT_PRIVILEGE`  | ¿El rol puede ejecutar la operación sobre la tabla, vista, secuencia o función? | `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `USAGE` o `EXECUTE`                   |
+| `ROW_AUTHORIZATION` | ¿Qué filas puede leer o modificar el actor?                                     | RLS, políticas, claims y autorización empresarial                             |
+
+Regla canónica:
+
+```text
+ESQUEMA CONFIGURADO
++ USAGE
++ PRIVILEGIO SOBRE EL OBJETO
+= OBJETO ALCANZABLE POR DATA API
+
+OBJETO ALCANZABLE
++ RLS / AUTORIZACIÓN
+= FILAS EFECTIVAMENTE PERMITIDAS
+```
+
+Por tanto:
+
+- `USAGE` sin inclusión en la configuración no demuestra exposición;
+- inclusión en la configuración sin `USAGE` o sin privilegio de objeto no produce acceso útil;
+- RLS no incorpora un esquema a PostgREST;
+- desactivar RLS no incorpora un esquema a PostgREST;
+- `service_role` puede omitir RLS, pero no elimina la necesidad de configuración y privilegios cuando accede por Data API;
+- `EXECUTE` heredado por `PUBLIC` no demuestra que una función sea invocable mediante Data API.
+
+#### 3. Evidencia canónica de configuración
+
+La configuración versionada de `vento-shell` declara:
+
+```toml
+[api]
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+```
+
+Esto establece dos superficies declaradas para entornos reproducidos desde el repositorio:
+
+| Esquema          | Gobierno | Estado                           | Interpretación                                                                                                                                                                                     |
+| ---------------- | -------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `public`         | Vento    | `DECLARADO_EN_CONFIG_VERSIONADA` | Superficie relacional principal actualmente declarada. No se convierte por ello en destino universal ni en autorización empresarial.                                                               |
+| `graphql_public` | Supabase | `DECLARADO_EN_CONFIG_VERSIONADA` | Frontera administrada para GraphQL. La función remota observada actualmente informa que `pg_graphql` no está habilitada, por lo que configuración y disponibilidad funcional no deben confundirse. |
+
+`extensions` aparece en `extra_search_path`, no en `schemas`. Esto permite resolución auxiliar de funciones o tipos, pero no convierte el esquema en una colección de recursos expuesta.
+
+#### 4. Límite de observación del estado remoto
+
+La lista remota de esquemas expuestos pertenece a la configuración del proceso PostgREST y puede ser administrada desde el control plane de Supabase. No está materializada necesariamente como una propiedad consultable en `pg_namespace`, grants, RLS, `pg_settings` o la sesión SQL usada para esta auditoría.
+
+En el proyecto remoto:
+
+- `current_setting('pgrst.db_schemas', true)` no devolvió una lista utilizable;
+- no existen ajustes persistidos en `pg_db_role_setting` que permitan reconstruirla;
+- los grants observados prueban preparación de acceso, no inclusión en PostgREST;
+- los tipos generados desde la base prueban existencia de objetos, no exposición mediante Data API.
+
+La comparación entre configuración versionada y configuración remota queda asignada a:
+
+```text
+SUPA-AUD-016 — Comparar estado remoto con migraciones versionadas
+```
+
+Esa tarea deberá obtener la configuración remota por una interfaz de control plane autorizada y registrar cualquier esquema adicional, ausente o divergente. Hasta entonces, esta auditoría no inventa una lista remota a partir de señales indirectas.
+
+#### 5. Esquemas Vento con evidencia de uso mediante Data API
+
+| Esquema | Evidencia de implementación                                                                                          | Roles preparados                        | Estado                                                         |
+| ------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| `club`  | una Edge Function usa `supabase.schema("club").rpc(...)`                                                             | `authenticated`, `service_role`         | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` |
+| `pass`  | una Edge Function usa `supabase.schema("pass").from(...)`                                                            | `anon`, `authenticated`, `service_role` | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` |
+| `viso`  | una migración dedicada concede acceso Data API a `service_role` y excluye deliberadamente a `anon` y `authenticated` | `service_role`                          | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` |
+
+Estas evidencias demuestran intención y dependencia técnica de PostgREST con perfil de esquema personalizado. No demuestran por sí solas que la configuración remota vigente incluya los tres esquemas.
+
+La ausencia de cualquiera de estos esquemas en el control plane remoto produciría un fallo contractual aunque sus grants fueran correctos.
+
+#### 6. Esquemas Vento preparados mediante grants pero no declarados
+
+| Esquema    | `anon` USAGE | `authenticated` USAGE | `service_role` USAGE | Relaciones con algún privilegio por rol          | Clasificación              |
+| ---------- | -----------: | --------------------: | -------------------: | ------------------------------------------------ | -------------------------- |
+| `payments` |           no |                    sí |                   sí | `anon` 0; `authenticated` 2; `service_role` 2    | `GRANT_READY_NO_DECLARADO` |
+| `pos`      |           sí |                    sí |                   sí | `anon` 13; `authenticated` 13; `service_role` 13 | `GRANT_READY_NO_DECLARADO` |
+| `talento`  |           sí |                    sí |                   sí | `anon` 13; `authenticated` 13; `service_role` 13 | `GRANT_READY_NO_DECLARADO` |
+| `vital`    |           no |                    sí |                   sí | `anon` 0; `authenticated` 54; `service_role` 54  | `GRANT_READY_NO_DECLARADO` |
+
+Interpretación:
+
+1. estos esquemas están técnicamente preparados, total o parcialmente, para ser consumidos por roles API;
+2. no aparecen en `api.schemas` del repositorio;
+3. no se encontró en `vento-shell` evidencia suficiente para declararlos expuestos en el estado canónico;
+4. sus grants actuales deberán auditarse en `SUPA-AUD-009`, aunque finalmente no sean expuestos;
+5. cualquier exposición futura deberá ser una decisión explícita de `SUPA-ARC-005`, `SUPA-ARC-015` y `SUPA-ARC-016`, no una consecuencia accidental de grants existentes.
+
+#### 7. Esquema privado de Vento
+
+`app_private` queda clasificado como:
+
+```text
+PRIVADO_NO_EXPONER
+```
+
+Evidencia:
+
+- no está declarado en `api.schemas`;
+- `USAGE` está revocado para `public`, `anon` y `authenticated`;
+- no se observaron privilegios relacionales o de ejecución para roles cliente;
+- contiene secretos y helpers internos utilizados desde lógica controlada;
+- su inclusión futura en PostgREST quedaría prohibida salvo una redefinición arquitectónica explícita que no exponga secretos ni helpers internos.
+
+`app_private` puede ser añadido al `search_path` de una función controlada sin convertirse en esquema expuesto.
+
+#### 8. Esquemas administrados que no constituyen una superficie Data API de Vento
+
+| Esquema               | Naturaleza                              | Conclusión Data API                                                                                  |
+| --------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `auth`                | servicio de autenticación               | se consume mediante Auth API y contratos administrados; no se expone como dominio PostgREST de Vento |
+| `realtime`            | servicio Realtime                       | no se expone como colección empresarial                                                              |
+| `storage`             | servicio Storage                        | se consume mediante Storage API y políticas propias                                                  |
+| `cron`                | extensión `pg_cron`                     | no exponer jobs y metadatos internos como API general                                                |
+| `extensions`          | contenedor y search path de extensiones | `extra_search_path` no equivale a exposición                                                         |
+| `net`                 | extensión `pg_net`                      | no exponer colas o helpers internos                                                                  |
+| `vault`               | gestión de secretos                     | prohibido convertir en superficie PostgREST general                                                  |
+| `graphql`             | frontera reservada                      | no declarada en `api.schemas`; sin objetos relevantes observados                                     |
+| `information_schema`  | metadatos SQL                           | no exponer                                                                                           |
+| `pg_catalog`          | catálogo interno                        | no exponer                                                                                           |
+| `pg_toast`            | almacenamiento interno                  | no exponer                                                                                           |
+| `pgbouncer`           | infraestructura de pooling              | no exponer                                                                                           |
+| `supabase_migrations` | historial del CLI                       | no exponer                                                                                           |
+
+La presencia de `USAGE`, privilegios heredados o funciones ejecutables en algunos de estos esquemas responde a necesidades internas del motor y de los servicios. No autoriza a tratarlos como recursos empresariales.
+
+#### 9. Matriz canónica completa
+
+| Esquema               | Clasificación E3                                                      | Estado Data API                                                | Evidencia determinante                                            |
+| --------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `app_private`         | `GOBERNADO_VENTO / VENTO_PRIVATE_TECHNICAL`                           | `PRIVADO_NO_EXPONER`                                           | revocación explícita y ausencia de acceso cliente                 |
+| `auth`                | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_PRODUCT_MANAGED`           | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | API administrada separada                                         |
+| `club`                | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` | cliente PostgREST con schema personalizado                        |
+| `cron`                | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_EXTENSION_MANAGED`         | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | propiedad de `pg_cron`                                            |
+| `extensions`          | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_EXTENSION_CONTAINER`       | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | solo extra search path                                            |
+| `graphql`             | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_PLATFORM_RESERVED_DORMANT` | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | no incluido en configuración versionada                           |
+| `graphql_public`      | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_PLATFORM_RESERVED_DORMANT` | `DECLARADO_EN_CONFIG_VERSIONADA`                               | incluido en `api.schemas`; implementación GraphQL remota inactiva |
+| `information_schema`  | `ADMINISTRADO_SUPABASE_POSTGRES / POSTGRES_SQL_STANDARD_MANAGED`      | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | metadatos estándar                                                |
+| `net`                 | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_EXTENSION_MANAGED`         | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | propiedad de `pg_net`                                             |
+| `pass`                | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` | cliente PostgREST con schema personalizado                        |
+| `payments`            | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `GRANT_READY_NO_DECLARADO`                                     | grants sin inclusión versionada                                   |
+| `pg_catalog`          | `ADMINISTRADO_SUPABASE_POSTGRES / POSTGRES_CORE_MANAGED`              | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | catálogo interno                                                  |
+| `pg_toast`            | `ADMINISTRADO_SUPABASE_POSTGRES / POSTGRES_CORE_MANAGED`              | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | almacenamiento interno                                            |
+| `pgbouncer`           | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_INFRASTRUCTURE_MANAGED`    | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | infraestructura de conexión                                       |
+| `pos`                 | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `GRANT_READY_NO_DECLARADO`                                     | grants sin inclusión versionada                                   |
+| `public`              | `GOBERNADO_VENTO / VENTO_SHARED_STANDARD_CONTAINER`                   | `DECLARADO_EN_CONFIG_VERSIONADA`                               | incluido en `api.schemas`                                         |
+| `realtime`            | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_PRODUCT_MANAGED`           | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | servicio administrado separado                                    |
+| `storage`             | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_PRODUCT_MANAGED`           | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | Storage API separada                                              |
+| `supabase_migrations` | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_CLI_MANAGED`               | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | historial interno del CLI                                         |
+| `talento`             | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `GRANT_READY_NO_DECLARADO`                                     | grants sin inclusión versionada                                   |
+| `vault`               | `ADMINISTRADO_SUPABASE_POSTGRES / SUPABASE_EXTENSION_MANAGED`         | `GESTIONADO_NO_DECLARADO_COMO_DATA_API`                        | secretos administrados                                            |
+| `viso`                | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `REQUERIDO_POR_IMPLEMENTACION_PENDIENTE_RECONCILIACION_REMOTA` | migración explícita de acceso Data API para service_role          |
+| `vital`               | `GOBERNADO_VENTO / VENTO_BUSINESS_DOMAIN`                             | `GRANT_READY_NO_DECLARADO`                                     | grants sin inclusión versionada                                   |
+
+#### 10. Lectura correcta de privilegios observados
+
+Para los esquemas Vento:
+
+| Esquema       | Relaciones con privilegio `anon` | `authenticated` | `service_role` | Rutinas ejecutables `anon` | `authenticated` | `service_role` |
+| ------------- | -------------------------------: | --------------: | -------------: | -------------------------: | --------------: | -------------: |
+| `app_private` |                                0 |               0 |              0 |                          0 |               0 |              0 |
+| `club`        |                                0 |              11 |             11 |                          0 |               5 |              7 |
+| `pass`        |                                7 |              21 |             27 |                         21 |              29 |             30 |
+| `payments`    |                                0 |               2 |              2 |                          0 |               0 |              0 |
+| `pos`         |                               13 |              13 |             13 |                          0 |               0 |              0 |
+| `public`      |                              134 |             192 |            248 |                        246 |             246 |            246 |
+| `talento`     |                               13 |              13 |             13 |                         16 |              16 |             16 |
+| `viso`        |                                0 |               0 |             12 |                          0 |               0 |              0 |
+| `vital`       |                                0 |              54 |             54 |                         43 |              45 |             47 |
+
+Estos conteos indican cuántos objetos tienen al menos un privilegio compatible con el rol. No prueban que todas las operaciones estén permitidas ni que las políticas RLS sean correctas.
+
+La cantidad elevada de rutinas ejecutables puede provenir del privilegio PostgreSQL `EXECUTE` concedido a `PUBLIC` por defecto. Su revisión individual corresponde a `SUPA-AUD-005`, `SUPA-AUD-008`, `SUPA-AUD-009` y `SUPA-AUD-015`.
+
+#### 11. Reglas de gobierno derivadas
+
+1. `public` permanece como superficie declarada actual, pero no como destino universal de datos o lógica.
+2. `graphql_public` puede estar configurado y al mismo tiempo carecer de una implementación GraphQL activa; ambos estados deben reportarse por separado.
+3. `club`, `pass` y `viso` no podrán considerarse reproducibles hasta que configuración local, configuración remota, grants y consumidores coincidan.
+4. `payments`, `pos`, `talento` y `vital` no se declararán expuestos basándose solo en grants.
+5. `app_private` no podrá incorporarse a la lista de esquemas expuestos.
+6. Los trece esquemas gestionados no declarados no podrán añadirse como superficies empresariales genéricas.
+7. Una Edge Function que use `service_role` no justifica conceder acceso a `anon` o `authenticated`.
+8. La exposición se decidirá por contrato mínimo y no por conveniencia del cliente.
+9. Toda superficie expuesta deberá tener RLS o una justificación equivalente para cada objeto accesible; la evaluación concreta corresponde a `SUPA-AUD-009`.
+10. Todo cambio de `api.schemas` deberá quedar versionado, comparado contra remoto y protegido por prueba de regresión.
+
+#### 12. Brechas y decisiones vinculadas
+
+| Hallazgo                                                              | Riesgo                                                    | Resolución documental                                                                                 |
+| --------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| no existe evidencia SQL concluyente de la lista remota de PostgREST   | declarar falsamente un esquema expuesto o privado         | `SUPA-AUD-016` comparará control plane remoto con `supabase/config.toml`                              |
+| `club`, `pass` y `viso` requieren perfil de esquema personalizado     | fallos de producción pese a grants correctos              | `SUPA-AUD-016` verificará inclusión remota; `SUPA-TRANS-013` verificará paridad por ambiente          |
+| cuatro esquemas Vento tienen grants sin declaración versionada        | superficie accidental o privilegios innecesarios          | `SUPA-AUD-009` auditará grants; `SUPA-ARC-015` decidirá exposición y mínimos                          |
+| `public` concentra una superficie amplia                              | exposición excesiva y mezcla de dominios                  | `SUPA-ARC-004`, `SUPA-ARC-005` y `SUPA-TRANS-001` definirán función futura y transición               |
+| `graphql_public` está declarado, pero GraphQL remoto aparece inactivo | configuración inútil, contrato ambiguo o dependencia rota | `SUPA-AUD-016` reconciliará entorno; `SUPA-ARC-005` decidirá su función futura                        |
+| rutinas con `EXECUTE` heredado por `PUBLIC`                           | RPC accidental al exponer un esquema                      | `SUPA-AUD-008`, `SUPA-AUD-009` y `SUPA-AUD-015` revisarán funciones, privilegios y `SECURITY DEFINER` |
+
+No queda un hallazgo diferido sin tarea responsable.
+
+#### 13. Requisitos de prueba derivados
+
+```text
+TREQ-SUPABASE-038 a TREQ-SUPABASE-049
+```
+
+Los requisitos protegen:
+
+- separación de las cuatro capas de exposición;
+- configuración versionada exacta de `public` y `graphql_public`;
+- prohibición de inferir exposición desde grants;
+- protección de `app_private`;
+- reconciliación remota de `club`, `pass` y `viso`;
+- tratamiento de esquemas grant-ready;
+- exclusión de esquemas administrados;
+- semántica de `service_role` y RLS;
+- detección de drift entre configuración, privilegios y consumidores.
+
+#### 14. Invariantes del registro
+
+```text
+SCHEMAS_NO_EFIMEROS = 23
+DECLARADOS_EN_CONFIG_VERSIONADA = 2
+REQUERIDOS_POR_IMPLEMENTACION = 3
+GRANT_READY_NO_DECLARADOS = 4
+PRIVADOS = 1
+GESTIONADOS_NO_DECLARADOS = 13
+SIN_CLASIFICAR = 0
+```
+
+```text
+DATA_API_EXPOSURE_MODEL_SHA256 = 7be62d59a5b231643f71e30ea1c979334839170d8086e1903ebc6550e88271df
+DATA_API_SCHEMA_EXPOSURE_MATRIX_SHA256 = c667db6062fa69592d6f8028f1cd5e39d231638456f1cb1084008763c3ac34bd
+```
+
+Todo esquema nuevo, eliminado o reclasificado deberá producir drift explícito y volver a evaluar configuración, grants, consumidores y RLS.
+
+#### 15. Resultado final
+
+`SUPA-AUD-003` deja identificada la exposición canónica y la evidencia disponible para los 23 esquemas:
+
+- `public` y `graphql_public` son las únicas superficies declaradas en la configuración versionada;
+- `club`, `pass` y `viso` dependen de acceso Data API personalizado y deben reconciliarse contra la configuración remota;
+- `payments`, `pos`, `talento` y `vital` tienen grants compatibles, pero no quedan declarados como expuestos;
+- `app_private` permanece explícitamente privado;
+- los trece esquemas administrados restantes no constituyen superficies empresariales de PostgREST;
+- exposición, privilegios y autorización por filas quedan separados como controles independientes.
+
+
 ### [ ] SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
 ### [ ] SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
 ### [ ] SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
