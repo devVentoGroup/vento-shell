@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **362** |
+| Tareas aprobadas | **363** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1213** |
+| Tareas no iniciadas | **1212** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **22.98% (362/1575)** |
+| Porcentaje de completamiento | **23.05% (363/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-020 — Clasificar vista personal o de cliente** |
-| Tarea actual | **AUTH-UI-021 — Definir actores objetivo** |
+| Última tarea aprobada | **AUTH-UI-021 — Definir actores objetivo** |
+| Tarea actual | **AUTH-UI-022 — Definir dispositivo de uso** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-022 — Definir dispositivo de uso** |
+| Siguiente tarea | **AUTH-UI-023 — Definir frecuencia de uso** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 20 de 29 aprobadas; AUTH-UI-021 pendiente** |
+| Progreso del bloque | **BLOQUE I: 21 de 29 aprobadas; AUTH-UI-022 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-020` — Clasificar vista personal o de cliente |
-| Tarea actual | `AUTH-UI-021` — Definir actores objetivo — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-022` — Definir dispositivo de uso |
+| Última aprobada | `AUTH-UI-021` — Definir actores objetivo |
+| Tarea actual | `AUTH-UI-022` — Definir dispositivo de uso — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-023` — Definir frecuencia de uso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **20 DE 29 APROBADAS — ACTUAL AUTH-UI-021** |
+| BLOQUE I | **21 DE 29 APROBADAS — ACTUAL AUTH-UI-022** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-020 — Clasificar vista personal o de cliente
-        ↓
-TAREA ACTUAL
 AUTH-UI-021 — Definir actores objetivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-022 — Definir dispositivo de uso
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-023 — Definir frecuencia de uso
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 20 de 29 tareas aprobadas
+BLOQUE I — 21 de 29 tareas aprobadas
 ```
