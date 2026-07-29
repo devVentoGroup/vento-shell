@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **361** |
+| Aprobadas | **362** |
 | En propuesta | **0** |
-| No iniciadas | **1214** |
+| No iniciadas | **1213** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.92% (361/1575)** |
+| Porcentaje de completamiento | **22.98% (362/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-019` — Clasificar vista de auditoría | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-020` — Clasificar vista personal o de cliente | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-021` — Definir actores objetivo | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-020` — Clasificar vista personal o de cliente | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-021` — Definir actores objetivo | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-022` — Definir dispositivo de uso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -808,7 +808,7 @@
 | ✅ APROBADA | `AUTH-UI-017` | Clasificar vista de supervisión | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-018` | Clasificar vista de configuración | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-019` | Clasificar vista de auditoría | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
-| ⬜ NO INICIADA | `AUTH-UI-020` | Clasificar vista personal o de cliente | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
+| ✅ APROBADA | `AUTH-UI-020` | Clasificar vista personal o de cliente | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-021` | Definir actores objetivo | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-022` | Definir dispositivo de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-023` | Definir frecuencia de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
