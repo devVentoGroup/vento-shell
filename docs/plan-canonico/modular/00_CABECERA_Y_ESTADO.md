@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **386** |
+| Tareas aprobadas | **387** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1189** |
+| Tareas no iniciadas | **1188** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.51% (386/1575)** |
+| Porcentaje de completamiento | **24.57% (387/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias** |
-| Tarea actual | **SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas** |
+| Última tarea aprobada | **SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas** |
+| Tarea actual | **SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`** |
+| Siguiente tarea | **SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 5 de 24 aprobadas; SUPA-AUD-006 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 6 de 24 aprobadas; SUPA-AUD-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias |
-| Tarea actual | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` |
+| Última aprobada | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas |
+| Tarea actual | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-008` — Inventariar triggers y funciones ejecutadas por triggers |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **5 DE 24 APROBADAS — ACTUAL SUPA-AUD-006** |
+| BLOQUE E3 | **6 DE 24 APROBADAS — ACTUAL SUPA-AUD-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
-        ↓
-TAREA ACTUAL
 SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 5 de 24 tareas aprobadas
+BLOQUE E3 — 6 de 24 tareas aprobadas
 ```

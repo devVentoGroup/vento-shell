@@ -2541,7 +2541,370 @@ Cualquier cambio en cantidades, definiciones, validación, orden de enums, secue
 La tarea no modifica la base ni aprueba correcciones. Proporciona la línea base para funciones, triggers, RLS, drift, normalización, arquitectura objetivo y transición.
 
 
-### [ ] SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
+### ✅ SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
+
+**Estado:** APROBADA
+**Fecha:** 2026-07-29
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias` — APROBADA
+**Tarea siguiente:** `SUPA-AUD-007 — Inventariar triggers y automatismos de base de datos`
+**Descripción:** Inventaría las rutinas PostgreSQL observables en los 23 esquemas no efímeros, separa funciones normales, agregados, funciones de ventana, procedimientos, funciones de trigger y firmas invocables como RPC; registra privilegios de ejecución, modo de seguridad, configuración de `search_path`, sobrecargas y defectos estructurales comprobables, sin ejecutar rutinas mutantes ni aprobar correcciones físicas.
+
+#### 1. Objetivo
+
+Crear una línea base reproducible de las rutinas remotas y de la superficie RPC que puede ser consumida por aplicaciones, Edge Functions, automatizaciones o actores de base de datos.
+
+```text
+3.794 RUTINAS REMOTAS
+= 3.622 FUNCIONES NORMALES
++ 157 AGREGADOS
++ 15 FUNCIONES DE VENTANA
++ 0 PROCEDIMIENTOS
+
+347 FIRMAS EN ESQUEMAS GOBERNADOS POR VENTO
+= 274 FIRMAS DIRECTAMENTE INVOCABLES
++ 73 FUNCIONES DE TRIGGER
+```
+
+La existencia de una función no certifica que su cuerpo sea correcto, que tenga autorización suficiente, que sus grants sean apropiados ni que haya sido ejecutada con éxito en producción.
+
+#### 2. Método de auditoría no mutante
+
+Se consultaron exclusivamente catálogos PostgreSQL mediante `SELECT`:
+
+- `pg_proc` para identidad, clase, propietario, lenguaje, volatilidad, paralelismo, modo de seguridad y configuración;
+- `pg_namespace` para reconciliar los 23 esquemas no efímeros;
+- `pg_language` para identificar lenguaje de implementación;
+- `pg_get_function_identity_arguments`, `pg_get_function_arguments`, `pg_get_function_result` y `pg_get_functiondef` para firmas y cuerpos;
+- `has_function_privilege` para observar `EXECUTE` efectivo de `anon`, `authenticated` y `service_role`;
+- `pg_attribute`, `pg_constraint` y `pg_index` para comprobar los tres defectos estructurales informados;
+- lectura del consumidor `vento-nexo/src/app/inventory/settings/products/actions.ts` para confirmar que las tres RPC defectuosas están activamente referenciadas.
+
+No se ejecutó ninguna RPC mutante, procedimiento, función de trigger, DDL, DML, migración ni cambio de grants.
+
+#### 3. Resultado global
+
+| Clase de rutina      | Total remoto | Administrado por PostgreSQL/Supabase | Gobernado por Vento |
+| -------------------- | -----------: | -----------------------------------: | ------------------: |
+| funciones normales   |    **3.622** |                                3.275 |                 347 |
+| agregados            |      **157** |                                  157 |                   0 |
+| funciones de ventana |       **15** |                                   15 |                   0 |
+| procedimientos       |        **0** |                                    0 |                   0 |
+| **Total**            |    **3.794** |                            **3.447** |             **347** |
+
+No existe ningún objeto `PROCEDURE` (`prokind='p'`) en el corte remoto. El término RPC usado por Supabase corresponde aquí a funciones expuestas mediante PostgREST, no a procedimientos PostgreSQL.
+
+#### 4. Matriz por esquema
+
+| Esquema               |    Firmas | Nombres distintos | `SECURITY DEFINER` | `SECURITY INVOKER` | Ejecutables por `anon` | Ejecutables por `authenticated` | Gobierno     |
+| --------------------- | --------: | ----------------: | -----------------: | -----------------: | ---------------------: | ------------------------------: | ------------ |
+| `app_private`         |         1 |                 1 |                  1 |                  0 |                      0 |                               0 | Vento        |
+| `auth`                |         4 |                 4 |                  0 |                  4 |                      4 |                               4 | administrado |
+| `club`                |         7 |                 7 |                  2 |                  5 |                      5 |                               7 | Vento        |
+| `cron`                |         7 |                 5 |                  0 |                  7 |                      5 |                               5 | administrado |
+| `extensions`          |        55 |                41 |                  0 |                 55 |                     54 |                              54 | administrado |
+| `graphql`             |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | administrado |
+| `graphql_public`      |         1 |                 1 |                  0 |                  1 |                      1 |                               1 | administrado |
+| `information_schema`  |        11 |                11 |                  0 |                 11 |                     11 |                              11 | administrado |
+| `net`                 |        12 |                12 |                  0 |                 12 |                     12 |                              12 | administrado |
+| `pass`                |        30 |                30 |                 27 |                  3 |                      5 |                              13 | Vento        |
+| `payments`            |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | Vento        |
+| `pg_catalog`          |     3.319 |             2.719 |                  0 |              3.319 |                  3.257 |                           3.257 | administrado |
+| `pg_toast`            |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | administrado |
+| `pgbouncer`           |         1 |                 1 |                  1 |                  0 |                      0 |                               0 | administrado |
+| `pos`                 |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | Vento        |
+| `public`              |       246 |               241 |                164 |                 82 |                     72 |                             173 | Vento        |
+| `realtime`            |        15 |                14 |                  0 |                 15 |                     15 |                              15 | administrado |
+| `storage`             |        17 |                17 |                  0 |                 17 |                     17 |                              17 | administrado |
+| `supabase_migrations` |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | administrado |
+| `talento`             |        16 |                16 |                 11 |                  5 |                      8 |                              15 | Vento        |
+| `vault`               |         5 |                 5 |                  2 |                  3 |                      0 |                               0 | administrado |
+| `viso`                |         0 |                 0 |                  0 |                  0 |                      0 |                               0 | Vento        |
+| `vital`               |        47 |                47 |                  5 |                 42 |                     44 |                              46 | Vento        |
+| **TOTAL**             | **3.794** |                 — |            **213** |          **3.581** |              **3.510** |                       **3.630** | —            |
+
+Los grants de rutinas administradas no se interpretan como superficie empresarial de Vento. La revisión contextual de grants, RLS y privilegios efectivos permanece en `SUPA-AUD-009`.
+
+#### 5. Superficie gobernada por Vento
+
+Las **347 firmas Vento** se distribuyen así:
+
+| Esquema       |  Firmas | Directas | Funciones de trigger |
+| ------------- | ------: | -------: | -------------------: |
+| `app_private` |       1 |        1 |                    0 |
+| `club`        |       7 |        7 |                    0 |
+| `pass`        |      30 |       20 |                   10 |
+| `payments`    |       0 |        0 |                    0 |
+| `pos`         |       0 |        0 |                    0 |
+| `public`      |     246 |      190 |                   56 |
+| `talento`     |      16 |       15 |                    1 |
+| `viso`        |       0 |        0 |                    0 |
+| `vital`       |      47 |       41 |                    6 |
+| **TOTAL**     | **347** |  **274** |               **73** |
+
+Dentro de las 274 firmas directamente invocables:
+
+- **125** tienen `EXECUTE` efectivo para `anon`;
+- **244** tienen `EXECUTE` efectivo para `authenticated`;
+- **272** tienen `EXECUTE` efectivo para `service_role`;
+- **179** son `SECURITY DEFINER`;
+- **95** son `SECURITY INVOKER`.
+
+Estas categorías se superponen. No equivalen a 125 endpoints anónimos seguros ni a 179 vulnerabilidades confirmadas.
+
+#### 6. Firmas sobrecargadas
+
+Se observaron tres nombres sobrecargados en esquemas Vento:
+
+| Esquema  | Nombre                              | Firmas |
+| -------- | ----------------------------------- | -----: |
+| `public` | `create_order_checkout_draft`       |      4 |
+| `public` | `fogo_create_real_production_batch` |      2 |
+| `public` | `unaccent`                          |      2 |
+
+Toda llamada RPC deberá resolver una firma inequívoca por nombres y tipos de parámetros. La compatibilidad de consumidores y contratos se verificará en `SUPA-AUD-023`, `SUPA-AUD-021` y los paquetes de transición correspondientes.
+
+#### 7. Registro nominal de firmas Vento
+
+El registro nominal completo se define por la identidad PostgreSQL estable:
+
+```text
+<schema>.<proname>(pg_get_function_identity_arguments)
+```
+
+Cobertura del registro:
+
+| Esquema                                                | Firmas nominales registradas |
+| ------------------------------------------------------ | ---------------------------: |
+| `app_private`                                          |                            1 |
+| `club`                                                 |                            7 |
+| `pass`                                                 |                           30 |
+| `public`                                               |                          246 |
+| `talento`                                              |                           16 |
+| `vital`                                                |                           47 |
+| esquemas Vento sin rutinas (`payments`, `pos`, `viso`) |                            0 |
+| **TOTAL**                                              |                      **347** |
+
+La firma canónica incorpora además tipo de retorno, clase, lenguaje, owner, `SECURITY DEFINER/INVOKER`, volatilidad, grants efectivos y configuración `proconfig`. El registro queda congelado mediante las huellas de la sección 15; cualquier diferencia futura constituye drift y deberá tratarse en `SUPA-AUD-017`.
+
+#### 8. RPC defectuosa: `apply_master_supplier_purchase_batch`
+
+Firma remota:
+
+```sql
+public.apply_master_supplier_purchase_batch(p_changes jsonb) returns uuid
+```
+
+Propiedades observadas:
+
+- lenguaje `plpgsql`;
+- `SECURITY INVOKER`;
+- `VOLATILE`;
+- `search_path=public`;
+- ejecutable por `authenticated` y `service_role`;
+- consumida por NEXO en `applyMasterSupplierPurchases`.
+
+Defecto comprobado:
+
+```sql
+update public.product_suppliers
+set purchase_price = price,
+    purchase_pack_qty = pack_qty,
+    purchase_pack_unit_code = unit_code,
+    is_primary = primary_flag,
+    updated_at = now()
+where id = supplier_link;
+```
+
+`public.product_suppliers` no contiene la columna `updated_at`. La sentencia fallará cuando alcance ese `UPDATE`.
+
+Clasificación: **DEFECTO ESTRUCTURAL CONFIRMADO — BLOQUEANTE PARA ESA RAMA RPC**.
+
+Destino obligatorio:
+
+- corrección física: `SUPA-TRANS-004` y paquete E5 del configurador maestro de productos;
+- paridad migratoria y drift: `SUPA-AUD-016`, `SUPA-AUD-017`;
+- consumidor: `SUPA-AUD-023`;
+- prueba contractual y de integración: `TREQ-SUPABASE-080`.
+
+#### 9. RPC defectuosa: `apply_master_presentation_version_batch`
+
+Firma remota:
+
+```sql
+public.apply_master_presentation_version_batch(p_changes jsonb) returns uuid
+```
+
+Propiedades observadas:
+
+- lenguaje `plpgsql`;
+- `SECURITY INVOKER`;
+- `VOLATILE`;
+- `search_path=public`;
+- ejecutable por `authenticated` y `service_role`;
+- consumida por NEXO en `applyMasterPresentationVersions`.
+
+Defecto comprobado:
+
+```sql
+update public.product_suppliers
+set uom_profile_id = new_id,
+    updated_at = now()
+where uom_profile_id = p.id;
+```
+
+La misma columna inexistente `product_suppliers.updated_at` hace fallar la rama cuando el `UPDATE` se ejecuta.
+
+Clasificación: **DEFECTO ESTRUCTURAL CONFIRMADO — BLOQUEANTE PARA ESA RAMA RPC**.
+
+Destino obligatorio:
+
+- corrección física: `SUPA-TRANS-004` y paquete E5 del versionado de presentaciones;
+- paridad migratoria y drift: `SUPA-AUD-016`, `SUPA-AUD-017`;
+- consumidor: `SUPA-AUD-023`;
+- prueba contractual y de integración: `TREQ-SUPABASE-081`.
+
+#### 10. RPC defectuosa: `apply_master_production_route_batch`
+
+Firma remota:
+
+```sql
+public.apply_master_production_route_batch(p_changes jsonb) returns uuid
+```
+
+Propiedades observadas:
+
+- lenguaje `plpgsql`;
+- `SECURITY INVOKER`;
+- `VOLATILE`;
+- `search_path=public`;
+- ejecutable por `authenticated` y `service_role`;
+- consumida por NEXO en `applyMasterProductionRoutes`.
+
+Defecto comprobado:
+
+```sql
+on conflict (product_id, site_id)
+do update set ...
+```
+
+`public.product_site_production_routes` no posee constraint `UNIQUE(product_id, site_id)` ni índice único no parcial compatible. El índice `idx_product_site_production_routes_product_site` existe, pero no es único. El único índice único funcional relacionado es parcial sobre `(product_id, site_id, area_kind)` con predicado `is_active=true and is_default=true`; no puede arbitrar ese `ON CONFLICT`.
+
+La sentencia fallará con ausencia de constraint único o de exclusión compatible.
+
+Clasificación: **DEFECTO ESTRUCTURAL CONFIRMADO — BLOQUEANTE PARA ESA RAMA RPC**.
+
+Destino obligatorio:
+
+- definición de cardinalidad y clave natural: `SUPA-AUD-019`, `SUPA-AUD-022`, `SUPA-ARC-*`;
+- corrección física: `SUPA-TRANS-004` y paquete E5 de rutas productivas;
+- paridad migratoria y drift: `SUPA-AUD-016`, `SUPA-AUD-017`;
+- consumidor: `SUPA-AUD-023`;
+- prueba contractual y de integración: `TREQ-SUPABASE-082`.
+
+No se aprueba automáticamente crear `UNIQUE(product_id, site_id)`, porque la tabla también modela `area_kind`, defaults y rutas activas. La clave correcta debe derivarse del proceso aprobado antes de migrar.
+
+#### 11. Confirmación de consumidores activos
+
+El archivo `vento-nexo/src/app/inventory/settings/products/actions.ts` referencia las tres RPC:
+
+| Acción NEXO                       | RPC                                       |
+| --------------------------------- | ----------------------------------------- |
+| `applyMasterSupplierPurchases`    | `apply_master_supplier_purchase_batch`    |
+| `applyMasterPresentationVersions` | `apply_master_presentation_version_batch` |
+| `applyMasterProductionRoutes`     | `apply_master_production_route_batch`     |
+
+Por tanto, no son cuerpos huérfanos sin consumidor conocido. El fallo puede alcanzar una ruta funcional vigente del configurador maestro de productos.
+
+#### 12. Seguridad de funciones privilegiadas
+
+En esquemas gobernados por Vento se observaron:
+
+- **210** funciones `SECURITY DEFINER`;
+- **45** de ellas ejecutables por `anon`;
+- **151** ejecutables por `authenticated`;
+- **210** ejecutables por `service_role`;
+- **0** `SECURITY DEFINER` sin `search_path` fijado en `proconfig`.
+
+El `search_path` fijado reduce una clase de riesgo, pero no certifica autorización interna, mínimo privilegio, aislamiento territorial, manejo de actor ni exposición correcta. La revisión individual corresponde a `SUPA-AUD-009`; los triggers y automatismos se continúan en `SUPA-AUD-007` y `SUPA-AUD-008`.
+
+#### 13. Límites de certificación operativa
+
+No se certifica ejecución histórica ni éxito operacional de todas las rutinas porque:
+
+- `track_functions` está desactivado;
+- no se obtuvo telemetría histórica de PostgreSQL por función;
+- no se ejecutaron RPC mutantes sobre datos reales;
+- la existencia, firma y cuerpo estático no demuestran que cada rama haya sido recorrida;
+- las funciones que crean tablas temporales deben probarse en ejecución controlada, aunque el análisis estático aislado pueda producir falsos positivos.
+
+Estado de evidencia:
+
+| Afirmación                                                      | Estado                             |
+| --------------------------------------------------------------- | ---------------------------------- |
+| existencia remota y firma                                       | confirmada                         |
+| owner, lenguaje, seguridad, volatilidad, grants y `search_path` | confirmados                        |
+| tres defectos estructurales reportados                          | confirmados                        |
+| consumidor NEXO de las tres RPC                                 | confirmado                         |
+| éxito histórico de todas las funciones                          | no demostrable con el corte actual |
+| autorización integral de cada función                           | pendiente de `SUPA-AUD-009`        |
+| comportamiento operativo de cada RPC                            | pendiente de pruebas controladas   |
+
+#### 14. Hallazgos y destino documental
+
+| Hallazgo                                                                     | Riesgo                                                                         | Tarea responsable                                                                            |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| tres RPC activamente consumidas contienen defectos estructurales confirmados | fallos deterministas en configuración maestra de productos                     | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-023`, `SUPA-TRANS-004`, paquete E5 correspondiente |
+| 210 funciones Vento `SECURITY DEFINER`                                       | bypass de RLS o privilegio excesivo si la autorización interna es insuficiente | `SUPA-AUD-009`                                                                               |
+| 45 `SECURITY DEFINER` ejecutables por `anon`                                 | superficie anónima privilegiada no justificada                                 | `SUPA-AUD-009`                                                                               |
+| 151 `SECURITY DEFINER` ejecutables por `authenticated`                       | acceso privilegiado demasiado amplio o sin territorio                          | `SUPA-AUD-009`                                                                               |
+| 73 funciones de trigger                                                      | automatismos invisibles para consumidores si no se vinculan a sus triggers     | `SUPA-AUD-007`                                                                               |
+| tres nombres sobrecargados                                                   | resolución ambigua o ruptura de clientes al cambiar parámetros                 | `SUPA-AUD-021`, `SUPA-AUD-023`                                                               |
+| ausencia de procedimientos                                                   | consumidores no deben documentar `CALL` donde solo existen funciones RPC       | `SUPA-AUD-023`                                                                               |
+| ausencia de telemetría histórica                                             | falsa certificación de uso o éxito operativo                                   | `SUPA-AUD-020`, `SUPA-OBS-*`                                                                 |
+
+No queda hallazgo narrativo sin tarea responsable.
+
+#### 15. Huellas de integridad
+
+```text
+VENTO_FUNCTION_SIGNATURE_REGISTRY_SHA256 = aa46a7e201dd67d1c2bd67163173b407c76d604820f5a858b0a35ee1bfb4b6e0
+VENTO_FUNCTION_BODY_REGISTRY_SHA256 = e49a641135848e848f9bea303ae7865abd3766f434f3b416cfc6eafdba5d7d7b
+OBSERVED_AT_UTC = 2026-07-29T19:27:28.627615Z
+SUPABASE_PROJECT_REF = clzdpinthhtknkmefsxx
+POSTGRESQL_VERSION = 17.6
+```
+
+La huella de firmas incluye esquema, nombre, argumentos de identidad, retorno, clase, lenguaje, owner, modo de seguridad, grants efectivos y `proconfig`. La huella de cuerpos agrega la definición completa obtenida mediante `pg_get_functiondef` para las 347 firmas Vento.
+
+#### 16. Requisitos de prueba derivados
+
+Se incorporan al registro canónico:
+
+```text
+TREQ-SUPABASE-074 a TREQ-SUPABASE-085
+```
+
+Protegen inventario completo, separación de clases, superficie invocable, funciones privilegiadas, sobrecargas, los tres defectos estructurales, consumidores, ausencia de procedimientos, límites de observabilidad e integridad por huellas.
+
+#### 17. Resultado final
+
+`SUPA-AUD-006` deja inventariados y reconciliados:
+
+- **3.794** rutinas remotas;
+- **347** firmas gobernadas por Vento;
+- **274** firmas directamente invocables;
+- **73** funciones de trigger;
+- **0** procedimientos PostgreSQL;
+- **210** funciones Vento `SECURITY DEFINER`;
+- **45** `SECURITY DEFINER` ejecutables por `anon`;
+- **151** `SECURITY DEFINER` ejecutables por `authenticated`;
+- tres nombres sobrecargados;
+- tres RPC defectuosas y activamente consumidas, con causa estructural comprobada.
+
+La tarea no modifica la base, no corrige las RPC y no certifica todavía autorización integral ni éxito operativo de todas las funciones.
+
+
 ### [ ] SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
 ### [ ] SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
 ### [ ] SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol

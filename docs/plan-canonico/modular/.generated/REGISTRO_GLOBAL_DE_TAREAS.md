@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **386** |
+| Aprobadas | **387** |
 | En propuesta | **0** |
-| No iniciadas | **1189** |
+| No iniciadas | **1188** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.51% (386/1575)** |
+| Porcentaje de completamiento | **24.57% (387/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias | ✅ APROBADA |
-| Tarea actual | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas | ⬜ NO INICIADA |
-| Siguiente | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas | ✅ APROBADA |
+| Tarea actual | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` | ⬜ NO INICIADA |
+| Siguiente | `SUPA-AUD-008` — Inventariar triggers y funciones ejecutadas por triggers | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -377,7 +377,7 @@
 | ✅ APROBADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-004` | Inventariar tablas, particiones, vistas y vistas materializadas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-005` | Inventariar claves primarias, foráneas, constraints, enums y secuencias | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-006` | Inventariar funciones, RPC, procedimientos y firmas públicas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-006` | Inventariar funciones, RPC, procedimientos y firmas públicas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-007` | Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-008` | Inventariar triggers y funciones ejecutadas por triggers | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-009` | Inventariar políticas RLS, grants y privilegios por rol | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
