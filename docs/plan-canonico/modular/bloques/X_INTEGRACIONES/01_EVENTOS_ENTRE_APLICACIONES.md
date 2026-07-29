@@ -1668,7 +1668,497 @@ INT-APP-006 — Definir compensaciones
 APROBADA
 
 
-### [ ] INT-APP-005 — Definir reintentos
+### ✅ INT-APP-005 — Definir reintentos
+
+**Estado:** APROBADA  
+**Fecha de aprobación documental:** 2026-07-29  
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas  
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-005 — Definir reintentos`  
+**Tarea anterior:** `INT-APP-004 — Definir idempotencia` — APROBADA  
+**Siguiente tarea:** `INT-APP-006 — Definir compensaciones`  
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@09f65964d5d2a5fcc4acb250ea7dd0820636d53b`  
+**Tipo de tarea:** definición documental transversal de elegibilidad, clasificación, programación, límites y agotamiento de reintentos; sin implementación, colas, workers, tablas, Supabase, compensaciones, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir un contrato único y cerrado de reintentos para solicitudes, comandos propietarios, emisión y entrega de eventos, consumo, efectos derivados, integraciones externas, operación offline y replay controlado, preservando las identidades y resultados idempotentes aprobados en `INT-APP-004`.
+
+```text
+FALLO O RESPUESTA INCIERTA
+        ↓
+CLASIFICAR CAUSA Y RESULTADO CONOCIDO
+        ↓
+¿EL MISMO INTENTO ES SEGURO, NECESARIO Y TODAVÍA VIGENTE?
+        ├── NO → RECHAZAR, CONCILIAR O ESCALAR
+        └── SÍ → MISMA IDENTIDAD EMPRESARIAL + NUEVO INTENTO TÉCNICO
+                         ↓
+              BACKOFF + JITTER + LÍMITES
+```
+
+Un reintento no crea una operación nueva, no cambia el payload lógico, no sustituye autorización y no garantiza éxito. Solo vuelve a intentar la misma operación cuando el error es elegible y el presupuesto contractual sigue vigente.
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                      | Revisión o blob                                         | Responsabilidad                                                           |
+| ----------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `vento-shell`                                               | `09f65964d5d2a5fcc4acb250ea7dd0820636d53b`              | revisión remota con `INT-APP-004` y 04A integrados                        |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`          | integrado en `09f65964d5d2a5fcc4acb250ea7dd0820636d53b` | formato vigente y secuencia `INT-APP-001` a `INT-APP-010`                 |
+| `INT-APP-004` / `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001` | integrado en `09f65964d5d2a5fcc4acb250ea7dd0820636d53b` | claves, huellas, outcomes, orden, replay y recuperación                   |
+| `PROC-CAT-017` / `ENTERPRISE-EVENT-CATALOG-001`             | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d`              | entrega al menos una vez, deduplicación y orden por agregado              |
+| `TREQ-INTEGRATION-003` y `TREQ-INTEGRATION-004`             | 04A remoto vigente                                      | backoff, jitter, Retry-After, límites, timeout desconocido y trazabilidad |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`          | `a133fcba2703b06c65c798f9fb2e2ab1da8f8097`              | línea base remota integrada de 4.128 requisitos                           |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-EVENT-RETRY-POLICY-001@1.0.0
+```
+
+| Propiedad                  | Valor                               | Regla                                         |
+| -------------------------- | ----------------------------------- | --------------------------------------------- |
+| `policy_id`                | `ENTERPRISE-EVENT-RETRY-POLICY-001` | identidad estable del contrato                |
+| `policy_version`           | `1.0.0`                             | primera definición transversal                |
+| `policy_status`            | `DEFINED`                           | contrato documental; no prueba implementación |
+| `covered_processes`        | **69**                              | `VPROC-0001` a `VPROC-0069`                   |
+| `normal_event_definitions` | **395**                             | catálogo completo de `INT-APP-001`            |
+| `event_consumer_relations` | **2.020**                           | relaciones de `INT-APP-003`                   |
+| `idempotency_scopes`       | **7**                               | alcances aprobados en `INT-APP-004`           |
+| `retry_profiles`           | **8**                               | perfiles cerrados y versionados               |
+| `error_classes`            | **12**                              | clasificación cerrada de disposición          |
+| `attempt_outcomes`         | **10**                              | estados lógicos del intento                   |
+| `backoff_algorithm`        | `EXPONENTIAL_FULL_JITTER`           | evita sincronización y tormentas              |
+| `transport_guarantee`      | `AT_LEAST_ONCE`                     | puede existir redelivery                      |
+| `default_unknown_error`    | `NO_AUTOMATIC_RETRY`                | falla cerrada hasta clasificación explícita   |
+| `aura_runtime_status`      | `DEFINED_DEFERRED`                  | contrato definido sin ejecución activa        |
+
+#### 4. Principios normativos
+
+1. El primer envío cuenta como intento uno.
+2. Cada reintento conserva la misma clave idempotente, huella, `event_id`, operación, audiencia y finalidad.
+3. `attempt_id`, `delivery_id`, timestamp, conexión, worker o trace pueden cambiar sin crear otra operación.
+4. Un error no clasificado no es reintentable por defecto.
+5. Los errores permanentes, rechazos empresariales, denegaciones y reutilizaciones conflictivas no se curan repitiendo.
+6. La autorización, el contexto y la vigencia se reevalúan antes de cada efecto.
+7. El presupuesto termina por el primer límite alcanzado: intentos, edad, cancelación, expiración o error permanente.
+8. Agotar reintentos no ejecuta automáticamente compensación, reversión, cancelación ni escritura cruzada.
+9. El hecho confirmado por la propietaria no se revierte porque una consumidora falle.
+10. Ningún perfil autoriza un ciclo infinito ni una espera silenciosa.
+
+#### 5. Vocabulario cerrado de errores y disposición
+
+| Clase                    | Disposición canónica         |
+| ------------------------ | ---------------------------- |
+| `TRANSIENT_CONNECTIVITY` | `AUTOMATIC_RETRY`            |
+| `TRANSIENT_DEPENDENCY`   | `AUTOMATIC_RETRY`            |
+| `RATE_LIMITED`           | `RETRY_AFTER`                |
+| `CONCURRENCY_RETRYABLE`  | `AUTOMATIC_RETRY`            |
+| `OUT_OF_ORDER_WAIT`      | `WAIT_FOR_DEPENDENCY`        |
+| `AUTH_REFRESH_REQUIRED`  | `REFRESH_THEN_REEVALUATE`    |
+| `UNKNOWN_OUTCOME`        | `INQUIRE_OR_RECONCILE_FIRST` |
+| `PERMANENT_CONTRACT`     | `NO_RETRY`                   |
+| `PERMANENT_BUSINESS`     | `NO_RETRY`                   |
+| `SECURITY_DENIED`        | `NO_RETRY`                   |
+| `CONFLICTING_REUSE`      | `NO_RETRY`                   |
+| `CANCELLED_OR_EXPIRED`   | `NO_RETRY`                   |
+
+Interpretación mínima:
+
+- `TRANSIENT_CONNECTIVITY`: DNS, conexión, red, reset o indisponibilidad temporal sin rechazo semántico;
+- `TRANSIENT_DEPENDENCY`: servicio o proveedor temporalmente no disponible;
+- `RATE_LIMITED`: cuota o capacidad con instante permitido de reanudación;
+- `CONCURRENCY_RETRYABLE`: deadlock, serialización, lock o claim recuperable;
+- `OUT_OF_ORDER_WAIT`: falta una versión o dependencia previa;
+- `AUTH_REFRESH_REQUIRED`: solo admite refrescar y reevaluar; nunca repetir con autoridad vencida;
+- `UNKNOWN_OUTCOME`: existe posibilidad de commit y exige consulta o conciliación antes de reejecutar;
+- las cinco clases permanentes restantes no admiten retry automático.
+
+Códigos HTTP, excepciones de SDK o mensajes de proveedor deberán traducirse a esta taxonomía mediante un contrato versionado. Un `500`, `409` o timeout no será reintentable por el número aislado si el contrato indica resultado permanente o desconocido.
+
+#### 6. Perfiles canónicos
+
+| Perfil                        | Intentos totales |   Base | Tope por demora | Edad máxima | Uso y límite                                                                                   |
+| ----------------------------- | ---------------: | -----: | --------------: | ----------: | ---------------------------------------------------------------------------------------------- |
+| `RETRY_NONE`                  |            **1** |      0 |               0 |           0 | sin reintento automático; rechazo, conflicto, cancelación o intervención explícita             |
+| `RETRY_INTERACTIVE_SAFE`      |            **3** | 500 ms |             5 s |        30 s | interacción corta y plenamente idempotente; la interfaz conserva el mismo identificador        |
+| `RETRY_OWNER_COMMAND`         |            **6** |    2 s |           2 min |      30 min | comando propietario recuperable; resultado desconocido exige consulta antes de reejecutar      |
+| `RETRY_EVENT_STANDARD`        |           **12** |    5 s |          15 min |        24 h | entrega y consumo asincrónicos ordinarios con inbox idempotente                                |
+| `RETRY_EVENT_CRITICAL`        |           **20** |    2 s |          10 min |        72 h | custodia, inventario, pago, fidelización, seguridad o continuidad con conciliación obligatoria |
+| `RETRY_PROVIDER_RATE_LIMITED` |           **12** |   30 s |             6 h |         7 d | proveedor externo o cuota; Retry-After define el instante mínimo cuando sea válido             |
+| `RETRY_OFFLINE_SYNC`          |           **20** |   10 s |          30 min |         7 d | sincronización durable; ausencia de conectividad no consume intento de transmisión             |
+| `RETRY_OUT_OF_ORDER`          |           **20** |   30 s |             1 h |        72 h | espera por versión o dependencia; despertar por señal es preferible a sondeo                   |
+
+Los valores son máximos contractuales, no una obligación de consumir todos los intentos. Un resultado recuperado, una denegación, una cancelación o una condición permanente detienen inmediatamente la secuencia.
+
+#### 7. Selección obligatoria de perfil
+
+| Alcance de `INT-APP-004` | Perfil ordinario              | Perfil alterno permitido                                            |
+| ------------------------ | ----------------------------- | ------------------------------------------------------------------- |
+| `REQUEST_ACCEPTANCE`     | `RETRY_INTERACTIVE_SAFE`      | `RETRY_OFFLINE_SYNC` cuando existe cola durable                     |
+| `OWNER_COMMAND`          | `RETRY_OWNER_COMMAND`         | `RETRY_NONE` para operación no repetible o rechazo permanente       |
+| `EVENT_EMISSION`         | `RETRY_EVENT_CRITICAL`        | `RETRY_EVENT_STANDARD` cuando no existe efecto sensible ni custodia |
+| `CONSUMER_INBOX`         | `RETRY_EVENT_STANDARD`        | `RETRY_EVENT_CRITICAL` por criticidad material                      |
+| `CONSUMER_EFFECT`        | `RETRY_EVENT_CRITICAL`        | `RETRY_NONE` si requiere decisión humana o conciliación previa      |
+| `EXTERNAL_RECEIPT`       | `RETRY_PROVIDER_RATE_LIMITED` | `RETRY_EVENT_STANDARD` si el proveedor no usa cuotas                |
+| `REPLAY_BATCH`           | `RETRY_NONE`                  | perfil subyacente por elemento después de autorización explícita    |
+
+Cada operación o relación deberá resolver exactamente un perfil vigente. La criticidad no podrá decidirse desde un componente de interfaz ni mediante un fallback local no versionado.
+
+#### 8. Backoff exponencial con full jitter
+
+Para el reintento número `n`, posterior al primer intento:
+
+```text
+exponential_ceiling = min(delay_cap, base_delay × 2^(n - 2))
+next_delay = random_uniform(0, exponential_ceiling)
+```
+
+Reglas:
+
+1. el jitter será por intento y operación, no una constante compartida;
+2. no se usará demora fija para todas las instancias;
+3. el scheduler no reducirá una espera ya impuesta por `Retry-After`;
+4. el reloj utilizado deberá ser monotónico para intervalos y conservar timestamps UTC para auditoría;
+5. un reinicio recuperará `next_attempt_at` durable y no reiniciará el presupuesto;
+6. el cliente no podrá acelerar reintentos manipulando el reloj local.
+
+#### 9. `Retry-After`, cuotas y ventanas del proveedor
+
+Cuando exista `Retry-After` o equivalente autenticado:
+
+```text
+next_attempt_at = max(calculated_backoff_at, provider_retry_after_at)
+```
+
+- el valor válido define el instante mínimo permitido;
+- un valor inválido o ausente usa el perfil local y registra la anomalía;
+- una espera que exceda la edad máxima termina en conciliación o intervención, no en envío tardío silencioso;
+- cuotas por aplicación, sede, credencial, endpoint o proveedor deberán mantenerse separadas;
+- cambiar credencial o worker para evadir una cuota queda prohibido;
+- una respuesta exitosa no borra límites empresariales pendientes ni confirma un efecto externo sin validación.
+
+#### 10. Presupuesto de intentos y edad
+
+El presupuesto se calcula desde `first_attempt_at`, no desde el último reinicio del cliente o worker.
+
+```text
+STOP WHEN
+attempt_number >= total_attempts
+OR now >= first_attempt_at + max_age
+OR operation_cancelled
+OR operation_expired
+OR permanent_error_detected
+OR authorization_or_contract_no_longer_valid
+```
+
+- el tiempo sin conectividad no consume intento de transmisión en `RETRY_OFFLINE_SYNC`, pero sí consume edad;
+- una ejecución que alcanzó al proveedor o servidor consume intento aunque la respuesta se pierda;
+- una consulta de estado para resolver `UNKNOWN_OUTCOME` se audita por separado y no fabrica otro comando;
+- extender edad o intentos exige una decisión versionada y no puede hacerse manualmente desde base de datos.
+
+#### 11. Identidad y estado de cada intento
+
+Cada intento conceptual deberá conservar:
+
+```text
+retry_operation_ref
++ idempotency_scope
++ idempotency_key_reference
++ fingerprint_reference
++ attempt_id
++ attempt_number
++ retry_profile
++ error_class
++ scheduled_at
++ started_at
++ completed_at
++ next_attempt_at
++ outcome
++ producer_application
++ consumer_application when applicable
++ event_id or source_command_id when applicable
++ authorization_and_audit_reference
+```
+
+Estados cerrados:
+
+| Outcome                     |
+| --------------------------- |
+| `SCHEDULED`                 |
+| `IN_FLIGHT`                 |
+| `SUCCEEDED`                 |
+| `DUPLICATE_RESULT_RETURNED` |
+| `WAITING_RETRY_AFTER`       |
+| `WAITING_DEPENDENCY`        |
+| `RECONCILIATION_REQUIRED`   |
+| `EXHAUSTED`                 |
+| `REJECTED_PERMANENT`        |
+| `CANCELLED`                 |
+
+Un intento técnico podrá finalizar en `DUPLICATE_RESULT_RETURNED` y cerrar correctamente la operación sin volver a aplicar el efecto.
+
+#### 12. Interacciones y comandos propietarios
+
+1. `RETRY_INTERACTIVE_SAFE` solo opera sobre solicitudes idempotentes y dentro de una ventana visible para el usuario.
+2. El frontend conserva la misma clave; no genera otra por cada click, timeout o refresh.
+3. Deshabilitar un botón no constituye protección contra doble envío.
+4. `RETRY_OWNER_COMMAND` revalida permiso, actor, sede, área, turno, recurso y versión.
+5. Ante respuesta perdida después de posible commit, se consulta el resultado por la misma clave antes de reejecutar.
+6. Una validación fallida, denegación, conflicto de huella o rechazo empresarial termina en `REJECTED_PERMANENT`.
+7. Un usuario podrá cancelar la espera futura cuando el proceso lo permita, pero no borrar un efecto ya confirmado.
+
+#### 13. Emisión, entrega y consumo de eventos
+
+```text
+OUTBOX PENDIENTE
+        ↓ perfil de emisión
+EVENTO CON event_id ESTABLE
+        ↓ perfil de entrega por consumidora
+INBOX consumer_application + event_id
+        ↓ perfil de efecto cuando aplique
+RESULTADO PROPIO O ESTADO PENDIENTE
+```
+
+- cada consumidora mantiene presupuesto y resultado independientes;
+- una entrega exitosa a `nexo` no consume ni completa el presupuesto de `numera`;
+- el redelivery conserva evento, versión, productora, audiencia y sensibilidad;
+- un fallo de consumidor no recrea el evento ni modifica `producer_application`;
+- las proyecciones monotónicas pueden devolver no-op idempotente;
+- los efectos físicos, financieros, de puntos, documentos, mensajes o impresión usan clave de efecto y perfil crítico;
+- una consumidora retirada o no autorizada no recibe reintentos históricos por conveniencia.
+
+#### 14. Resultado desconocido
+
+`UNKNOWN_OUTCOME` se usa cuando el cliente, adaptador o worker no puede demostrar si el receptor confirmó el efecto.
+
+Secuencia obligatoria:
+
+```text
+TIMEOUT O CONEXIÓN CERRADA DESPUÉS DEL ENVÍO
+        ↓
+CONSULTAR POR CLAVE, EVENT_ID, ID EXTERNO O RECIBO
+        ├── CONFIRMADO → RECUPERAR RESULTADO
+        ├── NO APLICADO DEMOSTRADO → REINTENTAR MISMA OPERACIÓN
+        └── INDETERMINADO → RECONCILIATION_REQUIRED
+```
+
+Queda prohibido tratar un timeout como fracaso seguro y volver a ejecutar pagos, inventario, puntos, custodia, publicación, impresión o notificación sin indagación cuando el receptor pudo haber confirmado.
+
+#### 15. Eventos fuera de orden y dependencias pendientes
+
+`RETRY_OUT_OF_ORDER` no sobrescribe versiones ni ejecuta sondeo agresivo.
+
+- `aggregate_id + aggregate_version` determina la dependencia;
+- la llegada de la versión faltante deberá despertar preferentemente los elementos esperando;
+- una versión inferior tardía se clasifica como stale o no-op, no como retry infinito;
+- una versión superior sin predecesora queda `WAITING_DEPENDENCY`;
+- al vencer el presupuesto pasa a conciliación o intervención;
+- ninguna consumidora podrá inventar el estado faltante para desbloquearse.
+
+#### 16. Integraciones externas
+
+1. El adaptador traduce códigos externos a la taxonomía cerrada.
+2. `source_system + external_event_id` permanece estable en todos los intentos.
+3. Webhooks repetidos se deduplican antes de cualquier efecto interno.
+4. Un proveedor sin identificador estable recibe `receipt_id` durable antes del procesamiento.
+5. `401` o credencial expirada exige renovar y reautorizar; no bucle con la misma credencial.
+6. `403`, contrato revocado, firma inválida o payload incompatible no admiten reintento automático.
+7. Un `429` respeta `Retry-After`; un `5xx` solo se reintenta dentro del contrato y presupuesto.
+8. El adaptador no cambia payload, canal, destinatario o importe para conseguir éxito.
+
+#### 17. Operación offline
+
+`RETRY_OFFLINE_SYNC` deberá:
+
+- persistir clave, huella, contenido lógico, contexto y edad antes de mostrar estado pendiente;
+- pausar envíos mientras la conectividad sea inexistente o no apta;
+- conservar el mismo identificador tras reinicio, actualización o cambio de red;
+- revalidar sesión, actor, turno, sede, área, permiso, dispositivo y versión al sincronizar;
+- distinguir pendiente local, enviado, resultado recuperado, conflicto, expirado y conciliación;
+- no transferir operaciones de un actor a otro en dispositivo compartido;
+- no consumir un intento por una comprobación local que detecta ausencia de red;
+- impedir que la cola antigua reviva contexto o autoridad vencidos.
+
+#### 18. Replay y backfill
+
+- replay conserva `event_id`, audiencia histórica y resultado previo de cada consumidora;
+- un batch autorizado no reintenta indiscriminadamente todos sus elementos;
+- cada elemento usa su propia identidad, clasificación y presupuesto;
+- `replay_request_id` identifica la instrucción, no reemplaza el `event_id`;
+- backfill mantiene fuente, lote, ventana, `is_backfill` y controles de efectos sensibles;
+- consumidoras añadidas después no reciben historia sin migración explícita;
+- agotamiento de un elemento no cancela ni confirma los demás;
+- pagos, stock, puntos, documentos, comunicaciones o acciones físicas requieren autorización expresa para replay.
+
+#### 19. Concurrencia, circuit breaker y tormentas
+
+1. Un claim o lease atómico evita dos intentos concurrentes del mismo alcance.
+2. El lease tendrá propietario, expiración y recuperación segura; expirar no prueba que el efecto no ocurrió.
+3. Un circuit breaker podrá detener temporalmente nuevos intentos ante dependencia degradada sin consumir presupuesto de envío mientras esté abierto.
+4. El estado half-open utilizará pruebas limitadas, no liberación masiva.
+5. Bulkheads separarán proveedores, aplicaciones, consumidoras y clases críticas para evitar cascadas.
+6. Los reintentos deberán tener límites de concurrencia y tasa por destino.
+7. Un restablecimiento no podrá liberar simultáneamente todo el backlog; aplicará jitter y drenaje controlado.
+8. La prioridad crítica no autoriza starvation indefinido ni bypass de idempotencia.
+
+#### 20. Agotamiento y salida del retry
+
+Al finalizar el presupuesto, la operación deberá quedar explícitamente en uno de estos destinos:
+
+| Destino                        | Regla                                                                  | Tarea posterior               |
+| ------------------------------ | ---------------------------------------------------------------------- | ----------------------------- |
+| `RECONCILIATION_REQUIRED`      | resultado posible o dependencia no resoluble automáticamente           | `INT-APP-008` y `INT-APP-009` |
+| `MANUAL_INTERVENTION_REQUIRED` | decisión humana, dato corregible o proveedor sin resolución automática | `INT-APP-009`                 |
+| `DEAD_LETTER_CANDIDATE`        | elemento aislado con evidencia y posibilidad de reproceso controlado   | `INT-APP-009`                 |
+| `PERMANENTLY_REJECTED`         | contrato, autorización o negocio impiden la operación                  | tarea funcional propietaria   |
+| `CANCELLED_OR_EXPIRED`         | la intención dejó de ser válida                                        | proceso propietario           |
+
+Agotar intentos no equivale a compensar. `INT-APP-006` decidirá si existe efecto confirmado que requiera compensación empresarial. Tampoco equivale a borrar, marcar completado o crear un hecho de éxito.
+
+#### 21. Autorización, sensibilidad y auditabilidad
+
+- cada intento revalida autorización y contexto cuando puede producir o revelar un efecto;
+- recuperar un resultado anterior no concede acceso actual al detalle;
+- logs y métricas usarán referencias, códigos y latencia, no payload sensible, tokens, firmas o huellas completas;
+- `INT-APP-007` completará actor, principal técnico, causa, intento, resultado y trazas;
+- el historial conservará cambios de perfil y clasificación;
+- reintentos manuales exigirán motivo, actor autorizado, alcance y evidencia;
+- una operación restringida no podrá moverse a una cola menos protegida para ser reintentada.
+
+#### 22. Fronteras críticas
+
+##### 22.1. ORIGO → NEXO → NUMERA
+
+Reintentar aceptación comercial, ingreso físico y obligación económica utiliza operaciones y presupuestos separados. Una recepción repetida no vuelve a sumar inventario ni recrea la obligación.
+
+##### 22.2. FOGO → NEXO → PULSO
+
+Plan, producción, calidad, entrada de terminado, disponibilidad y pedido conservan identidades distintas. Un lote retenido no se libera por agotar reintentos.
+
+##### 22.3. PULSO → PASS → NUMERA
+
+Pedido, pago, puntos y efecto financiero no comparten una clave universal. Un timeout de pago se consulta antes de cobrar otra vez y un retry de puntos no recrea la venta.
+
+##### 22.4. VISO → ANIMA → SHELL
+
+Programación, asistencia y contexto de acceso se reintentan dentro de sus dominios. Una marcación offline conserva identidad y no revive turno, sesión o permisos vencidos.
+
+##### 22.5. AURA
+
+Los perfiles quedan definidos para las relaciones diferidas, pero no se crean workers, colas, entregas, publicaciones ni reintentos activos antes de readiness.
+
+#### 23. Decisiones reservadas
+
+| Decisión                                                            | Tarea propietaria |
+| ------------------------------------------------------------------- | ----------------- |
+| compensaciones y efectos inversos                                   | `INT-APP-006`     |
+| auditoría completa de cada intento                                  | `INT-APP-007`     |
+| sincronización pendiente y estados offline                          | `INT-APP-008`     |
+| error parcial, cuarentena, dead-letter e intervención               | `INT-APP-009`     |
+| escrituras cruzadas y comandos inversos                             | `INT-APP-010`     |
+| tablas, constraints, outbox, inbox, leases y migraciones            | BLOQUES E3 y R    |
+| broker, topics, colas, workers, scheduler y circuit breaker físicos | BLOQUE E4         |
+| schemas, SDK, taxonomía y canonicalización compartida               | BLOQUE H          |
+| implementación, pruebas E2E, piloto, cutover, rollback e hypercare  | BLOQUE E5         |
+
+#### 24. Cambios no autorizados
+
+`INT-APP-005` no autoriza:
+
+- crear tablas, índices, funciones, triggers, RPC, RLS o migraciones;
+- escoger broker, cola, scheduler, cron, worker, proveedor o librería;
+- ejecutar reintentos reales, replay, backfill o drenaje de backlog;
+- alterar claves, huellas, eventos, emisoras, consumidoras o audiencias;
+- convertir errores permanentes en retry por conveniencia;
+- extender presupuestos manualmente desde base de datos;
+- compensar, revertir, cancelar o corregir efectos;
+- activar AURA;
+- conceder permisos o eludir contexto;
+- afirmar entrega exactly-once;
+- iniciar piloto o producción.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-138 a TREQ-INTEGRATION-167
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA_INT-APP-005.md`.
+
+#### 26. Huellas de integridad
+
+```text
+RETRY_PROFILE_REGISTRY_SHA256 = d5818cb1b2eee835370795e7ebfef8b5027eca880fa7a6c5a0d2027e91a0660b
+RETRY_ERROR_TAXONOMY_SHA256 = 03f65e06c3d6dec2edf07a425b46df4458b34d71b25172bf58ba8f902de6249e
+RETRY_OUTCOME_VOCABULARY_SHA256 = 1d41a26b2cf8ea9c6469cc1d7f47867b2d04ae398b4f37070c4ce729fbb2d762
+RETRY_POLICY_SHA256 = 0765ab16f1d06da221db8126ee33d347bff113e3981f66ce168b8f4f9325c371
+REMOTE_COMMIT_SHA = 09f65964d5d2a5fcc4acb250ea7dd0820636d53b
+REMOTE_04A_BASE_BLOB_SHA1 = a133fcba2703b06c65c798f9fb2e2ab1da8f8097
+EVENT_CATALOG_SOURCE_BLOB_SHA1 = 683c2540d88a7c665c8fd05cd6beb0fd74645b4d
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-004` figuran aprobadas en el remoto.
+- [x] Se congeló el commit remoto vigente antes de elaborar.
+- [x] Se preservó la estructura documental exacta usada por `INT-APP-004`.
+- [x] Se definieron ocho perfiles, doce clases de error y diez outcomes.
+- [x] Se estableció backoff exponencial con full jitter.
+- [x] Se definieron `Retry-After`, intentos totales y edad máxima.
+- [x] Se separó error transitorio, resultado desconocido, espera por dependencia y rechazo permanente.
+- [x] Se preservan clave, huella, evento, audiencia, finalidad y autorización.
+- [x] Se cubrieron interacción, comando, evento, consumidor, proveedor, offline, replay y backfill.
+- [x] Se definieron claims, circuit breaker, bulkheads y prevención de tormentas sin seleccionar tecnología.
+- [x] Se separó agotamiento de compensación, dead-letter y escritura cruzada.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `09f65964d5d2a5fcc4acb250ea7dd0820636d53b`            |
+| Base 04A integrada                           | `a133fcba2703b06c65c798f9fb2e2ab1da8f8097`            |
+| Procesos cubiertos                           | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora cubiertas      | **2.020**                                             |
+| Alcances idempotentes                        | **7**                                                 |
+| Perfiles de retry                            | **8**                                                 |
+| Clases de error                              | **12**                                                |
+| Outcomes de intento                          | **10**                                                |
+| Requisitos base                              | **4.128**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.158**                                             |
+| Dominio INTEGRATION                          | **167 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-167** |
+| Filas con catorce columnas                   | **4.158 de 4.158**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.128**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-005 — Definir reintentos` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+
+#### 30. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-005 — Definir reintentos
+        ↓
+TAREA ACTUAL
+INT-APP-006 — Definir compensaciones
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-007 — Definir auditoría transversal
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-006 — Definir compensaciones
 ### [ ] INT-APP-007 — Definir auditoría transversal
 ### [ ] INT-APP-008 — Definir estados pendientes de sincronización

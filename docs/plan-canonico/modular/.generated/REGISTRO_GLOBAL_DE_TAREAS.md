@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **375** |
+| Aprobadas | **376** |
 | En propuesta | **0** |
-| No iniciadas | **1200** |
+| No iniciadas | **1199** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.81% (375/1575)** |
+| Porcentaje de completamiento | **23.87% (376/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-004` — Definir idempotencia | ✅ APROBADA |
-| Tarea actual | `INT-APP-005` — Definir reintentos | ⬜ NO INICIADA |
-| Siguiente | `INT-APP-006` — Definir compensaciones | ⬜ NO INICIADA |
+| Última aprobada | `INT-APP-005` — Definir reintentos | ✅ APROBADA |
+| Tarea actual | `INT-APP-006` — Definir compensaciones | ⬜ NO INICIADA |
+| Siguiente | `INT-APP-007` — Definir auditoría transversal | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1409,7 +1409,7 @@
 | ✅ APROBADA | `INT-APP-002` | Definir aplicación emisora de cada evento | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-003` | Definir aplicaciones consumidoras | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `INT-APP-005` | Definir reintentos | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
+| ✅ APROBADA | `INT-APP-005` | Definir reintentos | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-006` | Definir compensaciones | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-008` | Definir estados pendientes de sincronización | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
