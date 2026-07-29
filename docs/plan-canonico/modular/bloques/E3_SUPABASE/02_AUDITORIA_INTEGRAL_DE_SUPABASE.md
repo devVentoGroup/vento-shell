@@ -5353,7 +5353,449 @@ SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del p
 ```
 
 
-### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
+### ✅ SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
+
+**Estado:** APROBADA  
+**Fecha de preparación documental:** 2026-07-29  
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`  
+**Tarea anterior:** `SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones` — APROBADA  
+**Siguiente tarea:** `SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de vento-shell`  
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`  
+**Tipo de tarea:** auditoría documental, consultas remotas read-only, inspección de metadatos de proyecto, extensiones, settings PostgreSQL, ACL, advisors, bundles desplegados y repositorios; sin DDL, DML, lectura o copia de valores secretos, rotaciones, cambios de Auth, claves, configuración, funciones ni código remoto
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de la configuración técnica que determina el comportamiento y la seguridad de Vento OS en Supabase:
+
+```text
+EXTENSIONES Y OBJETOS ADMINISTRADOS
+        +
+CLAVES API Y SECRETOS
+        +
+VARIABLES DE EDGE FUNCTIONS
+        +
+CONFIGURACIÓN DE POSTGRES, AUTH Y GATEWAY
+        +
+PARIDAD ENTRE REPOSITORIO Y REMOTO
+        ↓
+CONFIGURACIÓN CANÓNICA, MÍNIMA, ROTABLE Y REPRODUCIBLE
+```
+
+La existencia de una extensión, una variable o una clave no demuestra que sea necesaria, esté bien ubicada, tenga mínimo privilegio, pertenezca al ambiente correcto o pueda rotarse sin interrupción.
+
+#### 2. Regla canónica derivada
+
+```text
+Ningún secreto podrá residir en una superficie accesible por cliente, catálogo operativo, código, log o artefacto. Toda extensión, clave, variable y setting deberá tener propietario, finalidad, ambiente, consumidores, mínimo privilegio, fuente versionada, validación, rotación o actualización, evidencia de drift y rollback.
+```
+
+#### 3. Alcance, método y redacción
+
+Se inspeccionaron sin mutación:
+
+- proyecto, región, estado, versión de PostgreSQL y claves públicas activas;
+- extensiones instaladas, versiones disponibles, esquema, propietario y referencias específicas;
+- `pg_settings`, settings por rol y base, configuración de cron, TLS, WAL, logging y timeouts;
+- ACL efectivas de schemas y objetos técnicos para `anon`, `authenticated` y `service_role`;
+- metadata de `app_config`, `internal_job_secrets`, `app_runtime_settings` y Vault;
+- 24 Edge Functions activas, bundles, variables referenciadas, import maps y `verify_jwt`;
+- `supabase/config.toml`, `.gitignore` y búsquedas de código en repositorios Vento;
+- advisor de seguridad remoto;
+- línea base previa de schemas expuestos de `SUPA-AUD-003` para diferenciar privilegio directo de exposición Data API.
+
+No se extrajeron, reprodujeron ni hashearon valores de API keys, secretos, private keys, bearer, JWT privados, payloads SQL, coordenadas o credenciales. Solo se conservaron nombres, tipos, conteos, longitudes, estado, localización y huellas de conjuntos redactados.
+
+#### 4. Fuentes de verdad congeladas
+
+| Fuente                                             | Corte                                                                                  | Responsabilidad                                          |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `SUPA-AUD-014.md` local aprobado                   | SHA-256 `2268180383cbf2eac90d61379c4c4a6fd4506df0823cdecfe1cf9c47a5407ed1`             | continuidad documental inmediata                         |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | SHA-256 `21eff81ffa0fe86fe491357ec20c5a3a8f807b5073c01538227e7cc5ce35bcdf`; 4506 filas | base canónica hasta `TREQ-SUPABASE-211`                  |
+| Supabase `vento-os-dev`                            | consultas entre `2026-07-29T22:03Z` y `22:20Z`                                         | estado remoto de extensiones, ACL, settings y metadatos  |
+| Edge Functions remotas                             | 24 bundles `ACTIVE`                                                                    | código y configuración realmente desplegados             |
+| `supabase/config.toml`                             | blob `cc013305bf617ba469cde361bc57d035b423847f`                                        | configuración local declarada                            |
+| `.gitignore`                                       | blob `3e8103e64e74c79cb7734f0a67bd7b80037b4274`                                        | exclusión estática de `.env*` y PEM                      |
+| Supabase Security Advisor                          | corte del 2026-07-29                                                                   | señales administradas de Auth, extensión y superficie DB |
+| Documentación oficial Supabase                     | consultada el 2026-07-29                                                               | semántica de keys, secretos, extensiones, Auth y linter  |
+
+#### 5. Línea base ejecutiva
+
+| Métrica                                                     |                                  Resultado |
+| ----------------------------------------------------------- | -----------------------------------------: |
+| Extensiones instaladas                                      |                                      **8** |
+| Extensiones instaladas con upgrade pendiente                |                                      **0** |
+| Extensiones relevantes disponibles no instaladas            |                                      **9** |
+| Extensiones instaladas fuera de schema técnico recomendado  |              **1**: `unaccent` en `public` |
+| Extensiones sin referencia empresarial específica observada |                         **1**: `uuid-ossp` |
+| Secretos en Vault                                           |                                      **0** |
+| Claves públicas activas observadas                          | **2**: una `anon` legacy y una publishable |
+| Edge Functions activas                                      |                                     **24** |
+| Distribución `verify_jwt`                                   |                     **12 true / 12 false** |
+| Funciones con import map declarado                          |                                      **1** |
+| Claves en `app_config`                                      |                        **7**, una sensible |
+| Secretos en `internal_job_secrets`                          |                             **1** en texto |
+| Runtime flags                                               |         **6**, ninguno con nombre sensible |
+| Cron jobs con literal secreto                               |                                      **1** |
+| Respuestas retenidas en `net._http_response`                |                                     **72** |
+| Entradas `pg_stat_statements`                               |                                   **4858** |
+| Queries con términos sensibles por patrón                   |                                    **146** |
+| Queries con patrón de correo                                |                                      **7** |
+| Brechas asignadas                                           |                                     **28** |
+| Requisitos nuevos                                           |                                     **31** |
+
+#### 6. Inventario de extensiones
+
+| Extensión            |  Versión | Schema       | Owner            | Upgrade pendiente |
+| -------------------- | -------: | ------------ | ---------------- | :---------------: |
+| `pg_cron`            |  `1.6.4` | `pg_catalog` | `supabase_admin` |        no         |
+| `pg_net`             | `0.19.5` | `extensions` | `supabase_admin` |        no         |
+| `pg_stat_statements` |   `1.11` | `extensions` | `postgres`       |        no         |
+| `pgcrypto`           |    `1.3` | `extensions` | `postgres`       |        no         |
+| `plpgsql`            |    `1.0` | `pg_catalog` | `supabase_admin` |        no         |
+| `supabase_vault`     |  `0.3.1` | `vault`      | `supabase_admin` |        no         |
+| `unaccent`           |    `1.1` | `public`     | `supabase_admin` |        no         |
+| `uuid-ossp`          |    `1.1` | `extensions` | `postgres`       |        no         |
+
+Disponibles pero no instaladas en la selección de interés: `http`, `pg_jsonschema`, `pgaudit`, `pgjwt`, `pgmq`, `pgsodium`, `postgis`, `vector`, `wrappers`.
+
+Interpretación:
+
+- ninguna extensión instalada requería upgrade según el catálogo observado;
+- `pg_cron` y `pg_net` tienen consumidores empresariales comprobados;
+- `unaccent` es consumida por `public.normalize_text`, pero está ubicada en `public` y el advisor la marca como extensión en schema público;
+- `uuid-ossp` no mostró llamadas `uuid_generate_*` en funciones, vistas o defaults inspeccionados; esto obliga a evaluar, no a retirar automáticamente;
+- `supabase_vault` está instalada, pero `vault.secrets` no contiene filas y no se observaron referencias empresariales.
+
+#### 7. Claves API y transición de modelo
+
+La API de gestión retornó dos claves públicas activas:
+
+| Clase                   |                                 Cantidad | Estado documental                             |
+| ----------------------- | ---------------------------------------: | --------------------------------------------- |
+| `anon` legacy JWT       |                                    **1** | activa; consumidores aún usan nombres legacy  |
+| publishable key moderna |                                    **1** | activa                                        |
+| secret keys privadas    | no enumerables por el conector utilizado | requieren evidencia administrativa controlada |
+
+No se conserva ningún valor. La coexistencia no constituye por sí sola un incidente, pero prueba que la migración de consumidores no está cerrada. Los nombres `SUPABASE_ANON_KEY` y `SUPABASE_SERVICE_ROLE_KEY` siguen presentes en bundles y código server-side; deberá diferenciarse publicación cliente, secreto backend y credenciales administradas por plataforma.
+
+#### 8. Matriz de custodia de secretos
+
+| Ubicación                     |               Conteo observado | Acceso cliente                       | Custodia                   | Dictamen                                |
+| ----------------------------- | -----------------------------: | ------------------------------------ | -------------------------- | --------------------------------------- |
+| `public.app_config`           |           7 claves; 1 sensible | `anon` y `authenticated` pueden leer | JSONB en tabla empresarial | **exposición confirmada**               |
+| `public.internal_job_secrets` |                      1 secreto | denegado por RLS a clientes          | texto en tabla empresarial | privada, pero no custodia canónica      |
+| `vault.secrets`               |                              0 | sin acceso cliente                   | Vault                      | instalada y no adoptada                 |
+| `cron.job.command`            | 7 comandos; 1 con credenciales | no expuesto por Data API             | texto de catálogo          | **credencial literal confirmada**       |
+| Edge Function secrets         |          valores no enumerados | inyectados al runtime                | servicio administrado      | requiere inventario y rotación externos |
+| GitHub Actions secrets        |          valores no enumerados | runtime de workflow                  | GitHub                     | requiere reconciliación por consumidor  |
+
+El valor de `shift_notify_internal_secret` en `app_config` y los literales de `document-alerts-daily` deberán considerarse comprometidos hasta completar rotación y prueba de rechazo del valor anterior.
+
+#### 9. Privilegios críticos de schemas técnicos
+
+##### 9.1 `net`
+
+- `anon` y `authenticated` tienen `USAGE` en schema `net`;
+- ambos poseen `SELECT`, `INSERT`, `UPDATE` y `DELETE` sobre `net.http_request_queue` y `net._http_response`;
+- las tablas no tienen RLS;
+- había cero requests pendientes y 72 respuestas retenidas: 65 con respuesta útil y siete con error de transporte;
+- `net` no pertenece a la lista Data API expuesta congelada en `SUPA-AUD-003`.
+
+La ausencia de exposición REST reduce el vector actual, pero no elimina la capacidad otorgada a los roles DB ni protege contra una futura ampliación de schemas. Se clasifica como privilegio crítico latente y drift-sensitive.
+
+##### 9.2 `extensions.pg_stat_statements`
+
+- `anon` y `authenticated` tienen `USAGE` en `extensions` y `SELECT` sobre la vista;
+- se observaron 4858 filas, 4644 con texto SQL;
+- 146 textos coincidieron con términos sensibles y siete con patrón de correo; estas coincidencias pueden incluir SQL administrativo o de auditoría y no prueban por sí solas que exista un secreto real;
+- no se reprodujo ninguna consulta;
+- `extensions` no pertenece a la lista Data API expuesta vigente.
+
+El control requerido es revocar acceso cliente no justificado y evitar que SQL, PII o credenciales aparezcan como literales en consultas.
+
+#### 10. Variables de Edge Functions
+
+La inspección de bundles mostró grupos representativos:
+
+| Función                     | Variables referenciadas | Variables sensibles o de credencial                                                                   |
+| --------------------------- | ----------------------: | ----------------------------------------------------------------------------------------------------- |
+| `account-deletion`          |                       3 | `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`                                                      |
+| `attendance-report`         |                       3 | `SUPABASE_SERVICE_ROLE_KEY`                                                                           |
+| `document-alerts`           |                       4 | `DOCUMENT_ALERTS_CRON_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`                                            |
+| `order-message-notify`      |                       3 | `SUPABASE_SERVICE_ROLE_KEY`, `INTERNAL_NOTIFY_SECRET`                                                 |
+| `pass-address-search`       |                       4 | `GOOGLE_MAPS_SERVER_API_KEY`, `GOOGLE_MAPS_API_KEY`, `SUPABASE_ANON_KEY`                              |
+| `pass-delivery-quote`       |                       5 | `GOOGLE_MAPS_SERVER_API_KEY`, `GOOGLE_MAPS_API_KEY`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` |
+| `payments-create-intent`    |                       9 | `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `WOMPI_PUBLIC_KEY`, `WOMPI_INTEGRITY_SECRET`        |
+| `payments-webhook`          |                       4 | `SUPABASE_SERVICE_ROLE_KEY`, `WOMPI_EVENTS_SECRET`, `WOMPI_WEBHOOK_SECRET`                            |
+| `process-account-deletions` |                       3 | `SUPABASE_SERVICE_ROLE_KEY`, `ACCOUNT_DELETION_WORKER_SECRET`                                         |
+| `request-account-deletion`  |                       2 | `SUPABASE_SERVICE_ROLE_KEY`                                                                           |
+| `shift-runtime-processor`   |                       5 | `SUPABASE_SERVICE_ROLE_KEY`, `SHIFT_RUNTIME_CRON_SECRET`                                              |
+| `staff-invitations-create`  |                       8 | `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`                                                         |
+| `support-message-notify`    |                       4 | `SUPABASE_SERVICE_ROLE_KEY`, `INTERNAL_NOTIFY_SECRET`                                                 |
+| `wallet-pass`               |                       5 | `GOOGLE_WALLET_SERVICE_ACCOUNT_JSON`, `SUPABASE_ANON_KEY`                                             |
+
+Patrones detectados:
+
+1. aliases de la misma semántica: `SUPABASE_URL` frente a `EXPO_PUBLIC_SUPABASE_URL`, `WOMPI_EVENTS_SECRET` frente a `WOMPI_WEBHOOK_SECRET`, `GOOGLE_MAPS_SERVER_API_KEY` frente a `GOOGLE_MAPS_API_KEY`;
+2. múltiples redirects alternativos en invitaciones;
+3. defaults de proveedor o URLs cuando falta configuración;
+4. funciones fail-open si el secreto esperado está vacío;
+5. service account completa de Google Wallet en una variable JSON;
+6. ausencia de manifiesto común que declare obligatoriedad, tipo, ambiente, owner y rotación.
+
+#### 11. Configuración PostgreSQL observada
+
+| Área                  | Valor observado                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| Servidor              | PostgreSQL 17.6; proyecto `vento-os-dev`; región `us-east-2`                         |
+| Conexiones            | `max_connections=60`; reservadas `3`                                                 |
+| Cifrado de contraseña | `scram-sha-256`                                                                      |
+| TLS                   | habilitado; mínimo `TLSv1.2`                                                         |
+| RLS global            | `row_security=on`                                                                    |
+| Statement timeout     | global `120 s`; `anon 3 s`; `authenticated 8 s`                                      |
+| Locks y sesiones      | lock global `0`; idle transaction `0`; idle session `0`                              |
+| WAL                   | `logical`; cinco slots; cinco senders                                                |
+| Logging               | `log_statement=ddl`; slow query desactivado; conexiones y desconexiones desactivadas |
+| Auditoría             | `pgaudit.log=none`; extensión `pgaudit` no instalada                                 |
+| Cron                  | base `postgres`; log de runs y statements habilitado                                 |
+| JWT                   | expiración observada `3600 s`; secreto no extraído                                   |
+
+Controles positivos:
+
+- TLS habilitado con mínimo TLS 1.2;
+- contraseñas PostgreSQL con SCRAM-SHA-256;
+- `row_security=on`;
+- statement timeouts finitos y más restrictivos para roles cliente;
+- WAL lógico y capacidad de replicación coherentes con Realtime;
+- cero settings inspeccionados con `pending_restart`.
+
+Brechas de gobierno:
+
+- no existe baseline aprobado que justifique límites de conexiones, workers y timeouts por ambiente;
+- `lock_timeout`, `idle_in_transaction_session_timeout` e `idle_session_timeout` globales permanecen ilimitados;
+- slow-query logging, connection logging y `pgaudit` están desactivados;
+- `track_io_timing` está apagado, por lo que la decisión de observabilidad y costo debe quedar explícita, no asumirse como defecto automático.
+
+#### 12. Configuración Auth y advisor
+
+El advisor remoto confirmó `Leaked Password Protection Disabled`. Esta auditoría no cambió Auth ni intentó contraseñas. El control deberá habilitarse o quedar excepcionalmente diferido con riesgo, responsable, fecha y prueba de rechazo de contraseñas comprometidas.
+
+Otros hallazgos del advisor sobre RLS, vistas `SECURITY DEFINER` y RPC expuestas ya tienen propietarios en `SUPA-AUD-009`, `SUPA-AUD-016`, `SUPA-AUD-017` y arquitectura de exposición; no se duplican como hallazgos nuevos de esta tarea.
+
+#### 13. Runtime settings y feature flags
+
+`public.app_runtime_settings` contiene seis flags:
+
+- `anima.notifications.enabled`;
+- `pass.checkout.enabled`;
+- `pass.loyalty.enabled`;
+- `pass.orders.enabled`;
+- `pass.profile.enabled`;
+- `pulso.billing.enabled`.
+
+No se detectaron nombres sensibles. RLS está habilitado; `authenticated` puede leer y la política de actualización exige `has_platform_permission('platform.settings.manage')`. Sin embargo, la tabla concede privilegios SQL amplios al rol y no demuestra por sí sola historial inmutable, aprobación, motivo, vigencia, rollback ni propagación segura. Se asigna a `TREQ-SUPABASE-240`.
+
+#### 14. Configuración local frente al remoto
+
+`supabase/config.toml` es configuración local de CLI, no evidencia automática del remoto. El corte muestra:
+
+| Objeto                    | `config.toml`              | Remoto                                                              |
+| ------------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `club-revenuecat-webhook` | entrada `verify_jwt=false` | no desplegada                                                       |
+| `payments-return`         | sin entrada explícita      | activa con `verify_jwt=false`                                       |
+| `delivery-portal`         | sin entrada explícita      | activa con `verify_jwt=false`                                       |
+| schemas API local         | `public`, `graphql_public` | remoto posee una lista más amplia ya inventariada en `SUPA-AUD-003` |
+| Auth local                | defaults de desarrollo     | remoto solo parcialmente observable mediante settings y advisor     |
+
+Esta tarea registra el drift; `SUPA-AUD-016` y `SUPA-AUD-017` deberán reconciliarlo objeto por objeto y distinguir diferencia legítima de cambio manual.
+
+#### 15. Procedencia de código y supply chain
+
+Se observaron:
+
+- copias de Edge Functions en `vento-shell` y repositorios de aplicaciones;
+- funciones presentes en código que no están desplegadas en el remoto;
+- entrypoints remotos que contienen rutas temporales o absolutas de equipos;
+- imports desde Deno std, JSR, npm y esm.sh con políticas heterogéneas;
+- una sola función con import map declarado;
+- `.env*` y `*.pem` correctamente ignorados en `vento-shell`;
+- ninguna coincidencia en la búsqueda específica de variables públicas con nombre de service role, sin que esto pruebe ausencia total de secretos comprometidos.
+
+La fuente de verdad de cada bundle deberá convertirse en un manifiesto verificable de commit, ruta, dependencias, bundle SHA, configuración y rollback.
+
+#### 16. Hallazgos funcionales dependientes de configuración
+
+##### 16.1 Eliminación de cuentas
+
+- `request-account-deletion` acepta un correo del payload y opera con service role sin exigir que sea el correo del usuario autenticado;
+- `account-deletion` confía en `otp_verified` y `phrase_verified` aportados por el cliente;
+- `process-account-deletions` implementa un worker diferido;
+- los tres caminos representan políticas y estados distintos.
+
+La resolución deberá unificar identidad, reautenticación server-side, plazo, cancelación, claim, anonimización, Auth, Storage, retries y auditoría.
+
+##### 16.2 Observabilidad de ubicación
+
+`pass-delivery-quote` imprime coordenadas precisas de origen y destino. Aunque la función necesita ubicación para cotizar, la persistencia en logs no es necesaria por defecto y requiere redacción, precisión reducida o correlación no reversible.
+
+##### 16.3 Credencial de ejemplo en bundle
+
+El bundle remoto de `wallet-pass` conserva un JWT demostrativo en un comentario. No se afirma que pertenezca al proyecto vigente, pero ningún token con forma válida debe formar parte de código desplegable.
+
+#### 17. Evidencia positiva observada
+
+- las ocho extensiones instaladas coinciden con su versión default disponible;
+- Vault niega acceso a roles cliente;
+- `internal_job_secrets` aplica política denegatoria a `anon` y `authenticated`;
+- `app_runtime_settings` no contiene nombres de secreto;
+- `.gitignore` excluye `.env*` y PEM;
+- Wompi valida coherencia parcial entre key y ambiente en `payments-create-intent`;
+- `payments-webhook` falla cerrado cuando no existe secreto de eventos;
+- `net` y `extensions` no están actualmente en la lista Data API expuesta;
+- los valores sensibles nunca se copiaron a este documento.
+
+Estos controles reducen riesgo, pero no sustituyen inventario, mínimo privilegio, rotación, drift ni pruebas de ambiente.
+
+#### 18. Brechas y resolución obligatoria
+
+| Brecha               | Hallazgo                                                                                                                        | Riesgo                                                                                                | Requisitos                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `B-SUPA-AUD-015-001` | Una clave secreta reside en `public.app_config` y la tabla permite lectura a `anon` y `authenticated`.                          | Exposición directa de credencial interna.                                                             | `TREQ-SUPABASE-217`; `TREQ-SUPABASE-218`; `TREQ-SUPABASE-220` |
+| `B-SUPA-AUD-015-002` | `anon` y `authenticated` tienen USAGE y DML amplio sobre las tablas `net`, sin RLS.                                             | Emisión HTTP arbitraria, lectura de respuestas o activación futura por drift de Data API.             | `TREQ-SUPABASE-214`; `TREQ-SUPABASE-215`                      |
+| `B-SUPA-AUD-015-003` | `anon` y `authenticated` pueden consultar `extensions.pg_stat_statements`.                                                      | Exposición de SQL, identificadores o literales sensibles mediante sesión directa o exposición futura. | `TREQ-SUPABASE-214`; `TREQ-SUPABASE-216`                      |
+| `B-SUPA-AUD-015-004` | Un cron conserva bearer y clave personalizada como literales en `cron.job.command`.                                             | Credencial persistida en catálogo y respaldos.                                                        | `TREQ-SUPABASE-218`; `TREQ-SUPABASE-220`                      |
+| `B-SUPA-AUD-015-005` | `internal_job_secrets` almacena un secreto en texto mientras Vault está vacío.                                                  | Custodia fragmentada, sin cifrado de aplicación ni rotación uniforme.                                 | `TREQ-SUPABASE-217`; `TREQ-SUPABASE-219`                      |
+| `B-SUPA-AUD-015-006` | No existe registro canónico de secretos con propietario, consumidor, ambiente, fecha y rotación.                                | Secretos huérfanos, duplicados o imposibles de revocar coordinadamente.                               | `TREQ-SUPABASE-217`; `TREQ-SUPABASE-222`; `TREQ-SUPABASE-227` |
+| `B-SUPA-AUD-015-007` | Coexisten clave `anon` legacy y clave publishable moderna.                                                                      | Migración incompleta y consumidores atados a credenciales heredadas.                                  | `TREQ-SUPABASE-221`                                           |
+| `B-SUPA-AUD-015-008` | El conector no expone inventario de secret keys privadas ni sus rotaciones.                                                     | No se puede certificar número, edad, alcance o revocación de claves privilegiadas.                    | `TREQ-SUPABASE-222`                                           |
+| `B-SUPA-AUD-015-009` | Las 24 funciones no tienen manifiesto versionado común de variables obligatorias y opcionales.                                  | Despliegue parcialmente configurado o comportamiento divergente por ambiente.                         | `TREQ-SUPABASE-223`                                           |
+| `B-SUPA-AUD-015-010` | Varias funciones admiten aliases, defaults y rutas fail-open cuando falta un secreto.                                           | La ausencia o divergencia de configuración no bloquea de forma uniforme.                              | `TREQ-SUPABASE-224`; `TREQ-SUPABASE-225`                      |
+| `B-SUPA-AUD-015-011` | Credenciales de Google, Maps, Resend, Wompi, Expo y workers carecen de matriz transversal de propiedad y rotación.              | Privilegio excesivo o recuperación incompleta ante compromiso.                                        | `TREQ-SUPABASE-226`; `TREQ-SUPABASE-227`                      |
+| `B-SUPA-AUD-015-012` | `wallet-pass` depende de un JSON completo de service account en una sola variable.                                              | Clave privada extensa, difícil de rotar y validar por campos mínimos.                                 | `TREQ-SUPABASE-219`; `TREQ-SUPABASE-227`                      |
+| `B-SUPA-AUD-015-013` | Un bundle desplegado conserva un JWT demostrativo dentro de un comentario.                                                      | Normalización de credenciales de ejemplo y riesgo de reutilización accidental.                        | `TREQ-SUPABASE-241`                                           |
+| `B-SUPA-AUD-015-014` | `pass-delivery-quote` registra coordenadas precisas en logs.                                                                    | Exposición de ubicación personal u operativa en observabilidad.                                       | `TREQ-SUPABASE-230`                                           |
+| `B-SUPA-AUD-015-015` | `request-account-deletion` no vincula el correo solicitado con la identidad autenticada.                                        | Solicitud de borrado sobre otra cuenta.                                                               | `TREQ-SUPABASE-233`                                           |
+| `B-SUPA-AUD-015-016` | `account-deletion` confía en booleanos de verificación aportados por el cliente.                                                | Eliminación o anonimización sin prueba server-side de reautenticación.                                | `TREQ-SUPABASE-234`                                           |
+| `B-SUPA-AUD-015-017` | Coexisten tres rutas de eliminación con semánticas inmediata, diferida y worker.                                                | Estados competidores, doble procesamiento y política de privacidad incoherente.                       | `TREQ-SUPABASE-235`                                           |
+| `B-SUPA-AUD-015-018` | No existe clasificación CORS por consumidor y función; se observan allowlists abiertas repetidas.                               | Invocación cross-origin no gobernada y configuración duplicada.                                       | `TREQ-SUPABASE-228`                                           |
+| `B-SUPA-AUD-015-019` | Versiones de Deno, JSR, npm y ESM no siguen una política única; solo una función usa import map.                                | Build no reproducible y actualización desigual de dependencias.                                       | `TREQ-SUPABASE-229`                                           |
+| `B-SUPA-AUD-015-020` | `config.toml` y el remoto difieren en funciones con `verify_jwt=false`.                                                         | Configuración local que no reproduce el gateway desplegado.                                           | `TREQ-SUPABASE-236`                                           |
+| `B-SUPA-AUD-015-021` | Hay copias de funciones en varios repositorios y fuentes adicionales no desplegadas.                                            | Fuente canónica, commit y rollback ambiguos.                                                          | `TREQ-SUPABASE-237`                                           |
+| `B-SUPA-AUD-015-022` | `unaccent` está instalado en `public` y `uuid-ossp` no mostró referencias empresariales.                                        | Contaminación de namespace y extensiones sin decisión de ciclo de vida.                               | `TREQ-SUPABASE-212`; `TREQ-SUPABASE-213`                      |
+| `B-SUPA-AUD-015-023` | `pgaudit.log=none`, no hay umbral de slow query y el logging de conexiones está desactivado.                                    | Investigación y detección insuficientes ante abuso o degradación.                                     | `TREQ-SUPABASE-231`                                           |
+| `B-SUPA-AUD-015-024` | Timeouts de sesión, transacción inactiva y lock no tienen baseline empresarial aprobado.                                        | Bloqueos o sesiones abandonadas sin política verificable.                                             | `TREQ-SUPABASE-232`                                           |
+| `B-SUPA-AUD-015-025` | El advisor remoto indica protección contra contraseñas filtradas deshabilitada.                                                 | Aceptación de credenciales conocidas como comprometidas.                                              | `TREQ-SUPABASE-238`                                           |
+| `B-SUPA-AUD-015-026` | La consulta de branches no pudo certificarse y no existe inventario probado local, staging y producción.                        | Cambios o secretos mezclados entre ambientes.                                                         | `TREQ-SUPABASE-239`                                           |
+| `B-SUPA-AUD-015-027` | `app_runtime_settings` permite cambios a usuarios con permiso, pero no demuestra versionado, aprobación ni auditoría inmutable. | Feature flags alteradas sin historial suficiente o rollback.                                          | `TREQ-SUPABASE-240`                                           |
+| `B-SUPA-AUD-015-028` | No existe validador automático conjunto para extensiones, claves, secretos, variables y configuración.                          | Drift silencioso y reintroducción de exposición.                                                      | `TREQ-SUPABASE-242`                                           |
+
+No queda hallazgo narrativo sin requisito y tarea responsable.
+
+#### 19. Requisitos de prueba incorporados
+
+Se incorporan 31 filas canónicas en el registro 04A:
+
+- `TREQ-SUPABASE-212` — Todo proyecto deberá mantener un inventario versionado de extensiones instaladas con versión, esquema, propietario, disponibilidad de actualización, dependencias, consumidores, grants y decisión conservar, mover o retirar.
+- `TREQ-SUPABASE-213` — Cada extensión deberá tener esquema aprobado, política de actualización, prueba de compatibilidad, rollback y evidencia de uso
+- `TREQ-SUPABASE-214` — Los objetos creados por extensiones deberán aplicar mínimo privilegio a PUBLIC, anon, authenticated y service_role
+- `TREQ-SUPABASE-215` — Los roles anon y authenticated no podrán leer ni mutar net.http_request_queue ni net._http_response, ni invocar HTTP por pg_net, salvo contrato explícito, aislado y probado
+- `TREQ-SUPABASE-216` — Las estadísticas SQL solo serán accesibles a roles administrativos aprobados
+- `TREQ-SUPABASE-217` — Deberá existir un registro canónico de secretos con identificador no sensible, propietario, finalidad, proveedor, consumidores, ambientes, ubicación de custodia, fecha de creación, última rotación, próxima rotación, alcance y procedimiento de revocación.
+- `TREQ-SUPABASE-218` — Ningún secreto, bearer, service-role key, private key o token operativo podrá persistirse en tablas legibles por cliente, cron.job.command, migraciones, código, comentarios, logs, fixtures o artefactos
+- `TREQ-SUPABASE-219` — Los secretos server-side deberán residir en una custodia aprobada y cifrada, separada de tablas empresariales
+- `TREQ-SUPABASE-220` — Toda credencial expuesta, duplicada o almacenada fuera de custodia aprobada deberá rotarse coordinadamente, invalidarse en el origen, actualizar consumidores, probar rechazo del valor anterior y conservar evidencia sin revelar el nuevo valor.
+- `TREQ-SUPABASE-221` — Los consumidores deberán migrar de claves legacy anon y service_role JWT a publishable y secret keys modernas según su superficie
+- `TREQ-SUPABASE-222` — El inventario de API keys privadas deberá registrar tipo, estado, ambiente, consumidores, fecha, última rotación y revocación sin almacenar el valor
+- `TREQ-SUPABASE-223` — Cada Edge Function deberá declarar un manifiesto versionado de variables obligatorias, opcionales, sensibles y públicas, tipo, formato, consumidor, ambiente, default permitido, validación de arranque y propietario.
+- `TREQ-SUPABASE-224` — Toda función deberá fallar cerrada cuando falte una credencial, URL, audience, issuer, ambiente o configuración crítica
+- `TREQ-SUPABASE-225` — Cada dato de configuración tendrá un único nombre canónico
+- `TREQ-SUPABASE-226` — La configuración deberá declarar y validar proyecto, ambiente, proveedor, endpoint, redirect, issuer, audience y modo test o producción como una combinación coherente
+- `TREQ-SUPABASE-227` — Cada credencial de tercero deberá aplicar mínimo privilegio, restricción por API, dominio, IP o aplicación cuando el proveedor lo permita, cuota, propietario, rotación, revocación, datos autorizados y prueba de ambiente.
+- `TREQ-SUPABASE-228` — Cada endpoint HTTP deberá declarar consumidores y política CORS
+- `TREQ-SUPABASE-229` — Los runtimes, paquetes y fuentes de importación de Edge Functions deberán fijarse mediante versiones o lockfile aprobado, import map canónico, política de actualización, SBOM, prueba de build y rollback reproducible.
+- `TREQ-SUPABASE-230` — Logs, métricas y trazas deberán redactar claves, headers, payloads, SQL sensible, coordenadas precisas, correos y PII
+- `TREQ-SUPABASE-231` — La configuración PostgreSQL deberá definir auditoría y observabilidad aprobadas para DDL, accesos privilegiados, consultas lentas, conexiones y cambios de configuración, con alertas, retención y costo medido.
+- `TREQ-SUPABASE-232` — Timeouts de statement, lock, sesión e idle in transaction deberán tener valores por rol y ambiente, justificación, prueba de carga y alerta
+- `TREQ-SUPABASE-233` — Una solicitud de eliminación de cuenta deberá derivar la identidad y correo exclusivamente de la sesión validada
+- `TREQ-SUPABASE-234` — La eliminación o anonimización de cuenta deberá exigir prueba server-side fresca de reautenticación, OTP o mecanismo aprobado
+- `TREQ-SUPABASE-235` — Deberá existir un único proceso canónico de eliminación con estados, plazo, cancelación, identidad, reautenticación, claim, retry, anonimización, borrado Auth, Storage, auditoría y conciliación
+- `TREQ-SUPABASE-236` — CI deberá reconciliar config.toml, metadatos remotos y manifiesto de funciones para nombre, verify_jwt, entrypoint, import map, variables, bundle SHA y estado
+- `TREQ-SUPABASE-237` — Cada Edge Function tendrá un repositorio y ruta canónicos, commit de origen, proceso de build, bundle SHA, configuración, actor de despliegue y rollback
+- `TREQ-SUPABASE-238` — Supabase Auth deberá habilitar protección contra contraseñas filtradas o documentar excepción temporal con riesgo, fecha de cierre y prueba
+- `TREQ-SUPABASE-239` — Los ambientes local, pruebas, staging y producción deberán tener proyectos, branches, claves, secretos, redirects, proveedores, datos y permisos separados
+- `TREQ-SUPABASE-240` — Los runtime settings y feature flags deberán tener catálogo tipado, propietario, autorización server-side, razón, actor, versión, vigencia, historial inmutable, rollback y notificación
+- `TREQ-SUPABASE-241` — Código, comentarios, documentación desplegable, ejemplos y fixtures no podrán contener JWT, claves, tokens o credenciales con forma válida
+- `TREQ-SUPABASE-242` — El validador integral deberá comprobar ocho extensiones instaladas sin upgrade pendiente, nueve relevantes no instaladas, unaccent en public, cero secretos Vault, dos claves públicas activas, 24 funciones con distribución 12 y 12 de verify_jwt, seis runtime flags, privilegios net y pg_stat_statements, configuración PostgreSQL aprobada, ausencia de secretos literales y todas las huellas SUPA-AUD-015.
+
+El detalle completo de las catorce columnas reside únicamente en el archivo 04A regenerado.
+
+#### 20. Huellas de integridad de la evidencia
+
+| Conjunto                    | SHA-256                                                            |
+| --------------------------- | ------------------------------------------------------------------ |
+| `extension_inventory`       | `fb10265743f57cff487756fdc024cf1e45be33093af365c4a76444fa4502d4b0` |
+| `database_settings`         | `0cf74785d8d3b46e9a5d464cb15ec373bc8867a35836aced2bef775d1cf8852a` |
+| `secret_custody`            | `12c8cadc40230ae42b331fd157b15a1370aa12d15267f7b12d54c49f621caf11` |
+| `privilege_surface`         | `0a67be8f3f05c3f0ae84491ee6fb7e3cb89cc770d96446b671f8ac08d72929af` |
+| `edge_environment_manifest` | `fe59183ff7d1e3f782bc8badbb6a49f836d9e7beb46ab42ad2f4a0d9e7f0ee8a` |
+| `configuration_drift`       | `13daa5d06f97ffee4dee9121f75cce1f8691bb1c2a127ed9df528a96b5a3cec8` |
+| `breach_register`           | `08d1319c964b3d4413c102a52b37b17660f5c6a2e2e8d5b30653caad38f749f2` |
+
+Las huellas se calculan sobre JSON canónico redactado, con claves ordenadas, UTF-8 y sin valores secretos.
+
+#### 21. Criterios de aceptación de `SUPA-AUD-015`
+
+La tarea queda aceptada porque:
+
+1. preserva la línea base exacta aprobada de `SUPA-AUD-014` y 04A;
+2. inventaría las ocho extensiones instaladas y las nueve relevantes no instaladas;
+3. diferencia ubicación, uso observado, versión y ACL;
+4. registra claves públicas sin revelar valores;
+5. clasifica custodia de secretos sin leerlos ni reproducirlos;
+6. prueba los privilegios críticos de `net` y `pg_stat_statements`;
+7. inventaría settings PostgreSQL y configuración de Auth observable;
+8. identifica variables y aliases de Edge Functions;
+9. compara configuración local y metadatos remotos sin anticipar el cierre de drift;
+10. formaliza 28 brechas en 31 requisitos;
+11. no ejecuta ninguna mutación ni prueba activa contra proveedores;
+12. deja como siguiente tarea exacta `SUPA-AUD-016`.
+
+#### 22. Límites de la auditoría
+
+No pudo certificarse mediante las herramientas disponibles:
+
+- inventario y edad de secret keys privadas;
+- valores ni fechas de rotación de Edge Function secrets o GitHub Actions secrets;
+- branches de Supabase, porque la acción de listado no pudo resolver permisos del project ref;
+- configuración completa de Auth, SMTP, redirects y rate limits administrados;
+- exposición REST mediante invocación pública directa, por lo que se reutilizó la línea base aprobada de `SUPA-AUD-003`;
+- ausencia global de secretos en todos los commits históricos;
+- necesidad empresarial definitiva de retirar `uuid-ossp` o mover `unaccent`.
+
+Cada límite tiene requisito de cierre en `TREQ-SUPABASE-212` a `TREQ-SUPABASE-242`; no se interpreta ausencia de evidencia como configuración segura.
+
+#### 23. Declaración de no mutación
+
+No se ejecutaron:
+
+- `CREATE`, `ALTER`, `DROP`, `GRANT`, `REVOKE`, DML ni migraciones;
+- rotación, revelado, descarga o modificación de claves y secretos;
+- cambios de Auth, API, Storage, Realtime, PostgreSQL o Edge Functions;
+- invocaciones de prueba a funciones, webhooks o proveedores;
+- cambios de repositorio, commits, branches o workflows.
+
+#### 24. Cierre
+
+`SUPA-AUD-015` queda **APROBADA** como línea base documental de extensiones, secretos, variables y configuración. No autoriza hardening, retiro de extensiones, migración de keys, rotación, cambio de Auth, modificación de ACL ni despliegue. Las decisiones objetivo pertenecen a `SUPA-ARC-001`, `SUPA-ARC-003`, `SUPA-ARC-005`, `SUPA-ARC-006`, `SUPA-ARC-007`, `SUPA-ARC-008`, `SUPA-ARC-010`, `SUPA-ARC-011`, `SUPA-ARC-015`, `SUPA-ARC-020`, `SUPA-ARC-021`, `SUPA-ARC-022` y `SUPA-ARC-024`; la implementación deberá pasar por `SUPA-TRANS-*` y paquetes E5.
+
+La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de vento-shell
+```
+
+
 ### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
 ### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
 ### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
