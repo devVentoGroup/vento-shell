@@ -10,6 +10,7 @@ import {
   validateScreenClassifications,
   validateScreenStepBindings,
 } from './validate-screen-contract-matrices.mjs';
+import { validateBlockISurfaceMatrices } from './validate-block-i-surface-matrices.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -136,6 +137,17 @@ try {
   );
 } catch (error) {
   fail(`Matrices de pantalla inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const blockIStats = validateBlockISurfaceMatrices({ root });
+  console.log(
+    `OK: BLOQUE I; ${blockIStats.rows} filas AS-IS; ${blockIStats.renderedViews} vistas renderizadas; `
+    + `${blockIStats.aliases} aliases; ${blockIStats.redirects} redirects; `
+    + `${blockIStats.passSurfaces} superficies PASS.`
+  );
+} catch (error) {
+  fail(`Matrices BLOQUE I inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 let compiled = '';

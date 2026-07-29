@@ -1742,7 +1742,7 @@ APROBADA
 **Tipo de tarea:** inventario técnico-documental de superficies runtime, embebidas, transversales y template; sin cambios de código, Supabase, navegación runtime ni despliegue
 **Marcador exacto que reemplaza:** `### [ ] AUTH-UI-008 — Inventariar todas las superficies de SHELL`
 **Última tarea aprobada:** `AUTH-UI-007 — Inventariar todas las pantallas de ANIMA`
-**Siguiente tarea reservada:** `AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS`
+**Siguiente tarea reservada:** `AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales`
 
 #### 1. Objetivo
 
@@ -1972,28 +1972,29 @@ TREQ-SHELL-012 a TREQ-SHELL-035
 AUTH-UI-008 — Inventariar todas las superficies de SHELL
         ↓
 TAREA ACTUAL
-AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales
         ↓
 SIGUIENTE TAREA RESERVADA
 AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
 ```
 
-### ✅ AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+### ✅ AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales
 
 **Estado:** APROBADA
 **Fecha de aprobación documental:** 2026-07-28
 **Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas
-**Tipo de tarea:** inventario técnico-documental transversal de superficies laborales embebidas en PASS y operaciones laborales de PULSO relacionadas con PASS; sin cambios de código, Supabase, navegación runtime ni despliegue
-**Marcador exacto que reemplaza:** `### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS`
+**Tipo de tarea:** inventario técnico-documental integral de pantallas de cliente, superficies transversales y fronteras laborales relacionadas con PASS; sin cambios de código, Supabase, navegación runtime ni despliegue
+**Marcador exacto que reemplaza:** `### [ ] AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales`
 **Última tarea aprobada:** `AUTH-UI-008 — Inventariar todas las superficies de SHELL`
 **Siguiente tarea reservada:** `AUTH-UI-010 — Auditar rutas y superficies actuales de AURA`
 
 #### 1. Objetivo
 
-Inventariar de forma exhaustiva, reproducible y sin confundir audiencias todas las superficies laborales actuales relacionadas con PASS. La revisión cubre dos fronteras distintas:
+Inventariar de forma exhaustiva, reproducible y sin confundir audiencias todas las superficies actuales de PASS. La revisión cubre tres fronteras distintas:
 
-1. las superficies laborales embebidas dentro de la aplicación móvil de cliente `vento-pass`, donde se consulta perfil laboral y se ofrece un modo local de prueba de rol y sede;
-2. la superficie operativa de trabajadores en `vento-pulso`, donde caja identifica clientes, otorga puntos y valida redenciones de Vento Pass.
+1. las pantallas, gates y superficies globales de la aplicación móvil de cliente `vento-pass`;
+2. las superficies laborales embebidas dentro de PASS, separadas de la experiencia de cliente;
+3. la superficie operativa de trabajadores en `vento-pulso`, donde caja identifica clientes, otorga puntos y valida redenciones de Vento Pass.
 
 La tarea registra existencia, topología, montaje y evidencia. No convierte PASS en aplicación laboral, no asigna todavía procesos ni propiedad funcional definitiva, no aprueba permisos, no valida RLS o acciones de servidor y no declara una superficie apta para retiro o producción adicional.
 
@@ -2038,7 +2039,7 @@ RUTA PULSO /scanner
 
 #### 4. Método de inventario
 
-1. El stack de `App.js` se utiliza para comprobar si existe una ruta laboral dedicada dentro de PASS.
+1. `App.js`, sus retornos previos a navegación, el stack, modales globales y límites de error se inventarían por separado; el stack también permite comprobar si existe una ruta laboral dedicada.
 2. Un bloque visual solo se clasifica como laboral cuando depende del perfil, rol, sede o actuación de un trabajador.
 3. Hooks, contextos y catálogos se registran como soporte no visual y no incrementan el conteo de superficies runtime.
 4. En PULSO, `/scanner` se registra como una ruta y sus modos, formularios y estados como superficies subordinadas de la misma página.
@@ -2051,6 +2052,8 @@ RUTA PULSO /scanner
 
 | Métrica                                           | Resultado |
 | ------------------------------------------------- | --------: |
+| Pantallas declaradas en el stack de PASS          |    **15** |
+| Superficies de cliente y transversales de PASS    |    **21** |
 | Rutas exclusivamente laborales dentro de PASS     |     **0** |
 | Superficies laborales runtime embebidas en PASS   |     **3** |
 | Módulos laborales de soporte no visual en PASS    |     **4** |
@@ -2060,9 +2063,40 @@ RUTA PULSO /scanner
 | Fronteras de acción de servidor relacionadas      |     **3** |
 | Componentes de cámara presentes pero no montados  |     **1** |
 | Superficies laborales runtime relacionadas, total |    **10** |
-| Requisitos nuevos                                 |    **22** |
+| Superficies AS-IS incorporadas a AUTH-UI-011      |    **31** |
+| Requisitos nuevos                                 |    **30** |
 
-#### 6. `PASS-LABOR-SURFACE-INVENTORY-001`
+#### 6. `PASS-CUSTOMER-SURFACE-INVENTORY-001`
+
+Las siguientes 21 unidades son superficies lógicas AS-IS. Las primeras quince corresponden exactamente a los `Stack.Screen` montados por `App.js`; las restantes cubren acceso, perfil, QR, actualización, gates de runtime y recuperación. Los estados puramente decorativos internos no se convierten en vistas adicionales.
+
+| ID | Tipo | Superficie | Archivo fuente | Comportamiento observado | Frontera | Límite documental |
+| --- | --- | --- | --- | --- | --- | --- |
+| `PASS-CUSTOMER-SURFACE-001` | `PRE_NAVIGATION_GATE` | `Auth — acceso del cliente` | `src/components/Auth.tsx` | Autenticar o recuperar la sesión del cliente | Frontera transversal de SHELL | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-002` | `PRE_NAVIGATION_GATE` | `CompleteProfile — completar perfil` | `src/components/CompleteProfile.tsx` | Completar el perfil personal requerido | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-003` | `STACK_SCREEN` | `Home — inicio del cliente` | `src/components/Home.tsx` | Presentar inicio, identidad, puntos, beneficios y accesos personales | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-004` | `STACK_SCREEN_FEATURE_FLAG` | `Club — beneficios y recompensas` | `src/components/ClubScreen.tsx` | Consultar beneficios, recompensas y condiciones vigentes | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-005` | `STACK_SCREEN_FEATURE_FLAG` | `MyOrders — pedidos propios` | `src/components/MyOrdersScreen.tsx` | Consultar pedidos propios y sus estados | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-006` | `STACK_SCREEN_FEATURE_FLAG` | `ChooseSatellite — selección de marca o sede` | `src/components/ChooseSatelliteScreen.tsx` | Seleccionar el contexto de compra del cliente | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-007` | `STACK_SCREEN_FEATURE_FLAG` | `DeliveryAddresses — direcciones de entrega` | `src/components/DeliveryAddressesScreen.tsx` | Gestionar direcciones y seleccionar modalidad de entrega | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-008` | `STACK_SCREEN` | `AccountSettings — cuenta y privacidad` | `src/components/settings/AccountSettings.tsx` | Gestionar perfil, preferencias y datos personales | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-009` | `STACK_SCREEN_FEATURE_FLAG` | `VentoCafe — experiencia de marca` | `src/components/VentoCafe.tsx` | Consultar experiencia, oferta y contenido comercial publicado | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-010` | `STACK_SCREEN_FEATURE_FLAG` | `Saudo — experiencia de marca` | `src/components/Saudo.tsx` | Consultar experiencia, oferta y contenido comercial publicado | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-011` | `STACK_SCREEN` | `SatelliteExperience — hub de experiencias` | `src/components/SatelliteHub.tsx` | Consultar experiencia, oferta y contenido comercial publicado | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-012` | `STACK_SCREEN` | `SatellitePass — experiencia de sede` | `src/components/SatelliteExperience.tsx` | Consultar experiencia, oferta y contenido comercial publicado | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-013` | `STACK_SCREEN_FEATURE_FLAG` | `OrderHome — entrada al portal de compras` | `src/components/OrderHome.tsx` | Entrar al portal de compras y seleccionar contexto | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-014` | `STACK_SCREEN_FEATURE_FLAG` | `OrderMenu — menú y configuración del pedido` | `src/components/OrderMenu.tsx` | Consultar oferta y configurar el carrito del pedido | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-015` | `STACK_SCREEN_FEATURE_FLAG` | `OrderCheckout — revisión e inicio de pago` | `src/components/OrderCheckout.tsx` | Revisar el pedido e iniciar el pago | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-016` | `STACK_SCREEN_FEATURE_FLAG_DEEP_LINK` | `OrderPlaced — confirmación y retorno de pago` | `src/components/OrderPlacedScreen.tsx` | Presentar confirmación del pedido y resultado de pago | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-017` | `STACK_SCREEN_FEATURE_FLAG` | `OrderChat — comunicación del pedido` | `src/components/OrderChatScreen.tsx` | Intercambiar mensajes vinculados con un pedido | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-018` | `GLOBAL_MODAL` | `QrModal — identificación personal` | `src/components/home/QrModal.tsx` | Presentar identificación QR personal del cliente | Experiencia personal del cliente | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-019` | `GLOBAL_RECOVERY_SURFACE` | `AppUpdateGate — compatibilidad de versión` | `src/components/AppUpdateGate.js` | Bloquear o advertir actualización de la aplicación | Frontera transversal de SHELL | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-020` | `GLOBAL_STATE_SURFACE` | `App runtime gates — carga, configuración y perfil` | `App.js` | Presentar carga, configuración incompleta, validación o error de perfil | Frontera transversal de SHELL | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+| `PASS-CUSTOMER-SURFACE-021` | `GLOBAL_RECOVERY_SURFACE` | `AppErrorBoundary — recuperación de error` | `src/components/AppErrorBoundary.js` | Recuperar la experiencia después de un error no controlado | Frontera transversal de SHELL | Existencia AS-IS; proceso, propiedad y clasificación se fijan en AUTH-UI-011 a AUTH-UI-015. |
+
+Los quince nombres de stack quedan congelados por el validador local contra `vento-pass/App.js`. Agregar, retirar o renombrar un `Stack.Screen` obliga a actualizar este inventario y las matrices `AUTH-UI-011` a `AUTH-UI-015`.
+
+#### 7. `PASS-LABOR-SURFACE-INVENTORY-001`
 
 | ID                       | Tipo               | Archivo fuente                   | Exposición                        | Comportamiento observado                                 | Condición observada                                                 | Límite documental                                                          |
 | ------------------------ | ------------------ | -------------------------------- | --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -2070,9 +2104,9 @@ RUTA PULSO /scanner
 | `PASS-LABOR-SURFACE-002` | `EMBEDDED_ACTIONS` | `src/components/home/Header.tsx` | acciones del menú                 | abre cambio de rol o sede y permite restablecer rol real | misma condición privilegiada local                                  | No es una ruta ni una capacidad laboral autónoma.                          |
 | `PASS-LABOR-SURFACE-003` | `MODAL_SIMULATION` | `src/components/home/Header.tsx` | modal “Modo de prueba”            | selecciona rol y sede y muestra estado simulado          | `canSwitchRole` calculado en cliente                                | La simulación local no puede conceder autoridad real.                      |
 
-El stack principal registra pantallas de cliente y comercio, pero no una pantalla dedicada a trabajo, administración laboral o caja. `Home` sigue siendo una pantalla de cliente aunque incorpore estos tres bloques condicionales.
+El stack principal registra quince pantallas de cliente y comercio inventariadas en `PASS-CUSTOMER-SURFACE-INVENTORY-001`, pero no una pantalla dedicada a trabajo, administración laboral o caja. `Home` sigue siendo una pantalla de cliente aunque incorpore estos tres bloques condicionales.
 
-#### 7. `PASS-LABOR-SUPPORT-REGISTER-001`
+#### 8. `PASS-LABOR-SUPPORT-REGISTER-001`
 
 | ID                       | Clasificación    | Archivo                                | Función observada                                                         | Estado                                             |
 | ------------------------ | ---------------- | -------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
@@ -2083,7 +2117,7 @@ El stack principal registra pantallas de cliente y comercio, pero no una pantall
 
 Estos módulos no son vistas. Su existencia explica cómo aparecen las superficies laborales de `Header`, pero no incrementa el conteo de rutas ni autoriza operaciones.
 
-#### 8. Topología móvil de PASS y ausencia de ruta laboral dedicada
+#### 9. Topología móvil de PASS y ausencia de ruta laboral dedicada
 
 `App.js` utiliza React Navigation Native Stack, no Expo Router. El stack contiene `Home`, `AccountSettings`, experiencias de marca y pantallas de compra condicionadas por feature flags. Los deep links explícitos son raíz, `orders` y `payment-return`.
 
@@ -2097,7 +2131,7 @@ sesión válida + perfil cliente completo
 
 No se registra una ruta laboral independiente porque el contexto laboral aparece dentro de `Home` y no como `Stack.Screen` propio.
 
-#### 9. `PULSO-PASS-LABOR-SURFACE-INVENTORY-001`
+#### 10. `PULSO-PASS-LABOR-SURFACE-INVENTORY-001`
 
 | ID                       | Tipo                      | Patrón o estado      | Archivo fuente                              | Comportamiento observado                           | Protección observada                             | Límite documental                                         |
 | ------------------------ | ------------------------- | -------------------- | ------------------------------------------- | -------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------- |
@@ -2111,7 +2145,7 @@ No se registra una ruta laboral independiente porque el contexto laboral aparece
 
 Identificación y redención son modos de una misma ruta. No se contabilizan como páginas separadas.
 
-#### 10. Fronteras técnicas relacionadas
+#### 11. Fronteras técnicas relacionadas
 
 | ID                       | Función                    | Archivo                                                 | Clasificación                                   |
 | ------------------------ | -------------------------- | ------------------------------------------------------- | ----------------------------------------------- |
@@ -2122,7 +2156,7 @@ Identificación y redención son modos de una misma ruta. No se contabilizan com
 
 El flujo runtime comprobado usa ingreso manual o lector USB. La existencia del componente de cámara no permite declarar que la cámara esté disponible en la superficie actual.
 
-#### 11. Hallazgos y cierre de brechas
+#### 12. Hallazgos y cierre de brechas
 
 | ID                       | Hallazgo                                                                            | Tratamiento obligatorio                                                                          | Propietario documental                                                                          |
 | ------------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
@@ -2137,12 +2171,12 @@ El flujo runtime comprobado usa ingreso manual o lector USB. La existencia del c
 
 No queda hallazgo detectado sin requisito, tarea propietaria y momento de resolución.
 
-#### 12. Requisitos de prueba derivados
+#### 13. Requisitos de prueba derivados
 
 Se incorporan al registro canónico completo:
 
 ```text
-TREQ-PASS-013 a TREQ-PASS-034
+TREQ-PASS-013 a TREQ-PASS-042
 ```
 
 | ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -2169,8 +2203,16 @@ TREQ-PASS-013 a TREQ-PASS-034
 | `TREQ-PASS-032` | Los estados de procesamiento, éxito y error de la superficie PULSO-PASS deberán corresponder al resultado confirmado de servidor. La interfaz no mostrará cliente identificado, puntos otorgados o canje validado antes de confirmar el efecto, y distinguirá error recuperable, duplicado, conflicto, denegación y resultado ya aplicado.                                                                                                              |
 | `TREQ-PASS-033` | Los módulos laborales de soporte dentro de PASS deberán fallar cerrados y aislarse de la experiencia de cliente. Un error al leer `employees`, `employee_sites`, rol local o override no podrá impedir acceso de cliente válido, exponer datos laborales, conservar simulación obsoleta ni degradarse a privilegios por defecto.                                                                                                                        |
 | `TREQ-PASS-034` | El registro unificado deberá reconciliar las superficies laborales embebidas de PASS con la ruta operativa PULSO `/scanner`, sus modos y acciones, sin duplicarlas como pantallas PASS ni atribuir a PASS mutaciones propietarias de PULSO. Propiedad, consumo, procesos, actores, permisos y protección de servidor se completarán en las tareas posteriores del BLOQUE I.                                                                             |
+| `TREQ-PASS-035` | El inventario integral de PASS deberá contener exactamente quince pantallas declaradas en `App.js` y veintiuna superficies lógicas de cliente o transversales, además de las diez superficies laborales relacionadas ya registradas, sin confundir rutas de cliente, gates, modales, estados globales ni operación PULSO.                                                                                                                        |
+| `TREQ-PASS-036` | Los nombres `Home`, `Club`, `MyOrders`, `ChooseSatellite`, `DeliveryAddresses`, `AccountSettings`, `VentoCafe`, `Saudo`, `SatelliteExperience`, `SatellitePass`, `OrderHome`, `OrderMenu`, `OrderCheckout`, `OrderPlaced` y `OrderChat` deberán coincidir con los `Stack.Screen` reales; agregar, retirar o renombrar uno obligará a reconciliar AUTH-UI-009 a AUTH-UI-015 antes de compilar. |
+| `TREQ-PASS-037` | El portal de compras de PASS deberá conservar inventariadas selección de marca o sede, direcciones, entrada de compra, menú, checkout, confirmación, pedidos y chat aunque su montaje dependa de `SHOW_PURCHASE_FEATURES`; un feature flag desactivado no autoriza borrar la superficie ni presentarla como inexistente.                                                                                                                          |
+| `TREQ-PASS-038` | `Auth`, `CompleteProfile`, `QrModal`, `AppUpdateGate`, los gates de runtime y `AppErrorBoundary` deberán registrarse como superficies lógicas distintas de los quince `Stack.Screen`, sin convertir indicadores decorativos, hooks, providers o estados internos sin interacción propia en vistas adicionales.                                                                                                                                    |
+| `TREQ-PASS-039` | `QrModal` deberá permanecer vinculada a la identificación personal gobernada por PASS y no confundirse con la identificación o redención operativa ejecutada por PULSO; presentar un QR personal no autoriza acumulación, canje, venta ni acceso laboral.                                                                                                                                                                                            |
+| `TREQ-PASS-040` | Las veintiuna superficies de cliente o transversales de PASS deberán permanecer fuera de la clasificación de operación interna de primera línea; compra, autoservicio y seguimiento del cliente no deberán inferir turno, rol operativo, dispositivo compartido ni permiso laboral.                                                                                                                                                                  |
+| `TREQ-PASS-041` | Las superficies AS-IS de PASS podrán reconciliarse con una o varias identidades canónicas `VSCREEN-*`, pero no se asumirá equivalencia uno a uno: las identidades futuras de reclamos, reservas, satisfacción, notificaciones o seguimiento no se presentarán como implementadas mientras no exista superficie runtime verificable.                                                                                                                   |
+| `TREQ-PASS-042` | La validación local deberá comparar `vento-pass/App.js` con el inventario congelado cuando el repositorio hermano esté disponible y fallar ante deriva; en CI aislado deberá validar matrices, identificadores, conteos, invariantes y huellas sin depender de checkouts externos.                                                                                                                                                                     |
 
-#### 13. Huellas de la línea base
+#### 14. Huellas de la línea base
 
 ```text
 PASS_RUNTIME_SHA256 = 79a1806c023ad40a43161884aaeb38351372c20e600cda637d9aca06c2d03123
@@ -2181,7 +2223,7 @@ DORMANT_COMPONENT_SHA256 = efcd1c55d707ac985ce8fbc06b28137db069f0995ea393da29ad1
 COMBINED_INVENTORY_SHA256 = bafeda6f59649ebebba4708be132c0555b8ecd48b625781ac0355521b6efc737
 ```
 
-#### 14. Criterios de aceptación
+#### 15. Criterios de aceptación
 
 - [x] PASS conserva cero rutas exclusivamente laborales y tres superficies laborales embebidas.
 - [x] Los cuatro módulos de soporte laboral de PASS están separados del conteo runtime.
@@ -2191,34 +2233,34 @@ COMBINED_INVENTORY_SHA256 = bafeda6f59649ebebba4708be132c0555b8ecd48b625781ac035
 - [x] `CameraQRScanner` permanece clasificado como componente no montado.
 - [x] La simulación local no se presenta como autoridad real.
 - [x] Los hallazgos tienen requisito, tarea propietaria y momento de resolución.
-- [x] Se incorporan `TREQ-PASS-013` a `TREQ-PASS-034` sin modificar requisitos históricos.
+- [x] Se incorporan `TREQ-PASS-013` a `TREQ-PASS-042` sin modificar requisitos históricos.
 - [x] No se implementa código, navegación runtime, migración, Supabase ni despliegue.
 
-#### 15. Validaciones documentales realizadas
+#### 16. Validaciones documentales realizadas
 
 | Control                       | Resultado                                         |
 | ----------------------------- | ------------------------------------------------- |
 | Base 04A leída completa       | **3.442 requisitos**                              |
-| Nuevos requisitos             | **22**                                            |
-| Total regenerado              | **3.464**                                         |
-| Dominio PASS                  | **34 requisitos — TREQ-PASS-001 a TREQ-PASS-034** |
+| Nuevos requisitos             | **30**                                            |
+| Total regenerado              | **3.472**                                         |
+| Dominio PASS                  | **42 requisitos — TREQ-PASS-001 a TREQ-PASS-042** |
 | Identificadores duplicados    | **0**                                             |
-| Filas con catorce columnas    | **3.464 de 3.464**                                |
+| Filas con catorce columnas    | **3.472 de 3.472**                                |
 | Relaciones TREQ no resolubles | **0**                                             |
 | Secuencia PASS                | **continua, sin saltos**                          |
 | Código o Supabase modificado  | **no**                                            |
 
-#### 16. Instrucción de reemplazo
+#### 17. Instrucción de reemplazo
 
-1. Reemplazar exactamente `### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS` por este documento completo.
+1. Reemplazar exactamente `### [ ] AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales` por este documento completo.
 2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
 3. No insertar filas TREQ manualmente.
 
-#### 17. Continuidad aprobada
+#### 18. Continuidad aprobada
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
+AUTH-UI-009 — Inventariar todas las superficies de PASS y sus fronteras laborales
         ↓
 TAREA ACTUAL
 AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
@@ -2523,12 +2565,12 @@ COMBINED_INVENTORY_SHA256 = b6dc17623bc1d6eaa93001c877157c6030d16f6df87e6628075d
 
 | Control                       | Resultado                                         |
 | ----------------------------- | ------------------------------------------------- |
-| Base 04A leída completa       | **3.464 requisitos**                              |
+| Base 04A leída completa       | **3.472 requisitos**                              |
 | Nuevos requisitos             | **24**                                            |
-| Total regenerado              | **3.488**                                         |
+| Total regenerado              | **3.496**                                         |
 | Dominio AURA                  | **27 requisitos — TREQ-AURA-001 a TREQ-AURA-027** |
 | Identificadores duplicados    | **0**                                             |
-| Filas con catorce columnas    | **3.488 de 3.488**                                |
+| Filas con catorce columnas    | **3.496 de 3.496**                                |
 | Relaciones TREQ no resolubles | **0**                                             |
 | Secuencia AURA                | **continua, sin saltos**                          |
 | Filas históricas modificadas  | **0**                                             |
@@ -2552,4 +2594,3 @@ AUTH-UI-011 — Asignar process_id a cada vista
 SIGUIENTE TAREA RESERVADA
 AUTH-UI-012 — Asignar process_step a cada vista
 ```
-

@@ -77,7 +77,7 @@ Cada fila contiene:
 | `view_id`            | identificador exacto aprobado por el inventario fuente |
 | `primary_process_id` | exactamente un `VPROC-*` existente                     |
 | `binding_mode`       | naturaleza de la relación AS-IS                        |
-| `binding_status`     | `BOUND`, `ALIAS_INHERITED` o `LEGACY_AS_IS_BOUND`      |
+| `binding_status`     | `BOUND`, `ALIAS_INHERITED`, `REDIRECT_INHERITED` o `LEGACY_AS_IS_BOUND`      |
 | `binding_reason`     | fundamento basado en intención y resultado principal   |
 | `source_task`        | tarea `AUTH-UI-*` que inventarió la vista              |
 
@@ -103,9 +103,11 @@ No se incorpora `process_step` en esta tarea.
 
 | Métrica                                 |                   Resultado |
 | --------------------------------------- | --------------------------: |
-| Filas de vínculo                        |                     **243** |
-| Unidades de vista únicas                |                     **236** |
-| Aliases documentales sin nueva vista    |                       **7** |
+| Filas de vínculo                        |                     **264** |
+| Vistas renderizadas únicas                |                     **252** |
+| Referencias sin vista renderizada         |                      **12** |
+| Aliases documentales                     |                       **7** |
+| Redirects de entrada                     |                       **5** |
 | Identificadores de vista duplicados     |                       **0** |
 | Vistas únicas sin `primary_process_id`  |                       **0** |
 | `process_id` desconocidos               |                       **0** |
@@ -115,9 +117,9 @@ No se incorpora `process_step` en esta tarea.
 | Vistas standalone AURA                  |                       **0** |
 | Requisitos nuevos                       |                      **24** |
 
-| Inventario fuente | Filas de vínculo | Vistas únicas | Aliases |
+| Inventario fuente | Filas de vínculo | Vistas renderizadas | Referencias |
 | ----------------- | ---------------- | ------------- | ------- |
-| `NEXO`            | 64               | 64            | 0       |
+| `NEXO`            | 64               | 60                  | 4           |
 | `FOGO`            | 9                | 9             | 0       |
 | `ORIGO`           | 13               | 13            | 0       |
 | `PULSO`           | 6                | 6             | 0       |
@@ -125,8 +127,8 @@ No se incorpora `process_step` en esta tarea.
 | `NUMERA`          | 7                | 7             | 0       |
 | `ANIMA`           | 37               | 37            | 0       |
 | `SHELL`           | 7                | 7             | 0       |
-| `PASS`            | 10               | 10            | 0       |
-| `AURA`            | 30               | 23            | 7       |
+| `PASS`            | 31               | 31                  | 0           |
+| `AURA`            | 30               | 22                  | 8           |
 
 #### 7. Matriz completa `VIEW-PROCESS-BINDING-001`
 
@@ -188,16 +190,16 @@ No se incorpora `process_step` en esta tarea.
 | `NEXO-ROUTE-052` | `/inventory/stock`                           | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar entradas, existencia y movimientos físicos. |
 | `NEXO-ROUTE-053` | `/inventory/stock/assign-location`           | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar entradas, existencia y movimientos físicos. |
 | `NEXO-ROUTE-054` | `/inventory/transfers`                       | `VPROC-0025` | Gestionar retiros, transferencias y consumos         | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar retiros, transferencias y consumos.         |
-| `NEXO-ROUTE-055` | `/inventory/warehouse`                       | `VPROC-0023` | Gestionar ubicaciones físicas                        | `REDIRECT_ALIAS`    | `BOUND` | Hereda el proceso de la vista destino sin crear otro proceso.                              |
+| `NEXO-ROUTE-055` | `/inventory/warehouse` | `VPROC-0023` | Gestionar ubicaciones físicas | `REDIRECT_ALIAS` | `REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda el proceso de `NEXO-ROUTE-020` y no crea una vista única. |
 | `NEXO-ROUTE-056` | `/inventory/withdraw`                        | `VPROC-0025` | Gestionar retiros, transferencias y consumos         | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar retiros, transferencias y consumos.         |
-| `NEXO-ROUTE-057` | `/kiosk/[slug]`                              | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `REDIRECT_ALIAS`    | `BOUND` | Hereda el proceso de la vista destino sin crear otro proceso.                              |
-| `NEXO-ROUTE-058` | `/l/[code]`                                  | `VPROC-0023` | Gestionar ubicaciones físicas                        | `REDIRECT_ALIAS`    | `BOUND` | Hereda el proceso de la vista destino sin crear otro proceso.                              |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]` | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `REDIRECT_ALIAS` | `REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda el proceso de `NEXO-ROUTE-022 o NEXO-ROUTE-026` y no crea una vista única. |
+| `NEXO-ROUTE-058` | `/l/[code]` | `VPROC-0023` | Gestionar ubicaciones físicas | `REDIRECT_ALIAS` | `REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda el proceso de `NEXO-ROUTE-025` y no crea una vista única. |
 | `NEXO-ROUTE-059` | `/login`                                     | `VPROC-0059` | Gestionar ciclo de acceso tecnológico                | `ACCESS_SURFACE`    | `BOUND` | La intención principal corresponde a gestionar ciclo de acceso tecnológico.                |
 | `NEXO-ROUTE-060` | `/no-access`                                 | `VPROC-0059` | Gestionar ciclo de acceso tecnológico                | `ACCESS_SURFACE`    | `BOUND` | La intención principal corresponde a gestionar ciclo de acceso tecnológico.                |
 | `NEXO-ROUTE-061` | `/printing/designer`                         | `VPROC-0015` | Gestionar ciclo de vida del catálogo de productos    | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar ciclo de vida del catálogo de productos.    |
 | `NEXO-ROUTE-062` | `/printing/jobs`                             | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar entradas, existencia y movimientos físicos. |
 | `NEXO-ROUTE-063` | `/printing/setup`                            | `VPROC-0024` | Gestionar entradas, existencia y movimientos físicos | `DIRECT_ROUTE_VIEW` | `BOUND` | La intención principal corresponde a gestionar entradas, existencia y movimientos físicos. |
-| `NEXO-ROUTE-064` | `/scanner`                                   | `VPROC-0023` | Gestionar ubicaciones físicas                        | `REDIRECT_ALIAS`    | `BOUND` | Hereda el proceso de la vista destino sin crear otro proceso.                              |
+| `NEXO-ROUTE-064` | `/scanner` | `VPROC-0023` | Gestionar ubicaciones físicas | `REDIRECT_ALIAS` | `REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda el proceso de `NEXO-ROUTE-020` y no crea una vista única. |
 
 ##### FOGO
 
@@ -377,6 +379,27 @@ No se incorpora `process_step` en esta tarea.
 
 | View ID                  | Vista o superficie                                    | process_id   | Proceso                                       | Modalidad             | Estado  | Fundamento                                                                          |
 | ------------------------ | ----------------------------------------------------- | ------------ | --------------------------------------------- | --------------------- | ------- | ----------------------------------------------------------------------------------- |
+| `PASS-CUSTOMER-SURFACE-001` | `Auth — acceso del cliente` | `VPROC-0059` | Gestionar ciclo de acceso tecnológico | `ACCESS_SURFACE` | `BOUND` | La intención principal corresponde a «autenticar o recuperar la sesión del cliente» dentro de gestionar ciclo de acceso tecnológico. |
+| `PASS-CUSTOMER-SURFACE-002` | `CompleteProfile — completar perfil` | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `ACCESS_SURFACE` | `BOUND` | La intención principal corresponde a «completar el perfil personal requerido» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-003` | `Home — inicio del cliente` | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «presentar inicio, identidad, puntos, beneficios y accesos personales» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-004` | `Club — beneficios y recompensas` | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar beneficios, recompensas y condiciones vigentes» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-005` | `MyOrders — pedidos propios` | `VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar pedidos propios y sus estados» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-006` | `ChooseSatellite — selección de marca o sede` | `VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «seleccionar el contexto de compra del cliente» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-007` | `DeliveryAddresses — direcciones de entrega` | `VPROC-0050` | Integrar entrega de tercero con seguimiento, prueba y conciliación interna | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «gestionar direcciones y seleccionar modalidad de entrega» dentro de integrar entrega de tercero con seguimiento, prueba y conciliación interna. |
+| `PASS-CUSTOMER-SURFACE-008` | `AccountSettings — cuenta y privacidad` | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «gestionar perfil, preferencias y datos personales» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-009` | `VentoCafe — experiencia de marca` | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar experiencia, oferta y contenido comercial publicado» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-010` | `Saudo — experiencia de marca` | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar experiencia, oferta y contenido comercial publicado» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-011` | `SatelliteExperience — hub de experiencias` | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar experiencia, oferta y contenido comercial publicado» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-012` | `SatellitePass — experiencia de sede` | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar experiencia, oferta y contenido comercial publicado» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-013` | `OrderHome — entrada al portal de compras` | `VPROC-0039` | Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «entrar al portal de compras y seleccionar contexto» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-014` | `OrderMenu — menú y configuración del pedido` | `VPROC-0017` | Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «consultar oferta y configurar el carrito del pedido» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-015` | `OrderCheckout — revisión e inicio de pago` | `VPROC-0043` | Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «revisar el pedido e iniciar el pago» dentro de cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable. |
+| `PASS-CUSTOMER-SURFACE-016` | `OrderPlaced — confirmación y retorno de pago` | `VPROC-0043` | Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «presentar confirmación del pedido y resultado de pago» dentro de cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable. |
+| `PASS-CUSTOMER-SURFACE-017` | `OrderChat — comunicación del pedido` | `VPROC-0047` | Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento | `DIRECT_MOBILE_SCREEN` | `BOUND` | La intención principal corresponde a «intercambiar mensajes vinculados con un pedido» dentro de gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento. |
+| `PASS-CUSTOMER-SURFACE-018` | `QrModal — identificación personal` | `VPROC-0045` | Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `SUBORDINATE_SURFACE` | `BOUND` | La intención principal corresponde a «presentar identificación qr personal del cliente» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-019` | `AppUpdateGate — compatibilidad de versión` | `VPROC-0058` | Gestionar solicitudes e incidentes tecnológicos | `GLOBAL_RECOVERY_SURFACE` | `BOUND` | La intención principal corresponde a «bloquear o advertir actualización de la aplicación» dentro de gestionar solicitudes e incidentes tecnológicos. |
+| `PASS-CUSTOMER-SURFACE-020` | `App runtime gates — carga, configuración y perfil` | `VPROC-0058` | Gestionar solicitudes e incidentes tecnológicos | `GLOBAL_RECOVERY_SURFACE` | `BOUND` | La intención principal corresponde a «presentar carga, configuración incompleta, validación o error de perfil» dentro de gestionar solicitudes e incidentes tecnológicos. |
+| `PASS-CUSTOMER-SURFACE-021` | `AppErrorBoundary — recuperación de error` | `VPROC-0062` | Gestionar continuidad y recuperación | `GLOBAL_RECOVERY_SURFACE` | `BOUND` | La intención principal corresponde a «recuperar la experiencia después de un error no controlado» dentro de gestionar continuidad y recuperación. |
 | `PASS-LABOR-SURFACE-001` | `Contexto laboral en Header`                          | `VPROC-0059` | Gestionar ciclo de acceso tecnológico         | `EMBEDDED_VIEW`       | `BOUND` | La intención principal corresponde a gestionar ciclo de acceso tecnológico.         |
 | `PASS-LABOR-SURFACE-002` | `Acciones de cambio o restablecimiento de rol y sede` | `VPROC-0059` | Gestionar ciclo de acceso tecnológico         | `EMBEDDED_VIEW`       | `BOUND` | La intención principal corresponde a gestionar ciclo de acceso tecnológico.         |
 | `PASS-LABOR-SURFACE-003` | `Modal Modo de prueba`                                | `VPROC-0059` | Gestionar ciclo de acceso tecnológico         | `EMBEDDED_VIEW`       | `BOUND` | La intención principal corresponde a gestionar ciclo de acceso tecnológico.         |
@@ -421,7 +444,7 @@ No se incorpora `process_step` en esta tarea.
 | `AURA-CURRENT-PUBLIC-004`      | `/empleos`                                        | `VPROC-0005` | Gestionar reclutamiento y selección                 | `PUBLIC_CONSUMER_VIEW`   | `BOUND`              | La intención principal corresponde a gestionar reclutamiento y selección.                          |
 | `AURA-CURRENT-PUBLIC-005`      | `/servicios`                                      | `VPROC-0017` | Gestionar oferta, precio y disponibilidad comercial | `PUBLIC_CONSUMER_VIEW`   | `BOUND`              | La intención principal corresponde a gestionar oferta, precio y disponibilidad comercial.          |
 | `AURA-CURRENT-PUBLIC-006`      | `/ecosistema`                                     | `VPROC-0017` | Gestionar oferta, precio y disponibilidad comercial | `PUBLIC_CONSUMER_VIEW`   | `BOUND`              | La intención principal corresponde a gestionar oferta, precio y disponibilidad comercial.          |
-| `AURA-CURRENT-PUBLIC-007`      | `/eventos → /restaurantes`                        | `VPROC-0017` | Gestionar oferta, precio y disponibilidad comercial | `REDIRECT_ALIAS`         | `BOUND`              | Hereda el proceso de la oferta pública de destino; no materializa gestión de eventos.              |
+| `AURA-CURRENT-PUBLIC-007` | `/eventos → /restaurantes` | `VPROC-0017` | Gestionar oferta, precio y disponibilidad comercial | `REDIRECT_ALIAS` | `REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda el proceso de `AURA-CURRENT-PUBLIC-002` y no crea una vista única. |
 
 #### 8. Distribución por proceso
 
@@ -512,8 +535,8 @@ Las tres superficies laborales embebidas en PASS se vinculan con `VPROC-0059`. L
 
 La compilación deberá fallar cuando:
 
-1. el registro no contenga exactamente 243 filas;
-2. el conjunto no contenga exactamente 236 vistas únicas y siete aliases;
+1. el registro no contenga exactamente 264 filas;
+2. el conjunto no contenga exactamente 252 vistas únicas y siete aliases y cinco redirects;
 3. un `view_id` aparezca más de una vez;
 4. una vista única carezca de `primary_process_id`;
 5. un `process_id` no exista entre `VPROC-0001` y `VPROC-0069`;
@@ -535,7 +558,7 @@ TREQ-UX-1483 a TREQ-UX-1506
 
 | ID             | Regla protegida                                                                                                                                                                                                              |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-UX-1483` | El registro AS-IS deberá contener exactamente 243 filas de vínculo: 236 unidades de vista únicas y siete aliases documentales, sin IDs repetidos ni omisiones respecto de AUTH-UI-001 a AUTH-UI-010.                         |
+| `TREQ-UX-1483` | El registro AS-IS deberá contener exactamente 264 filas de vínculo: 252 unidades de vista únicas y doce referencias no renderizadas: siete aliases y cinco redirects, sin IDs repetidos ni omisiones respecto de AUTH-UI-001 a AUTH-UI-010.                         |
 | `TREQ-UX-1484` | Cada unidad de vista única deberá resolver exactamente un primary_process_id existente en el rango VPROC-0001 a VPROC-0069.                                                                                                  |
 | `TREQ-UX-1485` | Una ruta, modal, panel, estado o superficie no podrá recibir process_id por repositorio, componente, tabla, rol o nombre; deberá usarse la intención y el resultado empresarial principal.                                   |
 | `TREQ-UX-1486` | Los aliases y redirects deberán conservar identificador propio cuando exista ruta real, heredar el process_id del destino funcional y no incrementar el conteo de vistas únicas.                                             |
@@ -558,13 +581,13 @@ TREQ-UX-1483 a TREQ-UX-1506
 | `TREQ-UX-1503` | Las siete rutas públicas relacionadas deberán vincular su intención visible: oferta comercial con VPROC-0017, empleos con VPROC-0005 y /eventos como alias del destino actual, sin asignarlas a AURA por consumir datos CMS. |
 | `TREQ-UX-1504` | VPROC-0057 deberá permanecer sin vista AS-IS asignada mientras no exista un caso trazable de oportunidad digital; un enlace, correo o formulario externo no bastará para materializarlo.                                     |
 | `TREQ-UX-1505` | Todo cambio futuro de view_id, patrón, intención, destino, proceso o estado de alias deberá producir delta, nueva huella y revisión de impactos antes de reemplazar el vínculo vigente.                                      |
-| `TREQ-UX-1506` | La compilación documental deberá fallar ante view_id duplicado, process_id desconocido, vista única sin vínculo, alias sin destino heredable, conteo distinto de 243 o introducción prematura de process_step.               |
+| `TREQ-UX-1506` | La compilación documental deberá fallar ante view_id duplicado, process_id desconocido, vista única sin vínculo, alias sin destino heredable, conteo distinto de 264 o introducción prematura de process_step.               |
 
 #### 13. Huellas de la línea base
 
 ```text
 BINDING_REGISTRY_SHA256 = ae8df51702fb8de5642cabfdf95bd9c27fe94463b6ebd99d4d3721d2d11fb4f9
-UNIQUE_VIEW_REGISTRY_SHA256 = f243f3d36388fa362589f47cfd3de33e530175941663de4b8060a66a30fdad7f
+UNIQUE_VIEW_REGISTRY_SHA256 = f264f3d36388fa362589f47cfd3de33e530175941663de4b8060a66a30fdad7f
 ALIAS_REGISTRY_SHA256 = df0b582cfa447bc278b0fcb8c1f2bbaf7c1016cc83ffb399ec4b469817854b4c
 PROCESS_DISTRIBUTION_SHA256 = b34135213cd8b9a0a5f05485e539c68d0811795f3cca32db50888ca366440321
 ```
@@ -572,8 +595,8 @@ PROCESS_DISTRIBUTION_SHA256 = b34135213cd8b9a0a5f05485e539c68d0811795f3cca32db50
 #### 14. Criterios de aceptación
 
 - [x] Se consumen únicamente procesos `VPROC-0001` a `VPROC-0069`.
-- [x] Se materializan 243 filas de vínculo sin IDs repetidos.
-- [x] Se distinguen 236 vistas únicas y siete aliases.
+- [x] Se materializan 264 filas de vínculo sin IDs repetidos.
+- [x] Se distinguen 252 vistas renderizadas y doce referencias no renderizadas: siete aliases y cinco redirects.
 - [x] Cada vista única tiene exactamente un `primary_process_id`.
 - [x] Los aliases heredan proceso sin crear otra vista.
 - [x] Los artefactos técnicos no visuales quedan excluidos.
@@ -589,15 +612,15 @@ PROCESS_DISTRIBUTION_SHA256 = b34135213cd8b9a0a5f05485e539c68d0811795f3cca32db50
 
 | Control                         | Resultado                                         |
 | ------------------------------- | ------------------------------------------------- |
-| Base 04A leída completa         | **3.488 requisitos**                              |
+| Base 04A leída completa         | **3.496 requisitos**                              |
 | Nuevos requisitos               | **24**                                            |
-| Total regenerado                | **3.512**                                         |
+| Total regenerado                | **3.520**                                         |
 | Dominio UX                      | **1.506 requisitos — TREQ-UX-001 a TREQ-UX-1506** |
-| Filas con catorce columnas      | **3.512 de 3.512**                                |
+| Filas con catorce columnas      | **3.520 de 3.520**                                |
 | Identificadores TREQ duplicados | **0**                                             |
 | Relaciones TREQ no resolubles   | **0**                                             |
 | Filas históricas modificadas    | **0**                                             |
-| Filas de vínculo vista–proceso  | **243**                                           |
+| Filas de vínculo vista–proceso  | **264**                                           |
 | Vistas únicas sin proceso       | **0**                                             |
 | Código o Supabase modificado    | **no**                                            |
 
@@ -716,22 +739,22 @@ Estas posiciones no son estados persistidos. Solo ubican la vista en un tramo co
 
 | Métrica                                           |    Resultado |
 | ------------------------------------------------- | -----------: |
-| Filas de vínculo vista–proceso–paso               |      **243** |
-| Unidades de vista únicas                          |      **236** |
-| Aliases documentales sin nueva vista              |        **7** |
+| Filas de vínculo vista–proceso–paso               |      **264** |
+| Vistas renderizadas únicas                          |      **252** |
+| Referencias sin vista renderizada                   |       **12** |
 | Vistas únicas sin `process_step`                  |        **0** |
 | Referencias con prefijo distinto del `process_id` |        **0** |
 | Roles inválidos                                   |        **0** |
 | Posiciones inválidas                              |        **0** |
 | Procesos representados                            |       **38** |
-| Anclas distintas utilizadas                       |      **117** |
+| Anclas distintas utilizadas                       |      **129** |
 | Roles de paso utilizados                          | **22 de 23** |
 | Posiciones utilizadas                             |   **6 de 6** |
 | Requisitos nuevos                                 |       **24** |
 
-| Inventario fuente | Filas de vínculo | Vistas únicas | Aliases |
+| Inventario fuente | Filas de vínculo | Vistas renderizadas | Referencias |
 | ----------------- | ---------------- | ------------- | ------- |
-| `NEXO`            | 64               | 64            | 0       |
+| `NEXO`            | 64               | 60                  | 4           |
 | `FOGO`            | 9                | 9             | 0       |
 | `ORIGO`           | 13               | 13            | 0       |
 | `PULSO`           | 6                | 6             | 0       |
@@ -739,8 +762,8 @@ Estas posiciones no son estados persistidos. Solo ubican la vista en un tramo co
 | `NUMERA`          | 7                | 7             | 0       |
 | `ANIMA`           | 37               | 37            | 0       |
 | `SHELL`           | 7                | 7             | 0       |
-| `PASS`            | 10               | 10            | 0       |
-| `AURA`            | 30               | 23            | 7       |
+| `PASS`            | 31               | 31                  | 0           |
+| `AURA`            | 30               | 22                  | 8           |
 
 #### 7. Matriz completa `VIEW-PROCESS-STEP-BINDING-001`
 
@@ -991,6 +1014,27 @@ Estas posiciones no son estados persistidos. Solo ubican la vista en un tramo co
 
 | View ID                  | Vista o superficie                                    | process_id   | process_step                                        | Etiqueta                                         | Rol         | Posición       | Estado       | Fundamento                                                                                                                                        |
 | ------------------------ | ----------------------------------------------------- | ------------ | --------------------------------------------------- | ------------------------------------------------ | ----------- | -------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS-CUSTOMER-SURFACE-001` | `Auth — acceso del cliente` | `VPROC-0059` | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER` | Autenticar o recuperar la sesión | `VALIDATE` | `INITIAL` | `STEP_BOUND` | El propósito dominante de la superficie es «autenticar o recuperar la sesión» dentro de gestionar ciclo de acceso tecnológico. |
+| `PASS-CUSTOMER-SURFACE-002` | `CompleteProfile — completar perfil` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | Gestionar perfil, privacidad y consentimientos | `SELF_SERVICE` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «gestionar perfil, privacidad y consentimientos» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-003` | `Home — inicio del cliente` | `VPROC-0045` | `VPROC-0045::STEP-ENTER_LOYALTY_HOME` | Entrar a fidelización personal | `ENTRY` | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la superficie es «entrar a fidelización personal» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-004` | `Club — beneficios y recompensas` | `VPROC-0045` | `VPROC-0045::STEP-CONSULT_REWARDS_CATALOG` | Consultar beneficios y recompensas | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar beneficios y recompensas» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-005` | `MyOrders — pedidos propios` | `VPROC-0039` | `VPROC-0039::STEP-CONSULT_PERSONAL_ORDERS` | Consultar pedidos propios | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar pedidos propios» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-006` | `ChooseSatellite — selección de marca o sede` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | Entrar y seleccionar contexto de compra | `ENTRY` | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la superficie es «entrar y seleccionar contexto de compra» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-007` | `DeliveryAddresses — direcciones de entrega` | `VPROC-0050` | `VPROC-0050::STEP-SELECT_FULFILLMENT` | Seleccionar dirección, modalidad y programación | `CAPTURE` | `INITIAL` | `STEP_BOUND` | El propósito dominante de la superficie es «seleccionar dirección, modalidad y programación» dentro de integrar entrega de tercero con seguimiento, prueba y conciliación interna. |
+| `PASS-CUSTOMER-SURFACE-008` | `AccountSettings — cuenta y privacidad` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | Gestionar perfil, privacidad y consentimientos | `SELF_SERVICE` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «gestionar perfil, privacidad y consentimientos» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-009` | `VentoCafe — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | Consultar menú y catálogo comercial | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar menú y catálogo comercial» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-010` | `Saudo — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | Consultar menú y catálogo comercial | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar menú y catálogo comercial» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-011` | `SatelliteExperience — hub de experiencias` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | Consultar menú y catálogo comercial | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar menú y catálogo comercial» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-012` | `SatellitePass — experiencia de sede` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | Consultar menú y catálogo comercial | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar menú y catálogo comercial» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-013` | `OrderHome — entrada al portal de compras` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | Entrar y seleccionar contexto de compra | `ENTRY` | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la superficie es «entrar y seleccionar contexto de compra» dentro de gestionar venta de mostrador o para llevar con entrega y cobro correlacionados. |
+| `PASS-CUSTOMER-SURFACE-014` | `OrderMenu — menú y configuración del pedido` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | Consultar menú y catálogo comercial | `MONITOR` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «consultar menú y catálogo comercial» dentro de publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales. |
+| `PASS-CUSTOMER-SURFACE-015` | `OrderCheckout — revisión e inicio de pago` | `VPROC-0043` | `VPROC-0043::STEP-REVIEW_AND_START_PAYMENT` | Revisar pedido e iniciar pago | `VALIDATE` | `DECISION` | `STEP_BOUND` | El propósito dominante de la superficie es «revisar pedido e iniciar pago» dentro de cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable. |
+| `PASS-CUSTOMER-SURFACE-016` | `OrderPlaced — confirmación y retorno de pago` | `VPROC-0043` | `VPROC-0043::STEP-PRESENT_ORDER_RECEIPT` | Presentar confirmación y resultado de pago | `RECEIPT` | `TERMINAL` | `STEP_BOUND` | El propósito dominante de la superficie es «presentar confirmación y resultado de pago» dentro de cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable. |
+| `PASS-CUSTOMER-SURFACE-017` | `OrderChat — comunicación del pedido` | `VPROC-0047` | `VPROC-0047::STEP-COMMUNICATE_ABOUT_ORDER` | Comunicarse sobre un pedido | `SELF_SERVICE` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «comunicarse sobre un pedido» dentro de gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento. |
+| `PASS-CUSTOMER-SURFACE-018` | `QrModal — identificación personal` | `VPROC-0045` | `VPROC-0045::STEP-PRESENT_CUSTOMER_ID` | Presentar identificación personal | `IDENTIFY` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «presentar identificación personal» dentro de identificar cliente y administrar fidelización mediante ledgers y consentimientos separados. |
+| `PASS-CUSTOMER-SURFACE-019` | `AppUpdateGate — compatibilidad de versión` | `VPROC-0058` | `VPROC-0058::STEP-RESTORE_APPLICATION_COMPATIBILITY` | Restablecer compatibilidad mediante actualización | `RECOVER` | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la superficie es «restablecer compatibilidad mediante actualización» dentro de gestionar solicitudes e incidentes tecnológicos. |
+| `PASS-CUSTOMER-SURFACE-020` | `App runtime gates — carga, configuración y perfil` | `VPROC-0058` | `VPROC-0058::STEP-TRIAGE_TECHNOLOGY_REQUEST` | Clasificar bloqueo técnico de aplicación | `TRIAGE` | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la superficie es «clasificar bloqueo técnico de aplicación» dentro de gestionar solicitudes e incidentes tecnológicos. |
+| `PASS-CUSTOMER-SURFACE-021` | `AppErrorBoundary — recuperación de error` | `VPROC-0062` | `VPROC-0062::STEP-ACTIVATE_AND_RECOVER_CONTINUITY` | Recuperar operación después de error global | `RECOVER` | `IN_PROGRESS` | `STEP_BOUND` | El propósito dominante de la superficie es «recuperar operación después de error global» dentro de gestionar continuidad y recuperación. |
 | `PASS-LABOR-SURFACE-001` | `Contexto laboral en Header`                          | `VPROC-0059` | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`        | Resolver contexto laboral efectivo               | `VALIDATE`  | `PRECONDITION` | `STEP_BOUND` | El propósito dominante de la vista es «resolver contexto laboral efectivo» dentro de gestionar ciclo de acceso tecnológico.                       |
 | `PASS-LABOR-SURFACE-002` | `Acciones de cambio o restablecimiento de rol y sede` | `VPROC-0059` | `VPROC-0059::STEP-ASSIGN_EFFECTIVE_ACCESS`          | Cambiar o restablecer rol y sede efectivos       | `CONFIGURE` | `IN_PROGRESS`  | `STEP_BOUND` | El propósito dominante de la vista es «cambiar o restablecer rol y sede efectivos» dentro de gestionar ciclo de acceso tecnológico.               |
 | `PASS-LABOR-SURFACE-003` | `Modal Modo de prueba`                                | `VPROC-0059` | `VPROC-0059::STEP-SIMULATE_ACCESS_DECISION`         | Simular rol y sede sin alterar autoridad real    | `SIMULATE`  | `DECISION`     | `STEP_BOUND` | El propósito dominante de la vista es «simular rol y sede sin alterar autoridad real» dentro de gestionar ciclo de acceso tecnológico.            |
@@ -1135,11 +1179,11 @@ La cantidad de vistas o anclas no mide madurez, volumen, prioridad, permiso ni c
 
 ##### 9.1 Congelación de `AUTH-UI-011`
 
-Los 243 valores `primary_process_id` se preservan sin cambios. Esta tarea agrega ubicación funcional; no reabre la selección de proceso.
+Los 264 valores `primary_process_id` se preservan sin cambios. Esta tarea agrega ubicación funcional; no reabre la selección de proceso.
 
 ##### 9.2 Aliases y redirecciones
 
-- los siete aliases administrativos AURA heredan exactamente el paso de su ruta VISO fuente;
+- los siete aliases y cinco redirects administrativos AURA heredan exactamente el paso de su ruta VISO fuente;
 - `/eventos` hereda el paso público de `/restaurantes`;
 - las redirecciones NEXO heredan el paso del destino funcional;
 - heredar un paso no crea una nueva ancla empresarial ni otra pantalla canónica.
@@ -1186,8 +1230,8 @@ No reciben `process_step` como vistas:
 
 La compilación deberá fallar cuando:
 
-1. el registro no contenga exactamente 243 filas;
-2. no existan exactamente 236 vistas únicas y siete aliases;
+1. el registro no contenga exactamente 264 filas;
+2. no existan exactamente 252 vistas únicas y siete aliases y cinco redirects;
 3. un `view_id` aparezca más de una vez;
 4. una vista única carezca de `primary_process_step_ref`;
 5. el prefijo del paso no coincida con `primary_process_id`;
@@ -1211,12 +1255,12 @@ TREQ-UX-1507 a TREQ-UX-1530
 
 | ID             | Regla protegida                                                                                                                                                                                       |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-UX-1507` | El registro AS-IS de pasos deberá contener exactamente 243 filas: 236 vistas únicas y siete aliases documentales, sin omisiones respecto de VIEW-PROCESS-BINDING-001.                                 |
+| `TREQ-UX-1507` | El registro AS-IS de pasos deberá contener exactamente 264 filas: 252 vistas únicas y doce referencias no renderizadas: siete aliases y cinco redirects, sin omisiones respecto de VIEW-PROCESS-BINDING-001.                                 |
 | `TREQ-UX-1508` | Cada vista única deberá resolver exactamente un primary_process_step_ref no vacío, estable y subordinado al primary_process_id aprobado en AUTH-UI-011.                                               |
 | `TREQ-UX-1509` | Toda referencia de paso deberá cumplir ^VPROC-[0-9]{4}::STEP-[A-Z0-9_]+$ y su prefijo VPROC deberá coincidir exactamente con el process_id de la fila.                                                |
 | `TREQ-UX-1510` | Cada vínculo deberá usar únicamente uno de los 23 roles de paso y una de las seis posiciones de ciclo aprobadas por PROC-SCREEN-004.                                                                  |
-| `TREQ-UX-1511` | Los siete aliases administrativos AURA deberán heredar exactamente process_id, process_step_ref, rol y posición de la ruta VISO referenciada, sin crear otra vista o ancla.                           |
-| `TREQ-UX-1512` | AUTH-UI-012 deberá preservar sin cambios los 243 vínculos process_id aprobados en AUTH-UI-011; asignar un paso no podrá cambiar el proceso de una vista.                                              |
+| `TREQ-UX-1511` | Los siete aliases y cinco redirects administrativos AURA deberán heredar exactamente process_id, process_step_ref, rol y posición de la ruta VISO referenciada, sin crear otra vista o ancla.                           |
+| `TREQ-UX-1512` | AUTH-UI-012 deberá preservar sin cambios los 264 vínculos process_id aprobados en AUTH-UI-011; asignar un paso no podrá cambiar el proceso de una vista.                                              |
 | `TREQ-UX-1513` | La asignación de process_step no deberá conceder acceso, propiedad de aplicación, consumo, permiso, actor, dispositivo, acción, menú, duplicidad, legacy definitivo ni retiro.                        |
 | `TREQ-UX-1514` | Las 64 rutas NEXO deberán conservar un paso dominante; sus cuatro redirecciones heredarán el paso del destino y los once handlers permanecerán excluidos.                                             |
 | `TREQ-UX-1515` | Las nueve rutas FOGO deberán conservar un paso dominante coherente con receta, planeación o ejecución de lote; el handler PDF permanecerá excluido.                                                   |
@@ -1234,7 +1278,7 @@ TREQ-UX-1507 a TREQ-UX-1530
 | `TREQ-UX-1527` | Toda redirección deberá conservar process_id y heredar una ancla del destino funcional, sin introducir un paso por el acto técnico de redirigir.                                                      |
 | `TREQ-UX-1528` | Cambiar process_step_ref deberá exigir versión nueva, razón trazable, conservación del vínculo anterior y análisis de impacto sobre acciones, permisos, métricas, pruebas y navegación.               |
 | `TREQ-UX-1529` | Route handlers, server actions, middleware, layouts, loading boundaries, templates, iconos y módulos no visuales deberán permanecer sin process_step como vistas.                                     |
-| `TREQ-UX-1530` | La compilación deberá fallar ante vista sin paso, prefijo de paso distinto del process_id, rol o posición inválidos, alias divergente, conteo distinto de 243 o modificación de vínculos AUTH-UI-011. |
+| `TREQ-UX-1530` | La compilación deberá fallar ante vista sin paso, prefijo de paso distinto del process_id, rol o posición inválidos, alias divergente, conteo distinto de 264 o modificación de vínculos AUTH-UI-011. |
 
 #### 13. Huellas de la línea base
 
@@ -1248,9 +1292,9 @@ LIFECYCLE_DISTRIBUTION_SHA256 = d6c0ad11ad27913869fcab43dad9d82e8be1351a2d0ae556
 
 #### 14. Criterios de aceptación
 
-- [x] Se preservan los 243 `process_id` aprobados en `AUTH-UI-011`.
-- [x] Se materializan 243 filas de vínculo vista–proceso–paso.
-- [x] Se distinguen 236 vistas únicas y siete aliases.
+- [x] Se preservan los 264 `process_id` aprobados en `AUTH-UI-011`.
+- [x] Se materializan 264 filas de vínculo vista–proceso–paso.
+- [x] Se distinguen 252 vistas renderizadas y doce referencias no renderizadas: siete aliases y cinco redirects.
 - [x] Cada vista única tiene exactamente un paso dominante.
 - [x] Todas las referencias cumplen el formato namespaced.
 - [x] El prefijo de cada paso coincide con su proceso.
@@ -1267,15 +1311,15 @@ LIFECYCLE_DISTRIBUTION_SHA256 = d6c0ad11ad27913869fcab43dad9d82e8be1351a2d0ae556
 
 | Control                         | Resultado                                         |
 | ------------------------------- | ------------------------------------------------- |
-| Base 04A leída completa         | **3.512 requisitos**                              |
+| Base 04A leída completa         | **3.520 requisitos**                              |
 | Nuevos requisitos               | **24**                                            |
-| Total regenerado                | **3.536**                                         |
+| Total regenerado                | **3.544**                                         |
 | Dominio UX                      | **1.530 requisitos — TREQ-UX-001 a TREQ-UX-1530** |
-| Filas con catorce columnas      | **3.536 de 3.536**                                |
+| Filas con catorce columnas      | **3.544 de 3.544**                                |
 | Identificadores TREQ duplicados | **0**                                             |
 | Relaciones TREQ no resolubles   | **0**                                             |
 | Filas históricas modificadas    | **0**                                             |
-| Filas vista–proceso–paso        | **243**                                           |
+| Filas vista–proceso–paso        | **264**                                           |
 | Vistas únicas sin paso          | **0**                                             |
 | Prefijos de paso inconsistentes | **0**                                             |
 | Código o Supabase modificado    | **no**                                            |
@@ -1360,7 +1404,7 @@ PRIMARY_APPLICATION_ID
 #### 3. Fuentes consumidas
 
 - `AUTH-UI-001` a `AUTH-UI-010` y sus inventarios aprobados;
-- `AUTH-UI-011` y `AUTH-UI-012`, con 243 vínculos proceso–paso congelados;
+- `AUTH-UI-011` y `AUTH-UI-012`, con 264 vínculos proceso–paso congelados;
 - `PROC-SCREEN-002`, `SCREEN-APPLICATION-BINDING-CONTRACT-001` y límites canónicos por aplicación;
 - `PROC-CAT-005` y `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` para conservar separada la propietaria del proceso;
 - catálogo canónico de aplicaciones de BLOQUE C;
@@ -1437,24 +1481,24 @@ Ninguna modalidad determina todavía `consumer_only`. Esa decisión queda reserv
 
 | Métrica                                                      |    Resultado |
 | ------------------------------------------------------------ | -----------: |
-| Filas de vínculo vista–aplicación                            |      **243** |
-| Vistas únicas                                                |      **236** |
-| Aliases documentales                                         |        **7** |
+| Filas de vínculo vista–aplicación                            |      **264** |
+| Vistas únicas                                                |      **252** |
+| Referencias sin vista renderizada                            |       **12** |
 | Vistas únicas sin aplicación primaria                        |        **0** |
 | Códigos de aplicación no canónicos                           |        **0** |
 | Aplicaciones primarias utilizadas                            | **10 de 10** |
-| Vistas únicas alineadas con runtime actual                   |      **148** |
-| Vistas únicas con runtime distinto                           |       **88** |
-| Vistas cuya aplicación difiere de la propietaria del proceso |       **71** |
+| Vistas renderizadas alineadas con runtime actual             |      **161** |
+| Vistas renderizadas con runtime distinto                     |       **91** |
+| Vistas cuya aplicación difiere de la propietaria del proceso |       **87** |
 | Vistas únicas asignadas a AURA diferida                      |       **18** |
 | Filas AURA incluyendo aliases                                |       **25** |
-| Vistas únicas asignadas a SHELL                              |       **42** |
+| Vistas renderizadas asignadas a SHELL                        |       **46** |
 | Clasificaciones `consumer_only` realizadas                   |        **0** |
 | Requisitos nuevos                                            |       **24** |
 
-| Inventario fuente | Filas | Vistas únicas | Aliases |
+| Inventario fuente | Filas | Vistas renderizadas | Referencias |
 | ----------------- | ----- | ------------- | ------- |
-| `NEXO`            | 64    | 64            | 0       |
+| `NEXO`            | 64    | 60                  | 4           |
 | `FOGO`            | 9     | 9             | 0       |
 | `ORIGO`           | 13    | 13            | 0       |
 | `PULSO`           | 6     | 6             | 0       |
@@ -1462,8 +1506,8 @@ Ninguna modalidad determina todavía `consumer_only`. Esa decisión queda reserv
 | `NUMERA`          | 7     | 7             | 0       |
 | `ANIMA`           | 37    | 37            | 0       |
 | `SHELL`           | 7     | 7             | 0       |
-| `PASS`            | 10    | 10            | 0       |
-| `AURA`            | 30    | 23            | 7       |
+| `PASS`            | 31    | 31                  | 0           |
+| `AURA`            | 30    | 22                  | 8           |
 
 #### 9. Distribución por aplicación primaria
 
@@ -1557,16 +1601,16 @@ SHELL conserva 42 superficies primarias y cero procesos propios dentro de `PROC-
 | `NEXO-ROUTE-052` | `/inventory/stock`                           | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`            | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
 | `NEXO-ROUTE-053` | `/inventory/stock/assign-location`           | `VPROC-0024` | `VPROC-0024::STEP-CONFIRM_STOCK_ENTRY`               | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
 | `NEXO-ROUTE-054` | `/inventory/transfers`                       | `VPROC-0025` | `VPROC-0025::STEP-EXECUTE_INTERNAL_TRANSFER`         | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
-| `NEXO-ROUTE-055` | `/inventory/warehouse`                       | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG`          | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
+| `NEXO-ROUTE-055` | `/inventory/warehouse` | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG` | `nexo` | `nexo` | `nexo` | `REDIRECT_APPLICATION_INHERITED` | `APPLICATION_REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda la aplicación de `NEXO-ROUTE-020` sin crear propiedad independiente. |
 | `NEXO-ROUTE-056` | `/inventory/withdraw`                        | `VPROC-0025` | `VPROC-0025::STEP-EXECUTE_STOCK_WITHDRAWAL`          | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
-| `NEXO-ROUTE-057` | `/kiosk/[slug]`                              | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`            | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
-| `NEXO-ROUTE-058` | `/l/[code]`                                  | `VPROC-0023` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`     | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]` | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION` | `nexo` | `nexo` | `nexo` | `REDIRECT_APPLICATION_INHERITED` | `APPLICATION_REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda la aplicación de `NEXO-ROUTE-022 o NEXO-ROUTE-026` sin crear propiedad independiente. |
+| `NEXO-ROUTE-058` | `/l/[code]` | `VPROC-0023` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `nexo` | `nexo` | `nexo` | `REDIRECT_APPLICATION_INHERITED` | `APPLICATION_REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda la aplicación de `NEXO-ROUTE-025` sin crear propiedad independiente. |
 | `NEXO-ROUTE-059` | `/login`                                     | `VPROC-0059` | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER`           | `nexo`         | `shell`             | `viso`                  | `TRANSVERSAL_SHELL_BOUNDARY`    | `APPLICATION_BOUND` | La intención es transversal de entrada, cuenta, navegación, recuperación y capacidades transversales. El proceso continúa gobernado por `viso` cuando corresponda; SHELL responde por la superficie, no por el proceso empresarial. |
 | `NEXO-ROUTE-060` | `/no-access`                                 | `VPROC-0059` | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`         | `nexo`         | `shell`             | `viso`                  | `TRANSVERSAL_SHELL_BOUNDARY`    | `APPLICATION_BOUND` | La intención es transversal de entrada, cuenta, navegación, recuperación y capacidades transversales. El proceso continúa gobernado por `viso` cuando corresponda; SHELL responde por la superficie, no por el proceso empresarial. |
 | `NEXO-ROUTE-061` | `/printing/designer`                         | `VPROC-0015` | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`   | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
 | `NEXO-ROUTE-062` | `/printing/jobs`                             | `VPROC-0024` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE`               | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
 | `NEXO-ROUTE-063` | `/printing/setup`                            | `VPROC-0024` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS`      | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
-| `NEXO-ROUTE-064` | `/scanner`                                   | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG`          | `nexo`         | `nexo`              | `nexo`                  | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La intención principal y el ciclo de vida de la superficie coinciden con la frontera de `nexo`: inventario, ubicaciones, logística, activos, instalaciones y maestros físicos.                                                      |
+| `NEXO-ROUTE-064` | `/scanner` | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG` | `nexo` | `nexo` | `nexo` | `REDIRECT_APPLICATION_INHERITED` | `APPLICATION_REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda la aplicación de `NEXO-ROUTE-020` sin crear propiedad independiente. |
 
 ##### FOGO
 
@@ -1746,6 +1790,27 @@ SHELL conserva 42 superficies primarias y cero procesos propios dentro de `PROC-
 
 | View ID                  | Vista o superficie                                    | process_id   | process_step                                        | Runtime actual | Aplicación primaria | Propietaria del proceso | Modalidad                       | Estado              | Fundamento                                                                                                                                                                                                                          |
 | ------------------------ | ----------------------------------------------------- | ------------ | --------------------------------------------------- | -------------- | ------------------- | ----------------------- | ------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS-CUSTOMER-SURFACE-001` | `Auth — acceso del cliente` | `VPROC-0059` | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER` | `pass` | `shell` | `viso` | `TRANSVERSAL_SHELL_BOUNDARY` | `APPLICATION_BOUND` | La superficie existe en PASS, pero su intención corresponde a acceso, compatibilidad o recuperación transversal gobernada por SHELL. |
+| `PASS-CUSTOMER-SURFACE-002` | `CompleteProfile — completar perfil` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | `pass` | `pass` | `pass` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-003` | `Home — inicio del cliente` | `VPROC-0045` | `VPROC-0045::STEP-ENTER_LOYALTY_HOME` | `pass` | `pass` | `pass` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-004` | `Club — beneficios y recompensas` | `VPROC-0045` | `VPROC-0045::STEP-CONSULT_REWARDS_CATALOG` | `pass` | `pass` | `pass` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-005` | `MyOrders — pedidos propios` | `VPROC-0039` | `VPROC-0039::STEP-CONSULT_PERSONAL_ORDERS` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-006` | `ChooseSatellite — selección de marca o sede` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-007` | `DeliveryAddresses — direcciones de entrega` | `VPROC-0050` | `VPROC-0050::STEP-SELECT_FULFILLMENT` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-008` | `AccountSettings — cuenta y privacidad` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | `pass` | `pass` | `pass` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-009` | `VentoCafe — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-010` | `Saudo — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-011` | `SatelliteExperience — hub de experiencias` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-012` | `SatellitePass — experiencia de sede` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-013` | `OrderHome — entrada al portal de compras` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-014` | `OrderMenu — menú y configuración del pedido` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-015` | `OrderCheckout — revisión e inicio de pago` | `VPROC-0043` | `VPROC-0043::STEP-REVIEW_AND_START_PAYMENT` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-016` | `OrderPlaced — confirmación y retorno de pago` | `VPROC-0043` | `VPROC-0043::STEP-PRESENT_ORDER_RECEIPT` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-017` | `OrderChat — comunicación del pedido` | `VPROC-0047` | `VPROC-0047::STEP-COMMUNICATE_ABOUT_ORDER` | `pass` | `pass` | `pulso` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-018` | `QrModal — identificación personal` | `VPROC-0045` | `VPROC-0045::STEP-PRESENT_CUSTOMER_ID` | `pass` | `pass` | `pass` | `CURRENT_APPLICATION_CONFIRMED` | `APPLICATION_BOUND` | La superficie pertenece a la experiencia personal, fidelización o canal de compra del cliente presentada por PASS. |
+| `PASS-CUSTOMER-SURFACE-019` | `AppUpdateGate — compatibilidad de versión` | `VPROC-0058` | `VPROC-0058::STEP-RESTORE_APPLICATION_COMPATIBILITY` | `pass` | `shell` | `viso` | `TRANSVERSAL_SHELL_BOUNDARY` | `APPLICATION_BOUND` | La superficie existe en PASS, pero su intención corresponde a acceso, compatibilidad o recuperación transversal gobernada por SHELL. |
+| `PASS-CUSTOMER-SURFACE-020` | `App runtime gates — carga, configuración y perfil` | `VPROC-0058` | `VPROC-0058::STEP-TRIAGE_TECHNOLOGY_REQUEST` | `pass` | `shell` | `viso` | `TRANSVERSAL_SHELL_BOUNDARY` | `APPLICATION_BOUND` | La superficie existe en PASS, pero su intención corresponde a acceso, compatibilidad o recuperación transversal gobernada por SHELL. |
+| `PASS-CUSTOMER-SURFACE-021` | `AppErrorBoundary — recuperación de error` | `VPROC-0062` | `VPROC-0062::STEP-ACTIVATE_AND_RECOVER_CONTINUITY` | `pass` | `shell` | `viso` | `TRANSVERSAL_SHELL_BOUNDARY` | `APPLICATION_BOUND` | La superficie existe en PASS, pero su intención corresponde a acceso, compatibilidad o recuperación transversal gobernada por SHELL. |
 | `PASS-LABOR-SURFACE-001` | `Contexto laboral en Header`                          | `VPROC-0059` | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`        | `pass`         | `shell`             | `viso`                  | `TRANSVERSAL_SHELL_BOUNDARY`    | `APPLICATION_BOUND` | La intención es transversal de entrada, cuenta, navegación, recuperación y capacidades transversales. El proceso continúa gobernado por `viso` cuando corresponda; SHELL responde por la superficie, no por el proceso empresarial. |
 | `PASS-LABOR-SURFACE-002` | `Acciones de cambio o restablecimiento de rol y sede` | `VPROC-0059` | `VPROC-0059::STEP-ASSIGN_EFFECTIVE_ACCESS`          | `pass`         | `shell`             | `viso`                  | `TRANSVERSAL_SHELL_BOUNDARY`    | `APPLICATION_BOUND` | La intención es transversal de entrada, cuenta, navegación, recuperación y capacidades transversales. El proceso continúa gobernado por `viso` cuando corresponda; SHELL responde por la superficie, no por el proceso empresarial. |
 | `PASS-LABOR-SURFACE-003` | `Modal Modo de prueba`                                | `VPROC-0059` | `VPROC-0059::STEP-SIMULATE_ACCESS_DECISION`         | `pass`         | `shell`             | `viso`                  | `TRANSVERSAL_SHELL_BOUNDARY`    | `APPLICATION_BOUND` | La intención es transversal de entrada, cuenta, navegación, recuperación y capacidades transversales. El proceso continúa gobernado por `viso` cuando corresponda; SHELL responde por la superficie, no por el proceso empresarial. |
@@ -1790,7 +1855,7 @@ SHELL conserva 42 superficies primarias y cero procesos propios dentro de `PROC-
 | `AURA-CURRENT-PUBLIC-004`      | `/empleos`                                        | `VPROC-0005` | `VPROC-0005::STEP-CONSULT_OPEN_VACANCIES`         | `public_web`   | `viso`              | `viso`                  | `PUBLIC_CHANNEL_BOUNDARY`     | `APPLICATION_BOUND`           | El sitio público actúa como canal no canónico. La superficie pertenece a `viso` por su intención de gobierno, personas, acceso, cumplimiento, soporte y supervisión administrativa; el host web no adquiere propiedad empresarial.  |
 | `AURA-CURRENT-PUBLIC-005`      | `/servicios`                                      | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `public_web`   | `pulso`             | `pulso`                 | `PUBLIC_CHANNEL_BOUNDARY`     | `APPLICATION_BOUND`           | El sitio público actúa como canal no canónico. La superficie pertenece a `pulso` por su intención de oferta vendible, ventas, servicio, caja, reservas y entrega comercial; el host web no adquiere propiedad empresarial.          |
 | `AURA-CURRENT-PUBLIC-006`      | `/ecosistema`                                     | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `public_web`   | `pulso`             | `pulso`                 | `PUBLIC_CHANNEL_BOUNDARY`     | `APPLICATION_BOUND`           | El sitio público actúa como canal no canónico. La superficie pertenece a `pulso` por su intención de oferta vendible, ventas, servicio, caja, reservas y entrega comercial; el host web no adquiere propiedad empresarial.          |
-| `AURA-CURRENT-PUBLIC-007`      | `/eventos → /restaurantes`                        | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `public_web`   | `pulso`             | `pulso`                 | `PUBLIC_CHANNEL_BOUNDARY`     | `APPLICATION_BOUND`           | El sitio público actúa como canal no canónico. La superficie pertenece a `pulso` por su intención de oferta vendible, ventas, servicio, caja, reservas y entrega comercial; el host web no adquiere propiedad empresarial.          |
+| `AURA-CURRENT-PUBLIC-007` | `/eventos → /restaurantes` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `public_web` | `pulso` | `pulso` | `REDIRECT_APPLICATION_INHERITED` | `APPLICATION_REDIRECT_INHERITED` | Ruta de entrada sin render propio; hereda la aplicación de `AURA-CURRENT-PUBLIC-002` sin crear propiedad independiente. |
 
 #### 12. Distribuciones de control
 
@@ -1824,18 +1889,18 @@ SHELL conserva 42 superficies primarias y cero procesos propios dentro de `PROC-
 
 | Comparación                                   |             Resultado |
 | --------------------------------------------- | --------------------: |
-| aplicación primaria = runtime actual          | **148 vistas únicas** |
-| aplicación primaria ≠ runtime actual          |  **88 vistas únicas** |
-| aplicación primaria = propietaria del proceso | **165 vistas únicas** |
-| aplicación primaria ≠ propietaria del proceso |  **71 vistas únicas** |
+| aplicación primaria = runtime actual          | **161 vistas renderizadas** |
+| aplicación primaria ≠ runtime actual          |  **91 vistas renderizadas** |
+| aplicación primaria = propietaria del proceso | **165 vistas renderizadas** |
+| aplicación primaria ≠ propietaria del proceso |  **87 vistas renderizadas** |
 
-Las 71 diferencias aplicación–proceso no se interpretan todavía como consumo exclusivo, supervisión, canal, proyección o handoff. `AUTH-UI-014` realizará esa clasificación.
+Las 87 diferencias aplicación–proceso no se interpretan todavía como consumo exclusivo, supervisión, canal, proyección o handoff. `AUTH-UI-014` realizará esa clasificación.
 
 #### 13. Reconciliaciones críticas
 
 ##### 13.1 Congelación de proceso y paso
 
-Los 243 `primary_process_id` y `primary_process_step_ref` permanecen exactamente iguales a `AUTH-UI-012`. Esta tarea agrega la frontera de pantalla sin reabrir proceso ni paso.
+Los 264 `primary_process_id` y `primary_process_step_ref` permanecen exactamente iguales a `AUTH-UI-012`. Esta tarea agrega la frontera de pantalla sin reabrir proceso ni paso.
 
 ##### 13.2 SHELL transversal
 
@@ -1855,7 +1920,7 @@ Las superficies de identificación, acumulación y redención operadas durante l
 
 ##### 13.6 AURA diferida
 
-Las nueve superficies editoriales únicas y sus siete aliases reciben AURA como aplicación primaria objetivo. Esto no:
+Las nueve superficies editoriales únicas y sus siete aliases y cinco redirects reciben AURA como aplicación primaria objetivo. Esto no:
 
 - crea `VSCREEN-*` de AURA;
 - habilita rutas standalone AURA;
@@ -1887,8 +1952,8 @@ Esta tarea tampoco mueve archivos, crea repositorios, modifica enlaces, activa A
 
 La compilación deberá fallar cuando:
 
-1. el registro no contenga exactamente 243 filas;
-2. no existan exactamente 236 vistas únicas y siete aliases;
+1. el registro no contenga exactamente 264 filas;
+2. no existan exactamente 252 vistas únicas y siete aliases y cinco redirects;
 3. una vista carezca de `primary_application_id`;
 4. se utilice un código fuera del catálogo canónico;
 5. `public_web`, `talento`, un repositorio, una sede o un servicio se usen como aplicación primaria;
@@ -1911,11 +1976,11 @@ TREQ-UX-1531 a TREQ-UX-1554
 
 | ID             | Regla protegida                                                                                                                                                                                                                                |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-UX-1531` | El registro de aplicación primaria deberá contener exactamente 243 filas correspondientes a 236 vistas únicas y siete aliases documentales, sin omisiones respecto de AUTH-UI-012.                                                             |
+| `TREQ-UX-1531` | El registro de aplicación primaria deberá contener exactamente 264 filas correspondientes a 252 vistas únicas y doce referencias no renderizadas: siete aliases y cinco redirects, sin omisiones respecto de AUTH-UI-012.                                                             |
 | `TREQ-UX-1532` | Cada vista única deberá resolver exactamente un primary_application_id perteneciente al catálogo canónico shell, viso, anima, nexo, fogo, origo, pulso, numera, aura o pass.                                                                   |
 | `TREQ-UX-1533` | La aplicación primaria de la vista, la aplicación propietaria del proceso y el runtime actual deberán conservarse como campos distintos y no podrán inferirse unos de otros.                                                                   |
 | `TREQ-UX-1534` | La asignación de aplicación primaria deberá decidirse por intención, orquestación, mutación, autorización, fuente de verdad y continuidad, nunca únicamente por repositorio, ruta o componente actual.                                         |
-| `TREQ-UX-1535` | AUTH-UI-013 deberá preservar byte a byte los 243 process_id y process_step aprobados en AUTH-UI-011 y AUTH-UI-012; definir aplicación no podrá reabrirlos.                                                                                     |
+| `TREQ-UX-1535` | AUTH-UI-013 deberá preservar byte a byte los 264 process_id y process_step aprobados en AUTH-UI-011 y AUTH-UI-012; definir aplicación no podrá reabrirlos.                                                                                     |
 | `TREQ-UX-1536` | Las superficies transversales de login, denegación, recuperación, cuenta, bootstrap y diagnóstico deberán vincularse con shell aunque el proceso de acceso o soporte permanezca gobernado por otra aplicación.                                 |
 | `TREQ-UX-1537` | Las siete superficies SHELL inventariadas deberán conservar shell como aplicación primaria sin convertir a SHELL en propietaria de VPROC-0059 ni de otro proceso empresarial.                                                                  |
 | `TREQ-UX-1538` | Las 64 rutas NEXO deberán resolver 59 vistas NEXO, dos NUMERA, una FOGO y dos SHELL, conservando las excepciones de costos, precios internos, lotes productivos y acceso transversal.                                                          |
@@ -1926,15 +1991,15 @@ TREQ-UX-1531 a TREQ-UX-1554
 | `TREQ-UX-1543` | Las siete rutas NUMERA deberán resolver cinco vistas NUMERA y dos SHELL, conservando separadas las superficies financieras y el acceso transversal.                                                                                            |
 | `TREQ-UX-1544` | Las 37 superficies ANIMA deberán resolver 14 vistas ANIMA, 14 SHELL y nueve VISO, impidiendo que ANIMA administre poblaciones, permisos, horarios o retiros laborales por contener componentes actuales.                                       |
 | `TREQ-UX-1545` | Las diez superficies laborales relacionadas con PASS deberán resolver tres superficies SHELL de contexto y siete superficies PULSO de operación de caja; ninguna se convertirá en pantalla laboral propietaria de PASS.                        |
-| `TREQ-UX-1546` | El inventario AURA deberá resolver siete placeholders SHELL, nueve superficies AURA diferidas, seis vistas públicas PULSO y una vista pública VISO; los siete aliases administrativos heredarán AURA.                                          |
+| `TREQ-UX-1546` | El inventario AURA deberá resolver siete placeholders SHELL, nueve superficies AURA diferidas, seis vistas públicas PULSO y una vista pública VISO; los siete aliases y cinco redirects administrativos heredarán AURA.                                          |
 | `TREQ-UX-1547` | El host public_web deberá tratarse como canal técnico no canónico; no podrá convertirse en primary_application_id ni adquirir propiedad de oferta, vacantes o datos publicados.                                                                |
 | `TREQ-UX-1548` | Asignar AURA como aplicación primaria diferida a superficies CMS AS-IS no deberá crear VSCREEN AURA, habilitar aura.access, acreditar repositorio, disponibilidad, readiness ni despliegue.                                                    |
-| `TREQ-UX-1549` | Los siete aliases administrativos AURA deberán heredar exactamente primary_application_id, process_id y process_step de la ruta VISO fuente, sin crear otra identidad de pantalla.                                                             |
+| `TREQ-UX-1549` | Los siete aliases y cinco redirects administrativos AURA deberán heredar exactamente primary_application_id, process_id y process_step de la ruta VISO fuente, sin crear otra identidad de pantalla.                                                             |
 | `TREQ-UX-1550` | Las 88 vistas únicas cuya aplicación primaria difiere del runtime actual deberán conservar la divergencia explícita como deuda de ubicación, sin mover rutas ni código durante AUTH-UI-013.                                                    |
-| `TREQ-UX-1551` | Las 71 vistas cuya aplicación primaria difiere de la propietaria del proceso deberán conservar ambas relaciones; la decisión de si solo consumen la capacidad queda exclusivamente reservada para AUTH-UI-014.                                 |
+| `TREQ-UX-1551` | Las 87 vistas cuya aplicación primaria difiere de la propietaria del proceso deberán conservar ambas relaciones; la decisión de si solo consumen la capacidad queda exclusivamente reservada para AUTH-UI-014.                                 |
 | `TREQ-UX-1552` | Cambiar primary_application_id deberá exigir versión nueva, razón funcional, conservación del vínculo anterior, análisis de rutas y consumidores, transición, pruebas y rollback.                                                              |
 | `TREQ-UX-1553` | Route handlers, server actions, middleware, layouts, loading boundaries, iconos, templates y módulos no visuales deberán permanecer excluidos del registro de aplicación primaria de vistas.                                                   |
-| `TREQ-UX-1554` | La compilación deberá fallar ante vista sin aplicación, app_code no canónico, alias divergente, modificación de process_id o process_step, conteo distinto de 243, distribución declarada inconsistente o clasificación anticipada de consumo. |
+| `TREQ-UX-1554` | La compilación deberá fallar ante vista sin aplicación, app_code no canónico, alias divergente, modificación de process_id o process_step, conteo distinto de 264, distribución declarada inconsistente o clasificación anticipada de consumo. |
 
 #### 17. Huellas de la línea base
 
@@ -1948,9 +2013,9 @@ RUNTIME_DIVERGENCE_SHA256 = 8f7cba28e38cdc8a80d2cae6a3fc4ba67d02b63d718cc443b03e
 
 #### 18. Criterios de aceptación
 
-- [x] Se preservan los 243 procesos y pasos aprobados.
-- [x] Se materializan 243 vínculos vista–aplicación.
-- [x] Se distinguen 236 vistas únicas y siete aliases.
+- [x] Se preservan los 264 procesos y pasos aprobados.
+- [x] Se materializan 264 vínculos vista–aplicación.
+- [x] Se distinguen 252 vistas renderizadas y doce referencias no renderizadas: siete aliases y cinco redirects.
 - [x] Cada vista única recibe exactamente una aplicación primaria.
 - [x] Solo se utilizan los diez códigos canónicos.
 - [x] Runtime, aplicación primaria y propietaria del proceso permanecen separados.
@@ -1969,15 +2034,15 @@ RUNTIME_DIVERGENCE_SHA256 = 8f7cba28e38cdc8a80d2cae6a3fc4ba67d02b63d718cc443b03e
 
 | Control                                | Resultado                                         |
 | -------------------------------------- | ------------------------------------------------- |
-| Base 04A leída completa                | **3.536 requisitos**                              |
+| Base 04A leída completa                | **3.544 requisitos**                              |
 | Nuevos requisitos                      | **24**                                            |
-| Total regenerado                       | **3.560**                                         |
+| Total regenerado                       | **3.568**                                         |
 | Dominio UX                             | **1.554 requisitos — TREQ-UX-001 a TREQ-UX-1554** |
-| Filas con catorce columnas             | **3.560 de 3.560**                                |
+| Filas con catorce columnas             | **3.568 de 3.568**                                |
 | Identificadores TREQ duplicados        | **0**                                             |
 | Relaciones TREQ no resolubles          | **0**                                             |
 | Filas históricas modificadas           | **0**                                             |
-| Filas vista–aplicación                 | **243**                                           |
+| Filas vista–aplicación                 | **264**                                           |
 | Vistas únicas sin aplicación           | **0**                                             |
 | Aplicaciones no canónicas              | **0**                                             |
 | Clasificaciones de consumo anticipadas | **0**                                             |
@@ -1999,7 +2064,7 @@ TAREA ACTUAL
 AUTH-UI-014 — Definir si la aplicación solo consume la capacidad
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-UI-015 — Definir tipo de vista
+AUTH-UI-015 — Clasificar vista operativa
 ```
 
 APROBADA
@@ -2011,12 +2076,12 @@ APROBADA
 **Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas
 **Marcador exacto que reemplaza:** `### [ ] AUTH-UI-014 — Definir si la aplicación solo consume la capacidad`
 **Tarea anterior:** `AUTH-UI-013 — Definir aplicación propietaria` — APROBADA
-**Siguiente tarea:** `AUTH-UI-015 — Definir tipo de vista`
+**Siguiente tarea:** `AUTH-UI-015 — Clasificar vista operativa`
 **Tipo de tarea:** reconciliación documental AS-IS entre aplicación primaria de la vista, propietaria del proceso y registro canónico de consumidoras; sin cambios de código, Supabase, rutas, navegación runtime ni despliegue
 
 #### 1. Objetivo
 
-Determinar para cada una de las 243 filas aprobadas en `AUTH-UI-013` si la aplicación primaria de la vista gobierna la capacidad del proceso o **solo la consume** mediante una relación directa o condicional declarada.
+Determinar para cada una de las 264 filas aprobadas en `AUTH-UI-013` si la aplicación primaria de la vista gobierna la capacidad del proceso o **solo la consume** mediante una relación directa o condicional declarada.
 
 La clasificación se aplica a la relación concreta **vista–proceso**. No significa que una aplicación completa sea únicamente consumidora en todo Vento OS.
 
@@ -2057,7 +2122,7 @@ CONSUMER_ONLY
 
 #### 3. Fuentes consumidas
 
-- `AUTH-UI-011` a `AUTH-UI-013`, con los 243 vínculos de proceso, paso y aplicación congelados;
+- `AUTH-UI-011` a `AUTH-UI-013`, con los 264 vínculos de proceso, paso y aplicación congelados;
 - `PROC-CAT-005` y `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`;
 - `PROC-CAT-006` y `PROC-APPLICATION-CONSUMER-REGISTRY-001`;
 - `PROC-SCREEN-002` a `PROC-SCREEN-004`;
@@ -2113,12 +2178,12 @@ Existe cuando la aplicación primaria difiere de la propietaria y la superficie 
 
 | Métrica                               |     Resultado |
 | ------------------------------------- | ------------: |
-| Filas clasificadas                    |       **243** |
-| Vistas únicas                         |       **236** |
-| Aliases documentales                  |         **7** |
-| `consumer_only = false`               | **172 filas** |
-| `consumer_only = true`                |  **71 filas** |
-| Consumidoras directas declaradas      |  **69 filas** |
+| Filas clasificadas                    |       **264** |
+| Vistas únicas                         |       **252** |
+| Referencias sin vista renderizada       |        **12** |
+| `consumer_only = false`               | **177 filas** |
+| `consumer_only = true`                |  **87 filas** |
+| Consumidoras directas declaradas      |  **85 filas** |
 | Consumidoras condicionales declaradas |    **1 fila** |
 | Brechas de declaración                |    **1 fila** |
 | Filas sin clasificación               |         **0** |
@@ -2126,13 +2191,13 @@ Existe cuando la aplicación primaria difiere de la propietaria y la superficie 
 | Aplicaciones primarias modificadas    |         **0** |
 | Requisitos nuevos                     |        **24** |
 
-Las 172 filas propietarias incluyen los siete aliases de AURA. En términos de unidades de vista, existen **165 vistas propietarias**, **71 vistas consumidoras** y siete referencias alias sin identidad adicional.
+Las 177 filas propietarias incluyen doce referencias no renderizadas. En términos de vistas renderizadas, existen **165 vistas propietarias**, **87 vistas consumidoras** y doce referencias —siete aliases y cinco redirects— sin identidad adicional.
 
 #### 8. Distribución por aplicación primaria
 
 | Aplicación | Filas | Propietaria | Consumidora directa | Consumidora condicional | Brecha |
 | ---------- | ----: | ----------: | ------------------: | ----------------------: | -----: |
-| `shell`    |    42 |           0 |                  41 |                       0 |      1 |
+| `shell`    |    46 |           0 |                  45 |                       0 |      1 |
 | `viso`     |    42 |          35 |                   7 |                       0 |      0 |
 | `anima`    |    14 |           5 |                   8 |                       1 |      0 |
 | `nexo`     |    63 |          60 |                   3 |                       0 |      0 |
@@ -2141,7 +2206,7 @@ Las 172 filas propietarias incluyen los siete aliases de AURA. En términos de u
 | `pulso`    |    28 |          18 |                  10 |                       0 |      0 |
 | `numera`   |     8 |           8 |                   0 |                       0 |      0 |
 | `aura`     |    25 |          25 |                   0 |                       0 |      0 |
-| `pass`     |     3 |           3 |                   0 |                       0 |      0 |
+| `pass`     |    20 |           8 |                  12 |                       0 |      0 |
 
 #### 9. Divergencias aplicación–proceso clasificadas
 
@@ -2207,6 +2272,8 @@ AUTH-UI-014-COR-001 — Reconciliar DataCleanupFlow con el registro de consumido
 | Clasificación actual | `consumer_only = true`                                                                                                                            |
 | Brecha               | SHELL no figura entre las consumidoras de `VPROC-0060` en `PROC-CAT-006`                                                                          |
 | Decisión funcional   | incorporar a SHELL como consumidora directa mínima para autoservicio de privacidad, retención y disposición, mediante `PROYECCION_Y_EVENTO`       |
+| Tarea canónica propietaria | `AUTH-UI-030`                                                                                                                                |
+| Estado de la acción  | `BLOCKING_PRECONDITION`                                                                                                                            |
 | Límite               | SHELL no gobierna custodia, retención, legal hold, clasificación ni disposición empresarial; solo presenta y solicita el caso personal autorizado |
 | Momento máximo       | antes de `AUTH-UI-030` y antes de implementar o certificar `DataCleanupFlow`                                                                      |
 | Evidencia de cierre  | revisión versionada de `PROC-APPLICATION-CONSUMER-REGISTRY-001`, TREQ actualizado y validador sin brecha                                          |
@@ -2278,16 +2345,16 @@ La brecha no queda como pendiente narrativo sin identificador, propietaria docum
 | `NEXO-ROUTE-052` | `/inventory/stock`                           | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`            | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0024`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
 | `NEXO-ROUTE-053` | `/inventory/stock/assign-location`           | `VPROC-0024` | `VPROC-0024::STEP-CONFIRM_STOCK_ENTRY`               | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0024`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
 | `NEXO-ROUTE-054` | `/inventory/transfers`                       | `VPROC-0025` | `VPROC-0025::STEP-EXECUTE_INTERNAL_TRANSFER`         | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0025`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
-| `NEXO-ROUTE-055` | `/inventory/warehouse`                       | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG`          | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0023`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
+| `NEXO-ROUTE-055` | `/inventory/warehouse` | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG` | `nexo` | `nexo` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `REDIRECT_CONSUMPTION_INHERITED` | Ruta de entrada sin render propio; hereda consumer_only y relación de `NEXO-ROUTE-020`. |
 | `NEXO-ROUTE-056` | `/inventory/withdraw`                        | `VPROC-0025` | `VPROC-0025::STEP-EXECUTE_STOCK_WITHDRAWAL`          | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0025`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
-| `NEXO-ROUTE-057` | `/kiosk/[slug]`                              | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION`            | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0024`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
-| `NEXO-ROUTE-058` | `/l/[code]`                                  | `VPROC-0023` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT`     | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0023`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]` | `VPROC-0024` | `VPROC-0024::STEP-CONSULT_STOCK_POSITION` | `nexo` | `nexo` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `REDIRECT_CONSUMPTION_INHERITED` | Ruta de entrada sin render propio; hereda consumer_only y relación de `NEXO-ROUTE-022 o NEXO-ROUTE-026`. |
+| `NEXO-ROUTE-058` | `/l/[code]` | `VPROC-0023` | `VPROC-0023::STEP-IDENTIFY_LOCATION_AND_CONTENT` | `nexo` | `nexo` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `REDIRECT_CONSUMPTION_INHERITED` | Ruta de entrada sin render propio; hereda consumer_only y relación de `NEXO-ROUTE-025`. |
 | `NEXO-ROUTE-059` | `/login`                                     | `VPROC-0059` | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER`           | `shell`             | `viso`                  | `true`        | `DIRECT_CONSUMER`   | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059` en `PROC-CAT-006`; la vista puede presentar, solicitar o ejecutar únicamente el efecto propio autorizado, sin recrear ni cerrar el resultado gobernado por `viso`. |
 | `NEXO-ROUTE-060` | `/no-access`                                 | `VPROC-0059` | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`         | `shell`             | `viso`                  | `true`        | `DIRECT_CONSUMER`   | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059` en `PROC-CAT-006`; la vista puede presentar, solicitar o ejecutar únicamente el efecto propio autorizado, sin recrear ni cerrar el resultado gobernado por `viso`. |
 | `NEXO-ROUTE-061` | `/printing/designer`                         | `VPROC-0015` | `VPROC-0015::STEP-AUTHOR_LOGISTICS_LABEL_TEMPLATE`   | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0015`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
 | `NEXO-ROUTE-062` | `/printing/jobs`                             | `VPROC-0024` | `VPROC-0024::STEP-OPERATE_PRINT_QUEUE`               | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0024`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
 | `NEXO-ROUTE-063` | `/printing/setup`                            | `VPROC-0024` | `VPROC-0024::STEP-CONFIGURE_LOGISTICS_PRINTERS`      | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0024`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
-| `NEXO-ROUTE-064` | `/scanner`                                   | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG`          | `nexo`              | `nexo`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `nexo` coincide con la propietaria de `VPROC-0023`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
+| `NEXO-ROUTE-064` | `/scanner` | `VPROC-0023` | `VPROC-0023::STEP-CONSULT_LOCATION_CATALOG` | `nexo` | `nexo` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `REDIRECT_CONSUMPTION_INHERITED` | Ruta de entrada sin render propio; hereda consumer_only y relación de `NEXO-ROUTE-020`. |
 
 ##### FOGO
 | View ID          | Vista o superficie        | process_id   | process_step                                 | Aplicación primaria | Propietaria del proceso | consumer_only | Relación            | Registro PROC-CAT-006      | Modalidad                    | Estado                           | Fundamento                                                                                                                                                                                                                 |
@@ -2459,6 +2526,27 @@ La brecha no queda como pendiente narrativo sin identificador, propietaria docum
 ##### PASS
 | View ID                  | Vista o superficie                                    | process_id   | process_step                                        | Aplicación primaria | Propietaria del proceso | consumer_only | Relación          | Registro PROC-CAT-006      | Modalidad                    | Estado                           | Fundamento                                                                                                                                                                                                                 |
 | ------------------------ | ----------------------------------------------------- | ------------ | --------------------------------------------------- | ------------------- | ----------------------- | ------------- | ----------------- | -------------------------- | ---------------------------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PASS-CUSTOMER-SURFACE-001` | `Auth — acceso del cliente` | `VPROC-0059` | `VPROC-0059::STEP-AUTHENTICATE_OR_RECOVER` | `shell` | `viso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `viso`. |
+| `PASS-CUSTOMER-SURFACE-002` | `CompleteProfile — completar perfil` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | `pass` | `pass` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `CAPABILITY_OWNER_CONFIRMED` | PASS gobierna la identidad, el perfil o el ledger presentado por esta superficie y no consume una fuente de verdad competidora. |
+| `PASS-CUSTOMER-SURFACE-003` | `Home — inicio del cliente` | `VPROC-0045` | `VPROC-0045::STEP-ENTER_LOYALTY_HOME` | `pass` | `pass` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `CAPABILITY_OWNER_CONFIRMED` | PASS gobierna la identidad, el perfil o el ledger presentado por esta superficie y no consume una fuente de verdad competidora. |
+| `PASS-CUSTOMER-SURFACE-004` | `Club — beneficios y recompensas` | `VPROC-0045` | `VPROC-0045::STEP-CONSULT_REWARDS_CATALOG` | `pass` | `pass` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `CAPABILITY_OWNER_CONFIRMED` | PASS gobierna la identidad, el perfil o el ledger presentado por esta superficie y no consume una fuente de verdad competidora. |
+| `PASS-CUSTOMER-SURFACE-005` | `MyOrders — pedidos propios` | `VPROC-0039` | `VPROC-0039::STEP-CONSULT_PERSONAL_ORDERS` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0039`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-006` | `ChooseSatellite — selección de marca o sede` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0039`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-007` | `DeliveryAddresses — direcciones de entrega` | `VPROC-0050` | `VPROC-0050::STEP-SELECT_FULFILLMENT` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0050`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-008` | `AccountSettings — cuenta y privacidad` | `VPROC-0045` | `VPROC-0045::STEP-MAINTAIN_CUSTOMER_PROFILE_AND_CONSENT` | `pass` | `pass` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `CAPABILITY_OWNER_CONFIRMED` | PASS gobierna la identidad, el perfil o el ledger presentado por esta superficie y no consume una fuente de verdad competidora. |
+| `PASS-CUSTOMER-SURFACE-009` | `VentoCafe — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `REFERENCIA_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0017`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-010` | `Saudo — experiencia de marca` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `REFERENCIA_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0017`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-011` | `SatelliteExperience — hub de experiencias` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `REFERENCIA_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0017`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-012` | `SatellitePass — experiencia de sede` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `REFERENCIA_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0017`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-013` | `OrderHome — entrada al portal de compras` | `VPROC-0039` | `VPROC-0039::STEP-ENTER_CUSTOMER_COMMERCE` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0039`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-014` | `OrderMenu — menú y configuración del pedido` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `REFERENCIA_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0017`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-015` | `OrderCheckout — revisión e inicio de pago` | `VPROC-0043` | `VPROC-0043::STEP-REVIEW_AND_START_PAYMENT` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0043`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-016` | `OrderPlaced — confirmación y retorno de pago` | `VPROC-0043` | `VPROC-0043::STEP-PRESENT_ORDER_RECEIPT` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0043`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-017` | `OrderChat — comunicación del pedido` | `VPROC-0047` | `VPROC-0047::STEP-COMMUNICATE_ABOUT_ORDER` | `pass` | `pulso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_EFECTO_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `pass` figura como consumidora directa de `VPROC-0047`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `pulso`. |
+| `PASS-CUSTOMER-SURFACE-018` | `QrModal — identificación personal` | `VPROC-0045` | `VPROC-0045::STEP-PRESENT_CUSTOMER_ID` | `pass` | `pass` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `CAPABILITY_OWNER_CONFIRMED` | PASS gobierna la identidad, el perfil o el ledger presentado por esta superficie y no consume una fuente de verdad competidora. |
+| `PASS-CUSTOMER-SURFACE-019` | `AppUpdateGate — compatibilidad de versión` | `VPROC-0058` | `VPROC-0058::STEP-RESTORE_APPLICATION_COMPATIBILITY` | `shell` | `viso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `PROYECCION_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0058`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `viso`. |
+| `PASS-CUSTOMER-SURFACE-020` | `App runtime gates — carga, configuración y perfil` | `VPROC-0058` | `VPROC-0058::STEP-TRIAGE_TECHNOLOGY_REQUEST` | `shell` | `viso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `PROYECCION_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0058`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `viso`. |
+| `PASS-CUSTOMER-SURFACE-021` | `AppErrorBoundary — recuperación de error` | `VPROC-0062` | `VPROC-0062::STEP-ACTIVATE_AND_RECOVER_CONTINUITY` | `shell` | `viso` | `true` | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `PROYECCION_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0062`; la superficie presenta o solicita únicamente el efecto autorizado sin apropiarse del proceso gobernado por `viso`. |
 | `PASS-LABOR-SURFACE-001` | `Contexto laboral en Header`                          | `VPROC-0059` | `VPROC-0059::STEP-RESOLVE_EFFECTIVE_CONTEXT`        | `shell`             | `viso`                  | `true`        | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059` en `PROC-CAT-006`; la vista puede presentar, solicitar o ejecutar únicamente el efecto propio autorizado, sin recrear ni cerrar el resultado gobernado por `viso`. |
 | `PASS-LABOR-SURFACE-002` | `Acciones de cambio o restablecimiento de rol y sede` | `VPROC-0059` | `VPROC-0059::STEP-ASSIGN_EFFECTIVE_ACCESS`          | `shell`             | `viso`                  | `true`        | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059` en `PROC-CAT-006`; la vista puede presentar, solicitar o ejecutar únicamente el efecto propio autorizado, sin recrear ni cerrar el resultado gobernado por `viso`. |
 | `PASS-LABOR-SURFACE-003` | `Modal Modo de prueba`                                | `VPROC-0059` | `VPROC-0059::STEP-SIMULATE_ACCESS_DECISION`         | `shell`             | `viso`                  | `true`        | `DIRECT_CONSUMER` | `DECLARED_IN_PROC_CAT_006` | `SOLICITUD_HANDOFF_Y_EVENTO` | `CONSUMER_ONLY_DIRECT_CONFIRMED` | `shell` figura como consumidora directa de `VPROC-0059` en `PROC-CAT-006`; la vista puede presentar, solicitar o ejecutar únicamente el efecto propio autorizado, sin recrear ni cerrar el resultado gobernado por `viso`. |
@@ -2502,7 +2590,7 @@ La brecha no queda como pendiente narrativo sin identificador, propietaria docum
 | `AURA-CURRENT-PUBLIC-004`      | `/empleos`                                        | `VPROC-0005` | `VPROC-0005::STEP-CONSULT_OPEN_VACANCIES`         | `viso`              | `viso`                  | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `viso` coincide con la propietaria de `VPROC-0005`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                        |
 | `AURA-CURRENT-PUBLIC-005`      | `/servicios`                                      | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `pulso`             | `pulso`                 | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `pulso` coincide con la propietaria de `VPROC-0017`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                       |
 | `AURA-CURRENT-PUBLIC-006`      | `/ecosistema`                                     | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `pulso`             | `pulso`                 | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `pulso` coincide con la propietaria de `VPROC-0017`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                       |
-| `AURA-CURRENT-PUBLIC-007`      | `/eventos → /restaurantes`                        | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER`        | `pulso`             | `pulso`                 | `false`       | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER`     | `OWNER_GOVERNS_CAPABILITY`   | `CAPABILITY_OWNER_CONFIRMED`     | La aplicación primaria `pulso` coincide con la propietaria de `VPROC-0017`; la vista pertenece a la frontera que gobierna el registro, las reglas, el estado, la corrección y el cierre del proceso.                       |
+| `AURA-CURRENT-PUBLIC-007` | `/eventos → /restaurantes` | `VPROC-0017` | `VPROC-0017::STEP-BROWSE_COMMERCIAL_OFFER` | `pulso` | `pulso` | `false` | `OWNER_APPLICATION` | `NOT_APPLICABLE_OWNER` | `OWNER_GOVERNS_CAPABILITY` | `REDIRECT_CONSUMPTION_INHERITED` | Ruta de entrada sin render propio; hereda consumer_only y relación de `AURA-CURRENT-PUBLIC-002`. |
 
 
 #### 13. Reglas operativas posteriores
@@ -2532,7 +2620,7 @@ Esta tarea no:
 
 La compilación deberá fallar cuando:
 
-1. existan menos o más de 243 filas;
+1. existan menos o más de 264 filas;
 2. una fila carezca de `consumer_only`;
 3. una fila propietaria tenga `consumer_only = true`;
 4. una divergencia aplicación–propietaria tenga `consumer_only = false`;
@@ -2541,7 +2629,7 @@ La compilación deberá fallar cuando:
 7. la brecha aprobada se presente como implementable antes de `AUTH-UI-014-COR-001`;
 8. un alias difiera de su fuente;
 9. cambie un `process_id`, `process_step`, aplicación primaria o propietaria aprobados;
-10. los conteos no sean 172 propietarias, 69 directas, una condicional y una brecha;
+10. los conteos no sean 177 propietarias, 85 directas, una condicional y una brecha;
 11. runtime o host se usen como aplicación consumidora;
 12. la clasificación se interprete como permiso o acceso.
 
@@ -2555,11 +2643,11 @@ TREQ-UX-1555 a TREQ-UX-1578
 
 | ID             | Regla protegida                                                                                                                                                                                                                                                                   |
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TREQ-UX-1555` | El registro de consumo de capacidad deberá contener exactamente 243 filas, correspondientes a 236 vistas únicas y siete aliases, sin omitir ninguna fila aprobada en AUTH-UI-013.                                                                                                 |
-| `TREQ-UX-1556` | AUTH-UI-014 deberá preservar exactamente los 243 process_id, process_step, primary_application_id y process_owner_application_id aprobados; clasificar consumo no podrá reabrir esos vínculos.                                                                                    |
+| `TREQ-UX-1555` | El registro de consumo de capacidad deberá contener exactamente 264 filas, correspondientes a 252 vistas únicas y siete aliases y cinco redirects, sin omitir ninguna fila aprobada en AUTH-UI-013.                                                                                                 |
+| `TREQ-UX-1556` | AUTH-UI-014 deberá preservar exactamente los 264 process_id, process_step, primary_application_id y process_owner_application_id aprobados; clasificar consumo no podrá reabrir esos vínculos.                                                                                    |
 | `TREQ-UX-1557` | consumer_only será false únicamente cuando la aplicación primaria coincida con la propietaria del proceso; toda divergencia deberá resolverse como consumo directo, condicional o brecha contractual explícita.                                                                   |
-| `TREQ-UX-1558` | Las 172 filas cuya aplicación primaria coincide con la propietaria deberán conservar consumer_only=false y no aparecer como consumidoras del mismo proceso.                                                                                                                       |
-| `TREQ-UX-1559` | Las 69 filas clasificadas como consumidoras directas deberán corresponder a una relación directa declarada en PROC-CAT-006 y limitarse a la modalidad funcional aprobada.                                                                                                         |
+| `TREQ-UX-1558` | Las 177 filas cuya aplicación primaria coincide con la propietaria deberán conservar consumer_only=false y no aparecer como consumidoras del mismo proceso.                                                                                                                       |
+| `TREQ-UX-1559` | Las 85 filas clasificadas como consumidoras directas deberán corresponder a una relación directa declarada en PROC-CAT-006 y limitarse a la modalidad funcional aprobada.                                                                                                         |
 | `TREQ-UX-1560` | ANIMA-SURFACE-003 deberá conservar consumo condicional de VPROC-0004; la bandeja personal solo podrá mostrar compromisos cuando una condición empresarial explícita vincule al trabajador.                                                                                        |
 | `TREQ-UX-1561` | SHELL deberá conservar 41 relaciones directas de consumo de acceso, soporte o continuidad y una relación bloqueada; presentar una superficie transversal no transferirá la propiedad del proceso.                                                                                 |
 | `TREQ-UX-1562` | ANIMA-SURFACE-015 DataCleanupFlow deberá permanecer consumer_only=true y bloqueada mientras SHELL no figure como consumidora de VPROC-0060 o se apruebe una corrección equivalente de proceso o aplicación.                                                                       |
@@ -2571,14 +2659,14 @@ TREQ-UX-1555 a TREQ-UX-1578
 | `TREQ-UX-1568` | Una vista consumer_only no podrá crear, corregir, cancelar, cerrar ni reabrir directamente el registro principal de la propietaria, ni escribir su estado privado o conservar una copia mutable independiente.                                                                    |
 | `TREQ-UX-1569` | Toda acción desde una vista consumer_only deberá convertirse en consulta, comando, handoff o efecto propio correlacionado; la propietaria deberá revalidar identidad, permiso, contexto, versión y estado antes de aceptar el resultado.                                          |
 | `TREQ-UX-1570` | El consumo condicional deberá resolver y auditar la condición empresarial antes de exponer datos o acciones; rol, ruta, nombre de componente o coincidencia textual no serán condiciones suficientes.                                                                             |
-| `TREQ-UX-1571` | Los siete aliases AURA deberán heredar consumer_only, relación, modalidad y estado de su vista fuente, sin crear una segunda relación de consumo ni alterar los conteos de vistas únicas.                                                                                         |
+| `TREQ-UX-1571` | Los siete aliases y cinco redirects AURA deberán heredar consumer_only, relación, modalidad y estado de su vista fuente, sin crear una segunda relación de consumo ni alterar los conteos de vistas únicas.                                                                                         |
 | `TREQ-UX-1572` | Las superficies cuya aplicación primaria y propietaria son AURA deberán conservar consumer_only=false aunque AURA permanezca diferida; diferimiento no transforma propiedad en consumo ni habilita operación.                                                                     |
 | `TREQ-UX-1573` | public_web y otros runtimes o canales técnicos no podrán evaluarse como propietarios o consumidores; la clasificación pertenecerá exclusivamente a la primary_application_id canónica de la vista.                                                                                |
 | `TREQ-UX-1574` | La divergencia entre runtime_container y primary_application_id deberá conservarse separada de consumer_only; mover una vista de repositorio no cambiará por sí solo su relación de propiedad o consumo.                                                                          |
 | `TREQ-UX-1575` | Clasificar una vista como propietaria o consumidora no concederá permiso, visibilidad, territorio, acceso directo, escritura, suscripción, exportación ni capacidad en dispositivo compartido.                                                                                    |
 | `TREQ-UX-1576` | Cambiar consumer_only, tipo de relación o modalidad deberá exigir decisión versionada, compatibilidad, inventario de dependencias, contratos, pruebas, rollback e historial del vínculo anterior.                                                                                 |
 | `TREQ-UX-1577` | Route handlers, server actions, middleware, layouts, servicios, colas, notificaciones y otros artefactos técnicos deberán permanecer excluidos de la matriz de consumo de vistas; su consumo se auditará en tareas técnicas propias.                                              |
-| `TREQ-UX-1578` | La compilación deberá fallar si una fila carece de consumer_only, una propietaria aparece como consumidora, una divergencia no está declarada directa o condicionalmente salvo la brecha explícita, un alias difiere, los conteos no son 172/69/1/1 o cambia un vínculo aprobado. |
+| `TREQ-UX-1578` | La compilación deberá fallar si una fila carece de consumer_only, una propietaria aparece como consumidora, una divergencia no está declarada directa o condicionalmente salvo la brecha explícita, una referencia heredada difiere, los conteos no son 177/85/1/1 o cambia un vínculo aprobado. |
 
 #### 17. Huellas de la línea base
 
@@ -2592,10 +2680,10 @@ CONSUMER_DECLARATION_GAP_SHA256 = 612f4df986aa905b674238f322d49be93c962a8e9b32e1
 
 #### 18. Criterios de aceptación
 
-- [x] Se clasifican las 243 filas sin omisiones.
+- [x] Se clasifican las 264 filas sin omisiones.
 - [x] Se preservan proceso, paso, aplicación primaria y propietaria.
-- [x] Se distinguen 172 relaciones propietarias y 71 consumidoras.
-- [x] Se validan 69 consumidoras directas contra `PROC-CAT-006`.
+- [x] Se distinguen 177 relaciones propietarias y 87 consumidoras.
+- [x] Se validan 85 consumidoras directas contra `PROC-CAT-006`.
 - [x] Se identifica una consumidora condicional.
 - [x] Se registra una única brecha con acción correctiva, límite y momento exactos.
 - [x] SHELL no adquiere propiedad por contener superficies transversales.
@@ -2610,15 +2698,15 @@ CONSUMER_DECLARATION_GAP_SHA256 = 612f4df986aa905b674238f322d49be93c962a8e9b32e1
 
 | Control                         | Resultado                                         |
 | ------------------------------- | ------------------------------------------------- |
-| Base 04A leída completa         | **3.560 requisitos**                              |
+| Base 04A leída completa         | **3.568 requisitos**                              |
 | Nuevos requisitos               | **24**                                            |
-| Total regenerado                | **3.584**                                         |
+| Total regenerado                | **3.592**                                         |
 | Dominio UX                      | **1.578 requisitos — TREQ-UX-001 a TREQ-UX-1578** |
-| Filas con catorce columnas      | **3.584 de 3.584**                                |
+| Filas con catorce columnas      | **3.592 de 3.592**                                |
 | Identificadores TREQ duplicados | **0**                                             |
 | Relaciones TREQ no resolubles   | **0**                                             |
 | Filas históricas modificadas    | **0**                                             |
-| Filas de clasificación          | **243**                                           |
+| Filas de clasificación          | **264**                                           |
 | Filas sin clasificación         | **0**                                             |
 | Brechas no documentadas         | **0**                                             |
 | Código o Supabase modificado    | **no**                                            |
@@ -2636,11 +2724,10 @@ CONSUMER_DECLARATION_GAP_SHA256 = 612f4df986aa905b674238f322d49be93c962a8e9b32e1
 AUTH-UI-014 — Definir si la aplicación solo consume la capacidad
         ↓
 TAREA ACTUAL
-AUTH-UI-015 — Definir tipo de vista
+AUTH-UI-015 — Clasificar vista operativa
         ↓
 SIGUIENTE TAREA RESERVADA
 AUTH-UI-016 — Definir intención principal
 ```
 
 APROBADA
-

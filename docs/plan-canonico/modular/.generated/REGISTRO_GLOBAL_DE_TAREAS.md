@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **356** |
+| Aprobadas | **357** |
 | En propuesta | **0** |
-| No iniciadas | **1219** |
+| No iniciadas | **1218** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.60% (356/1575)** |
+| Porcentaje de completamiento | **22.67% (357/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-014` — Definir si la aplicación solo consume la capacidad | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-015` — Clasificar vista operativa | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-016` — Clasificar vista administrativa | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-015` — Clasificar vista operativa | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-016` — Clasificar vista administrativa | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-017` — Clasificar vista de supervisión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -797,13 +797,13 @@
 | ✅ APROBADA | `AUTH-UI-006` | Inventariar todas las rutas de NUMERA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-007` | Inventariar todas las pantallas de ANIMA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-008` | Inventariar todas las superficies de SHELL | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
-| ✅ APROBADA | `AUTH-UI-009` | Inventariar superficies laborales relacionadas con PASS | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
+| ✅ APROBADA | `AUTH-UI-009` | Inventariar todas las superficies de PASS y sus fronteras laborales | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-010` | Auditar rutas y superficies actuales de AURA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-011` | Asignar process_id a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ✅ APROBADA | `AUTH-UI-012` | Asignar process_step a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ✅ APROBADA | `AUTH-UI-013` | Definir aplicación propietaria | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ✅ APROBADA | `AUTH-UI-014` | Definir si la aplicación solo consume la capacidad | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-015` | Clasificar vista operativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
+| ✅ APROBADA | `AUTH-UI-015` | Clasificar vista operativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-016` | Clasificar vista administrativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-017` | Clasificar vista de supervisión | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-018` | Clasificar vista de configuración | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
