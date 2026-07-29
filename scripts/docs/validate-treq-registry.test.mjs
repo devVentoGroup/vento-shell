@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { validateTreqRegistrySource } from './validate-treq-registry.mjs';
+import {
+  extractDerivedTreqIds,
+  validateTreqRegistrySource,
+} from './validate-treq-registry.mjs';
 
 const context = {
   tasks: new Map([
@@ -13,6 +16,26 @@ const context = {
   ]),
   expectedLatestTaskId: 'TASK-BASE-001',
 };
+
+test('reconoce requisitos derivados, generados e incorporados', () => {
+  for (const variant of ['derivados', 'generados', 'incorporados']) {
+    const body = [
+      `#### 14. Requisitos de prueba ${variant}`,
+      '',
+      'TREQ-SUPABASE-139 a TREQ-SUPABASE-141',
+      '',
+      '#### 15. Cierre',
+      '',
+      'TREQ-SUPABASE-999',
+    ].join('\n');
+
+    assert.deepEqual(extractDerivedTreqIds(body), [
+      'TREQ-SUPABASE-139',
+      'TREQ-SUPABASE-140',
+      'TREQ-SUPABASE-141',
+    ]);
+  }
+});
 
 function registry({ rowOverrides = {}, summaryOverrides = {}, extraRows = [] } = {}) {
   const row = {

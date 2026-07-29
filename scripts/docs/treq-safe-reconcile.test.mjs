@@ -145,6 +145,14 @@ test('sincroniza automáticamente todas las métricas derivadas del resumen', ()
     duplicates: 0,
     unresolvedRelations: 0,
     latestTask: 'SUPA-AUD-008',
+    distribution: [
+      {
+        domain: 'SUPABASE',
+        firstId: 'TREQ-SUPABASE-001',
+        lastId: 'TREQ-SUPABASE-169',
+        count: 169,
+      },
+    ],
   });
 
   assert.match(result, /Requisitos vigentes \| \*\*4404\*\*/);
@@ -153,4 +161,39 @@ test('sincroniza automáticamente todas las métricas derivadas del resumen', ()
   assert.match(result, /Identificadores duplicados \| \*\*0\*\*/);
   assert.match(result, /Relaciones `TREQ-\*` no resolubles \| \*\*0\*\*/);
   assert.match(result, /Última tarea incorporada \| `SUPA-AUD-008`/);
+});
+
+test('regenera la distribución desde las filas validadas', () => {
+  const source = [
+    'Distribución vigente:',
+    '',
+    '| Dominio | Rango | Cantidad |',
+    '| ------- | ----- | -------: |',
+    '| `SUPABASE` | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-138` | 138 |',
+    '',
+    '### Procedimiento obligatorio de actualización',
+    '',
+  ].join('\n');
+
+  const result = updateRegistrySummary(source, {
+    requirements: 169,
+    domains: 1,
+    duplicates: 0,
+    unresolvedRelations: 0,
+    latestTask: 'SUPA-AUD-012',
+    distribution: [
+      {
+        domain: 'SUPABASE',
+        firstId: 'TREQ-SUPABASE-001',
+        lastId: 'TREQ-SUPABASE-169',
+        count: 169,
+      },
+    ],
+  });
+
+  assert.match(
+    result,
+    /\| `SUPABASE` \| `TREQ-SUPABASE-001` a `TREQ-SUPABASE-169` \|\s+169 \|/
+  );
+  assert.doesNotMatch(result, /TREQ-SUPABASE-138/);
 });

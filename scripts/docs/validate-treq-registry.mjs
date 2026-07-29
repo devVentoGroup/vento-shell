@@ -101,6 +101,22 @@ function expandTreqReferences(value) {
   return [...references];
 }
 
+export function extractDerivedTreqIds(body) {
+  const derivedMatch = body.match(
+    /^####(?:\s+\d+\.)?\s+Requisitos de prueba (?:derivados|generados|incorporados)\s*$/m
+  );
+  if (derivedMatch?.index === undefined) {
+    return [];
+  }
+
+  const derivedBody = body.slice(derivedMatch.index);
+  const nextSection = derivedBody.slice(5).search(/^####\s/m);
+  const section = nextSection >= 0
+    ? derivedBody.slice(0, nextSection + 5)
+    : derivedBody;
+  return expandTreqReferences(section);
+}
+
 function markerState(marker) {
   if (marker === '✅' || marker === '[x]') return 'APROBADA';
   if (marker === '🟡' || marker === '[~]') return 'PROPUESTA PARA APROBACIÓN';
@@ -145,21 +161,11 @@ export function buildCanonicalTreqContext({ baseDir, manifest }) {
       const id = match.groups.id;
       const end = matches[index + 1]?.index ?? source.length;
       const body = source.slice(match.index, end);
-      const derivedMatch = body.match(/^####(?:\s+\d+\.)?\s+Requisitos de prueba derivados\s*$/m);
-      let derivedIds = [];
-      if (derivedMatch?.index >= 0) {
-        const derivedBody = body.slice(derivedMatch.index);
-        const nextSection = derivedBody.slice(5).search(/^####\s/m);
-        const section = nextSection >= 0
-          ? derivedBody.slice(0, nextSection + 5)
-          : derivedBody;
-        derivedIds = expandTreqReferences(section);
-      }
       tasks.set(id, {
         id,
         state: markerState(match.groups.marker),
         relativePath,
-        derivedIds,
+        derivedIds: extractDerivedTreqIds(body),
       });
     });
   }
@@ -454,6 +460,12 @@ export function validateTreqRegistrySource(source, context) {
       duplicates: duplicateIds.size,
       unresolvedRelations,
       latestTask: context.expectedLatestTaskId,
+      distribution: [...grouped.entries()].map(([domain, domainRows]) => ({
+        domain,
+        firstId: domainRows[0]?.ID ?? null,
+        lastId: domainRows.at(-1)?.ID ?? null,
+        count: domainRows.length,
+      })),
     },
   };
 }

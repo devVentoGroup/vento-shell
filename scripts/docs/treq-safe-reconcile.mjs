@@ -75,6 +75,36 @@ function updateNumericSummaryMetric(source, label, value) {
   );
 }
 
+function updateDistributionSummary(source, distribution) {
+  if (!Array.isArray(distribution) || distribution.length === 0) {
+    return source;
+  }
+
+  const newline = source.includes('\r\n') ? '\r\n' : '\n';
+  const renderedRows = distribution.map((entry) => ({
+    domain: `\`${entry.domain}\``,
+    range: entry.count === 1
+      ? `\`${entry.firstId}\``
+      : `\`${entry.firstId}\` a \`${entry.lastId}\``,
+    count: String(entry.count),
+  }));
+  const domainWidth = Math.max('Dominio'.length, ...renderedRows.map((row) => row.domain.length));
+  const rangeWidth = Math.max('Rango'.length, ...renderedRows.map((row) => row.range.length));
+  const countWidth = Math.max('Cantidad'.length, ...renderedRows.map((row) => row.count.length));
+  const table = [
+    `| ${'Dominio'.padEnd(domainWidth)} | ${'Rango'.padEnd(rangeWidth)} | ${'Cantidad'.padStart(countWidth)} |`,
+    `| ${'-'.repeat(domainWidth)} | ${'-'.repeat(rangeWidth)} | ${'-'.repeat(countWidth - 1)}: |`,
+    ...renderedRows.map((row) =>
+      `| ${row.domain.padEnd(domainWidth)} | ${row.range.padEnd(rangeWidth)} | ${row.count.padStart(countWidth)} |`
+    ),
+  ].join(newline);
+
+  return source.replace(
+    /(Distribución vigente:\r?\n\r?\n)\|[^\r\n]*\r?\n\|[^\r\n]*\r?\n(?:\|[^\r\n]*\r?\n)+(?=\r?\n### Procedimiento obligatorio de actualización)/u,
+    `$1${table}${newline}`
+  );
+}
+
 export function updateRegistrySummary(source, stats) {
   let updated = source;
   updated = updateNumericSummaryMetric(
@@ -102,7 +132,8 @@ export function updateRegistrySummary(source, stats) {
     'Relaciones `TREQ-*` no resolubles',
     stats.unresolvedRelations
   );
-  return updateLatestTaskSummary(updated, stats.latestTask);
+  updated = updateLatestTaskSummary(updated, stats.latestTask);
+  return updateDistributionSummary(updated, stats.distribution);
 }
 
 export function reconcileTreqRegistrySource({

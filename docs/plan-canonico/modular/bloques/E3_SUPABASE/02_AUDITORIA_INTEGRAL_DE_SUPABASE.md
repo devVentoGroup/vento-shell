@@ -4358,7 +4358,15 @@ Estos objetos son administrados por Supabase. No deben ser reestructurados media
 
 No quedan pendientes narrativos sin tarea. Esta tarea identifica el estado; no define todavía el modelo definitivo ni aplica saneamiento.
 
-#### 14. Huellas de integridad
+#### 14. Requisitos de prueba derivados
+
+```text
+TREQ-SUPABASE-124 a TREQ-SUPABASE-138
+```
+
+Los requisitos protegen cuentas Auth, identidades, sesiones, refresh tokens, revocación laboral, bloqueo, metadatos no autoritativos, perfiles cliente, vínculos laborales, integridad referencial, invitaciones, clases de cuenta, nivel de aseguramiento, objetos administrados e integridad por huellas.
+
+#### 15. Huellas de integridad
 
 ```text
 AUTH_USER_REGISTRY_SHA256=103ea5a60e57394bf6eeded95647416ae9175176123ee9b036bb45e68210a6eb
@@ -4371,7 +4379,7 @@ METADATA_KEY_REGISTRY_SHA256=e5591f6e261d5fa4a7adc3522ec3984240b5e2e8d5b9d9d1957
 
 Las huellas excluyen valores de contraseña, correo, teléfono, token, IP, user-agent y payload sensible. Cualquier cambio deberá interpretarse junto con timestamp y operación legítima, porque usuarios y sesiones son datos vivos.
 
-#### 15. Criterios de cierre
+#### 16. Criterios de cierre
 
 SUPA-AUD-010 queda completa porque:
 
@@ -4580,7 +4588,245 @@ SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
 ```
 
 
-### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
+### ✅ SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`
+**Tarea anterior:** `SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime`
+**Proyecto Supabase observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Tipo de tarea:** auditoría documental, consultas remotas read-only y contraste estático de consumidores; sin DDL, DML, migraciones, creación o modificación de buckets, movimiento o eliminación de objetos, cambios de políticas, exposición, secretos ni despliegue
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de Supabase Storage: buckets, exposición, límites, objetos, rutas, políticas, referencias empresariales y ciclos de vida. La auditoría distingue cuatro planos que no deben confundirse:
+
+```text
+BUCKET Y CONFIGURACIÓN
+        ≠
+OBJETO FÍSICO Y RUTA
+        ≠
+FILA EMPRESARIAL QUE LO REFERENCIA
+        ≠
+AUTORIZACIÓN Y CICLO DE VIDA
+```
+
+Que una ruta exista no demuestra que su exposición sea correcta; que una política RLS exista no protege una URL pública; que una fila sea eliminada no demuestra que el objeto haya sido dispuesto; y que el objeto sea privado no reemplaza la autorización de dominio.
+
+#### 2. Método y límites
+
+Se ejecutaron únicamente consultas `SELECT` sobre `storage.buckets`, `storage.objects`, `storage.s3_multipart_uploads`, `pg_policies`, grants, índices, triggers, funciones, cron y columnas empresariales potencialmente referenciales. Se contrastaron consumidores estáticos en repositorios Vento para confirmar patrones de carga, URL firmada y eliminación compensatoria.
+
+No se descargó contenido, no se listaron nombres completos de archivos personales en este artefacto, no se generaron enlaces públicos o firmados, no se modificó Storage y no se invocaron operaciones de subida, copia, sustitución o borrado.
+
+#### 3. Corte cuantitativo
+
+| Métrica                               |                                              Resultado |
+| ------------------------------------- | -----------------------------------------------------: |
+| buckets STANDARD                      |                                                 **14** |
+| públicos                              |                                                  **8** |
+| privados                              |                                                  **6** |
+| objetos exactos                       |                                              **1.101** |
+| tamaño agregado                       | **750.891.333 bytes** — aproximadamente **716,11 MiB** |
+| políticas sobre `storage.objects`     |                                                 **39** |
+| objetos en bucket inexistente         |                                                  **0** |
+| rutas activas duplicadas por bucket   |                                                  **0** |
+| cargas multipart en progreso          |                                                  **0** |
+| referencias empresariales verificadas |                                              **1.054** |
+| referencias sin objeto                |                                                  **0** |
+| referencias a bucket inexistente      |                                                  **0** |
+
+La estimación estadística de `storage.objects` era 1.104, mientras que el conteo exacto por bucket suma 1.101. El artefacto usa el conteo exacto y conserva esta diferencia como señal normal de estadísticas no instantáneas, no como pérdida de datos.
+
+#### 4. Inventario canónico de buckets
+
+| Bucket                   | Público | Objetos |       Bytes |         Límite | MIME permitido    | Estado observado                                                       |
+| ------------------------ | ------: | ------: | ----------: | -------------: | ----------------- | ---------------------------------------------------------------------- |
+| `commercial-menu-images` |      sí |      51 |   2.800.621 |          5 MiB | JPEG, PNG, WebP   | activo y coherente                                                     |
+| `documents`              |  **sí** |     164 | 152.907.573 | **sin límite** | **sin allowlist** | **exposición incompatible con expediente laboral**                     |
+| `employee-photos`        |      sí |      26 |  39.118.553 |          5 MiB | JPEG, PNG, WebP   | dato personal publicado por diseño actual; requiere decisión explícita |
+| `nexo-ai-documents`      |      no |       1 |     312.532 |         12 MiB | PDF e imágenes    | privado, sin políticas cliente                                         |
+| `nexo-catalog-images`    |      sí |     790 | 172.881.585 |          5 MiB | imágenes          | activo; rutas heterogéneas y contenido draft/optimized                 |
+| `pass-satellite-logos`   |      sí |      11 |     685.743 |          5 MiB | imágenes y SVG    | activo                                                                 |
+| `product-images`         |      sí |      45 | 378.566.937 |          5 MiB | imágenes y SVG    | **15 objetos exceden el límite actual**                                |
+| `public-documents`       |      sí |       9 |   3.250.029 | **sin límite** | **sin allowlist** | contenido público deliberado mezclando PDF e imágenes                  |
+| `recipe-media`           |      no |       0 |           0 |        100 MiB | imagen y video    | privado, preparado para adopción                                       |
+| `recipe-step-photos`     |      sí |       4 |     367.760 |          8 MiB | JPEG, PNG, WebP   | mutación demasiado amplia para authenticated                           |
+| `talento-cv`             |      no |       0 |           0 |         10 MiB | PDF               | sin DELETE de candidato                                                |
+| `talento-documents`      |      no |       0 |           0 |         15 MiB | PDF, JPEG, PNG    | sin DELETE de candidato                                                |
+| `talento-medical`        |      no |       0 |           0 |         15 MiB | PDF, JPEG, PNG    | sensible; sin DELETE de candidato                                      |
+| `website-media`          |      no |       0 |           0 |         40 MiB | imagen y video    | privado con lectura authenticated                                      |
+
+La existencia de buckets vacíos no constituye por sí sola una brecha. Deben conservarse si son parte de un contrato de producto aprobado; de lo contrario, su retiro se resolverá en arquitectura y transición, no en esta auditoría.
+
+#### 5. Exposición pública y privacidad
+
+El hallazgo crítico es `documents`: contiene expedientes laborales referenciados por `public.documents`, posee políticas `SELECT` que verifican empleado, destinatario, sede y permisos, pero el bucket está configurado como público.
+
+```text
+POLÍTICA SELECT RESTRICTIVA
+        +
+BUCKET PUBLIC = TRUE
+        ↓
+LA URL PÚBLICA NO DEPENDE DE ESA POLÍTICA
+```
+
+El cliente ANIMA genera enlaces firmados de cinco minutos, lo que confirma intención de acceso privado. Esa intención no coincide con la configuración efectiva. La corrección futura deberá privatizar de manera controlada, verificar consumidores y evitar enlaces rotos; no se cambia el flag durante esta tarea.
+
+`employee-photos` también es público. No se declara automáticamente incorrecto porque puede existir una necesidad de distribución visual interna o pública, pero deberá documentarse finalidad, minimización, consentimiento o base aplicable, tamaño derivado y consumidores. La fotografía laboral no debe publicarse por simple conveniencia técnica.
+
+#### 6. Políticas de `storage.objects`
+
+Distribución observada:
+
+| Comando   | Políticas |
+| --------- | --------: |
+| `SELECT`  |     **6** |
+| `INSERT`  |    **12** |
+| `UPDATE`  |    **12** |
+| `DELETE`  |     **9** |
+| **Total** |    **39** |
+
+Hallazgos principales:
+
+1. `recipe-step-photos` permite insertar, actualizar y eliminar a cualquier `authenticated` siempre que coincida el bucket; no valida permiso, receta, sede ni área.
+2. `product-images` usa `viso.menu.images.manage` para insertar y actualizar, pero permite eliminar a propietario o gerente global. La capacidad no es simétrica.
+3. `talento-cv`, `talento-documents` y `talento-medical` permiten seleccionar, insertar y actualizar por pertenencia del candidato, pero no ofrecen DELETE. Esto puede ser una decisión de retención, pero hoy no existe ciclo explícito de disposición.
+4. `nexo-ai-documents` es privado y no posee políticas cliente; el único objeto fue creado por flujo privilegiado. El acceso futuro deberá documentar productor y consumidor.
+5. Los buckets públicos no requieren política SELECT para distribución pública, pero sí requieren autorización estricta para mutaciones.
+
+Los grants amplios observados sobre tablas administradas por Storage no se interpretan aisladamente como exposición, porque RLS y el servicio Storage participan en el control. No se modifican objetos administrados por Supabase.
+
+#### 7. Rutas y convenciones observadas
+
+Las rutas activas muestran varios contratos coexistentes:
+
+- prefijo funcional: `catalog-items`, `staff`, `products`, `recipes`, `viso`;
+- prefijo de estado: `draft-insumo`, `draft-asset`, `draft-reventa`, `draft-preparacion`, `optimized`;
+- prefijo UUID sin semántica declarada;
+- objeto directamente en raíz;
+- prefijo de usuario Auth para `documents`;
+- URLs públicas completas persistidas en numerosas tablas;
+- rutas desnudas persistidas en `public.documents.storage_path`.
+
+No se encontraron secuencias `..`, backslashes, dobles slash o slash inicial en los nombres activos. Sin embargo, la heterogeneidad impide definir de forma uniforme propietario, reemplazo, limpieza por entidad y migración. `SUPA-ARC-010` y `SUPA-ARC-011` deberán fijar gramática por bucket y versionarla.
+
+#### 8. Integridad entre tablas empresariales y objetos
+
+Se reconciliaron **1.054 referencias** y todas corresponden a objetos existentes. La cobertura confirmada incluye:
+
+| Fuente                                  | Bucket o buckets observados                                       | Referencias exactas |
+| --------------------------------------- | ----------------------------------------------------------------- | ------------------: |
+| `public.documents.storage_path`         | `documents`                                                       |                 157 |
+| `public.employees.photo_url`            | `employee-photos`                                                 |                  18 |
+| catálogo comercial                      | `commercial-menu-images`, `nexo-catalog-images`, `product-images` |                  72 |
+| imágenes de inventario y presentaciones | `nexo-catalog-images`                                             |                 792 |
+| logos de satélite                       | `pass-satellite-logos`                                            |                   9 |
+| fotos de pasos de receta                | `recipe-step-photos`                                              |                   4 |
+| medios website actualmente reutilizados | `pass-satellite-logos`                                            |                   2 |
+
+No hay referencias rotas en este corte. Sí existe acoplamiento semántico: una misma columna de catálogo contiene URLs de tres buckets; `website_items.image_url` reutiliza `pass-satellite-logos`; y varias fuentes guardan URL pública completa en vez de bucket y ruta. Estos usos pueden ser válidos temporalmente, pero impiden gobernar privacidad, host, CDN, migración y sustitución como contrato estable.
+
+#### 9. Límites, tipos y drift
+
+- `documents` y `public-documents` no tienen límite ni allowlist de MIME en el bucket.
+- Los objetos actuales coinciden con los tipos permitidos en los buckets que sí tienen allowlist.
+- `product-images` conserva **15 objetos** por encima del límite actual de 5 MiB; el mayor mide aproximadamente 35,2 MB.
+- No se detectaron propietarios Auth huérfanos en `owner` u `owner_id`.
+- No existen cargas multipart activas.
+
+Los objetos legacy sobre límite no deben borrarse. Deben clasificarse para optimización, excepción, reemplazo o migración, manteniendo referencias y calidad funcional.
+
+#### 10. Ciclos de vida y automatización
+
+No se encontraron rutinas empresariales, triggers propios ni jobs cron dedicados a:
+
+- expiración de objetos temporales;
+- limpieza de rutas draft;
+- reconciliación de filas y objetos;
+- disposición por baja laboral o eliminación de cuenta;
+- retención de CV, documentos médicos o expedientes;
+- detección de objetos sin referencia;
+- propagación controlada de sustituciones.
+
+Los triggers observados en `storage` son administrados por Supabase y protegen longitud, borrado directo y `updated_at`. No deben sustituirse ni utilizarse como lugar para lógica empresarial.
+
+El flujo ANIMA de carga intenta compensar borrando el objeto cuando falla la inserción de la fila. En eliminación hace lo inverso: borra primero la fila y considera no crítico un fallo posterior al borrar el objeto. Ese orden puede dejar un archivo laboral público sin fila empresarial ni mecanismo de reintento. La arquitectura objetivo deberá usar saga, tombstone o servicio de disposición auditable.
+
+#### 11. Modelo canónico mínimo requerido
+
+Cada clase de archivo deberá resolver:
+
+```text
+bucket_id
++ object_path estable
++ owner_subject_type y owner_subject_id
++ business_entity_type y business_entity_id
++ sensitivity
++ visibility
++ created_by_actor
++ created_at
++ replacement/version policy
++ retention_class
++ disposition_state
++ disposed_at y disposed_by
++ checksum o ETag cuando aplique
+```
+
+La URL será una representación derivada. Para contenido privado se generará bajo autorización y expiración; para contenido público podrá derivarse mediante infraestructura de distribución, sin convertir la URL persistida en identidad del objeto.
+
+#### 12. Brechas y enrutamiento obligatorio
+
+| ID local           | Hallazgo                                                                      | Riesgo                                          | Resolución obligatoria                                     |
+| ------------------ | ----------------------------------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------------- |
+| `SUPA-AUD-012-B01` | `documents` es público pese a políticas y enlaces firmados                    | exposición de expedientes laborales             | `SUPA-ARC-010`; `SUPA-TRANS-*`; paquetes ANIMA y VISO      |
+| `SUPA-AUD-012-B02` | `documents` y `public-documents` carecen de límite y MIME allowlist           | carga no acotada o tipo no previsto             | `SUPA-ARC-010`; `SUPA-AUD-015`; transición Storage         |
+| `SUPA-AUD-012-B03` | 15 objetos de `product-images` exceden 5 MiB                                  | drift y reemplazo incompatible                  | `SUPA-AUD-018`; `SUPA-ARC-010`; `SUPA-TRANS-*`             |
+| `SUPA-AUD-012-B04` | `recipe-step-photos` permite mutaciones a todo authenticated                  | alteración no autorizada                        | `SUPA-ARC-010`; `AUTH-DB-*`; paquete FOGO                  |
+| `SUPA-AUD-012-B05` | acciones de `product-images` usan capacidades asimétricas                     | autorización incoherente                        | `SUPA-ARC-010`; `AUTH-CAT-*`; paquetes VISO/PASS           |
+| `SUPA-AUD-012-B06` | buckets TALENTO privados no poseen disposición DELETE                         | retención indefinida o ciclo incompleto         | `SUPA-ARC-011`; paquete TALENTO; `SUPA-TRANS-*`            |
+| `SUPA-AUD-012-B07` | URL completa, ruta desnuda y múltiples buckets coexisten como referencias     | acoplamiento a host y migración riesgosa        | `SUPA-ARC-010`; `SUPA-TRANS-*`; paquetes consumidores      |
+| `SUPA-AUD-012-B08` | rutas raíz, UUID, draft, optimized y prefijos funcionales sin gramática única | limpieza y propiedad no deterministas           | `SUPA-ARC-010`; `SUPA-ARC-011`; `SUPA-TRANS-*`             |
+| `SUPA-AUD-012-B09` | no hay automatización empresarial de retención o reconciliación               | objetos residuales y disposición no verificable | `SUPA-AUD-014`; `SUPA-ARC-011`; paquetes de ciclo de vida  |
+| `SUPA-AUD-012-B10` | eliminación ANIMA borra fila antes de Storage y tolera fallo                  | archivo laboral huérfano y aún accesible        | `SUPA-ARC-011`; paquete documental ANIMA                   |
+| `SUPA-AUD-012-B11` | `employee-photos` es público sin contrato de finalidad documentado            | exposición de dato personal                     | `SUPA-ARC-010`; paquete ANIMA/VISO; revisión de privacidad |
+
+No quedan pendientes narrativos sin tarea.
+
+#### 13. Huellas de integridad
+
+| Registro                              | SHA-256                                                            |
+| ------------------------------------- | ------------------------------------------------------------------ |
+| configuración de buckets              | `e979a402b1d6fb4c64f8db2144bb362a68439e38841fe98e434c77a06258d3f4` |
+| uso agregado por bucket               | `846a0c19e05cdf31d1f29a6511f2a2e8bb2c2793f1324cf15a2cd5281efbaa69` |
+| políticas de Storage                  | `fef34dc7291ed2a4c63036f1ef03a48d092657e6a2390c143e9a53e8fc14b4d1` |
+| referencias empresariales verificadas | `8f4fed16f2a3fbb177200a8dc48d265eec1bf08543bca42231cb8c7a21b5efdf` |
+
+Las huellas excluyen contenido de archivos, nombres personales, URLs completas y secretos. El registro de referencias se compone de fuente, bucket, conteo, coincidencias y faltantes.
+
+#### 14. Requisitos de prueba incorporados
+
+Se incorporan `TREQ-SUPABASE-154` a `TREQ-SUPABASE-169` al registro canónico completo. Cubren inventario, contrato de bucket, privacidad documental, saga de archivos, buckets privados, TALENTO, autorización FOGO y VISO, límites, drift, rutas, referencias y validador integral.
+
+#### 15. Cierre
+
+La auditoría demuestra que el estado físico es consistente: no hay objetos en buckets inexistentes, rutas duplicadas ni referencias verificadas rotas. El problema principal es de gobierno:
+
+1. un bucket laboral sensible está públicamente expuesto;
+2. existen políticas de mutación demasiado amplias o asimétricas;
+3. rutas y referencias no siguen un contrato único;
+4. no existe ciclo empresarial automatizado de retención, reconciliación y disposición;
+5. contenido legacy excede límites actuales.
+
+No se modificó el remoto. La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+```
+
+
 ### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
 ### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
 ### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
