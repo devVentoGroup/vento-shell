@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **352** |
+| Tareas aprobadas | **353** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1223** |
+| Tareas no iniciadas | **1222** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **22.35% (352/1575)** |
+| Porcentaje de completamiento | **22.41% (353/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-010 — Auditar rutas y superficies actuales de AURA** |
-| Tarea actual | **AUTH-UI-011 — Asignar process_id a cada vista** |
+| Última tarea aprobada | **AUTH-UI-011 — Asignar process_id a cada vista** |
+| Tarea actual | **AUTH-UI-012 — Asignar process_step a cada vista** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-012 — Asignar process_step a cada vista** |
+| Siguiente tarea | **AUTH-UI-013 — Definir aplicación propietaria** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 10 de 29 aprobadas; AUTH-UI-011 pendiente** |
+| Progreso del bloque | **BLOQUE I: 11 de 29 aprobadas; AUTH-UI-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-010` — Auditar rutas y superficies actuales de AURA |
-| Tarea actual | `AUTH-UI-011` — Asignar process_id a cada vista — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-012` — Asignar process_step a cada vista |
+| Última aprobada | `AUTH-UI-011` — Asignar process_id a cada vista |
+| Tarea actual | `AUTH-UI-012` — Asignar process_step a cada vista — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-013` — Definir aplicación propietaria |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **10 DE 29 APROBADAS — ACTUAL AUTH-UI-011** |
+| BLOQUE I | **11 DE 29 APROBADAS — ACTUAL AUTH-UI-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
-        ↓
-TAREA ACTUAL
 AUTH-UI-011 — Asignar process_id a cada vista
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-012 — Asignar process_step a cada vista
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-013 — Definir aplicación propietaria
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 10 de 29 tareas aprobadas
+BLOQUE I — 11 de 29 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **352** |
+| Aprobadas | **353** |
 | En propuesta | **0** |
-| No iniciadas | **1223** |
+| No iniciadas | **1222** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.35% (352/1575)** |
+| Porcentaje de completamiento | **22.41% (353/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-010` — Auditar rutas y superficies actuales de AURA | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-011` — Asignar process_id a cada vista | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-012` — Asignar process_step a cada vista | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-011` — Asignar process_id a cada vista | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-012` — Asignar process_step a cada vista | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-013` — Definir aplicación propietaria | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -799,7 +799,7 @@
 | ✅ APROBADA | `AUTH-UI-008` | Inventariar todas las superficies de SHELL | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-009` | Inventariar superficies laborales relacionadas con PASS | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-010` | Auditar rutas y superficies actuales de AURA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-011` | Asignar process_id a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
+| ✅ APROBADA | `AUTH-UI-011` | Asignar process_id a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-012` | Asignar process_step a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-013` | Definir aplicación propietaria | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-014` | Definir si la aplicación solo consume la capacidad | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
