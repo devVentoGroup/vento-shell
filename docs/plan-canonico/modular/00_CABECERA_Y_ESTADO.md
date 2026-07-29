@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **358** |
+| Tareas aprobadas | **360** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1217** |
+| Tareas no iniciadas | **1215** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **22.73% (358/1575)** |
+| Porcentaje de completamiento | **22.86% (360/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-016 — Clasificar vista administrativa** |
-| Tarea actual | **AUTH-UI-017 — Clasificar vista de supervisión** |
+| Última tarea aprobada | **AUTH-UI-018 — Clasificar vista de configuración** |
+| Tarea actual | **AUTH-UI-019 — Clasificar vista de auditoría** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-018 — Clasificar vista de configuración** |
+| Siguiente tarea | **AUTH-UI-020 — Clasificar vista personal o de cliente** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 16 de 29 aprobadas; AUTH-UI-017 pendiente** |
+| Progreso del bloque | **BLOQUE I: 18 de 29 aprobadas; AUTH-UI-019 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-016` — Clasificar vista administrativa |
-| Tarea actual | `AUTH-UI-017` — Clasificar vista de supervisión — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-018` — Clasificar vista de configuración |
+| Última aprobada | `AUTH-UI-018` — Clasificar vista de configuración |
+| Tarea actual | `AUTH-UI-019` — Clasificar vista de auditoría — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-020` — Clasificar vista personal o de cliente |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **16 DE 29 APROBADAS — ACTUAL AUTH-UI-017** |
+| BLOQUE I | **18 DE 29 APROBADAS — ACTUAL AUTH-UI-019** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-016 — Clasificar vista administrativa
-        ↓
-TAREA ACTUAL
-AUTH-UI-017 — Clasificar vista de supervisión
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-UI-018 — Clasificar vista de configuración
         ↓
+TAREA ACTUAL
+AUTH-UI-019 — Clasificar vista de auditoría
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-020 — Clasificar vista personal o de cliente
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 16 de 29 tareas aprobadas
+BLOQUE I — 18 de 29 tareas aprobadas
 ```
