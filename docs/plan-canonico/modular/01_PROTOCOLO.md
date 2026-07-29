@@ -835,6 +835,46 @@ identificador exacto en todos los archivos de `manifest.json`.
   y orden de implementación, no solo existencia física.
 <!-- TASK-ID-UNIQUENESS:END -->
 
+<!-- PRIORITY-PACKAGE-PROTOCOL:START -->
+## Protocolo de carriles verticales prioritarios
+
+Un carril vertical prioritario modifica prioridad de ejecución, no identidad,
+alcance final ni estado de las tareas canónicas.
+
+Reglas obligatorias:
+
+1. la fuente estructurada será `priority-delivery-lanes.json`;
+2. la tarea documental actual seguirá derivándose exclusivamente de
+   `active-sequence.json`;
+3. un artefacto producido para una aplicación podrá ser consumido por un
+   paquete, pero la tarea transversal permanecerá no iniciada o en su estado
+   real hasta completar su alcance y recibir aprobación explícita;
+4. ninguna ejecución de paquete podrá insertar un marcador aprobado en una
+   tarea global;
+5. cada gate y cada paso de entrega se registrará como
+   `<task_id>::<package_id>` sin crear un nuevo identificador de tarea;
+6. `E5-GATE-008::<package_id>` deberá verificar solo el paquete indicado y no
+   se interpretará como cierre completo de E5;
+7. `SHELL-CI-020::<package_id>` a `SHELL-CI-024::<package_id>` conservarán
+   commit, versión, ambiente, migraciones, pruebas, decisiones, incidentes,
+   conciliación y evidencia propios;
+8. cerrar un paquete no aprobará automáticamente otros paquetes, bloques,
+   dominios o aplicaciones;
+9. una dependencia se podrá excluir únicamente con fundamento verificable,
+   tarea propietaria y reevaluación antes de ampliar alcance;
+10. toda migración de Supabase para VENTO se creará, versionará y ejecutará
+    desde `vento-shell`;
+11. los contratos compartidos se implementarán en su repositorio propietario y
+    NEXO solo consumirá versiones publicadas o una transición explícita;
+12. el compilador deberá rechazar un carril que altere la secuencia, permita
+    aprobación parcial, omita el ciclo de cierre o declare otro repositorio
+    propietario de Supabase.
+
+La ejecución de un carril nunca sustituye la aprobación del plan completo. Su
+propósito es validar una capacidad vertical reutilizable y devolver evidencia,
+defectos y contratos comprobados al desarrollo normal.
+<!-- PRIORITY-PACKAGE-PROTOCOL:END -->
+
 ## Regla canónica de granularidad documental
 
 La unidad física del plan será la **sección o bloque lógico**, no cada tarea individual.

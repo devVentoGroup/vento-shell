@@ -58,3 +58,26 @@ La evidencia real de código desplegado, migraciones aplicadas, restauración
 probada, piloto ejecutado o estabilización pertenece respectivamente a
 `SHELL-CI-020`, BLOQUE R, `SHELL-CI-021`, `SHELL-CI-022`,
 `SHELL-CI-023`, `SHELL-CI-024` y BLOQUE U.
+
+### Aplicación incremental sin aprobación parcial
+
+Una tarea transversal podrá producir un artefacto versionado para una
+aplicación antes de completar su cobertura global. Ese artefacto podrá ser
+entrada de un paquete prioritario solo cuando:
+
+- identifique la tarea canónica que lo originó;
+- declare que no cambia el marcador ni constituye aprobación parcial;
+- mantenga el contrato global y sus identificadores;
+- delimite filas, procesos, vistas, acciones, datos y ambientes cubiertos;
+- declare faltantes y consumidores todavía no migrados;
+- incluya compatibilidad y transición;
+- sea verificable de manera independiente;
+- quede vinculado al `package_id`.
+
+El paquete no podrá inventar un sustituto local para una tarea transversal
+pendiente. Si el artefacto mínimo seguro no existe, el paquete permanecerá
+bloqueado.
+
+El primer carril designado es `NEXO-REMISSIONS-001`, definido en
+`priority-delivery-lanes.json`. Su designación no equivale a aprobación ni
+readiness.

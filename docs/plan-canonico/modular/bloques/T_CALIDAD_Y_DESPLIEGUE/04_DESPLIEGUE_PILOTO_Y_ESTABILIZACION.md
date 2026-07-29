@@ -49,3 +49,24 @@ Reglas:
   deuda sin tarea, propietario, fecha y evidencia;
 - BLOQUE U certifica pruebas integrales, pero no sustituye las verificaciones
   realizadas durante implementación, readiness, piloto e hypercare.
+
+### Ejecuciones independientes
+
+Cada paso se materializará como una ejecución, no como una nueva tarea:
+
+```text
+SHELL-CI-020::<package_id>
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+```
+
+Todas las ejecuciones conservarán el mismo `package_id`. Aprobar una ejecución
+no modifica el estado de la tarea canónica ni de otros paquetes. El marcador
+de cada tarea `SHELL-CI-*` solo cambiará cuando se complete y apruebe su
+alcance canónico, no por el cierre aislado de una instancia.
+
+Para `NEXO-REMISSIONS-001`, `SHELL-CI-024` certificará únicamente el alcance
+de remisiones declarado en el paquete. No certificará inventario completo,
+NEXO completo, BLOQUE K ni Vento OS.

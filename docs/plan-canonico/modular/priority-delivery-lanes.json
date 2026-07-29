@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "canonical_sequence_unchanged": true,
+  "global_task_partial_approval_forbidden": true,
+  "lanes": [
+    {
+      "lane_id": "NEXO-REMISSIONS-001",
+      "title": "Remisiones NEXO como primer paquete vertical",
+      "status": "DESIGNATED_NOT_READY",
+      "owner_application": "nexo",
+      "application_repository": "vento-nexo",
+      "supabase_repository": "vento-shell",
+      "scope": [
+        "solicitud",
+        "edición y cancelación",
+        "preparación",
+        "despacho y transferencia de custodia",
+        "tránsito",
+        "recepción",
+        "movimientos y conciliación de inventario",
+        "autorización, auditoría, evidencia, impresión y operación controlada"
+      ],
+      "excluded_from_closure": [
+        "cierre completo de NEXO",
+        "migración completa del dominio de inventario",
+        "LPN, activos, mantenimiento e instalaciones no requeridos por el alcance aprobado",
+        "cierre de BLOQUE K",
+        "cierre integral de Vento OS"
+      ],
+      "required_task_artifacts": [
+        {
+          "task_refs": [
+            "INT-APP-001",
+            "INT-APP-002",
+            "INT-APP-003",
+            "INT-APP-004",
+            "INT-APP-005",
+            "INT-APP-006",
+            "INT-APP-007",
+            "INT-APP-008",
+            "INT-APP-009",
+            "INT-APP-010"
+          ],
+          "required_scope": "eventos, propietarios, consumidores, idempotencia, reintentos, compensaciones y errores aplicables a remisiones"
+        },
+        {
+          "task_refs": [
+            "NEXO-UX-009",
+            "NEXO-UX-010",
+            "NEXO-UX-011",
+            "NEXO-UX-012",
+            "NEXO-UX-013",
+            "NEXO-UX-022",
+            "NEXO-UX-023",
+            "NEXO-UX-024",
+            "NEXO-UX-025"
+          ],
+          "required_scope": "flujo completo, excepciones, dispositivos, validación con usuarios y métricas del piloto"
+        },
+        {
+          "task_refs": [
+            "NEXO-AUTH-002",
+            "NEXO-AUTH-003",
+            "NEXO-AUTH-004",
+            "NEXO-AUTH-005",
+            "NEXO-AUTH-006",
+            "NEXO-AUTH-008",
+            "NEXO-AUTH-009",
+            "NEXO-AUTH-010",
+            "NEXO-AUTH-015",
+            "NEXO-AUTH-016",
+            "NEXO-AUTH-018",
+            "NEXO-AUTH-019",
+            "NEXO-AUTH-020"
+          ],
+          "required_scope": "autorización por acción, territorio, dispositivo, consumo compartido y regresión integral"
+        },
+        {
+          "task_refs": [
+            "SUPA-AUD-004",
+            "SUPA-AUD-005",
+            "SUPA-AUD-006",
+            "SUPA-AUD-008",
+            "SUPA-AUD-009",
+            "SUPA-AUD-016",
+            "SUPA-AUD-017",
+            "SUPA-AUD-019",
+            "SUPA-AUD-023",
+            "SUPA-ARC-003",
+            "SUPA-ARC-005",
+            "SUPA-ARC-006",
+            "SUPA-ARC-007",
+            "SUPA-TRANS-003",
+            "SUPA-TRANS-006",
+            "SUPA-TRANS-007",
+            "SUPA-TRANS-008",
+            "SUPA-TRANS-009",
+            "SUPA-TRANS-011",
+            "SUPA-TRANS-013",
+            "SUPA-TRANS-015"
+          ],
+          "required_scope": "baseline, arquitectura y transición de los objetos de remisiones, inventario, autorización y auditoría afectados"
+        },
+        {
+          "task_refs": [
+            "SHELL-AUTH-001",
+            "SHELL-AUTH-002",
+            "SHELL-CTX-001",
+            "SHELL-CTX-002",
+            "SHELL-CTX-003",
+            "SHELL-CTX-005",
+            "SHELL-DB-001",
+            "SHELL-DB-002",
+            "SHELL-DB-003",
+            "SHELL-DB-004",
+            "SHELL-DB-005",
+            "AUTH-SRV-001",
+            "AUTH-SRV-003",
+            "AUTH-SRV-004",
+            "AUTH-SRV-005",
+            "AUTH-SRV-006",
+            "AUTH-SRV-007",
+            "AUTH-SRV-008",
+            "AUTH-SRV-009",
+            "AUTH-SRV-010",
+            "AUTH-SRV-011",
+            "AUTH-SRV-012",
+            "AUTH-SRV-013",
+            "AUTH-SRV-014",
+            "AUTH-SRV-016",
+            "AUTH-SRV-017"
+          ],
+          "required_scope": "fundación compartida y protección de servidor usada por el paquete, sin crear una copia local en NEXO"
+        },
+        {
+          "task_refs": [
+            "SHELL-CI-001",
+            "SHELL-CI-002",
+            "SHELL-CI-003",
+            "SHELL-CI-005",
+            "SHELL-CI-007",
+            "SHELL-CI-014",
+            "SHELL-CI-015",
+            "SHELL-CI-016",
+            "SHELL-CI-017",
+            "SHELL-CI-018",
+            "SHELL-CI-019"
+          ],
+          "required_scope": "build, compatibilidad, pruebas, rollback, despliegue independiente y evidencia del paquete"
+        }
+      ],
+      "conditional_artifacts": [
+        {
+          "condition": "la remisión incluye productos producidos o faltantes que activan producción",
+          "task_refs": [
+            "INT-PROD-005",
+            "NEXO-AUTH-007"
+          ]
+        },
+        {
+          "condition": "el paquete imprime documento, etiqueta, manifiesto o comprobante",
+          "task_refs": [
+            "PRINT-ARC-003",
+            "PRINT-ARC-004",
+            "PRINT-ARC-005",
+            "PRINT-ARC-006",
+            "PRINT-ARC-007",
+            "PRINT-ARC-010",
+            "PRINT-ARC-014",
+            "PRINT-ARC-015",
+            "PRINT-ARC-016",
+            "PRINT-ARC-020"
+          ]
+        },
+        {
+          "condition": "el paquete almacena fotografías, firmas, archivos o evidencia documental",
+          "task_refs": [
+            "EVID-ARC-001",
+            "EVID-ARC-002",
+            "EVID-ARC-003",
+            "EVID-ARC-004",
+            "EVID-ARC-005",
+            "EVID-ARC-006",
+            "EVID-ARC-007",
+            "EVID-ARC-008",
+            "EVID-ARC-009",
+            "EVID-ARC-010"
+          ]
+        },
+        {
+          "condition": "se ejecutan trabajos asíncronos, reintentos diferidos o impresión en cola",
+          "task_refs": [
+            "QUEUE-ARC-001",
+            "QUEUE-ARC-002",
+            "QUEUE-ARC-003",
+            "QUEUE-ARC-006",
+            "QUEUE-ARC-008",
+            "QUEUE-ARC-009",
+            "QUEUE-ARC-010",
+            "QUEUE-ARC-011",
+            "QUEUE-ARC-012"
+          ]
+        }
+      ],
+      "package_definition_tasks": [
+        "DELIV-PKG-001",
+        "DELIV-PKG-002",
+        "DELIV-PKG-003",
+        "DELIV-PKG-004",
+        "DELIV-PKG-005",
+        "DELIV-PKG-006",
+        "DELIV-PKG-007",
+        "DELIV-PKG-008",
+        "DELIV-PKG-009",
+        "DELIV-PKG-010",
+        "DELIV-PKG-011",
+        "DELIV-PKG-012",
+        "DELIV-PKG-013",
+        "DELIV-PKG-014",
+        "DELIV-PKG-015",
+        "DELIV-PKG-016",
+        "DELIV-PKG-017",
+        "DELIV-PKG-018",
+        "DELIV-PKG-019",
+        "DELIV-PKG-020",
+        "DELIV-PKG-021",
+        "DELIV-PKG-022",
+        "DELIV-PKG-023",
+        "DELIV-PKG-024",
+        "DELIV-PKG-025"
+      ],
+      "package_gate": "E5-GATE-008",
+      "execution_cycle": [
+        "SHELL-CI-020",
+        "SHELL-CI-021",
+        "SHELL-CI-022",
+        "SHELL-CI-023",
+        "SHELL-CI-024"
+      ],
+      "completion_task": "SHELL-CI-024",
+      "invariants": [
+        "La secuencia documental canónica continúa sin saltos ni aprobaciones inferidas.",
+        "Un artefacto incremental no aprueba parcialmente la tarea canónica que lo originó.",
+        "E5-GATE-008 se ejecuta como instancia trazable para un package_id exacto.",
+        "SHELL-CI-020 a SHELL-CI-024 conservan package_id, commit, versión, ambiente y evidencia independientes.",
+        "Toda migración o cambio físico de Supabase se crea y ejecuta desde vento-shell.",
+        "El paquete no crea helpers, permisos, eventos ni fuentes de verdad competidores.",
+        "Cerrar el paquete no cierra NEXO, BLOQUE K ni el dominio completo de inventario.",
+        "Las tareas y paquetes posteriores consumen contratos versionados o ejecutan una transición explícita."
+      ]
+    }
+  ]
+}

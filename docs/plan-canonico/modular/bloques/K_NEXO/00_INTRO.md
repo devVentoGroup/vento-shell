@@ -22,3 +22,37 @@
 ### [ ] NEXO-AUTH-018 — Migrar a paquetes de vento-shell
 ### [ ] NEXO-AUTH-019 — Eliminar helpers duplicados
 ### [ ] NEXO-AUTH-020 — Ejecutar pruebas integrales
+
+### Primer paquete vertical designado
+
+`NEXO-REMISSIONS-001 — Remisiones NEXO como primer paquete vertical`
+
+Este identificador corresponde a un carril de entrega y a su futuro
+`package_id`; no es una tarea nueva ni reemplaza `NEXO-AUTH-*`,
+`NEXO-UX-*`, `AUTH-UI-*`, E3, E4, E5, H, J, R, S o T.
+
+El alcance mínimo deberá cubrir:
+
+- solicitar, editar y cancelar;
+- preparar cantidades y registrar diferencias;
+- despachar separando custodia e inicio de tránsito;
+- registrar tránsito y novedades;
+- recibir con cantidades y observaciones;
+- publicar y conciliar movimientos de inventario sin doble efecto;
+- resolver sesión, actor, permiso, sede, área, turno, check-in y dispositivo;
+- consumir contratos y módulos compartidos de `vento-shell`;
+- proteger cada mutación en servidor;
+- conservar idempotencia, auditoría, evidencia, impresión y rollback cuando
+  apliquen;
+- validar tablet o kiosco y operación con usuarios representativos.
+
+Quedan fuera del cierre, salvo dependencia explícita del paquete:
+
+- LPN y contenedores avanzados;
+- activos, reutilizables, mantenimiento e instalaciones;
+- cierre completo del dominio de inventario;
+- cierre completo de NEXO;
+- funcionalidades de otras aplicaciones.
+
+La matriz completa de dependencias, condiciones e invariantes se conserva en
+`priority-delivery-lanes.json`.

@@ -25,3 +25,26 @@ SHELL-CI-020
 
 BLOQUE R se intercalará cuando el paquete incluya cambios físicos de Supabase,
 y BLOQUE U certificará la regresión e integración transversal aplicables.
+
+### Instancia de puerta por paquete
+
+Para un carril prioritario, la puerta se ejecutará como:
+
+```text
+E5-GATE-008::<package_id>
+```
+
+La instancia deberá registrar:
+
+- versión aprobada del paquete;
+- capacidades, procesos, vistas, acciones y brechas incluidas;
+- artefactos transversales consumidos y estado real de sus tareas fuente;
+- dependencias excluidas y fundamento de no aplicabilidad;
+- repositorios y ambientes;
+- migraciones de BLOQUE R aplicables;
+- pruebas, readiness, cutover, piloto, hypercare y rollback;
+- aprobadores y fecha;
+- hash o versión inmutable del expediente.
+
+Una instancia aprobada habilita únicamente su `package_id`. No cambia por sí
+sola el marcador de `E5-GATE-008`, no cierra E5 y no habilita otro paquete.

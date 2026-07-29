@@ -154,6 +154,65 @@ BLOQUE U — certificación integral transversal
 Ningún artefacto de planificación de E5 prueba por sí solo que un despliegue,
 una migración, un piloto o un periodo de hypercare hayan ocurrido.
 
+<!-- PRIORITY-DELIVERY-LANES:START -->
+### Carril vertical prioritario por paquete
+
+El orden de implementación conserva todas sus fases, tareas, dependencias y
+criterios de cierre. Para reducir tiempo hasta el primer valor operativo se
+permite ejecutar un paquete vertical antes de completar habilitadores no
+relacionados, únicamente cuando ese paquete:
+
+1. esté registrado en `priority-delivery-lanes.json`;
+2. conserve `canonical_sequence_unchanged = true`;
+3. identifique alcance incluido, excluido y diferido;
+4. disponga de los artefactos exactos que necesita de tareas transversales;
+5. no utilice un artefacto incremental para aprobar parcialmente su tarea
+   canónica de origen;
+6. complete `DELIV-PKG-001` a `DELIV-PKG-025`;
+7. supere una instancia trazable de
+   `E5-GATE-008::<package_id>`;
+8. ejecute íntegramente
+   `SHELL-CI-020` a `SHELL-CI-024` con el mismo `package_id`;
+9. ejecute mediante BLOQUE R cualquier migración o cambio físico de Supabase,
+   creado y gobernado desde `vento-shell`;
+10. demuestre compatibilidad, pruebas, rollout, rollback, piloto, conciliación
+    y soporte sin crear contratos competidores.
+
+Existen dos estados independientes:
+
+```text
+SECUENCIA DOCUMENTAL CANÓNICA
+→ continúa en el orden aprobado y solo avanza por aprobación explícita
+
+EJECUCIÓN DE UN PAQUETE PRIORITARIO
+→ avanza por su package_id y no modifica la tarea documental actual
+```
+
+La ejecución prioritaria no permite:
+
+- saltar una dependencia aplicable;
+- declarar completo un bloque, aplicación o dominio por cerrar un paquete;
+- cambiar el significado de una tarea aprobada;
+- aprobar parcialmente una tarea transversal;
+- introducir excepciones locales que el resto del plan deba heredar;
+- desplazar a NEXO la propiedad de contratos, datos o componentes
+  transversales;
+- convertir deuda o alcance diferido en una omisión sin tarea y propietario.
+
+#### Primer carril designado
+
+`NEXO-REMISSIONS-001 — Remisiones NEXO como primer paquete vertical`
+
+Su designación no autoriza implementación inmediata. El estado inicial es
+`DESIGNATED_NOT_READY`; solo podrá cambiar después de demostrar las
+dependencias y puertas declaradas en `priority-delivery-lanes.json`.
+
+El cierre de este paquete significa exclusivamente que solicitud, preparación,
+despacho, custodia, tránsito, recepción, cancelación, movimientos y
+conciliación incluidos funcionan y fueron certificados. No significa cierre de
+NEXO, BLOQUE K, inventario completo ni Vento OS.
+<!-- PRIORITY-DELIVERY-LANES:END -->
+
 
 FASE 3 — FUNDACIÓN COMPARTIDA, DATOS Y SEGURIDAD
 
@@ -454,6 +513,10 @@ Este habilitador:
 - no elimina la necesidad de recetas para productos preparados.
 
 FASE 5 — NEXO
+
+El primer paquete vertical candidato de esta fase es
+`NEXO-REMISSIONS-001`. Podrá entrar antes a ejecución únicamente por el
+carril controlado anterior; la secuencia restante de la fase no cambia.
 
 33. Consumir la matriz E1 y auditar implementación real de NEXO
 34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística
