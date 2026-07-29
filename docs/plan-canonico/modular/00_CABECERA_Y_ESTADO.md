@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **388** |
+| Tareas aprobadas | **389** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1187** |
+| Tareas no iniciadas | **1186** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.63% (388/1575)** |
+| Porcentaje de completamiento | **24.70% (389/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`** |
-| Tarea actual | **SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers** |
+| Última tarea aprobada | **SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers** |
+| Tarea actual | **SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol** |
+| Siguiente tarea | **SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 7 de 24 aprobadas; SUPA-AUD-008 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 8 de 24 aprobadas; SUPA-AUD-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` |
-| Tarea actual | `SUPA-AUD-008` — Inventariar triggers y funciones ejecutadas por triggers — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-009` — Inventariar políticas RLS, grants y privilegios por rol |
+| Última aprobada | `SUPA-AUD-008` — Inventariar triggers y funciones ejecutadas por triggers |
+| Tarea actual | `SUPA-AUD-009` — Inventariar políticas RLS, grants y privilegios por rol — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-010` — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **7 DE 24 APROBADAS — ACTUAL SUPA-AUD-008** |
+| BLOQUE E3 | **8 DE 24 APROBADAS — ACTUAL SUPA-AUD-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
-        ↓
-TAREA ACTUAL
 SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 7 de 24 tareas aprobadas
+BLOQUE E3 — 8 de 24 tareas aprobadas
 ```

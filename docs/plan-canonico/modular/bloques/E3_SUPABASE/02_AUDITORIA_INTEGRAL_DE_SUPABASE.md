@@ -3363,7 +3363,321 @@ Toda variación de modo, owner, ACL, `search_path`, `row_security`, firma o pert
 La tarea no modifica Supabase y no certifica todavía la autorización integral de ninguna función. La siguiente tarea deberá vincular las funciones de trigger con sus automatismos reales.
 
 
-### [ ] SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
+### ✅ SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
+
+**Estado:** APROBADA
+**Fecha:** 2026-07-29
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-AUD-007 — Inventariar funciones SECURITY DEFINER y SECURITY INVOKER` — APROBADA
+**Tarea siguiente:** `SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol`
+**Descripción:** Inventaría los triggers de relación, triggers internos de constraints, event triggers y funciones de retorno `trigger` o `event_trigger` observables en los 23 esquemas no efímeros; vincula cada automatismo explícito con relación, evento, temporización, nivel, condición, función y modo de seguridad, sin ejecutar DML ni aprobar cambios físicos.
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de los automatismos ejecutados por PostgreSQL ante cambios de datos o DDL.
+
+```text
+3.475 TRIGGERS DE RELACIÓN
+= 203 TRIGGERS DEFINIDOS POR USUARIO
++ 3.272 TRIGGERS INTERNOS DE FOREIGN KEY
+
+102 FUNCIONES DE TRIGGER
+= 31 SECURITY DEFINER
++ 71 SECURITY INVOKER
+
+6 EVENT TRIGGERS ADMINISTRADOS
+```
+
+La existencia de un trigger no certifica que su orden, cuerpo, privilegios o efectos sean correctos. Esta tarea registra la topología ejecutable; la autorización integral queda en `SUPA-AUD-009`, el drift en `SUPA-AUD-016` y `SUPA-AUD-017`, las duplicidades en `SUPA-AUD-019`, y el mapa proceso → datos → RPC → eventos → aplicaciones en `SUPA-AUD-023`.
+
+#### 2. Método de auditoría no mutante
+
+Se consultaron únicamente catálogos PostgreSQL mediante `SELECT`:
+
+- `pg_trigger` para triggers de relación, estado de habilitación, función, condición, constraint y parent trigger;
+- `pg_get_triggerdef` para definición normalizada;
+- `pg_proc`, `pg_namespace`, `pg_language` y `pg_get_functiondef` para identidad y cuerpo de funciones de trigger;
+- `pg_constraint` para reconciliar triggers internos de claves foráneas;
+- `pg_event_trigger` para automatismos de DDL;
+- `pg_class` para relación, clase y esquema propietario.
+
+No se ejecutaron triggers, RPC, DDL, DML, migraciones, `ALTER TABLE ... ENABLE/DISABLE TRIGGER`, `CREATE TRIGGER`, `DROP TRIGGER`, `GRANT` ni `REVOKE`.
+
+#### 3. Artefacto canónico
+
+```text
+SUPABASE-TRIGGER-INVENTORY-008@1.0.0
+```
+
+Cada trigger explícito queda identificado por:
+
+```text
+table_schema
++ relation_name
++ trigger_name
++ enabled_mode
++ timing
++ level
++ events
++ has_when_condition
++ transition_tables
++ function_schema
++ function_name
++ function_identity_arguments
++ function_owner
++ function_security_mode
++ function_search_path
++ trigger_definition
++ observation_timestamp
+```
+
+Los triggers internos se registran por identidad nominal y constraint asociado, pero se resumen funcionalmente como infraestructura derivada de FK. No se documentan como automatismos empresariales independientes.
+
+#### 4. Resultado global
+
+| Clase                          |     Total |     Vento | Administrado |
+| ------------------------------ | --------: | --------: | -----------: |
+| triggers definidos por usuario |   **203** |   **196** |        **7** |
+| triggers internos de FK        | **3.272** | **2.944** |      **328** |
+| triggers de relación totales   | **3.475** | **3.140** |      **335** |
+| funciones de trigger           |   **102** |    **73** |       **29** |
+| event triggers                 |     **6** |         0 |        **6** |
+
+Todos los 3.475 triggers de relación están habilitados en modo `ORIGIN` (`tgenabled='O'`). No se observaron triggers `DISABLED`, `REPLICA` ni `ALWAYS`.
+
+No se observaron:
+
+- triggers `INSTEAD OF`;
+- triggers clonados desde particiones (`tgparentid <> 0`);
+- transition tables `OLD TABLE` o `NEW TABLE`;
+- constraint triggers diferibles;
+- triggers explícitos de nivel statement en objetos Vento.
+
+#### 5. Triggers explícitos Vento por esquema
+
+| Esquema de la relación | Triggers | Relaciones afectadas | Funciones distintas | `DEFINER` | `INVOKER` |
+| ---------------------- | -------: | -------------------: | ------------------: | --------: | --------: |
+| `club`                 |        8 |                    8 |                   1 |         0 |         8 |
+| `pass`                 |       28 |                   18 |                  12 |        11 |        17 |
+| `payments`             |        1 |                    1 |                   1 |         0 |         1 |
+| `pos`                  |        2 |                    2 |                   1 |         0 |         2 |
+| `public`               |      123 |                   92 |                  57 |        18 |       105 |
+| `talento`              |       10 |                   10 |                   1 |         0 |        10 |
+| `vital`                |       24 |                   24 |                   1 |         0 |        24 |
+| **TOTAL**              |  **196** |              **155** |                   — |    **29** |   **167** |
+
+Los esquemas Vento `app_private` y `viso` no tienen triggers definidos por usuario. `viso` sí contiene triggers internos de FK; esa presencia no se interpreta como automatismo empresarial explícito.
+
+#### 6. Forma de disparo de los 196 triggers Vento
+
+| Temporización | Nivel | Triggers | Eventos INSERT | Eventos UPDATE | Eventos DELETE | `DEFINER` | `INVOKER` |
+| ------------- | ----- | -------: | -------------: | -------------: | -------------: | --------: | --------: |
+| `BEFORE`      | `ROW` |  **181** |             38 |            174 |              0 |        14 |       167 |
+| `AFTER`       | `ROW` |   **15** |             12 |              9 |              2 |        15 |         0 |
+| **TOTAL**     | —     |  **196** |              — |              — |              — |    **29** |   **167** |
+
+Un mismo trigger puede cubrir más de un evento; por ello los conteos por evento no se suman para obtener 196.
+
+Los 15 automatismos Vento `AFTER` se ejecutan mediante funciones `SECURITY DEFINER`. Los 181 `BEFORE` incluyen 14 `DEFINER` y 167 `INVOKER`. Esta distribución es una señal de diseño, no una aprobación de privilegios.
+
+#### 7. Triggers explícitos administrados
+
+Los siete triggers definidos por usuario en esquemas administrados son:
+
+| Relación                | Trigger                              | Forma                                                             | Función                                 | Seguridad |
+| ----------------------- | ------------------------------------ | ----------------------------------------------------------------- | --------------------------------------- | --------- |
+| `auth.users`            | `on_auth_user_created`               | `AFTER INSERT FOR EACH ROW`                                       | `public.handle_new_user()`              | `DEFINER` |
+| `cron.job`              | `cron_job_cache_invalidate`          | `AFTER INSERT OR UPDATE OR DELETE OR TRUNCATE FOR EACH STATEMENT` | `cron.job_cache_invalidate()`           | `INVOKER` |
+| `realtime.subscription` | `tr_check_filters`                   | `BEFORE INSERT OR UPDATE FOR EACH ROW`                            | `realtime.subscription_check_filters()` | `INVOKER` |
+| `storage.buckets`       | `enforce_bucket_name_length_trigger` | `BEFORE INSERT OR UPDATE FOR EACH ROW`                            | `storage.enforce_bucket_name_length()`  | `INVOKER` |
+| `storage.buckets`       | `protect_buckets_delete`             | `BEFORE DELETE FOR EACH STATEMENT`                                | `storage.protect_delete()`              | `INVOKER` |
+| `storage.objects`       | `protect_objects_delete`             | `BEFORE DELETE FOR EACH STATEMENT`                                | `storage.protect_delete()`              | `INVOKER` |
+| `storage.objects`       | `update_objects_updated_at`          | `BEFORE UPDATE FOR EACH ROW`                                      | `storage.update_updated_at_column()`    | `INVOKER` |
+
+`on_auth_user_created` reside sobre una tabla administrada pero ejecuta una función empresarial Vento. Por tanto, su tabla no transfiere ownership de la función y su continuidad deberá comprobarse tanto en Auth como en el proceso empresarial de alta.
+
+#### 8. Triggers internos derivados de claves foráneas
+
+Los **3.272 triggers internos** corresponden exclusivamente a enforcement de `FOREIGN KEY`:
+
+| Gobierno de la relación | Triggers internos FK |
+| ----------------------- | -------------------: |
+| Vento                   |            **2.944** |
+| PostgreSQL/Supabase     |              **328** |
+| **TOTAL**               |            **3.272** |
+
+No se observaron triggers internos asociados a PK, UNIQUE o CHECK. El número de triggers internos no equivale al número de FK: PostgreSQL puede crear varios triggers por constraint para comprobar modificaciones en la tabla referenciante y acciones sobre la tabla referenciada.
+
+Estos objetos se reconciliarán contra las 818 FK de `SUPA-AUD-005`; no se administrarán individualmente mediante migraciones empresariales.
+
+#### 9. Funciones de trigger
+
+```text
+102 FUNCIONES CON RETORNO trigger/event_trigger
+= 73 UBICADAS EN ESQUEMAS VENTO
++ 29 ADMINISTRADAS
+```
+
+Dentro de las 73 funciones Vento:
+
+- 31 son `SECURITY DEFINER`;
+- 42 son `SECURITY INVOKER`;
+- 71 están enlazadas al menos a un trigger explícito o interno;
+- 2 no están enlazadas actualmente a ningún trigger.
+
+Funciones Vento sin trigger asociado:
+
+1. `public.notify_shift_published()`;
+2. `public.update_loyalty_balance()`.
+
+Su retorno `trigger` demuestra intención de automatismo, pero la ausencia de enlace no permite concluir si son legacy, drift, instalación incompleta o funciones reservadas. La clasificación corresponde a `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-018`, `SUPA-AUD-019` y `SUPA-AUD-023`.
+
+#### 10. Reutilización de funciones
+
+Las funciones de mantenimiento temporal más reutilizadas son:
+
+| Función                                            | Triggers explícitos | Relaciones |
+| -------------------------------------------------- | ------------------: | ---------: |
+| `public._set_updated_at()`                         |                  44 |         44 |
+| `public.update_updated_at()`                       |                  27 |         27 |
+| `vital.set_updated_at()`                           |                  24 |         24 |
+| `talento.set_updated_at()`                         |                  10 |         10 |
+| `public.touch_updated_at()`                        |                   9 |          9 |
+| `public.touch_restock_fulfillment_updated_at()`    |                   6 |          6 |
+| `public.set_updated_at()`                          |                   5 |          5 |
+| `public.set_numera_updated_at()`                   |                   4 |          4 |
+| `public.tg_set_updated_at()`                       |                   4 |          4 |
+| `public.set_pulso_daily_sales_import_updated_at()` |                   2 |          2 |
+
+La coexistencia de múltiples helpers equivalentes de `updated_at` no se declara duplicidad funcional por nombre. Su semántica, owner, consumidores y posibilidad de consolidación pertenecen a `SUPA-AUD-018`, `SUPA-AUD-019`, `SUPA-AUD-022` y normalización posterior.
+
+#### 11. Relaciones con múltiples automatismos
+
+Las concentraciones más altas observadas son:
+
+| Relación                       | Triggers explícitos | Función principal de la concentración                            |
+| ------------------------------ | ------------------: | ---------------------------------------------------------------- |
+| `public.restock_request_items` |               **6** | políticas, UOM, mediciones, estado de ítem y estado de solicitud |
+| `public.attendance_logs`       |               **4** | geofence, resolución de turno, secuencia y contexto              |
+| `pass.commercial_collections`  |               **3** | reconciliación, sincronización y `updated_at`                    |
+| `public.employees`             |               **3** | asignación por sede y validación rol/sede                        |
+| `public.inventory_locations`   |               **3** | área/sede, parent y `updated_at`                                 |
+| `public.orders`                |               **3** | sesión de entrega, facturación y fulfillment                     |
+
+La cantidad no implica conflicto. `SUPA-AUD-023` deberá definir orden, precondiciones, datos producidos y consumidores; `SUPA-AUD-019` deberá detectar efectos duplicados o fuentes competidoras.
+
+#### 12. Hallazgo de posible automatismo duplicado
+
+`public.employee_push_tokens` tiene dos triggers `BEFORE UPDATE` de mantenimiento temporal:
+
+- `set_employee_push_tokens_updated_at` → `public._set_updated_at()`;
+- `trg_employee_push_tokens_updated_at` → `public.update_updated_at()`.
+
+Ambos están habilitados y se disparan en la misma clase de operación. La evidencia demuestra solapamiento estructural, pero no autoriza eliminar ninguno sin comparar cuerpos, migraciones, consumidores y efecto final. Queda vinculado a `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-018`, `SUPA-AUD-019` y transición aprobada.
+
+#### 13. Triggers con condición `WHEN`
+
+Solo dos triggers explícitos usan condición `WHEN`:
+
+1. `pass.pass_delivery_addresses_single_default`:
+   - `AFTER INSERT OR UPDATE OF is_default`;
+   - ejecuta `pass.ensure_single_default_delivery_address()`;
+   - condición `new.is_default = true`.
+2. `public.trg_orders_sync_billing_request_status`:
+   - `AFTER UPDATE OF status, payment_status`;
+   - ejecuta `public.sync_order_billing_request_status()`;
+   - condición de cambio real entre `OLD` y `NEW`.
+
+La ausencia de `WHEN` en los demás triggers no significa ejecución inútil: varios limitan columnas mediante `UPDATE OF`, o realizan validaciones obligatorias en toda operación.
+
+#### 14. Event triggers administrados
+
+Los seis event triggers son administrados por Supabase/PostgreSQL y están habilitados en modo `ORIGIN`:
+
+| Event trigger               | Evento            | Tags               | Función                                |
+| --------------------------- | ----------------- | ------------------ | -------------------------------------- |
+| `issue_graphql_placeholder` | `sql_drop`        | `DROP EXTENSION`   | `extensions.set_graphql_placeholder()` |
+| `issue_pg_cron_access`      | `ddl_command_end` | `CREATE EXTENSION` | `extensions.grant_pg_cron_access()`    |
+| `issue_pg_graphql_access`   | `ddl_command_end` | `CREATE FUNCTION`  | `extensions.grant_pg_graphql_access()` |
+| `issue_pg_net_access`       | `ddl_command_end` | `CREATE EXTENSION` | `extensions.grant_pg_net_access()`     |
+| `pgrst_ddl_watch`           | `ddl_command_end` | todos              | `extensions.pgrst_ddl_watch()`         |
+| `pgrst_drop_watch`          | `sql_drop`        | todos              | `extensions.pgrst_drop_watch()`        |
+
+No se autoriza alterar estos event triggers. Su función es mantener integración de extensiones y recarga de esquema de PostgREST.
+
+#### 15. Hallazgos y destino documental
+
+| Hallazgo                                                                | Riesgo                                                                      | Tarea responsable                                              |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 196 triggers empresariales explícitos distribuidos sobre 155 relaciones | automatismos invisibles, orden no gobernado o efectos laterales no mapeados | `SUPA-AUD-022`, `SUPA-AUD-023`                                 |
+| 29 triggers Vento usan funciones `SECURITY DEFINER`                     | bypass de RLS o privilegio elevado sin autorización contextual demostrada   | `SUPA-AUD-009`, `SUPA-AUD-023`                                 |
+| dos funciones de trigger Vento no tienen trigger asociado               | drift, función legacy o automatismo no instalado                            | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-018`, `SUPA-AUD-019` |
+| dos triggers de `employee_push_tokens` mantienen `updated_at`           | doble ejecución, divergencia de helper o deuda de migración                 | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-019`                 |
+| seis triggers sobre `restock_request_items`                             | orden implícito, efectos acoplados o transición parcial                     | `SUPA-AUD-019`, `SUPA-AUD-023`, paquete E5 de NEXO             |
+| cuatro triggers sobre `attendance_logs`                                 | orden crítico no certificado y doble resolución de contexto                 | `SUPA-AUD-019`, `SUPA-AUD-023`, paquete E5 de ANIMA            |
+| 3.272 triggers internos dependen de FK                                  | conteo inflado o manipulación manual de infraestructura derivada            | `SUPA-AUD-005`, `SUPA-AUD-016`, `SUPA-AUD-017`                 |
+| seis event triggers administrados reaccionan a DDL                      | modificación accidental de infraestructura Supabase/PostgREST               | `SUPA-AUD-015`, `SUPA-AUD-016`, `SUPA-AUD-017`                 |
+
+No queda hallazgo narrativo sin tarea responsable.
+
+#### 16. Decisiones que esta tarea no autoriza
+
+`SUPA-AUD-008` no autoriza:
+
+1. crear, eliminar, habilitar o deshabilitar triggers;
+2. cambiar orden, temporización, eventos, condición o nivel;
+3. modificar funciones ejecutadas por triggers;
+4. consolidar helpers de `updated_at`;
+5. retirar las dos funciones sin trigger asociado;
+6. eliminar uno de los triggers de `employee_push_tokens`;
+7. modificar triggers internos de FK;
+8. alterar event triggers administrados;
+9. declarar que un trigger `SECURITY DEFINER` es vulnerable únicamente por su modo;
+10. certificar el comportamiento operativo sin pruebas transaccionales controladas.
+
+#### 17. Requisitos de prueba derivados
+
+Se incorporan al registro canónico:
+
+```text
+TREQ-SUPABASE-098 a TREQ-SUPABASE-109
+```
+
+Protegen cobertura total, separación entre triggers explícitos e internos, vinculación función-trigger, forma de disparo, seguridad, automatismos sin enlace, solapamientos, event triggers, procedencia y detección de drift.
+
+#### 18. Huellas de integridad
+
+```text
+VENTO_USER_TRIGGER_REGISTRY_SHA256 = 61c95cc2e03953d7782d38ba803c1664b44f7bcbc62c714fc58e748dcc80d73a
+VENTO_TRIGGER_FUNCTION_REGISTRY_SHA256 = 9fb01f9cf20c56c97a54abe4be6185cd47e0bb2de7a71ce7565b80eddb37cde7
+INTERNAL_TRIGGER_REGISTRY_SHA256 = b0bf2a7d3147328e94ca9f766128b1fbc3ab64722b9014fd50c36245fd309796
+ALL_RELATION_TRIGGER_REGISTRY_SHA256 = 6b12609dbd4de2cf52e9406ad135dd38646ca52e95588e982f4c7f932493355c
+OBSERVED_AT_UTC = 2026-07-29T19:58:03.294936Z
+SUPABASE_PROJECT_REF = clzdpinthhtknkmefsxx
+POSTGRESQL_VERSION = 17.6
+```
+
+Toda variación en trigger, función, evento, temporización, condición, relación, modo de habilitación, seguridad o constraint asociado deberá registrarse como drift antes de arquitectura o transición.
+
+#### 19. Resultado final
+
+`SUPA-AUD-008` deja inventariados y reconciliados:
+
+- **3.475** triggers de relación;
+- **203** triggers definidos por usuario: 196 Vento y 7 administrados;
+- **3.272** triggers internos derivados exclusivamente de FK;
+- **102** funciones de trigger: 73 Vento y 29 administradas;
+- **29** triggers explícitos Vento ejecutados por funciones `SECURITY DEFINER`;
+- **167** triggers explícitos Vento ejecutados por funciones `SECURITY INVOKER`;
+- **2** funciones Vento de trigger sin enlace actual;
+- **2** triggers condicionales con `WHEN`;
+- **6** event triggers administrados;
+- **0** triggers deshabilitados, `REPLICA`, `ALWAYS`, `INSTEAD OF`, con transition tables o clones de partición;
+- un solapamiento estructural en `public.employee_push_tokens` pendiente de resolución documental.
+
+La tarea no modifica Supabase y no certifica todavía autorización, orden semántico ni funcionamiento operativo de los automatismos.
+
+
 ### [ ] SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
 ### [ ] SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
 ### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
