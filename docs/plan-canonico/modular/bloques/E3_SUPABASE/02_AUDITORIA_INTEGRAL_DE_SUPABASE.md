@@ -6511,7 +6511,166 @@ SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
 ```
 
 
-### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
+### ✅ SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy`
+**Tarea anterior:** `SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `0eefe75bae095a8023098341b1ae474ed2c52870`
+**Tipo de tarea:** auditoría documental y técnica read-only de legado estructural y compatibilidad; sin DDL, DML, eliminaciones, migraciones ni cambios remotos
+
+#### 1. Objetivo
+
+Identificar tablas, columnas, funciones, vistas y políticas legacy, separando legado confirmado, compatibilidad activa, candidatos y contratos versionados vigentes.
+
+```text
+NOMBRE ANTIGUO ≠ LEGACY CONFIRMADO
+CERO FILAS ≠ OBJETO ABANDONADO
+LEGACY CONFIRMADO + CONSUMIDOR ACTIVO ≠ SEGURO PARA BORRAR
+```
+
+#### 2. Regla canónica derivada
+
+Todo objeto legacy deberá tener reemplazo, consumidores, telemetría, propietario, datos reconciliados, ventana de deprecación y condición objetiva de retiro. Ningún objeto se elimina por nombre, antigüedad o ausencia aparente de filas.
+
+#### 3. Fuentes congeladas
+
+| Fuente                     | Corte                                                                                  | Responsabilidad                             |
+| -------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `SUPA-AUD-017.md` aprobado | SHA-256 `68a44e27d2b803fe91162e03bbdadb9f8e28f7ba2dafa5046ed004ca56870c2c`             | línea base de drift                         |
+| 04A aprobado               | SHA-256 `768fa25c9341ef923aaf525d2d88824b689f7fe89120d02ab18fa71baf4f3a4d`; 4597 filas | requisitos hasta `TREQ-SUPABASE-302`        |
+| Supabase `vento-os-dev`    | 2026-07-29                                                                             | catálogo, comentarios, datos y dependencias |
+| GitHub `devVentoGroup`     | commit indicado                                                                        | consumidores localizados                    |
+
+#### 4. Taxonomía aplicada
+
+| Clase                       | Criterio                                   | Acción                                             |
+| --------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| Legacy confirmado           | declaración explícita y reemplazo conocido | congelar usos y migrar consumidores                |
+| Compatibilidad activa       | alias, fallback o sobrecarga aún necesaria | medir, endurecer y fijar sunset                    |
+| Candidato legacy            | señales múltiples sin decisión suficiente  | investigar en SUPA-AUD-019/022                     |
+| Backup temporal             | copia histórica dentro de la BD            | exportar, verificar y retirar del esquema expuesto |
+| Staging temporal            | datos de importación o transformación      | gobernar por corrida y TTL                         |
+| Contrato versionado vigente | sufijo v1 sin reemplazo                    | conservar; no inferir legado por nombre            |
+
+#### 5. Resultado ejecutivo
+
+| Métrica                               |         Resultado |
+| ------------------------------------- | ----------------: |
+| Tablas legacy confirmadas             |             **1** |
+| Consumidores residuales confirmados   |  **1 hook ANIMA** |
+| Filas en `role_capabilities`          |            **26** |
+| Backup identificado en `public`       |  **1 / 35 filas** |
+| Staging identificado en `public`      | **1 / 492 filas** |
+| Alias o fallbacks prioritarios        |            **12** |
+| Familias RPC compatibles prioritarias |             **3** |
+| Brechas formalizadas                  |            **23** |
+| Requisitos nuevos                     |            **30** |
+
+#### 6. Legacy confirmado con consumidor residual
+
+`public.role_capabilities` declara expresamente que es LEGACY y que la fuente nueva es `app_permissions + role_permissions + operational_role_permissions`. Conserva 26 filas. `vento-anima` aún mantiene `src/hooks/use-role-capabilities.ts`, por lo que no es seguro eliminarla.
+
+**Dictamen:** bloquear nuevos consumidores, migrar ANIMA, observar cero lecturas y retirar después mediante migración forward-only.
+
+#### 7. Backup y staging en `public`
+
+- `product_categories_backup_20260316_preparaciones`: 35 filas y una dependencia catalogada.
+- `staging_insumos_import`: 492 filas y una dependencia catalogada, sin contrato visible de TTL o promoción.
+
+No son fuentes empresariales canónicas. Deben reconciliarse, exportarse o promoverse y retirarse del esquema expuesto bajo controles de recuperación.
+
+#### 8. Columnas de compatibilidad prioritarias
+
+| Contrato compatible                           | Contrato preferido                                             | Estado                                       |
+| --------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------- |
+| `inventory_entry_items.qty_base`              | `quantity_received` o `input_qty × conversion_factor_to_stock` | alias de lectura; consumidor NEXO localizado |
+| `purchase_order_items.qty`                    | `quantity_ordered`                                             | alias explícito                              |
+| `pass.catalog_items.category_label`           | `commercial_category_id`                                       | compatibilidad de lectura                    |
+| `pass.catalog_items.commercial_collection_id` | `pass.catalog_item_collections`                                | colección principal temporal                 |
+| `internal_price_list_items.unit_code`         | `uom_profile_id`                                               | fallback de presentación                     |
+| flags nullable de `product_site_settings`     | booleanos explícitos                                           | `NULL` mantiene comportamiento legacy        |
+| `staff_invitations.status=pending`            | vocabulario vigente                                            | estado histórico                             |
+| `staff_invitations.created_by`                | actor canónico por definir                                     | columna histórica                            |
+
+`recipes.inventory_id` ya no existe; `ingredient_product_id` materializa el reemplazo a nivel de columna.
+
+#### 9. Funciones y sobrecargas compatibles
+
+- `create_order_checkout_draft(...)` conserva una sobrecarga backward-compatible.
+- `fogo_create_real_production_batch(...)` mantiene firmas paralelas.
+- `resolve_internal_transfer_price(...)` usa `unit_code`; la variante `for_profile` prioriza `uom_profile_id`.
+
+Varias son `SECURITY DEFINER`. Durante la compatibilidad deberán mantener privilegio mínimo, `search_path` fijado, validación de actor y telemetría.
+
+#### 10. Objetos no clasificados como legacy
+
+Las superficies `v1` de contexto efectivo, dispositivos compartidos y VITAL son contratos versionados actuales mientras no exista reemplazo. `inventory_location_positions`, `operational_role_permissions`, `commercial_categories` y las tablas de plantillas representan separación vigente de responsabilidades.
+
+#### 11. Candidatos pendientes de decisión
+
+- `asset_maintenance_records`: cero filas, pero diseño nuevo por activo que convive con historial por producto.
+- `inventory_form_drafts`, `printing_label_templates` y otras tablas vacías recientes: cero filas no prueba abandono.
+- vistas `public.catalog_item_customization_*`: fachadas sobre `pass` sin dependientes SQL visibles; pueden tener clientes Data API.
+- políticas RLS antiguas o duplicadas: deben compararse semánticamente.
+
+#### 12. Brechas y resolución obligatoria
+
+| Brecha               | Título                                | Hallazgo                                                                         | Requisitos                                              |
+| -------------------- | ------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `B-SUPA-AUD-018-001` | Registro legacy inexistente           | No existe un ledger transversal con decisión, propietario y condición de retiro. | TREQ-SUPABASE-303; TREQ-SUPABASE-304                    |
+| `B-SUPA-AUD-018-002` | role_capabilities aún consumida       | La tabla está marcada LEGACY, contiene 26 filas y ANIMA mantiene un hook activo. | TREQ-SUPABASE-307; TREQ-SUPABASE-308                    |
+| `B-SUPA-AUD-018-003` | Backup dentro de public               | La copia fechada conserva 35 filas en esquema expuesto.                          | TREQ-SUPABASE-309; TREQ-SUPABASE-310                    |
+| `B-SUPA-AUD-018-004` | Staging persistente                   | staging_insumos_import conserva 492 filas sin ciclo de vida canónico.            | TREQ-SUPABASE-311; TREQ-SUPABASE-312                    |
+| `B-SUPA-AUD-018-005` | Alias qty_base activo                 | El alias legacy mantiene una referencia localizada en NEXO.                      | TREQ-SUPABASE-313; TREQ-SUPABASE-330                    |
+| `B-SUPA-AUD-018-006` | Alias qty de compras                  | purchase_order_items.qty continúa junto a quantity_ordered.                      | TREQ-SUPABASE-314; TREQ-SUPABASE-330                    |
+| `B-SUPA-AUD-018-007` | Compatibilidad comercial Pass         | Campos singulares conviven con categorías y colecciones normalizadas.            | TREQ-SUPABASE-315; TREQ-SUPABASE-316; TREQ-SUPABASE-330 |
+| `B-SUPA-AUD-018-008` | Precio interno por unit_code          | El fallback textual convive con UOM profile.                                     | TREQ-SUPABASE-317; TREQ-SUPABASE-318                    |
+| `B-SUPA-AUD-018-009` | Sobrecargas RPC                       | Checkout y producción mantienen firmas paralelas.                                | TREQ-SUPABASE-318; TREQ-SUPABASE-319                    |
+| `B-SUPA-AUD-018-010` | Null como comportamiento legacy       | Tres flags conservan semántica implícita por NULL.                               | TREQ-SUPABASE-320                                       |
+| `B-SUPA-AUD-018-011` | Estados legacy de invitación          | pending y created_by conservan semánticas históricas.                            | TREQ-SUPABASE-321; TREQ-SUPABASE-322                    |
+| `B-SUPA-AUD-018-012` | Mantenimiento competidor              | asset_maintenance_records convive con historial previo y tiene cero filas.       | TREQ-SUPABASE-323; TREQ-SUPABASE-324                    |
+| `B-SUPA-AUD-018-013` | Vistas fachada sin gobierno           | Fachadas public sobre pass no tienen dependientes SQL visibles.                  | TREQ-SUPABASE-325                                       |
+| `B-SUPA-AUD-018-014` | Sufijo v1 ambiguo                     | Contratos v1 vigentes pueden confundirse con legado.                             | TREQ-SUPABASE-304; TREQ-SUPABASE-326                    |
+| `B-SUPA-AUD-018-015` | Funciones privilegiadas compatibles   | Funciones candidatas legacy conservan SECURITY DEFINER.                          | TREQ-SUPABASE-327                                       |
+| `B-SUPA-AUD-018-016` | Políticas sin clasificación semántica | No existe inventario de reemplazos y equivalencia RLS.                           | TREQ-SUPABASE-328; TREQ-SUPABASE-329                    |
+| `B-SUPA-AUD-018-017` | Aliases sin condición de salida       | No existe detector uniforme de divergencia y consumidores.                       | TREQ-SUPABASE-330                                       |
+| `B-SUPA-AUD-018-018` | Datos legacy sin snapshot             | Objetos con datos carecen de reconciliación previa al retiro.                    | TREQ-SUPABASE-331                                       |
+| `B-SUPA-AUD-018-019` | Consumidores externos no certificados | Dependencias SQL y búsqueda Git no cubren todos los clientes.                    | TREQ-SUPABASE-305                                       |
+| `B-SUPA-AUD-018-020` | Proceso de deprecación ausente        | No existe secuencia canónica desde aviso hasta eliminación.                      | TREQ-SUPABASE-306                                       |
+| `B-SUPA-AUD-018-021` | Tablas vacías mal clasificables       | Cero filas no distingue abandono de capacidad futura.                            | TREQ-SUPABASE-324                                       |
+| `B-SUPA-AUD-018-022` | Backups y staging en Data API         | No existe prohibición global para temporales en esquemas expuestos.              | TREQ-SUPABASE-310; TREQ-SUPABASE-312                    |
+| `B-SUPA-AUD-018-023` | Validador integral inexistente        | No hay gate recurrente para inventario y condiciones de retiro.                  | TREQ-SUPABASE-332                                       |
+
+No queda hallazgo narrativo sin requisito y tarea responsable.
+
+#### 13. Decisiones de ejecución futura
+
+1. No borrar objetos en esta fase.
+2. Crear ledger legacy y gates antes de cualquier retiro.
+3. Migrar primero `role_capabilities` y aliases de cantidades.
+4. Reconciliar backup y staging antes de mover o eliminar.
+5. Consolidar RPC solo después de telemetría y E2E.
+6. Resolver duplicidades y fuentes competidoras en `SUPA-AUD-019`.
+7. Completar objeto → capacidad → propietario → consumidor en `SUPA-AUD-022`.
+
+#### 14. Requisitos incorporados
+
+Se incorporan `TREQ-SUPABASE-303` a `TREQ-SUPABASE-332` en el 04A completo.
+
+#### 15. Prohibiciones
+
+No se ejecutaron DDL, DML, eliminaciones, cambios de RLS, grants, purgas, repairs, despliegues ni modificaciones de consumidores.
+
+#### 16. Criterio de cierre
+
+La tarea queda cerrada cuando el inventario distingue legado confirmado, compatibilidad activa y candidatos; cada hallazgo tiene requisito; y el 04A preserva íntegramente las 4597 filas previas.
+
+
 ### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
 ### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
 ### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
