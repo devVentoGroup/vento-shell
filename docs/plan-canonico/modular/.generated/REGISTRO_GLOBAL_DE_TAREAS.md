@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **365** |
+| Aprobadas | **366** |
 | En propuesta | **0** |
-| No iniciadas | **1210** |
+| No iniciadas | **1209** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.17% (365/1575)** |
+| Porcentaje de completamiento | **23.24% (366/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-023` — Definir frecuencia de uso | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-024` — Definir acción principal | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-025` — Definir acciones secundarias | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-024` — Definir acción principal | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-025` — Definir acciones secundarias | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-026` — Identificar vistas duplicadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -812,7 +812,7 @@
 | ✅ APROBADA | `AUTH-UI-021` | Definir actores objetivo | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-022` | Definir dispositivo de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-023` | Definir frecuencia de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
-| ⬜ NO INICIADA | `AUTH-UI-024` | Definir acción principal | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
+| ✅ APROBADA | `AUTH-UI-024` | Definir acción principal | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-025` | Definir acciones secundarias | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-026` | Identificar vistas duplicadas | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-027` | Identificar vistas legacy | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
