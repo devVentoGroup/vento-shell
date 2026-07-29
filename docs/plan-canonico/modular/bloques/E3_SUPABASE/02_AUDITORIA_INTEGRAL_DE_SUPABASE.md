@@ -6671,7 +6671,275 @@ No se ejecutaron DDL, DML, eliminaciones, cambios de RLS, grants, purgas, repair
 La tarea queda cerrada cuando el inventario distingue legado confirmado, compatibilidad activa y candidatos; cada hallazgo tiene requisito; y el 04A preserva íntegramente las 4597 filas previas.
 
 
-### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
+### ✅ SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras`
+**Tarea anterior:** `SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `19165672a024a7d1367beaf50aa2058978b134d4`
+**Tipo de tarea:** auditoría documental y técnica read-only de duplicidad, integridad referencial y autoridad de datos; sin DDL, DML, merges, purgas, migraciones ni cambios remotos
+
+#### 1. Objetivo
+
+Detectar duplicidades estructurales y de datos, referencias huérfanas y contratos que representan el mismo concepto sin una autoridad única, diferenciando proyecciones legítimas, compatibilidad temporal y competencia real.
+
+```text
+MISMO NOMBRE EN DOS ESQUEMAS ≠ DUPLICIDAD EMPRESARIAL
+FK AUSENTE ≠ HUELFANO CONFIRMADO
+VALOR REPETIDO ≠ MISMA PERSONA O ENTIDAD
+DOS SALDOS ≠ DOS FUENTES CANONICAS
+```
+
+#### 2. Regla canónica derivada
+
+Cada concepto empresarial deberá tener una sola autoridad de escritura, claves naturales, proyecciones derivadas y reconciliación verificable. Ningún registro se fusionará, borrará o reasignará únicamente por coincidencia textual, ausencia de FK, cero uso aparente o diferencia entre capas agregadas.
+
+#### 3. Fuentes congeladas
+
+| Fuente                             | Corte                                                                                    | Responsabilidad                                 |
+| ---------------------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `SUPA-AUD-018.md` aprobado         | SHA-256 `36a69377362489bb6f6f9a773db8bb70c38762920c3282fa02103cae69807106`               | línea base legacy                               |
+| 04A aprobado                       | SHA-256 `f718f55dcc01a27a64f6e9d5a2655a19975648efad98926a30b537bc1e045c2c`; 4627 filas   | requisitos hasta `TREQ-SUPABASE-332`            |
+| Supabase `vento-os-dev`            | 2026-07-29                                                                               | catálogo, constraints, RLS y agregados de datos |
+| Historial de migraciones           | 549 versiones; huella `c728bc62b92f0d53fa229f6c184f3b85b71a1047492ebcd7282e433bfebb2f31` | continuidad estructural                         |
+| GitHub `devVentoGroup/vento-shell` | commit indicado                                                                          | corte de repositorio observado                  |
+
+#### 4. Taxonomía aplicada
+
+| Clase                          | Criterio                                             | Tratamiento                                |
+| ------------------------------ | ---------------------------------------------------- | ------------------------------------------ |
+| Proyección legítima            | vista sobre una tabla canónica especializada         | probar paridad y solo lectura              |
+| Fuente competidora             | dos tablas escribibles representan el mismo concepto | congelar expansión y reconciliar           |
+| Duplicado lógico               | misma clave empresarial completa repetida            | deduplicar con historial y constraint      |
+| Posible duplicado de identidad | correo, teléfono o documento repetido                | investigar; nunca fusionar automáticamente |
+| Referencia huérfana            | identificador no nulo sin destino requerido          | clasificar contrato y reparar              |
+| Relación lógica sin FK         | identificador externo o vínculo intencional          | documentar y validar por proceso           |
+| Desglose derivado              | saldo o atributo parcial subordinado a una autoridad | reconciliar cobertura y suma               |
+
+#### 5. Resultado ejecutivo
+
+| Métrica                                                  |                Resultado |
+| -------------------------------------------------------- | -----------------------: |
+| Fuentes competidoras críticas confirmadas                |  **1 familia principal** |
+| Filas activas en `public.site_operational_roles`         |                   **16** |
+| Filas activas en `viso.site_operational_roles`           |                   **32** |
+| Claves empresariales compartidas entre ambas             |                    **0** |
+| Grupos de políticas RLS exactamente equivalentes         |                    **7** |
+| Duplicados lógicos en `role_permissions`                 |  **4 grupos / 12 filas** |
+| Duplicados lógicos en `employee_permissions`             |   **2 grupos / 5 filas** |
+| Pares históricos `site_id + product_id` en catálogo Pass | **11 grupos / 22 filas** |
+| Proveedores con tax_id normalizado repetido              |  **1 grupo / 2 activos** |
+| Proveedores con teléfono normalizado repetido            |  **1 grupo / 2 activos** |
+| Usuarios con correo normalizado repetido                 |  **1 grupo / 6 activos** |
+| Usuarios con teléfono normalizado repetido               |  **1 grupo / 2 activos** |
+| `public.users` sin `auth.users`                          |                    **7** |
+| FK `NOT VALID`                                           |                    **1** |
+| Brechas formalizadas                                     |                   **23** |
+| Requisitos nuevos                                        |                   **30** |
+
+#### 6. Fuente competidora: roles operativos por sede
+
+`public.site_operational_roles` y `viso.site_operational_roles` son tablas físicas independientes.
+
+| Atributo                                | `public` | `viso` |
+| --------------------------------------- | -------: | -----: |
+| Filas                                   |       16 |     32 |
+| Filas activas                           |       16 |     32 |
+| Columnas                                |       13 |     11 |
+| Claves `site + area + role` compartidas |        0 |      0 |
+
+La tabla `public` incluye auditoría, descripción y FK a `operational_roles`; la FK de `role_code` está `NOT VALID`, aunque actualmente no se observaron valores huérfanos. La tabla `viso` conserva `area_kind` y otra semántica de etiqueta y orden.
+
+**Dictamen:** fuente competidora confirmada. No se designa autoridad definitiva en esta tarea; debe resolverse con mapa de consumidores y propietario en `SUPA-AUD-022` antes de migrar o eliminar.
+
+#### 7. Homónimos por esquema que no son duplicados automáticos
+
+Se identificaron numerosos pares `tabla especializada + vista public` para `pass` y `pos`, entre ellos catálogo, colecciones, fidelización y POS. Son fachadas Data API, no dos tablas escribibles. Algunas vistas exponen menos columnas que su tabla fuente.
+
+**Dictamen:** conservar como proyecciones compatibles mientras se prueben paridad, seguridad, frescura y contrato de solo lectura.
+
+#### 8. Duplicidad en autorización
+
+| Tabla                  | Grupos repetidos | Filas | Conflictos allow/deny |
+| ---------------------- | ---------------: | ----: | --------------------: |
+| `role_permissions`     |                4 |    12 |                     0 |
+| `employee_permissions` |                2 |     5 |                     0 |
+
+Todas las filas repetidas son `allow`. No existe contradicción de decisión, pero sí multiplicidad lógica que puede duplicar joins y evidencias. La restricción actual de `role_permissions` no cubre plenamente la clave efectiva cuando intervienen scopes con `NULL` e identificadores concretos.
+
+#### 9. Políticas RLS equivalentes
+
+Se detectaron siete grupos de dos políticas exactamente equivalentes por tabla, comando, roles, modo y predicados:
+
+- `attendance_breaks`;
+- `attendance_shift_events`;
+- dos grupos en `employee_sites`;
+- `roles`;
+- `site_attendance_policy`;
+- `users`.
+
+**Dictamen:** deuda de mantenimiento de seguridad. La consolidación deberá demostrar equivalencia semántica y ausencia de ampliación o reducción de acceso.
+
+#### 10. Duplicidad e historial en catálogo Pass
+
+Existen 11 grupos y 22 filas con el mismo `site_id + product_id`.
+
+- ningún grupo tiene dos filas activas;
+- los 11 grupos usan códigos o categorías distintos;
+- tres grupos también difieren en nombre;
+- ocho grupos tienen precios distintos.
+
+**Dictamen:** no son duplicados activos simples; constituyen versiones o sustituciones históricas sin linaje explícito. Debe mantenerse una sola fila activa y registrar sucesor, referencias y redirección.
+
+#### 11. Posibles duplicados de proveedores
+
+Se observaron, sin exponer valores personales o fiscales:
+
+- un `tax_id` normalizado compartido por dos proveedores activos y nombres distintos;
+- un teléfono normalizado compartido por dos proveedores activos y nombres distintos;
+- cero duplicados por correo y cero duplicados por nombre normalizado.
+
+**Dictamen:** candidatos a merge empresarial, no merge autorizado. Deben revisarse órdenes, recepciones, costos, facturas y alias antes de decidir autoridad.
+
+#### 12. Posibles duplicados de clientes
+
+- un correo normalizado aparece en seis usuarios activos, sin teléfono ni documento;
+- un teléfono normalizado aparece en dos usuarios activos con correos y documentos distintos.
+
+Los valores pueden ser placeholders, cuentas compartidas o errores de captura. No se incluyen valores en el informe.
+
+**Dictamen:** resolver identidad mediante señales múltiples y revisión controlada; queda prohibida la fusión automática por una sola coincidencia.
+
+#### 13. `public.users` sin identidad Auth
+
+Hay siete filas sin `auth.users`:
+
+- seis clientes activos con correo, sin teléfono, documento ni puntos;
+- una fila cliente inactiva.
+
+Esto no prueba orfandad destructiva porque `public.users` puede representar clientes identificados sin cuenta Auth. Debe definirse obligatoriedad de Auth por clase de usuario.
+
+#### 14. Columnas duales y fuentes competidoras de atributos
+
+##### 14.1 Invitaciones laborales
+
+`staff_invitations` conserva:
+
+- `staff_role` y `role_code`;
+- `staff_site_id` y `site_id`.
+
+No se observaron pares divergentes, pero existen dos filas con un solo valor en cada familia. La compatibilidad está incompleta.
+
+##### 14.2 Categoría comercial
+
+`pass.catalog_items.category_label` compite con `commercial_category_id`:
+
+- 15 filas tienen label diferente al nombre de la categoría FK;
+- 30 filas tienen label sin categoría FK;
+- ninguna fila tiene FK sin label.
+
+La FK deberá ser autoridad; el texto histórico requiere backfill por sede y excepciones.
+
+##### 14.3 Cantidades legacy
+
+- `purchase_order_items.qty` coincide actualmente con `quantity_ordered`;
+- `inventory_entry_items.qty_base` coincide con `quantity_received` y con la conversión cuando corresponde.
+
+La ausencia actual de divergencia debe convertirse en gate antes del retiro.
+
+##### 14.4 Rol de usuario y rol laboral
+
+Los 56 registros que existen en `users` y `employees` tienen `users.role = client` y un rol laboral en `employees.role`. No se considera inconsistencia: son conceptos distintos bajo nombres similares. Deben separarse contractualmente para evitar que `users.role` se use como autorización laboral.
+
+#### 15. Fuentes de stock y reconciliación
+
+`inventory_stock_by_site` está documentada remotamente como tabla canónica de stock por sitio.
+
+| Capa       | Cobertura frente a 202 claves sitio-producto | Divergencias | Gap absoluto |
+| ---------- | -------------------------------------------: | -----------: | -----------: |
+| ubicación  |                                     completa |            0 |            0 |
+| posición   |                             faltan 59 claves |            7 |         9724 |
+| perfil UOM |                            faltan 101 claves |           13 |        16056 |
+
+Las capas de posición y presentación pueden ser desgloses parciales; por ello el gap no se interpreta automáticamente como corrupción. Deben declararse cobertura, unidad y protocolo de escritura.
+
+#### 16. Unidad de stock
+
+En 963 productos, `products.unit` coincide con `products.stock_unit_code`. En 81 productos, `product_inventory_profiles.default_unit` difiere de ambas:
+
+- 63: `g` frente a `kg`;
+- 14: `ml` frente a `l`;
+- 2: `kg` frente a `g`;
+- 2: `un` frente a `dz`.
+
+**Dictamen:** `stock_unit_code` es la unidad base canónica; `default_unit` debe aclararse como unidad de captura o presentación y no operar como una segunda base implícita.
+
+#### 17. Integridad referencial
+
+- una FK `NOT VALID`: `public.site_operational_roles.role_code → operational_roles.code`;
+- cero valores huérfanos actuales en esa relación;
+- 47 columnas terminadas en `*_id` sin FK en esquemas empresariales;
+- ocho de esas columnas están pobladas en `public` y mezclan referencias lógicas, IDs externos y valores que no deben forzarse a FK;
+- cero mismatches observados entre sitio, área, ubicación, posición y LPN en las relaciones críticas consultadas.
+
+#### 18. Brechas y resolución obligatoria
+
+| Brecha               | Título                                   | Hallazgo                                                                       | Requisitos                                              |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `B-SUPA-AUD-019-001` | Autoridad de datos no registrada         | No existe catálogo transversal de fuente, escritor y proyección.               | TREQ-SUPABASE-333; TREQ-SUPABASE-334                    |
+| `B-SUPA-AUD-019-002` | Roles por sede competidores              | Dos tablas físicas, 16 y 32 filas activas, sin claves compartidas.             | TREQ-SUPABASE-335; TREQ-SUPABASE-336                    |
+| `B-SUPA-AUD-019-003` | Fachadas homónimas sin contrato uniforme | Vistas public conviven con tablas pass/pos y algunas proyectan menos columnas. | TREQ-SUPABASE-337; TREQ-SUPABASE-338                    |
+| `B-SUPA-AUD-019-004` | Duplicados en role_permissions           | 4 claves y 12 filas allow.                                                     | TREQ-SUPABASE-339; TREQ-SUPABASE-341                    |
+| `B-SUPA-AUD-019-005` | Duplicados en employee_permissions       | 2 claves y 5 filas allow.                                                      | TREQ-SUPABASE-340; TREQ-SUPABASE-341                    |
+| `B-SUPA-AUD-019-006` | RLS equivalente duplicada                | Siete grupos de dos políticas.                                                 | TREQ-SUPABASE-342; TREQ-SUPABASE-343                    |
+| `B-SUPA-AUD-019-007` | Catálogo histórico sin linaje            | 11 pares sitio-producto y 22 filas.                                            | TREQ-SUPABASE-344; TREQ-SUPABASE-345                    |
+| `B-SUPA-AUD-019-008` | Proveedores por tax_id                   | Un grupo con dos proveedores activos.                                          | TREQ-SUPABASE-346; TREQ-SUPABASE-347                    |
+| `B-SUPA-AUD-019-009` | Proveedores por teléfono                 | Un grupo con dos proveedores activos.                                          | TREQ-SUPABASE-346; TREQ-SUPABASE-347                    |
+| `B-SUPA-AUD-019-010` | Correo de cliente repetido               | Un valor normalizado en seis usuarios activos.                                 | TREQ-SUPABASE-348; TREQ-SUPABASE-349                    |
+| `B-SUPA-AUD-019-011` | Teléfono de cliente repetido             | Un valor normalizado en dos usuarios activos distintos.                        | TREQ-SUPABASE-348; TREQ-SUPABASE-349                    |
+| `B-SUPA-AUD-019-012` | Usuarios sin Auth                        | Siete public.users sin auth.users.                                             | TREQ-SUPABASE-350                                       |
+| `B-SUPA-AUD-019-013` | Referencias lógicas sin inventario       | 47 columnas *_id sin FK; ocho pobladas en public.                              | TREQ-SUPABASE-351                                       |
+| `B-SUPA-AUD-019-014` | FK no validada                           | role_code está protegido solo para datos nuevos.                               | TREQ-SUPABASE-352                                       |
+| `B-SUPA-AUD-019-015` | Campos duales de invitación              | Dos pares parciales para rol y sede.                                           | TREQ-SUPABASE-353; TREQ-SUPABASE-354                    |
+| `B-SUPA-AUD-019-016` | Alias cuantitativos aún activos          | Paridad actual sin gate recurrente.                                            | TREQ-SUPABASE-355                                       |
+| `B-SUPA-AUD-019-017` | Categoría comercial divergente           | 15 labels divergentes y 30 sin FK.                                             | TREQ-SUPABASE-356; TREQ-SUPABASE-357                    |
+| `B-SUPA-AUD-019-018` | Stock multinivel parcial                 | Posición y UOM no convergen completamente.                                     | TREQ-SUPABASE-358; TREQ-SUPABASE-359; TREQ-SUPABASE-360 |
+| `B-SUPA-AUD-019-019` | Unidad default ambigua                   | 81 perfiles difieren de la unidad de stock.                                    | TREQ-SUPABASE-361                                       |
+| `B-SUPA-AUD-019-020` | Roles con nombres semánticos solapados   | users.role y employees.role representan conceptos distintos.                   | TREQ-SUPABASE-333; TREQ-AUTH-001                        |
+| `B-SUPA-AUD-019-021` | Merge sin runbook                        | No existe procedimiento transversal reversible para entidades duplicadas.      | TREQ-SUPABASE-347; TREQ-SUPABASE-349                    |
+| `B-SUPA-AUD-019-022` | Reconciliación no automatizada           | Los controles son consultas puntuales.                                         | TREQ-SUPABASE-359; TREQ-SUPABASE-362                    |
+| `B-SUPA-AUD-019-023` | Validador integral inexistente           | No hay gate recurrente para toda la línea base.                                | TREQ-SUPABASE-362                                       |
+
+No queda hallazgo narrativo sin requisito y tarea responsable.
+
+#### 19. Decisiones de ejecución futura
+
+1. No fusionar ni borrar datos en esta fase.
+2. Crear primero el ledger de fuentes y propietarios.
+3. Congelar nuevos escritores sobre la tabla de roles que no resulte canónica.
+4. Deduplicar autorización mediante migración transaccional y constraints exactos.
+5. Resolver identidades de proveedores y clientes con revisión reversible.
+6. Reconciliar categorías y campos duales antes de retirar aliases.
+7. Mantener `inventory_stock_by_site` como autoridad y certificar desgloses.
+8. Usar `SUPA-AUD-022` para cerrar objeto → capacidad → propietario → consumidores.
+
+#### 20. Requisitos incorporados
+
+Se incorporan `TREQ-SUPABASE-333` a `TREQ-SUPABASE-362` en el 04A completo.
+
+#### 21. Prohibiciones
+
+No se ejecutaron DDL, DML, merges, deletes, updates, cambios de RLS, validación de constraints, migraciones, repairs ni modificaciones remotas.
+
+#### 22. Criterio de cierre
+
+La tarea queda cerrada cuando cada duplicidad o competencia se clasifica sin falsos positivos, los huérfanos se separan de relaciones lógicas, toda brecha tiene requisito y el 04A preserva exactamente las 4627 filas previas.
+
+
 ### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
 ### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
 ### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
