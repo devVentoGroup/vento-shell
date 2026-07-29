@@ -4106,7 +4106,290 @@ POSTGRESQL_VERSION = 17.6
 Las huellas se calculan sobre registros ordenados. Cualquier cambio de RLS, política, rol, membresía, grant actual o ACL por defecto exige revalidación antes de arquitectura, normalización o transición.
 
 
-### [ ] SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
+### ✅ SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible del sistema de identidad y autenticación de `vento-os-dev`, separando obligatoriamente:
+
+```text
+CUENTA DE AUTENTICACIÓN       = auth.users
+IDENTIDAD DE PROVEEDOR        = auth.identities
+SESIÓN Y ROTACIÓN             = auth.sessions + auth.refresh_tokens
+PERFIL DE CLIENTE             = public.users
+IDENTIDAD LABORAL             = public.employees
+INVITACIÓN LABORAL            = public.staff_invitations
+ACTOR TÉCNICO COMPARTIDO      = public.shared_operational_devices.auth_user_id
+PERFILES ESPECIALIZADOS       = talento.candidates, vital.user_profiles y dominios consumidores
+```
+
+`auth.users` no se considera catálogo laboral ni catálogo de clientes. Su función es autenticar una cuenta. La condición de cliente, trabajador, candidato, dispositivo o actor de sistema debe derivarse de vínculos empresariales explícitos y no de nombres, correos o metadatos editables.
+
+#### 2. Alcance y método no mutante
+
+Se consultaron exclusivamente catálogos y datos agregados mediante `SELECT`:
+
+- `auth.users`, `auth.identities`, `auth.sessions`, `auth.refresh_tokens`, `auth.mfa_*`, `auth.audit_log_entries`, `auth.flow_state` y `auth.one_time_tokens`;
+- `public.users`, `public.employees`, `public.employee_sites`, `public.employee_areas`, `public.employee_settings` y `public.staff_invitations`;
+- vínculos con dispositivos compartidos, candidatos y perfiles especializados;
+- constraints, funciones, políticas y vistas que podrían consumir `raw_user_meta_data`, `raw_app_meta_data` o `auth.jwt()`;
+- hashes SHA-256 de registros normalizados, sin incluir contraseñas, tokens, correos, teléfonos ni otros secretos en el documento.
+
+No se ejecutaron altas, bajas, invitaciones, revocaciones, cambios de contraseña, actualización de metadatos, cierre de sesiones, DDL, DML, RPC ni migraciones.
+
+Corte principal: `2026-07-29T20:34:06.446837Z`. Algunos contadores administrados continuaron creciendo durante la inspección —por ejemplo `auth.audit_log_entries`— y deberán compararse mediante huellas y timestamp, no suponerse estáticos.
+
+#### 3. Semántica canónica
+
+| Entidad               | Autoridad observada                                            | Regla de interpretación                                                                        |
+| --------------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `auth.users`          | cuenta autenticable y estado administrado por Supabase Auth    | no contiene por sí sola rol laboral ni condición de cliente                                    |
+| `auth.identities`     | proveedor e identidad externa asociada                         | varias identidades pueden pertenecer a una cuenta, aunque hoy existe una por usuario           |
+| `auth.sessions`       | sesión administrada, AAL, expiración y contexto de dispositivo | una fila no prueba por sí sola que un access token actual siga siendo utilizable               |
+| `auth.refresh_tokens` | cadena de renovación de sesión                                 | `revoked=false` es una señal material que debe cerrarse en offboarding                         |
+| `public.users`        | perfil de cliente y fidelización                               | hoy se sincroniza lógicamente con Auth, sin FK a `auth.users`                                  |
+| `public.employees`    | identidad laboral                                              | `employees.id` referencia `auth.users.id` con eliminación en cascada                           |
+| `staff_invitations`   | proceso empresarial de alta laboral                            | contiene campos legacy y actuales; no debe conservar secretos reutilizables después del cierre |
+| metadatos JWT         | atributos de transporte o bootstrap                            | `raw_user_meta_data` no puede ser autoridad de autorización                                    |
+
+#### 4. Resultado global de Auth
+
+| Métrica                         | Resultado |
+| ------------------------------- | --------: |
+| cuentas `auth.users`            |    **73** |
+| confirmadas                     |    **66** |
+| no confirmadas                  |     **7** |
+| eliminadas lógicamente          |     **0** |
+| anónimas                        |     **0** |
+| SSO                             |     **0** |
+| bloqueadas actualmente          |     **3** |
+| con correo                      |    **73** |
+| con teléfono                    |     **0** |
+| con contraseña cifrada presente |    **72** |
+| inicio de sesión en 30 días     |    **25** |
+| nunca iniciaron sesión          |     **7** |
+
+Las siete cuentas no confirmadas coinciden con las siete que nunca iniciaron sesión. No se observan cuentas eliminadas ni anónimas.
+
+#### 5. Identidades y proveedores
+
+| Métrica                                      |    Resultado |
+| -------------------------------------------- | -----------: |
+| identidades                                  |       **73** |
+| usuarios cubiertos                           | **73 de 73** |
+| proveedor `email`                            |       **73** |
+| usuarios sin identidad                       |        **0** |
+| usuarios con múltiples identidades           |        **0** |
+| referencias huérfanas                        |        **0** |
+| `provider_id` duplicado dentro del proveedor |        **0** |
+
+El proyecto usa actualmente un único proveedor de identidad: `email`. No existen SSO providers, custom OAuth providers ni OAuth clients configurados en las tablas administradas observadas. La arquitectura debe conservar capacidad de múltiples identidades sin suponer que una cuenta tendrá siempre exactamente una.
+
+#### 6. Sesiones, tokens y nivel de aseguramiento
+
+| Métrica                                | Resultado |
+| -------------------------------------- | --------: |
+| sesiones                               |   **174** |
+| usuarios con sesiones                  |    **63** |
+| sesiones `aal1`                        |   **174** |
+| sesiones `aal2`                        |     **0** |
+| sesiones con `not_after` nulo          |   **174** |
+| sesiones con refresh token no revocado |   **172** |
+| sesiones sin refresh token no revocado |     **2** |
+| refresh tokens totales                 | **6.371** |
+| revocados                              | **6.199** |
+| no revocados                           |   **172** |
+| refresh tokens sin sesión              |     **0** |
+| referencias de sesión huérfanas        |     **0** |
+
+Distribución de antigüedad de sesiones:
+
+| Antigüedad     | Sesiones |
+| -------------- | -------: |
+| 0–7 días       |        1 |
+| 8–30 días      |       50 |
+| 31–90 días     |       50 |
+| más de 90 días |       73 |
+
+No existen factores MFA, credenciales WebAuthn ni sesiones `aal2`. Esta ausencia no se declara automáticamente defecto: debe confrontarse con sensibilidad, roles y acciones en `SUPA-ARC-008`, `SUPA-ARC-009` y la arquitectura de autenticación.
+
+Todas las sesiones tienen `not_after` nulo. Por ello, la vigencia máxima no está representada en esa columna y depende de la configuración de Auth y de la rotación/revocación. La política de duración debe auditarse en `SUPA-AUD-015` y formalizarse antes de certificar sesiones administrativas o de dispositivos.
+
+#### 7. Baja laboral y revocación
+
+| Señal                                             |                     Resultado |
+| ------------------------------------------------- | ----------------------------: |
+| empleados totales                                 |                        **56** |
+| empleados inactivos                               |                        **16** |
+| inactivos con cuenta confirmada y no eliminada    |                        **15** |
+| inactivos con filas de sesión                     | **14 usuarios / 45 sesiones** |
+| refresh tokens no revocados ligados a inactivos   |                        **45** |
+| inactivos con inicio de sesión en 30 días         |                         **2** |
+| cuentas bloqueadas entre inactivos                |                         **3** |
+| refresh tokens no revocados de cuentas bloqueadas |                         **6** |
+
+La inactivación laboral no está acompañada por una revocación observable de sesiones y refresh tokens. Esto constituye una brecha de ciclo de vida, no una prueba de explotación: una fila de sesión o token no demuestra por sí sola que un access token concreto siga aceptándose. Sin embargo, el contrato objetivo deberá hacer verificable y atómico, o compensable con evidencia, el cierre de:
+
+1. vínculo laboral activo;
+2. sesiones y refresh tokens;
+3. dispositivos y push tokens personales;
+4. simulaciones, turnos o actor compartido activos;
+5. permisos, sedes y áreas efectivas;
+6. accesos derivados en aplicaciones consumidoras.
+
+Ruta de resolución: `SUPA-AUD-011`, `SUPA-ARC-008`, `SUPA-ARC-009`, tareas `AUTH-SRV-*`, `AUTH-DB-*` y paquete de offboarding correspondiente. No se revocaron sesiones durante esta auditoría.
+
+#### 8. Vínculos empresariales
+
+| Vínculo                                             |    Resultado |
+| --------------------------------------------------- | -----------: |
+| perfiles `public.users`                             |       **80** |
+| cuentas Auth con perfil cliente                     | **73 de 73** |
+| perfiles cliente sin cuenta Auth                    |        **7** |
+| cuentas Auth con identidad laboral                  |       **56** |
+| cuentas Auth sin identidad laboral                  |       **17** |
+| empleados sin sede activa                           |        **0** |
+| empleados sin sede primaria                         |        **0** |
+| empleados con múltiples sedes primarias             |        **0** |
+| discrepancias `employees.site_id` vs sede primaria  |        **0** |
+| discrepancias de área primaria                      |        **0** |
+| empleados sin `employee_settings`                   |        **0** |
+| selección de sede o área fuera de asignación activa |        **0** |
+
+La integridad de sede, área y preferencias de contexto está bien reconciliada en el corte. La frontera cliente/Auth no tiene la misma protección estructural:
+
+- `public.employees.id → auth.users.id` posee FK;
+- `public.users.id → auth.users.id` **no** posee FK;
+- `staff_invitations.auth_user_id → auth.users.id` **no** posee FK;
+- `talento.candidates.auth_user_id → auth.users.id` **no** posee FK;
+- `public.wallet_passes.user_id → auth.users.id` **no** posee FK.
+
+Los siete perfiles `public.users` sin cuenta Auth deben clasificarse en `SUPA-AUD-011` y `SUPA-AUD-019` como perfiles legacy, invitados, importados o huérfanos antes de corregirlos. No se autoriza borrarlos ni crear cuentas automáticamente.
+
+#### 9. Clases de cuenta observadas
+
+Aplicando precedencia `SHARED_DEVICE → EMPLOYEE → CANDIDATE → CLIENT_OR_OTHER`:
+
+| Clase inferida         | Cuentas |
+| ---------------------- | ------: |
+| dispositivo compartido |   **2** |
+| empleado               |  **55** |
+| candidato              |   **0** |
+| cliente u otro         |  **16** |
+
+La suma es 73. Una cuenta de dispositivo también puede coincidir estructuralmente con un empleado; por eso la precedencia evita doble conteo y explica que existan 56 vínculos laborales aunque 55 cuentas queden clasificadas como `EMPLOYEE`.
+
+La clase inferida no es todavía un atributo canónico. `SUPA-AUD-011` deberá auditar identidad de trabajador, cliente, dispositivo y actor de sistema con cardinalidades y restricciones explícitas.
+
+#### 10. Metadatos de usuario y aplicación
+
+`raw_user_meta_data` contiene:
+
+| Clave                             |   Usuarios |
+| --------------------------------- | ---------: |
+| `role`                            |     **47** |
+| `site_id`                         |     **47** |
+| `full_name`                       |     **47** |
+| `sub`                             |         21 |
+| `email`                           |         21 |
+| `email_verified`                  |         72 |
+| `phone_verified`                  |         21 |
+| claves de dispositivo y plantilla | 1 cada una |
+
+`raw_app_meta_data` contiene `provider/providers` en 73 cuentas y señales de cuenta técnica en una cuenta.
+
+La búsqueda estática remota encontró:
+
+- **0 políticas RLS** que usen `raw_user_meta_data`, `user_metadata`, `raw_app_meta_data`, `app_metadata` o `auth.jwt()`;
+- **0 vistas** con esas señales;
+- `talento.bootstrap_my_candidate(...)` consulta `auth.jwt()` y metadatos durante bootstrap;
+- `vital.is_service_role()` consulta `auth.jwt()` para identificar el rol de servicio.
+
+Por tanto, no se observó autorización RLS basada directamente en metadatos editables. Aun así, almacenar `role` y `site_id` laborales en `raw_user_meta_data` crea riesgo de consumo accidental, divergencia y datos obsoletos. Deben tratarse como información de compatibilidad, no como autoridad, y rastrearse en código y migraciones mediante `SUPA-AUD-016` y `SUPA-AUD-017`.
+
+#### 11. Invitaciones laborales
+
+| Estado                 |  Filas | Con token en texto | Con hash | Vinculadas a Auth | Vinculadas a empleado |
+| ---------------------- | -----: | -----------------: | -------: | ----------------: | --------------------: |
+| `accepted`             |     15 |                 15 |       15 |                15 |                    15 |
+| `cancelled`            |      8 |                  8 |        5 |                 4 |                     4 |
+| `linked_existing_user` |      5 |                  5 |        0 |                 5 |                     5 |
+| **TOTAL**              | **28** |             **28** |   **20** |            **24** |                **24** |
+
+Hallazgos:
+
+- las 28 invitaciones conservan `token` no vacío aunque todos sus estados son terminales o equivalentes;
+- 20 poseen además `invite_token_hash` SHA-256 de longitud 64;
+- 8 no poseen hash;
+- no existen discrepancias entre `staff_role/role_code` ni `staff_site_id/site_id` cuando ambos están presentes;
+- las 15 aceptadas tienen `auth_user_id = employee_id` y referencias existentes;
+- las cinco `linked_existing_user` están enlazadas tanto a Auth como a empleado.
+
+La columna `token` no se expuso ni se incluyó en huellas. Su presencia persistente debe tratarse como retención de secreto potencial hasta verificar cuerpo, formato, uso y capacidad de reutilización. La resolución corresponde a `SUPA-AUD-011`, `SUPA-AUD-016`, `SUPA-AUD-018` y la transición de invitaciones; no se eliminaron valores.
+
+#### 12. Estado administrado auxiliar
+
+| Objeto                        |                       Filas |
+| ----------------------------- | --------------------------: |
+| `auth.audit_log_entries`      | **41.092** al segundo corte |
+| `auth.flow_state`             |                     **192** |
+| `auth.one_time_tokens`        |                      **11** |
+| `auth.mfa_amr_claims`         |                     **174** |
+| `auth.mfa_factors`            |                       **0** |
+| `auth.sso_providers`          |                       **0** |
+| `auth.custom_oauth_providers` |                       **0** |
+| `auth.oauth_clients`          |                       **0** |
+
+Estos objetos son administrados por Supabase. No deben ser reestructurados mediante migraciones empresariales. Retención, configuración de Auth, protección de contraseñas filtradas, duración de sesiones y proveedores se completarán en `SUPA-AUD-015`.
+
+#### 13. Brechas y enrutamiento obligatorio
+
+| ID local           | Hallazgo                                                                         | Riesgo                                               | Resolución obligatoria                                                               |
+| ------------------ | -------------------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `SUPA-AUD-010-B01` | 16 empleados inactivos; 14 conservan 45 sesiones/tokens no revocados             | acceso posterior a baja                              | `SUPA-AUD-011`; `SUPA-ARC-008`; `SUPA-ARC-009`; `AUTH-SRV-*`; paquete de offboarding |
+| `SUPA-AUD-010-B02` | tres cuentas bloqueadas conservan seis refresh tokens no revocados               | bloqueo no reconciliado con revocación               | `SUPA-AUD-011`; `SUPA-AUD-015`; `AUTH-SRV-*`                                         |
+| `SUPA-AUD-010-B03` | 47 cuentas almacenan rol y sede en `raw_user_meta_data`                          | consumo accidental o claims obsoletos                | `SUPA-AUD-016`; `SUPA-AUD-017`; `AUTH-DB-*`                                          |
+| `SUPA-AUD-010-B04` | siete perfiles cliente no tienen cuenta Auth                                     | fuente de verdad ambigua o legacy                    | `SUPA-AUD-011`; `SUPA-AUD-019`; `SUPA-ARC-008`                                       |
+| `SUPA-AUD-010-B05` | vínculos Auth en `public.users`, invitaciones, candidatos y wallet carecen de FK | referencias huérfanas posibles                       | `SUPA-AUD-011`; `SUPA-AUD-019`; `SUPA-ARC-008`; transición posterior                 |
+| `SUPA-AUD-010-B06` | 28 invitaciones terminales conservan token; ocho carecen de hash                 | retención de secreto potencial y coexistencia legacy | `SUPA-AUD-011`; `SUPA-AUD-016`; `SUPA-AUD-018`; transición de invitaciones           |
+| `SUPA-AUD-010-B07` | 174 sesiones AAL1, cero MFA/AAL2                                                 | aseguramiento no diferenciado por sensibilidad       | `SUPA-AUD-015`; `SUPA-ARC-009`; tareas AUTH de MFA/step-up                           |
+| `SUPA-AUD-010-B08` | 174 sesiones con `not_after` nulo                                                | duración máxima no visible en datos                  | `SUPA-AUD-015`; `SUPA-ARC-009`                                                       |
+| `SUPA-AUD-010-B09` | dos cuentas de dispositivo comparten el mismo universo Auth que personas         | confusión entre sujeto humano y técnico              | `SUPA-AUD-011`; `SUPA-ARC-008`; `SUPA-ARC-009`                                       |
+
+No quedan pendientes narrativos sin tarea. Esta tarea identifica el estado; no define todavía el modelo definitivo ni aplica saneamiento.
+
+#### 14. Huellas de integridad
+
+```text
+AUTH_USER_REGISTRY_SHA256=103ea5a60e57394bf6eeded95647416ae9175176123ee9b036bb45e68210a6eb
+IDENTITY_REGISTRY_SHA256=f9aa009f72937309fb70f653672e89c1f58c4af5779e4682f1f7ad0d0528690e
+SESSION_REGISTRY_SHA256=87be3f3af4972d4dc0d3273361f6c0424c6694617e3a1dd4126d5767c65b343b
+BUSINESS_LINK_REGISTRY_SHA256=fc45a7347c12880f01ef1bd1f9d2a61078072a81fe9c5eb4882a69ea64c46a75
+INVITATION_STATE_REGISTRY_SHA256=80dd11cebceeb330717cc901d023cfc06518e2c7ca2cb760b572a5a49fe98876
+METADATA_KEY_REGISTRY_SHA256=e5591f6e261d5fa4a7adc3522ec3984240b5e2e8d5b9d9d1957bc950e1a9455a
+```
+
+Las huellas excluyen valores de contraseña, correo, teléfono, token, IP, user-agent y payload sensible. Cualquier cambio deberá interpretarse junto con timestamp y operación legítima, porque usuarios y sesiones son datos vivos.
+
+#### 15. Criterios de cierre
+
+SUPA-AUD-010 queda completa porque:
+
+- se inventariaron cuentas, identidades, sesiones, refresh tokens y nivel AAL;
+- se reconciliaron perfiles cliente, empleados, sedes, áreas y settings;
+- se auditaron invitaciones y referencias Auth principales;
+- se identificó la frontera de metadatos y su uso en funciones/políticas/vistas;
+- se registraron brechas con tarea y etapa de resolución;
+- se produjeron huellas reproducibles sin exponer PII ni secretos;
+- no se modificó el remoto.
+
+La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
+```
+
+
 ### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
 ### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
 ### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
