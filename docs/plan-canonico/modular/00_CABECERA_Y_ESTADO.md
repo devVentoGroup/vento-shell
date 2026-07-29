@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **355** |
+| Tareas aprobadas | **356** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1220** |
+| Tareas no iniciadas | **1219** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **22.54% (355/1575)** |
+| Porcentaje de completamiento | **22.60% (356/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-013 — Definir aplicación propietaria** |
-| Tarea actual | **AUTH-UI-014 — Definir si la aplicación solo consume la capacidad** |
+| Última tarea aprobada | **AUTH-UI-014 — Definir si la aplicación solo consume la capacidad** |
+| Tarea actual | **AUTH-UI-015 — Clasificar vista operativa** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-015 — Clasificar vista operativa** |
+| Siguiente tarea | **AUTH-UI-016 — Clasificar vista administrativa** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 13 de 29 aprobadas; AUTH-UI-014 pendiente** |
+| Progreso del bloque | **BLOQUE I: 14 de 29 aprobadas; AUTH-UI-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-013` — Definir aplicación propietaria |
-| Tarea actual | `AUTH-UI-014` — Definir si la aplicación solo consume la capacidad — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-015` — Clasificar vista operativa |
+| Última aprobada | `AUTH-UI-014` — Definir si la aplicación solo consume la capacidad |
+| Tarea actual | `AUTH-UI-015` — Clasificar vista operativa — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-016` — Clasificar vista administrativa |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **13 DE 29 APROBADAS — ACTUAL AUTH-UI-014** |
+| BLOQUE I | **14 DE 29 APROBADAS — ACTUAL AUTH-UI-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-013 — Definir aplicación propietaria
-        ↓
-TAREA ACTUAL
 AUTH-UI-014 — Definir si la aplicación solo consume la capacidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-015 — Clasificar vista operativa
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-016 — Clasificar vista administrativa
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 13 de 29 tareas aprobadas
+BLOQUE I — 14 de 29 tareas aprobadas
 ```
