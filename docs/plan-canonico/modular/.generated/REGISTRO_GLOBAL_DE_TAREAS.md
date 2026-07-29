@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **391** |
+| Aprobadas | **392** |
 | En propuesta | **0** |
-| No iniciadas | **1184** |
+| No iniciadas | **1183** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.83% (391/1575)** |
+| Porcentaje de completamiento | **24.89% (392/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-AUD-010` — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | ✅ APROBADA |
-| Tarea actual | `SUPA-AUD-011` — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | ⬜ NO INICIADA |
-| Siguiente | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-AUD-011` — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | ✅ APROBADA |
+| Tarea actual | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage | ⬜ NO INICIADA |
+| Siguiente | `SUPA-AUD-013` — Auditar publicaciones, canales y consumidores de Realtime | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -382,7 +382,7 @@
 | ✅ APROBADA | `SUPA-AUD-008` | Inventariar triggers y funciones ejecutadas por triggers | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-009` | Inventariar políticas RLS, grants y privilegios por rol | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-010` | Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-011` | Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-011` | Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-012` | Auditar buckets, rutas, políticas y ciclos de vida de Storage | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-013` | Auditar publicaciones, canales y consumidores de Realtime | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-014` | Auditar Edge Functions, webhooks, cron, colas y automatizaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

@@ -4390,7 +4390,196 @@ SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y a
 ```
 
 
-### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
+### ✅ SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
+
+**Estado:** APROBADA  
+**Fecha de preparación documental:** 2026-07-29  
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema`  
+**Tarea anterior:** `SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales` — APROBADA  
+**Siguiente tarea:** `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage`  
+**Proyecto Supabase observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`  
+**Tipo de tarea:** auditoría documental y consultas remotas read-only; sin DDL, DML, migraciones, cambios de Auth, creación o baja de cuentas, revocación de sesiones, saneamiento ni despliegue
+
+#### 1. Objetivo
+
+Definir una línea base verificable de las clases de sujeto que operan Vento OS y de sus relaciones reales: trabajador, cliente, candidato, dispositivo compartido y actor técnico. La auditoría distingue cuenta autenticable, perfil empresarial, actor efectivo y origen técnico; no los fusiona por compartir UUID, correo o dispositivo.
+
+#### 2. Regla canónica derivada
+
+```text
+CUENTA AUTH
+  ≠ PERFIL CLIENTE
+  ≠ IDENTIDAD LABORAL
+  ≠ DISPOSITIVO COMPARTIDO
+  ≠ ACTOR HUMANO EFECTIVO
+  ≠ ACTOR TÉCNICO DE SISTEMA
+```
+
+Una misma persona puede mantener legítimamente perfil laboral y perfil de cliente, pero esa coexistencia debe declararse. Una cuenta técnica no puede representar simultáneamente a una persona. El actor de una acción debe resolverse de forma explícita y auditable.
+
+#### 3. Método y alcance
+
+Se consultaron exclusivamente catálogos y tablas mediante `SELECT`: `auth.users`, `public.users`, `public.employees`, `talento.candidates`, `public.shared_operational_devices`, sesiones y políticas de actor compartido, firmas y eventos. Se verificaron claves foráneas, intersecciones, estados, roles, sedes, áreas, documentos, PIN, perfiles técnicos y huellas SHA-256. No se expusieron correos, teléfonos, documentos, tokens, PIN, UUID completos de personas ni secretos.
+
+#### 4. Matriz real de cuentas Auth
+
+| Combinación observada                   | Cuentas |
+| --------------------------------------- | ------: |
+| trabajador + cliente                    |  **55** |
+| trabajador + cliente + dispositivo      |   **1** |
+| cliente + dispositivo técnico explícito |   **1** |
+| solo cliente u otro usuario             |  **16** |
+| candidato                               |   **0** |
+| sin identidad empresarial observable    |   **0** |
+| **Total**                               |  **73** |
+
+La precedencia usada en SUPA-AUD-010 permitía contar 55 trabajadores, 2 dispositivos y 16 clientes sin duplicar cuentas. Esta tarea conserva además las intersecciones, porque son las que revelan colisiones semánticas.
+
+#### 5. Identidad de trabajadores
+
+| Control                   | Resultado |
+| ------------------------- | --------: |
+| trabajadores              |    **56** |
+| activos                   |    **40** |
+| inactivos                 |    **16** |
+| sin cuenta Auth           |     **0** |
+| rol inválido              |     **0** |
+| sede inválida             |     **0** |
+| área inválida             |     **0** |
+| sin documento             |    **56** |
+| sin documento normalizado |    **56** |
+| PIN en texto plano        |     **1** |
+| PIN con hash              |     **0** |
+| texto y hash simultáneos  |     **0** |
+
+El vínculo `employees.id → auth.users.id` es estructural y consistente. La identificación laboral documental todavía no está poblada. Esto no autoriza rellenar datos artificiales: deberá definirse fuente, obligatoriedad, normalización, privacidad y migración. El único `pin_code` en texto plano queda registrado como credencial legacy que debe retirarse mediante transición controlada.
+
+#### 6. Identidad de clientes
+
+| Control                                     | Resultado |
+| ------------------------------------------- | --------: |
+| perfiles `public.users`                     |    **80** |
+| marcados como cliente                       |    **79** |
+| sin cuenta Auth                             |     **7** |
+| activos sin cuenta Auth                     |     **6** |
+| también trabajadores                        |    **56** |
+| sin correo                                  |     **0** |
+| sin teléfono                                |    **59** |
+| sin documento                               |    **59** |
+| grupos duplicados por correo normalizado    |     **1** |
+| grupos duplicados por teléfono normalizado  |     **1** |
+| grupos duplicados por documento normalizado |     **0** |
+
+`public.users.id` no posee FK a `auth.users.id`. Los siete perfiles sin Auth no se clasifican automáticamente como errores: pueden ser históricos, importados, invitados o huérfanos. Se prohíbe eliminarlos, fusionarlos o provisionarlos sin clasificación y evidencia. Correo, teléfono y documento sirven para reconciliación, no como autoridad de autorización.
+
+#### 7. Coexistencia trabajador-cliente
+
+Las 56 identidades laborales también poseen perfil en `public.users`. Puede ser legítimo que una persona trabajadora sea cliente, pero hoy la mera presencia de la fila no distingue:
+
+1. perfil comercial deliberado;
+2. fila creada por bootstrap general;
+3. dependencia legacy de aplicaciones;
+4. duplicación técnica sin semántica cliente.
+
+La arquitectura objetivo deberá declarar si ambos perfiles son independientes, relacionados o si uno debe dejar de existir. Ningún consumidor podrá inferir rol laboral desde `public.users` ni condición de cliente desde `employees`.
+
+#### 8. Dispositivos compartidos
+
+| Control                                  | Resultado |
+| ---------------------------------------- | --------: |
+| dispositivos registrados                 |     **2** |
+| activos                                  |     **2** |
+| con cuenta Auth                          |     **2** |
+| cuenta Auth inexistente                  |     **0** |
+| cuenta Auth también empleada             |     **1** |
+| cuenta Auth con perfil cliente           |     **2** |
+| `account_type` técnico explícito         |     **1** |
+| `device_code` en metadatos administrados |     **1** |
+
+Los dos dispositivos operan en modo `shared_device`, están activos, exigen PIN de actor y turno activo, y no permiten actuar sin actor ni sin PIN. No obstante:
+
+- un dispositivo utiliza la cuenta Auth de un trabajador real;
+- el otro posee cuenta técnica explícita;
+- ambos aparecen también como perfiles cliente;
+- solo uno declara `account_type=shared_operational_device` y `device_code`.
+
+La colisión trabajador-dispositivo es una brecha crítica: offboarding, permisos, sesiones, auditoría y atribución pueden afectar simultáneamente a la persona y al equipo.
+
+#### 9. Actor humano en dispositivo compartido
+
+| Evidencia                         | Resultado |
+| --------------------------------- | --------: |
+| sesiones de actor registradas     |     **0** |
+| sesiones activas                  |     **0** |
+| firmas de actor                   |     **0** |
+| políticas activas por dispositivo |     **2** |
+| políticas activas por plantilla   |     **7** |
+| eventos de dispositivo            |     **3** |
+| eventos sin actor humano          |     **2** |
+| eventos sin cuenta de sesión      |     **0** |
+| eventos con referencia huérfana   |     **0** |
+
+La configuración expresa controles correctos, pero no existe evidencia de que el flujo de actor haya operado: no hay sesiones ni firmas. Dos de tres eventos carecen de actor humano. Esto puede ser válido para eventos técnicos de activación o heartbeat, pero cada tipo de evento deberá declarar si exige actor. La cuenta de sesión técnica y el actor empleado deben permanecer separados.
+
+#### 10. Actores de sistema
+
+No se encontraron filas actuales en `vital.adaptive_decision_logs` con actor textual, por lo que no existe un universo de nombres libres que deba sanearse en esa tabla. Sin embargo, el contrato transversal sigue siendo obligatorio:
+
+```text
+actor_type + actor_id + source + correlation_id + occurred_at
+```
+
+Los actores automáticos deberán clasificarse como servicio, función, job, cron, webhook, cola o proceso equivalente. `service_role`, `postgres` o el propietario de una función representan capacidad técnica, no una persona. La auditoría completa de productores automáticos continúa en `SUPA-AUD-014`.
+
+#### 11. Catálogo de roles
+
+Existen 15 roles activos; 14 aparecen en empleados y uno no tiene asignaciones actuales. No se elimina el rol sin uso: puede ser reservado o pendiente de adopción. La validez del rol no basta para resolver identidad efectiva; también se requieren vínculo activo, sede, área, turno, dispositivo y contexto de autorización.
+
+#### 12. Brechas y enrutamiento obligatorio
+
+| ID local           | Hallazgo                                               | Riesgo                                             | Resolución obligatoria                                                     |
+| ------------------ | ------------------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------------- |
+| `SUPA-AUD-011-B01` | una cuenta es simultáneamente trabajador y dispositivo | atribución falsa y acoplamiento con offboarding    | `SUPA-ARC-008`; `SUPA-ARC-009`; `SUPA-TRANS-*`; `AUTH-SRV-*`               |
+| `SUPA-AUD-011-B02` | las dos cuentas de dispositivo tienen perfil cliente   | datos comerciales y cuenta técnica mezclados       | `SUPA-AUD-019`; `SUPA-ARC-008`; transición de identidades                  |
+| `SUPA-AUD-011-B03` | solo un dispositivo declara clase y código técnicos    | aprovisionamiento no reproducible                  | `SUPA-ARC-008`; `SUPA-ARC-009`; `AUTH-DB-*`                                |
+| `SUPA-AUD-011-B04` | 56 trabajadores sin documento ni normalización         | identidad laboral no reconciliable documentalmente | `SUPA-AUD-019`; `SUPA-ARC-008`; paquete ANIMA                              |
+| `SUPA-AUD-011-B05` | un PIN permanece en texto plano                        | secreto operativo expuesto                         | `SUPA-AUD-015`; `SUPA-AUD-018`; `SUPA-ARC-009`; transición de credenciales |
+| `SUPA-AUD-011-B06` | siete perfiles cliente sin Auth, seis activos          | fuente de verdad y ciclo de vida ambiguos          | `SUPA-AUD-019`; `SUPA-ARC-008`; paquete PASS; `SUPA-TRANS-*`               |
+| `SUPA-AUD-011-B07` | duplicidad por correo y teléfono                       | perfiles y beneficios fragmentados                 | `SUPA-AUD-019`; `SUPA-ARC-008`; paquete PASS                               |
+| `SUPA-AUD-011-B08` | 56 trabajadores también son perfiles cliente           | doble identidad no formalizada                     | `SUPA-AUD-019`; `SUPA-ARC-008`; paquetes PASS y ANIMA                      |
+| `SUPA-AUD-011-B09` | cero sesiones y cero firmas de actor compartido        | control configurado pero no demostrado             | `SUPA-ARC-009`; `AUTH-SRV-*`; paquete de dispositivos compartidos          |
+| `SUPA-AUD-011-B10` | dos de tres eventos no tienen actor humano             | trazabilidad dependiente del tipo de evento        | `SUPA-ARC-009`; `SUPA-AUD-019`; contrato de auditoría                      |
+| `SUPA-AUD-011-B11` | actores automáticos sin contrato transversal cerrado   | automatización no atribuible                       | `SUPA-AUD-014`; `SUPA-ARC-008`; `SUPA-ARC-009`                             |
+
+No quedan pendientes narrativos sin tarea.
+
+#### 13. Huellas de integridad
+
+| Registro                    | SHA-256                                                            |
+| --------------------------- | ------------------------------------------------------------------ |
+| clases de cuenta Auth       | `dd702a5ff8247c393be619284c7db1e29f95ba1acb7766649163956140bcce3b` |
+| identidades laborales       | `aec83880d869c2c5dd3f319911a2cef26324151610cd71fb84a9fb8903b0e0c1` |
+| identidades cliente         | `83cbef270879d177a46167ce7c7a5576aeab8c3d4e99917fe8f6f73f6553e46a` |
+| identidades de dispositivo  | `620102ca413b09f0259965c957faebe46699865c15f552149fba7a457936a7d4` |
+| políticas de actor          | `18622507a04ae951ff2a34f0486f269c673fcb09b411c9092c402679cfa4e1a3` |
+| eventos de actor compartido | `8f065bd506626efe6bfdc1b8689d569be91ed375db89e62eed021cfffc211a3e` |
+
+#### 14. Requisitos de prueba generados
+
+Se incorporan `TREQ-SUPABASE-139` a `TREQ-SUPABASE-153` en el registro canónico completo.
+
+#### 15. Cierre
+
+La tarea queda aprobada como línea base observada, no como aprobación de la arquitectura actual. No se crearon, modificaron, bloquearon ni eliminaron usuarios; no se movieron perfiles; no se cambió ningún PIN; no se generaron sesiones de actor ni migraciones.
+
+La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
+```
+
+
 ### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
 ### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
 ### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones

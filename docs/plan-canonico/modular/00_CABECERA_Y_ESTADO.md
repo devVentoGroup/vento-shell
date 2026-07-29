@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **391** |
+| Tareas aprobadas | **392** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1184** |
+| Tareas no iniciadas | **1183** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.83% (391/1575)** |
+| Porcentaje de completamiento | **24.89% (392/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales** |
-| Tarea actual | **SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema** |
+| Última tarea aprobada | **SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema** |
+| Tarea actual | **SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage** |
+| Siguiente tarea | **SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 10 de 24 aprobadas; SUPA-AUD-011 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 11 de 24 aprobadas; SUPA-AUD-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-010` — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales |
-| Tarea actual | `SUPA-AUD-011` — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage |
+| Última aprobada | `SUPA-AUD-011` — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema |
+| Tarea actual | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-013` — Auditar publicaciones, canales y consumidores de Realtime |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **10 DE 24 APROBADAS — ACTUAL SUPA-AUD-011** |
+| BLOQUE E3 | **11 DE 24 APROBADAS — ACTUAL SUPA-AUD-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
-        ↓
-TAREA ACTUAL
 SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 10 de 24 tareas aprobadas
+BLOQUE E3 — 11 de 24 tareas aprobadas
 ```
