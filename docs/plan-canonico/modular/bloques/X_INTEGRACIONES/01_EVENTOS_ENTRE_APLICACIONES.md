@@ -2683,7 +2683,574 @@ INT-APP-007 — Definir auditoría transversal
 APROBADA
 
 
-### [ ] INT-APP-007 — Definir auditoría transversal
+### ✅ INT-APP-007 — Definir auditoría transversal
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-007 — Definir auditoría transversal`
+**Tarea anterior:** `INT-APP-006 — Definir compensaciones` — APROBADA
+**Siguiente tarea:** `INT-APP-008 — Definir estados pendientes de sincronización`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@10cc49d7c1afce61f5d24049b9a1142bdad36e55`
+**Tipo de tarea:** definición documental transversal de identidad, cobertura, causalidad, integridad, acceso y fallo de auditoría para comandos, eventos, entregas, efectos, reintentos, conciliaciones y compensaciones; sin implementación, tablas, Supabase, colas, observabilidad física, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir un contrato único y cerrado de auditoría transversal que permita reconstruir, de extremo a extremo, quién o qué intentó una operación, con qué autoridad y contexto, qué aplicación confirmó el hecho, qué evento se produjo, cómo se emitió y entregó, qué consumidora lo procesó, qué efecto aplicó, qué reintentos, conciliaciones o compensaciones ocurrieron y cuál fue el resultado verificable.
+
+```text
+SOLICITUD O MENSAJE
+        ↓
+AUTORIZACIÓN + COMANDO + COMMIT PROPIETARIO
+        ↓
+EVENTO + EMISIÓN + ENTREGA POR CONSUMIDORA
+        ↓
+CLAIM + DEDUPLICACIÓN + EFECTO PROPIO
+        ↓
+RETRY / CONCILIACIÓN / COMPENSACIÓN
+        ↓
+LÍNEA TEMPORAL CORRELACIONADA, INMUTABLE Y MINIMIZADA
+```
+
+La auditoría no es la fuente de verdad del proceso, no sustituye el evento, no copia el payload completo y no convierte un acuse técnico en resultado empresarial.
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                             | Revisión o blob                            | Responsabilidad                                                                 |
+| -------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
+| `vento-shell`                                      | `10cc49d7c1afce61f5d24049b9a1142bdad36e55` | remoto vigente con `INT-APP-006` y 04A integrados; continuidad en `INT-APP-007` |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` | `e93402164f0f90ea54794f3ceddaae9ca4c1f559` | contratos `INT-APP-001` a `INT-APP-006` y marcador de esta tarea                |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | `4d08e1126f729932c843bd0eb1ca33254b59e503` | línea base de 4.188 requisitos hasta `TREQ-INTEGRATION-197`                     |
+| `PROC-CAT-018` / `PROC-PROCESS-AUDIT-REGISTRY-001` | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d` | 69 perfiles `VPROC-####.AUDIT`, sobre mínimo, accesos sensibles e integridad    |
+| `INT-APP-001` a `INT-APP-003`                      | integrados en el remoto                    | catálogo, productoras, consumidoras y 2.020 relaciones                          |
+| `INT-APP-004`                                      | integrado en el remoto                     | scopes, claves, deduplicación, resultados y orden por agregado                  |
+| `INT-APP-005`                                      | integrado en el remoto                     | intentos, perfiles, errores, backoff, agotamiento y replay                      |
+| `INT-APP-006`                                      | integrado en el remoto                     | planes, pasos, acciones CCR, efectos inversos, residuales y cierre              |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-INTEGRATION-AUDIT-POLICY-001@1.0.0
+```
+
+| Propiedad                  | Valor                                     | Regla                                                       |
+| -------------------------- | ----------------------------------------- | ----------------------------------------------------------- |
+| `policy_id`                | `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001` | identidad estable del contrato transversal                  |
+| `policy_version`           | `1.0.0`                                   | primera definición transversal                              |
+| `policy_status`            | `DEFINED`                                 | contrato documental; no prueba implementación ni despliegue |
+| `covered_processes`        | **69**                                    | `VPROC-0001` a `VPROC-0069`                                 |
+| `process_audit_profiles`   | **69**                                    | perfiles heredados de `PROC-CAT-018`                        |
+| `normal_event_definitions` | **395**                                   | catálogo de `INT-APP-001`                                   |
+| `event_consumer_relations` | **2.020**                                 | relaciones de `INT-APP-003`                                 |
+| `audit_planes`             | **14**                                    | cobertura cerrada de extremo a extremo                      |
+| `integration_action_types` | **22**                                    | taxonomía cerrada de entradas auditables                    |
+| `audit_outcomes`           | **17**                                    | vocabulario cerrado de resultado auditado                   |
+| `audit_commit_classes`     | **3**                                     | política proporcional ante fallo de auditoría               |
+| `transport_guarantee`      | `AT_LEAST_ONCE`                           | exige deduplicación y auditoría por intento                 |
+| `aura_runtime_status`      | `DEFINED_DEFERRED`                        | contrato definido sin actividad operativa                   |
+
+#### 4. Principios normativos
+
+1. La auditoría obligatoria se produce en la frontera confiable, no por decisión de la interfaz.
+2. Cada entrada tiene identidad propia y no reutiliza `event_id`, `command_id`, `delivery_id` ni `attempt_id` como clave universal.
+3. Principal autenticado, actor efectivo y principal técnico se conservan separadamente.
+4. Toda acción sensible o denegación conserva autorización, razones, recurso, contexto y versión.
+5. La propietaria audita su hecho; cada consumidora audita únicamente su entrega y efecto.
+6. No existe un orden global entre aplicaciones; la causalidad se resuelve por referencias, versiones y vínculos.
+7. Un retry crea otro intento auditado, no otra operación empresarial.
+8. Un duplicado válido devuelve el resultado anterior y queda distinguido de un efecto nuevo.
+9. La auditoría es append-only y una corrección crea otra entrada enlazada.
+10. Payloads, secretos y datos sensibles se minimizan mediante referencias, hashes y diferencias.
+11. Un `200`, ACK, span, log o publicación no demuestra por sí solo efecto o cierre empresarial.
+12. Una falla de auditoría crítica impide presentar éxito y exige contención o conciliación.
+13. La auditoría puede verificar métricas, pero no se convierte en una fuente analítica competidora.
+14. Esta tarea no selecciona tablas, índices, hash chain, broker, proveedor de observabilidad ni retención física exacta.
+
+#### 5. Planos de auditoría
+
+| Plano                       | Cobertura                                                                                    |
+| --------------------------- | -------------------------------------------------------------------------------------------- |
+| `COMMAND_AND_AUTHORIZATION` | Recepción, resolución de autorización, aceptación o denegación del comando.                  |
+| `OWNER_COMMIT`              | Persistencia del hecho propietario, salida y ancla auditada del resultado.                   |
+| `EVENT_RECORDING`           | Creación durable del evento empresarial y vínculo con el hecho fuente.                       |
+| `EMISSION`                  | Intentos y confirmación de publicación sin convertir el acuse técnico en cierre empresarial. |
+| `DELIVERY`                  | Entrega por consumidora, intento, respuesta y estado independiente.                          |
+| `CONSUMER_INBOX`            | Claim, deduplicación, conflicto, stale y recuperación del resultado previo.                  |
+| `CONSUMER_EFFECT`           | Inicio, no-op, efecto confirmado, fallo y referencia del resultado propietario.              |
+| `RETRY_AND_RECOVERY`        | Clasificación, perfil, presupuesto, programación, resultado desconocido y agotamiento.       |
+| `RECONCILIATION`            | Indagación, comparación de fuentes, decisión y residual.                                     |
+| `COMPENSATION`              | Plan, versión, acción CCR, pasos, efectos, verificación y cierre.                            |
+| `EXTERNAL_ADAPTER`          | Recepción o envío externo, autenticidad, transformación, recibo y respuesta.                 |
+| `OFFLINE_SYNC`              | Captura local, actor, dispositivo, reloj, reautorización y sincronización.                   |
+| `REPLAY_AND_BACKFILL`       | Solicitud autorizada, lote, procedencia, ventana, elementos y resultados.                    |
+| `AUDIT_GOVERNANCE`          | Consulta, exportación, corrección, legal hold, retención e integridad de auditoría.          |
+
+Cada ocurrencia deberá resolver exactamente un plano principal y podrá relacionarse con otros mediante referencias; no se duplicará la misma decisión en varias aplicaciones como si fueran decisiones independientes.
+
+#### 6. Taxonomía cerrada de tipos de acción
+
+| Tipo                                  | Significado mínimo                                                           |
+| ------------------------------------- | ---------------------------------------------------------------------------- |
+| `REQUEST_RECEIVED`                    | La frontera confiable recibió una solicitud o mensaje identificable.         |
+| `AUTHORIZATION_EVALUATED`             | Se resolvieron permiso, contexto, alcance, recurso, versión y razones.       |
+| `COMMAND_REJECTED`                    | La operación fue denegada o rechazada antes del efecto.                      |
+| `COMMAND_ACCEPTED`                    | La operación fue aceptada para ejecución, sin afirmar todavía commit.        |
+| `OWNER_TRANSACTION_COMMITTED`         | La propietaria confirmó el hecho y su resultado durable.                     |
+| `EVENT_RECORDED`                      | Se creó la emisión empresarial durable vinculada al hecho.                   |
+| `EMISSION_ATTEMPTED`                  | Se intentó publicar el evento.                                               |
+| `EMISSION_CONFIRMED`                  | El transporte aceptó la publicación; no prueba consumo ni efecto.            |
+| `DELIVERY_ATTEMPTED`                  | Se intentó entregar a una consumidora concreta.                              |
+| `DELIVERY_ACKNOWLEDGED`               | La frontera de la consumidora acusó recibo contractual.                      |
+| `CONSUMER_CLAIMED`                    | La consumidora obtuvo claim o lease para procesar.                           |
+| `DUPLICATE_RESULT_RETURNED`           | Se detectó duplicado y se devolvió el resultado previo o no-op aprobado.     |
+| `EFFECT_STARTED`                      | Comenzó un efecto propietario después de deduplicar y autorizar.             |
+| `EFFECT_CONFIRMED`                    | La consumidora confirmó su propio efecto y referencia de resultado.          |
+| `EFFECT_FAILED`                       | El efecto no quedó confirmado y conserva clasificación y resultado conocido. |
+| `RETRY_SCHEDULED`                     | Se programó otro intento dentro del perfil y presupuesto vigente.            |
+| `RETRY_EXHAUSTED`                     | Terminó el presupuesto sin fabricar éxito ni compensación.                   |
+| `RECONCILIATION_DECIDED`              | Una indagación produjo decisión, residual o intervención.                    |
+| `COMPENSATION_STEP_RECORDED`          | Se planificó, ejecutó, verificó o cerró un paso compensatorio.               |
+| `EXTERNAL_EXCHANGE_RECORDED`          | Se validó, transformó, envió o recibió un intercambio externo.               |
+| `REPLAY_BACKFILL_RECORDED`            | Se registró una instrucción o elemento de replay/backfill autorizado.        |
+| `AUDIT_ACCESS_OR_CORRECTION_RECORDED` | Se consultó, exportó o corrigió auditoría mediante una entrada enlazada.     |
+
+Los tipos específicos heredan las clases generales aprobadas por `PROC-CAT-018`, especialmente `COMMAND_ATTEMPTED`, `COMMAND_DENIED`, `BUSINESS_EVENT_RECORDED`, `INTEGRATION_RECEIVED_OR_SENT`, `CCR_APPLIED`, `SENSITIVE_ACCESS` y `AUDIT_CORRECTION`.
+
+#### 7. Vocabulario cerrado de outcomes
+
+| Outcome                     |
+| --------------------------- |
+| `RECEIVED`                  |
+| `AUTHORIZED`                |
+| `DENIED`                    |
+| `ACCEPTED`                  |
+| `COMMITTED`                 |
+| `PUBLISHED`                 |
+| `DELIVERED`                 |
+| `CLAIMED`                   |
+| `DUPLICATE_RESULT_RETURNED` |
+| `APPLIED`                   |
+| `NO_OP`                     |
+| `RETRY_SCHEDULED`           |
+| `EXHAUSTED`                 |
+| `RECONCILIATION_REQUIRED`   |
+| `FAILED`                    |
+| `DEFERRED`                  |
+| `CANCELLED`                 |
+
+Reglas:
+
+- `AUTHORIZED` no equivale a `COMMITTED`;
+- `PUBLISHED` no equivale a `DELIVERED`;
+- `DELIVERED` no equivale a `APPLIED`;
+- `DUPLICATE_RESULT_RETURNED` puede cerrar correctamente un intento sin crear otro efecto;
+- `FAILED` debe indicar resultado conocido y clasificación;
+- `RECONCILIATION_REQUIRED` conserva incertidumbre explícita;
+- `DEFERRED` no puede mostrarse como éxito ni descartarse silenciosamente.
+
+#### 8. Clases de compromiso de auditoría
+
+| Clase                          | Uso                                                                                                                             | Regla ante fallo                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `AUDIT_ATOMIC_REQUIRED`        | decisiones de autorización, commit propietario, efecto financiero, físico, de puntos, acceso, documento, calidad o compensación | el resultado y el ancla auditada deben quedar atómicos o bajo mecanismo reconciliable equivalente; no se presenta éxito sin ancla |
+| `AUDIT_DURABLE_BEFORE_ACK`     | entrega, intercambio externo, acceso sensible, exportación y cierre de efecto                                                   | no se confirma al emisor o usuario hasta persistir una entrada durable o una referencia de contención                             |
+| `AUDIT_DURABLE_BUFFER_ALLOWED` | enriquecimiento técnico de intentos y trazas no decisorias                                                                      | exige ancla previa, identidad fija, buffer durable y recuperación; una pérdida crea brecha explícita                              |
+
+Ninguna clase permite omitir auditoría. La diferencia es el punto de compromiso y la respuesta segura ante indisponibilidad.
+
+#### 9. Sobre mínimo transversal
+
+```text
+audit_entry_id
+audit_schema_version
+audit_action_type
+audit_outcome
+process_id
+process_instance_id
+owner_application
+producer_application
+consumer_application
+source_application
+resource_type
+resource_id
+resource_version
+principal_id
+effective_actor_id
+technical_principal_id
+actor_type
+actor_capacity
+session_id
+device_id
+simulation_id
+site_id
+area_id
+shift_id
+checkin_id
+permission_key
+authorization_decision
+authorization_reason_codes
+authorization_policy_version
+command_id
+request_id
+source_command_id
+event_definition_id
+event_id
+delivery_id
+attempt_id
+effect_id
+compensation_plan_id
+compensation_step_id
+replay_request_id
+external_system
+external_event_id
+idempotency_scope
+idempotency_key_reference
+fingerprint_reference
+correlation_id
+causation_id
+trace_id
+span_id
+aggregate_type
+aggregate_id
+aggregate_version
+previous_state
+requested_state
+resulting_state
+result_code
+error_class
+retry_profile
+attempt_number
+next_attempt_at
+result_reference
+output_references
+evidence_references
+before_reference_or_hash
+after_reference_or_hash
+changed_fields
+payload_hash_reference
+occurred_at
+recorded_at
+completed_at
+timezone
+source_clock_quality
+sensitivity_class
+access_scope
+retention_class
+legal_hold_reference
+integrity_reference
+```
+
+No todos los campos se materializan en todas las entradas. Los campos no aplicables se omiten mediante contrato; los campos obligatorios por tipo no pueden degradarse a opcionales desde una implementación local.
+
+#### 10. Identidad, causalidad y orden
+
+```text
+UNA OPERACIÓN EMPRESARIAL
+request_id / source_command_id / idempotency scope
+        ↓
+UN HECHO PROPIETARIO Y CERO O MÁS EVENTOS
+process_instance_id / aggregate_version / event_id
+        ↓
+CERO O MÁS ENTREGAS INDEPENDIENTES
+consumer_application / delivery_id / attempt_id
+        ↓
+CERO O MÁS EFECTOS PROPIOS
+consumer_application / effect_code / effect_id
+        ↓
+RETRY, CONCILIACIÓN O COMPENSACIÓN VINCULADOS
+replay_request_id / compensation_plan_id / compensation_step_id
+```
+
+- `audit_entry_id` identifica una ocurrencia de auditoría y nunca se reutiliza;
+- `correlation_id` agrupa el caso, pero no autoriza mezclar procesos no relacionados;
+- `causation_id` identifica la causa inmediata;
+- `aggregate_version` y dependencias resuelven orden aplicable;
+- `occurred_at` no reemplaza causalidad ni versión;
+- cada aplicación conserva sus entradas y comparte referencias mínimas, no payloads privados.
+
+#### 11. Comando, autorización y commit propietario
+
+1. La solicitud se audita al entrar en la frontera confiable cuando sea sensible o mutante.
+2. La autorización registra permiso, recurso, territorio, contexto, versión y razones.
+3. La denegación se conserva aunque no exista mutación.
+4. `COMMAND_ACCEPTED` solo afirma aceptación para ejecutar.
+5. `OWNER_TRANSACTION_COMMITTED` afirma el hecho durable y referencia salida, evento y evidencia.
+6. Un resultado perdido se recupera por identidad; no crea otro commit ni otra decisión.
+7. La UI no puede fabricar timestamps, actor, decisión de autorización ni resultado final.
+
+#### 12. Evento, emisión y entrega
+
+- `EVENT_RECORDED` enlaza definición, productora, proceso, agregado, versión y hecho fuente;
+- cada `EMISSION_ATTEMPTED` usa `attempt_id` propio y conserva el mismo `event_id`;
+- `EMISSION_CONFIRMED` acredita aceptación del transporte, no consumo;
+- cada consumidora utiliza `delivery_id`, presupuesto y resultado independientes;
+- la audiencia histórica no se amplía durante replay sin decisión explícita;
+- un error de transporte no modifica el hecho de la productora;
+- la auditoría de entrega no copia el contenido protegido del evento.
+
+#### 13. Inbox, deduplicación y efecto consumidor
+
+1. Claim, lease, timeout y recuperación quedan auditados sin afirmar efecto.
+2. La misma consumidora y `event_id` devuelven el resultado anterior o no-op aprobado.
+3. Una huella incompatible produce conflicto y no aplica efecto.
+4. `EFFECT_STARTED` exige autorización vigente, deduplicación y versión aplicable.
+5. `EFFECT_CONFIRMED` referencia el resultado de la propietaria.
+6. `EFFECT_FAILED` conserva si el efecto no ocurrió, ocurrió parcialmente o permanece incierto.
+7. El procesamiento de una consumidora no acredita el de otra.
+
+#### 14. Reintentos, agotamiento y conciliación
+
+Cada intento deberá conservar:
+
+```text
+attempt_id
++ attempt_number
++ retry_profile
++ error_class
++ scheduled_at
++ started_at
++ completed_at
++ next_attempt_at
++ outcome
++ budget_reference
++ result_reference
+```
+
+- el primer envío es intento uno;
+- el retry conserva identidad y huella empresarial;
+- `UNKNOWN_OUTCOME` exige indagación antes de reejecución;
+- `RETRY_EXHAUSTED` no genera compensación automática;
+- una conciliación registra fuentes comparadas, diferencias, decisión, autoridad y residual;
+- ninguna entrada retrospectiva se inventa para rellenar una brecha.
+
+#### 15. Compensaciones
+
+La auditoría de `INT-APP-006` deberá enlazar:
+
+```text
+compensation_plan_id
++ compensation_plan_version
++ ccr_action_id
++ original_effect_ref
++ reversibility_class
++ compensation_step_id
++ owner_application
++ authorization_reference
++ idempotency_reference
++ attempt_references[]
++ verification_reference
++ residual_obligations[]
++ plan_outcome
+```
+
+Un plan `PARTIALLY_APPLIED` conserva los efectos confirmados y pendientes. Una versión sucesora no reinterpreta pasos anteriores. `COMPLETED` requiere verificación y residuales con dueño y autoridad.
+
+#### 16. Integraciones externas
+
+1. El adaptador conserva autenticidad, firma o credencial mediante referencia protegida.
+2. El payload original se guarda protegido y la auditoría conserva su hash o referencia.
+3. Transformación y mapeo identifican versión, campos descartados y resultado.
+4. `external_event_id` o `receipt_id` permanecen estables.
+5. Un timeout externo conserva resultado incierto y activa consulta o conciliación.
+6. Una respuesta técnica no confirma efecto interno ni cierre financiero.
+7. Reversos, reembolsos y contracargos se auditan como operaciones nuevas.
+
+#### 17. Offline, replay y backfill
+
+- offline conserva actor, dispositivo, sesión, momento del hecho, recepción y calidad del reloj;
+- al sincronizar se auditan reautorización, versión, conflicto, expiración y resultado;
+- una cola no transfiere una operación entre trabajadores de un dispositivo compartido;
+- replay conserva `event_id`, audiencia histórica y resultados previos;
+- backfill conserva fuente, lote, ventana e `is_backfill`;
+- cada elemento registra su resultado, no solo el resumen del lote;
+- los efectos sensibles requieren autorización explícita para replay o backfill.
+
+#### 18. Integridad, corrección y brechas
+
+1. La interfaz y los servicios ordinarios no actualizan ni eliminan entradas.
+2. La corrección crea `AUDIT_ACCESS_OR_CORRECTION_RECORDED` enlazada a la original.
+3. Deben poder detectarse inserciones, modificaciones o eliminaciones no autorizadas; la técnica exacta queda para E3.
+4. Una restauración o migración valida conteos, relaciones, orden causal e integridad.
+5. Una brecha usa outcome `RECONCILIATION_REQUIRED` y `result_code = AUDIT_GAP_RECONCILIATION_REQUIRED`, con periodo, alcance, causa, riesgo y plan.
+6. No se crean entradas falsas para simular cobertura histórica.
+7. Un rollback de código no borra la auditoría de efectos ya ocurridos.
+
+#### 19. Minimización y acceso
+
+- secretos, tokens, firmas completas, credenciales, datos bancarios completos, diagnósticos y expedientes no se copian;
+- `before` y `after` usan referencias, hashes o diferencias mínimas;
+- la consulta de auditoría requiere finalidad, proceso, sensibilidad, territorio y acción;
+- soporte técnico ve metadatos mínimos salvo autorización adicional;
+- búsquedas, vistas previas sensibles, descargas, impresiones, exportaciones y comparticiones se auditan;
+- las exportaciones conservan destinatario, alcance, filtros, finalidad y hash del artefacto;
+- crear auditoría no concede permiso para leerla.
+
+#### 20. Tiempo y retención
+
+1. `occurred_at`, `recorded_at` y `completed_at` se conservan separadamente.
+2. Intervalos usan reloj monotónico; trazabilidad conserva UTC, zona IANA y calidad del reloj.
+3. Una captura tardía no cambia el momento del hecho.
+4. Retención y legal hold utilizan clases explícitas sin romper vínculos.
+5. Los periodos físicos exactos, particionamiento y disposición quedan reservados para E3, AA y EVID.
+6. Vencer un registro técnico no vuelve a habilitar un efecto irreversible ni un retry.
+
+#### 21. Fronteras críticas
+
+##### 21.1. ORIGO → NEXO → NUMERA
+
+Orden, recepción, ingreso físico, obligación y pago conservan auditorías propietarias y handoffs correlacionados. Un acuse comercial no acredita movimiento ni hecho financiero.
+
+##### 21.2. FOGO → NEXO → PULSO
+
+Plan, lote, consumos, calidad, entrada de terminado, disponibilidad, pedido y entrega se auditan como efectos distintos. Retener producto no reescribe producción ni venta.
+
+##### 21.3. PULSO → PASS → NUMERA
+
+Venta, pago, documento, puntos y hecho económico conservan identidades, ledgers y auditorías separadas. Reembolso y reverso de puntos no recrean la venta.
+
+##### 21.4. VISO → ANIMA → SHELL
+
+Programación, asistencia, novedad, autorización, dispositivo, sesión y revocación conservan actor, contexto y causalidad. Corregir asistencia no restaura autoridad.
+
+#### 22. AURA diferida
+
+Las relaciones donde AURA sea productora o consumidora mantienen perfiles y requisitos definidos, pero:
+
+- no crean entradas operativas;
+- no habilitan workers ni entregas;
+- no conceden consulta de auditoría;
+- no ejecutan replay, compensaciones ni conciliaciones automáticas;
+- permanecen `DEFINED_DEFERRED` hasta cobertura, autorización, readiness y paquete E5 aprobados.
+
+#### 23. Decisiones reservadas
+
+| Decisión                                                               | Tarea propietaria |
+| ---------------------------------------------------------------------- | ----------------- |
+| estados de sincronización, pending y recuperación offline              | `INT-APP-008`     |
+| error parcial, cuarentena, dead-letter, brechas e intervención         | `INT-APP-009`     |
+| prohibición física de escrituras cruzadas y comandos inversos          | `INT-APP-010`     |
+| tablas, índices, constraints, particiones, RLS, funciones e integridad | BLOQUES E3 y R    |
+| broker, colas, workers, tracing, logging y observabilidad física       | BLOQUE E4         |
+| schemas, SDK, tipos, canonicalización y redacción de datos             | BLOQUE H          |
+| retención, legal hold, disposición y privacidad                        | BLOQUES AA y EVID |
+| implementación, pruebas E2E, piloto, cutover, rollback e hypercare     | BLOQUE E5         |
+
+#### 24. Cambios no autorizados
+
+`INT-APP-007` no autoriza:
+
+- crear tablas, índices, funciones, triggers, RPC, RLS o migraciones;
+- seleccionar proveedor de logging, tracing, SIEM, broker o almacenamiento;
+- registrar eventos, entregas, efectos o auditorías reales;
+- modificar los 69 perfiles de `PROC-CAT-018`;
+- cambiar productoras, consumidoras, audiencias, permisos, retries o compensaciones;
+- copiar payloads sensibles dentro de auditoría;
+- usar auditoría como fuente de estado o motor de integración;
+- activar AURA;
+- iniciar piloto, cutover, producción o hypercare;
+- escribir en GitHub.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-198 a TREQ-INTEGRATION-227
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado con esta tarea.
+
+#### 26. Huellas de integridad
+
+```text
+AUDIT_PLANE_REGISTRY_SHA256 = 302a67a62141e5a9ec84c60d55efb7121d0a2a2180c8ddebda76f0431173c4df
+AUDIT_ACTION_TYPE_REGISTRY_SHA256 = 4666c89ea1145cdb4d9ae5038c2b01c7c2112137f08e14d82aa59068c6de8e11
+AUDIT_OUTCOME_VOCABULARY_SHA256 = d738b4ba20aba1df5fc3554d5c4e3cd9ab485be488a2221de6159769283b17e8
+AUDIT_POLICY_SHA256 = 63a076f6886beb19cb6255c769a4ad97543d4b39eddd668205178f05d3ce820a
+REMOTE_COMMIT_SHA = 10cc49d7c1afce61f5d24049b9a1142bdad36e55
+REMOTE_X_BLOCK_BLOB_SHA1 = e93402164f0f90ea54794f3ceddaae9ca4c1f559
+REMOTE_04A_BASE_BLOB_SHA1 = 4d08e1126f729932c843bd0eb1ca33254b59e503
+PROC_AUDIT_SOURCE_BLOB_SHA1 = 683c2540d88a7c665c8fd05cd6beb0fd74645b4d
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-006` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se preservaron los 69 perfiles de auditoría de proceso.
+- [x] Se definieron catorce planos, veintidós tipos, diecisiete outcomes y tres clases de compromiso.
+- [x] Se cubrieron comando, autorización, commit, evento, emisión, entrega, inbox y efecto.
+- [x] Se cubrieron retry, conciliación, compensación, externos, offline, replay y backfill.
+- [x] Se separaron auditoría, evento, evidencia, log, métrica, trace y registro empresarial.
+- [x] Se definieron integridad, corrección, minimización, acceso, retención y brechas.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `10cc49d7c1afce61f5d24049b9a1142bdad36e55`            |
+| Blob del mini-bloque X                       | `e93402164f0f90ea54794f3ceddaae9ca4c1f559`            |
+| Blob 04A remoto base                         | `4d08e1126f729932c843bd0eb1ca33254b59e503`            |
+| Procesos cubiertos                           | **69**                                                |
+| Perfiles de proceso heredados                | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora                | **2.020**                                             |
+| Planos de auditoría                          | **14**                                                |
+| Tipos de acción                              | **22**                                                |
+| Outcomes                                     | **17**                                                |
+| Clases de compromiso                         | **3**                                                 |
+| Requisitos base                              | **4.188**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.218**                                             |
+| Dominio INTEGRATION                          | **227 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-227** |
+| Filas con catorce columnas                   | **4.218 de 4.218**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.188**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Validación real del repositorio
+
+```text
+VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+```
+
+Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
+
+```bash
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+#### 30. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-007 — Definir auditoría transversal` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+4. No modificar derivados bajo `.generated/` para forzar continuidad.
+
+#### 31. Continuidad preparada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-006 — Definir compensaciones
+        ↓
+TAREA ACTUAL EN REVISIÓN
+INT-APP-007 — Definir auditoría transversal
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-008 — Definir estados pendientes de sincronización
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-008 — Definir estados pendientes de sincronización
 ### [ ] INT-APP-009 — Definir manejo de errores parciales
 ### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato

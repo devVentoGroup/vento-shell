@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **377** |
+| Aprobadas | **378** |
 | En propuesta | **0** |
-| No iniciadas | **1198** |
+| No iniciadas | **1197** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.94% (377/1575)** |
+| Porcentaje de completamiento | **24.00% (378/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-006` — Definir compensaciones | ✅ APROBADA |
-| Tarea actual | `INT-APP-007` — Definir auditoría transversal | ⬜ NO INICIADA |
-| Siguiente | `INT-APP-008` — Definir estados pendientes de sincronización | ⬜ NO INICIADA |
+| Última aprobada | `INT-APP-007` — Definir auditoría transversal | ✅ APROBADA |
+| Tarea actual | `INT-APP-008` — Definir estados pendientes de sincronización | ⬜ NO INICIADA |
+| Siguiente | `INT-APP-009` — Definir manejo de errores parciales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1411,7 +1411,7 @@
 | ✅ APROBADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-005` | Definir reintentos | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-006` | Definir compensaciones | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
+| ✅ APROBADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-008` | Definir estados pendientes de sincronización | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-009` | Definir manejo de errores parciales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-010` | Evitar escrituras cruzadas sin contrato | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
