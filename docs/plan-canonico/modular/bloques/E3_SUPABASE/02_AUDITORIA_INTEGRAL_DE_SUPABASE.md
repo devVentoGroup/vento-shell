@@ -6188,7 +6188,329 @@ SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
 ```
 
 
-### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
+### ✅ SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración`
+**Tarea anterior:** `SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de vento-shell` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `0eefe75bae095a8023098341b1ae474ed2c52870`
+**Tipo de tarea:** auditoría documental y técnica read-only de drift estructural, DDL fuera de banda, procedencia migratoria y recursos no SQL; sin DDL, DML, migration repair, despliegues ni cambios remotos
+
+#### 1. Objetivo
+
+Detectar y clasificar diferencias entre el estado remoto y la historia de migraciones, distinguiendo con precisión:
+
+```text
+DRIFT CONFIRMADO FUERA DE BANDA
+        ≠
+OBJETO REMOTO SIN PROCEDENCIA IDENTIFICABLE
+        ≠
+DIFERENCIA DECLARATIVA
+        ≠
+DDL GESTIONADO POR LA PLATAFORMA
+        ≠
+FALSO POSITIVO DE BÚSQUEDA TEXTUAL
+```
+
+La tarea no convierte la ausencia de un nombre en prueba automática de creación manual. Solo clasifica como fuera de banda confirmado cuando existe telemetría DDL o evidencia equivalente y no existe statement migratorio correspondiente.
+
+#### 2. Regla canónica derivada
+
+```text
+Todo objeto empresarial remoto deberá poder trazarse a una migración, commit y definición reproducible. Un objeto sin procedencia se bloquea y se adopta mediante una migración forward-only; nunca se corrige editando historia aplicada. La evidencia debe separar certeza comprobada, inferencia y límite técnico.
+```
+
+#### 3. Fuentes congeladas
+
+| Fuente                     | Corte                                                                                  | Responsabilidad                                                                  |
+| -------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `SUPA-AUD-016.md` aprobado | SHA-256 `7d56aca40b99f3c2667c66207ee87609ff7c186866c3efa574a864870b96c9a9`             | línea base de paridad                                                            |
+| 04A aprobado               | SHA-256 `dce38706a25a382663297a0990d4a88fbc2abec88762df5dd159838b0385f5db`; 4567 filas | requisitos hasta `TREQ-SUPABASE-272`                                             |
+| Supabase `vento-os-dev`    | 2026-07-29                                                                             | catálogo, historia y telemetría SQL                                              |
+| `vento-shell` rama `main`  | commit `0eefe75bae095a8023098341b1ae474ed2c52870`                                      | fuente declarada y búsqueda de código                                            |
+| `pg_stat_statements`       | snapshot disponible al corte                                                           | evidencia agregada de DDL; no representa necesariamente hora exacta de ejecución |
+
+#### 4. Método y límites de certeza
+
+Se inspeccionaron sin mutación:
+
+- las 549 migraciones remotas y sus statements;
+- nombres actuales de tablas, columnas, funciones, triggers y políticas empresariales;
+- coincidencia nominal objeto → statement migratorio;
+- telemetría DDL agregada por rol, operación, queryid y hash redactado;
+- funciones SECURITY DEFINER, grants efectivos y dependencias de triggers;
+- índices actuales y nombres de columnas candidatos;
+- búsqueda conectada sobre `vento-shell` y commit actual;
+- continuidad de drift no SQL detectado en SUPA-AUD-016.
+
+La detección textual es un filtro de candidatos, no una prueba de equivalencia. Puede fallar ante SQL dinámico, renombres, `CREATE TABLE AS`, definiciones generadas o archivos no indexados. El cierre definitivo exige parser SQL, inventario Git completo y replay limpio.
+
+#### 5. Resultado ejecutivo
+
+| Métrica                                            |        Resultado |
+| -------------------------------------------------- | ---------------: |
+| Migraciones remotas                                |          **549** |
+| Versión máxima                                     | `20260716170000` |
+| Objetos actuales sin mención nominal en statements |            **8** |
+| Objetos o grupos con DDL fuera de banda confirmado |            **5** |
+| Columnas de nombre único sin mención migratoria    |            **3** |
+| Índices RBAC actuales sin migración                |            **4** |
+| Funciones SECURITY DEFINER sin procedencia         |            **2** |
+| Políticas actuales sin nombre migratorio           |            **4** |
+| Brechas formalizadas                               |           **23** |
+| Requisitos nuevos                                  |           **30** |
+
+#### 6. Taxonomía aplicada
+
+| Clasificación                         | Criterio                                                                               | Resultado                                                             |
+| ------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Fuera de banda confirmado             | DDL observado como `postgres`, objeto actual y ausencia en statements                  | `app_runtime_settings`; cuatro índices de `role_permissions`          |
+| Sin procedencia migratoria            | objeto actual sin mención en historia ni fuente localizada, sin telemetría concluyente | dos funciones de asistencia, un trigger y tres columnas               |
+| Política sin definición identificable | nombre actual ausente del corpus                                                       | dos políticas de `app_runtime_settings`; dos de `product_images`      |
+| Drift declarativo no SQL              | fuente, config y remoto no coinciden                                                   | Edge Functions y recursos administrados heredados de SUPA-AUD-016     |
+| Plataforma o tooling                  | DDL de `supabase_admin`, `pg_temp`, extensiones y metadatos internos                   | se excluye del conteo empresarial salvo efecto sobre superficie VENTO |
+
+#### 7. Drift fuera de banda confirmado
+
+##### 7.1 `public.app_runtime_settings`
+
+La tabla remota existe con siete columnas, RLS habilitado y dos políticas. Ninguno de estos nombres aparece en los statements de las 549 migraciones:
+
+- `public.app_runtime_settings`;
+- `app_runtime_settings_read_authenticated`;
+- `app_runtime_settings_write_admins`.
+
+`pg_stat_statements` conserva seis formas DDL ejecutadas como `postgres` desde el snapshot iniciado el 2026-05-28:
+
+- `CREATE TABLE`;
+- `ALTER TABLE` para RLS;
+- `DROP POLICY` y `CREATE POLICY` de lectura;
+- `DROP POLICY` y `CREATE POLICY` administrativa.
+
+Se conservaron únicamente hashes, rol, calls y `stats_since`; no se copió SQL completo. `stats_since` es inicio de acumulación estadística, no prueba exacta de la hora de ejecución.
+
+**Dictamen:** cambio fuera de banda confirmado y no reconciliado mediante migración.
+
+##### 7.2 Índices de alcance de `role_permissions`
+
+Están activos, válidos y listos:
+
+- `role_permissions_scope_site_id_idx`;
+- `role_permissions_scope_area_id_idx`;
+- `role_permissions_scope_site_type_idx`;
+- `role_permissions_scope_area_kind_idx`.
+
+Sus cuatro `CREATE INDEX` aparecen en telemetría como `postgres`, con dos llamadas por forma, y ninguno de los nombres aparece en statements migratorios.
+
+**Dictamen:** cuatro índices fuera de banda confirmados. Su utilidad se evaluará en SUPA-AUD-020; en esta tarea solo se exige adopción o retiro controlado.
+
+#### 8. Objetos sin procedencia migratoria identificable
+
+##### 8.1 Resolver de turno de asistencia
+
+Existen remoto:
+
+- `public.resolve_attendance_shift_before_insert()` — `SECURITY DEFINER`, `search_path=public`;
+- trigger `attendance_logs_01_resolve_shift` sobre `public.attendance_logs`.
+
+La función solo conserva EXECUTE para roles administrativos y service role en la evidencia consultada. El trigger la referencia directamente. Ningún nombre aparece en statements migratorios ni en la búsqueda conectada de `vento-shell`.
+
+**Dictamen:** objeto remoto sin procedencia identificable. No se afirma creación manual porque la telemetría DDL específica ya no está disponible.
+
+##### 8.2 `public.anima_is_active_owner()`
+
+La función es `SECURITY DEFINER`, `STABLE`, con `search_path=public, auth`. `authenticated` conserva EXECUTE además de roles administrativos. No se encontraron dependencias directas en policies, triggers, views o funciones dentro de las consultas ejecutadas, pero esto no demuestra ausencia total de consumidores externos.
+
+**Dictamen:** función privilegiada sin procedencia migratoria identificable y candidata a revisión legacy en SUPA-AUD-018.
+
+#### 9. Políticas sin definición migratoria identificable
+
+Las siguientes políticas actuales no aparecen por nombre en la historia:
+
+| Tabla                  | Política                                  | Comando |
+| ---------------------- | ----------------------------------------- | ------- |
+| `app_runtime_settings` | `app_runtime_settings_read_authenticated` | SELECT  |
+| `app_runtime_settings` | `app_runtime_settings_write_admins`       | ALL     |
+| `product_images`       | `product_images_read_authenticated`       | SELECT  |
+| `product_images`       | `product_images_write_inventory_managers` | ALL     |
+
+Los dos pares comparten hashes de predicado entre sí. Esto sugiere reutilización de una plantilla, pero no prueba que las políticas sean correctas para ambas tablas.
+
+**Dictamen:** las políticas de `app_runtime_settings` forman parte del drift confirmado; las de `product_images` requieren adopción o reemplazo explícito.
+
+#### 10. Columnas sin procedencia identificable
+
+La búsqueda de nombres únicos en la historia aisló:
+
+| Columna                                         | Estado remoto                    | Dictamen                                 |
+| ----------------------------------------------- | -------------------------------- | ---------------------------------------- |
+| `pass.site_schedule_exceptions.internal_reason` | `text`, nullable                 | sin procedencia migratoria identificable |
+| `public.suppliers.credit_days`                  | `integer`, nullable              | sin procedencia migratoria identificable |
+| `public.suppliers.payment_type`                 | `text`, NOT NULL, default `cash` | sin procedencia migratoria identificable |
+
+No se observaron formas DDL retenidas para estos nombres y la búsqueda de `vento-shell` no devolvió coincidencias. Por ello no se clasifican como manuales confirmadas.
+
+La comparación contextual tabla-columna produjo otros candidatos, incluidos objetos backup y `product_images`, pero se excluyeron del resultado firme porque pueden provenir de snapshots, `SELECT *`, SQL dinámico o coincidencias indirectas. Solo replay y parser pueden resolverlos.
+
+#### 11. Drift no SQL que permanece abierto
+
+SUPA-AUD-016 ya confirmó:
+
+- `delivery-portal` desplegada sin fuente canónica localizada ni entrada en `config.toml`;
+- `payments-return` desplegada con `verify_jwt=false` sin declaración explícita;
+- `club-revenuecat-webhook` versionada y configurada, pero no desplegada;
+- buckets, publicaciones, cron, Auth y configuración hosted sin comparación declarativa recurrente.
+
+Estos hallazgos no se duplican como objetos SQL; se incorporan al ledger unificado exigido por `TREQ-SUPABASE-296` y `297`.
+
+#### 12. Lo que no se considera prueba de cambio manual
+
+No se clasificó automáticamente como manual:
+
+- toda forma DDL sin match exacto, porque el CLI puede normalizar o dividir statements;
+- DDL de `supabase_admin`, extensiones, `pg_temp`, Auth, Storage o Realtime;
+- objetos presentes en una migración bajo otra forma textual;
+- nombres genéricos de columnas como `created_at` o `id`;
+- ausencia en búsqueda GitHub sin inventario completo del árbol;
+- diferencias de config hosted no accesibles por SQL.
+
+#### 13. Brechas y resolución obligatoria
+
+| Brecha               | Hallazgo                                                                                                                   | Requisitos                                              |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `B-SUPA-AUD-017-001` | app_runtime_settings y sus dos políticas no aparecen en la historia; seis DDL fuera de banda quedan confirmados.           | TREQ-SUPABASE-275; TREQ-SUPABASE-276; TREQ-SUPABASE-277 |
+| `B-SUPA-AUD-017-002` | resolve_attendance_shift_before_insert y attendance_logs_01_resolve_shift carecen de procedencia migratoria identificable. | TREQ-SUPABASE-278; TREQ-SUPABASE-279                    |
+| `B-SUPA-AUD-017-003` | anima_is_active_owner es SECURITY DEFINER sin mención migratoria.                                                          | TREQ-SUPABASE-280                                       |
+| `B-SUPA-AUD-017-004` | Dos políticas de product_images no aparecen por nombre en el corpus migratorio.                                            | TREQ-SUPABASE-281; TREQ-SUPABASE-282                    |
+| `B-SUPA-AUD-017-005` | suppliers.payment_type y suppliers.credit_days no aparecen en statements migratorios.                                      | TREQ-SUPABASE-283; TREQ-SUPABASE-284                    |
+| `B-SUPA-AUD-017-006` | pass.site_schedule_exceptions.internal_reason no aparece en statements migratorios.                                        | TREQ-SUPABASE-283; TREQ-SUPABASE-285                    |
+| `B-SUPA-AUD-017-007` | Cuatro índices de alcance de role_permissions fueron creados como postgres y no aparecen en migraciones.                   | TREQ-SUPABASE-275; TREQ-SUPABASE-286                    |
+| `B-SUPA-AUD-017-008` | No existe detector parser/replay objeto a migración; la búsqueda textual no certifica paridad.                             | TREQ-SUPABASE-287; TREQ-SUPABASE-295                    |
+| `B-SUPA-AUD-017-009` | La telemetría DDL disponible no es un ledger canónico y su texto puede ser sensible.                                       | TREQ-SUPABASE-288                                       |
+| `B-SUPA-AUD-017-010` | DDL de plataforma y DDL empresarial comparten la misma fuente de telemetría sin clasificación automática.                  | TREQ-SUPABASE-289                                       |
+| `B-SUPA-AUD-017-011` | No existe gate que bloquee releases por drift crítico confirmado.                                                          | TREQ-SUPABASE-290                                       |
+| `B-SUPA-AUD-017-012` | app_runtime_settings carece de comentario de tabla y ownership funcional declarativo.                                      | TREQ-SUPABASE-291                                       |
+| `B-SUPA-AUD-017-013` | Grants y revokes fuera de match exacto no tienen procedencia uniforme.                                                     | TREQ-SUPABASE-292                                       |
+| `B-SUPA-AUD-017-014` | La adopción RLS puede quedar parcial si solo se migra la tabla.                                                            | TREQ-SUPABASE-293                                       |
+| `B-SUPA-AUD-017-015` | No existe paquete estructural único para reconciliar columnas, policies, functions, triggers e índices.                    | TREQ-SUPABASE-294                                       |
+| `B-SUPA-AUD-017-016` | La búsqueda Git conectada no sustituye inventario completo del árbol y replay.                                             | TREQ-SUPABASE-295                                       |
+| `B-SUPA-AUD-017-017` | delivery-portal continúa sin fuente localizada y dos funciones conservan diferencias fuente-config-remoto.                 | TREQ-SUPABASE-296                                       |
+| `B-SUPA-AUD-017-018` | Recursos administrados no tienen ledger recurrente de drift.                                                               | TREQ-SUPABASE-297                                       |
+| `B-SUPA-AUD-017-019` | No existe ledger separado para DML de configuración y datos de referencia fuera de banda.                                  | TREQ-SUPABASE-298                                       |
+| `B-SUPA-AUD-017-020` | No existe registro operativo de excepciones de drift con expiración.                                                       | TREQ-SUPABASE-299                                       |
+| `B-SUPA-AUD-017-021` | No está formalizado el uso exclusivo de migraciones forward-only para adoptar drift.                                       | TREQ-SUPABASE-300                                       |
+| `B-SUPA-AUD-017-022` | La evidencia de drift no tiene aún retención y acceso canónicos.                                                           | TREQ-SUPABASE-301                                       |
+| `B-SUPA-AUD-017-023` | No existe validador integral automatizado de SUPA-AUD-017.                                                                 | TREQ-SUPABASE-302                                       |
+
+No queda hallazgo narrativo sin requisito y tarea responsable.
+
+#### 14. Requisitos de prueba incorporados
+
+Se incorporan 30 filas canónicas en el registro 04A:
+
+- `TREQ-SUPABASE-273` — Todo hallazgo de drift deberá clasificarse como cambio fuera de banda confirmado, objeto sin procedencia, diferencia declarativa, componente gestionado por plataforma, deuda legacy o falso positivo, con evidencia y nivel de certeza explícitos.
+- `TREQ-SUPABASE-274` — Cada objeto empresarial remoto deberá tener identidad canónica estable, tipo, schema, propietario, definición normalizada, hash, migración de origen, commit, estado y clasificación de procedencia.
+- `TREQ-SUPABASE-275` — Toda operación DDL fuera de una migración deberá generar evento de auditoría con actor, canal, hora, query hash redactado, objetos afectados, ticket, razón, ambiente y migración de reconciliación.
+- `TREQ-SUPABASE-276` — public.app_runtime_settings, sus políticas, grants, restricciones, comentarios y datos base deberán adoptarse mediante una migración canónica nueva que reproduzca el estado aprobado sin editar historia aplicada.
+- `TREQ-SUPABASE-277` — Los valores de app_runtime_settings deberán separarse entre definición estructural, seed por ambiente y cambios operativos; cada modificación conservará historial inmutable, actor, razón, vigencia y rollback.
+- `TREQ-SUPABASE-278` — public.resolve_attendance_shift_before_insert() y el trigger attendance_logs_01_resolve_shift deberán tener una migración de adopción con definición exacta, orden de trigger, grants, pruebas de concurrencia y rollback.
+- `TREQ-SUPABASE-279` — El orden relativo de triggers sobre attendance_logs deberá declararse y probarse; el prefijo nominal no será el único mecanismo para garantizar precedencia, idempotencia y compatibilidad con otros triggers.
+- `TREQ-SUPABASE-280` — Toda función SECURITY DEFINER sin migración de origen deberá bloquear releases hasta tener adopción, propietario, search_path fijo, validación de identidad, grants mínimos y prueba negativa por anon y authenticated.
+- `TREQ-SUPABASE-281` — Toda política RLS remota deberá corresponder a una definición migratoria identificable por tabla, nombre, comando, roles, USING, WITH CHECK y hash normalizado; coincidencias semánticas parciales no bastarán.
+- `TREQ-SUPABASE-282` — Las políticas product_images_read_authenticated y product_images_write_inventory_managers deberán adoptarse o reemplazarse mediante migración explícita y probar lectura, escritura, ownership, borrado y denegación por rol.
+- `TREQ-SUPABASE-283` — El validador de columnas deberá exigir que cada columna actual aparezca en el contexto de su tabla dentro de una migración o baseline aprobado, incluyendo tipo, nulabilidad, default, identidad, generación, comentario y orden lógico.
+- `TREQ-SUPABASE-284` — suppliers.payment_type y suppliers.credit_days deberán tener una migración de adopción con constraints, catálogo de valores, semántica de nulos, backfill, consumidores y pruebas de compras y pagos.
+- `TREQ-SUPABASE-285` — pass.site_schedule_exceptions.internal_reason deberá adoptarse mediante migración y definir clasificación, privacidad, obligatoriedad, retención, redacción y consumidores autorizados.
+- `TREQ-SUPABASE-286` — Los índices role_permissions_scope_site_id_idx, scope_area_id_idx, scope_site_type_idx y scope_area_kind_idx deberán declararse en una migración canónica y validarse contra consultas, selectividad, tamaño y redundancia.
+- `TREQ-SUPABASE-287` — CI deberá comparar el catálogo actual con el corpus de migraciones mediante parser SQL y replay, no solo búsqueda textual; cada objeto o columna sin procedencia generará un hallazgo bloqueante o excepción aprobada.
+- `TREQ-SUPABASE-288` — La telemetría DDL deberá retener actor, queryid, hash, primera y última observación, llamadas y objeto, pero nunca SQL completo cuando pueda contener datos o secretos; la retención deberá superar el ciclo de auditoría.
+- `TREQ-SUPABASE-289` — El detector de drift deberá excluir o clasificar explícitamente DDL gestionado por Supabase, extensiones, pg_temp, auth, storage, realtime y supabase_migrations, sin ocultar cambios empresariales ejecutados por roles administrativos.
+- `TREQ-SUPABASE-290` — Ningún despliegue posterior podrá ejecutarse mientras exista drift crítico confirmado sin una migración de reconciliación, prueba de replay, fingerprint posterior y decisión documentada de conservar o retirar.
+- `TREQ-SUPABASE-291` — Cada objeto empresarial deberá tener COMMENT ON canónico con finalidad, propietario funcional, sensibilidad, consumidores y tarea de retiro; la ausencia de comentario será brecha de gobierno, no prueba de objeto manual.
+- `TREQ-SUPABASE-292` — Grants y revokes deberán versionarse y compararse por objeto, firma, rol, privilegio y grantor; ninguna concesión actual podrá justificarse únicamente por ownership o defaults de PostgreSQL.
+- `TREQ-SUPABASE-293` — La adopción de objetos con RLS deberá incluir relrowsecurity, relforcerowsecurity, políticas, grants de tabla y columna, funciones auxiliares y pruebas negativas; adoptar solo CREATE TABLE será incompleto.
+- `TREQ-SUPABASE-294` — La reconciliación estructural deberá cubrir tablas, columnas, tipos, defaults, constraints, índices, funciones, triggers, comentarios, owners, grants y RLS como una unidad; no se aceptarán parches aislados sin fingerprint completo.
+- `TREQ-SUPABASE-295` — La ausencia de resultados en búsqueda de código no se considerará prueba definitiva de ausencia; deberá complementarse con inventario del árbol Git, hashes, parser SQL, historial, ramas aprobadas y replay.
+- `TREQ-SUPABASE-296` — Las Edge Functions y recursos administrados identificados como huérfanos en SUPA-AUD-016 deberán entrar al mismo registro de drift con fuente, config, remoto, bundle, ambiente, adopción o retiro y fecha límite.
+- `TREQ-SUPABASE-297` — Buckets, publicaciones, cron, extensiones, Auth, API y configuración hosted deberán producir snapshots declarativos versionados y diferencias clasificadas con la misma taxonomía, severidad, dueño y fecha de cierre del drift SQL.
+- `TREQ-SUPABASE-298` — Cambios DML operativos o de configuración ejecutados fuera de flujos aprobados deberán registrarse con tabla, clave lógica redactada, actor, razón, before/after protegido, ambiente y mecanismo de reversión; no se mezclarán con migraciones estructurales.
+- `TREQ-SUPABASE-299` — Todo drift aceptado temporalmente deberá tener identificador, riesgo residual, propietario, compensación, ambiente, fecha de expiración, criterio de cierre y tarea concreta; las excepciones vencidas bloquearán releases.
+- `TREQ-SUPABASE-300` — La remediación de drift deberá usar migraciones forward-only de adopción o corrección; no se editarán, renombrarán ni repararán versiones aplicadas salvo procedimiento excepcional aprobado y evidenciado.
+- `TREQ-SUPABASE-301` — La evidencia de drift deberá conservar consultas de catálogo, hashes redactados, commit, project ref, corte temporal, resultados y limitaciones durante la retención aprobada, con acceso restringido y verificación de integridad.
+- `TREQ-SUPABASE-302` — El validador integral deberá comprobar 549 migraciones sin cambio de versión máxima, ocho objetos sin mención nominal, cinco grupos de drift fuera de banda confirmados, tres columnas únicas sin procedencia, cuatro índices RBAC no migrados, clasificación de plataforma y todas las huellas SUPA-AUD-017.
+
+El detalle completo de las catorce columnas reside únicamente en el archivo 04A regenerado.
+
+#### 15. Huellas de integridad
+
+| Conjunto                                 | SHA-256                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------ |
+| `objects_without_name_in_history`        | `ec89e7e333b0182edba3ad99a5022555aefe2f06eca9321fa4965c6d38f07364` |
+| `confirmed_out_of_band`                  | `48ecc1fe1a1fef57f8c452ef3db8d4d46e86e8e20b038feb44f81e189c2b0c87` |
+| `columns_without_unique_name_in_history` | `b0b88bf388d31a1183f3f764f5073c88e080ca8d9f8f56de9357320359e93d03` |
+| `classification_manifest`                | `3774bf4144924855ebcb5af6041a004ac47b46282bc25c1c62f98a0d6a2070ce` |
+| `breach_register`                        | `e00b12f3dce8e67f42413a298a5789676d1ba24f1aaf24c9da2b198b61856cad` |
+
+Las huellas se calculan sobre JSON o Markdown canónico redactado. No incluyen SQL completo, datos personales ni valores de secretos.
+
+#### 16. Criterios de aceptación de `SUPA-AUD-017`
+
+La tarea queda aceptada porque:
+
+1. preserva exactamente SUPA-AUD-016 y las 4567 filas anteriores del 04A;
+2. mantiene la historia remota en 549 versiones y no confunde cambio de commit documental con cambio de schema;
+3. clasifica fuera de banda confirmado solo cuando hay evidencia DDL suficiente;
+4. identifica ocho objetos sin mención nominal, cinco grupos confirmados y tres columnas sin procedencia;
+5. separa DDL empresarial, tooling y componentes gestionados por plataforma;
+6. documenta límites de búsqueda textual, telemetría y Git;
+7. vincula 23 brechas a 30 requisitos concretos;
+8. no ejecuta correcciones, repairs ni mutaciones;
+9. deja la remediación forward-only para la fase de transición;
+10. entrega un validador contractual verificable mediante `TREQ-SUPABASE-302`.
+
+#### 17. Límites de la auditoría
+
+No pudo certificarse:
+
+- inventario completo byte a byte del árbol Git mediante clone local, porque el entorno no resolvió DNS de GitHub;
+- replay de las 549 migraciones;
+- equivalencia semántica de cada statement normalizado;
+- hora exacta de ejecución de DDL a partir de `pg_stat_statements`;
+- historia borrada por resets de estadísticas;
+- procedencia de columnas para las que no existe telemetría retenida;
+- configuración hosted completa de Auth, API, red y branches;
+- cambios DML históricos o ediciones desde Dashboard sin auditoría propia.
+
+Cada límite queda vinculado a `TREQ-SUPABASE-287` a `302`; no se interpreta ausencia de telemetría como ausencia de cambio.
+
+#### 18. Declaración de no mutación
+
+No se ejecutaron:
+
+- DDL, DML, GRANT, REVOKE, TRUNCATE o cambios de configuración;
+- `db push`, `db pull`, `db diff`, replay, squash o migration repair;
+- creación, edición o eliminación de objetos remotos;
+- despliegues o invocaciones de Edge Functions;
+- cambios de Auth, Storage, Realtime, cron, secretos o extensiones;
+- commits, branches, pull requests o workflows.
+
+Las consultas fueron exclusivamente de catálogo, estadísticas agregadas, hashing y búsqueda read-only.
+
+#### 19. Cierre
+
+`SUPA-AUD-017` queda **APROBADA** como registro canónico de drift confirmado, objetos sin procedencia y límites de detección. No autoriza adoptar objetos, eliminar funciones, recrear políticas, reparar historia ni desplegar cambios.
+
+La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
+```
+
+
 ### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
 ### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
 ### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
