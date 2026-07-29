@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **364** |
+| Aprobadas | **365** |
 | En propuesta | **0** |
-| No iniciadas | **1211** |
+| No iniciadas | **1210** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.11% (364/1575)** |
+| Porcentaje de completamiento | **23.17% (365/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-022` — Definir dispositivo de uso | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-023` — Definir frecuencia de uso | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-024` — Definir acción principal | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-023` — Definir frecuencia de uso | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-024` — Definir acción principal | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-025` — Definir acciones secundarias | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -811,7 +811,7 @@
 | ✅ APROBADA | `AUTH-UI-020` | Clasificar vista personal o de cliente | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-021` | Definir actores objetivo | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ✅ APROBADA | `AUTH-UI-022` | Definir dispositivo de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
-| ⬜ NO INICIADA | `AUTH-UI-023` | Definir frecuencia de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
+| ✅ APROBADA | `AUTH-UI-023` | Definir frecuencia de uso | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-024` | Definir acción principal | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-025` | Definir acciones secundarias | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-026` | Identificar vistas duplicadas | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |

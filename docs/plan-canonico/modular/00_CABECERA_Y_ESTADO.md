@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **364** |
+| Tareas aprobadas | **365** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1211** |
+| Tareas no iniciadas | **1210** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.11% (364/1575)** |
+| Porcentaje de completamiento | **23.17% (365/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-022 — Definir dispositivo de uso** |
-| Tarea actual | **AUTH-UI-023 — Definir frecuencia de uso** |
+| Última tarea aprobada | **AUTH-UI-023 — Definir frecuencia de uso** |
+| Tarea actual | **AUTH-UI-024 — Definir acción principal** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-024 — Definir acción principal** |
+| Siguiente tarea | **AUTH-UI-025 — Definir acciones secundarias** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 22 de 29 aprobadas; AUTH-UI-023 pendiente** |
+| Progreso del bloque | **BLOQUE I: 23 de 29 aprobadas; AUTH-UI-024 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-022` — Definir dispositivo de uso |
-| Tarea actual | `AUTH-UI-023` — Definir frecuencia de uso — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-024` — Definir acción principal |
+| Última aprobada | `AUTH-UI-023` — Definir frecuencia de uso |
+| Tarea actual | `AUTH-UI-024` — Definir acción principal — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-025` — Definir acciones secundarias |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **22 DE 29 APROBADAS — ACTUAL AUTH-UI-023** |
+| BLOQUE I | **23 DE 29 APROBADAS — ACTUAL AUTH-UI-024** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-022 — Definir dispositivo de uso
-        ↓
-TAREA ACTUAL
 AUTH-UI-023 — Definir frecuencia de uso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-024 — Definir acción principal
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-025 — Definir acciones secundarias
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 22 de 29 tareas aprobadas
+BLOQUE I — 23 de 29 tareas aprobadas
 ```
