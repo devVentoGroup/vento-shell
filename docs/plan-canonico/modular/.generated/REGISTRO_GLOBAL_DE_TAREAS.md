@@ -10,11 +10,11 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **371** |
+| Aprobadas | **372** |
 | En propuesta | **0** |
-| No iniciadas | **1204** |
+| No iniciadas | **1203** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.56% (371/1575)** |
+| Porcentaje de completamiento | **23.62% (372/1575)** |
 
 ## Continuidad activa
 
@@ -1404,7 +1404,7 @@
 | ⬜ NO INICIADA | `AURA-UX-008` | Diseñar tablero de resultados, atribución y copiloto de recomendaciones | `bloques/W_AURA/04_EXPERIENCIA_CREATIVA_Y_COMERCIAL.md` |
 | ⬜ NO INICIADA | `AURA-INT-001` | Definir adaptadores de canales, webhooks, límites, credenciales y reconciliación externa | `bloques/W_AURA/05_INTEGRACIONES_DE_CANALES_Y_DATOS.md` |
 | ⬜ NO INICIADA | `AURA-INT-002` | Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO | `bloques/W_AURA/05_INTEGRACIONES_DE_CANALES_Y_DATOS.md` |
-| ⬜ NO INICIADA | `INT-APP-001` | Crear catálogo de eventos empresariales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
+| ✅ APROBADA | `INT-APP-001` | Crear catálogo de eventos empresariales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-002` | Definir aplicación emisora de cada evento | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-003` | Definir aplicaciones consumidoras | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
