@@ -3678,7 +3678,434 @@ Toda variación en trigger, función, evento, temporización, condición, relaci
 La tarea no modifica Supabase y no certifica todavía autorización, orden semántico ni funcionamiento operativo de los automatismos.
 
 
-### [ ] SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
+### ✅ SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de autorización PostgreSQL para los 23 esquemas no efímeros del proyecto `vento-os-dev`, distinguiendo de forma obligatoria:
+
+```text
+ACCESO EFECTIVO
+= USAGE DEL ESQUEMA
++ PRIVILEGIO SOBRE EL OBJETO
++ POLÍTICA RLS APLICABLE CUANDO RLS ESTÁ ACTIVO
++ MODO DE EJECUCIÓN DE LA FUNCIÓN O VISTA
++ ATRIBUTOS Y MEMBRESÍAS DEL ROL
+```
+
+La presencia de un `GRANT` no concede por sí sola acceso a filas protegidas por RLS. La presencia de RLS tampoco concede acceso al objeto. Una política dirigida a `PUBLIC` no vuelve público un objeto si el rol carece de `USAGE` del esquema o del privilegio necesario. `service_role`, propietarios y roles con `BYPASSRLS` se analizan separadamente porque pueden quedar fuera del filtrado ordinario de RLS.
+
+#### 2. Semántica canónica de autorización
+
+| Capa                 | Pregunta que responde                                      | No debe confundirse con                       |
+| -------------------- | ---------------------------------------------------------- | --------------------------------------------- |
+| `USAGE` del esquema  | ¿el rol puede resolver objetos del esquema?                | acceso a tablas o funciones                   |
+| privilegio de objeto | ¿puede ejecutar `SELECT`, DML, `EXECUTE`, `USAGE`, etc.?   | autorización sobre filas                      |
+| RLS habilitado       | ¿PostgreSQL debe aplicar políticas a roles no exceptuados? | existencia de una política permisiva          |
+| política RLS         | ¿qué filas admite para un comando y rol?                   | acceso al objeto o al esquema                 |
+| `SECURITY INVOKER`   | ¿la rutina usa privilegios del llamador?                   | seguridad automática del cuerpo               |
+| `SECURITY DEFINER`   | ¿la rutina usa privilegios del propietario?                | autorización interna suficiente               |
+| `BYPASSRLS`          | ¿el rol omite RLS?                                         | permiso para exponer la credencial a clientes |
+| ACL por defecto      | ¿qué permisos heredarán objetos futuros?                   | permisos actuales de objetos existentes       |
+
+Una decisión de seguridad requiere componer todas las capas. Esta tarea no declara una tabla abierta únicamente porque tenga grants, ni cerrada únicamente porque tenga RLS.
+
+#### 3. Método de auditoría no mutante
+
+Se consultaron exclusivamente catálogos y funciones de inspección mediante `SELECT`:
+
+- `pg_class` para `relrowsecurity`, `relforcerowsecurity`, clase y owner;
+- `pg_policy` y `pg_get_expr` para identidad, modo, comando, roles, `USING` y `WITH CHECK`;
+- `pg_namespace`, `pg_roles`, `pg_auth_members` y `pg_db_role_setting` para esquemas, atributos, membresías y ajustes de rol;
+- `has_schema_privilege`, `has_table_privilege`, `has_sequence_privilege`, `has_function_privilege` y `has_type_privilege` para privilegios efectivos;
+- `aclexplode`, `acldefault` y `pg_default_acl` para ACL actuales y futuras;
+- `pg_proc`, `pg_type`, `pg_sequence` y `pg_class` para reconciliar funciones, tipos, secuencias, tablas y vistas;
+- Supabase Database Advisors para contrastar RLS sin políticas, vistas privilegiadas y funciones `SECURITY DEFINER` ejecutables por roles cliente.
+
+No se ejecutaron `GRANT`, `REVOKE`, `ALTER TABLE ... ENABLE/FORCE ROW LEVEL SECURITY`, `CREATE/DROP POLICY`, cambios de roles, migraciones, RPC, DDL ni DML.
+
+#### 4. Resultado global de RLS y políticas
+
+| Métrica                              |   Total |   Vento | Administrado |
+| ------------------------------------ | ------: | ------: | -----------: |
+| objetos tabulares `r/p`              | **432** | **317** |      **115** |
+| RLS habilitado                       | **332** | **305** |       **27** |
+| RLS deshabilitado                    | **100** |  **12** |       **88** |
+| `FORCE ROW LEVEL SECURITY`           |   **0** |   **0** |        **0** |
+| políticas RLS                        | **831** | **790** |       **41** |
+| tablas con políticas                 | **303** |       — |            — |
+| tablas sin políticas                 | **122** |       — |            — |
+| RLS habilitado sin políticas         |  **29** |   **5** |       **24** |
+| RLS deshabilitado con políticas      |   **0** |   **0** |        **0** |
+| RLS deshabilitado con grants cliente |   **0** |   **0** |        **0** |
+
+Las **831 políticas** están asociadas a tablas con RLS habilitado. Una reconciliación directa `pg_policy.polrelid → pg_class.oid` confirmó cero políticas sobre tablas con `relrowsecurity=false`.
+
+La ausencia total de `FORCE ROW LEVEL SECURITY` significa que propietarios y roles con `BYPASSRLS` no quedan sometidos al mismo filtro que los roles cliente ordinarios. No se deduce de ello que cada owner deba cambiar ni que `FORCE RLS` sea obligatorio para todas las tablas.
+
+#### 5. Matriz por esquema
+
+| Esquema               | Gobierno     |  Tablas | RLS activo | RLS inactivo | Políticas | RLS activo sin política |
+| --------------------- | ------------ | ------: | ---------: | -----------: | --------: | ----------------------: |
+| `app_private`         | Vento        |       1 |          0 |            1 |         0 |                       0 |
+| `auth`                | administrado |      23 |         16 |            7 |         0 |                  **16** |
+| `club`                | Vento        |      11 |         11 |            0 |        11 |                       0 |
+| `cron`                | administrado |       2 |          2 |            0 |         2 |                       0 |
+| `extensions`          | administrado |       0 |          0 |            0 |         0 |                       0 |
+| `graphql`             | administrado |       0 |          0 |            0 |         0 |                       0 |
+| `graphql_public`      | administrado |       0 |          0 |            0 |         0 |                       0 |
+| `information_schema`  | administrado |       4 |          0 |            4 |         0 |                       0 |
+| `net`                 | administrado |       2 |          0 |            2 |         0 |                       0 |
+| `pass`                | Vento        |      26 |         26 |            0 |       102 |                   **4** |
+| `payments`            | Vento        |       2 |          2 |            0 |         3 |                       0 |
+| `pg_catalog`          | administrado |      64 |          0 |           64 |         0 |                       0 |
+| `pg_toast`            | administrado |       0 |          0 |            0 |         0 |                       0 |
+| `pgbouncer`           | administrado |       0 |          0 |            0 |         0 |                       0 |
+| `pos`                 | Vento        |      13 |         13 |            0 |        21 |                       0 |
+| `public`              | Vento        |     185 |        185 |            0 |       444 |                   **1** |
+| `realtime`            | administrado |      10 |          1 |            9 |         0 |                   **1** |
+| `storage`             | administrado |       8 |          8 |            0 |        39 |                   **7** |
+| `supabase_migrations` | administrado |       1 |          0 |            1 |         0 |                       0 |
+| `talento`             | Vento        |      13 |         13 |            0 |        20 |                       0 |
+| `vault`               | administrado |       1 |          0 |            1 |         0 |                       0 |
+| `viso`                | Vento        |      12 |          1 |           11 |         1 |                       0 |
+| `vital`               | Vento        |      54 |         54 |            0 |       188 |                       0 |
+| **TOTAL**             | —            | **432** |    **332** |      **100** |   **831** |                  **29** |
+
+Las **29 tablas con RLS activo y sin políticas** se dividen en **5 tablas Vento** y **24 administradas por Supabase/PostgreSQL**: 16 en `auth`, 1 en `realtime` y 7 en `storage`. Las 24 administradas se conservan como estado de producto observado; su ausencia de políticas no se clasifica automáticamente como defecto empresarial porque sus mecanismos de acceso y operación pertenecen a los servicios administrados.
+
+#### 6. Taxonomía de las 831 políticas
+
+##### 6.1. Modo
+
+| Modo          | Políticas |
+| ------------- | --------: |
+| `PERMISSIVE`  |   **831** |
+| `RESTRICTIVE` |     **0** |
+
+Todas las políticas son permisivas. Cuando varias políticas permisivas aplican al mismo comando y rol, PostgreSQL combina su admisión mediante OR. Este inventario no concluye que deba existir una política restrictiva; conserva la ausencia para análisis posterior de composición.
+
+##### 6.2. Comando
+
+| Comando   |   Total |   Vento | Administrado |
+| --------- | ------: | ------: | -----------: |
+| `ALL`     | **137** |     135 |            2 |
+| `SELECT`  | **333** |     327 |            6 |
+| `INSERT`  | **146** |     134 |           12 |
+| `UPDATE`  | **121** |     109 |           12 |
+| `DELETE`  |  **94** |      85 |            9 |
+| **TOTAL** | **831** | **790** |       **41** |
+
+##### 6.3. Destinos de rol
+
+Las asignaciones de rol no son mutuamente excluyentes: una política puede listar más de un rol.
+
+| Destino         | Total observado | Vento | Administrado |
+| --------------- | --------------: | ----: | -----------: |
+| `PUBLIC`        |         **213** |   211 |            2 |
+| `anon`          |          **25** |    25 |            0 |
+| `authenticated` |         **610** |   571 |           39 |
+| `service_role`  |           **6** |     6 |            0 |
+
+`PUBLIC` significa todos los roles PostgreSQL, pero la política solo participa después de superar la capa de esquema y objeto. Por ello, las 211 políticas Vento dirigidas a `PUBLIC` no equivalen a 211 superficies públicas.
+
+#### 7. Tablas Vento con RLS habilitado y sin políticas
+
+| Tabla                                      | Grants cliente observados                       | Efecto actual para roles sin `BYPASSRLS` |
+| ------------------------------------------ | ----------------------------------------------- | ---------------------------------------- |
+| `pass.site_business_hours`                 | `authenticated: SELECT`                         | acceso denegado por ausencia de política |
+| `pass.site_delivery_slots`                 | `authenticated: SELECT`                         | acceso denegado por ausencia de política |
+| `pass.site_schedule_exception_resolutions` | ninguno para `anon/authenticated`               | sin superficie cliente directa           |
+| `pass.site_schedule_exceptions`            | ninguno para `anon/authenticated`               | sin superficie cliente directa           |
+| `public.client_push_tokens`                | `authenticated: SELECT, INSERT, UPDATE, DELETE` | acceso denegado por ausencia de política |
+
+Las cinco tablas Vento son `deny by default` para roles ordinarios. En tres existe además grant de cliente, por lo que la configuración produce una superficie declarada a nivel de objeto pero inutilizable a nivel de filas. Esto puede ser una protección deliberada, una instalación incompleta o drift; la tarea no lo decide.
+
+`service_role` conserva acceso por sus grants y `BYPASSRLS`, por lo que “sin políticas” no significa inaccesible para backend privilegiado.
+
+#### 8. Tablas Vento con RLS deshabilitado
+
+```text
+app_private.delivery_pin_secrets
+viso.demand_forecasts
+viso.demand_history_hourly
+viso.employee_availability
+viso.employee_planning_limits
+viso.employee_shift_preferences
+viso.shift_generation_candidate_items
+viso.shift_generation_candidates
+viso.shift_generation_runs
+viso.site_operational_roles
+viso.site_planning_rules
+viso.site_staffing_requirements
+```
+
+Ninguna de las doce tiene privilegios efectivos de tabla para `anon` o `authenticated`. Por tanto, en el corte actual no están abiertas directamente a roles cliente pese a tener RLS deshabilitado.
+
+Este resultado no autoriza mantener RLS desactivado de forma indefinida. Un grant futuro, cambio de esquema expuesto, función privilegiada o vista podría modificar la superficie. La protección actual depende de la continuidad de ACL y del aislamiento del esquema.
+
+#### 9. Superficie anónima de tablas y vistas
+
+Cuatro tablas `pass` poseen privilegios completos de DML para `anon`, todas con RLS activo y políticas:
+
+| Tabla                       | Privilegios de objeto            | Políticas |
+| --------------------------- | -------------------------------- | --------: |
+| `pass.loyalty_redemptions`  | `SELECT, INSERT, UPDATE, DELETE` |         6 |
+| `pass.loyalty_transactions` | `SELECT, INSERT, UPDATE, DELETE` |         2 |
+| `pass.pass_satellites`      | `SELECT, INSERT, UPDATE, DELETE` |         5 |
+| `pass.user_favorites`       | `SELECT, INSERT, UPDATE, DELETE` |         3 |
+
+Los grants no permiten omitir RLS. La semántica individual de cada política y operación deberá validarse con pruebas negativas y de territorio antes de certificar la superficie.
+
+Trece vistas seleccionables por `anon` se observaron con `security_invoker=true`:
+
+```text
+public.catalog_item_customization_template_assignments
+public.catalog_item_customization_template_groups
+public.catalog_item_customization_templates
+public.catalog_item_option_consumption_rules
+public.catalog_item_option_groups
+public.catalog_item_option_recipe_effects
+public.catalog_item_options
+public.catalog_item_presentation
+public.catalog_option_visual_assets
+public.commercial_categories
+public.commercial_collection_categories
+public.commercial_collections
+public.pass_delivery_distance_rates
+```
+
+No se observaron vistas anónimas Vento de esta lista ejecutando con semántica privilegiada del owner.
+
+#### 10. Políticas dirigidas explícitamente a `anon`
+
+Las 25 políticas se distribuyen así:
+
+| Esquema    | Comando  | Cantidad | Naturaleza observada                                                  |
+| ---------- | -------- | -------: | --------------------------------------------------------------------- |
+| `pass`     | `SELECT` |       12 | catálogo, tarifas, recompensas y satélites activos                    |
+| `payments` | `ALL`    |        1 | denegación explícita `false`                                          |
+| `public`   | `SELECT` |        2 | configuración y política de actualización visibles                    |
+| `public`   | `ALL`    |        8 | denegaciones explícitas `false` sobre objetos internos/legacy/staging |
+| `talento`  | `SELECT` |        1 | vacantes publicadas                                                   |
+| `viso`     | `ALL`    |        1 | denegación explícita `false`                                          |
+
+Las políticas `ALL` con `USING false` y `WITH CHECK false` son barreras declarativas, no grants. Deben conservarse diferenciadas de políticas de acceso real.
+
+#### 11. Modelo de roles y membresías
+
+| Rol                       | Login  | Herencia       | `BYPASSRLS`         | Función observada                             |
+| ------------------------- | ------ | -------------- | ------------------- | --------------------------------------------- |
+| `anon`                    | no     | sí             | no                  | actor cliente sin sesión                      |
+| `authenticated`           | no     | sí             | no                  | actor cliente con JWT válido                  |
+| `service_role`            | no     | sí             | **sí**              | backend privilegiado                          |
+| `authenticator`           | **sí** | **no**         | no                  | gateway que adopta el rol indicado por JWT    |
+| `postgres`                | sí     | sí             | **sí**              | owner/administración del proyecto             |
+| `supabase_admin`          | sí     | sí             | **sí**              | superusuario administrado                     |
+| roles `supabase_*_admin`  | mixto  | según producto | generalmente **sí** | operación de productos Supabase               |
+| `supabase_read_only_user` | sí     | sí             | **sí**              | lectura administrativa, no aislamiento tenant |
+| `dashboard_user`          | no     | sí             | no                  | lectura de dashboard según grants             |
+
+`authenticator` es miembro de `anon`, `authenticated` y `service_role` con `INHERIT=false` y `SET=true`. Esto permite cambiar al rol resuelto por PostgREST sin heredar simultáneamente las capacidades de los tres.
+
+`service_role` nunca debe interpretarse como identidad de usuario final: sus privilegios y `BYPASSRLS` constituyen una frontera de backend. `supabase_read_only_user` tampoco es un rol tenant: aunque no tenga DML, puede leer sin quedar limitado por RLS.
+
+#### 12. Privilegios efectivos sobre objetos Vento
+
+Universo: **9 esquemas**, **379 relaciones**, **2 secuencias**, **347 funciones** y **400 tipos** gobernados por Vento.
+
+| Rol                       | Esquemas `USAGE` | Relaciones `SELECT` | `INSERT` | `UPDATE` | `DELETE` | Funciones `EXECUTE` |  Secuencias | Tipos `USAGE` |
+| ------------------------- | ---------------: | ------------------: | -------: | -------: | -------: | ------------------: | ----------: | ------------: |
+| `anon`                    |              5/9 |              51/379 |        4 |        4 |        4 |             134/347 |         0/2 |       400/400 |
+| `authenticated`           |              8/9 |             357/379 |      334 |      332 |      329 |             244/347 |         2/2 |       400/400 |
+| `service_role`            |              9/9 |             346/379 |      328 |      328 |      326 |             341/347 |         2/2 |       400/400 |
+| `authenticator`           |              0/9 |                   0 |        0 |        0 |        0 |                   0 |           0 |             0 |
+| `supabase_read_only_user` |              9/9 |             379/379 |        0 |        0 |        0 |             347/347 | `USAGE` 2/2 |       400/400 |
+| `dashboard_user`          |              9/9 |             379/379 |        0 |        0 |        0 |             347/347 |         0/2 |       400/400 |
+
+Los conteos son privilegios efectivos y pueden incluir ACL directas, `PUBLIC`, ownership o membresías. No significan filas visibles ni operaciones autorizadas por negocio.
+
+La amplitud de `authenticated` es consistente con un diseño Supabase donde RLS gobierna filas, pero obliga a que toda tabla expuesta tenga políticas completas, territoriales y probadas. Un grant amplio sin RLS correcto sería crítico.
+
+#### 13. ACL actuales y diferencia frente a privilegios efectivos
+
+ACL directas o implícitas por defecto PostgreSQL sobre objetos Vento:
+
+| Grantee         | Clase                    | Señal principal                                        |
+| --------------- | ------------------------ | ------------------------------------------------------ |
+| `PUBLIC`        | funciones                | `EXECUTE` sobre **134** funciones                      |
+| `PUBLIC`        | tipos                    | `USAGE` sobre **400** tipos                            |
+| `PUBLIC`        | esquema                  | `USAGE` sobre `public`                                 |
+| `PUBLIC`        | tablas/vistas/secuencias | **0 grants**                                           |
+| `anon`          | tablas                   | 26 `SELECT`; 4 con DML completo                        |
+| `anon`          | vistas                   | 13 `SELECT`                                            |
+| `authenticated` | tablas                   | 295 `SELECT`, 273 `INSERT`, 270 `UPDATE`, 268 `DELETE` |
+| `authenticated` | vistas                   | 62 `SELECT`                                            |
+| `authenticated` | funciones                | 240 `EXECUTE` explícitos                               |
+| `service_role`  | funciones                | 332 `EXECUTE` explícitos                               |
+
+La diferencia entre 6 grants explícitos de función para `anon` y 134 ejecuciones efectivas se explica principalmente por `EXECUTE` concedido a `PUBLIC`. Esa herencia debe evaluarse junto con `SUPA-AUD-007`.
+
+#### 14. ACL por defecto y objetos futuros
+
+Los defaults actuales pueden ampliar automáticamente la superficie al crear objetos:
+
+| Owner/esquema                                     | Clase futura                   | Grants heredados relevantes                                                                                                |
+| ------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `postgres` / `public`                             | tablas                         | privilegios amplios para `authenticated` y `service_role`, incluidos DML, `TRUNCATE`, `REFERENCES`, `TRIGGER` y `MAINTAIN` |
+| `postgres` / `public`                             | secuencias                     | privilegios completos para `authenticated` y `service_role`                                                                |
+| `postgres` / `public`                             | funciones                      | `EXECUTE` para `authenticated` y `service_role`                                                                            |
+| `postgres` / `pass`                               | tablas y secuencias            | privilegios amplios para `service_role`                                                                                    |
+| `postgres` / `pass`                               | funciones                      | `EXECUTE` para `service_role`                                                                                              |
+| `postgres` / `club`, `payments`, `pos`, `talento` | funciones                      | `EXECUTE` para `service_role`                                                                                              |
+| `postgres` / `viso`                               | tablas, secuencias y funciones | privilegios amplios para `service_role`                                                                                    |
+| `postgres` / `vital`                              | tablas                         | DML y lectura para `authenticated`; ejecución/servicio para `service_role` según clase                                     |
+| `postgres` / `vital`                              | funciones                      | `EXECUTE` para `authenticated` y `service_role`                                                                            |
+
+Estos defaults son parte del contrato de creación. Un objeto nuevo puede nacer con exposición distinta a la esperada aunque su migración no contenga un `GRANT` explícito. `SUPA-AUD-016` y `SUPA-AUD-017` deberán comparar defaults remotos con migraciones y prevenir drift.
+
+#### 15. Vistas privilegiadas y funciones `SECURITY DEFINER`
+
+Supabase Database Advisors confirmó cuatro vistas `public` con semántica privilegiada del owner y `SELECT` efectivo para `authenticated`:
+
+```text
+public.permission_catalog_human_v1
+public.shared_operational_device_actor_policies_admin_v1
+public.shared_operational_device_templates_admin_v1
+public.shared_operational_devices_admin_v1
+```
+
+Las cuatro tienen `security_invoker=false`, no son seleccionables por `anon` y sí por `authenticated`. Su nombre administrativo no constituye autorización. Deben revisarse por columnas expuestas, predicates, consumidores y controles de aplicación antes de conservarlas o convertirlas.
+
+El advisor también confirmó la exposición cliente de funciones `SECURITY DEFINER` inventariada en `SUPA-AUD-007`. Esta tarea no duplica las 210 firmas Vento; compone sus grants con roles y RLS:
+
+- 45 `SECURITY DEFINER` Vento son ejecutables efectivamente por `anon`;
+- 151 son ejecutables efectivamente por `authenticated`;
+- 14 combinan `SECURITY DEFINER`, owner con `BYPASSRLS`, `row_security=off` y ejecución mediante `PUBLIC`.
+
+La revisión cuerpo por cuerpo y su autorización empresarial siguen siendo obligatorias; el advisor no convierte automáticamente cada función en vulnerabilidad ni certifica su intención.
+
+#### 16. Señales estáticas en políticas
+
+| Señal                                  | Políticas observadas | Interpretación permitida                                           |
+| -------------------------------------- | -------------------: | ------------------------------------------------------------------ |
+| `auth.uid()`                           |                  341 | identidad usada en la expresión; no demuestra territorio completo  |
+| `auth.jwt()`                           |                   18 | dependencia de claims; debe validarse origen y frescura            |
+| `auth.role()`                          |                **1** | uso de helper deprecado pendiente de normalización                 |
+| `raw_user_meta_data` / `user_metadata` |                **0** | no se observó autorización basada en metadata editable del usuario |
+| `raw_app_meta_data` / `app_metadata`   |                    0 | no se observó referencia textual directa                           |
+| `current_user`                         |                   18 | dependencia del rol PostgreSQL actual                              |
+
+La única política con `auth.role()` es:
+
+```text
+public.app_content_blocks
+policy: app_content_blocks_write_admin
+command: ALL
+roles: authenticated
+USING/WITH CHECK:
+is_owner() OR is_global_manager() OR auth.role() = 'service_role'
+```
+
+La corrección no se ejecuta aquí. Debe definirse una semántica explícita para `service_role` sin depender de un helper deprecado.
+
+`public.user_feedback` tiene una política `UPDATE` sin `WITH CHECK` escrito de forma explícita. Esta señal exige revisión semántica y prueba de reasignación de columnas de ownership; la ausencia textual no se trata por sí sola como bypass confirmado.
+
+#### 17. Políticas `PUBLIC` de mutación
+
+En esquemas Vento existen **144 políticas** dirigidas a `PUBLIC` para `ALL`, `INSERT`, `UPDATE` o `DELETE`:
+
+| Esquema  | Políticas |
+| -------- | --------: |
+| `pass`   |         2 |
+| `public` |         8 |
+| `vital`  |       134 |
+
+En esquemas administrados existen además 2 políticas `PUBLIC` de mutación en `cron`.
+
+La mayoría de las políticas Vento mantienen predicates de identidad, ownership, administración o `service_role`; el destino `PUBLIC` amplía el conjunto de roles al que puede aplicar la política, pero no omite el predicate ni crea grants. Su normalización deberá comparar intención, schema `USAGE`, grants y consumidores antes de cambiar el rol objetivo.
+
+#### 18. Hallazgos y destino documental
+
+| Hallazgo                                                                 | Riesgo                                                                 | Tarea responsable                                                       |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| cinco tablas Vento con RLS activo y cero políticas                       | acceso cliente bloqueado o instalación incompleta                      | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024` y paquete E5 del dominio |
+| doce tablas Vento sin RLS pero sin grants cliente                        | protección dependiente de ACL y aislamiento, susceptible a drift       | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024`, `SUPA-ARC-*`            |
+| 29 tablas globales con RLS activo y cero políticas, 24 administradas     | configuración de producto no reconciliada o falso positivo empresarial | `SUPA-AUD-010`, `SUPA-AUD-012`, `SUPA-AUD-013`, `SUPA-AUD-024`          |
+| 831 políticas exclusivamente permisivas                                  | composición OR no evaluada contra cada proceso                         | `SUPA-AUD-023`, `SUPA-AUD-024`, `SUPA-ARC-*`                            |
+| 211 políticas Vento dirigidas a `PUBLIC`                                 | alcance de rol mayor que la intención si grants cambian                | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-023`, `SUPA-AUD-024`          |
+| cuatro tablas `pass` con DML anónimo y RLS                               | dependencia crítica de políticas correctas y pruebas negativas         | `SUPA-AUD-023`, `SUPA-AUD-024` y paquetes E5 PASS                       |
+| cuatro vistas administrativas privilegiadas accesibles a `authenticated` | bypass de RLS/privilegios del llamador o columnas excesivas            | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024`, `SUPA-TRANS-*`          |
+| 134 funciones Vento ejecutables mediante `PUBLIC`                        | RPC no intencional o dependencia invisible de ACL por defecto          | `SUPA-AUD-007`, `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024`          |
+| defaults amplios de ACL                                                  | objetos futuros expuestos sin `GRANT` visible en su migración          | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024`, `SUPA-ARC-*`            |
+| una política usa `auth.role()`                                           | autorización deprecada o comportamiento divergente                     | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-018`, `SUPA-AUD-024`          |
+| una política UPDATE no escribe `WITH CHECK` explícito                    | reasignación no probada o contrato difícil de auditar                  | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-024`                          |
+| `service_role` y roles administrativos poseen `BYPASSRLS`                | credencial privilegiada usada fuera de backend confiable               | `SUPA-AUD-010`, `SUPA-AUD-014`, `SUPA-AUD-015`, `SUPA-AUD-024`          |
+
+No queda hallazgo narrativo sin tarea responsable.
+
+#### 19. Decisiones que esta tarea no toma
+
+Este inventario no autoriza:
+
+1. habilitar o deshabilitar RLS;
+2. crear, borrar o reescribir políticas;
+3. revocar grants sin identificar consumidores;
+4. conceder grants para “hacer funcionar” una pantalla;
+5. convertir automáticamente todas las políticas `PUBLIC` a `authenticated`;
+6. activar `FORCE RLS` indiscriminadamente;
+7. reemplazar `SECURITY DEFINER` sin analizar su necesidad;
+8. exponer `service_role` a clientes;
+9. mover vistas o funciones entre esquemas;
+10. certificar seguridad integral sin pruebas positivas, negativas, territoriales y de escalamiento.
+
+#### 20. Requisitos de prueba derivados
+
+```text
+TREQ-SUPABASE-110 a TREQ-SUPABASE-123
+```
+
+Los requisitos protegen cobertura de RLS, registro completo de políticas, composición grants/RLS, tablas sin políticas, tablas sin RLS, atributos y membresías, `BYPASSRLS`, ACL actuales, ACL por defecto, vistas privilegiadas, señales deprecadas, advisors e integridad por huellas.
+
+#### 21. Invariantes y huellas
+
+```text
+TABLE_LIKE_OBJECTS = 432
+RLS_ENABLED = 332
+RLS_DISABLED = 100
+FORCE_RLS = 0
+POLICIES_TOTAL = 831
+VENTO_POLICIES = 790
+MANAGED_POLICIES = 41
+PERMISSIVE_POLICIES = 831
+RESTRICTIVE_POLICIES = 0
+RLS_ENABLED_WITHOUT_POLICY = 29
+VENTO_RLS_ENABLED_WITHOUT_POLICY = 5
+MANAGED_RLS_ENABLED_WITHOUT_POLICY = 24
+TABLES_WITH_POLICIES = 303
+RLS_DISABLED_WITH_POLICY = 0
+RLS_DISABLED_WITH_CLIENT_GRANT = 0
+VENTO_PUBLIC_FUNCTION_EXECUTE = 134
+VENTO_ANON_MUTABLE_TABLES = 4
+PRIVILEGED_AUTHENTICATED_VIEWS = 4
+```
+
+```text
+RLS_REGISTRY_SHA256 = c4fd11aaf07ba22e36a31c3243cf4d7b81d679ab576ac92040deafeb174180b9
+POLICY_REGISTRY_SHA256 = bc969aeb62580f8580b812b199b9a3c3b4d660665583472f51738979a21d0eb4
+EFFECTIVE_PRIVILEGE_SHA256 = 8d2cc20d48fac49e0af69b5c51eebb3bffdf81d1d6f89fc5ea224c037ebc8587
+ACL_REGISTRY_SHA256 = 4b7eda3c7fe253e74321ae1dc42c41be2a2199e78ab8d06ac420bcc1cb8cc09b
+DEFAULT_ACL_SHA256 = c09d3b1651f375f18abe02aaa9a4e7776911cc9676df95746d80c6adede98bf0
+ROLE_ATTRIBUTE_SHA256 = 2a2c459ff7939840b96f60657ca114750b03b7836c1479b94bc631176aff6586
+ROLE_MEMBERSHIP_SHA256 = c9c4a6fff0003faefee0550b1e94e1204de570aa42aa6df7e757f57bdc7c97a4
+OBSERVED_AT_UTC = 2026-07-29T20:09:34.911632Z
+SUPABASE_PROJECT_REF = clzdpinthhtknkmefsxx
+POSTGRESQL_VERSION = 17.6
+```
+
+Las huellas se calculan sobre registros ordenados. Cualquier cambio de RLS, política, rol, membresía, grant actual o ACL por defecto exige revalidación antes de arquitectura, normalización o transición.
+
+
 ### [ ] SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
 ### [ ] SUPA-AUD-011 — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema
 ### [ ] SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage

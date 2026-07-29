@@ -10,7 +10,7 @@ import {
 import {
   normalizeApprovedTaskEvidence,
   reconcileTreqRegistrySource,
-  updateLatestTaskSummary,
+  updateRegistrySummary,
 } from './treq-safe-reconcile.mjs';
 import {
   syncPriorityLaneOrderDocument,
@@ -127,9 +127,9 @@ function attemptSafeReconciliation() {
     rowIds: invalidRowIds,
     approvedTaskIds,
   });
-  approvalCandidate = updateLatestTaskSummary(
+  approvalCandidate = updateRegistrySummary(
     approvalCandidate,
-    context.expectedLatestTaskId
+    currentValidation.stats
   );
 
   if (
@@ -145,10 +145,18 @@ function attemptSafeReconciliation() {
     const recoveryPath = saveRecoveryCopy(currentSource, approvalSync);
     fs.writeFileSync(registryPath, approvalCandidate, 'utf8');
 
-    console.log(
-      `[PLAN CANÓNICO] Transición de aprobación TREQ sincronizada: `
-      + `${invalidRowIds.size} filas actualizadas; resumen vigente corregido.`
-    );
+    if (invalidRowIds.size > 0) {
+      console.log(
+        `[PLAN CANÓNICO] Transición de aprobación TREQ sincronizada: `
+        + `${invalidRowIds.size} filas actualizadas; resumen vigente corregido.`
+      );
+    } else {
+      console.log(
+        `[PLAN CANÓNICO] Resumen TREQ sincronizado automáticamente: `
+        + `${currentValidation.stats.requirements} requisitos; `
+        + `última tarea ${currentValidation.stats.latestTask}.`
+      );
+    }
     console.log(
       `[PLAN CANÓNICO] Copia íntegra previa: ${recoveryPath}`
     );
@@ -185,9 +193,13 @@ function attemptSafeReconciliation() {
     approvedTaskIds,
   });
   reconciliation.normalizedApprovalIds = [...evidenceRows];
-  reconciliation.candidateSource = updateLatestTaskSummary(
+  const candidateStats = validateTreqRegistrySource(
     reconciliation.candidateSource,
-    context.expectedLatestTaskId
+    context
+  ).stats;
+  reconciliation.candidateSource = updateRegistrySummary(
+    reconciliation.candidateSource,
+    candidateStats
   );
 
   const candidateValidation = validateTreqRegistrySource(

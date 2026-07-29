@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **389** |
+| Aprobadas | **390** |
 | En propuesta | **0** |
-| No iniciadas | **1186** |
+| No iniciadas | **1185** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.70% (389/1575)** |
+| Porcentaje de completamiento | **24.76% (390/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-AUD-008` — Inventariar triggers y funciones ejecutadas por triggers | ✅ APROBADA |
-| Tarea actual | `SUPA-AUD-009` — Inventariar políticas RLS, grants y privilegios por rol | ⬜ NO INICIADA |
-| Siguiente | `SUPA-AUD-010` — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-AUD-009` — Inventariar políticas RLS, grants y privilegios por rol | ✅ APROBADA |
+| Tarea actual | `SUPA-AUD-010` — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | ⬜ NO INICIADA |
+| Siguiente | `SUPA-AUD-011` — Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -380,7 +380,7 @@
 | ✅ APROBADA | `SUPA-AUD-006` | Inventariar funciones, RPC, procedimientos y firmas públicas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-007` | Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-008` | Inventariar triggers y funciones ejecutadas por triggers | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-009` | Inventariar políticas RLS, grants y privilegios por rol | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-009` | Inventariar políticas RLS, grants y privilegios por rol | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-010` | Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-011` | Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-012` | Auditar buckets, rutas, políticas y ciclos de vida de Storage | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

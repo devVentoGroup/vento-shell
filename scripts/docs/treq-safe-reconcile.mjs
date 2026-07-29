@@ -64,6 +64,47 @@ export function updateLatestTaskSummary(source, latestTaskId) {
   );
 }
 
+function updateNumericSummaryMetric(source, label, value) {
+  const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return source.replace(
+    new RegExp(
+      `^(\\|\\s*${escapedLabel}\\s*\\|\\s*)\\*\\*.*?\\*\\*(\\s*\\|\\s*)$`,
+      'mu'
+    ),
+    `$1**${value}**$2`
+  );
+}
+
+export function updateRegistrySummary(source, stats) {
+  let updated = source;
+  updated = updateNumericSummaryMetric(
+    updated,
+    'Requisitos vigentes',
+    stats.requirements
+  );
+  updated = updateNumericSummaryMetric(
+    updated,
+    'Dominios con requisitos',
+    stats.domains
+  );
+  updated = updateNumericSummaryMetric(
+    updated,
+    'Filas con catorce columnas',
+    `${stats.requirements} de ${stats.requirements}`
+  );
+  updated = updateNumericSummaryMetric(
+    updated,
+    'Identificadores duplicados',
+    stats.duplicates
+  );
+  updated = updateNumericSummaryMetric(
+    updated,
+    'Relaciones `TREQ-*` no resolubles',
+    stats.unresolvedRelations
+  );
+  return updateLatestTaskSummary(updated, stats.latestTask);
+}
+
 export function reconcileTreqRegistrySource({
   currentSource,
   baselineSource,

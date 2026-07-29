@@ -5,6 +5,7 @@ import {
   normalizeApprovedTaskEvidence,
   reconcileTreqRegistrySource,
   updateLatestTaskSummary,
+  updateRegistrySummary,
 } from './treq-safe-reconcile.mjs';
 
 const row = (id, evidence) =>
@@ -125,4 +126,31 @@ test('actualiza únicamente la última tarea del resumen', () => {
 
   assert.match(result, /Última tarea incorporada \| `NFR-REQ-004`/);
   assert.match(result, /Otra métrica \| `NFR-REQ-003`/);
+});
+
+test('sincroniza automáticamente todas las métricas derivadas del resumen', () => {
+  const source = [
+    '| Requisitos vigentes | **4392** |',
+    '| Dominios con requisitos | **18** |',
+    '| Filas con catorce columnas | **4392 de 4392** |',
+    '| Identificadores duplicados | **2** |',
+    '| Relaciones `TREQ-*` no resolubles | **3** |',
+    '| Última tarea incorporada | `SUPA-AUD-007` |',
+    '',
+  ].join('\n');
+
+  const result = updateRegistrySummary(source, {
+    requirements: 4404,
+    domains: 19,
+    duplicates: 0,
+    unresolvedRelations: 0,
+    latestTask: 'SUPA-AUD-008',
+  });
+
+  assert.match(result, /Requisitos vigentes \| \*\*4404\*\*/);
+  assert.match(result, /Dominios con requisitos \| \*\*19\*\*/);
+  assert.match(result, /Filas con catorce columnas \| \*\*4404 de 4404\*\*/);
+  assert.match(result, /Identificadores duplicados \| \*\*0\*\*/);
+  assert.match(result, /Relaciones `TREQ-\*` no resolubles \| \*\*0\*\*/);
+  assert.match(result, /Última tarea incorporada \| `SUPA-AUD-008`/);
 });
