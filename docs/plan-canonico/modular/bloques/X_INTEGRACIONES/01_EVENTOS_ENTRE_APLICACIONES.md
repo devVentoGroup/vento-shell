@@ -1229,7 +1229,445 @@ INT-APP-005 — Definir reintentos
 APROBADA
 
 
-### [ ] INT-APP-004 — Definir idempotencia
+### ✅ INT-APP-004 — Definir idempotencia
+
+**Estado:** APROBADA
+**Fecha de aprobación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-004 — Definir idempotencia`
+**Tarea anterior:** `INT-APP-003 — Definir aplicaciones consumidoras` — APROBADA
+**Siguiente tarea:** `INT-APP-005 — Definir reintentos`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@a0cc6a083d9fbf1536a502103631f153aea91914`
+**Tipo de tarea:** definición documental transversal de identidades, alcances, conflictos y recuperación idempotente; sin implementación, tablas, índices, colas, retries, Supabase, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir un contrato único de idempotencia para las **395 definiciones normales**, las **2.020 relaciones evento-consumidora** y las **ocho familias condicionales** aprobadas, de modo que una solicitud, comando, evento, entrega o efecto repetido no produzca resultados empresariales duplicados y pueda recuperar de forma determinista el resultado previamente confirmado.
+
+```text
+MISMA OPERACIÓN LÓGICA + MISMA CLAVE + MISMA HUELLA
+        ↓
+UN SOLO EFECTO EMPRESARIAL
+        ↓
+RESULTADO DURABLE Y RECUPERABLE
+
+MISMA CLAVE + HUELLA DIFERENTE
+        ↓
+CONFLICTO EXPLÍCITO — CERO EFECTOS NUEVOS
+```
+
+Idempotencia no significa que el transporte entregue una sola vez. La entrega continúa siendo **al menos una vez**; la garantía funcional es **como máximo un efecto por alcance idempotente**, con devolución del resultado original ante duplicados.
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                   | Revisión o blob                                         | Responsabilidad                                             |
+| -------------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| `vento-shell`                                            | `a0cc6a083d9fbf1536a502103631f153aea91914`              | revisión remota con `INT-APP-003` y 04A integrados          |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`       | `8e577120d7be6090b6c06fb21f52b41901a881f7`              | secuencia y contratos `INT-APP-001` a `INT-APP-010`         |
+| `PROC-CAT-015`                                           | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d`              | request_id, client_event_id, versión y conflicto de entrada |
+| `PROC-CAT-017` / `ENTERPRISE-EVENT-CATALOG-001`          | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d`              | event_id, aggregate_version, entrega y replay               |
+| `INT-APP-002` / `ENTERPRISE-EVENT-PRODUCER-REGISTRY-001` | integrado en el mini-bloque remoto                      | emisora única y límite transaccional propietario            |
+| `INT-APP-003` / `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001` | integrado en `8e577120d7be6090b6c06fb21f52b41901a881f7` | 2.020 relaciones y diez perfiles de proyección              |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`       | `b4f5e215afbe88ce433e8cd3dc52a480819c8a04`              | línea base remota de 4.098 requisitos                       |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001@1.0.0
+```
+
+| Propiedad                    | Valor                                       | Regla                                         |
+| ---------------------------- | ------------------------------------------- | --------------------------------------------- |
+| `registry_id`                | `ENTERPRISE-EVENT-IDEMPOTENCY-REGISTRY-001` | identidad estable del contrato                |
+| `registry_version`           | `1.0.0`                                     | primera definición transversal                |
+| `registry_status`            | `DEFINED`                                   | contrato documental; no prueba implementación |
+| `covered_processes`          | **69**                                      | `VPROC-0001` a `VPROC-0069`                   |
+| `normal_event_definitions`   | **395**                                     | catálogo completo de `INT-APP-001`            |
+| `event_consumer_relations`   | **2.020**                                   | relaciones de `INT-APP-003`                   |
+| `conditional_event_families` | **8**                                       | excepciones y acciones CCR parametrizadas     |
+| `idempotency_scopes`         | **7**                                       | alcances separados y no intercambiables       |
+| `idempotency_outcomes`       | **8**                                       | resultados lógicos cerrados                   |
+| `projection_profiles`        | **10**                                      | perfiles heredados de `INT-APP-003`           |
+| `transport_guarantee`        | `AT_LEAST_ONCE`                             | puede existir redelivery                      |
+| `business_effect_guarantee`  | `AT_MOST_ONCE_PER_SCOPE_WITH_RESULT_REPLAY` | no se repite el efecto dentro del alcance     |
+| `global_order`               | `FORBIDDEN`                                 | solo se ordena por agregado y versión         |
+| `aura_runtime_status`        | `DEFINED_DEFERRED`                          | contrato definido sin ejecución activa        |
+
+#### 4. Separación conceptual obligatoria
+
+| Concepto            | Identidad                            | Función                                                          | No equivale a                          |
+| ------------------- | ------------------------------------ | ---------------------------------------------------------------- | -------------------------------------- |
+| solicitud           | `request_id` o `client_event_id`     | estabiliza una intención reintentable antes del primer envío     | comando confirmado ni evento           |
+| comando propietario | `source_command_id`                  | vincula autorización, mutación propietaria y eventos resultantes | intento técnico                        |
+| evento              | `event_id`                           | identifica una emisión empresarial concreta e inmutable          | tipo de evento ni instancia de proceso |
+| entrega             | `delivery_id` o equivalente          | identifica un intento de transporte hacia una consumidora        | nueva operación ni nueva emisión       |
+| efecto consumidor   | clave de efecto                      | identifica una mutación propia derivada de un evento             | escritura sobre el dominio emisor      |
+| correlación         | `correlation_id` y `causation_id`    | une una cadena de hechos y efectos                               | clave de deduplicación                 |
+| orden               | `aggregate_id` y `aggregate_version` | impide regresión y detecta eventos tardíos                       | identidad del evento                   |
+
+`event_definition_id`, `process_instance_id`, `aggregate_id`, `correlation_id`, nombres de ruta, payload hash y timestamps no son claves idempotentes suficientes por sí solos.
+
+#### 5. Alcances canónicos de idempotencia
+
+| Alcance              | Clave lógica mínima                             | Responsable                        | Equivalencia protegida                                       |
+| -------------------- | ----------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| `REQUEST_ACCEPTANCE` | `request_id o client_event_id`                  | aplicación productora              | misma solicitud lógica y huella                              |
+| `OWNER_COMMAND`      | `source_command_id`                             | aplicación productora              | mismo comando autorizado y mutación propietaria              |
+| `EVENT_EMISSION`     | `event_id`                                      | aplicación productora              | mismo evento empresarial persistido                          |
+| `CONSUMER_INBOX`     | `consumer_application + event_id`               | aplicación consumidora             | misma entrega de un evento a una consumidora                 |
+| `CONSUMER_EFFECT`    | `consumer_application + event_id + effect_code` | aplicación consumidora             | mismo efecto de dominio derivado de un evento                |
+| `EXTERNAL_RECEIPT`   | `source_system + external_event_id`             | adaptador y aplicación propietaria | misma afirmación externa autenticada                         |
+| `REPLAY_BATCH`       | `replay_request_id`                             | controlador de replay autorizado   | misma instrucción de replay conservando el event_id original |
+
+Reglas:
+
+1. una clave solo es comparable dentro de su alcance y propietario;
+2. la clave deberá existir antes del primer efecto reintentable;
+3. la misma clave no podrá reutilizarse para otra huella lógica;
+4. el resultado durable pertenece al mismo alcance y se recupera sin ejecutar otra vez;
+5. cada consumidora mantiene su inbox independiente;
+6. un mismo evento puede producir varios efectos distintos en una consumidora, identificados mediante `effect_code`;
+7. un intento técnico nuevo conserva la clave empresarial original.
+
+#### 6. Contrato de huella lógica
+
+La clave identifica la operación; la huella demuestra que su contenido lógico no cambió.
+
+La canonicalización versionada deberá incluir, según el alcance:
+
+- tipo de operación o `effect_code`;
+- proceso, recurso, agregado y versión objetivo;
+- campos empresariales materiales normalizados;
+- cantidad, unidad, moneda, lote, sede, área o destinatario cuando cambien el efecto;
+- identidad externa y versión contractual;
+- referencias de evidencia que sean parte del resultado pretendido.
+
+Deberá excluir:
+
+- `delivery_id`, `attempt_id`, retry count y backoff;
+- `trace_id`, span, heartbeat y timestamps creados por cada intento;
+- orden de propiedades sin significado;
+- firmas o tokens rotatorios usados solo para transporte;
+- secretos, contraseñas, credenciales y payload sensible completo.
+
+```text
+MISMA CLAVE + MISMA HUELLA VERSIONADA
+→ DUPLICATE_RESULT_RETURNED
+
+MISMA CLAVE + HUELLA DISTINTA
+→ CONFLICTING_REUSE
+```
+
+El hash es una guardia de equivalencia y conflicto. Nunca sustituye `request_id`, `event_id`, `external_event_id` ni la identidad empresarial del recurso.
+
+#### 7. Resultados lógicos cerrados
+
+| Resultado                   | Significado                                                                     |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `APPLIED`                   | el alcance se materializó por primera vez y existe resultado durable            |
+| `DUPLICATE_RESULT_RETURNED` | la misma operación ya existía y se devuelve su resultado sin repetirla          |
+| `CONFLICTING_REUSE`         | la clave existe con una huella lógica incompatible                              |
+| `IN_PROGRESS_RECOVERABLE`   | otra ejecución conserva el claim y el resultado deberá recuperarse              |
+| `STALE_VERSION`             | la operación parte de una versión anterior y no puede aplicarse silenciosamente |
+| `OUT_OF_ORDER_DEFERRED`     | el evento requiere una versión previa o conciliación antes de aplicarse         |
+| `RECONCILIATION_REQUIRED`   | el resultado no puede determinarse con seguridad mediante retry automático      |
+| `REJECTED`                  | el contrato, autorización, condición o contenido no permite la operación        |
+
+`INT-APP-004` no define tiempos, número de intentos, backoff, jitter ni dead-letter. Esas decisiones pertenecen a `INT-APP-005` y `INT-APP-009`.
+
+#### 8. Solicitudes, comandos y emisión propietaria
+
+1. La interfaz o adaptador crea una clave estable antes del primer envío o persistencia offline.
+2. La propietaria revalida identidad, permiso, contexto, contrato y `resource_version`; una clave conocida no concede autoridad.
+3. `source_command_id` vincula exactamente una acción autorizada con su mutación y sus eventos.
+4. El registro de clave, huella, resultado, mutación y outbox deberán quedar ligados atómicamente o por mecanismo equivalente.
+5. Un comando rechazado conserva resultado idempotente seguro cuando corresponda, pero no genera evento de éxito.
+6. Una respuesta perdida después del commit se recupera con la misma clave; no se repite la acción.
+7. Dos solicitudes concurrentes con la misma clave y huella producen un solo ganador empresarial.
+8. Una reutilización incompatible falla antes de cualquier efecto parcial.
+
+No se admite una comprobación `buscar y después insertar` mantenida únicamente en memoria del cliente o sin protección de concurrencia.
+
+#### 9. Emisión, inbox y efectos consumidores
+
+```text
+HECHO PROPIETARIO + OUTBOX
+        ↓ event_id estable
+ENTREGA AL MENOS UNA VEZ
+        ↓
+INBOX POR consumer_application + event_id
+        ↓
+CERO, UNO O VARIOS effect_code DISTINTOS
+        ↓
+RESULTADO PROPIO RECUPERABLE POR CLAVE DE EFECTO
+```
+
+- una redelivery conserva `event_id`;
+- cada consumidora deduplica de forma independiente;
+- procesar el evento en `nexo` no acredita su procesamiento en `numera`;
+- una consumidora de solo proyección aplica no-op o upsert monotónico ante duplicado;
+- una consumidora mutante exige clave de efecto;
+- un evento podrá originar dos efectos legítimos en la misma aplicación solo si tienen `effect_code` distintos;
+- el fallo de una consumidora no revierte el hecho confirmado por la productora;
+- la consumidora no reemite el evento fuente cambiando `producer_application`.
+
+#### 10. Comportamiento por perfil de proyección
+
+| Perfil de `INT-APP-003`          | Patrón idempotente                                                       | Límite                                   |
+| -------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------- |
+| `REFERENCE_PROJECTION`           | consumer inbox deduplication plus monotonic aggregate version            | no mutation                              |
+| `VERSIONED_REFERENCE_PROJECTION` | consumer inbox deduplication plus versioned replacement                  | no mutation                              |
+| `LIFECYCLE_PROJECTION`           | consumer inbox deduplication plus monotonic lifecycle projection         | no owner-state mutation                  |
+| `HANDOFF_PROJECTION`             | consumer inbox plus consumer effect key for acceptance or handoff        | one result per effect scope              |
+| `IMMUTABLE_FACT_PROJECTION`      | append once by consumer and event                                        | corrections remain separate events       |
+| `EFFECT_CONFIRMATION_PROJECTION` | consumer effect key mandatory                                            | one domain effect and recoverable result |
+| `EXECUTION_SIGNAL_PROJECTION`    | consumer effect key mandatory for physical or operational execution      | no duplicate physical effect             |
+| `RECONCILIATION_PROJECTION`      | ingest once and persist reconciliation result                            | no reconstruction of source fact         |
+| `MARKETING_ANALYTICS_PROJECTION` | ingest once; publication or contact needs separate authorized effect key | no automatic outreach                    |
+| `ANALYTICS_PROJECTION`           | deterministic ingestion and versioned snapshot                           | no operational mutation                  |
+
+El perfil determina cómo la consumidora materializa su propio resultado. No modifica identidad, audiencia, sensibilidad, permiso ni propiedad del evento.
+
+#### 11. Orden, versiones y concurrencia
+
+1. No existe orden global entre procesos o aplicaciones.
+2. El orden aplicable utiliza `aggregate_id` y `aggregate_version`.
+3. Un duplicado exacto de `event_id` devuelve el resultado previo.
+4. Un evento distinto que reclame la misma versión produce conflicto o conciliación.
+5. Una versión inferior tardía se marca `STALE_VERSION` o `OUT_OF_ORDER_DEFERRED`; no sobrescribe la actual.
+6. Una versión superior que dependa de una anterior ausente queda diferida o en conciliación.
+7. El claim concurrente deberá ser atómico y recuperable después de timeout o caída.
+8. El estado `IN_PROGRESS_RECOVERABLE` no autoriza a otra ejecución a aplicar el efecto en paralelo.
+
+#### 12. Entradas externas y webhooks
+
+| Situación                        | Identidad                            | Regla                                                                                |
+| -------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |
+| proveedor entrega ID estable     | `source_system + external_event_id`  | deduplicar antes de transformar; conservar autenticidad y payload original protegido |
+| proveedor no entrega ID          | `receipt_id` asignado por adaptador  | persistir antes del primer procesamiento y conservar en todos los intentos           |
+| payload repetido con ID distinto | identidades distintas                | no deduplicar solo por hash; evaluar contrato, equivalencia y posible conflicto      |
+| mismo ID con payload distinto    | misma identidad, huella incompatible | `CONFLICTING_REUSE`, cuarentena o conciliación                                       |
+| callback técnico                 | correlación técnica                  | no convertir en hecho empresarial hasta validación de la propietaria                 |
+
+Un banco, POS, Rappi, Shopify, ManyChat, mensajería o proveedor futuro no obtiene autoridad interna por entregar un identificador.
+
+#### 13. Offline, interrupciones y reanudación
+
+Una operación offline deberá:
+
+1. crear clave y huella antes de mostrarse como encolada;
+2. persistir contenido lógico, propietario, recurso, versión y estado durable;
+3. conservar la misma clave tras reinicio de aplicación, pérdida de red o refresh de sesión;
+4. crear una clave nueva cuando el usuario cambie materialmente la operación;
+5. revalidar identidad, permiso, contexto, turno, sede, área y versión al sincronizar;
+6. recuperar el resultado original cuando la operación ya fue aplicada;
+7. distinguir `PENDING`, `APPLIED`, `CONFLICTING_REUSE`, `STALE_VERSION` y `RECONCILIATION_REQUIRED`;
+8. impedir que una cola antigua reactive autoridad o contexto vencidos.
+
+#### 14. Familias condicionales
+
+Las ocho familias heredarán el mismo contrato de idempotencia, pero cada emisión deberá incorporar:
+
+- proceso y evento o hecho original;
+- referencia exacta `EX-*` o `CCR-*`;
+- identidad estable de la acción aprobada;
+- tipo de excepción, cancelación, anulación, reversión, compensación, corrección o revisión;
+- motivo, autoridad, alcance y efecto producido;
+- clave de efecto por aplicación consumidora.
+
+Dos compensaciones legítimas diferentes o dos correcciones sucesivas no son duplicados por compartir proceso y familia. Cada acción aprobada tendrá identidad propia y se relacionará con el hecho anterior sin sobrescribirlo.
+
+#### 15. Replay y backfill
+
+##### 15.1. Replay del mismo evento
+
+- conserva `event_id`, `occurred_at`, productora, versión y audiencia histórica;
+- crea nuevos intentos de entrega, no nuevas emisiones empresariales;
+- cada consumidora devuelve el resultado previo o reprocesa solo proyecciones expresamente reconstruibles;
+- no incorpora automáticamente consumidoras añadidas después.
+
+##### 15.2. Backfill o migración sintetizada
+
+- utiliza fuente, lote e identidad deterministas;
+- marca `is_backfill` o equivalente;
+- conserva `correlation_id`, procedencia y ventana temporal;
+- no dispara pagos, inventario, puntos, documentos, mensajes, impresión o acciones físicas sin autorización explícita;
+- registra conciliación entre fuente histórica y evento canónico producido.
+
+`replay_request_id` identifica la instrucción de replay; nunca reemplaza el `event_id` de cada elemento.
+
+#### 16. Recuperación, autorización y sensibilidad
+
+La devolución del resultado idempotente deberá:
+
+- comprobar que quien consulta puede conocer el resultado actual;
+- limitar la respuesta a la finalidad y proyección autorizadas;
+- no reutilizar una autorización histórica como permiso vigente;
+- no exponer datos personales, financieros o técnicos mediante logs o conflictos;
+- devolver una referencia segura cuando el detalle completo ya no sea visible;
+- conservar que el efecto no se vuelve a ejecutar aunque la respuesta se minimice.
+
+Los mensajes de conflicto no incluirán la huella, payload previo, secretos ni atributos sensibles suficientes para inferir otra operación.
+
+#### 17. Retención y auditabilidad
+
+El registro deberá conservar, como mínimo conceptual:
+
+```text
+idempotency_scope
++ idempotency_key_reference
++ fingerprint_version
++ fingerprint_reference
++ owner_application
++ operation_or_effect_code
++ resource_or_aggregate_reference
++ first_seen_at
++ current_outcome
++ result_reference
++ event_id when applicable
++ authorization_and_audit_reference
++ retention_class
+```
+
+La retención física no podrá ser menor que la máxima ventana aplicable de retry, operación offline, replay, disputa, corrección, compensación y auditoría. Un efecto irreversible no podrá volver a habilitarse únicamente porque venció un registro técnico.
+
+El detalle de intentos, actor, resultado, errores y trazas se completará en `INT-APP-007`. Los logs registrarán referencias y outcome, no payload sensible.
+
+#### 18. Fronteras críticas
+
+##### 18.1. ORIGO → NEXO → NUMERA
+
+Una recepción, ingreso físico y obligación económica usan claves y eventos distintos. Repetir la entrega comercial no vuelve a sumar inventario ni recrea la obligación.
+
+##### 18.2. FOGO → NEXO → PULSO
+
+Producción, liberación de calidad, entrada de terminado, disponibilidad y cumplimiento de pedido son efectos separados. El mismo lote o pedido no funciona como clave universal.
+
+##### 18.3. PULSO → PASS → NUMERA
+
+Venta, pago, movimiento de puntos y hecho económico utilizan alcances propios y correlacionados. Repetir un pago o una venta no duplica puntos, stock, costo ni obligación.
+
+##### 18.4. VISO → ANIMA → SHELL
+
+Turno, asistencia, novedad laboral y contexto de acceso conservan identidades distintas. Una marcación offline repetida no crea otra asistencia y una respuesta idempotente no revive permisos vencidos.
+
+##### 18.5. AURA
+
+Las reglas quedan definidas para las 197 relaciones diferidas vinculadas con AURA, sin crear procesamiento, publicación, inbox, efecto ni replay activo antes de readiness.
+
+#### 19. Decisiones reservadas
+
+| Decisión                                                           | Tarea propietaria |
+| ------------------------------------------------------------------ | ----------------- |
+| tiempos, backoff, jitter, máximo de intentos y Retry-After         | `INT-APP-005`     |
+| compensaciones empresariales                                       | `INT-APP-006`     |
+| auditoría completa de comando, emisión, entrega y efecto           | `INT-APP-007`     |
+| estados pendientes, offline y sincronización                       | `INT-APP-008`     |
+| error parcial, cuarentena y dead-letter                            | `INT-APP-009`     |
+| prohibiciones de escritura cruzada y comandos inversos             | `INT-APP-010`     |
+| tablas, constraints, outbox, inbox, funciones, RLS y migraciones   | BLOQUES E3 y R    |
+| broker, topics, colas, workers, jobs y observabilidad física       | BLOQUE E4         |
+| schemas, SDK y canonicalización compartida                         | BLOQUE H          |
+| implementación, pruebas E2E, piloto, cutover, rollback e hypercare | BLOQUE E5         |
+
+#### 20. Cambios no autorizados
+
+`INT-APP-004` no autoriza:
+
+- crear tablas, índices únicos, schemas, triggers, funciones, RPC, RLS o migraciones;
+- escoger Redis, broker, cola, topic, webhook, cron, worker o proveedor;
+- definir tiempos o número de reintentos;
+- publicar, reenviar, replayar o backfillear eventos reales;
+- activar AURA;
+- modificar los 395 eventos, emisoras, consumidoras o 2.020 relaciones;
+- conceder permisos o acceso mediante una clave;
+- afirmar exactly-once de transporte;
+- ejecutar compensaciones, escrituras cruzadas, piloto o producción.
+
+#### 21. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-108 a TREQ-INTEGRATION-137
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA_INT-APP-004.md`.
+
+#### 22. Huellas de integridad
+
+```text
+IDEMPOTENCY_SCOPE_REGISTRY_SHA256 = cd2dada3adcfdfa5f505827a4e5d898cc1f78e1205814c449a951686e817e615
+IDEMPOTENCY_OUTCOME_VOCABULARY_SHA256 = 0c5422fc6fe18976e71dc28f0589fa0745531ce8a6044e8ed47442026d206dcf
+IDEMPOTENCY_PROFILE_MATRIX_SHA256 = ec8d5fcf5a87fd970150085726c66faa47be548ac06bbc0b1a4a0f5267255887
+IDEMPOTENCY_POLICY_SHA256 = 4c6bece2e1c226a60eaebb7304673e9a9dc78af5ee162c5f2978cee02ce64527
+REMOTE_X_BLOCK_BLOB_SHA1 = 8e577120d7be6090b6c06fb21f52b41901a881f7
+REMOTE_04A_SOURCE_BLOB_SHA1 = b4f5e215afbe88ce433e8cd3dc52a480819c8a04
+EVENT_CATALOG_SOURCE_BLOB_SHA1 = 683c2540d88a7c665c8fd05cd6beb0fd74645b4d
+```
+
+#### 23. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-003` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] El contrato cubre 69 procesos, 395 eventos, 2.020 relaciones y ocho familias condicionales.
+- [x] Se separaron solicitud, comando, evento, entrega, efecto, correlación y orden.
+- [x] Se definieron siete alcances idempotentes y ocho resultados lógicos.
+- [x] Se estableció misma clave y misma huella igual a resultado original.
+- [x] Se estableció misma clave y huella distinta igual a conflicto sin efecto.
+- [x] Se definió inbox por consumidora y efecto mediante `effect_code`.
+- [x] Se preservó orden por agregado sin orden global.
+- [x] Se cubrieron concurrencia, respuesta perdida, offline, externos, replay y backfill.
+- [x] Se protegieron autorización, sensibilidad y retención.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 24. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `a0cc6a083d9fbf1536a502103631f153aea91914`            |
+| Blob del mini-bloque X                       | `8e577120d7be6090b6c06fb21f52b41901a881f7`            |
+| Blob 04A remoto base                         | `b4f5e215afbe88ce433e8cd3dc52a480819c8a04`            |
+| Procesos cubiertos                           | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora cubiertas      | **2.020**                                             |
+| Familias condicionales                       | **8**                                                 |
+| Alcances idempotentes                        | **7**                                                 |
+| Outcomes cerrados                            | **8**                                                 |
+| Perfiles de proyección                       | **10**                                                |
+| Requisitos base                              | **4.098**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.128**                                             |
+| Dominio INTEGRATION                          | **137 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-137** |
+| Filas con catorce columnas                   | **4.128 de 4.128**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.098**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 25. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-004 — Definir idempotencia` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+
+#### 26. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-004 — Definir idempotencia
+        ↓
+TAREA ACTUAL
+INT-APP-005 — Definir reintentos
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-006 — Definir compensaciones
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-005 — Definir reintentos
 ### [ ] INT-APP-006 — Definir compensaciones
 ### [ ] INT-APP-007 — Definir auditoría transversal

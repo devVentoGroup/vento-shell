@@ -852,31 +852,49 @@ supabase_repository = vento-shell
 Reglas obligatorias:
 
 1. la fuente estructurada será `priority-delivery-lanes.json`;
-2. la tarea documental actual seguirá derivándose exclusivamente de
+2. antes de iniciar trabajo de implementación deberá declararse una sola ruta:
+   si la prioridad activa es remisiones NEXO se seguirá
+   `NEXO-REMISSIONS-001`; en cualquier otro caso se seguirá
+   `NORMAL_CANONICAL_FLOW`;
+3. el flujo normal se deriva del orden canónico y de `active-sequence.json`;
+   el flujo prioritario se deriva exclusivamente de
+   `ordered_execution_stages`, en orden ascendente y sin mezclar etapas;
+4. elegir el flujo prioritario no cambia la tarea documental actual, no
+   reordena el plan y no elimina trabajo futuro;
+5. la tarea documental actual seguirá derivándose exclusivamente de
    `active-sequence.json`;
-3. un artefacto producido para una aplicación podrá ser consumido por un
+6. un artefacto producido para una aplicación podrá ser consumido por un
    paquete, pero la tarea transversal permanecerá no iniciada o en su estado
    real hasta completar su alcance y recibir aprobación explícita;
-4. ninguna ejecución de paquete podrá insertar un marcador aprobado en una
+7. ninguna ejecución de paquete podrá insertar un marcador aprobado en una
    tarea global;
-5. cada gate y cada paso de entrega se registrará como
+8. cada gate y cada paso de entrega se registrará como
    `<task_id>::<package_id>` sin crear un nuevo identificador de tarea;
-6. `E5-GATE-008::<package_id>` deberá verificar solo el paquete indicado y no
+9. `E5-GATE-008::<package_id>` deberá verificar solo el paquete indicado y no
    se interpretará como cierre completo de E5;
-7. `SHELL-CI-020::<package_id>` a `SHELL-CI-024::<package_id>` conservarán
+10. `SHELL-CI-020::<package_id>` a `SHELL-CI-024::<package_id>` conservarán
    commit, versión, ambiente, migraciones, pruebas, decisiones, incidentes,
    conciliación y evidencia propios;
-8. cerrar un paquete no aprobará automáticamente otros paquetes, bloques,
+11. cerrar un paquete no aprobará automáticamente otros paquetes, bloques,
    dominios o aplicaciones;
-9. una dependencia se podrá excluir únicamente con fundamento verificable,
+12. una dependencia se podrá excluir únicamente con fundamento verificable,
    tarea propietaria y reevaluación antes de ampliar alcance;
-10. toda migración de Supabase para VENTO se creará, versionará y ejecutará
+13. toda migración de Supabase para VENTO se creará, versionará y ejecutará
     desde `vento-shell`;
-11. los contratos compartidos se implementarán en su repositorio propietario y
+14. los contratos compartidos se implementarán en su repositorio propietario y
     NEXO solo consumirá versiones publicadas o una transición explícita;
-12. el compilador deberá rechazar un carril que altere la secuencia, permita
+15. el compilador deberá rechazar un carril que altere la secuencia, permita
     aprobación parcial, omita el ciclo de cierre o declare otro repositorio
-    propietario de Supabase.
+    propietario de Supabase;
+16. `NEXO-REMISSIONS-001` deberá completar todo BLOQUE H en su orden interno;
+    no podrá declarar que un subconjunto de H equivale a su cierre;
+17. cada dependencia identificada deberá quedar en una de tres categorías
+    exhaustivas: obligatoria, condicional con criterio verificable o posterior
+    preservada con fase propietaria;
+18. la tabla visible del orden de implementación se generará automáticamente
+    desde la fuente estructurada y el compilador rechazará cualquier deriva;
+19. una condición se evaluará de forma explícita antes de E5; el silencio no
+    equivale a “no aplica”.
 
 La ejecución de un carril nunca sustituye la aprobación del plan completo. Su
 propósito es validar una capacidad vertical reutilizable y devolver evidencia,

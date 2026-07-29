@@ -2,6 +2,15 @@
   "schema_version": 1,
   "canonical_sequence_unchanged": true,
   "global_task_partial_approval_forbidden": true,
+  "implementation_route_policy": {
+    "default_route": "NORMAL_CANONICAL_FLOW",
+    "normal_route_source": "active-sequence.json",
+    "priority_route_trigger": "La prioridad de implementación activa es remisiones NEXO.",
+    "priority_route_id": "NEXO-REMISSIONS-001",
+    "selection_rule": "Si la prioridad activa es remisiones NEXO se sigue el ordered_execution_stages del carril; para cualquier otra prioridad se sigue el flujo normal del plan.",
+    "canonical_documentation_continues": true,
+    "final_plan_scope_unchanged": true
+  },
   "lanes": [
     {
       "lane_id": "NEXO-REMISSIONS-001",
@@ -29,128 +38,313 @@
       ],
       "required_task_artifacts": [
         {
-          "task_refs": [
-            "INT-APP-001",
-            "INT-APP-002",
-            "INT-APP-003",
-            "INT-APP-004",
-            "INT-APP-005",
-            "INT-APP-006",
-            "INT-APP-007",
-            "INT-APP-008",
-            "INT-APP-009",
-            "INT-APP-010"
+          "artifact_group_id": "EVENT_CONTRACTS",
+          "task_ranges": [
+            {
+              "prefix": "INT-APP",
+              "from": 1,
+              "to": 10
+            }
           ],
-          "required_scope": "eventos, propietarios, consumidores, idempotencia, reintentos, compensaciones y errores aplicables a remisiones"
+          "required_scope": "contratos empresariales completos antes de diseñar o implementar consumidores"
         },
         {
-          "task_refs": [
-            "NEXO-UX-009",
-            "NEXO-UX-010",
-            "NEXO-UX-011",
-            "NEXO-UX-012",
-            "NEXO-UX-013",
-            "NEXO-UX-022",
-            "NEXO-UX-023",
-            "NEXO-UX-024",
-            "NEXO-UX-025"
+          "artifact_group_id": "SUPABASE_AUDIT",
+          "task_ranges": [
+            {
+              "prefix": "SUPA-AUD",
+              "from": 1,
+              "to": 24
+            }
           ],
-          "required_scope": "flujo completo, excepciones, dispositivos, validación con usuarios y métricas del piloto"
+          "required_scope": "auditoría integral del proyecto, exposición, seguridad, consumidores, drift y riesgos"
         },
         {
-          "task_refs": [
-            "NEXO-AUTH-002",
-            "NEXO-AUTH-003",
-            "NEXO-AUTH-004",
-            "NEXO-AUTH-005",
-            "NEXO-AUTH-006",
-            "NEXO-AUTH-008",
-            "NEXO-AUTH-009",
-            "NEXO-AUTH-010",
-            "NEXO-AUTH-015",
-            "NEXO-AUTH-016",
-            "NEXO-AUTH-018",
-            "NEXO-AUTH-019",
-            "NEXO-AUTH-020"
+          "artifact_group_id": "SUPABASE_ARCHITECTURE",
+          "task_ranges": [
+            {
+              "prefix": "SUPA-ARC",
+              "from": 1,
+              "to": 25
+            }
           ],
-          "required_scope": "autorización por acción, territorio, dispositivo, consumo compartido y regresión integral"
+          "required_scope": "arquitectura canónica completa antes de cualquier cambio físico"
         },
         {
-          "task_refs": [
-            "SUPA-AUD-004",
-            "SUPA-AUD-005",
-            "SUPA-AUD-006",
-            "SUPA-AUD-008",
-            "SUPA-AUD-009",
-            "SUPA-AUD-016",
-            "SUPA-AUD-017",
-            "SUPA-AUD-019",
-            "SUPA-AUD-023",
-            "SUPA-ARC-003",
-            "SUPA-ARC-005",
-            "SUPA-ARC-006",
-            "SUPA-ARC-007",
-            "SUPA-TRANS-003",
-            "SUPA-TRANS-006",
-            "SUPA-TRANS-007",
-            "SUPA-TRANS-008",
-            "SUPA-TRANS-009",
-            "SUPA-TRANS-011",
-            "SUPA-TRANS-013",
-            "SUPA-TRANS-015"
+          "artifact_group_id": "SUPABASE_TRANSITION",
+          "task_ranges": [
+            {
+              "prefix": "SUPA-TRANS",
+              "from": 1,
+              "to": 16
+            }
           ],
-          "required_scope": "baseline, arquitectura y transición de los objetos de remisiones, inventario, autorización y auditoría afectados"
+          "required_scope": "transición ejecutable, compatibilidad, pruebas, rollback y aprobación antes de BLOQUE R"
         },
         {
+          "artifact_group_id": "H_SHARED_AUDIT",
+          "task_ranges": [
+            {
+              "prefix": "SHELL-AUD",
+              "from": 1,
+              "to": 11
+            }
+          ],
+          "required_scope": "auditoría completa de componentes compartidos y clasificación de propiedad"
+        },
+        {
+          "artifact_group_id": "H_SHARED_DISTRIBUTION",
+          "task_ranges": [
+            {
+              "prefix": "SHELL-PKG",
+              "from": 1,
+              "to": 8
+            }
+          ],
+          "required_scope": "distribución, versionado, compatibilidad, deprecación y rollback de paquetes"
+        },
+        {
+          "artifact_group_id": "H_SHARED_CONTRACTS",
+          "task_ranges": [
+            {
+              "prefix": "SHELL-CON",
+              "from": 1,
+              "to": 24
+            }
+          ],
+          "required_scope": "todos los contratos compartidos e integraciones definidos por BLOQUE H"
+        },
+        {
+          "artifact_group_id": "TRANSVERSE_SERVICE_CATALOG",
+          "task_ranges": [
+            {
+              "prefix": "TSVC-CAT",
+              "from": 1,
+              "to": 10
+            }
+          ],
+          "required_scope": "catálogo, propiedad, contratos, seguridad, idempotencia, observabilidad y adopción de servicios transversales"
+        },
+        {
+          "artifact_group_id": "CI_FOUNDATION",
+          "task_ranges": [
+            {
+              "prefix": "SHELL-CI",
+              "from": 1,
+              "to": 19
+            }
+          ],
+          "required_scope": "capacidad completa de probar, versionar, actualizar, revertir y publicar evidencia antes del primer cambio físico"
+        },
+        {
+          "artifact_group_id": "AUTH_UI_CONTRACT",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-UI",
+              "from": 30,
+              "to": 39
+            }
+          ],
+          "required_scope": "contrato de lectura, acciones, contexto, sensibilidad y masking de las vistas"
+        },
+        {
+          "artifact_group_id": "H_AUTH_CONTEXT_BASE",
           "task_refs": [
             "SHELL-AUTH-001",
-            "SHELL-AUTH-002",
-            "SHELL-CTX-001",
-            "SHELL-CTX-002",
-            "SHELL-CTX-003",
-            "SHELL-CTX-005",
-            "SHELL-DB-001",
-            "SHELL-DB-002",
-            "SHELL-DB-003",
-            "SHELL-DB-004",
-            "SHELL-DB-005",
-            "AUTH-SRV-001",
-            "AUTH-SRV-003",
-            "AUTH-SRV-004",
-            "AUTH-SRV-005",
-            "AUTH-SRV-006",
-            "AUTH-SRV-007",
-            "AUTH-SRV-008",
-            "AUTH-SRV-009",
-            "AUTH-SRV-010",
-            "AUTH-SRV-011",
-            "AUTH-SRV-012",
-            "AUTH-SRV-013",
-            "AUTH-SRV-014",
-            "AUTH-SRV-016",
-            "AUTH-SRV-017"
+            "SHELL-CTX-001"
           ],
-          "required_scope": "fundación compartida y protección de servidor usada por el paquete, sin crear una copia local en NEXO"
+          "required_scope": "núcleo único de autorización y contexto antes de crear el backend autoritativo"
         },
         {
+          "artifact_group_id": "R0_DATABASE_SAFETY",
           "task_refs": [
-            "SHELL-CI-001",
-            "SHELL-CI-002",
-            "SHELL-CI-003",
-            "SHELL-CI-005",
-            "SHELL-CI-007",
-            "SHELL-CI-014",
-            "SHELL-CI-015",
-            "SHELL-CI-016",
-            "SHELL-CI-017",
-            "SHELL-CI-018",
-            "SHELL-CI-019"
+            "AUTH-DB-015",
+            "AUTH-DB-027",
+            "AUTH-DB-028",
+            "AUTH-DB-029",
+            "AUTH-DB-001",
+            "AUTH-DB-002",
+            "AUTH-DB-003",
+            "AUTH-DB-004",
+            "AUTH-DB-005"
           ],
-          "required_scope": "build, compatibilidad, pruebas, rollback, despliegue independiente y evidencia del paquete"
+          "required_scope": "migraciones gobernadas, harness, drift, respaldo, rollback y contención de exposición"
+        },
+        {
+          "artifact_group_id": "R1_AUTH_PHYSICAL_CORE",
+          "task_refs": [
+            "AUTH-DB-016",
+            "AUTH-DB-018",
+            "AUTH-DB-017",
+            "AUTH-DB-019",
+            "AUTH-DB-033",
+            "AUTH-DB-035",
+            "AUTH-DB-034",
+            "AUTH-DB-032",
+            "AUTH-DB-012",
+            "AUTH-DB-013",
+            "AUTH-DB-014"
+          ],
+          "required_scope": "esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos"
+        },
+        {
+          "artifact_group_id": "H_AUTH_CONTEXT_CONVERGENCE",
+          "task_refs": [
+            "SHELL-CTX-002",
+            "SHELL-CTX-003",
+            "SHELL-CTX-004",
+            "SHELL-CTX-005",
+            "SHELL-CTX-006",
+            "SHELL-AUTH-002",
+            "SHELL-AUTH-003",
+            "SHELL-AUTH-004"
+          ],
+          "required_scope": "contexto completo, adapters, scope por solicitud y gates contra legacy"
+        },
+        {
+          "artifact_group_id": "R2_NEXO_DATABASE_PACKAGE",
+          "task_refs": [
+            "AUTH-DB-020",
+            "AUTH-DB-006",
+            "AUTH-DB-007",
+            "AUTH-DB-008",
+            "AUTH-DB-009",
+            "AUTH-DB-010",
+            "AUTH-DB-021",
+            "AUTH-DB-011",
+            "AUTH-DB-022",
+            "AUTH-DB-023",
+            "AUTH-DB-024",
+            "AUTH-DB-025",
+            "AUTH-DB-026"
+          ],
+          "required_scope": "migración NEXO con RPC, RLS, grants, constraints, Storage, Realtime, automatizaciones, índices y tipos"
+        },
+        {
+          "artifact_group_id": "H_SHARED_REMAINING",
+          "task_ranges": [
+            {
+              "prefix": "SHELL-NORM",
+              "from": 1,
+              "to": 9
+            },
+            {
+              "prefix": "SHELL-DB",
+              "from": 1,
+              "to": 5
+            },
+            {
+              "prefix": "SHELL-UI",
+              "from": 1,
+              "to": 20
+            },
+            {
+              "prefix": "SHELL-NATIVE",
+              "from": 1,
+              "to": 3
+            }
+          ],
+          "required_scope": "normalización, acceso compartido a datos, UI web y compatibilidad nativa completas"
+        },
+        {
+          "artifact_group_id": "H_FINAL_AUTH_ADOPTION",
+          "task_refs": [
+            "SHELL-AUTH-005"
+          ],
+          "required_scope": "migración y certificación de consumidores al SDK compartido sin helpers competidores"
+        },
+        {
+          "artifact_group_id": "AUTH_UI_ENFORCEMENT",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-UI",
+              "from": 40,
+              "to": 51
+            }
+          ],
+          "required_scope": "protección de navegación, URL, acciones y estados transversales"
+        },
+        {
+          "artifact_group_id": "SERVER_ACTIONS_COMPLETE",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-SRV",
+              "from": 1,
+              "to": 18
+            }
+          ],
+          "required_scope": "inventario y protección completa de Server Actions, API routes y RPC"
+        },
+        {
+          "artifact_group_id": "SHARED_DEVICES_NEXO",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-DEV",
+              "from": 1,
+              "to": 14
+            }
+          ],
+          "required_scope": "identidad, alcance, actor, auditoría, revocación y pruebas de dispositivos NEXO"
+        },
+        {
+          "artifact_group_id": "STRICT_SIMULATION",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-SIM",
+              "from": 1,
+              "to": 14
+            }
+          ],
+          "required_scope": "simulación completa y segura antes de integrar simulación en NEXO"
+        },
+        {
+          "artifact_group_id": "AUTHORIZATION_ERRORS",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-ERR",
+              "from": 1,
+              "to": 20
+            }
+          ],
+          "required_scope": "mensajes de bloqueo completos, seguros y compartidos"
+        },
+        {
+          "artifact_group_id": "NEXO_FUNCTIONAL_UX",
+          "task_ranges": [
+            {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          ],
+          "required_scope": "inventario, navegación por actor, flujo completo de remisiones, movimientos, excepciones y piloto"
+        },
+        {
+          "artifact_group_id": "NEXO_AUTHORIZATION",
+          "task_ranges": [
+            {
+              "prefix": "NEXO-AUTH",
+              "from": 1,
+              "to": 20
+            }
+          ],
+          "required_scope": "autorización NEXO completa del alcance base, incluidos catálogo, movimientos, dispositivos, simulación y pruebas"
+        },
+        {
+          "artifact_group_id": "NEXO_UI_VALIDATION",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-UI",
+              "from": 52,
+              "to": 60
+            }
+          ],
+          "required_scope": "diseño, prototipos, validación y aprobación de pantallas NEXO por actor"
         }
       ],
       "conditional_artifacts": [
         {
+          "artifact_group_id": "PRODUCTION_CONDITIONAL",
           "condition": "la remisión incluye productos producidos o faltantes que activan producción",
           "task_refs": [
             "INT-PROD-005",
@@ -158,48 +352,485 @@
           ]
         },
         {
+          "artifact_group_id": "PRINTING_CONDITIONAL",
           "condition": "el paquete imprime documento, etiqueta, manifiesto o comprobante",
-          "task_refs": [
-            "PRINT-ARC-003",
-            "PRINT-ARC-004",
-            "PRINT-ARC-005",
-            "PRINT-ARC-006",
-            "PRINT-ARC-007",
-            "PRINT-ARC-010",
-            "PRINT-ARC-014",
-            "PRINT-ARC-015",
-            "PRINT-ARC-016",
-            "PRINT-ARC-020"
+          "task_ranges": [
+            {
+              "prefix": "PRINT-ARC",
+              "from": 1,
+              "to": 20
+            }
           ]
         },
         {
+          "artifact_group_id": "EVIDENCE_CONDITIONAL",
           "condition": "el paquete almacena fotografías, firmas, archivos o evidencia documental",
-          "task_refs": [
-            "EVID-ARC-001",
-            "EVID-ARC-002",
-            "EVID-ARC-003",
-            "EVID-ARC-004",
-            "EVID-ARC-005",
-            "EVID-ARC-006",
-            "EVID-ARC-007",
-            "EVID-ARC-008",
-            "EVID-ARC-009",
-            "EVID-ARC-010"
+          "task_ranges": [
+            {
+              "prefix": "EVID-ARC",
+              "from": 1,
+              "to": 10
+            }
           ]
         },
         {
+          "artifact_group_id": "QUEUE_CONDITIONAL",
           "condition": "se ejecutan trabajos asíncronos, reintentos diferidos o impresión en cola",
-          "task_refs": [
-            "QUEUE-ARC-001",
-            "QUEUE-ARC-002",
-            "QUEUE-ARC-003",
-            "QUEUE-ARC-006",
-            "QUEUE-ARC-008",
-            "QUEUE-ARC-009",
-            "QUEUE-ARC-010",
-            "QUEUE-ARC-011",
-            "QUEUE-ARC-012"
+          "task_ranges": [
+            {
+              "prefix": "QUEUE-ARC",
+              "from": 1,
+              "to": 12
+            }
           ]
+        },
+        {
+          "artifact_group_id": "NOTIFICATIONS_CONDITIONAL",
+          "condition": "el paquete envía alertas, novedades, confirmaciones, escalamiento o avisos a actores",
+          "task_ranges": [
+            {
+              "prefix": "NOTIFY-ARC",
+              "from": 1,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "PHYSICAL_NORMALIZATION_CONDITIONAL",
+          "condition": "la transición aprobada modifica o normaliza datos existentes de catálogo, búsqueda o inventario",
+          "task_ranges": [
+            {
+              "prefix": "DATA-NORM-DB",
+              "from": 1,
+              "to": 10
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "EXTERNAL_INTEGRATION_CONDITIONAL",
+          "condition": "la remisión consume o publica datos mediante un sistema externo",
+          "task_ranges": [
+            {
+              "prefix": "INT-DB",
+              "from": 1,
+              "to": 8
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "TECHNOLOGY_SUPPORT_CONDITIONAL",
+          "condition": "el piloto requiere tablets, red, impresoras, periféricos, telemetría o soporte operativo",
+          "task_ranges": [
+            {
+              "prefix": "TI-DOM",
+              "from": 1,
+              "to": 13
+            },
+            {
+              "prefix": "TI-AUTH",
+              "from": 1,
+              "to": 4
+            },
+            {
+              "prefix": "TI-UX",
+              "from": 1,
+              "to": 6
+            },
+            {
+              "prefix": "TI-INT",
+              "from": 1,
+              "to": 3
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "INFORMATION_GOVERNANCE_CONDITIONAL",
+          "condition": "el paquete conserva documentos, evidencia, datos personales, firmas, exportaciones o retención",
+          "task_ranges": [
+            {
+              "prefix": "INFO-DOM",
+              "from": 1,
+              "to": 13
+            },
+            {
+              "prefix": "INFO-AUTH",
+              "from": 1,
+              "to": 4
+            },
+            {
+              "prefix": "INFO-UX",
+              "from": 1,
+              "to": 6
+            },
+            {
+              "prefix": "INFO-INT",
+              "from": 1,
+              "to": 3
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "MASTER_DATA_ANALYTICS_CONDITIONAL",
+          "condition": "el paquete crea o cambia datos maestros, métricas oficiales, conciliaciones o analítica de inventario",
+          "task_ranges": [
+            {
+              "prefix": "DATA-DOM",
+              "from": 1,
+              "to": 17
+            },
+            {
+              "prefix": "DATA-AUTH",
+              "from": 1,
+              "to": 4
+            },
+            {
+              "prefix": "DATA-UX",
+              "from": 1,
+              "to": 8
+            },
+            {
+              "prefix": "DATA-INT",
+              "from": 1,
+              "to": 4
+            }
+          ]
+        },
+        {
+          "artifact_group_id": "CONTINUITY_CONDITIONAL",
+          "condition": "el alcance exige operación degradada, offline, respaldo, restauración, contingencia o reincorporación",
+          "task_ranges": [
+            {
+              "prefix": "CONT-DOM",
+              "from": 1,
+              "to": 15
+            },
+            {
+              "prefix": "CONT-AUTH",
+              "from": 1,
+              "to": 4
+            },
+            {
+              "prefix": "CONT-UX",
+              "from": 1,
+              "to": 7
+            },
+            {
+              "prefix": "CONT-INT",
+              "from": 1,
+              "to": 4
+            }
+          ]
+        }
+      ],
+      "post_package_artifacts": [
+        {
+          "artifact_group_id": "E5_READINESS_PLAN",
+          "task_ranges": [
+            {
+              "prefix": "READY-GATE",
+              "from": 1,
+              "to": 15
+            }
+          ],
+          "required_scope": "readiness técnico, operativo, de datos, permisos, hardware, soporte, monitoreo, respaldo y piloto"
+        },
+        {
+          "artifact_group_id": "E5_CUTOVER_PLAN",
+          "task_ranges": [
+            {
+              "prefix": "CUTOVER-OPS",
+              "from": 1,
+              "to": 10
+            }
+          ],
+          "required_scope": "cutover, convivencia, doble efecto, conciliación, reversión, métricas y salida de piloto"
+        },
+        {
+          "artifact_group_id": "E5_HYPERCARE_PLAN",
+          "task_ranges": [
+            {
+              "prefix": "HYPERCARE-OPS",
+              "from": 1,
+              "to": 10
+            }
+          ],
+          "required_scope": "monitoreo, incidentes, conciliación, deuda, soporte, contingencias y autoridad de cierre"
+        },
+        {
+          "artifact_group_id": "E5_ENTRY_GATES",
+          "task_ranges": [
+            {
+              "prefix": "E5-GATE",
+              "from": 1,
+              "to": 7
+            }
+          ],
+          "required_scope": "cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas"
+        }
+      ],
+      "post_implementation_artifacts": [
+        {
+          "artifact_group_id": "U_AUTHORIZATION_CERTIFICATION",
+          "task_ranges": [
+            {
+              "prefix": "AUTH-QA",
+              "from": 1,
+              "to": 30
+            }
+          ],
+          "required_scope": "autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas"
+        },
+        {
+          "artifact_group_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
+          "task_ranges": [
+            {
+              "prefix": "UX-QA",
+              "from": 1,
+              "to": 20
+            },
+            {
+              "prefix": "UX-QA",
+              "from": 24,
+              "to": 24
+            }
+          ],
+          "required_scope": "experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia"
+        }
+      ],
+      "ordered_execution_stages": [
+        {
+          "order": 1,
+          "stage_id": "EVENT_CONTRACTS",
+          "task_source": "required_task_artifacts.EVENT_CONTRACTS",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 2,
+          "stage_id": "SUPABASE_AUDIT",
+          "task_source": "required_task_artifacts.SUPABASE_AUDIT",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 3,
+          "stage_id": "SUPABASE_ARCHITECTURE",
+          "task_source": "required_task_artifacts.SUPABASE_ARCHITECTURE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 4,
+          "stage_id": "SUPABASE_TRANSITION",
+          "task_source": "required_task_artifacts.SUPABASE_TRANSITION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 5,
+          "stage_id": "H_SHARED_AUDIT",
+          "task_source": "required_task_artifacts.H_SHARED_AUDIT",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 6,
+          "stage_id": "H_SHARED_DISTRIBUTION",
+          "task_source": "required_task_artifacts.H_SHARED_DISTRIBUTION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 7,
+          "stage_id": "H_SHARED_CONTRACTS",
+          "task_source": "required_task_artifacts.H_SHARED_CONTRACTS",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 8,
+          "stage_id": "TRANSVERSE_SERVICE_CATALOG",
+          "task_source": "required_task_artifacts.TRANSVERSE_SERVICE_CATALOG",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 9,
+          "stage_id": "CI_FOUNDATION",
+          "task_source": "required_task_artifacts.CI_FOUNDATION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 10,
+          "stage_id": "AUTH_UI_CONTRACT",
+          "task_source": "required_task_artifacts.AUTH_UI_CONTRACT",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 11,
+          "stage_id": "H_AUTH_CONTEXT_BASE",
+          "task_source": "required_task_artifacts.H_AUTH_CONTEXT_BASE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 12,
+          "stage_id": "R0_DATABASE_SAFETY",
+          "task_source": "required_task_artifacts.R0_DATABASE_SAFETY",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 13,
+          "stage_id": "R1_AUTH_PHYSICAL_CORE",
+          "task_source": "required_task_artifacts.R1_AUTH_PHYSICAL_CORE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 14,
+          "stage_id": "H_AUTH_CONTEXT_CONVERGENCE",
+          "task_source": "required_task_artifacts.H_AUTH_CONTEXT_CONVERGENCE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 15,
+          "stage_id": "R2_NEXO_DATABASE_PACKAGE",
+          "task_source": "required_task_artifacts.R2_NEXO_DATABASE_PACKAGE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 16,
+          "stage_id": "H_SHARED_REMAINING",
+          "task_source": "required_task_artifacts.H_SHARED_REMAINING",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 17,
+          "stage_id": "H_FINAL_AUTH_ADOPTION",
+          "task_source": "required_task_artifacts.H_FINAL_AUTH_ADOPTION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 18,
+          "stage_id": "AUTH_UI_ENFORCEMENT",
+          "task_source": "required_task_artifacts.AUTH_UI_ENFORCEMENT",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 19,
+          "stage_id": "SERVER_ACTIONS_COMPLETE",
+          "task_source": "required_task_artifacts.SERVER_ACTIONS_COMPLETE",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 20,
+          "stage_id": "SHARED_DEVICES_NEXO",
+          "task_source": "required_task_artifacts.SHARED_DEVICES_NEXO",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 21,
+          "stage_id": "STRICT_SIMULATION",
+          "task_source": "required_task_artifacts.STRICT_SIMULATION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 22,
+          "stage_id": "AUTHORIZATION_ERRORS",
+          "task_source": "required_task_artifacts.AUTHORIZATION_ERRORS",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 23,
+          "stage_id": "NEXO_FUNCTIONAL_UX",
+          "task_source": "required_task_artifacts.NEXO_FUNCTIONAL_UX",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 24,
+          "stage_id": "NEXO_AUTHORIZATION",
+          "task_source": "required_task_artifacts.NEXO_AUTHORIZATION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 25,
+          "stage_id": "NEXO_UI_VALIDATION",
+          "task_source": "required_task_artifacts.NEXO_UI_VALIDATION",
+          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+        },
+        {
+          "order": 26,
+          "stage_id": "CONDITIONAL_ARTIFACTS",
+          "task_source": "conditional_artifacts",
+          "rule": "Evaluar todos los grupos; ejecutar los aplicables y justificar por escrito cada no aplicable."
+        },
+        {
+          "order": 27,
+          "stage_id": "PACKAGE_DEFINITION",
+          "task_source": "package_definition_tasks",
+          "rule": "Completar DELIV-PKG-001 a DELIV-PKG-025 para el package_id del carril."
+        },
+        {
+          "order": 28,
+          "stage_id": "E5_READINESS_PLAN",
+          "task_source": "post_package_artifacts.E5_READINESS_PLAN",
+          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+        },
+        {
+          "order": 29,
+          "stage_id": "E5_CUTOVER_PLAN",
+          "task_source": "post_package_artifacts.E5_CUTOVER_PLAN",
+          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+        },
+        {
+          "order": 30,
+          "stage_id": "E5_HYPERCARE_PLAN",
+          "task_source": "post_package_artifacts.E5_HYPERCARE_PLAN",
+          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+        },
+        {
+          "order": 31,
+          "stage_id": "E5_ENTRY_GATES",
+          "task_source": "post_package_artifacts.E5_ENTRY_GATES",
+          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+        },
+        {
+          "order": 32,
+          "stage_id": "PACKAGE_GATE",
+          "task_source": "package_gate",
+          "rule": "Aprobar E5-GATE-008::NEXO-REMISSIONS-001 sin cerrar E5 completo."
+        },
+        {
+          "order": 33,
+          "stage_id": "IMPLEMENTATION",
+          "task_source": "execution_cycle.SHELL-CI-020",
+          "rule": "Implementar y desplegar el paquete aprobado."
+        },
+        {
+          "order": 34,
+          "stage_id": "U_AUTHORIZATION_CERTIFICATION",
+          "task_source": "post_implementation_artifacts.U_AUTHORIZATION_CERTIFICATION",
+          "rule": "Ejecutar y cerrar la certificación del alcance implementado antes de readiness."
+        },
+        {
+          "order": 35,
+          "stage_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
+          "task_source": "post_implementation_artifacts.U_NEXO_EXPERIENCE_CERTIFICATION",
+          "rule": "Ejecutar y cerrar la certificación del alcance implementado antes de readiness."
+        },
+        {
+          "order": 36,
+          "stage_id": "READINESS",
+          "task_source": "execution_cycle.SHELL-CI-021",
+          "rule": "Validar readiness técnico y operativo."
+        },
+        {
+          "order": 37,
+          "stage_id": "PILOT",
+          "task_source": "execution_cycle.SHELL-CI-022",
+          "rule": "Ejecutar piloto controlado y conservar evidencia."
+        },
+        {
+          "order": 38,
+          "stage_id": "HYPERCARE",
+          "task_source": "execution_cycle.SHELL-CI-023",
+          "rule": "Estabilizar, conciliar y resolver defectos del alcance."
+        },
+        {
+          "order": 39,
+          "stage_id": "CERTIFICATION",
+          "task_source": "execution_cycle.SHELL-CI-024",
+          "rule": "Certificar únicamente el paquete de remisiones NEXO."
         }
       ],
       "package_definition_tasks": [
@@ -246,7 +877,46 @@
         "Toda migración o cambio físico de Supabase se crea y ejecuta desde vento-shell.",
         "El paquete no crea helpers, permisos, eventos ni fuentes de verdad competidores.",
         "Cerrar el paquete no cierra NEXO, BLOQUE K ni el dominio completo de inventario.",
-        "Las tareas y paquetes posteriores consumen contratos versionados o ejecutan una transición explícita."
+        "Las tareas y paquetes posteriores consumen contratos versionados o ejecutan una transición explícita.",
+        "BLOQUE H se completa íntegramente y conserva su secuencia interna antes de certificar el paquete.",
+        "Toda dependencia auditada queda clasificada como obligatoria, condicional evaluada o posterior preservada.",
+        "El orden visible se genera desde esta fuente y no se mantiene como una copia manual."
+      ],
+      "deferred_but_preserved": [
+        {
+          "reason": "R3 es cierre global posterior a adopción comprobada de todos los consumidores y no puede bloquear el primer paquete NEXO.",
+          "task_refs": [
+            "AUTH-DB-030",
+            "AUTH-DB-031"
+          ]
+        },
+        {
+          "reason": "Las pruebas físicas específicas de PULSO y FOGO permanecen en sus fases propietarias.",
+          "task_refs": [
+            "AUTH-DEV-015",
+            "AUTH-DEV-016"
+          ]
+        },
+        {
+          "reason": "LPN, activos, mantenimiento e instalaciones continúan en el cierre completo de SUBBLOQUE K2.",
+          "task_ranges": [
+            {
+              "prefix": "NEXO-DOM",
+              "from": 1,
+              "to": 38
+            },
+            {
+              "prefix": "NEXO-AUTH",
+              "from": 21,
+              "to": 32
+            },
+            {
+              "prefix": "NEXO-UX",
+              "from": 26,
+              "to": 48
+            }
+          ]
+        }
       ]
     }
   ]

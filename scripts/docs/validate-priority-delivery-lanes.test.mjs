@@ -1,31 +1,43 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import {
   validatePriorityDeliveryLaneData,
 } from './validate-priority-delivery-lanes.mjs';
 
-const packageTasks = Array.from(
-  { length: 25 },
-  (_, index) => `DELIV-PKG-${String(index + 1).padStart(3, '0')}`,
+const canonicalData = JSON.parse(
+  fs.readFileSync(
+    'docs/plan-canonico/modular/priority-delivery-lanes.json',
+    'utf8',
+  ),
 );
-const cycle = [
-  'SHELL-CI-020',
-  'SHELL-CI-021',
-  'SHELL-CI-022',
-  'SHELL-CI-023',
-  'SHELL-CI-024',
+const canonicalLane = canonicalData.lanes[0];
+const expandRanges = (ranges = []) =>
+  ranges.flatMap(({ prefix, from, to }) =>
+    Array.from(
+      { length: to - from + 1 },
+      (_, index) => `${prefix}-${String(from + index).padStart(3, '0')}`,
+    ));
+const artifactRefs = (artifact) => [
+  ...(artifact.task_refs ?? []),
+  ...expandRanges(artifact.task_ranges),
 ];
 const taskIds = new Set([
-  'INT-APP-001',
-  'E5-GATE-008',
-  ...packageTasks,
-  ...cycle,
+  ...canonicalLane.required_task_artifacts.flatMap(artifactRefs),
+  ...canonicalLane.conditional_artifacts.flatMap(artifactRefs),
+  ...canonicalLane.post_package_artifacts.flatMap(artifactRefs),
+  ...canonicalLane.post_implementation_artifacts.flatMap(artifactRefs),
+  ...canonicalLane.deferred_but_preserved.flatMap(artifactRefs),
+  ...canonicalLane.package_definition_tasks,
+  canonicalLane.package_gate,
+  ...canonicalLane.execution_cycle,
+  canonicalLane.completion_task,
 ]);
 const documents = {
   order:
-    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true',
+    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? Orden ejecutable de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 39 H_SHARED_AUDIT E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
   protocol:
-    '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id>',
+    '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id> NORMAL_CANONICAL_FLOW ordered_execution_stages deberá completar todo BLOQUE H',
   principles:
     'Aplicación incremental sin aprobación parcial NEXO-REMISSIONS-001',
   gate: 'Instancia de puerta por paquete E5-GATE-008::<package_id>',
@@ -36,28 +48,7 @@ const documents = {
 };
 
 function validData() {
-  return {
-    schema_version: 1,
-    canonical_sequence_unchanged: true,
-    global_task_partial_approval_forbidden: true,
-    lanes: [
-      {
-        lane_id: 'NEXO-REMISSIONS-001',
-        status: 'DESIGNATED_NOT_READY',
-        supabase_repository: 'vento-shell',
-        required_task_artifacts: [
-          { task_refs: ['INT-APP-001'], required_scope: 'eventos' },
-        ],
-        conditional_artifacts: [],
-        package_definition_tasks: packageTasks,
-        package_gate: 'E5-GATE-008',
-        execution_cycle: cycle,
-        completion_task: 'SHELL-CI-024',
-        excluded_from_closure: ['NEXO completo'],
-        invariants: Array.from({ length: 8 }, (_, index) => `regla ${index}`),
-      },
-    ],
-  };
+  return structuredClone(canonicalData);
 }
 
 test('acepta un carril que conserva secuencia, paquete y cierre independiente', () => {
@@ -102,7 +93,7 @@ test('rechaza cambiar el repositorio propietario de Supabase', () => {
 test('rechaza omitir una tarea o alterar el ciclo de cierre', () => {
   const data = validData();
   data.lanes[0].execution_cycle = ['SHELL-CI-020', 'SHELL-CI-024'];
-  data.lanes[0].required_task_artifacts[0].task_refs.push('TASK-UNKNOWN-001');
+  data.lanes[0].required_task_artifacts[0].task_refs = ['TASK-UNKNOWN-001'];
 
   assert.throws(
     () => validatePriorityDeliveryLaneData({
@@ -111,5 +102,64 @@ test('rechaza omitir una tarea o alterar el ciclo de cierre', () => {
       documents,
     }),
     /ciclo SHELL-CI-020 a SHELL-CI-024|tareas inexistentes/,
+  );
+});
+
+test('rechaza omitir una tarea obligatoria aunque el grupo siga existiendo', () => {
+  const data = validData();
+  data.lanes[0].required_task_artifacts[4].task_ranges[0].from = 2;
+
+  assert.throws(
+    () => validatePriorityDeliveryLaneData({
+      data,
+      taskIds,
+      documents,
+    }),
+    /H_SHARED_AUDIT omite tareas/,
+  );
+});
+
+test('rechaza omitir una tarea condicional o posterior preservada', () => {
+  const data = validData();
+  data.lanes[0].conditional_artifacts[2].task_ranges[0].to = 9;
+  data.lanes[0].deferred_but_preserved[2].task_ranges[0].to = 37;
+
+  assert.throws(
+    () => validatePriorityDeliveryLaneData({
+      data,
+      taskIds,
+      documents,
+    }),
+    /EVIDENCE_CONDITIONAL omite tareas|NEXO-DOM-038 debe quedar preservada/,
+  );
+});
+
+test('rechaza omitir planes E5 o certificación posterior a implementación', () => {
+  const data = validData();
+  data.lanes[0].post_package_artifacts[0].task_ranges[0].to = 14;
+  data.lanes[0].post_implementation_artifacts[0].task_ranges[0].to = 29;
+
+  assert.throws(
+    () => validatePriorityDeliveryLaneData({
+      data,
+      taskIds,
+      documents,
+    }),
+    /E5_READINESS_PLAN omite tareas|U_AUTHORIZATION_CERTIFICATION omite tareas/,
+  );
+});
+
+test('rechaza una ruta ambigua o etapas fuera de orden', () => {
+  const data = validData();
+  data.implementation_route_policy.default_route = 'PRIORITY_BY_DEFAULT';
+  data.lanes[0].ordered_execution_stages[0].order = 2;
+
+  assert.throws(
+    () => validatePriorityDeliveryLaneData({
+      data,
+      taskIds,
+      documents,
+    }),
+    /NORMAL_CANONICAL_FLOW|etapas deben estar numeradas/,
   );
 });

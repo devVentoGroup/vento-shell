@@ -188,6 +188,124 @@ EJECUCIÓN DE UN PAQUETE PRIORITARIO
 → avanza por su package_id y no modifica la tarea documental actual
 ```
 
+#### Decisión obligatoria de ruta
+
+```text
+¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO?
+
+SÍ
+→ seguir NEXO-REMISSIONS-001 desde la etapa 1 hasta la 39
+→ no volver al flujo normal entre etapas salvo suspensión documentada
+
+NO
+→ seguir el flujo normal del plan y la tarea derivada de active-sequence.json
+→ no ejecutar tareas del carril por inferencia
+```
+
+La prioridad se refiere al trabajo que se implementará, no a una modificación
+de la continuidad documental. Aunque se elija `NEXO-REMISSIONS-001`,
+`active-sequence.json` continúa gobernando la tarea documental actual.
+
+<!-- NEXO-REMISSIONS-ORDER:START -->
+#### Orden ejecutable de NEXO-REMISSIONS-001
+
+Esta tabla se genera automáticamente desde `priority-delivery-lanes.json`.
+Las etapas son secuenciales y no se avanza mientras la anterior carezca
+de resultado y evidencia. Dentro de cada grupo se respeta el orden
+enumerado por sus tareas o rangos.
+
+| Etapa | Grupo | Tareas exactas | Resultado para avanzar |
+| ----: | ----- | -------------- | ---------------------- |
+| 1 | `EVENT_CONTRACTS` | `INT-APP-001` a `INT-APP-010` | contratos empresariales completos antes de diseñar o implementar consumidores |
+| 2 | `SUPABASE_AUDIT` | `SUPA-AUD-001` a `SUPA-AUD-024` | auditoría integral del proyecto, exposición, seguridad, consumidores, drift y riesgos |
+| 3 | `SUPABASE_ARCHITECTURE` | `SUPA-ARC-001` a `SUPA-ARC-025` | arquitectura canónica completa antes de cualquier cambio físico |
+| 4 | `SUPABASE_TRANSITION` | `SUPA-TRANS-001` a `SUPA-TRANS-016` | transición ejecutable, compatibilidad, pruebas, rollback y aprobación antes de BLOQUE R |
+| 5 | `H_SHARED_AUDIT` | `SHELL-AUD-001` a `SHELL-AUD-011` | auditoría completa de componentes compartidos y clasificación de propiedad |
+| 6 | `H_SHARED_DISTRIBUTION` | `SHELL-PKG-001` a `SHELL-PKG-008` | distribución, versionado, compatibilidad, deprecación y rollback de paquetes |
+| 7 | `H_SHARED_CONTRACTS` | `SHELL-CON-001` a `SHELL-CON-024` | todos los contratos compartidos e integraciones definidos por BLOQUE H |
+| 8 | `TRANSVERSE_SERVICE_CATALOG` | `TSVC-CAT-001` a `TSVC-CAT-010` | catálogo, propiedad, contratos, seguridad, idempotencia, observabilidad y adopción de servicios transversales |
+| 9 | `CI_FOUNDATION` | `SHELL-CI-001` a `SHELL-CI-019` | capacidad completa de probar, versionar, actualizar, revertir y publicar evidencia antes del primer cambio físico |
+| 10 | `AUTH_UI_CONTRACT` | `AUTH-UI-030` a `AUTH-UI-039` | contrato de lectura, acciones, contexto, sensibilidad y masking de las vistas |
+| 11 | `H_AUTH_CONTEXT_BASE` | `SHELL-AUTH-001`; `SHELL-CTX-001` | núcleo único de autorización y contexto antes de crear el backend autoritativo |
+| 12 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027`; `AUTH-DB-028`; `AUTH-DB-029`; `AUTH-DB-001`; `AUTH-DB-002`; `AUTH-DB-003`; `AUTH-DB-004`; `AUTH-DB-005` | migraciones gobernadas, harness, drift, respaldo, rollback y contención de exposición |
+| 13 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012`; `AUTH-DB-013`; `AUTH-DB-014` | esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos |
+| 14 | `H_AUTH_CONTEXT_CONVERGENCE` | `SHELL-CTX-002`; `SHELL-CTX-003`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-CTX-006`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004` | contexto completo, adapters, scope por solicitud y gates contra legacy |
+| 15 | `R2_NEXO_DATABASE_PACKAGE` | `AUTH-DB-020`; `AUTH-DB-006`; `AUTH-DB-007`; `AUTH-DB-008`; `AUTH-DB-009`; `AUTH-DB-010`; `AUTH-DB-021`; `AUTH-DB-011`; `AUTH-DB-022`; `AUTH-DB-023`; `AUTH-DB-024`; `AUTH-DB-025`; `AUTH-DB-026` | migración NEXO con RPC, RLS, grants, constraints, Storage, Realtime, automatizaciones, índices y tipos |
+| 16 | `H_SHARED_REMAINING` | `SHELL-NORM-001` a `SHELL-NORM-009`; `SHELL-DB-001` a `SHELL-DB-005`; `SHELL-UI-001` a `SHELL-UI-020`; `SHELL-NATIVE-001` a `SHELL-NATIVE-003` | normalización, acceso compartido a datos, UI web y compatibilidad nativa completas |
+| 17 | `H_FINAL_AUTH_ADOPTION` | `SHELL-AUTH-005` | migración y certificación de consumidores al SDK compartido sin helpers competidores |
+| 18 | `AUTH_UI_ENFORCEMENT` | `AUTH-UI-040` a `AUTH-UI-051` | protección de navegación, URL, acciones y estados transversales |
+| 19 | `SERVER_ACTIONS_COMPLETE` | `AUTH-SRV-001` a `AUTH-SRV-018` | inventario y protección completa de Server Actions, API routes y RPC |
+| 20 | `SHARED_DEVICES_NEXO` | `AUTH-DEV-001` a `AUTH-DEV-014` | identidad, alcance, actor, auditoría, revocación y pruebas de dispositivos NEXO |
+| 21 | `STRICT_SIMULATION` | `AUTH-SIM-001` a `AUTH-SIM-014` | simulación completa y segura antes de integrar simulación en NEXO |
+| 22 | `AUTHORIZATION_ERRORS` | `AUTH-ERR-001` a `AUTH-ERR-020` | mensajes de bloqueo completos, seguros y compartidos |
+| 23 | `NEXO_FUNCTIONAL_UX` | `NEXO-UX-001` a `NEXO-UX-025` | inventario, navegación por actor, flujo completo de remisiones, movimientos, excepciones y piloto |
+| 24 | `NEXO_AUTHORIZATION` | `NEXO-AUTH-001` a `NEXO-AUTH-020` | autorización NEXO completa del alcance base, incluidos catálogo, movimientos, dispositivos, simulación y pruebas |
+| 25 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-060` | diseño, prototipos, validación y aprobación de pantallas NEXO por actor |
+| 26 | `CONDITIONAL_ARTIFACTS` | Evaluar la matriz condicional completa mostrada debajo | cada grupo queda ejecutado o justificado como no aplicable |
+| 27 | `PACKAGE_DEFINITION` | `DELIV-PKG-001` a `DELIV-PKG-025` | paquete ejecutable, verificable y reversible |
+| 28 | `E5_READINESS_PLAN` | `READY-GATE-001` a `READY-GATE-015` | readiness técnico, operativo, de datos, permisos, hardware, soporte, monitoreo, respaldo y piloto |
+| 29 | `E5_CUTOVER_PLAN` | `CUTOVER-OPS-001` a `CUTOVER-OPS-010` | cutover, convivencia, doble efecto, conciliación, reversión, métricas y salida de piloto |
+| 30 | `E5_HYPERCARE_PLAN` | `HYPERCARE-OPS-001` a `HYPERCARE-OPS-010` | monitoreo, incidentes, conciliación, deuda, soporte, contingencias y autoridad de cierre |
+| 31 | `E5_ENTRY_GATES` | `E5-GATE-001` a `E5-GATE-007` | cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas |
+| 32 | `PACKAGE_GATE` | `E5-GATE-008::NEXO-REMISSIONS-001` | autorización explícita del paquete, sin cerrar E5 |
+| 33 | `IMPLEMENTATION` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Implementar y desplegar el paquete aprobado. |
+| 34 | `U_AUTHORIZATION_CERTIFICATION` | `AUTH-QA-001` a `AUTH-QA-030` | autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas |
+| 35 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
+| 36 | `READINESS` | `SHELL-CI-021::NEXO-REMISSIONS-001` | Validar readiness técnico y operativo. |
+| 37 | `PILOT` | `SHELL-CI-022::NEXO-REMISSIONS-001` | Ejecutar piloto controlado y conservar evidencia. |
+| 38 | `HYPERCARE` | `SHELL-CI-023::NEXO-REMISSIONS-001` | Estabilizar, conciliar y resolver defectos del alcance. |
+| 39 | `CERTIFICATION` | `SHELL-CI-024::NEXO-REMISSIONS-001` | Certificar únicamente el paquete de remisiones NEXO. |
+
+##### Matriz condicional obligatoria
+
+En la etapa `CONDITIONAL_ARTIFACTS` se evalúan todos los grupos siguientes.
+“No aplica” exige justificación escrita; no puede asumirse por silencio.
+
+| Orden | Grupo | Se activa cuando | Tareas exactas |
+| ----: | ----- | ---------------- | -------------- |
+| 1 | `PRODUCTION_CONDITIONAL` | la remisión incluye productos producidos o faltantes que activan producción | `INT-PROD-005`; `NEXO-AUTH-007` |
+| 2 | `PRINTING_CONDITIONAL` | el paquete imprime documento, etiqueta, manifiesto o comprobante | `PRINT-ARC-001` a `PRINT-ARC-020` |
+| 3 | `EVIDENCE_CONDITIONAL` | el paquete almacena fotografías, firmas, archivos o evidencia documental | `EVID-ARC-001` a `EVID-ARC-010` |
+| 4 | `QUEUE_CONDITIONAL` | se ejecutan trabajos asíncronos, reintentos diferidos o impresión en cola | `QUEUE-ARC-001` a `QUEUE-ARC-012` |
+| 5 | `NOTIFICATIONS_CONDITIONAL` | el paquete envía alertas, novedades, confirmaciones, escalamiento o avisos a actores | `NOTIFY-ARC-001` a `NOTIFY-ARC-010` |
+| 6 | `PHYSICAL_NORMALIZATION_CONDITIONAL` | la transición aprobada modifica o normaliza datos existentes de catálogo, búsqueda o inventario | `DATA-NORM-DB-001` a `DATA-NORM-DB-010` |
+| 7 | `EXTERNAL_INTEGRATION_CONDITIONAL` | la remisión consume o publica datos mediante un sistema externo | `INT-DB-001` a `INT-DB-008` |
+| 8 | `TECHNOLOGY_SUPPORT_CONDITIONAL` | el piloto requiere tablets, red, impresoras, periféricos, telemetría o soporte operativo | `TI-DOM-001` a `TI-DOM-013`; `TI-AUTH-001` a `TI-AUTH-004`; `TI-UX-001` a `TI-UX-006`; `TI-INT-001` a `TI-INT-003` |
+| 9 | `INFORMATION_GOVERNANCE_CONDITIONAL` | el paquete conserva documentos, evidencia, datos personales, firmas, exportaciones o retención | `INFO-DOM-001` a `INFO-DOM-013`; `INFO-AUTH-001` a `INFO-AUTH-004`; `INFO-UX-001` a `INFO-UX-006`; `INFO-INT-001` a `INFO-INT-003` |
+| 10 | `MASTER_DATA_ANALYTICS_CONDITIONAL` | el paquete crea o cambia datos maestros, métricas oficiales, conciliaciones o analítica de inventario | `DATA-DOM-001` a `DATA-DOM-017`; `DATA-AUTH-001` a `DATA-AUTH-004`; `DATA-UX-001` a `DATA-UX-008`; `DATA-INT-001` a `DATA-INT-004` |
+| 11 | `CONTINUITY_CONDITIONAL` | el alcance exige operación degradada, offline, respaldo, restauración, contingencia o reincorporación | `CONT-DOM-001` a `CONT-DOM-015`; `CONT-AUTH-001` a `CONT-AUTH-004`; `CONT-UX-001` a `CONT-UX-007`; `CONT-INT-001` a `CONT-INT-004` |
+
+##### Trabajo posterior preservado
+
+Estas tareas no desaparecen ni se consideran terminadas por certificar el
+paquete. Regresan al flujo normal en su fase propietaria.
+
+| Orden | Tareas preservadas | Motivo |
+| ----: | ------------------ | ------ |
+| 1 | `AUTH-DB-030`; `AUTH-DB-031` | R3 es cierre global posterior a adopción comprobada de todos los consumidores y no puede bloquear el primer paquete NEXO. |
+| 2 | `AUTH-DEV-015`; `AUTH-DEV-016` | Las pruebas físicas específicas de PULSO y FOGO permanecen en sus fases propietarias. |
+| 3 | `NEXO-DOM-001` a `NEXO-DOM-038`; `NEXO-AUTH-021` a `NEXO-AUTH-032`; `NEXO-UX-026` a `NEXO-UX-048` | LPN, activos, mantenimiento e instalaciones continúan en el cierre completo de SUBBLOQUE K2. |
+
+Los artefactos del carril no cambian por sí solos el marcador de una tarea
+canónica. Cada aprobación global continúa requiriendo alcance completo y
+confirmación explícita.
+<!-- NEXO-REMISSIONS-ORDER:END -->
+
+#### Cómo seguir la tabla
+
+- dentro de cada rango se comienza por la primera tarea no aprobada;
+- una tarea ya aprobada se consume como antecedente y no se repite;
+- no se inicia la etapa siguiente hasta cerrar la anterior o registrar una
+  suspensión formal del carril;
+- BLOQUE H se completa íntegramente, pero aparece dividido entre varias
+  etapas porque su autorización y acceso a datos dependen del núcleo físico de
+  BLOQUE R;
+- en la etapa condicional se revisan los once grupos uno por uno;
+- después de `SHELL-CI-020` se ejecutan las certificaciones de BLOQUE U antes
+  de declarar readiness;
+- las tareas posteriores preservadas continúan en el flujo normal y no pueden
+  marcarse completas por el cierre de remisiones.
+
 La ejecución prioritaria no permite:
 
 - saltar una dependencia aplicable;

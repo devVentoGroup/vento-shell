@@ -12,6 +12,9 @@ import {
   reconcileTreqRegistrySource,
   updateLatestTaskSummary,
 } from './treq-safe-reconcile.mjs';
+import {
+  syncPriorityLaneOrderDocument,
+} from './sync-priority-delivery-lanes-doc.mjs';
 
 const root = process.cwd();
 const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
@@ -214,6 +217,12 @@ function attemptSafeReconciliation() {
 let reconciliation = null;
 
 try {
+  const laneOrderSync = syncPriorityLaneOrderDocument({ root });
+  if (laneOrderSync.changed) {
+    console.log(
+      '[PLAN CANÓNICO] Orden visible del carril prioritario actualizado.',
+    );
+  }
   reconciliation = attemptSafeReconciliation();
 } catch (error) {
   console.warn(

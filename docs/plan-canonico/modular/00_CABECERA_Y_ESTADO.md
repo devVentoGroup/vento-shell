@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **374** |
+| Tareas aprobadas | **375** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1201** |
+| Tareas no iniciadas | **1200** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.75% (374/1575)** |
+| Porcentaje de completamiento | **23.81% (375/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-APP-003 — Definir aplicaciones consumidoras** |
-| Tarea actual | **INT-APP-004 — Definir idempotencia** |
+| Última tarea aprobada | **INT-APP-004 — Definir idempotencia** |
+| Tarea actual | **INT-APP-005 — Definir reintentos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-APP-005 — Definir reintentos** |
+| Siguiente tarea | **INT-APP-006 — Definir compensaciones** |
 | Bloque actual | **BLOQUE X — Integraciones empresariales internas y externas** |
-| Progreso del bloque | **BLOQUE X: 3 de 10 aprobadas; INT-APP-004 pendiente** |
+| Progreso del bloque | **BLOQUE X: 4 de 10 aprobadas; INT-APP-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-APP-003` — Definir aplicaciones consumidoras |
-| Tarea actual | `INT-APP-004` — Definir idempotencia — **NO INICIADA** |
-| Siguiente tarea | `INT-APP-005` — Definir reintentos |
+| Última aprobada | `INT-APP-004` — Definir idempotencia |
+| Tarea actual | `INT-APP-005` — Definir reintentos — **NO INICIADA** |
+| Siguiente tarea | `INT-APP-006` — Definir compensaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE X | **3 DE 10 APROBADAS — ACTUAL INT-APP-004** |
+| BLOQUE X | **4 DE 10 APROBADAS — ACTUAL INT-APP-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-APP-003 — Definir aplicaciones consumidoras
-        ↓
-TAREA ACTUAL
 INT-APP-004 — Definir idempotencia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-APP-005 — Definir reintentos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-006 — Definir compensaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 3 de 10 tareas aprobadas
+BLOQUE X — 4 de 10 tareas aprobadas
 ```

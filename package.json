@@ -23,6 +23,7 @@
     "docs:block-i:reconcile": "node scripts/docs/reconcile-block-i-surface-matrices.mjs && node scripts/docs/reconcile-block-i-treq-registry.mjs",
     "docs:block-i:check": "node scripts/docs/validate-block-i-surface-matrices.mjs",
     "docs:delivery-lanes:check": "node scripts/docs/validate-priority-delivery-lanes.mjs",
+    "docs:delivery-lanes:sync": "node scripts/docs/sync-priority-delivery-lanes-doc.mjs",
     "docs:treq:check": "node scripts/docs/validate-treq-registry.mjs",
     "docs:treq:test": "node --test scripts/docs/validate-treq-registry.test.mjs scripts/docs/treq-safe-reconcile.test.mjs",
     "docs:plan:watch": "node scripts/docs/watch-plan-canonico.mjs"

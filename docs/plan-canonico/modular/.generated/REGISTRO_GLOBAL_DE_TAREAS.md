@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **374** |
+| Aprobadas | **375** |
 | En propuesta | **0** |
-| No iniciadas | **1201** |
+| No iniciadas | **1200** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.75% (374/1575)** |
+| Porcentaje de completamiento | **23.81% (375/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-003` — Definir aplicaciones consumidoras | ✅ APROBADA |
-| Tarea actual | `INT-APP-004` — Definir idempotencia | ⬜ NO INICIADA |
-| Siguiente | `INT-APP-005` — Definir reintentos | ⬜ NO INICIADA |
+| Última aprobada | `INT-APP-004` — Definir idempotencia | ✅ APROBADA |
+| Tarea actual | `INT-APP-005` — Definir reintentos | ⬜ NO INICIADA |
+| Siguiente | `INT-APP-006` — Definir compensaciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1408,7 +1408,7 @@
 | ✅ APROBADA | `INT-APP-001` | Crear catálogo de eventos empresariales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-002` | Definir aplicación emisora de cada evento | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-003` | Definir aplicaciones consumidoras | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
+| ✅ APROBADA | `INT-APP-004` | Definir idempotencia | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-005` | Definir reintentos | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-006` | Definir compensaciones | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
