@@ -1429,7 +1429,311 @@ AUTH-UI-007 — Inventariar todas las pantallas de ANIMA
 APROBADA
 
 
-### [ ] AUTH-UI-007 — Inventariar todas las pantallas de ANIMA
+### ✅ AUTH-UI-007 — Inventariar todas las pantallas de ANIMA
+
+**Estado:** APROBADA
+**Fecha de aprobación documental:** 2026-07-28
+**Bloque propietario:** BLOQUE I — Navegación, pantallas y autorización de vistas
+**Tipo de tarea:** inventario técnico-documental de aplicación móvil y superficies auxiliares; sin cambios de código, Supabase, despliegue ni navegación runtime
+
+#### 1. Objetivo
+
+Inventariar de forma exhaustiva, reproducible y sin reducir silenciosamente el alcance todas las pantallas activas de ANIMA en el snapshot inspeccionado, distinguiendo rutas móviles de Expo Router, layouts, pestañas, superficies interactivas internas, estados globales y superficies web auxiliares que viven en el mismo repositorio pero no forman parte de la aplicación móvil.
+
+La tarea fija una línea base de existencia y topología. No rediseña ANIMA, no asigna todavía `process_id` o `process_step`, no aprueba permisos definitivos, no acredita protección de servidor, no modifica navegación runtime y no declara ninguna pantalla apta para retiro, piloto, cutover o producción.
+
+#### 2. Fuente inspeccionada
+
+| Campo                     | Valor                                                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Repositorio operativo     | `devVentoGroup/vento-anima`                                                                                     |
+| Rama                      | `main`                                                                                                          |
+| Commit                    | `50b77742cc0ae85f873d42152108a50acc9d6964`                                                                      |
+| Aplicación                | ANIMA — Control de Asistencia                                                                                   |
+| Framework observado       | Expo 54, React Native 0.81.5 y Expo Router 6                                                                    |
+| Raíz de rutas móviles     | `app/`                                                                                                          |
+| Plataformas declaradas    | `ios` y `android`                                                                                               |
+| Soporte de tablet iOS     | `false`                                                                                                         |
+| Evidencia complementaria  | `app.config.js`, `package.json`, layouts, componentes de pantalla, hooks de navegación y `web-auth/vercel.json` |
+| Estado del snapshot       | `SOURCE_INVENTORY_APPROVED`                                                                                     |
+| Base documental utilizada | `AUTH-UI-006` y registro `04A` con 3.398 requisitos y última tarea `AUTH-UI-006`                                |
+
+#### 3. Frontera obligatoria
+
+```text
+PANTALLA MÓVIL EN CÓDIGO
+≠ LAYOUT
+≠ PESTAÑA
+≠ MODAL O FLUJO EMBEBIDO
+≠ SUPERFICIE WEB AUXILIAR
+≠ FILA EN app_screen_registry
+≠ ELEMENTO EN app_navigation_items
+≠ PROCESS_ID
+≠ PERMISO DEFINITIVO
+≠ ACCIÓN AUTORIZADA
+≠ DISPONIBILIDAD PRODUCTIVA
+```
+
+| Decisión pendiente                                                        | Tarea propietaria                    |
+| ------------------------------------------------------------------------- | ------------------------------------ |
+| Asignar proceso y paso                                                    | `AUTH-UI-011` y `AUTH-UI-012`        |
+| Definir propietaria y consumidores                                        | `AUTH-UI-013` y `AUTH-UI-014`        |
+| Clasificar intención, actores, dispositivo, frecuencia y acciones         | `AUTH-UI-015` a `AUTH-UI-025`        |
+| Resolver solapamientos, legacy, retiro y superficies técnicas             | `AUTH-UI-026` a `AUTH-UI-029`        |
+| Aprobar lectura, mutación, contexto, URL directa y protección de servidor | `AUTH-UI-030` a `AUTH-UI-044`        |
+| Reconciliar registro y navegación unificada                               | `AUTH-UI-045`                        |
+| Rediseñar experiencia de ANIMA                                            | subbloque `ANIMA-UX` correspondiente |
+
+#### 4. Contrato de inventario
+
+1. Cada archivo de ruta activo bajo `app/` distinto de `_layout.tsx` se registra como una pantalla móvil.
+2. Los grupos `(auth)` y `(app)` organizan archivos, pero no crean segmentos URL.
+3. Los query parameters, hashes, estados de modal y entidades seleccionadas no crean patrones adicionales.
+4. Los tres `_layout.tsx` se registran por separado y no se cuentan como pantallas.
+5. Modales y flujos embebidos con interacción propia se registran como superficies subordinadas `NO_ROUTE`.
+6. `ErrorBoundary` y `AppUpdateGate` se registran como superficies globales y no como rutas.
+7. Las páginas y handlers de `web-auth` se preservan como superficies auxiliares separadas; no convierten ANIMA en aplicación web operativa.
+8. La existencia de un rol, capability, permiso o allowlist en cliente se registra como evidencia observada y no como aprobación de autorización definitiva.
+9. Ocultar una pestaña no protege por sí solo la URL directa, los datos ni las mutaciones.
+10. Todo cambio de árbol, patrón, layout, deep link, guard, plataforma, superficie auxiliar o commit invalida la huella afectada.
+
+#### 5. Resumen reconciliado
+
+| Métrica                                        |                           Resultado |
+| ---------------------------------------------- | ----------------------------------: |
+| Pantallas móviles con ruta                     |                              **14** |
+| Patrones estáticos                             |                              **14** |
+| Patrones dinámicos                             |                               **0** |
+| Rutas de arranque y acceso                     |                               **3** |
+| Rutas autenticadas de aplicación               |                              **11** |
+| Pestañas registradas                           |                               **9** |
+| Pestañas generales                             |                               **7** |
+| Pestañas condicionadas por rol observado       |                               **2** |
+| Rutas fuera de pestañas                        | **5** — 3 de acceso + 2 utilitarias |
+| Layouts                                        |                               **3** |
+| Superficies internas subordinadas              |                              **16** |
+| Superficies globales                           |                               **2** |
+| Tipos de notificación con navegación explícita |                               **5** |
+| Destinos de deep link por notificación         |                               **2** |
+| Route handlers Expo `+api` observados          |                               **0** |
+| Superficies fuente de `web-auth`               |                               **5** |
+| Patrones web auxiliares declarados             |                               **5** |
+| Patrones URL móviles duplicados                |                               **0** |
+| Archivos de pantalla móviles duplicados        |                               **0** |
+
+#### 6. `ANIMA-SCREEN-INVENTORY-001`
+
+| ID                 | Patrón               | Archivo fuente                | Tipo       | Comportamiento                     | Superficie observada                                                   | Evidencia de acceso observada                                                                    | Navegación             | Límite documental                                                      |
+| ------------------ | -------------------- | ----------------------------- | ---------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------- | ---------------------------------------------------------------------- |
+| `ANIMA-SCREEN-001` | `/`                  | `app/index.tsx`               | `ESTATICA` | `REDIRECT_BOOT`                    | Puente de entrada hacia /splash                                        | Pública controlada; redirección incondicional                                                    | `ROOT_STACK`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-002` | `/splash`            | `app/(auth)/splash.tsx`       | `ESTATICA` | `BOOTSTRAP_AND_REDIRECT`           | Arranque, carga de asistencia y geocerca                               | Pública controlada; decide /home o /login según sesión                                           | `AUTH_STACK`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-003` | `/login`             | `app/(auth)/login.tsx`        | `ESTATICA` | `AUTHENTICATION_VIEW`              | Inicio y recuperación de acceso                                        | Pública controlada; autenticación Supabase                                                       | `AUTH_STACK`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-004` | `/home`              | `app/(app)/home.tsx`          | `ESTATICA` | `ATTENDANCE_OPERATION`             | Check-in, check-out, geocerca, cola offline y resumen diario           | Sesión consumida; autoridad definitiva pendiente                                                 | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-005` | `/shifts`            | `app/(app)/shifts.tsx`        | `ESTATICA` | `SHIFT_VIEW_AND_MANAGEMENT`        | Turnos personales, semana de sede y gestión gerencial                  | Lectura con sesión; gestión por capability shift.create o fallback de rol                        | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-006` | `/history`           | `app/(app)/history.tsx`       | `ESTATICA` | `ATTENDANCE_HISTORY`               | Historial propio, detalle y reporte de incidencia                      | Consulta asociada al user.id observado                                                           | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-007` | `/documents`         | `app/(app)/documents.tsx`     | `ESTATICA` | `DOCUMENT_VIEW_AND_MANAGEMENT`     | Documentos laborales, alertas, carga, apertura y eliminación           | Permisos anima.documents.* con fallback de roles observado                                       | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-008` | `/carnet`            | `app/(app)/carnet.tsx`        | `ESTATICA` | `LABOR_ID_VIEW`                    | Carné laboral y estado de elegibilidad                                 | Identidad laboral del usuario autenticado                                                        | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-009` | `/announcements`     | `app/(app)/announcements.tsx` | `ESTATICA` | `ANNOUNCEMENT_VIEW_AND_MANAGEMENT` | Novedades y formulario de administración de audiencia                  | Lectura con sesión; gestión por roles locales observados                                         | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-010` | `/operativo`         | `app/(app)/operativo.tsx`     | `ESTATICA` | `OPERATIONS_SUMMARY`               | Resumen operativo gerencial                                            | Propietario, gerente_general o gerente por rol local                                             | `TAB_ROLE_GATED`       | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-011` | `/team`              | `app/(app)/team.tsx`          | `ESTATICA` | `TEAM_VIEW_AND_MANAGEMENT`         | Equipo, invitaciones, edición y eliminación                            | Capabilities team.view/team.invite con fallback de roles observado                               | `TAB_ROLE_GATED`       | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-012` | `/support`           | `app/(app)/support.tsx`       | `ESTATICA` | `SUPPORT_AND_MESSAGING`            | Tickets, mensajes, contacto laboral y preguntas frecuentes             | Sesión; contacto a trabajadores limitado a roles gerenciales observados                          | `TAB_ALWAYS`           | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-013` | `/account-settings`  | `app/account-settings.tsx`    | `ESTATICA` | `ACCOUNT_AND_PRIVACY_SETTINGS`     | Permisos del dispositivo, privacidad, limpieza y eliminación de cuenta | Sesión consumida; acceso directo pendiente de guard canónico                                     | `ROOT_STACK_UTILITY`   | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+| `ANIMA-SCREEN-014` | `/anima-diagnostics` | `app/anima-diagnostics.tsx`   | `ESTATICA` | `TECHNICAL_DIAGNOSTICS`            | Diagnóstico de empleados, turnos, geocercas y push tokens              | Allowlist local de correos y estado de denegación; protección de servidor pendiente de auditoría | `ROOT_STACK_TECHNICAL` | No inferir permiso, proceso, completitud ni disponibilidad productiva. |
+
+#### 7. Layouts y topología de navegación
+
+##### 7.1 Layouts
+
+| ID                 | Archivo                  | Tipo         | Alcance observado                                                  |
+| ------------------ | ------------------------ | ------------ | ------------------------------------------------------------------ |
+| `ANIMA-LAYOUT-001` | `app/_layout.tsx`        | `ROOT_STACK` | Providers Auth/AppConfig/Attendance, ErrorBoundary y AppUpdateGate |
+| `ANIMA-LAYOUT-002` | `app/(auth)/_layout.tsx` | `AUTH_STACK` | splash y login; header oculto                                      |
+| `ANIMA-LAYOUT-003` | `app/(app)/_layout.tsx`  | `TAB_LAYOUT` | nueve pestañas, badge de soporte y deep links de notificaciones    |
+
+##### 7.2 Pestañas
+
+```text
+Check-in     /home             GENERAL
+Turnos       /shifts           GENERAL
+Historial    /history          GENERAL
+Documentos   /documents        GENERAL
+Carnet       /carnet           GENERAL
+Novedades    /announcements    GENERAL
+Resumen      /operativo        ROL_LOCAL_CONDICIONADO
+Equipo       /team             ROL_LOCAL_CONDICIONADO
+Soporte      /support          GENERAL + BADGE_NO_LEÍDOS
+```
+
+La visibilidad de `Resumen` y `Equipo` se calcula en el layout con `propietario`, `gerente_general` o `gerente`. Esa evidencia no aprueba la matriz definitiva y no sustituye los controles de cada pantalla o del servidor.
+
+##### 7.3 Navegación por notificación
+
+| Tipo recibido         | Destino observado |
+| --------------------- | ----------------- |
+| `shift_update`        | `/shifts`         |
+| `shift`               | `/shifts`         |
+| `shift_end_reminder`  | `/shifts`         |
+| `shift_auto_checkout` | `/shifts`         |
+| `support_message`     | `/support`        |
+
+No se observó un destino genérico controlado por datos remotos. Los tipos desconocidos no tienen navegación explícita en el snapshot.
+
+#### 8. Superficies internas subordinadas
+
+| ID                  | Superficie              | Pantalla propietaria          | Propósito                                        | Clasificación |
+| ------------------- | ----------------------- | ----------------------------- | ------------------------------------------------ | ------------- |
+| `ANIMA-SURFACE-001` | `SitePickerModal`       | `app/(app)/home.tsx`          | Selección de sede para marcación                 | `NO_ROUTE`    |
+| `ANIMA-SURFACE-002` | `UserMenuModal`         | `app/(app)/home.tsx`          | Menú de usuario y acceso a configuración         | `NO_ROUTE`    |
+| `ANIMA-SURFACE-003` | `CreateShiftModal`      | `app/(app)/shifts.tsx`        | Creación de turno                                | `NO_ROUTE`    |
+| `ANIMA-SURFACE-004` | `EditShiftModal`        | `app/(app)/shifts.tsx`        | Edición de turno                                 | `NO_ROUTE`    |
+| `ANIMA-SURFACE-005` | `HistoryDetailModal`    | `app/(app)/history.tsx`       | Detalle de registro                              | `NO_ROUTE`    |
+| `ANIMA-SURFACE-006` | `HistoryIncidentModal`  | `app/(app)/history.tsx`       | Reporte de incidencia                            | `NO_ROUTE`    |
+| `ANIMA-SURFACE-007` | `UploadDocumentModal`   | `app/(app)/documents.tsx`     | Carga de documento                               | `NO_ROUTE`    |
+| `ANIMA-SURFACE-008` | `DocumentPickerModal`   | `app/(app)/documents.tsx`     | Selección de tipo, sede o trabajador             | `NO_ROUTE`    |
+| `ANIMA-SURFACE-009` | `AnnouncementFormModal` | `app/(app)/announcements.tsx` | Crear o editar novedad y audiencia               | `NO_ROUTE`    |
+| `ANIMA-SURFACE-010` | `TeamEditModal`         | `app/(app)/team.tsx`          | Edición de trabajador                            | `NO_ROUTE`    |
+| `ANIMA-SURFACE-011` | `TeamInviteModal`       | `app/(app)/team.tsx`          | Invitación laboral                               | `NO_ROUTE`    |
+| `ANIMA-SURFACE-012` | `TeamDeleteModal`       | `app/(app)/team.tsx`          | Confirmación de eliminación de trabajador        | `NO_ROUTE`    |
+| `ANIMA-SURFACE-013` | `SupportTicketModal`    | `app/(app)/support.tsx`       | Creación de ticket                               | `NO_ROUTE`    |
+| `ANIMA-SURFACE-014` | `ContactWorkerModal`    | `app/(app)/support.tsx`       | Aviso o conversación con trabajador              | `NO_ROUTE`    |
+| `ANIMA-SURFACE-015` | `DataCleanupFlow`       | `app/account-settings.tsx`    | Solicitud de limpieza de datos                   | `NO_ROUTE`    |
+| `ANIMA-SURFACE-016` | `DeleteAccountFlow`     | `app/account-settings.tsx`    | Solicitud y cancelación de eliminación de cuenta | `NO_ROUTE`    |
+
+Estas dieciséis superficies se preservan porque contienen decisiones, formularios o confirmaciones propias, pero no incrementan el conteo de rutas móviles.
+
+#### 9. Superficies globales
+
+| ID                 | Superficie      | Archivo propietario | Propósito                                             |
+| ------------------ | --------------- | ------------------- | ----------------------------------------------------- |
+| `ANIMA-GLOBAL-001` | `ErrorBoundary` | `app/_layout.tsx`   | Estado global de error y reintento                    |
+| `ANIMA-GLOBAL-002` | `AppUpdateGate` | `app/_layout.tsx`   | Actualización obligatoria u opcional de la aplicación |
+
+#### 10. Superficies web auxiliares separadas
+
+| ID                  | Patrón observado                      | Archivo fuente                        | Propósito                                                   | Estado de exposición           |
+| ------------------- | ------------------------------------- | ------------------------------------- | ----------------------------------------------------------- | ------------------------------ |
+| `ANIMA-WEB-AUX-001` | `/api/request-password`               | `web-auth/api/request-password.js`    | Formulario web para solicitar enlace de contraseña          | `DECLARADA`                    |
+| `ANIMA-WEB-AUX-002` | `/api/set-password`                   | `web-auth/api/set-password.js`        | Formulario web de creación o restablecimiento de contraseña | `DECLARADA`                    |
+| `ANIMA-WEB-AUX-003` | `/privacy-policy`                     | `web-auth/public/privacy-policy.html` | Política de privacidad                                      | `DECLARADA`                    |
+| `ANIMA-WEB-AUX-004` | `/delete-account; /eliminar-cuenta`   | `web-auth/public/delete-account.html` | Información de eliminación de cuenta con alias              | `DECLARADA_DOS_PATRONES`       |
+| `ANIMA-WEB-AUX-005` | `sin patrón explícito en vercel.json` | `web-auth/public/index.html`          | Índice mínimo de ANIMA Auth                                 | `EXPOSICION_RUNTIME_PENDIENTE` |
+
+`web-auth` es un despliegue auxiliar para contraseña, privacidad y eliminación de cuenta. La aplicación principal mantiene `platforms: ["ios", "android"]` y `supportsTablet: false`. Por tanto:
+
+```text
+14 PANTALLAS MÓVILES
+≠ 5 SUPERFICIES FUENTE WEB-AUTH
+≠ ANIMA WEB OPERATIVA
+```
+
+#### 11. Evidencia de acceso observada
+
+- `/`, `/splash` y `/login` forman el circuito de entrada y bootstrap.
+- El layout autenticado consume `user`, `employee`, rol y contador de soporte, pero no contiene un guard canónico central explícito para las once rutas de aplicación.
+- `/operativo` vuelve a comprobar tres roles locales y muestra denegación cuando no coinciden.
+- `/team` utiliza `team.view` y `team.invite` cuando las capabilities están cargadas, con fallback a roles gerenciales.
+- `/documents` utiliza `anima.documents.view_all`, `upload` y `delete`, también con fallback de roles.
+- `/shifts` utiliza `shift.create` cuando las capabilities están cargadas, con fallback de roles gerenciales.
+- `/announcements` decide administración mediante una lista local de roles.
+- `/anima-diagnostics` usa una allowlist local de correos; la pantalla de configuración y la pantalla diagnóstica no declaran la misma lista.
+- La evidencia anterior describe el snapshot y no concede, revoca ni normaliza permisos en esta tarea.
+
+#### 12. Route handlers móviles y servicios auxiliares
+
+No se observaron archivos Expo Router `+api.ts`, `+api.tsx`, `+api.js` o `+api.jsx` bajo `app/`.
+
+```text
+EXPO_ROUTE_HANDLERS = 0
+```
+
+Los handlers `web-auth/api/request-password.js` y `web-auth/api/set-password.js` generan HTML y pertenecen al servicio auxiliar. No se cuentan como rutas móviles ni autorizan por sí solos operaciones laborales.
+
+#### 13. Hallazgos y carryover obligatorio
+
+| ID                         | Hallazgo                                                                                                                | Tratamiento inmediato                                                                                         | Propietario y momento de resolución                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ANIMA-SCREEN-FINDING-001` | La aplicación móvil declara solo iOS y Android, mientras el repositorio conserva un servicio web auxiliar.              | Mantener fronteras y despliegues separados; no registrar web-auth como navegación móvil.                      | `AUTH-UI-013`, `AUTH-UI-014`, `AUTH-UI-020` y `AUTH-UI-045`, antes de navegación unificada. |
+| `ANIMA-SCREEN-FINDING-002` | No existe un guard canónico único visible en el layout para todas las rutas autenticadas.                               | No concluir bypass; exigir reconciliación por URL directa y protección de servidor.                           | `AUTH-UI-030` a `AUTH-UI-044`, antes de implementación.                                     |
+| `ANIMA-SCREEN-FINDING-003` | Visibilidad de pestañas y controles combina roles locales, capabilities y permisos con fallbacks diferentes.            | Preservar evidencia y prohibir normalización prematura.                                                       | `AUTH-UI-030` a `AUTH-UI-038` y `AUTH-UI-045`.                                              |
+| `ANIMA-SCREEN-FINDING-004` | La allowlist de acceso al diagnóstico difiere entre `/account-settings` y `/anima-diagnostics`.                         | Clasificar la superficie como técnica y reemplazar allowlists por capacidad canónica en su tarea propietaria. | `AUTH-UI-029`, `AUTH-UI-030`, `AUTH-UI-041` y `AUTH-SRV-*` aplicable.                       |
+| `ANIMA-SCREEN-FINDING-005` | `OperativoReportScreen` aparece como ruta `/operativo` y también embebida en `/home` para roles gerenciales.            | Conservar ambas exposiciones hasta decidir si son vistas complementarias o solapadas.                         | `AUTH-UI-026` a `AUTH-UI-028`.                                                              |
+| `ANIMA-SCREEN-FINDING-006` | `/documents` elimina fila y luego intenta eliminar Storage directamente.                                                | No corregir aquí; mantener vinculación con ciclo documental, retención y disposición.                         | `TREQ-ANIMA-005`, tareas `INFO-*`, `EVID-ARC-*` y paquete ANIMA/VISO correspondiente.       |
+| `ANIMA-SCREEN-FINDING-007` | No se observó un sincronizador local de pantallas ANIMA hacia registros runtime de SHELL.                               | No inferir ausencia de filas remotas ni crear navegación en esta tarea.                                       | `AUTH-UI-045`, antes de aprobar navegación unificada.                                       |
+| `ANIMA-SCREEN-FINDING-008` | `web-auth/public/index.html` existe, pero `vercel.json` no declara un patrón explícito para ese archivo.                | Verificar exposición efectiva sin asumir `/`; conservarlo fuera del conteo móvil.                             | `AUTH-UI-029` y paquete de autenticación auxiliar antes de despliegue.                      |
+| `ANIMA-SCREEN-FINDING-009` | `/delete-account` y `/eliminar-cuenta` comparten una única superficie fuente.                                           | Mantener ambos patrones como alias y una sola identidad de superficie.                                        | `AUTH-UI-026`, `AUTH-UI-045` y contrato externo de enlaces.                                 |
+| `ANIMA-SCREEN-FINDING-010` | No existen rutas dinámicas móviles; selección de trabajador, turno, sede o ticket ocurre dentro de pantallas estáticas. | No expandir el inventario por entidad ni por estado de modal.                                                 | Regla permanente de `AUTH-UI-007`; validar drift en CI.                                     |
+
+No queda un hallazgo detectado como pendiente narrativo sin tarea o requisito propietario.
+
+#### 14. Requisitos de prueba derivados
+
+Se incorporan al registro canónico completo:
+
+```text
+TREQ-ANIMA-006 a TREQ-ANIMA-025
+```
+
+| ID               | Regla protegida                                                                                                                                                                                                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-ANIMA-006` | El inventario móvil de ANIMA deberá detectar exactamente catorce módulos de pantalla activos bajo app, excluyendo los tres layouts, componentes internos, superficies globales y el subproyecto web-auth.                                                                    |
+| `TREQ-ANIMA-007` | Cada pantalla móvil deberá conservar un identificador estable ANIMA-SCREEN-001 a ANIMA-SCREEN-014, un patrón único y un archivo fuente único; ningún route group de Expo Router formará parte de la URL.                                                                     |
+| `TREQ-ANIMA-008` | El snapshot aprobado deberá conservar catorce patrones estáticos y cero patrones dinámicos; parámetros de consulta, fragmentos, estados de modal y entidades seleccionadas no crearán pantallas adicionales.                                                                 |
+| `TREQ-ANIMA-009` | Pantallas, layouts, pestañas, modales, flujos embebidos, ErrorBoundary, AppUpdateGate, handlers auxiliares y páginas web de autenticación deberán clasificarse por separado y no inflar el conteo móvil.                                                                     |
+| `TREQ-ANIMA-010` | La raíz / deberá redirigir a /splash; /splash deberá completar o agotar de forma segura el bootstrap y conducir a /home con sesión o a /login sin sesión, sin bucles ni exposición intermedia de una pantalla protegida.                                                     |
+| `TREQ-ANIMA-011` | La aplicación principal deberá permanecer configurada únicamente para iOS y Android, sin soporte de tablet aprobado; web-auth será un servicio auxiliar separado y no convertirá ANIMA en una aplicación web de operación laboral.                                           |
+| `TREQ-ANIMA-012` | El layout raíz deberá conservar AuthProvider, AppConfigProvider y AttendanceProvider, manejar errores globales y aplicar la puerta de actualización sin contar esos elementos como rutas ni omitirlos del inventario de superficies transversales.                           |
+| `TREQ-ANIMA-013` | La navegación autenticada deberá reconciliar exactamente nueve pestañas: siete visibles de forma general y Resumen y Equipo condicionadas; ocultar una pestaña no sustituirá el control de acceso de la pantalla ni del servidor.                                            |
+| `TREQ-ANIMA-014` | Las respuestas de notificación solo podrán navegar a /shifts para shift_update, shift, shift_end_reminder o shift_auto_checkout, y a /support para support_message; tipos desconocidos no deberán abrir destinos arbitrarios.                                                |
+| `TREQ-ANIMA-015` | La pantalla /home deberá mantener separados estado de asistencia, geocerca, selección de sede, conectividad, cola offline, sincronización y diagnóstico; una marcación no se mostrará como aplicada cuando solo esté pendiente o fallida.                                    |
+| `TREQ-ANIMA-016` | La pantalla /shifts deberá separar lectura personal, semana de sede y gestión; crear, editar, confirmar o cancelar turnos requerirá capacidad efectiva y validación de servidor, sin depender exclusivamente del rol o de la visibilidad del botón.                          |
+| `TREQ-ANIMA-017` | La pantalla /history deberá consultar únicamente el historial permitido del actor, conservar estados de carga y vacío, y separar detalle de registro y reporte de incidencia sin permitir acceso a registros de terceros por manipulación local.                             |
+| `TREQ-ANIMA-018` | La pantalla /documents deberá respetar alcance personal, de sede o global y permisos de lectura, carga y eliminación; abrir, sustituir o eliminar fila y Storage deberá cumplir el ciclo documental, retención y evidencia definido por TREQ-ANIMA-005.                      |
+| `TREQ-ANIMA-019` | La pantalla /carnet deberá presentar únicamente la identidad laboral y elegibilidad del trabajador autenticado, diferenciar empleo, contrato y documentos y no declarar un carné válido cuando falte una condición requerida.                                                |
+| `TREQ-ANIMA-020` | La pantalla /announcements deberá conservar coherencia entre audiencia persistida, audiencia notificada y visibilidad al leer; crear, editar y eliminar deberán estar ocultos y bloqueados cuando la operación no sea autorizada o esté en modo solo lectura.                |
+| `TREQ-ANIMA-021` | Las pantallas /operativo y /team deberán aplicar en acceso directo la misma decisión efectiva que sus pestañas; la divergencia entre listas locales de rol, capabilities y permisos canónicos deberá detectarse y bloquearse antes de cualquier acción.                      |
+| `TREQ-ANIMA-022` | La pantalla /support deberá limitar tickets, mensajes y contacto con trabajadores al actor y territorio autorizados, conservar estados y no leídos, y resolver deep links sin exponer conversaciones ajenas.                                                                 |
+| `TREQ-ANIMA-023` | La pantalla /account-settings deberá operar únicamente sobre la cuenta autenticada, reflejar permisos reales del dispositivo y separar limpieza de datos, eliminación de cuenta y cierre de sesión; las solicitudes deberán conservar estado y trazabilidad.                 |
+| `TREQ-ANIMA-024` | La pantalla /anima-diagnostics deberá usar una capacidad técnica canónica y protección de servidor; la allowlist de navegación y la de la pantalla deberán ser consistentes, y ningún correo hardcodeado concederá por sí solo acceso a datos laborales.                     |
+| `TREQ-ANIMA-025` | Las superficies auxiliares web-auth deberán permanecer separadas del inventario móvil, conservar patrones y alias explícitos, validar de forma segura tokens de recuperación y producir un delta ante cualquier alta, retiro, movimiento o cambio frente al commit aprobado. |
+
+El registro resultante deberá pasar de **3.398** a **3.418** requisitos, y el dominio ANIMA de **5** a **25**, sin modificar las 3.398 filas históricas.
+
+#### 15. Huellas de la línea base
+
+```text
+ROUTE_REGISTRY_SHA256 = 1e8497684e54cf0d77d2937ae24c42293bb547f58c51582e7f2c61c87bfd6988
+LAYOUT_REGISTRY_SHA256 = 176e4156d8924d1d469074de2b500008c7dd73fe1e22a01d4813b5ffca65eb09
+INTERNAL_SURFACES_SHA256 = 8148ffaa1cc3511cf5a48764c488a5895744774bde93b5fa48e133b8f1517b68
+WEB_AUX_REGISTRY_SHA256 = a2bc72cee0ee9984979747d387e21d8e4317482dca5ece6037a5a6607688b599
+COMBINED_INVENTORY_SHA256 = c65ba8c4f9e138924f567e853ccd6774708685fdfdd2ffdbaa6d30cf85c38ee5
+```
+
+#### 16. Criterios de aceptación
+
+- [x] El inventario contiene exactamente catorce pantallas móviles únicas.
+- [x] Los IDs `ANIMA-SCREEN-001` a `ANIMA-SCREEN-014` son consecutivos.
+- [x] Las catorce rutas son estáticas y no existen patrones dinámicos.
+- [x] Tres layouts están separados del conteo de pantallas.
+- [x] Nueve pestañas se reconcilian con siete generales y dos condicionadas.
+- [x] Dieciséis superficies internas y dos globales están identificadas sin contarlas como rutas.
+- [x] Cinco superficies fuente de `web-auth` permanecen separadas de la aplicación móvil.
+- [x] Se registran cero handlers Expo `+api`.
+- [x] Los roles, capabilities, permisos y allowlists observados no se presentan como matriz definitiva.
+- [x] Todos los hallazgos tienen propietario y momento de resolución.
+- [x] Se definen `TREQ-ANIMA-006` a `TREQ-ANIMA-025` sin modificar requisitos históricos.
+- [x] No se implementa código, navegación runtime, migración, Supabase ni despliegue.
+
+#### 17. Continuidad
+
+```text
+AUTH-UI-006 — APROBADA
+        ↓
+AUTH-UI-007 — APROBADA
+```
+
+APROBADA
+
+
 ### [ ] AUTH-UI-008 — Inventariar todas las superficies de SHELL
 ### [ ] AUTH-UI-009 — Inventariar superficies laborales relacionadas con PASS
 ### [ ] AUTH-UI-010 — Auditar rutas y superficies actuales de AURA
