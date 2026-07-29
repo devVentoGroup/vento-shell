@@ -4827,7 +4827,187 @@ SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
 ```
 
 
-### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+### ✅ SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+
+**Estado:** APROBADA  
+**Fecha de preparación documental:** 2026-07-29  
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime`  
+**Tarea anterior:** `SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage` — APROBADA  
+**Siguiente tarea:** `SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones`  
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`  
+**Tipo de tarea:** auditoría documental, consultas remotas read-only, inspección de logs y repositorios; sin DDL, DML, cambios de publicaciones, RLS, slots, canales, despliegues ni código remoto
+
+#### 1. Objetivo
+
+Establecer una línea base verificable de la arquitectura Realtime vigente: publicaciones lógicas, tablas y columnas replicadas, controles RLS, replica identity, consumidores declarados en código, canales, filtros, recuperación, Broadcast, Presence, slots y señales operativas. La auditoría diferencia disponibilidad técnica, publicación efectiva y consumo funcional; ninguno de esos tres hechos se presume por la existencia de los otros.
+
+#### 2. Regla canónica derivada
+
+```text
+Una capacidad solo podrá declararse en tiempo real cuando exista un contrato trazable entre productor, relación o evento publicable, autorización, canal, consumidor, filtro, semántica de entrega, recuperación y evidencia. Consumidor sin publicación, publicación sin finalidad o suscripción a una vista constituyen drift y no cobertura Realtime.
+```
+
+#### 3. Alcance y método
+
+Se inspeccionaron, sin mutación:
+
+- `pg_publication`, `pg_publication_tables` y `pg_replication_slots`;
+- configuración de replicación lógica;
+- relaciones y particiones administradas del esquema `realtime`;
+- RLS, políticas, grants, PK y replica identity de las tablas publicadas;
+- funciones y triggers que podrían emitir Broadcast;
+- logs Realtime de las últimas veinticuatro horas;
+- consumidores `postgres_changes` en Vento PASS, PULSO y ANIMA;
+- carga inicial, filtros, limpieza, estado de conexión, polling y reconciliación observables.
+
+No se emitieron mensajes, no se abrieron canales de prueba y no se modificó la publicación.
+
+#### 4. Línea base de PostgreSQL y publicaciones
+
+| Elemento                                        | Resultado |
+| ----------------------------------------------- | --------: |
+| `wal_level`                                     | `logical` |
+| `max_replication_slots`                         |         5 |
+| `max_wal_senders`                               |         5 |
+| `max_logical_replication_workers`               |         4 |
+| `max_worker_processes`                          |         6 |
+| Publicaciones totales                           |         2 |
+| Relaciones empresariales en `supabase_realtime` |         6 |
+| Tablas empresariales con RLS                    |    6 de 6 |
+| Tablas empresariales con PK                     |    6 de 6 |
+| Tablas con `REPLICA IDENTITY FULL`              |         0 |
+| Filtros de fila de publicación                  |         0 |
+| Filas actuales en las seis tablas               |       100 |
+
+La segunda publicación, `supabase_realtime_messages_publication`, es administrada por Supabase y contiene las particiones diarias de `realtime.messages`; no se clasifica como publicación empresarial de Vento.
+
+#### 5. Tablas empresariales publicadas
+
+| Tabla                            | Filas | Políticas | Observación                                                     |
+| -------------------------------- | ----: | --------: | --------------------------------------------------------------- |
+| `public.order_conversations`     |     4 |         2 | Chat de pedidos; dos políticas SELECT.                          |
+| `public.order_delivery_sessions` |     0 |         2 | Publica hashes, notas y metadata aunque la tabla está vacía.    |
+| `public.order_messages`          |     4 |         4 | Mensajería; políticas SELECT e INSERT.                          |
+| `public.order_status_events`     |     5 |         3 | Eventos operativos con referencias y metadata.                  |
+| `public.orders`                  |     7 |         6 | Publica datos de cliente, dirección, pago, despacho y regalo.   |
+| `public.users`                   |    80 |         9 | Publica identidad, contacto, rol, puntos y fecha de nacimiento. |
+
+Las seis relaciones publican todas sus columnas, permiten INSERT, UPDATE, DELETE y TRUNCATE en la publicación y no aplican row filter. RLS continúa controlando qué filas puede recibir cada suscriptor, pero no resuelve la minimización de columnas, la finalidad ni el costo de replicar datos innecesarios.
+
+#### 6. Conciliación con consumidores observados
+
+Se identificaron trece objetivos técnicos distintos en consumidores inspeccionados. Cinco tablas están publicadas; seis tablas no lo están; dos objetivos de PULSO son vistas.
+
+##### 6.1 Suscripciones a tablas no publicadas
+
+| Consumidor                    | Relación declarada              | Resultado remoto |
+| ----------------------------- | ------------------------------- | ---------------- |
+| ANIMA — contexto laboral      | `public.employee_sites`         | no publicada     |
+| ANIMA — soporte               | `public.support_tickets`        | no publicada     |
+| ANIMA — soporte               | `public.support_messages`       | no publicada     |
+| ANIMA — soporte               | `public.support_ticket_reads`   | no publicada     |
+| PASS — facturación de pedidos | `public.order_billing_requests` | no publicada     |
+| PASS — redenciones            | `pass.loyalty_redemptions`      | no publicada     |
+
+Las seis relaciones tienen RLS, clave primaria y política de lectura, pero no pertenecen a `supabase_realtime`; por tanto, las suscripciones no pueden recibir Postgres Changes en el estado observado.
+
+##### 6.2 Suscripciones a vistas no publicables
+
+El salón de PULSO se suscribe a `public.pos_table_service_calls` y `public.pos_sessions`. Ambas son vistas `security_invoker=true` sobre tablas del esquema `pos`. Ni las vistas ni las tablas base están en la publicación. PostgreSQL logical replication publica tablas, no esas vistas; el diseño actual del salón no constituye una ruta Realtime funcional.
+
+##### 6.3 Consumidores sobre tablas publicadas
+
+PASS y PULSO consumen `orders`, `order_messages`, `order_conversations`, `order_status_events` y `order_delivery_sessions`. Existen filtros útiles por cliente, sede, pedido o conversación, pero también suscripciones sin filtro que descartan datos después en memoria. RLS evita acceso a filas no autorizadas; aun así, el fan-out y el procesamiento son más amplios de lo necesario.
+
+#### 7. Hallazgo de replica identity
+
+Todas las tablas empresariales publicadas usan `REPLICA IDENTITY DEFAULT`. PULSO compara `payload.old.payment_status` para detectar el paso a pago aprobado. Los valores anteriores no pertenecientes a la PK no deben asumirse disponibles bajo ese contrato. La solución no se decide en esta auditoría: `SUPA-ARC-019` deberá optar entre refetch, evento explícito, Broadcast o `REPLICA IDENTITY FULL`, evaluando costo y privacidad.
+
+#### 8. Canales y recuperación
+
+Se inventariaron diecisiete patrones de canal definidos localmente. La mayoría limpia el canal al desmontar, pero no todos procesan estados de suscripción. Existen recuperaciones parciales:
+
+- polling cada 8 segundos en inbox de chat PULSO;
+- polling cada 15 segundos en seguimiento PASS;
+- recarga al volver a foco, visibilidad u online en varios consumidores;
+- callbacks que recargan snapshots o inboxes completos.
+
+No existe un contrato transversal que defina frescura, backoff, deduplicación, reconciliación, presupuesto de consultas o señal visible de degradación.
+
+#### 9. Broadcast, Presence y esquema administrado
+
+| Control                                              | Resultado |
+| ---------------------------------------------------- | --------: |
+| Filas actuales en `realtime.messages`                |         0 |
+| Suscripciones persistidas en `realtime.subscription` |         0 |
+| Políticas sobre `realtime.messages`                  |         0 |
+| Triggers empresariales Broadcast                     |         0 |
+| Funciones administradas disponibles                  |         3 |
+| Uso de Presence observado en repositorios            |         0 |
+
+Las funciones `realtime.broadcast_changes`, `realtime.send` y `realtime.send_binary` son primitivas administradas; no existe productor empresarial que las invoque. Broadcast o Presence futuros deberán utilizar canales privados y políticas explícitas antes de habilitarse.
+
+#### 10. Slots y logs
+
+Se observó un slot lógico temporal activo administrado por Realtime, con plugin `pgoutput` y aproximadamente 16 MiB de WAL retenido al corte. Los logs muestran ciclos de inicialización, validación de publicación, streaming y cierre del tenant cuando no hay usuarios conectados. No se encontraron errores en la muestra; el cierre por inactividad no se clasifica como brecha.
+
+#### 11. Brechas y resolución obligatoria
+
+| ID                   | Brecha                                                            | Resolución asignada                                                         |
+| -------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `B-SUPA-AUD-013-001` | Seis suscripciones apuntan a tablas no publicadas.                | `SUPA-ARC-019`; paquetes E5 ANIMA/PASS; `TREQ-SUPABASE-170`, `171`.         |
+| `B-SUPA-AUD-013-002` | El salón se suscribe a dos vistas no publicables.                 | `SUPA-ARC-005`; `SUPA-ARC-019`; paquete E5 PULSO; `TREQ-SUPABASE-172`.      |
+| `B-SUPA-AUD-013-003` | No existe catálogo publicación–consumidor.                        | `SUPA-ARC-019`; `SHELL-CI-017`; `TREQ-SUPABASE-173`, `186`.                 |
+| `B-SUPA-AUD-013-004` | Todas las columnas y cero row filters.                            | `SUPA-ARC-015`, `016`, `019`; `TREQ-SUPABASE-174`.                          |
+| `B-SUPA-AUD-013-005` | `users` está publicada sin consumidor observado.                  | `SUPA-AUD-019`; `SUPA-ARC-019`; transición controlada; `TREQ-SUPABASE-175`. |
+| `B-SUPA-AUD-013-006` | Consumidor depende de `payload.old` con replica identity DEFAULT. | `SUPA-ARC-019`, `021`; paquete E5 PULSO; `TREQ-SUPABASE-176`.               |
+| `B-SUPA-AUD-013-007` | Diecisiete nombres de canal locales sin registro.                 | `SUPA-ARC-011`, `019`; `TREQ-SUPABASE-177`.                                 |
+| `B-SUPA-AUD-013-008` | Manejo desigual de error y reconexión.                            | `SUPA-ARC-019`; continuidad y E5; `TREQ-SUPABASE-178`, `179`.               |
+| `B-SUPA-AUD-013-009` | No hay semántica común de duplicado, orden o replay.              | `SUPA-ARC-019`; `TREQ-SUPABASE-180`.                                        |
+| `B-SUPA-AUD-013-010` | Recargas completas y polling pueden amplificar carga.             | `SUPA-ARC-021`; NFR; `TREQ-SUPABASE-181`, `185`.                            |
+| `B-SUPA-AUD-013-011` | Suscripciones amplias filtran después en cliente.                 | `SUPA-ARC-015`, `019`; `TREQ-SUPABASE-182`.                                 |
+| `B-SUPA-AUD-013-012` | Broadcast/Presence carecen de política y contrato.                | `SUPA-ARC-019`; `SUPA-AUD-014`; `TREQ-SUPABASE-183`, `184`.                 |
+| `B-SUPA-AUD-013-013` | No existe prueba de capacidad Realtime.                           | `SUPA-ARC-021`; `DELIV-PKG-013`; `TREQ-SUPABASE-185`.                       |
+| `B-SUPA-AUD-013-014` | No existe validador automático de drift.                          | `SUPA-AUD-016`, `017`; `SHELL-CI-017`; `TREQ-SUPABASE-186`, `187`.          |
+
+No queda pendiente narrativo sin tarea o requisito responsable.
+
+#### 12. Requisitos de prueba incorporados
+
+Se incorporan en el registro canónico completo:
+
+```text
+TREQ-SUPABASE-170 a TREQ-SUPABASE-187
+```
+
+#### 13. Huellas reproducibles
+
+| Registro                             | SHA-256                                                            |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| Publicación empresarial observada    | `bdc3ed59d4f8d9325a212208277f74f1b8fa7dcbb2138f42218d221e62f0e1da` |
+| Objetivos consumidor–publicación     | `2dc1fa9be3a6f11642d1e4b507f91234f48dca5f469d7bd9f1ef8865c674f632` |
+| Patrones de canal inventariados      | `c3464f36e7e3d4349316e1cd950a81966006d87871dd4d324043ea9b907dd56c` |
+| Controles agregados de publicación   | `655527e17c7dec0164b82a065ec0b2f7c61214c317c387557a32e940471a803f` |
+| Archivo base aportado por el usuario | `6c938a3c0ee0eeeabfcd2ba5090e8892ae51b86b579eceeb113a81dc06164677` |
+
+#### 14. Criterios de aceptación cumplidos
+
+- inventario remoto de publicaciones y slots obtenido;
+- tablas, columnas, RLS, políticas, PK y replica identity conciliados;
+- consumidores actuales inspeccionados en repositorios;
+- relaciones no publicadas y vistas imposibles identificadas;
+- Broadcast, Presence, triggers y políticas auditados;
+- recuperación y carga potencial clasificadas;
+- cada brecha vinculada a resolución concreta;
+- registro `04A` regenerado desde el archivo aportado por el usuario;
+- cero cambios remotos.
+
+#### 15. Cierre
+
+`SUPA-AUD-013` queda **APROBADA** como línea base documental. La auditoría no autoriza agregar o retirar tablas de publicaciones, cambiar replica identity, crear políticas Realtime ni modificar consumidores. Esas decisiones pertenecen a `SUPA-ARC-019`, paquetes E5 y transición controlada.
+
+
 ### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
 ### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
 ### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
