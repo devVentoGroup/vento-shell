@@ -2905,7 +2905,464 @@ Protegen inventario completo, separación de clases, superficie invocable, funci
 La tarea no modifica la base, no corrige las RPC y no certifica todavía autorización integral ni éxito operativo de todas las funciones.
 
 
-### [ ] SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
+### ✅ SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
+
+**Estado:** APROBADA
+**Fecha:** 2026-07-29
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas` — APROBADA
+**Tarea siguiente:** `SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers`
+**Descripción:** Clasifica las 3.622 funciones normales observables por modo de seguridad, propietario, capacidad de bypass RLS, clase de invocación, `search_path`, configuración de `row_security`, ACL y privilegios efectivos; profundiza las 347 firmas ubicadas en esquemas gobernados por Vento sin declarar vulnerabilidades únicamente por utilizar `SECURITY DEFINER` ni certificar seguridad únicamente por utilizar `SECURITY INVOKER`.
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de la identidad de ejecución de cada función normal inventariada en `SUPA-AUD-006`.
+
+```text
+3.622 FUNCIONES NORMALES
+= 213 SECURITY DEFINER
++ 3.409 SECURITY INVOKER
+
+347 FUNCIONES EN ESQUEMAS GOBERNADOS POR VENTO
+= 210 SECURITY DEFINER
++ 137 SECURITY INVOKER
+```
+
+El modo de seguridad responde una pregunta concreta:
+
+- `SECURITY DEFINER`: la función se ejecuta con los privilegios del propietario;
+- `SECURITY INVOKER`: la función se ejecuta con los privilegios del actor que la invoca.
+
+Ninguno de los dos modos constituye por sí solo una certificación de seguridad. Una función `DEFINER` puede ser necesaria y segura si sus grants, autorización interna, `search_path`, entradas y efectos están correctamente restringidos. Una función `INVOKER` puede seguir siendo insegura si el rol llamador posee privilegios excesivos, la función acepta identificadores arbitrarios o la superficie Data API está mal gobernada.
+
+#### 2. Alcance y método no mutante
+
+Se consultaron exclusivamente catálogos y funciones de inspección PostgreSQL mediante `SELECT`:
+
+- `pg_proc.prosecdef` para clasificar `DEFINER` e `INVOKER`;
+- `pg_proc.prorettype` para separar funciones directas y funciones de trigger;
+- `pg_roles.rolsuper` y `pg_roles.rolbypassrls` para registrar el poder efectivo del owner;
+- `pg_proc.proconfig` para `search_path` y `row_security=off`;
+- `pg_proc.proacl`, `aclexplode` y `acldefault` para distinguir grants de `PUBLIC`, `anon` y `authenticated`;
+- `has_function_privilege` para privilegios efectivos de `anon`, `authenticated` y `service_role`;
+- `pg_get_functiondef` únicamente para señales estáticas auxiliares de autorización, sin afirmar equivalencia con una revisión semántica completa.
+
+El universo de esta tarea es `pg_proc.prokind='f'`. Los 157 agregados y 15 objetos de ventana inventariados en `SUPA-AUD-006` no se mezclan con estas 3.622 funciones normales. No se ejecutó ninguna función, trigger, RPC mutante, DDL, DML, migración, `GRANT` ni `REVOKE`.
+
+#### 3. Artefacto canónico
+
+```text
+SUPABASE-FUNCTION-SECURITY-MODE-INVENTORY-007@1.0.0
+```
+
+Cada registro queda identificado por:
+
+```text
+schema_name
++ function_name
++ identity_arguments
++ result_type
++ owner_name
++ owner_superuser
++ owner_bypassrls
++ security_mode
++ call_kind
++ language
++ volatility
++ parallel_safety
++ search_path
++ row_security_off
++ acl_source
++ public_execute
++ anon_execute_effective
++ authenticated_execute_effective
++ service_role_execute_effective
++ observation_timestamp
+```
+
+La identidad nominal continúa siendo `<schema>.<nombre>(argumentos de identidad)`. Las 347 firmas de esquemas Vento ya congeladas en `SUPA-AUD-006` quedan enriquecidas por este registro sin cambiar su identidad.
+
+#### 4. Resultado global por esquema
+
+| Esquema               | Funciones | `DEFINER` | `INVOKER` | `DEFINER` directas | `DEFINER` trigger | `INVOKER` directas | `INVOKER` trigger | Gobierno     |
+| --------------------- | --------: | --------: | --------: | -----------------: | ----------------: | -----------------: | ----------------: | ------------ |
+| `app_private`         |         1 |         1 |         0 |                  1 |                 0 |                  0 |                 0 | Vento        |
+| `auth`                |         4 |         0 |         4 |                  0 |                 0 |                  4 |                 0 | administrado |
+| `club`                |         7 |         2 |         5 |                  2 |                 0 |                  5 |                 0 | Vento        |
+| `cron`                |         7 |         0 |         7 |                  0 |                 0 |                  6 |                 1 | administrado |
+| `extensions`          |        55 |         0 |        55 |                  0 |                 0 |                 49 |                 6 | administrado |
+| `graphql`             |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | administrado |
+| `graphql_public`      |         1 |         0 |         1 |                  0 |                 0 |                  1 |                 0 | administrado |
+| `information_schema`  |        11 |         0 |        11 |                  0 |                 0 |                 11 |                 0 | administrado |
+| `net`                 |        12 |         0 |        12 |                  0 |                 0 |                 12 |                 0 | administrado |
+| `pass`                |        30 |        27 |         3 |                 16 |                11 |                  3 |                 0 | Vento        |
+| `payments`            |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | Vento        |
+| `pg_catalog`          |     3.147 |         0 |     3.147 |                  0 |                 0 |              3.129 |                18 | administrado |
+| `pg_toast`            |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | administrado |
+| `pgbouncer`           |         1 |         1 |         0 |                  1 |                 0 |                  0 |                 0 | administrado |
+| `pos`                 |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | Vento        |
+| `public`              |       246 |       164 |        82 |                144 |                20 |                 42 |                40 | Vento        |
+| `realtime`            |        15 |         0 |        15 |                  0 |                 0 |                 14 |                 1 | administrado |
+| `storage`             |        17 |         0 |        17 |                  0 |                 0 |                 14 |                 3 | administrado |
+| `supabase_migrations` |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | administrado |
+| `talento`             |        16 |        11 |         5 |                 11 |                 0 |                  4 |                 1 | Vento        |
+| `vault`               |         5 |         2 |         3 |                  2 |                 0 |                  3 |                 0 | administrado |
+| `viso`                |         0 |         0 |         0 |                  0 |                 0 |                  0 |                 0 | Vento        |
+| `vital`               |        47 |         5 |        42 |                  5 |                 0 |                 41 |                 1 | Vento        |
+| **TOTAL**             | **3.622** |   **213** | **3.409** |            **182** |            **31** |          **3.338** |            **71** | —            |
+
+Las **102 funciones de trigger** de este corte se componen de 31 `DEFINER` y 71 `INVOKER`. `SUPA-AUD-008` deberá enlazarlas con los triggers reales, tablas, eventos, orden y condiciones de disparo; esta tarea solo clasifica su identidad de ejecución.
+
+#### 5. Reconciliación por gobierno estructural
+
+| Frontera                                       | `DEFINER` | `INVOKER` |     Total |
+| ---------------------------------------------- | --------: | --------: | --------: |
+| esquemas administrados por PostgreSQL/Supabase |         3 |     3.272 |     3.275 |
+| esquemas gobernados por Vento                  |       210 |       137 |       347 |
+| **TOTAL**                                      |   **213** | **3.409** | **3.622** |
+
+La clasificación por esquema admite una excepción de propiedad: cuatro funciones `unaccent*` están físicamente en `public`, pero pertenecen a la extensión `unaccent`, tienen owner `supabase_admin` y no deberán tratarse como lógica empresarial de Vento. Por tanto:
+
+```text
+347 FUNCIONES EN ESQUEMAS VENTO
+= 343 OWNER postgres
++ 4 OWNER supabase_admin / EXTENSIÓN unaccent
+```
+
+La ubicación en `public` no transfiere gobierno estructural sobre una función administrada por extensión. Su ciclo permanece vinculado a `SUPA-AUD-015`, `SUPA-AUD-016` y `SUPA-AUD-017`.
+
+#### 6. Propietarios y capacidad de bypass RLS
+
+| Grupo                       | Owner            | `rolsuper` | `rolbypassrls` | Cantidad |
+| --------------------------- | ---------------- | ---------: | -------------: | -------: |
+| `DEFINER` en esquemas Vento | `postgres`       |         no |         **sí** |  **210** |
+| `DEFINER` administradas     | `supabase_admin` |     **sí** |         **sí** |    **3** |
+
+Las 210 funciones `DEFINER` de esquemas Vento se ejecutan como `postgres`, rol que no es superusuario en este proyecto pero sí posee `BYPASSRLS`. Por ello, su autorización no puede delegarse implícitamente a las políticas RLS de las tablas consultadas: cada función deberá demostrar controles internos y grants coherentes con su finalidad en `SUPA-AUD-009`.
+
+Las 137 funciones `INVOKER` de esquemas Vento se dividen en 133 con owner `postgres` y cuatro `unaccent*` con owner `supabase_admin`; el owner no eleva una llamada `INVOKER`, porque la ejecución utiliza al actor llamador.
+
+#### 7. Superficie de llamada en esquemas Vento
+
+La clase `anon` significa que `anon` posee `EXECUTE` efectivo; no significa acceso exclusivo de ese rol. Las categorías se construyen con precedencia `anon` → `authenticated` → sin rol cliente.
+
+| Modo      | Clase   |  `anon` | Solo `authenticated` | Sin rol cliente |   Total |
+| --------- | ------- | ------: | -------------------: | --------------: | ------: |
+| `DEFINER` | directa |  **44** |              **105** |          **30** | **179** |
+| `DEFINER` | trigger |   **1** |                **1** |          **29** |  **31** |
+| `INVOKER` | directa |  **81** |               **14** |           **0** |  **95** |
+| `INVOKER` | trigger |   **8** |                **0** |          **34** |  **42** |
+| **TOTAL** | —       | **134** |              **120** |          **93** | **347** |
+
+Una función de retorno `trigger` no constituye una RPC directa válida aunque conserve `EXECUTE`; sus grants se registran porque son superficie innecesaria o confusa que deberá reconciliarse con el trigger real en `SUPA-AUD-008` y con privilegios en `SUPA-AUD-009`.
+
+#### 8. Matriz ACL de las 210 funciones `SECURITY DEFINER` Vento
+
+| `PUBLIC EXECUTE` | Grant explícito `anon` | Grant explícito `authenticated` | Cantidad |
+| ---------------: | ---------------------: | ------------------------------: | -------: |
+|               no |                     no |                              no |   **59** |
+|               no |                     no |                              sí |  **106** |
+|               sí |                     no |                              sí |   **43** |
+|               sí |                     sí |                              sí |    **2** |
+|        **Total** |                      — |                               — |  **210** |
+
+Conclusiones estrictamente observables:
+
+- **45** funciones `DEFINER` conservan `EXECUTE` para `PUBLIC`; por herencia, `anon` y `authenticated` obtienen ejecución efectiva;
+- las 45 también tienen grant explícito para `authenticated`;
+- solo dos tienen además grant explícito para `anon`: `pass.catalog_item_allowed_option_groups` y `pass.catalog_item_option_group_is_allowed`;
+- las 210 tienen ACL explícita; ninguna depende únicamente del ACL por defecto;
+- **151** tienen `EXECUTE` explícito para `authenticated`;
+- **59** no conceden ejecución a `PUBLIC`, `anon` ni `authenticated`.
+
+La presencia de `PUBLIC EXECUTE` no demuestra explotación, pero sí una frontera de llamada más amplia que la intención aparente de varios helpers administrativos y operativos. Su justificación, autorización interna y eventual revocación pertenecen a `SUPA-AUD-009`, no a esta tarea.
+
+#### 9. Registro prioritario: 45 `SECURITY DEFINER` con `PUBLIC EXECUTE`
+
+El conjunto contiene 44 funciones directas y una función de trigger.
+
+##### 9.1 Funciones directas ejecutables por `anon`
+
+1. `pass.catalog_item_allowed_option_groups(p_catalog_item_id uuid)`
+2. `pass.catalog_item_option_group_is_allowed(p_catalog_item_id uuid, p_option_group_id uuid)`
+3. `public.archive_finished_order_conversations(p_site_id uuid)`
+4. `public.assert_inventory_uom_profile_stock_input(p_location_id uuid, p_location_position_id uuid, p_product_id uuid, p_uom_profile_id uuid, p_presentation_qty numeric, p_base_qty numeric)`
+5. `public.can_access_area(p_area_id uuid)`
+6. `public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)`
+7. `public.can_access_site(p_site_id uuid)`
+8. `public.create_order_checkout_draft(p_site_id uuid, p_satellite_name text, p_fulfillment_type text, p_contact_name text, p_contact_phone text, p_address_line text, p_address_reference text, p_notes text, p_items jsonb, p_delivery_fee_amount numeric, p_source text, p_delivery_distance_km integer, p_delivery_quote_id uuid)`
+9. `public.create_order_checkout_draft(p_site_id uuid, p_satellite_name text, p_fulfillment_type text, p_contact_name text, p_contact_phone text, p_address_line text, p_address_reference text, p_notes text, p_items jsonb, p_delivery_fee_amount numeric, p_source text, p_delivery_distance_km integer, p_delivery_quote_id uuid, p_invoice_requested boolean, p_billing_data jsonb)`
+10. `public.current_employee_area_id()`
+11. `public.current_employee_primary_site_id()`
+12. `public.current_employee_role()`
+13. `public.current_employee_selected_area_id()`
+14. `public.current_employee_selected_site_id()`
+15. `public.current_employee_site_id()`
+16. `public.current_shared_device_can_access_app(app_code_input text)`
+17. `public.ensure_order_conversation(p_order_id uuid)`
+18. `public.fogo_recipe_area_options(p_site_id uuid)`
+19. `public.get_client_order_chat_unread_counts(p_order_ids uuid[])`
+20. `public.get_site_cost_center(p_site_id uuid)`
+21. `public.get_staff_order_chat_unread_counts(p_site_id uuid)`
+22. `public.has_permission(p_permission_code text, p_site_id uuid, p_area_id uuid)`
+23. `public.is_active_staff()`
+24. `public.is_employee()`
+25. `public.is_global_manager()`
+26. `public.is_manager()`
+27. `public.is_manager_or_owner()`
+28. `public.is_owner()`
+29. `public.mark_order_conversation_read(p_conversation_id uuid)`
+30. `public.permission_scope_matches(p_scope_type permission_scope_type, p_context_site_id uuid, p_context_area_id uuid, p_scope_site_id uuid, p_scope_area_id uuid, p_scope_site_type site_type, p_scope_area_kind text)`
+31. `public.register_shift_departure_event(p_site_id uuid, p_distance_meters integer, p_accuracy_meters integer, p_source text, p_notes text, p_occurred_at timestamp with time zone)`
+32. `public.register_shift_departure_event_autoclose(p_site_id uuid, p_distance_meters integer, p_accuracy_meters integer, p_source text, p_notes text, p_occurred_at timestamp with time zone, p_auto_checkout_threshold_meters integer)`
+33. `public.resolve_internal_transfer_price(p_product_id uuid, p_seller_cost_center_id uuid, p_buyer_cost_center_id uuid, p_buyer_site_id uuid, p_unit_code text, p_at timestamp with time zone)`
+34. `public.resolve_internal_transfer_price_for_profile(p_product_id uuid, p_seller_cost_center_id uuid, p_buyer_cost_center_id uuid, p_buyer_site_id uuid, p_uom_profile_id uuid, p_unit_code text, p_at timestamp with time zone)`
+35. `public.set_order_conversation_archived(p_conversation_id uuid, p_archived boolean)`
+36. `public.shared_device_actor_is_allowed_v1(p_device_id uuid, p_actor_employee_id uuid, p_site_id uuid, p_area_id uuid)`
+37. `public.update_order_operational_state(p_order_id uuid, p_site_id uuid, p_operation text, p_dispatch_partner text, p_dispatch_reference text, p_metadata jsonb)`
+38. `talento.confirm_interview(p_interview_id uuid, p_public_note text)`
+39. `talento.respond_to_offer(p_application_id uuid, p_decision talento.offer_status, p_public_note text)`
+40. `talento.set_primary_application(p_application_id uuid)`
+41. `talento.submit_application(p_vacancy_id uuid, p_source text, p_metadata jsonb)`
+42. `vital.can_access_user(target_user_id uuid)`
+43. `vital.is_feature_enabled(p_flag_key text, p_user_id uuid)`
+44. `vital.is_squad_member(target_squad_id uuid)`
+
+##### 9.2 Función de trigger con grant cliente
+
+```text
+public.unarchive_order_conversation_from_client_message()
+```
+
+Esta función de trigger conserva `PUBLIC EXECUTE`, por lo que `anon` y `authenticated` tienen privilegio efectivo aunque PostgreSQL no permita usarla como una función directa normal. `SUPA-AUD-008` deberá comprobar su trigger consumidor y `SUPA-AUD-009` deberá decidir si el grant es necesario.
+
+#### 10. Funciones `DEFINER` con `row_security=off`
+
+Se observaron **14 funciones**, todas:
+
+- ubicadas en `public`;
+- directas;
+- con owner `postgres` y `BYPASSRLS`;
+- ejecutables por `PUBLIC`, `anon`, `authenticated` y `service_role`;
+- con `search_path=public`.
+
+- `public.can_access_area(p_area_id uuid)`
+- `public.can_access_site(p_site_id uuid)`
+- `public.current_employee_area_id()`
+- `public.current_employee_primary_site_id()`
+- `public.current_employee_role()`
+- `public.current_employee_selected_area_id()`
+- `public.current_employee_selected_site_id()`
+- `public.current_employee_site_id()`
+- `public.is_active_staff()`
+- `public.is_employee()`
+- `public.is_global_manager()`
+- `public.is_manager()`
+- `public.is_manager_or_owner()`
+- `public.is_owner()`
+
+`row_security=off` es una decisión explícita adicional al modo `SECURITY DEFINER`. Estas funciones parecen formar una capa de resolución de identidad, rol, sede, área y acceso, pero esa intención no sustituye la revisión de entradas, retorno mínimo, uso dentro de políticas, recursión y exposición RPC. La decisión contextual queda en `SUPA-AUD-009` y la arquitectura objetivo en `SUPA-ARC-*`.
+
+#### 11. `search_path` de funciones `SECURITY DEFINER`
+
+Las 210 funciones `DEFINER` de esquemas Vento tienen un `search_path` fijado. No existe ninguna con configuración ausente, pero tampoco existe una que use el patrón vacío `search_path=''` recomendado como endurecimiento máximo cuando todas las referencias están calificadas.
+
+| `search_path` Vento `DEFINER`       | Cantidad |
+| ----------------------------------- | -------: |
+| `public`                            |       89 |
+| `public, pg_temp`                   |       22 |
+| `public, auth`                      |       21 |
+| `public, pass`                      |       16 |
+| `talento, public`                   |       11 |
+| `public, pass, auth`                |       10 |
+| `pass, public`                      |        8 |
+| `public, payments`                  |        8 |
+| `public, vital, auth`               |        5 |
+| `public, auth, pass`                |        4 |
+| `public, extensions`                |        4 |
+| `public, app_private, extensions`   |        3 |
+| `pass, public, auth`                |        2 |
+| `public, auth, storage, extensions` |        2 |
+| `public, club, auth`                |        2 |
+| `app_private, public, extensions`   |        1 |
+| `public, pass, pg_temp`             |        1 |
+| `public, pos`                       |        1 |
+| **TOTAL**                           |  **210** |
+
+Resumen de endurecimiento:
+
+```text
+210 CON SEARCH_PATH FIJADO
+= 23 CON pg_temp EXPLÍCITO AL FINAL
++ 187 SIN pg_temp EXPLÍCITO
+
+0 CON SEARCH_PATH VACÍO
+```
+
+La ausencia de `pg_temp` explícito no se declara vulnerabilidad sin comprobar referencias no calificadas y capacidad real del llamador para crear objetos temporales. Se registra como condición que deberá evaluar `SUPA-AUD-009`, `SUPA-AUD-016` y la normalización posterior.
+
+Las tres funciones `DEFINER` administradas utilizan `search_path=''`:
+
+- `pgbouncer.get_auth(p_usename text)`;
+- `vault.create_secret(new_secret text, new_name text, new_description text, new_key_id uuid)`;
+- `vault.update_secret(secret_id uuid, new_secret text, new_name text, new_description text, new_key_id uuid)`.
+
+No se autoriza modificar esas funciones administradas.
+
+#### 12. Inventario `SECURITY INVOKER` de esquemas Vento
+
+```text
+137 SECURITY INVOKER
+= 95 DIRECTAS
++ 42 FUNCIONES DE TRIGGER
+```
+
+Privilegios efectivos observados:
+
+- **89** ejecutables por `anon`;
+- **103** ejecutables por `authenticated`;
+- **135** ejecutables por `service_role`;
+- dentro de las 95 directas, 81 son ejecutables por `anon` y las 14 restantes solo por `authenticated` entre los roles cliente evaluados.
+
+La ejecución `INVOKER` conserva RLS y privilegios del llamador, pero no valida por sí sola ownership de filas, territorio, contexto empresarial ni parámetros. La revisión funcional y de grants permanece en `SUPA-AUD-009` y `SUPA-AUD-023`.
+
+Cuatro funciones `INVOKER` sin `search_path` fijado pertenecen a la extensión `unaccent`, no a lógica Vento:
+
+- `public.unaccent(regdictionary, text)`;
+- `public.unaccent(text)`;
+- `public.unaccent_init(internal)`;
+- `public.unaccent_lexize(internal, internal, internal, internal)`.
+
+Su ausencia de `proconfig` no deberá generar una migración empresarial ni un reemplazo manual; se auditará como extensión en `SUPA-AUD-015`.
+
+#### 13. Señales estáticas auxiliares de autorización
+
+Sobre las 179 funciones `DEFINER` directas de esquemas Vento se buscaron, únicamente como señales textuales no concluyentes:
+
+| Señal estática                  | Funciones donde aparece |
+| ------------------------------- | ----------------------: |
+| `auth.uid()`                    |                      90 |
+| `auth.jwt()`                    |                       1 |
+| `current_user`                  |                       4 |
+| helper de permiso, rol o acceso |                      59 |
+| `RAISE EXCEPTION`               |                      94 |
+| ninguna de esas señales         |                      46 |
+
+Las categorías se superponen. La presencia de una señal no demuestra autorización correcta y su ausencia no demuestra vulnerabilidad: una función puede delegar en otra función, depender de RLS del invocador, resolver acceso mediante una vista o aplicar un contrato distinto.
+
+Dentro de las 44 funciones `DEFINER` directas ejecutables por `anon`, ocho no contienen ninguna de esas señales textuales:
+
+- `pass.catalog_item_allowed_option_groups(p_catalog_item_id uuid)`
+- `pass.catalog_item_option_group_is_allowed(p_catalog_item_id uuid, p_option_group_id uuid)`
+- `public.current_employee_area_id()`
+- `public.current_employee_site_id()`
+- `public.get_site_cost_center(p_site_id uuid)`
+- `public.resolve_internal_transfer_price(p_product_id uuid, p_seller_cost_center_id uuid, p_buyer_cost_center_id uuid, p_buyer_site_id uuid, p_unit_code text, p_at timestamp with time zone)`
+- `public.resolve_internal_transfer_price_for_profile(p_product_id uuid, p_seller_cost_center_id uuid, p_buyer_cost_center_id uuid, p_buyer_site_id uuid, p_uom_profile_id uuid, p_unit_code text, p_at timestamp with time zone)`
+- `public.shared_device_actor_is_allowed_v1(p_device_id uuid, p_actor_employee_id uuid, p_site_id uuid, p_area_id uuid)`
+
+Estas ocho reciben prioridad de revisión semántica en `SUPA-AUD-009`; no se clasifican como vulnerables en `SUPA-AUD-007`.
+
+#### 14. Funciones de trigger con grants de roles cliente
+
+Entre las 31 funciones `DEFINER` de trigger ubicadas en esquemas Vento:
+
+- una es ejecutable por `anon`: `public.unarchive_order_conversation_from_client_message()`;
+- una adicional es ejecutable por `authenticated`: `pass.validate_catalog_item_product_site()`;
+- 29 no son ejecutables por roles cliente.
+
+Entre las 42 funciones `INVOKER` de trigger:
+
+- ocho son ejecutables por `anon` mediante `PUBLIC EXECUTE`;
+- 34 no son ejecutables por roles cliente.
+
+`SUPA-AUD-008` deberá verificar si cada grant es necesario, pero la decisión de `REVOKE` permanece reservada a `SUPA-AUD-009` y a una transición aprobada.
+
+#### 15. Relación con los tres RPC defectuosos de `SUPA-AUD-006`
+
+Las tres RPC estructuralmente defectuosas son `SECURITY INVOKER`:
+
+- `public.apply_master_supplier_purchase_batch(p_changes jsonb)`;
+- `public.apply_master_presentation_version_batch(p_changes jsonb)`;
+- `public.apply_master_production_route_batch(p_changes jsonb)`.
+
+Cambiar estas funciones a `SECURITY DEFINER` no corregiría sus referencias inválidas y además ampliaría su poder de ejecución. Sus defectos continúan vinculados a `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-AUD-023`, `SUPA-TRANS-004` y al paquete E5 correspondiente.
+
+#### 16. Hallazgos y destino documental
+
+| Hallazgo                                                                      | Riesgo                                                                                  | Tarea responsable                              |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 210 funciones `DEFINER` en esquemas Vento ejecutan como owner con `BYPASSRLS` | autorización interna insuficiente o acceso más amplio que la intención empresarial      | `SUPA-AUD-009`, `SUPA-AUD-023`, `SUPA-ARC-*`   |
+| 45 `DEFINER` conservan `PUBLIC EXECUTE`                                       | superficie privilegiada disponible a roles no previstos                                 | `SUPA-AUD-009`, `SUPA-AUD-016`, `SUPA-AUD-017` |
+| 14 `DEFINER` combinan `PUBLIC EXECUTE` y `row_security=off`                   | bypass explícito usado fuera de políticas o helpers autorizados                         | `SUPA-AUD-009`, `SUPA-ARC-*`                   |
+| 187 `DEFINER` no colocan `pg_temp` explícitamente al final                    | posible shadowing si existen referencias no calificadas y capacidad de crear temporales | `SUPA-AUD-009`, `SUPA-AUD-016`, `SUPA-NORM-*`  |
+| cero `DEFINER` Vento usan `search_path=''`                                    | endurecimiento máximo no aplicado de forma uniforme                                     | `SUPA-AUD-009`, `SUPA-ARC-*`, `SUPA-NORM-*`    |
+| dos funciones de trigger `DEFINER` tienen grants cliente                      | privilegios confusos o innecesarios sobre funciones no invocables como RPC normal       | `SUPA-AUD-008`, `SUPA-AUD-009`                 |
+| cuatro `unaccent*` administradas residen en `public`                          | apropiación accidental de objetos de extensión o drift falso                            | `SUPA-AUD-015`, `SUPA-AUD-016`, `SUPA-AUD-017` |
+| ocho `DEFINER` anónimas carecen de señales estáticas simples                  | falsa confianza sin revisión semántica del cuerpo y dependencias                        | `SUPA-AUD-009`, `SUPA-AUD-023`                 |
+
+No queda hallazgo narrativo sin tarea responsable.
+
+#### 17. Decisiones que esta tarea no autoriza
+
+`SUPA-AUD-007` no autoriza:
+
+1. cambiar una función de `DEFINER` a `INVOKER` o viceversa;
+2. aplicar `GRANT`, `REVOKE` o cambios de privilegios por defecto;
+3. modificar `search_path`, `row_security`, owner, cuerpo, firma o volatilidad;
+4. asumir que las 45 funciones con `PUBLIC EXECUTE` son explotables;
+5. asumir que las 137 funciones `INVOKER` son seguras;
+6. ejecutar RPC mutantes para probarlas sobre datos reales;
+7. modificar funciones administradas por Supabase, PostgreSQL o extensiones;
+8. corregir los tres RPC defectuosos registrados en `SUPA-AUD-006`;
+9. adelantar la vinculación de triggers reservada a `SUPA-AUD-008`;
+10. cerrar la auditoría integral de grants, RLS y privilegios reservada a `SUPA-AUD-009`.
+
+#### 18. Requisitos de prueba derivados
+
+Se incorporan al registro canónico:
+
+```text
+TREQ-SUPABASE-086 a TREQ-SUPABASE-097
+```
+
+Protegen clasificación completa, reconciliación por esquema y owner, semántica de ejecución, superficie cliente, ACL de `PUBLIC`, `row_security=off`, `search_path`, objetos administrados, revisión heurística, continuidad con triggers y detección de drift.
+
+#### 19. Huellas de integridad
+
+```text
+SECURITY_MODE_REGISTRY_SHA256 = dd3f8c67682f07d8c382cac3da10dab6d3319110fa4978a19c20ab52ecbf8098
+SECURITY_DEFINER_REGISTRY_SHA256 = b4b931b5751f3f430771bba9258ff1ef7b69628c7a69ce9cddcd740a803c285e
+SECURITY_INVOKER_REGISTRY_SHA256 = 1d899264f73c5846ab95f3f64919119dfc948867f05c0b35e4bb18fd239f028c
+PUBLIC_EXECUTE_DEFINER_SHA256 = 7b98ec6492583870155a2b6a876457004e420211215bf247347b69dca4c8e1a5
+ROW_SECURITY_OFF_DEFINER_SHA256 = 9a9f0f92fdfe0c0fb45c716be7e8af479d4e1a97abe5169ed02761b35c2af129
+SEARCH_PATH_MATRIX_SHA256 = fd0ffa03fe489e9ebd1c86398bb677e899ecedc502c6732874b377d7f3848148
+ACL_MATRIX_SHA256 = 19423842665406774473c8a6bf8edd396e2baf706e732e262a55772019c0bbc5
+OBSERVED_AT_UTC = 2026-07-29T19:38:41.563719Z
+SUPABASE_PROJECT_REF = clzdpinthhtknkmefsxx
+POSTGRESQL_VERSION = 17.6
+```
+
+Toda variación de modo, owner, ACL, `search_path`, `row_security`, firma o pertenencia al conjunto de 45 deberá registrarse como drift en `SUPA-AUD-017` antes de utilizar el inventario para arquitectura, normalización o transición.
+
+#### 20. Resultado final
+
+`SUPA-AUD-007` deja inventariadas y reconciliadas:
+
+- **3.622** funciones normales: 213 `SECURITY DEFINER` y 3.409 `SECURITY INVOKER`;
+- **347** funciones ubicadas en esquemas Vento: 210 `DEFINER` y 137 `INVOKER`;
+- **343** funciones owner `postgres` y cuatro funciones `unaccent*` administradas por extensión dentro de `public`;
+- **179** `DEFINER` directas y 31 de trigger;
+- **95** `INVOKER` directas y 42 de trigger dentro de esquemas Vento;
+- **45** `DEFINER` con `PUBLIC EXECUTE`;
+- **14** `DEFINER` con `row_security=off`;
+- **210** `DEFINER` Vento con `search_path` fijado, 23 con `pg_temp` explícito y cero con `search_path=''`;
+- tres funciones `DEFINER` administradas con `search_path=''`;
+- ocho funciones anónimas priorizadas para revisión semántica, sin declararlas vulnerables.
+
+La tarea no modifica Supabase y no certifica todavía la autorización integral de ninguna función. La siguiente tarea deberá vincular las funciones de trigger con sus automatismos reales.
+
+
 ### [ ] SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers
 ### [ ] SUPA-AUD-009 — Inventariar políticas RLS, grants y privilegios por rol
 ### [ ] SUPA-AUD-010 — Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales
