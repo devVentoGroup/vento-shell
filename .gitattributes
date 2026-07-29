@@ -1,4 +1,7 @@
 # Mantener estable el formato de las fuentes y herramientas del plan canónico.
 docs/plan-canonico/modular/** text eol=lf
+# El compilado replica saltos Markdown significativos de las fuentes; no tratar
+# sus dos espacios finales como errores de whitespace del artefacto generado.
+docs/plan-canonico/modular/.generated/*.md whitespace=-blank-at-eol
 scripts/docs/** text eol=lf
 package.json text eol=lf

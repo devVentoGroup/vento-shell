@@ -841,6 +841,14 @@ identificador exacto en todos los archivos de `manifest.json`.
 Un carril vertical prioritario modifica prioridad de ejecución, no identidad,
 alcance final ni estado de las tareas canónicas.
 
+Invariantes estructurales:
+
+```text
+canonical_sequence_unchanged = true
+global_task_partial_approval_forbidden = true
+supabase_repository = vento-shell
+```
+
 Reglas obligatorias:
 
 1. la fuente estructurada será `priority-delivery-lanes.json`;

@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "sequence_id": "I-DOCUMENTAL-001",
-  "block_code": "BLOQUE I",
-  "block_title": "Navegación, pantallas y autorización de vistas",
-  "previous_task_id": "NFR-REQ-012",
+  "sequence_id": "X-DOCUMENTAL-001",
+  "block_code": "BLOQUE X",
+  "block_title": "Integraciones empresariales internas y externas",
+  "previous_task_id": "AUTH-UI-029",
   "segments": [
     {
-      "prefix": "AUTH-UI",
+      "prefix": "INT-APP",
       "from": 1,
-      "to": 29
+      "to": 10
     }
   ]
 }

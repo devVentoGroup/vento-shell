@@ -824,7 +824,411 @@ INT-APP-004 — Definir idempotencia
 APROBADA
 
 
-### [ ] INT-APP-003 — Definir aplicaciones consumidoras
+### ✅ INT-APP-003 — Definir aplicaciones consumidoras
+
+**Estado:** APROBADA
+**Fecha de aprobación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-003 — Definir aplicaciones consumidoras`
+**Tarea anterior:** `INT-APP-002 — Definir aplicación emisora de cada evento` — APROBADA
+**Siguiente tarea:** `INT-APP-004 — Definir idempotencia`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@26038ab9a60f95ac4c299473086d151c6f6e069f`
+**Tipo de tarea:** definición documental de audiencia, finalidad y proyección mínima de eventos; sin implementación, transporte, credenciales, Supabase, suscripciones reales, replay, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir las aplicaciones consumidoras de las **395 definiciones normales** de `ENTERPRISE-EVENT-CATALOG-001`, preservando la emisora única de `INT-APP-002` y las relaciones directas y condicionales aprobadas en `PROC-CAT-006`.
+
+```text
+EVENT_DEFINITION_ID
+        +
+PROCESS_ID
+        ↓
+PROC-APPLICATION-CONSUMER-REGISTRY-001
+        ↓
+CONSUMIDORAS DIRECTAS + CONSUMIDORAS CONDICIONALES
+        ↓
+FINALIDAD + PERFIL DE PROYECCIÓN + FILTRO DE SENSIBILIDAD
+```
+
+Esta tarea convierte el registro de consumo por proceso en un registro transversal por evento mediante **herencia explícita por rango**. No crea una audiencia abierta ni presupone que una relación documental ya esté implementada.
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                    | Revisión o blob                                         | Responsabilidad                                        |
+| --------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------ |
+| `vento-shell`                                             | `26038ab9a60f95ac4c299473086d151c6f6e069f`              | revisión remota con `INT-APP-002` y 04A integrados     |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`        | `999db2d534128cab6e784d35db4df9b857411f25`              | secuencia y contratos de `INT-APP-001` a `INT-APP-010` |
+| `PROC-CAT-006` / `PROC-APPLICATION-CONSUMER-REGISTRY-001` | `f716207c571ab33e1d22584c249d874c65a50501`              | 278 relaciones directas y 77 condicionales por proceso |
+| `PROC-CAT-017` / `ENTERPRISE-EVENT-CATALOG-001`           | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d`              | 395 definiciones materiales y sensibilidad             |
+| `INT-APP-002` / `ENTERPRISE-EVENT-PRODUCER-REGISTRY-001`  | integrado en `999db2d534128cab6e784d35db4df9b857411f25` | emisora única por definición                           |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`        | `7fd69ad3356b4cd999891fa9e2c3436c363103b7`              | línea base remota de 4.070 requisitos                  |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-EVENT-CONSUMER-REGISTRY-001@1.0.0
+```
+
+| Propiedad                       | Valor                                    | Regla                                                     |
+| ------------------------------- | ---------------------------------------- | --------------------------------------------------------- |
+| `registry_id`                   | `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001` | identidad estable del registro                            |
+| `registry_version`              | `1.0.0`                                  | primera asignación transversal                            |
+| `registry_status`               | `DEFINED`                                | contrato documental; no prueba implementación             |
+| `covered_processes`             | **69**                                   | `VPROC-0001` a `VPROC-0069`                               |
+| `normal_event_definitions`      | **395**                                  | todas las definiciones de `INT-APP-001`                   |
+| `process_direct_relations`      | **278**                                  | relaciones directas de `PROC-CAT-006`                     |
+| `process_conditional_relations` | **77**                                   | relaciones condicionales de `PROC-CAT-006`                |
+| `event_direct_relations`        | **1.576**                                | relaciones normalizadas evento-consumidora directa        |
+| `event_conditional_relations`   | **444**                                  | relaciones normalizadas evento-consumidora condicional    |
+| `event_consumer_relations`      | **2.020**                                | total de asignaciones, no entregas de runtime             |
+| `events_without_consumer`       | **0**                                    | todas las definiciones tienen audiencia potencial cerrada |
+| `deferred_relations`            | **197**                                  | 153 por AURA consumidora y 44 por AURA productora         |
+
+#### 4. Regla normativa de herencia
+
+Para cada definición normal:
+
+```text
+direct_consumers(event_definition_id)
+=
+direct_consumers(process_id)
+
+conditional_consumers(event_definition_id)
+=
+conditional_consumers(process_id)
+```
+
+La relación directa se aplica a toda ejecución del proceso que resulte pertinente para esa aplicación. La relación condicional solo se activa cuando una variante, canal, sede, tipo de recurso, efecto o decisión explícita involucra a la consumidora.
+
+Reglas:
+
+1. la emisora de `INT-APP-002` queda excluida de ambas listas;
+2. una aplicación no declarada en `PROC-CAT-006` no puede convertirse en consumidora desde BLOQUE X;
+3. las listas directas y condicionales son disjuntas y sin duplicados;
+4. una condición ausente, desconocida o ambigua falla cerrada;
+5. el registro define audiencia máxima y proyección mínima, no permisos ni suscripciones desplegadas;
+6. una consumidora no puede republicar el mismo evento cambiando la emisora;
+7. cualquier efecto derivado pertenece al dominio de la consumidora y conserva correlación.
+
+#### 5. Semántica de relación
+
+| Tipo                | Regla de entrega                                                                                   | Estado documental        |
+| ------------------- | -------------------------------------------------------------------------------------------------- | ------------------------ |
+| `DIRECT`            | recibe el contrato mínimo de cada evento material cuando la ejecución del proceso sea aplicable    | `DEFINED`                |
+| `CONDITIONAL`       | recibe únicamente si la condición empresarial declarada se cumple                                  | `DEFINED_WITH_CONDITION` |
+| `DEFERRED_CONSUMER` | relación cuya consumidora es `aura`; no existe suscripción activa                                  | `DEFINED_DEFERRED`       |
+| `DEFERRED_PRODUCER` | evento emitido por `aura`; ninguna relación está activa mientras la productora permanezca diferida | `DEFINED_DEFERRED`       |
+
+La cantidad de relaciones no representa volumen, frecuencia, prioridad, ancho de banda ni cantidad de instancias. Una emisión real puede producir cero o más entregas según condiciones, autorización, finalidad y disponibilidad contractual.
+
+#### 6. Finalidades canónicas por aplicación
+
+| Aplicación | Finalidad canónica de consumo                |
+| ---------- | -------------------------------------------- |
+| `shell`    | `ECOSYSTEM_CONTEXT_ACCESS_CONTINUITY`        |
+| `anima`    | `WORKER_SELF_SERVICE_CONFIRMATION`           |
+| `viso`     | `ADMINISTRATION_PEOPLE_RISK_COMPLIANCE`      |
+| `nexo`     | `INVENTORY_CUSTODY_ASSETS_LOGISTICS`         |
+| `fogo`     | `RECIPE_PRODUCTION_QUALITY`                  |
+| `origo`    | `PROCUREMENT_SUPPLIER_RECEIPT`               |
+| `pulso`    | `OFFER_ORDER_SERVICE_PAYMENT_DELIVERY`       |
+| `numera`   | `FINANCIAL_RECONCILIATION_COST_ANALYSIS`     |
+| `aura`     | `MARKETING_CAMPAIGN_OPPORTUNITY_ATTRIBUTION` |
+| `pass`     | `CUSTOMER_IDENTITY_LOYALTY_SELF_SERVICE`     |
+
+La finalidad de una relación es la intersección entre esta responsabilidad, la modalidad del proceso y el hecho confirmado por el evento. El nombre de una pantalla, reporte, job o equipo no constituye finalidad.
+
+#### 7. Perfiles mínimos de proyección
+
+| Modalidad de `PROC-CAT-006`        | Perfil de evento                 | Contenido máximo funcional                                                            |
+| ---------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------- |
+| `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | identidad, versión, vigencia, estado de publicación o retiro y referencia propietaria |
+| `REFERENCIA_Y_EVENTO`              | `VERSIONED_REFERENCE_PROJECTION` | referencia versionada, cambio material y resultado aplicable                          |
+| `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | hito, estado o hecho confirmado, referencia del resultado y alcance mínimo            |
+| `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | solicitud o traspaso correlacionado, responsabilidad, estado y resultado              |
+| `HECHO_Y_PROYECCION`               | `IMMUTABLE_FACT_PROJECTION`      | hecho inmutable, actor o contexto mínimo, versión y corrección vinculada              |
+| `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | solicitud correlacionada, efecto confirmado, cantidad o resultado mínimo y pendientes |
+| `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | señal aceptada, ejecución material, handoff y resultado correlacionado                |
+| `EVENTO_CONCILIACION_Y_PROYECCION` | `RECONCILIATION_PROJECTION`      | referencia origen, clasificación, conciliación, diferencia y resultado económico      |
+| `PROYECCION_EVENTO_Y_ANALISIS`     | `MARKETING_ANALYTICS_PROJECTION` | publicación o interacción, atribución permitida, agregado y limitaciones              |
+| `PROYECCION_Y_ANALISIS`            | `ANALYTICS_PROJECTION`           | resultado consolidado, periodo, definición, calidad y limitaciones                    |
+
+Todo perfil incluye solo los campos necesarios del `EVENT-ENVELOPE-001`. Documentos, fórmulas, datos personales completos, valores financieros detallados y secretos permanecen referenciados y protegidos.
+
+#### 8. Contrato mínimo de relación evento-consumidora
+
+| Campo                       | Regla                                                               |
+| --------------------------- | ------------------------------------------------------------------- |
+| `event_definition_id`       | definición `VPROC-####.EVT-###`                                     |
+| `process_id`                | proceso propietario del evento                                      |
+| `producer_application`      | emisora única de `INT-APP-002`                                      |
+| `consumer_application`      | aplicación del catálogo permitido                                   |
+| `consumer_relation`         | `DIRECT` o `CONDITIONAL`                                            |
+| `condition_ref`             | obligatoria para relación condicional; regla empresarial versionada |
+| `consumer_purpose_code`     | finalidad compatible con la aplicación, modalidad y evento          |
+| `projection_profile`        | uno de los diez perfiles cerrados                                   |
+| `sensitivity_class`         | clasificación heredada de `PROC-CAT-017`                            |
+| `field_allowlist_ref`       | contrato versionado de campos mínimos                               |
+| `authorization_requirement` | lectura o efecto deberá reautorizarse en la consumidora             |
+| `delivery_status`           | `DEFINED`, `DEFINED_WITH_CONDITION` o `DEFINED_DEFERRED`            |
+| `consumer_result_ref`       | efecto propio, ACK empresarial o estado pendiente correlacionado    |
+| `origin_task`               | `INT-APP-003`                                                       |
+
+#### 9. Registro explícito por proceso y rango de eventos
+
+Cada fila aplica a todas las definiciones del rango. Así se materializan las **2.020 relaciones normalizadas** sin duplicar 395 veces las mismas listas aprobadas por proceso.
+
+| Proceso      | Definiciones cubiertas                      | Eventos | Emisora  | Consumidoras directas                                                        | Consumidoras condicionales                                          | Modalidad                          | Perfil                           | Estado                      |
+| ------------ | ------------------------------------------- | ------: | -------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------- | -------------------------------- | --------------------------- |
+| `VPROC-0001` | `VPROC-0001.EVT-001` a `VPROC-0001.EVT-005` |   **5** | `viso`   | —                                                                            | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0002` | `VPROC-0002.EVT-001` a `VPROC-0002.EVT-006` |   **6** | `viso`   | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0003` | `VPROC-0003.EVT-001` a `VPROC-0003.EVT-004` |   **4** | `viso`   | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0004` | `VPROC-0004.EVT-001` a `VPROC-0004.EVT-006` |   **6** | `viso`   | —                                                                            | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0005` | `VPROC-0005.EVT-001` a `VPROC-0005.EVT-006` |   **6** | `viso`   | —                                                                            | `anima`, `numera`                                                   | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0006` | `VPROC-0006.EVT-001` a `VPROC-0006.EVT-006` |   **6** | `viso`   | `anima`, `shell`                                                             | `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`                  | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0007` | `VPROC-0007.EVT-001` a `VPROC-0007.EVT-006` |   **6** | `viso`   | `anima`, `shell`                                                             | `nexo`, `fogo`, `origo`, `pulso`, `numera`                          | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0008` | `VPROC-0008.EVT-001` a `VPROC-0008.EVT-005` |   **5** | `anima`  | `viso`, `numera`, `shell`                                                    | `nexo`, `fogo`, `origo`, `pulso`                                    | `HECHO_Y_PROYECCION`               | `IMMUTABLE_FACT_PROJECTION`      | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0009` | `VPROC-0009.EVT-001` a `VPROC-0009.EVT-006` |   **6** | `viso`   | `anima`, `shell`                                                             | `nexo`, `fogo`, `origo`, `pulso`, `numera`                          | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0010` | `VPROC-0010.EVT-001` a `VPROC-0010.EVT-006` |   **6** | `numera` | `viso`, `anima`                                                              | —                                                                   | `HECHO_Y_PROYECCION`               | `IMMUTABLE_FACT_PROJECTION`      | `DEFINED`                   |
+| `VPROC-0011` | `VPROC-0011.EVT-001` a `VPROC-0011.EVT-006` |   **6** | `viso`   | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`         | —                                                                   | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED`                   |
+| `VPROC-0012` | `VPROC-0012.EVT-001` a `VPROC-0012.EVT-006` |   **6** | `viso`   | `anima`, `nexo`, `fogo`, `origo`, `pulso`                                    | `numera`                                                            | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0013` | `VPROC-0013.EVT-001` a `VPROC-0013.EVT-006` |   **6** | `viso`   | `anima`, `nexo`, `fogo`, `origo`, `pulso`                                    | `numera`                                                            | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0014` | `VPROC-0014.EVT-001` a `VPROC-0014.EVT-006` |   **6** | `viso`   | `nexo`, `fogo`, `origo`, `pulso`, `anima`                                    | —                                                                   | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0015` | `VPROC-0015.EVT-001` a `VPROC-0015.EVT-004` |   **4** | `nexo`   | `fogo`, `origo`, `pulso`, `numera`, `pass`, `aura`, `viso`                   | —                                                                   | `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0016` | `VPROC-0016.EVT-001` a `VPROC-0016.EVT-005` |   **5** | `fogo`   | `nexo`, `pulso`, `numera`                                                    | `origo`                                                             | `REFERENCIA_Y_EVENTO`              | `VERSIONED_REFERENCE_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0017` | `VPROC-0017.EVT-001` a `VPROC-0017.EVT-004` |   **4** | `pulso`  | `pass`, `aura`, `nexo`, `fogo`, `numera`                                     | —                                                                   | `REFERENCIA_Y_EVENTO`              | `VERSIONED_REFERENCE_PROJECTION` | `DEFINED`                   |
+| `VPROC-0018` | `VPROC-0018.EVT-001` a `VPROC-0018.EVT-005` |   **5** | `nexo`   | `fogo`, `origo`, `pulso`, `pass`, `aura`, `viso`                             | —                                                                   | `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0019` | `VPROC-0019.EVT-001` a `VPROC-0019.EVT-005` |   **5** | `origo`  | `numera`                                                                     | `nexo`, `fogo`, `pulso`                                             | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0020` | `VPROC-0020.EVT-001` a `VPROC-0020.EVT-005` |   **5** | `origo`  | `numera`, `viso`                                                             | `nexo`, `fogo`                                                      | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0021` | `VPROC-0021.EVT-001` a `VPROC-0021.EVT-006` |   **6** | `origo`  | `nexo`, `numera`                                                             | `fogo`                                                              | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0022` | `VPROC-0022.EVT-001` a `VPROC-0022.EVT-006` |   **6** | `origo`  | `nexo`, `numera`                                                             | `fogo`, `pulso`                                                     | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0023` | `VPROC-0023.EVT-001` a `VPROC-0023.EVT-006` |   **6** | `nexo`   | `fogo`, `origo`, `pulso`, `viso`                                             | —                                                                   | `REFERENCIA_CANONICA`              | `REFERENCE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0024` | `VPROC-0024.EVT-001` a `VPROC-0024.EVT-006` |   **6** | `nexo`   | `origo`, `fogo`, `pulso`, `numera`                                           | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0025` | `VPROC-0025.EVT-001` a `VPROC-0025.EVT-006` |   **6** | `nexo`   | `fogo`, `pulso`, `origo`, `numera`                                           | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0026` | `VPROC-0026.EVT-001` a `VPROC-0026.EVT-006` |   **6** | `nexo`   | `numera`, `viso`                                                             | `fogo`, `pulso`, `origo`                                            | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0027` | `VPROC-0027.EVT-001` a `VPROC-0027.EVT-006` |   **6** | `nexo`   | `fogo`, `pulso`, `origo`, `viso`, `numera`                                   | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0028` | `VPROC-0028.EVT-001` a `VPROC-0028.EVT-006` |   **6** | `nexo`   | `fogo`, `origo`, `pulso`, `numera`                                           | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0029` | `VPROC-0029.EVT-001` a `VPROC-0029.EVT-006` |   **6** | `nexo`   | `viso`, `numera`, `anima`, `origo`                                           | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0030` | `VPROC-0030.EVT-001` a `VPROC-0030.EVT-006` |   **6** | `nexo`   | `origo`, `numera`, `viso`                                                    | `anima`                                                             | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0031` | `VPROC-0031.EVT-001` a `VPROC-0031.EVT-006` |   **6** | `nexo`   | `viso`, `numera`, `anima`, `origo`                                           | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0032` | `VPROC-0032.EVT-001` a `VPROC-0032.EVT-006` |   **6** | `nexo`   | `fogo`, `pulso`, `numera`                                                    | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0033` | `VPROC-0033.EVT-001` a `VPROC-0033.EVT-004` |   **4** | `fogo`   | `nexo`, `origo`, `pulso`, `numera`, `viso`                                   | —                                                                   | `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | `DEFINED`                   |
+| `VPROC-0034` | `VPROC-0034.EVT-001` a `VPROC-0034.EVT-006` |   **6** | `fogo`   | `nexo`, `numera`, `pulso`                                                    | —                                                                   | `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | `DEFINED`                   |
+| `VPROC-0035` | `VPROC-0035.EVT-001` a `VPROC-0035.EVT-006` |   **6** | `fogo`   | `nexo`, `pulso`, `viso`                                                      | `numera`                                                            | `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0036` | `VPROC-0036.EVT-001` a `VPROC-0036.EVT-006` |   **6** | `fogo`   | `nexo`, `pulso`, `numera`                                                    | —                                                                   | `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | `DEFINED`                   |
+| `VPROC-0037` | `VPROC-0037.EVT-001` a `VPROC-0037.EVT-006` |   **6** | `fogo`   | `nexo`, `numera`, `viso`                                                     | —                                                                   | `SEÑAL_EFECTO_Y_EVENTO`            | `EXECUTION_SIGNAL_PROJECTION`    | `DEFINED`                   |
+| `VPROC-0038` | `VPROC-0038.EVT-001` a `VPROC-0038.EVT-005` |   **5** | `pulso`  | `fogo`, `nexo`, `numera`, `pass`                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0039` | `VPROC-0039.EVT-001` a `VPROC-0039.EVT-005` |   **5** | `pulso`  | `fogo`, `nexo`, `numera`, `pass`                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0040` | `VPROC-0040.EVT-001` a `VPROC-0040.EVT-006` |   **6** | `pulso`  | `fogo`, `nexo`, `numera`                                                     | `pass`, `aura`                                                      | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0041` | `VPROC-0041.EVT-001` a `VPROC-0041.EVT-006` |   **6** | `pulso`  | `aura`, `fogo`, `nexo`, `origo`, `numera`                                    | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0042` | `VPROC-0042.EVT-001` a `VPROC-0042.EVT-006` |   **6** | `pulso`  | `fogo`, `nexo`, `numera`, `pass`                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0043` | `VPROC-0043.EVT-001` a `VPROC-0043.EVT-006` |   **6** | `pulso`  | `numera`, `pass`                                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0044` | `VPROC-0044.EVT-001` a `VPROC-0044.EVT-006` |   **6** | `pulso`  | `numera`, `viso`                                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0045` | `VPROC-0045.EVT-001` a `VPROC-0045.EVT-006` |   **6** | `pass`   | `pulso`, `aura`, `viso`, `numera`                                            | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0046` | `VPROC-0046.EVT-001` a `VPROC-0046.EVT-006` |   **6** | `pulso`  | `pass`, `numera`, `viso`, `aura`                                             | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0047` | `VPROC-0047.EVT-001` a `VPROC-0047.EVT-006` |   **6** | `pulso`  | `pass`, `aura`                                                               | `fogo`, `nexo`                                                      | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0048` | `VPROC-0048.EVT-001` a `VPROC-0048.EVT-005` |   **5** | `nexo`   | `pulso`, `fogo`, `origo`, `viso`, `numera`                                   | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0049` | `VPROC-0049.EVT-001` a `VPROC-0049.EVT-006` |   **6** | `nexo`   | `pulso`, `fogo`, `origo`, `numera`, `viso`                                   | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0050` | `VPROC-0050.EVT-001` a `VPROC-0050.EVT-006` |   **6** | `pulso`  | `pass`, `numera`, `nexo`                                                     | `aura`                                                              | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0051` | `VPROC-0051.EVT-001` a `VPROC-0051.EVT-006` |   **6** | `numera` | `viso`, `nexo`, `fogo`, `origo`, `pulso`                                     | `anima`, `aura`, `pass`                                             | `EVENTO_CONCILIACION_Y_PROYECCION` | `RECONCILIATION_PROJECTION`      | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0052` | `VPROC-0052.EVT-001` a `VPROC-0052.EVT-006` |   **6** | `numera` | `origo`                                                                      | `viso`                                                              | `EVENTO_CONCILIACION_Y_PROYECCION` | `RECONCILIATION_PROJECTION`      | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0053` | `VPROC-0053.EVT-001` a `VPROC-0053.EVT-006` |   **6** | `numera` | `pulso`                                                                      | `viso`, `aura`                                                      | `EVENTO_CONCILIACION_Y_PROYECCION` | `RECONCILIATION_PROJECTION`      | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0054` | `VPROC-0054.EVT-001` a `VPROC-0054.EVT-006` |   **6** | `numera` | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura`                             | —                                                                   | `EVENTO_CONCILIACION_Y_PROYECCION` | `RECONCILIATION_PROJECTION`      | `DEFINED`                   |
+| `VPROC-0055` | `VPROC-0055.EVT-001` a `VPROC-0055.EVT-006` |   **6** | `nexo`   | `viso`, `anima`, `fogo`, `origo`, `pulso`, `numera`                          | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0056` | `VPROC-0056.EVT-001` a `VPROC-0056.EVT-005` |   **5** | `aura`   | `pulso`, `pass`, `viso`, `numera`                                            | —                                                                   | `PROYECCION_EVENTO_Y_ANALISIS`     | `MARKETING_ANALYTICS_PROJECTION` | `DEFINED_DEFERRED_PRODUCER` |
+| `VPROC-0057` | `VPROC-0057.EVT-001` a `VPROC-0057.EVT-006` |   **6** | `aura`   | `pulso`, `pass`, `viso`, `numera`                                            | —                                                                   | `PROYECCION_EVENTO_Y_ANALISIS`     | `MARKETING_ANALYTICS_PROJECTION` | `DEFINED_DEFERRED_PRODUCER` |
+| `VPROC-0058` | `VPROC-0058.EVT-001` a `VPROC-0058.EVT-006` |   **6** | `viso`   | `anima`, `shell`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0059` | `VPROC-0059.EVT-001` a `VPROC-0059.EVT-006` |   **6** | `viso`   | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED`                   |
+| `VPROC-0060` | `VPROC-0060.EVT-001` a `VPROC-0060.EVT-005` |   **5** | `viso`   | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass`          | —                                                                   | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0061` | `VPROC-0061.EVT-001` a `VPROC-0061.EVT-006` |   **6** | `numera` | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima`            | —                                                                   | `PROYECCION_Y_ANALISIS`            | `ANALYTICS_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0062` | `VPROC-0062.EVT-001` a `VPROC-0062.EVT-006` |   **6** | `viso`   | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0063` | `VPROC-0063.EVT-001` a `VPROC-0063.EVT-006` |   **6** | `viso`   | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima`          | —                                                                   | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED`                   |
+| `VPROC-0064` | `VPROC-0064.EVT-001` a `VPROC-0064.EVT-006` |   **6** | `viso`   | —                                                                            | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima` | `PROYECCION_Y_EVENTO`              | `LIFECYCLE_PROJECTION`           | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0065` | `VPROC-0065.EVT-001` a `VPROC-0065.EVT-006` |   **6** | `viso`   | `anima`, `numera`                                                            | —                                                                   | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED`                   |
+| `VPROC-0066` | `VPROC-0066.EVT-001` a `VPROC-0066.EVT-006` |   **6** | `viso`   | `anima`, `nexo`                                                              | `fogo`, `origo`, `pulso`, `shell`                                   | `SOLICITUD_HANDOFF_Y_EVENTO`       | `HANDOFF_PROJECTION`             | `DEFINED_WITH_CONDITIONS`   |
+| `VPROC-0067` | `VPROC-0067.EVT-001` a `VPROC-0067.EVT-006` |   **6** | `nexo`   | `fogo`, `pulso`, `origo`, `numera`, `viso`                                   | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`        | `EFFECT_CONFIRMATION_PROJECTION` | `DEFINED`                   |
+| `VPROC-0068` | `VPROC-0068.EVT-001` a `VPROC-0068.EVT-006` |   **6** | `pulso`  | `pass`, `aura`, `viso`, `numera`                                             | —                                                                   | `PROYECCION_EVENTO_Y_ANALISIS`     | `MARKETING_ANALYTICS_PROJECTION` | `DEFINED`                   |
+| `VPROC-0069` | `VPROC-0069.EVT-001` a `VPROC-0069.EVT-006` |   **6** | `numera` | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura`                             | —                                                                   | `PROYECCION_Y_ANALISIS`            | `ANALYTICS_PROJECTION`           | `DEFINED`                   |
+
+#### 10. Distribución reconciliada por aplicación consumidora
+
+| Consumidora | Procesos directos | Procesos condicionales | Relaciones de evento directas | Relaciones de evento condicionales |   Total | Finalidad                                    | Estado                      |
+| ----------- | ----------------: | ---------------------: | ----------------------------: | ---------------------------------: | ------: | -------------------------------------------- | --------------------------- |
+| `shell`     |                10 |                      1 |                            57 |                                  6 |  **63** | `ECOSYSTEM_CONTEXT_ACCESS_CONTINUITY`        | `DEFINED`                   |
+| `anima`     |                21 |                      6 |                           123 |                                 35 | **158** | `WORKER_SELF_SERVICE_CONFIRMATION`           | `DEFINED`                   |
+| `viso`      |                28 |                      2 |                           159 |                                 12 | **171** | `ADMINISTRATION_PEOPLE_RISK_COMPLIANCE`      | `DEFINED`                   |
+| `nexo`      |                31 |                     10 |                           176 |                                 56 | **232** | `INVENTORY_CUSTODY_ASSETS_LOGISTICS`         | `DEFINED`                   |
+| `fogo`      |                33 |                     14 |                           187 |                                 80 | **267** | `RECIPE_PRODUCTION_QUALITY`                  | `DEFINED`                   |
+| `origo`     |                32 |                     10 |                           183 |                                 57 | **240** | `PROCUREMENT_SUPPLIER_RECEIPT`               | `DEFINED`                   |
+| `pulso`     |                36 |                     11 |                           205 |                                 63 | **268** | `OFFER_ORDER_SERVICE_PAYMENT_DELIVERY`       | `DEFINED`                   |
+| `numera`    |                47 |                     10 |                           265 |                                 59 | **324** | `FINANCIAL_RECONCILIATION_COST_ANALYSIS`     | `DEFINED`                   |
+| `aura`      |                19 |                      8 |                           106 |                                 47 | **153** | `MARKETING_CAMPAIGN_OPPORTUNITY_ATTRIBUTION` | `DEFINED_DEFERRED_CONSUMER` |
+| `pass`      |                21 |                      5 |                           115 |                                 29 | **144** | `CUSTOMER_IDENTITY_LOYALTY_SELF_SERVICE`     | `DEFINED`                   |
+
+```text
+PROCESOS CUBIERTOS                         69
+DEFINICIONES CUBIERTAS                    395
+RELACIONES DE PROCESO DIRECTAS            278
+RELACIONES DE PROCESO CONDICIONALES        77
+RELACIONES DE EVENTO DIRECTAS           1.576
+RELACIONES DE EVENTO CONDICIONALES        444
+RELACIONES DE EVENTO TOTALES            2.020
+EVENTOS SIN AUDIENCIA POTENCIAL             0
+RELACIONES AURA DIFERIDAS                  197
+```
+
+#### 11. Fronteras críticas
+
+##### 11.1. ORIGO, NEXO y NUMERA
+
+La aceptación comercial, el ingreso físico y la obligación económica permanecen hechos distintos. Consumir uno no permite inferir ni registrar los otros.
+
+##### 11.2. FOGO, NEXO y PULSO
+
+Producción terminada, disposición de calidad, movimiento de inventario y cumplimiento de pedido se correlacionan, pero no son estados equivalentes ni escrituras compartidas.
+
+##### 11.3. PULSO, PASS, AURA y NUMERA
+
+Venta, fidelización, mercadeo y efecto económico conservan finalidades, ledgers y proyecciones separadas. PULSO no mantiene saldo de PASS; AURA no gobierna pedidos; NUMERA no reconstruye ventas.
+
+##### 11.4. VISO, ANIMA y SHELL
+
+VISO gobierna los procesos laborales asignados, ANIMA consume la experiencia personal y emite asistencia, y SHELL solo consume estructura, acceso, contexto, soporte o continuidad donde figure declarado.
+
+#### 12. Sistemas externos, servicios técnicos y notificaciones
+
+No son `consumer_application` interna:
+
+- Rappi, Shopify, ManyChat, bancos, proveedores de pago, mensajería, autoridades o asesores;
+- Supabase, tablas, triggers, outbox, topics, colas, workers o paquetes compartidos;
+- servicios de impresión, notificación, auditoría, documentos u observabilidad;
+- sedes, áreas, roles, actores o dispositivos.
+
+Los terceros consumen adaptaciones externas mediante contratos `INT-EXT-*`. Una notificación humana se deriva del evento y no se contabiliza como consumidora empresarial.
+
+#### 13. Familias condicionales, replay y evolución
+
+1. Las ocho familias condicionales heredan el conjunto máximo de consumidoras del proceso.
+2. Su entrega exige que la aplicación necesite el efecto excepcional exacto.
+3. Replay y backfill conservan la audiencia histórica o una migración explícita.
+4. Una consumidora añadida posteriormente no recibe historia automáticamente.
+5. Cambiar o retirar una consumidora exige versión, inventario de dependencias, compatibilidad, reconciliación, pruebas y rollback.
+6. Un mapping legacy exige equivalencia de proceso, evento, finalidad, sensibilidad, condición, proyección y efecto.
+
+#### 14. Decisiones reservadas
+
+| Decisión                                               | Tarea propietaria |
+| ------------------------------------------------------ | ----------------- |
+| claves y alcance de idempotencia por entrega           | `INT-APP-004`     |
+| reintentos y backoff por consumidora                   | `INT-APP-005`     |
+| compensaciones por efecto irreversible                 | `INT-APP-006`     |
+| auditoría de publicación, filtrado y consumo           | `INT-APP-007`     |
+| estados pendientes de sincronización                   | `INT-APP-008`     |
+| error parcial, rechazo y dead-letter                   | `INT-APP-009`     |
+| comandos y prohibiciones de escritura cruzada          | `INT-APP-010`     |
+| allowlists, esquemas, outbox, RLS y migraciones        | BLOQUES H, E3 y R |
+| topics, colas, subscriptions, workers y observabilidad | BLOQUE E4         |
+| implementación, piloto, cutover y rollback             | BLOQUE E5         |
+
+#### 15. Cambios no autorizados
+
+`INT-APP-003` no autoriza:
+
+- crear tablas, schemas, outbox, triggers, funciones, RPC, RLS o migraciones;
+- crear topics, colas, subscriptions, workers, webhooks o endpoints;
+- publicar o consumir eventos reales;
+- habilitar AURA;
+- conceder permisos o acceso a datos;
+- definir reintentos, dead-letter, compensaciones o idempotencia física;
+- ejecutar replay, backfill, piloto, cutover o producción;
+- modificar propiedad, emisoras o las listas aprobadas en `PROC-CAT-006`.
+
+#### 16. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-080 a TREQ-INTEGRATION-107
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA_INT-APP-003.md`.
+
+#### 17. Huellas de integridad
+
+```text
+EVENT_CONSUMER_PROCESS_MAPPING_SHA256 = 1cc14cdd007fe5f51c853222305d905d6bbc0cbd7ca50294940e926a5ebee887
+EVENT_CONSUMER_DISTRIBUTION_SHA256 = dd2e5b86ee22b8fd791e42c8aa4d9a92197e579533469f6dc56196ae170a8831
+EVENT_PROJECTION_PROFILE_VOCABULARY_SHA256 = 01a00e7bb299b48fc593dfd8ccd5939b956d43c25a3fc3f07af45884e3dcebfe
+EVENT_CONSUMER_PURPOSE_VOCABULARY_SHA256 = 29fc68ee23e6b61c8ccb75eb7ff330fda415b75fb5b3e9e4ee452a05a0578abf
+PROCESS_CONSUMER_SOURCE_BLOB_SHA1 = f716207c571ab33e1d22584c249d874c65a50501
+EVENT_CATALOG_SOURCE_BLOB_SHA1 = 683c2540d88a7c665c8fd05cd6beb0fd74645b4d
+REMOTE_04A_SOURCE_BLOB_SHA1 = 7fd69ad3356b4cd999891fa9e2c3436c363103b7
+```
+
+#### 18. Criterios de aceptación
+
+- [x] `INT-APP-002` figura aprobada en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se cubrieron exactamente 69 procesos y 395 definiciones.
+- [x] Se preservaron 278 relaciones directas y 77 condicionales de `PROC-CAT-006`.
+- [x] Se materializaron 1.576 relaciones directas y 444 condicionales por evento.
+- [x] La emisora quedó excluida de todas las listas.
+- [x] No existen consumidoras duplicadas ni simultáneamente directas y condicionales.
+- [x] Se definieron finalidad, condición, sensibilidad y perfil mínimo de proyección.
+- [x] SHELL quedó limitado a 63 relaciones de evento.
+- [x] Las 197 relaciones vinculadas a AURA quedaron diferidas.
+- [x] Ningún tercero, plataforma o servicio técnico figura como consumidora interna.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 28 requisitos completos.
+
+#### 19. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `26038ab9a60f95ac4c299473086d151c6f6e069f`            |
+| Blob del mini-bloque X                       | `999db2d534128cab6e784d35db4df9b857411f25`            |
+| Blob de propiedad y consumidoras             | `f716207c571ab33e1d22584c249d874c65a50501`            |
+| Blob del catálogo de eventos                 | `683c2540d88a7c665c8fd05cd6beb0fd74645b4d`            |
+| Blob 04A remoto base                         | `7fd69ad3356b4cd999891fa9e2c3436c363103b7`            |
+| Procesos cubiertos                           | **69**                                                |
+| Definiciones normales                        | **395**                                               |
+| Relaciones directas por proceso              | **278**                                               |
+| Relaciones condicionales por proceso         | **77**                                                |
+| Relaciones directas por evento               | **1.576**                                             |
+| Relaciones condicionales por evento          | **444**                                               |
+| Total de relaciones por evento               | **2.020**                                             |
+| Requisitos base                              | **4.070**                                             |
+| Requisitos nuevos                            | **28**                                                |
+| Total regenerado                             | **4.098**                                             |
+| Dominio INTEGRATION                          | **107 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-107** |
+| Filas con catorce columnas                   | **4.098 de 4.098**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.070**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 20. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-003 — Definir aplicaciones consumidoras` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+
+#### 21. Continuidad aprobada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-003 — Definir aplicaciones consumidoras
+        ↓
+TAREA ACTUAL
+INT-APP-004 — Definir idempotencia
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-005 — Definir reintentos
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-004 — Definir idempotencia
 ### [ ] INT-APP-005 — Definir reintentos
 ### [ ] INT-APP-006 — Definir compensaciones

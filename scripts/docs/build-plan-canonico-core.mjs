@@ -11,6 +11,7 @@ import {
   validateScreenStepBindings,
 } from './validate-screen-contract-matrices.mjs';
 import { validateBlockISurfaceMatrices } from './validate-block-i-surface-matrices.mjs';
+import { validatePriorityDeliveryLanes } from './validate-priority-delivery-lanes.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -148,6 +149,17 @@ try {
   );
 } catch (error) {
   fail(`Matrices BLOQUE I inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const laneStats = validatePriorityDeliveryLanes({ root });
+  console.log(
+    `OK: carriles prioritarios; ${laneStats.lanes} registrado(s); `
+    + `${laneStats.designated} designado(s) no listo(s); `
+    + `${laneStats.referencedTasks} tareas referenciadas.`
+  );
+} catch (error) {
+  fail(`Carriles prioritarios inválidos:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 let compiled = '';

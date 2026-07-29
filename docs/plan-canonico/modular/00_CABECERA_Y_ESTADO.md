@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **373** |
+| Tareas aprobadas | **374** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1202** |
+| Tareas no iniciadas | **1201** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.68% (373/1575)** |
+| Porcentaje de completamiento | **23.75% (374/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-029 — Identificar vistas técnicas que no deben ser permisos** |
-| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 29 de 29 aprobadas; secuencia documental completa** |
+| Última tarea aprobada | **INT-APP-003 — Definir aplicaciones consumidoras** |
+| Tarea actual | **INT-APP-004 — Definir idempotencia** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **INT-APP-005 — Definir reintentos** |
+| Bloque actual | **BLOQUE X — Integraciones empresariales internas y externas** |
+| Progreso del bloque | **BLOQUE X: 3 de 10 aprobadas; INT-APP-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos |
-| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | NINGUNA — SECUENCIA DOCUMENTAL COMPLETA |
+| Última aprobada | `INT-APP-003` — Definir aplicaciones consumidoras |
+| Tarea actual | `INT-APP-004` — Definir idempotencia — **NO INICIADA** |
+| Siguiente tarea | `INT-APP-005` — Definir reintentos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **29 DE 29 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
+| BLOQUE X | **3 DE 10 APROBADAS — ACTUAL INT-APP-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,10 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-029 — Identificar vistas técnicas que no deben ser permisos
+INT-APP-003 — Definir aplicaciones consumidoras
         ↓
-SECUENCIA DOCUMENTAL COMPLETA
+TAREA ACTUAL
+INT-APP-004 — Definir idempotencia
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-005 — Definir reintentos
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 29 de 29 tareas aprobadas
+BLOQUE X — 3 de 10 tareas aprobadas
 ```
