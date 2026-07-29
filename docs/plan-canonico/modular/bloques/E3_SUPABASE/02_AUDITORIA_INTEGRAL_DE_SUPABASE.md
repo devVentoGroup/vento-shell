@@ -5796,7 +5796,398 @@ SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de ve
 ```
 
 
-### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
+### ✅ SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de vento-shell`
+**Tarea anterior:** `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit `d7515ec3a4b1229fcd36c1461467f8e3316a85df`
+**Tipo de tarea:** auditoría documental y técnica read-only de historia de migraciones, catálogo remoto, configuración local, recursos administrados y Edge Functions; sin ejecutar `db push`, `db pull`, `db diff`, replay, repair, DDL, DML, despliegues ni cambios remotos
+
+#### 1. Objetivo
+
+Determinar qué parte del estado remoto puede atribuirse de forma verificable a `vento-shell`, qué diferencias ya están confirmadas y qué paridad permanece no certificable hasta ejecutar replay y validadores automatizados:
+
+```text
+ARCHIVOS VERSIONADOS EN VENTO-SHELL
+        +
+HISTORIA REMOTA DE MIGRACIONES
+        +
+CATÁLOGO POSTGRESQL Y RECURSOS ADMINISTRADOS
+        +
+CONFIG.TOML Y EDGE FUNCTIONS
+        ↓
+PARIDAD POR VERSIÓN, CONTENIDO, CONFIGURACIÓN Y PROCEDENCIA
+```
+
+Coincidir en timestamp no demuestra igualdad de SQL. Coincidir en estructura PostgreSQL tampoco demuestra paridad de publicaciones, buckets, cron, secretos, Auth o bundles Edge.
+
+#### 2. Regla canónica derivada
+
+```text
+Ningún estado remoto se considerará reproducible por existir en schema_migrations. La paridad exige archivo local, versión válida, contenido inmutable, procedencia, replay limpio, fingerprint estructural, configuración por ambiente y registros complementarios para recursos que el diff no cubre completamente.
+```
+
+#### 3. Alcance y método
+
+Se inspeccionaron sin mutación:
+
+- las 549 filas de `supabase_migrations.schema_migrations`, incluyendo nombre, conteo de statements, actor y metadatos disponibles;
+- hashes server-side del SQL almacenado, sin copiar secretos ni comandos sensibles al artefacto;
+- archivos puntuales de `vento-shell` para confirmar la entrada vacía, duplicados exactos, versiones inválidas y última migración;
+- `README.md`, la guía de migraciones centralizadas, `package.json` y `supabase/config.toml`;
+- las 24 Edge Functions activas, `verify_jwt`, versión, entrypoint y bundle SHA;
+- catálogo remoto de relaciones, columnas, constraints, índices, funciones, triggers, políticas, publicaciones, buckets, extensiones y cron;
+- documentación oficial de Supabase sobre `migration list`, `db diff`, configuración local, buckets y Edge Functions.
+
+No se ejecutó el replay de las migraciones ni un `db diff --linked`. Por tanto, esta tarea no declara que los 549 archivos locales existan o que reconstruyan exactamente el remoto; formaliza la evidencia comprobada y el gate que deberá certificarlo.
+
+#### 4. Fuentes congeladas
+
+| Fuente                         | Corte                                                                                  | Responsabilidad                                |
+| ------------------------------ | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `SUPA-AUD-015.md` aprobado     | SHA-256 `f28c712163ed7d02d2d12265f5e8df223084a19b0638210b29f4f045e7a8fdaf`             | continuidad documental                         |
+| 04A aprobado                   | SHA-256 `5724d6b016b0eb41d88b3da8f83cfb78006ad66afae40eda30e21a522190cba5`; 4537 filas | requisitos hasta `TREQ-SUPABASE-242`           |
+| Supabase `vento-os-dev`        | 2026-07-29                                                                             | historia, catálogo y recursos administrados    |
+| `vento-shell` rama `main`      | commit `d7515ec3a4b1229fcd36c1461467f8e3316a85df`                                      | archivos y configuración declarados            |
+| `supabase/config.toml`         | blob `cc013305bf617ba469cde361bc57d035b423847f`                                        | configuración local y reglas Edge declaradas   |
+| `package.json`                 | blob `e4678a38f43183b8218e7598f1c9a48f392b159e`                                        | scripts y versiones de toolchain               |
+| Documentación oficial Supabase | consultada 2026-07-29                                                                  | semántica de migraciones, diff y configuración |
+
+#### 5. Resultado ejecutivo
+
+| Métrica                                                |                      Resultado |
+| ------------------------------------------------------ | -----------------------------: |
+| Migraciones remotas                                    |                        **549** |
+| Versiones remotas únicas                               |                        **549** |
+| Nombres únicos                                         |                        **533** |
+| Nombres reutilizados                                   |                         **16** |
+| Migraciones remotas sin statements                     |                          **1** |
+| Pares de payload SQL idéntico bajo versiones distintas |                          **2** |
+| Versiones con timestamp no válido                      | **3** más baseline intencional |
+| Filas con rollback                                     |                          **0** |
+| Filas con idempotency key                              |                          **0** |
+| Filas con actor `created_by`                           |                         **85** |
+| Filas sin actor                                        |                        **464** |
+| Última versión remota                                  |               `20260716170000` |
+| Edge Functions remotas activas                         |                         **24** |
+| Distribución remota `verify_jwt`                       |         **12 true / 12 false** |
+| Entradas `verify_jwt=false` en config                  |                         **11** |
+| Buckets remotos                                        |                         **14** |
+| Publicaciones remotas                                  |                          **2** |
+| Cron jobs activos                                      |                          **7** |
+| Brechas formalizadas                                   |                         **28** |
+| Requisitos nuevos                                      |                         **30** |
+
+#### 6. Historia de migraciones
+
+##### 6.1 Integridad básica
+
+La historia remota contiene 549 versiones distintas entre `00000000000000` y `20260716170000`. La última migración remota tiene archivo correspondiente en `vento-shell`:
+
+```text
+supabase/migrations/20260716170000_add_route_snapshot_to_restock_item_fulfillments.sql
+```
+
+Esto es evidencia positiva puntual, no certificación de que las otras 548 versiones estén presentes y sean idénticas.
+
+##### 6.2 Entrada vacía confirmada
+
+La versión `20260707173357_employees_document_identity` tiene cero statements en remoto. El archivo Git correspondiente existe y está vacío. La versión inmediata `20260707173408` reutiliza el mismo nombre y contiene la implementación real de siete statements.
+
+Dictamen: la fila vacía no produjo esquema, pero contamina el historial y demuestra que el control actual permite archivos sin contenido.
+
+##### 6.3 Duplicados exactos
+
+Se verificaron dos pares con mismo nombre, mismo blob Git y mismo hash SQL remoto:
+
+| Nombre                                        | Versiones                          | Dictamen         |
+| --------------------------------------------- | ---------------------------------- | ---------------- |
+| `human_permission_catalog_configured_flag_v2` | `20260709134106`, `20260709143932` | duplicado exacto |
+| `shared_operational_devices_base`             | `20260709145349`, `20260709160904` | duplicado exacto |
+
+Otros catorce nombres también se repiten, pero con payload distinto; requieren clasificación como corrección, reimportación, reconciliación o colisión semántica.
+
+##### 6.4 Versiones no temporales
+
+Tres archivos y filas remotas usan catorce dígitos, pero no representan una hora válida:
+
+- `20260531265000_product_master_review_requests`;
+- `20260602555555_add_product_site_production_routes`;
+- `20260602600000_update_fogo_real_production_batch_routes`.
+
+El orden lexicográfico funciona, pero la columna de tiempo y las herramientas que interpretan UTC quedan semánticamente rotas.
+
+##### 6.5 Procedencia y reversibilidad
+
+- 85 filas registran `created_by`; 464 no;
+- ninguna fila registra `idempotency_key`;
+- ninguna fila conserva arreglo `rollback`;
+- existen dos snapshots `remote_schema` con 1156 y 2412 statements;
+- existen 10 nombres `preview`, tres `from_dev`, nueve `reconcile`, cuatro `manual` y dos nombres con punto.
+
+No se concluye automáticamente que las filas sin actor sean manuales. Sí se concluye que la historia no permite reconstruir de manera uniforme quién, cómo y desde qué commit aplicó cada cambio.
+
+#### 7. Fuente canónica declarada y artefactos ausentes
+
+`README.md` y `docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md` declaran que `vento-shell/supabase/migrations` es la fuente canónica. Ambos referencian `supabase/MIGRATION_MANIFEST.md`, pero el archivo no existe en `main`. La guía también referencia `supabase/schema.sql`, igualmente ausente.
+
+Consecuencias:
+
+1. no hay inventario legible y validable de versiones, hashes y estado remoto;
+2. la documentación de aplicación y troubleshooting apunta a artefactos inexistentes;
+3. la comparación exacta depende hoy de recorrer archivos y consultar el remoto de forma ad hoc;
+4. no existe snapshot estructural canónico complementario para revisión humana.
+
+#### 8. Configuración local frente al remoto
+
+##### 8.1 Controles compatibles
+
+| Control          | Local       | Remoto                | Resultado                  |
+| ---------------- | ----------- | --------------------- | -------------------------- |
+| PostgreSQL major | `17`        | `17`                  | compatible                 |
+| Edge runtime     | habilitado  | 24 funciones activas  | compatible a nivel general |
+| Deno major       | `2`         | plataforma Deno 2     | compatible a nivel mayor   |
+| Migrations       | habilitadas | history activa        | compatible                 |
+| Realtime         | habilitado  | publicaciones activas | compatible a nivel general |
+
+##### 8.2 Diferencias confirmadas de Edge Functions
+
+| Función                   | Fuente                                                    | config.toml        | Remoto                     | Dictamen                                   |
+| ------------------------- | --------------------------------------------------------- | ------------------ | -------------------------- | ------------------------------------------ |
+| `club-revenuecat-webhook` | existe en `vento-shell`                                   | `verify_jwt=false` | no desplegada              | fuente/config sin remoto                   |
+| `payments-return`         | existe en `vento-shell`                                   | sin entrada        | activa, `verify_jwt=false` | configuración implícita                    |
+| `delivery-portal`         | no localizada en `vento-shell` ni búsqueda organizacional | sin entrada        | activa, `verify_jwt=false` | función remota huérfana de fuente canónica |
+
+Diez entradas `verify_jwt=false` coinciden entre config y remoto. Las doce funciones remotas con `verify_jwt=true` dependen del default al no estar declaradas individualmente. El contrato canónico deberá ser explícito para las 24.
+
+##### 8.3 Configuración que no puede compararse por equivalencia directa
+
+`config.toml` es configuración del stack local. Contiene localhost, parámetros de desarrollo, Auth local y red local sin restricciones. No prueba la configuración hosted. Debe dividirse entre:
+
+- configuración estrictamente local;
+- contrato deseado por ambiente;
+- snapshot redactado del remoto;
+- diferencias justificadas y aprobadas.
+
+#### 9. Recursos no cubiertos por historia de migraciones
+
+##### 9.1 Storage
+
+El remoto contiene 14 buckets; `config.toml` no declara ninguna sección `storage.buckets.*`. Algunos buckets se crearon por SQL y políticas versionadas, pero la existencia, privacidad, límite y MIME types son filas de configuración que no quedan cubiertas completamente por un schema diff.
+
+##### 9.2 Realtime
+
+Existen dos publicaciones:
+
+- `supabase_realtime`, con seis relaciones empresariales enumeradas;
+- `supabase_realtime_messages_publication`, con `realtime.messages`.
+
+`config.toml` solo habilita Realtime y no declara miembros de publicación ni replica identity.
+
+##### 9.3 Cron y automatizaciones
+
+Existen siete cron jobs activos. Su schedule, comando redactado y autenticación no forman parte de `config.toml`; además, un squash puede omitir DML que crea cron, buckets o secretos.
+
+##### 9.4 Auth, API y red
+
+No pudo obtenerse un snapshot administrativo completo de Auth hosted, redirects, SMTP, rate limits, restricciones de red o branches. La sesión SQL tampoco expone la lista runtime de schemas PostgREST. Estas superficies quedan como paridad no certificada, no como configuración segura.
+
+#### 10. Fingerprint remoto congelado
+
+| Componente                      | Objetos o filas | SHA-256                                                            |
+| ------------------------------- | --------------: | ------------------------------------------------------------------ |
+| relaciones                      |             436 | `ead1df32ff00152fcfe5091c2b622dd2c822a6e21222f0a1a9da5d9e84b05539` |
+| columnas                        |            5116 | `4e91e7c536c45279e9f56800e3423abe5adc616dc6cdbbe1e8c6da7d44f0ddbc` |
+| constraints                     |            1944 | `d0c802e2a4bd66a30a14d899a639c3fc65f7715406f5c993c27cdf0ff848cf74` |
+| índices                         |            1122 | `4fed1d7a3c103e086abbd989c56dfe79deefdf6ec6735ec36c51025f2f472262` |
+| funciones                       |             464 | `3d1cbc83ae80c4620ce0c921fbda4113238a97e9cd939344b457a0b216613c32` |
+| triggers no internos            |             203 | `dfc8e9a8c1c7fc138113e6fba59addf7e27dcea95ebcbf2840d537d58f63f67d` |
+| políticas                       |             831 | `c89dea757962f10aa122f07e6d91cfca1b0878f844b9917683edae3cca430077` |
+| filas expandidas de publicación |              13 | `1b203aae88af0d4e903c490e331db4354d0b01eb2b0bd4bed67de1bb666ece1d` |
+| buckets                         |              14 | `e979a402b1d6fb4c64f8db2144bb362a68439e38841fe98e434c77a06258d3f4` |
+| extensiones                     |               8 | `1b9c3ddec4d084cd75bc4ff8e3e90ee2fa5cfa6a2b6db5e057ba6dbfa56c040a` |
+| cron jobs                       |               7 | `15ad00af7d4d673d74ce10a69203013da31bd93e573bf12c4256f03045c1cb52` |
+
+Las huellas permiten detectar cambios posteriores. No demuestran por sí solas que el repositorio reproduzca esos objetos.
+
+#### 11. Límites técnicos relevantes
+
+La semántica oficial usada para interpretar resultados es:
+
+- `migration list` compara timestamps locales y remotos, no contenido;
+- `db diff` construye un shadow database aplicando migraciones locales y compara estructura;
+- el diff tiene limitaciones conocidas para publicaciones, buckets y vistas con `security_invoker`;
+- el squash omite DML, incluidos cron, buckets y secretos Vault;
+- `config.toml` configura principalmente el stack local y reglas usadas por despliegues, no constituye snapshot automático del hosted;
+- `verify_jwt` default es true, pero el flag de despliegue puede sobrescribir la configuración;
+- desde 2026-08-05 la plataforma ignora el pin explícito de versiones de extensiones y usa la versión default.
+
+Por ello, el cierre de paridad requiere varios validadores complementarios, no un único comando.
+
+#### 12. Evidencia positiva
+
+- la última versión remota observada tiene archivo local correspondiente;
+- PostgreSQL major 17 coincide;
+- la distribución Edge remota permanece estable en 12 true y 12 false;
+- diez funciones false coinciden entre config y remoto;
+- las anomalías de migración pudieron confirmarse tanto en remoto como en archivos Git puntuales;
+- los objetos remotos tienen fingerprints reproducibles sin revelar secretos;
+- `vento-shell` sí contiene una política documental explícita de centralización.
+
+#### 13. Brechas y resolución obligatoria
+
+| Brecha               | Hallazgo                                                                                                              | Requisitos                                              |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `B-SUPA-AUD-016-001` | MIGRATION_MANIFEST.md declarado como canónico pero ausente.                                                           | TREQ-SUPABASE-243; TREQ-SUPABASE-270                    |
+| `B-SUPA-AUD-016-002` | schema.sql referenciado por la guía pero ausente.                                                                     | TREQ-SUPABASE-251; TREQ-SUPABASE-270                    |
+| `B-SUPA-AUD-016-003` | No existe evidencia automática de correspondencia exacta entre archivos locales y 549 versiones remotas.              | TREQ-SUPABASE-244; TREQ-SUPABASE-269                    |
+| `B-SUPA-AUD-016-004` | migration list solo compara timestamps y no detecta contenido editado.                                                | TREQ-SUPABASE-245                                       |
+| `B-SUPA-AUD-016-005` | Dieciséis nombres de migración se reutilizan.                                                                         | TREQ-SUPABASE-247                                       |
+| `B-SUPA-AUD-016-006` | Dos pares remotos y locales son duplicados exactos de contenido.                                                      | TREQ-SUPABASE-247                                       |
+| `B-SUPA-AUD-016-007` | Una migración remota y su archivo Git están vacíos.                                                                   | TREQ-SUPABASE-247                                       |
+| `B-SUPA-AUD-016-008` | Tres versiones no constituyen timestamps UTC válidos.                                                                 | TREQ-SUPABASE-246                                       |
+| `B-SUPA-AUD-016-009` | Ninguna migración remota conserva rollback.                                                                           | TREQ-SUPABASE-250                                       |
+| `B-SUPA-AUD-016-010` | Ninguna migración remota conserva idempotency_key.                                                                    | TREQ-SUPABASE-249                                       |
+| `B-SUPA-AUD-016-011` | La procedencia created_by es heterogénea y falta en 464 filas.                                                        | TREQ-SUPABASE-248                                       |
+| `B-SUPA-AUD-016-012` | Dos snapshots remote_schema acumulan 3568 statements y coexisten con reconciliaciones posteriores.                    | TREQ-SUPABASE-252                                       |
+| `B-SUPA-AUD-016-013` | La historia contiene preview, from_dev, manual y artefactos de reconciliación sin clasificación canónica de ambiente. | TREQ-SUPABASE-253                                       |
+| `B-SUPA-AUD-016-014` | No existe registro operativo de cambios fuera de banda y repairs.                                                     | TREQ-SUPABASE-254                                       |
+| `B-SUPA-AUD-016-015` | No existe fingerprint local-remoto automatizado de todo el catálogo.                                                  | TREQ-SUPABASE-255; TREQ-SUPABASE-269                    |
+| `B-SUPA-AUD-016-016` | db diff no cubre por completo publicaciones, buckets y security_invoker.                                              | TREQ-SUPABASE-256                                       |
+| `B-SUPA-AUD-016-017` | La exposición Data API declarada localmente no certifica la configuración hosted.                                     | TREQ-SUPABASE-257; TREQ-SUPABASE-258                    |
+| `B-SUPA-AUD-016-018` | config.toml mezcla defaults locales con contratos que no tienen overlay por ambiente.                                 | TREQ-SUPABASE-258                                       |
+| `B-SUPA-AUD-016-019` | club-revenuecat-webhook está en fuente/config pero no desplegada.                                                     | TREQ-SUPABASE-259; TREQ-SUPABASE-261                    |
+| `B-SUPA-AUD-016-020` | payments-return está desplegada con verify_jwt=false sin entrada explícita en config.toml.                            | TREQ-SUPABASE-259; TREQ-SUPABASE-262                    |
+| `B-SUPA-AUD-016-021` | delivery-portal está desplegada, no aparece en config.toml y no se localizó su fuente canónica.                       | TREQ-SUPABASE-259; TREQ-SUPABASE-261; TREQ-SUPABASE-262 |
+| `B-SUPA-AUD-016-022` | Los bundles remotos no se vinculan a commit y ruta canónicos mediante un manifiesto.                                  | TREQ-SUPABASE-260                                       |
+| `B-SUPA-AUD-016-023` | Los 14 buckets remotos no están declarados en config.toml.                                                            | TREQ-SUPABASE-264                                       |
+| `B-SUPA-AUD-016-024` | Las dos publicaciones Realtime no tienen registro declarativo en vento-shell.                                         | TREQ-SUPABASE-265                                       |
+| `B-SUPA-AUD-016-025` | Los siete cron jobs no forman parte de una comparación declarativa versionada.                                        | TREQ-SUPABASE-266                                       |
+| `B-SUPA-AUD-016-026` | Auth hosted, restricciones de red y branches no pudieron certificarse contra overlays de ambiente.                    | TREQ-SUPABASE-263; TREQ-SUPABASE-268                    |
+| `B-SUPA-AUD-016-027` | No existe prueba clean-room de replay integral desde PostgreSQL 17.                                                   | TREQ-SUPABASE-251                                       |
+| `B-SUPA-AUD-016-028` | No existe pipeline único que ejecute paridad, replay, diff, lint, advisors y funciones.                               | TREQ-SUPABASE-269; TREQ-SUPABASE-272                    |
+
+No queda hallazgo narrativo sin requisito y tarea responsable.
+
+#### 14. Requisitos de prueba incorporados
+
+Se incorporan 30 filas canónicas en el registro 04A:
+
+- `TREQ-SUPABASE-243` — Todo archivo de migración deberá registrarse en un manifiesto canónico con versión, nombre, ruta, tamaño, hash del archivo, hash SQL normalizado, commit, autor, ambiente, estado local y estado remoto.
+- `TREQ-SUPABASE-244` — CI deberá exigir correspondencia uno a uno entre versiones locales y supabase_migrations.schema_migrations, sin versiones solo locales, solo remotas, repetidas ni fuera del orden aprobado.
+- `TREQ-SUPABASE-245` — La paridad de migraciones deberá comparar contenido inmutable además de timestamps; una versión aplicada conservará hash SQL canónico y cualquier diferencia local-remota bloqueará el despliegue.
+- `TREQ-SUPABASE-246` — Toda versión de migración deberá usar catorce dígitos que formen un timestamp UTC válido y un nombre normalizado sin puntos, sufijos ambiguos ni colisiones semánticas.
+- `TREQ-SUPABASE-247` — No se admitirán migraciones vacías, archivos distintos con payload SQL idéntico ni reutilización de nombre sin una razón de continuidad explícita y verificable.
+- `TREQ-SUPABASE-248` — Cada migración remota deberá conservar actor técnico o humano, commit, pull request o decisión, método de aplicación, hora, resultado y ambiente; los registros sin procedencia deberán clasificarse y reconciliarse.
+- `TREQ-SUPABASE-249` — Cada migración deberá declarar límites transaccionales, lock_timeout, precondiciones, postcondiciones, estrategia idempotente y validación de datos antes de imponer constraints o mutaciones irreversibles.
+- `TREQ-SUPABASE-250` — Cada paquete de cambio deberá tener forward-fix, rollback o restauración aprobada, punto de recuperación, criterios de abandono y prueba de reversión compatible con datos reales.
+- `TREQ-SUPABASE-251` — La cadena completa de migraciones deberá reconstruir desde cero una base PostgreSQL 17 limpia y producir la misma estructura, configuración declarable y datos de referencia aprobados que el ambiente objetivo.
+- `TREQ-SUPABASE-252` — La estrategia de baseline y squash deberá reducir snapshots remote_schema y repeticiones sin perder DML, cron, buckets, publicaciones, secretos cifrados, grants, políticas ni historia necesaria para auditoría.
+- `TREQ-SUPABASE-253` — Migraciones con nombres preview, from_dev, sandbox, manual o equivalente deberán llevar clasificación de ambiente, evidencia de promoción, limpieza y prohibición expresa de efectos temporales en producción.
+- `TREQ-SUPABASE-254` — Todo cambio realizado mediante Dashboard, SQL Editor, API administrativa, repair o sesión directa deberá capturarse inmediatamente en una migración nueva, registrar la excepción y quedar reconciliado antes del siguiente despliegue.
+- `TREQ-SUPABASE-255` — La detección de drift deberá comparar huellas canónicas de schemas, relaciones, columnas, constraints, índices, funciones, triggers, políticas, grants, RLS, publicaciones, extensiones y objetos administrados.
+- `TREQ-SUPABASE-256` — Recursos no cubiertos completamente por db diff deberán tener registros declarativos separados: publicaciones Realtime, buckets, atributos security_invoker, cron, secretos, configuración Auth, API, Storage y Edge Functions.
+- `TREQ-SUPABASE-257` — La lista de schemas expuestos por Data API, extra_search_path, grants de schema y objetos, roles cliente y funciones RPC deberá declararse por ambiente y compararse con el gateway remoto.
+- `TREQ-SUPABASE-258` — config.toml deberá distinguir valores locales de contratos desplegables y usar overlays o manifiestos por ambiente; ningún default local se aceptará como evidencia de configuración hosted.
+- `TREQ-SUPABASE-259` — Cada Edge Function deberá existir exactamente una vez en la fuente canónica, en config.toml y en el remoto esperado, con estado enabled, verify_jwt, entrypoint e import map explícitos.
+- `TREQ-SUPABASE-260` — Todo bundle desplegado deberá corresponder a commit, ruta relativa, blob SHA, dependencias, bundle SHA remoto, actor, fecha, configuración y mecanismo de rollback verificables.
+- `TREQ-SUPABASE-261` — Una función desplegada sin fuente canónica o una fuente configurada sin despliegue deberá bloquear releases hasta ser adoptada, retirada o clasificada explícitamente por ambiente.
+- `TREQ-SUPABASE-262` — verify_jwt deberá declararse explícitamente para las 24 funciones y no depender del default ni de flags de despliegue; la configuración remota deberá coincidir con el contrato de invocación aprobado.
+- `TREQ-SUPABASE-263` — Auth deberá tener manifiesto por ambiente para site URL, redirects, signup, confirmaciones, recuperación, requisitos de contraseña, MFA, rate limits, SMTP, proveedores y claves de firma, con comparación remota redactada.
+- `TREQ-SUPABASE-264` — Los buckets deberán declararse con privacidad, límite, MIME types, políticas, propietario, retención y datos iniciales; CI comparará el registro con storage.buckets y sus políticas.
+- `TREQ-SUPABASE-265` — Las publicaciones Realtime deberán declarar publicación, tablas, operaciones, replica identity, consumidor, volumen esperado y política de incorporación o retiro; CI comparará el remoto.
+- `TREQ-SUPABASE-266` — Cron, pg_net, webhooks y automatizaciones deberán compararse por nombre, schedule, comando redactado, función objetivo, autenticación, timeout, estado y hash, sin depender del schema diff.
+- `TREQ-SUPABASE-267` — PostgreSQL, Supabase CLI, Edge Runtime, Deno y extensiones deberán fijarse o acotarse mediante versiones compatibles, política de actualización y prueba de replay; no se usarán versiones de extensión explícitas cuando la plataforma las ignore.
+- `TREQ-SUPABASE-268` — Cada ambiente deberá mapear nombre, project ref, región, branch, propósito, datos permitidos, configuración, secretos, dominio, proveedores y promoción; ninguna prueba podrá asumir que vento-os-dev representa staging o producción.
+- `TREQ-SUPABASE-269` — El pipeline deberá ejecutar lint de nombres, secret scan, migration list, replay limpio, db diff por schemas, db lint, advisors, fingerprints complementarios y comparación de Edge Functions antes de permitir merge o despliegue.
+- `TREQ-SUPABASE-270` — Toda documentación que declare un artefacto canónico deberá comprobar su existencia y hash; referencias a archivos ausentes deberán restaurarse o corregirse en el mismo paquete documental.
+- `TREQ-SUPABASE-271` — Cada auditoría de paridad deberá producir evidencia inmutable con commit, project ref, corte temporal, hashes de historia, catálogo, configuración, funciones y recursos administrados, sin incluir secretos.
+- `TREQ-SUPABASE-272` — El validador integral deberá comprobar 549 versiones remotas únicas, 533 nombres, 16 nombres repetidos, una migración vacía, dos pares de payload idéntico, tres timestamps inválidos, cero rollback, cero idempotency_key, commit y config esperados, 24 Edge Functions, 14 buckets, dos publicaciones y todas las huellas SUPA-AUD-016.
+
+El detalle completo de las catorce columnas reside únicamente en el archivo 04A regenerado.
+
+#### 15. Huellas de integridad
+
+| Conjunto                   | SHA-256                                                            |
+| -------------------------- | ------------------------------------------------------------------ |
+| `migration_history_remote` | `c728bc62b92f0d53fa229f6c184f3b85b71a1047492ebcd7282e433bfebb2f31` |
+| `migration_anomalies`      | `dfb629144195b4b3e2fc9c5d9bc626eab64291b2654b7e2257a8524a554f42a7` |
+| `edge_config_parity`       | `82db527fc2c5f58341c1e4ab85890ddcaeeb9b17d260204a88b44741d1377be3` |
+| `managed_resources`        | `b44176eb82186493288613f58af10a4e2d27bc4c82f0f92daf613a89cd00901e` |
+| `relations`                | `ead1df32ff00152fcfe5091c2b622dd2c822a6e21222f0a1a9da5d9e84b05539` |
+| `columns`                  | `4e91e7c536c45279e9f56800e3423abe5adc616dc6cdbbe1e8c6da7d44f0ddbc` |
+| `constraints`              | `d0c802e2a4bd66a30a14d899a639c3fc65f7715406f5c993c27cdf0ff848cf74` |
+| `indexes`                  | `4fed1d7a3c103e086abbd989c56dfe79deefdf6ec6735ec36c51025f2f472262` |
+| `functions`                | `3d1cbc83ae80c4620ce0c921fbda4113238a97e9cd939344b457a0b216613c32` |
+| `triggers`                 | `dfc8e9a8c1c7fc138113e6fba59addf7e27dcea95ebcbf2840d537d58f63f67d` |
+| `policies`                 | `c89dea757962f10aa122f07e6d91cfca1b0878f844b9917683edae3cca430077` |
+| `publications`             | `1b203aae88af0d4e903c490e331db4354d0b01eb2b0bd4bed67de1bb666ece1d` |
+| `buckets`                  | `e979a402b1d6fb4c64f8db2144bb362a68439e38841fe98e434c77a06258d3f4` |
+| `extensions`               | `1b9c3ddec4d084cd75bc4ff8e3e90ee2fa5cfa6a2b6db5e057ba6dbfa56c040a` |
+| `cron_jobs`                | `15ad00af7d4d673d74ce10a69203013da31bd93e573bf12c4256f03045c1cb52` |
+| `breach_register`          | `24b1e58457c94a025a53202a183667bd0a3a71d3595ef44d434d3e047fc7713f` |
+
+La huella de historia remota concatena versión, nombre y SHA-256 de statements en orden. Las demás huellas se calculan sobre catálogo o JSON canónico redactado.
+
+#### 16. Criterios de aceptación de `SUPA-AUD-016`
+
+La tarea queda aceptada porque:
+
+1. preserva exactamente la línea base aprobada de `SUPA-AUD-015` y 04A;
+2. inventaría y fingerprinta las 549 versiones remotas;
+3. confirma la entrada vacía, duplicados exactos y timestamps inválidos en remoto y Git;
+4. distingue paridad de timestamp, contenido, estructura, recursos administrados y bundles;
+5. compara `config.toml` con las 24 Edge Functions y clasifica tres diferencias concretas;
+6. congela fingerprints de once componentes del remoto;
+7. identifica artefactos canónicos referenciados pero inexistentes;
+8. formaliza 28 brechas en 30 requisitos;
+9. no afirma replay ni paridad completa sin haberlos ejecutado;
+10. no realiza cambios remotos;
+11. deja `SUPA-AUD-017` como responsable exacto del drift objeto por objeto.
+
+#### 17. Límites de la auditoría
+
+No pudo certificarse en esta tarea:
+
+- inventario byte a byte de los 549 archivos locales mediante una ejecución del CLI;
+- replay completo en una base limpia;
+- `db diff --linked` y clasificación de sus diferencias;
+- estado hosted completo de Auth, API gateway, red y branches;
+- correspondencia commit a bundle SHA de las 24 funciones;
+- procedencia exacta de cada una de las 464 migraciones sin `created_by`;
+- si cada diferencia es cambio manual, repair, importación, dashboard o despliegue por CLI;
+- datos y objetos físicos de Storage, que no deben manipularse mediante SQL.
+
+Cada límite queda vinculado a `TREQ-SUPABASE-243` a `TREQ-SUPABASE-272` y a `SUPA-AUD-017`; no se interpreta ausencia de evidencia como paridad.
+
+#### 18. Declaración de no mutación
+
+No se ejecutaron:
+
+- `supabase db push`, `db pull`, `db diff`, `db reset`, `migration repair`, `migration squash` ni replay;
+- DDL, DML, grants, revokes o cambios de historia;
+- despliegue, eliminación o invocación de Edge Functions;
+- cambios de Auth, Storage, Realtime, cron, extensiones, secretos o configuración;
+- commits, branches, pull requests o workflows.
+
+Las consultas SQL fueron exclusivamente de catálogo, agregación y hashing read-only.
+
+#### 19. Cierre
+
+`SUPA-AUD-016` queda **APROBADA** como línea base de comparación entre Supabase remoto y la fuente declarada en `vento-shell`. No certifica paridad total ni autoriza reparar historia, renombrar migraciones aplicadas, eliminar duplicados, reconstruir entornos o desplegar funciones.
+
+La siguiente tarea canónica es:
+
+```text
+SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
+```
+
+
 ### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
 ### [ ] SUPA-AUD-018 — Identificar tablas, columnas, funciones y políticas legacy
 ### [ ] SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras
