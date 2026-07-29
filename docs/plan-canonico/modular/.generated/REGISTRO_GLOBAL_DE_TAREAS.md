@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **353** |
+| Aprobadas | **354** |
 | En propuesta | **0** |
-| No iniciadas | **1222** |
+| No iniciadas | **1221** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.41% (353/1575)** |
+| Porcentaje de completamiento | **22.48% (354/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-011` — Asignar process_id a cada vista | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-012` — Asignar process_step a cada vista | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-013` — Definir aplicación propietaria | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-012` — Asignar process_step a cada vista | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-013` — Definir aplicación propietaria | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-014` — Definir si la aplicación solo consume la capacidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -800,7 +800,7 @@
 | ✅ APROBADA | `AUTH-UI-009` | Inventariar superficies laborales relacionadas con PASS | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-010` | Auditar rutas y superficies actuales de AURA | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-011` | Asignar process_id a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-012` | Asignar process_step a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
+| ✅ APROBADA | `AUTH-UI-012` | Asignar process_step a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-013` | Definir aplicación propietaria | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-014` | Definir si la aplicación solo consume la capacidad | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-015` | Clasificar vista operativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
