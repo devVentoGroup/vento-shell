@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **370** |
+| Aprobadas | **371** |
 | En propuesta | **0** |
-| No iniciadas | **1205** |
+| No iniciadas | **1204** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **23.49% (370/1575)** |
+| Porcentaje de completamiento | **23.56% (371/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-028` — Identificar vistas candidatas a retiro | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos | ✅ APROBADA |
+| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
 
 ## Registro completo
 
@@ -816,7 +816,7 @@
 | ✅ APROBADA | `AUTH-UI-026` | Identificar vistas duplicadas | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ✅ APROBADA | `AUTH-UI-027` | Identificar vistas legacy | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ✅ APROBADA | `AUTH-UI-028` | Identificar vistas candidatas a retiro | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
-| ⬜ NO INICIADA | `AUTH-UI-029` | Identificar vistas técnicas que no deben ser permisos | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
+| ✅ APROBADA | `AUTH-UI-029` | Identificar vistas técnicas que no deben ser permisos | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ⬜ NO INICIADA | `AUTH-UI-030` | Asignar permiso de lectura a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-031` | Asignar permiso exacto a cada acción | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-032` | Definir si requiere turno | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |

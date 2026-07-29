@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **370** |
+| Tareas aprobadas | **371** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1205** |
+| Tareas no iniciadas | **1204** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **23.49% (370/1575)** |
+| Porcentaje de completamiento | **23.56% (371/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-028 — Identificar vistas candidatas a retiro** |
-| Tarea actual | **AUTH-UI-029 — Identificar vistas técnicas que no deben ser permisos** |
-| Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Última tarea aprobada | **AUTH-UI-029 — Identificar vistas técnicas que no deben ser permisos** |
+| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
+| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
+| Siguiente tarea | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
 | Bloque actual | **BLOQUE I — Navegación, pantallas y autorización de vistas** |
-| Progreso del bloque | **BLOQUE I: 28 de 29 aprobadas; AUTH-UI-029 pendiente** |
+| Progreso del bloque | **BLOQUE I: 29 de 29 aprobadas; secuencia documental completa** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-028` — Identificar vistas candidatas a retiro |
-| Tarea actual | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Última aprobada | `AUTH-UI-029` — Identificar vistas técnicas que no deben ser permisos |
+| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
+| Siguiente tarea | NINGUNA — SECUENCIA DOCUMENTAL COMPLETA |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE I | **28 DE 29 APROBADAS — ACTUAL AUTH-UI-029** |
+| BLOQUE I | **29 DE 29 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,11 +88,10 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-028 — Identificar vistas candidatas a retiro
-        ↓
-TAREA ACTUAL
 AUTH-UI-029 — Identificar vistas técnicas que no deben ser permisos
         ↓
+SECUENCIA DOCUMENTAL COMPLETA
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE I — 28 de 29 tareas aprobadas
+BLOQUE I — 29 de 29 tareas aprobadas
 ```
