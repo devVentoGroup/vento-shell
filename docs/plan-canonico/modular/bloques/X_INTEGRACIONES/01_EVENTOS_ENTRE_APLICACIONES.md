@@ -3241,7 +3241,7 @@ git diff --check
 ÚLTIMA TAREA APROBADA
 INT-APP-006 — Definir compensaciones
         ↓
-TAREA ACTUAL EN REVISIÓN
+TAREA ACTUAL
 INT-APP-007 — Definir auditoría transversal
         ↓
 SIGUIENTE TAREA RESERVADA
@@ -3251,6 +3251,708 @@ INT-APP-008 — Definir estados pendientes de sincronización
 APROBADA
 
 
-### [ ] INT-APP-008 — Definir estados pendientes de sincronización
+### ✅ INT-APP-008 — Definir estados pendientes de sincronización
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-008 — Definir estados pendientes de sincronización`
+**Tarea anterior:** `INT-APP-007 — Definir auditoría transversal` — APROBADA
+**Siguiente tarea:** `INT-APP-009 — Definir manejo de errores parciales`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@6bcd35a1584169401aebd533f6bc9281d5b1c38c`
+**Tipo de tarea:** definición documental transversal de estados, transiciones, guardas, reautorización, conflicto, incertidumbre, reconciliación y presentación de operaciones locales o remotas pendientes; sin implementación, tablas, outbox, colas, workers, Service Workers, Supabase, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir una máquina de estados única para toda intención, captura, comando o evidencia que todavía no posea un resultado empresarial autoritativo, de forma que Vento OS pueda conservar el trabajo, sincronizarlo con seguridad, evitar duplicados, explicar su situación al trabajador y detenerse ante conflicto, autoridad vencida o resultado desconocido.
+
+```text
+CAPTURA LOCAL
+        ↓
+ELEGIBILIDAD + DEPENDENCIAS + REAUTORIZACIÓN
+        ↓
+INTENTO DURABLE
+        ↓
+RECEIPT TÉCNICO O RESULTADO AUTORITATIVO
+        ↓
+CONFIRMACIÓN / RETRY SEGURO / CONFLICTO / CONCILIACIÓN
+```
+
+Regla central:
+
+```text
+GUARDADO EN EL DISPOSITIVO
+≠
+ENVIADO
+≠
+RECIBIDO TÉCNICAMENTE
+≠
+EFECTO EMPRESARIAL CONFIRMADO
+```
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                     | Revisión o blob                            | Responsabilidad                                                                                                  |
+| ---------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `vento-shell`                                              | `6bcd35a1584169401aebd533f6bc9281d5b1c38c` | remoto vigente con `INT-APP-007` y 04A integrados; continuidad en `INT-APP-008`                                  |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`         | `aeb432864c630bfde66c95190f8c09444cb891a6` | contratos `INT-APP-001` a `INT-APP-007` y marcador de esta tarea                                                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`         | `6c9647d6854d50588cb139c0fd7be9101dcff5ec` | línea base de 4.218 requisitos hasta `TREQ-INTEGRATION-227`                                                      |
+| `UX-BASE-013` / `UX-CONNECTIVITY-DEGRADATION-CONTRACT-001` | `24a0118bc968af300d8e3541d0665557b76f1d40` | siete estados de conectividad, siete modos de capacidad, doce estados locales, envelope, conflictos y reconexión |
+| `CODE-AUD-018`                                             | `2234bc064cc91e766e4e550fc8c3801d669ec894` | criterios de operación offline durable, revalidación, idempotencia, concurrencia y resultado visible             |
+| `UX-STATION-008` a `UX-STATION-012`                        | `72a215e06dc54d64e6818cdc19aaa1490a08f266` | feedback local, pendientes, bandeja, resultado desconocido y componentes offline                                 |
+| `INT-APP-004`                                              | integrado en el remoto                     | identidad idempotente, huella, conflicto y replay del resultado previo                                           |
+| `INT-APP-005`                                              | integrado en el remoto                     | intentos, perfiles, errores, backoff, agotamiento y resultado desconocido                                        |
+| `INT-APP-006`                                              | integrado en el remoto                     | compensaciones, residuales y prohibición de borrar efectos ya ocurridos                                          |
+| `INT-APP-007`                                              | integrado en el remoto                     | auditoría de captura, intento, reautorización, conflicto, receipt y resultado                                    |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001@1.0.0
+```
+
+| Propiedad                     | Valor                                       | Regla                                         |
+| ----------------------------- | ------------------------------------------- | --------------------------------------------- |
+| `state_machine_id`            | `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001` | identidad estable del contrato transversal    |
+| `state_machine_version`       | `1.0.0`                                     | primera definición cerrada                    |
+| `state_machine_status`        | `DEFINED`                                   | contrato documental; no prueba implementación |
+| `covered_processes`           | **69**                                      | `VPROC-0001` a `VPROC-0069`                   |
+| `normal_event_definitions`    | **395**                                     | catálogo de `INT-APP-001`                     |
+| `event_consumer_relations`    | **2.020**                                   | relaciones de `INT-APP-003`                   |
+| `connectivity_states`         | **7**                                       | vector heredado de `UX-BASE-013`              |
+| `capability_modes`            | **7**                                       | política por capacidad heredada               |
+| `sync_states`                 | **14**                                      | estados cerrados de esta máquina              |
+| `allowed_transitions`         | **46**                                      | transiciones dirigidas permitidas             |
+| `conflict_classes`            | **10**                                      | vocabulario cerrado heredado                  |
+| `conflict_resolution_actions` | **7**                                       | respuestas controladas heredadas              |
+| `evidence_states`             | **7**                                       | ciclo independiente de archivos y evidencia   |
+| `reconnection_phases`         | **11**                                      | secuencia ordenada de recuperación            |
+| `transport_guarantee`         | `AT_LEAST_ONCE`                             | se asume redelivery y pérdida de respuesta    |
+| `aura_runtime_status`         | `DEFINED_DEFERRED`                          | contrato definido sin actividad operativa     |
+
+#### 4. Principios normativos
+
+1. Una operación pendiente conserva una sola identidad lógica durante todos sus intentos.
+2. Un cambio material crea una sucesora enlazada; no reutiliza identidad ni idempotency key.
+3. El estado de sincronización no sustituye conectividad, frescura, estado empresarial, auditoría ni evidencia.
+4. Una captura local nunca se presenta como resultado empresarial confirmado.
+5. Un receipt técnico nunca se presenta como efecto autoritativo.
+6. Todo retry reutiliza operación, huella, actor e idempotency key.
+7. `RESULT_UNKNOWN` exige consulta antes de repetir.
+8. Un conflicto empresarial no se resuelve mediante `last write wins`.
+9. Las dependencias y el orden causal prevalecen sobre prioridad y antigüedad.
+10. Una cola de dispositivo compartido no transfiere atribución al siguiente trabajador.
+11. Los estados terminales son inmutables; una corrección crea otro hecho enlazado.
+12. Un elemento no desaparece de la cola por timeout, cierre de aplicación o cambio de pantalla.
+13. La máquina se aplica por elemento; un lote no oculta resultados parciales.
+14. `INT-APP-008` define semántica y transiciones, no almacenamiento, scheduler, broker ni worker.
+
+#### 5. Dimensiones ortogonales obligatorias
+
+| Dimensión           | Pregunta que responde                                                  | Fuente                          |
+| ------------------- | ---------------------------------------------------------------------- | ------------------------------- |
+| conectividad        | ¿La red y el servicio requerido están disponibles?                     | siete estados de `UX-BASE-013`  |
+| modo de capacidad   | ¿Esta consulta o mutación puede operar en la condición actual?         | siete modos de `UX-BASE-013`    |
+| frescura            | ¿El dato conserva vigencia suficiente para esta decisión?              | seis clases de frescura         |
+| sincronización      | ¿Dónde está la intención entre captura local y resultado autoritativo? | catorce estados de esta tarea   |
+| proceso empresarial | ¿En qué estado real está el proceso propietario?                       | `PROC-CAT-009` a `PROC-CAT-014` |
+| intento y entrega   | ¿Qué ocurrió en este intento técnico concreto?                         | `INT-APP-005` y `INT-APP-007`   |
+| evidencia           | ¿El archivo está local, subido y vinculado de forma válida?            | siete estados de evidencia      |
+| auditoría           | ¿Qué entrada inmutable demuestra cada transición?                      | `INT-APP-007`                   |
+
+Prohibiciones:
+
+- `ONLINE_HEALTHY` no implica `ACKNOWLEDGED`;
+- `OFFLINE_CONFIRMED` no implica `LOCAL_DRAFT` si no existe captura;
+- `SYNCING` no implica que el proceso cambió de estado;
+- `UPLOADED_UNLINKED` no implica evidencia aceptada;
+- `ACKNOWLEDGED` no implica que todos los efectos de un flujo distribuido terminaron;
+- `REJECTED_TERMINAL` no podrá ocultar parcialidad o resultado desconocido.
+
+#### 6. Vector de conectividad y modos preservados
+
+Estados de conectividad preservados sin renombre:
+
+```text
+ONLINE_HEALTHY
+ONLINE_DEGRADED
+INTERMITTENT
+OFFLINE_CONFIRMED
+CONNECTIVITY_UNKNOWN
+RECOVERING
+SYNC_BLOCKED
+```
+
+Modos de capacidad preservados sin renombre:
+
+```text
+ONLINE_REQUIRED
+ONLINE_PREFERRED
+STALE_READ_ONLY
+OFFLINE_CAPTURE_ALLOWED
+OFFLINE_QUEUE_ALLOWED
+MANUAL_CONTINGENCY
+NOT_AVAILABLE_OFFLINE
+```
+
+La aplicación no tendrá un modo offline global. Cada capacidad declara su modo y cada operación pendiente conserva el modo bajo el cual fue capturada, sin convertirlo en autorización perpetua.
+
+#### 7. Registro cerrado de estados de sincronización
+
+| Estado                    | Categoría                | Entrada semántica                                                                                      | Salida permitida                                                                            | Texto operativo mínimo                                   | Terminal |
+| ------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- | -------------------------------------------------------- | -------- |
+| `LOCAL_DRAFT`             | `LOCAL_EDITABLE`         | Captura editable y durable solo en el dispositivo; no está elegible para envío.                        | El actor puede completar, descartar o reemplazar el borrador.                               | Guardado en este equipo.                                 | **no**   |
+| `READY_TO_SYNC`           | `QUEUED_ELIGIBLE`        | La operación está completa localmente, tiene contrato compatible y puede evaluarse para envío.         | Pasa a dependencia, reautorización, intento, cancelación local o sucesión.                  | Pendiente de sincronizar.                                | **no**   |
+| `WAITING_FOR_DEPENDENCY`  | `BLOCKED_AUTOMATIC`      | Existe prerequisito local o remoto aún no confirmado.                                                  | Solo sale por resolución verificable, rechazo terminal, descarte o sucesión.                | Esperando una condición necesaria.                       | **no**   |
+| `REAUTH_REQUIRED`         | `BLOCKED_AUTHORITY`      | La autoridad, sesión, turno, check-in, dispositivo o contexto debe resolverse nuevamente.              | La revalidación permite volver a READY_TO_SYNC o produce rechazo, descarte o sucesión.      | Necesita volver a validar acceso.                        | **no**   |
+| `SYNCING`                 | `IN_FLIGHT`              | Existe un intento activo con identidad y número de intento durables.                                   | Debe terminar en confirmación, pendiente, rechazo, conflicto, incertidumbre o conciliación. | Enviando.                                                | **no**   |
+| `PENDING_CONFIRMATION`    | `IN_FLIGHT_CONFIRMATION` | La frontera técnica recibió o aceptó la operación, pero falta el resultado empresarial autoritativo.   | Consulta receipt o resultado hasta confirmar o clasificar el desenlace.                     | Enviado; esperando confirmación.                         | **no**   |
+| `REJECTED_RETRYABLE`      | `RECOVERABLE`            | El intento falló de forma temporal y existe evidencia de que repetir con la misma identidad es seguro. | Vuelve a elegibilidad, espera, reautorización, rechazo terminal o incertidumbre.            | No se pudo enviar todavía; se intentará de forma segura. | **no**   |
+| `CONFLICT`                | `INTERVENTION`           | La fuente vigente contradice versión, contexto, autorización, cantidad, custodia u otra precondición.  | Requiere rechazo, sucesora o conciliación; nunca last write wins.                           | Hay cambios que deben revisarse.                         | **no**   |
+| `RESULT_UNKNOWN`          | `INTERVENTION`           | No puede afirmarse si el efecto ocurrió, no ocurrió o quedó parcial.                                   | Solo evidencia autoritativa permite confirmar, reintentar, rechazar o conciliar.            | Todavía no podemos confirmar el resultado.               | **no**   |
+| `RECONCILIATION_REQUIRED` | `INTERVENTION`           | Deben compararse fuentes digitales, físicas o externas y decidir el resultado.                         | Una decisión autorizada confirma, habilita retry seguro, rechaza o crea sucesora.           | Necesita conciliación.                                   | **no**   |
+| `ACKNOWLEDGED`            | `TERMINAL_SUCCESS`       | La propietaria confirmó un resultado empresarial durable o devolvió el resultado previo del duplicado. | No tiene transiciones ordinarias; una corrección crea otro hecho enlazado.                  | Confirmado.                                              | **sí**   |
+| `REJECTED_TERMINAL`       | `TERMINAL_NO_EFFECT`     | La operación no es ejecutable y no existe efecto empresarial confirmado.                               | No se reabre; una corrección material crea una operación nueva.                             | No se aplicó.                                            | **sí**   |
+| `CANCELLED_LOCAL`         | `TERMINAL_LOCAL`         | El actor descartó la intención antes de transmitirla.                                                  | No se reabre ni se publica.                                                                 | Descartado antes de enviar.                              | **sí**   |
+| `SUPERSEDED`              | `TERMINAL_REPLACED`      | Una sucesora explícita reemplazó la intención anterior antes de efecto confirmado.                     | No se ejecuta; conserva referencia a la sucesora.                                           | Reemplazado por una versión posterior.                   | **sí**   |
+
+Los doce estados ya definidos por `UX-BASE-013` se conservan exactamente. `PENDING_CONFIRMATION` y `RESULT_UNKNOWN`, ya aprobados en la gramática de experiencia, se integran para cerrar la separación entre receipt técnico, resultado autoritativo e incertidumbre.
+
+#### 8. Categorías, terminalidad y responsabilidad
+
+| Categoría            | Estados                                                 | Responsable de resolver                              |
+| -------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| `LOCAL_EDITABLE`     | `LOCAL_DRAFT`                                           | actor original dentro de la política local           |
+| `QUEUED_ELIGIBLE`    | `READY_TO_SYNC`                                         | planificador local después de validar precondiciones |
+| `BLOCKED_AUTOMATIC`  | `WAITING_FOR_DEPENDENCY`                                | hecho de dependencia o rechazo del prerequisito      |
+| `BLOCKED_AUTHORITY`  | `REAUTH_REQUIRED`                                       | servidor de autorización y actor atribuible          |
+| `IN_FLIGHT`          | `SYNCING`, `PENDING_CONFIRMATION`                       | frontera técnica y aplicación propietaria            |
+| `RECOVERABLE`        | `REJECTED_RETRYABLE`                                    | política de retry de `INT-APP-005`                   |
+| `INTERVENTION`       | `CONFLICT`, `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED` | propietaria, conciliador o actor autorizado          |
+| `TERMINAL_SUCCESS`   | `ACKNOWLEDGED`                                          | propietaria del resultado empresarial                |
+| `TERMINAL_NO_EFFECT` | `REJECTED_TERMINAL`                                     | propietaria o frontera autorizadora                  |
+| `TERMINAL_LOCAL`     | `CANCELLED_LOCAL`                                       | actor original antes del primer intento              |
+| `TERMINAL_REPLACED`  | `SUPERSEDED`                                            | regla de sucesión y operación sucesora               |
+
+Un estado técnico no cambia por acción visual. Refrescar, cerrar un modal, ocultar una tarjeta o reiniciar el dispositivo no constituye transición.
+
+#### 9. Matriz cerrada de transiciones
+
+| Estado origen             | Destinos permitidos                                                                                                                        | Guarda principal                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `LOCAL_DRAFT`             | `READY_TO_SYNC`, `CANCELLED_LOCAL`, `SUPERSEDED`                                                                                           | Validación local, descarte previo al envío o sustitución explícita.                                     |
+| `READY_TO_SYNC`           | `WAITING_FOR_DEPENDENCY`, `REAUTH_REQUIRED`, `SYNCING`, `CANCELLED_LOCAL`, `SUPERSEDED`                                                    | Elegibilidad, dependencias y autoridad se recalculan antes del primer intento.                          |
+| `WAITING_FOR_DEPENDENCY`  | `READY_TO_SYNC`, `REAUTH_REQUIRED`, `REJECTED_TERMINAL`, `CANCELLED_LOCAL`, `SUPERSEDED`                                                   | Solo un hecho verificable libera la dependencia; un prerequisito terminal bloquea el efecto.            |
+| `REAUTH_REQUIRED`         | `READY_TO_SYNC`, `REJECTED_TERMINAL`, `CANCELLED_LOCAL`, `SUPERSEDED`                                                                      | La reautorización no cambia la atribución original ni permite adopción silenciosa por otro actor.       |
+| `SYNCING`                 | `PENDING_CONFIRMATION`, `ACKNOWLEDGED`, `REJECTED_RETRYABLE`, `REJECTED_TERMINAL`, `CONFLICT`, `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED` | Todo intento termina en un estado conocido, incierto o de intervención; nunca desaparece.               |
+| `PENDING_CONFIRMATION`    | `ACKNOWLEDGED`, `REJECTED_RETRYABLE`, `REJECTED_TERMINAL`, `CONFLICT`, `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED`                         | Receipt técnico conocido, pero resultado empresarial todavía no autoritativo.                           |
+| `REJECTED_RETRYABLE`      | `READY_TO_SYNC`, `WAITING_FOR_DEPENDENCY`, `REAUTH_REQUIRED`, `REJECTED_TERMINAL`, `RESULT_UNKNOWN`                                        | Reutiliza operación, huella e idempotency key; no crea una intención nueva.                             |
+| `CONFLICT`                | `RECONCILIATION_REQUIRED`, `REJECTED_TERMINAL`, `SUPERSEDED`                                                                               | No existe retorno directo a READY_TO_SYNC porque cambiar contenido exige sucesora o corrección.         |
+| `RESULT_UNKNOWN`          | `ACKNOWLEDGED`, `READY_TO_SYNC`, `REJECTED_TERMINAL`, `RECONCILIATION_REQUIRED`                                                            | READY_TO_SYNC solo si una consulta autoritativa demuestra que el efecto no ocurrió y repetir es seguro. |
+| `RECONCILIATION_REQUIRED` | `ACKNOWLEDGED`, `READY_TO_SYNC`, `REJECTED_TERMINAL`, `SUPERSEDED`                                                                         | La decisión conserva fuentes comparadas, autoridad, residuales y vínculo con la operación.              |
+| `ACKNOWLEDGED`            | —                                                                                                                                          | Terminal: resultado autoritativo durable, incluido replay del resultado previo.                         |
+| `REJECTED_TERMINAL`       | —                                                                                                                                          | Terminal: rechazo definitivo sin efecto empresarial confirmado.                                         |
+| `CANCELLED_LOCAL`         | —                                                                                                                                          | Terminal: descarte anterior a cualquier transmisión o receipt.                                          |
+| `SUPERSEDED`              | —                                                                                                                                          | Terminal: existe sucesora explícita; la anterior nunca se ejecuta después.                              |
+
+Cualquier par no enumerado queda prohibido. La implementación posterior deberá fallar cerrada ante un estado desconocido, una transición no versionada o una fila legacy sin mapping explícito.
+
+#### 10. Captura local y descarte previo al envío
+
+`LOCAL_DRAFT` requiere:
+
+```text
+local_operation_id
++ actor original
++ dispositivo
++ contexto y área
++ esquema y versión de aplicación
++ payload minimizado
++ momento de captura
++ política de expiración
+```
+
+Reglas:
+
+1. El borrador puede modificarse mientras siga local y no haya intento.
+2. Pasar a `READY_TO_SYNC` congela la huella lógica enviada a idempotencia.
+3. `CANCELLED_LOCAL` exige `attempt_count = 0`, ausencia de receipt y ausencia de efecto.
+4. Después del primer intento no existe cancelación local; se usa consulta, comando inverso, corrección o compensación según corresponda.
+5. `SUPERSEDED` exige `successor_operation_id` y no elimina la anterior.
+6. Un vencimiento local no borra silenciosamente el borrador; aplica retención, aviso y disposición autorizada.
+
+#### 11. Elegibilidad, dependencias y orden causal
+
+Antes de `SYNCING`, `READY_TO_SYNC` deberá comprobar:
+
+```text
+payload completo y compatible
++ identidad e idempotency key
++ dependencias conocidas
++ evidencia mínima disponible
++ dispositivo y aplicación compatibles
++ ventana temporal no vencida
++ conectividad y servicio suficientes
++ necesidad de reautorización resuelta
+```
+
+Reglas de orden:
+
+- una dependencia pendiente lleva a `WAITING_FOR_DEPENDENCY`;
+- un prerequisito terminalmente rechazado no autoriza a ejecutar su dependiente;
+- una operación independiente puede avanzar;
+- prioridad no rompe causalidad;
+- operaciones de actores, dispositivos, contextos o áreas distintos no se fusionan;
+- un lote conserva estado y resultado por elemento;
+- un elemento `SUPERSEDED` nunca se envía posteriormente.
+
+#### 12. Envío, receipt y confirmación autoritativa
+
+```text
+READY_TO_SYNC
+        ↓
+SYNCING
+        ↓
+PENDING_CONFIRMATION O RESULTADO CLASIFICADO
+        ↓
+ACKNOWLEDGED SOLO CON RESULTADO EMPRESARIAL DURABLE
+```
+
+`SYNCING` registra `attempt_id`, `attempt_number`, inicio, timeout, perfil y resultado. `PENDING_CONFIRMATION` se utiliza cuando existe recepción o aceptación técnica conocida, pero la propietaria todavía no ha producido un resultado estable.
+
+`ACKNOWLEDGED` exige:
+
+- referencia empresarial estable;
+- propietaria del resultado;
+- outcome y versión aplicables;
+- correlación con operación e intento;
+- evidencia de commit o resultado durable;
+- indicación de `NEW_EFFECT` o `PRIOR_RESULT_REPLAY`;
+- auditoría de la transición.
+
+HTTP `2xx`, publicación en broker, ACK de transporte, upload o respuesta de un adaptador no bastan por sí solos.
+
+#### 13. Retry y rechazo
+
+`REJECTED_RETRYABLE` exige simultáneamente:
+
+1. error clasificado como temporal;
+2. perfil vigente de `INT-APP-005`;
+3. presupuesto disponible;
+4. mismo contenido lógico;
+5. misma operación e idempotency key;
+6. certeza de que repetir no crea un segundo efecto;
+7. próxima ejecución gobernada por dependencia, backoff y reautorización.
+
+`REJECTED_TERMINAL` solo aplica cuando no existe efecto confirmado ni resultado incierto. Un cambio material posterior crea otra operación; no reabre la terminal.
+
+Queda prohibido:
+
+- generar una clave nueva para “reintentar” la misma intención;
+- convertir un timeout en rechazo terminal sin consulta;
+- usar retry agotado como compensación;
+- ocultar error parcial dentro de `REJECTED_TERMINAL`;
+- presentar `REJECTED_RETRYABLE` como trabajo perdido.
+
+#### 14. Conflicto, resultado desconocido y conciliación
+
+Clases cerradas de conflicto:
+
+| Clase                       |
+| --------------------------- |
+| `RESOURCE_VERSION_CONFLICT` |
+| `CONTEXT_CHANGED`           |
+| `AUTHORIZATION_CHANGED`     |
+| `DUPLICATE_OPERATION`       |
+| `DEPENDENCY_REJECTED`       |
+| `SCHEMA_INCOMPATIBLE`       |
+| `BUSINESS_STATE_CHANGED`    |
+| `QUANTITY_CONFLICT`         |
+| `CUSTODY_CONFLICT`          |
+| `TIME_WINDOW_EXPIRED`       |
+
+Acciones de resolución permitidas:
+
+| Acción                   |
+| ------------------------ |
+| `ACCEPT_SERVER_STATE`    |
+| `REAPPLY_ALLOWED_FIELDS` |
+| `CREATE_CORRECTION`      |
+| `SPLIT_OPERATION`        |
+| `ESCALATE`               |
+| `DISCARD_LOCAL_DRAFT`    |
+| `MANUAL_RECONCILIATION`  |
+
+Reglas:
+
+- `CONFLICT` nunca retorna directamente a `READY_TO_SYNC` con payload modificado;
+- `REAPPLY_ALLOWED_FIELDS`, `CREATE_CORRECTION` o `SPLIT_OPERATION` crean una sucesora cuando cambie la intención;
+- `RESULT_UNKNOWN` bloquea repetición hasta consultar receipt, propietaria o fuente externa;
+- `RESULT_UNKNOWN → READY_TO_SYNC` exige evidencia de que el efecto no ocurrió y retry seguro;
+- `RECONCILIATION_REQUIRED` conserva fuentes comparadas, diferencias, autoridad, decisión y residual;
+- un hecho físico ya ocurrido no se elimina porque su registro digital haya sido rechazado;
+- la taxonomía detallada de parcialidad, cuarentena, dead-letter e intervención pertenece a `INT-APP-009`.
+
+#### 15. Cancelación y sucesión
+
+| Caso                                          | Estado permitido           | Regla                                                                    |
+| --------------------------------------------- | -------------------------- | ------------------------------------------------------------------------ |
+| borrador nunca enviado que el actor descarta  | `CANCELLED_LOCAL`          | cero intentos, receipts y efectos                                        |
+| intención corregida antes de efecto           | `SUPERSEDED`               | sucesora explícita con identidad y huella nuevas cuando cambie contenido |
+| operación enviada cuyo resultado no se conoce | `RESULT_UNKNOWN`           | consultar antes de cancelar o repetir                                    |
+| efecto confirmado que debe deshacerse         | fuera de cancelación local | comando inverso, corrección o `INT-APP-006`                              |
+| operación con efecto parcial                  | fuera de rechazo terminal  | `RECONCILIATION_REQUIRED` y tratamiento de `INT-APP-009`                 |
+
+Una sucesora no hereda automáticamente autorización, receipt, intentos ni resultado de la operación anterior. Solo hereda referencias necesarias y contexto permitido.
+
+#### 16. Envelope conceptual de operación pendiente
+
+Toda operación conservará, cuando aplique:
+
+```text
+local_operation_id
+idempotency_key
+operation_type
+process_id
+process_instance_id
+task_id
+resource_type
+resource_id
+resource_version_observed
+actor_id
+principal_id
+device_id
+site_id
+area_id
+shift_id
+checkin_id
+permission_code_requested
+context_id_observed
+context_resolved_at
+captured_at_device
+captured_at_server_estimate
+payload_schema_version
+application_version
+payload_minimized
+evidence_refs
+dependency_ids
+retry_policy
+sync_status
+sync_state_version
+state_entered_at
+attempt_count
+last_attempt_at
+server_receipt_id
+business_result_ref
+conflict_ref
+reconciliation_ref
+successor_operation_id
+```
+
+El envelope es conceptual. Esta tarea no autoriza tabla, outbox, inbox, almacenamiento local, índice, constraint, cifrado, formato binario ni tecnología concreta.
+
+#### 17. Identidad, idempotencia e intentos
+
+```text
+MISMA INTENCIÓN LÓGICA
++ MISMA HUELLA
+=
+MISMA OPERACIÓN + MISMA IDEMPOTENCY KEY
+```
+
+```text
+CAMBIO MATERIAL
+=
+OPERACIÓN SUCESORA + NUEVA KEY + VÍNCULO EXPLÍCITO
+```
+
+Reglas:
+
+1. `attempt_id` cambia por intento; `local_operation_id` e `idempotency_key` permanecen.
+2. Un duplicado válido retorna el resultado previo y puede terminar `ACKNOWLEDGED` con `PRIOR_RESULT_REPLAY`.
+3. Misma clave con huella diferente termina `CONFLICT` y cero efectos nuevos.
+4. Un intento perdido conserva número y estado; no se recrea retroactivamente.
+5. La cola no usa timestamp, posición o texto visible como identidad empresarial.
+6. Una operación no cambia de propietaria durante reintentos.
+7. El historial de intentos se conserva aunque el estado actual sea terminal.
+
+#### 18. Reautorización y dispositivos compartidos
+
+Antes de ejecutar, el servidor revalida:
+
+```text
+actor y vínculo
++ sesión o envelope offline
++ turno y check-in
++ dispositivo
++ sede y área
++ permiso y denegaciones
++ recurso y versión
++ ventana y límites
++ versión de política y esquema
+```
+
+En dispositivo compartido:
+
+- las colas se aíslan por dispositivo, actor, contexto y área;
+- cambiar trabajador detiene nuevas mutaciones del anterior;
+- los pendientes conservan actor original;
+- el nuevo actor no recibe borradores ni autoridad del anterior;
+- takeover exige contrato y auditoría explícitos; no se infiere por iniciar sesión;
+- sin identidad offline aprobada, la estación queda en consulta o contingencia;
+- una revocación puede conservar la captura como evidencia, pero no obliga a ejecutar el efecto.
+
+#### 19. Reconexión y ciclo de vida
+
+Secuencia obligatoria:
+
+```text
+1. STABILIZE_CONNECTIVITY
+2. VERIFY_TIME_AND_SERVICES
+3. REVALIDATE_SESSION_AND_DEVICE
+4. RESOLVE_ACCESS_CONTEXT
+5. DOWNLOAD_REVOCATIONS_AND_VERSIONS
+6. CLASSIFY_PENDING_OPERATIONS
+7. SYNC_BY_DEPENDENCIES
+8. QUERY_RECEIPTS
+9. STOP_AND_EXPLAIN_CONFLICTS
+10. REFRESH_PROJECTIONS
+11. CONFIRM_TO_WORKER
+```
+
+La cola deberá sobrevivir, según política, recarga, cierre accidental, suspensión, reinicio, cambio de orientación y pérdida breve de energía. No podrá ejecutar en segundo plano sin comprobar actor atribuible, autoridad vigente, dispositivo autorizado, esquema compatible, dependencias satisfechas y operación no cancelada ni sustituida.
+
+Recuperar red no envía toda la cola inmediatamente. La disponibilidad parcial de un servicio no habilita operaciones dependientes de otro servicio todavía indisponible.
+
+#### 20. Tiempo, frescura y evidencia
+
+Se conservan separadamente:
+
+```text
+occurred_at
+captured_at_device
+queued_at
+attempt_started_at
+receipt_received_at
+authoritative_result_at
+synchronized_at
+```
+
+Cada momento incluye UTC, zona IANA cuando aplique y calidad del reloj. La hora de sincronización no sustituye la hora del hecho observado.
+
+Clases de frescura preservadas:
+
+```text
+REAL_TIME_REQUIRED
+SHORT_LIVED
+SHIFT_SCOPED
+DAY_SCOPED
+VERSION_SCOPED
+REFERENCE_LONG_LIVED
+```
+
+Estados de evidencia preservados:
+
+```text
+LOCAL_ONLY
+QUEUED
+UPLOADING
+UPLOADED_UNLINKED
+LINKED_AND_CONFIRMED
+FAILED_RETRYABLE
+FAILED_TERMINAL
+```
+
+Un archivo puede estar `LINKED_AND_CONFIRMED` mientras la operación siga `PENDING_CONFIRMATION`, o la operación puede quedar `ACKNOWLEDGED` solo si la evidencia obligatoria exigida por el proceso también alcanzó su condición válida.
+
+#### 21. Presentación operativa y fronteras de dominio
+
+La interfaz mostrará, como mínimo:
+
+- significado humano del estado;
+- cantidad y antigüedad de pendientes;
+- última sincronización y frescura;
+- actor y área originales cuando sea seguro mostrarlos;
+- qué se conservó;
+- qué no se confirmó;
+- siguiente acción segura;
+- responsable y referencia de escalamiento cuando aplique.
+
+Mapeo mínimo:
+
+| Estado técnico            | Mensaje operativo sugerido                               |
+| ------------------------- | -------------------------------------------------------- |
+| `LOCAL_DRAFT`             | Guardado en este equipo.                                 |
+| `READY_TO_SYNC`           | Pendiente de sincronizar.                                |
+| `WAITING_FOR_DEPENDENCY`  | Esperando una condición necesaria.                       |
+| `REAUTH_REQUIRED`         | Necesita volver a validar acceso.                        |
+| `SYNCING`                 | Enviando.                                                |
+| `PENDING_CONFIRMATION`    | Enviado; esperando confirmación.                         |
+| `REJECTED_RETRYABLE`      | No se pudo enviar todavía; se intentará de forma segura. |
+| `CONFLICT`                | Hay cambios que deben revisarse.                         |
+| `RESULT_UNKNOWN`          | Todavía no podemos confirmar el resultado.               |
+| `RECONCILIATION_REQUIRED` | Necesita conciliación.                                   |
+| `ACKNOWLEDGED`            | Confirmado.                                              |
+| `REJECTED_TERMINAL`       | No se aplicó.                                            |
+| `CANCELLED_LOCAL`         | Descartado antes de enviar.                              |
+| `SUPERSEDED`              | Reemplazado por una versión posterior.                   |
+
+Aplicación por dominio:
+
+- NEXO puede capturar conteos u observaciones locales, pero movimiento y custodia requieren resultado propietario;
+- FOGO puede capturar tiempos, temperaturas y cantidades, pero cierre de lote y movimientos exigen sincronización autorizada;
+- ORIGO puede capturar recepción física, pero ingreso, diferencias, documento y obligación deben quedar correlacionados;
+- PULSO nunca infiere pago por conectividad o receipt de datáfono;
+- ANIMA no convierte marcación local en check-in operativo confirmado;
+- PASS no confirma canje, consentimiento o efecto financiero desde una cola local;
+- VISO y NUMERA permanecen online por defecto para aprobación, ajuste, conciliación, exportación y configuración sensible.
+
+#### 22. AURA diferida
+
+Las relaciones donde AURA sea productora o consumidora conservan estados, transiciones y requisitos definidos, pero:
+
+- no crean colas operativas;
+- no ejecutan sincronización, retry ni reconciliación automática;
+- no habilitan captura offline ni efectos;
+- no generan receipts productivos;
+- permanecen `DEFINED_DEFERRED` hasta cobertura, autorización, readiness y paquete E5 aprobados.
+
+#### 23. Decisiones reservadas
+
+| Decisión                                                              | Tarea propietaria               |
+| --------------------------------------------------------------------- | ------------------------------- |
+| error parcial, cuarentena, dead-letter, brechas e intervención        | `INT-APP-009`                   |
+| prohibición física de escrituras cruzadas y comandos inversos         | `INT-APP-010`                   |
+| tablas, outbox, inbox, constraints, RLS, funciones y migraciones      | BLOQUES E3 y R                  |
+| broker, scheduler, colas, workers, leases y observabilidad física     | BLOQUE E4                       |
+| schemas, SDK, tipos, canonicalización y compatibilidad                | BLOQUE H                        |
+| cifrado, retención local, legal hold, disposición y privacidad física | BLOQUES AA y EVID               |
+| comportamiento final por pantalla y aplicación                        | roadmaps funcionales y BLOQUE I |
+| implementación, pruebas E2E, piloto, cutover, rollback e hypercare    | BLOQUE E5                       |
+
+#### 24. Cambios no autorizados
+
+`INT-APP-008` no autoriza:
+
+- crear tablas, índices, constraints, funciones, triggers, RPC, RLS o migraciones;
+- implementar outbox, inbox, cola local, Service Worker, scheduler, worker, broker o cron;
+- sincronizar datos reales ni ejecutar replays;
+- modificar productoras, consumidoras, eventos, permisos, retries o compensaciones;
+- activar last write wins;
+- transferir pendientes entre actores;
+- tratar receipt técnico como resultado empresarial;
+- borrar operaciones, intentos, conflictos, evidencia o auditoría;
+- activar AURA;
+- iniciar piloto, cutover, producción o hypercare;
+- escribir en GitHub.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-228 a TREQ-INTEGRATION-257
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado con esta tarea.
+
+#### 26. Huellas de integridad
+
+```text
+SYNC_CONNECTIVITY_STATE_REGISTRY_SHA256 = cb8567053cde825a4829c59b3d5c72fdc2cefba388e51481ca259d255f5bc540
+SYNC_STATUS_REGISTRY_SHA256 = 272535b1675388cfb17850d40399dc14c6b0c96ec3152f7131caec1ab3ec58c3
+SYNC_TRANSITION_MATRIX_SHA256 = a77b8dfbb96c1505fee099600d6a2de7b9d4f2c23d87575849554b7bb448feea
+SYNC_POLICY_SHA256 = 9e134a5e1291aebab1d292d775add757eb6ffdb2b1223c0d44022aed9df75bd7
+REMOTE_COMMIT_SHA = 6bcd35a1584169401aebd533f6bc9281d5b1c38c
+REMOTE_X_BLOCK_BLOB_SHA1 = aeb432864c630bfde66c95190f8c09444cb891a6
+REMOTE_04A_BASE_BLOB_SHA1 = 6c9647d6854d50588cb139c0fd7be9101dcff5ec
+UX_CONNECTIVITY_SOURCE_BLOB_SHA1 = 24a0118bc968af300d8e3541d0665557b76f1d40
+CODE_OFFLINE_AUDIT_SOURCE_BLOB_SHA1 = 2234bc064cc91e766e4e550fc8c3801d669ec894
+UX_STATION_SOURCE_BLOB_SHA1 = 72a215e06dc54d64e6818cdc19aaa1490a08f266
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-007` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se preservaron sin renombre siete estados de conectividad y siete modos de capacidad.
+- [x] Se preservaron los doce estados de `UX-BASE-013` y se integraron `PENDING_CONFIRMATION` y `RESULT_UNKNOWN`.
+- [x] Se definieron catorce estados y cuarenta y seis transiciones cerradas.
+- [x] Se separaron conectividad, frescura, sincronización, proceso, intento, evidencia y auditoría.
+- [x] Se definieron terminalidad, cancelación local, sucesión, retry, conflicto, incertidumbre y conciliación.
+- [x] Se preservaron diez conflictos, siete resoluciones, siete estados de evidencia y once fases de reconexión.
+- [x] Se definieron reautorización, aislamiento de dispositivos compartidos, causalidad y lotes.
+- [x] Se cubrieron NEXO, FOGO, ORIGO, PULSO, ANIMA, PASS, VISO y NUMERA.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `6bcd35a1584169401aebd533f6bc9281d5b1c38c`            |
+| Blob del mini-bloque X                       | `aeb432864c630bfde66c95190f8c09444cb891a6`            |
+| Blob 04A remoto base                         | `6c9647d6854d50588cb139c0fd7be9101dcff5ec`            |
+| Procesos cubiertos                           | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora                | **2.020**                                             |
+| Estados de conectividad                      | **7**                                                 |
+| Modos de capacidad                           | **7**                                                 |
+| Estados de sincronización                    | **14**                                                |
+| Transiciones permitidas                      | **46**                                                |
+| Clases de conflicto                          | **10**                                                |
+| Acciones de resolución                       | **7**                                                 |
+| Estados de evidencia                         | **7**                                                 |
+| Fases de reconexión                          | **11**                                                |
+| Requisitos base                              | **4.218**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.248**                                             |
+| Dominio INTEGRATION                          | **257 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-257** |
+| Filas con catorce columnas                   | **4.248 de 4.248**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.218**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Validación real del repositorio
+
+```text
+VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+```
+
+Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
+
+```bash
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+#### 30. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-008 — Definir estados pendientes de sincronización` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+4. No modificar derivados bajo `.generated/` para forzar continuidad.
+
+#### 31. Continuidad preparada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-007 — Definir auditoría transversal
+        ↓
+TAREA ACTUAL
+INT-APP-008 — Definir estados pendientes de sincronización
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-009 — Definir manejo de errores parciales
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-009 — Definir manejo de errores parciales
 ### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato
