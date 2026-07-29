@@ -1,3 +1,11 @@
+### SECCIÓN — ROLES FUNCIONALES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-005` a `AUTH-RBAC-007` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-005 — Crear matriz de auxiliar_administrativa
 
 #### 1. Identificación de la tarea
@@ -1193,7 +1201,3 @@ El aumento cuantitativo no significa administración global. Expresa capacidades
 | AUTH-RBAC-008 | NO INICIADA |
 
 No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
-
-
-MATRICES OPERATIVAS
-

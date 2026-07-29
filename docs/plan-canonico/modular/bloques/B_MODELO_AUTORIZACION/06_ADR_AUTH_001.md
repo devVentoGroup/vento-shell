@@ -1,3 +1,11 @@
+### SECCIÓN — ADR AUTH 001
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-020` a `AUTH-MOD-021` — 2 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-020 — Documentar el modelo mediante ADR
 
 #### ADR-AUTH-001 — Modelo canónico de identidad, contexto y autorización de Vento OS
@@ -4572,5 +4580,3 @@ AUTH-CTX-028 — NO INICIADA
 ```
 
 No se inicia `AUTH-CTX-028` hasta recibir aprobación explícita de `AUTH-MOD-021`.
-
-

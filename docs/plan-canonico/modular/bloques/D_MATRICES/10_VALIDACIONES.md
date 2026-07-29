@@ -1,3 +1,11 @@
+### SECCIÓN — VALIDACIONES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-027` a `AUTH-RBAC-028` — 2 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-027 — Validar que no exista acceso operativo global accidental
 
 **Estado:** APROBADA  
@@ -1635,4 +1643,3 @@ gerente_general
 → reciben permisos administrativos globales explícitos
 → no reciben bypass por nombre de rol
 → las capacidades OPERATIONAL_ONLY continúan exigiendo contexto operativo
-

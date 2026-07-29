@@ -1,3 +1,11 @@
+### SECCIÓN — OPERATIVOS PRODUCCION
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-014` a `AUTH-RBAC-016` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-014 — Crear matriz de produccion_cocina
 
 #### 1. Identificación de la tarea

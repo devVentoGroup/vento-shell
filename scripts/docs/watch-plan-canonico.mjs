@@ -38,6 +38,7 @@ const ignoredDirectories = new Set([
 let debounceTimer = null;
 let buildRunning = false;
 let buildPending = false;
+let buildSequence = 0;
 const pendingChanges = new Set();
 
 function normalizeRelativePath(filename) {
@@ -92,14 +93,22 @@ function runNodeScript(args, label) {
   });
 }
 
-async function rebuild() {
+async function rebuild(reason) {
   if (buildRunning) {
     buildPending = true;
+    console.log(
+      "[PLAN CANÓNICO] ⏳ Ya hay una compilación en curso; este lote quedó en cola."
+    );
     return;
   }
 
   buildRunning = true;
   buildPending = false;
+  const buildId = ++buildSequence;
+
+  console.log(
+    `\n[PLAN CANÓNICO] ▶ Compilación #${buildId} iniciada (${reason}).`
+  );
 
   try {
     await runNodeScript(
@@ -113,19 +122,25 @@ async function rebuild() {
     );
 
     console.log(
-      "\n[PLAN CANÓNICO] ✅ Compilado actualizado y validado."
+      `\n[PLAN CANÓNICO] ✅ Compilación #${buildId}: compilado actualizado y validado.`
     );
   } catch (error) {
     console.error(
-      "\n[PLAN CANÓNICO] ❌ Error durante la compilación:"
+      `\n[PLAN CANÓNICO] ❌ Compilación #${buildId} fallida:`
     );
     console.error(error instanceof Error ? error.message : error);
   } finally {
     buildRunning = false;
 
     if (buildPending) {
-      rebuild();
+      console.log(
+        "[PLAN CANÓNICO] ↻ Procesando ahora el lote que estaba en cola."
+      );
+      void rebuild("lote pendiente");
+      return;
     }
+
+    console.log("[PLAN CANÓNICO] Esperando cambios...");
   }
 }
 
@@ -142,7 +157,7 @@ function scheduleRebuild(filename) {
       `[PLAN CANÓNICO] Aplicando lote estable de ${pendingChanges.size} archivo(s).`
     );
     pendingChanges.clear();
-    rebuild();
+    void rebuild("cambios guardados");
   }, 2000);
 }
 
@@ -177,4 +192,4 @@ process.on("SIGINT", () => {
 });
 
 // Garantiza que el compilado esté vigente al iniciar VS Code.
-rebuild();
+void rebuild("verificación inicial");

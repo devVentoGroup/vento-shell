@@ -1,3 +1,11 @@
+### SECCIÓN — DENEGACIONES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-019` — 1 tarea.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-019 — Definir reglas de denegación explícita
 
 #### 1. Problema que se resuelve
@@ -2217,4 +2225,3 @@ ALLOW
 DEFAULT_DENY
 
 APROBADO
-

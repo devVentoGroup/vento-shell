@@ -1,3 +1,11 @@
+### SECCIÓN — EXCEPCIONES Y DISPOSITIVOS
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-020` a `AUTH-RBAC-023` — 4 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-020 — Definir concesiones individuales base
 
 #### 1. Identificación de la tarea
@@ -3622,4 +3630,3 @@ AUTH-RBAC-023 podrá aprobarse cuando se acepte expresamente que:
 | AUTH-RBAC-024 | NO INICIADA |
 
 No se avanza a AUTH-RBAC-024 hasta recibir aprobación explícita.
-

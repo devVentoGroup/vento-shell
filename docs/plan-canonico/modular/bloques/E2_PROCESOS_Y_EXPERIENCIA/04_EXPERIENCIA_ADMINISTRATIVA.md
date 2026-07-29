@@ -1,3 +1,11 @@
+### SECCIÓN — EXPERIENCIA ADMINISTRATIVA
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `UX-ADMIN-001` a `UX-ADMIN-005` — 5 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 MODELO DE EXPERIENCIA ADMINISTRATIVA
 
 ### ✅ UX-ADMIN-001 — Inventariar tareas administrativas por dominio, frecuencia y complejidad
@@ -3183,4 +3191,3 @@ La continuidad documental pasa exclusivamente a:
 ```text
 PROC-SCREEN-001 — Inventariar pantallas necesarias por proceso y aplicación
 ```
-

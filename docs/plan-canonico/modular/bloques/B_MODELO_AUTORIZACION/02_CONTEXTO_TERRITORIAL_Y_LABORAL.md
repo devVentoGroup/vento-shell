@@ -1,3 +1,11 @@
+### SECCIÓN — CONTEXTO TERRITORIAL Y LABORAL
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-007` a `AUTH-MOD-012` — 6 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-007 — Definir sede asignada y sede activa
 
 #### 1. Decisión aprobada
@@ -2869,4 +2877,3 @@ recalcular resultados.
 Regla
 cambiar contexto simulado
 ≠ cambiar datos reales
-

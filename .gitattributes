@@ -1,0 +1,4 @@
+# Mantener estable el formato de las fuentes y herramientas del plan canónico.
+docs/plan-canonico/modular/** text eol=lf
+scripts/docs/** text eol=lf
+package.json text eol=lf

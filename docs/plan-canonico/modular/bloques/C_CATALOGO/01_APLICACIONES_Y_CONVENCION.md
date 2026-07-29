@@ -1,3 +1,11 @@
+### SECCIÓN — APLICACIONES Y CONVENCION
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-001` a `AUTH-CAT-002` — 2 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-001 — Normalizar el catálogo y los códigos de aplicaciones
 
 #### 1. Problema que se resuelve

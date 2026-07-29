@@ -1,3 +1,11 @@
+### SECCIÓN — ALCANCES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-013` a `AUTH-MOD-017` — 5 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-013 — Definir permisos globales
 
 La auditoría encontró que 503 de las 613 filas actuales de role_permissions usan alcance global. También detectó que gerente, auxiliar_administrativa y contador poseen actualmente conjuntos completos de permisos globales que no corresponden necesariamente con su responsabilidad real.
@@ -5773,4 +5781,3 @@ PERMISO
 ∩ MODALIDAD
 ∩ ÁREA REAL DEL RECURSO
 ∩ CONTEXTO OPERATIVO CUANDO APLIQUE
-

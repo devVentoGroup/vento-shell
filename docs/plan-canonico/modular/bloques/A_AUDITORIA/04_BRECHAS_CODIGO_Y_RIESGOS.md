@@ -1,3 +1,11 @@
+### SECCIÓN — BRECHAS CODIGO Y RIESGOS
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-AUD-015` a `AUTH-AUD-020` — 6 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-AUD-015 — Buscar permisos existentes sin asignación
 
 Resumen
@@ -2382,4 +2390,3 @@ Resultado de cierre
 La auditoría permitió reconstruir la cadena completa y detectar dónde el comportamiento actual se aparta del modelo esperado. El mapa es verificable, aunque todavía no es uniforme ni constituye una arquitectura definitiva.
 
 El Bloque B deberá convertir este mapa auditado en una única especificación canónica de identidad, contexto y autorización.
-

@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { readPlanSection } from './read-plan-section.mjs';
 import {
   validateScreenClassifications,
   validateScreenStepBindings,
@@ -15,7 +16,7 @@ function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-screen-matrices-'));
   const target = path.join(root, relative);
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(path.resolve(relative), target);
+  fs.writeFileSync(target, readPlanSection(process.cwd(), relative));
   return root;
 }
 

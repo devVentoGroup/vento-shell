@@ -17,4 +17,3 @@ En caso de conflicto prevalece, en este orden:
 3. Catálogo canónico vigente.
 4. Hallazgo de auditoría.
 5. Estado legacy observado.
-

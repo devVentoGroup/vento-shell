@@ -1,3 +1,11 @@
+### SECCIÓN — OPERATIVOS SERVICIO MOSTRADOR INTEGRAL
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-011` a `AUTH-RBAC-013` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-011 — Crear matriz de servicio_salon
 
 #### 1. Identificación de la tarea

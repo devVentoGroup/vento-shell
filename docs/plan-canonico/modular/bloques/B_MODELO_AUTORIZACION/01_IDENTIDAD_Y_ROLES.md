@@ -1,3 +1,11 @@
+### SECCIÓN — IDENTIDAD Y ROLES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-001` a `AUTH-MOD-006` — 6 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-001 — Definir identidad laboral del usuario
 
 #### AUTH-MOD-001 — Identidades reconocidas y fuentes de verdad
@@ -4049,4 +4057,3 @@ unión de permisos
 bypass por jerarquía
 
 ✅ AUTH-MOD-006 aprobado
-

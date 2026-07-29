@@ -1,3 +1,11 @@
+### SECCIÓN — VERSIONADO Y CONSUMO
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-017` a `AUTH-CAT-019` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-017 — Crear catálogo versionado en `vento-shell`
 
 #### 1. Identificación de la tarea
@@ -3897,4 +3905,3 @@ AUTH-CAT-019 queda aprobada como cierre del BLOQUE C.
 La continuidad documental pasa a:
 
 AUTH-RBAC-001 — Crear matriz de propietario.
-

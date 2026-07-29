@@ -1,3 +1,11 @@
+### SECCIÓN — PRECEDENCIA
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-MOD-018` — 1 tarea.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-MOD-018 — Definir precedencia entre permisos base y operativos
 
 #### 1. Problema que se resuelve
@@ -2217,4 +2225,3 @@ Carril base válido    Carril operativo       Evaluar ambos
                     DECISIÓN COMBINADA
 
 aprobada
-

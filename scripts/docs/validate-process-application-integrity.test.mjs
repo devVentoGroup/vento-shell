@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { readPlanSection } from './read-plan-section.mjs';
 import { validateProcessApplicationIntegrity } from './validate-process-application-integrity.mjs';
 
 const FILES = [
@@ -15,7 +16,7 @@ function fixture() {
   for (const relativePath of FILES) {
     const destination = path.join(root, relativePath);
     fs.mkdirSync(path.dirname(destination), { recursive: true });
-    fs.copyFileSync(path.resolve(relativePath), destination);
+    fs.writeFileSync(destination, readPlanSection(process.cwd(), relativePath));
   }
   return root;
 }

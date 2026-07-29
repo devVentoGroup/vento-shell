@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readPlanSection } from './read-plan-section.mjs';
 
 const SCREEN_PATH =
   'docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md';
@@ -8,7 +9,7 @@ const PROCESS_PATH =
   'docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/01_CATALOGO_DE_PROCESOS.md';
 
 function read(root, relativePath) {
-  return fs.readFileSync(path.resolve(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
+  return readPlanSection(root, relativePath);
 }
 
 function section(source, startPattern, endPattern) {

@@ -3596,4 +3596,3 @@ AUTH-RBAC-026 podrá aprobarse cuando se acepte que:
 
 No se avanza a AUTH-RBAC-027 hasta recibir aprobación explícita de
 AUTH-RBAC-026.
-

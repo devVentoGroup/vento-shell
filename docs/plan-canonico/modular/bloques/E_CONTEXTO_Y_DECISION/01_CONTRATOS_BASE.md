@@ -6909,6 +6909,3 @@ AUTH-CTX-004 podrá aprobarse cuando se acepte que:
 
 No se avanza a AUTH-CTX-005 hasta recibir aprobación explícita de
 AUTH-CTX-004.
-
-
-ACCESS CONTEXT

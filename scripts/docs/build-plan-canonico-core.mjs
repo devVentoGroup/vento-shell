@@ -28,25 +28,33 @@ function maskFencedCode(source) {
   }).join('\n');
 }
 
-function findUnregisteredBlockDirectories(manifestFiles) {
+function listMarkdownFiles(directory) {
+  const files = [];
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const fullPath = path.join(directory, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listMarkdownFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.md') && entry.name !== 'README.md') {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
+function findUnregisteredBlockFragments(manifestFiles, auxiliaryFiles = []) {
   const blocksDir = path.join(baseDir, 'bloques');
   if (!fs.existsSync(blocksDir)) return [];
 
   const registered = new Set(
-    manifestFiles
+    [...manifestFiles, ...auxiliaryFiles]
       .filter((relativePath) => relativePath.startsWith('bloques/'))
-      .map((relativePath) => relativePath.split('/')[1])
+      .map((relativePath) => relativePath.replaceAll('\\', '/')),
   );
 
-  return fs.readdirSync(blocksDir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .filter((entry) => {
-      const directory = path.join(blocksDir, entry.name);
-      const hasMarkdown = fs.readdirSync(directory, { withFileTypes: true })
-        .some((child) => child.isFile() && child.name.endsWith('.md') && child.name !== 'README.md');
-      return hasMarkdown && !registered.has(entry.name);
-    })
-    .map((entry) => `bloques/${entry.name}`);
+  return listMarkdownFiles(blocksDir)
+    .map((fullPath) => path.relative(baseDir, fullPath).replaceAll('\\', '/'))
+    .filter((relativePath) => !registered.has(relativePath))
+    .sort();
 }
 
 try {
@@ -58,13 +66,19 @@ try {
 if (!fs.existsSync(manifestPath)) fail(`no existe ${path.relative(root, manifestPath)}.`);
 const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 if (!Array.isArray(manifest.files) || manifest.files.length === 0) fail('manifest.json no contiene una lista válida de archivos.');
+if (manifest.auxiliary_files !== undefined && !Array.isArray(manifest.auxiliary_files)) {
+  fail('manifest.json contiene auxiliary_files con formato inválido.');
+}
 
 const duplicatePaths = manifest.files.filter((file, index, all) => all.indexOf(file) !== index);
 if (duplicatePaths.length) fail(`rutas duplicadas en manifest.json: ${[...new Set(duplicatePaths)].join(', ')}`);
 
-const unregisteredBlocks = findUnregisteredBlockDirectories(manifest.files);
-if (unregisteredBlocks.length) {
-  fail(`bloques con fragmentos Markdown fuera de manifest.json: ${unregisteredBlocks.join(', ')}`);
+const unregisteredFragments = findUnregisteredBlockFragments(
+  manifest.files,
+  manifest.auxiliary_files ?? [],
+);
+if (unregisteredFragments.length) {
+  fail(`fragmentos Markdown fuera de manifest.json: ${unregisteredFragments.join(', ')}`);
 }
 
 try {

@@ -20136,6 +20136,3 @@ AUTH-CTX-025 — NO INICIADA
 
 No se avanza a `AUTH-CTX-025` hasta recibir aprobación explícita de
 `AUTH-CTX-024`.
-
-
-DISEÑO DE IMPLEMENTACIÓN CANÓNICA

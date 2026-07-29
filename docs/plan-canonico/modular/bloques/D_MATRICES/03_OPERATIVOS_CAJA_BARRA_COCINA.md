@@ -1,3 +1,11 @@
+### SECCIÓN — OPERATIVOS CAJA BARRA COCINA
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-008` a `AUTH-RBAC-010` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-008 — Crear matriz de cajero_satelite
 
 #### 1. Identificación de la tarea

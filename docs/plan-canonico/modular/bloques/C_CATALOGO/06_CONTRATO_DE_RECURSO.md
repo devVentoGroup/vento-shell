@@ -1,3 +1,11 @@
+### SECCIÓN — CONTRATO DE RECURSO
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-016` — 1 tarea.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-016 — Definir contrato de recurso y resolución territorial de cada permiso
 
 #### 1. Identificación de la tarea
@@ -608,5 +616,3 @@ Las matrices solo podrán conceder alcances compatibles con el contrato del recu
 | AUTH-CAT-017 | NO INICIADA |
 
 No se avanza a AUTH-CAT-017 hasta recibir aprobación explícita.
-
-

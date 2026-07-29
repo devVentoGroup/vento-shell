@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readPlanSection } from './read-plan-section.mjs';
 
 const SCREEN_RELATIVE_PATH =
   'docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md';
@@ -10,9 +11,7 @@ const APPLICATION_RELATIVE_PATH =
   'docs/plan-canonico/modular/bloques/C_CATALOGO/01_APLICACIONES_Y_CONVENCION.md';
 
 function read(root, relativePath) {
-  const fullPath = path.resolve(root, relativePath);
-  if (!fs.existsSync(fullPath)) throw new Error(`no existe ${relativePath}.`);
-  return fs.readFileSync(fullPath, 'utf8').replace(/\r\n?/g, '\n');
+  return readPlanSection(root, relativePath);
 }
 
 function section(source, startPattern, endPattern) {

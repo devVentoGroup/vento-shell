@@ -1,3 +1,11 @@
+### SECCIÓN — NORMALIZACIÓN Y DESCRIPCIONES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-003` a `AUTH-CAT-005` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-003 — Normalizar códigos de permisos con la convención aprobada
 
 #### 1. Estado de implementación
@@ -3838,4 +3846,3 @@ AUTH-CAT-004
 
 AUTH-CAT-005
 → APROBADA
-

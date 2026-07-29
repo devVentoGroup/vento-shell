@@ -1,3 +1,11 @@
+### SECCIÓN — OPERATIVOS LOGISTICA Y GERENCIA
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-017` a `AUTH-RBAC-019` — 3 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-017 — Crear matriz de bodeguero
 
 #### 1. Identificación de la tarea
@@ -1469,7 +1477,3 @@ La tarea podrá aprobarse cuando se acepte que:
 | AUTH-RBAC-020 | NO INICIADA |
 
 No se implementan código, migraciones, cambios en Supabase, RLS, RPC, datasets, repositorios, guards, dispositivos ni pantallas. La matriz solo será canónica cuando el usuario la apruebe expresamente.
-
-
-CAPAS ADICIONALES
-

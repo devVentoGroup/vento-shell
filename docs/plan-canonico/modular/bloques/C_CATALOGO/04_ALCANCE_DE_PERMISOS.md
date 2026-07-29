@@ -1,3 +1,11 @@
+### SECCIÓN — ALCANCE DE PERMISOS
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-011` — 1 tarea.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-011 — Definir alcance permitido de cada permiso
 
 #### 1. Identificación de la tarea
@@ -758,4 +766,3 @@ no degradarse al alcance más permisivo.
 #### 16. Estado final de la propuesta
 
 AUTH-CAT-011 — APROBADA
-

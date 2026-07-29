@@ -1,3 +1,11 @@
+### SECCIÓN — MATRICES Y ASIGNACIONES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-AUD-005` a `AUTH-AUD-009` — 5 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-AUD-005 — Inventariar role_permissions
 
 Resumen general
@@ -1320,4 +1328,3 @@ La tabla no permite área predeterminada.
 Sedes laborales y puntos de marcación comparten catálogo.
 El modelo depende casi totalmente de los turnos.
 No existe configuración operativa habitual administrada para la mayoría del personal.
-

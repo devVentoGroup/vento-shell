@@ -1,3 +1,11 @@
+### SECCIÓN — PRERREQUISITOS Y CONTEXTO
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-012` a `AUTH-CAT-015` — 4 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-012 — Definir prerrequisitos de turno y check-in de cada permiso
 
 #### 1. Identificación de la tarea
@@ -3161,5 +3169,3 @@ Las matrices deberán impedir que una asignación simulada se persista como conc
 | AUTH-CAT-016 | NO INICIADA |
 
 No se avanza a AUTH-CAT-016 hasta recibir aprobación explícita.
-
-

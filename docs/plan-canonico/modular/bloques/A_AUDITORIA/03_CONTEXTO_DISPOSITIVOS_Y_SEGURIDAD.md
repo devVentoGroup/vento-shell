@@ -1,3 +1,11 @@
+### SECCIÓN — CONTEXTO DISPOSITIVOS Y SEGURIDAD
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-AUD-010` a `AUTH-AUD-014` — 5 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-AUD-010 — Inventariar turnos, check-ins y sesiones operativas
 
 Inventario general
@@ -2759,4 +2767,3 @@ Existen políticas redundantes y antiguas.
 Hay doble resolución del turno en asistencia.
 La validación del perfil operativo es incompleta.
 La seguridad efectiva depende de revisar individualmente los cuerpos de las RPC mutadoras.
-

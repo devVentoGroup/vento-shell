@@ -13126,7 +13126,3 @@ AUTH-CTX-016 — NO INICIADA
 
 No se avanza a AUTH-CTX-016 hasta recibir aprobación explícita de
 AUTH-CTX-015.
-
-
-
-AUTHORIZATION DECISION

@@ -3326,4 +3326,3 @@ No se inicia `CAP-TAL-001` ni se habilita la venta B2B hasta aprobación expresa
 **Propósito:** definir cliente objetivo, catálogo, presentaciones, precios, capacidad, toma de pedido, aprobación, producción, facturación, inventario, despacho, entrega, devoluciones y conciliación.  
 **Continuidad:** deberá asignar propietarios entre PULSO o canal comercial, FOGO, NEXO, NUMERA y BLOQUE X antes de E5.  
 **Límite:** continúa como capacidad futura hasta superar viabilidad, costeo, capacidad y readiness.
-

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readPlanSection } from './read-plan-section.mjs';
 
 const CONTRACT_PATH =
   'docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/05_CONTRATO_DE_PANTALLAS.md';
@@ -40,9 +41,7 @@ function byId(rows, label) {
 }
 
 function load(root) {
-  return fs
-    .readFileSync(path.resolve(root, CONTRACT_PATH), 'utf8')
-    .replace(/\r\n?/g, '\n');
+  return readPlanSection(root, CONTRACT_PATH);
 }
 
 function base(source) {

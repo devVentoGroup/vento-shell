@@ -1,3 +1,11 @@
+### SECCIÓN — ROLES APPS Y PERMISOS
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-AUD-001` a `AUTH-AUD-004` — 4 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-AUD-001 — Inventariar todos los roles base existentes
 
 Inventario actual de roles base
@@ -1058,4 +1066,3 @@ Resto del sistema  66
 Total             177
 
 Esto no significa que NEXO tenga realmente más capacidades. La diferencia proviene principalmente de permisos generados desde navegación.
-

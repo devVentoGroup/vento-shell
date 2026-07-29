@@ -1,3 +1,11 @@
+### SECCIÓN — MODALIDAD Y CLASIFICACIONES
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-CAT-006` a `AUTH-CAT-010` — 5 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-CAT-006 — Definir authorization_requirement de cada permiso
 
 #### 1. Estado de implementación
@@ -8920,4 +8928,3 @@ AUTH-CAT-009
 
 AUTH-CAT-010
 → APROBADA
-

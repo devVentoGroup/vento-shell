@@ -1,3 +1,11 @@
+### SECCIÓN — PROPIETARIO Y GERENCIAS
+
+<!-- PLAN-SECTION-META:START -->
+Esta sección reúne contenido canónico con una responsabilidad documental única dentro del plan. Debe conservarse cohesionada y actualizarse junto con sus referencias y validaciones dependientes.
+
+**Cobertura canónica:** `AUTH-RBAC-001` a `AUTH-RBAC-004` — 4 tareas.
+<!-- PLAN-SECTION-META:END -->
+
 ### ✅ AUTH-RBAC-001 — Crear matriz de propietario
 
 #### 1. Identificación de la tarea
@@ -1808,5 +1816,3 @@ AUTH-RBAC-004 podrá aprobarse cuando se acepte expresamente que:
 | AUTH-RBAC-005 | NO INICIADA |
 
 No se avanza a AUTH-RBAC-005 hasta recibir aprobación explícita.
-
-
