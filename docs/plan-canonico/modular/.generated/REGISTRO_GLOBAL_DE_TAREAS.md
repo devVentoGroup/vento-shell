@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **357** |
+| Aprobadas | **358** |
 | En propuesta | **0** |
-| No iniciadas | **1218** |
+| No iniciadas | **1217** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **22.67% (357/1575)** |
+| Porcentaje de completamiento | **22.73% (358/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-015` — Clasificar vista operativa | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-016` — Clasificar vista administrativa | ⬜ NO INICIADA |
-| Siguiente | `AUTH-UI-017` — Clasificar vista de supervisión | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-016` — Clasificar vista administrativa | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-017` — Clasificar vista de supervisión | ⬜ NO INICIADA |
+| Siguiente | `AUTH-UI-018` — Clasificar vista de configuración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -804,7 +804,7 @@
 | ✅ APROBADA | `AUTH-UI-013` | Definir aplicación propietaria | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ✅ APROBADA | `AUTH-UI-014` | Definir si la aplicación solo consume la capacidad | `bloques/I_NAVEGACION_Y_PANTALLAS/02_VINCULACION_CON_PROCESOS_Y_APLICACIONES.md` |
 | ✅ APROBADA | `AUTH-UI-015` | Clasificar vista operativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
-| ⬜ NO INICIADA | `AUTH-UI-016` | Clasificar vista administrativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
+| ✅ APROBADA | `AUTH-UI-016` | Clasificar vista administrativa | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-017` | Clasificar vista de supervisión | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-018` | Clasificar vista de configuración | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
 | ⬜ NO INICIADA | `AUTH-UI-019` | Clasificar vista de auditoría | `bloques/I_NAVEGACION_Y_PANTALLAS/03_CLASIFICACION_FUNCIONAL_Y_CONTEXTO_DE_USO.md` |
