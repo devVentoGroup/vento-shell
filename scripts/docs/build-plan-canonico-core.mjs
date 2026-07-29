@@ -12,6 +12,7 @@ import {
 } from './validate-screen-contract-matrices.mjs';
 import { validateBlockISurfaceMatrices } from './validate-block-i-surface-matrices.mjs';
 import { validatePriorityDeliveryLanes } from './validate-priority-delivery-lanes.mjs';
+import { validateEventApplicationBlock } from './validate-event-application-block.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -149,6 +150,18 @@ try {
   );
 } catch (error) {
   fail(`Matrices BLOQUE I inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const eventStats = validateEventApplicationBlock({ root });
+  console.log(
+    `OK: INT-APP; ${eventStats.tasks} tareas aprobadas; `
+    + `${eventStats.treqRequirements} requisitos derivados; `
+    + `${eventStats.processes} procesos; ${eventStats.normalEvents} eventos; `
+    + `${eventStats.consumerRelations} relaciones consumidoras.`
+  );
+} catch (error) {
+  fail(`Mini-bloque INT-APP inválido:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 try {

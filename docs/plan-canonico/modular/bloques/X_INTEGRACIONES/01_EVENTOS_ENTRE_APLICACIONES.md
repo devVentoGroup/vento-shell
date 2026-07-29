@@ -8,6 +8,11 @@ Esta sección organiza **eventos entre aplicaciones** dentro de **X INTEGRACIONE
 **Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
 
 **Límites funcionales:** comienza con “Crear catálogo de eventos empresariales” y concluye con “Evitar escrituras cruzadas sin contrato”.
+
+**Estado del mini-bloque:** cerrado documentalmente con `INT-APP-001` a
+`INT-APP-010` aprobadas. Los diagramas de continuidad incluidos dentro de cada
+tarea conservan el momento histórico de su aprobación; el estado vigente se
+obtiene de `active-sequence.json`, la cabecera y el registro global generados.
 <!-- PLAN-SECTION-META:END -->
 
 ### ✅ INT-APP-001 — Crear catálogo de eventos empresariales
@@ -2646,7 +2651,7 @@ PROC_CCR_SOURCE_BLOB_SHA1 = 55913e1380a83c12f50cfe368c1787c83222473e
 #### 29. Validación real del repositorio
 
 ```text
-VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+VALIDACIÓN LOCAL REQUERIDA AL INCORPORAR ESTA TAREA; EL RESULTADO VIGENTE LO DETERMINA EL COMPILADOR CANÓNICO
 ```
 
 Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
@@ -3214,7 +3219,7 @@ PROC_AUDIT_SOURCE_BLOB_SHA1 = 683c2540d88a7c665c8fd05cd6beb0fd74645b4d
 #### 29. Validación real del repositorio
 
 ```text
-VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+VALIDACIÓN LOCAL REQUERIDA AL INCORPORAR ESTA TAREA; EL RESULTADO VIGENTE LO DETERMINA EL COMPILADOR CANÓNICO
 ```
 
 Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
@@ -3917,7 +3922,7 @@ UX_STATION_SOURCE_BLOB_SHA1 = 72a215e06dc54d64e6818cdc19aaa1490a08f266
 #### 29. Validación real del repositorio
 
 ```text
-VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+VALIDACIÓN LOCAL REQUERIDA AL INCORPORAR ESTA TAREA; EL RESULTADO VIGENTE LO DETERMINA EL COMPILADOR CANÓNICO
 ```
 
 Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
@@ -4565,7 +4570,7 @@ CODE_OFFLINE_AUDIT_SOURCE_BLOB_SHA1 = 2234bc064cc91e766e4e550fc8c3801d669ec894
 #### 29. Validación real del repositorio
 
 ```text
-VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+VALIDACIÓN LOCAL REQUERIDA AL INCORPORAR ESTA TAREA; EL RESULTADO VIGENTE LO DETERMINA EL COMPILADOR CANÓNICO
 ```
 
 Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
@@ -4602,4 +4607,606 @@ INT-APP-010 — Evitar escrituras cruzadas sin contrato
 APROBADA
 
 
-### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato
+### ✅ INT-APP-010 — Evitar escrituras cruzadas sin contrato
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato`
+**Tarea anterior:** `INT-APP-009 — Definir manejo de errores parciales` — APROBADA
+**Siguiente tarea:** `NINGUNA — CIERRE DEL BLOQUE`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@2c1460ef79f1a0a7daf7937ae1f979f29c3c932c`
+**Tipo de tarea:** definición documental transversal de fronteras de escritura, comandos propietarios, proyecciones, correcciones, compensaciones, migraciones y controles contra mutaciones entre aplicaciones sin contrato; sin implementación, tablas, RLS, RPC, colas, workers, Supabase, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir una política única y cerrada para impedir que una aplicación modifique directamente el estado, ledger, hecho, workflow o registro principal perteneciente a otra aplicación, obligando a que toda mutación interaplicación se exprese mediante un contrato versionado dirigido a la propietaria canónica del proceso y que el resultado sea confirmado únicamente por esa propietaria.
+
+```text
+APLICACIÓN SOLICITANTE
+        ↓
+CONTRATO EXPLÍCITO + AUTORIZACIÓN + IDEMPOTENCIA
+        ↓
+APLICACIÓN PROPIETARIA
+        ↓
+VALIDACIÓN + COMMIT PROPIO + AUDITORÍA
+        ↓
+RESULTADO O EVENTO CONFIRMADO
+```
+
+Regla central:
+
+```text
+BASE DE DATOS COMPARTIDA
+≠
+AUTORIDAD DE ESCRITURA COMPARTIDA
+
+NECESIDAD DE OTRO DOMINIO
+≠
+PERMISO PARA MODIFICARLO
+
+COMPENSAR O CORREGIR
+≠
+EDITAR EL HECHO AJENO
+```
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                     | Revisión o blob                            | Responsabilidad                                                                 |
+| ---------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
+| `vento-shell`                                              | `2c1460ef79f1a0a7daf7937ae1f979f29c3c932c` | remoto vigente con `INT-APP-009` y 04A integrados; continuidad en `INT-APP-010` |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`         | `62b6e3e3438c3b020c2a124104ebb41482f44db9` | contratos `INT-APP-001` a `INT-APP-009` y marcador de esta tarea                |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`         | `4d4200e935016e668130a908ac6390c2ff9c25dc` | línea base de 4.278 requisitos hasta `TREQ-INTEGRATION-287`                     |
+| `PROC-CAT-005` / `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` | `f716207c571ab33e1d22584c249d874c65a50501` | una propietaria por cada uno de los 69 procesos y diez aplicaciones permitidas  |
+| `PROC-CAT-006`                                             | `f716207c571ab33e1d22584c249d874c65a50501` | consumidoras directas o condicionales sin transferencia de propiedad            |
+| `INT-APP-002` / `ENTERPRISE-EVENT-PRODUCER-REGISTRY-001`   | integrado en el remoto                     | emisora única y frontera transaccional propietaria                              |
+| `INT-APP-003` / `ENTERPRISE-EVENT-CONSUMER-REGISTRY-001`   | integrado en el remoto                     | 2.020 relaciones de consumo y proyecciones mínimas                              |
+| `INT-APP-004` a `INT-APP-009`                              | integrados en el remoto                    | idempotencia, retry, compensación, auditoría, sincronización y error parcial    |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-CROSS-APPLICATION-WRITE-POLICY-001@1.0.0
+```
+
+| Propiedad                       | Valor                                           | Regla                                             |
+| ------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| `policy_id`                     | `ENTERPRISE-CROSS-APPLICATION-WRITE-POLICY-001` | identidad estable del contrato transversal        |
+| `policy_version`                | `1.0.0`                                         | primera definición cerrada                        |
+| `policy_status`                 | `DEFINED`                                       | contrato documental; no prueba implementación     |
+| `covered_processes`             | **69**                                          | `VPROC-0001` a `VPROC-0069`                       |
+| `owner_applications`            | **10**                                          | catálogo permitido por `PROC-CAT-005`             |
+| `process_ownership_assignments` | **69**                                          | exactamente una propietaria por proceso           |
+| `normal_event_definitions`      | **395**                                         | catálogo de `INT-APP-001`                         |
+| `event_consumer_relations`      | **2.020**                                       | relaciones de `INT-APP-003`                       |
+| `owner_boundary_classes`        | **7**                                           | clases de dato y responsabilidad de escritura     |
+| `interaction_contract_families` | **10**                                          | únicas familias permitidas entre aplicaciones     |
+| `prohibited_write_paths`        | **12**                                          | rutas de mutación cerradas y prohibidas           |
+| `owner_command_outcomes`        | **10**                                          | resultados inequívocos del contrato propietario   |
+| `enforcement_layers`            | **8**                                           | controles documentales, técnicos y operativos     |
+| `transport_guarantee`           | `AT_LEAST_ONCE`                                 | duplicados y pérdida de respuesta siguen posibles |
+| `aura_runtime_status`           | `DEFINED_DEFERRED`                              | contrato definido sin actividad operativa         |
+
+#### 4. Principios normativos
+
+1. Cada proceso conserva exactamente una aplicación propietaria.
+2. Solo la propietaria puede crear, validar, transicionar, corregir o cerrar su fuente de verdad funcional.
+3. Una consumidora puede solicitar, consultar, proyectar o reaccionar; no puede escribir el resultado principal ajeno.
+4. Compartir Supabase, esquema, tabla, RPC, paquete o repositorio no transfiere propiedad funcional.
+5. Toda mutación interaplicación exige contrato versionado, identidad idempotente, autorización y resultado tipado.
+6. El servidor propietario revalida actor, contexto, permiso, recurso, versión y reglas empresariales.
+7. Un frontend no coordina transacciones distribuidas mediante varias escrituras directas.
+8. Un evento comunica un hecho ya confirmado; no es una orden para modificar retrospectivamente a la emisora.
+9. Una proyección consumidora es derivada, reemplazable y no autoritativa respecto del dominio fuente.
+10. Una corrección, reversión o compensación crea una operación propietaria nueva; no edita el hecho original ajeno.
+11. Retry, replay, backfill, migración y emergencia no suspenden la frontera de propiedad.
+12. Los servicios transversales escriben únicamente sus registros técnicos y nunca adquieren propiedad del proceso atendido.
+13. Toda denegación o intento de escritura cruzada queda auditado sin copiar payload sensible.
+14. Una ruta no declarada falla cerrada.
+15. AURA permanece diferida y no recibe excepciones a esta política.
+16. Esta tarea define semántica y gobierno; la materialización física corresponde a tareas posteriores.
+
+#### 5. Dimensiones ortogonales obligatorias
+
+| Dimensión     | Pregunta que responde                                        | Fuente o regla                         |
+| ------------- | ------------------------------------------------------------ | -------------------------------------- |
+| propiedad     | ¿Qué aplicación gobierna el resultado principal?             | `PROC-CAT-005`                         |
+| participación | ¿Qué aplicaciones consumen o intervienen?                    | `PROC-CAT-006` e `INT-APP-003`         |
+| intención     | ¿Qué efecto se solicita a la propietaria?                    | contrato `OWNER_COMMAND`               |
+| autoridad     | ¿Quién puede solicitar y quién debe validar?                 | modelo `AUTH-*` y servidor propietario |
+| identidad     | ¿Cómo se evita repetir o cambiar la misma intención?         | `INT-APP-004`                          |
+| resultado     | ¿Qué confirmó realmente la propietaria?                      | outcomes cerrados de esta tarea        |
+| parcialidad   | ¿Qué unidades quedaron confirmadas, fallidas o desconocidas? | `INT-APP-009`                          |
+| compensación  | ¿Qué efecto confirmado requiere tratamiento posterior?       | `INT-APP-006`                          |
+| persistencia  | ¿Dónde se almacena físicamente sin alterar propiedad?        | BLOQUES E3 y R                         |
+| auditoría     | ¿Qué demuestra solicitud, decisión, commit y denegación?     | `INT-APP-007`                          |
+
+#### 6. Clases cerradas de frontera propietaria
+
+| Clase                      |
+| -------------------------- |
+| `SOURCE_OF_TRUTH_STATE`    |
+| `IMMUTABLE_FACT_OR_LEDGER` |
+| `OWNER_WORKFLOW_STATE`     |
+| `CONSUMER_PROJECTION`      |
+| `SHARED_REFERENCE`         |
+| `INTEGRATION_METADATA`     |
+| `AUDIT_OR_EVIDENCE`        |
+
+| Clase                      | Regla de escritura                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `SOURCE_OF_TRUTH_STATE`    | Solo la aplicación propietaria crea y modifica el estado canónico del recurso o proceso.                                 |
+| `IMMUTABLE_FACT_OR_LEDGER` | Solo la propietaria agrega hechos, movimientos, asientos o correcciones enlazadas; nunca se reescribe el original.       |
+| `OWNER_WORKFLOW_STATE`     | Solo la propietaria evalúa y ejecuta transiciones del workflow que gobierna.                                             |
+| `CONSUMER_PROJECTION`      | La consumidora puede mantener su proyección local derivada, con procedencia y frescura, sin convertirla en fuente.       |
+| `SHARED_REFERENCE`         | Una propietaria designada versiona la referencia; las demás aplicaciones consumen por contrato.                          |
+| `INTEGRATION_METADATA`     | Outbox, inbox, receipt, intento, lease o deduplicación no constituyen efecto empresarial por sí solos.                   |
+| `AUDIT_OR_EVIDENCE`        | Una frontera confiable registra evidencia y auditoría, pero no usa esos registros como sustituto del estado propietario. |
+
+#### 7. Familias permitidas de interacción
+
+| Familia                      |
+| ---------------------------- |
+| `OWNER_COMMAND`              |
+| `OWNER_QUERY`                |
+| `EVENT_NOTIFICATION`         |
+| `HANDOFF_REQUEST`            |
+| `CONSUMER_PROJECTION_UPDATE` |
+| `CORRECTION_REQUEST`         |
+| `COMPENSATION_REQUEST`       |
+| `RECONCILIATION_CASE`        |
+| `EXTERNAL_ADAPTER_EXCHANGE`  |
+| `CONTROLLED_MIGRATION`       |
+
+| Familia                      | Finalidad                                                                                    | Puede modificar la fuente propietaria                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `OWNER_COMMAND`              | Solicitar a la propietaria una mutación concreta.                                            | Solo después de validación y commit de la propietaria.     |
+| `OWNER_QUERY`                | Consultar estado, receipt, versión o resultado.                                              | **no**                                                     |
+| `EVENT_NOTIFICATION`         | Informar un hecho confirmado por la emisora propietaria.                                     | **no**                                                     |
+| `HANDOFF_REQUEST`            | Solicitar transferencia de responsabilidad o custodia con aceptación explícita.              | Solo cada propietaria sobre su propio estado.              |
+| `CONSUMER_PROJECTION_UPDATE` | Actualizar una proyección local de la consumidora desde hechos autorizados.                  | **no** sobre la fuente; **sí** sobre la proyección propia. |
+| `CORRECTION_REQUEST`         | Pedir a la propietaria una corrección versionada y auditada.                                 | Solo la propietaria crea la corrección.                    |
+| `COMPENSATION_REQUEST`       | Pedir tratamiento de un efecto confirmado.                                                   | Solo la propietaria ejecuta su paso compensatorio.         |
+| `RECONCILIATION_CASE`        | Comparar fuentes y producir una decisión autorizada.                                         | No hasta que cada propietaria ejecute su resultado.        |
+| `EXTERNAL_ADAPTER_EXCHANGE`  | Normalizar una interacción externa y entregar receipt o solicitud al dominio.                | El adaptador no sustituye a la propietaria.                |
+| `CONTROLLED_MIGRATION`       | Mover o transformar datos mediante plan versionado, verificable y aprobado por propietarias. | Solo dentro del alcance y ventana autorizados.             |
+
+#### 8. Rutas de escritura expresamente prohibidas
+
+| Ruta prohibida                        |
+| ------------------------------------- |
+| `DIRECT_FOREIGN_TABLE_WRITE`          |
+| `DIRECT_FOREIGN_RPC_WITHOUT_CONTRACT` |
+| `CLIENT_MULTI_OWNER_TRANSACTION`      |
+| `SHARED_SCHEMA_OWNER_BYPASS`          |
+| `TRIGGER_CASCADE_INTO_FOREIGN_DOMAIN` |
+| `WORKER_OR_CRON_FOREIGN_MUTATION`     |
+| `WEBHOOK_DIRECT_FOREIGN_MUTATION`     |
+| `CONSUMER_PROJECTION_AS_SOURCE_WRITE` |
+| `MANUAL_SQL_CROSS_DOMAIN_REPAIR`      |
+| `BATCH_OR_IMPORT_CROSS_DOMAIN_WRITE`  |
+| `COMPENSATION_BY_FOREIGN_EDIT`        |
+| `SHELL_OR_ADMIN_HUB_FOREIGN_MUTATION` |
+
+Interpretación:
+
+- `DIRECT_FOREIGN_TABLE_WRITE`: insertar, actualizar o eliminar directamente una tabla cuyo resultado pertenece a otra aplicación;
+- `DIRECT_FOREIGN_RPC_WITHOUT_CONTRACT`: invocar una función mutante ajena sin contrato, versión, autorización y outcome propietario;
+- `CLIENT_MULTI_OWNER_TRANSACTION`: ejecutar desde navegador o cliente varias mutaciones de propietarias distintas y presentarlas como una sola transacción;
+- `SHARED_SCHEMA_OWNER_BYPASS`: usar una credencial o esquema compartido para saltar la frontera funcional;
+- `TRIGGER_CASCADE_INTO_FOREIGN_DOMAIN`: hacer que un trigger propietario modifique silenciosamente otra fuente de verdad;
+- `WORKER_OR_CRON_FOREIGN_MUTATION`: permitir que un worker, cron o scheduler escriba datos ajenos por conveniencia técnica;
+- `WEBHOOK_DIRECT_FOREIGN_MUTATION`: convertir una entrada externa en escritura directa sin pasar por la propietaria;
+- `CONSUMER_PROJECTION_AS_SOURCE_WRITE`: devolver una proyección derivada para sobrescribir la fuente canónica;
+- `MANUAL_SQL_CROSS_DOMAIN_REPAIR`: reparar un caso distribuido editando manualmente dominios ajenos;
+- `BATCH_OR_IMPORT_CROSS_DOMAIN_WRITE`: usar importación o lote para mutar varias propietarias sin contratos por elemento;
+- `COMPENSATION_BY_FOREIGN_EDIT`: revertir o compensar modificando directamente el ledger, estado o hecho de otra aplicación;
+- `SHELL_OR_ADMIN_HUB_FOREIGN_MUTATION`: permitir que SHELL, VISO u otra consola administrativa adquiera escritura universal por presentar la acción.
+
+#### 9. Contrato mínimo de comando propietario
+
+Toda mutación solicitada desde otra aplicación deberá conservar, cuando aplique:
+
+```text
+command_definition_id
++ command_id
++ command_type
++ command_version
++ requesting_application
++ owner_application
++ process_id
++ process_instance_id
++ target_resource_type
++ target_resource_id
++ expected_resource_version
++ requested_effect
++ input_contract_version
++ field_allowlist_ref
++ authorization_requirement
++ principal_id
++ effective_actor_id
++ site_id
++ area_id
++ shift_id
++ checkin_id
++ device_id
++ reason_code
++ idempotency_key
++ fingerprint_reference
++ correlation_id
++ causation_id
++ deadline_or_valid_until
++ sensitivity_class
++ evidence_references[]
++ result_contract_ref
++ audit_reference
+```
+
+Reglas:
+
+1. `requesting_application` nunca se infiere desde un campo enviado por el cliente.
+2. `owner_application` debe coincidir con `PROC-CAT-005` para el proceso y efecto solicitados.
+3. El contrato usa allowlist; no acepta objetos completos para sobrescritura masiva.
+4. `expected_resource_version` o control equivalente protege concurrencia cuando aplique.
+5. La misma intención conserva comando, huella e idempotency key durante retries.
+6. Un cambio de efecto, importe, cantidad, recurso, destinatario o alcance crea un comando nuevo.
+7. El command handler pertenece a la propietaria y no delega su validación final a la solicitante.
+
+#### 10. Outcomes cerrados del comando propietario
+
+| Outcome                   |
+| ------------------------- |
+| `REJECTED_AUTHORIZATION`  |
+| `REJECTED_CONTRACT`       |
+| `REJECTED_BUSINESS`       |
+| `ACCEPTED_PENDING`        |
+| `EFFECT_CONFIRMED`        |
+| `PRIOR_RESULT_REPLAYED`   |
+| `CONFLICT`                |
+| `RESULT_UNKNOWN`          |
+| `PARTIALLY_APPLIED`       |
+| `RECONCILIATION_REQUIRED` |
+
+| Outcome                   | Significado                                                                     | Terminal para la solicitud        |
+| ------------------------- | ------------------------------------------------------------------------------- | --------------------------------- |
+| `REJECTED_AUTHORIZATION`  | Actor, principal, contexto, permiso o dispositivo no autorizados.               | **sí**, sin efecto                |
+| `REJECTED_CONTRACT`       | Versión, esquema, allowlist, identidad o routing inválidos.                     | **sí**, sin efecto                |
+| `REJECTED_BUSINESS`       | La regla o estado empresarial impide el efecto.                                 | **sí**, sin efecto                |
+| `ACCEPTED_PENDING`        | La propietaria aceptó tramitar, pero aún no existe resultado empresarial final. | **no**                            |
+| `EFFECT_CONFIRMED`        | La propietaria confirmó un efecto nuevo, durable y referenciable.               | **sí** para esa unidad            |
+| `PRIOR_RESULT_REPLAYED`   | La propietaria devolvió el resultado previo de la misma intención.              | **sí** para esa unidad            |
+| `CONFLICT`                | Versión, huella, estado, custodia o precondición incompatibles.                 | **no** hasta resolución o rechazo |
+| `RESULT_UNKNOWN`          | No puede demostrarse si ocurrió el efecto.                                      | **no**                            |
+| `PARTIALLY_APPLIED`       | Algunas unidades o pasos están confirmados y otros no.                          | **no**                            |
+| `RECONCILIATION_REQUIRED` | Deben compararse fuentes y decidirse el tratamiento.                            | **no**                            |
+
+Un HTTP `2xx`, un ACK de transporte, una fila insertada en outbox o un mensaje publicado no equivalen por sí solos a `EFFECT_CONFIRMED`.
+
+#### 11. Autorización y autoridad propietaria
+
+Antes de cualquier efecto, la propietaria revalida:
+
+```text
+principal técnico
++ actor humano efectivo
++ aplicación solicitante
++ permiso exacto
++ sede, área y territorio
++ turno y check-in cuando aplique
++ dispositivo
++ recurso y versión
++ estado empresarial
++ sensibilidad
++ segregación
++ vigencia del comando
++ denegaciones aplicables
+```
+
+- La autorización de la solicitante solo permite emitir la solicitud; no obliga a la propietaria a aceptarla.
+- Una credencial técnica no concede autoridad empresarial universal.
+- Un service role no constituye permiso funcional.
+- La propietaria registra denegación, causa y correlación sin revelar datos innecesarios.
+- Un resultado previo puede recuperarse por idempotencia, pero su detalle sigue sujeto a autorización vigente.
+
+#### 12. Almacenamiento compartido y propiedad lógica
+
+1. Una base Supabase común puede contener varios dominios sin crear escritura compartida.
+2. Tabla, esquema, función, trigger, vista o bucket deberán tener propietaria lógica explícita.
+3. Grants, RLS, constraints y funciones deberán materializar la matriz de propiedad en BLOQUES E3 y R.
+4. Una tabla técnicamente compartida requerirá columnas o subrecursos con propiedad inequívoca y contratos separados; la ambigüedad queda prohibida.
+5. Las claves foráneas relacionan datos, pero no conceden derecho de mutación.
+6. Una transacción de base de datos solo puede confirmar efectos dentro de una frontera propietaria aprobada.
+7. Si una operación requiere varios dominios, cada propietaria confirma su parte y la coordinación usa eventos, comandos, conciliación y compensación.
+
+#### 13. Eventos, proyecciones y cachés
+
+- La emisora de `INT-APP-002` publica únicamente hechos confirmados en su frontera.
+- Una consumidora no usa el evento para editar retrospectivamente a la emisora.
+- La consumidora puede escribir su `CONSUMER_PROJECTION`, inbox y metadata técnica propios.
+- Toda proyección conserva fuente, event_id, versión, momento, frescura y limitaciones.
+- Una proyección no puede resolver conflictos mediante `last write wins` contra la fuente.
+- Reconstruir una proyección no reemite eventos ni recrea efectos propietarios.
+- Caché, materialized view o índice de búsqueda no se convierten en autoridad para mutaciones.
+
+#### 14. Flujos con varias propietarias
+
+```text
+ORQUESTACIÓN O COORDINACIÓN
+        ↓
+COMANDO A PROPIETARIA A
+        ↓
+EFECTO A CONFIRMADO + EVENTO
+        ↓
+COMANDO O REACCIÓN DE PROPIETARIA B
+        ↓
+EFECTO B CONFIRMADO O PENDIENTE
+        ↓
+CONCILIACIÓN / COMPENSACIÓN SI APLICA
+```
+
+Reglas:
+
+1. No existe commit distribuido fingido desde el cliente.
+2. Cada propietaria conserva comando, estado, idempotencia y auditoría propios.
+3. La coordinación no declara éxito global mientras exista parcialidad o resultado desconocido.
+4. Un fallo posterior no borra el efecto previo confirmado.
+5. Los pasos independientes pueden continuar; los dependientes quedan bloqueados de forma explícita.
+6. Un rollback técnico no sustituye los contratos de corrección o compensación.
+
+#### 15. Correcciones, reversos y compensaciones
+
+| Necesidad                     | Contrato permitido                                                    | Prohibición                                  |
+| ----------------------------- | --------------------------------------------------------------------- | -------------------------------------------- |
+| corregir un hecho ajeno       | `CORRECTION_REQUEST` a la propietaria                                 | editar la fila original desde la solicitante |
+| revertir un efecto confirmado | comando inverso propietario o `COMPENSATION_REQUEST`                  | cambiar estado o saldo ajeno directamente    |
+| deshacer una venta            | PULSO gobierna el resultado comercial y solicita efectos relacionados | borrar movimientos de PASS, NEXO o NUMERA    |
+| corregir asistencia           | decisión autorizada y corrección en ANIMA                             | VISO sobrescribe el hecho de asistencia      |
+| devolver inventario           | NEXO crea movimientos inversos o de retorno                           | ORIGO, FOGO o PULSO actualizan existencias   |
+| ajustar efecto financiero     | NUMERA crea ajuste o reexpresión                                      | otra aplicación modifica asientos o saldos   |
+
+Solo se compensan efectos confirmados. Un resultado desconocido se consulta y concilia antes de ordenar un inverso.
+
+#### 16. Error parcial, incertidumbre y cierre
+
+`INT-APP-009` se aplica por cada propietaria y unidad:
+
+- una unidad `EFFECT_CONFIRMED` permanece confirmada aunque otra falle;
+- una unidad `RESULT_UNKNOWN` no autoriza retry ni escritura correctiva en otro dominio;
+- una cuarentena o dead-letter conserva la solicitud, no ejecuta el efecto por una ruta alternativa;
+- la intervención humana utiliza los mismos contratos propietarios;
+- `PARTIALLY_APPLIED` exige mapa de efectos, pendientes, desconocidos, residuales y responsables;
+- el cierre global requiere outcomes verificables para todas las unidades obligatorias.
+
+#### 17. Offline, retry, replay y backfill
+
+1. Una cola offline conserva `owner_application` y nunca convierte al dispositivo en propietaria.
+2. Al reconectar, el comando se envía al handler propietario con la misma identidad.
+3. Retry reutiliza el contrato; no cambia de tabla, RPC o aplicación para conseguir éxito.
+4. Replay conserva audiencia y propietarias históricas; no concede nuevas rutas de escritura.
+5. Backfill puede reconstruir proyecciones consumidoras, pero no mutar fuentes ajenas sin `CONTROLLED_MIGRATION`.
+6. Una versión legacy sin mapping explícito queda bloqueada o en conciliación.
+7. Un cambio de actor o aplicación no transfiere operaciones pendientes.
+
+#### 18. Integraciones externas
+
+- El adaptador externo escribe únicamente receipts, payload protegido, mappings y metadata que le pertenecen.
+- El resultado externo se traduce a un comando, evento o caso de conciliación dirigido a la propietaria interna.
+- Un webhook no actualiza directamente inventario, puntos, pago, pedido, asistencia, producción o contabilidad de varios dominios.
+- Credenciales externas no obtienen acceso genérico a tablas internas.
+- Timeout, reverso, contracargo o respuesta parcial conservan resultado desconocido hasta consulta o conciliación.
+- Los contratos `INT-EXT-*` deberán heredar esta política.
+
+#### 19. SHELL y servicios transversales
+
+SHELL, impresión, documentos, notificaciones, auditoría, observabilidad y otros servicios transversales:
+
+- pueden autenticar, enrutar, presentar, registrar, entregar o almacenar sus propios artefactos técnicos;
+- no se convierten en propietarias del proceso atendido;
+- no exponen endpoints de escritura universal;
+- no aceptan objetos arbitrarios para mutar cualquier tabla;
+- no sustituyen el command handler de la aplicación propietaria;
+- no confunden envío de notificación, impresión o documento con cierre del proceso.
+
+Una consola administrativa puede ofrecer la acción, pero el commit ocurre en la propietaria.
+
+#### 20. Lotes, migraciones y emergencia
+
+##### 20.1. Lotes e importaciones
+
+Cada elemento resuelve propietaria, contrato, autorización, idempotencia y outcome. Un archivo CSV o acción masiva no autoriza una transacción multi-dominio desde el cliente.
+
+##### 20.2. Migraciones y backfills
+
+`CONTROLLED_MIGRATION` exige:
+
+```text
+migration_id
++ propietarias participantes
++ alcance y filas elegibles
++ mappings versionados
++ dry run y conteos
++ checkpoints
++ idempotencia
++ reconciliación
++ auditoría
++ rollback o tratamiento residual
++ aprobación y ventana
+```
+
+La migración escribe mediante procedimientos aprobados dentro de cada frontera propietaria.
+
+##### 20.3. Break-glass e incidentes
+
+Una emergencia no habilita escritura cruzada indiscriminada. El procedimiento de emergencia:
+
+- identifica la propietaria y autoridad de reparación;
+- limita alcance, tiempo y credencial;
+- actúa dentro del dominio propietario;
+- registra antes, durante y después;
+- conserva evidencia y reconciliación;
+- no oculta la brecha mediante edición silenciosa.
+
+#### 21. Fronteras críticas por aplicaciones
+
+##### 21.1. ORIGO → NEXO → NUMERA
+
+ORIGO gobierna necesidad, proveedor, evaluación, orden y aceptación comercial; NEXO gobierna recepción física, ubicación, movimiento, custodia y existencia; NUMERA gobierna obligación, asiento, costo y conciliación económica. Ninguna de las tres modifica directamente la fuente de las otras.
+
+##### 21.2. FOGO → NEXO → PULSO
+
+FOGO gobierna receta, plan, lote, ejecución y calidad; NEXO gobierna consumos, movimientos, producto terminado y disponibilidad física; PULSO gobierna oferta, pedido, servicio, venta y entrega comercial. Consumo y entrada física se solicitan a NEXO; retención o fallo productivo no reescriben pedidos o ventas.
+
+##### 21.3. PULSO → PASS → NUMERA
+
+PULSO gobierna pedido, venta, pago y caja; PASS gobierna identidad cliente, puntos, beneficios y canjes; NUMERA gobierna el efecto económico y su conciliación. Reembolso, reverso de puntos y ajuste contable son comandos separados, idempotentes y confirmados por cada propietaria.
+
+##### 21.4. VISO → ANIMA → SHELL
+
+VISO gobierna organización, vínculo, programación, permisos administrativos y decisiones laborales; ANIMA gobierna hechos de asistencia e interacción personal; SHELL gobierna acceso, sesión y navegación del ecosistema. Corregir asistencia no restaura autoridad, y revocar acceso no borra hechos laborales.
+
+#### 22. AURA diferida
+
+Las relaciones con AURA conservan propietaria objetivo, familias de contrato y prohibiciones, pero:
+
+- no habilitan endpoints mutantes;
+- no crean writers, workers, triggers ni credenciales;
+- no reciben acceso a tablas de otras aplicaciones;
+- no ejecutan migraciones, replay, compensaciones ni proyecciones productivas;
+- permanecen `DEFINED_DEFERRED` hasta cobertura, autorización, readiness y paquete E5 aprobados.
+
+#### 23. Decisiones reservadas
+
+| Decisión                                                                  | Tarea propietaria                                |
+| ------------------------------------------------------------------------- | ------------------------------------------------ |
+| tablas, schemas, grants, RLS, constraints, funciones y migraciones        | BLOQUES E3 y R                                   |
+| broker, topics, colas, workers, scheduler, leases y observabilidad física | BLOQUE E4                                        |
+| schemas de comando, SDK, tipos, canonicalización y compatibilidad         | BLOQUE H                                         |
+| endpoints, handlers y adapters concretos por aplicación                   | roadmaps funcionales y paquetes E5               |
+| credenciales, proveedores y contratos externos                            | mini-bloques `INT-EXT-*`                         |
+| pruebas E2E, piloto, cutover, rollback e hypercare                        | BLOQUE E5                                        |
+| retención, cifrado, legal hold y disposición                              | BLOQUES AA y EVID                                |
+| continuidad documental posterior a `INT-APP-010`                          | actualización explícita de la secuencia canónica |
+
+No queda una brecha narrativa sin propietaria documental.
+
+#### 24. Cambios no autorizados
+
+`INT-APP-010` no autoriza:
+
+- crear o modificar tablas, schemas, índices, constraints, funciones, triggers, RPC, RLS o migraciones;
+- implementar endpoints, handlers, adapters, outbox, inbox, colas, workers, cron o scheduler;
+- cambiar la propietaria de alguno de los 69 procesos;
+- modificar productoras, consumidoras, eventos, permisos, retries, compensaciones o estados aprobados;
+- ejecutar escrituras, correcciones, reversiones, migraciones o reparaciones reales;
+- conceder service role o acceso directo entre aplicaciones;
+- activar AURA;
+- iniciar piloto, cutover, producción o hypercare;
+- escribir en GitHub.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-288 a TREQ-INTEGRATION-317
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado con esta tarea.
+
+#### 26. Huellas de integridad
+
+```text
+OWNER_BOUNDARY_CLASS_REGISTRY_SHA256 = 65487ee2236397aa84c7b4773a5f2baf91494fb3bebefeac2c40f47c6caf590b
+INTERACTION_CONTRACT_FAMILY_REGISTRY_SHA256 = 7c2e1bed47f7c277de23a1f1b15e6903310b50dfe0f163681cbf9ae729b44ca7
+PROHIBITED_CROSS_WRITE_PATH_REGISTRY_SHA256 = 14ec1790138c1642ca2fa5ba65b6447391957ef9b40e6d0ce8a40d80bdf6f161
+CROSS_APPLICATION_WRITE_POLICY_SHA256 = f1391c149fb7eb051d9c5bed6a4056a3e5482bd0e032075ad03624c8d01cd5b5
+REMOTE_COMMIT_SHA = 2c1460ef79f1a0a7daf7937ae1f979f29c3c932c
+REMOTE_X_BLOCK_BLOB_SHA1 = 62b6e3e3438c3b020c2a124104ebb41482f44db9
+REMOTE_04A_BASE_BLOB_SHA1 = 4d4200e935016e668130a908ac6390c2ff9c25dc
+PROCESS_OWNERSHIP_SOURCE_BLOB_SHA1 = f716207c571ab33e1d22584c249d874c65a50501
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-009` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se preservaron exactamente 69 asignaciones de propiedad y diez aplicaciones propietarias.
+- [x] Se definieron siete clases de frontera y diez familias permitidas de interacción.
+- [x] Se prohibieron doce rutas de escritura cruzada.
+- [x] Se definió el contrato mínimo y diez outcomes del comando propietario.
+- [x] Se separaron fuente de verdad, ledger, workflow, proyección, referencia, metadata y auditoría.
+- [x] Se cubrieron autorización, almacenamiento compartido, eventos, proyecciones, workflows distribuidos y errores parciales.
+- [x] Se cubrieron corrección, compensación, offline, retry, replay, backfill, externos, servicios, migración y emergencia.
+- [x] Se fijaron fronteras ORIGO–NEXO–NUMERA, FOGO–NEXO–PULSO, PULSO–PASS–NUMERA y VISO–ANIMA–SHELL.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+- [x] Se cerró documentalmente el mini-bloque `INT-APP-001` a `INT-APP-010` sin avanzar a otra secuencia.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `2c1460ef79f1a0a7daf7937ae1f979f29c3c932c`            |
+| Blob del mini-bloque X                       | `62b6e3e3438c3b020c2a124104ebb41482f44db9`            |
+| Blob 04A remoto base                         | `4d4200e935016e668130a908ac6390c2ff9c25dc`            |
+| Blob de propiedad de procesos                | `f716207c571ab33e1d22584c249d874c65a50501`            |
+| Procesos cubiertos                           | **69**                                                |
+| Aplicaciones propietarias                    | **10**                                                |
+| Asignaciones de propiedad                    | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora                | **2.020**                                             |
+| Clases de frontera                           | **7**                                                 |
+| Familias de interacción                      | **10**                                                |
+| Rutas prohibidas                             | **12**                                                |
+| Outcomes propietarios                        | **10**                                                |
+| Capas de enforcement                         | **8**                                                 |
+| Requisitos base                              | **4.278**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.308**                                             |
+| Dominio INTEGRATION                          | **317 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-317** |
+| Filas con catorce columnas                   | **4.308 de 4.308**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.278**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Validación real del repositorio
+
+```text
+VALIDACIÓN LOCAL REQUERIDA AL INCORPORAR ESTA TAREA; EL RESULTADO VIGENTE LO DETERMINA EL COMPILADOR CANÓNICO
+```
+
+Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
+
+```bash
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+#### 30. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+4. No modificar derivados bajo `.generated/` para forzar continuidad.
+
+#### 31. Continuidad y cierre del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-009 — Definir manejo de errores parciales
+        ↓
+TAREA ACTUAL
+INT-APP-010 — Evitar escrituras cruzadas sin contrato
+        ↓
+SIGUIENTE TAREA RESERVADA
+NINGUNA — CIERRE DEL BLOQUE
+```
+
+`INT-APP-010` cierra documentalmente la secuencia activa `INT-APP-001` a `INT-APP-010`. No deberá iniciarse `INT-EXT-001` ni otra tarea hasta actualizar y validar explícitamente la continuidad canónica.
+
+APROBADA

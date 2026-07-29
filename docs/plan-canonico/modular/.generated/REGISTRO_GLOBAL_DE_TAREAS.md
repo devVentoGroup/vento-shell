@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **380** |
+| Aprobadas | **381** |
 | En propuesta | **0** |
-| No iniciadas | **1195** |
+| No iniciadas | **1194** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.13% (380/1575)** |
+| Porcentaje de completamiento | **24.19% (381/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-009` — Definir manejo de errores parciales | ✅ APROBADA |
-| Tarea actual | `INT-APP-010` — Evitar escrituras cruzadas sin contrato | ⬜ NO INICIADA |
+| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato | ✅ APROBADA |
+| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
 
 ## Registro completo
 
@@ -1413,7 +1413,7 @@
 | ✅ APROBADA | `INT-APP-007` | Definir auditoría transversal | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-008` | Definir estados pendientes de sincronización | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ✅ APROBADA | `INT-APP-009` | Definir manejo de errores parciales | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `INT-APP-010` | Evitar escrituras cruzadas sin contrato | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
+| ✅ APROBADA | `INT-APP-010` | Evitar escrituras cruzadas sin contrato | `bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `INT-EXT-001` | Inventariar sistemas externos, proveedores, propietarios y finalidad | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-002` | Definir principal técnico independiente por integración | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
 | ⬜ NO INICIADA | `INT-EXT-003` | Diferenciar credenciales emitidas por proveedores y credenciales emitidas por Vento | `bloques/X_INTEGRACIONES/02_INTEGRACIONES_EXTERNAS_Y_CREDENCIALES.md` |
