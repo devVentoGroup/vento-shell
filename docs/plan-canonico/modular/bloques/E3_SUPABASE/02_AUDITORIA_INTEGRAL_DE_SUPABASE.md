@@ -5008,7 +5008,351 @@ TREQ-SUPABASE-170 a TREQ-SUPABASE-187
 `SUPA-AUD-013` queda **APROBADA** como línea base documental. La auditoría no autoriza agregar o retirar tablas de publicaciones, cambiar replica identity, crear políticas Realtime ni modificar consumidores. Esas decisiones pertenecen a `SUPA-ARC-019`, paquetes E5 y transición controlada.
 
 
-### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
+### ✅ SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
+
+**Estado:** APROBADA  
+**Fecha de preparación documental:** 2026-07-29  
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones`  
+**Tarea anterior:** `SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime` — APROBADA  
+**Siguiente tarea:** `SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto`  
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`  
+**Tipo de tarea:** auditoría documental, consultas remotas read-only, inspección de funciones desplegadas, logs, catálogos PostgreSQL, migraciones y consumidores; sin DDL, DML, despliegues, invocaciones de prueba, cambios de cron, secretos, colas, webhooks ni código remoto
+
+#### 1. Objetivo
+
+Establecer una línea base reproducible de toda automatización observada en Vento OS: Edge Functions, webhooks externos e internos, funciones privilegiadas, triggers, `pg_cron`, `pg_net`, workflows externos, notificaciones, workers y mecanismos de cola. La auditoría diferencia cuatro hechos que no son equivalentes:
+
+```text
+FUNCIÓN DESPLEGADA
+        ≠
+PRODUCTOR CORRECTAMENTE AUTENTICADO
+        ≠
+EJECUCIÓN HTTP EXITOSA
+        ≠
+EFECTO EMPRESARIAL CONFIRMADO Y CONCILIABLE
+```
+
+#### 2. Regla canónica derivada
+
+```text
+Toda automatización deberá tener productor, autorización, contrato de entrada, efecto idempotente, correlación, timeout, retry, estado terminal, observabilidad, propietario, fuente versionada y mecanismo de recuperación. Un cron succeeded, una petición encolada o un HTTP 2xx no demostrarán por sí solos que el efecto empresarial quedó aplicado.
+```
+
+#### 3. Alcance y método
+
+Se inspeccionaron sin mutación:
+
+- metadatos y código desplegado de las 24 Edge Functions activas;
+- `verify_jwt`, versión, estado, SHA y entrypoint observado;
+- `pg_extension`, `cron.job`, `cron.job_run_details`, `net.http_request_queue` y `net._http_response`;
+- funciones `SECURITY DEFINER`, triggers y rutas `pg_net` relacionadas con notificaciones, pagos, asistencia, delivery y limpieza;
+- políticas y grants de `app_config` e `internal_job_secrets`, sin extraer valores;
+- índices de idempotencia y concurrencia de eventos, entregas, runtime y eliminación de cuentas;
+- logs de Edge Functions de las últimas veinticuatro horas;
+- migraciones de `vento-shell`, consumidores en aplicaciones y el workflow GitHub Actions de eliminación de cuentas;
+- presencia o ausencia de `pgmq`, `pgmq_public`, Vault y colas.
+
+Se aplicó redacción obligatoria: ningún token, bearer, secreto, hash de secreto ni valor sensible observado se reproduce en este artefacto.
+
+#### 4. Línea base ejecutiva
+
+| Métrica                                                 |                             Resultado |
+| ------------------------------------------------------- | ------------------------------------: |
+| Edge Functions activas                                  |                                **24** |
+| Con `verify_jwt=true`                                   |                                **12** |
+| Con `verify_jwt=false`                                  |                                **12** |
+| Cron jobs activos                                       |                                 **7** |
+| Jobs con fallos históricos observados                   |                                 **1** |
+| Fallos históricos del job afectado                      |                                 **2** |
+| Extensiones relevantes instaladas                       | `pg_cron`, `pg_net`, `supabase_vault` |
+| Extensión `pgmq`                                        |                      **no instalada** |
+| Esquemas `pgmq` o `pgmq_public`                         |                                 **0** |
+| Secretos en `vault.secrets`                             |                                 **0** |
+| Requests pendientes en `net.http_request_queue`         |                                 **0** |
+| Respuestas `pg_net` en la muestra retenida              |                                **72** |
+| Respuestas 2xx                                          |                                **65** |
+| Timeouts o errores de transporte                        |                                 **7** |
+| Trigger HTTP empresarial activo                         |                                 **1** |
+| Trigger de notificación de turnos esperado pero ausente |                                 **1** |
+| Claves técnicas localizadas en tablas de configuración  |                                 **5** |
+| Brechas documentadas y asignadas                        |                                **20** |
+
+#### 5. Inventario de Edge Functions
+
+| Función                     | Versión | `verify_jwt` | Clase observada                                                | Bundle SHA-256                                                     |
+| --------------------------- | ------: | :----------: | -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `wallet-pass`               |      33 |      sí      | `usuario autenticado`                                          | `fb5a0fea13f47c95b1895079169c2b87cce8a0646f53b32c008ea45f15988aef` |
+| `attendance-report`         |      50 |      sí      | `usuario autenticado`                                          | `16d27070f2307e2b07f36f1479d32f6f461cf41e9a8b5503cc7864b4ec69aa59` |
+| `staff-invitations-create`  |      46 |      sí      | `usuario autenticado`                                          | `a4423e51da0764248b7f86d4af486993a84d40cb1dc9b1a5779e44ee6eeb10cd` |
+| `request-account-deletion`  |      28 |      sí      | `usuario autenticado`                                          | `ef78e5a385d3a14ee896e363d57c33630f20d374a02876fdd8cb53f2c2d4ed9e` |
+| `account-deletion`          |      29 |      sí      | `usuario autenticado`                                          | `280d6688351108e6d6fe1ccaa87c3b7c88f486bde99f10c1dacd7e6a7a543a79` |
+| `payments-create-intent`    |      21 |      sí      | `usuario autenticado`                                          | `9942cced9b99dc3a45b4f7f690b5629135ca60bd1fa94a72e8a9307c1d595671` |
+| `shift-publish-notify`      |      14 |      sí      | `usuario o llamada interna declarada`                          | `84924db92fe82654a7cce974523449e9696049fd798cac53c29dbee3d2250712` |
+| `pass-delivery-quote`       |      15 |      sí      | `usuario autenticado`                                          | `8b97ebc07c840069702ab25f061abca3bc3c666135627369b4dd87a2e54263f3` |
+| `pass-address-search`       |      11 |      sí      | `usuario autenticado`                                          | `bab2f9ade92f9481762a4c653af376b821e4a0ff1e00c4f791fe482e651b9fa1` |
+| `support-message-notify`    |       3 |      sí      | `llamada interna con configuración incompatible`               | `4186887297bbf32076d7cfb58f51323e45d491f6a3d96ffb424ee024a5dbedb8` |
+| `pass-register-push-token`  |       3 |      sí      | `usuario autenticado`                                          | `0411843c25d5f2a5b117280b721cd8686a831bbd1a56997e9a59bb99d2261d26` |
+| `order-message-notify`      |       3 |      sí      | `usuario autenticado`                                          | `a9fa8f44d6dae85f530384d8fb6ff5d01b5b44312d646bdd3066a6b43206d214` |
+| `staff-invitations-accept`  |      36 |      no      | `bearer validado manualmente; autorización crítica defectuosa` | `84e615a9840e5015442ebac7688770c341b3012a4598cab88cbc7b178118194d` |
+| `document-alerts`           |      33 |      no      | `cron con secreto personalizado fail-open`                     | `392815742821484a01ba9c1f5af6f610779e2085c131b349a856d0cc8f7d82e6` |
+| `process-account-deletions` |      29 |      no      | `worker con bearer secreto fail-closed`                        | `60fbb0eb24eff4a3115e28e7e984c2b96675f38ef85e58d16f31dbd323a4afcb` |
+| `register-push-token`       |      24 |      no      | `bearer de usuario validado manualmente`                       | `33e3c2f3d1760746f842f328e94f7ea71bffe1bff4e3dd7e348fbe81b7c6ec37` |
+| `announcement-notify`       |      23 |      no      | `bearer manual; roles hardcoded`                               | `ad8b25228ae0532b8b687bc01b18ad735b5fe3edeabe52df416195c7e4576925` |
+| `employee-delete`           |      15 |      no      | `bearer manual; UID fijo de autoridad`                         | `418165e003e593dd6dc171344d97ecfb016d6b84a8d1860eb4722f1be5654285` |
+| `payments-webhook`          |      19 |      no      | `webhook público con checksum Wompi`                           | `6d1c50bb097eadaff6d9d92c20b09f8fefa68125a45d7edaf367aaf099ea145b` |
+| `staff-invitations-resend`  |      15 |      no      | `bearer manual; roles hardcoded`                               | `1092ebdf95196b3042ed8678d2138e78cf66aff3f6de04d29dfca694dcaa1488` |
+| `staff-invitations-cancel`  |      14 |      no      | `bearer manual; roles hardcoded`                               | `5ceef28ee60bba7a2debd7df96c430259790652c022b5831e084b186e727c7dd` |
+| `shift-runtime-processor`   |      21 |      no      | `cron con secreto personalizado fail-open`                     | `0e61882b535592baf9dbb83194d1d0e8212e5d7cfa5772d6399feb4fc79e95f1` |
+| `payments-return`           |       3 |      no      | `adaptador público de retorno a deep link`                     | `253b7a39ac76ecb2b0c8ca632bcfd11dd754e13b7bd5a947224afed54bf7d641` |
+| `delivery-portal`           |       1 |      no      | `portal público por token de capacidad`                        | `316e21a30709e9b25778313bdf8172aba72ad1d4bd2b26679964279b932934dc` |
+
+La distribución 12/12 no se interpreta como buena o mala por sí sola. `verify_jwt=false` es adecuado para webhooks firmados, workers con secreto o endpoints deliberadamente públicos; se vuelve riesgoso cuando la autorización manual es incompleta, fail-open o depende de datos controlables por el usuario.
+
+#### 6. Hallazgo crítico: escalamiento en `staff-invitations-accept`
+
+El código desplegado:
+
+1. valida un bearer de usuario;
+2. toma `role` y `site_id` primero del payload y luego de `user_metadata`;
+3. comprueba únicamente que el rol y la sede existan y estén activos;
+4. usa `service_role` para actualizar contraseña y metadata de Auth;
+5. hace `upsert` del trabajador y su sede primaria;
+6. intenta marcar alguna invitación compatible después de materializar la identidad.
+
+No exige que una invitación vigente, no cancelada, de un solo uso y vinculada al usuario autorice previamente esos valores. Por tanto, el endpoint constituye una ruta de escalamiento potencial a cualquier rol y sede activos, incluido un rol administrativo máximo. La resolución se asigna a `TREQ-SUPABASE-190`, `191`, `205`, `AUTH-SRV-*`, `AUTH-DB-*` y al paquete de onboarding ANIMA.
+
+#### 7. Hallazgo crítico: secretos expuestos y persistidos
+
+`public.app_config` tiene RLS habilitado, pero sus políticas `app_config_select_anon` y `app_config_select_authenticated` permiten `SELECT` con condición `true`. Dentro de esa tabla se identificó la clave `shift_notify_internal_secret`. No se leyó ni se conserva su valor en este artefacto.
+
+Además, `document-alerts-daily` contiene en `cron.job.command` un bearer y un `x-cron-key` literales. Los valores se consideran expuestos y fueron deliberadamente omitidos. La tarea no rota credenciales por ser read-only; la rotación y migración a custodia privada quedan obligatoriamente asignadas a `SUPA-AUD-015`, `SUPA-ARC-020`, `SUPA-TRANS-*` y `TREQ-SUPABASE-192`, `193`.
+
+`internal_job_secrets` presenta una política denegatoria para `anon` y `authenticated`, pero almacena secreto en texto y no sustituye una arquitectura canónica de secret keys o Vault. `vault.secrets` estaba vacío al corte.
+
+#### 8. Compatibilidad entre productor y gateway
+
+La documentación vigente de Supabase establece que `verify_jwt=true` ejecuta una validación de plataforma antes del handler y requiere un JWT válido en `Authorization`. La ruta activa de soporte contradice ese contrato:
+
+```text
+AFTER INSERT public.support_messages
+        ↓
+notify_support_message_inserted()
+        ↓
+pg_net con x-internal-secret, sin Authorization
+        ↓
+support-message-notify con verify_jwt=true
+```
+
+El gateway puede responder 401 antes de que la función compare `x-internal-secret`. La ruta deberá corregirse y probarse extremo a extremo; no basta con revisar el handler.
+
+Para turnos ocurre el drift inverso: la migración define `trg_employee_shifts_notify_published`, pero ese trigger no existe remoto. ANIMA invoca `shift-publish-notify` desde cliente con JWT después de crear o editar turnos, por lo que existe una compensación local no equivalente al diseño server-side original.
+
+#### 9. Cron jobs y semántica temporal
+
+| Job ID | Nombre                                               | Schedule UTC  | Objetivo                                               |   Runs | Fallos | Observación                                                                                  |
+| -----: | ---------------------------------------------------- | ------------- | ------------------------------------------------------ | -----: | -----: | -------------------------------------------------------------------------------------------- |
+|      1 | `document-alerts-daily`                              | `0 14 * * *`  | Edge Function document-alerts por pg_net               |    183 |      0 | Authorization y x-cron-key literales presentes en cron.job.command; valores REDACTADOS       |
+|      2 | `auto-close-attendance`                              | `59 4 * * *`  | public.close_open_attendance_day_end('America/Bogota') |    181 |      2 | equivale a 23:59 America/Bogota del día anterior; dos fallos por empleado inactivo           |
+|      3 | `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *` | public.run_shift_runtime_processor()                   | 39.513 |      0 | éxito de cron significa despacho de pg_net. no resultado final de la Edge Function           |
+|      5 | `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`  | pass.cleanup_delivery_quotes()                         |  1.510 |      0 | elimina cotizaciones expiradas y usadas antiguas                                             |
+|      6 | `anima_attendance_day_end_close_0005`                | `5 0 * * *`   | public.close_open_attendance_day_end('America/Bogota') |     31 |      0 | equivale a 19:05 America/Bogota; duplica función del job 2 y contradice el nombre 0005 local |
+|      9 | `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`  | public.close_stale_open_attendance_shifts()            |     24 |      0 | equivale a 00:10 America/Bogota                                                              |
+|     10 | `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *` | public.reconcile_expired_payment_checkouts()           |  5.564 |      0 | actualiza transacción y pedido en una misma función SQL                                      |
+
+Los dos fallos de `auto-close-attendance`, ocurridos el 27 y 28 de junio de 2026, fueron causados por `Empleado inactivo` dentro del trigger de asistencia. La función remota fue corregida posteriormente para filtrar empleados activos, pero no existe prueba canónica que demuestre la regresión cerrada.
+
+La mayor contradicción temporal es `anima_attendance_day_end_close_0005`: su expresión `5 0 * * *` corre a las **19:05 de Bogotá**, no a las 00:05 locales. El job `auto-close-attendance` corre a las **23:59 de Bogotá** y ejecuta la misma función. Aunque la función es esencialmente idempotente frente a cierres ya existentes, mantener ambos jobs carece de contrato y puede cerrar turnos de días anteriores varias horas antes de la supuesta ventana local.
+
+#### 10. `pg_net`, timeouts y falso éxito
+
+En la muestra retenida entre `2026-07-29T15:50:00Z` y `2026-07-29T21:45:00Z`:
+
+| Resultado                                | Cantidad |
+| ---------------------------------------- | -------: |
+| respuestas 200                           |       65 |
+| respuestas 4xx                           |        0 |
+| respuestas 5xx                           |        0 |
+| errores de transporte por timeout de 5 s |        7 |
+| requests todavía pendientes              |        0 |
+
+Los siete errores ocurrieron en cadencia de cinco minutos. Los logs de Edge Functions mostraron ejecuciones de `shift-runtime-processor` que podían superar cinco segundos; por coincidencia temporal, es razonable inferir que parte o toda la muestra de timeouts pertenece a ese flujo, aunque `net._http_response` no conserva URL para probarlo. La inferencia no se presenta como atribución definitiva.
+
+`cron.job_run_details.status='succeeded'` solo demuestra que la sentencia SQL terminó. En jobs que llaman `net.http_post`, eso normalmente significa que la petición obtuvo un `request_id`; no demuestra HTTP 2xx ni efecto empresarial. Se requieren correlación y reconciliación conforme a `TREQ-SUPABASE-198` a `200`.
+
+#### 11. Registro productor–consumidor
+
+| Productor                | Transporte           | Consumidor                  | Autenticación                            | Estado contractual observado                                                |
+| ------------------------ | -------------------- | --------------------------- | ---------------------------------------- | --------------------------------------------------------------------------- |
+| cron.job 1               | pg_net               | `document-alerts`           | bearer y x-cron-key literales en comando | sin correlación durable del resultado                                       |
+| cron.job 3               | función SQL + pg_net | `shift-runtime-processor`   | x-cron-key desde internal_job_secrets    | respuesta pg_net expira a 5 s en parte de la muestra                        |
+| trigger support_messages | pg_net               | `support-message-notify`    | solo x-internal-secret                   | verify_jwt=true requiere Authorization antes del handler; ruta incompatible |
+| cliente ANIMA            | functions.invoke     | `shift-publish-notify`      | JWT de usuario                           | ruta observable; trigger DB esperado no existe remoto                       |
+| GitHub Actions diario    | curl HTTPS           | `process-account-deletions` | bearer secreto                           | worker no reclama filas con lease atómico                                   |
+| Wompi                    | webhook HTTPS        | `payments-webhook`          | checksum de proveedor                    | idempotencia por provider y event_id; mutación y registro no atómicos       |
+| repartidor externo       | URL de capacidad     | `delivery-portal`           | token en URL/cuerpo                      | expiración e intentos en RPC; sin rate limit explícito                      |
+
+#### 12. Webhook interno de soporte
+
+`notify_support_message_inserted`:
+
+- envía `ticket_id`, `message_id`, `author_id` y el cuerpo completo del mensaje;
+- reutiliza `shift_notify_internal_secret` en un dominio distinto;
+- captura `when others` y retorna `NEW`, sin persistir el fallo;
+- no conserva outbox, retry, correlation id, resultado ni deduplicación;
+- llama una función cuya configuración `verify_jwt` no coincide con los headers enviados.
+
+El diseño deberá cambiar a un evento mínimo, normalmente identificadores y correlación, para que la Edge Function recupere el contenido mediante autorización server-side. El cuerpo laboral no deberá viajar por el trigger si no es estrictamente necesario.
+
+#### 13. Pagos y webhooks externos
+
+`payments-webhook` presenta controles positivos:
+
+- checksum Wompi obligatorio;
+- clave única `(provider, provider_event_id)`;
+- lookup de duplicado procesado;
+- RPC privadas limitadas a `service_role`;
+- bloqueo de transacción antes de actualizar pago y pedido.
+
+Persisten brechas:
+
+- la transición de pago y el registro del webhook son llamadas separadas;
+- si el registro falla después del cambio de estado, la función registra el error pero puede responder éxito;
+- cuando el proveedor no entrega un event ID, se genera UUID aleatorio y se pierde idempotencia entre reintentos equivalentes;
+- se persiste el payload completo sin contrato aprobado de redacción y retención.
+
+`payments-return` no modifica datos y escapa el HTML; sin embargo, construye el deep link desde query params no confiables. PASS deberá revalidar pedido, transacción y autorización server-side.
+
+#### 14. Eliminación de cuentas
+
+El workflow `vento-pass/.github/workflows/process-account-deletions.yml` ejecuta diariamente a las `03:00 UTC` y también admite ejecución manual. Llama `process-account-deletions` mediante un bearer secreto.
+
+El worker está protegido de forma fail-closed, pero selecciona hasta 200 solicitudes `pending`, luego cambia cada una a `processing`. No existe claim atómico, lease, `SKIP LOCKED`, heartbeat, contador de reintentos o dead-letter. Dos ejecuciones concurrentes pueden leer la misma fila antes del cambio de estado y comenzar el mismo trabajo. La corrección pertenece a `TREQ-SUPABASE-202` y a la decisión de colas/outbox de `TREQ-SUPABASE-203`.
+
+#### 15. Colas
+
+No existen la extensión `pgmq`, los esquemas `pgmq` o `pgmq_public`, tablas de queue ni consumidores PGMQ. Esta ausencia no se declara automáticamente como error: la arquitectura puede elegir outbox transaccional u otro mecanismo. Sin embargo, la decisión es obligatoria porque existen trabajos críticos que necesitan persistencia, backpressure, retry y replay:
+
+- eliminación de cuentas;
+- notificaciones de soporte, turnos, documentos y pedidos;
+- recepción de webhooks de pago;
+- conciliaciones y retenciones;
+- futuros ciclos de vida de Storage.
+
+#### 16. Portales y tokens de capacidad
+
+`delivery-portal` usa un token aleatorio cuyo hash se almacena con índice único; los RPC aplican expiración, estados, bloqueo de fila, límite de intentos de PIN y eventos operativos. Esos controles son positivos.
+
+El token viaja en query string, por lo que puede persistir en historial, logs, capturas o referers si no se aplican controles adicionales. El portal expone dirección, teléfono, instrucciones y datos de regalo al poseedor. No se observó rate limiting explícito en Edge Function. La protección definitiva se asigna a `TREQ-SUPABASE-206`.
+
+#### 17. Autorización administrativa y proveedores
+
+Se observaron decisiones locales que deben converger al modelo canónico:
+
+- `employee-delete` autoriza exclusivamente por un UID de entorno;
+- `announcement-notify`, `staff-invitations-resend` y `staff-invitations-cancel` usan sets de roles hardcoded;
+- notificaciones Expo y correos Resend no comparten política uniforme de timeout, retry, receipts, idempotencia o rate limiting;
+- varias funciones usan `service_role`, por lo que el control previo debe ser explícito, mínimo y auditable.
+
+#### 18. Procedencia y reproducibilidad
+
+Los metadatos de despliegue contienen:
+
+- rutas temporales bajo `/tmp/user_fn_*`;
+- rutas absolutas de equipos personales bajo `/Users/User/...`;
+- una ruta bajo OneDrive de otro equipo;
+- funciones originadas en repositorios de aplicación y otras en `vento-shell`.
+
+El entrypoint remoto no sustituye un manifiesto reproducible. Debe existir una conciliación `slug → repositorio → ruta relativa → commit → configuración → bundle SHA`, protegida por `TREQ-SUPABASE-188`, `209` y `211`.
+
+#### 19. Evidencia positiva observada
+
+La auditoría también preserva controles válidos:
+
+- `payments-webhook` verifica checksum y dispone de índice único de idempotencia;
+- `shift_runtime_events` tiene índice único `(shift_id, event_type)`;
+- los RPC del portal de entrega solo son ejecutables por `postgres` y `service_role`;
+- `internal_job_secrets` deniega clientes mediante RLS;
+- `process-account-deletions` exige secreto y falla cerrado;
+- las funciones SQL de limpieza, asistencia y pagos inspeccionadas limitan `EXECUTE` a `postgres` y `service_role`;
+- `net.http_request_queue` estaba vacía al corte.
+
+Estos controles reducen riesgo, pero no cierran las brechas de autorización, secreto, correlación y resiliencia identificadas.
+
+#### 20. Brechas y resolución obligatoria
+
+| ID                   | Severidad   | Brecha                                                                                                                                                                                                        | Resolución asignada                                                             |
+| -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `B-SUPA-AUD-014-001` | **CRÍTICA** | staff-invitations-accept permite que el usuario autenticado suministre role y site_id desde el cuerpo o user_metadata y luego los materializa con service_role sin exigir una invitación válida y vinculante. | SUPA-ARC-020; AUTH-SRV-*; AUTH-DB-*; paquete ANIMA; TREQ-SUPABASE-190 y 191     |
+| `B-SUPA-AUD-014-002` | **CRÍTICA** | app_config contiene un secreto interno y sus políticas SELECT permiten lectura total a anon y authenticated.                                                                                                  | SUPA-AUD-015; SUPA-ARC-015 y 020; transición urgente; TREQ-SUPABASE-192 y 193   |
+| `B-SUPA-AUD-014-003` | **CRÍTICA** | document-alerts-daily conserva un bearer y un x-cron-key literales dentro de cron.job.command.                                                                                                                | SUPA-AUD-015; SUPA-ARC-020; rotación inmediata en transición; TREQ-SUPABASE-193 |
+| `B-SUPA-AUD-014-004` | **CRÍTICA** | support-message-notify tiene verify_jwt=true, pero el trigger PostgreSQL solo envía x-internal-secret y no Authorization; el gateway puede rechazar la solicitud antes del handler.                           | SUPA-ARC-020; paquete ANIMA soporte; TREQ-SUPABASE-195 y 200                    |
+| `B-SUPA-AUD-014-005` | **ALTA**    | document-alerts y shift-runtime-processor aplican autorización personalizada de forma fail-open si su secreto esperado no existe.                                                                             | SUPA-AUD-015; SUPA-ARC-020; TREQ-SUPABASE-194                                   |
+| `B-SUPA-AUD-014-006` | **ALTA**    | dos cron jobs ejecutan close_open_attendance_day_end con horarios UTC que representan 19:05 y 23:59 en Bogotá; el nombre 0005 induce una semántica local incorrecta.                                          | SUPA-ARC-020; paquete ANIMA asistencia; TREQ-SUPABASE-196 y 197                 |
+| `B-SUPA-AUD-014-007` | **ALTA**    | pg_cron marca como succeeded el encolado pg_net y no demuestra resultado HTTP; la muestra net contiene 65 respuestas 2xx y siete timeouts de transporte.                                                      | SUPA-ARC-020 y 021; observabilidad; TREQ-SUPABASE-198 y 199                     |
+| `B-SUPA-AUD-014-008` | **ALTA**    | notify_support_message_inserted transmite el cuerpo completo, reutiliza el secreto de turnos y silencia toda excepción sin outbox, retry o conciliación.                                                      | SUPA-ARC-020; paquete ANIMA soporte; TREQ-SUPABASE-199 y 200                    |
+| `B-SUPA-AUD-014-009` | **ALTA**    | process-account-deletions procesa filas por lote sin claim, lease, SKIP LOCKED, retry counter ni dead-letter; ejecuciones concurrentes pueden duplicar trabajo.                                               | SUPA-ARC-020 y 022; paquete PASS privacidad; TREQ-SUPABASE-202 y 203            |
+| `B-SUPA-AUD-014-010` | **ALTA**    | payments-webhook actualiza el pago y registra el evento en operaciones separadas; un fallo de registro puede dejar el estado aplicado sin evidencia transaccional equivalente.                                | SUPA-ARC-020; paquete PASS pagos; TREQ-SUPABASE-201                             |
+| `B-SUPA-AUD-014-011` | **ALTA**    | no están instalados pgmq ni Supabase Queues y varios flujos asíncronos críticos dependen de HTTP directo, cron o workflows sin una frontera durable común.                                                    | SUPA-ARC-020 y 022; decisión arquitectónica; TREQ-SUPABASE-203                  |
+| `B-SUPA-AUD-014-012` | **ALTA**    | employee-delete usa un UID humano fijo y announcement-notify e invitaciones usan sets de roles hardcoded en lugar de capacidades canónicas.                                                                   | AUTH-CAT-*; AUTH-SRV-*; SUPA-ARC-020; TREQ-SUPABASE-205                         |
+| `B-SUPA-AUD-014-013` | **ALTA**    | delivery-portal expone dirección, contacto e instrucciones mediante token de capacidad en URL; no se observó rate limiting explícito ni contrato de privacidad de logs.                                       | SUPA-ARC-020 y 022; paquete PULSO/PASS; TREQ-SUPABASE-206                       |
+| `B-SUPA-AUD-014-014` | **MEDIA**   | payments-return construye el deep link con identificadores de query string sin comprobar su relación; la app receptora debe tratarlos solo como pistas y revalidar servidor-side.                             | SUPA-ARC-020; paquete PASS pagos; TREQ-SUPABASE-207                             |
+| `B-SUPA-AUD-014-015` | **ALTA**    | envíos Expo y Resend tienen manejo desigual de timeout, códigos no 2xx, retry, receipt y deduplicación.                                                                                                       | SUPA-ARC-020 y 021; paquetes ANIMA/PASS/PULSO; TREQ-SUPABASE-204 y 208          |
+| `B-SUPA-AUD-014-016` | **ALTA**    | el trigger de notificación de turnos previsto en migración no existe remoto; ANIMA compensa con llamada cliente directa, generando doble diseño y drift.                                                      | SUPA-AUD-016 y 017; SUPA-ARC-020; TREQ-SUPABASE-195 y 209                       |
+| `B-SUPA-AUD-014-017` | **MEDIA**   | metadatos de despliegue mezclan rutas temporales con rutas absolutas de equipos de desarrollo y no existe manifiesto único que concilie fuente, versión y SHA desplegado.                                     | SUPA-AUD-016 y 017; SHELL-CI-017; TREQ-SUPABASE-209                             |
+| `B-SUPA-AUD-014-018` | **ALTA**    | no existe panel canónico que una cron run, request_id pg_net, invocación Edge, efecto empresarial, retry y alerta.                                                                                            | SUPA-ARC-007 y 020; NFR; TREQ-SUPABASE-210                                      |
+| `B-SUPA-AUD-014-019` | **ALTA**    | no se observaron automatizaciones empresariales de retención, reconciliación de objetos Storage u orphans; la brecha de SUPA-AUD-012 permanece asignada.                                                      | SUPA-ARC-018 y 022; SUPA-TRANS-*; TREQ-SUPABASE-157 y 158                       |
+| `B-SUPA-AUD-014-020` | **ALTA**    | no existe validador automático del inventario de funciones, jobs, rutas, secretos expuestos, colas y productores.                                                                                             | SUPA-AUD-016 y 017; SHELL-CI-017; TREQ-SUPABASE-211                             |
+
+No queda hallazgo narrativo sin tarea o requisito responsable.
+
+#### 21. Requisitos de prueba incorporados
+
+Se añadieron 24 requisitos consecutivos:
+
+```text
+TREQ-SUPABASE-188 a TREQ-SUPABASE-211
+```
+
+Cubren inventario, autorización, invitaciones, secretos, gateway, cron, timezone, `pg_net`, soporte, pagos, eliminación de cuenta, colas, push, acciones destructivas, capability URLs, proveedores, procedencia, observabilidad y drift.
+
+Rango incorporado: `TREQ-SUPABASE-188`, `TREQ-SUPABASE-189`, `TREQ-SUPABASE-190`, `TREQ-SUPABASE-191`, `TREQ-SUPABASE-192`, `TREQ-SUPABASE-193`, `TREQ-SUPABASE-194`, `TREQ-SUPABASE-195`, `TREQ-SUPABASE-196`, `TREQ-SUPABASE-197`, `TREQ-SUPABASE-198`, `TREQ-SUPABASE-199`, `TREQ-SUPABASE-200`, `TREQ-SUPABASE-201`, `TREQ-SUPABASE-202`, `TREQ-SUPABASE-203`, `TREQ-SUPABASE-204`, `TREQ-SUPABASE-205`, `TREQ-SUPABASE-206`, `TREQ-SUPABASE-207`, `TREQ-SUPABASE-208`, `TREQ-SUPABASE-209`, `TREQ-SUPABASE-210`, `TREQ-SUPABASE-211`.
+
+#### 22. Huellas de integridad de la evidencia
+
+| Registro                       | SHA-256                                                            |
+| ------------------------------ | ------------------------------------------------------------------ |
+| `edge_function_registry`       | `4d1ee07c3c5c659e06acb9687db27690c8df1c5fab9318d459617b2175ad685f` |
+| `cron_registry`                | `c24271f32da5a81094be38f67c497fb48e28f77e8db82e2e8233183e9ee2ad04` |
+| `automation_contract_registry` | `93a525281a8d54731ba33460c6b806ad6220cff6a28b7e4edac32251ec214f34` |
+| `breach_register`              | `d11fc061f0f054790b20e50c0e23d90f35f89bf2b7c0843813ec02dfaf833ab0` |
+
+Las huellas excluyen cualquier secreto o credencial. El registro cron sustituye el contenido sensible por una indicación redactada.
+
+#### 23. Límites de esta auditoría
+
+Esta tarea no:
+
+- rota secretos ni cambia políticas;
+- modifica `verify_jwt`;
+- reprograma o elimina cron jobs;
+- crea colas, outbox o workers;
+- invoca funciones para pruebas destructivas;
+- cambia código o despliegues;
+- decide todavía el inventario completo de variables de entorno, API keys, Vault y configuración del proyecto, reservado para `SUPA-AUD-015`;
+- ejecuta la comparación exhaustiva remoto–migraciones, reservada para `SUPA-AUD-016` y `SUPA-AUD-017`.
+
+#### 24. Cierre
+
+`SUPA-AUD-014` queda **APROBADA** como línea base documental de Edge Functions, webhooks, cron, colas y automatizaciones. Ningún hallazgo autoriza un cambio directo en producción; las correcciones deberán diseñarse en `SUPA-ARC-020`, incorporarse a transición controlada y probarse mediante `TREQ-SUPABASE-188` a `211`.
+
+La continuidad canónica queda fijada en:
+
+```text
+SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
+```
+
+
 ### [ ] SUPA-AUD-015 — Auditar extensiones, secretos, variables y configuración del proyecto
 ### [ ] SUPA-AUD-016 — Comparar Supabase remoto con migraciones y configuración de `vento-shell`
 ### [ ] SUPA-AUD-017 — Detectar drift, cambios manuales y objetos sin migración
