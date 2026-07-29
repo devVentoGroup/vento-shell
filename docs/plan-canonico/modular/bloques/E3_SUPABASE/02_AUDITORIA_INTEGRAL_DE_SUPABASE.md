@@ -1062,7 +1062,1212 @@ Todo esquema nuevo, eliminado o reclasificado deberá producir drift explícito 
 - exposición, privilegios y autorización por filas quedan separados como controles independientes.
 
 
-### [ ] SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
+### ✅ SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
+
+#### 1. Objetivo
+
+Crear el inventario individual, reproducible y reconciliado de todas las relaciones PostgreSQL de tipo tabla ordinaria, tabla particionada, partición hija, vista y vista materializada observables en los **23 esquemas no efímeros** inventariados por `SUPA-AUD-001`, conservando la clasificación estructural definida por `SUPA-AUD-002` y sin confundir existencia técnica con exposición Data API, autorización, propiedad funcional, calidad arquitectónica o destino futuro.
+
+```text
+23 ESQUEMAS NO EFÍMEROS
+        ↓
+640 RELACIONES INVENTARIADAS
+        ↓
+424 TABLAS ORDINARIAS NO PARTICIÓN
++ 1 TABLA PARTICIONADA
++ 7 PARTICIONES HIJAS
++ 208 VISTAS
++ 0 VISTAS MATERIALIZADAS
+        ↓
+BASE PARA CONSTRAINTS, FUNCIONES, RLS, DRIFT Y ARQUITECTURA OBJETIVO
+```
+
+#### 2. Semántica de tipos obligatoria
+
+| Clase canónica      | Criterio PostgreSQL                    |  Conteo | Regla                                                      |
+| ------------------- | -------------------------------------- | ------: | ---------------------------------------------------------- |
+| `ORDINARY_TABLE`    | `relkind='r' AND relispartition=false` | **424** | tabla ordinaria no hija de partición                       |
+| `PARTITIONED_TABLE` | `relkind='p'`                          |   **1** | padre lógico particionado; no se suma como tabla ordinaria |
+| `PARTITION_CHILD`   | `relkind='r' AND relispartition=true`  |   **7** | relación física hija; conserva padre y bound               |
+| `VIEW`              | `relkind='v'`                          | **208** | vista PostgreSQL no materializada                          |
+| `MATERIALIZED_VIEW` | `relkind='m'`                          |   **0** | ausencia explícita y protegida contra drift                |
+
+La huella de `SUPA-AUD-001` reportó **431 tablas ordinarias** porque contó todas las relaciones `relkind='r'`. `SUPA-AUD-004` no contradice ese total: lo descompone correctamente en **424 tablas ordinarias no partición + 7 particiones hijas = 431 relaciones `relkind='r'`**.
+
+#### 3. Método de auditoría no mutante
+
+Se utilizaron exclusivamente consultas `SELECT` sobre:
+
+- `pg_namespace` para mantener el universo de 23 esquemas;
+- `pg_class` para tipo, nombre, owner, persistencia, tamaño, RLS, comentarios y opciones de vista;
+- `pg_inherits` para relaciones padre-hija;
+- `pg_get_partkeydef` y `pg_get_expr` para clave y límites de partición;
+- `pg_options_to_table` para `security_invoker` y `security_barrier`;
+- `pg_total_relation_size` para tamaño físico observado.
+
+No se ejecutaron `CREATE`, `ALTER`, `DROP`, `GRANT`, `REVOKE`, `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `REFRESH MATERIALIZED VIEW`, RPC, funciones empresariales, migraciones ni cambios de configuración.
+
+#### 4. Contrato mínimo de cada registro
+
+Cada entrada publicada en el inventario nominal conserva:
+
+```text
+schema_name
++ object_name
++ qualified_name
++ object_type
++ schema_governance_class
++ observation_timestamp
+```
+
+La consulta reproducible que genera el inventario captura además owner, persistencia, flags de partición, padre, clave o bound, RLS, `FORCE RLS`, opciones de vista, comentario, estimación de filas y tamaño. Este documento consolida esos atributos en matrices, jerarquías y excepciones verificables; no inventa valores para campos no aplicables ni convierte una observación técnica en decisión de seguridad.
+
+#### 5. Reconciliación global
+
+| Métrica                                          |             Resultado |
+| ------------------------------------------------ | --------------------: |
+| esquemas no efímeros representados               |          **23 de 23** |
+| relaciones inventariadas                         |               **640** |
+| tablas ordinarias no partición                   |               **424** |
+| tablas particionadas                             |                 **1** |
+| particiones hijas                                |                 **7** |
+| vistas                                           |               **208** |
+| vistas materializadas                            |                 **0** |
+| relaciones permanentes                           |               **638** |
+| relaciones `UNLOGGED`                            |                 **2** |
+| relaciones temporales persistidas en el corte    |                 **0** |
+| objetos tabulares con RLS observado              |               **332** |
+| objetos tabulares con `FORCE ROW LEVEL SECURITY` |                 **0** |
+| vistas `security_invoker=true`                   |                **58** |
+| vistas con `security_invoker=false` o ausente    |               **150** |
+| vistas `security_barrier=true`                   |                 **3** |
+| vistas con `security_barrier=false` o ausente    |               **205** |
+| relaciones con comentario                        |               **207** |
+| relaciones sin comentario                        |               **433** |
+| tamaño físico tabular/materializado observado    | **137.756.672 bytes** |
+
+#### 6. Matriz completa por esquema
+
+| Esquema               | Clase                            | Tablas ordinarias | Tabla particionada | Particiones hijas |  Vistas | Vistas materializadas |   Total | Persistentes | Unlogged | RLS activo en objetos tabulares | Tamaño tabular observado |
+| --------------------- | -------------------------------- | ----------------: | -----------------: | ----------------: | ------: | --------------------: | ------: | -----------: | -------: | ------------------------------: | -----------------------: |
+| `app_private`         | `GOBERNADO_VENTO`                |                 1 |                  0 |                 0 |       0 |                     0 |   **1** |            1 |        0 |                               0 |                 32.768 B |
+| `auth`                | `ADMINISTRADO_SUPABASE_POSTGRES` |                23 |                  0 |                 0 |       0 |                     0 |  **23** |           23 |        0 |                              16 |             17.563.648 B |
+| `club`                | `GOBERNADO_VENTO`                |                11 |                  0 |                 0 |       0 |                     0 |  **11** |           11 |        0 |                              11 |                368.640 B |
+| `cron`                | `ADMINISTRADO_SUPABASE_POSTGRES` |                 2 |                  0 |                 0 |       0 |                     0 |   **2** |            2 |        0 |                               2 |              8.708.096 B |
+| `extensions`          | `ADMINISTRADO_SUPABASE_POSTGRES` |                 0 |                  0 |                 0 |       2 |                     0 |   **2** |            2 |        0 |                               0 |                      0 B |
+| `graphql`             | `ADMINISTRADO_SUPABASE_POSTGRES` |                 0 |                  0 |                 0 |       0 |                     0 |   **0** |            0 |        0 |                               0 |                      0 B |
+| `graphql_public`      | `ADMINISTRADO_SUPABASE_POSTGRES` |                 0 |                  0 |                 0 |       0 |                     0 |   **0** |            0 |        0 |                               0 |                      0 B |
+| `information_schema`  | `ADMINISTRADO_SUPABASE_POSTGRES` |                 4 |                  0 |                 0 |      65 |                     0 |  **69** |           69 |        0 |                               0 |                253.952 B |
+| `net`                 | `ADMINISTRADO_SUPABASE_POSTGRES` |                 2 |                  0 |                 0 |       0 |                     0 |   **2** |            0 |        2 |                               0 |             50.290.688 B |
+| `pass`                | `GOBERNADO_VENTO`                |                26 |                  0 |                 0 |       1 |                     0 |  **27** |           27 |        0 |                              26 |              2.695.168 B |
+| `payments`            | `GOBERNADO_VENTO`                |                 2 |                  0 |                 0 |       0 |                     0 |   **2** |            2 |        0 |                               2 |                180.224 B |
+| `pg_catalog`          | `ADMINISTRADO_SUPABASE_POSTGRES` |                64 |                  0 |                 0 |      78 |                     0 | **142** |          142 |        0 |                               0 |             25.935.872 B |
+| `pg_toast`            | `ADMINISTRADO_SUPABASE_POSTGRES` |                 0 |                  0 |                 0 |       0 |                     0 |   **0** |            0 |        0 |                               0 |                      0 B |
+| `pgbouncer`           | `ADMINISTRADO_SUPABASE_POSTGRES` |                 0 |                  0 |                 0 |       0 |                     0 |   **0** |            0 |        0 |                               0 |                      0 B |
+| `pos`                 | `GOBERNADO_VENTO`                |                13 |                  0 |                 0 |       0 |                     0 |  **13** |           13 |        0 |                              13 |                335.872 B |
+| `public`              | `GOBERNADO_VENTO`                |               185 |                  0 |                 0 |      61 |                     0 | **246** |          246 |        0 |                             185 |             24.444.928 B |
+| `realtime`            | `ADMINISTRADO_SUPABASE_POSTGRES` |                 2 |                  1 |                 7 |       0 |                     0 |  **10** |           10 |        0 |                               1 |                270.336 B |
+| `storage`             | `ADMINISTRADO_SUPABASE_POSTGRES` |                 8 |                  0 |                 0 |       0 |                     0 |   **8** |            8 |        0 |                               8 |              2.211.840 B |
+| `supabase_migrations` | `ADMINISTRADO_SUPABASE_POSTGRES` |                 1 |                  0 |                 0 |       0 |                     0 |   **1** |            1 |        0 |                               0 |              1.449.984 B |
+| `talento`             | `GOBERNADO_VENTO`                |                13 |                  0 |                 0 |       0 |                     0 |  **13** |           13 |        0 |                              13 |                450.560 B |
+| `vault`               | `ADMINISTRADO_SUPABASE_POSTGRES` |                 1 |                  0 |                 0 |       1 |                     0 |   **2** |            2 |        0 |                               0 |                 24.576 B |
+| `viso`                | `GOBERNADO_VENTO`                |                12 |                  0 |                 0 |       0 |                     0 |  **12** |           12 |        0 |                               1 |                548.864 B |
+| `vital`               | `GOBERNADO_VENTO`                |                54 |                  0 |                 0 |       0 |                     0 |  **54** |           54 |        0 |                              54 |              1.990.656 B |
+| **TOTAL**             | —                                |           **424** |              **1** |             **7** | **208** |                 **0** | **640** |      **638** |    **2** |                         **332** |        **137.756.672 B** |
+
+Reglas de lectura:
+
+1. los tamaños son evidencia del corte, no métricas de capacidad ni retención;
+2. las vistas no almacenan bytes propios en esta suma;
+3. la tabla padre particionada y sus hijos se identifican por separado;
+4. los esquemas sin relaciones permanecen representados con cero;
+5. los indicadores RLS y de vistas son inventario, no certificación de seguridad.
+
+#### 7. Distribución por gobierno estructural
+
+| Clase vigente según `SUPA-AUD-002` | Esquemas | Tablas ordinarias | Padres particionados | Particiones hijas |  Vistas | Materializadas |   Total |
+| ---------------------------------- | -------: | ----------------: | -------------------: | ----------------: | ------: | -------------: | ------: |
+| `GOBERNADO_VENTO`                  |        9 |           **317** |                    0 |                 0 |  **62** |              0 | **379** |
+| `ADMINISTRADO_SUPABASE_POSTGRES`   |       14 |           **107** |                **1** |             **7** | **146** |              0 | **261** |
+| **TOTAL**                          |   **23** |           **424** |                **1** |             **7** | **208** |          **0** | **640** |
+
+Esta distribución no aprueba conservar, mover, dividir o retirar ningún objeto. La propiedad funcional y los consumidores se resolverán en `SUPA-AUD-022`; el diseño objetivo en `SUPA-ARC-*`; la transición en `SUPA-TRANS-*`.
+
+#### 8. Jerarquía de particiones observada
+
+Existe una sola tabla particionada:
+
+| Padre               | Owner                     | Persistencia | Clave                 | RLS    | `FORCE RLS` |
+| ------------------- | ------------------------- | ------------ | --------------------- | ------ | ----------- |
+| `realtime.messages` | `supabase_realtime_admin` | `PERMANENT`  | `RANGE (inserted_at)` | activo | no          |
+
+Particiones hijas observadas:
+
+| Partición                      | Bound literal observado    | Owner                     | RLS propio |   Tamaño |
+| ------------------------------ | -------------------------- | ------------------------- | ---------- | -------: |
+| `realtime.messages_2026_07_26` | `[2026-07-26, 2026-07-27)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_07_27` | `[2026-07-27, 2026-07-28)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_07_28` | `[2026-07-28, 2026-07-29)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_07_29` | `[2026-07-29, 2026-07-30)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_07_30` | `[2026-07-30, 2026-07-31)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_07_31` | `[2026-07-31, 2026-08-01)` | `supabase_realtime_admin` | no         | 24.576 B |
+| `realtime.messages_2026_08_01` | `[2026-08-01, 2026-08-02)` | `supabase_realtime_admin` | no         | 24.576 B |
+
+Los índices hijos también aparecen en `pg_inherits`, pero no pertenecen al alcance de relaciones `r`, `p`, `v` o `m`; su inventario se resolverá con índices y rendimiento en `SUPA-AUD-020`. La política de creación, retención y mantenimiento de estas particiones corresponde a `SUPA-AUD-013`, `SUPA-AUD-020` y `SUPA-AUD-016` según servicio, rendimiento y reproducibilidad.
+
+#### 9. Persistencia y ownership
+
+- **638** relaciones son `PERMANENT`.
+- Las únicas **2** relaciones `UNLOGGED` son `net._http_response` y `net.http_request_queue`.
+- No se observó ninguna relación temporal persistida dentro de los 23 esquemas no efímeros.
+- El owner se conserva por objeto; no se hereda conceptualmente desde el owner del esquema.
+- `realtime` contiene owners distintos (`supabase_admin` y `supabase_realtime_admin`), lo que demuestra que owner de esquema y owner de objeto no son equivalentes.
+
+La idoneidad de owners, grants y privilegios se auditará en `SUPA-AUD-009`; esta tarea solo registra el estado.
+
+#### 10. Señales RLS observadas
+
+De **432 objetos tabulares** —424 tablas ordinarias, 1 padre particionado y 7 hijos—:
+
+- **332** tienen `relrowsecurity=true`;
+- **100** tienen `relrowsecurity=false`;
+- **0** tienen `relforcerowsecurity=true`.
+
+Dentro de los nueve esquemas gobernados por Vento, los objetos tabulares sin RLS observado son:
+
+```text
+app_private.delivery_pin_secrets
+viso.demand_forecasts
+viso.demand_history_hourly
+viso.employee_availability
+viso.employee_planning_limits
+viso.employee_shift_preferences
+viso.shift_generation_candidate_items
+viso.shift_generation_candidates
+viso.shift_generation_runs
+viso.site_operational_roles
+viso.site_planning_rules
+viso.site_staffing_requirements
+```
+
+La ausencia de RLS no constituye automáticamente una vulnerabilidad: puede existir aislamiento por esquema, grants, acceso exclusivo de backend o diseño interno. La evaluación objeto por objeto, roles, políticas y justificaciones corresponde exclusivamente a `SUPA-AUD-009`.
+
+#### 11. Opciones de ejecución de vistas
+
+| Señal                              | Total global | Gobernadas por Vento |
+| ---------------------------------- | -----------: | -------------------: |
+| `security_invoker=true`            |       **58** |               **58** |
+| `security_invoker=false` o ausente |      **150** |                **4** |
+| `security_barrier=true`            |        **3** |                **0** |
+| `security_barrier=false` o ausente |      **205** |               **62** |
+
+Las cuatro vistas gobernadas por Vento sin `security_invoker=true` son:
+
+```text
+public.permission_catalog_human_v1
+public.shared_operational_device_actor_policies_admin_v1
+public.shared_operational_device_templates_admin_v1
+public.shared_operational_devices_admin_v1
+```
+
+`pass.sell_products_by_site` y las otras 57 vistas Vento observadas tienen `security_invoker=true`. La matriz no decide si las cuatro excepciones son correctas: `SUPA-AUD-009` deberá cruzar definición, owner, grants, RLS de tablas base y consumidores; `SUPA-AUD-016` verificará su reproducción por migraciones.
+
+#### 12. Vistas materializadas
+
+No existe ninguna relación `relkind='m'` en el corte:
+
+```text
+MATERIALIZED_VIEW_COUNT = 0
+```
+
+La ausencia se registra como resultado positivo del inventario, no como categoría omitida. La aparición futura de una vista materializada deberá generar drift, identificar refresh, owner, dependencias, índices, seguridad, retención y consumidor antes de considerarse aceptada.
+
+#### 13. Inventario nominal completo
+
+El inventario se ordena por esquema, tipo y nombre calificado. Incluye objetos de PostgreSQL y Supabase porque el alcance aprobado exige reconciliar el universo completo de 23 esquemas; su inclusión no los convierte en objetos empresariales de Vento.
+
+##### 1. `app_private`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_PRIVATE_TECHNICAL`;
+- huella: 1 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (1):**
+
+```text
+app_private.delivery_pin_secrets
+```
+
+##### 2. `auth`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_PRODUCT_MANAGED`;
+- huella: 23 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (23):**
+
+```text
+auth.audit_log_entries
+auth.custom_oauth_providers
+auth.flow_state
+auth.identities
+auth.instances
+auth.mfa_amr_claims
+auth.mfa_challenges
+auth.mfa_factors
+auth.oauth_authorizations
+auth.oauth_client_states
+auth.oauth_clients
+auth.oauth_consents
+auth.one_time_tokens
+auth.refresh_tokens
+auth.saml_providers
+auth.saml_relay_states
+auth.schema_migrations
+auth.sessions
+auth.sso_domains
+auth.sso_providers
+auth.users
+auth.webauthn_challenges
+auth.webauthn_credentials
+```
+
+##### 3. `club`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 11 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (11):**
+
+```text
+club.audit_events
+club.beta_access
+club.cashback_rules
+club.earn_events
+club.entitlements
+club.plans
+club.redemption_links
+club.store_products
+club.subscriptions
+club.wallet_accounts
+club.wallet_ledger
+```
+
+##### 4. `cron`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_EXTENSION_MANAGED`;
+- huella: 2 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (2):**
+
+```text
+cron.job
+cron.job_run_details
+```
+
+##### 5. `extensions`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_EXTENSION_CONTAINER`;
+- huella: 0 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 2 vistas y 0 vistas materializadas;
+
+**Vistas (2):**
+
+```text
+extensions.pg_stat_statements
+extensions.pg_stat_statements_info
+```
+
+##### 6. `graphql`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_PLATFORM_RESERVED_DORMANT`;
+- huella: 0 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+```text
+SIN OBJETOS DE TIPO r, p, v O m EN EL CORTE OBSERVADO
+```
+
+##### 7. `graphql_public`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_PLATFORM_RESERVED_DORMANT`;
+- huella: 0 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+```text
+SIN OBJETOS DE TIPO r, p, v O m EN EL CORTE OBSERVADO
+```
+
+##### 8. `information_schema`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `POSTGRES_SQL_STANDARD_MANAGED`;
+- huella: 4 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 65 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (4):**
+
+```text
+information_schema.sql_features
+information_schema.sql_implementation_info
+information_schema.sql_parts
+information_schema.sql_sizing
+```
+
+**Vistas (65):**
+
+```text
+information_schema._pg_foreign_data_wrappers
+information_schema._pg_foreign_servers
+information_schema._pg_foreign_table_columns
+information_schema._pg_foreign_tables
+information_schema._pg_user_mappings
+information_schema.administrable_role_authorizations
+information_schema.applicable_roles
+information_schema.attributes
+information_schema.character_sets
+information_schema.check_constraint_routine_usage
+information_schema.check_constraints
+information_schema.collation_character_set_applicability
+information_schema.collations
+information_schema.column_column_usage
+information_schema.column_domain_usage
+information_schema.column_options
+information_schema.column_privileges
+information_schema.column_udt_usage
+information_schema.columns
+information_schema.constraint_column_usage
+information_schema.constraint_table_usage
+information_schema.data_type_privileges
+information_schema.domain_constraints
+information_schema.domain_udt_usage
+information_schema.domains
+information_schema.element_types
+information_schema.enabled_roles
+information_schema.foreign_data_wrapper_options
+information_schema.foreign_data_wrappers
+information_schema.foreign_server_options
+information_schema.foreign_servers
+information_schema.foreign_table_options
+information_schema.foreign_tables
+information_schema.information_schema_catalog_name
+information_schema.key_column_usage
+information_schema.parameters
+information_schema.referential_constraints
+information_schema.role_column_grants
+information_schema.role_routine_grants
+information_schema.role_table_grants
+information_schema.role_udt_grants
+information_schema.role_usage_grants
+information_schema.routine_column_usage
+information_schema.routine_privileges
+information_schema.routine_routine_usage
+information_schema.routine_sequence_usage
+information_schema.routine_table_usage
+information_schema.routines
+information_schema.schemata
+information_schema.sequences
+information_schema.table_constraints
+information_schema.table_privileges
+information_schema.tables
+information_schema.transforms
+information_schema.triggered_update_columns
+information_schema.triggers
+information_schema.udt_privileges
+information_schema.usage_privileges
+information_schema.user_defined_types
+information_schema.user_mapping_options
+information_schema.user_mappings
+information_schema.view_column_usage
+information_schema.view_routine_usage
+information_schema.view_table_usage
+information_schema.views
+```
+
+##### 9. `net`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_EXTENSION_MANAGED`;
+- huella: 2 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (2):**
+
+```text
+net._http_response
+net.http_request_queue
+```
+
+##### 10. `pass`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 26 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 1 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (26):**
+
+```text
+pass.catalog_item_collections
+pass.catalog_item_customization_template_assignments
+pass.catalog_item_customization_template_groups
+pass.catalog_item_customization_templates
+pass.catalog_item_option_consumption_rules
+pass.catalog_item_option_groups
+pass.catalog_item_option_recipe_effects
+pass.catalog_item_options
+pass.catalog_item_presentation
+pass.catalog_items
+pass.catalog_option_visual_assets
+pass.commercial_categories
+pass.commercial_collection_categories
+pass.commercial_collections
+pass.delivery_addresses
+pass.delivery_distance_rates
+pass.delivery_quotes
+pass.loyalty_redemptions
+pass.loyalty_rewards
+pass.loyalty_transactions
+pass.pass_satellites
+pass.site_business_hours
+pass.site_delivery_slots
+pass.site_schedule_exception_resolutions
+pass.site_schedule_exceptions
+pass.user_favorites
+```
+
+**Vistas (1):**
+
+```text
+pass.sell_products_by_site
+```
+
+##### 11. `payments`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 2 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (2):**
+
+```text
+payments.transactions
+payments.webhook_events
+```
+
+##### 12. `pg_catalog`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `POSTGRES_CORE_MANAGED`;
+- huella: 64 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 78 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (64):**
+
+```text
+pg_catalog.pg_aggregate
+pg_catalog.pg_am
+pg_catalog.pg_amop
+pg_catalog.pg_amproc
+pg_catalog.pg_attrdef
+pg_catalog.pg_attribute
+pg_catalog.pg_auth_members
+pg_catalog.pg_authid
+pg_catalog.pg_cast
+pg_catalog.pg_class
+pg_catalog.pg_collation
+pg_catalog.pg_constraint
+pg_catalog.pg_conversion
+pg_catalog.pg_database
+pg_catalog.pg_db_role_setting
+pg_catalog.pg_default_acl
+pg_catalog.pg_depend
+pg_catalog.pg_description
+pg_catalog.pg_enum
+pg_catalog.pg_event_trigger
+pg_catalog.pg_extension
+pg_catalog.pg_foreign_data_wrapper
+pg_catalog.pg_foreign_server
+pg_catalog.pg_foreign_table
+pg_catalog.pg_index
+pg_catalog.pg_inherits
+pg_catalog.pg_init_privs
+pg_catalog.pg_language
+pg_catalog.pg_largeobject
+pg_catalog.pg_largeobject_metadata
+pg_catalog.pg_namespace
+pg_catalog.pg_opclass
+pg_catalog.pg_operator
+pg_catalog.pg_opfamily
+pg_catalog.pg_parameter_acl
+pg_catalog.pg_partitioned_table
+pg_catalog.pg_policy
+pg_catalog.pg_proc
+pg_catalog.pg_publication
+pg_catalog.pg_publication_namespace
+pg_catalog.pg_publication_rel
+pg_catalog.pg_range
+pg_catalog.pg_replication_origin
+pg_catalog.pg_rewrite
+pg_catalog.pg_seclabel
+pg_catalog.pg_sequence
+pg_catalog.pg_shdepend
+pg_catalog.pg_shdescription
+pg_catalog.pg_shseclabel
+pg_catalog.pg_statistic
+pg_catalog.pg_statistic_ext
+pg_catalog.pg_statistic_ext_data
+pg_catalog.pg_subscription
+pg_catalog.pg_subscription_rel
+pg_catalog.pg_tablespace
+pg_catalog.pg_transform
+pg_catalog.pg_trigger
+pg_catalog.pg_ts_config
+pg_catalog.pg_ts_config_map
+pg_catalog.pg_ts_dict
+pg_catalog.pg_ts_parser
+pg_catalog.pg_ts_template
+pg_catalog.pg_type
+pg_catalog.pg_user_mapping
+```
+
+**Vistas (78):**
+
+```text
+pg_catalog.pg_available_extension_versions
+pg_catalog.pg_available_extensions
+pg_catalog.pg_backend_memory_contexts
+pg_catalog.pg_config
+pg_catalog.pg_cursors
+pg_catalog.pg_file_settings
+pg_catalog.pg_group
+pg_catalog.pg_hba_file_rules
+pg_catalog.pg_ident_file_mappings
+pg_catalog.pg_indexes
+pg_catalog.pg_locks
+pg_catalog.pg_matviews
+pg_catalog.pg_policies
+pg_catalog.pg_prepared_statements
+pg_catalog.pg_prepared_xacts
+pg_catalog.pg_publication_tables
+pg_catalog.pg_replication_origin_status
+pg_catalog.pg_replication_slots
+pg_catalog.pg_roles
+pg_catalog.pg_rules
+pg_catalog.pg_seclabels
+pg_catalog.pg_sequences
+pg_catalog.pg_settings
+pg_catalog.pg_shadow
+pg_catalog.pg_shmem_allocations
+pg_catalog.pg_stat_activity
+pg_catalog.pg_stat_all_indexes
+pg_catalog.pg_stat_all_tables
+pg_catalog.pg_stat_archiver
+pg_catalog.pg_stat_bgwriter
+pg_catalog.pg_stat_checkpointer
+pg_catalog.pg_stat_database
+pg_catalog.pg_stat_database_conflicts
+pg_catalog.pg_stat_gssapi
+pg_catalog.pg_stat_io
+pg_catalog.pg_stat_progress_analyze
+pg_catalog.pg_stat_progress_basebackup
+pg_catalog.pg_stat_progress_cluster
+pg_catalog.pg_stat_progress_copy
+pg_catalog.pg_stat_progress_create_index
+pg_catalog.pg_stat_progress_vacuum
+pg_catalog.pg_stat_recovery_prefetch
+pg_catalog.pg_stat_replication
+pg_catalog.pg_stat_replication_slots
+pg_catalog.pg_stat_slru
+pg_catalog.pg_stat_ssl
+pg_catalog.pg_stat_subscription
+pg_catalog.pg_stat_subscription_stats
+pg_catalog.pg_stat_sys_indexes
+pg_catalog.pg_stat_sys_tables
+pg_catalog.pg_stat_user_functions
+pg_catalog.pg_stat_user_indexes
+pg_catalog.pg_stat_user_tables
+pg_catalog.pg_stat_wal
+pg_catalog.pg_stat_wal_receiver
+pg_catalog.pg_stat_xact_all_tables
+pg_catalog.pg_stat_xact_sys_tables
+pg_catalog.pg_stat_xact_user_functions
+pg_catalog.pg_stat_xact_user_tables
+pg_catalog.pg_statio_all_indexes
+pg_catalog.pg_statio_all_sequences
+pg_catalog.pg_statio_all_tables
+pg_catalog.pg_statio_sys_indexes
+pg_catalog.pg_statio_sys_sequences
+pg_catalog.pg_statio_sys_tables
+pg_catalog.pg_statio_user_indexes
+pg_catalog.pg_statio_user_sequences
+pg_catalog.pg_statio_user_tables
+pg_catalog.pg_stats
+pg_catalog.pg_stats_ext
+pg_catalog.pg_stats_ext_exprs
+pg_catalog.pg_tables
+pg_catalog.pg_timezone_abbrevs
+pg_catalog.pg_timezone_names
+pg_catalog.pg_user
+pg_catalog.pg_user_mappings
+pg_catalog.pg_views
+pg_catalog.pg_wait_events
+```
+
+##### 13. `pg_toast`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `POSTGRES_CORE_MANAGED`;
+- huella: 0 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+```text
+SIN OBJETOS DE TIPO r, p, v O m EN EL CORTE OBSERVADO
+```
+
+##### 14. `pgbouncer`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_INFRASTRUCTURE_MANAGED`;
+- huella: 0 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+```text
+SIN OBJETOS DE TIPO r, p, v O m EN EL CORTE OBSERVADO
+```
+
+##### 15. `pos`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 13 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (13):**
+
+```text
+pos.pos_cash_movements
+pos.pos_cash_shifts
+pos.pos_modifier_options
+pos.pos_modifiers
+pos.pos_order_item_modifiers
+pos.pos_payments
+pos.pos_product_modifiers
+pos.pos_session_orders
+pos.pos_sessions
+pos.pos_table_call_devices
+pos.pos_table_service_calls
+pos.pos_tables
+pos.pos_zones
+```
+
+##### 16. `public`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_SHARED_STANDARD_CONTAINER`;
+- huella: 185 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 61 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (185):**
+
+```text
+public.account_deletion_requests
+public.announcements
+public.app_config
+public.app_content_blocks
+public.app_navigation_items
+public.app_operation_policies
+public.app_permissions
+public.app_runtime_settings
+public.app_screen_registry
+public.app_update_policies
+public.apps
+public.area_kinds
+public.areas
+public.asistencia_logs
+public.asset_count_lines
+public.asset_count_sessions
+public.asset_documents
+public.asset_groups
+public.asset_items
+public.asset_maintenance_records
+public.asset_movements
+public.attendance_breaks
+public.attendance_logs
+public.attendance_policy
+public.attendance_shift_events
+public.attendance_sync_conflicts
+public.client_billing_profiles
+public.client_push_tokens
+public.context_simulation_sessions
+public.cost_centers
+public.document_types
+public.documents
+public.employee_area_purpose_assignments
+public.employee_areas
+public.employee_devices
+public.employee_inventory_location_assignments
+public.employee_permissions
+public.employee_push_tokens
+public.employee_settings
+public.employee_shifts
+public.employee_site_operational_profiles
+public.employee_sites
+public.employee_wallet_cards
+public.employees
+public.gift_recipient_events
+public.gift_recipients
+public.internal_job_secrets
+public.internal_pos_document_lines
+public.internal_pos_document_sequences
+public.internal_pos_documents
+public.internal_price_list_items
+public.internal_price_lists
+public.internal_transfer_variances
+public.inventory_cost_policies
+public.inventory_count_line_entries
+public.inventory_count_lines
+public.inventory_count_sessions
+public.inventory_entries
+public.inventory_entry_corrections
+public.inventory_entry_items
+public.inventory_form_drafts
+public.inventory_location_positions
+public.inventory_location_product_catalog
+public.inventory_locations
+public.inventory_lpn_items
+public.inventory_lpns
+public.inventory_movement_types
+public.inventory_movements
+public.inventory_stock_by_location
+public.inventory_stock_by_position
+public.inventory_stock_by_site
+public.inventory_stock_by_uom_profile
+public.inventory_transfer_items
+public.inventory_transfers
+public.inventory_unit_aliases
+public.inventory_units
+public.loyalty_external_sales
+public.numera_cost_center_budgets
+public.numera_expense_categories
+public.numera_expenses
+public.numera_periods
+public.operational_role_permissions
+public.operational_roles
+public.order_billing_requests
+public.order_conversations
+public.order_delivery_sessions
+public.order_gift_details
+public.order_item_options
+public.order_items
+public.order_messages
+public.order_status_events
+public.orders
+public.printing_label_templates
+public.procurement_agreed_prices
+public.procurement_reception_items
+public.procurement_receptions
+public.procurement_supplier_product_costs
+public.product_asset_maintenance_events
+public.product_asset_profiles
+public.product_asset_transfer_events
+public.product_categories
+public.product_categories_backup_20260316_preparaciones
+public.product_configuration_batches
+public.product_cost_events
+public.product_fulfillment_routes
+public.product_images
+public.product_inventory_profiles
+public.product_master_review_requests
+public.product_request_policies
+public.product_request_policy_presentations
+public.product_site_area_remission_categories
+public.product_site_production_routes
+public.product_site_settings
+public.product_sku_aliases
+public.product_sku_sequences
+public.product_suppliers
+public.product_uom_profiles
+public.production_batch_consumptions
+public.production_batch_outputs
+public.production_batch_packages
+public.production_batches
+public.production_request_items
+public.production_requests
+public.products
+public.pulso_daily_sales_import_batches
+public.pulso_daily_sales_import_rows
+public.pulso_external_sales_item_mappings
+public.pulso_sales_consumption_rules
+public.pulso_sales_inventory_postings
+public.purchase_order_items
+public.purchase_orders
+public.recipe_cards
+public.recipe_outputs
+public.recipe_site_uses
+public.recipe_steps
+public.recipes
+public.remission_dispatch_runs
+public.remission_exceptions
+public.remission_product_categories
+public.remission_receipt_items
+public.remission_receipts
+public.remission_shipment_items
+public.remission_shipments
+public.required_document_rules
+public.restock_item_fulfillments
+public.restock_request_item_picks
+public.restock_request_items
+public.restock_requests
+public.role_capabilities
+public.role_permissions
+public.role_site_type_rules
+public.roles
+public.shared_device_actor_signatures
+public.shared_operational_device_actor_policies
+public.shared_operational_device_actor_sessions
+public.shared_operational_device_apps
+public.shared_operational_device_events
+public.shared_operational_device_template_actor_policies
+public.shared_operational_device_template_apps
+public.shared_operational_device_templates
+public.shared_operational_devices
+public.shift_policy
+public.shift_runtime_events
+public.site_area_purpose_rules
+public.site_attendance_policy
+public.site_operational_capabilities
+public.site_operational_roles
+public.site_production_pick_order
+public.site_purpose_settings
+public.site_supply_routes
+public.sites
+public.staff_invitations
+public.staff_manual_calendar_events
+public.staff_schedule_hidden_employees
+public.staging_insumos_import
+public.suppliers
+public.support_messages
+public.support_ticket_reads
+public.support_tickets
+public.user_feedback
+public.users
+public.wallet_devices
+public.wallet_passes
+public.website_blocks
+public.website_items
+```
+
+**Vistas (61):**
+
+```text
+public.catalog_item_customization_template_assignments
+public.catalog_item_customization_template_groups
+public.catalog_item_customization_templates
+public.catalog_item_option_consumption_rules
+public.catalog_item_option_groups
+public.catalog_item_option_recipe_effects
+public.catalog_item_options
+public.catalog_item_presentation
+public.catalog_items
+public.catalog_option_visual_assets
+public.commercial_categories
+public.commercial_collection_categories
+public.commercial_collections
+public.employee_attendance_status
+public.loyalty_redemptions
+public.loyalty_rewards
+public.loyalty_transactions
+public.numera_cost_center_monthly_summary
+public.operational_sites
+public.pass_delivery_distance_rates
+public.pass_satellites
+public.permission_catalog_human_v1
+public.pos_cash_movements
+public.pos_cash_shifts
+public.pos_modifier_options
+public.pos_modifiers
+public.pos_order_item_modifiers
+public.pos_payments
+public.pos_product_modifiers
+public.pos_session_orders
+public.pos_sessions
+public.pos_table_call_devices
+public.pos_table_service_calls
+public.pos_tables
+public.pos_zones
+public.product_request_policy_audit
+public.product_request_policy_audit_summary
+public.product_request_policy_usage
+public.pulso_sales_import_rows_pending_consumption
+public.sell_products_by_site
+public.shared_operational_device_actor_policies_admin_v1
+public.shared_operational_device_templates_admin_v1
+public.shared_operational_devices_admin_v1
+public.shift_calendar_view
+public.user_favorites
+public.v_asset_count_session_summary
+public.v_asset_groups_inventory_status
+public.v_asset_items_inventory_status
+public.v_inventory_catalog
+public.v_inventory_stock_by_location
+public.v_ops_restock_product_gaps
+public.v_ops_site_readiness
+public.v_procurement_price_book
+public.v_site_area_operational_diagnostics
+public.v_site_production_route_diagnostics
+public.vento_operational_roles_v1
+public.vento_site_operational_role_matrix_v1
+public.viso_employee_site_operational_profiles
+public.viso_operational_checkin_points
+public.viso_operational_sites
+public.viso_site_operational_roles
+```
+
+##### 17. `realtime`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_PRODUCT_MANAGED`;
+- huella: 2 tablas ordinarias, 1 tablas particionadas, 7 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (2):**
+
+```text
+realtime.schema_migrations
+realtime.subscription
+```
+
+**Tablas particionadas (1):**
+
+```text
+realtime.messages
+```
+
+**Particiones hijas (7):**
+
+```text
+realtime.messages_2026_07_26
+realtime.messages_2026_07_27
+realtime.messages_2026_07_28
+realtime.messages_2026_07_29
+realtime.messages_2026_07_30
+realtime.messages_2026_07_31
+realtime.messages_2026_08_01
+```
+
+##### 18. `storage`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_PRODUCT_MANAGED`;
+- huella: 8 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (8):**
+
+```text
+storage.buckets
+storage.buckets_analytics
+storage.buckets_vectors
+storage.migrations
+storage.objects
+storage.s3_multipart_uploads
+storage.s3_multipart_uploads_parts
+storage.vector_indexes
+```
+
+##### 19. `supabase_migrations`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_CLI_MANAGED`;
+- huella: 1 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (1):**
+
+```text
+supabase_migrations.schema_migrations
+```
+
+##### 20. `talento`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 13 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (13):**
+
+```text
+talento.application_events
+talento.application_requirements
+talento.application_stage_history
+talento.applications
+talento.candidate_documents
+talento.candidate_employee_links
+talento.candidate_profiles
+talento.candidates
+talento.interviews
+talento.medical_evaluations
+talento.offers
+talento.preboarding_tasks
+talento.vacancies
+```
+
+##### 21. `vault`
+
+- clasificación vigente: `ADMINISTRADO_SUPABASE_POSTGRES` / `SUPABASE_EXTENSION_MANAGED`;
+- huella: 1 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 1 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (1):**
+
+```text
+vault.secrets
+```
+
+**Vistas (1):**
+
+```text
+vault.decrypted_secrets
+```
+
+##### 22. `viso`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 12 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (12):**
+
+```text
+viso.demand_forecasts
+viso.demand_history_hourly
+viso.employee_availability
+viso.employee_planning_limits
+viso.employee_shift_preferences
+viso.role_concurrency_limits
+viso.shift_generation_candidate_items
+viso.shift_generation_candidates
+viso.shift_generation_runs
+viso.site_operational_roles
+viso.site_planning_rules
+viso.site_staffing_requirements
+```
+
+##### 23. `vital`
+
+- clasificación vigente: `GOBERNADO_VENTO` / `VENTO_DOMAIN_SCHEMA`;
+- huella: 54 tablas ordinarias, 0 tablas particionadas, 0 particiones hijas, 0 vistas y 0 vistas materializadas;
+
+**Tablas ordinarias (54):**
+
+```text
+vital.academy_staff_assignments
+vital.adaptive_decision_logs
+vital.admin_users
+vital.ai_decision_logs
+vital.ai_plan_proposals
+vital.availability_profiles
+vital.badges
+vital.body_metrics
+vital.challenge_progress
+vital.challenges
+vital.consent_records
+vital.daily_nutrition_logs_v1
+vital.daily_readiness_inputs
+vital.fair_play_events
+vital.fatigue_scores
+vital.feature_flags
+vital.football_preset_catalog
+vital.game_profiles
+vital.goal_profiles
+vital.health_profiles
+vital.league_memberships
+vital.level_states
+vital.module_catalog
+vital.module_goal_weights_v1
+vital.module_interference_rules
+vital.module_template_catalog
+vital.muscle_load_snapshots
+vital.notification_plans
+vital.program_versions
+vital.programs
+vital.readiness_scores
+vital.recovery_signals
+vital.safety_intake
+vital.seasons
+vital.session_logs
+vital.sport_module_template_catalog
+vital.sport_objective_blend_rules
+vital.sports_profiles
+vital.squad_memberships
+vital.squads
+vital.starter_program_catalog
+vital.starter_program_tasks
+vital.task_instances
+vital.task_templates
+vital.telemetry_events
+vital.user_badges
+vital.user_cycle_states
+vital.user_feature_flags
+vital.user_module_preferences
+vital.user_nutrition_profiles_v1
+vital.user_profiles
+vital.weekly_leaderboard_snapshots
+vital.weekly_reviews
+vital.xp_events
+```
+
+#### 14. Hallazgos y resolución documental
+
+| Hallazgo                                                                            | Riesgo                                                              | Tarea responsable de resolverlo                                                                   |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| el conteo anterior de 431 tablas mezclaba tablas ordinarias con 7 particiones hijas | doble conteo o interpretación incorrecta de capacidad               | `SUPA-AUD-004` deja la semántica corregida; `SUPA-AUD-020` usará esta separación para rendimiento |
+| `public` concentra 185 tablas y 61 vistas                                           | frontera compartida sobredimensionada o dominios mezclados          | `SUPA-AUD-022`, `SUPA-ARC-004`, `SUPA-ARC-005` y `SUPA-TRANS-001`                                 |
+| 12 objetos tabulares Vento no tienen RLS observado                                  | acceso no evaluado o falsa alarma por ignorar grants y aislamiento  | `SUPA-AUD-009`                                                                                    |
+| 4 vistas Vento no tienen `security_invoker=true`                                    | ejecución con privilegios del owner sin evaluación contextual       | `SUPA-AUD-009` y `SUPA-AUD-016`                                                                   |
+| `net` contiene 2 tablas `UNLOGGED`                                                  | pérdida aceptada o no comprendida ante crash                        | `SUPA-AUD-014`, `SUPA-AUD-015` y `SUPA-AUD-020`                                                   |
+| las particiones `realtime.messages_*` cambian con el tiempo                         | drift normal del servicio confundido con cambio manual              | `SUPA-AUD-013`, `SUPA-AUD-016`, `SUPA-AUD-017` y `SUPA-AUD-020`                                   |
+| 207 relaciones tienen comentario y 433 no                                           | contexto insuficiente o confianza excesiva en comentarios parciales | `SUPA-AUD-022` y `SUPA-ARC-001`                                                                   |
+| no existen vistas materializadas                                                    | ausencia no protegida frente a aparición no gobernada               | `SUPA-AUD-017` y `SUPA-AUD-020`                                                                   |
+
+No queda un hallazgo diferido sin tarea responsable.
+
+#### 15. Decisiones que esta tarea no toma
+
+Queda prohibido usar este inventario, por sí solo, para:
+
+1. declarar un objeto legacy o duplicado;
+2. asignar dominio o aplicación propietaria;
+3. aprobar o rechazar RLS, grants u owners;
+4. inferir exposición Data API;
+5. mover objetos entre esquemas;
+6. eliminar tablas, vistas o particiones;
+7. definir claves, constraints, índices o retención;
+8. concluir que una vista con `security_invoker=false` es insegura sin contexto;
+9. concluir que una tabla sin RLS es accesible por roles cliente;
+10. tratar tamaño o `reltuples` como conteo exacto de filas.
+
+#### 16. Requisitos de prueba derivados
+
+```text
+TREQ-SUPABASE-050 a TREQ-SUPABASE-061
+```
+
+Los requisitos protegen:
+
+- cobertura individual de las 640 relaciones;
+- tipificación correcta de tablas y particiones;
+- representación de los 23 esquemas, incluidos los vacíos;
+- jerarquía y bounds de partición;
+- metadatos técnicos mínimos;
+- persistencia `UNLOGGED` explícita;
+- separación entre observación RLS y decisión de seguridad;
+- opciones `security_invoker` y `security_barrier`;
+- ausencia explícita de vistas materializadas;
+- reconciliación por gobierno estructural;
+- procedencia del corte;
+- huellas deterministas y detección de drift.
+
+El detalle completo queda incorporado en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 17. Invariantes y huellas
+
+```text
+SCHEMAS_NO_EFIMEROS = 23
+RELATIONS_TOTAL = 640
+ORDINARY_TABLES = 424
+PARTITIONED_TABLES = 1
+PARTITION_CHILDREN = 7
+RELKIND_R_TOTAL = 431
+VIEWS = 208
+MATERIALIZED_VIEWS = 0
+PERMANENT_RELATIONS = 638
+UNLOGGED_RELATIONS = 2
+TEMPORARY_RELATIONS = 0
+VENTO_GOVERNED_RELATIONS = 379
+MANAGED_RELATIONS = 261
+UNCLASSIFIED_RELATIONS = 0
+```
+
+```text
+RELATION_NAME_REGISTRY_SHA256 = 6acfebdf063f483af03a60d88b9c14e0d95b3eab0e5fbd91e5de525c08937f63
+SCHEMA_RELATION_COUNT_MATRIX_SHA256 = 797f86e828a076c19244937431adb1cb854e09ef312dd024df9ad0195e2bbbec
+PARTITION_HIERARCHY_SHA256 = ee48c126781ed4e2bf1c137b45c2eac063c135d833bf63dd991f5f926ae506c1
+RELATION_INVENTORY_SUMMARY_SHA256 = 201b7b51535a773fa9e33a0e94b5e1dab0ad1d97d487e45cb37916f147caa116
+```
+
+Las huellas se calculan sobre registros ordenados y normalizados. Un nombre nuevo, eliminado, reclasificado o reordenado cambia la evidencia y exige revalidación.
+
 ### [ ] SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
 ### [ ] SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
 ### [ ] SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
