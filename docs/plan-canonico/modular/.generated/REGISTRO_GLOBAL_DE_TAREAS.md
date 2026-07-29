@@ -10,18 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **381** |
+| Aprobadas | **382** |
 | En propuesta | **0** |
-| No iniciadas | **1194** |
+| No iniciadas | **1193** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.19% (381/1575)** |
+| Porcentaje de completamiento | **24.25% (382/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato | ✅ APROBADA |
-| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
+| Última aprobada | `SUPA-AUD-001` — Inventariar todos los esquemas existentes | ✅ APROBADA |
+| Tarea actual | `SUPA-AUD-002` — Clasificar esquemas administrados por Supabase y esquemas de Vento | ⬜ NO INICIADA |
+| Siguiente | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -371,7 +372,7 @@
 | ✅ APROBADA | `OPS-CAN-001` | Diseñar la arquitectura objetivo de canales corporativos y comerciales | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
 | ✅ APROBADA | `OPS-LOG-001` | Diseñar el proceso transversal objetivo de Bodega y Abastecimiento | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
 | ✅ APROBADA | `OPS-B2B-001` | Diseñar el proceso objetivo de venta B2B del Centro de Producción | `bloques/E2_PROCESOS_Y_EXPERIENCIA/10_PROCESOS_TRANSVERSALES_DERIVADOS.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-001` | Inventariar todos los esquemas existentes | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-002` | Clasificar esquemas administrados por Supabase y esquemas de Vento | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-003` | Identificar esquemas expuestos mediante Data API | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `SUPA-AUD-004` | Inventariar tablas, particiones, vistas y vistas materializadas | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |

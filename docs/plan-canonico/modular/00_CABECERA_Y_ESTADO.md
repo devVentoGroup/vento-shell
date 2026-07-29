@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **381** |
+| Tareas aprobadas | **382** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1194** |
+| Tareas no iniciadas | **1193** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.19% (381/1575)** |
+| Porcentaje de completamiento | **24.25% (382/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-APP-010 — Evitar escrituras cruzadas sin contrato** |
-| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Bloque actual | **BLOQUE X — Integraciones empresariales internas y externas** |
-| Progreso del bloque | **BLOQUE X: 10 de 10 aprobadas; secuencia documental completa** |
+| Última tarea aprobada | **SUPA-AUD-001 — Inventariar todos los esquemas existentes** |
+| Tarea actual | **SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API** |
+| Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
+| Progreso del bloque | **BLOQUE E3: 1 de 24 aprobadas; SUPA-AUD-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-APP-010` — Evitar escrituras cruzadas sin contrato |
-| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | NINGUNA — SECUENCIA DOCUMENTAL COMPLETA |
+| Última aprobada | `SUPA-AUD-001` — Inventariar todos los esquemas existentes |
+| Tarea actual | `SUPA-AUD-002` — Clasificar esquemas administrados por Supabase y esquemas de Vento — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-003` — Identificar esquemas expuestos mediante Data API |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE X | **10 DE 10 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
+| BLOQUE E3 | **1 DE 24 APROBADAS — ACTUAL SUPA-AUD-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,10 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-APP-010 — Evitar escrituras cruzadas sin contrato
+SUPA-AUD-001 — Inventariar todos los esquemas existentes
         ↓
-SECUENCIA DOCUMENTAL COMPLETA
+TAREA ACTUAL
+SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 10 de 10 tareas aprobadas
+BLOQUE E3 — 1 de 24 tareas aprobadas
 ```

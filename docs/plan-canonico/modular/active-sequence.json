@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "sequence_id": "X-DOCUMENTAL-001",
-  "block_code": "BLOQUE X",
-  "block_title": "Integraciones empresariales internas y externas",
-  "previous_task_id": "AUTH-UI-029",
+  "sequence_id": "E3-SUPABASE-AUDIT-001",
+  "block_code": "BLOQUE E3",
+  "block_title": "Arquitectura canónica de datos y gobierno integral de Supabase",
+  "previous_task_id": "INT-APP-010",
   "segments": [
     {
-      "prefix": "INT-APP",
+      "prefix": "SUPA-AUD",
       "from": 1,
-      "to": 10
+      "to": 24
     }
   ]
 }
