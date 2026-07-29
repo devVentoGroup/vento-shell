@@ -3954,5 +3954,652 @@ INT-APP-009 — Definir manejo de errores parciales
 APROBADA
 
 
-### [ ] INT-APP-009 — Definir manejo de errores parciales
+### ✅ INT-APP-009 — Definir manejo de errores parciales
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE X — Integraciones empresariales internas y externas
+**Marcador exacto que reemplaza:** `### [ ] INT-APP-009 — Definir manejo de errores parciales`
+**Tarea anterior:** `INT-APP-008 — Definir estados pendientes de sincronización` — APROBADA
+**Siguiente tarea:** `INT-APP-010 — Evitar escrituras cruzadas sin contrato`
+**Línea base remota obligatoria:** `devVentoGroup/vento-shell@8ecac3a8b38e4f6ed73a995d8254158d80acb482`
+**Tipo de tarea:** definición documental transversal de detección, clasificación, aislamiento, cuarentena, dead-letter, intervención, conciliación y cierre de errores parciales; sin implementación, tablas, colas, workers, Supabase, reprocesos, piloto ni despliegue
+
+#### 1. Objetivo
+
+Definir un contrato único y cerrado para tratar operaciones, entregas, consumidores, lotes, integraciones externas, sincronizaciones o evidencias que no terminan de manera completamente uniforme, de modo que cada efecto confirmado, rechazado, bloqueado, conflictivo o desconocido permanezca visible, atribuible y resoluble sin declarar éxito global falso, repetir efectos ya ocurridos ni borrar la evidencia del fallo.
+
+```text
+OPERACIÓN DISTRIBUIDA O LOTE
+        ↓
+IDENTIFICAR UNIDADES Y EFECTOS ESPERADOS
+        ↓
+CLASIFICAR CADA RESULTADO REAL
+        ↓
+SEPARAR CONFIRMADO / RECHAZADO / BLOQUEADO / DESCONOCIDO
+        ↓
+RETRY SEGURO / ESPERA / CUARENTENA / DEAD-LETTER / INTERVENCIÓN
+        ↓
+CONCILIACIÓN + CORRECCIÓN O COMPENSACIÓN + CIERRE TRAZABLE
+```
+
+Regla central:
+
+```text
+ALGUNOS PASOS EXITOSOS
+≠
+OPERACIÓN COMPLETAMENTE EXITOSA
+
+FALLO TÉCNICO
+≠
+AUSENCIA DEMOSTRADA DE EFECTO
+
+DEAD-LETTER
+≠
+RESULTADO EMPRESARIAL TERMINAL
+```
+
+#### 2. Fuentes de verdad congeladas
+
+| Fuente                                                      | Revisión o blob                            | Responsabilidad                                                                  |
+| ----------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
+| `vento-shell`                                               | `8ecac3a8b38e4f6ed73a995d8254158d80acb482` | remoto vigente con `INT-APP-008` y 04A integrados; continuidad en `INT-APP-009`  |
+| `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`          | `1dbbd74b08d511a9ba94dc6384188399274a20fc` | contratos `INT-APP-001` a `INT-APP-008` y marcador de esta tarea                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`          | `6d276b2a62d70263da69200b9e19b8c00f0be1f8` | línea base de 4.248 requisitos hasta `TREQ-INTEGRATION-257`                      |
+| `INT-APP-005` / `ENTERPRISE-EVENT-RETRY-POLICY-001`         | integrado en el remoto                     | doce clases de error, agotamiento, intervención y candidato a dead-letter        |
+| `INT-APP-006` / `ENTERPRISE-EVENT-COMPENSATION-POLICY-001`  | integrado en el remoto                     | efectos confirmados, parcialidad, residuales y compensación por propietaria      |
+| `INT-APP-007` / `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001`   | integrado en el remoto                     | evidencia inmutable de clasificación, intento, decisión, corrección y brecha     |
+| `INT-APP-008` / `ENTERPRISE-SYNC-PENDING-STATE-MACHINE-001` | integrado en el remoto                     | catorce estados, resultado desconocido, conflicto, conciliación y terminalidad   |
+| `UX-BASE-013` / `UX-CONNECTIVITY-DEGRADATION-CONTRACT-001`  | `24a0118bc968af300d8e3541d0665557b76f1d40` | operación degradada, colas, conflictos, evidencia, reconexión y mensajes humanos |
+| `CODE-AUD-018`                                              | `2234bc064cc91e766e4e550fc8c3801d669ec894` | brechas reales de offline, reintentos, concurrencia, atomicidad e idempotencia   |
+
+#### 3. Artefacto producido
+
+```text
+ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001@1.0.0
+```
+
+| Propiedad                       | Valor                                          | Regla                                             |
+| ------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| `policy_id`                     | `ENTERPRISE-PARTIAL-ERROR-HANDLING-POLICY-001` | identidad estable del contrato transversal        |
+| `policy_version`                | `1.0.0`                                        | primera definición cerrada                        |
+| `policy_status`                 | `DEFINED`                                      | contrato documental; no prueba implementación     |
+| `covered_processes`             | **69**                                         | `VPROC-0001` a `VPROC-0069`                       |
+| `normal_event_definitions`      | **395**                                        | catálogo de `INT-APP-001`                         |
+| `event_consumer_relations`      | **2.020**                                      | relaciones de `INT-APP-003`                       |
+| `inherited_sync_states`         | **14**                                         | máquina de `INT-APP-008` sin renombre             |
+| `inherited_sync_transitions`    | **46**                                         | matriz de `INT-APP-008` sin alteración            |
+| `inherited_retry_profiles`      | **8**                                          | perfiles de `INT-APP-005` sin alteración          |
+| `inherited_retry_error_classes` | **12**                                         | taxonomía de `INT-APP-005` sin renombre           |
+| `failure_scopes`                | **8**                                          | fronteras donde se clasifica el fallo             |
+| `partiality_classes`            | **9**                                          | formas cerradas de parcialidad o incertidumbre    |
+| `dispositions`                  | **12**                                         | tratamientos permitidos                           |
+| `quarantine_reasons`            | **8**                                          | causas cerradas de aislamiento                    |
+| `dead_letter_gates`             | **7**                                          | condiciones acumulativas de elegibilidad          |
+| `manual_actions`                | **10**                                         | acciones humanas permitidas y auditables          |
+| `closure_outcomes`              | **8**                                          | cierres explícitos; no existe cierre desconocido  |
+| `transport_guarantee`           | `AT_LEAST_ONCE`                                | redelivery y pérdida de respuesta siguen posibles |
+| `aura_runtime_status`           | `DEFINED_DEFERRED`                             | contrato definido sin operación activa            |
+
+#### 4. Principios normativos
+
+1. El resultado se clasifica por unidad, efecto, consumidora o elemento; nunca solo por el resumen global.
+2. Un fallo técnico no demuestra que el efecto empresarial no ocurrió.
+3. Un efecto confirmado no se deshace, repite ni oculta porque otro efecto haya fallado.
+4. `REJECTED_TERMINAL` solo representa ausencia demostrada de efecto para esa unidad exacta.
+5. `RESULT_UNKNOWN` y `RECONCILIATION_REQUIRED` no pueden cerrarse como fracaso seguro.
+6. Retry, cuarentena, dead-letter, intervención, conciliación y compensación son conceptos distintos.
+7. Cuarentena y dead-letter son disposiciones operativas; no sustituyen el estado empresarial.
+8. Un lote conserva resultados individuales y puede continuar únicamente con unidades independientes.
+9. Ninguna corrección manual se realiza editando silenciosamente una fuente de verdad.
+10. Todo pendiente tiene propietaria, responsable, siguiente acción, vencimiento o condición de reactivación.
+11. Una operación no puede cerrarse mientras exista efecto desconocido o residual sin dueño.
+12. La interfaz no reduce una parcialidad a `Error`, `Falló` o `Listo` sin explicar qué ocurrió.
+13. El aislamiento no autoriza exposición de payload sensible ni traslado a una cola menos protegida.
+14. Esta tarea define semántica y gobierno; no selecciona broker, cola, almacenamiento ni herramienta.
+
+#### 5. Dimensiones ortogonales obligatorias
+
+| Dimensión        | Pregunta que responde                                         | Fuente o regla                       |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------ |
+| alcance de fallo | ¿En qué frontera ocurrió el problema?                         | ocho alcances de esta tarea          |
+| parcialidad      | ¿Qué proporción y certeza tienen los efectos?                 | nueve clases cerradas                |
+| sincronización   | ¿Dónde está la intención respecto del resultado autoritativo? | catorce estados de `INT-APP-008`     |
+| retry            | ¿Es seguro repetir la misma operación?                        | `INT-APP-005`                        |
+| reversibilidad   | ¿Qué efecto confirmado admite corrección o compensación?      | `INT-APP-006`                        |
+| confianza        | ¿El contenido puede seguir siendo procesado?                  | cuarentena y controles de integridad |
+| intervención     | ¿Qué decisión humana exacta falta?                            | diez acciones permitidas             |
+| cierre           | ¿Qué resultado verificable terminó el caso?                   | ocho outcomes cerrados               |
+
+Prohibiciones:
+
+- `EXHAUSTED` no implica `DEAD_LETTER_CANDIDATE` sin cumplir sus puertas;
+- `QUARANTINE` no implica que el efecto no ocurrió;
+- `ACKNOWLEDGED` de una unidad no confirma las demás;
+- `REJECTED_TERMINAL` de una consumidora no revierte el evento propietario;
+- `RESOLVED_WITH_ACCEPTED_RESIDUAL` no elimina el residual ni su dueño;
+- `RESOLVED` nunca se infiere por antigüedad, ocultamiento o eliminación de la fila.
+
+#### 6. Alcances cerrados de fallo
+
+| Alcance               |
+| --------------------- |
+| `REQUEST_OR_COMMAND`  |
+| `OWNER_TRANSACTION`   |
+| `EVENT_EMISSION`      |
+| `DELIVERY`            |
+| `CONSUMER_EFFECT`     |
+| `BATCH_OR_BULK_ITEM`  |
+| `EXTERNAL_EXCHANGE`   |
+| `OFFLINE_OR_EVIDENCE` |
+
+| Alcance               | Unidad mínima de clasificación                             |
+| --------------------- | ---------------------------------------------------------- |
+| `REQUEST_OR_COMMAND`  | una intención idempotente y su aceptación propietaria      |
+| `OWNER_TRANSACTION`   | cada efecto indivisible dentro de la frontera propietaria  |
+| `EVENT_EMISSION`      | registro del evento y publicación de la emisión concreta   |
+| `DELIVERY`            | una relación evento-consumidora y su entrega independiente |
+| `CONSUMER_EFFECT`     | un efecto propio de una consumidora después del claim      |
+| `BATCH_OR_BULK_ITEM`  | cada elemento y dependencia del lote o acción masiva       |
+| `EXTERNAL_EXCHANGE`   | solicitud, receipt y efecto confirmado por el tercero      |
+| `OFFLINE_OR_EVIDENCE` | operación local, archivo, periférico o soporte asociado    |
+
+Una ocurrencia puede involucrar varios alcances, pero cada registro de parcialidad deberá identificar uno como origen y enlazar los demás sin fusionar identidades.
+
+#### 7. Clases cerradas de parcialidad
+
+| Clase                             | Significado mínimo                                                                |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `NO_EFFECT_CONFIRMED`             | ninguna unidad posee efecto empresarial confirmado y el no-efecto está demostrado |
+| `SOME_EFFECTS_CONFIRMED`          | al menos un efecto ocurrió y al menos otro quedó rechazado, bloqueado o pendiente |
+| `SOME_EFFECTS_UNKNOWN`            | existen efectos conocidos y al menos uno cuyo resultado no puede determinarse     |
+| `ALL_EFFECTS_UNKNOWN`             | no puede confirmarse ni descartarse ningún efecto esperado                        |
+| `DEPENDENCY_INCOMPLETE`           | una unidad no puede avanzar porque falta un prerequisito real                     |
+| `CONFLICTING_RESULTS`             | fuentes autoritativas o efectos reportan resultados incompatibles                 |
+| `UNTRUSTED_OR_TAMPERED_INPUT`     | autenticidad, integridad o procedencia no son confiables                          |
+| `CONTRACT_OR_SCHEMA_INCOMPATIBLE` | versión, contrato o esquema impiden interpretar con seguridad                     |
+| `EXTERNAL_STATE_DIVERGENCE`       | el tercero y la fuente interna conservan estados materialmente distintos          |
+
+`SOME_EFFECTS_CONFIRMED`, `SOME_EFFECTS_UNKNOWN` y `ALL_EFFECTS_UNKNOWN` no podrán convertirse en `NO_EFFECT_CONFIRMED` por timeout, agotamiento o ausencia de logs.
+
+#### 8. Manifiesto obligatorio por unidad y efecto
+
+Toda operación distribuida o lote deberá poder resolver, cuando aplique:
+
+```text
+partial_error_id
++ operation_id
++ process_id
++ process_instance_id
++ owner_application
++ failure_scope
++ event_id / delivery_id / consumer_application
++ batch_id / item_id
++ effect_manifest_version
++ expected_effects[]
++ confirmed_effects[]
++ rejected_effects[]
++ blocked_effects[]
++ unknown_effects[]
++ conflicting_effects[]
++ partiality_class
++ sync_state
++ retry_error_class
++ disposition
++ quarantine_reason
++ dead_letter_gate_results[]
++ responsible_owner
++ next_action
++ due_at_or_reactivation_condition
++ authorization_reference
++ audit_reference
++ reconciliation_reference
++ compensation_reference
++ residual_obligations[]
++ closure_outcome
+```
+
+El manifiesto describe resultados; no duplica las fuentes propietarias. Cada efecto utiliza referencia estable, estado, certeza, momento y evidencia mínima.
+
+#### 9. Secuencia obligatoria de clasificación
+
+```text
+1. AISLAR LA UNIDAD EXACTA
+2. CONGELAR IDENTIDAD, HUELLA Y EVIDENCIA DISPONIBLE
+3. CONSULTAR PROPIETARIA, RECEIPTS Y RESULTADOS PREVIOS
+4. ENUMERAR EFECTOS ESPERADOS
+5. CLASIFICAR CADA EFECTO COMO CONFIRMADO, RECHAZADO, BLOQUEADO, CONFLICTIVO O DESCONOCIDO
+6. DETERMINAR DEPENDENCIAS Y UNIDADES INDEPENDIENTES
+7. EVALUAR RETRY, AUTORIDAD, CONTRATO Y REVERSIBILIDAD
+8. ELEGIR UNA DISPOSICIÓN PERMITIDA
+9. ASIGNAR PROPIETARIA, RESPONSABLE Y SIGUIENTE ACCIÓN
+10. AUDITAR LA DECISIÓN Y SU CIERRE
+```
+
+La clasificación falla cerrada cuando falta una unidad, efecto esperado, propietaria, identidad, evidencia o contrato necesario.
+
+#### 10. Disposiciones permitidas
+
+| Disposición                      | Condición principal                                                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------- |
+| `RETRY_SAME_OPERATION`           | está demostrado que repetir con la misma identidad es seguro                           |
+| `WAIT_FOR_DEPENDENCY`            | existe prerequisito real no terminal y una condición de reactivación                   |
+| `QUERY_AUTHORITATIVE_RESULT`     | el resultado puede recuperarse por clave, receipt o propietaria                        |
+| `RECONCILE`                      | deben compararse fuentes, efectos físicos, externos o financieros                      |
+| `QUARANTINE`                     | el elemento no puede permanecer en procesamiento normal por confianza o compatibilidad |
+| `DEAD_LETTER_CANDIDATE`          | la automatización terminó y se cumplen las siete puertas acumulativas                  |
+| `MANUAL_INTERVENTION_REQUIRED`   | falta una decisión humana concreta y autorizada                                        |
+| `PERMANENTLY_REJECT`             | no existe efecto confirmado y el contrato impide continuar                             |
+| `COMPENSATE_CONFIRMED_EFFECTS`   | hay efectos confirmados elegibles bajo `INT-APP-006`                                   |
+| `CREATE_CORRECTION_OR_SUCCESSOR` | el contenido debe cambiar sin reescribir la intención histórica                        |
+| `CONTINUE_INDEPENDENT_UNITS`     | otras unidades no dependen del fallo y conservan autorización                          |
+| `BLOCK_DEPENDENT_UNITS`          | continuar violaría causalidad, integridad, custodia o cierre                           |
+
+Una clasificación puede producir varias disposiciones complementarias por unidad, pero no dos acciones incompatibles sobre el mismo efecto.
+
+#### 11. Retry, agotamiento y rechazo
+
+- `RETRY_SAME_OPERATION` conserva operación, clave, huella, propietaria y contenido lógico;
+- un cambio material exige `CREATE_CORRECTION_OR_SUCCESSOR`;
+- `UNKNOWN_OUTCOME` exige `QUERY_AUTHORITATIVE_RESULT` o `RECONCILE` antes del retry;
+- agotar intentos permite evaluar intervención o dead-letter, pero no demuestra fracaso empresarial;
+- un error permanente solo termina `PERMANENTLY_REJECT` cuando no existe efecto confirmado ni incertidumbre;
+- una unidad fallida no reinicia presupuestos de unidades ya confirmadas;
+- el reproceso desde cuarentena o dead-letter no crea una clave nueva para la misma intención;
+- un retry manual requiere autorización, razón, alcance, evidencia y auditoría.
+
+#### 12. Resultado desconocido y parcialidad incierta
+
+```text
+TIMEOUT, PÉRDIDA DE RESPUESTA O INTERRUPCIÓN
+        ↓
+¿EXISTE POSIBILIDAD DE EFECTO?
+        ├── NO DEMOSTRADO → NO CLASIFICAR COMO RECHAZO
+        └── SÍ O INCIERTO → QUERY_AUTHORITATIVE_RESULT
+                                  ↓
+                 CONFIRMADO / NO APLICADO / TODAVÍA INDETERMINADO
+```
+
+- `SOME_EFFECTS_UNKNOWN` y `ALL_EFFECTS_UNKNOWN` bloquean acciones incompatibles;
+- no se repiten pagos, inventario, puntos, custodia, entrega, impresión, documento o notificación sin indagación;
+- si el no-efecto queda demostrado, la unidad puede volver a retry seguro;
+- si el efecto queda confirmado, se recupera el resultado y se evalúan efectos faltantes;
+- si continúa indeterminado, pasa a `RECONCILE` o intervención;
+- ningún caso puede cerrar con outcome `UNKNOWN`.
+
+#### 13. Dependencias, orden causal y continuidad segura
+
+1. Una unidad confirmada conserva su resultado aunque una dependiente falle.
+2. Una unidad independiente puede continuar mediante `CONTINUE_INDEPENDENT_UNITS`.
+3. Una unidad dependiente usa `BLOCK_DEPENDENT_UNITS` hasta que exista condición verificable.
+4. Un prerequisito permanentemente rechazado no se inventa ni se salta.
+5. Prioridad, urgencia o presión operativa no rompen causalidad.
+6. Un evento fuera de orden espera su versión o termina en conciliación; nunca sobrescribe.
+7. Un cambio de propietaria, área, actor o consumidor no se usa para eludir el bloqueo.
+8. Un cierre global requiere que cada unidad sea terminal o conserve una excepción abierta con dueño.
+
+#### 14. Lotes, acciones masivas y múltiples consumidoras
+
+- cada elemento de lote conserva identidad, estado, intentos, efecto y evidencia propios;
+- el resumen deriva de los elementos y no reemplaza sus resultados;
+- se muestran cantidades confirmadas, rechazadas, bloqueadas, desconocidas, en cuarentena y pendientes de intervención;
+- una consumidora exitosa no confirma ni cancela el presupuesto de otra;
+- una entrega fallida no recrea el evento propietario;
+- la atomicidad global solo existe cuando un contrato explícito la garantiza;
+- un lote parcialmente aplicado no se presenta como `completado con advertencias` sin residual, dueño y acción;
+- replay y backfill se autorizan y clasifican por elemento, no por el botón de lote.
+
+#### 15. Cuarentena
+
+Causas permitidas:
+
+| Razón de cuarentena                   |
+| ------------------------------------- |
+| `UNTRUSTED_SIGNATURE_OR_AUTHENTICITY` |
+| `SCHEMA_OR_VERSION_UNSUPPORTED`       |
+| `PAYLOAD_INTEGRITY_FAILED`            |
+| `IDENTITY_OR_ROUTING_AMBIGUOUS`       |
+| `SENSITIVITY_OR_POLICY_VIOLATION`     |
+| `REPEATED_POISON_MESSAGE`             |
+| `EVIDENCE_LINKAGE_INVALID`            |
+| `MANUAL_HOLD_FOR_INVESTIGATION`       |
+
+Reglas:
+
+1. Cuarentena retira el elemento del procesamiento ordinario sin cambiar su resultado empresarial.
+2. Conserva identidad, contenido original o referencia protegida, hash, procedencia, sensibilidad, intentos y evidencia.
+3. No se usa para red temporal, rate limit, espera normal de dependencia ni rechazo empresarial ordinario.
+4. Un elemento en cuarentena no se reprocesa automáticamente.
+5. Liberar exige resolver la causa, autorizar la acción y conservar versión o mapping aplicable.
+6. Si el contenido cambia materialmente, se crea una sucesora y la original permanece aislada.
+7. Acceso, exportación y revisión de cuarentena respetan finalidad, territorio y sensibilidad.
+8. Eliminar la fila para reducir un contador queda prohibido.
+
+#### 16. Candidato a dead-letter
+
+Puertas acumulativas:
+
+| Puerta                                               |
+| ---------------------------------------------------- |
+| `AUTOMATION_BUDGET_CLOSED`                           |
+| `ITEM_ISOLATED`                                      |
+| `IDENTITY_AND_CONTENT_PRESERVED`                     |
+| `BUSINESS_OUTCOME_CLASSIFIED_OR_RECONCILIATION_OPEN` |
+| `OWNER_AND_NEXT_ACTION_ASSIGNED`                     |
+| `REPROCESSING_REQUIRES_AUTHORIZATION`                |
+| `RETENTION_AND_AUDIT_DEFINED`                        |
+
+Diferencia normativa:
+
+```text
+CUARENTENA
+→ CONFIANZA, INTEGRIDAD O COMPATIBILIDAD IMPIDEN PROCESAR
+
+DEAD_LETTER_CANDIDATE
+→ LA AUTOMATIZACIÓN YA NO PUEDE CONTINUAR Y REQUIERE DISPOSICIÓN CONTROLADA
+```
+
+Reglas:
+
+- `DEAD_LETTER_CANDIDATE` no es un estado empresarial ni outcome de éxito o fracaso;
+- no puede utilizarse para ocultar `RESULT_UNKNOWN` sin conciliación abierta;
+- no autoriza reescribir payload, route, destinatario, importe, cantidad o efecto;
+- el reproceso reutiliza identidad si la intención no cambió;
+- una corrección material crea una sucesora;
+- cada candidato tiene propietaria, responsable, edad, prioridad, siguiente acción y política de retención;
+- borrar o archivar el elemento no cierra el caso ni sus residuales.
+
+#### 17. Intervención manual
+
+Acciones permitidas:
+
+| Acción manual                |
+| ---------------------------- |
+| `RETRY_AUTHORIZED`           |
+| `QUERY_RECEIPT`              |
+| `CORRECT_METADATA`           |
+| `CREATE_SUCCESSOR`           |
+| `RELINK_EVIDENCE`            |
+| `REPROCESS_FROM_QUARANTINE`  |
+| `REPROCESS_FROM_DEAD_LETTER` |
+| `PERMANENT_REJECT`           |
+| `START_RECONCILIATION`       |
+| `START_COMPENSATION`         |
+
+Toda intervención deberá registrar:
+
+```text
+actor autorizado
++ permiso y step-up cuando aplique
++ finalidad y motivo estructurado
++ unidad y efectos exactos
++ evidencia consultada
++ acción seleccionada
++ parámetros permitidos
++ resultado anterior y posterior
++ segregación requerida
++ audit_reference
++ residual y siguiente responsable
+```
+
+No se permite `editar la base`, `marcar como resuelto`, `forzar éxito` o `eliminar de la cola` como acciones genéricas. La interfaz solo ofrecerá acciones compatibles con la clasificación y la propietaria.
+
+#### 18. Conciliación y cierre
+
+La conciliación deberá comparar, según aplique:
+
+- fuente propietaria;
+- event, outbox, delivery e inbox;
+- idempotency result y receipts;
+- estado del proveedor externo;
+- movimientos físicos, financieros, de puntos o custodia;
+- evidencia y documentos;
+- observación local y contingencia manual;
+- auditoría y versiones.
+
+Outcomes de cierre permitidos:
+
+| Outcome de cierre                 |
+| --------------------------------- |
+| `RESOLVED_CONFIRMED`              |
+| `RESOLVED_NO_EFFECT`              |
+| `RESOLVED_DUPLICATE_PRIOR_RESULT` |
+| `RESOLVED_CORRECTED`              |
+| `RESOLVED_COMPENSATED`            |
+| `RESOLVED_WITH_ACCEPTED_RESIDUAL` |
+| `PERMANENTLY_REJECTED`            |
+| `SUPERSEDED_BY_SUCCESSOR`         |
+
+`RESOLVED_WITH_ACCEPTED_RESIDUAL` exige residual explícito, propietaria, responsable, riesgo, control compensatorio, autoridad y fecha. No existe `CLOSED_UNKNOWN`, `AUTO_RESOLVED_BY_AGE` ni `DISMISSED_WITHOUT_EVIDENCE`.
+
+#### 19. Corrección, sucesión y compensación
+
+| Situación                                                        | Tratamiento permitido                               |
+| ---------------------------------------------------------------- | --------------------------------------------------- |
+| no ocurrió ningún efecto y el contenido era inválido             | `PERMANENTLY_REJECT` o sucesora corregida           |
+| efecto confirmado correcto pero faltan efectos dependientes      | continuar, conciliar o intervenir por unidad        |
+| efecto confirmado incorrecto pero reversible                     | plan de `INT-APP-006`                               |
+| efecto confirmado irreversible                                   | corrección de representación, mitigación o residual |
+| metadata o evidencia relinkable sin cambiar intención            | acción manual autorizada y auditada                 |
+| cambio de cantidad, importe, recurso, destinatario o significado | nueva operación sucesora                            |
+
+Solo se compensan efectos confirmados. Nunca se compensa una mera posibilidad sin primero resolver la certeza, y nunca se corrige sobrescribiendo el hecho original.
+
+#### 20. Externos, offline, archivos y dispositivos compartidos
+
+- un receipt técnico externo no confirma el efecto económico, físico o comercial;
+- divergencia entre proveedor y fuente interna usa `EXTERNAL_STATE_DIVERGENCE`;
+- webhooks repetidos se deduplican antes de clasificar parcialidad;
+- una operación offline conserva actor, dispositivo, contexto, área, versión, identidad y evidencia originales;
+- cambiar de trabajador no transfiere pendientes, cuarentena ni decisiones;
+- una captura local revocada puede conservarse como evidencia, pero no obliga a ejecutar el efecto;
+- uploads y archivos se clasifican por elemento; `UPLOADED_UNLINKED` no satisface evidencia obligatoria;
+- un periférico puede fallar después del efecto empresarial y requiere receipt o conciliación independiente;
+- contingencias físicas se digitalizan y concilian sin inventar hora, actor ni resultado.
+
+#### 21. Presentación operativa, observabilidad y guardrails
+
+La interfaz deberá responder:
+
+```text
+QUÉ UNIDADES SE CONFIRMARON
+QUÉ UNIDADES NO SE APLICARON
+QUÉ RESULTADOS SIGUEN DESCONOCIDOS
+QUÉ SE CONSERVÓ
+QUÉ ESTÁ AISLADO
+QUIÉN DEBE ACTUAR
+QUÉ ACCIÓN ES SEGURA AHORA
+REFERENCIA DEL CASO
+```
+
+Mensajes como `Error parcial`, `Algo salió mal`, `Procesado con advertencias` o `Falló el lote` son insuficientes sin detalle progresivo.
+
+Métricas mínimas:
+
+- cantidad y edad por parciality class y disposición;
+- tiempo hasta clasificación, intervención y cierre;
+- unidades confirmadas, bloqueadas, desconocidas y rechazadas;
+- elementos en cuarentena y candidatos a dead-letter;
+- reintentos manuales y reprocesos;
+- duplicados evitados;
+- residuales abiertos y vencidos;
+- recurrencia por contrato, aplicación, proveedor y versión.
+
+Guardrails:
+
+```text
+EFECTO CONFIRMADO REPETIDO DURANTE RECUPERACIÓN = 0
+RESULTADO DESCONOCIDO CERRADO COMO RECHAZO = 0
+LOTE PARCIAL PRESENTADO COMO ÉXITO TOTAL = 0
+ELEMENTO BORRADO PARA CERRAR DEAD-LETTER = 0
+INTERVENCIÓN SIN ACTOR, MOTIVO Y AUDITORÍA = 0
+```
+
+Las métricas no se usarán para responsabilizar a trabajadores por red, latencia, fallas de proveedor o defectos del sistema.
+
+#### 22. Fronteras críticas
+
+##### 22.1. ORIGO → NEXO → NUMERA
+
+Orden, recepción física, ingreso de inventario, diferencia, obligación y pago son unidades separadas. Una recepción física confirmada con obligación fallida queda parcial; no se repite el ingreso ni se elimina la recepción.
+
+##### 22.2. FOGO → NEXO → PULSO
+
+Lote, consumos, calidad, entrada de terminado, disponibilidad, pedido y entrega conservan resultados propios. Un lote terminado con movimiento desconocido exige consulta o conciliación; no se vuelve a producir.
+
+##### 22.3. PULSO → PASS → NUMERA
+
+Venta, cobro, documento, puntos y hecho financiero no comparten outcome. Un cobro confirmado con puntos fallidos no repite el pago; un reembolso parcial conserva todas las obligaciones abiertas.
+
+##### 22.4. VISO → ANIMA → SHELL
+
+Programación, asistencia, vínculo, autorización, sesión y dispositivo se clasifican por propietaria. Corregir una marcación no restaura permisos ni oculta una revocación fallida.
+
+#### 23. AURA diferida y decisiones reservadas
+
+Las relaciones donde AURA sea productora o consumidora conservan clases, disposiciones y requisitos definidos, pero:
+
+- no crean cuarentenas, dead-letter, intervenciones ni reprocesos productivos;
+- no ejecutan conciliación o compensación automática;
+- no generan métricas operativas de backlog;
+- permanecen `DEFINED_DEFERRED` hasta cobertura, autorización, readiness y paquete E5 aprobados.
+
+| Decisión                                                                                   | Tarea propietaria                   |
+| ------------------------------------------------------------------------------------------ | ----------------------------------- |
+| prohibición física de escrituras cruzadas y comandos inversos                              | `INT-APP-010`                       |
+| tablas, outbox, inbox, quarantine store, dead-letter store, constraints, RLS y migraciones | BLOQUES E3 y R                      |
+| broker, topics, colas, workers, leases, scheduler, circuit breaker y observabilidad física | BLOQUE E4                           |
+| schemas, SDK, tipos, canonicalización, compatibilidad y redacción                          | BLOQUE H                            |
+| permisos finales de intervención y rutas administrativas                                   | BLOQUES D, I y roadmaps funcionales |
+| retención, legal hold, disposición y privacidad física                                     | BLOQUES AA y EVID                   |
+| implementación, inyección de fallos, pruebas E2E, piloto, cutover y hypercare              | BLOQUE E5                           |
+
+#### 24. Cambios no autorizados
+
+`INT-APP-009` no autoriza:
+
+- crear tablas, índices, constraints, funciones, triggers, RPC, RLS o migraciones;
+- implementar quarantine store, dead-letter queue, broker, topic, worker, scheduler, cron o panel operativo;
+- mover, reprocesar, rechazar, compensar o corregir operaciones reales;
+- editar payloads, estados, saldos, inventario, pagos, puntos, documentos o auditoría;
+- convertir una intervención en acceso directo a base de datos;
+- cambiar productoras, consumidoras, eventos, permisos, idempotencia, retries o compensaciones;
+- borrar elementos para reducir backlog, métricas o alertas;
+- tratar dead-letter como resultado empresarial;
+- activar AURA;
+- iniciar piloto, cutover, producción o hypercare;
+- escribir en GitHub.
+
+#### 25. Requisitos de prueba derivados
+
+```text
+TREQ-INTEGRATION-258 a TREQ-INTEGRATION-287
+```
+
+El detalle completo reside exclusivamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` regenerado con esta tarea.
+
+#### 26. Huellas de integridad
+
+```text
+PARTIAL_ERROR_SCOPE_REGISTRY_SHA256 = 2cf5b605bc6a2b5a839d91de1fe99d1cae39d0611819df9f3330a3a2b78da45d
+PARTIALITY_CLASS_REGISTRY_SHA256 = f23c9b7b5699b5f8cce81c46cd6e3f3059562caeaee9b2efa91c086d73b006c3
+ERROR_DISPOSITION_REGISTRY_SHA256 = af81fb3b802e1342a78b081e57e947d4c7c2b0552edcb609091b76b819161f84
+PARTIAL_ERROR_POLICY_SHA256 = 2a8f7b26a0e28c241ce383779c1d607ee4af59cb004efed8e1322d1fe408ceee
+REMOTE_COMMIT_SHA = 8ecac3a8b38e4f6ed73a995d8254158d80acb482
+REMOTE_X_BLOCK_BLOB_SHA1 = 1dbbd74b08d511a9ba94dc6384188399274a20fc
+REMOTE_04A_BASE_BLOB_SHA1 = 6d276b2a62d70263da69200b9e19b8c00f0be1f8
+UX_CONNECTIVITY_SOURCE_BLOB_SHA1 = 24a0118bc968af300d8e3541d0665557b76f1d40
+CODE_OFFLINE_AUDIT_SOURCE_BLOB_SHA1 = 2234bc064cc91e766e4e550fc8c3801d669ec894
+```
+
+#### 27. Criterios de aceptación
+
+- [x] `INT-APP-001` a `INT-APP-008` figuran aprobadas en el remoto.
+- [x] Se congelaron commit y blobs consumidos.
+- [x] Se preservaron los catorce estados, cuarenta y seis transiciones, ocho perfiles de retry y doce clases de error heredadas.
+- [x] Se definieron ocho alcances, nueve clases de parcialidad y doce disposiciones.
+- [x] Se definieron ocho razones de cuarentena y siete puertas acumulativas de dead-letter.
+- [x] Se definieron diez acciones manuales y ocho outcomes de cierre.
+- [x] Se exige clasificación por efecto, elemento, consumidora y unidad de lote.
+- [x] Se separaron retry, rechazo, resultado desconocido, cuarentena, dead-letter, intervención, conciliación y compensación.
+- [x] Se prohibió cerrar parcialidad o incertidumbre como éxito o fracaso global falso.
+- [x] Se definieron causalidad, unidades independientes, residuales y propiedad de resolución.
+- [x] Se cubrieron externos, offline, evidencias, periféricos y dispositivos compartidos.
+- [x] Se cubrieron las cuatro fronteras críticas.
+- [x] AURA permanece diferida.
+- [x] No se autorizó implementación ni efecto operativo.
+- [x] Se generaron 30 requisitos completos.
+
+#### 28. Validaciones documentales realizadas
+
+| Control                                      | Resultado                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| Commit remoto leído                          | `8ecac3a8b38e4f6ed73a995d8254158d80acb482`            |
+| Blob del mini-bloque X                       | `1dbbd74b08d511a9ba94dc6384188399274a20fc`            |
+| Blob 04A remoto base                         | `6d276b2a62d70263da69200b9e19b8c00f0be1f8`            |
+| Procesos cubiertos                           | **69**                                                |
+| Eventos normales cubiertos                   | **395**                                               |
+| Relaciones evento-consumidora                | **2.020**                                             |
+| Estados de sincronización heredados          | **14**                                                |
+| Transiciones de sincronización heredadas     | **46**                                                |
+| Perfiles de retry heredados                  | **8**                                                 |
+| Clases de error heredadas                    | **12**                                                |
+| Alcances de fallo                            | **8**                                                 |
+| Clases de parcialidad                        | **9**                                                 |
+| Disposiciones                                | **12**                                                |
+| Razones de cuarentena                        | **8**                                                 |
+| Puertas de dead-letter                       | **7**                                                 |
+| Acciones manuales                            | **10**                                                |
+| Outcomes de cierre                           | **8**                                                 |
+| Requisitos base                              | **4.248**                                             |
+| Requisitos nuevos                            | **30**                                                |
+| Total regenerado                             | **4.278**                                             |
+| Dominio INTEGRATION                          | **287 — TREQ-INTEGRATION-001 a TREQ-INTEGRATION-287** |
+| Filas con catorce columnas                   | **4.278 de 4.278**                                    |
+| Identificadores duplicados                   | **0**                                                 |
+| Relaciones TREQ no resolubles                | **0**                                                 |
+| Identificadores históricos preservados       | **4.248**                                             |
+| Valores históricos modificados               | **0**                                                 |
+| Código, Supabase o integraciones modificados | **no**                                                |
+
+#### 29. Validación real del repositorio
+
+```text
+VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE DE EJECUCIÓN LOCAL
+```
+
+Comandos requeridos desde la raíz de `vento-shell` después del reemplazo:
+
+```bash
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+#### 30. Instrucción de reemplazo
+
+1. Reemplazar exactamente `### [ ] INT-APP-009 — Definir manejo de errores parciales` por este documento completo.
+2. Reemplazar completamente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` por el archivo regenerado entregado con esta tarea.
+3. No copiar, fusionar ni insertar filas `TREQ-*` manualmente.
+4. No modificar derivados bajo `.generated/` para forzar continuidad.
+
+#### 31. Continuidad preparada
+
+```text
+ÚLTIMA TAREA APROBADA
+INT-APP-008 — Definir estados pendientes de sincronización
+        ↓
+TAREA ACTUAL
+INT-APP-009 — Definir manejo de errores parciales
+        ↓
+SIGUIENTE TAREA RESERVADA
+INT-APP-010 — Evitar escrituras cruzadas sin contrato
+```
+
+APROBADA
+
+
 ### [ ] INT-APP-010 — Evitar escrituras cruzadas sin contrato

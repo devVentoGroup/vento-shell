@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **379** |
+| Tareas aprobadas | **380** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1196** |
+| Tareas no iniciadas | **1195** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.06% (379/1575)** |
+| Porcentaje de completamiento | **24.13% (380/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-APP-008 — Definir estados pendientes de sincronización** |
-| Tarea actual | **INT-APP-009 — Definir manejo de errores parciales** |
+| Última tarea aprobada | **INT-APP-009 — Definir manejo de errores parciales** |
+| Tarea actual | **INT-APP-010 — Evitar escrituras cruzadas sin contrato** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-APP-010 — Evitar escrituras cruzadas sin contrato** |
+| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
 | Bloque actual | **BLOQUE X — Integraciones empresariales internas y externas** |
-| Progreso del bloque | **BLOQUE X: 8 de 10 aprobadas; INT-APP-009 pendiente** |
+| Progreso del bloque | **BLOQUE X: 9 de 10 aprobadas; INT-APP-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-APP-008` — Definir estados pendientes de sincronización |
-| Tarea actual | `INT-APP-009` — Definir manejo de errores parciales — **NO INICIADA** |
-| Siguiente tarea | `INT-APP-010` — Evitar escrituras cruzadas sin contrato |
+| Última aprobada | `INT-APP-009` — Definir manejo de errores parciales |
+| Tarea actual | `INT-APP-010` — Evitar escrituras cruzadas sin contrato — **NO INICIADA** |
+| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE X | **8 DE 10 APROBADAS — ACTUAL INT-APP-009** |
+| BLOQUE X | **9 DE 10 APROBADAS — ACTUAL INT-APP-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,11 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-APP-008 — Definir estados pendientes de sincronización
-        ↓
-TAREA ACTUAL
 INT-APP-009 — Definir manejo de errores parciales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-APP-010 — Evitar escrituras cruzadas sin contrato
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE X — 8 de 10 tareas aprobadas
+BLOQUE X — 9 de 10 tareas aprobadas
 ```
