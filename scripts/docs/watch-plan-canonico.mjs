@@ -39,6 +39,7 @@ let debounceTimer = null;
 let buildRunning = false;
 let buildPending = false;
 let buildSequence = 0;
+let changeVersion = 0;
 const pendingChanges = new Set();
 
 function normalizeRelativePath(filename) {
@@ -105,6 +106,7 @@ async function rebuild(reason) {
   buildRunning = true;
   buildPending = false;
   const buildId = ++buildSequence;
+  const buildVersion = changeVersion;
 
   console.log(
     `\n[PLAN CANÓNICO] ▶ Compilación #${buildId} iniciada (${reason}).`
@@ -113,13 +115,29 @@ async function rebuild(reason) {
   try {
     await runNodeScript(
       [safeBuildScript],
-      "Generando documento compilado..."
+      "Sincronizando cabecera, registro global, TREQ y documento compilado..."
     );
+
+    if (changeVersion !== buildVersion) {
+      console.log(
+        `[PLAN CANÓNICO] ↻ Compilación #${buildId}: hubo nuevos guardados durante la generación; `
+        + "se omite la validación intermedia y se procesará el lote más reciente."
+      );
+      return;
+    }
 
     await runNodeScript(
       [checkScript, "--check"],
       "Validando documento compilado..."
     );
+
+    if (changeVersion !== buildVersion) {
+      console.log(
+        `[PLAN CANÓNICO] ↻ Compilación #${buildId}: llegó un nuevo guardado durante la validación; `
+        + "el resultado final se confirmará con el siguiente lote."
+      );
+      return;
+    }
 
     console.log(
       `\n[PLAN CANÓNICO] ✅ Compilación #${buildId}: compilado actualizado y validado.`
@@ -146,6 +164,7 @@ async function rebuild(reason) {
 
 function scheduleRebuild(filename) {
   clearTimeout(debounceTimer);
+  changeVersion += 1;
   pendingChanges.add(normalizeRelativePath(filename));
 
   console.log(
