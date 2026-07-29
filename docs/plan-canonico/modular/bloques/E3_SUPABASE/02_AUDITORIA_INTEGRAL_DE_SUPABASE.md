@@ -2268,7 +2268,279 @@ RELATION_INVENTORY_SUMMARY_SHA256 = 201b7b51535a773fa9e33a0e94b5e1dab0ad1d97d487
 
 Las huellas se calculan sobre registros ordenados y normalizados. Un nombre nuevo, eliminado, reclasificado o reordenado cambia la evidencia y exige revalidación.
 
-### [ ] SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
+### ✅ SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
+
+**Estado:** APROBADA  
+**Fecha:** 2026-07-29  
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Tarea anterior:** `SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas` — APROBADA  
+**Tarea siguiente:** `SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas`  
+**Descripción:** Inventaría las claves primarias, claves foráneas, restricciones estructurales, columnas `NOT NULL`, tipos enum y secuencias observables en los 23 esquemas no efímeros, preservando su estado de validación, dependencias y gobierno sin aprobar todavía correcciones, rediseños ni migraciones.
+
+#### 1. Objetivo
+
+Crear una línea base reproducible de integridad estructural para las **432 relaciones tabulares** inventariadas en `SUPA-AUD-004`, junto con los tipos enum y secuencias de los 23 esquemas no efímeros.
+
+```text
+2.057 CONSTRAINTS
+= 422 PRIMARY KEY
++ 818 FOREIGN KEY
++ 155 UNIQUE
++ 662 CHECK
+
++ 3.187 COLUMNAS NOT NULL
++ 34 ENUMS / 150 VALORES
++ 7 SECUENCIAS
+```
+
+La tarea registra existencia, identidad, definición, validación y dependencia. No concluye que un constraint sea correcto por existir, que una tabla sin PK sea defectuosa por definición, ni que una FK entre esquemas apruebe esa dependencia como arquitectura objetivo.
+
+#### 2. Método de auditoría no mutante
+
+Se consultaron exclusivamente catálogos PostgreSQL mediante `SELECT`:
+
+- `pg_constraint` y `pg_get_constraintdef` para PK, FK, UNIQUE y CHECK;
+- `pg_attribute` para columnas `NOT NULL`;
+- `pg_type` y `pg_enum` para enums y orden de valores;
+- `pg_class`, `pg_sequence` y `pg_depend` para secuencias, persistencia y vínculos;
+- `pg_namespace` para mantener el universo de 23 esquemas;
+- `pg_inherits` y metadatos de relación para distinguir padres y particiones.
+
+No se ejecutó DDL, DML, `VALIDATE CONSTRAINT`, `ALTER TYPE`, reinicio de secuencias, migración ni cambio de datos.
+
+#### 3. Resultado global de constraints
+
+| Tipo          |  Cantidad | Estado relevante    |
+| ------------- | --------: | ------------------- |
+| `PRIMARY KEY` |   **422** | todas validadas     |
+| `FOREIGN KEY` |   **818** | **1** no validada   |
+| `UNIQUE`      |   **155** | todas validadas     |
+| `CHECK`       |   **662** | **13** no validadas |
+| exclusión     |     **0** | ausencia explícita  |
+| otros tipos   |     **0** | ausencia explícita  |
+| **Total**     | **2.057** | **14** no validados |
+
+Propiedades transversales:
+
+- constraints `DEFERRABLE`: **0**;
+- constraints `INITIALLY DEFERRED`: **0**;
+- constraints heredados o no locales: **14**;
+- checks `NO INHERIT`: **1.388**;
+- columnas `NOT NULL`: **3.187**.
+
+`NOT NULL` se registra separadamente porque PostgreSQL lo representa como atributo de columna en este corte, no como las 2.057 filas de `pg_constraint`.
+
+#### 4. Matriz por esquema
+
+| Esquema               |      PK |      FK |  UNIQUE |   CHECK |     Total | No validados | `NOT NULL` |  Enums | Valores enum | Secuencias |
+| --------------------- | ------: | ------: | ------: | ------: | --------: | -----------: | ---------: | -----: | -----------: | ---------: |
+| `app_private`         |       1 |       0 |       0 |       1 |         2 |            0 |          3 |      0 |            0 |          0 |
+| `auth`                |      23 |      18 |      10 |      43 |        94 |            0 |        111 |      9 |           25 |          1 |
+| `club`                |      11 |      15 |       5 |      14 |        45 |            0 |         84 |      0 |            0 |          0 |
+| `cron`                |       2 |       0 |       1 |       0 |         3 |            0 |          9 |      0 |            0 |          2 |
+| `extensions`          |       0 |       0 |       0 |       0 |         0 |            0 |          0 |      0 |            0 |          0 |
+| `graphql`             |       0 |       0 |       0 |       0 |         0 |            0 |          0 |      0 |            0 |          0 |
+| `graphql_public`      |       0 |       0 |       0 |       0 |         0 |            0 |          0 |      0 |            0 |          0 |
+| `information_schema`  |       0 |       0 |       0 |       2 |         2 |            0 |          0 |      0 |            0 |          0 |
+| `net`                 |       0 |       0 |       0 |       1 |         1 |            0 |          5 |      1 |            3 |          1 |
+| `pass`                |      26 |      54 |      18 |      86 |       184 |            0 |        236 |      0 |            0 |          0 |
+| `payments`            |       2 |       4 |       2 |       2 |        10 |            0 |         20 |      0 |            0 |          0 |
+| `pg_catalog`          |      62 |       0 |      48 |       0 |       110 |            0 |        509 |      0 |            0 |          0 |
+| `pg_toast`            |       0 |       0 |       0 |       0 |         0 |            0 |          0 |      0 |            0 |          0 |
+| `pgbouncer`           |       0 |       0 |       0 |       0 |         0 |            0 |          0 |      0 |            0 |          0 |
+| `pos`                 |      13 |      33 |       2 |       6 |        54 |            0 |         81 |      0 |            0 |          0 |
+| `public`              |     183 |     587 |      51 |     395 |     1.216 |           13 |      1.419 |      7 |           26 |          2 |
+| `realtime`            |      10 |       0 |       0 |       9 |        19 |            1 |         48 |      2 |           18 |          1 |
+| `storage`             |       8 |       5 |       1 |       0 |        14 |            0 |         41 |      1 |            3 |          0 |
+| `supabase_migrations` |       1 |       0 |       1 |       0 |         2 |            0 |          1 |      0 |            0 |          0 |
+| `talento`             |      13 |      14 |       6 |       0 |        33 |            0 |         87 |      7 |           49 |          0 |
+| `vault`               |       1 |       0 |       0 |       0 |         1 |            0 |          5 |      0 |            0 |          0 |
+| `viso`                |      12 |      19 |       7 |      16 |        54 |            0 |        123 |      0 |            0 |          0 |
+| `vital`               |      54 |      69 |       3 |      87 |       213 |            0 |        405 |      7 |           26 |          0 |
+| **TOTAL**             | **422** | **818** | **155** | **662** | **2.057** |       **14** |  **3.187** | **34** |      **150** |      **7** |
+
+#### 5. Distribución por gobierno estructural
+
+| Clase                            | Constraints |      PK |      FK |  UNIQUE |   CHECK | No validados |  Enums | Valores enum | Secuencias |
+| -------------------------------- | ----------: | ------: | ------: | ------: | ------: | -----------: | -----: | -----------: | ---------: |
+| `GOBERNADO_VENTO`                |   **1.811** |     315 |     795 |      94 |     607 |           13 |     21 |          101 |          2 |
+| `ADMINISTRADO_SUPABASE_POSTGRES` |     **246** |     107 |      23 |      61 |      55 |            1 |     13 |           49 |          5 |
+| **TOTAL**                        |   **2.057** | **422** | **818** | **155** | **662** |       **14** | **34** |      **150** |      **7** |
+
+La distribución no autoriza modificar objetos administrados ni conservar automáticamente la estructura actual de los esquemas Vento.
+
+#### 6. Cobertura de claves primarias
+
+Se observaron **432 objetos tabulares**: 424 tablas ordinarias, una tabla particionada y siete particiones hijas. **422** tienen PK y **10** no tienen PK propia.
+
+| Esquema              | Objeto sin PK                                      | Clase                          |
+| -------------------- | -------------------------------------------------- | ------------------------------ |
+| `information_schema` | `sql_features`                                     | administrado                   |
+| `information_schema` | `sql_implementation_info`                          | administrado                   |
+| `information_schema` | `sql_parts`                                        | administrado                   |
+| `information_schema` | `sql_sizing`                                       | administrado                   |
+| `net`                | `_http_response`                                   | administrado / extensión       |
+| `net`                | `http_request_queue`                               | administrado / extensión       |
+| `pg_catalog`         | `pg_depend`                                        | administrado                   |
+| `pg_catalog`         | `pg_shdepend`                                      | administrado                   |
+| `public`             | `product_categories_backup_20260316_preparaciones` | Vento / backup legacy aparente |
+| `public`             | `staging_insumos_import`                           | Vento / staging aparente       |
+
+Las ocho ausencias administradas no son brechas de diseño de Vento. Las dos tablas de `public` deberán clasificarse por vigencia, fuente de verdad y retiro en `SUPA-AUD-018` y `SUPA-AUD-019`; esta tarea no aprueba agregarles PK ni conservarlas.
+
+#### 7. Constraints no validados
+
+Se observaron **14** constraints con `convalidated=false`.
+
+| Esquema    | Tabla                       | Constraint                                               | Tipo               |
+| ---------- | --------------------------- | -------------------------------------------------------- | ------------------ |
+| `public`   | `app_screen_registry`       | `app_screen_registry_navigation_kind_check`              | CHECK              |
+| `public`   | `cost_centers`              | `cost_centers_code_not_blank`                            | CHECK              |
+| `public`   | `cost_centers`              | `cost_centers_type_check`                                | CHECK              |
+| `public`   | `production_batch_packages` | `production_batch_packages_original_qty_chk`             | CHECK              |
+| `public`   | `production_batch_packages` | `production_batch_packages_remaining_qty_chk`            | CHECK              |
+| `public`   | `production_batch_packages` | `production_batch_packages_reserved_qty_chk`             | CHECK              |
+| `public`   | `products`                  | `products_sku_format_chk`                                | CHECK              |
+| `public`   | `recipe_site_uses`          | `recipe_site_uses_location_chk`                          | CHECK              |
+| `public`   | `restock_request_items`     | `restock_request_items_transfer_total_non_negative`      | CHECK              |
+| `public`   | `restock_request_items`     | `restock_request_items_transfer_unit_price_non_negative` | CHECK              |
+| `public`   | `restock_requests`          | `restock_requests_pricing_mode_check`                    | CHECK              |
+| `public`   | `restock_requests`          | `restock_requests_pricing_status_check`                  | CHECK              |
+| `public`   | `site_operational_roles`    | `site_operational_roles_role_code_fkey`                  | FK                 |
+| `realtime` | `messages`                  | `messages_payload_exclusive`                             | CHECK administrado |
+
+Un constraint `NOT VALID` se aplica a nuevas escrituras, pero no certifica que todas las filas históricas cumplan. Los trece objetos de `public` deberán contrastarse con datos y migraciones en `SUPA-AUD-016`, `SUPA-AUD-017` y la auditoría de calidad `SUPA-NORM-*`; el constraint de `realtime` permanece bajo gobierno de Supabase.
+
+#### 8. Claves foráneas entre esquemas
+
+De las **818 FK**, **200** cruzan fronteras de esquema. Distribución observada:
+
+| Origen     | Destino    |      FK |
+| ---------- | ---------- | ------: |
+| `club`     | `auth`     |       8 |
+| `club`     | `pass`     |       1 |
+| `club`     | `public`   |       1 |
+| `pass`     | `auth`     |       4 |
+| `pass`     | `public`   |      32 |
+| `payments` | `auth`     |       1 |
+| `payments` | `public`   |       2 |
+| `pos`      | `public`   |      18 |
+| `public`   | `auth`     |      60 |
+| `public`   | `pass`     |       8 |
+| `public`   | `payments` |       1 |
+| `public`   | `pos`      |       1 |
+| `viso`     | `public`   |      17 |
+| `vital`    | `auth`     |      45 |
+| `vital`    | `public`   |       1 |
+| **TOTAL**  | —          | **200** |
+
+Estas FK prueban dependencia física actual, no propiedad funcional ni arquitectura canónica. `SUPA-AUD-022` deberá asignar objeto, capacidad y propietario; `SUPA-AUD-019` detectará fuentes competidoras; `SUPA-ARC-*` decidirá fronteras objetivo.
+
+#### 9. Inventario de enums
+
+| Esquema    | Enum                          | Valores ordenados                                           |
+| ---------- | ----------------------------- | ----------------------------------------------------------- |
+| `auth`     | `aal_level`                   | `aal1`, `aal2`, `aal3`                                      |
+| `auth`     | `code_challenge_method`       | `s256`, `plain`                                             |
+| `auth`     | `factor_status`               | `unverified`, `verified`                                    |
+| `auth`     | `factor_type`                 | `totp`, `webauthn`, `phone`                                 |
+| `auth`     | `oauth_authorization_status`  | `pending`, `approved`, `denied`, `expired`                  |
+| `auth`     | `oauth_client_type`           | `public`, `confidential`                                    |
+| `auth`     | `oauth_registration_type`     | `dynamic`, `manual`                                         |
+| `auth`     | `oauth_response_type`         | `code`                                                      |
+| `auth`     | `one_time_token_type`         | 6 valores administrados                                     |
+| `net`      | `request_status`              | `PENDING`, `SUCCESS`, `ERROR`                               |
+| `public`   | `document_scope`              | `employee`, `site`, `group`                                 |
+| `public`   | `document_status`             | `pending_review`, `approved`, `rejected`                    |
+| `public`   | `employee_wallet_card_status` | `eligible`, `issued`, `revoked`, `expired`, `blocked`       |
+| `public`   | `permission_scope_type`       | `global`, `site`, `site_type`, `area`, `area_kind`          |
+| `public`   | `recipe_status`               | `draft`, `published`, `archived`                            |
+| `public`   | `site_type`                   | `satellite`, `production_center`, `admin`                   |
+| `public`   | `support_ticket_status`       | `open`, `in_progress`, `resolved`, `closed`                 |
+| `realtime` | `action`                      | `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `ERROR`           |
+| `realtime` | `equality_op`                 | 13 operadores administrados                                 |
+| `storage`  | `buckettype`                  | `STANDARD`, `ANALYTICS`, `VECTOR`                           |
+| `talento`  | `application_status`          | 13 estados                                                  |
+| `talento`  | `document_status`             | 6 estados                                                   |
+| `talento`  | `interview_status`            | 6 estados                                                   |
+| `talento`  | `medical_status`              | 6 estados                                                   |
+| `talento`  | `offer_status`                | 5 estados                                                   |
+| `talento`  | `requirement_status`          | 5 estados                                                   |
+| `talento`  | `stage_code`                  | 8 etapas                                                    |
+| `vital`    | `challenge_scope`             | `personal`, `squad`, `company`                              |
+| `vital`    | `competition_mode`            | `private`, `friends`, `team`, `public`                      |
+| `vital`    | `fair_play_severity`          | `low`, `medium`, `high`                                     |
+| `vital`    | `league_tier`                 | `bronze`, `silver`, `gold`, `platinum`, `titan`             |
+| `vital`    | `profile_context`             | `personal`, `employee`                                      |
+| `vital`    | `program_status`              | `draft`, `active`, `paused`, `archived`                     |
+| `vital`    | `task_status`                 | `pending`, `in_progress`, `completed`, `skipped`, `snoozed` |
+
+Los nombres repetidos entre esquemas, como `document_status`, son tipos distintos. Su consolidación o permanencia se decidirá en `SUPA-AUD-021` y `SUPA-ARC-*`, no por coincidencia nominal.
+
+#### 10. Inventario de secuencias
+
+| Esquema    | Secuencia                   | Persistencia | Vínculo observado                                                    |
+| ---------- | --------------------------- | ------------ | -------------------------------------------------------------------- |
+| `auth`     | `refresh_tokens_id_seq`     | permanente   | owned by `auth.refresh_tokens.id`                                    |
+| `cron`     | `jobid_seq`                 | permanente   | uso administrado por `pg_cron`; sin dependencia `OWNED BY` observada |
+| `cron`     | `runid_seq`                 | permanente   | uso administrado por `pg_cron`; sin dependencia `OWNED BY` observada |
+| `net`      | `http_request_queue_id_seq` | `UNLOGGED`   | owned by `net.http_request_queue.id`                                 |
+| `public`   | `inventory_sku_seq`         | permanente   | secuencia Vento sin dependencia `OWNED BY` observada                 |
+| `public`   | `lpn_sequence`              | permanente   | secuencia Vento sin dependencia `OWNED BY` observada                 |
+| `realtime` | `subscription_id_seq`       | permanente   | dependencia interna de identidad con `realtime.subscription.id`      |
+
+Todas usan `bigint`, inicio 1, incremento 1, caché 1 y `NO CYCLE`. Las dos secuencias Vento de `public` deberán conservar consumidor, función generadora, concurrencia y política de no reutilización en `SUPA-AUD-006`, `SUPA-AUD-016` y `SUPA-AUD-020`; la ausencia de `OWNED BY` no autoriza alterarlas.
+
+#### 11. Hallazgos y destino documental
+
+| Hallazgo                             | Riesgo                                                        | Tarea responsable                                        |
+| ------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------------- |
+| dos tablas Vento sin PK              | duplicados o identidad ambigua si continúan activas           | `SUPA-AUD-018`, `SUPA-AUD-019`                           |
+| trece constraints Vento no validados | datos históricos incompatibles con reglas declaradas          | `SUPA-AUD-016`, `SUPA-AUD-017`, `SUPA-NORM-*`            |
+| 200 FK entre esquemas                | acoplamiento físico convertido en arquitectura implícita      | `SUPA-AUD-019`, `SUPA-AUD-022`, `SUPA-ARC-*`             |
+| 21 enums Vento                       | contratos rígidos o duplicados no gobernados                  | `SUPA-AUD-021`, `SUPA-ARC-*`                             |
+| dos secuencias Vento sin `OWNED BY`  | dependencia invisible, colisión o reinicio incorrecto         | `SUPA-AUD-006`, `SUPA-AUD-016`, `SUPA-AUD-020`           |
+| cero constraints diferibles          | ciclos o transacciones complejas no pueden diferir validación | `SUPA-AUD-019`, `SUPA-ARC-*` solo si un proceso lo exige |
+
+No queda hallazgo narrativo sin tarea responsable.
+
+#### 12. Requisitos de prueba derivados
+
+Se incorporan al registro canónico:
+
+```text
+TREQ-SUPABASE-062 a TREQ-SUPABASE-073
+```
+
+Protegen clasificación completa, reconciliación por esquema, cobertura PK, constraints no validados, FK cruzadas, enums, secuencias, procedencia y drift.
+
+#### 13. Huellas de integridad
+
+```text
+CONSTRAINT_REGISTRY_SHA256 = 01e934fc142742e278d6f5eac23c1db029478221b6e0cdded6e8d9421b1bba9f
+ENUM_REGISTRY_SHA256 = d04bcc6c6750c0463c8568adba65011c6be2f0f94d1f66864faf170ca7c61e73
+SEQUENCE_REGISTRY_SHA256 = 2fe6eefbae8fbb8c14f41d2e0b5a3f12a1e246e9fe294134561f830d659ccb24
+CROSS_SCHEMA_FK_REGISTRY_SHA256 = 4e7cc9b3f33f68772176b50caa4f943fdb8eca08370c7499919ed71ed5f633c2
+```
+
+Cualquier cambio en cantidades, definiciones, validación, orden de enums, secuencias o dependencias deberá registrarse como drift en `SUPA-AUD-017` antes de utilizar el inventario para arquitectura o transición.
+
+#### 14. Resultado final
+
+`SUPA-AUD-005` deja inventariados y reconciliados:
+
+- **2.057 constraints**;
+- **422 PK**, **818 FK**, **155 UNIQUE** y **662 CHECK**;
+- **3.187** columnas `NOT NULL`;
+- **14** constraints no validados;
+- **10** objetos tabulares sin PK propia;
+- **200** FK entre esquemas;
+- **34** enums y **150** valores ordenados;
+- **7** secuencias, cinco administradas y dos Vento.
+
+La tarea no modifica la base ni aprueba correcciones. Proporciona la línea base para funciones, triggers, RLS, drift, normalización, arquitectura objetivo y transición.
+
+
 ### [ ] SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
 ### [ ] SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
 ### [ ] SUPA-AUD-008 — Inventariar triggers y funciones ejecutadas por triggers

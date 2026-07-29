@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **385** |
+| Tareas aprobadas | **386** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1190** |
+| Tareas no iniciadas | **1189** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.44% (385/1575)** |
+| Porcentaje de completamiento | **24.51% (386/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas** |
-| Tarea actual | **SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias** |
+| Última tarea aprobada | **SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias** |
+| Tarea actual | **SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas** |
+| Siguiente tarea | **SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 4 de 24 aprobadas; SUPA-AUD-005 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 5 de 24 aprobadas; SUPA-AUD-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-004` — Inventariar tablas, particiones, vistas y vistas materializadas |
-| Tarea actual | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas |
+| Última aprobada | `SUPA-AUD-005` — Inventariar claves primarias, foráneas, constraints, enums y secuencias |
+| Tarea actual | `SUPA-AUD-006` — Inventariar funciones, RPC, procedimientos y firmas públicas — **NO INICIADA** |
+| Siguiente tarea | `SUPA-AUD-007` — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER` |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **4 DE 24 APROBADAS — ACTUAL SUPA-AUD-005** |
+| BLOQUE E3 | **5 DE 24 APROBADAS — ACTUAL SUPA-AUD-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
-        ↓
-TAREA ACTUAL
 SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-AUD-006 — Inventariar funciones, RPC, procedimientos y firmas públicas
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-007 — Inventariar funciones `SECURITY DEFINER` y `SECURITY INVOKER`
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 4 de 24 tareas aprobadas
+BLOQUE E3 — 5 de 24 tareas aprobadas
 ```
