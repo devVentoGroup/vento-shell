@@ -529,7 +529,241 @@ No se inicia `SUPA-AUD-002` hasta la aprobación expresa de esta tarea.
 APROBADA
 
 
-### [ ] SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento
+### ✅ SUPA-AUD-002 — Clasificar esquemas administrados por Supabase y esquemas de Vento
+
+**Estado:** APROBADA  
+**Fecha:** 2026-07-29  
+**Bloque:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Tarea anterior:** `SUPA-AUD-001 — Inventariar todos los esquemas existentes` — APROBADA  
+**Tarea siguiente:** `SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API`  
+**Descripción:** Clasifica los 23 esquemas no efímeros inventariados según quién administra su frontera estructural, separando los esquemas gestionados por PostgreSQL, Supabase o extensiones de los esquemas gobernados por Vento, sin definir todavía exposición, arquitectura objetivo ni transición física.
+
+#### 1. Resultado canónico
+
+Los **23 esquemas no efímeros** inventariados en `SUPA-AUD-001` quedan clasificados sin pendientes:
+
+| Clase primaria                   | Cantidad | Regla de administración                                                                                                                                                                                                        |
+| -------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ADMINISTRADO_SUPABASE_POSTGRES` |   **14** | La estructura pertenece al motor PostgreSQL, a un producto de Supabase, a su infraestructura, al CLI o al ciclo de una extensión. Vento puede configurar su uso, pero no apropiarse de su estructura como dominio empresarial. |
+| `GOBERNADO_VENTO`                |    **9** | La estructura fue creada, poblada o reorganizada por migraciones de `vento-shell` para capacidades, datos o lógica de Vento. Su evolución debe permanecer versionada y auditada por Vento.                                     |
+
+```text
+23 ESQUEMAS NO EFÍMEROS
+=
+14 ADMINISTRADOS POR SUPABASE / POSTGRESQL / EXTENSIONES
++
+9 GOBERNADOS POR VENTO
++
+0 SIN CLASIFICAR
+```
+
+Artefacto resultante:
+
+```text
+SUPABASE-SCHEMA-CLASSIFICATION-001@1.0.0
+```
+
+#### 2. Regla de clasificación
+
+La clasificación responde exclusivamente a esta pregunta:
+
+```text
+¿QUIÉN ADMINISTRA LA FRONTERA ESTRUCTURAL DEL ESQUEMA
+Y SU CICLO DE CAMBIO?
+```
+
+No responde todavía:
+
+- qué aplicación consume cada objeto;
+- qué esquema está expuesto mediante Data API;
+- qué objetos son legacy;
+- qué esquema deberá existir en la arquitectura objetivo;
+- qué objetos deberán conservarse, moverse, dividirse o retirarse.
+
+Se separan obligatoriamente cuatro conceptos:
+
+| Concepto                   | Significado                                                     |
+| -------------------------- | --------------------------------------------------------------- |
+| origen del namespace       | quién o qué creó inicialmente el esquema                        |
+| administración estructural | quién gobierna tablas, funciones y cambios internos del esquema |
+| gobierno del contenido     | quién decide la finalidad empresarial de los datos almacenados  |
+| propiedad funcional        | qué dominio o aplicación responde por el resultado empresarial  |
+
+La coincidencia de nombre entre aplicación y esquema no prueba propiedad funcional. La ausencia de objetos tampoco convierte un esquema de plataforma en esquema de Vento.
+
+#### 3. Taxonomía de esquemas administrados por Supabase o PostgreSQL
+
+| Subclase                             | Cantidad | Esquemas                      | Naturaleza                                          |
+| ------------------------------------ | -------: | ----------------------------- | --------------------------------------------------- |
+| `POSTGRES_CORE_MANAGED`              |    **2** | `pg_catalog`, `pg_toast`      | catálogo y almacenamiento interno del motor         |
+| `POSTGRES_SQL_STANDARD_MANAGED`      |    **1** | `information_schema`          | metadatos estándar SQL                              |
+| `SUPABASE_PRODUCT_MANAGED`           |    **3** | `auth`, `realtime`, `storage` | servicios administrados de Supabase                 |
+| `SUPABASE_EXTENSION_MANAGED`         |    **3** | `cron`, `net`, `vault`        | schemas o contenido regido por extensiones          |
+| `SUPABASE_EXTENSION_CONTAINER`       |    **1** | `extensions`                  | contenedor reservado para extensiones               |
+| `SUPABASE_PLATFORM_RESERVED_DORMANT` |    **2** | `graphql`, `graphql_public`   | frontera GraphQL de plataforma actualmente inactiva |
+| `SUPABASE_INFRASTRUCTURE_MANAGED`    |    **1** | `pgbouncer`                   | pooling e infraestructura de conexión               |
+| `SUPABASE_CLI_MANAGED`               |    **1** | `supabase_migrations`         | historial de migraciones del CLI                    |
+
+Reglas comunes:
+
+1. no crear tablas o funciones empresariales dentro de estos esquemas;
+2. no renombrarlos, moverlos, fusionarlos ni eliminarlos como parte de una reorganización de dominios;
+3. no editar directamente estructuras internas de `auth`, `storage`, `realtime`, `cron`, `net`, `vault`, `pgbouncer` o `supabase_migrations`;
+4. gestionar configuración, políticas permitidas, jobs, secretos, publicaciones o extensiones mediante sus superficies soportadas y migraciones versionadas;
+5. tratar objetos internos como infraestructura o metadata técnica, no como fuente de verdad empresarial de Vento.
+
+#### 4. Taxonomía de esquemas gobernados por Vento
+
+| Subclase                          | Cantidad | Esquemas                                                      | Naturaleza                                           |
+| --------------------------------- | -------: | ------------------------------------------------------------- | ---------------------------------------------------- |
+| `VENTO_PRIVATE_TECHNICAL`         |    **1** | `app_private`                                                 | lógica y secretos técnicos privados                  |
+| `VENTO_DOMAIN_SCHEMA`             |    **7** | `club`, `pass`, `payments`, `pos`, `talento`, `viso`, `vital` | dominios o capacidades empresariales actuales        |
+| `VENTO_SHARED_STANDARD_CONTAINER` |    **1** | `public`                                                      | contenedor estándar con objetos gobernados por Vento |
+
+Reglas comunes:
+
+1. toda evolución estructural corresponde a migraciones versionadas en `vento-shell`;
+2. cada objeto deberá adquirir propietario funcional, consumidores y fuente de verdad en las tareas posteriores;
+3. la clasificación como Vento no valida el diseño actual ni aprueba conservar el nombre o distribución existentes;
+4. ningún esquema se convierte automáticamente en frontera canónica por coincidir con una aplicación;
+5. `public` permanece bajo gobierno de Vento para sus objetos actuales, aunque el namespace sea estándar de PostgreSQL.
+
+#### 5. Matriz canónica completa
+
+| Esquema               | Clase primaria                   | Subclase                             | Administración estructural                                    | Contenido observado                                                               | Evidencia determinante                                                                                         | Regla resultante                                                                                                                |
+| --------------------- | -------------------------------- | ------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `app_private`         | `GOBERNADO_VENTO`                | `VENTO_PRIVATE_TECHNICAL`            | Vento mediante migraciones de `vento-shell`                   | secretos técnicos y helpers privados de Vento                                     | Creado por `20260713234029_add_order_delivery_sessions.sql`; owner `postgres`; acceso revocado a roles cliente | No es dominio empresarial ni infraestructura de Supabase; permanece bajo gobierno técnico de Vento.                             |
+| `auth`                | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_PRODUCT_MANAGED`           | Supabase Auth                                                 | usuarios técnicos, identidades, sesiones y configuración interna de autenticación | Owner `supabase_admin`; Supabase inyecta y usa el esquema `auth` para Auth                                     | No se trata como catálogo laboral o de clientes y no se modifica estructuralmente como dominio Vento.                           |
+| `club`                | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | suscripciones, planes, entitlement y auditoría de Club                            | Creado por `20260310130000_club_schema_foundation.sql`; owner `postgres`                                       | Esquema empresarial actual de Vento; su correspondencia futura con dominios canónicos se decidirá después.                      |
+| `cron`                | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_EXTENSION_MANAGED`         | extensión `pg_cron` y superficie Supabase Cron                | jobs y ejecuciones de programación                                                | El esquema es miembro de la extensión `pg_cron`; owner `supabase_admin`                                        | No se usa como dominio Vento ni se altera fuera del ciclo gobernado de la extensión.                                            |
+| `extensions`          | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_EXTENSION_CONTAINER`       | extensiones PostgreSQL habilitadas en el proyecto             | objetos de `pg_net`, `pg_stat_statements`, `pgcrypto` y `uuid-ossp`               | Cuatro extensiones instaladas en el esquema; Supabase recomienda reservarlo para extensiones                   | Vento puede decidir qué extensiones habilita, pero no convierte sus objetos internos en objetos empresariales.                  |
+| `graphql`             | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_PLATFORM_RESERVED_DORMANT` | Supabase / `pg_graphql`                                       | namespace reservado actualmente sin objetos observados                            | Owner `supabase_admin`; `pg_graphql` no está habilitado en el corte                                            | Se conserva como frontera de plataforma aunque esté inactivo; no se reclasifica como Vento por estar vacío.                     |
+| `graphql_public`      | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_PLATFORM_RESERVED_DORMANT` | Supabase / `pg_graphql`                                       | función pública de compatibilidad que informa que `pg_graphql` está deshabilitado | Owner de esquema y función `supabase_admin`; función `graphql_public.graphql(...)` observada                   | Es infraestructura de compatibilidad de Supabase, no una RPC empresarial de Vento.                                              |
+| `information_schema`  | `ADMINISTRADO_SUPABASE_POSTGRES` | `POSTGRES_SQL_STANDARD_MANAGED`      | PostgreSQL                                                    | metadatos estándar SQL                                                            | Namespace estándar; owner `supabase_admin` en el proyecto                                                      | Solo lectura y consulta; nunca se trata como esquema empresarial.                                                               |
+| `net`                 | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_EXTENSION_MANAGED`         | extensión `pg_net`                                            | ejecución HTTP asíncrona y metadatos técnicos                                     | El esquema es miembro de la extensión `pg_net`; owner `supabase_admin`                                         | No se modifica como dominio ni se usa para persistir estado empresarial.                                                        |
+| `pass`                | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | fidelización, puntos, recompensas, favoritos y satélites                          | Creado y documentado por `20260310150000_pass_schema_reorganization_v1.sql`; owner `postgres`                  | Esquema empresarial actual de Vento; no equivale automáticamente a una frontera canónica definitiva.                            |
+| `payments`            | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | transacciones, webhooks y metadatos de proveedor de pagos                         | Creado por `20260312133000_orders_payments_wompi_foundation.sql`; owner `postgres`                             | Esquema empresarial e integrador de Vento; sus contratos y fuente de verdad se auditarán por objeto.                            |
+| `pg_catalog`          | `ADMINISTRADO_SUPABASE_POSTGRES` | `POSTGRES_CORE_MANAGED`              | PostgreSQL                                                    | catálogo interno del motor                                                        | Namespace de catálogo; owner `supabase_admin`                                                                  | No se modifica, mueve, renombra ni considera dominio empresarial.                                                               |
+| `pg_toast`            | `ADMINISTRADO_SUPABASE_POSTGRES` | `POSTGRES_CORE_MANAGED`              | PostgreSQL                                                    | almacenamiento TOAST interno                                                      | Namespace reservado para TOAST; owner `supabase_admin`                                                         | No se gestiona directamente ni participa en arquitectura de dominios.                                                           |
+| `pgbouncer`           | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_INFRASTRUCTURE_MANAGED`    | infraestructura de pooling de conexiones                      | función técnica del pooler                                                        | Owner `pgbouncer`; namespace de infraestructura                                                                | No se usa para objetos Vento ni se incorpora a Data API o contratos empresariales.                                              |
+| `pos`                 | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | sesiones POS, cajas, mesas, modificadores y pagos en sitio                        | Creado y documentado por `20260311113000_pos_schema_reorganization_v1.sql`; owner `postgres`                   | Esquema empresarial actual de Vento; aplicación y dominio no se confunden por compartir el nombre POS.                          |
+| `public`              | `GOBERNADO_VENTO`                | `VENTO_SHARED_STANDARD_CONTAINER`    | Vento para sus objetos; PostgreSQL para el namespace estándar | contenedor compartido y heterogéneo de objetos empresariales y técnicos actuales  | 185 tablas, 61 vistas y 246 rutinas observadas; cambios versionados en migraciones Vento                       | Su origen estándar no lo vuelve administrado por Supabase. La clasificación tampoco aprueba conservarlo como destino universal. |
+| `realtime`            | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_PRODUCT_MANAGED`           | Supabase Realtime                                             | migraciones, suscripciones, autorización y mensajes del servicio Realtime         | Owner `supabase_admin`; contiene tablas y partición administradas por Realtime                                 | No se modifica como dominio Vento; publicaciones y consumidores se auditan por separado.                                        |
+| `storage`             | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_PRODUCT_MANAGED`           | Supabase Storage                                              | metadatos de buckets, objetos y migraciones del servicio Storage                  | Owner `supabase_admin`; documentación Supabase exige tratar sus tablas como read-only                          | Vento gobierna buckets, políticas y uso, pero no la estructura interna del esquema.                                             |
+| `supabase_migrations` | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_CLI_MANAGED`               | Supabase CLI                                                  | historial remoto de migraciones aplicadas                                         | Contiene `schema_migrations`; usado por `supabase migration list` y `db push`                                  | No es dominio Vento y no se edita como tabla empresarial.                                                                       |
+| `talento`             | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | reclutamiento, evaluación, documentos, entrevistas y preingreso                   | Creado por `20260324190000_talento_foundation.sql`; owner `postgres`                                           | Esquema empresarial actual de Vento; su integración con identidad y laboral se audita posteriormente.                           |
+| `vault`               | `ADMINISTRADO_SUPABASE_POSTGRES` | `SUPABASE_EXTENSION_MANAGED`         | extensión `supabase_vault` y UI de Supabase Vault             | secretos cifrados y vista de acceso                                               | Extensión `supabase_vault` instalada en el esquema; owner `supabase_admin`                                     | Vento gobierna finalidades y permisos de secretos, pero no trata las tablas internas como dominio.                              |
+| `viso`                | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | planeación, demanda, reglas y generación para VISO                                | Creado por `20260413120000_viso_planning_ai_foundation.sql`; owner `postgres`                                  | Esquema empresarial actual de Vento; no prueba que toda información de VISO deba residir aquí.                                  |
+| `vital`               | `GOBERNADO_VENTO`                | `VENTO_DOMAIN_SCHEMA`                | Vento mediante migraciones de `vento-shell`                   | programas, tareas, perfiles y dinámicas del dominio Vital                         | Creado por `20260302000001_vital_foundation.sql`; owner `postgres`                                             | Esquema empresarial actual de Vento; su propiedad funcional definitiva se resolverá con el mapa objeto-capacidad.               |
+
+#### 6. Tratamiento específico de `public`
+
+`public` tiene doble naturaleza:
+
+```text
+ORIGEN DEL NAMESPACE
+→ estándar de PostgreSQL
+
+CONTENIDO ACTUAL Y EVOLUCIÓN
+→ gobernados por Vento
+```
+
+Por tanto:
+
+- se clasifica como `GOBERNADO_VENTO / VENTO_SHARED_STANDARD_CONTAINER`;
+- no se considera esquema administrado por Supabase;
+- su clasificación no lo aprueba como destino universal;
+- sus **185 tablas, 61 vistas y 246 rutinas** deberán clasificarse individualmente por propietario, capacidad, consumidor, exposición y estado;
+- los objetos de extensiones que residan en `public`, como `unaccent`, conservan gobierno de extensión aunque compartan el namespace.
+
+#### 7. Tratamiento específico de GraphQL
+
+El corte remoto muestra:
+
+- `graphql` sin objetos observados en las categorías inventariadas;
+- `graphql_public` con la función `graphql_public.graphql(...)` propiedad de `supabase_admin`;
+- la función informa que `pg_graphql` no está habilitado;
+- la extensión `pg_graphql` no aparece instalada.
+
+Ambos esquemas se clasifican como `SUPABASE_PLATFORM_RESERVED_DORMANT` porque su vacío o inactividad no transfiere administración a Vento. La necesidad de conservarlos, habilitar GraphQL o retirar compatibilidad se evaluará en las tareas específicas de objetos, exposición, extensiones y transición.
+
+#### 8. Tratamiento específico de extensiones
+
+La administración queda separada así:
+
+| Esquema      | Evidencia                                                         | Clasificación                                                             |
+| ------------ | ----------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `cron`       | el namespace es miembro de `pg_cron`                              | extensión administrada                                                    |
+| `net`        | el namespace es miembro de `pg_net`                               | extensión administrada                                                    |
+| `vault`      | contiene la extensión `supabase_vault`                            | extensión administrada                                                    |
+| `extensions` | contiene `pg_net`, `pg_stat_statements`, `pgcrypto` y `uuid-ossp` | contenedor de extensiones                                                 |
+| `pg_catalog` | contiene `pg_cron` y `plpgsql` como namespaces de instalación     | catálogo PostgreSQL; no dominio Vento                                     |
+| `public`     | contiene `unaccent` junto con objetos Vento                       | gobierno mixto por objeto; clase primaria Vento para el contenedor actual |
+
+Habilitar una extensión es una decisión de Vento; administrar sus objetos internos corresponde al motor o a la extensión.
+
+#### 9. Consecuencias para la auditoría de E3
+
+Esta clasificación fija las siguientes restricciones:
+
+1. `SUPA-AUD-003` evaluará exposición solo sobre superficies realmente servidas; `USAGE` no equivale a Data API.
+2. `SUPA-AUD-004` a `SUPA-AUD-008` inventariarán objetos respetando la clase del esquema.
+3. `SUPA-AUD-009` distinguirá privilegios permitidos sobre esquemas administrados de autorización empresarial sobre objetos Vento.
+4. `SUPA-AUD-016` y `SUPA-AUD-017` compararán el remoto con migraciones sin exigir que objetos internos de Supabase estén definidos como dominios Vento.
+5. `SUPA-AUD-018` no podrá declarar legacy un esquema administrado por plataforma solo por estar vacío o inactivo.
+6. `SUPA-ARC-001` y `SUPA-ARC-004` utilizarán esta clasificación para separar infraestructura, extensiones y fronteras empresariales.
+7. `SUPA-TRANS-*` no podrá incluir cambios estructurales sobre esquemas administrados como si fueran objetos propios de Vento.
+
+#### 10. Registro canónico de clasificación
+
+```text
+ADMINISTRADOS POR SUPABASE / POSTGRESQL
+information_schema
+pg_catalog
+pg_toast
+auth
+realtime
+storage
+cron
+extensions
+net
+vault
+graphql
+graphql_public
+pgbouncer
+supabase_migrations
+```
+
+```text
+GOBERNADOS POR VENTO
+app_private
+club
+pass
+payments
+pos
+public
+talento
+viso
+vital
+```
+
+#### 11. Requisitos de prueba derivados
+
+```text
+TREQ-SUPABASE-026 a TREQ-SUPABASE-037
+```
+
+Estos requisitos protegen la cobertura completa, la separación entre administración y semántica, los esquemas de motor y plataforma, las extensiones, los esquemas Vento, el tratamiento de `public`, el estado GraphQL y la estabilidad de la clasificación ante drift.
+
+#### 12. Huellas deterministas
+
+```text
+SCHEMA_CLASSIFICATION_MATRIX_SHA256 = 35ea4de8f92c3954a735d092cd309184a73207b0970dd9d47e2635430dc78ec7
+MANAGED_SCHEMA_REGISTRY_SHA256 = 5a28761c86fd0a447eead63c65ab62cc226fb5e64ef19e653272d37ec1aea753
+VENTO_SCHEMA_REGISTRY_SHA256 = d9758f76ffbf1a84c6b7b4b963f52b2cae569a9d8776b971ecc8f1d02a3d5ff1
+SCHEMA_CLASSIFICATION_POLICY_SHA256 = 0cda615837ef9f960c572e9a5ea54d77d530feb7ea587461e9466aa00813178a
+```
+
 ### [ ] SUPA-AUD-003 — Identificar esquemas expuestos mediante Data API
 ### [ ] SUPA-AUD-004 — Inventariar tablas, particiones, vistas y vistas materializadas
 ### [ ] SUPA-AUD-005 — Inventariar claves primarias, foráneas, constraints, enums y secuencias
