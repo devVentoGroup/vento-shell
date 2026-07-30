@@ -147,26 +147,3 @@ normalize(value)
 ```
 
 ### [ ] SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
-
-La lista final de esquemas empresariales no se aprobará por intuición.
-
-Se derivará de:
-
-procesos aprobados
-+
-fuentes de verdad
-+
-propiedad funcional
-+
-dependencias reales
-+
-seguridad
-+
-frecuencia de cambio
-+
-necesidades de exposición
-
-Los nombres preliminares como `organization`, `workforce`, `attendance`,
-`authorization`, `catalog`, `inventory`, `logistics`, `production`,
-`procurement`, `sales`, `finance`, `loyalty`, `api`, `private` y `audit`
-solo podrán convertirse en canónicos después de la auditoría.

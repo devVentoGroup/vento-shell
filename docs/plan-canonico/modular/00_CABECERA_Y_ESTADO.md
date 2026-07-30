@@ -29,11 +29,11 @@
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción** |
-| Tarea actual | **SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos** |
+| Tarea actual | **DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NINGUNA — CIERRE DEL BLOQUE** |
+| Siguiente tarea | **DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 24 de 25 aprobadas; SUPA-ARC-025 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 0 de 45 aprobadas; DATA-NORM-AUD-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -41,8 +41,8 @@
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
 | Última aprobada | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción |
-| Tarea actual | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos — **NO INICIADA** |
-| Siguiente tarea | NINGUNA — CIERRE DEL BLOQUE |
+| Tarea actual | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **24 DE 25 APROBADAS — ACTUAL SUPA-ARC-025** |
+| BLOQUE E3 | **0 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -91,8 +91,11 @@
 SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
         ↓
 TAREA ACTUAL
-SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 24 de 25 tareas aprobadas
+BLOQUE E3 — 0 de 45 tareas aprobadas
 ```

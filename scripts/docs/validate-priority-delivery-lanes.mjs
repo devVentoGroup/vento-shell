@@ -21,17 +21,41 @@ const range = (prefix, from, to) =>
     { length: to - from + 1 },
     (_, index) => `${prefix}-${String(from + index).padStart(3, '0')}`,
   );
+
 const EXPECTED_REQUIRED_GROUPS = new Map([
   ['EVENT_CONTRACTS', range('INT-APP', 1, 10)],
-  ['SUPABASE_AUDIT', range('SUPA-AUD', 1, 24)],
-  ['SUPABASE_ARCHITECTURE', range('SUPA-ARC', 1, 25)],
-  ['SUPABASE_TRANSITION', range('SUPA-TRANS', 1, 16)],
+  ['SUPABASE_AUDIT', [
+    ...range('SUPA-AUD', 1, 24),
+    ...range('DATA-NORM-AUD', 1, 7),
+  ]],
+  ['SUPABASE_ARCHITECTURE', [
+    ...range('SUPA-ARC', 1, 24),
+    ...range('DATA-NORM-ARC', 1, 12),
+    'SUPA-ARC-025',
+  ]],
+  ['SUPABASE_TRANSITION', [
+    ...range('SUPA-TRANS', 1, 15),
+    ...range('DATA-NORM-TRANS', 1, 9),
+    'SUPA-TRANS-016',
+  ]],
   ['H_SHARED_AUDIT', range('SHELL-AUD', 1, 11)],
   ['H_SHARED_DISTRIBUTION', range('SHELL-PKG', 1, 8)],
-  ['H_SHARED_CONTRACTS', range('SHELL-CON', 1, 24)],
   ['TRANSVERSE_SERVICE_CATALOG', range('TSVC-CAT', 1, 10)],
-  ['CI_FOUNDATION', range('SHELL-CI', 1, 19)],
   ['AUTH_UI_CONTRACT', range('AUTH-UI', 30, 39)],
+  ['SHARED_DEVICE_CONTRACT', range('AUTH-DEV', 1, 6)],
+  ['SIMULATION_CONTRACT', range('AUTH-SIM', 1, 6)],
+  ['AUTHORIZATION_ERRORS', range('AUTH-ERR', 1, 20)],
+  ['NEXO_INVENTORY_CLASSIFICATION', ['NEXO-DOM-001']],
+  ['NEXO_FUNCTIONAL_UX', range('NEXO-UX', 1, 25)],
+  ['NEXO_UI_VALIDATION', range('AUTH-UI', 52, 60)],
+]);
+
+const EXPECTED_EXECUTION_PREREQUISITES = new Map([
+  ['CI_FOUNDATION', range('SHELL-CI', 1, 19)],
+]);
+
+const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
+  ['H_SHARED_CONTRACTS', range('SHELL-CON', 1, 24)],
   ['H_AUTH_CONTEXT_BASE', ['SHELL-AUTH-001', 'SHELL-CTX-001']],
   ['R0_DATABASE_SAFETY', [
     'AUTH-DB-015',
@@ -53,6 +77,12 @@ const EXPECTED_REQUIRED_GROUPS = new Map([
     ...range('SHELL-CTX', 2, 6),
     ...range('SHELL-AUTH', 2, 4),
   ]],
+  ['H_SHARED_REMAINING', [
+    ...range('SHELL-NORM', 1, 9),
+    ...range('SHELL-DB', 1, 5),
+    ...range('SHELL-UI', 1, 20),
+    ...range('SHELL-NATIVE', 1, 3),
+  ]],
   ['R2_NEXO_DATABASE_PACKAGE', [
     'AUTH-DB-020',
     ...range('AUTH-DB', 6, 10),
@@ -60,45 +90,51 @@ const EXPECTED_REQUIRED_GROUPS = new Map([
     'AUTH-DB-011',
     ...range('AUTH-DB', 22, 26),
   ]],
-  ['H_SHARED_REMAINING', [
-    ...range('SHELL-NORM', 1, 9),
-    ...range('SHELL-DB', 1, 5),
-    ...range('SHELL-UI', 1, 20),
-    ...range('SHELL-NATIVE', 1, 3),
-  ]],
-  ['H_FINAL_AUTH_ADOPTION', ['SHELL-AUTH-005']],
-  ['AUTH_UI_ENFORCEMENT', range('AUTH-UI', 40, 51)],
   ['SERVER_ACTIONS_COMPLETE', range('AUTH-SRV', 1, 18)],
-  ['SHARED_DEVICES_NEXO', range('AUTH-DEV', 1, 14)],
-  ['STRICT_SIMULATION', range('AUTH-SIM', 1, 14)],
-  ['AUTHORIZATION_ERRORS', range('AUTH-ERR', 1, 20)],
-  ['NEXO_FUNCTIONAL_UX', range('NEXO-UX', 1, 25)],
-  ['NEXO_AUTHORIZATION', range('NEXO-AUTH', 1, 20)],
-  ['NEXO_UI_VALIDATION', range('AUTH-UI', 52, 60)],
+  ['SHARED_DEVICE_IMPLEMENTATION', range('AUTH-DEV', 7, 14)],
+  ['SIMULATION_IMPLEMENTATION', range('AUTH-SIM', 7, 14)],
+  ['NEXO_AUTHORIZATION', [
+    ...range('NEXO-AUTH', 1, 6),
+    ...range('NEXO-AUTH', 8, 20),
+  ]],
+  ['AUTH_UI_ENFORCEMENT', range('AUTH-UI', 40, 51)],
+  ['H_FINAL_AUTH_ADOPTION', ['SHELL-AUTH-005']],
 ]);
-const EXPECTED_CONDITIONAL_GROUP_IDS = [
+
+const EXPECTED_IMPLEMENTATION_ORDER = [
+  'H_SHARED_CONTRACTS',
+  'H_AUTH_CONTEXT_BASE',
+  'R0_DATABASE_SAFETY',
+  'R1_AUTH_PHYSICAL_CORE',
+  'H_AUTH_CONTEXT_CONVERGENCE',
+  'H_SHARED_REMAINING',
+  'CONDITIONAL_IMPLEMENTATION_ARTIFACTS',
+  'R2_NEXO_DATABASE_PACKAGE',
+  'SERVER_ACTIONS_COMPLETE',
+  'SHARED_DEVICE_IMPLEMENTATION',
+  'SIMULATION_IMPLEMENTATION',
+  'NEXO_AUTHORIZATION',
+  'AUTH_UI_ENFORCEMENT',
+  'H_FINAL_AUTH_ADOPTION',
+];
+
+const EXPECTED_CONDITIONAL_DESIGN_GROUP_IDS = [
   'PRODUCTION_CONDITIONAL',
   'PRINTING_CONDITIONAL',
   'EVIDENCE_CONDITIONAL',
   'QUEUE_CONDITIONAL',
   'NOTIFICATIONS_CONDITIONAL',
-  'PHYSICAL_NORMALIZATION_CONDITIONAL',
-  'EXTERNAL_INTEGRATION_CONDITIONAL',
   'TECHNOLOGY_SUPPORT_CONDITIONAL',
   'INFORMATION_GOVERNANCE_CONDITIONAL',
   'MASTER_DATA_ANALYTICS_CONDITIONAL',
   'CONTINUITY_CONDITIONAL',
 ];
-const EXPECTED_CONDITIONAL_GROUPS = new Map([
-  ['PRODUCTION_CONDITIONAL', ['INT-PROD-005', 'NEXO-AUTH-007']],
-  ['PRINTING_CONDITIONAL', [
-    ...range('PRINT-ARC', 1, 20),
-  ]],
+const EXPECTED_CONDITIONAL_DESIGN_GROUPS = new Map([
+  ['PRODUCTION_CONDITIONAL', ['INT-PROD-005']],
+  ['PRINTING_CONDITIONAL', range('PRINT-ARC', 1, 20)],
   ['EVIDENCE_CONDITIONAL', range('EVID-ARC', 1, 10)],
   ['QUEUE_CONDITIONAL', range('QUEUE-ARC', 1, 12)],
   ['NOTIFICATIONS_CONDITIONAL', range('NOTIFY-ARC', 1, 10)],
-  ['PHYSICAL_NORMALIZATION_CONDITIONAL', range('DATA-NORM-DB', 1, 10)],
-  ['EXTERNAL_INTEGRATION_CONDITIONAL', range('INT-DB', 1, 8)],
   ['TECHNOLOGY_SUPPORT_CONDITIONAL', [
     ...range('TI-DOM', 1, 13),
     ...range('TI-AUTH', 1, 4),
@@ -124,6 +160,18 @@ const EXPECTED_CONDITIONAL_GROUPS = new Map([
     ...range('CONT-INT', 1, 4),
   ]],
 ]);
+
+const EXPECTED_CONDITIONAL_IMPLEMENTATION_GROUP_IDS = [
+  'PRODUCTION_LINK_IMPLEMENTATION',
+  'PHYSICAL_NORMALIZATION_CONDITIONAL',
+  'EXTERNAL_INTEGRATION_CONDITIONAL',
+];
+const EXPECTED_CONDITIONAL_IMPLEMENTATION_GROUPS = new Map([
+  ['PRODUCTION_LINK_IMPLEMENTATION', ['NEXO-AUTH-007']],
+  ['PHYSICAL_NORMALIZATION_CONDITIONAL', range('DATA-NORM-DB', 1, 10)],
+  ['EXTERNAL_INTEGRATION_CONDITIONAL', range('INT-DB', 1, 8)],
+]);
+
 const EXPECTED_POST_PACKAGE_GROUPS = new Map([
   ['E5_READINESS_PLAN', range('READY-GATE', 1, 15)],
   ['E5_CUTOVER_PLAN', range('CUTOVER-OPS', 1, 10)],
@@ -137,6 +185,7 @@ const EXPECTED_POST_IMPLEMENTATION_GROUPS = new Map([
     'UX-QA-024',
   ]],
 ]);
+
 const ALLOWED_STATUSES = new Set([
   'DESIGNATED_NOT_READY',
   'READY_FOR_E5',
@@ -166,7 +215,7 @@ function expandTaskRanges(taskRanges = []) {
   });
 }
 
-function artifactTaskRefs(artifact) {
+function artifactTaskRefs(artifact = {}) {
   return [
     ...(artifact.task_refs ?? []),
     ...expandTaskRanges(artifact.task_ranges),
@@ -175,12 +224,13 @@ function artifactTaskRefs(artifact) {
 
 function allTaskRefs(lane) {
   return [
-    ...(lane.required_task_artifacts ?? []).flatMap(
+    ...(lane.required_task_artifacts ?? []).flatMap(artifactTaskRefs),
+    ...(lane.conditional_artifacts ?? []).flatMap(artifactTaskRefs),
+    ...(lane.conditional_implementation_artifacts ?? []).flatMap(
       artifactTaskRefs,
     ),
-    ...(lane.conditional_artifacts ?? []).flatMap(
-      artifactTaskRefs,
-    ),
+    ...(lane.execution_prerequisite_artifacts ?? []).flatMap(artifactTaskRefs),
+    ...(lane.implementation_artifacts ?? []).flatMap(artifactTaskRefs),
     ...(lane.post_package_artifacts ?? []).flatMap(artifactTaskRefs),
     ...(lane.post_implementation_artifacts ?? []).flatMap(artifactTaskRefs),
     ...(lane.deferred_but_preserved ?? []).flatMap(artifactTaskRefs),
@@ -191,6 +241,32 @@ function allTaskRefs(lane) {
   ].filter(Boolean);
 }
 
+function groupIds(artifacts = []) {
+  return artifacts.map((artifact) => artifact.artifact_group_id);
+}
+
+function validateExactGroups({
+  laneId,
+  artifacts,
+  expected,
+  errors,
+  label,
+}) {
+  const actualIds = groupIds(artifacts);
+  if (!equalArray(actualIds, [...expected.keys()])) {
+    errors.push(`${laneId}: faltan ${label} o están fuera del orden auditado.`);
+  }
+  for (const [groupId, expectedTasks] of expected) {
+    const artifact = artifacts.find(
+      ({ artifact_group_id: candidate }) => candidate === groupId,
+    );
+    const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
+    if (!equalArray(actualTasks, expectedTasks)) {
+      errors.push(`${laneId}: ${groupId} omite tareas o altera su orden.`);
+    }
+  }
+}
+
 export function validatePriorityDeliveryLaneData({
   data,
   taskIds,
@@ -199,15 +275,14 @@ export function validatePriorityDeliveryLaneData({
 }) {
   const errors = [];
 
-  if (data?.schema_version !== 1) {
-    errors.push('schema_version debe ser 1.');
-  }
+  if (data?.schema_version !== 1) errors.push('schema_version debe ser 1.');
   if (data?.canonical_sequence_unchanged !== true) {
     errors.push('canonical_sequence_unchanged debe permanecer en true.');
   }
   if (data?.global_task_partial_approval_forbidden !== true) {
     errors.push('global_task_partial_approval_forbidden debe permanecer en true.');
   }
+
   const routePolicy = data?.implementation_route_policy;
   if (routePolicy?.default_route !== 'NORMAL_CANONICAL_FLOW') {
     errors.push('la ruta por defecto debe ser NORMAL_CANONICAL_FLOW.');
@@ -259,50 +334,96 @@ export function validatePriorityDeliveryLaneData({
       || lane.excluded_from_closure.length === 0) {
       errors.push(`${lane.lane_id}: debe declarar exclusiones de cierre.`);
     }
-    if (!Array.isArray(lane.invariants) || lane.invariants.length < 8) {
-      errors.push(`${lane.lane_id}: debe conservar al menos ocho invariantes.`);
+    if (!Array.isArray(lane.invariants) || lane.invariants.length < 12) {
+      errors.push(`${lane.lane_id}: debe conservar al menos doce invariantes.`);
     }
 
-    const requiredGroupIds = (lane.required_task_artifacts ?? [])
-      .map((artifact) => artifact.artifact_group_id);
-    const conditionalGroupIds = (lane.conditional_artifacts ?? [])
-      .map((artifact) => artifact.artifact_group_id);
-    const postPackageGroupIds = (lane.post_package_artifacts ?? [])
-      .map((artifact) => artifact.artifact_group_id);
-    const postImplementationGroupIds =
-      (lane.post_implementation_artifacts ?? [])
-        .map((artifact) => artifact.artifact_group_id);
+    const requiredIds = groupIds(lane.required_task_artifacts);
+    const conditionalDesignIds = groupIds(lane.conditional_artifacts);
+    const conditionalImplementationIds = groupIds(
+      lane.conditional_implementation_artifacts,
+    );
+    const prerequisiteIds = groupIds(lane.execution_prerequisite_artifacts);
+    const implementationIds = groupIds(lane.implementation_artifacts);
+    const postPackageIds = groupIds(lane.post_package_artifacts);
+    const postImplementationIds = groupIds(lane.post_implementation_artifacts);
     const allGroupIds = [
-      ...requiredGroupIds,
-      ...conditionalGroupIds,
-      ...postPackageGroupIds,
-      ...postImplementationGroupIds,
+      ...requiredIds,
+      ...conditionalDesignIds,
+      ...conditionalImplementationIds,
+      ...prerequisiteIds,
+      ...implementationIds,
+      ...postPackageIds,
+      ...postImplementationIds,
     ];
     if (allGroupIds.some((groupId) => !groupId)
       || new Set(allGroupIds).size !== allGroupIds.length) {
       errors.push(`${lane.lane_id}: artifact_group_id ausente o duplicado.`);
     }
 
-    const stages = lane.ordered_execution_stages ?? [];
+    const artifactCollections = [
+      lane.required_task_artifacts ?? [],
+      lane.conditional_artifacts ?? [],
+      lane.conditional_implementation_artifacts ?? [],
+      lane.execution_prerequisite_artifacts ?? [],
+      lane.implementation_artifacts ?? [],
+      lane.post_package_artifacts ?? [],
+      lane.post_implementation_artifacts ?? [],
+      lane.deferred_but_preserved ?? [],
+    ];
+    const taskOwners = new Map();
+    for (const artifact of artifactCollections.flat()) {
+      for (const taskId of artifactTaskRefs(artifact)) {
+        const previous = taskOwners.get(taskId);
+        if (previous) {
+          errors.push(
+            `${lane.lane_id}: ${taskId} aparece en más de un grupo (${previous} y ${artifact.artifact_group_id}).`,
+          );
+        } else {
+          taskOwners.set(taskId, artifact.artifact_group_id);
+        }
+      }
+    }
+
+    if (!equalArray(
+      lane.implementation_execution_order ?? [],
+      EXPECTED_IMPLEMENTATION_ORDER,
+    )) {
+      errors.push(`${lane.lane_id}: implementation_execution_order incompleto o desordenado.`);
+    }
+
+    const entryGateId = 'E5_ENTRY_GATES';
+    const postPackageBeforeEntryGate = postPackageIds.filter(
+      (id) => id !== entryGateId,
+    );
     const expectedStageSources = [
-      ...requiredGroupIds.map((groupId) => `required_task_artifacts.${groupId}`),
+      ...requiredIds.map((id) => `required_task_artifacts.${id}`),
       'conditional_artifacts',
+      'conditional_implementation_scope',
       'package_definition_tasks',
-      ...postPackageGroupIds.map(
-        (groupId) => `post_package_artifacts.${groupId}`,
+      ...postPackageBeforeEntryGate.map(
+        (id) => `post_package_artifacts.${id}`,
       ),
+      ...prerequisiteIds.map(
+        (id) => `execution_prerequisite_artifacts.${id}`,
+      ),
+      ...(postPackageIds.includes(entryGateId)
+        ? [`post_package_artifacts.${entryGateId}`]
+        : []),
       'package_gate',
       `execution_cycle.${EXPECTED_CYCLE[0]}`,
-      ...postImplementationGroupIds.map(
-        (groupId) => `post_implementation_artifacts.${groupId}`,
+      ...(lane.implementation_execution_order ?? []).map((id) =>
+        id === 'CONDITIONAL_IMPLEMENTATION_ARTIFACTS'
+          ? 'conditional_implementation_artifacts'
+          : `implementation_artifacts.${id}`),
+      ...postImplementationIds.map(
+        (id) => `post_implementation_artifacts.${id}`,
       ),
-      ...EXPECTED_CYCLE.slice(1).map(
-        (taskId) => `execution_cycle.${taskId}`,
-      ),
+      ...EXPECTED_CYCLE.slice(1).map((id) => `execution_cycle.${id}`),
     ];
-    const stageOrders = stages.map((stage) => stage.order);
+    const stages = lane.ordered_execution_stages ?? [];
     const expectedOrders = expectedStageSources.map((_, index) => index + 1);
-    if (!equalArray(stageOrders, expectedOrders)) {
+    if (!equalArray(stages.map((stage) => stage.order), expectedOrders)) {
       errors.push(
         `${lane.lane_id}: las etapas deben estar numeradas de 1 a ${expectedOrders.length}.`,
       );
@@ -313,87 +434,105 @@ export function validatePriorityDeliveryLaneData({
     )) {
       errors.push(`${lane.lane_id}: el orden ejecutable está incompleto o desordenado.`);
     }
-    const stagedRequiredGroups = stages
-      .map((stage) => stage.task_source)
-      .filter((source) => source?.startsWith('required_task_artifacts.'))
-      .map((source) => source.slice('required_task_artifacts.'.length));
-    if (!equalArray(stagedRequiredGroups, requiredGroupIds)) {
-      errors.push(`${lane.lane_id}: los grupos obligatorios no coinciden con sus etapas.`);
-    }
     if (stages.some((stage) => !stage.stage_id || !stage.rule)) {
       errors.push(`${lane.lane_id}: cada etapa debe declarar stage_id y rule.`);
     }
 
+    const gateIndex = expectedStageSources.indexOf('package_gate');
+    const ciFoundationIndex = expectedStageSources.indexOf(
+      'execution_prerequisite_artifacts.CI_FOUNDATION',
+    );
+    const implementationStartIndex = expectedStageSources.indexOf(
+      'execution_cycle.SHELL-CI-020',
+    );
+    const firstPhysicalIndex = expectedStageSources.findIndex(
+      (source) => source.startsWith('implementation_artifacts.')
+        || source === 'conditional_implementation_artifacts',
+    );
+    const entryGatesIndex = expectedStageSources.indexOf(
+      'post_package_artifacts.E5_ENTRY_GATES',
+    );
+    if (!(ciFoundationIndex < entryGatesIndex
+      && entryGatesIndex < gateIndex
+      && gateIndex < implementationStartIndex
+      && implementationStartIndex < firstPhysicalIndex)) {
+      errors.push(
+        `${lane.lane_id}: CI, E5-GATE-001..008, SHELL-CI-020 e implementación están fuera de orden.`,
+      );
+    }
+
     if (lane.lane_id === 'NEXO-REMISSIONS-001') {
-      if (!equalArray(requiredGroupIds, [...EXPECTED_REQUIRED_GROUPS.keys()])) {
+      validateExactGroups({
+        laneId: lane.lane_id,
+        artifacts: lane.required_task_artifacts ?? [],
+        expected: EXPECTED_REQUIRED_GROUPS,
+        errors,
+        label: 'grupos obligatorios de diseño',
+      });
+      validateExactGroups({
+        laneId: lane.lane_id,
+        artifacts: lane.execution_prerequisite_artifacts ?? [],
+        expected: EXPECTED_EXECUTION_PREREQUISITES,
+        errors,
+        label: 'prerrequisitos de ejecución',
+      });
+      validateExactGroups({
+        laneId: lane.lane_id,
+        artifacts: lane.implementation_artifacts ?? [],
+        expected: EXPECTED_IMPLEMENTATION_GROUPS,
+        errors,
+        label: 'grupos obligatorios de implementación',
+      });
+      if (!equalArray(
+        conditionalDesignIds,
+        EXPECTED_CONDITIONAL_DESIGN_GROUP_IDS,
+      )) {
         errors.push(
-          `${lane.lane_id}: faltan grupos obligatorios o están fuera del orden auditado.`,
+          `${lane.lane_id}: faltan grupos condicionales de diseño o están fuera del orden auditado.`,
         );
       }
-      for (const [groupId, expectedTasks] of EXPECTED_REQUIRED_GROUPS) {
-        const artifact = (lane.required_task_artifacts ?? [])
-          .find(({ artifact_group_id: candidate }) => candidate === groupId);
-        const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
-        if (!equalArray(actualTasks, expectedTasks)) {
-          errors.push(
-            `${lane.lane_id}: ${groupId} omite tareas o altera su orden.`,
-          );
-        }
-      }
-      if (!equalArray(conditionalGroupIds, EXPECTED_CONDITIONAL_GROUP_IDS)) {
-        errors.push(
-          `${lane.lane_id}: faltan grupos condicionales o están fuera del orden auditado.`,
+      for (const [groupId, expectedTasks] of EXPECTED_CONDITIONAL_DESIGN_GROUPS) {
+        const artifact = (lane.conditional_artifacts ?? []).find(
+          ({ artifact_group_id: candidate }) => candidate === groupId,
         );
-      }
-      for (const [groupId, expectedTasks] of EXPECTED_CONDITIONAL_GROUPS) {
-        const artifact = (lane.conditional_artifacts ?? [])
-          .find(({ artifact_group_id: candidate }) => candidate === groupId);
-        const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
-        if (!equalArray(actualTasks, expectedTasks)) {
-          errors.push(
-            `${lane.lane_id}: ${groupId} omite tareas o altera su orden.`,
-          );
+        if (!equalArray(artifact ? artifactTaskRefs(artifact) : [], expectedTasks)) {
+          errors.push(`${lane.lane_id}: ${groupId} omite tareas o altera su orden.`);
         }
       }
       if (!equalArray(
-        postPackageGroupIds,
-        [...EXPECTED_POST_PACKAGE_GROUPS.keys()],
+        conditionalImplementationIds,
+        EXPECTED_CONDITIONAL_IMPLEMENTATION_GROUP_IDS,
       )) {
         errors.push(
-          `${lane.lane_id}: faltan planes o gates E5 posteriores al paquete.`,
-        );
-      }
-      for (const [groupId, expectedTasks] of EXPECTED_POST_PACKAGE_GROUPS) {
-        const artifact = (lane.post_package_artifacts ?? [])
-          .find(({ artifact_group_id: candidate }) => candidate === groupId);
-        const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
-        if (!equalArray(actualTasks, expectedTasks)) {
-          errors.push(
-            `${lane.lane_id}: ${groupId} omite tareas o altera su orden.`,
-          );
-        }
-      }
-      if (!equalArray(
-        postImplementationGroupIds,
-        [...EXPECTED_POST_IMPLEMENTATION_GROUPS.keys()],
-      )) {
-        errors.push(
-          `${lane.lane_id}: faltan certificaciones posteriores a la implementación.`,
+          `${lane.lane_id}: faltan grupos condicionales de implementación o están fuera del orden auditado.`,
         );
       }
       for (
         const [groupId, expectedTasks]
-        of EXPECTED_POST_IMPLEMENTATION_GROUPS
+        of EXPECTED_CONDITIONAL_IMPLEMENTATION_GROUPS
       ) {
-        const artifact = (lane.post_implementation_artifacts ?? [])
-          .find(({ artifact_group_id: candidate }) => candidate === groupId);
-        const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
-        if (!equalArray(actualTasks, expectedTasks)) {
-          errors.push(
-            `${lane.lane_id}: ${groupId} omite tareas o altera su orden.`,
-          );
+        const artifact = (
+          lane.conditional_implementation_artifacts ?? []
+        ).find(({ artifact_group_id: candidate }) => candidate === groupId);
+        if (!equalArray(artifact ? artifactTaskRefs(artifact) : [], expectedTasks)) {
+          errors.push(`${lane.lane_id}: ${groupId} omite tareas o altera su orden.`);
         }
       }
+      validateExactGroups({
+        laneId: lane.lane_id,
+        artifacts: lane.post_package_artifacts ?? [],
+        expected: EXPECTED_POST_PACKAGE_GROUPS,
+        errors,
+        label: 'planes o gates E5 posteriores al paquete',
+      });
+      validateExactGroups({
+        laneId: lane.lane_id,
+        artifacts: lane.post_implementation_artifacts ?? [],
+        expected: EXPECTED_POST_IMPLEMENTATION_GROUPS,
+        errors,
+        label: 'certificaciones posteriores a la implementación',
+      });
+
       const deferred = new Set(
         (lane.deferred_but_preserved ?? []).flatMap(artifactTaskRefs),
       );
@@ -402,7 +541,7 @@ export function validatePriorityDeliveryLaneData({
         'AUTH-DB-031',
         'AUTH-DEV-015',
         'AUTH-DEV-016',
-        ...range('NEXO-DOM', 1, 38),
+        ...range('NEXO-DOM', 2, 38),
         ...range('NEXO-AUTH', 21, 32),
         ...range('NEXO-UX', 26, 48),
       ]) {
@@ -415,9 +554,7 @@ export function validatePriorityDeliveryLaneData({
     const unknownTasks = [...new Set(allTaskRefs(lane))]
       .filter((taskId) => !taskIds.has(taskId));
     if (unknownTasks.length) {
-      errors.push(
-        `${lane.lane_id}: tareas inexistentes: ${unknownTasks.join(', ')}.`,
-      );
+      errors.push(`${lane.lane_id}: tareas inexistentes: ${unknownTasks.join(', ')}.`);
     }
   }
 
@@ -428,8 +565,12 @@ export function validatePriorityDeliveryLaneData({
       'canonical_sequence_unchanged = true',
       '¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO?',
       'Orden ejecutable de NEXO-REMISSIONS-001',
-      'desde la etapa 1 hasta la 39',
-      'H_SHARED_AUDIT',
+      'desde la etapa 1 hasta la 44',
+      'NEXO_INVENTORY_CLASSIFICATION',
+      'CONDITIONAL_IMPLEMENTATION_SCOPE',
+      'Ninguna tarea de implementación, migración o cambio físico comienza antes',
+      'CI_FOUNDATION',
+      'R2_NEXO_DATABASE_PACKAGE',
       'E5_READINESS_PLAN',
       'U_AUTHORIZATION_CERTIFICATION',
       'SHELL-CI-024::NEXO-REMISSIONS-001',
@@ -495,7 +636,6 @@ export function validatePriorityDeliveryLaneData({
 function readTaskIds(blocksRoot) {
   const taskIds = new Set();
   const pending = [blocksRoot];
-
   while (pending.length) {
     const current = pending.pop();
     for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
@@ -510,7 +650,6 @@ function readTaskIds(blocksRoot) {
       }
     }
   }
-
   return taskIds;
 }
 
@@ -544,7 +683,6 @@ export function validatePriorityDeliveryLanes({ root = process.cwd() } = {}) {
 const isCli =
   process.argv[1]
   && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-
 if (isCli) {
   try {
     const stats = validatePriorityDeliveryLanes();

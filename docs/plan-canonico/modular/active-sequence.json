@@ -1,14 +1,39 @@
 {
   "schema_version": 1,
-  "sequence_id": "E3-SUPABASE-ARCHITECTURE-001",
+  "sequence_id": "E3-SUPABASE-NORMALIZATION-AND-TRANSITION-001",
   "block_code": "BLOQUE E3",
   "block_title": "Arquitectura canónica de datos y gobierno integral de Supabase",
-  "previous_task_id": "SUPA-AUD-024",
+  "previous_task_id": "SUPA-ARC-024",
   "segments": [
     {
-      "prefix": "SUPA-ARC",
+      "prefix": "DATA-NORM-AUD",
       "from": 1,
+      "to": 7
+    },
+    {
+      "prefix": "DATA-NORM-ARC",
+      "from": 1,
+      "to": 12
+    },
+    {
+      "prefix": "SUPA-ARC",
+      "from": 25,
       "to": 25
+    },
+    {
+      "prefix": "SUPA-TRANS",
+      "from": 1,
+      "to": 15
+    },
+    {
+      "prefix": "DATA-NORM-TRANS",
+      "from": 1,
+      "to": 9
+    },
+    {
+      "prefix": "SUPA-TRANS",
+      "from": 16,
+      "to": 16
     }
   ]
 }

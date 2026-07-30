@@ -21,7 +21,8 @@
 | Relación | Tarea | Estado |
 | --- | --- | --- |
 | Última aprobada | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ⬜ NO INICIADA |
+| Tarea actual | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | ⬜ NO INICIADA |
 
 ## Registro completo
 
