@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "task_artifact": {
+    "filename": "<TASK-ID>_APROBADA_PARA_REEMPLAZAR.md",
+    "exactly_one_task": true,
+    "allow_replacement_instructions_inside_file": false,
+    "allow_chat_instructions_inside_file": false,
+    "allow_global_summary_inside_file": false
+  },
+  "registry_artifact": {
+    "canonical_repository_filename": "04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md",
+    "delivery_filename": "04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA__ACTUALIZADO_HASTA_<TASK-ID>__R<REVISION>__<TIMESTAMP>.md",
+    "delivery_filename_must_be_unique": true,
+    "replace_complete_file": true
+  },
+  "chat_only_content": [
+    "marcador exacto que debe reemplazarse",
+    "instrucción de reemplazo",
+    "advertencia de reemplazar 04A completamente",
+    "validaciones ejecutadas",
+    "validaciones pendientes",
+    "enlaces de descarga"
+  ],
+  "forbidden_inside_task": [
+    "Marcador exacto que reemplaza",
+    "Instrucción de reemplazo",
+    "Descargar",
+    "Reemplazar completamente 04A",
+    "copiar o combinar filas",
+    "VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE"
+  ]
+}

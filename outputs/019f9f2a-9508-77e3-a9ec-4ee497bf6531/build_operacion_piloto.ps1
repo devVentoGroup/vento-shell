@@ -288,6 +288,12 @@ function Write-BuildLog {
 
 $excel = $null
 $workbook = $null
+$realDataPath = Join-Path $OutputDirectory "operacion_piloto_data.json"
+$realData = if (Test-Path -LiteralPath $realDataPath) {
+    Get-Content -LiteralPath $realDataPath -Raw -Encoding UTF8 | ConvertFrom-Json
+} else {
+    $null
+}
 try {
     $excel = New-Object -ComObject Excel.Application
     $excel.Visible = $false
@@ -323,6 +329,9 @@ try {
         EstadosCalidad = @("PENDIENTE", "LIBERADO", "RETENIDO", "RECHAZADO", "CORREGIDO")
         SiNo = @("SÍ", "NO")
         MetodosRecepcion = @("CONTEO", "PESO", "VOLUMEN", "ESCANEO", "MIXTO")
+    }
+    if ($null -ne $realData -and $realData.sedes.Count -gt 0) {
+        $listData.Sedes = @($realData.sedes)
     }
 
     $columnIndex = 1
@@ -361,9 +370,19 @@ try {
         controla_vencimiento = "lstSiNo"; controla_frio = "lstSiNo"; es_retornable = "lstSiNo";
         estado_registro = "lstEstadosRegistro"
     }
+    $catalogDescription = if ($null -ne $realData) {
+        "Catálogo real de productos activos sincronizado desde Supabase. Se conserva una presentación operativa priorizada por producto para evitar duplicar el identificador canónico."
+    } else {
+        "Define producto, presentación y unidad sin mezclar conceptos. Los diez códigos iniciales son espacios del piloto, no datos productivos."
+    }
+    $catalogInstruction = if ($null -ne $realData) {
+        "Los campos de lote, vencimiento, frío, retornable y proveedor quedan vacíos cuando la base no contiene evidencia suficiente. Revísalos antes de operar."
+    } else {
+        "Completa primero nombre, categoría, presentación y unidades. No reutilices un producto_id para otro producto."
+    }
     $catalog = Add-TableSheet $workbook "01_CATALOGOS" "Catálogo maestro del piloto" `
-        "Define producto, presentación y unidad sin mezclar conceptos. Los diez códigos iniciales son espacios del piloto, no datos productivos." `
-        "Completa primero nombre, categoría, presentación y unidades. No reutilices un producto_id para otro producto." `
+        $catalogDescription `
+        $catalogInstruction `
         "tblCatalogos" $catalogHeaders $catalogRows $catalogWidths $catalogValidations @{} @("fecha_alta") `
         @("factor_conversion", "temperatura_min_c", "temperatura_max_c") @()
     Write-BuildLog "SHEET_01"
@@ -388,9 +407,19 @@ try {
     $locationValidations = @{
         sede = "lstSedes"; permite_inventario = "lstSiNo"; requiere_frio = "lstSiNo"; estado_registro = "lstEstadosRegistro"
     }
+    $locationDescription = if ($null -ne $realData) {
+        "Sedes, áreas y ubicaciones físicas activas sincronizadas desde Supabase. Cada ubicacion_id conserva su UUID canónico."
+    } else {
+        "Ubica cada movimiento en una sede y LOC concreta. Las ubicaciones propuestas deben validarse físicamente antes de marcarse ACTIVAS."
+    }
+    $locationInstruction = if ($null -ne $realData) {
+        "Valida físicamente el control de frío y completa responsables; no se infirieron esos datos desde nombres o códigos."
+    } else {
+        "Recorre cada sede, completa área/zona/punto y valida si permite inventario o requiere control de frío."
+    }
     $locations = Add-TableSheet $workbook "02_UBICACIONES" "Sedes y ubicaciones físicas" `
-        "Ubica cada movimiento en una sede y LOC concreta. Las ubicaciones propuestas deben validarse físicamente antes de marcarse ACTIVAS." `
-        "Recorre cada sede, completa área/zona/punto y valida si permite inventario o requiere control de frío." `
+        $locationDescription `
+        $locationInstruction `
         "tblUbicaciones" $locationHeaders $locationRows $locationWidths $locationValidations @{} @() @() @()
     Write-BuildLog "SHEET_02"
 
@@ -476,13 +505,8 @@ try {
         @("fecha_recepcion") @("cantidad_recibida", "cantidad_conforme", "cantidad_no_conforme", "temperatura_c") @()
     Write-BuildLog "SHEET_05"
 
-    # La fórmula cruzada se asigna solo después de que 05_RECEPCIONES existe.
-    # Así Excel conserva una referencia interna y no crea un vínculo de libro externo.
-    $receivedColumn = $remissions.ListObjects.Item("tblRemisiones").ListColumns.Item("cantidad_recibida").DataBodyRange
-    $receivedColumn.Formula = '=IF(OR(A8="",G8=""),"",SUMIFS(''05_RECEPCIONES''!$I$8:$I$200,''05_RECEPCIONES''!$B$8:$B$200,A8,''05_RECEPCIONES''!$F$8:$F$200,G8,''05_RECEPCIONES''!$G$8:$G$200,I8))'
-    $receivedColumn.Interior.Color = $colors.Formula
-    $receivedColumn.Font.Color = $colors.Navy
-    Write-BuildLog "REMISSION_INTERNAL_REFERENCE_CREATED"
+    # La fórmula cruzada se asigna después del primer guardado. En un libro nuevo
+    # y aún sin ruta, Excel puede intentar resolver 05_RECEPCIONES como otro libro.
 
     $countHeaders = @(
         "sesion_conteo_id", "fecha_corte", "sede", "ubicacion_id", "responsable", "metodo",
@@ -642,7 +666,7 @@ try {
     $panel.Range("A7:L7").HorizontalAlignment = -4108
 
     $kpis = @(
-        @("Productos activos", '=COUNTIF(''01_CATALOGOS''!$P$8:$P$200,"ACTIVO")', $colors.Blue),
+        @("Productos activos", '=COUNTIF(tblCatalogos[estado_registro],"ACTIVO")', $colors.Blue),
         @("Solicitudes abiertas", '=COUNTIFS(''03_SOLICITUDES''!$A$8:$A$200,"<>",''03_SOLICITUDES''!$G$8:$G$200,"<>CERRADA",''03_SOLICITUDES''!$G$8:$G$200,"<>CANCELADA")', $colors.Teal),
         @("Remisiones en tránsito", '=COUNTIF(''04_REMISIONES''!$F$8:$F$200,"EN TRÁNSITO")', $colors.Orange),
         @("Diferencias recepción", '=COUNTIFS(''04_REMISIONES''!$A$8:$A$200,"<>",''04_REMISIONES''!$R$8:$R$200,"<>0")', $colors.Red),
@@ -933,6 +957,16 @@ End Sub
     $workbook.Save()
     Write-BuildLog "SAVED"
 
+    $receivedColumn = $remissions.ListObjects.Item("tblRemisiones").ListColumns.Item("cantidad_recibida").DataBodyRange
+    foreach ($cell in @($receivedColumn.Cells)) {
+        $row = $cell.Row
+        $cell.Formula = "=IF(OR(A$row="""",G$row=""""),"""",SUMIFS('05_RECEPCIONES'!`$I`$8:`$I`$200,'05_RECEPCIONES'!`$B`$8:`$B`$200,A$row,'05_RECEPCIONES'!`$F`$8:`$F`$200,G$row,'05_RECEPCIONES'!`$G`$8:`$G`$200,I$row))"
+    }
+    $receivedColumn.Interior.Color = $colors.Formula
+    $receivedColumn.Font.Color = $colors.Navy
+    $workbook.Save()
+    Write-BuildLog "REMISSION_INTERNAL_REFERENCE_CREATED"
+
     $verification = [ordered]@{
         output = $outputPath
         sheets = @()
@@ -1000,3 +1034,11 @@ finally {
 }
 
 Write-Output $outputPath
+
+if ($null -ne $realData) {
+    $populateScript = Join-Path $PSScriptRoot "populate_operacion_piloto.ps1"
+    $verifyScript = Join-Path $PSScriptRoot "verify_operacion_piloto.ps1"
+    & $populateScript -WorkbookPath $outputPath -DataPath $realDataPath | Out-Null
+    & $verifyScript -WorkbookPath $outputPath `
+        -ReportPath (Join-Path $OutputDirectory "verification_real_data.json") | Out-Null
+}

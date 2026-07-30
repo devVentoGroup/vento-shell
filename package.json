@@ -25,6 +25,7 @@
     "docs:delivery-lanes:check": "node scripts/docs/validate-priority-delivery-lanes.mjs",
     "docs:delivery-lanes:sync": "node scripts/docs/sync-priority-delivery-lanes-doc.mjs",
     "docs:int-app:check": "node scripts/docs/validate-event-application-block.mjs",
+    "docs:delivery:check": "node scripts/docs/validate-task-delivery.mjs",
     "docs:treq:check": "node scripts/docs/validate-treq-registry.mjs",
     "docs:treq:test": "node --test scripts/docs/validate-treq-registry.test.mjs scripts/docs/treq-safe-reconcile.test.mjs",
     "docs:plan:watch": "node scripts/docs/watch-plan-canonico.mjs"
@@ -44,7 +45,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
-    "png-to-ico": "^2.1.3",
+    "png-to-ico": "^1.3.1",
     "sharp": "^0.33.5",
     "tailwindcss": "^4",
     "typescript": "^5"

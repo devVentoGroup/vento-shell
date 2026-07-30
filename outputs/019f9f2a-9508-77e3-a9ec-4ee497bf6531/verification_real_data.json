@@ -1,0 +1,29 @@
+{
+  "workbook": "C:\\Users\\User\\devVentoGroup\\vento-shell\\outputs\\019f9f2a-9508-77e3-a9ec-4ee497bf6531\\VENTO_OPERACION_PILOTO.xlsm",
+  "verified_at": "2026-07-29T21:18:13.1848231-05:00",
+  "sheets": 14,
+  "tables": 11.0,
+  "catalog_rows": 950,
+  "location_rows": 12,
+  "first_product": "Abatidor",
+  "last_product": "Zumo de Limón",
+  "placeholder_products": 0,
+  "dashboard_active_products": 950.0,
+  "lstProductos": "=tblCatalogos[producto_id]",
+  "lstUbicaciones": "=tblUbicaciones[ubicacion_id]",
+  "lstSedes": "='99_LISTAS'!$A$2:$A$8",
+  "external_links": 0,
+  "external_formulas": [],
+  "formula_errors": [],
+  "macro_present": true,
+  "macro_size": 37888,
+  "backup_macro_size": 37888,
+  "macro_different_bytes": 15,
+  "macro_structurally_preserved": true,
+  "validation_types": {
+    "catalog_status": 3,
+    "catalog_unit": 3,
+    "location_site": 3,
+    "remission_product": 3
+  }
+}
