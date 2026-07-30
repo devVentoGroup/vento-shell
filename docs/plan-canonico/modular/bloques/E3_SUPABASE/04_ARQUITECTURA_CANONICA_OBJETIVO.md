@@ -8825,7 +8825,778 @@ SUPA-ARC-017 — Definir política de escrituras entre dominios
 `SUPA-ARC-017` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-017 — Definir política de escrituras entre dominios
+### ✅ SUPA-ARC-017 — Definir política de escrituras entre dominios
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio — APROBADA
+**Tarea siguiente:** `SUPA-ARC-018 — Definir arquitectura de Storage`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `925e33e5788bac0a1f9278ddc9410e621c400099`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `41d02e802accf7107ce8300b0090a7209d8763b0`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` blob `8502533e144e5c1878192f470e766da99c522ecd`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `df3f7e85226a37ad7e56a7fdfff0c07a9fca1495`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa de fronteras transaccionales, comandos propietarios, coordinación durable, sagas, eventos, outbox, inbox, idempotencia, outcomes, parcialidad, compensación, conciliación, migración controlada y seguridad para escrituras que involucren dos o más owner schemas; sin crear, alterar, ejecutar, conceder, revocar, migrar o retirar schemas, tablas, funciones, RPC, triggers, policies, grants, RLS, datos, colas, workers, Edge Functions, webhooks, cron, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una política única y verificable para coordinar efectos empresariales que atraviesan dos o más owner schemas sin permitir escrituras laterales, autoridad compartida, transacciones distribuidas fingidas, cascadas ocultas ni bypass mediante credenciales técnicas.
+
+```text
+UNA INTENCIÓN EMPRESARIAL
+        ↓
+UN OWNER PRIMARIO Y UN REGISTRO DE COORDINACIÓN
+        ↓
+COMANDOS PROPIETARIOS INDEPENDIENTES
+        ↓
+COMMIT LOCAL + EVENTO + OUTBOX + AUDITORÍA
+        ↓
+REACCIÓN DEL SIGUIENTE OWNER MEDIANTE INBOX
+        ↓
+OUTCOMES POR PASO + RESULTADO GLOBAL
+        ↓
+COMPENSACIÓN O CONCILIACIÓN CUANDO APLIQUE
+```
+
+La tarea convierte las fronteras aprobadas por `INT-APP-010` y `SUPA-ARC-016` en una política de arquitectura de datos. No materializa coordinadores, tablas, colas, handlers ni eventos y no autoriza que una sola transacción confirme efectos empresariales de dos owner schemas.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-CROSS-DOMAIN-WRITE-POLICY-001@1.0.0
+```
+
+| Propiedad                                           |        Valor |
+| --------------------------------------------------- | -----------: |
+| `owner_schema_coverage`                             | **26 de 26** |
+| `process_coverage`                                  | **69 de 69** |
+| `allowed_write_pattern_count`                       |        **5** |
+| `interaction_family_count`                          |       **10** |
+| `prohibited_cross_write_route_count`                |       **12** |
+| `coordination_lifecycle_state_count`                |       **14** |
+| `owner_step_outcome_count`                          |       **10** |
+| `current_vento_relations_subject_to_classification` |      **379** |
+| `current_vento_functions_subject_to_classification` |      **347** |
+| `current_vento_triggers_subject_to_classification`  |      **196** |
+| `direct_foreign_owner_dml_target`                   |        **0** |
+| `client_multi_owner_transaction_target`             |        **0** |
+| `distributed_two_phase_commit_target`               |        **0** |
+| `exactly_once_delivery_claim_target`                |        **0** |
+| `new_test_requirements`                             |       **56** |
+| `physical_changes_authorized`                       |        **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                        | Decisión consumida                                                                                               |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                             | continuidad, preservación histórica, fase documental y separación entre definición e implementación              |
+| `delivery-contract.json`                                      | una sola tarea y registro 04A completo con identidad única de entrega                                            |
+| `active-sequence.json`                                        | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-017` como tarea actual                                      |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0`  | 26 owner schemas, autoridad única y prohibición de transferir ownership por dependencia                          |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                   | `COMMAND_RPC` como frontera mutante expuesta y `api` sin estado ni autoridad                                     |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                   | `INTERNAL_COORDINATOR` sin tablas ni autoridad propia y `app_private` sin persistencia empresarial               |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`           | evento, outbox, inbox, auditoría, efecto consumidor y conciliación como registros separados                      |
+| `SUPABASE-KEY-CONSTRAINT-STATE-TIME-STANDARD-001@1.0.0`       | claves, estados, timestamps, idempotencia, concurrencia y vigencias                                              |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`            | comandos, triggers, firmas y efectos primarios inequívocos                                                       |
+| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0`                  | invoker por defecto, elevación individual y prohibición de bypass por privilegio                                 |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`               | grants mínimos, RLS, cero DML cliente directo y audiencias técnicas separadas                                    |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0`   | 26 perfiles, 69 procesos, un efecto primario por comando y bloqueo previo de coordinación multi-owner            |
+| `ENTERPRISE-EVENT-CATALOG-001@1.0.0`                          | 395 definiciones normales, 69 procesos, envelope común y hechos confirmados por productora                       |
+| `INT-APP-004` a `INT-APP-010`                                 | idempotencia, retry, compensación, auditoría, sincronización, error parcial y prohibición de escrituras cruzadas |
+| `SUPABASE-OBJECT-CAPABILITY-OWNERSHIP-CONSUMER-MAP-022@1.0.0` | 379 relaciones, 347 funciones, 196 triggers y consumidores actuales                                              |
+| `SUPABASE-PROCESS-DATA-RPC-EVENT-APPLICATION-MAP-023@1.0.0`   | 69 procesos, objetos, automatismos, eventos, consumidoras y brechas de fuente                                    |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`            | 5.439 requisitos hasta `SUPA-ARC-016`; rango `TREQ-SUPABASE-001` a `1144`                                        |
+
+#### 4. Distinciones normativas
+
+```text
+MISMA BASE DE DATOS ≠ MISMO OWNER EMPRESARIAL
+FK ENTRE SCHEMAS ≠ DERECHO DE ESCRITURA
+COMANDO A OTRO OWNER ≠ DML SOBRE SU TABLA
+COORDINACIÓN ≠ AUTORIDAD COMPARTIDA
+SAGA ≠ TRANSACCIÓN DISTRIBUIDA
+OUTBOX INSERTADO ≠ EFECTO EXTERNO CONFIRMADO
+ACK DE TRANSPORTE ≠ RESULTADO EMPRESARIAL
+EVENTO RECIBIDO ≠ PERMISO PARA REESCRIBIR AL EMISOR
+COMPENSACIÓN ≠ ROLLBACK TÉCNICO GLOBAL
+RECONCILIACIÓN ≠ EDICIÓN MANUAL MULTI-DOMINIO
+SERVICE_ROLE ≠ AUTORIZACIÓN EMPRESARIAL
+APP_PRIVATE ≠ OWNER DE PROCESO
+```
+
+La política se aplica aunque los participantes compartan proyecto Supabase, conexión, transacción técnica disponible, repositorio, aplicación, operador o credencial.
+
+#### 5. Principios obligatorios
+
+1. Todo efecto empresarial será confirmado exclusivamente por el owner schema que posee ese hecho.
+2. Un comando tendrá un solo efecto primario y un solo `primary_owner_schema_id`.
+3. Un proceso que requiera varios efectos se descompondrá en comandos propietarios independientes.
+4. Ningún cliente, aplicación, helper, trigger, worker, webhook, cron, migración o rol técnico obtendrá escritura universal.
+5. La coordinación podrá conocer outcomes y referencias, pero no modificar las tablas autoritativas de los participantes.
+6. Cada owner revalidará autorización, contrato, estado, concurrencia e invariantes antes de su commit.
+7. El éxito global solo se declarará cuando todos los pasos obligatorios tengan outcome verificable compatible con el cierre.
+8. Un efecto confirmado no se borrará porque un paso posterior falle.
+9. `RESULT_UNKNOWN` bloqueará decisiones dependientes hasta consulta o conciliación.
+10. Retry, replay, backfill, operación offline y emergencia conservarán owner, command id, idempotencia y límites.
+11. La compensación será una intención nueva ejecutada por el owner del efecto original.
+12. Las proyecciones consumidoras podrán reconstruirse, pero nunca usarse para sobrescribir la fuente.
+13. La evidencia técnica en `audit` no adquiere autoridad empresarial.
+14. Una ruta no registrada fallará cerrada y producirá evidencia mínima de denegación.
+15. No se afirmará entrega exactly-once; la política usa entrega al menos una vez con deduplicación e idempotencia.
+16. La topología física posterior deberá ser reproducible, observable, conciliable y reversible desde `vento-shell`.
+
+#### 6. Unidad de autoridad y coordinación
+
+Toda coordinación tendrá:
+
+```text
+un proceso primario
++ un owner schema primario
++ una intención iniciadora
++ cero o más owner schemas participantes
++ un plan versionado de pasos
++ outcomes por paso
++ un resultado global
+```
+
+Reglas:
+
+1. El owner primario posee únicamente el estado de coordinación y el resultado de su proceso, no los efectos de otros owners.
+2. El estado durable de coordinación residirá en el owner schema primario del proceso.
+3. `app_private.INTERNAL_COORDINATOR` podrá secuenciar funciones registradas, pero permanecerá sin tablas, ledger ni autoridad propia.
+4. `audit.RECONCILIATION_CASE` conservará evidencia y seguimiento transversal, pero la decisión empresarial corresponderá al owner designado.
+5. Una consola administrativa podrá iniciar o presentar la coordinación; no se convertirá en owner de los efectos.
+6. El transportador, scheduler o worker ejecutará instrucciones contractuales y no decidirá reglas empresariales.
+7. El owner de cada paso conservará su propia idempotencia, versión, auditoría, evento y capacidad de corrección.
+
+#### 7. Patrones de escritura permitidos
+
+| Patrón                         | Uso                                                                               | Regla de commit                                                                                    | Prohibición dominante                                          |
+| ------------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `OWNER_LOCAL_ATOMIC_COMMAND`   | una intención produce un efecto en un solo owner schema                           | efecto, versión, idempotencia, evento, outbox y ancla auditable se confirman en una frontera local | no tocar otro owner schema                                     |
+| `ORCHESTRATED_SAGA`            | pasos ordenados, dependencias, decisiones, deadlines, compensación o intervención | el owner primario conserva el estado de coordinación y emite comandos a cada owner                 | no declarar atomicidad global                                  |
+| `CHOREOGRAPHED_EVENT_REACTION` | un hecho confirmado habilita reacciones independientes y acotadas                 | cada consumidor confirma su propio efecto tras inbox y deduplicación                               | no usar eventos como comandos genéricos ni crear ciclos opacos |
+| `HANDOFF_WITH_ACCEPTANCE`      | transferencia de custodia, responsabilidad o trabajo                              | origen solicita, destino acepta o rechaza y cada owner registra su estado                          | no inferir aceptación por envío o recepción técnica            |
+| `CONTROLLED_MIGRATION`         | transformación o movimiento excepcional y versionado                              | cada owner ejecuta procedimientos aprobados con dry run, checkpoints y conciliación                | no convertir el mecanismo en ruta de runtime                   |
+
+La elección será explícita por proceso y versión. No se seleccionará un patrón solo por comodidad técnica o porque todos los objetos residan en PostgreSQL.
+
+#### 8. Familias de interacción permitidas
+
+Se preservan exactamente las diez familias aprobadas:
+
+```text
+OWNER_COMMAND
+OWNER_QUERY
+EVENT_NOTIFICATION
+HANDOFF_REQUEST
+CONSUMER_PROJECTION_UPDATE
+CORRECTION_REQUEST
+COMPENSATION_REQUEST
+RECONCILIATION_CASE
+EXTERNAL_ADAPTER_EXCHANGE
+CONTROLLED_MIGRATION
+```
+
+Solo `OWNER_COMMAND`, `HANDOFF_REQUEST`, `CORRECTION_REQUEST`, `COMPENSATION_REQUEST` y `CONTROLLED_MIGRATION` podrán originar un efecto propietario, siempre dentro del owner que lo confirma. Las demás familias consultan, notifican, proyectan, adaptan o concilian sin editar fuentes ajenas.
+
+#### 9. Rutas expresamente prohibidas
+
+Se preservan las doce rutas cerradas de `INT-APP-010`:
+
+```text
+DIRECT_FOREIGN_TABLE_WRITE
+DIRECT_FOREIGN_RPC_WITHOUT_CONTRACT
+CLIENT_MULTI_OWNER_TRANSACTION
+SHARED_SCHEMA_OWNER_BYPASS
+TRIGGER_CASCADE_INTO_FOREIGN_DOMAIN
+WORKER_OR_CRON_FOREIGN_MUTATION
+WEBHOOK_DIRECT_FOREIGN_MUTATION
+CONSUMER_PROJECTION_AS_SOURCE_WRITE
+MANUAL_SQL_CROSS_DOMAIN_REPAIR
+BATCH_OR_IMPORT_CROSS_DOMAIN_WRITE
+COMPENSATION_BY_FOREIGN_EDIT
+SHELL_OR_ADMIN_HUB_FOREIGN_MUTATION
+```
+
+Cualquier objeto actual que materialice una de estas rutas será clasificado para contención, sustitución y retiro; su funcionamiento actual no constituye aprobación.
+
+#### 10. Fronteras transaccionales
+
+| Frontera                | Contenido atómico permitido                                                                         | Contenido excluido                                      |
+| ----------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `OWNER_COMMAND_TX`      | efecto primario del owner, versión, resultado idempotente, evento durable, outbox y ancla auditable | efectos empresariales de otro owner                     |
+| `COORDINATION_STATE_TX` | estado del coordinador primario y solicitud durable del siguiente paso                              | commit del owner participante                           |
+| `CONSUMER_EFFECT_TX`    | inbox, deduplicación, efecto del consumidor, evento derivado y resultado local                      | reescritura del emisor                                  |
+| `EXTERNAL_DISPATCH_TX`  | intención de entrega, intento y receipt técnico                                                     | confirmación del proveedor o efecto empresarial externo |
+
+La escritura técnica en `audit` dentro de `OWNER_COMMAND_TX` no constituye un segundo owner empresarial. Permite preservar atomicidad entre hecho, evento, outbox y evidencia sin transferir autoridad a la capa transversal.
+
+No se utilizarán two-phase commit, prepared transactions, commit coordinado desde el cliente ni una función SQL que modifique dos owner schemas para simular atomicidad global.
+
+#### 11. Registro conceptual de coordinación durable
+
+Cada coordinación conservará como mínimo:
+
+```text
+coordination_id
++ coordination_type
++ coordination_version
++ lifecycle_state
++ primary_owner_schema_id
++ primary_process_id
++ primary_process_instance_id
++ initiating_contract_id
++ initiating_command_id
++ initiating_application
++ principal_id
++ effective_actor_id
++ participant_owner_schema_ids
++ step_plan_version
++ current_step_id
++ correlation_id
++ causation_id
++ idempotency_scope
++ request_fingerprint_ref
++ authorization_snapshot_ref
++ deadline_at
++ compensation_plan_ref
++ reconciliation_policy_ref
++ global_outcome
++ created_at
++ updated_at
++ completed_at
+```
+
+Los payloads sensibles no se copiarán al registro de coordinación. Se conservarán referencias mínimas, hashes o evidencias protegidas según finalidad.
+
+#### 12. Registro conceptual de cada paso
+
+```text
+step_id
++ coordination_id
++ sequence_or_dependency_set
++ owner_schema_id
++ process_id
++ command_contract_id
++ command_contract_version
++ command_id
++ required_flag
++ dependency_step_ids
++ idempotency_key
++ request_fingerprint_ref
++ expected_resource_version
++ deadline_at
++ attempt_count
++ step_outcome
++ business_result_ref
++ event_id
++ outbox_item_id
++ owner_receipt_id
++ started_at
++ settled_at
++ result_unknown_since
++ compensation_step_id
++ reconciliation_case_id
+```
+
+El coordinador no interpretará una fila modificada, un HTTP `2xx`, un ACK, un mensaje publicado o un outbox despachado como `EFFECT_CONFIRMED` sin el receipt empresarial del owner.
+
+#### 13. Lifecycle de coordinación
+
+| Estado                    | Semántica                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `DRAFT`                   | plan definido, sin ejecución habilitada                                         |
+| `READY`                   | contrato, participantes, autorización inicial y precondiciones listos           |
+| `IN_PROGRESS`             | existe al menos un paso iniciado y ningún bloqueo terminal                      |
+| `WAITING_FOR_OWNER`       | se espera receipt o resultado de un owner                                       |
+| `WAITING_FOR_DEPENDENCY`  | un paso no puede iniciar hasta confirmar una condición previa                   |
+| `PARTIALLY_APPLIED`       | existen efectos confirmados y otros pendientes, fallidos o desconocidos         |
+| `RESULT_UNKNOWN`          | no puede demostrarse si un paso produjo efecto                                  |
+| `COMPENSATION_REQUIRED`   | existe un efecto confirmado que debe tratarse mediante acción propietaria nueva |
+| `COMPENSATING`            | uno o más comandos compensatorios están en curso                                |
+| `RECONCILIATION_REQUIRED` | las fuentes u outcomes requieren comparación y decisión autorizada              |
+| `COMPLETED`               | todos los pasos obligatorios tienen resultado compatible con cierre             |
+| `FAILED_TERMINAL`         | la coordinación cerró sin poder completar y sin efectos pendientes desconocidos |
+| `CANCELLED_BEFORE_EFFECT` | la intención se canceló antes de cualquier efecto confirmado                    |
+| `SUPERSEDED`              | otra coordinación reemplazó la intención con identidad y vínculo explícitos     |
+
+Un estado terminal no se reabre. Una continuación material crea una coordinación sucesora o un caso de conciliación vinculado.
+
+#### 14. Outcomes cerrados por paso propietario
+
+Se preservan exactamente:
+
+```text
+REJECTED_AUTHORIZATION
+REJECTED_CONTRACT
+REJECTED_BUSINESS
+ACCEPTED_PENDING
+EFFECT_CONFIRMED
+PRIOR_RESULT_REPLAYED
+CONFLICT
+RESULT_UNKNOWN
+PARTIALLY_APPLIED
+RECONCILIATION_REQUIRED
+```
+
+Reglas:
+
+1. `REJECTED_*` produce cero efectos nuevos.
+2. `ACCEPTED_PENDING` no habilita pasos que dependan de un efecto confirmado.
+3. `EFFECT_CONFIRMED` exige referencia durable al resultado del owner.
+4. `PRIOR_RESULT_REPLAYED` devuelve el resultado previo de la misma intención.
+5. `CONFLICT` requiere resolución, nueva precondición o rechazo; no se convierte en retry ciego.
+6. `RESULT_UNKNOWN` bloquea retry destructivo, compensación y cierre.
+7. `PARTIALLY_APPLIED` enumera unidades confirmadas, pendientes, fallidas y desconocidas.
+8. `RECONCILIATION_REQUIRED` crea o vincula un caso con owner y SLA definidos.
+
+#### 15. Inicio, routing y aceptación
+
+1. La superficie iniciadora será un `COMMAND_RPC` de `api` o un contrato interno registrado.
+2. El servidor resolverá `primary_owner_schema_id`, participantes y plan; el cliente no enviará nombres de schema, tabla, función o owner como autoridad.
+3. La coordinación validará versión contractual, actor, aplicación, proceso, recurso, territorio, segregación, deadline e idempotencia.
+4. Crear el registro de coordinación no confirma ninguno de los efectos participantes.
+5. Cada owner podrá rechazar el paso aunque la coordinación haya sido autorizada inicialmente.
+6. Una modificación material de importe, cantidad, recurso, destinatario, alcance o plan crea una coordinación sucesora.
+7. El routing será allowlisted y versionado; una ruta ausente o ambigua falla cerrada.
+
+#### 16. Orquestación tipo saga
+
+La orquestación será obligatoria cuando exista:
+
+- orden estricto entre pasos;
+- branching según resultado;
+- deadline o expiración global;
+- compensación planificada;
+- intervención humana;
+- necesidad de presentar un estado global;
+- dependencia de un servicio externo con outcome diferido;
+- más de un consumidor con pasos obligatorios.
+
+Secuencia normativa:
+
+```text
+CREAR COORDINACIÓN EN OWNER PRIMARIO
+        ↓
+EMITIR COMANDO AL OWNER A
+        ↓
+OWNER A CONFIRMA EFECTO + EVENTO + OUTBOX
+        ↓
+INBOX DEL COORDINADOR CONSUME RESULTADO
+        ↓
+ACTUALIZAR ESTADO Y EMITIR COMANDO AL OWNER B
+        ↓
+REPETIR HASTA CIERRE, COMPENSACIÓN O CONCILIACIÓN
+```
+
+El coordinador no envolverá los commits de A y B en una transacción única ni ejecutará DML lateral si un handler no está disponible.
+
+#### 17. Coreografía basada en eventos
+
+La coreografía será admisible cuando:
+
+1. el evento representa un hecho ya confirmado;
+2. cada reacción es independiente o sus dependencias son explícitas;
+3. cada consumidor tiene un solo efecto propietario;
+4. no se requiere branching central ni éxito global atómico;
+5. duplicados y reordenamiento están controlados por inbox, versión e idempotencia;
+6. la ausencia temporal de un consumidor no invalida el hecho del emisor;
+7. existe conciliación para consumidores obligatorios atrasados.
+
+Un evento no será un comando genérico. El consumidor decide si el hecho habilita una intención propia y registra su outcome sin modificar al emisor.
+
+#### 18. Handoff con aceptación
+
+Toda transferencia de custodia, responsabilidad o trabajo conservará:
+
+```text
+handoff_id
++ source_owner_schema_id
++ target_owner_schema_id
++ resource_reference
++ scope_and_quantity
++ offered_at
++ valid_until
++ source_state
++ target_acceptance_state
++ accepting_actor
++ accepted_at
++ rejection_reason
++ correlation_id
+```
+
+El origen conserva su estado hasta la aceptación contractual. El destino no adquiere custodia por recepción técnica, visualización, escaneo o recepción de archivo. El rechazo, expiración o aceptación parcial se representa de forma explícita.
+
+#### 19. Evento, outbox, inbox y efecto consumidor
+
+1. El owner que confirma un efecto crea el evento empresarial, outbox y ancla auditable en la misma frontera transaccional cuando el contrato lo exige.
+2. La publicación ocurre después del commit y puede repetirse.
+3. El consumidor registra `CONSUMER_INBOX_RECEIPT` antes o junto con su efecto local para deduplicar.
+4. `event_id`, `command_id` y `idempotency_key` conservan identidades distintas.
+5. La entrega será al menos una vez; duplicados válidos no crean efectos adicionales.
+6. No existe orden global. El orden relevante será por agregado, versión o dependencia declarada.
+7. El consumidor no procesa una versión anterior después de haber confirmado una posterior incompatible.
+8. Replay reconstruye proyecciones o reejecuta reacciones autorizadas; no recrea el hecho del emisor.
+9. La semántica física de publicaciones, canales y transporte permanece reservada a `SUPA-ARC-019`.
+
+#### 20. Idempotencia y deduplicación
+
+La identidad de coordinación se vinculará a:
+
+```text
+principal o sistema iniciador
++ contrato y versión
++ proceso e instancia
++ intención normalizada
++ owner primario
++ conjunto de participantes
++ payload fingerprint
+```
+
+Reglas:
+
+- repetir la misma intención devuelve la coordinación y outcomes existentes;
+- una misma clave con fingerprint diferente produce conflicto y cero efectos nuevos;
+- cada paso deriva o recibe una idempotency key estable propia;
+- intentos cambian `attempt_id`, no `command_id` ni intención;
+- inbox y command handler mantendrán constraints de unicidad compatibles con el alcance;
+- una clave no se reutiliza entre ambientes, actores, owners o versiones incompatibles;
+- la ventana de idempotencia no expirará mientras exista posibilidad de retry, replay o resultado desconocido.
+
+#### 21. Concurrencia, dependencias y orden
+
+1. Cada paso declara `expected_version`, `expected_state`, clave empresarial o mecanismo equivalente.
+2. El coordinador usa dependencies explícitas; no infiere orden desde timestamps de llegada.
+3. Un paso obligatorio no inicia antes de confirmar todos sus prerequisitos.
+4. Pasos independientes podrán ejecutarse en paralelo con límites y aislamiento.
+5. Un conflicto de un owner no autoriza saltar a otra ruta o editar la fuente directamente.
+6. Deadlock, serialization failure y lock timeout se tratan dentro del owner y con retry acotado.
+7. El estado de coordinación usa compare-and-set o versión para evitar dobles avances.
+8. Un evento duplicado o atrasado no retrocede el estado global.
+
+#### 22. Parcialidad y resultado desconocido
+
+Toda coordinación parcial conservará un mapa por paso y unidad:
+
+```text
+confirmed
++ pending
++ rejected
++ conflicted
++ unknown
++ compensation_required
++ compensated
++ reconciliation_required
+```
+
+Reglas:
+
+1. Un efecto confirmado permanece confirmado aunque otro falle.
+2. `RESULT_UNKNOWN` se consulta por command id, idempotency key o receipt antes de reintentar.
+3. Los pasos dependientes quedan bloqueados mientras el resultado necesario sea desconocido.
+4. No se compensa un efecto cuya ocurrencia no haya sido demostrada.
+5. Un timeout no se transforma en rechazo ni éxito.
+6. El resultado global no se cierra mientras exista una unidad obligatoria pendiente, desconocida o en conciliación.
+7. La interfaz y observabilidad distinguirán espera, parcialidad, fallo y desconocimiento.
+
+#### 23. Compensación
+
+Cada paso potencialmente compensable declarará antes de activarse:
+
+```text
+compensation_eligibility
++ inverse_command_contract_id
++ compensation_owner_schema_id
++ dependency_order
++ authorization_requirement
++ deadline
++ idempotency_scope
++ expected_original_result
++ non_compensatable_residuals
++ reconciliation_fallback
+```
+
+Reglas:
+
+1. Solo se compensan efectos confirmados.
+2. La compensación es un comando nuevo del owner original y conserva el hecho inicial.
+3. La secuencia de compensación sigue dependencias declaradas; no se asume siempre orden inverso mecánico.
+4. Una compensación puede quedar rechazada, parcial o desconocida y requerir conciliación.
+5. No se usa `DELETE`, edición de ledger ajeno ni actualización manual de estados para simular rollback.
+6. Efectos legal, fiscal, físico o externamente irreversibles declaran residuales y tratamiento manual.
+7. El cierre `COMPLETED` o `FAILED_TERMINAL` documenta qué efectos permanecen y cuáles fueron compensados.
+
+#### 24. Conciliación
+
+Se abrirá `RECONCILIATION_CASE` cuando exista:
+
+- resultado desconocido;
+- diferencia entre owner, receipt, proyección o proveedor;
+- parcialidad no resoluble automáticamente;
+- evento perdido o consumidor obligatorio atrasado;
+- compensación fallida;
+- versión incompatible;
+- intervención manual requerida;
+- conflicto de identidad, cantidad, importe, custodia o estado.
+
+El caso conservará owners participantes, unidades, evidencias, snapshots, decisiones permitidas, responsable, SLA, acciones ejecutadas y cierre. La resolución se materializa mediante comandos propietarios; el caso no edita fuentes.
+
+#### 25. Seguridad, grants y autorización
+
+1. Clientes y aplicaciones solo invocarán contratos expuestos o internos allowlisted.
+2. El rol coordinador recibirá `EXECUTE` mínimo sobre handlers registrados y cero DML directo sobre tablas de owners.
+3. Cada owner revalidará principal, actor, sesión, aplicación solicitante, permiso, scope, territorio, recurso, estado, segregación y vigencia.
+4. `service_role`, owner PostgreSQL, `BYPASSRLS` o `SECURITY DEFINER` no sustituyen autorización empresarial.
+5. Una función privilegiada requerirá excepción individual de `SUPA-ARC-014` y no podrá convertirse en dispatcher genérico.
+6. `PUBLIC`, `anon` y `authenticated` no recibirán acceso directo a owner schemas ni `app_private`.
+7. El coordinador no aceptará nombres de tablas, SQL, predicates, funciones o schemas enviados libremente.
+8. Denegaciones y rutas inexistentes registrarán código, owner, correlación y mínima evidencia sin payload sensible.
+9. Los comandos de compensación, conciliación, migración y emergencia tendrán permisos independientes.
+10. La autorización se evalúa en cada paso y no se hereda irrevocablemente de la solicitud inicial.
+
+#### 26. Relación con `app_private`
+
+`app_private.INTERNAL_COORDINATOR` podrá:
+
+- resolver el plan versionado;
+- invocar contratos internos registrados;
+- evaluar dependencias técnicas;
+- normalizar outcomes;
+- producir correlación y telemetría mínima;
+- solicitar actualización del estado de coordinación al owner primario.
+
+No podrá:
+
+- persistir tablas o ledgers propios;
+- confirmar hechos empresariales;
+- ejecutar DML lateral en owners participantes;
+- esconder HTTP, cron, webhook, worker o cola dentro de SQL;
+- decidir autorización mediante metadata editable o roles hardcoded;
+- depender de `api` o `public` como fuente de verdad;
+- crear ciclos de dependencias con los owner schemas.
+
+#### 27. Efectos externos y ejecución asíncrona
+
+1. Edge Functions, webhooks, cron, workers y adaptadores solo transportan o ejecutan contratos.
+2. Un webhook externo se normaliza, verifica y dirige al owner correspondiente; no actualiza varios dominios directamente.
+3. La solicitud externa, intento, receipt y resultado empresarial son registros separados.
+4. Un timeout del proveedor queda `RESULT_UNKNOWN` hasta consulta o conciliación.
+5. Los secretos y credenciales permanecen en custodia aprobada y con privilegio mínimo.
+6. La semántica física de Edge Functions, webhooks, cron, colas y credenciales se define en `SUPA-ARC-020`.
+7. La ausencia de un worker no habilita fallback por DML manual.
+
+#### 28. Offline, retry, replay y backfill
+
+- una operación offline conserva owner, actor original, dispositivo, contrato, fingerprint e idempotency key;
+- la reconexión revalida autorización y dependencias antes de ejecutar;
+- retry usa el mismo handler propietario y no cambia de ruta para obtener éxito;
+- replay preserva owners, versiones, audiencias y eventos históricos;
+- backfill puede reconstruir proyecciones, inbox o evidencia, pero no mutar fuentes ajenas;
+- una versión legacy sin mapping queda bloqueada o en conciliación;
+- cambiar usuario, dispositivo, aplicación o ambiente no transfiere pendientes;
+- resultados anteriores se consultan antes de repetir efectos sensibles.
+
+#### 29. Lotes, importaciones, migraciones y emergencia
+
+##### 29.1. Lotes e importaciones
+
+Cada elemento resolverá owner, contrato, autorización, idempotencia, precondición y outcome. Un archivo o acción masiva no crea transacción multi-owner ni permite DML genérico.
+
+##### 29.2. Migración controlada
+
+Todo `CONTROLLED_MIGRATION` declarará:
+
+```text
+migration_id
++ owners participantes
++ fuente y destino por objeto
++ filas elegibles
++ mappings versionados
++ dry run y conteos
++ checkpoints
++ idempotencia
++ orden de escritura
++ conciliación
++ auditoría
++ rollback o residuales
++ aprobación y ventana
+```
+
+La migración actuará mediante procedimientos aprobados dentro de cada owner. El rol de migración no se reutilizará en runtime.
+
+##### 29.3. Emergencia
+
+Break-glass limita owner, alcance, tiempo, actor, credencial, acciones y evidencia. No habilita SQL multi-dominio, bypass permanente ni corrección silenciosa. Toda acción de emergencia se reconcilia y revisa después del incidente.
+
+#### 30. Cobertura de los 26 owner schemas
+
+| VSCHEMA       | Owner schema             | Autoridad en coordinación                                                | Regla de escritura interdominio                                                                                             |
+| ------------- | ------------------------ | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| `VSCHEMA-001` | `org_governance`         | referencias organizativas, decisiones y compromisos                      | publica referencias versionadas; los demás dominios no corrigen sedes, áreas, jerarquías ni políticas por DML lateral       |
+| `VSCHEMA-002` | `recruiting`             | candidatos, postulaciones, entrevistas y ofertas                         | transfiere mediante handoff aceptado hacia workforce; no crea trabajadores directamente fuera de su contrato                |
+| `VSCHEMA-003` | `workforce`              | vínculo, expediente, asignación y offboarding                            | publica hechos laborales y recibe comandos propietarios; scheduling, payroll e identity_access solo reaccionan por contrato |
+| `VSCHEMA-004` | `work_scheduling`        | programación, disponibilidad y novedades                                 | publica versiones de plan; attendance consume la programación sin reescribirla                                              |
+| `VSCHEMA-005` | `attendance`             | marcaciones, pausas, tiempo y correcciones                               | agrega hechos y correcciones propias; workforce, payroll e identity_access no alteran sus registros originales              |
+| `VSCHEMA-006` | `payroll`                | periodos, cálculos, beneficios y resultados publicados                   | consume insumos confirmados y publica resultados; ajustes se ejecutan mediante comandos de payroll                          |
+| `VSCHEMA-007` | `operational_compliance` | incidentes, inspecciones, hallazgos y acciones correctivas               | acepta referencias de personas, activos y sedes; conserva su propio caso y no modifica las fuentes referenciadas            |
+| `VSCHEMA-008` | `product_catalog`        | producto, unidad, presentación y especificación                          | publica referencias maestras versionadas; recipes, procurement, inventory, production y sales_orders consumen sin editar    |
+| `VSCHEMA-009` | `recipes`                | recetas, pasos, rendimientos y versiones publicadas                      | recibe referencias de producto; production ejecuta versiones sin sobrescribir conocimiento productivo                       |
+| `VSCHEMA-010` | `commercial_offer`       | surtido, precio, canal, sede y vigencia                                  | publica oferta consumible; sales_orders crea pedidos contra una versión sin alterar la oferta                               |
+| `VSCHEMA-011` | `procurement`            | proveedores, solicitudes, órdenes y aceptación comercial                 | coordina recepción mediante comando a inventory y obligación mediante comando a finance; no escribe sus fuentes             |
+| `VSCHEMA-012` | `inventory`              | movimientos, stock, ubicaciones, lotes y conteos                         | solo inventory confirma existencia y custodia; otros dominios solicitan movimientos propietarios                            |
+| `VSCHEMA-013` | `assets`                 | identidad durable, custodia, mantenimiento y retorno                     | acepta referencias operativas; transferencias y condiciones se confirman mediante comandos de assets                        |
+| `VSCHEMA-014` | `production`             | planes, lotes, consumos, salidas y calidad                               | solicita movimientos a inventory y publica resultados productivos; no actualiza stock ni pedidos directamente               |
+| `VSCHEMA-015` | `sales_orders`           | pedido, ítems, servicio, estado y devolución                             | coordina pagos, fidelización y logística mediante contratos; no altera ledgers ni fuentes de otros dominios                 |
+| `VSCHEMA-016` | `payments`               | transacciones, caja, recaudo, reembolso y soporte fiscal operativo       | confirma efectos monetarios propios; finance y sales_orders consumen hechos sin editar el ledger de pagos                   |
+| `VSCHEMA-017` | `customer_engagement`    | cliente, consentimiento, fidelización, beneficios y experiencia          | recibe hechos de venta y pago mediante eventos o comandos; no recrea la venta ni el efecto financiero                       |
+| `VSCHEMA-018` | `logistics`              | ruta, carga, custodia, entrega, novedad y retorno                        | acepta handoffs explícitos y confirma custodia; pedidos, inventory y customer_engagement no editan sus estados              |
+| `VSCHEMA-019` | `finance`                | hechos económicos, obligaciones, cartera, costos y periodos              | registra asientos, ajustes y conciliaciones propios; ninguna aplicación o dominio modifica saldos por acceso compartido     |
+| `VSCHEMA-020` | `facilities`             | condición física, incidencia y orden de trabajo                          | coordina activos, compras y cumplimiento mediante referencias y comandos; conserva la autoridad de la intervención física   |
+| `VSCHEMA-021` | `marketing`              | contenido, campaña, promoción, audiencia y vigencia                      | publica versiones y solicita activaciones a canales mediante contratos; no edita oferta, clientes ni ventas directamente    |
+| `VSCHEMA-022` | `technology_operations`  | aplicaciones, configuración, dispositivos, cambios e incidentes          | administra artefactos tecnológicos propios; soporte o automatización no concede escritura empresarial universal             |
+| `VSCHEMA-023` | `identity_access`        | principal, actor, rol, permiso, contexto, sesión y revocación            | decide acceso y publica hechos de autorización; no corrige fuentes laborales, comerciales u operativas                      |
+| `VSCHEMA-024` | `business_records`       | metadata, versión, vínculo, custodia, retención y disposición documental | vincula evidencia a hechos de otros dominios sin sustituirlos; los bytes permanecen en Storage administrado                 |
+| `VSCHEMA-025` | `business_insights`      | métricas, snapshots, forecasts, análisis y mejora                        | consume fuentes y publica resultados analíticos; nunca escribe de regreso en fuentes operacionales                          |
+| `VSCHEMA-026` | `operational_continuity` | dependencias, degradación, operación mínima, recuperación y conciliación | coordina respuesta mediante contratos propietarios; una contingencia no autoriza mutación lateral                           |
+
+La cobertura no crea endpoints ni coordinaciones automáticas. Cada flujo deberá vincular procesos, contratos, participantes, condiciones y pruebas concretas.
+
+#### 31. Fronteras críticas
+
+| Flujo                                | Owner primario y participantes                                                 | Secuencia mínima                                                                                      | Condición de cierre                                                                 |
+| ------------------------------------ | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| abastecimiento y recepción           | `procurement` → `inventory` → `finance`                                        | aceptación comercial; recepción física; obligación o efecto económico                                 | cada owner confirma su resultado; una recepción no duplica stock ni obligación      |
+| producción y disponibilidad          | `production` → `inventory` → `commercial_offer` o `sales_orders` según proceso | cierre o liberación de lote; movimientos de consumo y entrada; publicación o disponibilidad comercial | lote, stock y compromiso comercial conservan identidades y outcomes separados       |
+| venta, pago, fidelización y finanzas | `sales_orders` + `payments` → `customer_engagement` → `finance`                | venta y pago confirmados; puntos o beneficio; asiento o conciliación económica                        | retry de puntos no recrea la venta y reversos se ejecutan por owner                 |
+| ciclo laboral y acceso               | `workforce` + `work_scheduling` → `attendance` → `identity_access`             | vínculo y turno vigentes; hecho de asistencia; resolución o revocación de acceso                      | corregir asistencia no reactiva permisos y revocar acceso no borra hechos laborales |
+
+Estas fronteras preservan las decisiones funcionales de ORIGO–NEXO–NUMERA, FOGO–NEXO–PULSO, PULSO–PASS–NUMERA y VISO–ANIMA–SHELL sin convertir nombres de aplicación en owners físicos.
+
+#### 32. Clasificación obligatoria de superficies actuales
+
+Toda función, trigger, Edge Function, webhook, cron, script, importación o flujo manual que pueda mutar más de un dominio recibirá exactamente una disposición:
+
+| Disposición                  | Condición                                                                  |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| `OWNER_LOCAL_CONFIRMED`      | solo produce un efecto dentro de un owner y cumple contrato local          |
+| `CONTRACTED_OWNER_COMMAND`   | solicita un efecto ajeno mediante command handler registrado               |
+| `COORDINATION_CANDIDATE`     | requiere saga, handoff o coreografía explícita                             |
+| `PROJECTION_ONLY`            | actualiza únicamente una proyección derivada propia                        |
+| `TECHNICAL_METADATA_ONLY`    | escribe inbox, outbox, receipt, intento o auditoría sin efecto empresarial |
+| `CONTROLLED_MIGRATION_ONLY`  | válido únicamente dentro de una migración aprobada y temporal              |
+| `LEGACY_CONTAIN_AND_REPLACE` | funciona actualmente, pero conserva ruta incompatible o deuda de contrato  |
+| `PROHIBITED_REMOVE`          | materializa escritura lateral, bypass o mutación genérica no aceptable     |
+
+No se aceptará una clasificación por nombre, schema o propietario PostgreSQL. La revisión será por firma, objeto, llamadores, DML, outcomes y dependencias reales.
+
+#### 33. Riesgos y controles
+
+| Riesgo                            | Control obligatorio                                                 | Continuidad responsable                        |
+| --------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------- |
+| doble efecto por retry            | idempotencia por coordinación y paso, fingerprint e inbox           | `SUPA-TRANS-009`                               |
+| éxito global falso                | outcomes por owner y cierre solo con pasos obligatorios confirmados | paquetes E5 por proceso                        |
+| escritura lateral oculta          | cero grants DML, análisis de dependencias y disposición por objeto  | `SUPA-TRANS-003`; `SUPA-TRANS-015`             |
+| trigger o worker multi-owner      | prohibición y sustitución por comandos/eventos                      | `SUPA-TRANS-003`; `SUPA-ARC-020`               |
+| evento duplicado o fuera de orden | inbox, aggregate version y dependencias                             | `SUPA-ARC-019`; `SUPA-TRANS-009`               |
+| resultado desconocido             | consulta, bloqueo, conciliación y cero retry ciego                  | paquetes E5; `SUPA-TRANS-009`                  |
+| compensación destructiva          | comando inverso propietario y preservación del original             | `SUPA-TRANS-003`; `SUPA-TRANS-009`             |
+| privilegio técnico excesivo       | EXECUTE nominal, invoker por defecto y excepción individual         | `SUPA-TRANS-003`; `SUPA-TRANS-015`             |
+| proyección convertida en fuente   | procedencia, frescura y prohibición de write-back                   | `SUPA-TRANS-007`; `SUPA-TRANS-012`             |
+| migración convertida en runtime   | rol temporal, ventana, checkpoints y retiro                         | `SUPA-TRANS-011`; `SUPA-TRANS-013`             |
+| drift entre ambientes             | manifiesto, hashes, catálogo y gates automáticos                    | `SUPA-ARC-024`; `SUPA-ARC-025`; `SHELL-CI-017` |
+
+#### 34. Decisiones reservadas
+
+| Decisión                                                         | Tarea propietaria                             |
+| ---------------------------------------------------------------- | --------------------------------------------- |
+| tablas, constraints, índices y funciones físicas de coordinación | `SUPA-TRANS-*` y paquetes E5 correspondientes |
+| publicaciones, canales, transporte, replay y capacidad Realtime  | `SUPA-ARC-019`                                |
+| Edge Functions, webhooks, cron, workers, secretos y proveedores  | `SUPA-ARC-020`                                |
+| índices, locking, capacidad y rendimiento                        | `SUPA-ARC-021`                                |
+| retención, archivo, purga y recuperación                         | `SUPA-ARC-022`                                |
+| tipos generados de contratos, eventos y outcomes                 | `SUPA-ARC-023`                                |
+| overlays, credenciales y paridad de ambientes                    | `SUPA-ARC-024`                                |
+| ADR, linter y gate consolidado                                   | `SUPA-ARC-025`                                |
+| nombres de endpoints, handlers y coordinaciones concretas        | roadmaps funcionales, `SUPA-TRANS-*` y E5     |
+
+#### 35. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear coordinadores, tablas, constraints, funciones, RPC, triggers, outbox, inbox, colas, workers o casos de conciliación;
+- ejecutar comandos, sagas, compensaciones, migraciones, backfills o reparaciones reales;
+- modificar grants, roles, RLS, policies, owners, `api.schemas`, `search_path` o credenciales;
+- usar una transacción para confirmar efectos empresariales de dos owner schemas;
+- conceder DML directo a clientes, coordinadores, workers, service role o consolas administrativas;
+- declarar conformes funciones, triggers o integraciones actuales por inferencia;
+- implementar transporte, Edge Functions, webhooks, cron o Storage;
+- iniciar `SUPA-ARC-018` antes de aprobación expresa.
+
+#### 36. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1145 a TREQ-SUPABASE-1200
+```
+
+Los cincuenta y seis requisitos protegen ownership, rutas prohibidas, patrones, fronteras transaccionales, coordinación, comandos, outcomes, idempotencia, outbox, inbox, orden, parcialidad, compensación, conciliación, seguridad, ejecución externa, offline, replay, migraciones, flujos críticos, clasificación y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 37. Criterios de aceptación
+
+- [ ] Existe una política versionada única para escrituras entre dominios.
+- [ ] Los 26 owner schemas y 69 procesos quedan cubiertos sin transferir autoridad.
+- [ ] Se permiten exactamente cinco patrones y diez familias de interacción.
+- [ ] Se preservan las doce rutas prohibidas de `INT-APP-010`.
+- [ ] Una transacción empresarial confirma efectos de un solo owner schema.
+- [ ] Hecho, evento, outbox y auditoría pueden ser atómicos sin crear un segundo owner.
+- [ ] El estado durable de coordinación pertenece al owner primario y `app_private` permanece sin tablas.
+- [ ] El lifecycle contiene catorce estados y cada paso usa uno de diez outcomes.
+- [ ] No se afirma exactly-once ni orden global.
+- [ ] Idempotencia e inbox impiden efectos duplicados.
+- [ ] `RESULT_UNKNOWN` bloquea retry destructivo, dependencias y compensación.
+- [ ] La compensación es un comando propietario nuevo y conserva el hecho original.
+- [ ] La conciliación produce decisiones mediante contratos, no DML manual multi-owner.
+- [ ] Triggers, workers, webhooks, cron, service role y consolas no obtienen escritura lateral.
+- [ ] Los cuatro flujos críticos conservan owners y outcomes separados.
+- [ ] Todas las superficies mutantes actuales reciben una disposición posterior individual.
+- [ ] Se generan `TREQ-SUPABASE-1145` a `TREQ-SUPABASE-1200`.
+- [ ] No se ejecutan cambios físicos ni se inicia la siguiente tarea.
+
+#### 38. Controles estructurales requeridos
+
+| Control                                     | Resultado esperado |
+| ------------------------------------------- | -----------------: |
+| owner schemas cubiertos                     |       **26 de 26** |
+| procesos cubiertos                          |       **69 de 69** |
+| patrones permitidos                         |              **5** |
+| familias de interacción                     |             **10** |
+| rutas prohibidas                            |             **12** |
+| estados de coordinación                     |             **14** |
+| outcomes de paso                            |             **10** |
+| commits multi-owner permitidos              |              **0** |
+| rutas directas de DML extranjero permitidas |              **0** |
+| claims exactly-once permitidos              |              **0** |
+| requisitos nuevos                           |             **56** |
+| cambios físicos                             |              **0** |
+
+#### 39. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-017 — Definir política de escrituras entre dominios
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-018 — Definir arquitectura de Storage
+```
+
+`SUPA-ARC-018` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-018 — Definir arquitectura de Storage
 ### [ ] SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
 ### [ ] SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron

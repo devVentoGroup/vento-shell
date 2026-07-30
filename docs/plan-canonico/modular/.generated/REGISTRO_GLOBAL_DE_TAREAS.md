@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **421** |
+| Aprobadas | **422** |
 | En propuesta | **0** |
-| No iniciadas | **1154** |
+| No iniciadas | **1153** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **26.73% (421/1575)** |
+| Porcentaje de completamiento | **26.79% (422/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-017` — Definir política de escrituras entre dominios | ⬜ NO INICIADA |
-| Siguiente | `SUPA-ARC-018` — Definir arquitectura de Storage | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-017` — Definir política de escrituras entre dominios | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-018` — Definir arquitectura de Storage | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-019` — Definir arquitectura de Realtime y eventos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -419,7 +419,7 @@
 | ✅ APROBADA | `SUPA-ARC-014` | Definir política canónica de `SECURITY DEFINER` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-015` | Definir política canónica de exposición, grants y RLS | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-016` | Definir contratos de lectura y mutación por dominio | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-017` | Definir política de escrituras entre dominios | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-017` | Definir política de escrituras entre dominios | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-018` | Definir arquitectura de Storage | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-019` | Definir arquitectura de Realtime y eventos | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-020` | Definir arquitectura de Edge Functions, webhooks y cron | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
