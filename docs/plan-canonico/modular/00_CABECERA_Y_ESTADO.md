@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **393** |
+| Tareas aprobadas | **407** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1182** |
+| Tareas no iniciadas | **1168** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **24.95% (393/1575)** |
+| Porcentaje de completamiento | **25.84% (407/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage** |
-| Tarea actual | **SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime** |
+| Última tarea aprobada | **SUPA-ARC-002 — Definir dominios empresariales estables** |
+| Tarea actual | **SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones** |
+| Siguiente tarea | **SUPA-ARC-004 — Definir función futura de `public`** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 12 de 24 aprobadas; SUPA-AUD-013 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 2 de 25 aprobadas; SUPA-ARC-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage |
-| Tarea actual | `SUPA-AUD-013` — Auditar publicaciones, canales y consumidores de Realtime — **NO INICIADA** |
-| Siguiente tarea | `SUPA-AUD-014` — Auditar Edge Functions, webhooks, cron, colas y automatizaciones |
+| Última aprobada | `SUPA-ARC-002` — Definir dominios empresariales estables |
+| Tarea actual | `SUPA-ARC-003` — Definir esquema propietario de cada fuente de verdad — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-004` — Definir función futura de `public` |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **12 DE 24 APROBADAS — ACTUAL SUPA-AUD-013** |
+| BLOQUE E3 | **2 DE 25 APROBADAS — ACTUAL SUPA-ARC-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-AUD-012 — Auditar buckets, rutas, políticas y ciclos de vida de Storage
+SUPA-ARC-002 — Definir dominios empresariales estables
         ↓
 TAREA ACTUAL
-SUPA-AUD-013 — Auditar publicaciones, canales y consumidores de Realtime
+SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad
         ↓
 SIGUIENTE TAREA RESERVADA
-SUPA-AUD-014 — Auditar Edge Functions, webhooks, cron, colas y automatizaciones
+SUPA-ARC-004 — Definir función futura de `public`
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 12 de 24 tareas aprobadas
+BLOQUE E3 — 2 de 25 tareas aprobadas
 ```

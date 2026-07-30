@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **393** |
+| Aprobadas | **407** |
 | En propuesta | **0** |
-| No iniciadas | **1182** |
+| No iniciadas | **1168** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **24.95% (393/1575)** |
+| Porcentaje de completamiento | **25.84% (407/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-AUD-012` — Auditar buckets, rutas, políticas y ciclos de vida de Storage | ✅ APROBADA |
-| Tarea actual | `SUPA-AUD-013` — Auditar publicaciones, canales y consumidores de Realtime | ⬜ NO INICIADA |
-| Siguiente | `SUPA-AUD-014` — Auditar Edge Functions, webhooks, cron, colas y automatizaciones | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-002` — Definir dominios empresariales estables | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-003` — Definir esquema propietario de cada fuente de verdad | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-004` — Definir función futura de `public` | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -384,18 +384,18 @@
 | ✅ APROBADA | `SUPA-AUD-010` | Auditar Auth, usuarios, identidades, sesiones y vínculos empresariales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-011` | Auditar identidades de trabajadores, clientes, dispositivos y actores de sistema | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-012` | Auditar buckets, rutas, políticas y ciclos de vida de Storage | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-013` | Auditar publicaciones, canales y consumidores de Realtime | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-014` | Auditar Edge Functions, webhooks, cron, colas y automatizaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-015` | Auditar extensiones, secretos, variables y configuración del proyecto | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-016` | Comparar Supabase remoto con migraciones y configuración de `vento-shell` | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-017` | Detectar drift, cambios manuales y objetos sin migración | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-018` | Identificar tablas, columnas, funciones y políticas legacy | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-019` | Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-020` | Auditar índices, consultas, planes, crecimiento y retención | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-021` | Auditar generación y consumo de tipos de base de datos | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-022` | Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-023` | Crear mapa proceso → datos → RPC → eventos → aplicaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `SUPA-AUD-024` | Clasificar riesgos críticos, altos, medios y deuda técnica | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-013` | Auditar publicaciones, canales y consumidores de Realtime | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-014` | Auditar Edge Functions, webhooks, cron, colas y automatizaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-015` | Auditar extensiones, secretos, variables y configuración del proyecto | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-016` | Comparar Supabase remoto con migraciones y configuración de `vento-shell` | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-017` | Detectar drift, cambios manuales y objetos sin migración | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-018` | Identificar tablas, columnas, funciones y políticas legacy | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-019` | Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-020` | Auditar índices, consultas, planes, crecimiento y retención | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-021` | Auditar generación y consumo de tipos de base de datos | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-022` | Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-023` | Crear mapa proceso → datos → RPC → eventos → aplicaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
+| ✅ APROBADA | `SUPA-AUD-024` | Clasificar riesgos críticos, altos, medios y deuda técnica | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-001` | Inventariar campos textuales y reglas actuales de normalización | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-002` | Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
@@ -403,8 +403,8 @@
 | ⬜ NO INICIADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-003` | Definir esquema propietario de cada fuente de verdad | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-004` | Definir función futura de `public` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-005` | Definir capa expuesta de vistas y RPC | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
