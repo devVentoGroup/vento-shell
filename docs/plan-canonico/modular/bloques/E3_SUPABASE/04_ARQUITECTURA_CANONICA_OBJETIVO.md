@@ -4898,7 +4898,677 @@ SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columna
 `SUPA-ARC-011` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+### ✅ SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `ca97ffa51359e956a3187dbeff821c921485f8cd`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `37a5f985d315273c4ff9f850f881bc6c31ad2c4b`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `a14efa35424ff442689993127f6ae0ac5e04384b`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `2b98a51f48b721ffa3b53e2c9fc5188f8478e83d`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa del lenguaje físico para schemas, relaciones tabulares y columnas de Vento OS; sin crear, renombrar, mover o retirar objetos, sin definir nombres de constraints, índices, secuencias, funciones, RPC, triggers o policies, sin DDL, DML, migraciones, backfills, cambios de datos, Data API, grants, RLS, Auth, Storage, Realtime, Edge Functions, cron, código ni despliegues
+
+#### 1. Objetivo
+
+Definir un estándar único, legible, estable y verificable para los nombres físicos de schemas, tablas, vistas, vistas materializadas y columnas gobernados por Vento, de modo que la arquitectura objetivo pueda distinguir responsabilidad empresarial, identidad de objeto y semántica de datos sin depender de aplicaciones, pantallas, rutas, equipos, ambientes, fechas, abreviaturas ambiguas o compatibilidad legacy.
+
+```text
+CONCEPTO EMPRESARIAL O TÉCNICO APROBADO
+        ↓
+TOKEN CANÓNICO EN INGLÉS
+        ↓
+IDENTIFICADOR ASCII EN lower_snake_case
+        ↓
+SCHEMA + RELACIÓN + COLUMNA CON SEMÁNTICA INEQUÍVOCA
+        ↓
+REGISTRO, COMPATIBILIDAD, TRANSICIÓN Y VALIDACIÓN RECURRENTE
+```
+
+El estándar gobierna identidad nominal. No decide todavía tipos físicos, generación de claves, nombres de constraints, vocabularios de estado, timestamps obligatorios, firmas de funciones, exposición, RLS ni transición objeto por objeto.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-SCHEMA-TABLE-COLUMN-NAMING-STANDARD-001@1.0.0
+```
+
+| Propiedad                              |              Valor |
+| -------------------------------------- | -----------------: |
+| `canonical_identifier_language`        |          `ENGLISH` |
+| `canonical_identifier_case`            | `lower_snake_case` |
+| `canonical_identifier_charset`         |            `ASCII` |
+| `postgres_identifier_hard_limit_bytes` |             **63** |
+| `target_owner_schema_names`            |             **26** |
+| `target_transversal_schema_names`      |              **3** |
+| `target_vento_schema_names_total`      |             **29** |
+| `managed_schema_names_reserved`        |             **14** |
+| `transitional_public_schema_names`     |              **1** |
+| `approved_abbreviation_tokens`         |             **19** |
+| `new_test_requirements`                |             **40** |
+| `physical_changes_authorized`          |              **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                          |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, preservación histórica, una sola tarea y separación entre definición e implementación          |
+| `delivery-contract.json`                                     | artefacto único de tarea y registro 04A completo con identidad de entrega única                             |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-011` como tarea actual                                 |
+| `01_PRINCIPIOS_OBLIGATORIOS.md` de E3                        | schema como frontera lógica y de nombres; dominio como responsabilidad estable; aplicación como consumidora |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`            | separación entre plataforma, dominio, aplicación, exposición y compatibilidad                               |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | nombres físicos aprobados de `VSCHEMA-001` a `VSCHEMA-026`                                                  |
+| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0`           | `public` como namespace transitorio de compatibilidad y no como destino universal                           |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | schema `api` e identidad contractual `api.<contract_name>_v<major>`                                         |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | schema técnico privado `app_private`                                                                        |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | schema transversal `audit` y clases de evidencia, eventos y conciliación                                    |
+| `SUPA-AUD-001` a `SUPA-AUD-005`                              | inventario de schemas, relaciones, columnas, constraints, enums y secuencias actuales                       |
+| `SUPA-AUD-016` a `SUPA-AUD-018`                              | procedencia, drift y ejemplos confirmados de compatibilidad, backup, staging y nombres legacy               |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.173 requisitos hasta `SUPA-ARC-010`; rango `TREQ-SUPABASE-001` a `878`                                    |
+
+#### 4. Alcance y frontera de la decisión
+
+Esta tarea gobierna:
+
+1. nombres de schemas gobernados por Vento;
+2. nombres de tablas ordinarias y particionadas;
+3. nombres de vistas y vistas materializadas como relaciones tabulares;
+4. nombres de columnas persistidas o proyectadas;
+5. tokens, abreviaturas, pluralización, calificadores y sufijos nominales;
+6. compatibilidad y lifecycle de nombres;
+7. reglas que deberá aplicar un linter recurrente.
+
+Esta tarea no gobierna:
+
+- nombres de PK, FK, UNIQUE, CHECK, EXCLUDE, índices o secuencias;
+- tipos de identificador, cascadas, nullability o generación de claves;
+- estados permitidos, transiciones o timestamps obligatorios;
+- nombres y firmas de funciones, RPC, procedimientos, parámetros o triggers;
+- nombres de policies, roles PostgreSQL, grants o publicaciones;
+- nombres de buckets, rutas de Storage, Edge Functions, cron jobs o secretos;
+- renombres físicos ni mapeo individual de los objetos actuales.
+
+Esas decisiones permanecen en `SUPA-ARC-012` a `SUPA-ARC-024` y en la transición posterior.
+
+#### 5. Forma léxica obligatoria
+
+Todo identificador nuevo gobernado por esta tarea deberá cumplir:
+
+```text
+^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$
+```
+
+Reglas:
+
+1. solo caracteres ASCII en minúscula;
+2. palabras separadas por un único guion bajo;
+3. primer carácter alfabético;
+4. sin espacios, guiones medios, puntos, tildes, mayúsculas ni caracteres invisibles;
+5. sin guion bajo inicial, final o duplicado;
+6. sin identificadores entre comillas;
+7. máximo de 63 bytes UTF-8, sin depender del truncamiento de PostgreSQL;
+8. dos nombres distintos no podrán producir el mismo valor después de normalización o truncamiento;
+9. los dígitos solo aparecerán cuando formen parte de un estándar aprobado o de la versión contractual de `api`; no sustituirán campos repetibles mediante sufijos ordinales;
+10. toda excepción requerirá decisión versionada, propietario, riesgo, consumidores y puerta de salida.
+
+#### 6. Idioma y vocabulario canónico
+
+Los identificadores físicos usarán inglés. La documentación, etiquetas humanas y mensajes podrán permanecer en español.
+
+Principios:
+
+```text
+UN CONCEPTO PRIMARIO
+→ UN TOKEN CANÓNICO
+
+UN TOKEN CANÓNICO
+→ UN SIGNIFICADO PRIMARIO DENTRO DEL MODELO
+```
+
+| Concepto documental              | Token físico canónico                                   | Distinción obligatoria                                                |
+| -------------------------------- | ------------------------------------------------------- | --------------------------------------------------------------------- |
+| organización o grupo empresarial | `organization` o `org` únicamente donde ya fue aprobado | no usar `company` y `business` como sinónimos libres                  |
+| sede                             | `site`                                                  | no confundir con ubicación interna                                    |
+| área organizacional              | `area`                                                  | no usar para coordenada o superficie física                           |
+| ubicación física de inventario   | `location`                                              | no sustituye `site` ni `area`                                         |
+| trabajador                       | `employee`                                              | no alternar con `worker`, `staff` o `user` sin diferencia contractual |
+| cliente                          | `customer`                                              | no inferir desde cuenta Auth                                          |
+| usuario autenticable             | `auth_subject` o `principal` según el contrato          | no convertirlo en identidad laboral o comercial                       |
+| actor efectivo                   | `actor`                                                 | no confundir con principal o rol                                      |
+| dispositivo                      | `device`                                                | no modelarlo como empleado                                            |
+| producto                         | `product`                                               | no usar `item` cuando representa el maestro de producto               |
+| línea o elemento dependiente     | `item`                                                  | requiere entidad propietaria explícita                                |
+| proveedor                        | `supplier`                                              | no alternar con `vendor` sin decisión de dominio                      |
+| pedido de venta                  | `order`                                                 | no usar para orden de compra                                          |
+| orden de compra                  | `purchase_order`                                        | conserva semántica distinta de `order`                                |
+| envío o expedición               | `shipment`                                              | no equivale automáticamente a entrega confirmada                      |
+| entrega confirmada               | `delivery`                                              | no equivale a transporte en curso                                     |
+| permiso                          | `permission`                                            | no usar `capability` como sinónimo legacy                             |
+| rol                              | `role`                                                  | no representa permiso efectivo ni actor                               |
+| documento empresarial            | `document`                                              | no equivale al objeto físico de Storage                               |
+
+Una nueva sinonimia no podrá introducirse por preferencia local de una aplicación o equipo.
+
+#### 7. Namespaces canónicos de Vento
+
+Los 26 owner schemas aprobados conservan exactamente estos nombres:
+
+```text
+org_governance
+recruiting
+workforce
+work_scheduling
+attendance
+payroll
+operational_compliance
+product_catalog
+recipes
+commercial_offer
+procurement
+inventory
+assets
+production
+sales_orders
+payments
+customer_engagement
+logistics
+finance
+facilities
+marketing
+technology_operations
+identity_access
+business_records
+business_insights
+operational_continuity
+```
+
+Las tres capas transversales gobernadas por Vento conservan:
+
+```text
+api
+app_private
+audit
+```
+
+Reglas:
+
+1. los 29 nombres anteriores pasan la forma léxica y son el registro nominal objetivo vigente;
+2. ningún schema adicional podrá aparecer sin modificar explícitamente la arquitectura y su ownership;
+3. un schema no llevará nombre de aplicación, repositorio, pantalla, equipo, persona, sede concreta, ambiente, fecha o fase;
+4. no se usarán sufijos de versión, `legacy`, `old`, `new`, `backup`, `temp`, `staging`, `dev`, `test`, `qa`, `stage` o `prod` en schemas objetivo;
+5. el nombre permanecerá estable aunque cambien aplicaciones, equipos o responsables;
+6. un alias de schema no creará una segunda autoridad ni podrá permanecer sin lifecycle de compatibilidad.
+
+#### 8. Namespaces administrados y reservados
+
+Vento tratará como nombres reservados exactos:
+
+```text
+pg_catalog
+pg_toast
+information_schema
+auth
+realtime
+storage
+cron
+net
+vault
+extensions
+graphql
+graphql_public
+pgbouncer
+supabase_migrations
+```
+
+No se crearán schemas Vento que colisionen, imiten o extiendan estos nombres para aparentar una superficie administrada. `public` permanece como namespace transitorio definido por `SUPA-ARC-004`; no recibe nuevas fuentes autoritativas ni se considera nombre disponible para otro propósito.
+
+#### 9. Regla general para relaciones tabulares
+
+El nombre de una tabla, vista o vista materializada deberá describir la colección o proyección empresarial que representa dentro de su schema.
+
+Reglas:
+
+1. usar sustantivos o frases nominales, nunca nombres de botones, rutas o acciones de interfaz;
+2. usar plural para colecciones contables y un nombre de masa aceptado cuando el concepto no tenga plural operativo;
+3. omitir el nombre del schema cuando repetirlo no añada semántica;
+4. no incluir prefijos de aplicación como `nexo_`, `fogo_`, `viso_`, `numera_`, `pass_`, `pulso_`, `origo_`, `anima_`, `aura_` o `shell_` por razón de consumo;
+5. no incluir prefijos o sufijos técnicos como `tbl_`, `table_`, `vw_`, `view_`, `mv_`, `_table`, `_view` o `_materialized_view`;
+6. no usar nombres genéricos aislados como `data`, `records`, `details`, `master`, `misc`, `info`, `values`, `objects` o `entities`;
+7. no codificar owner PostgreSQL, rol, grant, RLS, lenguaje, tipo de almacenamiento o estrategia de índice en el nombre;
+8. el tipo físico de relación se conservará en catálogos y registros, no en el identificador;
+9. una vista no podrá adoptar el mismo nombre calificado que su fuente ni presentarse como autoridad;
+10. toda relación tendrá un concepto canónico y un owner schema resoluble antes de materializarse.
+
+#### 10. Familias semánticas de tablas
+
+Los siguientes tokens finales solo se usarán con su significado contractual:
+
+| Token final   | Uso permitido                                                       |
+| ------------- | ------------------------------------------------------------------- |
+| `items`       | elementos dependientes de una entidad propietaria explícita         |
+| `events`      | hechos inmutables ordenados; no estado actual mutable               |
+| `entries`     | asientos o entradas append-only con semántica de ledger o auditoría |
+| `assignments` | relación vigente o histórica de asignación con lifecycle propio     |
+| `memberships` | pertenencia explícita entre una entidad y un conjunto               |
+| `links`       | vínculo identificable con origen, estado y lifecycle                |
+| `attempts`    | intentos independientes con resultado y correlación                 |
+| `receipts`    | constancias de recepción, deduplicación o aceptación                |
+| `snapshots`   | captura inmutable de un estado en un instante                       |
+| `versions`    | revisiones persistidas de una entidad estable                       |
+| `settings`    | configuración tipada de una entidad o ámbito explícito              |
+| `policies`    | reglas configurables con autoridad y vigencia declaradas            |
+| `rules`       | condiciones normativas evaluables; no policies de PostgreSQL        |
+| `sessions`    | sesiones empresariales o técnicas declaradas por su owner           |
+
+No se usarán `_map`, `_mapping`, `_xref`, `_join`, `_assoc`, `_log` o `_history` como sustitutos genéricos de una semántica no definida. Una tabla de relación deberá nombrar la relación empresarial en orden natural y declarar cuál entidad gobierna su lifecycle.
+
+#### 11. Backups, staging y temporales
+
+Una fuente autoritativa, una relación de `api` o una tabla de `public` no podrá usar nombres que incorporen:
+
+```text
+backup
+bak
+copy
+old
+new
+temp
+tmp
+staging
+import
+pre
+post
+YYYYMMDD
+```
+
+El objeto actual `product_categories_backup_20260316_preparaciones` y `staging_insumos_import` permanecen como evidencia AS-IS de backup, staging, fecha y mezcla de idioma; esta tarea no los renombra ni retira. Su clasificación, datos, consumidores, TTL, exportación y disposición continúan bajo `SUPA-AUD-018` y `SUPA-TRANS-*`.
+
+#### 12. Versiones y compatibilidad nominal
+
+1. schemas, tablas autoritativas y columnas no llevarán sufijos `v1`, `v2` o equivalentes;
+2. la identidad `api.<contract_name>_v<major>` aprobada en `SUPA-ARC-005` es la única excepción general para versión mayor visible en nombres gobernados por esta tarea;
+3. un sufijo `v1` en una superficie `api` activa no implica legado;
+4. deprecación, compatibilidad y sucesión se registrarán en metadata y contratos, no mediante `old`, `new`, `legacy` o fechas en nombres canónicos;
+5. una coexistencia temporal conservará nombre fuente, nombre sucesor, consumidores, telemetría, paridad y condición de salida;
+6. no existirán dos objetos activos con el mismo nombre y versión contractual.
+
+#### 13. Regla general para columnas
+
+Cada columna deberá expresar una propiedad atómica, una referencia o una medida del concepto representado por su relación.
+
+Reglas:
+
+1. cumplir la forma léxica general;
+2. no repetir el nombre completo de la tabla cuando el contexto ya sea inequívoco;
+3. no usar `data`, `value`, `field`, `property`, `attribute`, `misc`, `extra`, `info`, `details` o `other` sin un contrato tipado y una semántica específica;
+4. no usar columnas ordinales como `phone_1`, `phone_2`, `address_1` o `value_3` para modelar colecciones;
+5. no codificar tipo SQL en el nombre mediante `_uuid`, `_json`, `_jsonb`, `_text`, `_int`, `_bool` o equivalentes;
+6. no usar palabras reservadas que obliguen a citar el identificador;
+7. no mezclar idioma, abreviatura local y nombre completo para el mismo concepto;
+8. una columna derivada declarará semántica de derivación y no aparentará ser la fuente autoritativa;
+9. un alias legacy no podrá recibir nuevas escrituras salvo contrato de compatibilidad explícito;
+10. nombres iguales en tablas distintas deberán conservar el mismo significado cuando representen el mismo concepto transversal.
+
+#### 14. Identidad y referencias
+
+| Caso                               | Convención nominal                          |
+| ---------------------------------- | ------------------------------------------- |
+| identidad primaria local           | `id`                                        |
+| referencia a entidad               | `<entity_singular>_id`                      |
+| referencia a principal             | `principal_id`                              |
+| referencia a actor efectivo        | `actor_id` o un nombre de acción calificado |
+| referencia a trabajador            | `employee_id`                               |
+| referencia a cliente               | `customer_id`                               |
+| referencia a dispositivo           | `device_id`                                 |
+| referencia a servicio nominal      | `service_principal_id`                      |
+| identificador de proveedor externo | `<provider>_<entity>_id`                    |
+
+Reglas:
+
+1. `_id` expresa identidad o referencia, no cualquier código;
+2. `_uuid` queda prohibido como sufijo nominal nuevo: el tipo físico corresponde a `SUPA-ARC-012`;
+3. `entity_id`, `object_id`, `record_id`, `ref_id` o `target_id` no se usarán sin un discriminador tipado y un contrato polimórfico aprobado;
+4. una referencia interdominio nombrará la entidad referenciada y no la aplicación consumidora;
+5. una columna de actor iniciada por una acción usará una forma inequívoca como `<action>_by_actor_id` cuando sea necesario distinguirla de la entidad afectada;
+6. `created_by` permanece como nombre legacy ambiguo donde exista y requerirá clasificación; no se convertirá automáticamente en usuario, empleado o actor.
+
+#### 15. Códigos, claves, números y nombres humanos
+
+| Sufijo    | Significado                                                       |
+| --------- | ----------------------------------------------------------------- |
+| `_code`   | código empresarial legible y estable dentro de un ámbito definido |
+| `_key`    | clave de máquina estable usada por contratos o catálogos          |
+| `_number` | número documental o secuencial visible para operación             |
+| `_name`   | nombre humano principal de la entidad                             |
+| `_label`  | texto de presentación; no identidad ni autoridad                  |
+| `_slug`   | token legible para URL o navegación pública                       |
+
+`id`, `code`, `key`, `number`, `name`, `label` y `slug` no serán intercambiables. La unicidad, tipo, generación y constraint de cada uno se decidirán en `SUPA-ARC-012` y en el contrato del dominio.
+
+#### 16. Booleanos
+
+Todo booleano nuevo deberá leerse como una proposición inequívoca. Prefijos permitidos:
+
+```text
+is_
+has_
+can_
+requires_
+allows_
+should_
+```
+
+Reglas:
+
+1. evitar nombres negativos como `is_not_active`, `not_deleted` o dobles negaciones;
+2. evitar `flag`, `enabled_flag`, `value` o el uso de `NULL` como tercer estado implícito;
+3. no representar un estado multivalor mediante varios booleanos competidores;
+4. un booleano derivado o cacheado deberá declarar su fuente y política de invalidación;
+5. las reglas exactas de estados y nulabilidad se completarán en `SUPA-ARC-012`.
+
+#### 17. Tipos, categorías, estados y razones
+
+1. una columna genérica `type`, `category`, `status`, `state` o `reason` solo será válida cuando exista un único concepto primario inequívoco en la relación;
+2. cuando coexistan varios conceptos, se usará `<concept>_type`, `<concept>_category`, `<concept>_status`, `<concept>_state` o `<concept>_reason_code`;
+3. `_reason_code` representará un vocabulario de máquina; el mensaje humano permanecerá separado;
+4. no se duplicarán `status` y `state` sin una diferencia contractual explícita;
+5. esta tarea define la forma nominal; vocabularios, transiciones, estado inicial, terminalidad y timestamps de cambio corresponden a `SUPA-ARC-012`.
+
+#### 18. Tiempo y duración
+
+Convenciones nominales:
+
+| Sufijo                                    | Tipo conceptual                                |
+| ----------------------------------------- | ---------------------------------------------- |
+| `_at`                                     | instante temporal                              |
+| `_date`                                   | fecha civil                                    |
+| `_time`                                   | hora local sin fecha                           |
+| `_timezone`                               | zona horaria identificable                     |
+| `_from` y `_until`                        | límites semánticos de una vigencia o intervalo |
+| `_seconds`, `_minutes`, `_hours`, `_days` | duración expresada en una unidad explícita     |
+
+No se usarán `timestamp`, `datetime`, `time_value`, `start`, `end` o `duration` sin calificador suficiente. Tipos SQL, precisión, zona, defaults, columnas obligatorias y reglas de actualización se reservan a `SUPA-ARC-012`.
+
+#### 19. Cantidades, unidades, dinero y medidas
+
+1. usar `quantity`, no `qty`, en nombres nuevos;
+2. una cantidad declarará su significado y unidad mediante el nombre o una referencia `uom_profile_id` aprobada;
+3. `amount` se calificará por concepto: subtotal, impuesto, descuento, pago, saldo u otro hecho económico definido;
+4. toda moneda se asociará a `currency_code` o al contrato monetario del dominio;
+5. un porcentaje usará `_percentage`, una tasa `_rate` y un conteo `_count`;
+6. medidas físicas usarán una unidad explícita o un perfil de unidad; no se aceptará `value` con unidad en metadata informal;
+7. `qty_base`, `qty` y `unit_code` actuales permanecen como compatibilidad identificada por `SUPA-AUD-018`; no autorizan nuevas columnas con esos tokens.
+
+#### 20. JSON, payloads y metadata
+
+Los tokens `payload`, `metadata` y `snapshot` solo se permitirán cuando:
+
+1. exista schema o contrato de contenido versionado;
+2. el owner y la finalidad sean explícitos;
+3. se defina sensibilidad, retención y compatibilidad;
+4. no sustituyan columnas necesarias para integridad, autorización, búsqueda o constraints;
+5. no contengan secretos ni credenciales reutilizables;
+6. `payload` corresponda a evento, comando, outbox, inbox o integración identificable;
+7. `metadata` sea complementaria y no autoridad empresarial;
+8. `snapshot` sea una captura inmutable con origen y momento definidos.
+
+`json`, `jsonb`, `blob`, `data`, `extra` e `info` no serán nombres canónicos por sí solos.
+
+#### 21. Registro de abreviaturas
+
+Abreviaturas permitidas cuando su concepto sea realmente el indicado:
+
+```text
+api
+id
+ip
+url
+uri
+sku
+gtin
+uom
+lpn
+loc
+pos
+mfa
+aal
+jwt
+otp
+rpc
+http
+https
+org
+```
+
+Reglas:
+
+1. el registro es cerrado; una nueva abreviatura requiere aprobación y definición;
+2. los tokens se usan en minúscula y no se pluralizan de forma arbitraria;
+3. `id` solo representa identidad o referencia;
+4. `loc` y `lpn` conservan su significado logístico aprobado;
+5. `org` se conserva por el nombre aprobado `org_governance`; no autoriza abreviar cualquier uso de `organization`;
+6. quedan prohibidos para nombres nuevos `qty`, `usr`, `emp`, `prod`, `inv`, `cat`, `cfg`, `desc`, `num`, `addr`, `msg`, `aux`, `misc`, `tmp` y abreviaturas locales no registradas.
+
+#### 22. Registro canónico de decisiones nominales
+
+Toda creación o cambio futuro deberá poder registrarse con:
+
+```text
+naming_entry_id
++ object_kind
++ qualified_name
++ owner_schema_id
++ semantic_concept
++ canonical_tokens
++ abbreviations_used
++ lifecycle_status
++ legacy_aliases
++ predecessor_qualified_name
++ consumer_ids
++ compatibility_contract
++ transition_task_ids
++ test_requirement_ids
+```
+
+No se aceptará un nombre sin concepto, owner, consumidores potenciales, lifecycle o evaluación de colisión. El registro nominal no sustituye el catálogo PostgreSQL ni el registro de contratos expuestos.
+
+#### 23. Cambios de nombre y compatibilidad
+
+Todo cambio nominal será tratado como cambio de contrato cuando exista cualquier consumidor SQL, Data API, tipo generado, RPC, vista, trigger, policy, Edge Function, aplicación, reporte, integración o operación manual que use el nombre anterior.
+
+Secuencia obligatoria:
+
+```text
+INVENTARIAR NOMBRE Y CONSUMIDORES
+→ DEFINIR NOMBRE SUCESOR Y OWNER
+→ PROBAR COLISIONES Y SEMÁNTICA
+→ DEFINIR COMPATIBILIDAD DE LECTURA Y ESCRITURA
+→ ADAPTAR CONSUMIDORES POR OLEADAS
+→ MEDIR USO DEL NOMBRE ANTERIOR
+→ RETIRAR ALIAS SOLO CON CERO CONSUMIDORES Y ROLLBACK
+```
+
+Reglas:
+
+1. no ejecutar renombre masivo por consistencia estética;
+2. no mantener dual write sin precedencia, idempotencia y conciliación;
+3. un alias de columna no podrá divergir silenciosamente de su fuente;
+4. un nombre nuevo no podrá reutilizar la identidad de un objeto retirado con otra semántica;
+5. toda transición conservará historia, datos, grants, policies, dependencias y rollback;
+6. `SUPA-TRANS-001` a `SUPA-TRANS-015` decidirán y ejecutarán el tratamiento objeto por objeto.
+
+#### 24. Clasificación de la línea base vigente
+
+| Evidencia AS-IS                                                    | Clasificación nominal                   | Consecuencia                                        |
+| ------------------------------------------------------------------ | --------------------------------------- | --------------------------------------------------- |
+| 26 owner schemas aprobados                                         | `CANONICAL_TARGET_NAME`                 | se preservan exactamente                            |
+| `api`, `app_private`, `audit`                                      | `CANONICAL_TRANSVERSAL_NAME`            | se preservan exactamente                            |
+| 14 schemas administrados                                           | `RESERVED_MANAGED_NAME`                 | Vento no los renombra ni reutiliza                  |
+| `public`                                                           | `TRANSITIONAL_COMPATIBILITY_NAME`       | no recibe nueva autoridad                           |
+| schemas actuales `club`, `pass`, `pos`, `talento`, `viso`, `vital` | `CURRENT_PHYSICAL_NAME`                 | no se declaran destino objetivo por existir         |
+| `product_categories_backup_20260316_preparaciones`                 | `BACKUP_NAMING_VIOLATION_AS_IS`         | exige reconciliación antes de disposición           |
+| `staging_insumos_import`                                           | `STAGING_AND_LANGUAGE_VIOLATION_AS_IS`  | exige lifecycle y transición controlada             |
+| `qty_base`, `qty`, `unit_code`, `created_by`                       | `LEGACY_OR_AMBIGUOUS_COLUMN_NAME_AS_IS` | requiere mapeo semántico, no sustitución automática |
+| superficies `v1` activas                                           | `ACTIVE_VERSIONED_CONTRACT`             | no se clasifican como legacy por el sufijo          |
+
+Esta clasificación no renombra, acepta, retira ni corrige físicamente ningún objeto actual.
+
+#### 25. Linter y controles recurrentes
+
+El control automático deberá:
+
+1. leer catálogos remotos, migraciones, contratos y tipos generados;
+2. validar forma léxica, bytes, ASCII, minúsculas y guiones bajos;
+3. comprobar los 29 nombres objetivo y los 14 nombres administrados reservados;
+4. detectar nombres de aplicación, ambiente, fecha, backup, staging y tipo físico;
+5. validar vocabulario, abreviaturas, sufijos semánticos y palabras reservadas;
+6. detectar nombres que colisionen después de normalización o truncamiento;
+7. detectar dos tokens distintos usados para el mismo concepto sin decisión;
+8. detectar un token reutilizado con semánticas incompatibles;
+9. distinguir deuda histórica registrada de una nueva infracción;
+10. bloquear nuevas infracciones y exigir tarea propietaria para las históricas;
+11. comparar remoto, migraciones y contratos para detectar drift nominal;
+12. producir evidencia ordenada sin exponer datos ni secretos.
+
+No se declarará conforme un objeto únicamente porque PostgreSQL acepte su identificador.
+
+#### 26. Orden obligatorio de materialización futura
+
+```text
+1. CONGELAR EL ESTÁNDAR Y EL GLOSARIO
+2. INVENTARIAR NOMBRES REMOTOS, MIGRACIONES Y CONSUMIDORES
+3. CLASIFICAR CANÓNICO, COMPATIBLE, LEGACY, AMBIGUO O RESERVADO
+4. DEFINIR NOMBRES SUCESORES SIN COLISIONES
+5. COMPLETAR CLAVES, CONSTRAINTS, ESTADOS Y TIMESTAMPS
+6. COMPLETAR FUNCIONES, RPC, TRIGGERS, SEGURIDAD Y CONTRATOS
+7. GENERAR MAPAS DE COMPATIBILIDAD Y TIPOS
+8. EJECUTAR TRANSICIÓN POR OLEADAS CON TELEMETRÍA
+9. RETIRAR ALIASES SOLO DESPUÉS DE CERO CONSUMIDORES
+10. VALIDAR DRIFT, PARIDAD AMBIENTAL Y ROLLBACK
+```
+
+Este orden no autoriza cambios físicos.
+
+#### 27. Riesgos restringidos y carryover
+
+| Riesgo o hallazgo                          | Efecto de esta tarea                                            | Resolución restante                |
+| ------------------------------------------ | --------------------------------------------------------------- | ---------------------------------- |
+| schemas nombrados por aplicación           | los prohíbe en el objetivo y conserva el registro de 29 nombres | inventario y transición por objeto |
+| `public` como namespace universal          | impide nuevos nombres autoritativos allí                        | `SUPA-TRANS-*`                     |
+| abreviaturas como `qty`                    | las bloquea para nombres nuevos                                 | mapeo y compatibilidad de columnas |
+| backup y staging fechados en `public`      | los clasifica como deuda, no como fuente                        | `SUPA-TRANS-001`; `003`; `006`     |
+| `created_by` ambiguo                       | exige actor o principal explícito                               | `SUPA-ARC-012`; transición         |
+| nombres versionados confundidos con legacy | reserva `_v<major>` para contratos `api`                        | `SUPA-ARC-013`; `023`              |
+| renombre masivo                            | exige consumidores, compatibilidad, telemetría y rollback       | `SUPA-TRANS-005` a `012`           |
+| nombres truncados o citados                | los prohíbe para objetos nuevos                                 | linter y `SUPA-ARC-025`            |
+| drift remoto-migraciones                   | exige comparación recurrente                                    | `SUPA-ARC-025`; `SUPA-TRANS-015`   |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 28. Decisiones reservadas
+
+| Decisión                                                        | Tarea propietaria                   |
+| --------------------------------------------------------------- | ----------------------------------- |
+| tipos de identificador y generación de claves                   | `SUPA-ARC-012`                      |
+| nombres de PK, FK, UNIQUE, CHECK, EXCLUDE, índices y secuencias | `SUPA-ARC-012`                      |
+| vocabularios de estado, transiciones y timestamps obligatorios  | `SUPA-ARC-012`                      |
+| nombres y firmas de funciones, RPC, parámetros y triggers       | `SUPA-ARC-013`                      |
+| funciones privilegiadas y `search_path`                         | `SUPA-ARC-014`                      |
+| exposición, grants, roles y RLS                                 | `SUPA-ARC-015`                      |
+| contratos de lectura y mutación por dominio                     | `SUPA-ARC-016`                      |
+| escrituras interdominio                                         | `SUPA-ARC-017`                      |
+| nombres y rutas de Storage                                      | `SUPA-ARC-018`                      |
+| canales Realtime y eventos                                      | `SUPA-ARC-019`                      |
+| Edge Functions, webhooks y cron                                 | `SUPA-ARC-020`                      |
+| generación de tipos para consumidores                           | `SUPA-ARC-023`                      |
+| valores por ambiente y paridad                                  | `SUPA-ARC-024`                      |
+| ADR y linter recurrente consolidado                             | `SUPA-ARC-025`                      |
+| inventario, renombre, compatibilidad, cutover y retiro físico   | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 29. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, renombrar, mover, copiar o retirar schemas, tablas, vistas, vistas materializadas o columnas;
+- crear aliases, fachadas, tablas temporales o nombres sucesores físicos;
+- modificar tipos, defaults, nullability, PK, FK, constraints, índices, secuencias, enums o timestamps;
+- cambiar nombres de funciones, RPC, triggers, policies, buckets, Edge Functions o cron jobs;
+- modificar Data API, `api.schemas`, `extra_search_path`, grants, ACL, RLS o owners;
+- editar datos, ejecutar backfills o reconciliar backups y staging;
+- modificar aplicaciones, tipos TypeScript, consultas, reportes, integraciones o documentación de consumidores;
+- ejecutar DDL, DML, migraciones, pruebas mutantes, cutover o despliegues;
+- declarar conforme o retirar un objeto actual por su nombre;
+- iniciar `SUPA-ARC-012` antes de aprobación expresa.
+
+#### 30. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-879 a TREQ-SUPABASE-918
+```
+
+Los cuarenta requisitos protegen forma léxica, schemas canónicos y reservados, lenguaje, vocabulario, relaciones tabulares, columnas, referencias, booleanos, medidas, JSON, abreviaturas, compatibilidad, transición, linter y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 31. Criterios de aceptación
+
+- [ ] Existe un único estándar versionado para schemas, relaciones tabulares y columnas.
+- [ ] Todo identificador nuevo usa ASCII `lower_snake_case`, no requiere comillas y ocupa como máximo 63 bytes.
+- [ ] Los 26 owner schemas conservan exactamente sus nombres aprobados.
+- [ ] `api`, `app_private` y `audit` son las únicas capas transversales Vento ya nombradas.
+- [ ] Los 14 schemas administrados permanecen reservados y `public` continúa transitorio.
+- [ ] Ningún schema objetivo se nombra por aplicación, equipo, ambiente, fecha o versión.
+- [ ] Las relaciones usan conceptos empresariales y no prefijos de aplicación o tipo físico.
+- [ ] Backups, staging y temporales no se convierten en fuentes canónicas por nombre.
+- [ ] `_v<major>` se limita a contratos expuestos de `api`.
+- [ ] Las columnas diferencian identidad, referencia, código, clave, número, nombre, label y slug.
+- [ ] Booleanos, tipos, estados, tiempo, cantidades, dinero y medidas tienen formas inequívocas.
+- [ ] `qty`, `_uuid`, `data`, `value`, `created_by` y abreviaturas no registradas no se propagan a nombres nuevos.
+- [ ] JSON, payloads, metadata y snapshots requieren contrato, owner, versión y sensibilidad.
+- [ ] Un cambio nominal exige consumidores, compatibilidad, telemetría, paridad y rollback.
+- [ ] La línea base AS-IS se clasifica sin renombres ni retiros automáticos.
+- [ ] El linter distingue deuda histórica de nuevas infracciones y bloquea estas últimas.
+- [ ] Se generan `TREQ-SUPABASE-879` a `TREQ-SUPABASE-918`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-012` permanece reservada.
+
+#### 32. Controles estructurales requeridos
+
+| Control                                            | Resultado esperado |
+| -------------------------------------------------- | -----------------: |
+| idioma físico canónico                             |          `ENGLISH` |
+| forma física canónica                              | `lower_snake_case` |
+| charset físico canónico                            |            `ASCII` |
+| límite duro PostgreSQL                             |       **63 bytes** |
+| owner schemas nombrados                            |       **26 de 26** |
+| capas transversales Vento nombradas                |         **3 de 3** |
+| nombres objetivo Vento                             |             **29** |
+| schemas administrados reservados                   |             **14** |
+| schemas `public` transitorios                      |              **1** |
+| abreviaturas permitidas                            |             **19** |
+| nombres de aplicación permitidos como owner schema |              **0** |
+| versionado nominal general fuera de `api`          |              **0** |
+| cambios físicos                                    |              **0** |
+| requisitos nuevos                                  |             **40** |
+
+#### 33. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+```
+
+`SUPA-ARC-012` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
 ### [ ] SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
 ### [ ] SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
