@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **436** |
+| Aprobadas | **437** |
 | En propuesta | **0** |
-| No iniciadas | **1139** |
+| No iniciadas | **1138** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.68% (436/1575)** |
+| Porcentaje de completamiento | **27.75% (437/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-003` — Definir reglas de capitalización para nombres empresariales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -427,7 +427,7 @@
 | ✅ APROBADA | `SUPA-ARC-022` | Definir retención, archivado, respaldo y recuperación | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-023` | Definir generación canónica de tipos para consumidores | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-024` | Definir entornos local, pruebas, staging y producción | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `DATA-NORM-ARC-001` | Definir política de normalización por dominio, entidad y campo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `DATA-NORM-ARC-001` | Definir política de normalización por dominio, entidad y campo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-002` | Definir clases de campo y tratamiento permitido | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-003` | Definir reglas de capitalización para nombres empresariales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-004` | Definir conectores que permanecen en minúscula | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
