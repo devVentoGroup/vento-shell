@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **429** |
+| Tareas aprobadas | **430** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1146** |
+| Tareas no iniciadas | **1145** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **27.24% (429/1575)** |
+| Porcentaje de completamiento | **27.30% (430/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción** |
-| Tarea actual | **DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización** |
+| Última tarea aprobada | **DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización** |
+| Tarea actual | **DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores** |
+| Siguiente tarea | **DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 0 de 45 aprobadas; DATA-NORM-AUD-001 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 1 de 45 aprobadas; DATA-NORM-AUD-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción |
-| Tarea actual | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores |
+| Última aprobada | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización |
+| Tarea actual | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-AUD-003` — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **0 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-001** |
+| BLOQUE E3 | **1 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
-        ↓
-TAREA ACTUAL
 DATA-NORM-AUD-001 — Inventariar campos textuales y reglas actuales de normalización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 0 de 45 tareas aprobadas
+BLOQUE E3 — 1 de 45 tareas aprobadas
 ```

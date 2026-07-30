@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **429** |
+| Aprobadas | **430** |
 | En propuesta | **0** |
-| No iniciadas | **1146** |
+| No iniciadas | **1145** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.24% (429/1575)** |
+| Porcentaje de completamiento | **27.30% (430/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-AUD-001` — Inventariar campos textuales y reglas actuales de normalización | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-AUD-003` — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -396,7 +396,7 @@
 | ✅ APROBADA | `SUPA-AUD-022` | Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-023` | Crear mapa proceso → datos → RPC → eventos → aplicaciones | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `SUPA-AUD-024` | Clasificar riesgos críticos, altos, medios y deuda técnica | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
-| ⬜ NO INICIADA | `DATA-NORM-AUD-001` | Inventariar campos textuales y reglas actuales de normalización | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `DATA-NORM-AUD-001` | Inventariar campos textuales y reglas actuales de normalización | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-002` | Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-004` | Detectar duplicados semánticos mediante valores normalizados de comparación | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
