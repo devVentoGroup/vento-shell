@@ -3174,7 +3174,508 @@ SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
 `SUPA-ARC-008` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+### ✅ SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispositivo`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `18a3e5f2a517f4b3886a438fd85f7a478db6cbed`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `11b6d0c7f70f739c1108c2a1316d68c37b1e2dbe`; `01_IDENTIDAD_Y_ROLES.md` blob `ed957e29cff70ff9042bbc2b739464587f928cdb`; `06_ADR_AUTH_001.md` blob `e41074801c22a761123ba103353f2981672078a2`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `dab90321d79d215d6cc5ebd353976a5bd60e9156`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`
+**Tipo de tarea:** definición normativa del modelo objetivo de autenticación, principal, identidad empresarial y actor efectivo; sin crear, alterar o eliminar usuarios, identidades, sesiones, factores, tablas, schemas, funciones, triggers, RLS, grants, claims, proveedores, configuraciones, migraciones, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir cómo Vento OS utilizará Supabase Auth para autenticar credenciales sin convertir `auth.users`, los proveedores, los tokens o sus metadatos en fuente de verdad de trabajador, cliente, dispositivo, rol, permiso, sede, área, turno o actor efectivo.
+
+```text
+CREDENCIAL VALIDADA POR SUPABASE AUTH
+        ↓
+PRINCIPAL AUTENTICADO
+        ↓
+VÍNCULOS EMPRESARIALES RESUELTOS
+        ↓
+IDENTIDAD DE DOMINIO REQUERIDA
+        ↓
+ACTOR EFECTIVO
+        ↓
+CONTEXTO + AUTORIZACIÓN + AUDITORÍA
+```
+
+La autenticación demostrará quién presenta una credencial. La identidad empresarial demostrará qué entidad representa. El actor efectivo determinará a quién se atribuye la acción. La autorización decidirá si puede ejecutarla.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-AUTH-ENTERPRISE-IDENTITY-MODEL-001@1.0.0
+```
+
+| Propiedad                                  |             Valor |
+| ------------------------------------------ | ----------------: |
+| `managed_auth_schema`                      |            `auth` |
+| `enterprise_identity_owner_schema`         | `identity_access` |
+| `enterprise_identity_owner_schema_id`      |     `VSCHEMA-023` |
+| `authenticated_principal_kinds`            |             **3** |
+| `business_identity_kinds`                  |             **4** |
+| `effective_actor_kinds`                    |             **3** |
+| `authorization_from_auth_metadata`         |             **0** |
+| `client_service_role_usage_target`         |             **0** |
+| `direct_business_authority_in_auth_target` |             **0** |
+| `physical_changes_authorized`              |             **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                              |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, separación entre definición e implementación, trazabilidad y pruebas                               |
+| `delivery-contract.json`                                     | una sola tarea y registro 04A completo con nombre único                                                         |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-008` como tarea actual                                     |
+| `ADR-AUTH-001`                                               | capas de identidad, contexto, autorización y presentación; tres clases de principal; actor efectivo obligatorio |
+| `AUTH-MOD-001`                                               | separación entre usuario Auth, empleado, cliente, dispositivo técnico, actor de dispositivo y servicio          |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`            | `auth` como schema administrado y sus internals fuera de la autoridad empresarial                               |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | `identity_access` como owner schema de identidad empresarial y autorización                                     |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | `api` como única capa expuesta para contratos empresariales                                                     |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | helpers privados sin duplicar autoridad de identidad                                                            |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | principal, actor y decisión como referencias auditables separadas                                               |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.051 requisitos hasta `SUPA-ARC-007`; rango `TREQ-SUPABASE-001` a `756`                                        |
+
+#### 4. Decisión canónica
+
+Vento OS adoptará una separación obligatoria entre cuatro planos:
+
+```text
+1. AUTH MANAGED PLANE
+   auth.users, auth.identities, sesiones, tokens, factores y flujos administrados
+
+2. ENTERPRISE PRINCIPAL PLANE
+   identity_access: principal estable, clase, estado y vínculo empresarial
+
+3. DOMAIN IDENTITY PLANE
+   trabajador, cliente, dispositivo y actor de sistema en sus fronteras propietarias
+
+4. EFFECTIVE ACTOR PLANE
+   actor atribuible que continúa hacia contexto, autorización y auditoría
+```
+
+`auth` seguirá administrado por Supabase. `identity_access` será la frontera empresarial objetivo para registrar la interpretación autorizada del principal y sus vínculos, sin copiar credenciales, tokens, contraseñas ni internals administrados.
+
+#### 5. Principios normativos
+
+1. `auth.users` representa una cuenta autenticable, no una persona laboral, cliente, dispositivo empresarial, rol ni permiso.
+2. `auth.identities` representa proveedores e identidades externas, no perfiles de dominio.
+3. Una cuenta podrá coexistir con más de una identidad empresarial compatible; la cardinalidad física exacta se define en `SUPA-ARC-009`.
+4. Una identidad empresarial podrá existir sin cuenta Auth cuando el proceso lo permita, sin adquirir acceso autenticado implícito.
+5. La ausencia de vínculo requerido produce denegación cerrada o onboarding explícito, nunca inferencia.
+6. JWT, claims y metadata transportan evidencia de sesión o bootstrap; no sustituyen fuentes empresariales vigentes.
+7. El actor efectivo se resuelve server-side y nunca se acepta libremente desde el cliente.
+8. Un servicio privilegiado conserva identidad técnica propia y no se presenta como usuario humano.
+9. Un dispositivo compartido autentica la terminal; la acción empresarial requiere actor humano vigente.
+10. La revocación, expiración y desactivación se completarán en `SUPA-ARC-010` sin alterar estas fronteras.
+
+#### 6. Clases de principal autenticado
+
+| Clase           | Credencial                                          | Qué demuestra                                                        | Qué no demuestra                                                |
+| --------------- | --------------------------------------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `HUMAN_USER`    | sesión personal de Supabase Auth                    | una persona presentó una credencial válida                           | empleo, clientela, rol, permiso o contexto                      |
+| `SHARED_DEVICE` | cuenta técnica vinculada a una terminal             | una terminal autorizada está autenticada                             | identidad humana, rol laboral o permiso empresarial             |
+| `SERVICE`       | credencial server-side o identidad técnica aprobada | un proceso técnico identificado puede invocar una frontera permitida | autorización empresarial universal o identidad de usuario final |
+
+Cada principal autenticado tendrá exactamente una clase primaria por resolución. Una misma credencial no podrá interpretarse simultáneamente como persona, dispositivo y servicio.
+
+#### 7. Identidades empresariales reconocidas
+
+| Clase          | Autoridad empresarial                                 | Regla                                                                |
+| -------------- | ----------------------------------------------------- | -------------------------------------------------------------------- |
+| `EMPLOYEE`     | identidad laboral vigente del dominio correspondiente | exige vínculo válido y estado laboral activo para acciones laborales |
+| `CUSTOMER`     | identidad comercial del dominio correspondiente       | no concede acceso laboral ni permisos administrativos                |
+| `DEVICE`       | registro empresarial del dispositivo compartido       | no recibe rol base, rol operativo ni capacidad humana propia         |
+| `SYSTEM_ACTOR` | proceso o servicio registrado y permitido             | solo actúa dentro de operaciones nominales y auditables              |
+
+Una persona podrá ser simultáneamente `EMPLOYEE` y `CUSTOMER`. Esa coexistencia no fusiona perfiles, estados, datos, finalidades ni permisos.
+
+#### 8. Actor efectivo
+
+Los tipos de actor efectivo serán:
+
+```text
+EMPLOYEE
+SYSTEM
+NONE
+```
+
+Resolución:
+
+```text
+HUMAN_USER + EMPLOYEE ACTIVO
+→ actor efectivo EMPLOYEE
+
+SHARED_DEVICE + SESIÓN DE ACTOR VIGENTE + EMPLOYEE ACTIVO
+→ actor efectivo EMPLOYEE
+
+SERVICE + PROCESO REGISTRADO + OPERACIÓN PERMITIDA
+→ actor efectivo SYSTEM
+
+PRINCIPAL SIN VÍNCULO O SIN CONDICIONES SUFICIENTES
+→ NONE + DENEGACIÓN
+```
+
+El actor efectivo no es un claim libre, un rol, una selección de interfaz ni un parámetro sustituible por el consumidor.
+
+#### 9. Fronteras de autoridad
+
+| Elemento                           | Fuente autorizada                                  | Prohibición                                             |
+| ---------------------------------- | -------------------------------------------------- | ------------------------------------------------------- |
+| cuenta, proveedor y sesión técnica | Supabase Auth                                      | no derivar perfil empresarial desde el email o provider |
+| principal y vínculo empresarial    | `identity_access`                                  | no duplicarlo en metadata editable                      |
+| identidad laboral                  | owner schema laboral                               | no derivarla de `public.users` ni del rol JWT           |
+| identidad de cliente               | owner schema de cliente                            | no usarla como identidad laboral                        |
+| dispositivo y actor compartido     | contrato de `identity_access` y tareas posteriores | no modelar una tablet como empleado ficticio            |
+| roles, permisos y contexto         | catálogos y contratos de autorización              | no convertirlos en identidad                            |
+| auditoría                          | `audit`                                            | no usar logs como fuente de identidad                   |
+
+#### 10. Cuenta Auth y perfil empresarial
+
+La relación conceptual será:
+
+```text
+AUTH ACCOUNT
+  0..N provider identities
+  0..N enterprise identity links
+
+ENTERPRISE IDENTITY
+  owner schema propio
+  lifecycle propio
+  0..1 vínculo autenticable activo según contrato posterior
+```
+
+La notación anterior no aprueba constraints físicos. `SUPA-ARC-009` definirá cardinalidades, claves, enlaces, conflictos, perfiles legacy y resolución de duplicados.
+
+#### 11. Proveedores e identidades externas
+
+1. El proveedor de autenticación es un mecanismo de ingreso, no una categoría empresarial.
+2. Varias identidades de proveedor podrán converger en una cuenta cuando Supabase y el contrato lo soporten.
+3. Cambiar proveedor no cambiará `employee_id`, `customer_id`, `device_id` ni actor de sistema.
+4. Email y teléfono podrán ser atributos de contacto o login, pero no claves empresariales universales.
+5. Linking, unlinking y recuperación deberán impedir apropiación de cuentas y preservar auditoría.
+6. La política exacta de proveedores, reautenticación y MFA se completa en `SUPA-ARC-010` y `SUPA-ARC-024`.
+
+#### 12. JWT, claims y metadata
+
+- `sub` identifica la cuenta Auth dentro del proyecto y no la identidad empresarial completa.
+- `raw_user_meta_data` queda prohibido como fuente de autorización, rol, sede, área, turno o estado laboral.
+- `raw_app_meta_data` podrá transportar señales server-managed de bootstrap o compatibilidad, pero no será la única autoridad de información mutable.
+- Un claim puede estar obsoleto hasta renovar el token; las operaciones sensibles deberán resolver estado vigente.
+- El rol PostgreSQL del JWT no equivale a rol base u operativo de Vento.
+- Claims, metadata y tokens no se copiarán a tablas empresariales ni auditoría salvo referencia mínima y finalidad aprobada.
+
+#### 13. Sesión personal humana
+
+Una sesión personal laboral deberá resolver, en orden:
+
+```text
+JWT VÁLIDO
+→ CUENTA AUTH
+→ PRINCIPAL HUMAN_USER
+→ VÍNCULO EMPLOYEE
+→ EMPLOYEE ACTIVO
+→ ACTOR EFECTIVO EMPLOYEE
+→ CONTEXTO
+→ AUTORIZACIÓN
+```
+
+Una sesión cliente seguirá una ruta independiente hacia `CUSTOMER`. La aplicación declarará qué identidad acepta y no cambiará de identidad por fallback.
+
+#### 14. Dispositivo compartido
+
+```text
+JWT TÉCNICO VÁLIDO
+→ PRINCIPAL SHARED_DEVICE
+→ DISPOSITIVO ACTIVO
+→ SESIÓN DE ACTOR VIGENTE
+→ EMPLOYEE ACTIVO
+→ ACTOR EFECTIVO EMPLOYEE
+```
+
+Sin actor vigente, el dispositivo solo podrá ejecutar capacidades técnicas nominales: configuración, heartbeat, inicio o cierre de sesión de actor y diagnóstico aprobado. No podrá ejecutar mutaciones empresariales.
+
+#### 15. Servicios y `service_role`
+
+1. `service_role` es una capacidad técnica privilegiada, no una identidad empresarial.
+2. Nunca estará disponible en cliente, dispositivo no confiable, bundle móvil o navegador.
+3. Toda ejecución autónoma declarará `service_principal_id`, proceso, operación, ambiente y owner técnico.
+4. Toda ejecución iniciada por humano conservará principal humano y actor efectivo aunque use un backend privilegiado.
+5. La credencial no podrá sustituir permiso, territorio, contexto, idempotencia ni auditoría.
+6. El uso de `SECURITY DEFINER`, roles de base y grants se resolverá en `SUPA-ARC-014` y `SUPA-ARC-015`.
+
+#### 16. Actividad y denegación cerrada
+
+Una identidad será utilizable solo cuando todas sus capas requeridas estén vigentes. Tendrán precedencia las condiciones negativas:
+
+```text
+CUENTA BLOQUEADA O SESIÓN INVÁLIDA
+> VÍNCULO POSITIVO
+
+IDENTIDAD EMPRESARIAL INACTIVA
+> ROL, PERMISO, SEDE, TURNO O EXCEPCIÓN
+
+DISPOSITIVO INACTIVO O SESIÓN DE ACTOR EXPIRADA
+> CAPACIDAD OPERATIVA
+```
+
+No se aplicarán fallbacks que amplíen privilegios por ausencia de datos.
+
+#### 17. Contrato lógico de resolución
+
+```text
+EnterpriseIdentityContext
+├── auth_subject_id
+├── principal_id
+├── principal_kind
+├── provider_identity_refs[]
+├── employee_id
+├── customer_id
+├── device_id
+├── service_principal_id
+├── effective_actor_kind
+├── effective_actor_id
+├── actor_session_id
+├── identity_state
+├── assurance_level
+├── session_reference
+├── resolved_at
+├── source_versions
+└── denial_reason_codes[]
+```
+
+Los campos no aplicables serán nulos por contrato. La ausencia de un identificador requerido no podrá ocultarse con valores por defecto.
+
+#### 18. Estados lógicos de resolución
+
+| Estado                   | Significado                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| `ANONYMOUS`              | no existe sesión autenticada válida                                                |
+| `AUTHENTICATED_UNLINKED` | existe cuenta Auth, pero no el vínculo empresarial exigido                         |
+| `ACTIVE`                 | principal, identidad y condiciones requeridas están vigentes                       |
+| `INACTIVE`               | la identidad empresarial existe, pero está desactivada                             |
+| `TECHNICAL_ONLY`         | dispositivo o servicio válido sin actor humano requerido para mutación empresarial |
+| `DENIED`                 | existe una condición estructural que impide continuar                              |
+
+Los estados de token, sesión, refresh, revocación y offboarding se especificarán en `SUPA-ARC-010`.
+
+#### 19. Códigos mínimos de denegación
+
+```text
+unauthenticated
+unsupported_principal
+principal_unlinked
+identity_not_found
+identity_inactive
+device_not_found
+device_inactive
+device_actor_required
+actor_session_expired
+actor_identity_inactive
+service_principal_missing
+service_operation_not_allowed
+identity_ambiguous
+identity_incomplete
+fresh_state_required
+```
+
+Los consumidores podrán traducirlos, pero no reinterpretar la decisión ni reemplazarla por mensajes genéricos de éxito.
+
+#### 20. Acceso a schemas administrados
+
+- las aplicaciones no consultarán tablas internas de `auth` mediante Data API;
+- los flujos de login, logout, recuperación y MFA usarán APIs soportadas de Supabase;
+- la lógica server-side podrá consultar superficies administradas permitidas cuando el contrato lo exija;
+- una referencia a `auth.users.id` no transfiere ownership del objeto empresarial;
+- no se recrearán tablas espejo de sesiones, tokens o identidades de proveedor como autoridad alternativa;
+- cambios de Auth deberán superar compatibilidad de plataforma, paridad ambiental y rollback.
+
+#### 21. Relación con las capas objetivo
+
+| Capa              | Relación con identidad                                                 |
+| ----------------- | ---------------------------------------------------------------------- |
+| owner schemas     | conservan perfiles y estados empresariales de cada dominio             |
+| `identity_access` | registra principal, vínculos y resolución empresarial autorizada       |
+| `api`             | expone contratos mínimos de identidad y comandos autorizados           |
+| `app_private`     | aloja primitivas técnicas, nunca perfiles ni credenciales persistentes |
+| `audit`           | conserva principal, actor, decisión y resultado mediante referencias   |
+| `public`          | solo compatibilidad temporal con salida obligatoria                    |
+| `auth`            | administra credenciales y sesión técnica mediante Supabase             |
+
+#### 22. Integridad y unicidad conceptual
+
+1. Una cuenta no podrá vincularse silenciosamente con dos identidades empresariales incompatibles de la misma clase.
+2. Una identidad empresarial no podrá ser reclamada por otra cuenta sin workflow de resolución y evidencia.
+3. La fusión o separación de cuentas preservará actor, auditoría, consentimiento, sesiones y recursos.
+4. Los perfiles huérfanos no se eliminarán ni enlazarán automáticamente.
+5. Los enlaces se versionarán y tendrán lifecycle, origen, autoridad y razón.
+6. La integridad física exacta queda reservada a `SUPA-ARC-009`, `SUPA-ARC-012` y la transición.
+
+#### 23. Auditoría mínima
+
+Se auditarán, según sensibilidad:
+
+- creación, confirmación, bloqueo y eliminación de cuenta;
+- linking y unlinking de proveedor;
+- creación, activación, desactivación y corrección de vínculo empresarial;
+- resolución ambigua o denegada;
+- inicio, renovación y cierre de actor en dispositivo compartido;
+- uso de servicio y operación privilegiada;
+- acceso o exportación de información de identidad;
+- recuperación, reautenticación, MFA y revocación cuando se definan.
+
+La auditoría registrará referencias e integridad, no tokens, contraseñas ni secretos.
+
+#### 24. Línea base actual y clasificación
+
+El estado actual contiene cuentas, proveedores, sesiones y tokens administrados por Supabase, junto con perfiles de cliente, empleados, invitaciones, dispositivos compartidos y perfiles especializados distribuidos en schemas Vento.
+
+Reglas:
+
+1. la coexistencia actual no prueba que todos los vínculos sean correctos;
+2. `public.users` y `employees` no se fusionan por compartir un identificador;
+3. roles o sedes presentes en metadata se clasifican como compatibilidad, no autoridad;
+4. cuentas técnicas no se convierten en empleados ficticios;
+5. perfiles sin cuenta se clasifican antes de enlazar, crear o eliminar;
+6. sesiones y tokens actuales se tratan en `SUPA-ARC-010`;
+7. el inventario objeto por objeto corresponde a `SUPA-TRANS-001` a `SUPA-TRANS-004`.
+
+#### 25. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR CUENTAS, PROVEEDORES, PERFILES, DISPOSITIVOS Y SERVICIOS
+2. CLASIFICAR PRINCIPAL E IDENTIDADES EMPRESARIALES
+3. RESOLVER CARDINALIDADES, HUÉRFANOS, DUPLICADOS Y CONFLICTOS
+4. DEFINIR ESTADOS, REVOCACIÓN, MFA Y OFFBOARDING
+5. MATERIALIZAR REGISTRO DE PRINCIPALES Y VÍNCULOS
+6. ADAPTAR GUARDS, RPC, RLS Y SERVICIOS
+7. MIGRAR METADATA Y BYPASSES LEGACY
+8. PROBAR SESIONES PERSONALES, DISPOSITIVOS Y SERVICIOS
+9. VERIFICAR PARIDAD, AUDITORÍA, RECUPERACIÓN Y ROLLBACK
+10. RETIRAR FUENTES COMPETIDORAS SIN PERDER HISTORIA
+```
+
+Este orden no autoriza implementación física.
+
+#### 26. Riesgos restringidos y carryover
+
+| Riesgo                               | Efecto de esta tarea                             | Resolución restante              |
+| ------------------------------------ | ------------------------------------------------ | -------------------------------- |
+| Auth tratado como perfil empresarial | separa cuenta, principal e identidad             | `SUPA-ARC-009`; transición       |
+| metadata editable como autorización  | la prohíbe como autoridad                        | `SUPA-ARC-015`; transición       |
+| dispositivo modelado como empleado   | define principal técnico y actor humano separado | `SUPA-ARC-009`; `010`            |
+| `service_role` como bypass           | exige servicio nominal y operación permitida     | `SUPA-ARC-014`; `015`; `020`     |
+| cuenta con varios perfiles           | permite coexistencia sin fusionar dominios       | `SUPA-ARC-009`                   |
+| perfiles huérfanos o duplicados      | exige clasificación y resolución controlada      | `SUPA-ARC-009`; transición       |
+| sesión válida con identidad inactiva | establece denegación estructural                 | `SUPA-ARC-010`                   |
+| claims obsoletos                     | exige estado fresco en operaciones sensibles     | `SUPA-ARC-010`; `015`            |
+| drift entre ambientes                | exige manifiesto y paridad                       | `SUPA-ARC-024`; `SUPA-TRANS-013` |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 27. Decisiones reservadas
+
+| Decisión                                                               | Tarea propietaria                   |
+| ---------------------------------------------------------------------- | ----------------------------------- |
+| cardinalidades, claves y enlaces de trabajador, cliente y dispositivo  | `SUPA-ARC-009`                      |
+| sesión, refresh, revocación, bloqueo, desactivación, MFA y offboarding | `SUPA-ARC-010`                      |
+| nombres físicos y constraints                                          | `SUPA-ARC-011`; `SUPA-ARC-012`      |
+| funciones, RPC y triggers                                              | `SUPA-ARC-013`                      |
+| `SECURITY DEFINER` y `search_path`                                     | `SUPA-ARC-014`                      |
+| grants, RLS, roles de ejecución y claims autorizados                   | `SUPA-ARC-015`                      |
+| contratos por dominio                                                  | `SUPA-ARC-016`                      |
+| Storage de evidencias de identidad                                     | `SUPA-ARC-018`                      |
+| Edge Functions, webhooks y servicios                                   | `SUPA-ARC-020`                      |
+| retención y recuperación                                               | `SUPA-ARC-022`                      |
+| tipos generados                                                        | `SUPA-ARC-023`                      |
+| proveedores y paridad por ambiente                                     | `SUPA-ARC-024`                      |
+| inventario, migración y retiro                                         | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 28. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear o alterar schemas, tablas, funciones, triggers, policies, roles o grants;
+- crear, bloquear, confirmar, eliminar o vincular cuentas;
+- modificar proveedores, MFA, contraseñas, sesiones, refresh tokens o configuración de Auth;
+- cambiar metadata, claims, JWT, templates, redirects o credenciales;
+- migrar perfiles, resolver huérfanos, fusionar cuentas o eliminar duplicados;
+- cambiar guards, Server Actions, RPC, RLS o clientes Supabase;
+- introducir `service_role` en nuevos consumidores;
+- ejecutar DDL, DML, migraciones, backfills, despliegues o pruebas mutantes;
+- iniciar `SUPA-ARC-009` antes de aprobación expresa.
+
+#### 29. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-757 a TREQ-SUPABASE-796
+```
+
+Los cuarenta requisitos protegen separación de Auth e identidad, clases de principal, identidades empresariales, actor efectivo, vínculos, proveedores, metadata, claims, dispositivos compartidos, servicios, estados, denegación cerrada, integridad, auditoría, transición y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 30. Criterios de aceptación
+
+- [ ] `auth` permanece administrado por Supabase y sin autoridad empresarial directa.
+- [ ] `identity_access` queda identificado como owner schema empresarial de principal y vínculos.
+- [ ] Se preservan exactamente tres clases de principal autenticado.
+- [ ] Se preservan cuatro clases de identidad empresarial.
+- [ ] Se preservan tres clases de actor efectivo.
+- [ ] `auth.users`, proveedores, JWT y metadata no equivalen a trabajador, cliente, dispositivo, rol o permiso.
+- [ ] Una persona puede ser empleado y cliente sin fusionar identidades.
+- [ ] Un dispositivo técnico no adquiere identidad laboral ni permisos humanos.
+- [ ] `service_role` no concede autorización empresarial automática.
+- [ ] Toda mutación empresarial tiene actor efectivo resoluble.
+- [ ] `raw_user_meta_data` queda excluido de autorización.
+- [ ] Claims obsoletos no sustituyen validación de estado vigente.
+- [ ] La ausencia o inactividad produce denegación cerrada.
+- [ ] Perfiles huérfanos, duplicados o ambiguos requieren resolución controlada.
+- [ ] Auditoría conserva principal, actor y decisión sin secretos.
+- [ ] Las decisiones físicas de vínculo y sesión permanecen reservadas.
+- [ ] Se generan `TREQ-SUPABASE-757` a `TREQ-SUPABASE-796`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-009` permanece reservada.
+
+#### 31. Controles estructurales requeridos
+
+| Control                                     |        Resultado esperado |
+| ------------------------------------------- | ------------------------: |
+| schemas administrados de Auth               |            **1** (`auth`) |
+| owner schemas de identidad empresarial      | **1** (`identity_access`) |
+| clases de principal autenticado             |                     **3** |
+| clases de identidad empresarial             |                     **4** |
+| clases de actor efectivo                    |                     **3** |
+| autoridad empresarial directa en Auth       |                     **0** |
+| autorización basada en `raw_user_meta_data` |                     **0** |
+| uso cliente de `service_role`               |                     **0** |
+| cuentas técnicas modeladas como empleados   |                     **0** |
+| mutaciones empresariales sin actor efectivo |                     **0** |
+| requisitos nuevos                           |                    **40** |
+| cambios físicos                             |                     **0** |
+
+#### 32. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispositivo
+```
+
+`SUPA-ARC-009` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
 ### [ ] SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
 ### [ ] SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
